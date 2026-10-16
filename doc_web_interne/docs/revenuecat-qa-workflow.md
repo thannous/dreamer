@@ -38,6 +38,88 @@ preuve `passed` avec une autre valeur reste historique et ne qualifie pas le can
 - Si le compte B doit etre remplace, creer un utilisateur email distinct, confirmer son email,
   verifier qu'il reste `free / inactive`, puis mettre a jour uniquement `.env.qa.local`.
 
+## iOS physique : réutiliser la préparation Sandbox
+
+Rétro du 16 octobre 2026 : achat Apple Sandbox réel, restauration du nouveau reçu et retour
+après connexion ont été vérifiés sur un iPhone physique. Achat et retour Google ont une preuve
+composée : gestes natifs de l’utilisateur, captures et assertions e2e de continuation. Le client
+était un **Expo development client 3.5.0 (13)**, JS `ed9fb3ff` ; la révision native compilée était
+inconnue. Ce résultat ne qualifie pas un binaire Release/TestFlight ultérieur.
+
+### Ce qu’on conserve pour les prochaines campagnes
+
+- Réutiliser le testeur Apple Sandbox dédié dont l’adresse est validée, sa session dans
+  Réglages → Développement → Compte Apple Sandbox, et le compte Noctalia existant.
+  L’identité du testeur reste dans la préparation locale privée ; aucun mot de passe dans Git.
+  Une session Google existante évite une nouvelle authentification hors test explicite du login.
+- Réutiliser le profil ignoré `.env.ios-sandbox.local` (permissions `0600`), la vraie clé Apple
+  RevenueCat `appl_`, `mock=false`, le compte Xcode et le pilote AgentDeviceRunner signé.
+  Réidentifier le binaire installé et l’identité RevenueCat à chaque campagne ; ne pas relire
+  toutes les variables EAS ni reconstruire le pilote si ses entrées sont encore compatibles.
+- Garder **une session de campagne** pour le pilote. Sur le Mac de développement du propriétaire,
+  décision explicite du 16 octobre 2026 : **laisser DevToolsSecurity activé durablement**, y compris
+  entre campagnes. Vérifier son état ; ne plus le désactiver en nettoyage ni redemander cet accord.
+  Ce choix concerne ce Mac, pas les autres machines. Sur une machine dont l’activation est seulement
+  temporaire, conserver l’état pendant les pauses et restaurer l’état initial une fois à la fin.
+- Le testeur, son reçu et l’état de facturation sont des fixtures réutilisables : aucun effacement
+  Apple, suppression de client RevenueCat, remplacement de compte ou réinstallation par défaut.
+  Un abonnement déjà actif appelle une restauration, pas un nouvel achat. Une nouvelle transaction
+  se teste avec l’état réel courant (expiration/renouvellement à relire), dans le périmètre autorisé.
+
+### Reprise courte sur cette machine
+
+Le wrapper, la configuration et les tests sont versionnés avec le
+[rapport iOS Sandbox](qa/revenuecat-ios-sandbox-20261016.md). Le profil privé et les preuves brutes
+restent dans le worktree iPhone conservé. Le pilote sous `/private/tmp` est un cache réutilisable
+tant qu’il existe, pas une sauvegarde durable.
+
+```sh
+cd "$HOME/.codex/worktrees/iphone-revenuecat-sandbox/noctalia"
+# Terminal 1 : script canonique, profil privé déjà préparé.
+CI=1 EXPO_NO_METRO_LAZY=1 mise exec -- npm run start -- \
+  --profile .env.ios-sandbox.local --dev-client --lan --port 4519
+# Terminal 2 : préflight sans ouverture de l’app ni transaction.
+mise exec -- node tools/e2e/run-iphone-sandbox-local.mjs --check
+# Exemples ciblés, un seul worker/propriétaire de l’iPhone.
+mise exec -- node tools/e2e/run-iphone-sandbox-local.mjs --grep 'restores receipt'
+mise exec -- node tools/e2e/run-iphone-sandbox-local.mjs --grep 'inspects existing subscriber'
+```
+
+Ces commandes supposent un téléphone connecté/déverrouillé, le pilote disponible et l’état
+Sandbox adapté. Le wrapper contrôle le client développeur installé **3.5.0 (13)** et la cible
+Metro : après changement de candidat, revoir ces entrées, sans neutraliser le contrôle.
+Le test `inspects existing subscriber` contrôle la reprise au premier plan ; il ne rejoue pas
+une connexion invité → Google complète. Le test `confirms fresh sandbox purchase` n’est valable
+que comme continuation de l’achat déjà lancé et horodaté, jamais comme preuve d’un nouvel achat.
+Le profil `.env.ios-sandbox.example` décrit les variables de cible, de signature et de preuves ;
+les valeurs réelles restent dans `.env.ios-sandbox.local`. `--list --grep <sélection>` découvre les
+tests sans pilote. Un nouvel achat nécessite explicitement `--allow-sandbox-purchase` et sa
+sélection `--grep`; aucune campagne complète ni nouvelle transaction n’est implicite. Ne pas
+relancer un achat en attente ; vérifier son reçu puis utiliser le test de continuation.
+Les versions effectives qualifiées étaient e2e **0.21.1**, mobile **0.12.1**, agent-device **0.21.25**.
+
+### Ce qui a ralenti et comment l’éviter
+
+| Blocage observé | Méthode à réutiliser |
+| --- | --- |
+| Multiples demandes macOS pendant les pauses | Le propriétaire autorise désormais une activation durable sur son Mac de développement : réutiliser ce réglage entre campagnes, sans cycle activation/désactivation. Sur les autres machines, respecter leur propre périmètre. |
+| Pas de profil de signature pour le pilote | Réutiliser le compte Xcode, le team ID, le bundle du helper et le derived path présents dans la configuration privée de campagne. Reconstruire seulement si incompatibles/manquants. |
+| Compte affiché dans les réglages mais testeur Apple non préparé | Réutiliser le testeur dédié et son adresse validée ; un compte connecté ne suffit pas à prouver le parcours d’achat. |
+| Un droit actif masque le nouvel achat | Lire l’abonnement avant le geste. Restaurer l’existant ; ne pas supprimer le client pour fabriquer une nouvelle situation Free. |
+| Réponse RevenueCat ancienne juste après le reset exceptionnel | Attendre un changement observable via SDK/API. Le reset de cette campagne a été confirmé par SDK HTTP 201 puis un GET vide ; l’effacement Apple n’a pas été effectué. |
+| Une commande de préflight échoue mais la suivante démarre | Utiliser `set -e` ou une orchestration qui arrête réellement la chaîne après l’échec ; garder le contrôle d’abonnement dans le test. |
+| La feuille Apple est visible en capture mais absente de l’arbre de l’app | Vérifier visuellement compte, produit et mention de test sans débit. Le mot « sandbox » dans une adresse email seul ne suffit pas. Conserver une preuve composée et la limite du pilote. |
+| Confirmation bouton latéral / Face ID | Intervention physique attendue pour ce parcours ; ensuite vérifier le reçu récent `is_sandbox=true`, `app_store`, puis Plus et les quotas attendus par le contrat courant. Ne jamais retaper Acheter pour vérifier. |
+| Alerte Apple « Tout est prêt / [Environment: Sandbox] » | Après observation exacte, acquitter OK via `device.alert('accept')` / `agent-device alert accept`. Ne pas accepter à l’aveugle une alerte inconnue. |
+| « Achats restaurés » malgré une erreur native `noAccount` | Exiger une restauration native acceptée et sans erreur de compte, ainsi que la convergence serveur ; un toast ou droit en cache ne suffit pas. |
+
+Pour les itérations d’interface, employer les parcours natifs simulés déjà qualifiés ; réserver
+le vrai Sandbox aux comportements StoreKit/RevenueCat affectés. Ces preuves restent distinctes.
+Un rapport unique conserve identité source/binaire, versions, préconditions, commande, échecs,
+reçu résumé sans token, assertions et limites. Les traces e2e originales restent immuables.
+La preuve privée de cette campagne est `outputs/revenuecat-ios-sandbox-20261016/qualification.json`.
+Les mots de passe, JWS, emails privés et sessions restent hors Git.
+
 ## Politique de release smoke actuelle
 
 La decision RevenueCat finale est un seul gate, avec trois assertions:
@@ -936,3 +1018,45 @@ mensuel/annuel, l'annulation, l'expiration et la convergence webhook/backend res
 `npm run subscription:qa:full-gate`; ils sont obligatoires apres une modification Billing ou lors
 d'une campagne QA complete, mais ne bloquent plus automatiquement chaque candidat sans changement
 de ce perimetre.
+
+### Garde-fous de preuve après revue du harnais
+
+Le wrapper exige un checkout propre pour les runs et le préflight, associe le nom sélectionné
+par le SDK à l’UDID physique inspecté via CoreDevice, et vérifie que le listener Metro appartient
+au même worktree. Il recontrôle HEAD, propreté et empreinte du profil à la fin ; un changement
+invalide la qualification. Le profil privé et les sorties ignorées restent réutilisables.
+
+Une nouvelle tentative d’achat reçoit `purchaseAttempt.id`, `campaignId`, propriétaire, produit,
+source HEAD et expiration de **15 minutes** dans `physical-flow-state.json`. Une continuation
+exige `--resume-attempt <id>` ; l’ancien champ `purchaseStartedAt` seul n’est plus recevable.
+Après observation réelle de la feuille sans débit et réponse explicite du propriétaire, le pilote
+rédige **dans le dossier privé de preuves** `purchase-attestation.json`, avec ces champs :
+
+- `attemptId`, `campaignId`, `ownerId`, `product` repris de la tentative courante ;
+- `transactionId` de la transaction Apple effectivement confirmée ;
+- `sheetObservedAt`, `confirmedAt` en millisecondes UTC, dans la fenêtre de tentative ;
+- `noChargeSheetVerified: true`, `ownerSideButtonConfirmed: true`, seulement si réellement observés ;
+- `sheetEvidence` (chemin privé de capture) et `sheetEvidenceSha256` (empreinte de ses octets).
+
+Ne pas produire cette attestation à partir d’un reçu seul. Le test exige une transaction native
+`PURCHASE`, même identifiant que `store_transaction_id` RevenueCat, compte/produit/environnement
+concordants et date bornée par la confirmation. Un renouvellement, une autre transaction ou une
+tentative expirée/consommée est refusé. La convergence du reçu est attendue avec un poll borné,
+sans réessayer l’achat. Exemple de reprise après attestation :
+
+```sh
+mise exec -- node tools/e2e/run-iphone-sandbox-local.mjs \
+  --resume-attempt '<id-de-la-tentative-courante>' --grep 'confirms fresh sandbox purchase'
+```
+
+L’identité est relue depuis les événements natifs de l’ouverture courante, en tenant compte
+d’un logout ultérieur ; le login complet enregistre le propriétaire dans son nouvel état.
+Les contre-exemples de cible étrangère, source sale, logout, tentative périmée et faux reçu ne
+peuvent pas être exercés sans risque sur le téléphone personnel. Ils sont donc contrôlés par :
+
+```sh
+mise exec -- node --test tools/e2e/iphone-sandbox-guards.test.mjs
+```
+
+Cette isolation couvre ces refus et la convergence d’un reçu antérieur, sans remplacer les
+parcours StoreKit ni qualifier les changements de harnais comme un nouveau passage natif.

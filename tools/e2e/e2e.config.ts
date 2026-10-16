@@ -57,6 +57,10 @@ export default {
         cwd: product === 'meditation' ? `${root}apps/meditation` : root,
         env: {
           ...(appNodeOptions === undefined ? {} : { NODE_OPTIONS: appNodeOptions }),
+          // Isolated validation links node_modules from the primary checkout.
+          // Metro's lazy URLs cannot resolve those external paths (Markdown WASM);
+          // bundle the real modules eagerly so the same journeys work in both trees.
+          EXPO_NO_METRO_LAZY: '1',
           CI: '1', EXPO_PUBLIC_MOCK_MODE: 'true', EXPO_PUBLIC_MOCK_AUDIO: 'true', EXPO_PUBLIC_MOCK_PERSISTENCE: 'true',
           ...(product === 'meditation' ? {} : {
             NOCTALIA_APP_VARIANT: product === 'lucid' ? 'lucid' : 'noctalia',

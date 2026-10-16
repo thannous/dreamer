@@ -313,6 +313,9 @@ function Glow({ size, color }: { size: number; color: string }) {
   );
 }
 
+/** Each letter's last measured width: a legend drawn again sits on its arc at once. */
+const glyphWidths = new Map<string, number>();
+
 /**
  * The legend engraved around the window, letter after letter from its start, centred on
  * the top of the seal, or along its foot (`bottom`), where it reads upright from left to
@@ -330,8 +333,15 @@ export function SealLegend({ text, reduced, from = DREAM_STORY.sealContact, stil
 }) {
   const letters = useMemo(() => [...text.toUpperCase()].map((letter) => (letter === ' ' ? '\u00a0' : letter)), [text]);
   const glyphs = useMemo(() => [...new Set(letters)], [letters]);
-  const [widths, setWidths] = useState<Record<string, number>>({});
+  const [widths, setWidths] = useState<Record<string, number>>(() => Object.fromEntries(glyphs.flatMap((glyph) => {
+    const width = glyphWidths.get(glyph);
+    return width === undefined ? [] : [[glyph, width]];
+  })));
   const measured = glyphs.every((glyph) => widths[glyph] !== undefined);
+  // Still measured afresh, unseen, each time it is drawn: should its font have loaded since,
+  // the letters move to their true widths.
+  const [remeasured, setRemeasured] = useState<Record<string, true>>({});
+  const measuring = !glyphs.every((glyph) => remeasured[glyph]);
 
   const placed = useMemo(() => {
     if (!measured) return null;
@@ -372,16 +382,20 @@ export function SealLegend({ text, reduced, from = DREAM_STORY.sealContact, stil
   const letterClass = 'font-sans-medium text-[10px] text-champagne-on';
   return (
     <>
-      {measured ? null : (
+      {measuring ? (
         <View className="absolute opacity-0" style={{ left: 0, top: 0 }}>
           {glyphs.map((glyph) => (
             <Text key={glyph} allowFontScaling={false} className={`absolute ${letterClass}`} style={{ lineHeight: LEGEND_LINE }}
-              onLayout={({ nativeEvent: { layout } }) => setWidths((current) => ({ ...current, [glyph]: layout.width }))}>
+              onLayout={({ nativeEvent: { layout } }) => {
+                glyphWidths.set(glyph, layout.width);
+                setWidths((current) => (current[glyph] === layout.width ? current : { ...current, [glyph]: layout.width }));
+                setRemeasured((current) => ({ ...current, [glyph]: true }));
+              }}>
               {glyph}
             </Text>
           ))}
         </View>
-      )}
+      ) : null}
       {placed?.map((letter, index) => (
         <View key={index} className="absolute" style={{
           left: letter.left, top: letter.top, width: letter.width, height: LEGEND_LINE,
