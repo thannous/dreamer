@@ -1,16 +1,14 @@
 import * as Haptics from 'expo-haptics';
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { Platform, Pressable, View, useWindowDimensions } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { useTranslation } from '@/hooks/useTranslation';
+import { Platform, View, useWindowDimensions } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
-  Extrapolation, interpolate, useAnimatedStyle, useReducedMotion, useSharedValue, withSequence, withSpring, withTiming,
+  Easing, Extrapolation, interpolate, useAnimatedStyle, useReducedMotion, useSharedValue, withSequence, withSpring, withTiming,
 } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
 
 import { JournalPagePreview } from '@/components/journal/JournalPagePreview';
+import { PageTurnsContext } from '@/components/journal/journalPageTurns';
 import { JournalTonightPage } from '@/components/journal/JournalTonightPage';
 import { EASING } from '@/components/motion/motion';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
@@ -35,12 +33,14 @@ const IDLE = 0;
 const SETTLING_FORWARD = 1;
 const SETTLING_BACK = 2;
 /**
- * Once a session, a while after the first dream page opens, its corner lifts a little to
- * show the next page beneath, then falls back: the journal can be leafed through.
+ * Each dream page opened arrives still lifted a little off the next one and falls shut on
+ * it as a page does: slowly at first, then faster, landing with a slight rebound. The
+ * journal can be leafed through. Pages turned to on the same screen do not fall again.
  */
-const HINT_AFTER = 2200;
-const HINT_LIFT = 0.15;
-let hintedThisSession = false;
+const HINT_LIFT = 0.18;
+const HINT_HOLD = 220;
+const HINT_FALL = 560;
+const HINT_REBOUND = 0.02;
 
 const PageTurnLockContext = createContext<(locked: boolean) => void>(() => {});
 const PageArrivalContext = createContext<{ laidOut: () => void; arriving: () => boolean }>({
@@ -83,7 +83,7 @@ export function useJournalPageTurnLock(locked: boolean) {
  * side it only lifts a little. Vertical scrolling and the system back swipe at the binding
  * stay as they are; under reduce motion the page changes at once.
  */
-export function JournalPageTurner({ newer, older, folio, tonight = false, onTurn, children }: {
+export function JournalPageTurner({ newer, older, folio, tonight = false, hint = true, onTurn, children }: {
   /** The dream after this one, turned to towards the left. */
   newer: DreamAnalysis | null;
   /** The dream before this one, turned back to towards the right. */
@@ -92,13 +92,13 @@ export function JournalPageTurner({ newer, older, folio, tonight = false, onTurn
   folio?: number;
   /** After the last dream, tonight's blank page can be turned to. */
   tonight?: boolean;
+  /** The page may show on arrival that it can be turned (not under the capture seal's own arrival). */
+  hint?: boolean;
   onTurn: (dream: DreamAnalysis) => void;
   children: React.ReactNode;
 }) {
   const { width, height } = useWindowDimensions();
   const [pageHeight, setPageHeight] = useState(height);
-  const insets = useSafeAreaInsets();
-  const { t } = useTranslation();
   const reduced = useReducedMotion();
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
@@ -201,8 +201,8 @@ export function JournalPageTurner({ newer, older, folio, tonight = false, onTurn
     onTurn(target);
   }, [direction, onTurn, progress, reachTonight, shown.newer, shown.older, tonight, turnedOver]);
 
-  // Explicit buttons share the same targets as swipes and are available to
-  // keyboards and assistive technology. A discrete action changes page at once.
+  // The controls at a page's foot share the same targets as swipes. A discrete action
+  // changes page at once.
   const navigatePage = useCallback((turnedTo: number) => {
     if (lockedNow.current || phase.get() !== IDLE) return;
     if (atTonight) {
@@ -218,26 +218,32 @@ export function JournalPageTurner({ newer, older, folio, tonight = false, onTurn
     turnAtOnce(turnedTo);
   }, [atTonight, direction, leaveTonight, phase, progress, turnAtOnce, turnedOver]);
 
-  // The hint: the page lifts towards the next one and falls back, once a session.
+  // The hint: arriving, the page falls shut over the next one, once per opening.
+  const hinted = useRef(false);
   useEffect(() => {
-    if (reduced || hintedThisSession || (!newer && !tonight)) return;
-    const timer = setTimeout(() => {
-      if (hintedThisSession || lockedNow.current || direction.get() !== 0 || turnedOver.get()) return;
-      hintedThisSession = true;
-      direction.set(FORWARD);
-      progress.set(withSequence(
-        withTiming(HINT_LIFT, { duration: 520, easing: EASING.inOut }),
-        withTiming(0, { duration: 640, easing: EASING.inOut }, (done) => {
-          if (done) direction.set(0);
-        })
-      ));
-    }, HINT_AFTER);
-    return () => clearTimeout(timer);
-  }, [direction, newer, progress, reduced, tonight, turnedOver]);
+    if (!hint || reduced || hinted.current || (!newer && !tonight)) return;
+    if (lockedNow.current || direction.get() !== 0 || turnedOver.get()) return;
+    hinted.current = true;
+    direction.set(FORWARD);
+    progress.set(withSequence(
+      withTiming(HINT_LIFT, { duration: 0 }),
+      // Held while the screen comes in, then let go: it falls as under its own weight.
+      withTiming(HINT_LIFT, { duration: HINT_HOLD }),
+      withTiming(0, { duration: HINT_FALL, easing: Easing.in(Easing.quad) }),
+      withTiming(HINT_REBOUND, { duration: 150, easing: EASING.out }),
+      withTiming(0, { duration: 220, easing: EASING.inOut }, (done) => {
+        if (done) direction.set(0);
+      })
+    ));
+  }, [direction, hint, newer, progress, reduced, tonight, turnedOver]);
 
   const hasLaterDream = shown.newer != null;
   const hasNewer = hasLaterDream || tonight;
   const hasOlder = shown.older != null;
+  const turnsValue = useMemo(() => ({
+    atTonight, hasOlder, hasNewer, locked,
+    turn: (forward: boolean) => navigatePage(forward ? FORWARD : BACKWARD),
+  }), [atTonight, hasNewer, hasOlder, locked, navigatePage]);
   const pan = useMemo(() => Gesture.Pan()
     .enabled(!locked)
     .activeOffsetX([-18, 18])
@@ -362,6 +368,7 @@ export function JournalPageTurner({ newer, older, folio, tonight = false, onTurn
   return (
     <PageTurnLockContext.Provider value={setLocked}>
       <PageArrivalContext.Provider value={arrival}>
+      <PageTurnsContext.Provider value={turnsValue}>
       <View className="flex-1 bg-ink">
       <GestureDetector gesture={pan} touchAction="pan-y">
         <View className="flex-1 bg-ink" onLayout={({ nativeEvent: { layout } }) => setPageHeight(layout.height)}>
@@ -391,24 +398,8 @@ export function JournalPageTurner({ newer, older, folio, tonight = false, onTurn
           ) : null}
         </View>
       </GestureDetector>
-          {/* Reserve the controls' own space so they never cover the reading dock. */}
-          <View className="flex-row justify-between px-4"
-            style={{ paddingTop: 8, paddingBottom: Math.max(insets.bottom, 8) }}>
-            {([BACKWARD, FORWARD] as const).map((side) => {
-              const available = side === BACKWARD ? atTonight || hasOlder : !atTonight && hasNewer;
-              if (!available) return <View key={side} />;
-              const label = t(side === BACKWARD ? 'journal.page.previous' : 'journal.page.next');
-              return <Pressable key={side} onPress={() => navigatePage(side)} disabled={locked}
-                accessibilityRole="button" accessibilityLabel={label} accessibilityState={{ disabled: locked }}
-                testID={side === BACKWARD ? 'journal.page.previous' : 'journal.page.next'}
-                style={{ width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center',
-                  backgroundColor: noctalia.screen.background, borderWidth: 1, borderColor: noctalia.surface.border,
-                  opacity: locked ? 0.4 : 1 }}>
-                <IconSymbol name={side === BACKWARD ? 'chevron.left' : 'chevron.right'} size={20} color={noctalia.text.primary} />
-              </Pressable>;
-            })}
-          </View>
       </View>
+      </PageTurnsContext.Provider>
       </PageArrivalContext.Provider>
     </PageTurnLockContext.Provider>
   );

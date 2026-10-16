@@ -59,7 +59,7 @@ export function JournalTonightPage({ folio, interactive }: {
       testID="journal.tonight"
       {...(Platform.OS === 'web' ? { 'aria-hidden': !interactive, inert: !interactive } : {})}>
       <JournalPaper />
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1, paddingTop: insets.top + 12, paddingBottom: 16 }}>
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1, paddingTop: insets.top + 12, paddingBottom: insets.bottom + 16 }}>
         <View style={{ marginBottom: RUNNING_HEAD_GAP }}>
           <JournalRunningHead onBack={interactive ? () => router.replace('/(tabs)/journal') : undefined}
             backTestID="journal.tonight.back" />
@@ -108,8 +108,8 @@ export function JournalTonightPage({ folio, interactive }: {
             )
           ) : null}
         </View>
-        <View pointerEvents="none" style={{ marginTop: 'auto', paddingTop: 24 }}>
-          <JournalFolio folio={folio} />
+        <View pointerEvents={interactive ? 'box-none' : 'none'} style={{ marginTop: 'auto', paddingTop: 24 }}>
+          <JournalFolio folio={folio} turns={interactive ? 'tonight' : undefined} />
         </View>
       </ScrollView>
       <JournalPageEdges />
