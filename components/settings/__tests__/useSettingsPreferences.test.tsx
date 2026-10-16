@@ -101,6 +101,18 @@ describe('settings preference controllers', () => {
     expect(result.current.error).toBe(false);
   });
 
+  it('does not label the app override as the system theme', () => {
+    mockUseTheme.mockReturnValue({
+      loaded: true,
+      preference: 'dynamic',
+      setPreference: mockSetThemePreference,
+      systemMode: null,
+    });
+    const { result } = renderHook(() => useThemeSettingsPreference());
+    const auto = result.current.options.find((option: { value: string }) => option.value === 'auto');
+    expect(auto.description).toBe('settings.theme.option.auto.description');
+  });
+
   it('surfaces a persistence error without changing the context-backed current value', async () => {
     const consoleError = jest.spyOn(console, 'error').mockImplementation(() => {});
     mockSetThemePreference.mockRejectedValueOnce(new Error('storage unavailable'));
