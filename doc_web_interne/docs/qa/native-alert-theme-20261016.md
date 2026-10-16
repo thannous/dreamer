@@ -114,6 +114,14 @@ aucun achat supplémentaire pour la fusion. L’effet appliquant le mode natif e
 inchangé ; la capture physique reste attribuée à `8dcdb38d1c9a`, sans prétendre
 qualifier une exécution fraîche du nouveau test.
 
+Sur `15c5049f80592f619bc2dd64bdb0f91c7d005d58`, les deux parcours web FR
+clair/sombre des réglages ont été rejoués : **2/2 passed**, services simulés,
+aucun modèle. Artefact frais :
+`tools/e2e/.e2e/dreamer-web/1792175466355-15999-fa1aaee1-8f66-402f-9ebc-6dee8aaa5bed/`.
+`verify:pr` sur ce même commit est passé (6 contrôles exécutés, 4 réutilisés,
+6 hors périmètre ; 74 suites / 791 tests liés au diff). Le head final après
+intégration de master et sa preuve sont consignés dans la PR.
+
 ## Autres contrôles du correctif
 
 Sur `e79f04ad0f77685566723d5184de98b4b9ee0f20` : 5/5 tests ThemeContext et
