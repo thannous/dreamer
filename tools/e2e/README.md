@@ -3,16 +3,41 @@
 Default framework for new journeys since the owner's 2026-10-05 instruction.
 Follow https://docs.expo.dev/guides/using-e2e/ and the skill bundled in this
 package's `node_modules/e2e/skills/e2e/`. Dependencies and lockfile are isolated
-from the application's Playwright version. The locked runtime is `e2e` 0.21.1,
-`@e2e-dev/web` 0.15.0, `@e2e-dev/mobile` 0.12.1 and `agent-device` 0.21.25
+from the application's Playwright version. The locked runtime is `e2e` 0.21.2,
+`@e2e-dev/web` 0.15.2, `@e2e-dev/mobile` 0.12.3 and `agent-device` 0.21.28
 (the mobile engine's own exact dependency). `SDK_PINS` in `qualification.mjs`
 holds the same four versions; the runner refuses another installed version and
-a report from another runner or engine. The engine peer ranges accept e2e 0.21.1.
-Web 0.15.0 drives `playwright-core` 1.64.0, so the matcher Playwright moves to
+a report from another runner or engine. The engine peer ranges accept e2e 0.21.2.
+Web 0.15.2 drives `playwright-core` 1.64.0, so the matcher Playwright moves to
 1.64.0 too and both share one Chromium build.
 Node 24.19.0 is pinned by the root mise file and satisfies e2e 0.21's
 `^22.22.3 || >=24.8.0` requirement. The runner uses e2e's bundled TypeScript
 loader; the scoped public matcher preload is unchanged.
+
+Local web runs use several workers: half the CPU cores, at most four, or
+`E2E_WORKERS=<n>`. Files run in parallel against the one local server, each
+attempt in its own browser context and storage; a file's tests stay in order.
+CI (`CI` set) keeps one worker and shards across containers, and native runs keep
+one worker per named device. e2e 0.21.2 starts the slowest files first only when
+the previous report sits in the same output directory, which this runner never
+reuses, so files start in collection order.
+
+What 0.21.2 changes here:
+
+- With several workers, `--shard` counts a skipped test in one shard only.
+  Failure summaries and trace pages name the step that actually ended the test.
+- Web `scrollUntilVisible` no longer pauses 100 ms between swipes (web 0.15.2).
+  Web 0.15.1 adds `browser.keyboard.down()`/`up()` for held keys and modifier
+  sequences; `tap`, `double_tap` and `right_click` accept modifier keys.
+- On Android, locators and `expect` keep waiting while the app reports no readable
+  foreground content after a cold start (mobile 0.12.3). `getByTestId` falls back
+  to a resource id without its `<package>:id/` prefix, so `toHaveCount(0)` can now
+  find such a node. Mobile 0.12.2 maps iOS element types to roles for `getByRole`
+  and keeps video, resets, settings, alerts and clipboard on the selected device.
+- Cached actions record their model and a replay with another model is flagged;
+  an iOS navigation-bar or Android toolbar title change makes old recordings
+  `REPLAY_STALE` under `--strict-cache`. This harness runs with `cache: 'off'`.
+  See the [official release notes](https://github.com/tester-army/e2e/releases/tag/e2e%400.21.2).
 
 What 0.21.1 changes here:
 
@@ -176,7 +201,7 @@ CircleCI runs only when triggered manually (web app or API; see the
 [CircleCI guide](../../doc_web_interne/docs/circleci-migration.md)); pushes and PRs
 rely on local runs. A manual pipeline runs the exact Dreamer and Lucid journeys in
 the Noctalia workflow, Meditation in its own workflow, and the generated site after
-`docs:build` and `docs:check`. Each job installs this package's locked e2e 0.21.1 dependencies
+`docs:build` and `docs:check`. Each job installs this package's locked e2e 0.21.2 dependencies
 and Chromium, uses one worker with no replay or model, and retains JUnit, reports, screenshots,
 trace pages and source identity under `tools/e2e/.e2e/`. Existing backend, Maestro and
 quality checks remain required. `E2E_KEEP_METRO_CACHE=1` drops Metro's `--clear`
@@ -377,7 +402,7 @@ typechecked test is not evidence that the user journey passed.
 ## agent-device inspection and live exploration
 
 The host CLI and the official `agent-device` Codex skill are installed. This
-package uses the engine's exact `agent-device` 0.21.25 dependency through its
+package uses the engine's exact `agent-device` 0.21.28 dependency through its
 local CLI. A globally installed CLI may have a different version; the guarded
 package commands use this local pin. Read its version-matched `help workflow`
 or `help debugging` for specialized work. Use exact compatible pins for a measured
