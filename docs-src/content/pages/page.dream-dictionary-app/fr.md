@@ -79,7 +79,7 @@
       <li><a href="/fr/symboles/chien" class="text-dream-salmon hover:underline">Chien</a> : le vôtre, un chien familier ou un inconnu.</li>
       <li><a href="/fr/symboles/lune" class="text-dream-salmon hover:underline">Lune</a> : pleine, en croissant, énorme ou rouge.</li>
     </ul>
-    <p class="mt-4">Le <a href="/fr/guides/dictionnaire-symboles-reves" class="text-dream-salmon hover:underline">dictionnaire complet</a> classe les autres fiches par catégorie et de A à Z.</p>
+    <p class="mt-4">Le <a href="/fr/guides/dictionnaire-symboles-reves" class="text-dream-salmon hover:underline">dictionnaire des rêves complet</a> classe les autres fiches par catégorie et de A à Z.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5 overflow-x-auto">
@@ -103,7 +103,7 @@
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
-    <h2 class="text-2xl font-serif text-white mb-4">FAQ du dictionnaire de rêves</h2>
+    <h2 class="text-2xl font-serif text-white mb-4">FAQ de l’application dictionnaire de rêves</h2>
     <div class="space-y-5">
       <div><h3 class="text-white font-medium">Le dictionnaire Noctalia est-il gratuit ?</h3><p class="mt-1">Oui. Le dictionnaire web public permet de parcourir 160 fiches éditoriales de symboles par catégorie ou de A à Z sans installer l'application.</p></div>
       <div><h3 class="text-white font-medium">Un symbole a-t-il toujours la même signification ?</h3><p class="mt-1">Non. Un même symbole peut renvoyer à des souvenirs, émotions et situations différents. Utilisez le dictionnaire comme un ensemble de possibilités à comparer avec le rêve complet.</p></div>
