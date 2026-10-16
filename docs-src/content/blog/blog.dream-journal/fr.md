@@ -4,8 +4,8 @@
   "layout": "blogArticle",
   "lang": "fr",
   "slug": "journal-de-reves",
-  "title": "Journal de rêves : rappel, méthodes et routines | Noctalia",
-  "description": "Journal de rêves : comment se souvenir de ses rêves, quoi noter chaque matin, les bases du sommeil paradoxal et une routine simple à tenir.",
+  "title": "Mémoire des rêves : par où commencer | Noctalia",
+  "description": "Aucun rêve, des fragments, des réveils la nuit ? Repérez votre situation, faites un premier geste dès demain matin et trouvez le guide adapté.",
   "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -13,24 +13,24 @@
   "bodyStyle": "background-color: #0a0514;",
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "website",
-  "ogTitle": "Journal de rêves : rappel, méthodes et routines",
-  "ogDescription": "Se souvenir de ses rêves et tenir un journal de rêves sur la durée : la routine du matin et nos guides.",
+  "ogTitle": "Mémoire des rêves : par où commencer",
+  "ogDescription": "Aucun rêve, des fragments ou des réveils la nuit : un premier geste pour chaque situation, puis le bon guide.",
   "ogImage": "https://noctalia.app/img/og/noctalia-fr-1200x630.jpg",
   "ogImageAlt": "",
   "twitterCard": "summary_large_image",
-  "twitterTitle": "Journal de rêves : rappel, méthodes et routines",
-  "twitterDescription": "Retenir davantage de rêves : une routine simple au réveil et nos guides sur le journal de rêves.",
+  "twitterTitle": "Mémoire des rêves : par où commencer",
+  "twitterDescription": "Aucun rêve, des fragments ou des réveils la nuit : un premier geste pour chaque situation, puis le bon guide.",
   "twitterImage": "https://noctalia.app/img/og/noctalia-fr-1200x630.jpg",
-  "twitterImageAlt": "Journal de rêves : rappel, méthodes et routines",
+  "twitterImageAlt": "Mémoire des rêves : par où commencer",
   "publishedTime": "",
-  "modifiedTime": "2026-10-09",
+  "modifiedTime": "2026-10-16",
   "author": "",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"CollectionPage\",\n    \"name\": \"Journal de rêves : rappel, méthodes et routines\",\n    \"description\": \"Journal de rêves : comment se souvenir de ses rêves, quoi noter chaque matin, les bases du sommeil paradoxal et une routine simple à tenir.\",\n    \"inLanguage\": \"fr\",\n    \"url\": \"https://noctalia.app/fr/blog/journal-de-reves\",\n    \"dateModified\": \"2026-10-09\"\n}",
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Accueil\",\n            \"item\": \"https://noctalia.app/fr/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Ressources\",\n            \"item\": \"https://noctalia.app/fr/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Journal de rêves\",\n            \"item\": \"https://noctalia.app/fr/blog/journal-de-reves\"\n        }\n    ]\n}"
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"CollectionPage\",\n    \"name\": \"Mémoire des rêves : par où commencer\",\n    \"description\": \"Aucun rêve, des fragments, des réveils la nuit ? Repérez votre situation, faites un premier geste dès demain matin et trouvez le guide adapté.\",\n    \"inLanguage\": \"fr\",\n    \"url\": \"https://noctalia.app/fr/blog/journal-de-reves\",\n    \"dateModified\": \"2026-10-16\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Accueil\",\n            \"item\": \"https://noctalia.app/fr/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Ressources\",\n            \"item\": \"https://noctalia.app/fr/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Mémoire des rêves\",\n            \"item\": \"https://noctalia.app/fr/blog/journal-de-reves\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
 }
@@ -50,7 +50,7 @@
 </li>
 <li class="text-purple-400">/</li>
 <li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem">
-<span class="text-dream-cream" itemprop="name">Journal de rêves</span>
+<span class="text-dream-cream" itemprop="name">Mémoire des rêves</span>
 <meta content="3" itemprop="position">
 </li>
 </ol>
@@ -59,22 +59,86 @@
 <header class="mb-12">
 <div class="flex flex-wrap items-center gap-3 mb-6">
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-3 py-1 uppercase">Hub thématique</span>
-<span class="text-sm text-purple-300/60">Journal de rêves</span>
+<span class="text-sm text-purple-300/60">Mémoire des rêves</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Journal de rêves : rappel, méthodes et routines
+                    Mémoire des rêves : par où commencer selon votre situation
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Le réveil sonne et, quelques secondes, le rêve est encore là : un couloir, un visage, un malaise diffus. Vous regardez votre téléphone, il a disparu. Un <a class="text-dream-salmon hover:underline" href="guide-journal-reves">journal de rêves</a> le retient. Voici nos guides sur le rappel, le <a class="text-dream-salmon hover:underline" href="sommeil-paradoxal-reves">sommeil paradoxal</a>, la <a class="text-dream-salmon hover:underline" href="../guides/dictionnaire-symboles-reves">signification des symboles de rêves courants</a> et une routine du matin.
+                    Certains matins, il reste une scène entière. D’autres, une seule image, ou rien du tout. Ce qui aide n’est pas le même dans ces trois cas. Repérez votre situation ci-dessous, faites un premier geste dès demain matin, puis choisissez le guide qui va plus loin.
                 </p>
 </header>
-<section class="glass-panel rounded-2xl p-6 md:p-8 mt-10 border border-dream-salmon/10" data-blog-hub-expanded="true">
-  <h2 class="font-serif text-2xl text-dream-cream mb-4">Comment commencer un journal de rêves</h2>
-  <div class="prose prose-invert prose-purple max-w-none text-gray-300 leading-relaxed space-y-4">
-    <p><strong>Réponse rapide :</strong> notez votre rêve avant de vous lever, même une seule image, chaque matin pendant une semaine. La régularité compte plus que la longueur.</p>
-    <ul><li><strong>Au réveil :</strong> restez immobile et repassez-vous le rêve.</li><li><strong>À noter :</strong> le lieu, les personnes, l’action, l’émotion.</li><li><strong>Après sept nuits :</strong> relisez et repérez ce qui revient.</li></ul>
-    <p>Le <a class="text-dream-salmon hover:underline" href="/fr/journal-de-reves-vocal">journal de rêves vocal sur Android</a> vous permet de dicter un rêve dès le réveil : il est transcrit et enregistré, prêt à être relu à côté des autres.</p>
-  </div>
+<section class="mt-10" data-blog-hub-expanded="true">
+<h2 class="font-serif text-2xl text-dream-cream mb-6">Où en êtes-vous ?</h2>
+<div class="grid md:grid-cols-2 gap-6">
+<div class="glass-panel rounded-xl p-6">
+<h3 class="font-serif text-lg text-dream-cream mb-3">« Je ne me souviens d’aucun rêve »</h3>
+<p class="text-sm text-gray-300 mb-3">C’est fréquent et ce n’est pas un trouble en soi. Presque tout le monde rêve chaque nuit, mais la plupart des rêves s’effacent dans les minutes qui suivent le réveil.</p>
+<p class="text-sm text-gray-300 mb-3"><strong class="text-dream-cream">Demain matin :</strong> avant de bouger ou de toucher votre téléphone, restez immobile trente secondes et demandez-vous ce que vous ressentez. Si rien ne vient, notez « rien » : la note compte quand même, c’est elle qui installe l’habitude.</p>
+<p class="text-sm text-purple-200/70">Pour aller plus loin : <a class="text-dream-salmon hover:underline" href="pourquoi-oublie-reves-reveil">Pourquoi oublie-t-on ses rêves ?</a> · <a class="text-dream-salmon hover:underline" href="comment-se-souvenir-de-ses-reves">10 techniques pour s’en souvenir</a></p>
+</div>
+<div class="glass-panel rounded-xl p-6">
+<h3 class="font-serif text-lg text-dream-cream mb-3">« Il me reste des fragments qui s’effacent »</h3>
+<p class="text-sm text-gray-300 mb-3">Une couleur, un lieu, une émotion : c’est déjà un souvenir de rêve. Le fragment disparaît surtout quand l’attention part ailleurs.</p>
+<p class="text-sm text-gray-300 mb-3"><strong class="text-dream-cream">Demain matin :</strong> notez trois mots avant de vous lever (un lieu, une personne, une émotion), puis complétez si d’autres détails reviennent. Si écrire vous réveille trop, dictez-les : le <a class="text-dream-salmon hover:underline" href="/fr/journal-de-reves-vocal">journal de rêves vocal</a> de Noctalia les transcrit.</p>
+<p class="text-sm text-purple-200/70">Pour aller plus loin : <a class="text-dream-salmon hover:underline" href="guide-journal-reves">Tenir un journal de rêves : modèle en 60 secondes</a></p>
+</div>
+<div class="glass-panel rounded-xl p-6">
+<h3 class="font-serif text-lg text-dream-cream mb-3">« Je me réveille la nuit avec un rêve en tête »</h3>
+<p class="text-sm text-gray-300 mb-3">Un réveil pendant ou juste après un rêve donne souvent le souvenir le plus net de la nuit.</p>
+<p class="text-sm text-gray-300 mb-3"><strong class="text-dream-cream">Cette nuit :</strong> gardez la note très courte, l’heure et quelques mots, avec la lumière la plus faible possible, puis rendormez-vous. Ne provoquez pas de réveils exprès si vos nuits sont déjà courtes.</p>
+<p class="text-sm text-purple-200/70">Pour aller plus loin : <a class="text-dream-salmon hover:underline" href="reveil-nocturne-rappel-reves">Réveil nocturne : quoi noter en 90 secondes</a></p>
+</div>
+<div class="glass-panel rounded-xl p-6">
+<h3 class="font-serif text-lg text-dream-cream mb-3">« Je retiens mes rêves et je veux aller plus loin »</h3>
+<p class="text-sm text-gray-300 mb-3">Quand le souvenir vient, la question devient : qu’est-ce qui revient d’un rêve à l’autre ?</p>
+<p class="text-sm text-gray-300 mb-3"><strong class="text-dream-cream">Cette semaine :</strong> après sept nuits notées, relisez-les d’un seul coup et soulignez ce qui se répète : un lieu, une personne, une émotion. Partez de vos propres associations avant de chercher une définition.</p>
+<p class="text-sm text-purple-200/70">Pour aller plus loin : <a class="text-dream-salmon hover:underline" href="signification-des-reves">Signification des rêves</a> · <a class="text-dream-salmon hover:underline" href="../guides/dictionnaire-symboles-reves">Dictionnaire des rêves</a> · <a class="text-dream-salmon hover:underline" href="reve-lucide">Rêve lucide</a></p>
+</div>
+</div>
+</section>
+<section class="glass-panel rounded-2xl p-6 md:p-8 mt-12 border border-dream-salmon/10">
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Ce qui joue sur le souvenir d’un rêve</h2>
+<p class="text-gray-300 leading-relaxed">Ces facteurs reviennent dans nos guides. Aucun ne garantit un souvenir, mais en changer un ou deux suffit souvent à garder davantage de fragments.</p>
+<div class="grid md:grid-cols-2 gap-4 mt-6">
+<div class="rounded-xl border border-white/10 p-4">
+<h3 class="font-serif text-lg text-dream-cream mb-2">Le moment du réveil</h3>
+<p class="text-sm text-gray-300 mb-2">On rapporte le plus souvent un rêve en se réveillant pendant ou juste après le <a class="text-dream-salmon hover:underline" href="sommeil-paradoxal-reves">sommeil paradoxal</a>, dont les périodes s’allongent en fin de nuit.</p>
+<p class="text-sm text-gray-300"><strong class="text-dream-cream">À essayer :</strong> Dormir assez longtemps pour garder les derniers cycles, ceux où ces périodes sont les plus longues.</p>
+</div>
+<div class="rounded-xl border border-white/10 p-4">
+<h3 class="font-serif text-lg text-dream-cream mb-2">Une sonnerie brutale</h3>
+<p class="text-sm text-gray-300 mb-2">Un réveil en sursaut tourne l’attention vers le bruit et la journée qui commence.</p>
+<p class="text-sm text-gray-300"><strong class="text-dream-cream">À essayer :</strong> Une sonnerie plus douce, ou quelques secondes immobile après l’avoir coupée.</p>
+</div>
+<div class="rounded-xl border border-white/10 p-4">
+<h3 class="font-serif text-lg text-dream-cream mb-2">Le téléphone dès le réveil</h3>
+<p class="text-sm text-gray-300 mb-2">Messages et notifications prennent la place du rêve en quelques secondes.</p>
+<p class="text-sm text-gray-300"><strong class="text-dream-cream">À essayer :</strong> Le poser hors de portée, ou ne l’ouvrir que pour noter le rêve.</p>
+</div>
+<div class="rounded-xl border border-white/10 p-4">
+<h3 class="font-serif text-lg text-dream-cream mb-2">Le stress du matin</h3>
+<p class="text-sm text-gray-300 mb-2">La liste des tâches du jour remplace vite le souvenir.</p>
+<p class="text-sm text-gray-300"><strong class="text-dream-cream">À essayer :</strong> Noter le rêve avant de penser à la journée.</p>
+</div>
+<div class="rounded-xl border border-white/10 p-4">
+<h3 class="font-serif text-lg text-dream-cream mb-2">L’alcool et certains médicaments</h3>
+<p class="text-sm text-gray-300 mb-2">L’alcool réduit le sommeil paradoxal en première partie de nuit, et certains médicaments modifient le sommeil.</p>
+<p class="text-sm text-gray-300"><strong class="text-dream-cream">À essayer :</strong> Aller doucement sur l’alcool le soir. Pour un médicament, en parler à votre médecin plutôt que de l’arrêter seul.</p>
+</div>
+<div class="rounded-xl border border-white/10 p-4">
+<h3 class="font-serif text-lg text-dream-cream mb-2">L’intention du soir</h3>
+<p class="text-sm text-gray-300 mb-2">S’intéresser à ses rêves avant de dormir va souvent de pair avec un meilleur souvenir au réveil.</p>
+<p class="text-sm text-gray-300"><strong class="text-dream-cream">À essayer :</strong> Une phrase simple au coucher : « Demain matin, je note ce qu’il me reste. »</p>
+</div>
+</div>
+</section>
+<section class="mt-12">
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Combien de temps avant de voir une différence ?</h2>
+<div class="prose prose-invert prose-purple max-w-none text-gray-300 leading-relaxed space-y-4">
+<p>Il n’y a pas de délai garanti. Jugez sur deux semaines de notes régulières plutôt que sur une seule nuit : une mauvaise nuit, un réveil pressé ou un week-end décalé suffisent à tout effacer un matin donné. Si rien ne change après ces deux semaines, regardez d’abord votre sommeil et votre réveil, qui comptent souvent davantage que la méthode.</p>
+<p>Ne pas se souvenir de ses rêves n’est pas un problème médical en soi. En revanche, des <a class="text-dream-salmon hover:underline" href="guide-cauchemars">cauchemars</a> fréquents qui gênent votre sommeil, des réveils nocturnes répétés ou une fatigue qui dure méritent d’en parler à un médecin.</p>
+</div>
 </section>
 
 <section class="mt-12">
@@ -83,7 +147,7 @@
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="guide-journal-reves">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Pour commencer</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Tenir un journal de rêves</h3>
-<p class="text-sm text-gray-400">Quoi écrire chaque matin, et comment s’y tenir.</p>
+<p class="text-sm text-gray-400">Le guide complet : modèle d’entrée, routine de 7 jours et exemple commenté.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="comment-se-souvenir-de-ses-reves">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Rappel</span>

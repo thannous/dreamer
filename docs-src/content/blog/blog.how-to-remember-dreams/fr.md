@@ -64,7 +64,7 @@
 <header class="mb-12">
 <div class="flex flex-wrap items-center gap-3 mb-6">
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-3 py-1 uppercase">Guide</span>
-<a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="journal-de-reves">Thématique : Journal de rêves</a>
+<a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="journal-de-reves">Thématique : Mémoire des rêves</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Publié le 6 janvier 2025</span>
 <span class="text-sm text-purple-300/60">10 min de lecture</span>

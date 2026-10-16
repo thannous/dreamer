@@ -166,7 +166,7 @@ Les guides servent à une recherche rapide sur le Web. Pour garder le rêve lui-
 <div class="grid md:grid-cols-2 gap-6">
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="journal-de-reves">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Hub</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Journal de rêves</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Mémoire des rêves</h3>
 <p class="text-sm text-gray-400">Vous souvenir de plus de rêves et tenir une routine de notes qui dure.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="reve-lucide">
