@@ -7,7 +7,13 @@ const ts = require('typescript');
 const { requireContext } = require('expo-router/internal/testing');
 const { getRoutes } = require('expo-router/internal/routing');
 const { EXPO_ROUTER_CTX_IGNORE } = require('expo-router/_ctx-shared');
-const { getTypedRoutesDeclarationFile } = require('@expo/router-server/build/typed-routes/generate');
+// npm may nest @expo/cli (and its @expo/router-server) under expo, so resolve it from there.
+const expoCliRoot = path.dirname(require.resolve('@expo/cli/package.json', {
+  paths: [path.dirname(require.resolve('expo/package.json'))],
+}));
+const { getTypedRoutesDeclarationFile } = require(require.resolve('@expo/router-server/build/typed-routes/generate', {
+  paths: [expoCliRoot],
+}));
 
 const projectRoot = path.resolve(__dirname, '..');
 const properties = ['hrefInputParams', 'hrefOutputParams', 'href'];
