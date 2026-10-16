@@ -1,3 +1,4 @@
+import { fromMarkdown } from 'mdast-util-from-markdown';
 import React, { useMemo, useState } from 'react';
 import { Platform, Text, View, useWindowDimensions } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
@@ -7,6 +8,7 @@ import { MarkdownText } from '@/components/ui/MarkdownText';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
+import { MAX_MARKDOWN_INPUT_LENGTH } from '@/lib/markdownSecurity';
 
 /**
  * The typography of a dream page set as a book: a measure the eye can follow, sections
@@ -103,8 +105,23 @@ export function useBookBody(italic = false) {
   }), [ink.text.primary, italic]);
 }
 
-/** Text that needs the Markdown renderer: lists, headings, quotes, emphasis, code or links. */
-const MARKDOWN = /(^|\n)\s{0,3}(#{1,6}\s|>|[-*+]\s|\d+[.)]\s|```)|\*\*|__|`|~~|!?\[[^\]]*\]\(|(^|\s)[*_][^*_\s][^*_\n]*[*_]/;
+/** GitHub's additions to Markdown, which the CommonMark parser does not know: tables, struck text and bare links. */
+const GFM_SYNTAX = /[|~@]|:\/\/|www\./i;
+
+/**
+ * Whether the story reads the same set as written as through the Markdown renderer:
+ * paragraphs of plain text, without any syntax, escape or character reference.
+ */
+function isPlainProse(story: string): boolean {
+  // The Markdown renderer shows a story this long as plain text too.
+  if (story.length > MAX_MARKDOWN_INPUT_LENGTH) return true;
+  if (GFM_SYNTAX.test(story)) return false;
+  return fromMarkdown(story).children.every((block) => block.type === 'paragraph'
+    && block.children.every((inline) => inline.type === 'text'
+      && inline.position?.start.offset != null && inline.position.end.offset != null
+      && story.slice(inline.position.start.offset, inline.position.end.offset) === inline.value));
+}
+
 /** The story's initial: any opening quotation mark, then its first letter. */
 const INITIAL_LETTER = /^[«"“‘'(\[¿¡]*\s?\p{L}/u;
 
@@ -129,12 +146,13 @@ export function BookProse({ text }: { text: string }) {
   const { fontScale } = useWindowDimensions();
   const body = useBookBody();
   const story = text.trimStart();
-  const initial = MARKDOWN.test(story) ? null : INITIAL_LETTER.exec(story)?.[0];
+  const plain = useMemo(() => isPlainProse(story), [story]);
+  const initial = plain ? INITIAL_LETTER.exec(story)?.[0] : null;
   // The story keeps native font scaling; the initial follows it, within bounds.
-  const scale = Platform.OS === 'web' ? 1 : Math.max(1, fontScale);
-  const initialScale = Math.min(1.6, scale);
+  const textScale = Platform.OS === 'web' ? 1 : fontScale;
+  const initialScale = Math.min(1.6, Math.max(1, textScale));
   const initialSize = INITIAL.fontSize * initialScale;
-  const [initialWidth, setInitialWidth] = useState(initialSize * 0.7);
+  const [widths, setWidths] = useState({ initial: initialSize * 0.7, letter: PROSE.fontSize * textScale * 0.6 });
 
   if (!initial) {
     return <MarkdownText variant="reading" style={{ ...body, lineHeight: PROSE.lineHeight }}>{text}</MarkdownText>;
@@ -143,7 +161,7 @@ export function BookProse({ text }: { text: string }) {
   const prose = { ...body, fontSize: PROSE.fontSize, lineHeight: PROSE.lineHeight };
   const initialInk = { fontFamily: Fonts.fraunces.semiBold, fontSize: initialSize, color: ink.accent.text };
   // A line box sets its text on a baseline half the line down, shifted by the font's metrics.
-  const proseBaseline = (PROSE.lineHeight * scale) / 2 + PROSE.fontSize * scale * LORA_SHIFT;
+  const proseBaseline = (PROSE.lineHeight * textScale) / 2 + PROSE.fontSize * textScale * LORA_SHIFT;
   // The room the initial takes above the first line.
   const rise = Math.max(0, Math.ceil(initialSize * FRAUNCES_CAP - proseBaseline + 2));
 
@@ -161,21 +179,27 @@ export function BookProse({ text }: { text: string }) {
   }
 
   // A native line takes one height for all its text, so the initial is drawn beside the
-  // story on the first line's baseline, and an inline space of its width opens that line.
+  // story, on its first line's baseline. The story keeps its own first letter, unseen and
+  // spaced out to the drawn initial's width, so it is selected, copied and read aloud whole.
   const initialLine = INITIAL.lineHeight * initialScale;
   const initialBaseline = initialLine / 2 + initialSize * FRAUNCES_SHIFT;
+  const measure = (key: 'initial' | 'letter') => ({ nativeEvent: { layout } }: { nativeEvent: { layout: { width: number } } }) => {
+    setWidths((previous) => Math.abs(previous[key] - layout.width) < 0.5 ? previous : { ...previous, [key]: layout.width });
+  };
+  // The platform scales letter spacing with the text, so it is given before that scale.
+  const spacing = Math.max(0, widths.initial + INITIAL_GAP - widths.letter) / Array.from(initial).length / textScale;
+  const hidden = { accessible: false, importantForAccessibility: 'no-hide-descendants', accessibilityElementsHidden: true, selectable: false } as const;
   return (
     <View style={{ paddingTop: rise }}>
-      <Text allowFontScaling={false} accessible={false} importantForAccessibility="no" selectable={false}
-        onLayout={({ nativeEvent: { layout } }) => {
-          setInitialWidth((previous) => Math.abs(previous - layout.width) < 0.5 ? previous : layout.width);
-        }}
+      <Text {...hidden} allowFontScaling={false} onLayout={measure('initial')}
         style={{ ...initialInk, lineHeight: initialLine, position: 'absolute', left: 0, top: rise + proseBaseline - initialBaseline }}>
         {initial}
       </Text>
-      {/* Read aloud as written: the initial drawn beside the text belongs to its first word. */}
-      <Text selectable style={prose} accessibilityLabel={story}>
-        <View style={{ width: initialWidth + INITIAL_GAP, height: 1 }} />
+      <Text {...hidden} onLayout={measure('letter')} style={{ ...prose, position: 'absolute', left: 0, top: 0, opacity: 0 }}>
+        {initial}
+      </Text>
+      <Text selectable style={prose}>
+        <Text style={{ color: 'transparent', letterSpacing: spacing }}>{initial}</Text>
         {rest}
       </Text>
     </View>
