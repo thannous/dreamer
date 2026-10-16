@@ -338,7 +338,7 @@
     "playwright": "^1.58.2",
     "react-test-renderer": "19.3.0",
     "sharp": "^0.34.5",
-    "supabase": "2.120.0",
+    "supabase": "2.121.0",
     "typescript": "~6.0.3",
     "vercel": "62.2.0",
     "vite-tsconfig-paths": "^5.1.1",
