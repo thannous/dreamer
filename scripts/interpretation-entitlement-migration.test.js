@@ -87,3 +87,29 @@ describe('interpretation entitlement and device risk database contract', () => {
     expect(sql).toContain('set search_path = \'\'');
   });
 });
+
+describe('Plus chat ceiling', () => {
+  // The site copy is checked against constants/limits.ts; this keeps the
+  // database, which enforces the ceiling, on the same number.
+  it('is the same in the latest migration, the app quotas and the database contract', () => {
+    const { readAppQuotas } = require('./check-content-release-gates');
+    const latest = {};
+    for (const name of fs.readdirSync(migrationsDir).filter((file) => file.endsWith('.sql')).sort()) {
+      const sql = fs.readFileSync(path.join(migrationsDir, name), 'utf8').toLowerCase();
+      for (const [, tier, limit] of sql.matchAll(/\('(plus|premium)', 'monthly', 'messages_per_dream', (\d+|null)\)/g)) {
+        latest[tier] = limit === 'null' ? null : Number(limit);
+      }
+    }
+    const manifest = JSON.parse(
+      fs.readFileSync(path.resolve(__dirname, '..', 'supabase', 'db-contract.manifest.json'), 'utf8')
+    );
+    const contract = (tier) => manifest.requiredSeedRows.find(
+      (row) => row.table === 'quota_limits' && row.match.tier === tier && row.match.quota_type === 'messages_per_dream'
+    ).expect.quota_limit;
+    const ceiling = readAppQuotas().plus.messagesPerDream;
+
+    expect(ceiling).toBe(100);
+    expect(latest).toEqual({ plus: ceiling, premium: ceiling });
+    expect({ plus: contract('plus'), premium: contract('premium') }).toEqual({ plus: ceiling, premium: ceiling });
+  });
+});

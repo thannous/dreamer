@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Noctalia dream journal app with voice recording and guided reflection screens",
   "publishedTime": "",
-  "modifiedTime": "2026-10-10",
+  "modifiedTime": "2026-10-15",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -727,10 +727,11 @@
                     <span class="oh-plan-tag">Paid plan</span>
                     <h3>Noctalia Plus</h3>
                     <div class="oh-plan-price">Price shown in Google Play</div>
+                    <p class="oh-plan-desc">Unlimited dreams, analyses and chat.</p>
                 </div>
                 <ul>
-                    <li>Unlimited dream analyses and images</li>
-                    <li>Up to 20 follow-up messages per dream</li>
+                    <li>Unlimited dream analyses, each with an image</li>
+                    <li>Unlimited chat under fair use: up to 100 follow-up messages per dream</li>
                     <li>360° synthesis at the end of a guided exploration</li>
                 </ul>
                 <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=en" class="oh-plan-cta">View Noctalia Plus</a>

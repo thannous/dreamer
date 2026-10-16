@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Noctalia dream journal app",
   "publishedTime": "2026-05-20T00:00:00+02:00",
-  "modifiedTime": "2026-10-11T00:00:00+02:00",
+  "modifiedTime": "2026-10-15T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"name\": \"App de interpretación de sueños con IA\",\n  \"description\": \"Noctalia captura sueños por voz, explora símbolos, crea imágenes y permite profundizar con reflexión guiada.\",\n  \"url\": \"https://noctalia.app/es/app-interpretacion-suenos-ia\",\n  \"inLanguage\": \"es\",\n  \"dateModified\": \"2026-10-11T00:00:00+02:00\",\n  \"publisher\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  }\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"name\": \"App de interpretación de sueños con IA\",\n  \"description\": \"Noctalia captura sueños por voz, explora símbolos, crea imágenes y permite profundizar con reflexión guiada.\",\n  \"url\": \"https://noctalia.app/es/app-interpretacion-suenos-ia\",\n  \"inLanguage\": \"es\",\n  \"dateModified\": \"2026-10-15T00:00:00+02:00\",\n  \"publisher\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  }\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Inicio\",\n      \"item\": \"https://noctalia.app/es/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"App de interpretación de sueños con IA\",\n      \"item\": \"https://noctalia.app/es/app-interpretacion-suenos-ia\"\n    }\n  ]\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Qué buscar\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Que guarde el sueño en segundos, explique la privacidad con claridad y permita borrar o exportar tus relatos. Que lea los símbolos en su contexto, te haga preguntas y diga lo que no puede hacer.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Por qué Noctalia encaja\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Noctalia funciona en Android, se usa con la voz, crea imágenes, está en varios idiomas y se apoya en un diccionario público de símbolos que sigue creciendo.\"\n      }\n    }\n  ]\n}"
   ],
@@ -37,7 +37,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">App de interpretación de sueños con IA</h1>
-<p class="text-sm text-purple-300/70 mb-6">Actualizado el 11 de octubre de 2026</p>
+<p class="text-sm text-purple-300/70 mb-6">Actualizado el 15 de octubre de 2026</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">Al despertar suele quedar una escena suelta. Una buena app de interpretación de sueños con IA te deja guardarla primero y luego te propone pistas y preguntas, sin diagnosticar ni predecir nada.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
@@ -157,7 +157,7 @@
       <li><strong>Corrige lo que no encaja.</strong> «No, no tenía miedo, estaba molesto.» El resto de la conversación lo tiene en cuenta.</li>
       <li><strong>Pide más cuando lo quieras.</strong> Las respuestas son breves por defecto. Escribe «profundiza» o «dame un ejemplo».</li>
     </ul>
-    <p class="mt-4">Cada sueño tiene un tope de intercambios: hasta 10 mensajes de seguimiento por sueño analizado con el plan gratuito y hasta 20 mensajes de seguimiento por sueño con Plus. Las preguntas precisas los aprovechan mejor.</p>
+    <p class="mt-4">Cada sueño tiene un tope de intercambios: hasta 10 mensajes de seguimiento por sueño analizado con el plan gratuito. Con Plus, el chat es ilimitado con uso razonable, hasta 100 mensajes de seguimiento por sueño. Las preguntas precisas los aprovechan mejor.</p>
   </section>
 
       <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">

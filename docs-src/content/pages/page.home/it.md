@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-it-1200x630.jpg",
   "twitterImageAlt": "Diario dei sogni con illustrazioni e interpretazione",
   "publishedTime": "",
-  "modifiedTime": "2026-10-10",
+  "modifiedTime": "2026-10-15",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -727,10 +727,11 @@
                     <span class="oh-plan-tag">Piano a pagamento</span>
                     <h3>Noctalia Plus</h3>
                     <div class="oh-plan-price">Prezzo indicato su Google Play</div>
+                    <p class="oh-plan-desc">Sogni, analisi e chat illimitati.</p>
                 </div>
                 <ul>
-                    <li>Analisi dei sogni e immagini illimitate</li>
-                    <li>Fino a 20 messaggi di approfondimento per sogno</li>
+                    <li>Analisi dei sogni illimitate, ognuna con un’immagine</li>
+                    <li>Chat illimitata con uso ragionevole: fino a 100 messaggi di approfondimento per sogno</li>
                     <li>Sintesi a 360° alla fine di un’esplorazione guidata</li>
                 </ul>
                 <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=it" class="oh-plan-cta">Vedi Noctalia Plus</a>

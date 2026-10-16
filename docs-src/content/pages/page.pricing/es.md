@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-es-1200x630.jpg",
   "twitterImageAlt": "Planes y precios del diario de sueños Noctalia",
   "publishedTime": "2026-07-31T00:00:00+02:00",
-  "modifiedTime": "2026-10-11T00:00:00+02:00",
+  "modifiedTime": "2026-10-15T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Planes y precios de Noctalia\",\"description\":\"Compara el plan gratuito Soñador y la suscripción opcional Noctalia Plus. Google Play muestra el precio y las opciones aplicables antes de comprar.\",\"url\":\"https://noctalia.app/es/precios\",\"inLanguage\":\"es\",\"datePublished\":\"2026-07-31T00:00:00+02:00\",\"dateModified\":\"2026-10-11T00:00:00+02:00\"}",
+    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Planes y precios de Noctalia\",\"description\":\"Compara el plan gratuito Soñador y la suscripción opcional Noctalia Plus. Google Play muestra el precio y las opciones aplicables antes de comprar.\",\"url\":\"https://noctalia.app/es/precios\",\"inLanguage\":\"es\",\"datePublished\":\"2026-07-31T00:00:00+02:00\",\"dateModified\":\"2026-10-15T00:00:00+02:00\"}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Inicio\",\"item\":\"https://noctalia.app/es/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Precios\",\"item\":\"https://noctalia.app/es/precios\"}]}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"MobileApplication\",\"name\":\"Noctalia\",\"operatingSystem\":\"Android\",\"applicationCategory\":\"LifestyleApplication\",\"downloadUrl\":\"https://play.google.com/store/apps/details?id=com.tanuki75.noctalia\",\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"EUR\",\"url\":\"https://play.google.com/store/apps/details?id=com.tanuki75.noctalia\",\"description\":\"Instalación gratuita con compras opcionales de Noctalia Plus mostradas por Google Play.\"}}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"¿Noctalia se puede usar gratis?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Sí. El plan Soñador incluye grabaciones de sueños ilimitadas, tres análisis de sueños al mes (cada uno con una imagen), exploraciones guiadas sin límite mensual, hasta 10 mensajes de seguimiento por sueño analizado y un diario de sueños guardado.\"}},{\"@type\":\"Question\",\"name\":\"¿Cuánto cuesta Noctalia Plus?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Abre la ficha de Google Play o la pantalla de suscripción de la aplicación para ver el precio, el periodo de facturación, los impuestos, la elegibilidad y cualquier promoción para tu país y tu cuenta antes de comprar.\"}},{\"@type\":\"Question\",\"name\":\"¿Hay suscripciones mensuales y anuales?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Puede haber opciones mensuales y anuales. Google Play muestra las opciones disponibles actualmente para tu país y tu cuenta, por lo que la disponibilidad puede variar.\"}},{\"@type\":\"Question\",\"name\":\"¿Dónde puedo gestionar o cancelar una suscripción?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Noctalia Plus se factura mediante Google Play. Puedes gestionarlo o cancelarlo desde la sección Suscripciones de la cuenta de Google Play utilizada para la compra.\"}}]}"
@@ -38,7 +38,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Planes y precios de Noctalia</h1>
-<p class="text-sm text-purple-300/70 mb-6">Actualizado el 11 de octubre de 2026</p>
+<p class="text-sm text-purple-300/70 mb-6">Actualizado el 15 de octubre de 2026</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">Empieza con el plan gratuito Soñador y pásate a Plus solo si quieres más reflexión guiada. Noctalia se instala gratis en Android. El precio, los impuestos, el periodo de facturación, la elegibilidad y las promociones dependen de tu país y tu cuenta, así que es Google Play quien muestra el importe que pagarás.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
@@ -61,8 +61,8 @@
       <h2 class="text-3xl font-serif text-white mb-3">Noctalia Plus</h2>
       <p class="text-2xl text-dream-cream mb-5">Precio actual en Google Play</p>
       <ul class="list-disc pl-5 space-y-2">
-        <li>Análisis de sueños e imágenes ilimitados</li>
-        <li>Hasta 20 mensajes de seguimiento por sueño</li>
+        <li>Análisis de sueños ilimitados, cada uno con una imagen</li>
+        <li>Chat ilimitado con uso razonable: hasta 100 mensajes de seguimiento por sueño</li>
         <li>Síntesis 360° al final de una exploración guiada</li>
         <li>Facturación y renovación gestionadas por Google Play</li>
       </ul>
@@ -77,9 +77,9 @@
       <tbody class="divide-y divide-white/10">
         <tr><td class="py-4 pr-4 text-white font-medium">Registrar un sueño por voz o texto</td><td class="py-4 pr-4">Sin límite</td><td class="py-4 pr-4">Sin límite</td></tr>
         <tr><td class="py-4 pr-4 text-white font-medium">Análisis de un sueño</td><td class="py-4 pr-4">3 al mes</td><td class="py-4 pr-4">Sin límite</td></tr>
-        <tr><td class="py-4 pr-4 text-white font-medium">Imagen del sueño</td><td class="py-4 pr-4">Una con cada análisis</td><td class="py-4 pr-4">Sin límite</td></tr>
+        <tr><td class="py-4 pr-4 text-white font-medium">Imagen del sueño</td><td class="py-4 pr-4">Una con cada análisis</td><td class="py-4 pr-4">Una con cada análisis</td></tr>
         <tr><td class="py-4 pr-4 text-white font-medium">Exploraciones guiadas</td><td class="py-4 pr-4">Sin límite mensual</td><td class="py-4 pr-4">Sin límite mensual</td></tr>
-        <tr><td class="py-4 pr-4 text-white font-medium">Mensajes de seguimiento</td><td class="py-4 pr-4">Hasta 10 por sueño analizado</td><td class="py-4 pr-4">Hasta 20 por sueño</td></tr>
+        <tr><td class="py-4 pr-4 text-white font-medium">Mensajes de seguimiento</td><td class="py-4 pr-4">Hasta 10 por sueño analizado</td><td class="py-4 pr-4">Ilimitados con uso razonable: hasta 100 por sueño</td></tr>
         <tr><td class="py-4 pr-4 text-white font-medium">Síntesis 360° al final de una exploración guiada</td><td class="py-4 pr-4">No incluida</td><td class="py-4 pr-4">Incluida</td></tr>
         <tr><td class="py-4 pr-4 text-white font-medium">Diario de sueños</td><td class="py-4 pr-4">Guardado, para releerlo cuando quieras</td><td class="py-4 pr-4">Guardado, para releerlo cuando quieras</td></tr>
         <tr><td class="py-4 pr-4 text-white font-medium">Pago</td><td class="py-4 pr-4">Ninguno</td><td class="py-4 pr-4">Suscripción facturada y renovada por Google Play</td></tr>
