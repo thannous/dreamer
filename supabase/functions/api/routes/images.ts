@@ -248,6 +248,11 @@ export async function handleGenerateImage(ctx: ApiContext): Promise<Response> {
     });
 
     guestQuotaClaim = null;
+    console.log('[ai-spend] image', {
+      route: '/generateImage',
+      provider: 'gemini',
+      model: imageModel,
+    });
     return new Response(JSON.stringify({ imageUrl, imageBytes, prompt }), {
       status: 200,
       headers: { 'Content-Type': 'application/json', ...corsHeaders },
