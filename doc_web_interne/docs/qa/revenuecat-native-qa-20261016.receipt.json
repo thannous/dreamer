@@ -1,0 +1,143 @@
+{
+  "schemaVersion": 1,
+  "kind": "redacted-native-billing-evidence-summary",
+  "status": "passed",
+  "scope": "iOS Simulator UI with synthetic auth, receipt and entitlement confirmation",
+  "appSource": "c9dea5ef7911316f41f46d5837c35143994c15e8",
+  "build": {
+    "version": "3.5.0",
+    "build": "11",
+    "bundle": "com.tanuki75.noctalia",
+    "configuration": "Release",
+    "binarySha256": "7bee7746ebcb22f3f51762cfea353909b49e57d7571fdf8291296603524e5a54",
+    "nativeInputDigest": "a1877d1e7a8dd557d82df52a33f97e4095e05b87ac9846b16b3214fd013132b4",
+    "profile": {
+      "name": "mock-persistent",
+      "mock": true,
+      "persistence": true,
+      "audioMock": true,
+      "featureSheets": false,
+      "categorizationDelayMs": 0
+    },
+    "otaEnabled": false,
+    "receiptRelativePath": "tools/e2e/.e2e/dreamer-ios/1792139806309-61913-77fadd6f-fb0c-4083-ac42-b31869609928/release.json",
+    "receiptSha256": "18e5dda95ebd78c9584510a0c360dc239469d9e31968f4d7d403a7ee8403d6cd"
+  },
+  "target": {
+    "name": "Noctalia_Native_QA",
+    "platform": "iOS Simulator",
+    "runtime": "iOS 27.0",
+    "ownedSyntheticData": true
+  },
+  "testSource": {
+    "executedSha256": "1ca4b97998dc8ffa458b7367f34f5d5fa6ac9bcec22e64d266c0e205db2ef162",
+    "deliverySha256": "777443b74ca6a49ff2ba463d645146e1bba08ff9ad6c6992292d87f4eb64e6c1",
+    "deliveryDelta": "Only platforms: [ios] was added to the billing registration; executed test bodies and helpers are byte-identical. No new native execution claimed.",
+    "platformSelection": [
+      "ios"
+    ]
+  },
+  "totals": {
+    "uniquePassed": 7,
+    "failed": 0,
+    "skipped": 0,
+    "flaky": 0,
+    "automaticRetries": 0,
+    "modelTokens": 0,
+    "traces": 7,
+    "screenshots": 11
+  },
+  "runs": [
+    {
+      "label": "purchase_restore",
+      "runId": "01a143f1-7637-780b-ac99-6423233072f7",
+      "artifactRootRelative": "tools/e2e/.e2e/dreamer-ios/1792141257789-5124-729b6510-eb94-455e-94fa-ca59d1becd14",
+      "summary": {
+        "discovered": 19,
+        "selected": 5,
+        "executed": 5,
+        "passed": 5,
+        "failed": 0,
+        "interrupted": 0,
+        "flaky": 0,
+        "skipped": 0
+      },
+      "applicationQualified": true,
+      "sourceStable": true,
+      "sourceClean": false,
+      "installedHashMatchesStartAndEnd": true,
+      "resourceCleanup": "complete",
+      "secondaryErrors": [],
+      "automaticRetries": 0,
+      "modelTokens": 0,
+      "pins": {
+        "e2e": "0.21.1",
+        "@e2e-dev/web": "0.15.0",
+        "@e2e-dev/mobile": "0.12.1",
+        "agent-device": "0.21.25"
+      },
+      "passedTests": [
+        "Dreamer native billing purchase activates Plus",
+        "Dreamer native billing restore activates an existing receipt without purchase",
+        "Dreamer native billing empty restore keeps Free and reports no subscription",
+        "Dreamer native billing delayed purchase recovers after reentry without a second Store operation",
+        "Dreamer native billing delayed restore recovers after reentry without a second Store operation"
+      ],
+      "artifacts": {
+        "report.json": "80c969d9c3c267cb22548a5a5294edc9032c76032cd1ea046687e7d501d5b314",
+        "qualification.json": "5494d569980304ccbed4a8ad839ef975b5a366ce04112647aa74cf321a1bdb0a",
+        "installed-start.json": "fa8dcd2609e6b442e2373b660ee2e3074a343f9a10ac4e1832842858ec5a5951",
+        "installed-end.json": "119057d714694b57ee4fabf6fae6a50163ba8f33b8ac868ea96ac2565352b174",
+        "source-start.json": "980ab3d3fecc6f9c2c4ca2be7b91e2dfb3809447becf1ed9771eefdfa43b009a",
+        "source-end.json": "980ab3d3fecc6f9c2c4ca2be7b91e2dfb3809447becf1ed9771eefdfa43b009a"
+      }
+    },
+    {
+      "label": "auth_return",
+      "runId": "01a143ef-6bd8-7cef-b940-ae30863b5189",
+      "artifactRootRelative": "tools/e2e/.e2e/dreamer-ios/1792141124034-88843-133fc3db-4e36-4197-b96b-a9df466848d9",
+      "summary": {
+        "discovered": 19,
+        "selected": 2,
+        "executed": 2,
+        "passed": 2,
+        "failed": 0,
+        "interrupted": 0,
+        "flaky": 0,
+        "skipped": 0
+      },
+      "applicationQualified": true,
+      "sourceStable": true,
+      "sourceClean": false,
+      "installedHashMatchesStartAndEnd": true,
+      "resourceCleanup": "complete",
+      "secondaryErrors": [],
+      "automaticRetries": 0,
+      "modelTokens": 0,
+      "pins": {
+        "e2e": "0.21.1",
+        "@e2e-dev/web": "0.15.0",
+        "@e2e-dev/mobile": "0.12.1",
+        "agent-device": "0.21.25"
+      },
+      "passedTests": [
+        "Dreamer native billing guest returns after existing sign in and foreground does not reopen the offer",
+        "Dreamer native billing guest returns after new sign in and foreground does not reopen the offer"
+      ],
+      "artifacts": {
+        "report.json": "ebb57fc2938622229bc20ed517a8abcecb88927af13422ef6db4872b64305331",
+        "qualification.json": "2c31b06d7c5d5be17ae8c6621a9660a5e0166693b60f7c7a06535920df5aee51",
+        "installed-start.json": "becc5da571a5ee38dee8278d7ac81d7c53a778b0a1619f4e901d414885ad44e0",
+        "installed-end.json": "3c736085e6e4b186a95ea9bde5b2434ff0ca58503236943600f4817e77dc9840",
+        "source-start.json": "980ab3d3fecc6f9c2c4ca2be7b91e2dfb3809447becf1ed9771eefdfa43b009a",
+        "source-end.json": "980ab3d3fecc6f9c2c4ca2be7b91e2dfb3809447becf1ed9771eefdfa43b009a"
+      }
+    }
+  ],
+  "limits": [
+    "Real RevenueCat/Store SDK checkout, receipts, webhook and backend entitlement are not qualified.",
+    "Auth uses synthetic mock profiles, not Google/Apple OAuth.",
+    "No Android, physical device, Store install, reinstall restoration or process-death durability qualification.",
+    "Auth dismissal uses visible Continue free; a previous offscreen header tap only scrolled."
+  ]
+}
