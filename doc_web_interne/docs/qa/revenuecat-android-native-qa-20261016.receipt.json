@@ -1,0 +1,246 @@
+{
+  "schemaVersion": 1,
+  "kind": "noctalia-android-native-billing-qa-summary",
+  "date": "2026-10-16",
+  "sourceRevision": "225aafa07de3215d923e81596aa3bc84d37776de",
+  "testFile": "tools/e2e/tests/dreamer.mobile.e2e.ts",
+  "testFileSha256": "952d8c295b436bb95e219d9ceab6b58cb9dbc8f9a99a168ae4fca0564a580c97",
+  "testSourceCommitted": false,
+  "appSourceChanged": false,
+  "device": {
+    "avd": "Pixel_9_API_37",
+    "serial": "emulator-5588",
+    "os": "Android 17",
+    "api": 37,
+    "abi": "arm64-v8a",
+    "preservedSnapshot": "before-native-billing-20261016"
+  },
+  "runtime": {
+    "node": "24.19.0",
+    "e2e": "0.21.1",
+    "mobile": "0.12.1",
+    "agentDevice": "0.21.25",
+    "java": "Temurin 17.0.20.1+1"
+  },
+  "build": {
+    "receiptRelativeToWorktree": "tools/e2e/.e2e/dreamer-android/1792153430675-61897-18bfddd9-cffd-4bca-b00a-4b35c7fe29e3/release.json",
+    "configuration": "Release",
+    "version": "3.5.0",
+    "versionCode": "83",
+    "bundle": "com.tanuki75.noctalia",
+    "binarySha256": "c33bdb98136db2412bf87f40bcfc3d182edc8c550d90187e19e0a2168e60539e",
+    "appInputDigest": "646e709220e0aee0b9167f64c187e9e70c9881f0b233e71cb87c20d6b14104cb",
+    "nativeInputDigest": "f9718bab963b50c19fc99ea04cdbd62562f98ae80edd7eec4301821b8e729b0c",
+    "otaEnabled": false,
+    "profile": {
+      "name": "mock-persistent",
+      "mock": true,
+      "persistence": true,
+      "audioMock": true,
+      "featureSheets": false,
+      "categorizationDelayMs": 0
+    },
+    "gradleExitCode": 0,
+    "wrapperExitCode": 3,
+    "wrapperDiagnostic": "SOURCE_OR_OUTPUT_CHANGED: test-only helper edits during build; app/native inputs remained stable and receipt validated in both final runs."
+  },
+  "totals": {
+    "distinctPassed": 7,
+    "failed": 0,
+    "skipped": 0,
+    "flaky": 0,
+    "automaticRetries": 0,
+    "modelTokens": 0,
+    "traces": 7,
+    "screenshots": 11
+  },
+  "runs": [
+    {
+      "outputRelativeToWorktree": "tools/e2e/.e2e/dreamer-android/1792154081599-67923-b0f420e8-0c74-4ec1-90ba-8273b9b99ef3",
+      "runId": "01a144b5-1eac-7620-93f5-b337c42a2210",
+      "startedAt": "2026-10-16T12:34:44.102Z",
+      "finishedAt": "2026-10-16T12:36:43.801Z",
+      "summary": {
+        "discovered": 19,
+        "selected": 3,
+        "executed": 3,
+        "passed": 3,
+        "failed": 0,
+        "interrupted": 0,
+        "flaky": 0,
+        "skipped": 0
+      },
+      "assertedTests": [
+        "Dreamer native billing empty restore keeps Free and reports no subscription",
+        "Dreamer native billing guest returns after existing sign in and foreground does not reopen the offer",
+        "Dreamer native billing guest returns after new sign in and foreground does not reopen the offer"
+      ],
+      "modelTokens": 0,
+      "applicationQualified": true,
+      "sourceStable": true,
+      "outputsStable": true,
+      "installedBinarySha256": "c33bdb98136db2412bf87f40bcfc3d182edc8c550d90187e19e0a2168e60539e",
+      "installedHashMatchesBeforeAndAfter": true,
+      "resourceCleanup": "complete",
+      "lockReleased": true,
+      "secondaryErrors": [],
+      "reportSha256": "6b61ebab52c52c8c8374c72fb27c7ec6846645bdf46beff33ea7c83d89a9f479",
+      "qualificationSha256": "349f6f3637c32586c11546443f3e3eadf2f7cfea60ef15fe84b98b53bccee716",
+      "artifacts": [
+        {
+          "kind": "screenshot",
+          "path": "dreamer-mobile-dreamer-native-billing-empty-90b5d7810fdd6c60/attempt-1/screenshots/001-native-restore-empty.png",
+          "size": 232200,
+          "sha256": "7b5a4a650b02782356ca3673f157cf34843c7c5b07db67966ecac6526c5495ea"
+        },
+        {
+          "kind": "trace",
+          "path": "dreamer-mobile-dreamer-native-billing-empty-90b5d7810fdd6c60/trace.md",
+          "size": 31816,
+          "sha256": "ad6e7b7acda60a42a7b0ac0c68d350aedc4a47d61aa2bbe3986a1e1a885d67b7"
+        },
+        {
+          "kind": "screenshot",
+          "path": "dreamer-mobile-dreamer-native-billing-guest-22ec4832294a0c0f/attempt-1/screenshots/001-native-existing-offer-after-signin.png",
+          "size": 226523,
+          "sha256": "783c3bdbb9530d011dfc5585b8832d7c954e0c7a76b69b24601e272cd8ec6441"
+        },
+        {
+          "kind": "screenshot",
+          "path": "dreamer-mobile-dreamer-native-billing-guest-22ec4832294a0c0f/attempt-1/screenshots/002-native-existing-foreground-capture.png",
+          "size": 707333,
+          "sha256": "08fd89c115c97a961f45a2a5a11238ec11d8755289eb385a009eedbbd89cbbcb"
+        },
+        {
+          "kind": "trace",
+          "path": "dreamer-mobile-dreamer-native-billing-guest-22ec4832294a0c0f/trace.md",
+          "size": 28610,
+          "sha256": "55004bf47e46e25bc4d005039e17137c2ad12a2904bc9c2bbe8fa47749d7e34b"
+        },
+        {
+          "kind": "screenshot",
+          "path": "dreamer-mobile-dreamer-native-billing-guest-4c2989b5030196aa/attempt-1/screenshots/001-native-new-offer-after-signin.png",
+          "size": 226523,
+          "sha256": "783c3bdbb9530d011dfc5585b8832d7c954e0c7a76b69b24601e272cd8ec6441"
+        },
+        {
+          "kind": "screenshot",
+          "path": "dreamer-mobile-dreamer-native-billing-guest-4c2989b5030196aa/attempt-1/screenshots/002-native-new-foreground-capture.png",
+          "size": 707696,
+          "sha256": "62862dcd9a8b98cf08f646f2fcb2fba90ae199f30830bd5882d65aae5c6a849d"
+        },
+        {
+          "kind": "trace",
+          "path": "dreamer-mobile-dreamer-native-billing-guest-4c2989b5030196aa/trace.md",
+          "size": 28632,
+          "sha256": "3f516430c9c3079845f6d644bfb1187a9bfa5af31ca02c53e1d972ccfa7fd782"
+        }
+      ]
+    },
+    {
+      "outputRelativeToWorktree": "tools/e2e/.e2e/dreamer-android/1792154232703-69746-4737bdc7-b7e4-4298-9fbf-34a3c41489c4",
+      "runId": "01a144b7-6cd3-7da6-98fb-3abbf93c550b",
+      "startedAt": "2026-10-16T12:37:15.141Z",
+      "finishedAt": "2026-10-16T12:40:29.797Z",
+      "summary": {
+        "discovered": 19,
+        "selected": 4,
+        "executed": 4,
+        "passed": 4,
+        "failed": 0,
+        "interrupted": 0,
+        "flaky": 0,
+        "skipped": 0
+      },
+      "assertedTests": [
+        "Dreamer native billing purchase activates Plus",
+        "Dreamer native billing restore activates an existing receipt without purchase",
+        "Dreamer native billing delayed purchase recovers after reentry without a second Store operation",
+        "Dreamer native billing delayed restore recovers after reentry without a second Store operation"
+      ],
+      "modelTokens": 0,
+      "applicationQualified": true,
+      "sourceStable": true,
+      "outputsStable": true,
+      "installedBinarySha256": "c33bdb98136db2412bf87f40bcfc3d182edc8c550d90187e19e0a2168e60539e",
+      "installedHashMatchesBeforeAndAfter": true,
+      "resourceCleanup": "complete",
+      "lockReleased": true,
+      "secondaryErrors": [],
+      "reportSha256": "ff9a79407d5dabf69164f803e784284e4f70a09a13c9948b7616d2f3d32d49e6",
+      "qualificationSha256": "f6904004ada1cae0d26bbb98c64cdeefbd5e76d2f92ca4aef40a48593022ac3c",
+      "artifacts": [
+        {
+          "kind": "screenshot",
+          "path": "dreamer-mobile-dreamer-native-billing-purchase-4ad9dbf63c127467/attempt-1/screenshots/001-native-purchase-confirmed.png",
+          "size": 1307411,
+          "sha256": "3a33133e10ccfcd9500228f41f6c30e7ac0230722863a3281541ed4a371e9559"
+        },
+        {
+          "kind": "trace",
+          "path": "dreamer-mobile-dreamer-native-billing-purchase-4ad9dbf63c127467/trace.md",
+          "size": 32123,
+          "sha256": "ef3134860be353285a7ced64c904f46b47c6585eae9ed1e322182a0ddab0b7b8"
+        },
+        {
+          "kind": "screenshot",
+          "path": "dreamer-mobile-dreamer-native-billing-restore-dc9e5ad1bfe159ae/attempt-1/screenshots/001-native-restore-confirmed.png",
+          "size": 1313574,
+          "sha256": "fa417352e25c5bb049d9ef66c0c873a25a358c8da26e0bfff52149c60405a936"
+        },
+        {
+          "kind": "trace",
+          "path": "dreamer-mobile-dreamer-native-billing-restore-dc9e5ad1bfe159ae/trace.md",
+          "size": 33231,
+          "sha256": "7bb86995323f35244998fb5da9447efba8212a969982922c12683dbf47efde28"
+        },
+        {
+          "kind": "screenshot",
+          "path": "dreamer-mobile-dreamer-native-billing-delayed-be4bcda050463e2c/attempt-1/screenshots/001-native-purchase-activation-pending.png",
+          "size": 1307701,
+          "sha256": "79a670ae8e7eefe607837bf8aad041d837db5de80031cc92fc9d13a376923686"
+        },
+        {
+          "kind": "screenshot",
+          "path": "dreamer-mobile-dreamer-native-billing-delayed-be4bcda050463e2c/attempt-1/screenshots/002-native-purchase-retry-confirmed.png",
+          "size": 1323106,
+          "sha256": "89a7f5fd538f51eea58b1a230e3fb4a6461f2326e2429708b02fae27aba2b585"
+        },
+        {
+          "kind": "trace",
+          "path": "dreamer-mobile-dreamer-native-billing-delayed-be4bcda050463e2c/trace.md",
+          "size": 42624,
+          "sha256": "39721cb8a82fab723d07aa47dd77e7daae838c077e24ea0edccd5240f6426891"
+        },
+        {
+          "kind": "screenshot",
+          "path": "dreamer-mobile-dreamer-native-billing-delayed-63c89a1d3c2f2713/attempt-1/screenshots/001-native-restore-activation-pending.png",
+          "size": 1307293,
+          "sha256": "6fc40296ccffaddc031f965239aafb2aab0fae38105743695097a68824f3307c"
+        },
+        {
+          "kind": "screenshot",
+          "path": "dreamer-mobile-dreamer-native-billing-delayed-63c89a1d3c2f2713/attempt-1/screenshots/002-native-restore-retry-confirmed.png",
+          "size": 1323238,
+          "sha256": "b337156e884954d2afdd570e38390352ce5431fb7d1a071f0145145c96f246b3"
+        },
+        {
+          "kind": "trace",
+          "path": "dreamer-mobile-dreamer-native-billing-delayed-63c89a1d3c2f2713/trace.md",
+          "size": 43893,
+          "sha256": "dda97ff50464267cee33af9fe6760f55896ebfde96667ba7759425a84ef61fa0"
+        }
+      ]
+    }
+  ],
+  "diagnosticRunsExcluded": [
+    "1792153657887-63428-f6fb5183-a2da-4f14-8fa6-a12941f0e904",
+    "1792153717780-64236-e7ba7424-609f-4845-a575-33f2b35cd3f3"
+  ],
+  "limits": [
+    "Synthetic purchases, receipts, entitlement convergence and auth only",
+    "No real Play Store checkout, RevenueCat backend, webhooks or OAuth qualification",
+    "No physical-device, reinstall-restoration or process-death qualification",
+    "No production deployment, Store/EAS publication or real payment"
+  ]
+}
