@@ -1,7 +1,7 @@
 import * as Haptics from 'expo-haptics';
 import { Image, type ImageSource } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { useEffect, useMemo, useRef, type ComponentProps } from 'react';
+import React, { useEffect, useMemo, useRef, useState, type ComponentProps } from 'react';
 import { AccessibilityInfo, Image as Mark, Text, View, type StyleProp, type ViewStyle } from 'react-native';
 import Animated, { useReducedMotion, type CSSStyle } from 'react-native-reanimated';
 import Svg, { Circle, Defs, Ellipse, Path, RadialGradient, Stop } from 'react-native-svg';
@@ -49,6 +49,12 @@ const READING_STARS = [-60, 0, 60, 120, 180, 240].map((degrees) => {
   return { x: CENTER + 94 * Math.cos(radians), y: CENTER + 94 * Math.sin(radians) };
 });
 const READING_STAR = 5;
+/** The astrolabe's entrance has played by then: the orbit's, the longest, ends at 1480 ms. */
+const ENTRANCE_MS = 1500;
+/** After the seal's contact, the strike and the date engraved after it have played. */
+const STRIKE_TAIL_MS = 1100;
+/** After the seal's choice, its signs have faded when it found none to strike. */
+const CHOICE_TAIL_MS = 300;
 
 /** Where the dream is in its story: just saved, being read, or read. */
 export type { SealMark };
@@ -134,12 +140,24 @@ export function SavedDreamMoment({
   const dark = mode === 'dark';
   const accent = noctalia.accent.text;
 
-  const motion = useMemo(() => (still ? { halo: null, orbit: null, medallion: null, label: null } : {
+  // Once come in, the astrolabe stays as it is: when a view holding it is rebuilt (a step
+  // offered or taken, the illustration landing), its entrance does not play again.
+  const [entered, setEntered] = useState(still);
+  useEffect(() => {
+    if (entered) return;
+    const timer = setTimeout(() => setEntered(true), ENTRANCE_MS);
+    return () => clearTimeout(timer);
+  }, [entered]);
+  const motion = useMemo(() => (still || entered ? { halo: null, orbit: null, medallion: null } : {
     halo: entrance(null, 1200, 0, reduced),
     orbit: entrance({ from: [{ rotate: '-24deg' }], to: [{ rotate: '0deg' }] }, 1400, 80, reduced),
     medallion: handedOver ? null : entrance({ from: [{ scale: 0.94 }], to: [{ scale: 1 }] }, 700, 0, reduced),
-    label: entrance({ from: [{ translateY: 8 }], to: [{ translateY: 0 }] }, 400, 320, reduced),
-  }), [handedOver, reduced, still]);
+  }), [entered, handedOver, reduced, still]);
+  // The words under the seal still enter afresh with each step they offer.
+  const labelMotion = useMemo(
+    () => (still ? null : entrance({ from: [{ translateY: 8 }], to: [{ translateY: 0 }] }, 400, 320, reduced)),
+    [reduced, still]
+  );
   const readingStars = useMemo(
     () => READING_STARS.map((_, index) => twinkle(index, READING_STARS.length, reduced)),
     [reduced]
@@ -188,15 +206,26 @@ export function SavedDreamMoment({
     };
   }, [reduced]);
   const seal = sealing?.mark ?? null;
-  const settled = sealing?.settled === true;
+  const struckBefore = sealing?.settled === true;
   const struck = seal != null;
   useEffect(() => {
-    if (!struck || settled || process.env.EXPO_OS === 'web') return;
+    if (!struck || struckBefore || process.env.EXPO_OS === 'web') return;
     const timer = setTimeout(() => {
       void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Rigid).catch(() => {});
     }, reduced ? 0 : DREAM_STORY.sealContact);
     return () => clearTimeout(timer);
-  }, [reduced, settled, struck]);
+  }, [reduced, struckBefore, struck]);
+  // The seal's choice and its strike play once too: once over, the seal shows them as they
+  // were left, struck and engraved, or plain.
+  const [ceremonyLeft, setCeremonyLeft] = useState(false);
+  useEffect(() => {
+    if (!sealing || struckBefore || ceremonyLeft) return;
+    const timer = setTimeout(() => setCeremonyLeft(true), struck
+      ? (reduced ? 0 : DREAM_STORY.sealContact) + STRIKE_TAIL_MS
+      : DREAM_STORY.sealChoice + CHOICE_TAIL_MS);
+    return () => clearTimeout(timer);
+  }, [ceremonyLeft, reduced, sealing, struckBefore, struck]);
+  const settled = struckBefore || ceremonyLeft;
   const settle = useMemo(() => (landArtwork ? paintSettle(reduced) : null), [landArtwork, reduced]);
 
   const medallion = (
@@ -312,7 +341,7 @@ export function SavedDreamMoment({
         ) : null}
         {date ? (
           <View testID={tid('component.savedDream.sealDate')} className="absolute left-0 top-0" style={{ width: ORBIT, height: ORBIT }}>
-            <SealLegend text={date} side="bottom" reduced={reduced} still={settled || still}
+            <SealLegend text={date} side="bottom" reduced={reduced} still={settled || still || (entered && !struck)}
               from={seal && !settled ? DREAM_STORY.sealContact + 240 : 320} />
           </View>
         ) : null}
@@ -352,7 +381,7 @@ export function SavedDreamMoment({
   const words = !wordsLine && !action ? null : (
     <View className="mt-3 items-center justify-center" style={{ height: WORDS_LINE }}>
       {action ? (
-        <Animated.View key={action.label} style={motion.label as StyleProp<ViewStyle>}
+        <Animated.View key={action.label} style={labelMotion as StyleProp<ViewStyle>}
           className={`flex-row items-center gap-1.5 ${action.disabled ? 'opacity-60' : ''}`}>
           {action.icon ? <IconSymbol name={action.icon} size={14} color={accent} /> : null}
           <Text testID={tid(TID.Text.DreamDetailActionTitle)} accessibilityLiveRegion="polite" numberOfLines={1}
