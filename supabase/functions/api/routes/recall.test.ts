@@ -111,3 +111,32 @@ Deno.test('recall accepts an early stop without filling the remaining question a
   assertEquals(await response.json(), { question: null, done: true });
   assertEquals(calls, 1);
 });
+
+Deno.test('recall asks Claude Haiku at low effort and falls back to Gemini on an ungrounded answer', async () => {
+  const originalFetch = globalThis.fetch;
+  let geminiCalls = 0;
+  try {
+    globalThis.fetch = async (input, init) => {
+      const request = new Request(input, init);
+      assertEquals(new URL(request.url).hostname, 'api.anthropic.com');
+      const sent = await request.json();
+      assertEquals(sent.model, 'claude-haiku-5-5');
+      assertEquals(sent.output_config.effort, 'low');
+      // Claude receives the nullable question as anyOf, not a JSON type array.
+      assertEquals(sent.output_config.format.schema.properties.question, { anyOf: [{ type: 'string' }, { type: 'null' }] });
+      return new Response(JSON.stringify({
+        id: 'msg_test', type: 'message', role: 'assistant', model: 'claude-haiku-5-5',
+        content: [{ type: 'text', text: JSON.stringify({ question: 'Que faisait le dragon ?', anchor: 'dragon' }) }],
+        stop_reason: 'end_turn', stop_sequence: null, usage: { input_tokens: 900, output_tokens: 30 },
+      }), { headers: { 'Content-Type': 'application/json' } });
+    };
+    const response = await handleRecallQuestion(ctx(body), {
+      apiKey: 'test-key', anthropicApiKey: 'synthetic-anthropic-key', admit,
+      generate: async () => { geminiCalls++; return { text: JSON.stringify({ question: 'Comment était ce jardin ?', anchor: 'un jardin' }), raw: {} }; },
+    });
+    assertEquals(await response.json(), { question: 'Comment était ce jardin ?', done: false });
+    assertEquals(geminiCalls, 1);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});

@@ -19,9 +19,9 @@ Deno.test('disabled or missing HD flag forces Lite for every tier and ignores pr
   }
 });
 
-Deno.test('resolveImageModel uses stable Flash Image only for explicit subscriber HD requests', () => {
+Deno.test('resolveImageModel uses the HD image model only for explicit subscriber HD requests', () => {
   assertEquals(resolveImageModel('plus', envReader({}), '4K'), GEMINI_FLASH_IMAGE_MODEL);
-  assertEquals(GEMINI_FLASH_IMAGE_MODEL, 'gemini-3.1-flash-image');
+  assertEquals(GEMINI_FLASH_IMAGE_MODEL, 'gemini-nano-banana-2.1');
 });
 
 Deno.test('resolveImageModel uses stable Flash Lite Image for every non-subscriber tier', () => {
@@ -71,6 +71,8 @@ Deno.test('resolveImageModel ignores retired preview overrides', () => {
 
   assertEquals(resolveImageModel('plus', readEnv, '2K'), GEMINI_FLASH_IMAGE_MODEL);
   assertEquals(resolveImageModel('free', readEnv), GEMINI_FLASH_LITE_IMAGE_MODEL);
+  // The deprecated previous HD default, as copied from the old .env.example.
+  assertEquals(resolveImageModel('plus', envReader({ IMAGEN_HD_MODEL: 'gemini-3.1-flash-image' }), '2K'), GEMINI_FLASH_IMAGE_MODEL);
 });
 
 Deno.test('resolveImagePromptModel uses the stable default when no override is configured', () => {

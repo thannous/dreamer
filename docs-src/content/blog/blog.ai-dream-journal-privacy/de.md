@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/blog/dream-memory-hero.webp",
   "twitterImageAlt": "Geschützte Traumerinnerungen in nächtlichem Licht",
   "publishedTime": "2026-06-20T00:00:00+02:00",
-  "modifiedTime": "2026-10-09",
+  "modifiedTime": "2026-10-15",
   "author": "Thanh Chau",
   "prevPath": "/de/blog/traeume-emotionsregulation-studie-2026",
   "nextPath": "/de/blog/wachtraeumen-onirische-zustaende",
@@ -58,7 +58,7 @@
 <li><strong>Werbung:</strong> kein Verkauf von Daten, keine personalisierte Werbung, klar formuliert.</li>
 </ul>
 <h2>Was Noctalia darauf antwortet</h2>
-<p>Laut unserer <a class="text-dream-salmon hover:underline" href="/de/datenschutz">Datenschutzerklärung</a> nutzt die App zuerst die eingebaute Spracherkennung des Smartphones (die des Systems). Ist sie nicht verfügbar oder scheitert sie, kann das Audio an Google Cloud Speech-to-Text gehen; es wird nur wenige Minuten verarbeitet und von Noctalia nicht gespeichert. Der Traumtext geht für Analyse und Bilder an Google (Gemini), wobei das Training allgemeiner Modelle deaktiviert ist, soweit der Dienst das erlaubt. Analyse, Gespräch und Bilder erfolgen nur, nachdem Sie in der App zugestimmt haben. Das Tagebuch liegt in der EU. Kein Datenverkauf, keine personalisierte Werbung. <a class="text-dream-salmon hover:underline" href="/de/konto-loeschen">Ihr Konto löschen</a> Sie in den Einstellungen; die Daten werden in der Regel innerhalb von 30 Tagen entfernt.</p>
+<p>Laut unserer <a class="text-dream-salmon hover:underline" href="/de/datenschutz">Datenschutzerklärung</a> nutzt die App zuerst die eingebaute Spracherkennung des Smartphones (die des Systems). Ist sie nicht verfügbar oder scheitert sie, kann das Audio an Google Cloud Speech-to-Text gehen; es wird nur wenige Minuten verarbeitet und von Noctalia nicht gespeichert. Der Traumtext geht für Analyse und Gespräch an Anthropic (Claude), für Bilder an Google (Gemini), ebenso Text, wenn Claude nicht verfügbar ist, wobei das Training allgemeiner Modelle deaktiviert ist, soweit der Dienst das erlaubt. Analyse, Gespräch und Bilder erfolgen nur, nachdem Sie in der App zugestimmt haben. Das Tagebuch liegt in der EU. Kein Datenverkauf, keine personalisierte Werbung. <a class="text-dream-salmon hover:underline" href="/de/konto-loeschen">Ihr Konto löschen</a> Sie in den Einstellungen; die Daten werden in der Regel innerhalb von 30 Tagen entfernt.</p>
 <h2>Was sich durch die EU-KI-Verordnung ändert</h2>
 <p>Die KI-Verordnung wurde 2024 verabschiedet und gilt seit 2025 schrittweise. Ein Traumtagebuch zählt nicht zu ihren Hochrisiko-Anwendungen. Wenn Sie mit einer KI chatten, müssen Sie darüber informiert werden. Ein Siegel „konform mit der KI-Verordnung“ sagt also wenig über Ihre Notizen: Auskunft und Löschung regelt die DSGVO.</p>
 <h2>Eine gute Analyse muss korrigierbar bleiben</h2>
@@ -76,6 +76,6 @@
 <li><a href="https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai" rel="nofollow noopener noreferrer" target="_blank">Europäische Kommission: KI-Verordnung (englisch)</a></li>
 <li><a href="https://www.cnil.fr/fr/intelligence-artificielle" rel="nofollow noopener noreferrer" target="_blank">CNIL: Künstliche Intelligenz und personenbezogene Daten (französisch)</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Aktualisiert am 9. Oktober 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Aktualisiert am 15. Oktober 2026</p>
 </section>
 </article>

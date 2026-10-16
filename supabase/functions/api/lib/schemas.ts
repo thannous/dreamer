@@ -63,6 +63,35 @@ export const ANALYZE_DREAM_SCHEMA = {
   ],
 };
 
+/** Claude structured outputs reject array length bounds; the app clamps counts itself. */
+export const withoutArrayBounds = (schema: unknown): unknown => {
+  if (Array.isArray(schema)) return schema.map(withoutArrayBounds);
+  if (!schema || typeof schema !== 'object') return schema;
+  return Object.fromEntries(
+    Object.entries(schema as Record<string, unknown>)
+      .filter(([key]) => key !== 'minItems' && key !== 'maxItems')
+      .map(([key, value]) => [key, withoutArrayBounds(value)])
+  );
+};
+
+/**
+ * The form Claude structured outputs accept: no array bounds, `anyOf` instead of a
+ * JSON type array, and every object closed with `additionalProperties: false`.
+ */
+export const toClaudeSchema = (schema: unknown): unknown => {
+  const visit = (node: unknown): unknown => {
+    if (Array.isArray(node)) return node.map(visit);
+    if (!node || typeof node !== 'object') return node;
+    const { type, ...rest } = node as Record<string, unknown>;
+    const mapped = Object.fromEntries(Object.entries(rest).map(([key, value]) => [key, visit(value)]));
+    if (Array.isArray(type)) return { ...mapped, anyOf: type.map((member) => ({ type: member })) };
+    // `type` can also be a property named "type" inside a properties map.
+    const result = type === undefined ? mapped : { type: typeof type === 'object' ? visit(type) : type, ...mapped };
+    return type === 'object' && !('additionalProperties' in result) ? { ...result, additionalProperties: false } : result;
+  };
+  return visit(withoutArrayBounds(schema));
+};
+
 /** A response schema whose theme is kept to the themes offered for the request. */
 export const withDreamThemes = <T extends { properties: { theme: object } }>(schema: T, themes: readonly string[]): T => ({
   ...schema,

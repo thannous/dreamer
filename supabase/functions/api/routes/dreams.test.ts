@@ -4,6 +4,7 @@ import {
   claimGuestAnalysisQuota,
   isAuthenticatedAnalysisQuotaRetry,
 } from '../lib/analysisQuota.ts';
+import { runDreamCategorization } from './dreams.ts';
 
 Deno.test('authenticated quota recognizes the same request as an idempotent retry', () => {
   assertEquals(
@@ -72,4 +73,43 @@ Deno.test('guest quota refuses provider work without a request id', async () => 
     error: 'Analysis request id is required',
     code: 'ANALYSIS_CLAIM_REQUIRED',
   });
+});
+
+const claudeJson = (value: unknown, stopReason = 'end_turn') => new Response(JSON.stringify({
+  id: 'msg_test', type: 'message', role: 'assistant', model: 'claude-haiku-5-5',
+  content: [{ type: 'text', text: JSON.stringify(value) }],
+  stop_reason: stopReason, stop_sequence: null, usage: { input_tokens: 800, output_tokens: 40 },
+}), { headers: { 'Content-Type': 'application/json' } });
+
+Deno.test('categorization runs on Claude Haiku at low effort and falls back to Gemini on a refusal', async () => {
+  const originalFetch = globalThis.fetch;
+  const category = { title: 'La porte', theme: 'calm', dreamType: 'Unknown', hasPerson: false, hasAnimal: false };
+  const options = { apiKey: 'synthetic-gemini-key', anthropicApiKey: 'synthetic-anthropic-key', transcript: 'Une porte fermée.', truncatedForPrompt: false, lang: 'fr', themes: ['surreal', 'mystical', 'calm', 'noir'] };
+  try {
+    const hosts: string[] = [];
+    globalThis.fetch = async (input, init) => {
+      const request = new Request(input, init);
+      hosts.push(new URL(request.url).hostname);
+      const body = await request.json();
+      assertEquals(body.model, 'claude-haiku-5-5');
+      assertEquals(body.output_config.effort, 'low');
+      assertEquals(body.output_config.format.schema.additionalProperties, false);
+      return claudeJson(category);
+    };
+    assertEquals(await runDreamCategorization(options), category);
+    assertEquals(hosts, ['api.anthropic.com']);
+
+    hosts.length = 0;
+    globalThis.fetch = async (input, init) => {
+      const host = new URL(new Request(input, init).url).hostname;
+      hosts.push(host);
+      return host === 'api.anthropic.com'
+        ? claudeJson({}, 'refusal')
+        : new Response(JSON.stringify({ status: 'completed', steps: [{ type: 'model_output', content: [{ type: 'text', text: JSON.stringify({ ...category, title: 'Porte Gemini' }) }] }] }), { headers: { 'Content-Type': 'application/json' } });
+    };
+    assertEquals((await runDreamCategorization(options)).title, 'Porte Gemini');
+    assertEquals(hosts, ['api.anthropic.com', 'generativelanguage.googleapis.com']);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
 });

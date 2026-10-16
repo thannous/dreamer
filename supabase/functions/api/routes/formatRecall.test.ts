@@ -43,3 +43,20 @@ Deno.test('formatting fails closed on malformed, empty, oversized or failed prov
   const result = await handleFormatRecall(ctx(body), { apiKey: 'test', admit, generate: async () => { throw new Error('provider failed'); } });
   assertEquals(result.status, 502);
 });
+Deno.test('a long account skips Claude so the Gemini rewrite keeps the whole app deadline', async () => {
+  const originalFetch = globalThis.fetch;
+  let claudeCalls = 0;
+  globalThis.fetch = async () => { claudeCalls++; throw new Error('unexpected network call'); };
+  try {
+    let calls = 0;
+    const long = { ...body, transcript: 'Une plage noire. '.repeat(300) };
+    const response = await handleFormatRecall(ctx(long), { apiKey: 'test', anthropicApiKey: 'synthetic-anthropic-key', admit,
+      generate: async () => { calls++; return { text: JSON.stringify({ transcript: 'Une plage noire.' }), raw: {} }; },
+    });
+    assertEquals(response.status, 200);
+    assertEquals(claudeCalls, 0);
+    assertEquals(calls, 1);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});

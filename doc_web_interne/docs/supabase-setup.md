@@ -52,6 +52,7 @@ add column if not exists image_generation_failed boolean default false;
 - Requires the Supabase CLI: https://supabase.com/docs/guides/cli
 - Initialize functions in a separate folder or clone `supabase/functions/api/index.ts` from this repo.
 - Set Gemini secret: `supabase secrets set GEMINI_API_KEY="your_key" --project-ref <project-ref>`.
+- Optional Anthropic secret: `supabase secrets set ANTHROPIC_API_KEY="your_key" --project-ref <project-ref>`. With it, every text feature sends its text to Anthropic and runs on Claude Haiku 5.5: dream analysis and chat at medium effort; categorization, recall questions and recall formatting at low effort. Each falls back to Gemini on any failure, and images stay on Gemini. Without it, all text stays on Gemini.
 
 Key points
 - Link project if needed: `supabase link --project-ref <project-ref>`.
