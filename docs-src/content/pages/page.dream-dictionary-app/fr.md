@@ -79,7 +79,7 @@
       <li><a href="/fr/symboles/chien" class="text-dream-salmon hover:underline">Chien</a> : le vôtre, un chien familier ou un inconnu.</li>
       <li><a href="/fr/symboles/lune" class="text-dream-salmon hover:underline">Lune</a> : pleine, en croissant, énorme ou rouge.</li>
     </ul>
-    <p class="mt-4">Le <a href="/fr/guides/dictionnaire-symboles-reves" class="text-dream-salmon hover:underline">dictionnaire complet</a> classe les autres fiches par catégorie et de A à Z.</p>
+    <p class="mt-4">Le <a href="/fr/guides/dictionnaire-symboles-reves" class="text-dream-salmon hover:underline">dictionnaire des rêves</a> classe les autres fiches par catégorie et de A à Z.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5 overflow-x-auto">

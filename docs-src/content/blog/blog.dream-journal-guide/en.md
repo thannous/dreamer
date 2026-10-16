@@ -98,7 +98,7 @@
         <div class="glass-panel rounded-xl p-4"><h3 class="text-dream-cream font-medium mb-2">3. The image</h3><p>Pick the detail that stayed with you: water, a door, a dog, a staircase, a face.</p></div>
         <div class="glass-panel rounded-xl p-4"><h3 class="text-dream-cream font-medium mb-2">4. The question</h3><p>Optional: “Does this remind me of anything from yesterday?”</p></div>
     </div>
-    <p class="text-sm text-purple-200/70 mt-4">Sixty seconds is a guide, not a deadline. Half asleep, the <a class="text-dream-salmon hover:underline" href="/en/voice-dream-journal">voice dream journal</a> lets you say it out loud. Later, the <a class="text-dream-salmon hover:underline" href="/en/guides/dream-symbols-dictionary">dream symbols dictionary</a> and the <a class="text-dream-salmon hover:underline" href="/en/ai-dream-interpretation-app">AI dream interpretation app</a> suggest possible readings. Neither decides what your dream means.</p>
+    <p class="text-sm text-purple-200/70 mt-4">Sixty seconds is a guide, not a deadline. Half asleep, the <a class="text-dream-salmon hover:underline" href="/en/voice-dream-journal">voice dream journal</a> lets you say it out loud. Later, the <a class="text-dream-salmon hover:underline" href="/en/guides/dream-symbols-dictionary">dream dictionary</a> and the <a class="text-dream-salmon hover:underline" href="/en/ai-dream-interpretation-app">AI dream interpretation app</a> suggest possible readings. Neither decides what your dream means. For a recurring nightmare, lucid dreaming or linking a dream to your day, our <a class="text-dream-salmon hover:underline" href="dream-journal">dream journal templates</a> give you a dedicated format to copy.</p>
 </section>
 <!-- Featured Image -->
 
@@ -292,7 +292,7 @@
                 </p>
 <h2 id="formats">Notebook, voice, app or sketches: which format suits you?</h2>
 <p>
-                    The best format is the one you can manage half awake. You can switch along the way.
+                    The best format is the one you can manage half awake. You can switch along the way. If you lean towards an app, our <a class="text-dream-salmon hover:underline" href="/en/dream-journal-apps">comparison of dream journal apps</a> sorts the options by need.
                 </p>
 <h3>Free writing</h3>
 <p>
