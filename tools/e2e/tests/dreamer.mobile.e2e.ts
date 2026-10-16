@@ -12,7 +12,7 @@ type NativeBackgroundFixtures = TestFixtures & { device: Device };
 // Billing uses only the runner's identified, disposable mock Release. Store
 // operations and entitlement convergence are simulated; no Store account is used.
 const nativeBillingOptions = {
-  platforms: ['ios'],
+  platforms: ['ios', 'android'],
   tags: ['native-billing'], timeout: 300_000,
   skip: process.env.E2E_NATIVE_MOCK_MODE !== 'true'
     ? 'Requires the owned mock-persistent Release; never run against real payments.' : false,
@@ -46,7 +46,7 @@ async function billingSettings(screen: TestFixtures['screen']) {
 
 async function billingGuest({ app, screen }: NativeBackgroundFixtures) {
   await app.open();
-  // The profile and simulator are owned synthetic QA data, checked by run.mjs.
+  // The profile and device are owned synthetic QA data, checked by run.mjs.
   await app.clearState();
   await screen.getByTestId('btn.onboarding.intro.next', { visible: true }).tap();
   await leaveGuidedStories(screen);
@@ -83,17 +83,26 @@ async function billingOffer(screen: TestFixtures['screen']) {
   await billingTap(screen, 'btn.paywall.selectMonthly');
 }
 
-async function billingClose(screen: TestFixtures['screen']) {
-  await billingTap(screen, 'btn.paywall.close', 'up');
+async function billingClose(screen: TestFixtures['screen'], useFreeFooter = false) {
+  // The Free offer's header can be clipped beneath Android's status bar.
+  // Continue free is the visible exit and uses the same handleClose.
+  if (useFreeFooter) {
+    const exit = screen.getByRole('button', 'Continue free', { visible: true });
+    await screen.scrollUntilVisible(exit);
+    await exit.tap();
+  } else await billingTap(screen, 'btn.paywall.close', 'up');
   await expect(screen.getByTestId('screen.paywall', { visible: true })).toHaveCount(0);
 }
 
-async function billingCounts(screen: TestFixtures['screen'], purchases: string, restores: string) {
+async function billingCounts({ screen, platform }: NativeBackgroundFixtures, purchases: string, restores: string) {
+  // Android's UIAutomator tree does not expose RN's expanded state to this SDK.
+  // Reopen Settings so the embedded QA panel starts in its known collapsed state.
+  if (platform === 'android') await billingSettings(screen);
   const toggle = screen.getByTestId('screen.subscription.qaLab.toggle', { visible: true });
   await screen.scrollUntilVisible(toggle);
   // UIKit exposes this button's expansion as its accessibility value. A
   // clipped status cell being absent does not mean the panel is collapsed.
-  if (await toggle.inputValue() !== 'expanded') await toggle.tap();
+  if (platform === 'android' || await toggle.inputValue() !== 'expanded') await toggle.tap();
   for (const [id, count] of [['purchaseCalls', purchases], ['restoreCalls', restores]]) {
     const value = screen.getByTestId(`text.subscription.qa.${id}`, { visible: true });
     await screen.scrollUntilVisible(value);
@@ -115,7 +124,7 @@ test('Dreamer native billing purchase activates Plus', nativeBillingOptions, asy
   await billingOffer(fixtures.screen);
   await billingTap(fixtures.screen, 'btn.paywall.purchase');
   await billingPlus(fixtures, 'native-purchase');
-  await billingCounts(fixtures.screen, '1', '0');
+  await billingCounts(fixtures, '1', '0');
 });
 
 test('Dreamer native billing restore activates an existing receipt without purchase', nativeBillingOptions, async (fixtures) => {
@@ -124,7 +133,7 @@ test('Dreamer native billing restore activates an existing receipt without purch
   await billingOffer(fixtures.screen);
   await billingTap(fixtures.screen, 'btn.paywall.restore');
   await billingPlus(fixtures, 'native-restore');
-  await billingCounts(fixtures.screen, '0', '1');
+  await billingCounts(fixtures, '0', '1');
 });
 
 test('Dreamer native billing empty restore keeps Free and reports no subscription', nativeBillingOptions, async (fixtures) => {
@@ -137,11 +146,11 @@ test('Dreamer native billing empty restore keeps Free and reports no subscriptio
   await expect(info.getByText(/No active subscription/, { visible: true })).toBeVisible();
   await expect(screen.getByTestId('toast.paywall.success')).toHaveCount(0);
   await app.screenshot('native-restore-empty');
-  await billingClose(screen);
+  await billingClose(screen, fixtures.platform === 'android');
   const quota = screen.getByTestId('quota.analysisValue', { visible: true });
   await screen.scrollUntilVisible(quota, { direction: 'up' });
   await expect(quota).toHaveText(/^(?:Included analyses: )?5 \/ 3$/);
-  await billingCounts(screen, '0', '1');
+  await billingCounts(fixtures, '0', '1');
 });
 
 for (const action of ['purchase', 'restore'] as const) {
@@ -170,7 +179,7 @@ for (const action of ['purchase', 'restore'] as const) {
     const quota = screen.getByTestId('quota.analysisValue', { visible: true });
     await screen.scrollUntilVisible(quota);
     await expect(quota).toHaveText(/^(?:Included analyses: )?Unlimited$/);
-    await billingCounts(screen, action === 'purchase' ? '1' : '0', action === 'restore' ? '1' : '0');
+    await billingCounts(fixtures, action === 'purchase' ? '1' : '0', action === 'restore' ? '1' : '0');
   });
 }
 
@@ -200,15 +209,18 @@ for (const profile of ['existing', 'new'] as const) {
     await billingHome(screen);
     await device.home();
     await device.openApp('com.tanuki75.noctalia');
-    await expect(screen.getByTestId('screen.home', { visible: true })).toBeVisible();
+    // RootLayoutNav's default foreground destination is Capture. Android
+    // dispatches that lifecycle transition; the historical iOS run stayed Home.
+    const resumedScreen = fixtures.platform === 'android' ? 'screen.recording' : 'screen.home';
+    await expect(screen.getByTestId(resumedScreen, { visible: true })).toBeVisible();
     await expect(screen.getByTestId('screen.paywall', { visible: true })).toHaveCount(0);
-    await app.screenshot(`native-${profile}-foreground-stays-home`);
+    await app.screenshot(`native-${profile}-foreground-${fixtures.platform === 'android' ? 'capture' : 'home'}`);
     await billingSettings(screen);
     const quota = screen.getByTestId('quota.analysisValue', { visible: true });
     await screen.scrollUntilVisible(quota);
     await expect(quota).toHaveText(profile === 'existing'
       ? /^(?:Included analyses: )?5 \/ 3$/ : /^(?:Included analyses: )?0 \/ 3$/);
-    await billingCounts(screen, '0', '0');
+    await billingCounts(fixtures, '0', '0');
   });
 }
 
