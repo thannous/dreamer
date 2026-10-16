@@ -62,7 +62,7 @@
       <p class="text-2xl text-dream-cream mb-5">Prix actuel sur Google Play</p>
       <ul class="list-disc pl-5 space-y-2">
         <li>Analyses de rêves illimitées, chacune avec une image</li>
-        <li>Chat illimité en usage raisonnable : jusqu’à 100 messages de suivi par rêve</li>
+        <li>Chat illimité en usage raisonnable : jusqu’à 100 messages de suivi par rêve</li>
         <li>Synthèse 360° à la fin d’une exploration guidée</li>
         <li>Facturation et renouvellement gérés par Google Play</li>
       </ul>
@@ -79,7 +79,7 @@
         <tr><td class="py-4 pr-4 text-white font-medium">Analyse d'un rêve</td><td class="py-4 pr-4">3 par mois</td><td class="py-4 pr-4">Sans limite</td></tr>
         <tr><td class="py-4 pr-4 text-white font-medium">Image du rêve</td><td class="py-4 pr-4">Une avec chaque analyse</td><td class="py-4 pr-4">Une avec chaque analyse</td></tr>
         <tr><td class="py-4 pr-4 text-white font-medium">Explorations guidées</td><td class="py-4 pr-4">Sans limite mensuelle</td><td class="py-4 pr-4">Sans limite mensuelle</td></tr>
-        <tr><td class="py-4 pr-4 text-white font-medium">Messages de suivi</td><td class="py-4 pr-4">Jusqu’à 10 par rêve analysé</td><td class="py-4 pr-4">Illimités en usage raisonnable : jusqu’à 100 par rêve</td></tr>
+        <tr><td class="py-4 pr-4 text-white font-medium">Messages de suivi</td><td class="py-4 pr-4">Jusqu’à 10 par rêve analysé</td><td class="py-4 pr-4">Illimités en usage raisonnable : jusqu’à 100 par rêve</td></tr>
         <tr><td class="py-4 pr-4 text-white font-medium">Synthèse 360° à la fin d'une exploration guidée</td><td class="py-4 pr-4">Non incluse</td><td class="py-4 pr-4">Incluse</td></tr>
         <tr><td class="py-4 pr-4 text-white font-medium">Journal de rêves</td><td class="py-4 pr-4">Enregistré, à relire quand vous voulez</td><td class="py-4 pr-4">Enregistré, à relire quand vous voulez</td></tr>
         <tr><td class="py-4 pr-4 text-white font-medium">Paiement</td><td class="py-4 pr-4">Aucun</td><td class="py-4 pr-4">Abonnement facturé et renouvelé par Google Play</td></tr>
