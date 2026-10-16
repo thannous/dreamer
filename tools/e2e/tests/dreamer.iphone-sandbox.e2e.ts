@@ -120,19 +120,15 @@ test('Physical iPhone prepares Sandbox confirmation visual inspection', async (f
   await open(f);
   await settings(f);
   await tap(f.screen, 'settings-theme-choice', 'up');
-  let originalTheme: string | undefined;
-  for (const value of ['dynamic', 'auto', 'light', 'dark']) {
-    if (await f.screen.getByTestId(`settings-theme-choice.option.${value}`, { visible: true }).isChecked()) originalTheme = value;
+  // This out-of-process inspection has no guaranteed cleanup while Apple owns
+  // the screen. Require the existing theme instead of changing personal settings.
+  try {
+    await expect(f.screen.getByTestId('settings-theme-choice.option.dynamic', { visible: true })).toBeChecked();
+    await f.app.screenshot('theme-dynamic-confirmed');
+  } finally {
+    await f.screen.getByRole('button', /^(Annuler|Cancel)$/, { visible: true }).tap();
   }
-  assert.ok(originalTheme, 'Record the existing preference before temporarily selecting the dynamic theme');
-  phase('theme-preference-preserved', { originalTheme });
-  if (originalTheme !== 'dynamic') {
-    await f.screen.getByTestId('settings-theme-choice.option.dynamic', { visible: true }).tap();
-    await tap(f.screen, 'settings-theme-choice', 'up');
-  }
-  await expect(f.screen.getByTestId('settings-theme-choice.option.dynamic', { visible: true })).toBeChecked();
-  await f.app.screenshot('theme-dynamic-confirmed');
-  await f.screen.getByRole('button', /^(Annuler|Cancel)$/, { visible: true }).tap();
+  phase('dynamic-theme-precondition-verified', { themePreferenceReadOnly: true });
   const ownerId = await qa(f);
   const before = await subscriber(ownerId);
   assert.ok(Object.values(before.subscriptions).every(x => Date.parse(x.expires_date) <= Date.now()), 'An active receipt blocks a new purchase');
@@ -145,6 +141,7 @@ test('Physical iPhone prepares Sandbox confirmation visual inspection', async (f
   await f.app.screenshot('theme-before-sandbox-purchase');
   phase('awaiting-sandbox-sheet-visual-inspection', { purchaseAttempt, purchaseStartedAt: startedAt });
   await buy.tap();
+  await expect(f.screen.getByText(/environment\s*:\s*sandbox|environnement\s*:\s*sandbox|environnement\s+(?:de\s+)?test|test environment|(?:à|a) des fins de test uniquement|ne serez pas (?:factur|débité)|won.t be charged/i, { visible: true })).toBeVisible({ timeout: 60_000 });
   const sheetCapture = await f.app.screenshot('theme-apple-sheet-needs-visual-verification');
   phase('sandbox-sheet-awaiting-visual-verification', { sheetCapture, purchaseQualified: false });
 });

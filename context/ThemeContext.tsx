@@ -27,8 +27,8 @@ export type ThemeContextValue = {
   mode: ThemeMode;
   /** Current visual ambience, including the two time-aware palettes. */
   ambience: ThemeAmbience;
-  /** Current system-derived theme mode */
-  systemMode: ThemeMode;
+  /** Device mode when observable without a native app override; otherwise unknown. */
+  systemMode: ThemeMode | null;
   /** User's theme preference ('dynamic', 'light', 'dark', or 'auto') */
   preference: ThemePreference;
   /** Update the user's theme preference */
@@ -44,7 +44,7 @@ const defaultThemeContextValue: ThemeContextValue = {
   shadows: Shadows.light,
   mode: 'light',
   ambience: 'light',
-  systemMode: 'light',
+  systemMode: null,
   preference: 'dynamic',
   setPreference: async () => {
     // No-op fallback to keep hooks functional when the provider is missing.
@@ -62,7 +62,10 @@ export const ThemeProvider: React.FC<React.PropsWithChildren> = ({ children }) =
   const [preference, setPreferenceState] = useState<ThemePreference>('dynamic');
   const [localTime, setLocalTime] = useState(() => new Date());
   const [loaded, setLoaded] = useState(false);
-  const systemMode: ThemeMode = systemColorScheme === 'dark' ? 'dark' : 'light';
+  const observedMode: ThemeMode = systemColorScheme === 'dark' ? 'dark' : 'light';
+  // React Native reports the app override, not the underlying device setting.
+  // Avoid presenting that value as the system mode while a native override is active.
+  const systemMode = Platform.OS === 'web' || preference === 'auto' ? observedMode : null;
 
   // Load theme preference from storage on mount
   useEffect(() => {
@@ -99,9 +102,9 @@ export const ThemeProvider: React.FC<React.PropsWithChildren> = ({ children }) =
 
   const ambience = useMemo<ThemeAmbience>(() => {
     if (preference === 'dynamic') return resolveThemeAmbience(localTime);
-    if (preference === 'auto') return systemMode;
+    if (preference === 'auto') return observedMode;
     return preference;
-  }, [localTime, preference, systemMode]);
+  }, [localTime, preference, observedMode]);
 
   // Calculate effective theme mode based on preference and system
   const mode: ThemeMode = useMemo(() => {

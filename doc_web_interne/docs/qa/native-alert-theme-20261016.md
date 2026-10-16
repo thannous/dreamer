@@ -2,7 +2,7 @@
 
 Responsable : fil `popup-native-theme`, PR #382. Périmètre : cohérence du thème
 natif de Dreamer et observation de la confirmation Apple StoreKit. Aucune
-publication ni fusion de cette PR demandée.
+publication demandée. La fusion de la PR est ensuite autorisée par le propriétaire.
 
 ## Résultat observé sur iPhone
 
@@ -77,7 +77,9 @@ Preuves privées, hors Git :
 Relance : profil privé `.env.ios-sandbox.local` pointant sur les preuves de ce fil,
 le pilote signé existant, le compte validé et Metro 4521. Lire le runbook
 [RevenueCat QA](../revenuecat-qa-workflow.md). Une tentative déjà amorcée doit être
-reprise sans acheter à nouveau. Le choix initial d’apparence doit être restauré.
+reprise sans acheter à nouveau. La préparation actuelle exige Dynamique déjà
+sélectionné sans le modifier ; si une préparation manuelle le change, restaurer
+le choix initial après le contrôle.
 
 ```sh
 CI=1 EXPO_NO_METRO_LAZY=1 mise exec -- npm run start -- --profile .env.ios-sandbox.local --dev-client --lan --port 4521
@@ -85,6 +87,32 @@ mise exec -- node tools/e2e/run-iphone-sandbox-local.mjs --check
 # Uniquement après expiration du reçu et en l’absence de tentative en attente :
 mise exec -- node tools/e2e/run-iphone-sandbox-local.mjs --grep 'prepares Sandbox confirmation visual inspection' --allow-sandbox-purchase
 ```
+
+## Corrections de revue avant fusion
+
+La revue du head `038e1be40d` a identifié trois points corrigés avant fusion :
+
+- React Native expose le mode forcé de l’app, sans API publique pour lire le mode
+  système sous cet override. `systemMode` est désormais inconnu (`null`) sur
+  natif hors Auto ; l’option Auto garde sa description générale sans annoncer
+  un faux mode système. Son indication réapparaît quand le système est suivi.
+  Le navigateur conserve sa vraie préférence `matchMedia`.
+- La préparation physique ne sélectionne plus de thème : elle exige Dynamique
+  déjà coché et referme le sélecteur même si ce prérequis échoue. Aucun réglage
+  personnel modifié à restaurer par ce test. La restauration manuelle observée
+  dans la preuve historique ci-dessus reste un fait de cette ancienne exécution.
+- Une assertion attend une mention Sandbox/test sur la feuille Apple avant la
+  capture et avant de déclarer la préparation réussie. Une absence de feuille
+  échoue ; la tentative reste enregistrée pour ne jamais acheter une seconde fois.
+
+Les assertions isolées ont reproduit le faux mode système avant correction,
+avec l’absence d’indication trompeuse après correction : **10/10** tests de
+contexte/préférences et typecheck TesterArmy passés. Cette exception isolée couvre
+la frontière native que les parcours navigateur ne peuvent pas observer.
+La dernière préparation avec assertion StoreKit n’a pas été rejouée sur iPhone :
+aucun achat supplémentaire pour la fusion. L’effet appliquant le mode natif est
+inchangé ; la capture physique reste attribuée à `8dcdb38d1c9a`, sans prétendre
+qualifier une exécution fraîche du nouveau test.
 
 ## Autres contrôles du correctif
 

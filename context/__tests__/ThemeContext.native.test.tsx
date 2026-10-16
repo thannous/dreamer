@@ -52,6 +52,7 @@ it('keeps native appearance with the evening and morning palettes across the clo
   expect(result.current.ambience).toBe('afterglow');
   expect(result.current.mode).toBe('dark');
   expect(Appearance.getColorScheme()).toBe('dark');
+  expect(result.current.systemMode).toBeNull();
 
   mockSystemScheme = 'dark';
   await act(() => {
@@ -67,10 +68,12 @@ it('releases the evening override when switching back to automatic', async () =>
   const { result, rerender } = await renderHook(() => useTheme(), { wrapper });
   await waitFor(() => expect(result.current.loaded).toBe(true));
   expect(Appearance.getColorScheme()).toBe('dark');
+  expect(result.current.systemMode).toBeNull();
 
   await act(async () => { await result.current.setPreference('auto'); });
   await rerender({});
   expect(result.current.mode).toBe('light');
   expect(Appearance.getColorScheme()).toBe('light');
   expect(mockNativeOverride).toBe('auto');
+  expect(result.current.systemMode).toBe('light');
 });
