@@ -2,7 +2,6 @@ import type { E2EConfig } from 'e2e';
 import { mobile } from '@e2e-dev/mobile';
 import { webEngine } from './web-engine';
 import { fileURLToPath } from 'node:url';
-import { availableParallelism } from 'node:os';
 
 const root = fileURLToPath(new URL('../../', import.meta.url));
 const product = process.env.E2E_PRODUCT ?? 'dreamer';
@@ -30,14 +29,11 @@ const device = process.env.E2E_DEVICE;
 const keepMetroCache = process.env.E2E_KEEP_METRO_CACHE === '1' && product !== 'meditation';
 if (native && (!device || (platform === 'android' && !/^emulator-\d+$/.test(device))))
   throw new Error('Name an explicit emulator/simulator with E2E_DEVICE; physical devices are excluded.');
-// Local web files run in parallel against the one local server; every attempt gets
-// its own browser context and storage. CI keeps e2e's single worker and shards
-// instead; a native target drives its one named device.
+// run.mjs resolves the web worker count and records it; a native target drives its one device.
 const requestedWorkers = process.env.E2E_WORKERS;
 if (requestedWorkers !== undefined && (native || !/^[1-9]\d?$/.test(requestedWorkers)))
   throw new Error('E2E_WORKERS takes 1-99 web workers; native runs use one device.');
-const ci = !['', '0', 'false'].includes(process.env.CI ?? '');
-const workers = native ? 1 : Number(requestedWorkers ?? (ci ? 1 : Math.min(4, Math.max(1, Math.floor(availableParallelism() / 2)))));
+const workers = Number(requestedWorkers ?? 1);
 
 export default {
   projectId: `noctalia-${product}`,
