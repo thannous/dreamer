@@ -118,5 +118,8 @@ describe('Plus chat ceiling', () => {
       'utf8'
     );
     expect(Number(chatContext.match(/MAX_CHAT_USER_MESSAGES = (\d+)/)[1])).toBe(ceiling);
+    // The device cache must keep every user turn and its reply.
+    const storage = fs.readFileSync(path.resolve(__dirname, '..', 'services', 'storageServiceReal.ts'), 'utf8');
+    expect(Number(storage.match(/MAX_CHAT_HISTORY_FOR_STORAGE = (\d+)/)[1])).toBe(2 * ceiling);
   });
 });

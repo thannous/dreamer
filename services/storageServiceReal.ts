@@ -47,7 +47,8 @@ const ONBOARDING_GUEST_CLAIMED_BY_KEY = 'gemini_dream_journal_onboarding_guest_c
 const PENDING_RECORDING_NOTIFICATION_KEY = 'gemini_dream_journal_pending_recording_notification_v1';
 const DREAMS_MIGRATION_SYNCED_PREFIX = 'gemini_dream_journal_dreams_migration_synced_';
 const GUEST_DREAM_MIGRATION_OWNER_KEY = 'gemini_dream_journal_guest_migration_owner_v1';
-const MAX_CHAT_HISTORY_FOR_STORAGE = 50;
+// Every user turn of a 100-message Plus conversation (constants/limits.ts) and its reply.
+const MAX_CHAT_HISTORY_FOR_STORAGE = 200;
 const IMAGE_CACHE_DIR = FileSystemLegacy.cacheDirectory ?? FileSystemLegacy.documentDirectory ?? null;
 // Store large payloads on the filesystem to avoid Android CursorWindow limits in AsyncStorage
 const FILE_STORAGE_DIR = FileSystemLegacy.documentDirectory ?? FileSystemLegacy.cacheDirectory ?? null;

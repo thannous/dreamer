@@ -46,10 +46,16 @@ Deno.test('escaped text and metadata fit serialized notes bound with explicit tr
   assertEquals(result.recentMessages, history.slice(-20));
 });
 
-Deno.test('a Plus conversation keeps its first association past exchange 20', () => {
-  const history = [...exchanges(), ...exchanges(), ...exchanges()];
+Deno.test('a full Plus conversation of everyday turns keeps its first association', () => {
+  const turn = 'Je repense à la maison de mon enfance, au couloir sombre et à la porte du grenier. ';
+  const history = Array.from({ length: MAX_CHAT_USER_MESSAGES }, (_, index) => [
+    { role: 'user', text: index === 0 ? 'Le vélo me rappelle ma sœur, pas la liberté.' : `${index + 1}. ${turn.repeat(2)}` },
+    { role: 'model', text: `Assistant hypothesis ${index + 1}` },
+  ]).flat();
   const notes = JSON.parse(buildChatHistory(history).olderUserNotes!);
   assertEquals(notes.omittedUserMessages, 0);
+  assertEquals(notes.messages.length, MAX_CHAT_USER_MESSAGES - 10);
+  assert(!notes.messages.some((note: { truncated: boolean }) => note.truncated));
   assertEquals(notes.messages[0].text, history[0].text);
   assertEquals(notes.messages[0].messageOrder, 1);
 });
