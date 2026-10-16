@@ -456,3 +456,11 @@ human steps and continuation passes stay distinct evidence.
 See the [reusable iOS runbook](../../doc_web_interne/docs/revenuecat-qa-workflow.md#ios-physique--réutiliser-la-préparation-sandbox)
 and the [dated qualification](../../doc_web_interne/docs/qa/revenuecat-ios-sandbox-20261016.md).
 This developer-client proof does not qualify Release/TestFlight or production delivery.
+
+Receipt qualification also binds Metro to the clean checked-out source, resolves the device
+name to the inspected physical UDID and checks source/profile stability at completion.
+A purchase continuation requires `--resume-attempt <id>` within 15 minutes, an explicit
+attempt-bound `purchase-attestation.json`, and a native PURCHASE matching RevenueCat's
+`store_transaction_id`. A renewal or stale state is refused. See the runbook for the private
+attestation fields. Run `mise exec -- node --test tools/e2e/iphone-sandbox-guards.test.mjs`
+for the documented unsafe-device/stale-evidence counterexamples without touching a phone.

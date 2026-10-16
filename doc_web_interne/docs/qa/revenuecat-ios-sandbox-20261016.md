@@ -99,3 +99,17 @@ développement pour supprimer les allers-retours d’authentification. Le régla
 les nettoyages suivants le conservent. Les comptes, profil et signature sont réutilisés.
 Aucun paiement réel, aucune mise en production, soumission Store, réinstallation ou effacement
 personnel n’a été effectué dans ce lot.
+
+## Corrections issues de la revue de livraison
+
+Sept observations ont renforcé le harnais livré : provenance du worktree Metro propre et stable,
+liaison nom/UDID, identité native fraîche avec invalidation sur logout, propriétaire persisté après
+login, tentative explicite expirant après 15 minutes, attestation humaine liée à la même transaction,
+et poll borné de convergence du reçu. Les renouvellements et reçus d’autres tentatives sont refusés.
+Le compte test et les preuves historiques restent conservés. La procédure d’attestation/reprise est
+précisée dans le runbook ; elle n’est jamais déduite automatiquement d’un reçu présent.
+
+Neuf contrôles isolés vérifient ces erreurs et leurs contre-exemples : les déclencher réellement
+impliquerait un téléphone étranger, une déconnexion ou un nouvel achat sur le compte personnel,
+ce que la livraison n’exige pas. Les tests natifs exécutés avant ces corrections restent une preuve
+historique délimitée ; ces nouveaux garde-fous ne sont pas présentés comme rejoués sur l’appareil.

@@ -158,14 +158,25 @@
       "node --check passed",
       "SDK discovery passed",
       "No-filter/worker/retry override refusals passed",
-      "Read-only installed-candidate/Metro preflight passed"
+      "Read-only installed-candidate/Metro preflight passed",
+      "9 isolated source/device/identity/receipt counterexample tests passed"
     ],
     "optionalNativeReplay": {
       "runId": "01a1459f-2d85-710f-bacf-ca8c0cdd6045",
       "status": "not-executed",
       "cause": "iPhone owned by popup-theme task; ENGINE_FAILURE before app/test start; foreign session preserved"
     },
-    "evidenceReuse": "Original reports keep their recorded source/test hashes; delivered parameterization is not a fresh native pass."
+    "evidenceReuse": "Original reports keep their recorded source/test hashes; delivered parameterization is not a fresh native pass.",
+    "reviewFixes": [
+      "Clean Metro worktree provenance and end-of-run stability",
+      "Resolve selected name to inspected physical UDID",
+      "Fresh chronological login/logout identity",
+      "Persist owner after complete auth return",
+      "Explicit 15-minute pending attempt, source/campaign/account bound and single-use",
+      "Explicit human attestation and exact native PURCHASE/provider transaction ID match",
+      "Bounded receipt convergence poll without repeating purchase"
+    ],
+    "isolationGap": "Unsafe foreign-device/stale-identity/abandoned-attempt/renewal counterexamples cannot be generated safely by a real purchase on the personal device; focused Node controls cover them."
   },
   "boundaries": {
     "realPayment": false,

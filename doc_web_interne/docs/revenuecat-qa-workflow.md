@@ -1018,3 +1018,45 @@ mensuel/annuel, l'annulation, l'expiration et la convergence webhook/backend res
 `npm run subscription:qa:full-gate`; ils sont obligatoires apres une modification Billing ou lors
 d'une campagne QA complete, mais ne bloquent plus automatiquement chaque candidat sans changement
 de ce perimetre.
+
+### Garde-fous de preuve après revue du harnais
+
+Le wrapper exige un checkout propre pour les runs et le préflight, associe le nom sélectionné
+par le SDK à l’UDID physique inspecté via CoreDevice, et vérifie que le listener Metro appartient
+au même worktree. Il recontrôle HEAD, propreté et empreinte du profil à la fin ; un changement
+invalide la qualification. Le profil privé et les sorties ignorées restent réutilisables.
+
+Une nouvelle tentative d’achat reçoit `purchaseAttempt.id`, `campaignId`, propriétaire, produit,
+source HEAD et expiration de **15 minutes** dans `physical-flow-state.json`. Une continuation
+exige `--resume-attempt <id>` ; l’ancien champ `purchaseStartedAt` seul n’est plus recevable.
+Après observation réelle de la feuille sans débit et réponse explicite du propriétaire, le pilote
+rédige **dans le dossier privé de preuves** `purchase-attestation.json`, avec ces champs :
+
+- `attemptId`, `campaignId`, `ownerId`, `product` repris de la tentative courante ;
+- `transactionId` de la transaction Apple effectivement confirmée ;
+- `sheetObservedAt`, `confirmedAt` en millisecondes UTC, dans la fenêtre de tentative ;
+- `noChargeSheetVerified: true`, `ownerSideButtonConfirmed: true`, seulement si réellement observés ;
+- `sheetEvidence` (chemin privé de capture) et `sheetEvidenceSha256` (empreinte de ses octets).
+
+Ne pas produire cette attestation à partir d’un reçu seul. Le test exige une transaction native
+`PURCHASE`, même identifiant que `store_transaction_id` RevenueCat, compte/produit/environnement
+concordants et date bornée par la confirmation. Un renouvellement, une autre transaction ou une
+tentative expirée/consommée est refusé. La convergence du reçu est attendue avec un poll borné,
+sans réessayer l’achat. Exemple de reprise après attestation :
+
+```sh
+mise exec -- node tools/e2e/run-iphone-sandbox-local.mjs \
+  --resume-attempt '<id-de-la-tentative-courante>' --grep 'confirms fresh sandbox purchase'
+```
+
+L’identité est relue depuis les événements natifs de l’ouverture courante, en tenant compte
+d’un logout ultérieur ; le login complet enregistre le propriétaire dans son nouvel état.
+Les contre-exemples de cible étrangère, source sale, logout, tentative périmée et faux reçu ne
+peuvent pas être exercés sans risque sur le téléphone personnel. Ils sont donc contrôlés par :
+
+```sh
+mise exec -- node --test tools/e2e/iphone-sandbox-guards.test.mjs
+```
+
+Cette isolation couvre ces refus et la convergence d’un reçu antérieur, sans remplacer les
+parcours StoreKit ni qualifier les changements de harnais comme un nouveau passage natif.
