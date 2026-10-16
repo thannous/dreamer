@@ -111,3 +111,37 @@ async function verifiedPendingPurchase(attempt: Attempt): Promise<Subscription> 
   }, { timeout: Math.min(120_000, Math.max(1, attempt.expiresAt - Date.now())), interval: 1_000, message: 'Wait for matching Sandbox PURCHASE, explicit owner attestation and provider convergence; never buy again.' }).toBe(true);
   assert.ok(purchase); return purchase;
 }
+
+// Visual preparation only: stop after one purchase tap so the human can inspect
+// Apple's out-of-process sheet. This is not a completed-purchase qualification.
+test('Physical iPhone prepares Sandbox confirmation visual inspection', async (f) => {
+  assert.equal(process.env.E2E_IPHONE_ALLOW_PURCHASE, 'true', 'Require explicit Sandbox purchase opt-in');
+  assert.ok(!state().purchaseAttempt || state().purchaseAttempt.completedAt, 'Never repeat a pending purchase attempt');
+  await open(f);
+  await settings(f);
+  await tap(f.screen, 'settings-theme-choice', 'up');
+  // This out-of-process inspection has no guaranteed cleanup while Apple owns
+  // the screen. Require the existing theme instead of changing personal settings.
+  try {
+    await expect(f.screen.getByTestId('settings-theme-choice.option.dynamic', { visible: true })).toBeChecked();
+    await f.app.screenshot('theme-dynamic-confirmed');
+  } finally {
+    await f.screen.getByRole('button', /^(Annuler|Cancel)$/, { visible: true }).tap();
+  }
+  phase('dynamic-theme-precondition-verified', { themePreferenceReadOnly: true });
+  const ownerId = await qa(f);
+  const before = await subscriber(ownerId);
+  assert.ok(Object.values(before.subscriptions).every(x => Date.parse(x.expires_date) <= Date.now()), 'An active receipt blocks a new purchase');
+  const startedAt = Date.now();
+  const purchaseAttempt: Attempt = { id: randomUUID(), campaignId: process.env.E2E_IPHONE_CAMPAIGN_ID!, ownerId, product: 'noctalia_plus_monthly', startedAt, expiresAt: startedAt + ATTEMPT_TTL_MS, sourceRevision: process.env.E2E_IPHONE_SOURCE_REVISION! };
+  await offer(f);
+  const buy = f.screen.getByTestId('btn.paywall.purchase', { visible: true });
+  await f.screen.scrollUntilVisible(buy);
+  await expect(buy).toBeEnabled();
+  await f.app.screenshot('theme-before-sandbox-purchase');
+  phase('awaiting-sandbox-sheet-visual-inspection', { purchaseAttempt, purchaseStartedAt: startedAt });
+  await buy.tap();
+  await expect(f.screen.getByText(/environment\s*:\s*sandbox|environnement\s*:\s*sandbox|environnement\s+(?:de\s+)?test|test environment|(?:à|a) des fins de test uniquement|ne serez pas (?:factur|débité)|won.t be charged/i, { visible: true })).toBeVisible({ timeout: 60_000 });
+  const sheetCapture = await f.app.screenshot('theme-apple-sheet-needs-visual-verification');
+  phase('sandbox-sheet-awaiting-visual-verification', { sheetCapture, purchaseQualified: false });
+});

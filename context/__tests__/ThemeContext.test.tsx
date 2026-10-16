@@ -42,7 +42,8 @@ describe('ThemeContext', () => {
 
     expect(result.current.preference).toBe('dark');
     expect(result.current.mode).toBe('dark');
-    expect(result.current.systemMode).toBe('light');
+    // A native override cannot reveal the underlying device preference.
+    expect(result.current.systemMode).toBeNull();
     expect(result.current.colors).toBe(DarkTheme);
     expect(result.current.shadows).toBe(Shadows.dark);
   });
