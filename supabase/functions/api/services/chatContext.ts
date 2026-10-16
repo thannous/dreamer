@@ -11,8 +11,11 @@ export const CHAT_SYSTEM_PREAMBLES: Record<AiLanguage, string> = {
 };
 
 export const MAX_RECENT_CHAT_MESSAGES = 20;
-export const MAX_CHAT_USER_MESSAGES = 20;
-export const MAX_OLDER_CHAT_NOTES_CHARS = 8000;
+// Matches the Plus per-dream chat ceiling (constants/limits.ts), so every user message
+// of an allowed conversation stays eligible; the notes stay bounded by MAX_OLDER_CHAT_NOTES_CHARS.
+export const MAX_CHAT_USER_MESSAGES = 100;
+// Sized so a full Plus conversation of everyday turns (about 200 characters each) fits verbatim.
+export const MAX_OLDER_CHAT_NOTES_CHARS = 24_000;
 
 export function buildChatSystem(lang: string): string {
   return `${localizedForAi(lang, CHAT_SYSTEM_PREAMBLES)} ${REFLECTION_POLICY}

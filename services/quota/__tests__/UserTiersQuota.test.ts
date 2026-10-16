@@ -184,7 +184,7 @@ describe('Quota rules by user tier (MockQuotaProvider)', () => {
     const status = await provider.getQuotaStatus(userPlus, 'plus');
     expect(status.usage.analysis.limit).toBeNull();
     expect(status.usage.exploration.limit).toBeNull();
-    expect(status.usage.messages.limit).toBe(20);
+    expect(status.usage.messages.limit).toBe(100);
     expect(status.usage.image?.limit).toBeNull();
     expect(status.canGenerateImage).toBe(true);
   });

@@ -48,7 +48,7 @@ export const QUOTAS: Record<UserTier, TierQuotas> = {
   plus: {
     analysis: null,
     exploration: null,
-    messagesPerDream: 20,
+    messagesPerDream: 100,
     image: null,
   },
 };

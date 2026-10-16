@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Noctalia dream journal app",
   "publishedTime": "2026-05-20T00:00:00+02:00",
-  "modifiedTime": "2026-10-11T00:00:00+02:00",
+  "modifiedTime": "2026-10-15T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"name\": \"KI-Traumdeutung-App für Android\",\n  \"description\": \"Noctalia erfasst Träume per Sprache, erklärt Symbole, erzeugt Bilder und vertieft die Reflexion mit geführten Fragen.\",\n  \"url\": \"https://noctalia.app/de/ki-traumdeutung-app\",\n  \"inLanguage\": \"de\",\n  \"dateModified\": \"2026-10-11T00:00:00+02:00\",\n  \"publisher\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  }\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"name\": \"KI-Traumdeutung-App für Android\",\n  \"description\": \"Noctalia erfasst Träume per Sprache, erklärt Symbole, erzeugt Bilder und vertieft die Reflexion mit geführten Fragen.\",\n  \"url\": \"https://noctalia.app/de/ki-traumdeutung-app\",\n  \"inLanguage\": \"de\",\n  \"dateModified\": \"2026-10-15T00:00:00+02:00\",\n  \"publisher\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  }\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Startseite\",\n      \"item\": \"https://noctalia.app/de/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"KI-Traumdeutung-App für Android\",\n      \"item\": \"https://noctalia.app/de/ki-traumdeutung-app\"\n    }\n  ]\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Worauf achten\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Die App sollte einen Traum in Sekunden speichern, den Datenschutz verständlich erklären und Löschen oder Export erlauben. Sie sollte Symbole im Kontext lesen, Fragen stellen und offen sagen, was sie nicht kann.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Warum Noctalia passt\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Noctalia läuft auf Android, lässt sich per Sprache bedienen, erzeugt Bilder, ist mehrsprachig und mit einem öffentlichen Symbollexikon verbunden, das weiter wächst.\"\n      }\n    }\n  ]\n}"
   ],
@@ -37,7 +37,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">KI-Traumdeutung-App für Android</h1>
-<p class="text-sm text-purple-300/70 mb-6">Aktualisiert am 11. Oktober 2026</p>
+<p class="text-sm text-purple-300/70 mb-6">Aktualisiert am 15. Oktober 2026</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">Nach dem Aufwachen bleibt oft nur eine einzelne Szene. Eine gute KI-Traumdeutung-App hält sie zuerst fest und stellt danach Fragen, mit denen Sie weiterdenken können, ohne Diagnose oder Vorhersage zu versprechen.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
@@ -157,7 +157,7 @@
       <li><strong>Korrigieren Sie, was nicht passt.</strong> „Nein, ich hatte keine Angst, ich war genervt.“ Das weitere Gespräch berücksichtigt das.</li>
       <li><strong>Fragen Sie nach, wenn Sie mehr wollen.</strong> Antworten sind standardmäßig kurz. Schreiben Sie „Bitte ausführlicher“ oder „Ein Beispiel, bitte“.</li>
     </ul>
-    <p class="mt-4">Pro Traum gibt es eine Obergrenze: bis zu 10 Folgenachrichten pro analysiertem Traum im kostenlosen Tarif, bis zu 20 Folgenachrichten pro Traum mit Plus. Genaue Fragen holen mehr daraus heraus.</p>
+    <p class="mt-4">Pro Traum gibt es eine Obergrenze: bis zu 10 Folgenachrichten pro analysiertem Traum im kostenlosen Tarif. Mit Plus ist der Chat bei fairer Nutzung unbegrenzt, bis zu 100 Folgenachrichten pro Traum. Genaue Fragen holen mehr daraus heraus.</p>
   </section>
 
       <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">

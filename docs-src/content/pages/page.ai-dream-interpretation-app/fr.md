@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Application Noctalia de journal et d’interprétation de rêves",
   "publishedTime": "2026-05-20T00:00:00+02:00",
-  "modifiedTime": "2026-10-11T00:00:00+02:00",
+  "modifiedTime": "2026-10-15T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"name\": \"Application d’interprétation des rêves IA\",\n  \"description\": \"Capturez un rêve par voix, obtenez des pistes d’interprétation IA, reliez les symboles et gardez vos récits dans une application Android.\",\n  \"url\": \"https://noctalia.app/fr/application-interpretation-reves-ia\",\n  \"inLanguage\": \"fr\",\n  \"dateModified\": \"2026-10-11T00:00:00+02:00\",\n  \"publisher\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  }\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"name\": \"Application d’interprétation des rêves IA\",\n  \"description\": \"Capturez un rêve par voix, obtenez des pistes d’interprétation IA, reliez les symboles et gardez vos récits dans une application Android.\",\n  \"url\": \"https://noctalia.app/fr/application-interpretation-reves-ia\",\n  \"inLanguage\": \"fr\",\n  \"dateModified\": \"2026-10-15T00:00:00+02:00\",\n  \"publisher\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  }\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Accueil\",\n      \"item\": \"https://noctalia.app/fr/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Application d’interprétation des rêves IA\",\n      \"item\": \"https://noctalia.app/fr/application-interpretation-reves-ia\"\n    }\n  ]\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Que peut analyser une IA dans un rêve ?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Une IA peut comparer le récit, les émotions, les lieux, les personnages et les symboles du rêve pour proposer des pistes d’interprétation. Elle doit rester un support de réflexion, pas une vérité finale.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Pourquoi un dictionnaire des rêves ne suffit pas toujours ?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Un dictionnaire donne des repères symboliques, mais le sens dépend du contexte personnel, de l’émotion au réveil et des motifs qui reviennent dans votre journal de rêves.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Noctalia donne-t-il une signification définitive ?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Non. Noctalia formule des pistes d’interprétation et des questions de réflexion. Vous gardez la main sur le sens, surtout pour les rêves sensibles ou récurrents.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Comment protéger la vie privée de ses rêves ?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Vérifiez la politique de confidentialité, les options de suppression, le rôle des prestataires IA et les données réellement nécessaires. Les rêves sont intimes et doivent être traités comme tels.\"\n      }\n    }\n  ]\n}"
   ],
@@ -37,7 +37,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Application d’interprétation des rêves IA</h1>
-<p class="text-sm text-purple-300/70 mb-6">Mis à jour le 11 octobre 2026</p>
+<p class="text-sm text-purple-300/70 mb-6">Mis à jour le 15 octobre 2026</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">Au réveil, il reste souvent une scène et une émotion. Noctalia vous permet de les noter tout de suite, puis de tirer du récit des pistes d’interprétation IA : symboles, émotions, lieux, personnages, images et questions à vous poser. L’interprétation des rêves par IA n’a d’intérêt que si elle part de votre contexte, pas d’un sens imposé.</p>
 
 <div class="grid md:grid-cols-3 gap-4 mb-10 text-sm">
@@ -131,7 +131,7 @@
       <li><strong>Corrigez ce qui sonne faux.</strong> « Non, je n’avais pas peur, j’étais agacé. » La suite de la conversation en tient compte.</li>
       <li><strong>Demandez plus quand vous le voulez.</strong> Les réponses sont courtes par défaut. Écrivez « développe » ou « donne-moi un exemple ».</li>
     </ul>
-    <p class="mt-4">Chaque rêve a un plafond d’échanges : jusqu’à 10 messages de suivi par rêve analysé avec l’offre gratuite, jusqu’à 20 messages de suivi par rêve avec Plus. Des questions précises en tirent le meilleur parti.</p>
+    <p class="mt-4">Chaque rêve a un plafond d’échanges : jusqu’à 10 messages de suivi par rêve analysé avec l’offre gratuite. Avec Plus, le chat est illimité en usage raisonnable, jusqu’à 100 messages de suivi par rêve. Des questions précises en tirent le meilleur parti.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
