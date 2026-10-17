@@ -102,7 +102,7 @@ jest.doMock('@/lib/accessibility', () => ({
 }));
 
 jest.doMock('@/lib/dreamFilters', () => ({
-  applyFilters: (dreams: any[]) => dreams,
+  createNarrowingFilter: () => (dreams: any[]) => dreams,
   getUniqueThemes: jest.fn(() => ['mystical']),
   getUniqueDreamTypes: jest.fn(() => []),
   sortDreamsByDate: (dreams: any[]) => dreams,
