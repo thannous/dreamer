@@ -57,7 +57,7 @@ const BEAT = {
 type Ink = ReturnType<typeof getNoctaliaDesignTokens>;
 
 const plain = (text: string): string => text.replace(/[*_`#>]+/g, '').replace(/\s+/g, ' ').trim();
-const sameDream = (a: DreamAnalysis, b: DreamAnalysis) => getDreamIdentityKey(a) === getDreamIdentityKey(b);
+const sameDream = (a: DreamAnalysis, b: DreamAnalysis | null) => b !== null && getDreamIdentityKey(a) === getDreamIdentityKey(b);
 
 /**
  * A symbol's page, opened from the dream's reading: its face, what it has done across
@@ -70,8 +70,11 @@ const sameDream = (a: DreamAnalysis, b: DreamAnalysis) => getDreamIdentityKey(a)
  */
 export function DreamSymbolSheet({ index, dream, linkKey, onSelect, onClose }: {
   index: SymbolIndex;
-  /** The dream whose reading is open: its trace reads "This dream" and does not open. */
-  dream: DreamAnalysis;
+  /**
+   * The dream whose reading is open: its trace reads "This dream" and does not open. Null
+   * when the sheet opens outside a reading (Tendances): every dream of the thread opens.
+   */
+  dream: DreamAnalysis | null;
   /** The symbol to show, or null when the sheet is closed. */
   linkKey: string | null;
   onSelect: (linkKey: string) => void;
@@ -151,7 +154,7 @@ export function DreamSymbolSheet({ index, dream, linkKey, onSelect, onClose }: {
 function SymbolPage({ symbol, index, dream, born, language, onSelect, onClose }: {
   symbol: LinkedSymbol;
   index: SymbolIndex;
-  dream: DreamAnalysis;
+  dream: DreamAnalysis | null;
   born: boolean;
   language: SymbolLanguage;
   onSelect: (linkKey: string) => void;
@@ -381,7 +384,7 @@ function AddedLine({ reduced }: { reduced: boolean }) {
  */
 function DreamTraces({ symbol, dream, reduced, onOpen }: {
   symbol: LinkedSymbol;
-  dream: DreamAnalysis;
+  dream: DreamAnalysis | null;
   reduced: boolean;
   onOpen: (target: DreamAnalysis) => void;
 }) {

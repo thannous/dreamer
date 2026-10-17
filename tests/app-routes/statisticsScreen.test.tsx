@@ -176,6 +176,7 @@ jest.mock('@/components/trends/TrendsReturns', () => ({
     </div>
   ),
 }));
+jest.mock('@/components/journal/symbols/DreamSymbolSheet', () => ({ DreamSymbolSheet: () => null }));
 jest.mock('@/components/NoctaliaScreenHeader', () => ({
   NoctaliaScreenHeader: ({
     titleKey,
