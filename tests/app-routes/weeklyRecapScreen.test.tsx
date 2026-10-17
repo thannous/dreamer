@@ -1,5 +1,12 @@
 /* @jest-environment jsdom */
 
+jest.mock('@/lib/storeReview', () => ({
+  canOpenStoreReviewPage: () => false,
+  markStoreReviewPaywallSeen: jest.fn(),
+  openStoreReviewPage: jest.fn(),
+  recordStoreReviewAnalysisRead: jest.fn(async () => undefined),
+  requestStoreReviewIfDue: jest.fn(async () => false),
+}));
 jest.mock('@/components/ui/DreamerBackground', () => ({ DreamerArtworkWindow: () => null, DreamerBackground: () => null }));
 
 

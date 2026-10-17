@@ -11,6 +11,13 @@ import { TID } from '@/lib/testIDs';
 
 // Static hook fixtures need an actual context notification across a memo boundary.
 const mockMarkPerformance = jest.fn();
+jest.mock('@/lib/storeReview', () => ({
+  canOpenStoreReviewPage: () => false,
+  markStoreReviewPaywallSeen: jest.fn(),
+  openStoreReviewPage: jest.fn(),
+  recordStoreReviewAnalysisRead: jest.fn(async () => undefined),
+  requestStoreReviewIfDue: jest.fn(async () => false),
+}));
 jest.mock('@/lib/performanceTrace', () => ({
   markPerformance: (...args: unknown[]) => mockMarkPerformance(...args),
   performanceTraceId: () => 1,

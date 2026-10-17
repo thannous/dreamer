@@ -1112,6 +1112,7 @@ const translations: Record<string, string> = {
     'settings.section.preferences': 'Preferences',
     'settings.section.experience': 'My experience',
     'settings.onboarding_replay': "Replay the introduction",
+    'settings.rate_app': "Rate Noctalia",
     'settings.section.notifications': 'Notifications',
     'settings.section.rituals': 'Rituals',
     'settings.rituals.reminders': 'Dream reminders',
