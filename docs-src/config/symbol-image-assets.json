@@ -1,5 +1,5 @@
 {
-  "version": "2026-08-j27",
+  "version": "2026-10-17",
   "promptVersion": "noctalia-symbol-editorial-j27",
   "generatedWith": "OpenAI image_gen built-in tool",
   "responsiveBase": "/img/seo/symbols-v2",
@@ -873,284 +873,404 @@
       "subject": "Zombie"
     },
     "sex": {
-      "src": "/img/symbols/placeholders-2026-10/sex.webp",
+      "src": "/img/symbols/editorial-2026-10-17/sex-v1.webp",
       "width": 1600,
       "height": 900,
       "category": "actions",
-      "subject": "Sex"
+      "subject": "Sex",
+      "heroLayout": "contained",
+      "generatedWith": "OpenAI image_gen built-in",
+      "promptVersion": "noctalia-symbol-editorial-2026-10-17"
     },
     "cheating": {
-      "src": "/img/symbols/placeholders-2026-10/cheating.webp",
+      "src": "/img/symbols/editorial-2026-10-17/cheating-v1.webp",
       "width": 1600,
       "height": 900,
       "category": "actions",
-      "subject": "Cheating / Infidelity"
+      "subject": "Cheating / Infidelity",
+      "heroLayout": "contained",
+      "generatedWith": "OpenAI image_gen built-in",
+      "promptVersion": "noctalia-symbol-editorial-2026-10-17"
     },
     "kissing": {
-      "src": "/img/symbols/placeholders-2026-10/kissing.webp",
+      "src": "/img/symbols/editorial-2026-10-17/kissing-v1.webp",
       "width": 1600,
       "height": 900,
       "category": "actions",
-      "subject": "Kissing"
+      "subject": "Kissing",
+      "heroLayout": "contained",
+      "generatedWith": "OpenAI image_gen built-in",
+      "promptVersion": "noctalia-symbol-editorial-2026-10-17"
     },
     "attack": {
-      "src": "/img/symbols/placeholders-2026-10/attack.webp",
+      "src": "/img/symbols/editorial-2026-10-17/attack-v1.webp",
       "width": 1600,
       "height": 900,
       "category": "actions",
-      "subject": "Being Attacked"
+      "subject": "Being Attacked",
+      "heroLayout": "contained",
+      "generatedWith": "OpenAI image_gen built-in",
+      "promptVersion": "noctalia-symbol-editorial-2026-10-17"
     },
     "killing": {
-      "src": "/img/symbols/placeholders-2026-10/killing.webp",
+      "src": "/img/symbols/editorial-2026-10-17/killing-v1.webp",
       "width": 1600,
       "height": 900,
       "category": "actions",
-      "subject": "Killing Someone"
+      "subject": "Killing Someone",
+      "heroLayout": "contained",
+      "generatedWith": "OpenAI image_gen built-in",
+      "promptVersion": "noctalia-symbol-editorial-2026-10-17"
     },
     "fighting": {
-      "src": "/img/symbols/placeholders-2026-10/fighting.webp",
+      "src": "/img/symbols/editorial-2026-10-17/fighting-v1.webp",
       "width": 1600,
       "height": 900,
       "category": "actions",
-      "subject": "Fighting"
+      "subject": "Fighting",
+      "heroLayout": "contained",
+      "generatedWith": "OpenAI image_gen built-in",
+      "promptVersion": "noctalia-symbol-editorial-2026-10-17"
     },
     "eating": {
-      "src": "/img/symbols/placeholders-2026-10/eating.webp",
+      "src": "/img/symbols/editorial-2026-10-17/eating-v1.webp",
       "width": 1600,
       "height": 900,
       "category": "actions",
-      "subject": "Eating / Food"
+      "subject": "Eating / Food",
+      "heroLayout": "contained",
+      "generatedWith": "OpenAI image_gen built-in",
+      "promptVersion": "noctalia-symbol-editorial-2026-10-17"
     },
     "kidnapping": {
-      "src": "/img/symbols/placeholders-2026-10/kidnapping.webp",
+      "src": "/img/symbols/editorial-2026-10-17/kidnapping-v1.webp",
       "width": 1600,
       "height": 900,
       "category": "actions",
-      "subject": "Kidnapping"
+      "subject": "Kidnapping",
+      "heroLayout": "contained",
+      "generatedWith": "OpenAI image_gen built-in",
+      "promptVersion": "noctalia-symbol-editorial-2026-10-17"
     },
     "moving-house": {
-      "src": "/img/symbols/placeholders-2026-10/moving-house.webp",
+      "src": "/img/symbols/editorial-2026-10-17/moving-house-v1.webp",
       "width": 1600,
       "height": 900,
       "category": "actions",
-      "subject": "Moving House"
+      "subject": "Moving House",
+      "heroLayout": "contained",
+      "generatedWith": "OpenAI image_gen built-in",
+      "promptVersion": "noctalia-symbol-editorial-2026-10-17"
     },
     "war": {
-      "src": "/img/symbols/placeholders-2026-10/war.webp",
+      "src": "/img/symbols/editorial-2026-10-17/war-v1.webp",
       "width": 1600,
       "height": 900,
       "category": "actions",
-      "subject": "War"
+      "subject": "War",
+      "heroLayout": "contained",
+      "generatedWith": "OpenAI image_gen built-in",
+      "promptVersion": "noctalia-symbol-editorial-2026-10-17"
     },
     "vomiting": {
-      "src": "/img/symbols/placeholders-2026-10/vomiting.webp",
+      "src": "/img/symbols/editorial-2026-10-17/vomiting-v1.webp",
       "width": 1600,
       "height": 900,
       "category": "body",
-      "subject": "Vomiting"
+      "subject": "Vomiting",
+      "heroLayout": "contained",
+      "generatedWith": "OpenAI image_gen built-in",
+      "promptVersion": "noctalia-symbol-editorial-2026-10-17"
     },
     "nails": {
-      "src": "/img/symbols/placeholders-2026-10/nails.webp",
+      "src": "/img/symbols/editorial-2026-10-17/nails-v1.webp",
       "width": 1600,
       "height": 900,
       "category": "body",
-      "subject": "Nails (fingernails)"
+      "subject": "Nails (fingernails)",
+      "heroLayout": "contained",
+      "generatedWith": "OpenAI image_gen built-in",
+      "promptVersion": "noctalia-symbol-editorial-2026-10-17"
     },
     "tsunami": {
-      "src": "/img/symbols/placeholders-2026-10/tsunami.webp",
+      "src": "/img/symbols/editorial-2026-10-17/tsunami-v1.webp",
       "width": 1600,
       "height": 900,
       "category": "nature",
-      "subject": "Tsunami"
+      "subject": "Tsunami",
+      "heroLayout": "contained",
+      "generatedWith": "OpenAI image_gen built-in",
+      "promptVersion": "noctalia-symbol-editorial-2026-10-17"
     },
     "flowers": {
-      "src": "/img/symbols/placeholders-2026-10/flowers.webp",
+      "src": "/img/symbols/editorial-2026-10-17/flowers-v1.webp",
       "width": 1600,
       "height": 900,
       "category": "nature",
-      "subject": "Flowers"
+      "subject": "Flowers",
+      "heroLayout": "contained",
+      "generatedWith": "OpenAI image_gen built-in",
+      "promptVersion": "noctalia-symbol-editorial-2026-10-17"
     },
     "tiger": {
-      "src": "/img/symbols/placeholders-2026-10/tiger.webp",
+      "src": "/img/symbols/editorial-2026-10-17/tiger-v1.webp",
       "width": 1600,
       "height": 900,
       "category": "animals",
-      "subject": "Tiger"
+      "subject": "Tiger",
+      "heroLayout": "contained",
+      "generatedWith": "OpenAI image_gen built-in",
+      "promptVersion": "noctalia-symbol-editorial-2026-10-17"
     },
     "deer": {
-      "src": "/img/symbols/placeholders-2026-10/deer.webp",
+      "src": "/img/symbols/editorial-2026-10-17/deer-v1.webp",
       "width": 1600,
       "height": 900,
       "category": "animals",
-      "subject": "Deer"
+      "subject": "Deer",
+      "heroLayout": "contained",
+      "generatedWith": "OpenAI image_gen built-in",
+      "promptVersion": "noctalia-symbol-editorial-2026-10-17"
     },
     "pig": {
-      "src": "/img/symbols/placeholders-2026-10/pig.webp",
+      "src": "/img/symbols/editorial-2026-10-17/pig-v1.webp",
       "width": 1600,
       "height": 900,
       "category": "animals",
-      "subject": "Pig"
+      "subject": "Pig",
+      "heroLayout": "contained",
+      "generatedWith": "OpenAI image_gen built-in",
+      "promptVersion": "noctalia-symbol-editorial-2026-10-17"
     },
     "monkey": {
-      "src": "/img/symbols/placeholders-2026-10/monkey.webp",
+      "src": "/img/symbols/editorial-2026-10-17/monkey-v1.webp",
       "width": 1600,
       "height": 900,
       "category": "animals",
-      "subject": "Monkey"
+      "subject": "Monkey",
+      "heroLayout": "contained",
+      "generatedWith": "OpenAI image_gen built-in",
+      "promptVersion": "noctalia-symbol-editorial-2026-10-17"
     },
     "lizard": {
-      "src": "/img/symbols/placeholders-2026-10/lizard.webp",
+      "src": "/img/symbols/editorial-2026-10-17/lizard-v1.webp",
       "width": 1600,
       "height": 900,
       "category": "animals",
-      "subject": "Lizard"
+      "subject": "Lizard",
+      "heroLayout": "contained",
+      "generatedWith": "OpenAI image_gen built-in",
+      "promptVersion": "noctalia-symbol-editorial-2026-10-17"
     },
     "bat": {
-      "src": "/img/symbols/placeholders-2026-10/bat.webp",
+      "src": "/img/symbols/editorial-2026-10-17/bat-v1.webp",
       "width": 1600,
       "height": 900,
       "category": "animals",
-      "subject": "Bat"
+      "subject": "Bat",
+      "heroLayout": "contained",
+      "generatedWith": "OpenAI image_gen built-in",
+      "promptVersion": "noctalia-symbol-editorial-2026-10-17"
     },
     "toilet": {
-      "src": "/img/symbols/placeholders-2026-10/toilet.webp",
+      "src": "/img/symbols/editorial-2026-10-17/toilet-v1.webp",
       "width": 1600,
       "height": 900,
       "category": "places",
-      "subject": "Toilet"
+      "subject": "Toilet",
+      "heroLayout": "contained",
+      "generatedWith": "OpenAI image_gen built-in",
+      "promptVersion": "noctalia-symbol-editorial-2026-10-17"
     },
     "church": {
-      "src": "/img/symbols/placeholders-2026-10/church.webp",
+      "src": "/img/symbols/editorial-2026-10-17/church-v1.webp",
       "width": 1600,
       "height": 900,
       "category": "places",
-      "subject": "Church"
+      "subject": "Church",
+      "heroLayout": "contained",
+      "generatedWith": "OpenAI image_gen built-in",
+      "promptVersion": "noctalia-symbol-editorial-2026-10-17"
     },
     "beach": {
-      "src": "/img/symbols/placeholders-2026-10/beach.webp",
+      "src": "/img/symbols/editorial-2026-10-17/beach-v1.webp",
       "width": 1600,
       "height": 900,
       "category": "places",
-      "subject": "Beach"
+      "subject": "Beach",
+      "heroLayout": "contained",
+      "generatedWith": "OpenAI image_gen built-in",
+      "promptVersion": "noctalia-symbol-editorial-2026-10-17"
     },
     "castle": {
-      "src": "/img/symbols/placeholders-2026-10/castle.webp",
+      "src": "/img/symbols/editorial-2026-10-17/castle-v1.webp",
       "width": 1600,
       "height": 900,
       "category": "places",
-      "subject": "Castle"
+      "subject": "Castle",
+      "heroLayout": "contained",
+      "generatedWith": "OpenAI image_gen built-in",
+      "promptVersion": "noctalia-symbol-editorial-2026-10-17"
     },
     "swimming-pool": {
-      "src": "/img/symbols/placeholders-2026-10/swimming-pool.webp",
+      "src": "/img/symbols/editorial-2026-10-17/swimming-pool-v1.webp",
       "width": 1600,
       "height": 900,
       "category": "places",
-      "subject": "Swimming Pool"
+      "subject": "Swimming Pool",
+      "heroLayout": "contained",
+      "generatedWith": "OpenAI image_gen built-in",
+      "promptVersion": "noctalia-symbol-editorial-2026-10-17"
     },
     "alien": {
-      "src": "/img/symbols/placeholders-2026-10/alien.webp",
+      "src": "/img/symbols/editorial-2026-10-17/alien-v1.webp",
       "width": 1600,
       "height": 900,
       "category": "people",
-      "subject": "Aliens"
+      "subject": "Aliens",
+      "heroLayout": "contained",
+      "generatedWith": "OpenAI image_gen built-in",
+      "promptVersion": "noctalia-symbol-editorial-2026-10-17"
     },
     "celebrity": {
-      "src": "/img/symbols/placeholders-2026-10/celebrity.webp",
+      "src": "/img/symbols/editorial-2026-10-17/celebrity-v1.webp",
       "width": 1600,
       "height": 900,
       "category": "people",
-      "subject": "Celebrity"
+      "subject": "Celebrity",
+      "heroLayout": "contained",
+      "generatedWith": "OpenAI image_gen built-in",
+      "promptVersion": "noctalia-symbol-editorial-2026-10-17"
     },
     "boss": {
-      "src": "/img/symbols/placeholders-2026-10/boss.webp",
+      "src": "/img/symbols/editorial-2026-10-17/boss-v1.webp",
       "width": 1600,
       "height": 900,
       "category": "people",
-      "subject": "Boss"
+      "subject": "Boss",
+      "heroLayout": "contained",
+      "generatedWith": "OpenAI image_gen built-in",
+      "promptVersion": "noctalia-symbol-editorial-2026-10-17"
     },
     "crush": {
-      "src": "/img/symbols/placeholders-2026-10/crush.webp",
+      "src": "/img/symbols/editorial-2026-10-17/crush-v1.webp",
       "width": 1600,
       "height": 900,
       "category": "people",
-      "subject": "Crush"
+      "subject": "Crush",
+      "heroLayout": "contained",
+      "generatedWith": "OpenAI image_gen built-in",
+      "promptVersion": "noctalia-symbol-editorial-2026-10-17"
     },
     "witch": {
-      "src": "/img/symbols/placeholders-2026-10/witch.webp",
+      "src": "/img/symbols/editorial-2026-10-17/witch-v1.webp",
       "width": 1600,
       "height": 900,
       "category": "people",
-      "subject": "Witch"
+      "subject": "Witch",
+      "heroLayout": "contained",
+      "generatedWith": "OpenAI image_gen built-in",
+      "promptVersion": "noctalia-symbol-editorial-2026-10-17"
     },
     "clown": {
-      "src": "/img/symbols/placeholders-2026-10/clown.webp",
+      "src": "/img/symbols/editorial-2026-10-17/clown-v1.webp",
       "width": 1600,
       "height": 900,
       "category": "people",
-      "subject": "Clown"
+      "subject": "Clown",
+      "heroLayout": "contained",
+      "generatedWith": "OpenAI image_gen built-in",
+      "promptVersion": "noctalia-symbol-editorial-2026-10-17"
     },
     "gun": {
-      "src": "/img/symbols/placeholders-2026-10/gun.webp",
+      "src": "/img/symbols/editorial-2026-10-17/gun-v1.webp",
       "width": 1600,
       "height": 900,
       "category": "objects",
-      "subject": "Gun"
+      "subject": "Gun",
+      "heroLayout": "contained",
+      "generatedWith": "OpenAI image_gen built-in",
+      "promptVersion": "noctalia-symbol-editorial-2026-10-17"
     },
     "knife": {
-      "src": "/img/symbols/placeholders-2026-10/knife.webp",
+      "src": "/img/symbols/editorial-2026-10-17/knife-v1.webp",
       "width": 1600,
       "height": 900,
       "category": "objects",
-      "subject": "Knife"
+      "subject": "Knife",
+      "heroLayout": "contained",
+      "generatedWith": "OpenAI image_gen built-in",
+      "promptVersion": "noctalia-symbol-editorial-2026-10-17"
     },
     "wallet": {
-      "src": "/img/symbols/placeholders-2026-10/wallet.webp",
+      "src": "/img/symbols/editorial-2026-10-17/wallet-v1.webp",
       "width": 1600,
       "height": 900,
       "category": "objects",
-      "subject": "Wallet"
+      "subject": "Wallet",
+      "heroLayout": "contained",
+      "generatedWith": "OpenAI image_gen built-in",
+      "promptVersion": "noctalia-symbol-editorial-2026-10-17"
     },
     "doll": {
-      "src": "/img/symbols/placeholders-2026-10/doll.webp",
+      "src": "/img/symbols/editorial-2026-10-17/doll-v1.webp",
       "width": 1600,
       "height": 900,
       "category": "objects",
-      "subject": "Doll"
+      "subject": "Doll",
+      "heroLayout": "contained",
+      "generatedWith": "OpenAI image_gen built-in",
+      "promptVersion": "noctalia-symbol-editorial-2026-10-17"
     },
     "gold": {
-      "src": "/img/symbols/placeholders-2026-10/gold.webp",
+      "src": "/img/symbols/editorial-2026-10-17/gold-v1.webp",
       "width": 1600,
       "height": 900,
       "category": "objects",
-      "subject": "Gold"
+      "subject": "Gold",
+      "heroLayout": "contained",
+      "generatedWith": "OpenAI image_gen built-in",
+      "promptVersion": "noctalia-symbol-editorial-2026-10-17"
     },
     "coffin": {
-      "src": "/img/symbols/placeholders-2026-10/coffin.webp",
+      "src": "/img/symbols/editorial-2026-10-17/coffin-v1.webp",
       "width": 1600,
       "height": 900,
       "category": "objects",
-      "subject": "Coffin"
+      "subject": "Coffin",
+      "heroLayout": "contained",
+      "generatedWith": "OpenAI image_gen built-in",
+      "promptVersion": "noctalia-symbol-editorial-2026-10-17"
     },
     "stars": {
-      "src": "/img/symbols/placeholders-2026-10/stars.webp",
+      "src": "/img/symbols/editorial-2026-10-17/stars-v1.webp",
       "width": 1600,
       "height": 900,
       "category": "celestial",
-      "subject": "Stars"
+      "subject": "Stars",
+      "heroLayout": "contained",
+      "generatedWith": "OpenAI image_gen built-in",
+      "promptVersion": "noctalia-symbol-editorial-2026-10-17"
     },
     "sky": {
-      "src": "/img/symbols/placeholders-2026-10/sky.webp",
+      "src": "/img/symbols/editorial-2026-10-17/sky-v1.webp",
       "width": 1600,
       "height": 900,
       "category": "celestial",
-      "subject": "Sky"
+      "subject": "Sky",
+      "heroLayout": "contained",
+      "generatedWith": "OpenAI image_gen built-in",
+      "promptVersion": "noctalia-symbol-editorial-2026-10-17"
     },
     "god": {
-      "src": "/img/symbols/placeholders-2026-10/god.webp",
+      "src": "/img/symbols/editorial-2026-10-17/god-v1.webp",
       "width": 1600,
       "height": 900,
       "category": "celestial",
-      "subject": "God"
+      "subject": "God",
+      "heroLayout": "contained",
+      "generatedWith": "OpenAI image_gen built-in",
+      "promptVersion": "noctalia-symbol-editorial-2026-10-17"
     }
   }
 }

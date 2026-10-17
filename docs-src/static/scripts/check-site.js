@@ -388,7 +388,7 @@ function isKnownUtilityPage(relHtml) {
 function main() {
   assertDocsBuildReady(ROOT_DIR);
   const htmlFilesAbs = walkFiles(DOCS_ROOT, (p) => p.endsWith('.html'));
-  const htmlFilesRel = htmlFilesAbs.map((p) => path.relative(DOCS_ROOT, p)).sort();
+  const htmlFilesRel = htmlFilesAbs.map((p) => path.relative(DOCS_ROOT, p).split(path.sep).join('/')).sort();
 
   const errors = [];
   const warnings = [];

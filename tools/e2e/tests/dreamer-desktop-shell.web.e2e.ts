@@ -36,7 +36,7 @@ test('desktop sidebar leads to every destination and Capture saves under its edi
   await expect(page.getByTestId('component.recording.draftProgress.count')).toHaveText('35 characters');
   await page.screenshot({ path: info.outputPath('desktop-capture.png') });
 
-  for (const [tab, marker] of [['tab.journal', 'screen.journal'], ['tab.stats', 'trends.section.week'], ['tab.explore', 'screen.explore'], ['tab.home', 'screen.home']]) {
+  for (const [tab, marker] of [['tab.journal', 'screen.journal'], ['tab.stats', 'screen.trends'], ['tab.explore', 'screen.explore'], ['tab.home', 'screen.home']]) {
     await page.getByTestId(tab).filter({ visible: true }).click();
     const content = page.getByTestId(marker).filter({ visible: true });
     await expect(content).toHaveCount(1);
