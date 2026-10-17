@@ -299,7 +299,7 @@ for (const mode of ['light', 'dark'] as const) {
       await app.screenshot(`native-${label}-${mode}`);
     }
     await screen.getByTestId('tab.stats', { visible: true }).tap();
-    await expect(screen.getByTestId('trends.week.count.value', { visible: true })).toBeVisible();
+    await expect(screen.getByTestId('screen.trends', { visible: true })).toBeVisible();
     await app.screenshot(`native-trends-${mode}`);
     // These are the installed app's supported routes, including the notification
     // entry and native-only audio screen. No private data or injected UI is used.
