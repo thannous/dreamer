@@ -98,6 +98,9 @@ E2E_DEVICE=<emulator-serial> E2E_RELEASE_RECEIPT=<release.json imprimé> \
 - [ ] Le run finit avec `applicationQualified: true` dans son `end.json`.
 - [ ] Le `versionCode` du build local est celui du candidat (`QA_ANDROID_VERSION_CODE`
   quand EAS attribue le compteur) ; sinon `android:gates:strict` reste bloqué.
+- [ ] Le run est fait sur le commit qualifié, arbre de travail propre, sans filtre
+  (`--grep`, `--tag`, `--exclude-tag`, `--tag-mode`, `--shard`) ; son dossier est
+  complet et conforme à son `files.json`. Un run d'un autre commit ne compte pas.
 - [ ] Ces parcours restent hors ligne : ils ne prouvent ni achat, ni voix réelle, ni compte backend.
 
 - [ ] Vérifier la release sur la piste Test interne et son accès aux testeurs.

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /* global __dirname */
 
+const { createHash } = require('crypto');
 const fs = require('fs');
 const path = require('path');
 const { spawnSync } = require('child_process');
@@ -776,28 +777,147 @@ function readRunJson(runDir, name, { existsSync, readFileSync }) {
   }
 }
 
+// Files a native TesterArmy run writes before files.json; files.json lists the
+// sha256 of every file of the run folder except itself and end.json.
+const TESTERARMY_RUN_FILES = [
+  'evidence.json',
+  'release-used.json',
+  'source-start.json',
+  'source-end.json',
+  'collection.json',
+  'report.json',
+  'qualification.json',
+  'installed-start.json',
+  'installed-end.json',
+];
+// The selection flags of tools/e2e/run.mjs: any of them narrows the collection,
+// so such a run is not the full release suite.
+const TESTERARMY_SELECTION_FLAGS = new Set([
+  '--grep',
+  '--grep-invert',
+  '--tag',
+  '--exclude-tag',
+  '--tag-mode',
+  '--shard',
+]);
+const FULL_SHA = /^[a-f0-9]{40}$/;
+
+function runFolderHashes(runDir, readdirSync, readFileSync) {
+  const hashes = {};
+  const walk = (dir) => {
+    const entries = readdirSync(dir, { withFileTypes: true })
+      .slice()
+      .sort((a, b) => String(a.name).localeCompare(String(b.name)));
+    for (const entry of entries) {
+      const full = path.join(dir, String(entry.name));
+      const relative = path.relative(runDir, full).split(path.sep).join('/');
+      if (entry.isSymbolicLink()) throw new Error('symlink');
+      if (entry.isDirectory()) walk(full);
+      else if (entry.isFile() && relative !== 'files.json' && relative !== 'end.json') {
+        hashes[relative] = createHash('sha256').update(readFileSync(full)).digest('hex');
+      }
+    }
+  };
+  walk(runDir);
+  return hashes;
+}
+
+function sameHashes(declared, actual) {
+  if (!declared || typeof declared !== 'object' || Array.isArray(declared)) return false;
+  const declaredKeys = Object.keys(declared).sort();
+  const actualKeys = Object.keys(actual).sort();
+  return (
+    declaredKeys.length === actualKeys.length &&
+    declaredKeys.every((key, index) => key === actualKeys[index] && declared[key] === actual[key])
+  );
+}
+
+// Why a run folder does not prove the full release suite on this revision, or
+// null when it does. The runner already re-verified the SDK report, artifacts
+// and collection when it wrote qualification.json; this checks that the folder
+// is complete and unchanged since, that it ran unfiltered and that every
+// receipt names the same commit as the checkout under qualification.
+function testerArmyRunProblem({ runDir, end, evidence, release, revision, io }) {
+  const { existsSync, readFileSync, readdirSync } = io;
+  for (const name of TESTERARMY_RUN_FILES) {
+    if (!existsSync(path.join(runDir, name))) return `${name} is missing`;
+  }
+  const declared = readRunJson(runDir, 'files.json', io);
+  let actual;
+  try {
+    actual = runFolderHashes(runDir, readdirSync, readFileSync);
+  } catch {
+    return 'the run folder cannot be hashed';
+  }
+  if (!sameHashes(declared, actual)) return 'files.json does not match the run folder';
+  const command = Array.isArray(evidence.command) ? evidence.command.map(String) : null;
+  if (!command || command[4] !== 'run') return 'evidence.json does not record a run command';
+  const filter = command.find((arg) => TESTERARMY_SELECTION_FLAGS.has(arg));
+  if (filter) return `the run was filtered with ${filter}`;
+  if (!revision) return 'the current commit cannot be read';
+  if (evidence.revision !== revision) return `it ran on ${String(evidence.revision).slice(0, 12)}, not ${revision.slice(0, 12)}`;
+  if (evidence.workingTree !== '') return 'it ran on a modified working tree';
+  if (end.stability?.sourceStable !== true || end.stability.sourceClean !== true) {
+    return 'its source changed or was not clean during the run';
+  }
+  if (!FULL_SHA.test(String(release.source?.revision))) return 'release-used.json has no source revision';
+  const qualification = readRunJson(runDir, 'qualification.json', io);
+  if (
+    qualification?.revision !== revision ||
+    qualification.target !== 'dreamer-android' ||
+    !Array.isArray(qualification.passed) ||
+    !qualification.passed.length
+  ) {
+    return 'qualification.json does not qualify dreamer-android on this commit';
+  }
+  const report = readRunJson(runDir, 'report.json', io);
+  if (
+    report?.run?.vcs?.commit !== revision ||
+    report.run.status !== 'passed' ||
+    report.run.exitCode !== 0 ||
+    report.run.summary?.failed !== 0 ||
+    report.run.summary?.interrupted !== 0
+  ) {
+    return 'report.json does not record a passed run of this commit';
+  }
+  return null;
+}
+
+function readCurrentRevision(rootDir, spawn) {
+  try {
+    const result = spawn('git', ['rev-parse', 'HEAD'], { cwd: rootDir, encoding: 'utf8' });
+    const revision = String(result?.stdout ?? '').trim();
+    return result?.status === 0 && FULL_SHA.test(revision) ? revision : null;
+  } catch {
+    return null;
+  }
+}
+
 // The newest TesterArmy run that qualified the installed production-apk build of
-// the candidate. end.json is the runner's final verdict (applicationQualified is
-// false on any SDK, install, identity or cleanup failure); release-used.json is
-// the build receipt the runner validated and installed.
+// the candidate on the current commit. end.json is the runner's final verdict
+// (applicationQualified is false on any SDK, install, identity or cleanup
+// failure); release-used.json is the build receipt the runner validated against
+// that commit's inputs and installed.
 function findTesterArmyReleaseRun({
   rootDir,
   versionCode,
+  revision,
   existsSync,
   readFileSync,
   readdirSync,
 }) {
   const runsDir = path.join(rootDir, TESTERARMY_ANDROID_RUNS);
-  if (!existsSync(runsDir)) return { run: null, runs: 0 };
+  if (!existsSync(runsDir)) return { run: null, runs: 0, rejected: [] };
   let names;
   try {
     names = readdirSync(runsDir).map(String).sort().reverse();
   } catch {
-    return { run: null, runs: 0 };
+    return { run: null, runs: 0, rejected: [] };
   }
+  const rejected = [];
   for (const name of names) {
     const runDir = path.join(runsDir, name);
-    const io = { existsSync, readFileSync };
+    const io = { existsSync, readFileSync, readdirSync };
     const end = readRunJson(runDir, 'end.json', io);
     if (end?.applicationQualified !== true || end.exitCode !== 0) continue;
     const evidence = readRunJson(runDir, 'evidence.json', io);
@@ -810,17 +930,23 @@ function findTesterArmyReleaseRun({
     ) {
       continue;
     }
+    const problem = testerArmyRunProblem({ runDir, end, evidence, release, revision, io });
+    if (problem) {
+      rejected.push(`${name}: ${problem}`);
+      continue;
+    }
     return {
       run: `${TESTERARMY_ANDROID_RUNS}/${name}`,
       runs: names.length,
+      rejected,
       finishedAt: end.finishedAt,
       revision: evidence.revision,
     };
   }
-  return { run: null, runs: names.length };
+  return { run: null, runs: names.length, rejected };
 }
 
-function getTesterArmyReleaseCheck({ prebuild, versionCode, ...io }) {
+function getTesterArmyReleaseCheck({ prebuild, versionCode, spawn, ...io }) {
   if (prebuild) {
     return {
       status: 'manual',
@@ -835,7 +961,8 @@ function getTesterArmyReleaseCheck({ prebuild, versionCode, ...io }) {
       remediation: 'Fix the Android release candidate versionCode check first.',
     };
   }
-  const found = findTesterArmyReleaseRun({ versionCode, ...io });
+  const revision = readCurrentRevision(io.rootDir, spawn);
+  const found = findTesterArmyReleaseRun({ versionCode, revision, ...io });
   if (found.run) {
     return {
       status: 'pass',
@@ -845,8 +972,8 @@ function getTesterArmyReleaseCheck({ prebuild, versionCode, ...io }) {
   }
   return {
     status: 'blocked',
-    details: `No TesterArmy run under ${TESTERARMY_ANDROID_RUNS} (${found.runs} run(s) found) qualified an installed ${TESTERARMY_RELEASE_PROFILE} build of ${EXPECTED_ANDROID_PACKAGE_NAME} versionCode ${versionCode}.`,
-    remediation: `On an emulator, ${TESTERARMY_RELEASE_COMMANDS}; the run must end with applicationQualified true.`,
+    details: `No TesterArmy run under ${TESTERARMY_ANDROID_RUNS} (${found.runs} run(s) found) qualified an installed ${TESTERARMY_RELEASE_PROFILE} build of ${EXPECTED_ANDROID_PACKAGE_NAME} versionCode ${versionCode} on ${revision ? revision.slice(0, 12) : 'the current commit'}.${found.rejected.length ? ` Rejected: ${found.rejected.join('; ')}.` : ''}`,
+    remediation: `On an emulator, on this commit with a clean working tree and without --grep, --tag or --shard, ${TESTERARMY_RELEASE_COMMANDS}; the run must end with applicationQualified true.`,
   };
 }
 
@@ -1064,6 +1191,7 @@ function checkAndroidReleaseGates({
   const testerArmyCheck = getTesterArmyReleaseCheck({
     prebuild,
     versionCode: androidCandidateVersionCode,
+    spawn,
     rootDir,
     existsSync,
     readFileSync,

@@ -68,7 +68,27 @@ function validEnv() {
   ].join('\n');
 }
 
-// The files tools/e2e/run.mjs writes for a qualified native run of a Release build.
+const RUN_REVISION = '0123456789abcdef0123456789abcdef01234567';
+
+function hashRunFolder(root, runDir) {
+  const base = path.join(root, runDir);
+  const hashes = {};
+  const walk = (dir) => {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
+      const full = path.join(dir, entry.name);
+      const relative = path.relative(base, full).split(path.sep).join('/');
+      if (entry.isDirectory()) walk(full);
+      else if (relative !== 'files.json' && relative !== 'end.json') {
+        hashes[relative] = require('crypto').createHash('sha256').update(fs.readFileSync(full)).digest('hex');
+      }
+    }
+  };
+  walk(base);
+  return hashes;
+}
+
+// The files tools/e2e/run.mjs writes for a qualified native run of a Release
+// build, with files.json written last before end.json, as the runner does.
 function writeTesterArmyRun(root, {
   name = '1760000000000-1-run',
   versionCode = 33,
@@ -77,21 +97,45 @@ function writeTesterArmyRun(root, {
   product = 'dreamer',
   applicationQualified = true,
   exitCode = 0,
+  revision = RUN_REVISION,
+  workingTree = '',
+  args = ['--install-release'],
+  sourceStable = true,
+  sourceClean = true,
 } = {}) {
   const runDir = `tools/e2e/.e2e/dreamer-android/${name}`;
   writeJson(root, `${runDir}/evidence.json`, {
     product,
     platform: 'android',
-    revision: '0123456789abcdef0123456789abcdef01234567',
+    revision,
+    workingTree,
+    command: ['node', 'tools/e2e/run.mjs', product, 'android', 'run', ...args],
   });
   writeJson(root, `${runDir}/release-used.json`, {
     profile: { name: profile },
+    source: { revision },
     binary: { bundle, version: '2.0.2', build: String(versionCode) },
   });
+  writeJson(root, `${runDir}/source-start.json`, { revision });
+  writeJson(root, `${runDir}/source-end.json`, { revision });
+  writeJson(root, `${runDir}/collection.json`, { pairs: [{ file: 'tests/dreamer.mobile.e2e.ts' }] });
+  writeJson(root, `${runDir}/report.json`, {
+    run: { vcs: { commit: revision }, status: 'passed', exitCode: 0, summary: { failed: 0, interrupted: 0 } },
+  });
+  writeJson(root, `${runDir}/qualification.json`, {
+    revision,
+    target: 'dreamer-android',
+    passed: [{ targetId: 'dreamer-android', testId: 'release' }],
+  });
+  writeJson(root, `${runDir}/installed-start.json`, { bundle });
+  writeJson(root, `${runDir}/installed-end.json`, { bundle });
+  writeFile(root, `${runDir}/results/release/trace.md`, 'trace');
+  writeJson(root, `${runDir}/files.json`, hashRunFolder(root, runDir));
   writeJson(root, `${runDir}/end.json`, {
     finishedAt: '2026-10-15T10:00:00.000Z',
     exitCode,
     applicationQualified,
+    stability: { sourceStable, sourceClean },
   });
   return runDir;
 }
@@ -255,8 +299,12 @@ describe('android release gate preflight', () => {
     adbDevices = true,
     adbMdnsStdout = 'List of discovered mdns services\n',
     adbUsbStdout = '',
+    gitHead = RUN_REVISION,
   } = {}) {
     return (command, args) => {
+      if (command === 'git' && args[0] === 'rev-parse' && args[1] === 'HEAD') {
+        return gitHead ? { status: 0, stdout: `${gitHead}\n`, stderr: '' } : { status: 128, stdout: '', stderr: 'not a git repository' };
+      }
       if (['which', 'where'].includes(command) && args[0] === 'adb') return { status: 0 };
       if (command === 'adb' && args[0] === 'devices') {
         return {
@@ -930,6 +978,56 @@ describe('android release gate preflight', () => {
       expect(testerArmyCheck(report).details).toContain('1 run(s) found');
     });
 
+    it.each([
+      ['ran on another commit', { revision: 'fedcba9876543210fedcba9876543210fedcba98' }, 'not 0123456789ab'],
+      ['ran on a modified working tree', { workingTree: ' M app.json' }, 'modified working tree'],
+      ['saw its source change during the run', { sourceStable: false }, 'source changed'],
+      ['was filtered with --grep', { args: ['--grep', 'onboarding', '--install-release'] }, 'filtered with --grep'],
+      ['was filtered with --tag', { args: ['--tag', '@smoke'] }, 'filtered with --tag'],
+      ['was one shard', { args: ['--shard', '1/2'] }, 'filtered with --shard'],
+    ])('rejects a qualified run of the candidate that %s', (_name, overrides, reason) => {
+      const root = qualificationRoot();
+      writeTesterArmyRun(root, overrides);
+
+      const report = checkAndroidReleaseGates({ rootDir: root, spawn: spawnWithTools() });
+
+      expect(report.ok).toBe(false);
+      expect(testerArmyCheck(report)).toMatchObject({ status: 'blocked' });
+      expect(testerArmyCheck(report).details).toContain(reason);
+    });
+
+    it('rejects a run folder that is incomplete or changed after its manifest', () => {
+      const missing = qualificationRoot();
+      const missingDir = writeTesterArmyRun(missing);
+      fs.rmSync(path.join(missing, missingDir, 'report.json'));
+      const edited = qualificationRoot();
+      const editedDir = writeTesterArmyRun(edited);
+      writeJson(edited, `${editedDir}/qualification.json`, { revision: RUN_REVISION, target: 'dreamer-android', passed: [{}, {}] });
+      const handWritten = qualificationRoot();
+      const handDir = writeTesterArmyRun(handWritten);
+      fs.rmSync(path.join(handWritten, handDir, 'files.json'));
+
+      const details = [missing, edited, handWritten].map((root) => {
+        const report = checkAndroidReleaseGates({ rootDir: root, spawn: spawnWithTools() });
+        expect(testerArmyCheck(report)).toMatchObject({ status: 'blocked' });
+        return testerArmyCheck(report).details;
+      });
+
+      expect(details[0]).toContain('report.json is missing');
+      expect(details[1]).toContain('files.json does not match the run folder');
+      expect(details[2]).toContain('files.json does not match the run folder');
+    });
+
+    it('blocks qualification when the current commit cannot be read', () => {
+      const root = qualificationRoot();
+      writeTesterArmyRun(root);
+
+      const report = checkAndroidReleaseGates({ rootDir: root, spawn: spawnWithTools({ gitHead: null }) });
+
+      expect(testerArmyCheck(report)).toMatchObject({ status: 'blocked' });
+      expect(testerArmyCheck(report).details).toContain('the current commit cannot be read');
+    });
+
     it('accepts an older qualified run when a newer run of the candidate failed', () => {
       const root = qualificationRoot();
       writeTesterArmyRun(root, { name: '1760000000000-1-good' });
@@ -1110,6 +1208,7 @@ describe('android release gate preflight', () => {
     const adbPath = path.join(fakeHome, 'Library/Android/sdk/platform-tools/adb');
     writeFile(root, 'home/Library/Android/sdk/platform-tools/adb', '');
     const spawn = (command, args) => {
+      if (command === 'git' && args[0] === 'rev-parse') return { status: 0, stdout: `${RUN_REVISION}\n`, stderr: '' };
       if (command === 'which' && args[0] === 'adb') return { status: 1 };
       if (npmRunScript(args) === 'subscription:qa:release-gate') {
         return { status: 0, stdout: 'ok\n', stderr: '' };

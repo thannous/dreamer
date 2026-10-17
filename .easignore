@@ -87,6 +87,9 @@ upload_cert.der
 docs-src/img-tmp/*
 
 # Local test/agent artifacts
+# Maestro is retired (2026-10-14); old local captures stay out of the archive.
+.maestro-home/
+maestro-results/
 tmp-stage/
 tmp-stage-index/
 /output/

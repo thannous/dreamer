@@ -222,7 +222,10 @@ the Android release journeys. `npm run android:gates:strict` passes its
 TesterArmy check only when a run under `tools/e2e/.e2e/dreamer-android/` has a
 final `end.json` with `applicationQualified: true` and exit 0, for the installed
 `production-apk` build of `com.tanuki75.noctalia` whose versionCode is the
-candidate's (`QA_ANDROID_VERSION_CODE`, else `app.json`). Build that profile with
+candidate's (`QA_ANDROID_VERSION_CODE`, else `app.json`). The run must also be on
+the commit under qualification, from a clean working tree whose source stayed
+stable, without `--grep`, `--tag`, `--exclude-tag`, `--tag-mode` or `--shard`, and
+its folder must be complete and match its `files.json`. Build that profile with
 the native build command below (`E2E_BUILD_PROFILE=production-apk`), then run
 `E2E_DEVICE=<emulator-serial> E2E_RELEASE_RECEIPT=<its release.json> npm run test:testerarmy:mobile -- dreamer android run --install-release`.
 Its journeys stay offline; they do not prove purchases, real voice or backend
