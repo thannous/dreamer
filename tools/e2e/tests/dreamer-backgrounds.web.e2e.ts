@@ -28,130 +28,152 @@ async function readable(page: Page, info: ParityInfo, label: string) {
     lastLayout = layout;
     return stableFrames;
   }, { intervals: [100] }).toBeGreaterThanOrEqual(3);
-  const samples = await page.evaluate(() => {
-    const parents = new Set<HTMLElement>();
-    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
-    for (let text = walker.nextNode(); text; text = walker.nextNode()) {
-      const parent = text.parentElement;
-      if (parent && !parent.closest('script,style,textarea') && /[\p{L}\p{N}]/u.test(text.textContent ?? '')) parents.add(parent);
-    }
-    const nodes = [...parents, ...document.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('textarea,input[type="text"],input[type="search"]')];
-    const samples: { text: string; color: number[]; alpha: number; required: number; rows: number[][] }[] = [];
-    let id = 0;
-    for (const node of nodes) {
-      const input = node instanceof HTMLInputElement || node instanceof HTMLTextAreaElement;
-      const placeholder = input && !node.value;
-      const text = input ? node.value || node.placeholder : Array.from(node.childNodes).filter(child => child.nodeType === Node.TEXT_NODE).map(child => child.textContent).join('');
-      if (!/[\p{L}\p{N}]/u.test(text) || node.closest('[aria-hidden="true"],[aria-disabled="true"],[disabled]')) continue;
-      const style = getComputedStyle(node);
-      const bounds = node.getBoundingClientRect();
-      if (style.visibility !== 'visible' || !bounds.width || !bounds.height || bounds.right <= 0 || bounds.left >= innerWidth || bounds.bottom <= 0 || bounds.top >= innerHeight) continue;
-      let opacity = 1;
-      for (let ancestor: Element | null = node; ancestor; ancestor = ancestor.parentElement) opacity *= Number(getComputedStyle(ancestor).opacity);
-      if (opacity === 0) continue;
-      const inkStyle = placeholder ? getComputedStyle(node, '::placeholder') : style;
-      if (placeholder) opacity *= Number(inkStyle.opacity);
-      const rgb = inkStyle.color.match(/^rgba?\(([^)]+)\)$/);
-      if (!rgb) throw new Error(`Unsupported rendered text colour: ${inkStyle.color}`);
-      const channels = rgb[1].split(/[, /]+/).map(Number);
-      let boxes: DOMRect[];
-      if (input) {
-        // Input bounds include blank space and trailing controls. Measure the
-        // lines of its value/placeholder, rather than the entire field.
-        const measure = document.createElement('span');
-        const left = bounds.x + parseFloat(style.paddingLeft) + parseFloat(style.borderLeftWidth);
-        const width = bounds.width - (left - bounds.x) - parseFloat(style.paddingRight) - parseFloat(style.borderRightWidth);
-        const lineHeight = parseFloat(style.lineHeight) || parseFloat(style.fontSize) * 1.2;
-        const top = node instanceof HTMLTextAreaElement ? bounds.y + parseFloat(style.paddingTop) + parseFloat(style.borderTopWidth) : bounds.y + (bounds.height - lineHeight) / 2;
-        Object.assign(measure.style, { position: 'fixed', left: `${left}px`, top: `${top}px`, width: `${width}px`, font: style.font, lineHeight: style.lineHeight, letterSpacing: style.letterSpacing, whiteSpace: 'pre-wrap', overflowWrap: 'break-word', visibility: 'hidden', pointerEvents: 'none' });
-        measure.textContent = text;
-        document.body.appendChild(measure);
-        const range = document.createRange();
-        range.selectNodeContents(measure);
-        boxes = Array.from(range.getClientRects());
-        measure.remove();
-      } else {
-        boxes = Array.from(node.childNodes).filter(child => child.nodeType === Node.TEXT_NODE).flatMap(child => {
+  for (let attempt = 1; ; attempt++) {
+    const samples = await page.evaluate(() => {
+      const parents = new Set<HTMLElement>();
+      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+      for (let text = walker.nextNode(); text; text = walker.nextNode()) {
+        const parent = text.parentElement;
+        if (parent && !parent.closest('script,style,textarea') && /[\p{L}\p{N}]/u.test(text.textContent ?? '')) parents.add(parent);
+      }
+      const nodes = [...parents, ...document.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('textarea,input[type="text"],input[type="search"]')];
+      const samples: { text: string; color: number[]; alpha: number; required: number; rows: number[][] }[] = [];
+      let id = 0;
+      for (const node of nodes) {
+        const input = node instanceof HTMLInputElement || node instanceof HTMLTextAreaElement;
+        const placeholder = input && !node.value;
+        const text = input ? node.value || node.placeholder : Array.from(node.childNodes).filter(child => child.nodeType === Node.TEXT_NODE).map(child => child.textContent).join('');
+        if (!/[\p{L}\p{N}]/u.test(text) || node.closest('[aria-hidden="true"],[aria-disabled="true"],[disabled]')) continue;
+        const style = getComputedStyle(node);
+        const bounds = node.getBoundingClientRect();
+        if (style.visibility !== 'visible' || !bounds.width || !bounds.height || bounds.right <= 0 || bounds.left >= innerWidth || bounds.bottom <= 0 || bounds.top >= innerHeight) continue;
+        let opacity = 1;
+        for (let ancestor: Element | null = node; ancestor; ancestor = ancestor.parentElement) opacity *= Number(getComputedStyle(ancestor).opacity);
+        if (opacity === 0) continue;
+        const inkStyle = placeholder ? getComputedStyle(node, '::placeholder') : style;
+        if (placeholder) opacity *= Number(inkStyle.opacity);
+        const rgb = inkStyle.color.match(/^rgba?\(([^)]+)\)$/);
+        if (!rgb) throw new Error(`Unsupported rendered text colour: ${inkStyle.color}`);
+        const channels = rgb[1].split(/[, /]+/).map(Number);
+        let boxes: DOMRect[];
+        if (input) {
+          // Input bounds include blank space and trailing controls. Measure the
+          // lines of its value/placeholder, rather than the entire field.
+          const measure = document.createElement('span');
+          const left = bounds.x + parseFloat(style.paddingLeft) + parseFloat(style.borderLeftWidth);
+          const width = bounds.width - (left - bounds.x) - parseFloat(style.paddingRight) - parseFloat(style.borderRightWidth);
+          const lineHeight = parseFloat(style.lineHeight) || parseFloat(style.fontSize) * 1.2;
+          const top = node instanceof HTMLTextAreaElement ? bounds.y + parseFloat(style.paddingTop) + parseFloat(style.borderTopWidth) : bounds.y + (bounds.height - lineHeight) / 2;
+          Object.assign(measure.style, { position: 'fixed', left: `${left}px`, top: `${top}px`, width: `${width}px`, font: style.font, lineHeight: style.lineHeight, letterSpacing: style.letterSpacing, whiteSpace: 'pre-wrap', overflowWrap: 'break-word', visibility: 'hidden', pointerEvents: 'none' });
+          measure.textContent = text;
+          document.body.appendChild(measure);
           const range = document.createRange();
-          range.selectNodeContents(child);
-          return Array.from(range.getClientRects());
-        });
-      }
-      const fontSize = parseFloat(style.fontSize);
-      const bold = Number(style.fontWeight) >= 700 || /bold/i.test(style.fontFamily);
-      const rows: number[][] = [];
-      for (const box of boxes) {
-        const left = Math.max(0, Math.ceil(box.x) + 1);
-        const top = Math.max(0, Math.ceil(box.y) + 1);
-        const right = Math.min(innerWidth, Math.floor(box.right) - 1);
-        const bottom = Math.min(innerHeight, Math.floor(box.bottom) - 1);
-        for (let y = top; y < bottom; y += 2) {
-          let start: number | null = null;
-          for (let x = left; x <= right; x += 2) {
-            const hit = x < right ? document.elementFromPoint(x, y) : null;
-            const visible = hit !== null && (hit === node || node.contains(hit));
-            if (visible && start === null) start = x;
-            if (!visible && start !== null) { rows.push([y, start, x]); start = null; }
+          range.selectNodeContents(measure);
+          boxes = Array.from(range.getClientRects());
+          measure.remove();
+        } else {
+          boxes = Array.from(node.childNodes).filter(child => child.nodeType === Node.TEXT_NODE).flatMap(child => {
+            const range = document.createRange();
+            range.selectNodeContents(child);
+            return Array.from(range.getClientRects());
+          });
+        }
+        const fontSize = parseFloat(style.fontSize);
+        const bold = Number(style.fontWeight) >= 700 || /bold/i.test(style.fontFamily);
+        const rows: number[][] = [];
+        for (const box of boxes) {
+          const left = Math.max(0, Math.ceil(box.x) + 1);
+          const top = Math.max(0, Math.ceil(box.y) + 1);
+          const right = Math.min(innerWidth, Math.floor(box.right) - 1);
+          const bottom = Math.min(innerHeight, Math.floor(box.bottom) - 1);
+          for (let y = top; y < bottom; y += 2) {
+            let start: number | null = null;
+            for (let x = left; x <= right; x += 2) {
+              const hit = x < right ? document.elementFromPoint(x, y) : null;
+              const visible = hit !== null && (hit === node || node.contains(hit));
+              if (visible && start === null) start = x;
+              if (!visible && start !== null) { rows.push([y, start, x]); start = null; }
+            }
+            if (start !== null) rows.push([y, start, right]);
           }
-          if (start !== null) rows.push([y, start, right]);
         }
+        // Clipped content and copy beneath a toast or navigation are not visible.
+        if (rows.length === 0) continue;
+        samples.push({ text: text.trim().slice(0, 80), color: channels.slice(0, 3), alpha: (channels[3] ?? 1) * opacity, required: fontSize >= 24 || (bold && fontSize >= 18.66) ? 3 : 4.5, rows });
+        node.dataset.backgroundContrast = String(id++);
+        node.dataset.backgroundOriginalStyle = node.getAttribute('style') ?? '';
+        node.dataset.backgroundBounds = JSON.stringify([bounds.x, bounds.y, bounds.width, bounds.height]);
       }
-      // Clipped content and copy beneath a toast or navigation are not visible.
-      if (rows.length === 0) continue;
-      samples.push({ text: text.trim().slice(0, 80), color: channels.slice(0, 3), alpha: (channels[3] ?? 1) * opacity, required: fontSize >= 24 || (bold && fontSize >= 18.66) ? 3 : 4.5, rows });
-      node.dataset.backgroundContrast = String(id++);
-      node.dataset.backgroundOriginalStyle = node.getAttribute('style') ?? '';
-    }
-    // Read every inherited colour before hiding any parent Text node.
-    for (const node of document.querySelectorAll<HTMLElement>('[data-background-contrast]')) {
-      node.style.setProperty('color', 'transparent', 'important');
-      node.style.setProperty('text-shadow', 'none', 'important');
-      node.style.setProperty('caret-color', 'transparent', 'important');
-    }
-    const mask = document.createElement('style');
-    mask.id = 'background-placeholder-mask';
-    mask.textContent = '[data-background-contrast]::placeholder { color: transparent !important; }';
-    document.head.appendChild(mask);
-    return samples;
-  });
-  try {
-    const buffer = await page.screenshot({ scale: 'css' });
-    const decoded = await sharp(buffer).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
-    const results = samples.map(sample => {
-      let minimum = Infinity;
-      let measured = 0;
-      for (const [y, left, right] of sample.rows) {
-        for (let x = left; x < right; x += 2) {
-          const offset = (y * decoded.info.width + x) * 4;
-          const ground = Array.from(decoded.data.subarray(offset, offset + 3));
-          const ink = sample.color.map((channel, index) => channel * sample.alpha + ground[index] * (1 - sample.alpha));
-          const a = luminance(ink);
-          const b = luminance(ground);
-          minimum = Math.min(minimum, (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05));
-          measured++;
-        }
-      }
-      return { text: sample.text, color: sample.color, alpha: sample.alpha, minimum: Number(minimum.toFixed(3)), required: sample.required, measured };
-    }).filter(result => result.measured > 0);
-    await info.attach(`${label}-contrast`, { contentType: 'application/json', body: JSON.stringify({ method: 'Visible text lines over screenshot pixels with ink hidden; clipped, occluded and disabled copy excluded', results }, null, 2) });
-    try {
-      expect(results.length, `${label}: visible text was actually measured`).toBeGreaterThan(0);
-      for (const result of results) expect(result.minimum, `${label}: ${result.text}`).toBeGreaterThanOrEqual(result.required);
-    } catch (error) {
-      await info.attach(`${label}-masked-failure`, { contentType: 'image/png', body: buffer });
-      throw error;
-    }
-  } finally {
-    await page.evaluate(() => {
-      document.getElementById('background-placeholder-mask')?.remove();
+      // Read every inherited colour before hiding any parent Text node.
       for (const node of document.querySelectorAll<HTMLElement>('[data-background-contrast]')) {
-        const original = node.dataset.backgroundOriginalStyle!;
-        if (original) node.setAttribute('style', original);
-        else node.removeAttribute('style');
-        delete node.dataset.backgroundContrast;
-        delete node.dataset.backgroundOriginalStyle;
+        node.style.setProperty('color', 'transparent', 'important');
+        node.style.setProperty('text-shadow', 'none', 'important');
+        node.style.setProperty('caret-color', 'transparent', 'important');
       }
+      const mask = document.createElement('style');
+      mask.id = 'background-placeholder-mask';
+      mask.textContent = '[data-background-contrast]::placeholder { color: transparent !important; }';
+      document.head.appendChild(mask);
+      return samples;
     });
+    try {
+      const buffer = await page.screenshot({ scale: 'css' });
+      // A transient element, such as the analysis outcome pill that closes 6 s after an
+      // analysis settles, can leave between sampling and this screenshot. Its rows would
+      // then fall on the copy it covered, which was never sampled and so keeps its ink
+      // (the 2026-10-17 fr-FR Journal failure measured the Noctalia brand under the pill
+      // at a ratio of 1). Measure again whenever the sampled copy moved or left.
+      const unchanged = await page.evaluate(count => {
+        const nodes = Array.from(document.querySelectorAll<HTMLElement>('[data-background-contrast]'));
+        return nodes.length === count && nodes.every(node => {
+          if (!node.isConnected) return false;
+          const r = node.getBoundingClientRect();
+          return node.dataset.backgroundBounds === JSON.stringify([r.x, r.y, r.width, r.height]);
+        });
+      }, samples.length);
+      if (!unchanged) {
+        if (attempt < 3) continue;
+        throw new Error(`${label}: the sampled copy kept changing during the contrast screenshot`);
+      }
+      const decoded = await sharp(buffer).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+      const results = samples.map(sample => {
+        let minimum = Infinity;
+        let measured = 0;
+        for (const [y, left, right] of sample.rows) {
+          for (let x = left; x < right; x += 2) {
+            const offset = (y * decoded.info.width + x) * 4;
+            const ground = Array.from(decoded.data.subarray(offset, offset + 3));
+            const ink = sample.color.map((channel, index) => channel * sample.alpha + ground[index] * (1 - sample.alpha));
+            const a = luminance(ink);
+            const b = luminance(ground);
+            minimum = Math.min(minimum, (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05));
+            measured++;
+          }
+        }
+        return { text: sample.text, color: sample.color, alpha: sample.alpha, minimum: Number(minimum.toFixed(3)), required: sample.required, measured };
+      }).filter(result => result.measured > 0);
+      await info.attach(`${label}-contrast`, { contentType: 'application/json', body: JSON.stringify({ method: 'Visible text lines over screenshot pixels with ink hidden; clipped, occluded and disabled copy excluded', attempt, results }, null, 2) });
+      try {
+        expect(results.length, `${label}: visible text was actually measured`).toBeGreaterThan(0);
+        for (const result of results) expect(result.minimum, `${label}: ${result.text}`).toBeGreaterThanOrEqual(result.required);
+      } catch (error) {
+        await info.attach(`${label}-masked-failure`, { contentType: 'image/png', body: buffer });
+        throw error;
+      }
+    } finally {
+      await page.evaluate(() => {
+        document.getElementById('background-placeholder-mask')?.remove();
+        for (const node of document.querySelectorAll<HTMLElement>('[data-background-contrast]')) {
+          const original = node.dataset.backgroundOriginalStyle!;
+          if (original) node.setAttribute('style', original);
+          else node.removeAttribute('style');
+          delete node.dataset.backgroundContrast;
+          delete node.dataset.backgroundOriginalStyle;
+          delete node.dataset.backgroundBounds;
+        }
+      });
+    }
+    break;
   }
   await page.screenshot({ path: info.outputPath(`${label}.png`), scale: 'css' });
 }
