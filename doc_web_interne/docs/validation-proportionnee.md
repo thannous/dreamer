@@ -62,7 +62,8 @@ d'un changement d'inputs, d'un soupçon de corruption ou d'un contrôle Release 
 Cette règle supprime les répétitions ad hoc, pas les gardes existantes du runner.
 
 Regrouper les corrections locales et leur relecture avant de demander la fusion
-lorsque c'est possible. Pousser ne coûte rien : le hook ne lance aucune suite.
+lorsque c'est possible. Le hook ne lance aucune suite ; la validation locale
+avant chaque push conserve son coût et réutilise ses preuves encore valides.
 `npm run verify:pr` reste exigé sur le dernier commit de la PR : cette règle
 n'autorise ni le contournement du hook ni une modification implicite des
 contrôles (`verify-local.config.mjs`) ou du pipeline.
@@ -172,10 +173,66 @@ laisser d'écritures en arrière-plan pendant leur nettoyage.
 
 ## Revue et preuve native
 
+### Revue ciblée et convergente
+
 Une implémentation substantielle demande une revue indépendante. Une correction
 mineure issue de cette revue se vérifie sur son delta ; elle ne déclenche pas
 systématiquement une nouvelle revue complète. Une simple édition documentaire
 se satisfait d'une relecture et d'un contrôle du diff.
+
+1. L'auteur termine une tranche cohérente, relit son diff et simplifie ce qu'il
+   vient d'ajouter : code mort, doublon réel, abstraction sans consommateur utile.
+   Les refactorings voisins et préférences de style ne deviennent pas des
+   prérequis de cette livraison.
+2. Fournir à un relecteur distinct l'objectif, la base et le SHA relu, les
+   surfaces touchées et le reçu `verify:pr` disponible, avec le parcours
+   TesterArmy pertinent et son artefact canonique. Une preuve manquante reste
+   nommée ; ne pas présenter un check statique comme un parcours exécuté.
+3. Le relecteur vérifie le comportement demandé, ses consommateurs affectés et
+   les risques concrets du diff. Chaque défaut signale emplacement, scénario,
+   résultat attendu/observé et conséquence. Une reproduction ou un raisonnement
+   précis dans le code est nécessaire ; une hypothèse non vérifiée reste une
+   question, pas un défaut certain.
+4. Regrouper les constats en une passe : défauts bloquants pour le comportement
+   demandé, puis suggestions facultatives. Les données, comptes, achats, sync,
+   contrats partagés et builds méritent une attention explicite lorsqu'ils sont
+   touchés. Un second spécialiste intervient seulement pour un risque nommé que
+   la première revue ne peut résoudre, pas pour refaire la même lecture.
+5. Corriger les défauts retenus ensemble, puis rejouer les parcours invalidés et
+   relire le delta ainsi que ses interactions. Une nouvelle revue complète se
+   justifie par un changement de portée ou de risque. Un nouveau défaut concret
+   découvert dans ce delta reste à traiter ; une suggestion facultative ne
+   relance pas une boucle de correction.
+
+Le reçu local et les E2E restent complémentaires. `verify:pr` conserve tous ses
+contrôles et sa sélection ; il ne lance pas automatiquement chaque parcours
+fonctionnel. Pendant l'itération, choisir le produit et le scénario touchés via
+les lanceurs existants dans [tools/e2e/README.md](../../tools/e2e/README.md), puis
+élargir aux consommateurs lorsque le code est partagé. Une sélection filtrée
+ne devient jamais la campagne complète exigée pour une qualification Release.
+Les étapes déterministes ne demandent ni modèle ni replay payant.
+
+Dans la PR, garder un seul résumé du risque et de la preuve : révision, commande,
+résultat, artefact et limites. Un résultat `skipped`, bloqué, ou une preuve d'une
+autre plateforme reste explicite. Les traces privées restent hors Git. Réutiliser
+les rapports produits par les runners, sans nouveau collecteur ni checklist qui
+duplique leurs gardes. Toute nouvelle tête passe `verify:pr` avant son push ;
+laisser le moteur décider quelles preuves restent réutilisables.
+
+La revue se termine lorsque les constats bloquants sont résolus et vérifiés, ou
+explicitement contestés avec leur preuve et arbitrés dans la PR. Les suggestions
+restantes n'empêchent pas de demander la fusion ; elles ne deviennent pas
+automatiquement de nouvelles tâches. Les règles de fusion et publication restent
+celles de la [livraison](regle-commune-livraison.md).
+
+CircleCI reste manuel : demander un run seulement pour un besoin précis de
+machine propre, de diagnostic ou de plateforme. Une absence de run distant ne
+se remplace pas par une répétition locale de toute l'armée ; conserver les gates
+locaux et les limites de la preuve. Après une fusion autorisée, contrôler le
+résultat intégré sur les surfaces affectées et conserver son identité ; une
+publication continue d'exiger ses commandes et son autorisation propres.
+
+### Preuve native
 
 Par exemple, remplacer une liste par une FlatList justifie des tests ciblés de
 montage, d'édition et de suppression ainsi qu'un parcours natif pertinent. Changer
