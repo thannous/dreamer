@@ -205,7 +205,8 @@ function JournalListScreen() {
   const [sortOrder, setSortOrder] = useState<JournalSortOrder>('newest');
 
   // Another screen (Tendances) can open the journal on a set of dreams: its filters
-  // replace the current ones, then leave the route so a later visit starts clean.
+  // replace the current ones and then stay like filters set by hand (shown as chips,
+  // kept while a dream is open). The params leave the route so they apply only once.
   const filterParams = useLocalSearchParams<JournalFilterRouteParams>();
   const filterLink = parseJournalFilterParams(filterParams);
   useEffect(() => {

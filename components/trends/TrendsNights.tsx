@@ -121,8 +121,9 @@ export function TrendsNights({ trends, lit, reduced, ink, onAccent, t, formatDat
     [trends.nights],
   );
   const [picked, setPicked] = useState<string | null>(null);
-  const selectedKey = picked ?? latest;
-  const selected = nights.find((night) => night.dateKey === selectedKey && night.dreams.length > 0) ?? null;
+  // A night picked in a longer period may not be in this one: the latest night stands in.
+  const withDreams = (key: string | null) => nights.find((night) => night.dateKey === key && night.dreams.length > 0);
+  const selected = withDreams(picked) ?? withDreams(latest) ?? null;
 
   const nightDate = (night: DreamTrendsNight) => formatDate(night.dayStart, { weekday: 'short', day: 'numeric', month: 'short' });
   const nightLabel = (night: DreamTrendsNight) => {
@@ -146,12 +147,14 @@ export function TrendsNights({ trends, lit, reduced, ink, onAccent, t, formatDat
   const todayStart = trends.range.end;
   const stats: { key: string; value: string; label: string }[] = [];
   if (trends.averagePerWeek != null) {
+    // The plural follows the number on screen: 0.96 reads "1 dream", not "1 dreams".
+    const shown = Math.round(trends.averagePerWeek * 10) / 10;
     const singular = typeof Intl.PluralRules === 'function'
-      ? new Intl.PluralRules(locale).select(trends.averagePerWeek) === 'one'
-      : locale.startsWith('fr') || locale.startsWith('pt-BR') ? trends.averagePerWeek < 2 : trends.averagePerWeek === 1;
+      ? new Intl.PluralRules(locale).select(shown) === 'one'
+      : locale.startsWith('fr') || locale.startsWith('pt-BR') ? shown < 2 : shown === 1;
     stats.push({
       key: 'perWeek',
-      value: formatNumber(trends.averagePerWeek, { maximumFractionDigits: 1 }),
+      value: formatNumber(shown, { maximumFractionDigits: 1 }),
       label: t(singular ? 'trends.stats.per_week_one' : 'trends.stats.per_week'),
     });
   }

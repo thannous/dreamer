@@ -182,9 +182,13 @@ test('each door opens the journal on exactly those dreams, and the period change
     await expect(journalItems(page).filter({ hasText: title })).toHaveCount(1);
   }
 
-  // 7 nights: 4 dreams against 3 the week before.
+  // 7 nights: 4 dreams against 3 the week before. A night picked in the 30 leaves with
+  // them, and the latest night of the 7 takes its place.
   await openTrends(page);
+  await page.getByTestId('trends.nights.night.2026-09-20').click();
+  await expect(page.getByTestId('trends.nights.selected')).toContainText('Sep 20');
   await page.getByTestId('trends.period.7').click();
+  await expect(page.getByTestId('trends.nights.selected')).toContainText('Oct 2');
   await expect(page.getByTestId('trends.period.7')).toHaveAttribute('aria-selected', 'true');
   await expect(page.getByTestId('trends.figure.dreams.value')).toHaveText('4');
   await expect(page.getByTestId('trends.figure.dreams.note')).toHaveText('+1');
