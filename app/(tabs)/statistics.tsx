@@ -2,20 +2,31 @@ import { useQuickSettings } from '@/context/QuickSettingsContext';
 import { JournalCompletenessNotice } from '@/components/journal/JournalCompletenessNotice';
 import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import {
   Platform,
-  Pressable,
   ScrollView,
   Text,
   View,
   useWindowDimensions,
+  type NativeScrollEvent,
+  type NativeSyntheticEvent,
+  type ViewInstance,
 } from 'react-native';
+import { useReducedMotion } from 'react-native-reanimated';
+import Svg, { Path } from 'react-native-svg';
 
 import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
 import { ScreenContainer } from '@/components/ScreenContainer';
-import { StatsEvolutionBars } from '@/components/stats/StatsEvolutionBars';
-import { StatsRankedList, type StatsRankedRow } from '@/components/stats/StatsRankedList';
+import { sparklePath } from '@/components/journal/story/sparkle';
+import { PressableScale } from '@/components/motion';
+import { PeriodSeal, PERIOD_SEAL_SIZE } from '@/components/trends/PeriodSeal';
+import { TrendsFigures } from '@/components/trends/TrendsFigures';
+import { TrendsNights } from '@/components/trends/TrendsNights';
+import { TrendsPeriodSwitch } from '@/components/trends/TrendsPeriodSwitch';
+import { TrendsReturns } from '@/components/trends/TrendsReturns';
+import { useEndOfLocalDay } from '@/components/trends/useEndOfLocalDay';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 import { DESKTOP_BREAKPOINT, getBottomNavigationLayout } from '@/constants/layout';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
@@ -24,80 +35,73 @@ import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useTranslation } from '@/hooks/useTranslation';
+import { getDreamThemeLabel } from '@/lib/dreamLabels';
+import { getDreamRouteParams } from '@/lib/dreamRoute';
 import {
   buildDreamTrends,
-  type DreamTrendsFacet,
-  type DreamTrendsNextAction,
+  DEFAULT_DREAM_TRENDS_PERIOD,
+  getLocalDateKey,
+  MIN_DREAMS_FOR_TRENDS,
+  type DreamTrends,
+  type DreamTrendsPeriod,
 } from '@/lib/dreamTrends';
-import { getDreamThemeLabel, getDreamTypeLabel, getEmotionFamilyLabel } from '@/lib/dreamLabels';
+import { toJournalFilterParams, type JournalFilterRequest } from '@/lib/journalFilterLink';
 import { TID } from '@/lib/testIDs';
+import type { DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
 import { useHeaderScroll } from '@/components/ui/headerStretch';
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 
 const COMPACT_BREAKPOINT = 360;
+/** A section lights once this much of it has come above the bottom of the screen. */
+const REVEAL_MARGIN = 80;
 
-const NEXT_ACTION_KEYS: Record<
-  DreamTrendsNextAction,
-  { label: string; href: '/recording' | '/(tabs)/journal' }
-> = {
-  capture_first: { label: 'trends.cta.capture_first', href: '/recording' },
-  capture_this_week: { label: 'trends.cta.capture_this_week', href: '/recording' },
-  keep_rhythm: { label: 'trends.cta.keep_rhythm', href: '/recording' },
-  wait_for_patterns: { label: 'trends.cta.wait_for_patterns', href: '/(tabs)/journal' },
-  review_patterns: { label: 'trends.cta.review_patterns', href: '/(tabs)/journal' },
-};
+type Translate = (key: string, params?: Record<string, string | number>) => string;
 
-function dateFromLocalKey(dateKey: string): Date {
-  const [year, month, day] = dateKey.split('-').map((part) => Number(part));
-  return new Date(year || 0, (month || 1) - 1, day || 1);
-}
-
-function dreamCountLabel(
-  count: number,
-  t: (key: string, params?: Record<string, string | number>) => string,
-  formatNumber: (value: number, options?: Intl.NumberFormatOptions) => string,
-): string {
-  return t(count === 1 ? 'stats.legend.count_one' : 'stats.legend.count', {
-    count: formatNumber(count),
+/** The journal opened on some of the period's dreams; `all` carries no dates. */
+function openJournal(trends: DreamTrends, request: JournalFilterRequest) {
+  const dates = trends.period === 'all' ? {} : {
+    from: getLocalDateKey(trends.range.start),
+    to: getLocalDateKey(trends.range.end),
+  };
+  router.navigate({
+    pathname: '/(tabs)/journal',
+    params: toJournalFilterParams({ ...request, ...dates }, String(Date.now())),
   });
 }
 
-// Hermes can expose date/number formatters without Intl.PluralRules. Keep the
-// cardinal rules for the six shipped locales when that constructor is absent.
-function averageDreamCountKey(count: number, locale: string): string {
-  const singular = typeof Intl.PluralRules === 'function'
-    ? new Intl.PluralRules(locale).select(count) === 'one'
-    : locale.startsWith('fr') || locale.startsWith('pt-BR')
-      ? count >= 0 && count < 2
-      : count === 1;
-  return singular ? 'stats.legend.count_one' : 'stats.legend.count';
-}
-
-function toRankedRows<T extends string>(
-  facets: DreamTrendsFacet<T>[],
-  labelOf: (value: T) => string,
-  t: (key: string, params?: Record<string, string | number>) => string,
-  formatNumber: (value: number, options?: Intl.NumberFormatOptions) => string,
-): StatsRankedRow[] {
-  return facets.map((facet) => ({
-    id: facet.value,
-    label: labelOf(facet.value),
-    count: facet.count,
-    countLabel: dreamCountLabel(facet.count, t, formatNumber),
-  }));
-}
-
-/** Section opening shared with the symbol sheets and noctalia.app: champagne mark, serif title. */
-function SectionHead({ title, subtitle }: { title: string; subtitle?: string }) {
-  return (
-    <View className="gap-1">
-      <View className="mb-2 h-[2px] w-7 rounded-full bg-champagne" />
-      <Text accessibilityRole="header" className="text-[25px] leading-[31px] font-display-semibold text-ivory">
-        {title}
-      </Text>
-      {subtitle ? <Text className="text-[13px] leading-[19px] font-sans text-ivory-muted">{subtitle}</Text> : null}
-    </View>
-  );
+/** The sentence under the seal: what leads, what the chosen sign holds, or why nothing leads yet. */
+function sealSentence(trends: DreamTrends, selected: DreamTheme | null, t: Translate, formatNumber: (value: number) => string) {
+  const { counts, total, dominant, previousCounts } = trends.themes;
+  if (trends.count === 0) return t('trends.seal.quiet');
+  const theme = selected ?? dominant;
+  if (!theme) {
+    if (total === 0) return t('trends.seal.unthemed');
+    if (total < MIN_DREAMS_FOR_TRENDS) {
+      const missing = MIN_DREAMS_FOR_TRENDS - total;
+      return t(missing === 1 ? 'trends.seal.early_one' : 'trends.seal.early', { count: formatNumber(missing) });
+    }
+    return t('trends.seal.tied');
+  }
+  const count = counts[theme];
+  const sentence = selected
+    ? t(count === 0 ? 'trends.seal.theme_zero' : count === 1 ? 'trends.seal.theme_one' : 'trends.seal.theme', {
+      theme: getDreamThemeLabel(theme, t) ?? theme,
+      count: formatNumber(count),
+      total: formatNumber(trends.count),
+    })
+    : t('trends.seal.leans', {
+      scope: t(`trends.scope.${trends.period}`),
+      toward: t(`trends.seal.toward.${theme}`),
+      count: formatNumber(count),
+      total: formatNumber(trends.count),
+    });
+  if (!previousCounts || trends.period === 'all') return `${sentence}.`;
+  const change = count - previousCounts[theme];
+  const previous = t(`trends.previous.${trends.period}`);
+  const compare = change > 0 ? t('trends.compare.more', { count: formatNumber(change), previous })
+    : change < 0 ? t('trends.compare.fewer', { count: formatNumber(-change), previous })
+      : t('trends.compare.same', { previous });
+  return `${sentence}, ${compare}.`;
 }
 
 function StatisticsScreen() {
@@ -110,11 +114,18 @@ function StatisticsScreen() {
   const insets = useSafeAreaInsets();
   const { colors, mode } = useTheme();
   const openQuickSettings = useQuickSettings();
+  const reduced = useReducedMotion();
   useClearWebFocus();
+
+  const [period, setPeriod] = useState<DreamTrendsPeriod>(DEFAULT_DREAM_TRENDS_PERIOD);
+  const [selectedTheme, setSelectedTheme] = useState<DreamTheme | null>(null);
+  const [nightsLit, setNightsLit] = useState(false);
+  const [returnsLit, setReturnsLit] = useState(false);
+  const nightsRef = useRef<ViewInstance | null>(null);
+  const returnsRef = useRef<ViewInstance | null>(null);
 
   const compact = width < COMPACT_BREAKPOINT;
   const largeText = Number.isFinite(fontScale) && fontScale >= 1.3;
-  const stackWeekMetrics = largeText;
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const isDesktopLayout = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;
   const navigationLayout = getBottomNavigationLayout(width, height, fontScale);
@@ -123,18 +134,44 @@ function StatisticsScreen() {
   const scrollBottomPadding = isDesktopLayout
     ? ThemeLayout.spacing.xl
     : scrollHeader ? ThemeLayout.spacing.lg : navigationClearance + ThemeLayout.spacing.lg;
+  const sealSize = Math.min(PERIOD_SEAL_SIZE, Math.max(240, Math.min(width, 640) - 40));
 
-  const { trends, weekStart, weekEnd } = useMemo(() => {
-    const end = new Date();
-    const start = new Date(end);
-    start.setDate(start.getDate() - 6);
-    return { trends: buildDreamTrends(dreams, { now: end.getTime() }), weekStart: start, weekEnd: end };
-  }, [dreams]);
-  const cta = NEXT_ACTION_KEYS[trends.evolution.nextAction];
+  // Read on today's date, again whenever the journal, the period or the day changes.
+  const today = useEndOfLocalDay();
+  const trends = useMemo(() => buildDreamTrends(dreams, { period, now: today }), [dreams, period, today]);
 
-  const handlePrimaryCta = useCallback(() => {
-    router.push(cta.href);
-  }, [cta.href]);
+  const reveal = useCallback(() => {
+    const probe = (ref: React.RefObject<ViewInstance | null>, lit: boolean, light: (value: boolean) => void) => {
+      if (lit || !ref.current) return;
+      ref.current.measureInWindow((_x, y) => {
+        if (Number.isFinite(y) && y < height - REVEAL_MARGIN) light(true);
+      });
+    };
+    probe(nightsRef, nightsLit, setNightsLit);
+    probe(returnsRef, returnsLit, setReturnsLit);
+  }, [height, nightsLit, returnsLit]);
+
+  const handleScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    onHeaderScroll(event);
+    reveal();
+  }, [onHeaderScroll, reveal]);
+
+  const choosePeriod = useCallback((next: DreamTrendsPeriod) => {
+    setPeriod(next);
+    setSelectedTheme(null);
+  }, []);
+
+  const chooseTheme = useCallback((theme: DreamTheme) => {
+    setSelectedTheme((current) => (current === theme ? null : theme));
+  }, []);
+
+  const openDream = useCallback((dream: DreamAnalysis) => {
+    router.push({ pathname: '/journal/[id]', params: getDreamRouteParams(dream) });
+  }, []);
+
+  const capture = useCallback(() => {
+    router.push('/recording');
+  }, []);
 
   const header = (
     <NoctaliaScreenHeader
@@ -151,20 +188,6 @@ function StatisticsScreen() {
         },
       ]}
     />
-  );
-
-  const primaryCta = (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityLabel={t(cta.label)}
-      testID="trends.cta.primary"
-      onPress={handlePrimaryCta}
-      className="min-h-[50px] rounded-[18px] border border-champagne-soft bg-champagne px-[18px] items-center justify-center"
-    >
-      <Text className="text-[15px] font-sans-bold text-on-champagne">
-        {t(cta.label)}
-      </Text>
-    </Pressable>
   );
 
   if (!loaded) {
@@ -199,61 +222,34 @@ function StatisticsScreen() {
     );
   }
 
-  const week = trends.week;
-  const patterns = trends.patterns;
-  const evolution = trends.evolution;
-  const showAverage = week.averagePerWeek != null;
-  const metricClassName = stackWeekMetrics
-    ? 'w-full min-w-0 gap-1'
-    : 'min-w-0 flex-1 gap-1';
-  const rangeLabel = t('trends.week.range', {
-    start: formatDate(weekStart, { day: 'numeric', month: 'short' }),
-    end: formatDate(weekEnd, { day: 'numeric', month: 'short', year: 'numeric' }),
-  });
-  const daysLabel = (count: number) => t(
-    count === 1 ? 'trends.week.active_days.value_one' : 'trends.week.active_days.value',
-    { count: formatNumber(count) },
-  );
-  const secondaryMetrics = [
-    { key: 'current', label: t('trends.week.streak.current'), value: daysLabel(week.streak.current) },
-    { key: 'longest', label: t('trends.week.streak.longest'), value: daysLabel(week.streak.longest) },
-    ...(showAverage ? [{
-      key: 'average',
-      label: t('trends.week.average'),
-      value: t(averageDreamCountKey(week.averagePerWeek as number, locale), {
-        count: formatNumber(week.averagePerWeek as number, { maximumFractionDigits: 1 }),
-      }),
-    }] : []),
-    ...(week.lastActivityAt != null ? [{
-      key: 'last',
-      label: t('trends.week.last_activity'),
-      value: formatDate(week.lastActivityAt, { dateStyle: 'medium' }),
-    }] : []),
-  ];
-  const themeRows = toRankedRows(
-    patterns.themes,
-    (value) => getDreamThemeLabel(value, t) ?? value,
-    t,
-    formatNumber,
-  );
-  const emotionRows = toRankedRows(
-    patterns.emotions,
-    (value) => getEmotionFamilyLabel(value, t) ?? value,
-    t,
-    formatNumber,
-  );
-  const typeRows = toRankedRows(
-    patterns.types,
-    (value) => getDreamTypeLabel(value, t) ?? value,
-    t,
-    formatNumber,
-  );
+  const ink = noctalia.accent.text;
+  const shownTheme = selectedTheme ?? trends.themes.dominant;
+  const shownCount = shownTheme ? trends.themes.counts[shownTheme] : 0;
+  const shortDate = (value: number) => formatDate(value, { day: 'numeric', month: 'short' });
+  const rangeLabel = trends.period === 'all'
+    ? t('trends.range.since', { date: formatDate(trends.range.start, { day: 'numeric', month: 'short', year: 'numeric' }) })
+    : t('trends.range', { start: shortDate(trends.range.start), end: shortDate(trends.range.end) });
+  const monthYear = (value: number) => formatDate(value, { month: 'short', year: 'numeric' });
+  // The foot of the seal is short: the whole journal is told in months there.
+  const sealDates = trends.period !== 'all'
+    ? t('trends.range', { start: shortDate(trends.range.start), end: shortDate(trends.range.end) })
+    : monthYear(trends.range.start) === monthYear(trends.range.end)
+      ? monthYear(trends.range.end)
+      : t('trends.range', { start: monthYear(trends.range.start), end: monthYear(trends.range.end) });
+  // The journal's age as it is: nights for its first two weeks, then whole weeks.
+  const journalNights = trends.range.nights;
+  const journalWeeks = Math.floor(journalNights / 7);
+  const compareLabel = trends.period === 'all'
+    ? journalNights < 14
+      ? t(journalNights === 1 ? 'trends.compare.all_nights_one' : 'trends.compare.all_nights', { count: formatNumber(journalNights) })
+      : t('trends.compare.all', { count: formatNumber(journalWeeks) })
+    : trends.countDelta != null ? t(`trends.compare.${trends.period}`) : null;
 
   return (
-    <View className="flex-1 bg-ink">
+    <View className="flex-1 bg-ink" testID="screen.trends">
       <ScrollView
         className="flex-1"
-        onScroll={onHeaderScroll}
+        onScroll={handleScroll}
         scrollEventThrottle={16}
         style={scrollHeader ? { marginBottom: navigationClearance } : undefined}
         // The header scrolls away with the content, as on Today. It already owns
@@ -265,136 +261,95 @@ function StatisticsScreen() {
         {header}
         <ScreenContainer key="resources">
           <JournalCompletenessNotice status={completeness?.status} trends onRetry={() => { void reloadDreams(); }} />
-          <View className="gap-6 px-5 pb-5 pt-2">
-            <View className="gap-4" testID="trends.section.week" accessible={false} accessibilityRole="none">
-              <View className="flex-row items-start gap-3 border-b border-line pb-4">
-                <View className="mt-[9px] h-px w-[22px] bg-champagne" />
-                <Text accessibilityRole="header" className="min-w-0 shrink text-[12px] leading-[18px] font-sans-medium uppercase tracking-[1.6px] text-champagne-on">
-                  {rangeLabel} · {t('trends.section.week')}
-                </Text>
+          {trends.empty ? (
+            <View className="items-center gap-5 px-6 pb-5 pt-10" testID="trends.empty">
+              <View accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+                <Svg width={44} height={44}>
+                  <Path d={sparklePath(22, 22, 20)} fill={ink} />
+                </Svg>
               </View>
-              <View
-                className={stackWeekMetrics ? 'flex-col gap-5' : 'flex-row flex-wrap gap-6'}
-                testID={stackWeekMetrics ? 'trends.week.metrics.stacked' : 'trends.week.metrics.inline'}
-              >
-                <View className={metricClassName}>
-                  <Text testID="trends.week.count.value" className="text-[56px] leading-[64px] font-display-semibold text-ivory">
-                    {formatNumber(week.count)}
-                  </Text>
-                  <Text className="shrink text-[14px] leading-[20px] font-sans text-ivory">{t('trends.week.count')}</Text>
-                </View>
-                <View className={`${metricClassName}${stackWeekMetrics ? '' : ' border-l border-line pl-5'}`}>
-                  <Text testID="trends.week.activeDays.value" className="text-[56px] leading-[64px] font-display-semibold text-ivory">
-                    {formatNumber(week.activeDays)}
-                  </Text>
-                  <Text className="shrink text-[14px] leading-[20px] font-sans text-ivory">{t('trends.week.active_days')}</Text>
-                </View>
-              </View>
+              <Text className="max-w-[320px] text-center text-[19px] leading-[27px] font-display-semibold text-ivory">
+                {t('trends.empty.body')}
+              </Text>
+              <PressableScale testID="trends.cta.primary" onPress={capture} haptic="light" accessibilityRole="button"
+                accessibilityLabel={t('trends.empty.cta')}
+                className="min-h-[50px] items-center justify-center rounded-[18px] border border-champagne-soft bg-champagne px-[22px]">
+                <Text className="text-[15px] font-sans-bold text-on-champagne">{t('trends.empty.cta')}</Text>
+              </PressableScale>
             </View>
-
-            <View className="gap-4" testID="trends.section.patterns" accessible={false} accessibilityRole="none">
-              <SectionHead
-                title={t(themeRows.length > 0 || patterns.empty ? 'trends.patterns.themes' : 'trends.section.patterns')}
-                subtitle={t('trends.patterns.scope')}
-              />
-              {patterns.empty ? (
-                <Text accessibilityRole="text" className="text-[15px] leading-[23px] font-sans text-ivory-muted">
-                  {t('trends.patterns.empty')}
-                </Text>
-              ) : themeRows.length > 0 ? (
-                <View className="gap-3">
-                  <StatsRankedList
-                    noctalia={noctalia}
-                    rows={themeRows}
-                    maxCount={Math.max(...themeRows.map((row) => row.count), 1)}
-                    testID="trends.patterns.themes.list"
-                  />
-                  <Text className="text-[13px] leading-[19px] font-sans text-ivory-muted">{t('trends.patterns.legend')}</Text>
+          ) : (
+            <View className="gap-8 px-5 pb-5 pt-2">
+              <View className="gap-5" testID="trends.section.period" accessible={false} accessibilityRole="none">
+                <TrendsPeriodSwitch period={period} onChange={choosePeriod} reduced={reduced} t={t} />
+                <View className="flex-row items-start gap-3">
+                  <View className="mt-[9px] h-px w-[22px] bg-champagne" />
+                  <Text testID="trends.range" className="min-w-0 shrink text-[12px] leading-[18px] font-sans-medium uppercase tracking-[1.6px] text-champagne-on">
+                    {[rangeLabel, compareLabel].filter(Boolean).join(' · ')}
+                  </Text>
                 </View>
-              ) : null}
+                <TrendsFigures trends={trends} entrance reduced={reduced} stacked={largeText}
+                  t={t} formatNumber={formatNumber} formatDate={formatDate} />
+              </View>
 
-              <View className="mt-2 border-t border-line" testID="trends.week.details">
-                {secondaryMetrics.map((metric) => (
-                  <View key={metric.key} className="flex-row items-baseline gap-4 border-b border-line py-3">
-                    <Text className="min-w-0 flex-1 text-[14px] leading-[21px] font-sans text-ivory-muted">{metric.label}</Text>
-                    <Text className="max-w-[45%] shrink text-right text-[15px] leading-[21px] font-display-semibold text-ivory">{metric.value}</Text>
-                  </View>
-                ))}
-                {week.lastActivityAt == null ? (
-                  <Text className="pt-3 text-[14px] leading-[21px] font-sans text-ivory-muted">{t('trends.week.last_activity.empty')}</Text>
+              <View className="items-center gap-4" testID="trends.section.seal" accessible={false} accessibilityRole="none">
+                <PeriodSeal
+                  counts={trends.themes.counts}
+                  shown={shownTheme}
+                  selected={selectedTheme}
+                  onSelect={chooseTheme}
+                  legend={shownTheme ? t('trends.seal.legend', {
+                    theme: getDreamThemeLabel(shownTheme, t) ?? shownTheme,
+                    count: formatNumber(shownCount),
+                    total: formatNumber(trends.count),
+                  }) : null}
+                  dates={sealDates}
+                  medalLabel={(theme) => {
+                    const count = trends.themes.counts[theme];
+                    return t(count === 0 ? 'trends.seal.medal_zero' : count === 1 ? 'trends.seal.medal_one' : 'trends.seal.medal', {
+                      theme: getDreamThemeLabel(theme, t) ?? theme,
+                      count: formatNumber(count),
+                    });
+                  }}
+                  ink={ink}
+                  glow={noctalia.atmosphere.glow}
+                  star={noctalia.atmosphere.star}
+                  entrance
+                  reduced={reduced}
+                  size={sealSize}
+                />
+                <Text testID="trends.seal.sentence" accessibilityLiveRegion="polite"
+                  className="max-w-[420px] text-center text-[17px] leading-[25px] font-display text-ivory">
+                  {sealSentence(trends, selectedTheme, t, formatNumber)}
+                </Text>
+                {shownTheme && shownCount > 0 ? (
+                  <PressableScale testID="trends.seal.open" haptic="light" accessibilityRole="button"
+                    onPress={() => openJournal(trends, { theme: shownTheme })}
+                    className="min-h-[48px] flex-row items-center gap-2 rounded-full border border-champagne-soft px-5">
+                    <Text className="text-[15px] font-sans-bold text-champagne-on">
+                      {t(shownCount === 1 ? 'trends.seal.open_one' : 'trends.seal.open', { count: formatNumber(shownCount) })}
+                    </Text>
+                    <IconSymbol name="arrow.right" size={14} color={ink} />
+                  </PressableScale>
+                ) : null}
+                {!selectedTheme && trends.themes.dominant ? (
+                  <Text className="text-center text-[12px] leading-[16px] font-sans text-ivory-muted">{t('trends.seal.hint')}</Text>
                 ) : null}
               </View>
 
-              {!patterns.empty ? (
-                <View className="gap-6 pt-3">
-                  {emotionRows.length > 0 ? (
-                    <View className="gap-2">
-                      <Text accessibilityRole="header" className="text-[19px] leading-[25px] font-display-semibold text-ivory">{t('trends.patterns.emotions')}</Text>
-                      <StatsRankedList noctalia={noctalia} rows={emotionRows}
-                        maxCount={Math.max(...emotionRows.map((row) => row.count), 1)} testID="trends.patterns.emotions.list" />
-                    </View>
-                  ) : null}
-                  {typeRows.length > 0 ? (
-                    <View className="gap-2">
-                      <Text accessibilityRole="header" className="text-[19px] leading-[25px] font-display-semibold text-ivory">{t('trends.patterns.types')}</Text>
-                      <StatsRankedList noctalia={noctalia} rows={typeRows}
-                        maxCount={Math.max(...typeRows.map((row) => row.count), 1)} testID="trends.patterns.types.list" />
-                    </View>
-                  ) : null}
-                  {patterns.recurrence.hasRecurrence ? (
-                    <Text className="text-[15px] leading-[22px] font-sans text-ivory">
-                      {t(patterns.recurrence.count === 1 ? 'trends.patterns.recurrence_one' : 'trends.patterns.recurrence',
-                        { count: formatNumber(patterns.recurrence.count) })}
-                    </Text>
-                  ) : null}
-                </View>
-              ) : null}
-            </View>
+              <View ref={nightsRef} onLayout={reveal} className="border-t border-line pt-7">
+                <TrendsNights trends={trends} lit={nightsLit} reduced={reduced} ink={ink} onAccent={noctalia.action.primaryText}
+                  t={t} formatDate={formatDate} formatNumber={formatNumber} locale={locale}
+                  onOpenDream={openDream} onCapture={capture} />
+              </View>
 
-            <View
-              className="gap-4 border-t border-line pt-7"
-              testID="trends.section.evolution"
-              accessible={false}
-              accessibilityRole="none"
-            >
-              <SectionHead title={t('trends.section.evolution')} />
-              {evolution.days.length === 0 ? (
-                <Text className="text-[15px] font-sans text-ivory-muted">
-                  {t('trends.evolution.empty')}
-                </Text>
-              ) : (
-                <StatsEvolutionBars
-                  compact={compact}
-                  testID="trends.evolution.chart"
-                  days={evolution.days.map((day) => {
-                    const themeLabel = getDreamThemeLabel(day.dominantTheme, t) ?? day.dominantTheme;
-                    const dateLabel = formatDate(dateFromLocalKey(day.dateKey), {
-                      day: 'numeric',
-                      month: 'short',
-                    });
-                    return {
-                      dateKey: day.dateKey,
-                      dateLabel,
-                      themeLabel,
-                      count: day.total,
-                      countLabel: dreamCountLabel(day.total, t, formatNumber),
-                      accessibilityLabel: t('trends.evolution.point', {
-                        date: dateLabel,
-                        theme: themeLabel,
-                        count: formatNumber(day.total),
-                      }),
-                    };
-                  })}
-                />
-              )}
-              <Text className="text-[14px] font-sans text-ivory-muted">
-                {t(`trends.evolution.next.${evolution.nextAction}`)}
-              </Text>
+              <View ref={returnsRef} onLayout={reveal} className="border-t border-line pt-7">
+                <TrendsReturns trends={trends} lit={returnsLit || reduced} ink={ink} t={t} formatNumber={formatNumber}
+                  onOpenUnanalyzed={() => openJournal(trends, { analysis: 'unanalyzed' })}
+                  onOpenType={(type: DreamType) => openJournal(trends, { dreamType: type, analysis: 'analyzed' })} />
+              </View>
+              {compact ? <View testID="trends.layout.compact" /> : null}
             </View>
-
-            {primaryCta}
-            {compact ? <View testID="trends.layout.compact" /> : null}
-          </View>
+          )}
         </ScreenContainer>
       </ScrollView>
     </View>

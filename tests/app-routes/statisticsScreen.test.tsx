@@ -1,12 +1,15 @@
 /* @jest-environment jsdom */
 import React from 'react';
-import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, jest } from '@jest/globals';
 
 import { TID } from '@/lib/testIDs';
-import type { DreamAnalysis } from '@/lib/types';
+import type { DreamAnalysis, DreamTheme } from '@/lib/types';
 
 const mockPush = jest.fn();
+const mockNavigate = jest.fn();
+const mockSealProps = jest.fn();
+const mockFiguresProps = jest.fn();
 const mockUseDreams = jest.fn();
 const mockWindow = { width: 390, height: 844, scale: 1, fontScale: 1 };
 let mockBottomInset = 0;
@@ -26,6 +29,7 @@ jest.setSystemTime(NOW);
 afterEach(() => {
   cleanup();
   jest.clearAllMocks();
+  jest.setSystemTime(NOW);
   mockWindow.width = 390;
   mockWindow.height = 844;
   mockWindow.fontScale = 1;
@@ -51,7 +55,7 @@ const analyzed = (
 });
 
 jest.mock('expo-router', () => ({
-  router: { push: mockPush },
+  router: { push: mockPush, navigate: mockNavigate },
 }));
 
 jest.mock('react-native', () => {
@@ -74,6 +78,7 @@ jest.mock('react-native', () => {
       style,
       numberOfLines,
       allowFontScaling,
+      onLayout: _onLayout,
       ...rest
     } = props;
     return {
@@ -112,6 +117,7 @@ jest.mock('react-native', () => {
 
   return {
     __esModule: true,
+    AppState: { addEventListener: jest.fn(() => ({ remove: jest.fn() })) },
     Platform: {
       OS: 'web',
       select: (values: Record<string, any>) => values?.web ?? values?.default,
@@ -129,8 +135,46 @@ jest.mock('react-native', () => {
   };
 });
 
-jest.mock('@/components/inspiration/AtmosphericBackground', () => ({
-  AtmosphericBackground: () => null,
+jest.mock('react-native-svg', () => ({ __esModule: true, default: () => null, Path: () => null }));
+jest.mock('@/components/ui/icon-symbol', () => ({ IconSymbol: () => null }));
+jest.mock('@/components/motion', () => ({
+  PressableScale: ({ children, onPress, testID, accessibilityLabel }: any) => (
+    <button type="button" data-testid={testID} aria-label={accessibilityLabel} onClick={onPress}>{children}</button>
+  ),
+}));
+// The seal, the calendar and the rest have their own motion; here they only report what the page hands them.
+jest.mock('@/components/trends/PeriodSeal', () => ({
+  PERIOD_SEAL_SIZE: 312,
+  PeriodSeal: (props: any) => {
+    mockSealProps(props);
+    return <div data-testid="seal" />;
+  },
+}));
+jest.mock('@/components/trends/TrendsFigures', () => ({
+  TrendsFigures: (props: any) => {
+    mockFiguresProps(props);
+    return <div data-testid="figures" />;
+  },
+}));
+jest.mock('@/components/trends/TrendsPeriodSwitch', () => ({
+  TrendsPeriodSwitch: ({ onChange }: any) => (
+    <div>
+      {['7', '30', 'all'].map((period) => (
+        <button key={period} type="button" data-testid={`trends.period.${period}`} onClick={() => onChange(period)} />
+      ))}
+    </div>
+  ),
+}));
+jest.mock('@/components/trends/TrendsNights', () => ({
+  TrendsNights: () => <div data-testid="trends.section.nights" />,
+}));
+jest.mock('@/components/trends/TrendsReturns', () => ({
+  TrendsReturns: ({ onOpenUnanalyzed, onOpenType }: any) => (
+    <div data-testid="trends.section.returns">
+      <button type="button" data-testid="returns.unanalyzed" onClick={onOpenUnanalyzed} />
+      <button type="button" data-testid="returns.type" onClick={() => onOpenType('Nightmare')} />
+    </div>
+  ),
 }));
 jest.mock('@/components/NoctaliaScreenHeader', () => ({
   NoctaliaScreenHeader: ({
@@ -173,6 +217,7 @@ jest.mock('@/hooks/useTranslation', () => ({
 }));
 jest.mock('@/hooks/useLocaleFormatting', () => ({
   useLocaleFormatting: () => ({
+    locale: 'en-US',
     formatNumber: (value: number) => String(value),
     formatDate: (value: Date | number) => {
       const date = new Date(typeof value === 'number' ? value : value.getTime());
@@ -194,45 +239,17 @@ const { default: StatisticsScreen } = require('@/app/(tabs)/statistics') as {
   default: React.ComponentType;
 };
 
-const SECTION_IDS = [
-  'trends.section.week',
-  'trends.section.patterns',
-  'trends.section.evolution',
-] as const;
+// Saturday 29 August 2026: the 30 nights run from 31 July, the 30 before from 1 July.
+const nightsAgo = (days: number) => localDay(2026, 7, 29 - days);
+const lastSeal = () => mockSealProps.mock.calls.at(-1)?.[0] as any;
+const sentence = () => screen.getByTestId('trends.seal.sentence').textContent;
 
-const RETIRED_IDS = [
-  TID.Button.HeaderStatsShare,
-  TID.Button.HeaderStatsPeriod,
-  TID.Button.StatsPeriodChip,
-  TID.Button.DreamProfileUpgradeCta,
-  TID.Button.StatsInsightCta,
-  TID.Button.StatsMostDiscussedDream,
-  TID.Component.DreamProfileCard,
-  TID.Component.DreamProfilePlusPreview,
-  TID.Component.StatsInsight,
-  TID.Component.StatsPeriodEmpty,
-  TID.Stats.TotalChatsValue,
-  TID.Stats.DreamsWithChatValue,
-] as const;
-
-function expectVNextShell() {
-  expect(SECTION_IDS.map((id) => screen.getByTestId(id))).toHaveLength(3);
-  expect(screen.getAllByTestId(/trends\.section\./)).toHaveLength(3);
-  expect(screen.getByTestId('trends.cta.primary')).toBeTruthy();
-  for (const id of RETIRED_IDS) {
-    expect(screen.queryByTestId(id)).toBeNull();
-  }
+function renderJournal(dreams: DreamAnalysis[]) {
+  mockUseDreams.mockReturnValue({ dreams, loaded: true });
+  return render(<StatisticsScreen />);
 }
 
-function expectUngroupedSection(testID: string, heading: string) {
-  const section = screen.getByTestId(testID);
-  expect(section.getAttribute('data-accessible')).toBe('false');
-  expect(section.getAttribute('role')).toBe('none');
-  expect(section.getAttribute('aria-label')).toBeNull();
-  expect(section.querySelector('[role="header"]')?.textContent).toContain(heading);
-}
-
-describe('Statistics screen VNext trends', () => {
+describe('Tendances screen', () => {
   it.each([false, true])('keeps loading=%s and the settings header in a usable compact scroll viewport', (loaded: boolean) => {
     mockUseDreams.mockReturnValue({ dreams: [], loaded });
     mockBottomInset = 24;
@@ -251,7 +268,7 @@ describe('Statistics screen VNext trends', () => {
           const content = JSON.parse(scroll!.getAttribute('data-content-container-style') ?? '{}');
           expect(height - style.marginBottom).toBeGreaterThanOrEqual(120);
           expect(content.paddingBottom).toBeLessThan(50);
-          expect(scroll!.textContent).toContain(loaded ? 'trends.section.week' : 'trends.loading');
+          expect(scroll!.textContent).toContain(loaded ? 'trends.empty.body' : 'trends.loading');
           if (!loaded) {
             const message = screen.getByText('trends.loading').parentElement!;
             expect(message.className).toContain('shrink-0');
@@ -272,40 +289,23 @@ describe('Statistics screen VNext trends', () => {
     render(<StatisticsScreen />);
 
     expect(screen.getByRole('progressbar', { name: 'trends.loading' })).toBeTruthy();
-    expect(screen.getByText('trends.loading')).toBeTruthy();
-    expect(screen.queryByTestId('trends.section.week')).toBeNull();
+    expect(screen.queryByTestId('screen.trends')).toBeNull();
     expect(screen.queryByTestId('trends.cta.primary')).toBeNull();
   });
 
-  it('renders exactly three sections with an honest empty journal', () => {
-    mockUseDreams.mockReturnValue({ dreams: [], loaded: true });
+  it('welcomes an empty journal with one capture button instead of a row of zeros', () => {
+    renderJournal([]);
 
-    render(<StatisticsScreen />);
-
-    expectVNextShell();
-    expectUngroupedSection('trends.section.week', 'trends.section.week');
-    expectUngroupedSection('trends.section.patterns', 'trends.patterns.themes');
-    expectUngroupedSection('trends.section.evolution', 'trends.section.evolution');
-    expect(screen.getByLabelText('trends.cta.capture_first')).toBeTruthy();
-    expect(screen.getByText('trends.week.last_activity.empty')).toBeTruthy();
-    expect(screen.getByText('trends.patterns.empty')).toBeTruthy();
-    expect(screen.getByText('trends.evolution.empty')).toBeTruthy();
-    expect(screen.queryByText('trends.week.average')).toBeNull();
-  });
-
-  it('routes capture_first to recording', () => {
-    mockUseDreams.mockReturnValue({ dreams: [], loaded: true });
-
-    render(<StatisticsScreen />);
+    expect(screen.getByTestId('trends.empty').textContent).toContain('trends.empty.body');
+    expect(screen.queryByTestId('figures')).toBeNull();
+    expect(screen.queryByTestId('seal')).toBeNull();
     fireEvent.click(screen.getByTestId('trends.cta.primary'));
-
     expect(mockPush).toHaveBeenCalledWith('/recording');
   });
 
   it('exposes settings from the trends header without a fifth tab', () => {
-    mockUseDreams.mockReturnValue({ dreams: [], loaded: true });
+    renderJournal([]);
 
-    render(<StatisticsScreen />);
     const settings = screen.getByTestId(TID.Button.HeaderTrendsSettings);
     expect(settings.getAttribute('aria-label')).toBe('nav.settings');
     fireEvent.click(settings);
@@ -313,185 +313,121 @@ describe('Statistics screen VNext trends', () => {
     expect(screen.queryByTestId(TID.Tab.Settings)).toBeNull();
   });
 
-  it('hides the weekly average when the model returns null', () => {
-    mockUseDreams.mockReturnValue({
-      dreams: [analyzed(localDay(2026, 7, 29), { theme: 'calm' })],
-      loaded: true,
+  it('says where the month leans, against the 30 nights before, and opens those dreams', () => {
+    renderJournal([
+      analyzed(nightsAgo(0), { theme: 'mystical' }),
+      analyzed(nightsAgo(3), { theme: 'mystical' }),
+      analyzed(nightsAgo(9), { theme: 'mystical' }),
+      analyzed(nightsAgo(12), { theme: 'calm' }),
+      analyzed(nightsAgo(40), { theme: 'mystical' }),
+    ]);
+
+    expect(screen.getByTestId('trends.range').textContent).toBe('trends.range:start=2026-07-31|end=2026-08-29 · trends.compare.30');
+    expect(lastSeal()).toMatchObject({ shown: 'mystical', selected: null });
+    expect(sentence()).toBe(
+      'trends.seal.leans:scope=trends.scope.30|toward=trends.seal.toward.mystical|count=3|total=4, '
+      + 'trends.compare.more:count=2|previous=trends.previous.30.',
+    );
+    expect(screen.getByTestId('trends.seal.open').textContent).toBe('trends.seal.open:count=3');
+    fireEvent.click(screen.getByTestId('trends.seal.open'));
+    expect(mockNavigate).toHaveBeenCalledWith({
+      pathname: '/(tabs)/journal',
+      params: { filter: expect.any(String), theme: 'mystical', from: '2026-07-31', to: '2026-08-29' },
+    });
+  });
+
+  it('turns the seal to a chosen sign and lets a new period start from what leads', () => {
+    renderJournal([
+      analyzed(nightsAgo(0), { theme: 'mystical' }),
+      analyzed(nightsAgo(3), { theme: 'mystical' }),
+      analyzed(nightsAgo(12), { theme: 'calm' }),
+    ]);
+
+    act(() => lastSeal().onSelect('noir'));
+    expect(lastSeal()).toMatchObject({ shown: 'noir', selected: 'noir' });
+    expect(sentence()).toBe('trends.seal.theme_zero:theme=dream.theme.noir|count=0|total=3.');
+    // Nothing to open for a sign without dreams.
+    expect(screen.queryByTestId('trends.seal.open')).toBeNull();
+
+    act(() => lastSeal().onSelect('calm'));
+    expect(screen.getByTestId('trends.seal.open').textContent).toBe('trends.seal.open_one:count=1');
+
+    fireEvent.click(screen.getByTestId('trends.period.7'));
+    expect(lastSeal()).toMatchObject({ selected: null });
+  });
+
+  it.each([
+    ['a tie', ['mystical', 'mystical', 'calm', 'calm'], 'trends.seal.tied'],
+    ['too few themed dreams', ['mystical', 'mystical'], 'trends.seal.early_one:count=1'],
+    ['no theme yet', [undefined, undefined, undefined], 'trends.seal.unthemed'],
+  ])('does not claim a lean with %s', (_case: string, themes: (DreamTheme | undefined)[], expected: string) => {
+    renderJournal(themes.map((theme, index) => analyzed(nightsAgo(index + 1), { theme })));
+
+    expect(lastSeal().shown).toBeNull();
+    expect(sentence()).toBe(expected);
+    expect(screen.queryByTestId('trends.seal.open')).toBeNull();
+    // Nothing came before these 30 nights, so nothing is compared.
+    expect(screen.getByTestId('trends.range').textContent).not.toContain('trends.compare');
+  });
+
+  it('says a quiet period is quiet and opens the whole journal without dates', () => {
+    renderJournal([analyzed(nightsAgo(20), { theme: 'calm', dreamType: 'Nightmare' })]);
+
+    fireEvent.click(screen.getByTestId('trends.period.7'));
+    expect(sentence()).toBe('trends.seal.quiet');
+    fireEvent.click(screen.getByTestId('returns.unanalyzed'));
+    expect(mockNavigate).toHaveBeenLastCalledWith({
+      pathname: '/(tabs)/journal',
+      params: { filter: expect.any(String), analysis: 'unanalyzed', from: '2026-08-23', to: '2026-08-29' },
     });
 
-    render(<StatisticsScreen />);
-
-    expectVNextShell();
-    expect(screen.queryByText('trends.week.average')).toBeNull();
-    expect(screen.getByText('trends.patterns.empty')).toBeTruthy();
-  });
-
-  it('renders motifs and chronological evolution', () => {
-    mockUseDreams.mockReturnValue({
-      dreams: [
-        analyzed(localDay(2026, 7, 27), {
-          dreamType: 'Recurring Dream',
-          theme: 'noir',
-          emotions: [{ name: 'fear', insight: '' }],
-        }),
-        analyzed(localDay(2026, 7, 28), {
-          theme: 'calm',
-          emotions: [{ name: 'angoisse', insight: '' }],
-          memory: { recurring: true },
-        }),
-        analyzed(localDay(2026, 7, 29), {
-          dreamType: 'Lucid Dream',
-          theme: 'calm',
-          memory: { rememberedKind: 'recurring' },
-        }),
-      ],
-      loaded: true,
+    fireEvent.click(screen.getByTestId('trends.period.all'));
+    expect(screen.getByTestId('trends.range').textContent).toBe('trends.range.since:date=2026-08-09 · trends.compare.all:count=3');
+    fireEvent.click(screen.getByTestId('returns.type'));
+    expect(mockNavigate).toHaveBeenLastCalledWith({
+      pathname: '/(tabs)/journal',
+      params: { filter: expect.any(String), type: 'Nightmare', analysis: 'analyzed' },
     });
+  });
 
-    render(<StatisticsScreen />);
+  it('reads on the new day once midnight passes with the page open', () => {
+    renderJournal([analyzed(nightsAgo(0), { theme: 'calm' })]);
+    expect(screen.getByTestId('trends.range').textContent).toBe('trends.range:start=2026-07-31|end=2026-08-29');
 
-    expectVNextShell();
-    const patterns = within(screen.getByTestId('trends.section.patterns'));
-    expect(patterns.queryByText('trends.patterns.empty')).toBeNull();
-    expect(patterns.getByText('dream.theme.calm')).toBeTruthy();
-    expect(patterns.getByText('dream.theme.noir')).toBeTruthy();
-    expect(patterns.getAllByText('stats.legend.count:count=2').length).toBeGreaterThan(0);
-    expect(patterns.getAllByText('stats.legend.count_one:count=1').length).toBeGreaterThan(0);
-    expect(patterns.getByText('stats.emotion.family.fear')).toBeTruthy();
-    expect(patterns.getByText('dream.type.recurring')).toBeTruthy();
-    expect(patterns.getByText('trends.patterns.recurrence:count=3')).toBeTruthy();
-
-    const calmBar = patterns.getByRole('progressbar', { name: 'dream.theme.calm' });
-    expect(calmBar.getAttribute('aria-valuenow')).toBe('2');
-    expect(calmBar.getAttribute('aria-valuemax')).toBe('2');
-    expect(calmBar.getAttribute('aria-valuetext')).toBe('stats.legend.count:count=2');
-
-    const evolution = within(screen.getByTestId('trends.section.evolution'));
-    expect(evolution.queryByText('trends.evolution.empty')).toBeNull();
-    expect(screen.getByTestId('trends.evolution.chart').getAttribute('data-accessible')).toBe('false');
-    const firstPoint = screen.getByRole('progressbar', {
-      name: 'trends.evolution.point:date=2026-08-27|theme=dream.theme.noir|count=1',
+    // 18:00 to 01:00 the next morning.
+    act(() => {
+      jest.advanceTimersByTime(7 * 60 * 60 * 1000);
     });
-    expect(firstPoint.getAttribute('data-testid')).toBe('trends.evolution.chart.day.2026-08-27');
-    expect(firstPoint.getAttribute('data-accessible')).toBe('true');
-    expect(firstPoint.getAttribute('aria-valuetext')).toBe('stats.legend.count_one:count=1');
-    expect(
-      evolution.getByLabelText('trends.evolution.point:date=2026-08-27|theme=dream.theme.noir|count=1'),
-    ).toBeTruthy();
-    expect(
-      evolution.getByLabelText('trends.evolution.point:date=2026-08-28|theme=dream.theme.calm|count=1'),
-    ).toBeTruthy();
-    expect(
-      evolution.getByLabelText('trends.evolution.point:date=2026-08-29|theme=dream.theme.calm|count=1'),
-    ).toBeTruthy();
-    expect(screen.queryByText('trends.week.average')).toBeNull();
+    expect(screen.getByTestId('trends.range').textContent).toBe('trends.range:start=2026-08-01|end=2026-08-30');
   });
 
-  it('routes review_patterns to the journal', () => {
-    mockUseDreams.mockReturnValue({
-      dreams: [
-        analyzed(localDay(2026, 7, 27), { theme: 'noir' }),
-        analyzed(localDay(2026, 7, 28), { theme: 'calm' }),
-        analyzed(localDay(2026, 7, 29), { theme: 'calm' }),
-      ],
-      loaded: true,
-    });
-
-    render(<StatisticsScreen />);
-
-    expect(screen.getByLabelText('trends.cta.review_patterns')).toBeTruthy();
-    fireEvent.click(screen.getByTestId('trends.cta.primary'));
-    expect(mockPush).toHaveBeenCalledWith('/(tabs)/journal');
+  it('tells a journal younger than two weeks in nights', () => {
+    renderJournal([analyzed(nightsAgo(0), { theme: 'calm' })]);
+    fireEvent.click(screen.getByTestId('trends.period.all'));
+    expect(screen.getByTestId('trends.range').textContent).toBe('trends.range.since:date=2026-08-29 · trends.compare.all_nights_one:count=1');
   });
 
-  it('does not expose share, period, profile, paywall or chat surfaces', () => {
-    mockUseDreams.mockReturnValue({ dreams: [], loaded: true });
-
-    render(<StatisticsScreen />);
-
-    expectVNextShell();
-    expect(screen.queryByText(/stats\.(share|period|profile|empty|insight)/)).toBeNull();
-    expect(screen.queryByText(/paywall/i)).toBeNull();
-    expect(screen.queryByText(/chat/i)).toBeNull();
-  });
-
-  it('keeps the three sections and labelled charts usable at 320 dp', () => {
-    mockWindow.width = 320;
-    mockUseDreams.mockReturnValue({
-      dreams: [
-        analyzed(localDay(2026, 7, 27), { theme: 'noir', dreamType: 'Recurring Dream' }),
-        analyzed(localDay(2026, 7, 28), { theme: 'calm' }),
-        analyzed(localDay(2026, 7, 29), { theme: 'calm' }),
-      ],
-      loaded: true,
-    });
-
-    render(<StatisticsScreen />);
-
-    expectVNextShell();
-    expect(screen.getByTestId('trends.layout.compact')).toBeTruthy();
-    expect(screen.getByTestId('trends.patterns.themes.list')).toBeTruthy();
-    expect(screen.getByTestId('trends.evolution.chart')).toBeTruthy();
-    expect(screen.getByTestId('trends.evolution.chart.day.2026-08-27')).toBeTruthy();
-    expect(screen.getByRole('progressbar', { name: 'dream.theme.calm' }).getAttribute('aria-valuenow')).toBe('2');
-  });
-
-  it('keeps weekly metrics inline at default text scale', () => {
-    mockUseDreams.mockReturnValue({ dreams: [], loaded: true });
-
-    render(<StatisticsScreen />);
-
-    const metrics = screen.getByTestId('trends.week.metrics.inline');
-    expect(metrics.getAttribute('class')).toContain('flex-row');
-    expect(metrics.getAttribute('class')).toContain('flex-wrap');
-    expect(metrics.getAttribute('class')).not.toContain('flex-col');
-    expect(screen.queryByTestId('trends.week.metrics.stacked')).toBeNull();
-    expect(screen.getByText('trends.week.count').getAttribute('class')).toContain('shrink');
-    expect(screen.getByText('trends.week.active_days').getAttribute('data-number-of-lines')).toBeNull();
-    expect(screen.getByText('trends.week.streak.current').getAttribute('data-allow-font-scaling')).toBeNull();
-    expect(screen.getByText('trends.week.streak.longest')).toBeTruthy();
-  });
-
-  it('reserves taller trends scroll padding at fontScale 2 so content stays above the tab bar', () => {
+  it('stacks the figures at fontScale 2 and reserves scroll padding above the tab bar', () => {
     mockWindow.fontScale = 2;
-    mockUseDreams.mockReturnValue({ dreams: [], loaded: true });
+    renderJournal([analyzed(nightsAgo(1), { theme: 'calm' })]);
 
-    render(<StatisticsScreen />);
-
+    expect(mockFiguresProps.mock.calls.at(-1)?.[0]).toMatchObject({ stacked: true });
     const { getBottomNavigationLayout } = require('@/constants/layout');
     const { ThemeLayout } = require('@/constants/journalTheme');
     const layout = getBottomNavigationLayout(390, 844, 2);
-    const base = getBottomNavigationLayout(390, 844, 1);
     const expected = layout.barHeight + layout.minimumBottomInset + ThemeLayout.spacing.lg;
-    const scroller = screen.getByTestId('trends.section.week').closest('[data-content-container-style]');
+    const scroller = screen.getByTestId('trends.section.seal').closest('[data-content-container-style]');
     expect(scroller?.getAttribute('data-content-container-style')).toContain(`"paddingBottom":${expected}`);
-    // Same contract as home: the padding tracks bar height + inset floor + spacing,
-    // growing at fontScale 2 instead of capping labels.
-    expect(expected).toBeGreaterThan(base.barHeight + base.minimumBottomInset + ThemeLayout.spacing.lg);
-    expect(expected).toBeGreaterThanOrEqual(layout.barHeight + layout.minimumBottomInset);
   });
 
-  it('stacks weekly metrics at fontScale 2 without clipping labels', () => {
-    mockWindow.fontScale = 2;
-    mockUseDreams.mockReturnValue({ dreams: [], loaded: true });
+  it('fits the seal and keeps every section at 320 dp', () => {
+    mockWindow.width = 320;
+    renderJournal([analyzed(nightsAgo(1), { theme: 'calm' })]);
 
-    render(<StatisticsScreen />);
-
-    const metrics = screen.getByTestId('trends.week.metrics.stacked');
-    expect(metrics.getAttribute('class')).toContain('flex-col');
-    expect(metrics.getAttribute('class')).not.toContain('flex-row');
-    expect(screen.queryByTestId('trends.week.metrics.inline')).toBeNull();
-    expect(screen.queryByTestId('trends.layout.compact')).toBeNull();
-
-    for (const label of [
-      'trends.week.count',
-      'trends.week.active_days',
-      'trends.week.streak.current',
-      'trends.week.streak.longest',
-    ]) {
-      const node = screen.getByText(label);
-      expect(node.getAttribute('data-number-of-lines')).toBeNull();
-      expect(node.getAttribute('data-allow-font-scaling')).toBeNull();
+    expect(lastSeal().size).toBe(280);
+    expect(mockFiguresProps.mock.calls.at(-1)?.[0]).toMatchObject({ stacked: false });
+    for (const id of ['trends.section.period', 'trends.section.seal', 'trends.section.nights', 'trends.section.returns', 'trends.layout.compact']) {
+      expect(screen.getByTestId(id)).toBeTruthy();
     }
   });
 });
