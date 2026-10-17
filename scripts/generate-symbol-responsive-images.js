@@ -155,7 +155,8 @@ async function generateIllustrations(illustrations, { force = false, manifestPat
   let generated = 0;
   let total = 0;
   for (const illustration of illustrations) {
-    for (const width of WIDTHS) {
+    const source = await sharp(illustration.sourcePath).metadata();
+    for (const width of WIDTHS.filter((candidate) => candidate <= source.width)) {
       total += 1;
       const target = outputPath(illustration, width);
       const recipe = { width, withoutEnlargement: true, rotate: true,
@@ -163,7 +164,7 @@ async function generateIllustrations(illustrations, { force = false, manifestPat
       const key = path.basename(target);
       const input = cache.fingerprint(illustration.sourcePath, recipe);
       if (!force && cache.isFresh(key, input, target)) continue;
-      await sharp(illustration.sourcePath)
+      const encoded = await sharp(illustration.sourcePath)
         .rotate()
         .resize({ width, withoutEnlargement: true })
         .webp({
@@ -171,7 +172,15 @@ async function generateIllustrations(illustrations, { force = false, manifestPat
           effort: 5,
           smartSubsample: true,
         })
-        .toFile(target);
+        .toBuffer();
+      // Replace atomically so readers never see a partially encoded variant.
+      const temporary = `${target}.${process.pid}.tmp`;
+      try {
+        fs.writeFileSync(temporary, encoded);
+        fs.renameSync(temporary, target);
+      } finally {
+        if (fs.existsSync(temporary)) fs.unlinkSync(temporary);
+      }
       cache.record(key, input, target);
       generated += 1;
       if (generated % GENERATION_PROGRESS_INTERVAL === 0) {
@@ -207,7 +216,7 @@ async function validateIllustrations(illustrations) {
       errors.push(`${illustration.symbolId}: source must be at least 1200px wide`);
       continue;
     }
-    for (const width of WIDTHS) {
+    for (const width of WIDTHS.filter((candidate) => candidate <= source.width)) {
       const target = outputPath(illustration, width);
       if (!fs.existsSync(target)) {
         errors.push(`${illustration.symbolId}: missing ${path.relative(ROOT_DIR, target)}`);
@@ -259,7 +268,7 @@ async function main() {
   const result = await validateIllustrations(illustrations);
   console.log(
     `Responsive symbol images ${checkOnly ? 'checked' : 'generated'}: ` +
-      `${illustrations.length} illustrations, ${illustrations.length * WIDTHS.length} WebP variants ` +
+      `${illustrations.length} illustrations, up to ${illustrations.length * WIDTHS.length} WebP variants ` +
       `(${WIDTHS.map((width) => `${width}w=${result.bytesByWidth[width]} bytes`).join(', ')}).`
   );
   for (const warning of result.warnings) console.warn(`WARN ${warning}`);
