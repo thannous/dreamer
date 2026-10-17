@@ -1,0 +1,127 @@
+import { test, type Browser } from '@e2e-dev/web';
+import { expect } from 'e2e';
+import type { App, Screen } from 'e2e';
+import { isolateWeb } from '../web-fixtures';
+
+// The reading's symbols are followed through the journal. The mock reading names the
+// dictionary's Water and Doorway and one symbol of the dreamer's own, Light.
+
+async function leaveGuidedStories(browser: Browser, screen: Screen) {
+  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED !== 'true') return;
+  const unsubscribe = await browser.onDialog('accept');
+  try { await screen.getByTestId('btn.onboarding.feature.close', { visible: true }).tap(); }
+  finally { await unsubscribe(); }
+}
+
+async function startPlus(app: App, screen: Screen, browser: Browser) {
+  await app.open();
+  await screen.getByTestId('btn.onboarding.intro.next').tap();
+  await leaveGuidedStories(browser, screen);
+  await screen.getByTestId('btn.onboarding.skip').tap();
+  await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
+  const home = screen.getByTestId('tab.home', { visible: true });
+  if (await home.isVisible()) await home.tap();
+  else await screen.getByTestId('btn.recording.home', { visible: true }).tap();
+  await screen.getByTestId('btn.header.home.settings', { visible: true }).tap();
+  await screen.getByTestId('quick-settings.all', { visible: true }).tap();
+  await screen.getByTestId('settings-account-open-signin', { visible: true }).tap();
+  await screen.getByTestId('btn.mockProfile.plus', { visible: true }).tap();
+  await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
+}
+
+async function settledMotion(browser: Browser) {
+  await expect.poll(() => browser.evaluate(() => document.getAnimations().filter(animation =>
+    animation.playState === 'running' && animation.effect?.getTiming().iterations !== Infinity).length)).toBe(0);
+}
+
+async function tellAndRead(screen: Screen, story: string) {
+  await screen.getByTestId('input.dreamTranscript', { visible: true }).fill(story);
+  await screen.getByTestId('btn.saveDream', { visible: true }).tap();
+  // The journal asks during the seal; yes opens the page already reading the dream.
+  await screen.getByTestId('btn.dreamCaptureSeal.readNow', { visible: true }).tap();
+  await expect(screen.getByTestId('component.dreamDetail.readingZone', { visible: true })).toContainText('Symbols');
+  await expect(screen.getByTestId('component.dreamDetail.readingWait')).toHaveCount(0);
+}
+
+async function newDream(screen: Screen) {
+  await screen.getByTestId('btn.navigateJournal', { visible: true }).tap();
+  await expect(screen.getByTestId('screen.journal', { visible: true })).toHaveCount(1);
+  await screen.getByTestId('tab.addDream', { visible: true }).tap();
+  await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
+}
+
+test('a personal symbol is born when first opened, then the reading follows each symbol across dreams',
+  async ({ app, screen, browser }) => {
+    await isolateWeb(browser, app);
+    await startPlus(app, screen, browser);
+    const consent = await browser.onDialog('accept');
+    const first = 'E2E symbols: a lamp glows beside still water near an old doorway.';
+    await tellAndRead(screen, first);
+    await consent();
+
+    // A first reading: every symbol appears for the first time; the dreamer's own one is new.
+    const water = screen.getByTestId('dream.symbol.d.water', { visible: true });
+    const light = screen.getByTestId('dream.symbol.p.guiding-light', { visible: true });
+    await light.scrollIntoView();
+    await expect(water).toHaveAttribute('aria-label', 'Water, First appearance');
+    await expect(light).toHaveAttribute('aria-label', 'Light, New, First appearance');
+    await settledMotion(browser);
+    await light.scrollIntoView();
+    await app.screenshot('first-reading-symbols');
+
+    // Opening it tells its birth and makes it the dreamer's.
+    await light.tap();
+    const sheet = screen.getByTestId('sheet.dreamSymbol', { visible: true });
+    await expect(sheet).toContainText(/a symbol is born/i);
+    await app.screenshot('personal-symbol-being-born');
+    await expect(screen.getByTestId('text.dreamSymbol.born', { visible: true }))
+      .toContainText('No dictionary knows it: it comes from this dream.');
+    await expect(sheet).toContainText('Added to your symbols');
+    await settledMotion(browser);
+    await app.screenshot('personal-symbol-born');
+    await screen.getByTestId('btn.dreamSymbol.close', { visible: true }).tap();
+    await expect(screen.getByTestId('sheet.dreamSymbol')).toBeHidden();
+    await expect(light).toHaveAttribute('aria-label', 'Light, First appearance');
+
+    // A second dream: the same symbols come back, linked to the first.
+    await newDream(screen);
+    await tellAndRead(screen, 'E2E symbols: the water returns, and the same quiet light.');
+    const returning = screen.getByTestId('dream.symbol.p.guiding-light', { visible: true });
+    await returning.scrollIntoView();
+    await expect(screen.getByTestId('dream.symbol.d.water', { visible: true }))
+      .toHaveAttribute('aria-label', 'Water, In 2 of 2 dreams');
+    await expect(returning).toHaveAttribute('aria-label', 'Light, In 2 of 2 dreams');
+    await settledMotion(browser);
+    await returning.scrollIntoView();
+    await app.screenshot('second-reading-symbols');
+
+    // The dreamer's own symbol, already theirs: its thread holds both dreams.
+    await returning.tap();
+    await expect(sheet).toContainText(/your symbol/i);
+    await expect(sheet).not.toContainText(/a symbol is born/i);
+    await expect(screen.getByTestId('text.dreamSymbol.status')).toContainText('In 2 of 2 dreams');
+    await expect(sheet).toContainText('In your dreams');
+    await expect(sheet).toContainText(/this dream/i);
+    await expect(screen.getByTestId(/^dreamSymbol\.appearance\./, { visible: true })).toHaveCount(1);
+    await settledMotion(browser);
+    await app.screenshot('personal-symbol-thread');
+
+    // Its companion from the dictionary opens in place, with the dictionary's landmarks.
+    await screen.getByTestId('dreamSymbol.companion.d.water', { visible: true }).tap();
+    await expect(screen.getByTestId('text.dreamSymbol.title')).toContainText('Water');
+    await expect(sheet).toContainText(/dictionary symbol/i);
+    await expect(sheet).toContainText('Landmarks');
+    await expect(screen.getByTestId('btn.dreamSymbol.readMore', { visible: true })).toBeVisible();
+    await settledMotion(browser);
+    await app.screenshot('dictionary-symbol-landmarks');
+
+    // The thread opens the first dream.
+    await screen.getByTestId(/^dreamSymbol\.appearance\./, { visible: true }).tap();
+    await expect(screen.getByTestId('sheet.dreamSymbol')).toBeHidden();
+    await expect(screen.getByTestId('component.transcriptCard', { visible: true })).toContainText(first);
+
+    // From there, the dictionary's full entry.
+    await screen.getByTestId('dream.symbol.d.water', { visible: true }).tap();
+    await screen.getByTestId('btn.dreamSymbol.readMore', { visible: true }).tap();
+    await expect(screen.getByTestId('screen.symbolDetail', { visible: true })).toBeVisible();
+  });
