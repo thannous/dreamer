@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-es-1200x630.jpg",
   "twitterImageAlt": "Política de privacidad",
   "publishedTime": "",
-  "modifiedTime": "2026-10-08",
+  "modifiedTime": "2026-10-15",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -36,7 +36,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Política de privacidad</h1>
-        <p class="text-lg text-purple-200/80 mb-10">Última actualización: 8 de octubre de 2026</p>
+        <p class="text-lg text-purple-200/80 mb-10">Última actualización: 15 de octubre de 2026</p>
 
         <div class="space-y-8 text-gray-300 leading-relaxed">
             <div class="p-6 rounded-2xl bg-dream-salmon/5 border border-dream-salmon/20">
@@ -132,8 +132,8 @@
                 <p>Noctalia se apoya en servicios de Inteligencia Artificial para transcribir y analizar tus sueños, así como para generar imágenes asociadas.</p>
                 <ul class="list-disc pl-5 mt-4 space-y-2">
                     <li><strong>Reconocimiento de voz:</strong> utilizamos principalmente el reconocimiento de voz nativo de tu dispositivo (a través de interfaces del sistema). En caso de fallo o indisponibilidad, una grabación de audio puede transmitirse temporalmente a un servicio de reconocimiento de voz de terceros (por ejemplo, Google Cloud Speech-to-Text) a través de nuestro backend para producir una transcripción. Estas grabaciones de audio se procesan en tiempo real para producir la transcripción y Noctalia no las almacena de forma persistente.</li>
-                    <li><strong>Análisis de sueños y generación de contenido:</strong> el texto de tus sueños y ciertos metadatos estrictamente necesarios se envían a nuestro proveedor principal de IA, actualmente <strong>Google (Gemini)</strong>, para generar análisis, resúmenes, elementos de conversación y visuales.</li>
-                    <li><strong>Otros proveedores de IA líderes:</strong> en el futuro, podemos utilizar otros proveedores de IA de alto nivel como <strong>Anthropic, OpenAI, Perplexity, Mistral</strong>, o servicios equivalentes. Solo los activaremos si disponemos de garantías contractuales y técnicas equivalentes (seguridad, confidencialidad, limitaciones de uso).</li>
+                    <li><strong>Análisis de sueños y generación de contenido:</strong> el texto de tus sueños y ciertos metadatos estrictamente necesarios se envían a nuestros proveedores de IA: <strong>Anthropic (Claude)</strong> para los análisis, resúmenes y elementos de conversación, y <strong>Google (Gemini)</strong> para los visuales, así como para el texto cuando Claude no está disponible.</li>
+                    <li><strong>Otros proveedores de IA líderes:</strong> en el futuro, podemos utilizar otros proveedores de IA de alto nivel como <strong>OpenAI, Perplexity, Mistral</strong>, o servicios equivalentes. Solo los activaremos si disponemos de garantías contractuales y técnicas equivalentes (seguridad, confidencialidad, limitaciones de uso).</li>
                     <li><strong>Entrenamiento de modelos:</strong> donde estos servicios lo permiten, configuramos a nuestros proveedores de IA para que <strong>no utilicen tus datos para entrenar sus modelos generales</strong>. Cuando corresponda, tus datos solo se utilizan para proporcionar el servicio solicitado (transcripción, análisis, generación de imagen o texto).</li>
                 </ul>
             </section>
@@ -172,7 +172,7 @@
                     <li><strong>Analítica del sitio web:</strong> Ahrefs Pte Ltd proporciona la medición sin cookies descrita anteriormente. Puedes consultar más detalles en la <a href="https://ahrefs.com/legal/privacy-policy" class="text-dream-salmon hover:underline">Política de privacidad de Ahrefs</a>.</li>
                     <li><strong>Análisis de uso con consentimiento:</strong> Microsoft proporciona Clarity solo después de que lo aceptes. Puedes consultar más detalles en la <a href="https://privacy.microsoft.com/privacystatement" class="text-dream-salmon hover:underline">Declaración de privacidad de Microsoft</a>.</li>
                     <li><strong>Medición de audiencia con consentimiento:</strong> Google proporciona Google Analytics solo después de que lo aceptes. Puedes consultar más detalles en la <a href="https://policies.google.com/privacy" class="text-dream-salmon hover:underline">Política de privacidad de Google</a>.</li>
-                    <li><strong>Proveedores de IA y reconocimiento de voz:</strong> Google (Gemini, Google Cloud Speech-to-Text), y cuando corresponda otros proveedores de IA líderes (Anthropic, OpenAI, Perplexity, Mistral, o servicios equivalentes) para transcripción, análisis de tus sueños y generación de imágenes o contenido.</li>
+                    <li><strong>Proveedores de IA y reconocimiento de voz:</strong> Google (Gemini, Google Cloud Speech-to-Text), Anthropic (Claude), y cuando corresponda otros proveedores de IA líderes (OpenAI, Perplexity, Mistral, o servicios equivalentes) para transcripción, análisis de tus sueños y generación de imágenes o contenido.</li>
                     <li><strong>Gestión de suscripciones:</strong> RevenueCat (EE. UU.) gestiona las suscripciones integradas. RevenueCat recibe un identificador de usuario anónimo y la información de compra proporcionada por la tienda aplicable, Apple App Store o Google Play. Tu información de pago completa nunca pasa por Noctalia. Tras eliminar tu cuenta, Noctalia elimina los datos de suscripción de su lado; no obstante, Apple, Google Play y RevenueCat pueden conservar los registros de compra conforme a sus propias obligaciones legales. La eliminación de la cuenta no cancela la suscripción, que se gestiona en los ajustes de suscripción de Apple App Store o Google Play.</li>
                     <li><strong>Asesores externos y autoridades:</strong> bufetes de abogados, contables o autoridades administrativas y judiciales cuando lo exija la ley o para defender nuestros derechos.</li>
                 </ul>

@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/blog/dream-memory-hero.webp",
   "twitterImageAlt": "Frammenti di memoria onirica protetti in una luce notturna",
   "publishedTime": "2026-06-20T00:00:00+02:00",
-  "modifiedTime": "2026-10-09",
+  "modifiedTime": "2026-10-15",
   "author": "Thanh Chau",
   "prevPath": "/it/blog/sogni-regolazione-emozioni-studio-2026",
   "nextPath": "/it/blog/sognare-da-svegli-stati-onirici",
@@ -58,7 +58,7 @@
 <li><strong>Pubblicità:</strong> niente vendita di dati né annunci mirati, nero su bianco.</li>
 </ul>
 <h2>Cosa risponde Noctalia</h2>
-<p>Secondo la nostra <a class="text-dream-salmon hover:underline" href="/it/privacy-policy">informativa privacy</a>, l'app usa prima il riconoscimento vocale integrato del telefono (quello di sistema). Se non è disponibile o non riesce, l'audio può passare per pochi minuti da Google Cloud Speech-to-Text, senza che Noctalia lo conservi. Il testo va a Google (Gemini) per analisi e immagini, senza addestrare modelli generali quando il servizio lo consente. Analisi, conversazione e immagini avvengono solo dopo che accetti nell'app. Diario ospitato nell'UE, niente vendita di dati né annunci mirati. Puoi <a class="text-dream-salmon hover:underline" href="/it/eliminazione-account">eliminare l'account</a> in Impostazioni; i dati vengono di norma cancellati entro 30 giorni.</p>
+<p>Secondo la nostra <a class="text-dream-salmon hover:underline" href="/it/privacy-policy">informativa privacy</a>, l'app usa prima il riconoscimento vocale integrato del telefono (quello di sistema). Se non è disponibile o non riesce, l'audio può passare per pochi minuti da Google Cloud Speech-to-Text, senza che Noctalia lo conservi. Il testo va ad Anthropic (Claude) per analisi e conversazione, e a Google (Gemini) per le immagini o per il testo quando Claude non è disponibile, senza addestrare modelli generali quando il servizio lo consente. Analisi, conversazione e immagini avvengono solo dopo che accetti nell'app. Diario ospitato nell'UE, niente vendita di dati né annunci mirati. Puoi <a class="text-dream-salmon hover:underline" href="/it/eliminazione-account">eliminare l'account</a> in Impostazioni; i dati vengono di norma cancellati entro 30 giorni.</p>
 <h2>Che cosa cambia con l'AI Act europeo</h2>
 <p>L'AI Act, adottato nel 2024, si applica a tappe dal 2025. Un diario dei sogni non rientra tra gli usi ad alto rischio; se chatti con un'IA, devi esserne informato. Un bollino «conforme all'AI Act» dice quindi poco sulle tue note: accesso e cancellazione dipendono dal GDPR.</p>
 <h2>Una buona analisi resta correggibile</h2>
@@ -76,6 +76,6 @@
 <li><a href="https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai" rel="nofollow noopener noreferrer" target="_blank">Commissione europea: AI Act</a></li>
 <li><a href="https://www.cnil.fr/fr/intelligence-artificielle" rel="nofollow noopener noreferrer" target="_blank">CNIL: intelligenza artificiale e dati personali (in francese)</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Aggiornato il 9 ottobre 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Aggiornato il 15 ottobre 2026</p>
 </section>
 </article>

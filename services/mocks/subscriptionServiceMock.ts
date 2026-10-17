@@ -13,6 +13,8 @@ let currentStatus: SubscriptionStatus | null = null;
 let currentStatusUserId: string | null = null;
 let hasExplicitStatus = false;
 let nextPurchase: { userId: string; outcome: MockPurchaseOutcome } | null = null;
+let syncFailures: { userId: string; remaining: number } | null = null;
+const operationCounts = new Map<string, { purchases: number; restores: number }>();
 // A simulated store receipt is separate from locally loaded access and scoped to its owner.
 const receipts = new Map<string, SubscriptionStatus>();
 const DEFAULT_PLUS_PRODUCT_ID = 'mock_plus';
@@ -198,6 +200,24 @@ export async function setNextMockPurchaseOutcome(outcome: MockPurchaseOutcome): 
   nextPurchase = { userId: user.id, outcome };
 }
 
+/** Fail convergence and its automatic retry, then allow the explicit retry. */
+export async function delayMockSubscriptionActivation(): Promise<void> {
+  const user = await getCurrentUser();
+  if (!user) throw new Error('auth_required');
+  syncFailures = { userId: user.id, remaining: 2 };
+}
+
+export function simulateMockSubscriptionSync(source: string, userId?: string): void {
+  if (!['purchase', 'restore', 'manual_refresh'].includes(source)) return;
+  if (!syncFailures || syncFailures.userId !== userId || syncFailures.remaining === 0) return;
+  syncFailures.remaining -= 1;
+  throw new Error('NETWORK_ERROR');
+}
+
+export function getMockBillingOperationCounts(userId?: string) {
+  return (userId && operationCounts.get(userId)) || { purchases: 0, restores: 0 };
+}
+
 export async function purchasePackage(id: string): Promise<SubscriptionStatus> {
   if (!initialized) {
     throw new Error('Purchases not initialized');
@@ -206,6 +226,8 @@ export async function purchasePackage(id: string): Promise<SubscriptionStatus> {
   if (!pkg) throw new Error('ITEM_UNAVAILABLE');
   const user = await getCurrentUser();
   if (!user) throw new Error('auth_required');
+  const counts = getMockBillingOperationCounts(user.id);
+  operationCounts.set(user.id, { ...counts, purchases: counts.purchases + 1 });
   const outcome = nextPurchase?.userId === user.id ? nextPurchase.outcome : 'success';
   nextPurchase = null;
   if (outcome === 'cancelled') {
@@ -223,6 +245,8 @@ export async function restorePurchases(): Promise<SubscriptionStatus> {
   }
   const user = await getCurrentUser();
   if (!user) throw new Error('auth_required');
+  const counts = getMockBillingOperationCounts(user.id);
+  operationCounts.set(user.id, { ...counts, restores: counts.restores + 1 });
   const receipt = receipts.get(user.id);
   return receipt ? setStatus(receipt, user.id) : syncStatusWithCurrentUser();
 }
@@ -255,5 +279,6 @@ export async function logOutUser(): Promise<void> {
   currentStatusUserId = null;
   hasExplicitStatus = false;
   nextPurchase = null;
+  syncFailures = null;
   listeners.clear();
 }

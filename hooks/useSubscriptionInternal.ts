@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import type { User } from '@supabase/supabase-js';
 import { useAuth } from '@/context/AuthContext';
-import { isMockModeEnabled } from '@/lib/env';
 import { normalizeSubscriptionTier } from '@/lib/quotaTier';
 import { isEntitlementExpired } from '@/lib/revenuecat';
 import { isUserCancelledError as isSharedUserCancelledError, type RevenueCatLikeError } from '@/lib/subscriptionErrors';
@@ -10,6 +9,7 @@ import type { PurchasePackage, SubscriptionStatus, SubscriptionTier } from '@/li
 import { quotaService } from '@/services/quotaService';
 import {
   initializeSubscription,
+  isMockSubscriptionService,
   isSubscriptionInitialized,
   loadSubscriptionPackages,
   purchaseSubscriptionPackage,
@@ -17,6 +17,7 @@ import {
   restoreSubscriptionPurchases,
 } from '@/services/subscriptionService';
 import { syncSubscriptionFromServer } from '@/services/subscriptionSyncService';
+import { simulateMockSubscriptionSync } from '@/services/mocks/subscriptionServiceMock';
 import { useSubscriptionCustomerInfoListener } from './useSubscriptionCustomerInfoListener';
 import { useSubscriptionExpiryTimer } from './useSubscriptionExpiryTimer';
 import { useSubscriptionMonitor } from './useSubscriptionMonitor';
@@ -101,9 +102,12 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  // Provider-owned and account-scoped: dismissing a screen must not erase a
+  // store-successful operation whose server activation still needs a retry.
+  const [activationPendingFor, setActivationPendingFor] = useState<string | null>(null);
   const [error, setError] = useState<Error | null>(null);
   const clearError = useCallback(() => setError(null), []);
-  const isMockMode = isMockModeEnabled();
+  const isMockMode = isMockSubscriptionService;
   const requiresAuth = !user?.id;
   // Track which expiry we've already refreshed to avoid infinite loops on expired plans
   const expiredExpiryKeyRef = useRef<string | null>(null);
@@ -139,6 +143,7 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
     setStatus(null);
     setPackages([]);
     setError(null);
+    setActivationPendingFor(null);
   }, [userId]);
 
   useEffect(() => {
@@ -231,6 +236,7 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
     }
   ) => {
     if (isMockMode) {
+      simulateMockSubscriptionSync(source, userId);
       return null;
     }
     if (!userId) {
@@ -250,6 +256,9 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
     lastSyncAttemptRef.current = { userId, at: now };
 
     const result = await syncSubscriptionFromServer(source);
+    if (result.ok && result.isActive && result.tier === 'plus' && lastUserIdRef.current === userId) {
+      setActivationPendingFor(null);
+    }
 
     if (options?.localStatus) {
       const mergedStatus: SubscriptionStatus = {
@@ -339,9 +348,12 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
         });
       }
 
-      return result
+      const confirmedStatus = result
         ? { ...nextStatus, tier: result.tier, isActive: result.isActive, serverConfirmed: result.ok === true, storeActive: nextStatus.isActive }
         : { ...nextStatus, serverConfirmed: isMockMode, storeActive: nextStatus.isActive };
+      if (confirmedStatus.serverConfirmed && confirmedStatus.isActive && confirmedStatus.tier === 'plus'
+        && lastUserIdRef.current === userId) setActivationPendingFor(null);
+      return confirmedStatus;
     } catch (err) {
       console.warn('[useSubscription] Subscription convergence failed', {
         timestamp: new Date().toISOString(),
@@ -489,6 +501,7 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
       });
 
       const nextStatus = await purchaseSubscriptionPackage(id);
+      if (user?.id && lastUserIdRef.current === user.id) setActivationPendingFor(user.id);
       console.log('[useSubscription] Purchase completed', {
         timestamp: new Date().toISOString(),
         userId: user?.id,
@@ -544,6 +557,7 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
       });
 
       const nextStatus = await restoreSubscriptionPurchases();
+      if (nextStatus.isActive && user?.id && lastUserIdRef.current === user.id) setActivationPendingFor(user.id);
       console.log('[useSubscription] Purchase restore completed', {
         timestamp: new Date().toISOString(),
         userId: user?.id,
@@ -681,6 +695,7 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
     loading,
     processing,
     refreshing,
+    activationPending: Boolean(userId && activationPendingFor === userId),
     error,
     clearError,
     packages,

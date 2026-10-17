@@ -173,10 +173,16 @@ const toSystemInstruction = (
 
 // Gemini 3.8 Flash does not support minimal; Lite 3.5 is qualified separately.
 // Pin omitted levels to low rather than inheriting a provider default.
+// Image models known to accept minimal run at minimal unless high is asked;
+// other image models keep their provider default rather than an unsupported level.
+const MINIMAL_THINKING_IMAGE_MODELS: ReadonlySet<string> = new Set([
+  'gemini-3.1-flash-image', 'gemini-3.1-flash-lite-image', 'gemini-nano-banana-2.1',
+]);
 const toThinkingLevel = (
-  model: string, thinkingLevel?: GeminiThinkingLevel
-): GeminiThinkingLevel => {
-  if (model === GEMINI_FLASH_IMAGE_MODEL || model === GEMINI_FLASH_LITE_IMAGE_MODEL) {
+  model: string, thinkingLevel?: GeminiThinkingLevel, isImage = false
+): GeminiThinkingLevel | undefined => {
+  if (isImage) {
+    if (!MINIMAL_THINKING_IMAGE_MODELS.has(model)) return undefined;
     return thinkingLevel === 'high' ? 'high' : 'minimal';
   }
   if (!thinkingLevel) return 'low';
@@ -208,7 +214,7 @@ const toResponseFormat = (
   return undefined;
 };
 
-const extractText = (interaction: any): string => {
+export const extractText = (interaction: any): string => {
   if (typeof interaction?.output_text === 'string' && interaction.output_text.trim()) {
     return interaction.output_text;
   }
@@ -353,13 +359,17 @@ type GeminiRequestOptions = {
   contents: GeminiContent[] | string;
   systemInstruction?: string | GeminiContent;
   config?: GeminiGenerationConfig;
+  /** SDK retries for this call; the SDK default (4) applies when omitted. */
+  maxRetries?: number;
 };
 
 export const buildInteractionParams = (options: GeminiRequestOptions) => {
   const { model, contents, systemInstruction, config } = options;
   const system = toSystemInstruction(systemInstruction);
   const responseFormat = toResponseFormat(config);
-  const thinkingLevel = toThinkingLevel(model, config?.thinkingLevel);
+  const thinkingLevel = toThinkingLevel(
+    model, config?.thinkingLevel, config?.responseModalities?.includes('IMAGE') === true
+  );
   const generationConfig = {
     ...(thinkingLevel ? { thinking_level: thinkingLevel } : {}),
     ...(typeof config?.maxOutputTokens === 'number'
@@ -396,7 +406,10 @@ export const requestGeminiGenerateContent = async (
 ): Promise<any> => {
   const client = getClient(options.apiKey);
   try {
-    return await client.interactions.create(buildInteractionParams(options));
+    return await client.interactions.create(
+      buildInteractionParams(options),
+      options.maxRetries === undefined ? undefined : { maxRetries: options.maxRetries }
+    );
   } catch (error) {
     throw toApiError(error);
   }

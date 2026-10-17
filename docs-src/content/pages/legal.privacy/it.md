@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-it-1200x630.jpg",
   "twitterImageAlt": "Informativa sulla privacy",
   "publishedTime": "",
-  "modifiedTime": "2026-10-08",
+  "modifiedTime": "2026-10-15",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -36,7 +36,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Informativa sulla privacy</h1>
-<p class="text-lg text-purple-200/80 mb-10">In vigore dall’8 ottobre 2026</p>
+<p class="text-lg text-purple-200/80 mb-10">In vigore dal 15 ottobre 2026</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <div class="p-6 rounded-2xl bg-dream-salmon/5 border border-dream-salmon/20">
@@ -130,8 +130,8 @@
     <p>Noctalia usa servizi di IA per trascrivere e analizzare i sogni e per generare immagini o testi associati.</p>
     <ul class="list-disc pl-5 mt-4 space-y-2">
       <li><strong>Riconoscimento vocale:</strong> usiamo preferibilmente il riconoscimento nativo del dispositivo. Se non disponibile, l’audio può essere inviato temporaneamente tramite backend a un servizio terzo come Google Cloud Speech-to-Text. Noctalia non conserva tali registrazioni in modo persistente.</li>
-      <li><strong>Analisi e generazione:</strong> il testo del sogno e metadati necessari sono inviati al provider IA principale, attualmente <strong>Google Gemini</strong>, per generare analisi, riassunti, risposte alle domande di riflessione e contenuti visuali.</li>
-      <li><strong>Altri provider:</strong> in futuro potremmo usare servizi equivalenti come Anthropic, OpenAI, Perplexity o Mistral, solo con garanzie adeguate di sicurezza e riservatezza.</li>
+      <li><strong>Analisi e generazione:</strong> il testo del sogno e metadati necessari sono inviati ai nostri provider IA: <strong>Anthropic (Claude)</strong> per analisi, riassunti e risposte alle domande di riflessione, e <strong>Google Gemini</strong> per i contenuti visuali e per il testo quando Claude non è disponibile.</li>
+      <li><strong>Altri provider:</strong> in futuro potremmo usare servizi equivalenti come OpenAI, Perplexity o Mistral, solo con garanzie adeguate di sicurezza e riservatezza.</li>
       <li><strong>Addestramento modelli:</strong> quando possibile, configuriamo i provider affinché i tuoi dati non siano usati per addestrare modelli generali.</li>
     </ul>
   </section>
@@ -167,7 +167,7 @@
       <li><strong>Analisi del sito web:</strong> Ahrefs Pte Ltd fornisce la misurazione senza cookie descritta sopra. I dettagli sono disponibili nell'<a href="https://ahrefs.com/legal/privacy-policy" class="text-dream-salmon hover:underline">Informativa sulla privacy di Ahrefs</a>.</li>
       <li><strong>Analisi d'uso con consenso:</strong> Microsoft fornisce Clarity solo dopo la tua accettazione. I dettagli sono disponibili nell'<a href="https://privacy.microsoft.com/privacystatement" class="text-dream-salmon hover:underline">Informativa sulla privacy di Microsoft</a>.</li>
       <li><strong>Misurazione dell'audience con consenso:</strong> Google fornisce Google Analytics solo dopo la tua accettazione. I dettagli sono disponibili nell'<a href="https://policies.google.com/privacy" class="text-dream-salmon hover:underline">Informativa sulla privacy di Google</a>.</li>
-      <li><strong>Provider IA e voce:</strong> Google Gemini, Google Cloud Speech-to-Text e, se necessario, servizi equivalenti.</li>
+      <li><strong>Provider IA e voce:</strong> Google Gemini, Anthropic (Claude), Google Cloud Speech-to-Text e, se necessario, servizi equivalenti.</li>
       <li><strong>Gestione abbonamenti:</strong> RevenueCat tratta identificatori anonimi e informazioni di acquisto fornite dallo store applicabile, Apple App Store o Google Play. I dati completi di pagamento non passano da Noctalia. Dopo l'eliminazione dell'account, Noctalia cancella i dati dell'abbonamento dal proprio lato; i registri degli acquisti possono tuttavia essere conservati da Apple, Google Play e RevenueCat in conformità con i rispettivi obblighi legali. L'eliminazione dell'account non annulla l'abbonamento, che si gestisce nelle impostazioni degli abbonamenti di Apple App Store o Google Play.</li>
       <li><strong>Autorità e consulenti:</strong> quando richiesto dalla legge o per tutelare i nostri diritti.</li>
     </ul>

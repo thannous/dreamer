@@ -64,7 +64,7 @@ export function TodayHero({ state, dream, now, onPressCta, onOpenSettings }: Pro
   return (
     <View className="relative bg-ink">
       {/* No dream artwork yet: the night sky fills the opening from the top of the screen, like every tab header. */}
-      {!hasArtwork ? <NightSkyBand height={insets.top + 340} background={ground} scene="reverie" /> : null}
+      {!hasArtwork ? <NightSkyBand height={insets.top + 340} background={ground} scene="reverie" reading /> : null}
       {immersiveArtwork ? <Animated.View className="absolute left-0 right-0 top-0 overflow-hidden"
         pointerEvents="none" accessibilityElementsHidden importantForAccessibility="no-hide-descendants"
         style={[{ height: (stageHeight ?? 260) + 1, transformOrigin: 'top center' }, artworkStretch]}>

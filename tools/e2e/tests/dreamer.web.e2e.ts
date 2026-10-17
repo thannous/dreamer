@@ -69,7 +69,9 @@ test('guest saves the exact story and reads its simulated analysis inline', asyn
   await screen.getByTestId('btn.saveDream', { visible: true }).tap();
   await expect(screen.getByTestId('component.transcriptCard', { visible: true })).toContainText(story);
   const reading = screen.getByTestId('component.dreamDetail.readingZone', { visible: true });
-  await expect(reading).toContainText('Analysis');
+  // Revised 2026-10-16 (was 'Analysis'): the page is set as a book, its section names in
+  // spaced capitals, so the visible heading reads "ANALYSIS".
+  await expect(reading).toContainText(/Analysis/i);
   await expect(reading).toContainText('Symbols');
   expect((await reading.textContent() ?? '').length).toBeGreaterThan(100);
   await expect(screen.getByTestId('analysis.reading.modal')).toHaveCount(0);
@@ -487,9 +489,57 @@ test('plus account watches its dream painted into the window, then finds it glow
   await offConsent();
   await settledMotion(browser);
   await screen.getByTestId('btn.journal.illustrate').scrollIntoView();
+  // The seal offers the illustration itself; the page below keeps only the dreamer's own picture.
+  const sealBox = (await screen.getByTestId('component.dreamDetail.savedMoment').boundingBox())!;
+  const illustrateBox = (await screen.getByTestId('btn.journal.illustrate').boundingBox())!;
+  expect(illustrateBox.y >= sealBox.y && illustrateBox.y + illustrateBox.height <= sealBox.y + sealBox.height).toBe(true);
+  await expect(screen.getByTestId('btn.journal.addImageFromLibrary')).toHaveCount(1);
+  await app.screenshot('plus-seal-offers-illustration');
+  // While the illustration lands, the astrolabe holds still: the date engraved on its rim
+  // stays whole, never fading out, and nothing but the illustration plays its entrance again.
+  await browser.evaluate(() => {
+    const w = window as unknown as { __sealDate: { settled: number; lowest: number | null; replayed: number } };
+    // Letters seen, each through every view down from the rim's date.
+    const seen = () => {
+      const date = document.querySelector('[data-testid="component.savedDream.sealDate"]');
+      if (!date) return 0;
+      return Array.from(date.querySelectorAll('[class*="css-text"]')).filter((letter) => {
+        let opacity = 1;
+        for (let el: Element | null = letter; el && el !== date.parentElement; el = el.parentElement) {
+          opacity *= Number(getComputedStyle(el).opacity);
+        }
+        return opacity > 0.99;
+      }).length;
+    };
+    // Animations running in the seal outside its window's illustration.
+    const replaying = (artwork: Element) => {
+      const seal = document.querySelector('[data-testid="component.dreamDetail.savedMoment"]');
+      return (seal?.getAnimations({ subtree: true }) ?? []).filter((animation) => {
+        const target = (animation.effect as KeyframeEffect | null)?.target;
+        return animation.playState === 'running' && target instanceof Element && !artwork.contains(target);
+      }).length;
+    };
+    w.__sealDate = { settled: seen(), lowest: null, replayed: 0 };
+    const start = performance.now();
+    const tick = () => {
+      const artwork = document.querySelector('[data-testid="component.dreamDetail.savedMoment.artwork"]');
+      if (artwork) {
+        w.__sealDate.lowest = Math.min(w.__sealDate.lowest ?? Infinity, seen());
+        w.__sealDate.replayed = Math.max(w.__sealDate.replayed, replaying(artwork));
+      }
+      if (performance.now() - start < 6000) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+    return null;
+  });
   await screen.getByTestId('btn.journal.illustrate', { visible: true }).tap();
   // Painted in the seal's window: no canvas of its own is added to the page.
   await expect(screen.getByTestId('component.dreamDetail.savedMoment.artwork')).toHaveCount(1);
+  await new Promise((resolve) => setTimeout(resolve, 1200));
+  const sealDate = await browser.evaluate(() => (window as unknown as { __sealDate: { settled: number; lowest: number | null; replayed: number } }).__sealDate);
+  expect(sealDate.settled).toBeGreaterThan(0);
+  expect(sealDate.lowest).toBe(sealDate.settled);
+  expect(sealDate.replayed).toBe(0);
   await expect(screen.getByTestId('journal.detail.image.generation_dots')).toHaveCount(0);
   await expect(screen.getByTestId('component.dreamDetail.paintedArtwork')).toHaveCount(0);
   await app.screenshot('plus-painting-landed-in-the-seal');

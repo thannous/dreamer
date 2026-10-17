@@ -1191,8 +1191,8 @@
 <i class="w-6 h-6 text-blue-400/60 group-hover:text-blue-300 transition-colors" data-lucide="book-open"></i>
 </div>
 <div class="relative">
-<h3 class="font-serif text-xl text-dream-cream mb-2 group-hover:text-white transition-colors pr-14">Journal de rêves</h3>
-<p class="text-sm text-gray-400 leading-relaxed">Rappel, routines, sommeil REM et méthodes pour décrire vos rêves.</p>
+<h3 class="font-serif text-xl text-dream-cream mb-2 group-hover:text-white transition-colors pr-14">Modèles de journal de rêves</h3>
+<p class="text-sm text-gray-400 leading-relaxed">Cinq trames à copier, et nos guides sur le rappel et le sommeil.</p>
 </div>
 </a>
 <a class="group relative rounded-2xl p-6 block overflow-hidden border border-white/5 bg-gradient-to-br from-pink-900/40 via-dream-dark/60 to-dream-dark hover:border-pink-400/30 transition-all duration-500" href="signification-des-reves">

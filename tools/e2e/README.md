@@ -3,18 +3,53 @@
 Default framework for new journeys since the owner's 2026-10-05 instruction.
 Follow https://docs.expo.dev/guides/using-e2e/ and the skill bundled in this
 package's `node_modules/e2e/skills/e2e/`. Dependencies and lockfile are isolated
-from the application's Playwright version. The locked runtime is `e2e` 0.21.0,
-`@e2e-dev/web` 0.15.0, `@e2e-dev/mobile` 0.12.1 and `agent-device` 0.21.25
+from the application's Playwright version. The locked runtime is `e2e` 0.21.2,
+`@e2e-dev/web` 0.15.2, `@e2e-dev/mobile` 0.12.3 and `agent-device` 0.21.28
 (the mobile engine's own exact dependency). `SDK_PINS` in `qualification.mjs`
 holds the same four versions; the runner refuses another installed version and
-a report from another runner or engine. The engine peer ranges accept e2e 0.21.0.
-Web 0.15.0 drives `playwright-core` 1.64.0, so the matcher Playwright moves to
+a report from another runner or engine. The engine peer ranges accept e2e 0.21.2.
+Web 0.15.2 drives `playwright-core` 1.64.0, so the matcher Playwright moves to
 1.64.0 too and both share one Chromium build.
 Node 24.19.0 is pinned by the root mise file and satisfies e2e 0.21's
 `^22.22.3 || >=24.8.0` requirement. The runner uses e2e's bundled TypeScript
 loader; the scoped public matcher preload is unchanged.
 
-What 0.21 changes here:
+Local web runs use several workers: half the CPU cores, at most four, or
+`E2E_WORKERS=<n>`. Files run in parallel against the one local server, each
+attempt in its own browser context and storage; a file's tests stay in order.
+CI (`CI` set) keeps one worker and shards across containers, and native runs keep
+one worker per named device. e2e 0.21.2 starts the slowest files first only when
+the previous report sits in the same output directory, which this runner never
+reuses, so files start in collection order.
+
+What 0.21.2 changes here:
+
+- With several workers, `--shard` counts a skipped test in one shard only.
+  Failure summaries and trace pages name the step that actually ended the test.
+- Web `scrollUntilVisible` no longer pauses 100 ms between swipes (web 0.15.2).
+  Web 0.15.1 adds `browser.keyboard.down()`/`up()` for held keys and modifier
+  sequences; `tap`, `double_tap` and `right_click` accept modifier keys.
+- On Android, locators and `expect` keep waiting while the app reports no readable
+  foreground content after a cold start (mobile 0.12.3). `getByTestId` falls back
+  to a resource id without its `<package>:id/` prefix, so `toHaveCount(0)` can now
+  find such a node. Mobile 0.12.2 maps iOS element types to roles for `getByRole`
+  and keeps video, resets, settings, alerts and clipboard on the selected device.
+- Cached actions record their model and a replay with another model is flagged;
+  an iOS navigation-bar or Android toolbar title change makes old recordings
+  `REPLAY_STALE` under `--strict-cache`. This harness runs with `cache: 'off'`.
+  See the [official release notes](https://github.com/tester-army/e2e/releases/tag/e2e%400.21.2).
+
+What 0.21.1 changes here:
+
+- Corrects CLI broken-pipe handling, timeout reporting and hosted-session deadline
+  handling. The qualification report and trace format remain compatible.
+- Adds `run()` from `e2e/runner` and an optional measured `keyboardVisible`
+  observation. This harness keeps its existing CLI and engines; receiving mobile
+  keyboard measurements requires a supporting mobile engine.
+- Corrects MCP locator advice and the bug-bash skill's repro glob example.
+  See the [official release notes](https://github.com/tester-army/e2e/releases/tag/e2e%400.21.1).
+
+What 0.21.0 changes here:
 
 - Reads (`textContent()`, `inputValue()`, `getAttribute()`, `isEnabled()`,
   `isChecked()`, `boundingBox()`...) wait for one match until the action timeout
@@ -166,7 +201,7 @@ CircleCI runs only when triggered manually (web app or API; see the
 [CircleCI guide](../../doc_web_interne/docs/circleci-migration.md)); pushes and PRs
 rely on local runs. A manual pipeline runs the exact Dreamer and Lucid journeys in
 the Noctalia workflow, Meditation in its own workflow, and the generated site after
-`docs:build` and `docs:check`. Each job installs this package's locked e2e 0.21.0 dependencies
+`docs:build` and `docs:check`. Each job installs this package's locked e2e 0.21.2 dependencies
 and Chromium, uses one worker with no replay or model, and retains JUnit, reports, screenshots,
 trace pages and source identity under `tools/e2e/.e2e/`. Existing backend and
 quality checks remain required. `E2E_KEEP_METRO_CACHE=1` drops Metro's `--clear`
@@ -382,7 +417,7 @@ typechecked test is not evidence that the user journey passed.
 ## agent-device inspection and live exploration
 
 The host CLI and the official `agent-device` Codex skill are installed. This
-package uses the engine's exact `agent-device` 0.21.25 dependency through its
+package uses the engine's exact `agent-device` 0.21.28 dependency through its
 local CLI. A globally installed CLI may have a different version; the guarded
 package commands use this local pin. Read its version-matched `help workflow`
 or `help debugging` for specialized work. Use exact compatible pins for a measured
@@ -436,3 +471,36 @@ missing proof files, SDK/wrapper exits and hashes of the available report/log by
 It returns nonzero and never writes a qualifying `campaign.json`. The original
 reports, logs and partial media remain in the uploaded directory; an interrupted
 ZIP/video is not claimed complete. No SDK test or app is launched by collection.
+
+## Physical iPhone Apple Sandbox billing
+
+The opt-in `run-iphone-sandbox-local.mjs` uses the existing developer-signed app on an owned
+physical iPhone. It does not install/reset the app or change macOS security settings.
+Configure the ignored `.env.ios-sandbox.local` from `.env.ios-sandbox.example`, retaining the
+existing signed runner, device/account identity and private evidence/preflight. Start the
+canonical local Metro profile before `--check` or a run; `--list` needs no device/Metro.
+
+```sh
+mise exec -- node tools/e2e/run-iphone-sandbox-local.mjs --check
+mise exec -- node tools/e2e/run-iphone-sandbox-local.mjs --list --grep 'restores receipt'
+mise exec -- node tools/e2e/run-iphone-sandbox-local.mjs --grep 'restores receipt'
+```
+
+An explicit `--grep` is required. One worker and zero retries cannot be overridden through
+this wrapper. Fresh purchases also require `--allow-sandbox-purchase`; verify the actual
+Apple test-only/no-charge sheet and expected account before physical confirmation. The
+native sheet may be absent from the app accessibility tree. Resume an already completed
+purchase with the continuation test; do not tap Buy again to check it. Original failures,
+human steps and continuation passes stay distinct evidence.
+
+See the [reusable iOS runbook](../../doc_web_interne/docs/revenuecat-qa-workflow.md#ios-physique--réutiliser-la-préparation-sandbox)
+and the [dated qualification](../../doc_web_interne/docs/qa/revenuecat-ios-sandbox-20261016.md).
+This developer-client proof does not qualify Release/TestFlight or production delivery.
+
+Receipt qualification also binds Metro to the clean checked-out source, resolves the device
+name to the inspected physical UDID and checks source/profile stability at completion.
+A purchase continuation requires `--resume-attempt <id>` within 15 minutes, an explicit
+attempt-bound `purchase-attestation.json`, and a native PURCHASE matching RevenueCat's
+`store_transaction_id`. A renewal or stale state is refused. See the runbook for the private
+attestation fields. Run `mise exec -- node --test tools/e2e/iphone-sandbox-guards.test.mjs`
+for the documented unsafe-device/stale-evidence counterexamples without touching a phone.

@@ -1,17 +1,36 @@
 {
   "en": {
-    "page_title": "Dream Symbols Dictionary: 150 A-Z Meanings | Noctalia",
-    "meta_description": "Search 150 dream symbols A-Z: water, teeth, falling, animals, death, doors, hospitals, wolves and recurring dream themes.",
-    "og_title": "Dream Symbols Dictionary: 150 A-Z Meanings",
+    "page_title": "Dream dictionary: 160 dream symbols A-Z | Noctalia",
+    "meta_description": "An A-Z dream dictionary of 160 symbols, from water, teeth and falling to snakes, houses and death, with possible meanings and questions to reread your dream.",
+    "og_title": "Dream dictionary: 160 dream symbols A-Z",
     "og_description": "Find clear meanings, reflection prompts and related symbols for common dreams.",
-    "twitter_title": "Dream Symbols Dictionary A-Z",
-    "twitter_description": "150 dream symbols with meanings, examples and personal prompts.",
-    "h1_text": "Dream Symbols Dictionary A‑Z",
-    "intro_paragraph": "Search the dream symbol that stayed with you after waking: water, teeth, a door, a hospital, a wolf, a house or a repeated action. This A-Z dictionary covers 150 symbols, each with a short meaning, questions to ask yourself and related themes, so you can go from a general definition back to your own dream.",
+    "twitter_title": "Dream dictionary A-Z",
+    "twitter_description": "160 dream symbols with meanings, examples and personal prompts.",
+    "h1_text": "Dream dictionary A‑Z",
+    "intro_paragraph": "Search the dream symbol that stayed with you after waking: water, teeth, a door, a hospital, a wolf, a house or a repeated action. This A-Z dream dictionary covers 160 symbols, each with a short meaning, questions to ask yourself and related themes, so you can go from a general definition back to your own dream.",
     "hero_search_placeholder": "Search a symbol (water, snake, falling…)",
     "sticky_search_placeholder": "Search a symbol (water, snake, falling…)",
     "no_results_text": "No symbols found for",
     "browse_by_category": "Browse by Category",
+    "priority_links_heading": "Most searched",
+    "priority_links_intro": "Start with three of the most searched dream symbols and pick the situation closest to your dream.",
+    "priority_links": [
+      {
+        "label": "Teeth falling out",
+        "href": "/en/symbols/teeth",
+        "desc": "Loose, crumbling or falling teeth: common scenes and questions to ask yourself."
+      },
+      {
+        "label": "Snake dreams",
+        "href": "/en/symbols/snake",
+        "desc": "A snake that bites, chases or just watches: compare the possible readings."
+      },
+      {
+        "label": "Falling dreams",
+        "href": "/en/symbols/falling",
+        "desc": "Falling into empty space, waking with a jolt, losing control and notes for your journal."
+      }
+    ],
     "section_heading": "Symbols starting with",
     "ask_yourself_label": "Ask yourself:",
     "cta_title": "Save every dream and see which symbols come back.",
@@ -85,18 +104,37 @@
     }
   },
   "fr": {
-    "page_title": "Dictionnaire des symboles de rêves : 150 significations A-Z | Noctalia",
-    "meta_description": "Cherchez 150 symboles de rêves A-Z : eau, dents, chute, animaux, mort, maison, hôpital, loup et thèmes récurrents.",
-    "og_title": "Dictionnaire des symboles de rêves : 150 significations",
+    "page_title": "Dictionnaire des rêves : 160 symboles de A à Z | Noctalia",
+    "meta_description": "Dictionnaire des rêves de A à Z : 160 symboles (eau, dents, chute, serpent, maison, mort…) avec leur sens possible et des questions pour relire votre rêve.",
+    "og_title": "Dictionnaire des rêves : 160 symboles de A à Z",
     "og_description": "Trouvez des significations claires, des questions de réflexion et des symboles liés.",
-    "twitter_title": "Dictionnaire des symboles de rêves A-Z",
-    "twitter_description": "150 symboles de rêves avec significations, exemples et questions personnelles.",
-    "h1_text": "Dictionnaire des symboles de rêves A-Z",
-    "intro_paragraph": "Cherchez le symbole qui vous est resté au réveil : eau, dents, porte, hôpital, loup, maison ou action répétée. Ce dictionnaire A-Z rassemble 150 symboles avec significations rapides, questions de réflexion et thèmes liés pour passer d’une définition générale au contexte de votre propre rêve.",
+    "twitter_title": "Dictionnaire des rêves de A à Z",
+    "twitter_description": "160 symboles de rêves avec significations, exemples et questions personnelles.",
+    "h1_text": "Dictionnaire des rêves de A à Z",
+    "intro_paragraph": "Cherchez le symbole qui vous est resté au réveil : eau, dents, porte, hôpital, loup, maison ou action répétée. Ce dictionnaire des rêves de A à Z rassemble 160 symboles avec significations rapides, questions de réflexion et thèmes liés pour passer d’une définition générale au contexte de votre propre rêve.",
     "hero_search_placeholder": "Rechercher un symbole (eau, serpent, chute…)",
     "sticky_search_placeholder": "Rechercher un symbole (eau, serpent, chute…)",
     "no_results_text": "Aucun symbole trouvé pour",
     "browse_by_category": "Parcourir par catégorie",
+    "priority_links_heading": "Les plus cherchés",
+    "priority_links_intro": "Commencez par trois symboles très recherchés et choisissez la situation la plus proche de votre rêve.",
+    "priority_links": [
+      {
+        "label": "Rêver de perdre ses dents",
+        "href": "/fr/symboles/dents",
+        "desc": "Dents qui tombent, qui bougent ou qui s’effritent : scènes fréquentes et questions à se poser."
+      },
+      {
+        "label": "Rêver de serpent",
+        "href": "/fr/symboles/serpent",
+        "desc": "Serpent qui mord, qui poursuit ou qui reste immobile : comparer les lectures possibles."
+      },
+      {
+        "label": "Rêver de tomber",
+        "href": "/fr/symboles/chute",
+        "desc": "Chute dans le vide, réveil en sursaut, perte de contrôle et pistes pour votre journal."
+      }
+    ],
     "section_heading": "Symboles commençant par",
     "ask_yourself_label": "À vous demander :",
     "cta_title": "Notez chaque rêve et repérez les symboles qui reviennent.",
@@ -359,18 +397,47 @@
     }
   },
   "it": {
-    "page_title": "Dizionario dei simboli dei sogni: 150 significati A-Z | Noctalia",
-    "meta_description": "Cerca 150 simboli dei sogni A-Z: acqua, denti, cadere, animali, morte, casa, ospedale, lupo e temi ricorrenti.",
-    "og_title": "Dizionario dei simboli dei sogni: 150 significati",
+    "page_title": "Dizionario dei simboli dei sogni: 160 significati A-Z | Noctalia",
+    "meta_description": "Cerca 160 simboli dei sogni A-Z: acqua, denti, cadere, animali, morte, casa, ospedale, lupo e temi ricorrenti.",
+    "og_title": "Dizionario dei simboli dei sogni: 160 significati",
     "og_description": "Trova significati chiari, domande di riflessione e simboli collegati.",
     "twitter_title": "Dizionario dei simboli dei sogni A-Z",
-    "twitter_description": "150 simboli dei sogni con significati, esempi e domande personali.",
+    "twitter_description": "160 simboli dei sogni con significati, esempi e domande personali.",
     "h1_text": "Dizionario dei simboli dei sogni A-Z",
-    "intro_paragraph": "Cerca il simbolo che ti è rimasto al risveglio: acqua, denti, porta, ospedale, lupo, casa o un’azione ripetuta. Questo dizionario A-Z include 150 simboli con significati rapidi, domande di riflessione e temi collegati per passare da una definizione generale al contesto del tuo sogno.",
+    "intro_paragraph": "Cerca il simbolo che ti è rimasto al risveglio: acqua, denti, porta, ospedale, lupo, casa o un’azione ripetuta. Questo dizionario A-Z include 160 simboli con significati rapidi, domande di riflessione e temi collegati per passare da una definizione generale al contesto del tuo sogno.",
     "hero_search_placeholder": "Cerca un simbolo (acqua, serpente, caduta…)",
     "sticky_search_placeholder": "Cerca un simbolo (acqua, serpente, caduta…)",
     "no_results_text": "Nessun simbolo trovato per",
     "browse_by_category": "Sfoglia per categoria",
+    "priority_links_heading": "I più cercati",
+    "priority_links_intro": "Cinque simboli molto cercati: scegli la scena più vicina al tuo sogno.",
+    "priority_links": [
+      {
+        "label": "Sognare cacca",
+        "href": "/it/simboli/cacca",
+        "desc": "Pestarla, pulirla o trovarla dove non dovrebbe essere, e la credenza che porti soldi."
+      },
+      {
+        "label": "Sognare topi",
+        "href": "/it/simboli/topo",
+        "desc": "Un topo in casa, tanti topi o un topo morto: piccole preoccupazioni e spazio privato."
+      },
+      {
+        "label": "Sognare pesci",
+        "href": "/it/simboli/pesce",
+        "desc": "Pesci vivi, morti o pescati: che cosa cambia secondo l’acqua e il tuo gesto."
+      },
+      {
+        "label": "Sognare il mare",
+        "href": "/it/simboli/oceano",
+        "desc": "Mare calmo, mare agitato o onde alte: che cosa cambia secondo l’acqua e il punto in cui ti trovi."
+      },
+      {
+        "label": "Sognare scarafaggi",
+        "href": "/it/simboli/scarafaggio",
+        "desc": "Uno solo o un’invasione, in cucina o nel letto: fastidio, sporco e spazi da riprendere."
+      }
+    ],
     "section_heading": "Simboli che iniziano con",
     "ask_yourself_label": "Chiediti:",
     "cta_title": "Salva ogni sogno e guarda quali simboli ritornano.",

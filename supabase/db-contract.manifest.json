@@ -20,6 +20,7 @@
         "image_url",
         "chat_history",
         "theme",
+        "precise_theme",
         "dream_type",
         "is_favorite",
         "is_analyzed",
@@ -293,6 +294,17 @@
         "BEFORE UPDATE OF chat_history",
         "EXECUTE FUNCTION public.enforce_quota_for_chat()"
       ]
+    },
+    {
+      "schema": "public",
+      "table": "dreams",
+      "name": "trg_05_project_dream_precise_theme",
+      "functionSchema": "public",
+      "functionName": "project_dream_precise_theme",
+      "definitionIncludes": [
+        "BEFORE INSERT OR UPDATE",
+        "EXECUTE FUNCTION public.project_dream_precise_theme()"
+      ]
     }
   ],
   "requiredIndexes": [
@@ -525,7 +537,7 @@
         "quota_type": "messages_per_dream"
       },
       "expect": {
-        "quota_limit": 20
+        "quota_limit": 100
       }
     },
     {
@@ -561,7 +573,7 @@
         "quota_type": "messages_per_dream"
       },
       "expect": {
-        "quota_limit": 20
+        "quota_limit": 100
       }
     }
   ],

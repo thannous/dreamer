@@ -16,6 +16,11 @@ There is no feature-specific palette or appearance provider.
   reading content; native iOS scroll-edge blur is disabled on this route. The primary
   action appears when the story enters the viewport and hides during editing.
   White borders baked into a generated illustration are image content, not theme surfaces.
+- The page is set as a book (`JournalBook.tsx`): Lora body text at a book's measure
+  (centred, at most `BOOK_MEASURE` wide on large screens), sections opened by a
+  mark in spaced capitals between hairlines, the story opening on a raised initial (its
+  words unchanged, for reading and copying), and the actions as a colophon under an
+  ornament. The name keeps its place and alignment: the capture seal lands on it.
 - Navigation, decorative headings, list previews and control labels use bounded
   explicit font metrics. Readonly text uses matching drawing and layout sizes to
   avoid stale native measurements during live Dynamic Type changes. Search and

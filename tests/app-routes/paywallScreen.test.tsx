@@ -257,8 +257,8 @@ describe('Paywall screen', () => {
     mockParams = { trigger: 'settings' };
     mockUser = { id: 'user-1' };
     mockCanGoBack.mockReturnValue(true);
-    mockPurchase.mockResolvedValue(undefined);
-    mockRestore.mockResolvedValue(undefined);
+    mockPurchase.mockResolvedValue({ tier: 'plus', isActive: true, serverConfirmed: true, storeActive: true });
+    mockRestore.mockResolvedValue({ tier: 'free', isActive: false, serverConfirmed: true, storeActive: false });
     mockRefreshSubscription.mockReset().mockResolvedValue({ tier: 'plus', isActive: true, serverConfirmed: true, storeActive: true });
     mockUseSubscription.mockReturnValue({
       status: { tier: 'free', isActive: false, expiryDate: null },

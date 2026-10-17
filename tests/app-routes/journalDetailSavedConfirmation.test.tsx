@@ -1234,6 +1234,23 @@ describe('journal detail saved confirmation route', () => {
     expect(screen.getByRole('button', { name: 'Retry illustration' })).toBeTruthy();
   });
 
+  // The seal offers only a first illustration: a failed one keeps its own card and step (PR #367 review).
+  it('keeps a single upgrade step on the failure card when a free illustration failed', () => {
+    mockTier = 'free';
+    mockUser = { id: 'user-1' };
+    mockSearchParams = { id: '42' };
+    mockDreams = [buildDream({
+      isAnalyzed: true,
+      analysisStatus: 'done',
+      interpretation: 'A quiet reflection',
+      imageGenerationFailed: true,
+    })];
+    render(<JournalDetailScreen />);
+    const upgrades = screen.getAllByTestId(TID.Button.ImageUpgrade);
+    expect(upgrades).toHaveLength(1);
+    expect(screen.getByTestId(TID.Component.SavedDreamMoment).contains(upgrades[0])).toBe(false);
+  });
+
   it.each(['analysis_confirmation', 'analysis_requested'] as const)('only dismisses optional onboarding analysis on return: %s', (phase: 'analysis_confirmation' | 'analysis_requested') => {
     mockPendingRecordingIntent = { savedDreamId: 42, phase };
     render(<JournalDetailScreen />);

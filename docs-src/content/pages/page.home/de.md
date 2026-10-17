@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-de-1200x630.jpg",
   "twitterImageAlt": "Traumtagebuch mit Traumillustrationen & Deutung",
   "publishedTime": "",
-  "modifiedTime": "2026-10-10",
+  "modifiedTime": "2026-10-15",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -726,10 +726,11 @@
                     <span class="oh-plan-tag">Bezahlabo</span>
                     <h3>Noctalia Plus</h3>
                     <div class="oh-plan-price">Preis in Google Play</div>
+                    <p class="oh-plan-desc">Träume, Analysen und Chat ohne Limit.</p>
                 </div>
                 <ul>
-                    <li>Unbegrenzte Traumanalysen und Bilder</li>
-                    <li>Bis zu 20 Folgenachrichten pro Traum</li>
+                    <li>Unbegrenzte Traumanalysen, jede mit einem Bild</li>
+                    <li>Unbegrenzter Chat bei fairer Nutzung: bis zu 100 Folgenachrichten pro Traum</li>
                     <li>360°-Synthese am Ende einer geführten Erkundung</li>
                 </ul>
                 <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=de" class="oh-plan-cta">Noctalia Plus ansehen</a>

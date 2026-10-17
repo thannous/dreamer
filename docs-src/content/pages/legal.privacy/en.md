@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Privacy Policy",
   "publishedTime": "",
-  "modifiedTime": "2026-10-08",
+  "modifiedTime": "2026-10-15",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -36,7 +36,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Privacy Policy</h1>
-        <p class="text-lg text-purple-200/80 mb-10">Effective October 8, 2026</p>
+        <p class="text-lg text-purple-200/80 mb-10">Effective October 15, 2026</p>
 
         <div class="space-y-8 text-gray-300 leading-relaxed">
             <div class="p-6 rounded-2xl bg-dream-salmon/5 border border-dream-salmon/20">
@@ -132,8 +132,8 @@
                 <p>Noctalia relies on Artificial Intelligence services to transcribe and analyze your dreams, as well as to generate associated images.</p>
                 <ul class="list-disc pl-5 mt-4 space-y-2">
                     <li><strong>Speech recognition:</strong> we primarily use your device's native speech recognition (via system interfaces). In case of failure or unavailability, an audio recording may be temporarily transmitted to a third-party speech recognition service (e.g., Google Cloud Speech-to-Text) via our backend to produce a transcript. These audio recordings are processed in real-time to produce the transcript and are not persistently stored by Noctalia.</li>
-                    <li><strong>Dream analysis and content generation:</strong> the text of your dreams and certain strictly necessary metadata are sent to our main AI provider, currently <strong>Google (Gemini)</strong>, to generate analyses, summaries, conversation elements and visuals.</li>
-                    <li><strong>Other leading AI providers:</strong> in the future, we may use other high-level AI providers such as <strong>Anthropic, OpenAI, Perplexity, Mistral</strong>, or equivalent services. We will only enable them if we have equivalent contractual and technical guarantees (security, confidentiality, usage limitations).</li>
+                    <li><strong>Dream analysis and content generation:</strong> the text of your dreams and certain strictly necessary metadata are sent to our AI providers: <strong>Anthropic (Claude)</strong> for analyses, summaries and conversation elements, and <strong>Google (Gemini)</strong> for visuals, and for text when Claude is unavailable.</li>
+                    <li><strong>Other leading AI providers:</strong> in the future, we may use other high-level AI providers such as <strong>OpenAI, Perplexity, Mistral</strong>, or equivalent services. We will only enable them if we have equivalent contractual and technical guarantees (security, confidentiality, usage limitations).</li>
                     <li><strong>Model training:</strong> where these services allow it, we configure our AI providers so that they <strong>do not use your data to train their general models</strong>. Where applicable, your data is only used to provide the requested service (transcription, analysis, image or text generation).</li>
                 </ul>
             </section>
@@ -172,7 +172,7 @@
                     <li><strong>Website analytics:</strong> Ahrefs Pte Ltd provides the cookie-free audience measurement described above. Details are available in the <a href="https://ahrefs.com/legal/privacy-policy" class="text-dream-salmon hover:underline">Ahrefs Privacy Policy</a>.</li>
                     <li><strong>Consent-based usage analysis:</strong> Microsoft provides Clarity only after you agree. Details are available in the <a href="https://privacy.microsoft.com/privacystatement" class="text-dream-salmon hover:underline">Microsoft Privacy Statement</a>.</li>
                     <li><strong>Consent-based traffic measurement:</strong> Google provides Google Analytics only after you agree. Details are available in the <a href="https://policies.google.com/privacy" class="text-dream-salmon hover:underline">Google Privacy Policy</a>.</li>
-                    <li><strong>AI and speech recognition providers:</strong> Google (Gemini, Google Cloud Speech-to-Text), and where applicable other leading AI providers (Anthropic, OpenAI, Perplexity, Mistral, or equivalent services) for transcription, analysis of your dreams and generation of images or content.</li>
+                    <li><strong>AI and speech recognition providers:</strong> Google (Gemini, Google Cloud Speech-to-Text), Anthropic (Claude), and where applicable other leading AI providers (OpenAI, Perplexity, Mistral, or equivalent services) for transcription, analysis of your dreams and generation of images or content.</li>
                     <li><strong>Subscription management:</strong> RevenueCat (USA) manages in-app subscriptions. RevenueCat receives an anonymous user identifier and purchase information provided by the applicable app store, Apple App Store or Google Play. Your complete payment information never passes through Noctalia. After you delete your account, Noctalia deletes the subscription data on its side; purchase records may however be retained by Apple, Google Play and RevenueCat in accordance with their own legal obligations. Deleting your account does not cancel the subscription, which is managed in the subscription settings of the Apple App Store or Google Play.</li>
                     <li><strong>External advisors and authorities:</strong> legal firms, accountants or administrative and judicial authorities when required by law or to defend our rights.</li>
                 </ul>

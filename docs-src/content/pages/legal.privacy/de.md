@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-de-1200x630.jpg",
   "twitterImageAlt": "Datenschutzerklärung",
   "publishedTime": "",
-  "modifiedTime": "2026-10-08",
+  "modifiedTime": "2026-10-15",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -36,7 +36,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Datenschutzerklärung</h1>
-<p class="text-lg text-purple-200/80 mb-10">Gültig ab 8. Oktober 2026</p>
+<p class="text-lg text-purple-200/80 mb-10">Gültig ab 15. Oktober 2026</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <div class="p-6 rounded-2xl bg-dream-salmon/5 border border-dream-salmon/20">
@@ -130,8 +130,8 @@
     <p>Noctalia nutzt KI-Dienste, um Träume zu transkribieren, zu analysieren und Bilder oder Texte zu erzeugen.</p>
     <ul class="list-disc pl-5 mt-4 space-y-2">
       <li><strong>Spracherkennung:</strong> bevorzugt nutzen wir die native Spracherkennung deines Geräts. Wenn sie nicht verfügbar ist, kann Audio vorübergehend über unser Backend an einen Drittanbieter wie Google Cloud Speech-to-Text gesendet werden. Noctalia speichert diese Aufnahmen nicht dauerhaft.</li>
-      <li><strong>Analyse und Generierung:</strong> Traumtext und erforderliche Metadaten werden an unseren Haupt-KI-Anbieter, derzeit <strong>Google Gemini</strong>, gesendet, um Analysen, Zusammenfassungen, Antworten auf Reflexionsfragen und visuelle Inhalte zu erzeugen.</li>
-      <li><strong>Weitere Anbieter:</strong> zukünftig können vergleichbare Anbieter wie Anthropic, OpenAI, Perplexity oder Mistral eingesetzt werden, wenn angemessene Sicherheits- und Vertraulichkeitsgarantien bestehen.</li>
+      <li><strong>Analyse und Generierung:</strong> Traumtext und erforderliche Metadaten werden an unsere KI-Anbieter gesendet: <strong>Anthropic (Claude)</strong> für Analysen, Zusammenfassungen und Antworten auf Reflexionsfragen, <strong>Google Gemini</strong> für visuelle Inhalte und für Text, wenn Claude nicht verfügbar ist.</li>
+      <li><strong>Weitere Anbieter:</strong> zukünftig können vergleichbare Anbieter wie OpenAI, Perplexity oder Mistral eingesetzt werden, wenn angemessene Sicherheits- und Vertraulichkeitsgarantien bestehen.</li>
       <li><strong>Modelltraining:</strong> soweit Anbieter diese Option erlauben, konfigurieren wir die Dienste so, dass deine Daten nicht zum Training allgemeiner Modelle verwendet werden.</li>
     </ul>
   </section>
@@ -167,7 +167,7 @@
       <li><strong>Website-Analyse:</strong> Ahrefs Pte Ltd stellt die oben beschriebene cookiefreie Reichweitenmessung bereit. Einzelheiten findest du in der <a href="https://ahrefs.com/legal/privacy-policy" class="text-dream-salmon hover:underline">Datenschutzerklärung von Ahrefs</a>.</li>
       <li><strong>Nutzungsanalyse mit Einwilligung:</strong> Microsoft stellt Clarity erst nach deiner Zustimmung bereit. Einzelheiten findest du in der <a href="https://privacy.microsoft.com/privacystatement" class="text-dream-salmon hover:underline">Datenschutzerklärung von Microsoft</a>.</li>
       <li><strong>Reichweitenmessung mit Einwilligung:</strong> Google stellt Google Analytics erst nach deiner Zustimmung bereit. Einzelheiten findest du in der <a href="https://policies.google.com/privacy" class="text-dream-salmon hover:underline">Datenschutzerklärung von Google</a>.</li>
-      <li><strong>KI- und Sprachanbieter:</strong> Google Gemini, Google Cloud Speech-to-Text und gegebenenfalls vergleichbare Anbieter.</li>
+      <li><strong>KI- und Sprachanbieter:</strong> Google Gemini, Anthropic (Claude), Google Cloud Speech-to-Text und gegebenenfalls vergleichbare Anbieter.</li>
       <li><strong>Abonnementverwaltung:</strong> RevenueCat verarbeitet anonyme Nutzerkennungen und Kaufdaten des jeweils genutzten App-Stores, Apple App Store oder Google Play. Vollständige Zahlungsdaten laufen nicht über Noctalia. Nach der Kontolöschung löscht Noctalia die Abonnementdaten auf seiner Seite; Kaufaufzeichnungen können jedoch von Apple, Google Play und RevenueCat gemäß ihren eigenen gesetzlichen Pflichten aufbewahrt werden. Die Kontolöschung kündigt das Abonnement nicht; es wird in den Abonnementeinstellungen des Apple App Store oder von Google Play verwaltet.</li>
       <li><strong>Behörden und Berater:</strong> soweit gesetzlich erforderlich oder zur Wahrung unserer Rechte.</li>
     </ul>

@@ -66,8 +66,10 @@ for (const theme of ['light', 'dark'] as const) {
     // React Native's layout event follows the phone/grid resize. Observe the
     // settled portrait frame rather than its initial width from the previous layout.
     await expect.poll(async () => {
-      const bounds = (await cover.boundingBox())!;
-      return Math.abs(bounds.height - Math.min(bounds.width * 16 / 9, 620));
+      const bounds = await cover.boundingBox();
+      // A responsive list remount can briefly remove the cover between reads.
+      // Keep polling the same geometry contract instead of throwing on null.
+      return bounds ? Math.abs(bounds.height - Math.min(bounds.width * 16 / 9, 620)) : Infinity;
     }).toBeLessThanOrEqual(1);
     const coverBounds = (await cover.boundingBox())!;
     const textBounds = (await text.boundingBox())!;
@@ -114,9 +116,9 @@ for (const theme of ['light', 'dark'] as const) {
       }
     });
     await expect.poll(async () => {
-      const coverRect = (await cover.boundingBox())!;
-      const textRect = (await text.boundingBox())!;
-      return textRect.y + textRect.height <= coverRect.y + coverRect.height + 1;
+      const coverRect = await cover.boundingBox();
+      const textRect = await text.boundingBox();
+      return Boolean(coverRect && textRect && textRect.y + textRect.height <= coverRect.y + coverRect.height + 1);
     }).toBe(true);
     await page.screenshot({ path: testInfo.outputPath(`${theme}-browser-text-200.png`) });
     await card.click();

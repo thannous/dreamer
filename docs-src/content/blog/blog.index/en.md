@@ -59,8 +59,8 @@
 </div>
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 <a class="glass-panel rounded-xl p-5 block hover:border-dream-salmon/30 transition-colors" href="/en/blog/dream-journal">
-<h3 class="font-serif text-lg text-dream-cream mb-2">Dream journal</h3>
-<p class="text-sm text-gray-400">Recall, recording routines, and useful journal habits.</p>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Dream journal templates</h3>
+<p class="text-sm text-gray-400">Five formats to copy, plus our guides on recall and journal habits.</p>
 </a>
 <a class="glass-panel rounded-xl p-5 block hover:border-dream-salmon/30 transition-colors" href="/en/blog/dream-meanings">
 <h3 class="font-serif text-lg text-dream-cream mb-2">Dream meanings</h3>

@@ -60,7 +60,7 @@ export function useThemeSettingsPreference(): SettingsPreferenceController<Theme
     () => THEME_VALUES.map((value) => ({
       value,
       label: t(`settings.theme.option.${value}.label`),
-      description: value === 'auto'
+      description: value === 'auto' && systemMode !== null
         ? `${t('settings.theme.option.auto.description')}\n${t('settings.theme.option.auto.system_hint', {
             theme: t(`settings.theme.option.${systemMode}.label`),
           })}`

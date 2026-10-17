@@ -15,7 +15,7 @@ describe('plan facts follow constants/limits.ts', () => {
 
   it('reads the app quotas, with explorations unmetered', () => {
     expect(quotas.free).toMatchObject({ analysis: 3, exploration: null, messagesPerDream: 10 });
-    expect(quotas.plus).toMatchObject({ analysis: null, exploration: null, messagesPerDream: 20 });
+    expect(quotas.plus).toMatchObject({ analysis: null, exploration: null, messagesPerDream: 100 });
   });
 
   it('builds the required sentences for every landing language from the quotas', () => {
@@ -24,7 +24,7 @@ describe('plan facts follow constants/limits.ts', () => {
       '3 dream analyses per month',
       'Guided explorations with no monthly limit',
       'Up to 10 follow-up messages per analyzed dream',
-      'Up to 20 follow-up messages per dream',
+      'Up to 100 follow-up messages per dream',
     ]);
   });
 
@@ -34,7 +34,7 @@ describe('plan facts follow constants/limits.ts', () => {
       <li>3 dream analyses per month, each with an image</li>
       <li>Guided explorations with no monthly limit</li>
       <li>Up to 10 follow-up messages per analyzed dream</li>
-      <li>Up to 20 follow-up messages per dream</li>
+      <li>Unlimited chat under fair use: up to 100 follow-up messages per dream</li>
     </ul>`;
     expect(evaluatePlanFacts({ facts, visibleText, requireFacts: true })).toEqual([]);
   });
@@ -63,8 +63,8 @@ describe('plan facts follow constants/limits.ts', () => {
   });
 
   it('forces a copy update when the app limits change', () => {
-    const raisedCap = readAppQuotas(LIMITS_SOURCE.replace('messagesPerDream: 20', 'messagesPerDream: 30'));
-    expect(buildPlanFacts('en', raisedCap).required).toContain('Up to 30 follow-up messages per dream');
+    const raisedCap = readAppQuotas(LIMITS_SOURCE.replace('messagesPerDream: 100', 'messagesPerDream: 130'));
+    expect(buildPlanFacts('en', raisedCap).required).toContain('Up to 130 follow-up messages per dream');
 
     const meteredAgain = readAppQuotas(LIMITS_SOURCE.replace(/exploration: null/g, 'exploration: 2'));
     expect(() => buildPlanFacts('en', meteredAgain)).toThrow(/meters explorations again/);

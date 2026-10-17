@@ -4,6 +4,7 @@ import { Platform, Text, View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { DreamAnalysisContent } from '@/components/journal/DreamAnalysisContent';
+import { BOOK_MEASURE, BookOrnament, BookProse, BookSectionMark, BookStar } from '@/components/journal/JournalBook';
 import { JournalCoverPlate } from '@/components/journal/JournalCoverPlate';
 import { JournalEditLink } from '@/components/journal/JournalEditLink';
 import { JournalFolio } from '@/components/journal/JournalFolio';
@@ -14,9 +15,7 @@ import { DecorativeCopy } from '@/components/journal/DecorativeCopy';
 import { SavedDreamMoment } from '@/components/journal/SavedDreamMoment';
 import { SEAL_EMBLEMS, SEAL_NAME_LINES } from '@/components/journal/story/sealMarks';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { MarkdownText } from '@/components/ui/MarkdownText';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
-import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useDreamMedia } from '@/hooks/useDreamMedia';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
@@ -31,7 +30,7 @@ import type { DreamAnalysis } from '@/lib/types';
  * Another dream's page as it lies in the journal, drawn so it can be turned to: the top of
  * its dream page as that page sets it, at the same sizes and places (its running head, its
  * name, date and details, on the plate of its illustration when it has one; once read, its
- * seal bearing those details and its reading; its story under "My account", then its
+ * seal bearing those details and its reading; its story under "My story", then its
  * actions), so that once turned to, the dream page takes its place without anything moving.
  * It runs none of the page's work and offers none of its controls.
  */
@@ -48,12 +47,13 @@ export function JournalPagePreview({ dream, folio, height }: { dream: DreamAnaly
   // The dream page's own measures.
   const compactTextScale = Math.min(1.3, Math.max(1, window.fontScale));
   const titleTextScale = Math.min(1.4, Math.max(1, window.fontScale));
-  const metadataTextStyle = { fontSize: 13 * compactTextScale, lineHeight: 18 * compactTextScale };
+  const metadataTextStyle = { fontSize: 14 * compactTextScale, lineHeight: 20 * compactTextScale };
   const navigationHeight = insets.top + 76;
   const analysisState = getDreamAnalysisState(dream);
   const showReading = shouldShowCompletedJournalReading(dream.analysisStatus, analysisState.isAnalyzed);
   const typeLabel = getDreamTypeLabel(dream.dreamType, t) ?? dream.dreamType;
   const themeLabel = getDreamThemeLabel(dream.theme, t) ?? dream.theme;
+  const typeShown = Boolean(dream.dreamType && (analysisState.isAnalyzed || dream.dreamType !== 'Symbolic Dream'));
 
   // Its cover, from the same source and cache as the dream page, as the plate it opens on;
   // at the top of the page, where a turned-to page opens, it rests undrifted.
@@ -63,15 +63,16 @@ export function JournalPagePreview({ dream, folio, height }: { dream: DreamAnaly
     : null;
   const coverTravel = Math.round(height * 0.06);
 
-  const head = <JournalRunningHead />;
+  const head = <JournalRunningHead label={cover ? undefined : t('nav.sidebar_tagline')} />;
   // A read dream's seal heads its reading, between its name and its story, and carries its details.
   const sealMark = showReading && dream.theme && dream.theme in SEAL_EMBLEMS ? {
     theme: dream.theme,
-    legend: [dream.dreamType && (analysisState.isAnalyzed || dream.dreamType !== 'Symbolic Dream') ? typeLabel : null, themeLabel]
+    legend: [typeShown ? typeLabel : null, themeLabel]
       .filter(Boolean).join(' · '),
   } : null;
   const heading = (
-    <View onLayout={({ nativeEvent: { layout } }) => setIntroHeight(layout.height)}>
+    <View className="w-full self-center" style={{ maxWidth: BOOK_MEASURE - 32 }}
+      onLayout={({ nativeEvent: { layout } }) => setIntroHeight(layout.height)}>
       <View className={`mx-2 ${showReading ? 'mb-1' : 'mb-7'}`}>
         <View style={showReading && !cover ? { minHeight: SEAL_NAME_LINES * 32 * titleTextScale + 8 } : undefined}>
           <Text allowFontScaling={false} style={{ fontSize: 26 * titleTextScale, lineHeight: 32 * titleTextScale }}
@@ -81,27 +82,22 @@ export function JournalPagePreview({ dream, folio, height }: { dream: DreamAnaly
         </View>
         <View className={`${showReading ? 'mb-2' : 'mb-5'} flex-row items-center ${showReading ? 'justify-end' : 'justify-between'} gap-3`}>
           {showReading ? null : (
-            <Text allowFontScaling={false} style={{ fontSize: 12 * compactTextScale, lineHeight: 20 * compactTextScale }}
-              className="shrink font-sans text-[12px] leading-5 text-ivory-muted">
+            <Text allowFontScaling={false} style={{ fontSize: 13 * compactTextScale, lineHeight: 20 * compactTextScale }}
+              className="shrink font-serif-italic text-[13px] leading-5 text-ivory-muted">
               {formatDreamDate(dream.id)} · {formatDreamTime(dream.id)}
             </Text>
           )}
           <JournalEditLink lineHeight={20 * compactTextScale} />
         </View>
-        {sealMark ? null : <View className="flex-row flex-wrap items-center gap-x-5 gap-y-2">
-          {dream.dreamType && (analysisState.isAnalyzed || dream.dreamType !== 'Symbolic Dream') ? (
-            <View className="max-w-full flex-row items-center gap-1.5">
-              <IconSymbol name="moon.stars.fill" size={15} color={noctalia.accent.text} />
-              <Text allowFontScaling={false} style={metadataTextStyle}
-                className="shrink font-sans-medium text-[13px] text-ivory-muted">{typeLabel}</Text>
-            </View>
+        {sealMark ? null : <View className="flex-row flex-wrap items-center gap-x-2.5 gap-y-2">
+          {typeShown ? (
+            <Text allowFontScaling={false} style={metadataTextStyle}
+              className="max-w-full shrink font-serif-italic text-[14px] text-ivory-muted">{typeLabel}</Text>
           ) : null}
+          {typeShown && themeLabel ? <BookStar size={3} opacity={0.7} /> : null}
           {themeLabel ? (
-            <View className="max-w-full flex-row items-center gap-1.5">
-              <IconSymbol name="paintpalette" size={15} color={noctalia.accent.text} />
-              <Text allowFontScaling={false} style={metadataTextStyle}
-                className="shrink font-sans-medium text-[13px] text-ivory-muted">{themeLabel}</Text>
-            </View>
+            <Text allowFontScaling={false} style={metadataTextStyle}
+              className="max-w-full shrink font-serif-italic text-[14px] text-ivory-muted">{themeLabel}</Text>
           ) : (
             <View className="min-h-[44px] max-w-full justify-center">
               <View className="flex-row items-center gap-1.5 rounded-full border border-line px-3 py-1.5">
@@ -129,7 +125,7 @@ export function JournalPagePreview({ dream, folio, height }: { dream: DreamAnaly
         ) : null}
         <View style={{ paddingTop: cover ? 0 : navigationHeight - 64 }}>
           {cover ? null : <View style={{ marginBottom: RUNNING_HEAD_GAP }}>{head}</View>}
-          <View className="px-4 pb-6">
+          <View className="w-full self-center px-4 pb-6" style={{ maxWidth: BOOK_MEASURE }}>
             {cover ? null : heading}
             {showReading ? (
               <>
@@ -141,30 +137,28 @@ export function JournalPagePreview({ dream, folio, height }: { dream: DreamAnaly
 
             <View className="mt-2 mb-5">
               <View className="px-2 pb-4">
-                <Text allowFontScaling={false} style={{ fontSize: 12 * compactTextScale, lineHeight: 18 * compactTextScale }}
-                  className="mb-3 font-sans-medium text-[12px] uppercase tracking-[2px] text-champagne-on">
-                  {t('journal.original_transcript')}
-                </Text>
-                <MarkdownText style={{ fontFamily: Fonts.lora.regularItalic, fontSize: 17, lineHeight: 28, color: noctalia.accent.text }}>
-                  {dream.transcript}
-                </MarkdownText>
+                <BookSectionMark label={t('journal.original_transcript')} scale={compactTextScale} className="mb-5" />
+                <BookProse text={dream.transcript} />
               </View>
             </View>
 
-            <View className="mt-5 mb-3 flex-row items-center gap-2.5">
-              <Text className="font-sans-bold text-[16px] text-ivory">{t('journal.detail.zone.actions')}</Text>
-            </View>
-            <View className="mb-6 flex-row justify-around gap-3">
-              <View className="flex-1 flex-row items-center justify-center gap-2 rounded-md border border-line-strong bg-ink-soft px-4 py-3.5">
-                <IconSymbol name={dream.isFavorite ? 'heart.fill' : 'heart'} size={24} color={noctalia.accent.text} />
-                <Text className="font-sans-medium text-[14px] text-ivory">
+            <BookOrnament className="mt-3 mb-4" />
+            <View className="mb-1 flex-row flex-wrap items-center justify-center">
+              <View className="min-h-[44px] flex-row items-center justify-center gap-2 px-4">
+                <IconSymbol name={dream.isFavorite ? 'heart.fill' : 'heart'} size={18} color={noctalia.accent.text} />
+                <Text className="font-serif-italic text-[16px] text-ivory">
                   {dream.isFavorite ? t('journal.detail.favorite.on') : t('journal.detail.favorite.off')}
                 </Text>
               </View>
-              <View className="flex-1 flex-row items-center justify-center gap-2 rounded-md border border-line-strong bg-ink-soft px-4 py-3.5">
-                <IconSymbol name="square.and.arrow.up" size={24} color={noctalia.accent.text} />
-                <Text className="font-sans-medium text-[14px] text-ivory">{t('journal.detail.share.button_default')}</Text>
+              <View className="h-5 w-px bg-line" />
+              <View className="min-h-[44px] flex-row items-center justify-center gap-2 px-4">
+                <IconSymbol name="square.and.arrow.up" size={18} color={noctalia.accent.text} />
+                <Text className="font-serif-italic text-[16px] text-ivory">{t('journal.detail.share.button_default')}</Text>
               </View>
+            </View>
+            <View className="min-h-[44px] flex-row items-center justify-center gap-1.5 self-center px-3">
+              <IconSymbol name="trash" size={16} color={noctalia.status.danger.icon} />
+              <Text className="font-serif-italic text-[15px] text-danger-on">{t('journal.menu.delete')}</Text>
             </View>
             <JournalFolio folio={folio} className="mt-8" />
           </View>

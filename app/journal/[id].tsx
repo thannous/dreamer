@@ -1,6 +1,5 @@
 import type { LayoutChangeEvent, ViewInstance, ScrollViewInstance } from 'react-native';
 import { getSavedAnalysisAction } from '@/lib/savedAnalysisAccess';
-import { MarkdownText } from '@/components/ui/MarkdownText';
 import { DreamAnalysisContent } from '@/components/journal/DreamAnalysisContent';
 import { isPoeticDreamQuote } from '@/lib/dreamQuote';
 import { CaptureOriginal } from '@/components/recording/CaptureOriginal';
@@ -11,6 +10,7 @@ import { isInitialDreamCategorizationPending, subscribeInitialDreamCategorizatio
 import { useDreamMedia } from '@/hooks/useDreamMedia';
 import { Toast } from '@/components/Toast';
 import { DreamRecallAssistantCard } from '@/components/journal/DreamRecallAssistantCard';
+import { BOOK_MEASURE, BookOrnament, BookProse, BookSectionMark, BookStar } from '@/components/journal/JournalBook';
 import { JournalCoverPlate } from '@/components/journal/JournalCoverPlate';
 import { JournalEditLink } from '@/components/journal/JournalEditLink';
 import { JournalFolio } from '@/components/journal/JournalFolio';
@@ -18,7 +18,6 @@ import { JournalPageEdges } from '@/components/journal/JournalPageEdges';
 import { JournalPageTurner, useJournalPageLaidOut, useJournalPageTurnedTo, useJournalPageTurnLock } from '@/components/journal/JournalPageTurner';
 import { JournalPaper } from '@/components/journal/JournalPaper';
 import { JournalRunningHead, RUNNING_HEAD_GAP, RUNNING_HEAD_HEIGHT } from '@/components/journal/JournalRunningHead';
-import { Fonts } from '@/constants/theme';
 import { SavedDreamMoment, type SavedDreamAction, type SavedDreamPhase, type SealMark } from '@/components/journal/SavedDreamMoment';
 import { CoverFlight } from '@/components/journal/story/CoverFlight';
 import { SEAL_EMBLEMS, SEAL_MEASURES, SEAL_NAME_LINES } from '@/components/journal/story/sealMarks';
@@ -366,7 +365,9 @@ function ArrivalLater({ play, ready, children }: { play: boolean; ready: boolean
 }
 
 function JournalDetailScreen() {
-  const route = useLocalSearchParams<{ id: string; remoteId?: string; clientRequestId?: string }>();
+  const route = useLocalSearchParams<{ id: string; remoteId?: string; clientRequestId?: string; saved?: string | string[] }>();
+  // Arriving from the capture seal, the page has its own ceremony: it does not also fall shut.
+  const [arrivedFromSeal] = useState(() => isJournalSavedConfirmationParam(route.saved));
   const { user } = useAuth();
   const { dreams } = useDreamsData();
   const dream = resolveDreamRoute(dreams, route);
@@ -395,7 +396,8 @@ function JournalDetailScreen() {
   const content = <JournalDetailContent key={JSON.stringify([user?.id, route.id, route.remoteId, route.clientRequestId])}
     dream={dream} folio={neighbours.folio} />;
   return dream
-    ? <JournalPageTurner newer={neighbours.newer} older={neighbours.older} folio={neighbours.folio} tonight onTurn={turnTo}>{content}</JournalPageTurner>
+    ? <JournalPageTurner newer={neighbours.newer} older={neighbours.older} folio={neighbours.folio} tonight hint={!arrivedFromSeal}
+      onTurn={turnTo}>{content}</JournalPageTurner>
     : content;
 }
 
@@ -495,7 +497,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   const windowSize = useWindowDimensions();
   const compactTextScale = Math.min(1.3, Math.max(1, windowSize.fontScale));
   const titleTextScale = Math.min(1.4, Math.max(1, windowSize.fontScale));
-  const metadataTextStyle = { fontSize: 13 * compactTextScale, lineHeight: 18 * compactTextScale };
+  const metadataTextStyle = { fontSize: 14 * compactTextScale, lineHeight: 20 * compactTextScale };
   const [coverViewport, setCoverViewport] = useState<{ width: number; height: number } | null>(null);
   const [readingActionVisible, setReadingActionVisible] = useState(false);
   const [failedCoverUri, setFailedCoverUri] = useState<string | null>(null);
@@ -508,13 +510,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   const coverHeight = viewportHeight;
   // The illustration lies a little deeper than the page and drifts as it scrolls.
   const coverTravel = Math.round(coverHeight * 0.06);
-  const coverParallax = useFrameParallax(coverTravel);
   const onHeaderScroll = useHeaderScroll();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
-  // The story is written in the journal's own ink, as the pen wrote it in the capture seal.
-  const markdownStyles = useMemo(() => StyleSheet.create({
-    transcript: { fontFamily: Fonts.lora.regularItalic, fontSize: 17, lineHeight: 28, color: noctalia.accent.text },
-  }), [noctalia.accent.text]);
   const { language } = useLanguage();
   useClearWebFocus();
 
@@ -525,6 +522,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     router.setParams({ saved: undefined });
   }, [savedParam]);
   const [isRetryingImage, setIsRetryingImage] = useState(false);
+  const [illustrationAskedOnSeal, setIllustrationAskedOnSeal] = useState(false);
   const [isRetryingSync, setIsRetryingSync] = useState(false);
   const [syncRetryFailed, setSyncRetryFailed] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -1899,6 +1897,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   const coverImageFailed = Boolean((failedCoverUri && failedCoverUri === displayImageUrl) || (!displayImageUrl && media.error));
   const hasIllustratedCover = (artworkAtArrival === true || plateRevealed) && Boolean(dream?.imageUrl?.trim())
     && !shouldHideHeroMedia && !coverImageFailed;
+  // Only the plate's picture drifts; without a plate its frame is never mounted.
+  const coverParallax = useFrameParallax(hasIllustratedCover ? coverTravel : 0);
   useEffect(() => {
     if (readingStory === 'waiting') {
       readingRevealScrolledRef.current = false;
@@ -2123,9 +2123,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       testID={TID.Component.TranscriptCard}
       className="font-sans text-[15px] leading-6"
     >
-      <Text key={`story-heading-${windowSize.fontScale}`} allowFontScaling={false} style={{ fontSize: 12 * compactTextScale, lineHeight: 18 * compactTextScale }} accessibilityRole="header" testID={TID.Text.DreamDetailDreamZone} className="mb-3 font-sans-medium text-[12px] uppercase tracking-[2px] text-champagne-on">
-        {t('journal.original_transcript')}
-      </Text>
+      <BookSectionMark key={`story-heading-${windowSize.fontScale}`} label={t('journal.original_transcript')}
+        testID={TID.Text.DreamDetailDreamZone} scale={compactTextScale} className="mb-5" />
       {isEditing && hasUncategorizedDraft && initialCategorizationPending ? (
         <Text testID="text.dreamMetadata.pending" accessibilityLiveRegion="polite" className="mb-4 font-sans text-[13px] text-ivory-muted">
           {t('journal.detail.metadata.loading')}
@@ -2148,36 +2147,35 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
           textAlignVertical="top"
         />
       ) : (
-        <MarkdownText style={markdownStyles.transcript}>{dream.transcript}</MarkdownText>
+        <BookProse text={dream.transcript} />
       )}
       {dream.captureOriginalTranscript ? <CaptureOriginal source={dream.captureOriginalTranscript} /> : null}
     </View>
   );
 
-  const renderMetadataChips = () => (
-    <View className="flex-row flex-wrap items-center gap-x-5 gap-y-2">
-      {dream.dreamType && (analysisState.isAnalyzed || dream.dreamType !== 'Symbolic Dream') ? (
-        <View className="max-w-full flex-row items-center gap-1.5">
-          <IconSymbol name="moon.stars.fill" size={15} color={noctalia.accent.text} />
-          <Text key={`dream-type-${windowSize.fontScale}`} allowFontScaling={false} style={metadataTextStyle} className="shrink font-sans-medium text-[13px] text-ivory-muted">{dreamTypeLabel || dream.dreamType}</Text>
-        </View>
-      ) : null}
-      {dreamThemeLabel ? (
-        <View className="max-w-full flex-row items-center gap-1.5">
-          <IconSymbol name="paintpalette" size={15} color={noctalia.accent.text} />
-          <Text key={`dream-theme-${windowSize.fontScale}`} allowFontScaling={false} style={metadataTextStyle} className="shrink font-sans-medium text-[13px] text-ivory-muted">{dreamThemeLabel}</Text>
-        </View>
-      ) : (
-        <Pressable onPress={startEditing} disabled={isAnalysisLocked} accessibilityRole="button"
-          className={`min-h-[44px] max-w-full justify-center ${isAnalysisLocked ? 'opacity-70' : ''}`}>
-          <View className="flex-row items-center gap-1.5 rounded-full border border-line px-3 py-1.5">
-            <IconSymbol name="paintpalette" size={14} color={noctalia.accent.text} />
-            <Text className="shrink font-sans-medium text-[13px] text-champagne-on">{t('journal.detail.theme_placeholder')}</Text>
-          </View>
-        </Pressable>
-      )}
-    </View>
-  );
+  // The dream's type and theme, under its name as a book sets a subtitle: in italics, a star between them.
+  const renderMetadataChips = () => {
+    const typeShown = Boolean(dream.dreamType && (analysisState.isAnalyzed || dream.dreamType !== 'Symbolic Dream'));
+    return (
+      <View className="flex-row flex-wrap items-center gap-x-2.5 gap-y-2">
+        {typeShown ? (
+          <Text key={`dream-type-${windowSize.fontScale}`} allowFontScaling={false} style={metadataTextStyle} className="max-w-full shrink font-serif-italic text-[14px] text-ivory-muted">{dreamTypeLabel || dream.dreamType}</Text>
+        ) : null}
+        {typeShown && dreamThemeLabel ? <BookStar size={3} opacity={0.7} /> : null}
+        {dreamThemeLabel ? (
+          <Text key={`dream-theme-${windowSize.fontScale}`} allowFontScaling={false} style={metadataTextStyle} className="max-w-full shrink font-serif-italic text-[14px] text-ivory-muted">{dreamThemeLabel}</Text>
+        ) : (
+          <Pressable onPress={startEditing} disabled={isAnalysisLocked} accessibilityRole="button"
+            className={`min-h-[44px] max-w-full justify-center ${isAnalysisLocked ? 'opacity-70' : ''}`}>
+            <View className="flex-row items-center gap-1.5 rounded-full border border-line px-3 py-1.5">
+              <IconSymbol name="paintpalette" size={14} color={noctalia.accent.text} />
+              <Text className="shrink font-sans-medium text-[13px] text-champagne-on">{t('journal.detail.theme_placeholder')}</Text>
+            </View>
+          </Pressable>
+        )}
+      </View>
+    );
+  };
 
   const renderMetadataCard = (variant: 'inline' | 'floating' = 'inline') => {
     const compactMetadata = variant === 'inline' && !isEditing;
@@ -2237,7 +2235,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
           <View className={`${opensOnSavedMoment || (compactMetadata && sealVisible) ? 'mb-2' : 'mb-5'} flex-row items-center ${
             compactMetadata && sealVisible ? 'justify-end' : 'justify-between'} gap-3`}>
             {compactMetadata && sealVisible ? null : (
-              <Text key={`dream-date-${windowSize.fontScale}`} allowFontScaling={false} style={{ fontSize: 12 * compactTextScale, lineHeight: 20 * compactTextScale }} className="shrink font-sans text-[12px] leading-5 text-ivory-muted">
+              <Text key={`dream-date-${windowSize.fontScale}`} allowFontScaling={false} style={{ fontSize: 13 * compactTextScale, lineHeight: 20 * compactTextScale }} className="shrink font-serif-italic text-[13px] leading-5 text-ivory-muted">
                 {formatDreamDate(dream.id)} · {formatDreamTime(dream.id)}
               </Text>
             )}
@@ -2502,16 +2500,46 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     && (visiblePrimaryAction === 'analyze' || readingInFlight);
   // Whatever page it is on, the seal says while the dream is being read; the dock need not.
   const sealShowsReading = sealVisible && readingInFlight;
+  // Once read, the seal offers the dream's illustration, which it then paints in its own window.
+  // Asked there, it keeps its words while it paints, so the seal stays the same button meanwhile.
+  const sealSettled = sealVisible && !readingInFlight && !sealReads;
+  const sealPaints = sealSettled && illustrationAskedOnSeal && paintingInProgress && !plateRevealed;
+  // Only a dream with no illustration yet: a failed one keeps its own card and its own step.
+  const sealIllustrates = sealSettled && illustrationSidecar === 'empty' && !paintingInProgress
+    && (visibleIllustrationCta === 'illustrate' || visibleIllustrationCta === 'upgrade');
   const sealAction: SavedDreamAction | null = !sealVisible ? null
     : readingInFlight ? { label: t('loading.analyzing') }
-      : !sealReads || !detailActionCard ? null : {
-        label: analysisAccessLabel ?? detailActionCard.cta,
-        icon: analysisIcon,
-        onPress: primaryPress,
-        disabled: primaryDisabled,
-        hint: quotaHintLabel,
-        testID: primaryButtonTestID,
-      };
+      : sealPaints ? {
+        label: t('analysis.reading.image_generating'),
+        icon: 'sparkles',
+        onPress: () => {},
+        disabled: true,
+        testID: TID.Button.JournalIllustrate,
+      }
+        : sealIllustrates ? (visibleIllustrationCta === 'upgrade' ? {
+          label: t('journal.detail.image.seal_upgrade'),
+          icon: 'sparkles',
+          onPress: handleImageUpgrade,
+          hint: t('journal.detail.image.upgrade_action'),
+          testID: TID.Button.ImageUpgrade,
+        } : {
+          label: t('journal.detail.image.generate_action'),
+          icon: 'sparkles',
+          onPress: () => {
+            setIllustrationAskedOnSeal(true);
+            void onRetryImage();
+          },
+          disabled: isRetryingImage || isImageJobPending,
+          testID: TID.Button.JournalIllustrate,
+        })
+          : !sealReads || !detailActionCard ? null : {
+            label: analysisAccessLabel ?? detailActionCard.cta,
+            icon: analysisIcon,
+            onPress: primaryPress,
+            disabled: primaryDisabled,
+            hint: quotaHintLabel,
+            testID: primaryButtonTestID,
+          };
 
   const renderReturnToJournal = (quiet: boolean) => (
     <PressableScale accessibilityRole="button" onPress={handleBackPress}
@@ -2756,17 +2784,6 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     );
   };
 
-  const renderDetailZoneHeader = (label: string, testID?: string) => (
-    <View className="mt-5 mb-3 flex-row items-center gap-2.5">
-      <Text
-        className="font-sans-bold text-[16px] text-ivory"
-        testID={testID}
-      >
-        {label}
-      </Text>
-    </View>
-  );
-
   const renderStaleBanner = () => {
     if (!isAnalysisStale || isEditing) {
       return null;
@@ -2888,6 +2905,29 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
               ) : null}
             </View>
           )
+        ) : sealIllustrates ? (
+          // The seal offers the illustration; the page keeps only the dreamer's own picture.
+          <PressableScale
+            onPress={handlePickImage}
+            disabled={isPickingImage || isAnalysisLocked}
+            testID={TID.Button.JournalAddImageFromLibrary}
+            accessibilityRole="button"
+            accessibilityState={{ disabled: isPickingImage || isAnalysisLocked }}
+            className={`min-h-[44px] flex-row items-center justify-center gap-2 self-center px-3 ${
+              (isPickingImage || isAnalysisLocked) ? 'opacity-70' : ''
+            }`}
+          >
+            {isPickingImage ? (
+              <ActivityIndicator size="small" color={noctalia.text.secondary} />
+            ) : (
+              <IconSymbol name="photo" size={16} color={noctalia.text.secondary} />
+            )}
+            <Text className="font-sans-medium text-[14px] text-ivory-muted">
+              {isPickingImage
+                ? t('journal.detail.image.adding_from_library')
+                : t('journal.detail.image.add_from_library')}
+            </Text>
+          </PressableScale>
         ) : (
           <View className="min-h-[180px] flex-col items-center justify-center gap-2.5 rounded-lg border border-line bg-ink-soft px-5 py-6">
             <IconSymbol name="photo" size={28} color={noctalia.text.secondary} />
@@ -2971,8 +3011,10 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     );
   };
 
+  // Over a plate the head carries only the way back; on the paper it is printed with the journal's name.
   const runningHead = (
-    <JournalRunningHead onBack={handleBackPress} testID="journal.detail.navigation" backTestID={TID.Button.NavigateJournal} />
+    <JournalRunningHead onBack={handleBackPress} testID="journal.detail.navigation" backTestID={TID.Button.NavigateJournal}
+      label={hasIllustratedCover ? undefined : t('nav.sidebar_tagline')} />
   );
   const sealBlock = (
     <View ref={sealWindowRef} collapsable={false}>
@@ -2986,9 +3028,10 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     </View>
   );
   const heading = (
-    <View pointerEvents="box-none" onLayout={({ nativeEvent: { layout } }) => {
-      setCoverIntroHeight(previous => previous === layout.height ? previous : layout.height);
-    }}>
+    <View pointerEvents="box-none" className="w-full self-center" style={{ maxWidth: BOOK_MEASURE - 32 }}
+      onLayout={({ nativeEvent: { layout } }) => {
+        setCoverIntroHeight(previous => previous === layout.height ? previous : layout.height);
+      }}>
       {/* After the seal, the name and date are already in place: they do not enter again. */}
       {!isEditing ? <ArrivalReveal play={opensOnSavedMoment && !windowHandedOver} index={0}>{renderMetadataCard()}</ArrivalReveal> : null}
     </View>
@@ -3051,7 +3094,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
           )}
           {/* The name, then the reading, which starts with the name's seal. */}
           {hasIllustratedCover ? null : <View className="px-4" collapsable={false}>{heading}</View>}
-          <View ref={readingContentRef} collapsable={false} className="px-4 pb-6"
+          <View ref={readingContentRef} collapsable={false} className="w-full self-center px-4 pb-6" style={{ maxWidth: BOOK_MEASURE }}
             onLayout={({ nativeEvent: { layout } }) => {
               setReadingContentTop((previous) => (previous === layout.y ? previous : layout.y));
             }}>
@@ -3072,19 +3115,14 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
               <FreeAnalysesNudge nudge={lastFreeAnalysesNudge} className="mx-2 mb-6" />
             ) : null}
             {!isEditing && dreamMemoryItems.length > 0 && (
-              <View className="mx-2 mb-7 gap-2 border-t border-t-line pt-3">
-                <View className="flex-row items-center gap-2">
-                  <IconSymbol name="moon.stars.fill" size={16} color={noctalia.accent.text} />
-                  <Text className="font-sans-bold text-[16px] text-ivory">
-                    {t('journal.detail.zone.memory')}
-                  </Text>
-                </View>
+              <View className="mx-2 mb-8 gap-3">
+                <BookSectionMark label={t('journal.detail.zone.memory')} scale={compactTextScale} className="mb-1" />
                 {dreamMemoryItems.map((item) => (
                   <View key={item.key} className="gap-0.5">
-                    <Text className="font-sans-medium text-[12px] leading-4 text-ivory-muted">
+                    <Text className="font-serif-italic text-[13px] leading-[18px] text-ivory-muted">
                       {item.label}
                     </Text>
-                    <Text className="font-sans-bold text-[14px] leading-[18px] text-ivory">
+                    <Text className="font-serif text-[16px] leading-6 text-ivory">
                       {item.value}
                     </Text>
                   </View>
@@ -3133,48 +3171,50 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
 
 
             <View>
-              {renderDetailZoneHeader(t('journal.detail.zone.actions'))}
-
-              <View className="mb-6 flex-row justify-around gap-3">
+              {/* The page ends as a book's last page does: an ornament, then what can be done with it. */}
+              <BookOrnament className="mt-3 mb-4" />
+              <View accessibilityRole="toolbar" accessibilityLabel={t('journal.detail.zone.actions')}
+                className="mb-1 flex-row flex-wrap items-center justify-center">
                 <PressableScale
                   onPress={handleToggleFavorite}
                   disabled={isAnalysisLocked}
                   testID={TID.Button.DreamFavorite}
+                  accessibilityRole="button"
                   accessibilityLabel={t('journalDetail.a11y.toggleFavorite')}
-                  hitSlop={{ top: 8, bottom: 8, left: 0, right: 0 }}
-                  className={`flex-1 flex-row items-center justify-center gap-2 rounded-md border border-line-strong bg-ink-soft px-4 py-3.5 ${
+                  hitSlop={{ top: 4, bottom: 4, left: 0, right: 0 }}
+                  className={`min-h-[44px] flex-row items-center justify-center gap-2 px-4 ${
                     isAnalysisLocked ? 'opacity-60' : ''
                   }`}
-
                 >
                   <IconSymbol
                     name={dream.isFavorite ? 'heart.fill' : 'heart'}
-                    size={24}
+                    size={18}
                     color={noctalia.accent.text}
                   />
-                  <Text className={`font-sans-medium text-[14px] text-ivory`}>
+                  <Text className="font-serif-italic text-[16px] text-ivory">
                     {dream.isFavorite
                       ? t('journal.detail.favorite.on')
                       : t('journal.detail.favorite.off')}
                   </Text>
                 </PressableScale>
+                <View accessible={false} className="h-5 w-px bg-line" />
                 <PressableScale
                   onPress={onShare}
                   disabled={isSharing || isAnalysisLocked || shareMediaPending}
                   testID={TID.Button.DreamShare}
+                  accessibilityRole="button"
                   accessibilityLabel={t('journalDetail.a11y.shareDream')}
-                  hitSlop={{ top: 8, bottom: 8, left: 0, right: 0 }}
-                  className={`flex-1 flex-row items-center justify-center gap-2 rounded-md border border-line-strong bg-ink-soft px-4 py-3.5 ${
+                  hitSlop={{ top: 4, bottom: 4, left: 0, right: 0 }}
+                  className={`min-h-[44px] flex-row items-center justify-center gap-2 px-4 ${
                     isSharing || isAnalysisLocked || shareMediaPending ? 'opacity-70' : ''
                   }`}
-
                 >
                   {isSharing || shareMediaPending ? (
                     <ActivityIndicator size="small" color={noctalia.accent.text} />
                   ) : (
-                    <IconSymbol name="square.and.arrow.up" size={24} color={noctalia.accent.text} />
+                    <IconSymbol name="square.and.arrow.up" size={18} color={noctalia.accent.text} />
                   )}
-                  <Text className={`font-sans-medium text-[14px] text-ivory`}>
+                  <Text className="font-serif-italic text-[16px] text-ivory">
                     {isSharing || shareMediaPending
                       ? t('journal.detail.share.button_loading')
                       : t('journal.detail.share.button_default')}
@@ -3186,18 +3226,18 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
                 onPress={onDelete}
                 disabled={isAnalysisLocked}
                 accessibilityState={{ disabled: isAnalysisLocked }}
-                className={`mt-2 min-h-[44px] min-w-[44px] flex-row items-center justify-center gap-1.5 self-center px-3 ${isAnalysisLocked ? 'opacity-70' : ''}`}
+                className={`min-h-[44px] min-w-[44px] flex-row items-center justify-center gap-1.5 self-center px-3 ${isAnalysisLocked ? 'opacity-70' : ''}`}
                 hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
                 accessibilityRole="button"
                 testID={TID.Button.DreamDelete}
                 accessibilityLabel={t('journalDetail.a11y.deleteDream')}
               >
-                <IconSymbol name="trash" size={18} color={noctalia.status.danger.icon} />
-                <Text className={`font-sans-medium text-[15px] text-danger-on`}>
+                <IconSymbol name="trash" size={16} color={noctalia.status.danger.icon} />
+                <Text className={`font-serif-italic text-[15px] text-danger-on`}>
                   {t('journal.menu.delete')}
                 </Text>
               </PressableScale>
-              <JournalFolio folio={folio} className="mt-8" />
+              <JournalFolio folio={folio} className="mt-8" turns="dream" />
             </View>
             </View>
         </ScrollView>
@@ -3222,7 +3262,9 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
                 colors={[`${noctalia.screen.background}00`, noctalia.screen.background]}
                 style={{ position: 'absolute', left: 0, right: 0, top: -32, height: 32 }} />
             ) : null}
-            <ArrivalLater play={opensOnSavedMoment} ready={!namingOn}>{renderDetailActionCard()}</ArrivalLater>
+            <View className="w-full self-center" style={{ maxWidth: BOOK_MEASURE - 32 }}>
+              <ArrivalLater play={opensOnSavedMoment} ready={!namingOn}>{renderDetailActionCard()}</ArrivalLater>
+            </View>
           </View>
         ) : null}
 

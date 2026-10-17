@@ -29,6 +29,11 @@ const device = process.env.E2E_DEVICE;
 const keepMetroCache = process.env.E2E_KEEP_METRO_CACHE === '1' && product !== 'meditation';
 if (native && (!device || (platform === 'android' && !/^emulator-\d+$/.test(device))))
   throw new Error('Name an explicit emulator/simulator with E2E_DEVICE; physical devices are excluded.');
+// run.mjs resolves the web worker count and records it; a native target drives its one device.
+const requestedWorkers = process.env.E2E_WORKERS;
+if (requestedWorkers !== undefined && (native || !/^[1-9]\d?$/.test(requestedWorkers)))
+  throw new Error('E2E_WORKERS takes 1-99 web workers; native runs use one device.');
+const workers = Number(requestedWorkers ?? 1);
 
 export default {
   projectId: `noctalia-${product}`,
@@ -57,6 +62,10 @@ export default {
         cwd: product === 'meditation' ? `${root}apps/meditation` : root,
         env: {
           ...(appNodeOptions === undefined ? {} : { NODE_OPTIONS: appNodeOptions }),
+          // Isolated validation links node_modules from the primary checkout.
+          // Metro's lazy URLs cannot resolve those external paths (Markdown WASM);
+          // bundle the real modules eagerly so the same journeys work in both trees.
+          EXPO_NO_METRO_LAZY: '1',
           CI: '1', EXPO_PUBLIC_MOCK_MODE: 'true', EXPO_PUBLIC_MOCK_AUDIO: 'true', EXPO_PUBLIC_MOCK_PERSISTENCE: 'true',
           ...(product === 'meditation' ? {} : {
             NOCTALIA_APP_VARIANT: product === 'lucid' ? 'lucid' : 'noctalia',
@@ -71,7 +80,7 @@ export default {
     },
   }],
   // app.open/restart use config.timeout, capped by the remaining test budget.
-  workers: 1, retries: 0, timeout: product === 'meditation' && !native ? 180_000 : 120_000, assertionTimeout: 30_000,
+  workers, retries: 0, timeout: product === 'meditation' && !native ? 180_000 : 120_000, assertionTimeout: 30_000,
   launchTimeout: 180_000, output,
   // Every engine writes a trace page per test (results/<test>/trace.md); each pass keeps one as evidence.
   reporters: ['list', 'markdown', 'junit'], trace: 'on', cache: 'off',

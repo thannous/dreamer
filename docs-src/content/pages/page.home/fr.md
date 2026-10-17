@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-fr-1200x630.jpg",
   "twitterImageAlt": "Journal de rêves illustré et interprété",
   "publishedTime": "",
-  "modifiedTime": "2026-10-10",
+  "modifiedTime": "2026-10-15",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -727,10 +727,11 @@
                     <span class="oh-plan-tag">Offre payante</span>
                     <h3>Noctalia Plus</h3>
                     <div class="oh-plan-price">Prix affiché sur Google Play</div>
+                    <p class="oh-plan-desc">Rêves, analyses et chat illimités.</p>
                 </div>
                 <ul>
-                    <li>Analyses de rêves et images illimitées</li>
-                    <li>Jusqu’à 20 messages de suivi par rêve</li>
+                    <li>Analyses de rêves illimitées, chacune avec une image</li>
+                    <li>Chat illimité en usage raisonnable : jusqu’à 100 messages de suivi par rêve</li>
                     <li>Synthèse 360° à la fin d’une exploration guidée</li>
                 </ul>
                 <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr" class="oh-plan-cta">Voir Noctalia Plus</a>

@@ -4,7 +4,7 @@
   "layout": "blogArticle",
   "lang": "en",
   "slug": "flying-dreams-meaning",
-  "title": "Flying Dreams Meaning: Science and 6 Scenarios | Noctalia",
+  "title": "Flying dream meaning: 6 scenarios and the science | Noctalia",
   "description": "What do flying dreams mean? Effortless soaring, failing to take off, flying to escape: what each scene can suggest, what research shows and what to note.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
@@ -13,12 +13,12 @@
   "bodyStyle": "background-color: #0a0514;",
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
-  "ogTitle": "Flying Dreams Meaning: Science and 6 Scenarios | Noctalia",
+  "ogTitle": "Flying dream meaning: 6 scenarios and the science | Noctalia",
   "ogDescription": "Joyful soaring, a failed takeoff or an escape through the air: what your flying dream might be about, depending on how it felt.",
   "ogImage": "https://noctalia.app/img/blog/flying-dreams-meaning.webp",
   "ogImageAlt": "Wide sky view representing the freedom and thrill of flying in dreams",
   "twitterCard": "summary_large_image",
-  "twitterTitle": "Flying Dreams Meaning: Science and 6 Scenarios | Noctalia",
+  "twitterTitle": "Flying dream meaning: 6 scenarios and the science | Noctalia",
   "twitterDescription": "Flying dreams: freedom, perspective or effort? It depends on how you flew.",
   "twitterImage": "https://noctalia.app/img/blog/flying-dreams-meaning.webp",
   "twitterImageAlt": "Wide sky view representing the freedom and thrill of flying in dreams",
@@ -62,7 +62,7 @@
 <span class="text-sm text-purple-300/60">9 min read</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Flying dreams meaning: what the way you flew can tell you
+                    Flying dream meaning: what the way you flew can tell you
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
                     One small push and the ground drops away. Rooftops slide past beneath you and the air simply holds you up. Or you flap and kick and never get higher than the streetlights. A flying dream can be the best dream of your week or one of the most frustrating. Its meaning depends far less on the fact that you flew than on how you flew and how it felt.
@@ -254,7 +254,7 @@
                 </h2>
 <p class="text-sm text-purple-300/60 mb-4">Compare the details that appeared in your dream:</p>
 <div class="flex flex-wrap gap-3">
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../symbols/flying">Flying Dream Meaning</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../symbols/flying">Flying: quick symbol reference</a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../symbols/plane">Plane Dream Meaning</a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../symbols/bird">Bird Dream Meaning</a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../symbols/falling">Falling Dream Meaning</a>

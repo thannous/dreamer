@@ -163,7 +163,7 @@ const processAnalysisJob = async (input: {
 
     const { data: dream, error: dreamError } = await adminClient
       .from('dreams')
-      .select('id,user_id,title,transcript,analysis_status,analysis_request_id,is_analyzed,theme,dream_type')
+      .select('id,user_id,title,transcript,analysis_status,analysis_request_id,is_analyzed,theme,precise_theme,dream_type')
       .eq('id', job.dream_id)
       .eq('user_id', job.user_id)
       .limit(1)
@@ -202,6 +202,7 @@ const processAnalysisJob = async (input: {
     const lang = String(job.request_payload?.lang ?? 'en');
     const reading = await runDreamAnalysis({
       apiKey,
+      anthropicApiKey: Deno.env.get('ANTHROPIC_API_KEY')?.trim(),
       transcript: resolvedTranscript.promptTranscript,
       truncatedForPrompt: resolvedTranscript.truncatedForPrompt,
       lang,
@@ -210,13 +211,16 @@ const processAnalysisJob = async (input: {
     // A dream its pre-analysis classed keeps that class and the name its seal wrote: the
     // reading neither classes nor renames it. Synchronized values are shared across
     // app versions; request capability negotiation does not filter journal reads.
-    const classed = typeof (dream as any).theme === 'string' && (dream as any).theme.length > 0;
+    // precise_theme holds the full theme; theme is only its projection for older apps.
+    const storedTheme = [(dream as any).precise_theme, (dream as any).theme]
+      .find((value) => typeof value === 'string' && value.length > 0) as string | undefined;
+    const classed = storedTheme !== undefined;
     const name = typeof (dream as any).title === 'string' ? (dream as any).title.trim() : '';
     const analysis = classed
       ? {
         ...reading,
         title: name && name.length <= 500 ? name : reading.title,
-        theme: String((dream as any).theme),
+        theme: storedTheme,
         dreamType: String((dream as any).dream_type ?? reading.dreamType),
       }
       : reading;
