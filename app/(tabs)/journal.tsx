@@ -40,13 +40,14 @@ import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useTranslation } from '@/hooks/useTranslation';
 import { blurActiveElement } from '@/lib/accessibility';
 import { applyFilters, getUniqueDreamTypes, getUniqueThemes, sortDreamsByDate, type JournalAnalysisStatusFilter, type JournalQuickFilter } from '@/lib/dreamFilters';
-import { getDreamTypeLabel } from '@/lib/dreamLabels';
+import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
+import { parseJournalFilterParams, type JournalFilterRouteParams } from '@/lib/journalFilterLink';
 import { getDreamThumbnailCacheKey, getDreamThumbnailUri, preloadImage } from '@/lib/imageUtils';
 import { trackProductEvent } from '@/lib/analytics';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
 import { FlashList, type FlashListRef, type ListRenderItemInfo } from '@shopify/flash-list';
-import { router, useFocusEffect } from 'expo-router';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import React, { useCallback, useContext, useDeferredValue, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import {
@@ -202,6 +203,27 @@ function JournalListScreen() {
   const [showRecurringOnly, setShowRecurringOnly] = useState(false);
   const [analysisStatus, setAnalysisStatus] = useState<JournalAnalysisStatusFilter | null>(null);
   const [sortOrder, setSortOrder] = useState<JournalSortOrder>('newest');
+
+  // Another screen (Tendances) can open the journal on a set of dreams: its filters
+  // replace the current ones, then leave the route so a later visit starts clean.
+  const filterParams = useLocalSearchParams<JournalFilterRouteParams>();
+  const filterLink = parseJournalFilterParams(filterParams);
+  useEffect(() => {
+    const link = filterLink;
+    if (!link) return;
+    setSearchQuery('');
+    setSelectedTheme(link.theme);
+    setSelectedDreamType(link.dreamType);
+    setDateRange({ start: link.start, end: link.end });
+    setQuickFilter('all');
+    setShowRememberedOnly(false);
+    setShowRecurringOnly(false);
+    setAnalysisStatus(link.analysis);
+    setSortOrder('newest');
+    router.setParams({ filter: undefined, theme: undefined, type: undefined, from: undefined, to: undefined, analysis: undefined });
+    // Applied once per link: the parsed dates are new objects on every render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterLink?.key]);
 
   // Modal states
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
@@ -750,7 +772,7 @@ function JournalListScreen() {
     },
     ...(selectedTheme ? [{
       id: 'theme' as const,
-      label: t('journal.filter.theme'),
+      label: getDreamThemeLabel(selectedTheme, t) ?? t('journal.filter.theme'),
       active: true,
       onPress: () => toggleThemeFilter(selectedTheme),
       accessibilityLabel: t('journal.filter.accessibility.theme'),

@@ -6,26 +6,15 @@ const languages = ['en', 'fr', 'es', 'de', 'it', 'pt'] as const;
 
 const TRENDS_PREFIX = 'trends.';
 
-const evolutionNextKeys = [
-  'trends.evolution.next.capture_first',
-  'trends.evolution.next.capture_this_week',
-  'trends.evolution.next.keep_rhythm',
-  'trends.evolution.next.wait_for_patterns',
-  'trends.evolution.next.review_patterns',
-] as const;
-
-const ctaKeys = [
-  'trends.cta.capture_first',
-  'trends.cta.capture_this_week',
-  'trends.cta.keep_rhythm',
-  'trends.cta.wait_for_patterns',
-  'trends.cta.review_patterns',
-] as const;
-
+// Counted strings whose singular form must not read as the plural.
 const countedPairs = [
-  ['trends.week.active_days.value_one', 'trends.week.active_days.value'],
-  ['trends.patterns.recurrence_one', 'trends.patterns.recurrence'],
+  ['trends.nights.summary_one', 'trends.nights.summary'],
+  ['trends.seal.medal_one', 'trends.seal.medal'],
+  ['trends.returns.basis_one', 'trends.returns.basis'],
+  ['trends.nights.month_one', 'trends.nights.month'],
 ] as const;
+
+const placeholders = (value: string) => (value.match(/\{[a-z]+\}/g) ?? []).sort();
 
 async function loadAllLanguages() {
   const packs = await Promise.all(
@@ -42,24 +31,15 @@ function trendsKeysFrom(pack: Record<string, string>): string[] {
 }
 
 describe('trends i18n', () => {
-  it('defines every English trends key in supported languages without falling back to the key', async () => {
+  it('defines every English trends key in supported languages, with the same placeholders', async () => {
     const packs = await loadAllLanguages();
     const trendsKeys = trendsKeysFrom(packs.en);
-
-    expect(evolutionNextKeys).toHaveLength(5);
-    expect(ctaKeys).toHaveLength(5);
-
-    for (const key of evolutionNextKeys) {
-      expect(trendsKeys).toContain(key);
-    }
-
-    for (const key of ctaKeys) {
-      expect(trendsKeys).toContain(key);
-    }
 
     for (const language of languages) {
       const pack = packs[language];
       const t = getTranslator(language);
+      // No language keeps a key the screen no longer reads.
+      expect(trendsKeysFrom(pack)).toEqual(trendsKeys);
 
       for (const key of trendsKeys) {
         expect({ language, key, value: pack[key] }).toEqual({
@@ -70,7 +50,10 @@ describe('trends i18n', () => {
         expect(pack[key]).not.toBe(key);
         expect(pack[key].trim()).not.toBe('');
         expect(t(key)).not.toBe(key);
-        expect(t(key).trim()).not.toBe('');
+        // A missing placeholder would print a raw count or theme on screen.
+        expect({ language, key, placeholders: placeholders(pack[key]) })
+          .toEqual({ language, key, placeholders: placeholders(packs.en[key]) });
+        expect(pack[key]).not.toContain('—');
       }
     }
   });
@@ -82,11 +65,10 @@ describe('trends i18n', () => {
       const t = getTranslator(language);
 
       for (const [singularKey, pluralKey] of countedPairs) {
-        expect(t(singularKey, { count: 1 })).toContain('1');
-        expect(t(pluralKey, { count: 0 })).toContain('0');
-        expect(t(pluralKey, { count: 2 })).toContain('2');
-        expect(t(singularKey, { count: 1 })).not.toBe(t(pluralKey, { count: 1 }));
-        expect(t(pluralKey, { count: 0 })).not.toBe(t(singularKey, { count: 0 }));
+        const params = (count: number) => ({ count, total: 30, theme: 'X', month: 'M', date: 'D' });
+        expect(t(singularKey, params(1))).toContain('1');
+        expect(t(pluralKey, params(2))).toContain('2');
+        expect(t(singularKey, params(1))).not.toBe(t(pluralKey, params(1)));
       }
     }
   });
