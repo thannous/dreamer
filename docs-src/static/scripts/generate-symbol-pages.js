@@ -900,7 +900,7 @@ const TIGER_ATLAS = {
   scenes: {
     id: 'scenes',
     kicker: 'Scènes courantes',
-    title: 'Quelle scène ressemble le plus à votre rêve ?',
+    title: 'Quelle scène ressemble le plus à votre rêve\u00a0?',
     legend: 'Choisir une scène',
     source: 'Lire la variante',
     choices: [
@@ -912,7 +912,7 @@ const TIGER_ATLAS = {
   reflectionKicker: 'Réflexion',
   continuationTitle: 'Suite de la lecture',
   keepKicker: 'Continuer dans Noctalia',
-  relatedLead: 'Explorer d’autres symboles proches :',
+  relatedLead: 'Explorer d’autres symboles proches\u00a0:',
   // Fingerprinted files from docs-src/static/img/symbols/atlas-tiger-v1 (assets-manifest.json).
   images: {
     pursuit: { width: 320, height: 180, avif: { 320: 'tiger-pursuit-320-f1ce09fe543d.avif', 640: 'tiger-pursuit-640-112fb4ac41a6.avif' }, webp: { 320: 'tiger-pursuit-320-05b0f7866689.webp', 640: 'tiger-pursuit-640-54f668afdf3d.webp' } },
@@ -939,6 +939,11 @@ function plainText(html) {
 // Compares French copy whatever its non-breaking spaces (one character for one, so indexes match).
 function looseSpaces(text) {
   return text.replace(/[\u00a0\u202f]/g, ' ');
+}
+
+// French punctuation never starts a line: the space before : ; ? ! » and after « holds.
+function frenchSpaces(text) {
+  return String(text).replace(/ ([:;?!»])/g, '\u00a0$1').replace(/« /g, '«\u00a0');
 }
 
 // The whole sentence of `text` that starts with `prefix`.
@@ -1014,7 +1019,7 @@ function renderTigerAtlasArticle(c) {
     const question = meaning.slice(0, meaning.indexOf('?') + 1);
     const rest = meaning.slice(question.length).trim();
     if (!question || !rest) throw new Error(`Tiger atlas: variation "${choice.variation}" no longer opens with a question`);
-    return { ...choice, checked: index === 0, question, excerpt: sentenceStarting(rest, looseSpaces(rest.slice(0, 12)), `variation "${choice.variation}"`) };
+    return { ...choice, checked: index === 0, card: c.variations.indexOf(variation), question, excerpt: sentenceStarting(rest, looseSpaces(rest.slice(0, 12)), `variation "${choice.variation}"`) };
   });
   const sceneChoicesHtml = scenes.map((scene) => `
                                 <input class="atlas-scene-input" type="radio" name="atlas-scene" id="atlas-scene-${scene.id}" value="${scene.id}" aria-controls="atlas-scene-results"${scene.checked ? ' checked' : ''}>
@@ -1030,8 +1035,17 @@ function renderTigerAtlasArticle(c) {
                         <div class="atlas-scene-result" data-scene="${scene.id}">
                             <p class="atlas-scene-question"><i data-lucide="quote" class="w-5 h-5"></i>${escapeHtml(scene.question)}</p>
                             <p class="atlas-scene-excerpt">${escapeHtml(scene.excerpt)}</p>
-                            <a class="atlas-link" href="#variations">${escapeHtml(atlas.scenes.source)} «\u00a0${escapeHtml(scene.variation)}\u00a0»</a>
+                            <a class="atlas-link" href="#variante-${scene.id}">${escapeHtml(atlas.scenes.source)} «\u00a0${escapeHtml(scene.variation)}\u00a0»</a>
                         </div>`).join('');
+
+  // Each scene's source link lands on its own variation card.
+  let card = -1;
+  const variationsHtml = asH4(c.variationsHtml).replace(/<div class="variation-card">/g, () => {
+    card += 1;
+    const scene = scenes.find((s) => s.card === card);
+    return scene ? `<div class="variation-card" id="variante-${scene.id}">` : '<div class="variation-card">';
+  });
+  if (card !== c.variations.length - 1) throw new Error('Tiger atlas: the variation cards no longer match the variations');
 
   const pageLinks = [
     { href: 'meaning', label: c.sheetLabels.meaning },
@@ -1068,7 +1082,7 @@ function renderTigerAtlasArticle(c) {
                         </nav>
                         <!-- Main Interpretation -->
                         <section id="meaning" class="symbol-meaning atlas-meaning">
-                            <h3 class="atlas-h3">${c.t.section_interpretation}</h3>
+                            <h3 class="atlas-h3">${frenchSpaces(c.t.section_interpretation)}</h3>
                             <div class="prose prose-invert prose-purple max-w-none leading-relaxed space-y-4">
                                 ${opening}
                             </div>
@@ -1115,7 +1129,6 @@ function renderTigerAtlasArticle(c) {
                     <p class="atlas-related-lead">${escapeHtml(atlas.relatedLead)}</p>
                     <div class="atlas-related-links">${c.relatedSymbolsHtml}
                     </div>
-                    <p class="atlas-related-caveat">${escapeHtml(caveat)}</p>
                 </section>
 
                 <div class="atlas-deep">
@@ -1137,7 +1150,7 @@ function renderTigerAtlasArticle(c) {
                 <!-- Variations -->
                 <section id="variations" class="symbol-variations symbol-section">
                     <h3 class="symbol-h2">${c.t.section_variations}</h3>
-                    <div class="atlas-variation-grid">${asH4(c.variationsHtml)}
+                    <div class="atlas-variation-grid">${variationsHtml}
                     </div>
                 </section>
 
@@ -1149,7 +1162,7 @@ function renderTigerAtlasArticle(c) {
 
                 <!-- Related Reading -->
                 <section class="symbol-reading symbol-section">
-                    <h3 class="symbol-h2">${c.t.section_learn_more}</h3>${asH4(c.relatedReadingCard)}
+                    <h3 class="symbol-h2">${c.t.section_learn_more}</h3>${asH4(c.relatedReadingCard).replace(/<h4>([\s\S]*?)<\/h4>/, (match, title) => `<h4>${frenchSpaces(title)}</h4>`)}
                 </section>` : ''}
 
                 <!-- Back to Dictionary -->
@@ -1313,6 +1326,9 @@ const TIGER_ATLAS_CSS = `
         .atlas-link, .atlas-journal-notes a { color: var(--salmon); text-decoration: underline; text-decoration-color: rgba(234, 212, 180, 0.35); text-underline-offset: 3px; }
         .atlas-link { display: inline-flex; align-items: center; min-height: 44px; font-size: 0.85rem; }
         .atlas-caveat { margin-top: 0.75rem; font-size: 0.8rem; font-style: italic; color: var(--cream-64); }
+        .atlas .variation-card { scroll-margin-top: 7rem; }
+        .atlas .variation-card:target { border-top-color: var(--salmon); }
+        .atlas .variation-card:target h4 { color: var(--salmon); }
 
         /* Band: reflection questions, fictional journal, the app. */
         .atlas-band { display: grid; margin-top: clamp(3rem, 6vw, 5rem); border-top: 1px solid var(--line); }
@@ -1350,10 +1366,8 @@ const TIGER_ATLAS_CSS = `
         .atlas-related .atlas-kicker { margin: 0; }
         .atlas-related-lead { font-size: 0.9rem; color: var(--cream-64); }
         .atlas-related-links { display: flex; flex-wrap: wrap; gap: 0.25rem 1.5rem; }
-        .atlas-related-caveat { text-wrap: balance; }
         .atlas-related-links .symbol-link { border-top: 0; padding: 0.55rem 0; gap: 0.5rem; justify-content: flex-start; }
         .atlas-related-links .symbol-link span { text-decoration: underline; text-decoration-color: rgba(255, 247, 237, 0.3); text-underline-offset: 4px; font-size: 1rem; }
-        .atlas-related-caveat { font-family: 'Fraunces', ui-serif, Georgia, serif; font-style: italic; font-size: 0.95rem; color: var(--cream-64); }
         .atlas-more .symbol-variations { margin-top: clamp(3rem, 6vw, 4.5rem); border-top: 0; padding-top: 0; }
         .atlas-variation-grid, .atlas-faq-grid { display: grid; grid-template-columns: minmax(0, 1fr); column-gap: var(--atlas-gap); }
         .atlas .variation-card { padding: 1.35rem 0; }
@@ -1362,12 +1376,20 @@ const TIGER_ATLAS_CSS = `
         .atlas .symbol-faq { scroll-margin-top: 7rem; }
         .atlas-back { text-align: left; }
         @media (max-width: 767px) {
+            /* Below the fixed navbar and section bar. */
+            .atlas .variation-card { scroll-margin-top: 12rem; }
+            /* The navbar slides away when scrolling down: the section bar takes its place
+               instead of leaving the text visible above it. */
+            body.symbol-jump-fixed:has(#navbar.nav-scroll-hidden) .symbol-jump-nav { transform: translateY(-4.15rem); }
             #navbar.atlas-nav-solid, body.symbol-jump-fixed #navbar {
                 background: rgba(10, 5, 20, 0.92);
                 backdrop-filter: blur(18px);
                 -webkit-backdrop-filter: blur(18px);
                 box-shadow: 0 12px 34px rgba(0, 0, 0, 0.24);
             }
+        }
+        @media (max-width: 767px) and (prefers-reduced-motion: no-preference) {
+            body.symbol-jump-fixed .symbol-jump-nav { transition: transform 0.3s ease; }
         }
 
         @media (min-width: 768px) {
@@ -1377,8 +1399,6 @@ const TIGER_ATLAS_CSS = `
             .atlas-column + .atlas-column { border-top: 0; }
             .atlas-keep { grid-column: 1 / -1; border-top: 1px solid var(--line) !important; }
             .atlas-scene { grid-template-columns: 8.5rem minmax(0, 1fr) auto; }
-            .atlas-related { grid-template-columns: auto minmax(0, 1fr); align-items: center; column-gap: 2rem; }
-            .atlas-related-caveat { grid-column: 1 / -1; }
             .symbol-hero--living .symbol-hero-overlay { width: min(90vw, 2304px); padding-inline: 0; }
         }
         @media (min-width: 1024px) {
@@ -1391,13 +1411,12 @@ const TIGER_ATLAS_CSS = `
             .atlas-scenes { grid-column: 2; grid-row: 1; margin-top: 0; padding-top: clamp(5rem, 6.4vw, 7rem); }
             .atlas-decor { display: block; grid-column: 2; grid-row: 2; margin-top: 2rem; }
             .atlas-decor img { display: block; width: 100%; height: auto; }
-            .atlas-band { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 0; }
-            .atlas-column { padding-inline: clamp(1.5rem, 2.6vw, 3rem); }
-            .atlas-reflection { padding-left: 0; }
-            .atlas-column + .atlas-column { border-left: 1px solid var(--line); }
-            .atlas-keep { grid-column: auto; border-top: 0 !important; padding-right: 0; }
-            .atlas-related { grid-template-columns: auto auto minmax(0, 1fr) auto; column-gap: clamp(1.5rem, 2.5vw, 3rem); }
-            .atlas-related-caveat { grid-column: auto; text-align: right; }
+            .atlas-related { grid-template-columns: auto auto minmax(0, 1fr); align-items: center; column-gap: clamp(1.5rem, 2.5vw, 3rem); }
+        }
+        /* Compact plate: cards wide enough for their titles on one line. */
+        @media (min-width: 1024px) and (max-width: 1439px) {
+            .atlas-plate { grid-template-columns: minmax(0, 1fr) 22rem; }
+            .atlas-scene { grid-template-columns: 6.5rem minmax(0, 1fr) auto; }
         }
         @media (min-width: 1200px) {
             .atlas-top { display: grid; grid-template-columns: var(--atlas-rail) minmax(0, 1fr); column-gap: var(--atlas-gap); }
@@ -1420,12 +1439,21 @@ const TIGER_ATLAS_CSS = `
             .atlas-rail-links a { display: block; padding: 0.3rem 0; font-size: 0.82rem; color: var(--cream-64); transition: color 0.2s ease; }
             .atlas-rail-links a:hover { color: var(--cream); }
             .atlas-plate { padding-top: clamp(2rem, 3vw, 3rem); }
+            /* The band takes three columns once the rail is there. */
+            .atlas-band { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 0; }
+            .atlas-column { padding-inline: clamp(1.5rem, 2.6vw, 3rem); }
+            .atlas-reflection { padding-left: 0; }
+            .atlas-column + .atlas-column { border-left: 1px solid var(--line); }
+            .atlas-keep { grid-column: auto; border-top: 0 !important; padding-right: 0; }
             .atlas-variation-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-            .atlas-related { grid-template-columns: auto auto minmax(0, 1fr) minmax(0, 20rem); }
             .atlas-deep { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); column-gap: var(--atlas-gap); align-items: start; }
             .atlas-continuation .prose { columns: 2 22rem; column-gap: var(--atlas-gap); }
             .atlas-continuation .prose p { break-inside: avoid; }
             .symbol-hero--living .symbol-hero-overlay { padding-left: calc(12.5rem + clamp(1.75rem, 3vw, 4.5rem)); }
+        }
+        @media (min-width: 1200px) and (max-width: 1439px) {
+            /* Room for the store button on one line. */
+            .atlas-band { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.2fr); }
         }
         /* From 1440px the backdrop sits right of the reading, behind the opaque controls,
            out into the page margin; it is never wider than leaves the tiger's face
@@ -1619,6 +1647,9 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
       enabled: true
     }
   ].filter(item => item.enabled);
+  // The atlas sets the questions before the variations: its bar follows the page,
+  // which the active-link scan below expects.
+  if (livingPainting) jumpItems.sort((a, b) => Number(a.href === 'variations') - Number(b.href === 'variations'));
   const jumpNavHtml = jumpItems.map((item, index) => `
                     <a href="#${item.href}" class="symbol-jump-link ${index === 0 ? 'is-active' : ''}">
                         <i data-lucide="${item.icon}" class="w-5 h-5"></i>

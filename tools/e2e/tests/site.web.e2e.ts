@@ -583,6 +583,58 @@ test('the French tiger atlas sets its chapters side by side and shows each publi
     else await expect.poll(navGround).toMatch(/^rgba\(10, 5, 20, 0\.9\d*\)$/);
   }
 
+  // The phone section bar follows the page order: a tapped link lands its section below the bar
+  // and stays lit past it (the FAQ comes after the variations), and the text never shows above
+  // the bar, even once the navbar slides away.
+  const readJump = () => browser.evaluate(() => {
+    const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('.symbol-jump-link'));
+    const bar = document.querySelector('.symbol-jump-nav')!.getBoundingClientRect();
+    return {
+      hashes: links.map(link => link.hash),
+      tops: links.map(link => document.querySelector(link.hash)!.getBoundingClientRect().top + window.scrollY),
+      active: links.filter(link => link.classList.contains('is-active')).map(link => link.hash),
+      covered: bar.top <= Math.max(0, document.querySelector('#navbar')!.getBoundingClientRect().bottom) + 8,
+      barBottom: bar.bottom,
+      variationsTitle: document.querySelector('#variations h3')!.getBoundingClientRect().top,
+      faqTop: document.querySelector('#faq')!.getBoundingClientRect().top + window.scrollY,
+    };
+  });
+  // Anchors scroll smoothly: read positions once the page has stopped.
+  let lastY = -1;
+  const settled = () => expect.poll(async () => {
+    const y = await browser.evaluate(() => window.scrollY);
+    const still = y === lastY;
+    lastY = y;
+    return still;
+  }).toBe(true);
+  const bar = await readJump();
+  expect(bar.hashes).toEqual(['#meaning', '#questions', '#variations']);
+  expect(bar.tops).toEqual([...bar.tops].sort((a, b) => a - b));
+  await screen.getByRole('link', { name: /^Variantes$/ }).tap();
+  await settled();
+  await expect.poll(() => readJump().then(read => read.active)).toEqual(['#variations']);
+  await expect.poll(() => readJump().then(read => read.covered)).toBe(true);
+  const landed = await readJump();
+  expect(landed.variationsTitle).toBeGreaterThanOrEqual(landed.barBottom);
+  expect(landed.variationsTitle).toBeLessThan(phone.viewportHeight / 2);
+  await browser.evaluate(scrollToY, Math.round(landed.faqTop - 150));
+  await expect.poll(() => readJump().then(read => read.active)).toEqual(['#variations']);
+  await expect.poll(() => readJump().then(read => read.covered)).toBe(true);
+
+  // The source link of the selected scene lands on its own variation card, below the bar.
+  await screen.getByRole('link', { name: /^Lire la variante/ }).tap();
+  await expect.poll(() => browser.evaluate(() => window.location.hash)).toBe('#variante-cage');
+  await settled();
+  const target = await browser.evaluate(() => {
+    const card = document.querySelector(':target');
+    const title = card?.querySelector('h4')?.getBoundingClientRect();
+    return { section: card?.closest('section')?.id ?? null, title: card?.querySelector('h4')?.textContent?.trim() ?? null, top: title?.top ?? -1, bar: document.querySelector('.symbol-jump-nav')!.getBoundingClientRect().bottom };
+  });
+  expect([target.section, target.title]).toEqual(['variations', 'Un tigre en cage ou un petit tigre']);
+  expect(target.top).toBeGreaterThanOrEqual(target.bar);
+  expect(target.top).toBeLessThan(phone.viewportHeight / 2);
+  await app.screenshot('tiger-atlas-390-variant');
+
   // The other languages keep the shared single-column article.
   await app.open('/en/symbols/tiger.html');
   await expect(screen.getByRole('heading', { level: 1 })).toBeVisible();
