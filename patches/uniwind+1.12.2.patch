@@ -1,0 +1,54 @@
+diff --git a/node_modules/uniwind/src/components/index.ts b/node_modules/uniwind/src/components/index.ts
+index 6fcad21..fea8a5c 100644
+--- a/node_modules/uniwind/src/components/index.ts
++++ b/node_modules/uniwind/src/components/index.ts
+@@ -307,4 +307,49 @@ module.exports = {
+     get XamlHost() {
+         return require('react-native').XamlHost
+     },
++    get AssetRegistry() {
++        return require('react-native').AssetRegistry
++    },
++    get EventEmitter() {
++        return require('react-native').EventEmitter
++    },
++    get PushNotificationIOS() {
++        return require('react-native').PushNotificationIOS
++    },
++    get unstable_DEFAULT_INITIAL_NUM_TO_RENDER() {
++        return require('react-native').unstable_DEFAULT_INITIAL_NUM_TO_RENDER
++    },
++    get unstable_NativeText() {
++        return require('react-native').unstable_NativeText
++    },
++    get unstable_NativeView() {
++        return require('react-native').unstable_NativeView
++    },
++    get unstable_VirtualArray() {
++        return require('react-native').unstable_VirtualArray
++    },
++    get unstable_VirtualColumn() {
++        return require('react-native').unstable_VirtualColumn
++    },
++    get unstable_VirtualColumnGenerator() {
++        return require('react-native').unstable_VirtualColumnGenerator
++    },
++    get unstable_VirtualRow() {
++        return require('react-native').unstable_VirtualRow
++    },
++    get unstable_createVirtualCollectionView() {
++        return require('react-native').unstable_createVirtualCollectionView
++    },
++    get unstable_getScrollParent() {
++        return require('react-native').unstable_getScrollParent
++    },
++    get useAnimatedColor() {
++        return require('react-native').useAnimatedColor
++    },
++    get useAnimatedValueXY() {
++        return require('react-native').useAnimatedValueXY
++    },
++    get usePressability() {
++        return require('react-native').usePressability
++    },
+ }
