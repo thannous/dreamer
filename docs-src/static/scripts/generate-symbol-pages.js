@@ -843,6 +843,40 @@ function renderLegacyPseoFooter(lang, t, allSymbols, curationPages = OPTIONAL_CU
     </footer>`;
 }
 
+// Living-painting pilot of the French tiger page (mist, lantern glow, scroll
+// depth). The folder is named after the script's sha256, so the immutable
+// /js/* cache never serves a stale copy; its layers load relative to the
+// script. On a phone held upright the hero takes 75svh and shows a dedicated
+// portrait painting; the landscape image, SEO and cards stay shared.
+const TIGER_LIVING = {
+  dir: '/js/tiger-living/43e912703ed3',
+  media: '(max-width: 767px) and (orientation: portrait)',
+  portrait: { name: 'tiger-mobile-v4', width: 984, height: 1599, widths: [480, 984] },
+};
+
+function tigerLivingSourcesHtml() {
+  const { dir, media, portrait } = TIGER_LIVING;
+  return ['avif', 'webp'].map((format) => {
+    const srcset = portrait.widths
+      .map((width) => `${dir}/assets/${portrait.name}-${width}w.${format} ${width}w`)
+      .join(', ');
+    return `
+                        <source media="${media}" type="image/${format}" srcset="${srcset}" sizes="100vw" width="${portrait.width}" height="${portrait.height}">`;
+  }).join('');
+}
+
+// Before any script runs: the portrait hero has its final height, so the
+// painting and the title never jump.
+function tigerLivingStyleHtml() {
+  return `
+    <style>
+        @media ${TIGER_LIVING.media} {
+            .symbol-hero--living { aspect-ratio: auto; height: 75vh; height: 75svh; }
+            .symbol-hero--living .symbol-hero-media img { object-fit: cover; object-position: 50% 35%; }
+        }
+    </style>`;
+}
+
 // Generate HTML page for a symbol
 function generatePage(symbol, allSymbols, i18n, extended, lang) {
   const t = i18n[lang];
@@ -888,11 +922,9 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
   const softCta = symbolData.softCta && symbolData.softCta.href
     ? symbolData.softCta
     : null;
-  // Living-painting pilot (mist + lantern glow): French tiger page only. The
-  // folder is named after the script's sha256, so the immutable /js/* cache
-  // never serves a stale copy; its layers load relative to the script.
-  const livingPaintingScriptHtml = symbol.id === 'tiger' && lang === 'fr'
-    ? `\n    <script src="/js/tiger-living/4a2c0644fe77/tiger-living-painting.js" defer></script>`
+  const livingPainting = symbol.id === 'tiger' && lang === 'fr';
+  const livingPaintingScriptHtml = livingPainting
+    ? `\n    <script src="${TIGER_LIVING.dir}/tiger-living-painting.js" defer></script>`
     : '';
 
   // Generate variations HTML
@@ -918,7 +950,7 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
             </section>` : '';
 
   const heroPictureHtml = illustration && responsiveIllustration ? `
-                    <picture class="symbol-hero-media">${responsiveIllustration.avifSrcset ? `
+                    <picture class="symbol-hero-media">${livingPainting ? tigerLivingSourcesHtml() : ''}${responsiveIllustration.avifSrcset ? `
                         <source type="image/avif" srcset="${escapeHtml(responsiveIllustration.avifSrcset)}" sizes="${heroImageSizes}">` : ''}
                         <img src="${escapeHtml(responsiveIllustration.src)}"
                              ${responsiveIllustration.srcset ? `srcset="${escapeHtml(responsiveIllustration.srcset)}"` : ''}
@@ -1669,7 +1701,7 @@ ${renderSharedComponentStyles()}
             }
             .variation-card { padding-left: 2.5rem; }
         }
-    </style>
+    </style>${livingPainting ? tigerLivingStyleHtml() : ''}
 
     <!-- Schema.org DefinedTerm -->
 ${renderJsonLd(definedTermJsonLd)}
@@ -1691,7 +1723,7 @@ ${renderPseoNav(lang, currentPaths, 'dictionary')}
 
     <main class="symbol-page-main pb-20">
             <!-- Header -->
-            <header class="symbol-hero" data-image-seo-hero="true">
+            <header class="symbol-hero${livingPainting ? ' symbol-hero--living' : ''}" data-image-seo-hero="true">
                 <figure class="symbol-hero-figure" data-image-seo-role="symbol-hero" data-image-asset-id="symbol.${escapeHtml(symbol.id)}">
 ${heroPictureHtml}
                     ${illustration?.caption ? `<figcaption class="symbol-hero-caption">${escapeHtml(illustration.caption)}</figcaption>` : ''}
