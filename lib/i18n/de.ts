@@ -1923,6 +1923,7 @@ const translations: Record<string, string> = {
     'trends.returns.to_analyze': '{count} zu analysieren',
     'trends.returns.to_analyze_label': 'Die {count} Träume zum Analysieren ansehen',
     'trends.returns.to_analyze_label_one': 'Den Traum zum Analysieren ansehen',
+    'trends.returns.symbols': 'Symbole',
     'trends.returns.emotions': 'Emotionen',
     'trends.returns.share': '{count} von {total}',
     'trends.returns.trend.up': 'steigend',

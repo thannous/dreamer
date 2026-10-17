@@ -1,5 +1,6 @@
 import { useQuickSettings } from '@/context/QuickSettingsContext';
 import { JournalCompletenessNotice } from '@/components/journal/JournalCompletenessNotice';
+import { DreamSymbolSheet } from '@/components/journal/symbols/DreamSymbolSheet';
 import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
@@ -46,6 +47,8 @@ import {
   type DreamTrendsPeriod,
 } from '@/lib/dreamTrends';
 import { toJournalFilterParams, type JournalFilterRequest } from '@/lib/journalFilterLink';
+import { getSymbolIndex } from '@/lib/symbolLinks';
+import { getPeriodSymbols } from '@/lib/trendsSymbols';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
 import { useHeaderScroll } from '@/components/ui/headerStretch';
@@ -108,7 +111,7 @@ function StatisticsScreen() {
   // This screen's own scroll, published to its header painting and title.
   const onHeaderScroll = useHeaderScroll();
   const { dreams, loaded, completeness, reloadDreams } = useDreams();
-  const { t } = useTranslation();
+  const { t, currentLang } = useTranslation();
   const { formatDate, formatNumber, locale } = useLocaleFormatting();
   const { width, height, fontScale } = useWindowDimensions();
   const insets = useSafeAreaInsets();
@@ -121,6 +124,7 @@ function StatisticsScreen() {
   const [selectedTheme, setSelectedTheme] = useState<DreamTheme | null>(null);
   const [nightsLit, setNightsLit] = useState(false);
   const [returnsLit, setReturnsLit] = useState(false);
+  const [openSymbol, setOpenSymbol] = useState<string | null>(null);
   const nightsRef = useRef<ViewInstance | null>(null);
   const returnsRef = useRef<ViewInstance | null>(null);
 
@@ -139,6 +143,18 @@ function StatisticsScreen() {
   // Read on today's date, again whenever the journal, the period or the day changes.
   const today = useEndOfLocalDay();
   const trends = useMemo(() => buildDreamTrends(dreams, { period, now: today }), [dreams, period, today]);
+  // The journal's symbols, read only once enough dreams are; the index is the one the readings share.
+  // An open page keeps it, so the sheet closes as it should even if the period stops being ready.
+  const { ready, analyzedIds } = trends.patterns;
+  const symbolsShown = ready || openSymbol !== null;
+  const symbolIndex = useMemo(
+    () => (symbolsShown ? getSymbolIndex(dreams, currentLang) : null),
+    [currentLang, dreams, symbolsShown],
+  );
+  const periodSymbols = useMemo(
+    () => (symbolIndex ? getPeriodSymbols(symbolIndex, analyzedIds) : []),
+    [analyzedIds, symbolIndex],
+  );
 
   const reveal = useCallback(() => {
     const probe = (ref: React.RefObject<ViewInstance | null>, lit: boolean, light: (value: boolean) => void) => {
@@ -343,15 +359,21 @@ function StatisticsScreen() {
               </View>
 
               <View ref={returnsRef} onLayout={reveal} className="border-t border-line pt-7">
-                <TrendsReturns trends={trends} lit={returnsLit || reduced} ink={ink} t={t} formatNumber={formatNumber}
+                <TrendsReturns trends={trends} symbols={periodSymbols} lit={returnsLit || reduced} ink={ink} t={t}
+                  formatNumber={formatNumber}
                   onOpenUnanalyzed={() => openJournal(trends, { analysis: 'unanalyzed' })}
-                  onOpenType={(type: DreamType) => openJournal(trends, { dreamType: type, analysis: 'analyzed' })} />
+                  onOpenType={(type: DreamType) => openJournal(trends, { dreamType: type, analysis: 'analyzed' })}
+                  onOpenSymbol={setOpenSymbol} />
               </View>
               {compact ? <View testID="trends.layout.compact" /> : null}
             </View>
           )}
         </ScreenContainer>
       </ScrollView>
+      {symbolIndex ? (
+        <DreamSymbolSheet index={symbolIndex} dream={null} linkKey={openSymbol} onSelect={setOpenSymbol}
+          onClose={() => setOpenSymbol(null)} />
+      ) : null}
     </View>
   );
 }
