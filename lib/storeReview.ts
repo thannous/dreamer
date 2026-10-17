@@ -24,7 +24,7 @@ export const STORE_REVIEW_RULES = {
   minAnalysesRead: 3,
   minWeeklyRecapDreams: 3,
   minDaysSinceFirstSeen: 2,
-  minDaysBetweenRequests: 90,
+  minDaysBetweenRequests: 30,
   quietAfterPaywallMs: 10 * 60 * 1000,
 } as const;
 

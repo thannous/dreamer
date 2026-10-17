@@ -51,14 +51,14 @@ describe('store review pacing', () => {
     expect(StoreReview.requestReview).toHaveBeenCalledTimes(1);
   });
 
-  it('asks at most once every 90 days, even when the store request fails', async () => {
+  it('asks at most once every 30 days, even when the store request fails', async () => {
     jest.spyOn(console, 'warn').mockImplementation(() => undefined);
     jest.mocked(StoreReview.requestReview).mockRejectedValueOnce(new Error('no activity'));
     await readAnalyses(3);
     now = START + 3 * DAY_MS;
     await expect(requestStoreReviewIfDue({ kind: 'analysis_read' })).resolves.toBe(true);
 
-    now += 89 * DAY_MS;
+    now += 29 * DAY_MS;
     await expect(requestStoreReviewIfDue({ kind: 'weekly_recap', dreamCount: 6 })).resolves.toBe(false);
 
     now += DAY_MS;
