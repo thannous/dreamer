@@ -49,6 +49,7 @@ import {
   status,
   sweepStaleCopies,
   verify,
+  verifyJobs,
 } from './verify-local.mjs';
 
 const ENGINE = fileURLToPath(new URL('./verify-local.mjs', import.meta.url));
@@ -107,6 +108,9 @@ function makeRepository() {
     HOME: base,
     // Each fixture takes its own heavy-check lock, never the machine's.
     VERIFY_LOCAL_HEAVY_LOCK: path.join(base, 'heavy.lock'),
+    // One check at a time, in order: these cases read the order of RUN_LOG.
+    // The side-by-side runs have their own cases ('checks side by side').
+    VERIFY_LOCAL_JOBS: '1',
   };
   const git = (args, cwd = work, extra = {}) => {
     const result = spawnSync('git', args, { cwd, env: { ...env, ...extra }, encoding: 'utf8' });
@@ -1851,6 +1855,116 @@ describe('verify:release and the deploy guard', () => {
   });
 });
 
+describe('checks side by side', () => {
+  // A repository whose config holds only these checks.
+  const withChecks = (checks) => {
+    const repo = makeRepository();
+    repo.git(['checkout', '--quiet', '-b', 'feature']);
+    repo.commit('checks', {
+      'verify-local.config.mjs': `export const ENGINE_SHA256 = '${ENGINE_FILE_SHA256}';
+export default {
+  mainBranch: 'main',
+  commands: { pr: 'npm run verify:pr', release: 'npm run verify:release' },
+  deps: { mode: 'link', lockfile: 'package-lock.json', install: 'mkdir -p node_modules' },
+  checks: ${JSON.stringify(checks)},
+};
+`,
+    });
+    return repo;
+  };
+  const jobs = (repo, count) => ({ ...repo.options, env: { ...repo.env, VERIFY_LOCAL_JOBS: String(count) } });
+  // Each check of the pair waits for the other to have started: only a run
+  // that starts both at once passes.
+  const pair = (marks) => ['a', 'b'].map((name) => ({
+    name,
+    command: `touch "${marks}/${name}"; i=0; while [ ! -e "${marks}/${name === 'a' ? 'b' : 'a'}" ]; do i=$((i+1)); [ $i -gt 60 ] && exit 9; sleep 0.05; done; echo ${name}-out-1; echo ${name}-out-2`,
+  }));
+
+  test('VERIFY_LOCAL_JOBS sets how many checks run at once; anything else means the processors here', () => {
+    const processors = typeof os.availableParallelism === 'function' ? os.availableParallelism() : os.cpus().length;
+    assert.equal(verifyJobs({ VERIFY_LOCAL_JOBS: '3' }), 3);
+    assert.equal(verifyJobs({ VERIFY_LOCAL_JOBS: ' 1 ' }), 1);
+    assert.equal(verifyJobs({ VERIFY_LOCAL_JOBS: '1000' }), 64);
+    for (const raw of [undefined, '', '0', '-2', '2.5', 'abc']) assert.equal(verifyJobs({ VERIFY_LOCAL_JOBS: raw }), Math.max(1, processors), String(raw));
+  });
+
+  test('checks start together, each one prints its output in one piece, and the proof keeps the config order', async () => {
+    const marks = mkdtempSync(path.join(scratch, 'marks-'));
+    const repo = withChecks(pair(marks));
+    const { status: code, proof } = await verify('pr', [], jobs(repo, 4));
+    assert.equal(code, 0, repo.lines.join('\n'));
+    assert.deepEqual(proof.checks.map((check) => [check.name, check.result]), [['a', 'passed'], ['b', 'passed']]);
+    for (const name of ['a', 'b']) {
+      const at = repo.lines.indexOf(`${name}-out-1`);
+      assert.ok(at > 0 && repo.lines[at - 1] === `[verify-local] ${name} output:` && repo.lines[at + 1] === `${name}-out-2`, repo.lines.join('\n'));
+    }
+    assert.ok(repo.lines.some((line) => /2 checks ran side by side \(up to 2 at a time\)/.test(line)), repo.lines.join('\n'));
+
+    // One at a time, the same pair waits for each other in vain.
+    const alone = withChecks(pair(mkdtempSync(path.join(scratch, 'marks-'))));
+    const sequential = await verify('pr', [], jobs(alone, 1));
+    assert.equal(sequential.status, 1);
+    assert.deepEqual(sequential.proof.checks.map((check) => [check.name, check.result]), [['a', 'failed']]);
+  });
+
+  test('after a failure no other check starts, a running one ends and is recorded, and the failure is never reused', async () => {
+    const repo = withChecks([
+      { name: 'slow', command: 'sleep 0.5; echo slow >> "$RUN_LOG"' },
+      { name: 'fail', command: 'echo fail >> "$RUN_LOG"; exit 3' },
+      { name: 'later', command: 'echo later >> "$RUN_LOG"' },
+    ]);
+    const first = await verify('pr', [], jobs(repo, 2));
+    assert.equal(first.status, 1);
+    assert.equal(first.proof.result, 'failed');
+    assert.deepEqual(first.proof.checks.map((check) => [check.name, check.result]), [['slow', 'passed'], ['fail', 'failed']]);
+    assert.deepEqual(repo.runs().sort(), ['fail', 'slow'], 'later never started');
+    repo.clearRuns();
+    const second = await verify('pr', [], jobs(repo, 2));
+    assert.equal(second.status, 1);
+    assert.ok(!repo.runs().includes('slow'), 'slow is reused');
+    assert.ok(repo.runs().includes('fail'), 'the failed check runs again');
+  });
+
+  test('an exclusive check runs alone, after the others', async () => {
+    const marks = mkdtempSync(path.join(scratch, 'marks-'));
+    const busy = (name) => `touch "${marks}/busy-${name}"; sleep 0.3; rm "${marks}/busy-${name}"; echo ${name} >> "$RUN_LOG"`;
+    const repo = withChecks([
+      { name: 'x', command: `test -z "$(ls "${marks}")" && echo x >> "$RUN_LOG"`, exclusive: true },
+      { name: 'y', command: busy('y') },
+      { name: 'z', command: busy('z') },
+    ]);
+    const { status: code, proof } = await verify('pr', [], jobs(repo, 4));
+    assert.equal(code, 0, repo.lines.join('\n'));
+    assert.equal(repo.runs().at(-1), 'x', repo.runs().join(','));
+    assert.deepEqual(proof.checks.map((check) => check.name), ['x', 'y', 'z']);
+  });
+
+  test('a check killed by a signal fails among checks side by side', async () => {
+    const repo = withChecks([{ name: 'ok', command: 'true' }, { name: 'killed', command: 'kill -KILL $$' }]);
+    const { status: code, proof } = await verify('pr', [], jobs(repo, 2));
+    assert.equal(code, 1);
+    const killed = proof.checks.find((check) => check.name === 'killed');
+    assert.equal(killed.result, 'failed');
+    assert.match(killed.reason ?? '', /killed/);
+  });
+
+  test('checks side by side hold the heavy lock once: they wait while it is held, see it held, and free it', { skip: hasFlock() ? false : 'flock is not installed here (macOS has none by default): the engine runs steps without the lock' }, async () => {
+    const held = 'test "$VERIFY_LOCAL_HEAVY_LOCK_HELD" = "$VERIFY_LOCAL_HEAVY_LOCK" && ! flock --nonblock "$VERIFY_LOCAL_HEAVY_LOCK" true';
+    const repo = withChecks([{ name: 'one', command: held }, { name: 'two', command: held }]);
+    const lock = repo.env.VERIFY_LOCAL_HEAVY_LOCK;
+    const holder = spawn('flock', [lock, 'sh', '-c', 'echo held; exec sleep 1'], { stdio: ['ignore', 'pipe', 'ignore'], detached: true });
+    await new Promise((resolve) => holder.stdout.once('data', resolve));
+    holder.stdout.destroy();
+    holder.unref();
+    const started = Date.now();
+    const { status: code } = await verify('pr', [], jobs(repo, 2));
+    assert.equal(code, 0, repo.lines.join('\n'));
+    assert.ok(repo.lines.some((line) => line.includes(`waiting for lock ${lock}`)), repo.lines.join('\n'));
+    assert.ok(Date.now() - started >= 500, 'the run waited for the holder');
+    assert.equal(spawnSync('flock', ['--nonblock', lock, 'true']).status, 0, 'the lock is free after the run');
+  });
+});
+
 describe('cleanup of the isolated copy', () => {
   const left = (dir) => (existsSync(dir) ? readdirSync(dir) : []);
 
@@ -1866,7 +1980,7 @@ describe('cleanup of the isolated copy', () => {
     assert.deepEqual(left(repo.options.worktreeRoot), []);
   });
 
-  for (const signal of ['SIGTERM', 'SIGKILL']) test(`a verify run stopped by ${signal} during a step leaves no isolated copy`, {
+  for (const jobs of ['1', '2']) for (const signal of ['SIGTERM', 'SIGKILL']) test(`a verify run stopped by ${signal} during a step leaves no isolated copy (${jobs === '1' ? 'one check at a time' : 'checks side by side'})`, {
     skip: process.platform === 'win32' ? 'Windows runs steps without the supervisor; the next run sweeps the copy' : false,
   }, async () => {
     const repo = makeRepository();
@@ -1876,7 +1990,7 @@ describe('cleanup of the isolated copy', () => {
     const config = readFileSync(path.join(repo.work, 'verify-local.config.mjs'), 'utf8');
     repo.commit('slow', { 'verify-local.config.mjs': config.replace(`command: 'echo lint >> "$RUN_LOG"'`, () => `command: 'touch ${started}; sleep 300'`) });
     const copies = path.join(tmp, 'verify-local');
-    const run = spawn(process.execPath, [ENGINE, 'pr'], { cwd: repo.work, env: { ...repo.env, TMPDIR: tmp }, stdio: 'ignore' });
+    const run = spawn(process.execPath, [ENGINE, 'pr'], { cwd: repo.work, env: { ...repo.env, TMPDIR: tmp, VERIFY_LOCAL_JOBS: jobs }, stdio: 'ignore' });
     const wait = async (condition) => {
       for (let i = 0; i < 300 && !condition(); i += 1) await new Promise((resolve) => setTimeout(resolve, 50));
       return condition();
