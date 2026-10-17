@@ -29,6 +29,7 @@ jest.setSystemTime(NOW);
 afterEach(() => {
   cleanup();
   jest.clearAllMocks();
+  jest.setSystemTime(NOW);
   mockWindow.width = 390;
   mockWindow.height = 844;
   mockWindow.fontScale = 1;
@@ -116,6 +117,7 @@ jest.mock('react-native', () => {
 
   return {
     __esModule: true,
+    AppState: { addEventListener: jest.fn(() => ({ remove: jest.fn() })) },
     Platform: {
       OS: 'web',
       select: (values: Record<string, any>) => values?.web ?? values?.default,
@@ -386,6 +388,23 @@ describe('Tendances screen', () => {
       pathname: '/(tabs)/journal',
       params: { filter: expect.any(String), type: 'Nightmare', analysis: 'analyzed' },
     });
+  });
+
+  it('reads on the new day once midnight passes with the page open', () => {
+    renderJournal([analyzed(nightsAgo(0), { theme: 'calm' })]);
+    expect(screen.getByTestId('trends.range').textContent).toBe('trends.range:start=2026-07-31|end=2026-08-29');
+
+    // 18:00 to 01:00 the next morning.
+    act(() => {
+      jest.advanceTimersByTime(7 * 60 * 60 * 1000);
+    });
+    expect(screen.getByTestId('trends.range').textContent).toBe('trends.range:start=2026-08-01|end=2026-08-30');
+  });
+
+  it('tells a journal younger than two weeks in nights', () => {
+    renderJournal([analyzed(nightsAgo(0), { theme: 'calm' })]);
+    fireEvent.click(screen.getByTestId('trends.period.all'));
+    expect(screen.getByTestId('trends.range').textContent).toBe('trends.range.since:date=2026-08-29 · trends.compare.all_nights_one:count=1');
   });
 
   it('stacks the figures at fontScale 2 and reserves scroll padding above the tab bar', () => {

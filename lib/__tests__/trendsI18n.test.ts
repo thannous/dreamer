@@ -12,6 +12,7 @@ const countedPairs = [
   ['trends.seal.medal_one', 'trends.seal.medal'],
   ['trends.returns.basis_one', 'trends.returns.basis'],
   ['trends.nights.month_one', 'trends.nights.month'],
+  ['trends.compare.all_nights_one', 'trends.compare.all_nights'],
 ] as const;
 
 const placeholders = (value: string) => (value.match(/\{[a-z]+\}/g) ?? []).sort();

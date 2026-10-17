@@ -25,6 +25,7 @@ import { TrendsFigures } from '@/components/trends/TrendsFigures';
 import { TrendsNights } from '@/components/trends/TrendsNights';
 import { TrendsPeriodSwitch } from '@/components/trends/TrendsPeriodSwitch';
 import { TrendsReturns } from '@/components/trends/TrendsReturns';
+import { useEndOfLocalDay } from '@/components/trends/useEndOfLocalDay';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { DESKTOP_BREAKPOINT, getBottomNavigationLayout } from '@/constants/layout';
 import { ThemeLayout } from '@/constants/journalTheme';
@@ -135,8 +136,9 @@ function StatisticsScreen() {
     : scrollHeader ? ThemeLayout.spacing.lg : navigationClearance + ThemeLayout.spacing.lg;
   const sealSize = Math.min(PERIOD_SEAL_SIZE, Math.max(240, Math.min(width, 640) - 40));
 
-  // Read on today's date, again whenever the journal or the period changes.
-  const trends = useMemo(() => buildDreamTrends(dreams, { period }), [dreams, period]);
+  // Read on today's date, again whenever the journal, the period or the day changes.
+  const today = useEndOfLocalDay();
+  const trends = useMemo(() => buildDreamTrends(dreams, { period, now: today }), [dreams, period, today]);
 
   const reveal = useCallback(() => {
     const probe = (ref: React.RefObject<ViewInstance | null>, lit: boolean, light: (value: boolean) => void) => {
@@ -234,9 +236,13 @@ function StatisticsScreen() {
     : monthYear(trends.range.start) === monthYear(trends.range.end)
       ? monthYear(trends.range.end)
       : t('trends.range', { start: monthYear(trends.range.start), end: monthYear(trends.range.end) });
-  const weeks = Math.max(1, Math.round(trends.range.nights / 7));
+  // The journal's age as it is: nights for its first two weeks, then whole weeks.
+  const journalNights = trends.range.nights;
+  const journalWeeks = Math.floor(journalNights / 7);
   const compareLabel = trends.period === 'all'
-    ? t(weeks === 1 ? 'trends.compare.all_one' : 'trends.compare.all', { count: formatNumber(weeks) })
+    ? journalNights < 14
+      ? t(journalNights === 1 ? 'trends.compare.all_nights_one' : 'trends.compare.all_nights', { count: formatNumber(journalNights) })
+      : t('trends.compare.all', { count: formatNumber(journalWeeks) })
     : trends.countDelta != null ? t(`trends.compare.${trends.period}`) : null;
 
   return (
