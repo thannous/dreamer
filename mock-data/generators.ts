@@ -135,7 +135,7 @@ type AnalysisCopy = {
   fallbackTitle: string;
   interpretations: readonly string[];
   quotes: readonly string[];
-  symbols: readonly { name: string; meaning: string }[];
+  symbols: readonly { name: string; meaning: string; symbolId?: string; key?: string }[];
   emotions: readonly { name: string; insight: string }[];
   questions: readonly string[];
 };
@@ -146,9 +146,9 @@ const ANALYSIS_COPY: Record<AppLanguage, AnalysisCopy> = {
     interpretations: INTERPRETATIONS,
     quotes: SHAREABLE_QUOTES,
     symbols: [
-      { name: 'Water', meaning: 'Emotional currents moving beneath the surface of this dream.' },
-      { name: 'Light', meaning: 'A guiding awareness drawing your attention toward change.' },
-      { name: 'Doorway', meaning: 'A threshold between what is familiar and what is still forming.' },
+      { name: 'Water', meaning: 'Emotional currents moving beneath the surface of this dream.', symbolId: 'water' },
+      { name: 'Light', meaning: 'A guiding awareness drawing your attention toward change.', key: 'guiding-light' },
+      { name: 'Doorway', meaning: 'A threshold between what is familiar and what is still forming.', symbolId: 'door' },
     ],
     emotions: [
       { name: 'Wonder', insight: 'An openness to what this dream is showing you.' },
@@ -172,9 +172,9 @@ const ANALYSIS_COPY: Record<AppLanguage, AnalysisCopy> = {
       'La nuit laisse une trace à explorer.',
     ],
     symbols: [
-      { name: 'Eau', meaning: 'L’eau peut évoquer le mouvement des émotions.' },
-      { name: 'Lumière', meaning: 'La lumière peut représenter un repère dans le rêve.' },
-      { name: 'Porte', meaning: 'Une porte peut suggérer un passage ou une possibilité.' },
+      { name: 'Eau', meaning: 'L’eau peut évoquer le mouvement des émotions.', symbolId: 'water' },
+      { name: 'Lumière', meaning: 'La lumière peut représenter un repère dans le rêve.', key: 'guiding-light' },
+      { name: 'Porte', meaning: 'Une porte peut suggérer un passage ou une possibilité.', symbolId: 'door' },
     ],
     emotions: [
       { name: 'Étonnement', insight: 'Une ouverture à ce que le rêve te montre.' },
@@ -198,9 +198,9 @@ const ANALYSIS_COPY: Record<AppLanguage, AnalysisCopy> = {
       'La noche deja una huella por explorar.',
     ],
     symbols: [
-      { name: 'Agua', meaning: 'El agua puede evocar el movimiento de las emociones.' },
-      { name: 'Luz', meaning: 'La luz puede representar una guía dentro del sueño.' },
-      { name: 'Puerta', meaning: 'Una puerta puede sugerir un paso o una posibilidad.' },
+      { name: 'Agua', meaning: 'El agua puede evocar el movimiento de las emociones.', symbolId: 'water' },
+      { name: 'Luz', meaning: 'La luz puede representar una guía dentro del sueño.', key: 'guiding-light' },
+      { name: 'Puerta', meaning: 'Una puerta puede sugerir un paso o una posibilidad.', symbolId: 'door' },
     ],
     emotions: [
       { name: 'Asombro', insight: 'Una apertura a lo que muestra el sueño.' },
@@ -224,9 +224,9 @@ const ANALYSIS_COPY: Record<AppLanguage, AnalysisCopy> = {
       'Die Nacht hinterlässt eine Spur zum Erkunden.',
     ],
     symbols: [
-      { name: 'Wasser', meaning: 'Wasser kann die Bewegung von Gefühlen andeuten.' },
-      { name: 'Licht', meaning: 'Licht kann im Traum ein Orientierungspunkt sein.' },
-      { name: 'Tür', meaning: 'Eine Tür kann einen Übergang oder eine Möglichkeit andeuten.' },
+      { name: 'Wasser', meaning: 'Wasser kann die Bewegung von Gefühlen andeuten.', symbolId: 'water' },
+      { name: 'Licht', meaning: 'Licht kann im Traum ein Orientierungspunkt sein.', key: 'guiding-light' },
+      { name: 'Tür', meaning: 'Eine Tür kann einen Übergang oder eine Möglichkeit andeuten.', symbolId: 'door' },
     ],
     emotions: [
       { name: 'Staunen', insight: 'Offenheit für das, was der Traum zeigt.' },
@@ -250,9 +250,9 @@ const ANALYSIS_COPY: Record<AppLanguage, AnalysisCopy> = {
       'La notte lascia una traccia da esplorare.',
     ],
     symbols: [
-      { name: 'Acqua', meaning: 'L’acqua può evocare il movimento delle emozioni.' },
-      { name: 'Luce', meaning: 'La luce può rappresentare un punto di riferimento nel sogno.' },
-      { name: 'Porta', meaning: 'Una porta può suggerire un passaggio o una possibilità.' },
+      { name: 'Acqua', meaning: 'L’acqua può evocare il movimento delle emozioni.', symbolId: 'water' },
+      { name: 'Luce', meaning: 'La luce può rappresentare un punto di riferimento nel sogno.', key: 'guiding-light' },
+      { name: 'Porta', meaning: 'Una porta può suggerire un passaggio o una possibilità.', symbolId: 'door' },
     ],
     emotions: [
       { name: 'Meraviglia', insight: 'Apertura verso ciò che il sogno mostra.' },
@@ -276,9 +276,9 @@ const ANALYSIS_COPY: Record<AppLanguage, AnalysisCopy> = {
       'A noite deixa um rastro para explorar.',
     ],
     symbols: [
-      { name: 'Água', meaning: 'A água pode representar o movimento das emoções.' },
-      { name: 'Luz', meaning: 'A luz pode representar um ponto de referência no sonho.' },
-      { name: 'Porta', meaning: 'Uma porta pode sugerir uma passagem ou uma possibilidade.' },
+      { name: 'Água', meaning: 'A água pode representar o movimento das emoções.', symbolId: 'water' },
+      { name: 'Luz', meaning: 'A luz pode representar um ponto de referência no sonho.', key: 'guiding-light' },
+      { name: 'Porta', meaning: 'Uma porta pode sugerir uma passagem ou uma possibilidade.', symbolId: 'door' },
     ],
     emotions: [
       { name: 'Admiração', insight: 'Abertura para o que o sonho mostra.' },
