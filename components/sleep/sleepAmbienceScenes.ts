@@ -32,10 +32,17 @@ export type SleepAmbienceScene = {
   thumbnailPosition: ImageContentPosition;
   weather: 'rain' | 'tide' | 'mist';
   lights: SceneLight[];
+  /**
+   * The water, from its far edge to the near shore (in painting pixels): where the swell
+   * rolls in, or where the mist lies and rises from.
+   */
+  water?: { horizon: number; shore: number };
   /** The moon's path on the water, where the tide glints (in painting pixels). */
   glintPath?: { x: number; top: number; bottom: number; spread: number };
   /** Stones in the water, where rings open as the waves come in (in painting pixels). */
   ripples?: { x: number; y: number; r: number }[];
+  /** Banks of mist drifting across the painting, from far to near (in painting pixels). */
+  mistBanks?: { y: number; height: number; opacity: number; period: number }[];
 };
 
 /**
@@ -70,6 +77,7 @@ export const SLEEP_AMBIENCE_SCENES: Record<SleepSoundId, SleepAmbienceScene> = {
     thumbnailPosition: { right: 0, top: '30%' },
     weather: 'tide',
     lights: [{ x: 1356, y: 190, r: 130, period: 8000, min: 0.25, max: 0.5 }],
+    water: { horizon: 594, shore: 1010 },
     glintPath: { x: 1342, top: 600, bottom: 830, spread: 70 },
     ripples: [
       { x: 1262, y: 806, r: 110 },
@@ -90,6 +98,15 @@ export const SLEEP_AMBIENCE_SCENES: Record<SleepSoundId, SleepAmbienceScene> = {
     lights: [
       { x: 548, y: 274, r: 260, period: 10000, min: 0.16, max: 0.3 },
       { x: 150, y: 466, r: 46, period: 3400, min: 0.35, max: 0.8 },
+    ],
+    water: { horizon: 700, shore: 1320 },
+    // A thin veil crosses the moon; the next bank passes over the house on the cliff
+    // and dims its windows; the lowest ones lie on the lake.
+    mistBanks: [
+      { y: 300, height: 170, opacity: 0.3, period: 110000 },
+      { y: 480, height: 190, opacity: 0.42, period: 76000 },
+      { y: 760, height: 230, opacity: 0.48, period: 56000 },
+      { y: 1010, height: 300, opacity: 0.55, period: 40000 },
     ],
   },
 };
