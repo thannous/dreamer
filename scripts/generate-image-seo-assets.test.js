@@ -10,7 +10,7 @@ let registry;
 let illustrations;
 beforeEach(async () => {
   root = fs.mkdtempSync(path.join(os.tmpdir(), 'image-generators-'));
-  await sharp({ create: { width: 32, height: 24, channels: 3, background: '#123456' } })
+  await sharp({ create: { width: 320, height: 240, channels: 3, background: '#123456' } })
     .png().toFile(path.join(root, 'source.png'));
   jest.resetModules();
   jest.doMock('./lib/image-seo-assets', () => ({
@@ -74,7 +74,7 @@ test.each(['seo', 'symbols'])('%s source bytes change is detected with unchanged
   const before = fs.readFileSync(manifestPath, 'utf8');
   const source = path.join(root, 'source.png');
   const stamp = fs.statSync(source).mtime;
-  await sharp({ create: { width: 32, height: 24, channels: 3, background: '#abcdef' } })
+  await sharp({ create: { width: 320, height: 240, channels: 3, background: '#abcdef' } })
     .png().toFile(source);
   fs.utimesSync(source, stamp, stamp);
   await generate();

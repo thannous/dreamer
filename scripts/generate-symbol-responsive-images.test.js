@@ -106,7 +106,7 @@ describe('responsive symbol image inventory', () => {
   });
 
   it('keeps card variants inside the shared responsive symbol pipeline', () => {
-    expect(WIDTHS).toEqual([240, 480, 800, 1200]);
+    expect(WIDTHS).toEqual([240, 480, 800, 1200, 1600]);
     expect(SYMBOL_CARD_RESPONSIVE_WIDTHS).toEqual([240, 480]);
   });
 

@@ -878,6 +878,10 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
     lang
   );
   const responsiveIllustration = resolveResponsiveSymbolIllustration(illustration);
+  const containedHero = getGeneratedSymbolImage(symbol.id, SYMBOL_IMAGE_REGISTRY)?.heroLayout === 'contained';
+  const heroImageSizes = containedHero
+    ? '(min-resolution: 3.01dppx) min(100vw, 400px), (min-resolution: 2.01dppx) min(100vw, 533px), (min-resolution: 1.01dppx) min(100vw, 800px), min(100vw, 1600px)'
+    : '100vw';
   const preferredImageUrl = responsiveIllustration
     ? `https://noctalia.app${responsiveIllustration.src}`
     : DEFAULT_SOCIAL_IMAGE;
@@ -912,10 +916,10 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
 
   const heroPictureHtml = illustration && responsiveIllustration ? `
                     <picture class="symbol-hero-media">${responsiveIllustration.avifSrcset ? `
-                        <source type="image/avif" srcset="${escapeHtml(responsiveIllustration.avifSrcset)}" sizes="100vw">` : ''}
+                        <source type="image/avif" srcset="${escapeHtml(responsiveIllustration.avifSrcset)}" sizes="${heroImageSizes}">` : ''}
                         <img src="${escapeHtml(responsiveIllustration.src)}"
                              ${responsiveIllustration.srcset ? `srcset="${escapeHtml(responsiveIllustration.srcset)}"` : ''}
-                             sizes="100vw"
+                             sizes="${heroImageSizes}"
                              alt="${escapeHtml(preferredImageAlt)}"
                              fetchpriority="high"
                              decoding="async"
@@ -1659,6 +1663,17 @@ ${renderSharedComponentStyles()}
             }
             .variation-card { padding-left: 2.5rem; }
         }
+        /* Keep complete 16:9 artwork within its native pixel budget, including Retina screens. */
+        .symbol-hero-contained { --symbol-image-width: 1600px; min-height: 0; padding-top: 5rem; }
+        .symbol-hero-contained .symbol-hero-figure { position: relative; inset: auto; width: min(100%, var(--symbol-image-width)); height: auto; aspect-ratio: 16 / 9; margin: 0 auto; }
+        .symbol-hero-contained .symbol-hero-media { position: relative; inset: auto; height: auto; aspect-ratio: 16 / 9; }
+        .symbol-hero-contained .symbol-hero-media img { height: auto; aspect-ratio: 16 / 9; object-fit: contain; }
+        .symbol-hero-contained::after { display: none; }
+        .symbol-hero-contained .symbol-hero-overlay { min-height: 0; padding: 1.5rem 1rem 2.5rem; }
+        .symbol-hero-contained .symbol-breadcrumb { padding-top: 0; margin-bottom: 1.5rem; }
+        @media (min-resolution: 1.01dppx) { .symbol-hero-contained { --symbol-image-width: 800px; } }
+        @media (min-resolution: 2.01dppx) { .symbol-hero-contained { --symbol-image-width: 533px; } }
+        @media (min-resolution: 3.01dppx) { .symbol-hero-contained { --symbol-image-width: 400px; } }
     </style>
 
     <!-- Schema.org DefinedTerm -->
@@ -1683,7 +1698,7 @@ ${renderPseoNav(lang, currentPaths, 'dictionary')}
         <article class="max-w-3xl mx-auto">
 
             <!-- Header -->
-            <header class="symbol-hero" data-image-seo-hero="true">
+            <header class="symbol-hero${containedHero ? ' symbol-hero-contained' : ''}" data-image-seo-hero="true">
                 <figure class="symbol-hero-figure" data-image-seo-role="symbol-hero" data-image-asset-id="symbol.${escapeHtml(symbol.id)}">
 ${heroPictureHtml}
                     ${illustration?.caption ? `<figcaption class="symbol-hero-caption">${escapeHtml(illustration.caption)}</figcaption>` : ''}
