@@ -49,16 +49,25 @@ async function generateSymbolAvif({ force = false, manifestPath = path.join(
   const illustrations = collectSymbolIllustrations();
   let generated = 0;
   for (const illustration of illustrations) {
-    for (const width of WIDTHS) {
+    const source = await sharp(illustration.sourcePath).metadata();
+    for (const width of WIDTHS.filter((candidate) => candidate <= source.width)) {
       const target = path.join(OUTPUT_DIR, `${illustration.stem}-${width}w.avif`);
       const key = path.basename(target);
       const input = cache.fingerprint(illustration.sourcePath, { width, ...AVIF_OPTIONS });
       if (!force && cache.isFresh(key, input, target)) continue;
-      await sharp(illustration.sourcePath)
+      const encoded = await sharp(illustration.sourcePath)
         .rotate()
         .resize({ width, withoutEnlargement: true })
         .avif(AVIF_OPTIONS)
-        .toFile(target);
+        .toBuffer();
+      // Replace atomically so readers never see a partially encoded variant.
+      const temporary = `${target}.${process.pid}.tmp`;
+      try {
+        fs.writeFileSync(temporary, encoded);
+        fs.renameSync(temporary, target);
+      } finally {
+        if (fs.existsSync(temporary)) fs.unlinkSync(temporary);
+      }
       cache.record(key, input, target);
       generated += 1;
     }

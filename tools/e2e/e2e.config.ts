@@ -54,7 +54,7 @@ export default {
       // (undici `Parser.finish` assertion) before any journey runs; probe a tiny file.
       ...(product === 'site' ? { readyUrl: `http://127.0.0.1:${port}/robots.txt` } : {}),
       command: product === 'site' ? {
-        executable: 'python3', args: ['-m', 'http.server', String(port), '--bind', '127.0.0.1', '--directory', 'docs'], cwd: root,
+        executable: process.platform === 'win32' ? 'python' : 'python3', args: ['-m', 'http.server', String(port), '--bind', '127.0.0.1', '--directory', 'docs'], cwd: root,
         startupTimeout: 180_000, log: appLog,
       } : {
         executable: 'npm',
