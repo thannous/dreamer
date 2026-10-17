@@ -14,6 +14,8 @@ export function getNoctaliaPalette(mode: ThemeMode) {
     surface: dark ? 'rgba(234, 212, 180, 0.06)' : 'rgba(255, 249, 239, 0.14)',
     actionTint: dark ? 'rgba(234, 212, 180, 0.12)' : 'rgba(124, 76, 43, 0.08)',
     raised: dark ? '#14131A' : '#F5EADB',
+    // `raised` with a light veil: the screen's painting shows through cards laid on it.
+    raisedTranslucent: dark ? 'rgba(20, 19, 26, 0.84)' : 'rgba(245, 234, 219, 0.88)',
     line: dark ? '#514637' : 'rgba(126, 83, 49, 0.25)',
     overlay: dark ? 'rgba(0, 0, 0, 0.64)' : 'rgba(38, 27, 28, 0.44)',
     onAccent: dark ? '#382D35' : '#FFF9EF',
@@ -104,7 +106,7 @@ export function getNoctaliaDesignTokens(colors: ThemeColors, mode: ThemeMode) {
     backgroundArtwork: p.backgroundArtwork,
     text: { primary: colors.textPrimary, secondary: colors.textSecondary, tertiary: colors.textTertiary, onAccent: colors.textOnAccentSurface },
     accent: { base: colors.accent, strong: colors.accentDark, soft: colors.accentLight, text: colors.accentText },
-    surface: { base: p.raised, raised: p.raised, active: p.actionTint, soft: p.surface, border: p.line, borderStrong: p.line, overlay: p.overlay },
+    surface: { base: p.raised, raised: p.raised, translucent: p.raisedTranslucent, active: p.actionTint, soft: p.surface, border: p.line, borderStrong: p.line, overlay: p.overlay },
     action: { primary: p.accent, primaryBorder: p.line, primaryText: p.onAccent, disabled: p.actionTint, disabledBorder: p.line, disabledText: p.muted },
     status: p.status,
     nav: { background: colors.navbarBg, border: colors.navbarBorder, active: colors.navbarTextActive, inactive: colors.navbarTextInactive },
