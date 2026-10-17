@@ -131,8 +131,13 @@ test('an offline save synchronizes once after reconnection and survives restart'
   try {
     await page.getByTestId('input.dreamTranscript').fill(story);
     await page.getByTestId('btn.saveDream').click();
-    await page.getByTestId('btn.dreamCaptureSeal.readLater').click();
-    await expect(page.getByTestId('component.transcriptCard')).toContainText(story);
+    // The seal asks to read the dream only when the allowance was known before the network
+    // dropped (the capture screen fetches it as it opens); either way the dream is saved.
+    const later = page.getByTestId('btn.dreamCaptureSeal.readLater');
+    const savedStory = page.getByTestId('component.transcriptCard');
+    await expect(later.or(savedStory).first()).toBeVisible();
+    if (await later.isVisible()) await later.click();
+    await expect(savedStory).toContainText(story);
     const before = await owner.from('dreams').select('id').eq('transcript', story);
     expect(before.error).toBeNull();
     expect(before.data).toEqual([]);
