@@ -1,13 +1,14 @@
 #!/usr/bin/env node
 /* global __dirname */
 
+const { createHash } = require('crypto');
 const fs = require('fs');
 const path = require('path');
 const { spawnSync } = require('child_process');
+const { pathToFileURL } = require('url');
 const {
   commandExists,
   getAdbCandidates,
-  getMaestroCandidates,
   resolveCommand,
   resolveNpmInvocation,
 } = require('./android-tooling');
@@ -15,9 +16,6 @@ const {
   detectAdbMdnsServices,
   detectUsbAndroidDevice,
 } = require('./check-android-adb-device');
-const {
-  evaluateVoiceAnalysisEvidence,
-} = require('./android-voice-analysis-evidence');
 const { getOpenPaymentProfileRequirements } = require('./update-google-play-payments-profile-state');
 const {
   getTrackStatus,
@@ -38,6 +36,14 @@ const EXPECTED_GOOGLE_OAUTH_ANDROID_SHA1 = 'BC:CF:C2:96:38:47:81:D6:8C:B7:B6:5A:
 const EXPECTED_ANDROID_PACKAGE_NAME = 'com.tanuki75.noctalia';
 const RELEASE_QUALIFICATION_WORKFLOW =
   '.eas/workflows/android-release-qualification.yml';
+// Owner decision 2026-10-14: the Android release journeys run locally with
+// TesterArmy on an emulator, against a production-apk Release build, instead of
+// a Maestro EAS job. tools/e2e/run.mjs writes one immutable folder per run here.
+const TESTERARMY_ANDROID_RUNS = 'tools/e2e/.e2e/dreamer-android';
+const TESTERARMY_RELEASE_PROFILE = 'production-apk';
+const TESTERARMY_RELEASE_COMMANDS =
+  'build production-apk with `node tools/e2e/run.mjs dreamer android build` (E2E_BUILD_PROFILE=production-apk), then run `E2E_DEVICE=<emulator-serial> E2E_RELEASE_RECEIPT=<its release.json> npm run test:testerarmy:mobile -- dreamer android run --install-release` (tools/e2e/README.md)';
+const VOICE_MANUAL_CHECKLIST = 'doc_web_interne/docs/android-release-checklist.md';
 const REQUIRED_EAS_PROFILES = ['preview', 'release', 'production-apk', 'production'];
 const ANALYSIS_BUNDLE_EAS_PROFILES = ['release', 'production-apk', 'production'];
 const REQUIRED_TESTSTORE_PUBLIC_ENV = [
@@ -762,11 +768,275 @@ function checkEasWorkflowTriggers(
   return { files, problems };
 }
 
+function readRunJson(runDir, name, { existsSync, readFileSync }) {
+  const filePath = path.join(runDir, name);
+  if (!existsSync(filePath)) return null;
+  try {
+    return JSON.parse(readFileSync(filePath, 'utf8'));
+  } catch {
+    return null;
+  }
+}
+
+// Files a native TesterArmy run writes before files.json; files.json lists the
+// sha256 of every file of the run folder except itself and end.json.
+const TESTERARMY_RUN_FILES = [
+  'evidence.json',
+  'release-used.json',
+  'source-start.json',
+  'source-end.json',
+  'collection.json',
+  'report.json',
+  'qualification.json',
+  'installed-start.json',
+  'installed-end.json',
+];
+// The selection flags of tools/e2e/run.mjs: any of them narrows the collection,
+// so such a run is not the full release suite.
+const TESTERARMY_SELECTION_FLAGS = new Set([
+  '--grep',
+  '--grep-invert',
+  '--tag',
+  '--exclude-tag',
+  '--tag-mode',
+  '--shard',
+]);
+const FULL_SHA = /^[a-f0-9]{40}$/;
+const CANDIDATE_APK_ENV = 'QA_ANDROID_RELEASE_APK';
+
+// The engine's own checks, in a child Node because tools/e2e/qualification.mjs
+// is ESM: verifyEvidenceFiles (files.json must list the sha256 of every file of
+// the run folder except itself and end.json), then compareSnapshots on
+// source-start.json and source-end.json. end.json is not covered by files.json,
+// so the gate derives stability and cleanliness from the snapshots itself.
+const EVIDENCE_ENGINE = path.join(ROOT, 'tools/e2e/qualification.mjs');
+function verifyRunWithEngine(runDir) {
+  const script =
+    `import { verifyEvidenceFiles, compareSnapshots } from ${JSON.stringify(pathToFileURL(EVIDENCE_ENGINE).href)};\n` +
+    "import { readFileSync } from 'fs';\n" +
+    "import { join } from 'path';\n" +
+    'const dir = process.argv[1];\n' +
+    'try { verifyEvidenceFiles(dir); } catch (error) { console.error(error.message); process.exit(1); }\n' +
+    "const read = (name) => JSON.parse(readFileSync(join(dir, name), 'utf8'));\n" +
+    "try { process.stdout.write(JSON.stringify(compareSnapshots(read('source-start.json'), read('source-end.json')))); }\n" +
+    "catch { console.error('SOURCE_SNAPSHOT_UNREADABLE'); process.exit(1); }";
+  const result = spawnSync(process.execPath, ['--input-type=module', '-e', script, runDir], {
+    encoding: 'utf8',
+    timeout: 60000,
+  });
+  if (result.status !== 0) {
+    const code = String(result.stderr || '').trim().split('\n').pop() || 'unknown error';
+    return { problem: `its manifest check failed (${code})` };
+  }
+  try {
+    return { stability: JSON.parse(result.stdout) };
+  } catch {
+    return { problem: 'its manifest check failed (no snapshot comparison)' };
+  }
+}
+
+// Why the source snapshots the runner wrote around the run do not prove a
+// clean, unchanged checkout of the release commit, or null when they do.
+function sourceSnapshotProblem({ runDir, stability, revision, io }) {
+  const start = readRunJson(runDir, 'source-start.json', io);
+  const end = readRunJson(runDir, 'source-end.json', io);
+  for (const [name, snapshot] of [['source-start.json', start], ['source-end.json', end]]) {
+    if (!snapshot || typeof snapshot !== 'object') return `${name} is unreadable`;
+    if (snapshot.revision !== revision) {
+      return `${name} names ${String(snapshot.revision).slice(0, 12)}, not ${revision.slice(0, 12)}`;
+    }
+    if (snapshot.workingTree !== '') return `${name} records a dirty working tree`;
+    if (!snapshot.files || typeof snapshot.files !== 'object' || !Object.keys(snapshot.files).length) {
+      return `${name} has no source file map`;
+    }
+  }
+  if (stability?.sourceStable !== true) return 'its source file map changed during the run (source-start.json and source-end.json differ)';
+  if (stability.sourceClean !== true) return 'its source snapshots record a dirty working tree';
+  return null;
+}
+
+const SHA256 = /^[a-f0-9]{64}$/;
+function fileSha256(filePath, readFileSync) {
+  try {
+    return createHash('sha256').update(readFileSync(filePath)).digest('hex');
+  } catch {
+    return null;
+  }
+}
+
+// Why a run folder does not prove the full release suite on this revision, or
+// null when it does. The runner already re-verified the SDK report, artifacts
+// and collection when it wrote qualification.json; this checks that the folder
+// is complete and unchanged since, that it ran unfiltered and that every
+// receipt names the same commit as the checkout under qualification.
+function testerArmyRunProblem({ runDir, end, evidence, release, revision, candidateApkSha256, io }) {
+  const { existsSync } = io;
+  for (const name of TESTERARMY_RUN_FILES) {
+    if (!existsSync(path.join(runDir, name))) return `${name} is missing`;
+  }
+  if (!existsSync(path.join(runDir, 'files.json'))) return 'files.json is missing';
+  const engine = verifyRunWithEngine(runDir);
+  if (engine.problem) return engine.problem;
+  const command = Array.isArray(evidence.command) ? evidence.command.map(String) : null;
+  if (!command || command[4] !== 'run') return 'evidence.json does not record a run command';
+  const filter = command.find((arg) => TESTERARMY_SELECTION_FLAGS.has(arg));
+  if (filter) return `the run was filtered with ${filter}`;
+  if (!revision) return 'the current commit cannot be read';
+  if (evidence.revision !== revision) return `it ran on ${String(evidence.revision).slice(0, 12)}, not ${revision.slice(0, 12)}`;
+  if (evidence.workingTree !== '') return 'it ran on a modified working tree';
+  const snapshotProblem = sourceSnapshotProblem({ runDir, stability: engine.stability, revision, io });
+  if (snapshotProblem) return snapshotProblem;
+  // end.json is not in files.json: its stability is an extra condition only.
+  if (end.stability?.sourceStable !== true || end.stability.sourceClean !== true) {
+    return 'its source changed or was not clean during the run';
+  }
+  if (release.source?.revision !== revision) {
+    return `its build came from ${String(release.source?.revision).slice(0, 12)}, not ${revision.slice(0, 12)}`;
+  }
+  if (!candidateApkSha256) return 'the candidate APK cannot be read';
+  const installedStart = readRunJson(runDir, 'installed-start.json', io);
+  const installedEnd = readRunJson(runDir, 'installed-end.json', io);
+  const testedHashes = [
+    release.binary?.sha256,
+    evidence.binary?.sha256,
+    installedStart?.binarySha256,
+    installedEnd?.binarySha256,
+  ];
+  if (testedHashes.some((hash) => !SHA256.test(String(hash)) || hash !== candidateApkSha256)) {
+    return `the tested APK is not the candidate APK (sha256 ${candidateApkSha256.slice(0, 12)})`;
+  }
+  const qualification = readRunJson(runDir, 'qualification.json', io);
+  if (
+    qualification?.revision !== revision ||
+    qualification.target !== 'dreamer-android' ||
+    !Array.isArray(qualification.passed) ||
+    !qualification.passed.length
+  ) {
+    return 'qualification.json does not qualify dreamer-android on this commit';
+  }
+  const report = readRunJson(runDir, 'report.json', io);
+  if (
+    report?.run?.vcs?.commit !== revision ||
+    report.run.status !== 'passed' ||
+    report.run.exitCode !== 0 ||
+    report.run.summary?.failed !== 0 ||
+    report.run.summary?.interrupted !== 0
+  ) {
+    return 'report.json does not record a passed run of this commit';
+  }
+  return null;
+}
+
+function readCurrentRevision(rootDir, spawn) {
+  try {
+    const result = spawn('git', ['rev-parse', 'HEAD'], { cwd: rootDir, encoding: 'utf8' });
+    const revision = String(result?.stdout ?? '').trim();
+    return result?.status === 0 && FULL_SHA.test(revision) ? revision : null;
+  } catch {
+    return null;
+  }
+}
+
+// The newest TesterArmy run that qualified the installed production-apk build of
+// the candidate on the current commit. end.json is the runner's final verdict
+// (applicationQualified is false on any SDK, install, identity or cleanup
+// failure); release-used.json is the build receipt the runner validated against
+// that commit's inputs and installed.
+function findTesterArmyReleaseRun({
+  rootDir,
+  versionCode,
+  revision,
+  candidateApkSha256,
+  existsSync,
+  readFileSync,
+  readdirSync,
+}) {
+  const runsDir = path.join(rootDir, TESTERARMY_ANDROID_RUNS);
+  if (!existsSync(runsDir)) return { run: null, runs: 0, rejected: [] };
+  let names;
+  try {
+    names = readdirSync(runsDir).map(String).sort().reverse();
+  } catch {
+    return { run: null, runs: 0, rejected: [] };
+  }
+  const rejected = [];
+  for (const name of names) {
+    const runDir = path.join(runsDir, name);
+    const io = { existsSync, readFileSync, readdirSync };
+    const end = readRunJson(runDir, 'end.json', io);
+    if (end?.applicationQualified !== true || end.exitCode !== 0) continue;
+    const evidence = readRunJson(runDir, 'evidence.json', io);
+    if (evidence?.product !== 'dreamer' || evidence.platform !== 'android') continue;
+    const release = readRunJson(runDir, 'release-used.json', io);
+    if (
+      release?.profile?.name !== TESTERARMY_RELEASE_PROFILE ||
+      release.binary?.bundle !== EXPECTED_ANDROID_PACKAGE_NAME ||
+      String(release.binary?.build) !== String(versionCode)
+    ) {
+      continue;
+    }
+    const problem = testerArmyRunProblem({ runDir, end, evidence, release, revision, candidateApkSha256, io });
+    if (problem) {
+      rejected.push(`${name}: ${problem}`);
+      continue;
+    }
+    return {
+      run: `${TESTERARMY_ANDROID_RUNS}/${name}`,
+      runs: names.length,
+      rejected,
+      finishedAt: end.finishedAt,
+      revision: evidence.revision,
+    };
+  }
+  return { run: null, runs: names.length, rejected };
+}
+
+function getTesterArmyReleaseCheck({ prebuild, versionCode, spawn, env, ...io }) {
+  if (prebuild) {
+    return {
+      status: 'manual',
+      details: `Deferred until the production-apk candidate (versionCode ${versionCode || 'missing'}) is built.`,
+      remediation: `Before Android production release, ${TESTERARMY_RELEASE_COMMANDS}.`,
+    };
+  }
+  if (!versionCode) {
+    return {
+      status: 'blocked',
+      details: 'No candidate versionCode to match a TesterArmy run against.',
+      remediation: 'Fix the Android release candidate versionCode check first.',
+    };
+  }
+  const apk = env?.[CANDIDATE_APK_ENV];
+  if (!apk) {
+    return {
+      status: 'blocked',
+      details: `${CANDIDATE_APK_ENV} is not set, so the tested APK cannot be compared with the release candidate.`,
+      remediation: `Set ${CANDIDATE_APK_ENV} to the candidate production-apk file (the release.apk of its build receipt).`,
+    };
+  }
+  const candidateApkSha256 = fileSha256(path.resolve(io.rootDir, apk), io.readFileSync);
+  const revision = readCurrentRevision(io.rootDir, spawn);
+  const found = findTesterArmyReleaseRun({ versionCode, revision, candidateApkSha256, ...io });
+  if (found.run) {
+    return {
+      status: 'pass',
+      details: `${found.run} qualified the installed ${TESTERARMY_RELEASE_PROFILE} build ${EXPECTED_ANDROID_PACKAGE_NAME} versionCode ${versionCode}${found.revision ? ` from ${String(found.revision).slice(0, 12)}` : ''}${found.finishedAt ? ` (${found.finishedAt})` : ''}.`,
+      remediation: 'None.',
+    };
+  }
+  return {
+    status: 'blocked',
+    details: `No TesterArmy run under ${TESTERARMY_ANDROID_RUNS} (${found.runs} run(s) found) qualified an installed ${TESTERARMY_RELEASE_PROFILE} build of ${EXPECTED_ANDROID_PACKAGE_NAME} versionCode ${versionCode} on ${revision ? revision.slice(0, 12) : 'the current commit'}.${found.rejected.length ? ` Rejected: ${found.rejected.join('; ')}.` : ''}`,
+    remediation: `On an emulator, on this commit with a clean working tree and without --grep, --tag or --shard, ${TESTERARMY_RELEASE_COMMANDS}; the run must end with applicationQualified true and test the APK named by ${CANDIDATE_APK_ENV}.`,
+  };
+}
+
 function checkAndroidReleaseGates({
   rootDir = ROOT,
   spawn = spawnSync,
   existsSync = fs.existsSync,
   readFileSync = fs.readFileSync,
+  readdirSync = fs.readdirSync,
   env = process.env,
   platform = process.platform,
   phase = 'qualification',
@@ -927,18 +1197,15 @@ function checkAndroidReleaseGates({
   const releaseWorkflowReady =
     releaseWorkflow.includes('type: build') &&
     releaseWorkflow.includes('profile: production-apk') &&
-    releaseWorkflow.includes('type: maestro') &&
-    releaseWorkflow.includes('build_id: ${{ needs.build_android.outputs.build_id }}') &&
-    releaseWorkflow.includes('flow_path: maestro/release-smoke.yml') &&
     isDispatchOnlyReleaseWorkflow(releaseWorkflow, RELEASE_TAG_WORKFLOWS['android-release-qualification.yml']);
   addCheck(
     checks,
     releaseWorkflowReady ? 'pass' : 'fail',
-    'EAS Android Release build and smoke workflow',
+    'EAS Android Release build workflow',
     releaseWorkflowReady
-      ? `${RELEASE_QUALIFICATION_WORKFLOW} builds production-apk and runs release-smoke.yml on dispatch only.`
-      : `${RELEASE_QUALIFICATION_WORKFLOW} is missing, does not chain production-apk to the Release smoke flow, does not check the release tag, or has a trigger other than workflow_dispatch with a required release_tag input.`,
-    'Add a validated EAS workflow whose only trigger is workflow_dispatch with a required release_tag input, that runs scripts/check-android-release-ref.js, builds production-apk and passes its build_id to maestro/release-smoke.yml.'
+      ? `${RELEASE_QUALIFICATION_WORKFLOW} builds production-apk on dispatch only, after the release tag check.`
+      : `${RELEASE_QUALIFICATION_WORKFLOW} is missing, does not build production-apk, does not check the release tag, or has a trigger other than workflow_dispatch with a required release_tag input.`,
+    'Add a validated EAS workflow whose only trigger is workflow_dispatch with a required release_tag input, that runs scripts/check-android-release-ref.js before building production-apk.'
   );
 
   const easWorkflows = checkEasWorkflowTriggers(rootDir, { existsSync, readFileSync });
@@ -975,34 +1242,33 @@ function checkAndroidReleaseGates({
       : 'Run npm run subscription:qa:release-smoke on the Play-installed candidate and close its single final verdict before Android production release.'
   );
 
-  const fallbackFlowPath = path.join(rootDir, 'maestro/recording-text-fallback.yml');
-  const runMaestroPath = path.join(rootDir, 'scripts/run-maestro-android.js');
-  const suiteText = existsSync(runMaestroPath) ? readFileSync(runMaestroPath, 'utf8') : '';
-  const hasFallbackFlow = existsSync(fallbackFlowPath);
-  const suiteReferencesFallback = suiteText.includes('maestro/recording-text-fallback.yml');
-  addCheck(
-    checks,
-    hasFallbackFlow && suiteReferencesFallback ? 'pass' : 'fail',
-    'Recording text fallback E2E flow registered',
-    hasFallbackFlow && suiteReferencesFallback
-      ? 'maestro/recording-text-fallback.yml exists and is listed in the Android suites.'
-      : 'Fallback flow file or suite registration is missing.',
-    'Add the flow file and include it in scripts/run-maestro-android.js.'
-  );
-
-  const voiceEvidenceCheck = evaluateVoiceAnalysisEvidence({
+  const testerArmyCheck = getTesterArmyReleaseCheck({
+    prebuild,
+    versionCode: androidCandidateVersionCode,
+    spawn,
+    env,
     rootDir,
-    phase,
     existsSync,
     readFileSync,
-    env,
+    readdirSync,
   });
   addCheck(
     checks,
-    voiceEvidenceCheck.status,
-    'Release voice transcription, save and analysis evidence',
-    voiceEvidenceCheck.details,
-    voiceEvidenceCheck.remediation
+    testerArmyCheck.status,
+    'TesterArmy Android Release journeys (production-apk)',
+    testerArmyCheck.details,
+    testerArmyCheck.remediation
+  );
+
+  // Real speech needs a person: the automated voice receipt went with Maestro
+  // (owner decision 2026-10-14). The manual checklist is an optional test and
+  // does not block the release gate (owner decision 2026-10-17).
+  addCheck(
+    checks,
+    'manual',
+    'Release voice transcription, save and analysis',
+    `No automated check: real speech recognition needs a person speaking to the installed candidate (versionCode ${androidCandidateVersionCode || 'missing'}). Optional manual test, not blocking.`,
+    `Optionally run the manual voice checklist of ${VOICE_MANUAL_CHECKLIST} on the candidate and note its result with the release evidence.`
   );
 
   const adbCommand = resolveCommand('adb', { spawn, existsSync, env, platform });
@@ -1037,20 +1303,6 @@ function checkAndroidReleaseGates({
       'Install adb, then run this check again with an emulator/device connected.'
     );
   }
-
-  const maestroCommand = resolveCommand('maestro', { spawn, existsSync, env, platform });
-  const maestroAvailable = Boolean(maestroCommand);
-  addCheck(
-    checks,
-    maestroAvailable ? 'pass' : 'blocked',
-    'Maestro CLI',
-    maestroAvailable
-      ? maestroCommand === 'maestro'
-        ? 'maestro is available in PATH.'
-        : `maestro was found at ${maestroCommand}, but it is not available in PATH.`
-      : 'maestro is not available in PATH or common Homebrew formula locations.',
-    'Install Maestro CLI and make maestro available in PATH.'
-  );
 
   const projectCheck = getGoogleCloudProjectCheck(envValues[PLAY_INTEGRITY_PROJECT_NUMBER_KEY], projectStateResult);
   addCheck(checks, projectCheck.status, 'Google Cloud project number confirmation', projectCheck.details, projectCheck.remediation);
@@ -1166,7 +1418,7 @@ module.exports = {
   getAdbDeviceVisibilityCheck,
   getAdbCandidates,
   getAndroidReleaseOptimizationCheck,
-  getMaestroCandidates,
+  findTesterArmyReleaseRun,
   listAdbDevices,
   parseDotEnv,
   resolveCommand,

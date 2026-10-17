@@ -10,10 +10,6 @@ const {
   formatReport,
   parseDotEnv,
 } = require('./check-android-release-gates');
-const {
-  VOICE_ANALYSIS_FLOW,
-  writeVoiceAnalysisEvidence,
-} = require('./android-voice-analysis-evidence');
 
 const SCRIPT = path.join(__dirname, 'check-android-release-gates.js');
 
@@ -72,6 +68,91 @@ function validEnv() {
   ].join('\n');
 }
 
+const RUN_REVISION = '0123456789abcdef0123456789abcdef01234567';
+const OTHER_REVISION = 'fedcba9876543210fedcba9876543210fedcba98';
+// Relative to each fixture root; the gate resolves QA_ANDROID_RELEASE_APK there.
+const CANDIDATE_APK = 'build/release.apk';
+const CANDIDATE_APK_BYTES = 'candidate apk bytes';
+const sha256 = (value) => require('crypto').createHash('sha256').update(value).digest('hex');
+
+function hashRunFolder(root, runDir) {
+  const base = path.join(root, runDir);
+  const hashes = {};
+  const walk = (dir) => {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
+      const full = path.join(dir, entry.name);
+      const relative = path.relative(base, full).split(path.sep).join('/');
+      if (entry.isDirectory()) walk(full);
+      else if (relative !== 'files.json' && relative !== 'end.json') hashes[relative] = sha256(fs.readFileSync(full));
+    }
+  };
+  walk(base);
+  return Object.fromEntries(Object.entries(hashes).sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)));
+}
+
+// The files tools/e2e/run.mjs writes for a qualified native run of a Release
+// build, with files.json written last before end.json, as the runner does.
+function writeTesterArmyRun(root, {
+  name = '1760000000000-1-run',
+  versionCode = 33,
+  profile = 'production-apk',
+  bundle = 'com.tanuki75.noctalia',
+  product = 'dreamer',
+  applicationQualified = true,
+  exitCode = 0,
+  revision = RUN_REVISION,
+  buildRevision = revision,
+  workingTree = '',
+  args = ['--install-release'],
+  sourceStable = true,
+  sourceClean = true,
+  apkBytes = CANDIDATE_APK_BYTES,
+  sourceEnd = {},
+} = {}) {
+  const runDir = `tools/e2e/.e2e/dreamer-android/${name}`;
+  writeFile(root, CANDIDATE_APK, CANDIDATE_APK_BYTES);
+  const binary = { bundle, version: '2.0.2', build: String(versionCode), sha256: sha256(apkBytes), path: `/builds/${name}/release.apk` };
+  writeJson(root, `${runDir}/evidence.json`, {
+    product,
+    platform: 'android',
+    revision,
+    workingTree,
+    binary,
+    command: ['node', 'tools/e2e/run.mjs', product, 'android', 'run', ...args],
+  });
+  writeJson(root, `${runDir}/release-used.json`, { profile: { name: profile }, source: { revision: buildRevision }, binary });
+  // The shape of tools/e2e/qualification.mjs sourceSnapshot, as the #387 runner
+  // writes it before and after the run (source-end.json comes before files.json).
+  const sourceFiles = {
+    'app.json': sha256('app.json bytes'),
+    'app/recording.tsx': sha256('recording bytes'),
+    'package.json': sha256('package.json bytes'),
+  };
+  const snapshot = { revision, workingTree, files: sourceFiles, outputs: {}, allowedOutputPrefixes: [] };
+  writeJson(root, `${runDir}/source-start.json`, snapshot);
+  writeJson(root, `${runDir}/source-end.json`, { ...snapshot, ...sourceEnd });
+  writeJson(root, `${runDir}/collection.json`, { pairs: [{ file: 'tests/dreamer.mobile.e2e.ts' }] });
+  writeJson(root, `${runDir}/report.json`, {
+    run: { vcs: { commit: revision }, status: 'passed', exitCode: 0, summary: { failed: 0, interrupted: 0 } },
+  });
+  writeJson(root, `${runDir}/qualification.json`, {
+    revision,
+    target: 'dreamer-android',
+    passed: [{ targetId: 'dreamer-android', testId: 'release' }],
+  });
+  writeJson(root, `${runDir}/installed-start.json`, { bundle, binarySha256: binary.sha256, buildSource: buildRevision });
+  writeJson(root, `${runDir}/installed-end.json`, { bundle, binarySha256: binary.sha256, buildSource: buildRevision });
+  writeFile(root, `${runDir}/results/release/trace.md`, 'trace');
+  writeJson(root, `${runDir}/files.json`, hashRunFolder(root, runDir));
+  writeJson(root, `${runDir}/end.json`, {
+    finishedAt: '2026-10-15T10:00:00.000Z',
+    exitCode,
+    applicationQualified,
+    stability: { sourceStable, sourceClean },
+  });
+  return runDir;
+}
+
 function setupFixture({ versionCode = 33 } = {}) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'android-gates-'));
   writeJson(root, 'app.json', {
@@ -96,44 +177,6 @@ function setupFixture({ versionCode = 33 } = {}) {
   });
   writeJson(root, 'eas.json', validEasJson());
   writeFile(root, '.env.teststore', validEnv());
-  writeFile(root, 'maestro/recording-text-fallback.yml', 'appId: com.tanuki75.noctalia\n');
-  writeFile(
-    root,
-    'scripts/run-maestro-android.js',
-    [
-      `const flows = ['maestro/recording-text-fallback.yml', '${VOICE_ANALYSIS_FLOW}'];`,
-      "const suites = { 'release-voice-analysis': ['maestro/release-auth-voice-analysis.yml'] };",
-      'invalidateVoiceAnalysisEvidence();',
-      'writeVoiceAnalysisEvidence();',
-      '',
-    ].join('\n')
-  );
-  writeFile(
-    root,
-    VOICE_ANALYSIS_FLOW,
-    [
-      'appId: com.tanuki75.noctalia',
-      '---',
-      '- tapOn:',
-      '    id: btn.recordToggle',
-      '- assertVisible: for[eê]t|lune',
-      '- assertVisible: renard|porte',
-      '- tapOn:',
-      '    id: btn.saveDream',
-      '- assertVisible:',
-      '    id: component.transcriptCard',
-      '- assertVisible: Interpretation|Interprétation',
-      '- tapOn:',
-      '    id: btn.auth.signOut',
-      '',
-    ].join('\n')
-  );
-  writeJson(root, 'package.json', {
-    scripts: {
-      'test:e2e:release:voice-analysis:local':
-        'node scripts/run-maestro-android.js --suite release-voice-analysis --no-start-metro',
-    },
-  });
   writeFile(
     root,
     '.eas/workflows/android-release-qualification.yml',
@@ -156,11 +199,6 @@ function setupFixture({ versionCode = 33 } = {}) {
       '    type: build',
       '    params:',
       '      profile: production-apk',
-      '  smoke_android:',
-      '    type: maestro',
-      '    params:',
-      '      build_id: ${{ needs.build_android.outputs.build_id }}',
-      '      flow_path: maestro/release-smoke.yml',
       '',
     ].join('\n')
   );
@@ -188,32 +226,13 @@ function setupFixture({ versionCode = 33 } = {}) {
       '',
     ].join('\n')
   );
-  for (const platform of ['android', 'ios']) {
-    writeFile(
-      root,
-      `.eas/workflows/e2e-test-${platform}.yml`,
-      [
-        'on:',
-        '  workflow_dispatch: {}',
-        'jobs:',
-        `  build_${platform}_for_e2e:`,
-        '    type: build',
-        '    params:',
-        `      platform: ${platform}`,
-        '      profile: e2e-test',
-        '',
-      ].join('\n')
-    );
-  }
-  writeVoiceAnalysisEvidence({
-    rootDir: root,
-    buildIdentity: {
-      packageName: 'com.tanuki75.noctalia',
-      versionName: '2.0.2',
-      versionCode,
-    },
-    targetKind: 'emulator',
-  });
+  // Any other workflow is held to the dispatch-only rule as well.
+  writeFile(
+    root,
+    '.eas/workflows/on-demand.yml',
+    ['on:', '  workflow_dispatch: {}', 'jobs:', '  build_on_demand:', '    type: build', ''].join('\n')
+  );
+  writeTesterArmyRun(root, { versionCode });
   return root;
 }
 
@@ -282,6 +301,14 @@ function writeSupabasePlayIntegritySecretsSnapshot(root, overrides = {}) {
 }
 
 describe('android release gate preflight', () => {
+  const previousApk = process.env.QA_ANDROID_RELEASE_APK;
+  beforeEach(() => {
+    process.env.QA_ANDROID_RELEASE_APK = CANDIDATE_APK;
+  });
+  afterAll(() => {
+    if (previousApk === undefined) delete process.env.QA_ANDROID_RELEASE_APK;
+    else process.env.QA_ANDROID_RELEASE_APK = previousApk;
+  });
   function npmRunScript(args) {
     const runIndex = args.indexOf('run');
     return runIndex === -1 ? null : args[runIndex + 1];
@@ -293,10 +320,13 @@ describe('android release gate preflight', () => {
     adbDevices = true,
     adbMdnsStdout = 'List of discovered mdns services\n',
     adbUsbStdout = '',
+    gitHead = RUN_REVISION,
   } = {}) {
     return (command, args) => {
+      if (command === 'git' && args[0] === 'rev-parse' && args[1] === 'HEAD') {
+        return gitHead ? { status: 0, stdout: `${gitHead}\n`, stderr: '' } : { status: 128, stdout: '', stderr: 'not a git repository' };
+      }
       if (['which', 'where'].includes(command) && args[0] === 'adb') return { status: 0 };
-      if (['which', 'where'].includes(command) && args[0] === 'maestro') return { status: 0 };
       if (command === 'adb' && args[0] === 'devices') {
         return {
           status: 0,
@@ -407,7 +437,7 @@ describe('android release gate preflight', () => {
     ).toBe(true);
   });
 
-  it('fails prebuild when the Release build-to-smoke workflow is missing', () => {
+  it('fails prebuild when the Release build workflow is missing', () => {
     const root = setupFixture();
     fs.rmSync(path.join(root, '.eas/workflows/android-release-qualification.yml'));
 
@@ -422,7 +452,7 @@ describe('android release gate preflight', () => {
       expect.arrayContaining([
         expect.objectContaining({
           status: 'fail',
-          title: 'EAS Android Release build and smoke workflow',
+          title: 'EAS Android Release build workflow',
         }),
       ])
     );
@@ -473,7 +503,7 @@ describe('android release gate preflight', () => {
     expect(report.checks).toEqual(expect.arrayContaining([expect.objectContaining({ status: 'fail', title })]));
   }
 
-  const QUALIFICATION_TITLE = 'EAS Android Release build and smoke workflow';
+  const QUALIFICATION_TITLE = 'EAS Android Release build workflow';
   const TRIGGERS_TITLE = 'EAS workflows dispatch only';
 
   it('passes both workflow checks on the fixture and on the real .eas/workflows', () => {
@@ -483,9 +513,7 @@ describe('android release gate preflight', () => {
     }
     const real = checkEasWorkflowTriggers(path.resolve(__dirname, '..'));
     expect(real.problems).toEqual([]);
-    expect(real.files).toEqual(expect.arrayContaining([
-      QUALIFICATION, SMOKE, 'e2e-test-android.yml', 'e2e-test-ios.yml',
-    ]));
+    expect(real.files).toEqual(expect.arrayContaining([QUALIFICATION, SMOKE]));
   });
 
   it.each(EXTRA_TRIGGERS)('fails prebuild when the Release workflow has %s next to workflow_dispatch', (_name, extraTrigger) => {
@@ -593,7 +621,7 @@ describe('android release gate preflight', () => {
   });
 
   describe('top-level keys of an EAS workflow (YAML 1.1 booleans, non-string keys)', () => {
-    const E2E = 'e2e-test-android.yml';
+    const E2E = 'on-demand.yml';
     const withTopLevel = (extra) => (w) => `${w}${extra}`;
     const YAML11_BOOLEANS = [
       'y', 'Y', 'yes', 'Yes', 'YES', 'n', 'N', 'no', 'No', 'NO',
@@ -663,7 +691,7 @@ describe('android release gate preflight', () => {
     expectCheckFails(gateReport(SMOKE, (w) => w.replace(DISPATCH_HEADER, 'on:\n  workflow_dispatch: {}\n')), TRIGGERS_TITLE);
   });
 
-  describe.each([SMOKE, 'e2e-test-android.yml', 'e2e-test-ios.yml'])('dispatch-only triggers of %s', (file) => {
+  describe.each([SMOKE, 'on-demand.yml'])('dispatch-only triggers of %s', (file) => {
     it.each(EXTRA_TRIGGERS)('fails prebuild with %s next to workflow_dispatch', (_name, extraTrigger) => {
       expectCheckFails(gateReport(file, (w) => w.replace('  workflow_dispatch', `${extraTrigger}  workflow_dispatch`)), TRIGGERS_TITLE);
     });
@@ -921,6 +949,208 @@ describe('android release gate preflight', () => {
     ).toBe(true);
   });
 
+  describe('TesterArmy production-apk release evidence', () => {
+    const TITLE = 'TesterArmy Android Release journeys (production-apk)';
+    const VOICE_TITLE = 'Release voice transcription, save and analysis';
+    const testerArmyCheck = (report) => report.checks.find((check) => check.title === TITLE);
+    const voiceCheck = (report) => report.checks.find((check) => check.title === VOICE_TITLE);
+
+    function qualificationRoot(versionCode = 33) {
+      const root = setupFixture({ versionCode });
+      writeGooglePlayTrackSnapshot(root, versionCode);
+      fs.rmSync(path.join(root, 'tools/e2e/.e2e'), { recursive: true });
+      return root;
+    }
+
+    it('passes qualification with a qualified run of the candidate production-apk build', () => {
+      const root = qualificationRoot();
+      const runDir = writeTesterArmyRun(root);
+
+      const report = checkAndroidReleaseGates({ rootDir: root, spawn: spawnWithTools() });
+
+      expect(testerArmyCheck(report)).toMatchObject({ status: 'pass' });
+      expect(testerArmyCheck(report).details).toContain(runDir);
+      expect(testerArmyCheck(report).details).toContain('versionCode 33');
+      expect(report.ok).toBe(true);
+    });
+
+    it('blocks qualification without any TesterArmy run', () => {
+      const report = checkAndroidReleaseGates({ rootDir: qualificationRoot(), spawn: spawnWithTools() });
+
+      expect(report.ok).toBe(false);
+      expect(testerArmyCheck(report)).toMatchObject({ status: 'blocked' });
+      expect(testerArmyCheck(report).remediation).toContain('npm run test:testerarmy:mobile -- dreamer android run --install-release');
+    });
+
+    it.each([
+      ['another versionCode', { versionCode: 32 }],
+      ['a mock-persistent build', { profile: 'mock-persistent' }],
+      ['another bundle', { bundle: 'com.tanuki75.noctalia.qa' }],
+      ['another product', { product: 'lucid' }],
+      ['a run that did not qualify the application', { applicationQualified: false }],
+      ['a run with a non-zero final exit', { exitCode: 1 }],
+    ])('blocks qualification when the only run is %s', (_name, overrides) => {
+      const root = qualificationRoot();
+      writeTesterArmyRun(root, overrides);
+
+      const report = checkAndroidReleaseGates({ rootDir: root, spawn: spawnWithTools() });
+
+      expect(report.ok).toBe(false);
+      expect(testerArmyCheck(report)).toMatchObject({ status: 'blocked' });
+      expect(testerArmyCheck(report).details).toContain('1 run(s) found');
+    });
+
+    it.each([
+      ['is stale: it ran on another commit', { revision: OTHER_REVISION, buildRevision: OTHER_REVISION }, 'not 0123456789ab'],
+      ['tested a build from another source commit', { buildRevision: OTHER_REVISION }, 'its build came from fedcba987654'],
+      ['ran on a modified working tree', { workingTree: ' M app.json' }, 'modified working tree'],
+      ['saw its source change during the run', { sourceStable: false }, 'source changed'],
+      ['tested another APK than the candidate', { apkBytes: 'another apk' }, 'not the candidate APK'],
+      ['was filtered with --grep', { args: ['--grep', 'onboarding', '--install-release'] }, 'filtered with --grep'],
+      ['was filtered with --tag', { args: ['--tag', '@smoke'] }, 'filtered with --tag'],
+      ['was one shard', { args: ['--shard', '1/2'] }, 'filtered with --shard'],
+    ])('blocks qualification when the qualified run of the candidate %s', (_name, overrides, reason) => {
+      const root = qualificationRoot();
+      writeTesterArmyRun(root, overrides);
+
+      const report = checkAndroidReleaseGates({ rootDir: root, spawn: spawnWithTools() });
+
+      expect(report.ok).toBe(false);
+      expect(testerArmyCheck(report)).toMatchObject({ status: 'blocked' });
+      expect(testerArmyCheck(report).details).toContain(reason);
+    });
+
+    // end.json is not covered by files.json, so these runs keep an end.json that
+    // says exit 0, qualified, stable and clean: the gate must still read the
+    // source snapshots itself.
+    it.each([
+      ['source-end.json shows a changed file map', { sourceEnd: { files: { 'app.json': sha256('app.json bytes'), 'app/recording.tsx': sha256('edited during the run'), 'package.json': sha256('package.json bytes') } } }, 'source file map changed during the run'],
+      ['source-end.json shows a file added during the run', { sourceEnd: { files: { 'app.json': sha256('app.json bytes'), 'app/new.tsx': sha256('new'), 'app/recording.tsx': sha256('recording bytes'), 'package.json': sha256('package.json bytes') } } }, 'source file map changed during the run'],
+      ['source-end.json shows a dirty working tree', { sourceEnd: { workingTree: ' M app/recording.tsx' } }, 'source-end.json records a dirty working tree'],
+      ['source-end.json names another commit', { sourceEnd: { revision: OTHER_REVISION } }, 'source-end.json names fedcba987654, not 0123456789ab'],
+      ['source-end.json has no file map', { sourceEnd: { files: {} } }, 'source-end.json has no source file map'],
+    ])('blocks qualification when end.json says OK but %s', (_name, overrides, reason) => {
+      const root = qualificationRoot();
+      const runDir = writeTesterArmyRun(root, overrides);
+      expect(JSON.parse(fs.readFileSync(path.join(root, runDir, 'end.json'), 'utf8'))).toMatchObject({
+        exitCode: 0,
+        applicationQualified: true,
+        stability: { sourceStable: true, sourceClean: true },
+      });
+
+      const report = checkAndroidReleaseGates({ rootDir: root, spawn: spawnWithTools() });
+
+      expect(report.ok).toBe(false);
+      expect(testerArmyCheck(report)).toMatchObject({ status: 'blocked' });
+      expect(testerArmyCheck(report).details).toContain(reason);
+    });
+
+    it('blocks qualification when only end.json is rewritten to say OK over a refused run', () => {
+      const root = qualificationRoot();
+      const runDir = writeTesterArmyRun(root, { sourceEnd: { workingTree: ' M app.json' }, sourceStable: false, sourceClean: false, exitCode: 3, applicationQualified: false });
+      writeJson(root, `${runDir}/end.json`, {
+        finishedAt: '2026-10-15T10:00:00.000Z',
+        exitCode: 0,
+        applicationQualified: true,
+        stability: { sourceStable: true, sourceClean: true },
+      });
+
+      const report = checkAndroidReleaseGates({ rootDir: root, spawn: spawnWithTools() });
+
+      expect(report.ok).toBe(false);
+      expect(testerArmyCheck(report)).toMatchObject({ status: 'blocked' });
+      expect(testerArmyCheck(report).details).toContain('source-end.json records a dirty working tree');
+    });
+
+    it.each([
+      ['a file was edited after files.json', (root, runDir) => writeJson(root, `${runDir}/qualification.json`, { revision: RUN_REVISION, target: 'dreamer-android', passed: [{}, {}] }), 'EVIDENCE_CHANGED'],
+      ['a file was added after files.json', (root, runDir) => writeFile(root, `${runDir}/results/extra.txt`, 'x'), 'EVIDENCE_CHANGED'],
+      ['a file listed in files.json is gone', (root, runDir) => fs.rmSync(path.join(root, runDir, 'results/release/trace.md')), 'EVIDENCE_CHANGED'],
+      ['files.json is missing', (root, runDir) => fs.rmSync(path.join(root, runDir, 'files.json')), 'files.json is missing'],
+      ['a required file is missing', (root, runDir) => fs.rmSync(path.join(root, runDir, 'report.json')), 'report.json is missing'],
+    ])('blocks qualification when %s (engine verifyEvidenceFiles)', (_name, tamper, reason) => {
+      const root = qualificationRoot();
+      const runDir = writeTesterArmyRun(root);
+      tamper(root, runDir);
+
+      const report = checkAndroidReleaseGates({ rootDir: root, spawn: spawnWithTools() });
+
+      expect(report.ok).toBe(false);
+      expect(testerArmyCheck(report)).toMatchObject({ status: 'blocked' });
+      expect(testerArmyCheck(report).details).toContain(reason);
+    });
+
+    it('blocks qualification without the candidate APK to compare', () => {
+      const root = qualificationRoot();
+      writeTesterArmyRun(root);
+      delete process.env.QA_ANDROID_RELEASE_APK;
+
+      const report = checkAndroidReleaseGates({ rootDir: root, spawn: spawnWithTools() });
+
+      expect(testerArmyCheck(report)).toMatchObject({ status: 'blocked' });
+      expect(testerArmyCheck(report).details).toContain('QA_ANDROID_RELEASE_APK is not set');
+    });
+
+    it('blocks qualification when the current commit cannot be read', () => {
+      const root = qualificationRoot();
+      writeTesterArmyRun(root);
+
+      const report = checkAndroidReleaseGates({ rootDir: root, spawn: spawnWithTools({ gitHead: null }) });
+
+      expect(testerArmyCheck(report)).toMatchObject({ status: 'blocked' });
+      expect(testerArmyCheck(report).details).toContain('the current commit cannot be read');
+    });
+
+    it('accepts an older qualified run when a newer run of the candidate failed', () => {
+      const root = qualificationRoot();
+      writeTesterArmyRun(root, { name: '1760000000000-1-good' });
+      writeTesterArmyRun(root, { name: '1760000999999-2-failed', applicationQualified: false, exitCode: 1 });
+
+      const report = checkAndroidReleaseGates({ rootDir: root, spawn: spawnWithTools() });
+
+      expect(testerArmyCheck(report)).toMatchObject({ status: 'pass' });
+      expect(testerArmyCheck(report).details).toContain('1760000000000-1-good');
+    });
+
+    it('ignores an unreadable run record', () => {
+      const root = qualificationRoot();
+      writeFile(root, 'tools/e2e/.e2e/dreamer-android/1760000000001-1-broken/end.json', '{not json');
+
+      const report = checkAndroidReleaseGates({ rootDir: root, spawn: spawnWithTools() });
+
+      expect(testerArmyCheck(report)).toMatchObject({ status: 'blocked' });
+    });
+
+    it('defers the run to qualification during prebuild', () => {
+      const root = setupFixture({ versionCode: 41 });
+      fs.rmSync(path.join(root, 'tools/e2e/.e2e'), { recursive: true });
+
+      const report = checkAndroidReleaseGates({ rootDir: root, spawn: spawnWithTools(), phase: 'prebuild' });
+
+      expect(report.ok).toBe(true);
+      expect(testerArmyCheck(report)).toMatchObject({ status: 'manual' });
+      expect(testerArmyCheck(report).details).toContain('versionCode 41');
+    });
+
+    it('lists the real voice journey as an optional manual checklist', () => {
+      const report = checkAndroidReleaseGates({ rootDir: qualificationRoot(), spawn: spawnWithTools() });
+
+      expect(voiceCheck(report)).toMatchObject({ status: 'manual' });
+      expect(voiceCheck(report).remediation).toContain('doc_web_interne/docs/android-release-checklist.md');
+    });
+
+    it('passes strict qualification with the voice check left manual (owner decision 2026-10-17)', () => {
+      const root = qualificationRoot();
+      writeTesterArmyRun(root);
+
+      const report = checkAndroidReleaseGates({ rootDir: root, spawn: spawnWithTools() });
+
+      expect(voiceCheck(report)).toMatchObject({ status: 'manual' });
+      expect(testerArmyCheck(report)).toMatchObject({ status: 'pass' });
+      expect(report.ok).toBe(true);
+    });
+  });
+
   it('fails when the RevenueCat subscription release gate is still red', () => {
     const root = setupFixture();
     const report = checkAndroidReleaseGates({
@@ -1061,8 +1291,8 @@ describe('android release gate preflight', () => {
     const adbPath = path.join(fakeHome, 'Library/Android/sdk/platform-tools/adb');
     writeFile(root, 'home/Library/Android/sdk/platform-tools/adb', '');
     const spawn = (command, args) => {
+      if (command === 'git' && args[0] === 'rev-parse') return { status: 0, stdout: `${RUN_REVISION}\n`, stderr: '' };
       if (command === 'which' && args[0] === 'adb') return { status: 1 };
-      if (command === 'which' && args[0] === 'maestro') return { status: 0 };
       if (npmRunScript(args) === 'subscription:qa:release-gate') {
         return { status: 0, stdout: 'ok\n', stderr: '' };
       }
@@ -1078,7 +1308,7 @@ describe('android release gate preflight', () => {
     const report = checkAndroidReleaseGates({
       rootDir: root,
       spawn,
-      env: { HOME: fakeHome },
+      env: { HOME: fakeHome, QA_ANDROID_RELEASE_APK: CANDIDATE_APK },
       platform: 'darwin',
     });
 
@@ -1086,41 +1316,6 @@ describe('android release gate preflight', () => {
     expect(
       report.checks.some(
         (check) => check.status === 'pass' && check.details.includes(adbPath)
-      )
-    ).toBe(true);
-  });
-
-  it('uses Maestro from an explicit CLI path when PATH misses it', () => {
-    const root = setupFixture();
-    writeGooglePlayTrackSnapshot(root, 33);
-    const maestroPath = path.join(root, 'maestro', 'bin', 'maestro');
-    writeFile(root, 'maestro/bin/maestro', '');
-    const spawn = (command, args) => {
-      if (command === 'which' && args[0] === 'maestro') return { status: 1 };
-      if (command === 'which' && args[0] === 'adb') return { status: 0 };
-      if (npmRunScript(args) === 'subscription:qa:release-gate') {
-        return { status: 0, stdout: 'ok\n', stderr: '' };
-      }
-      if (command === 'adb' && args[0] === 'devices') {
-        return {
-          status: 0,
-          stdout: 'List of devices attached\nemulator-5554\tdevice\n',
-        };
-      }
-      return { status: 1, stdout: '', stderr: '' };
-    };
-
-    const report = checkAndroidReleaseGates({
-      rootDir: root,
-      spawn,
-      env: { MAESTRO_CLI_PATH: maestroPath },
-      platform: 'darwin',
-    });
-
-    expect(report.ok).toBe(true);
-    expect(
-      report.checks.some(
-        (check) => check.status === 'pass' && check.details.includes(maestroPath)
       )
     ).toBe(true);
   });

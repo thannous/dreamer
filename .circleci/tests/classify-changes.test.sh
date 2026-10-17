@@ -359,7 +359,8 @@ while IFS=$'\t' read -r input graph consumers; do
 done < "$repository_root/.circleci/dependency-consumers.tsv"
 
 # Regression expectation comes from the real consumers, independently of the map.
-assert_change "Android lock validates both application consumers only" scripts/android-device-lock.js pr true true false false false true false false false false false
+# Meditation stopped running the lock with its Maestro scripts (2026-10-14).
+assert_change "Android lock validates its only application consumer" scripts/android-device-lock.js pr true false false false false true false false false false false
 assert_change "unknown shared execution input fails closed" scripts/new-shared-tool.js pr true true true true true true false false false false false
 assert_change "unknown shared data fails closed" data/new-common-contract.json pr true true true true true true false false false false false
 

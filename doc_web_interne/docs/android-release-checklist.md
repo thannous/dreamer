@@ -77,6 +77,38 @@ Après autorisation de soumission, retirer `--dry-run`. Le runner sélectionne
 `submit.internal` ; `submit.production.android` cible la production. Un envoi
 EAS terminé ne prouve ni la disponibilité pour les testeurs ni l'installation.
 
+### Parcours de release TesterArmy (émulateur)
+
+Depuis le 14 octobre 2026, Maestro est retiré : le job Maestro EAS qui suivait le
+build `production-apk` n'existe plus. La preuve E2E de release est un run
+TesterArmy local d'un build Release `production-apk` du candidat, installé sur un
+émulateur possédé ([guide TesterArmy](../../tools/e2e/README.md#android-release-evidence)) :
+
+```bash
+EXPO_NO_DOTENV=1 EXPO_OFFLINE=1 E2E_BUILD_PROFILE=production-apk \
+  EXPO_PUBLIC_MOCK_MODE=false EXPO_PUBLIC_MOCK_PERSISTENCE=false \
+  EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=false \
+  E2E_BUILD_COMMAND='["./gradlew",":app:assembleRelease","--no-daemon"]' \
+  E2E_RELEASE_BINARY=android/app/build/outputs/apk/release/app-release.apk \
+  mise exec -- node tools/e2e/run.mjs dreamer android build
+E2E_DEVICE=<emulator-serial> E2E_RELEASE_RECEIPT=<release.json imprimé> \
+  mise exec -- npm run test:testerarmy:mobile -- dreamer android run --install-release
+```
+
+- [ ] Le run finit avec `applicationQualified: true` dans son `end.json`.
+- [ ] Le `versionCode` du build local est celui du candidat (`QA_ANDROID_VERSION_CODE`
+  quand EAS attribue le compteur) ; sinon `android:gates:strict` reste bloqué.
+- [ ] Le run est fait sur le commit qualifié, arbre de travail propre, sans filtre
+  (`--grep`, `--tag`, `--exclude-tag`, `--tag-mode`, `--shard`), sur un build dont
+  la source est ce même commit ; son dossier est complet et passe
+  `verifyEvidenceFiles` (son `files.json`). Un run d'un autre commit ne compte pas.
+- [ ] Ses `source-start.json` et `source-end.json` nomment ce commit, avec un arbre
+  de travail vide et la même carte de fichiers : le gate le vérifie lui-même,
+  `end.json` (hors manifeste) n'est qu'une condition en plus.
+- [ ] `QA_ANDROID_RELEASE_APK` désigne l'APK candidat ; son sha256 doit être celui
+  de l'APK testé et installé par le run.
+- [ ] Ces parcours restent hors ligne : ils ne prouvent ni achat, ni voix réelle, ni compte backend.
+
 - [ ] Vérifier la release sur la piste Test interne et son accès aux testeurs.
 - [ ] Copier le SHA-1 Play App Signing depuis Play Console → App Integrity.
 - [ ] Ajouter ce SHA-1 au client OAuth Android dans Google Cloud Console.
@@ -101,11 +133,31 @@ Installer depuis la piste Internal Testing, pas en sideload.
     --version-code <installed-version-code>
   ```
 
-- [ ] Exiger `3/3` puis relancer `npm run android:gates:strict`.
+- [ ] Exiger `3/3`, passer la checklist voix ci-dessous, puis relancer `npm run android:gates:strict`.
 - [ ] Si les produits/forfaits, le paywall/achat, les clés ou le SDK RevenueCat, ou le webhook ont changé, exécuter aussi `npm run subscription:qa:full-gate` et requalifier les sept scénarios.
 - [ ] Limite quota vers paywall.
-- [ ] Enregistrement audio et fallback texte.
 - [ ] App Links `https://dream.noctalia.app`.
+
+### Checklist manuelle voix
+
+La reconnaissance vocale réelle demande une personne qui parle au candidat : elle
+n'est pas automatisable sur émulateur (l'injection audio y faisait quitter
+l'émulateur). Le parcours Maestro `release-auth-voice-analysis` et son reçu
+automatique sont retirés depuis le 14 octobre 2026. Décision de thanh du
+17 octobre 2026 : cette checklist est un test manuel optionnel, elle ne bloque pas
+la release ; `android:gates:strict` affiche cette étape comme manuelle.
+
+Sur le candidat installé depuis Play, connecté au compte QA `qa-free` :
+
+- [ ] Choisir explicitement le français dans Paramètres → Langue (la reconnaissance suit la langue de l'app).
+- [ ] Accorder le micro au premier enregistrement ; un refus affiche le texte d'aide et laisse la saisie au clavier disponible.
+- [ ] Dicter la phrase témoin : « Cette nuit, je marchais dans une forêt calme sous une lune brillante, puis un renard doré m'a guidé vers une porte bleue. » puis arrêter l'enregistrement.
+- [ ] La transcription affiche, dans cet ordre, `forêt` ou `lune` puis `renard` ou `porte` ; le minuteur du micro seul ne prouve rien.
+- [ ] Enregistrer le rêve : la carte de transcription apparaît et le rêve figure dans le Journal avec le texte exact.
+- [ ] Lancer l'analyse : l'interprétation s'affiche pour ce rêve, avec la carte de transcription.
+- [ ] Se déconnecter : l'app revient en invité.
+- [ ] Repasser en saisie texte pendant un brouillon vocal : le texte déjà transcrit est conservé.
+- [ ] Noter le `versionCode` installé, l'appareil, la date et le résultat dans le relevé de release ; ne commiter ni enregistrement audio ni capture contenant des données privées.
 
 ## 5. Play Console
 

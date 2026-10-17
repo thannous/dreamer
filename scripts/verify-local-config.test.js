@@ -44,7 +44,7 @@ describe('verify-local.config.mjs', () => {
     const files = [
       '.eas/workflows/android-release-qualification.yml',
       '.eas/workflows/android-release-smoke.yml',
-      '.eas/workflows/e2e-test-ios.yml',
+      '.eas/workflows/on-demand.yml',
       '.eas/workflows/new/nested.yaml',
       'eas.json',
       'scripts/check-android-release-ref.js',

@@ -27,7 +27,6 @@
     "**/*.test.tsx",
     "**/__tests__/**",
     "tests/**",
-    "maestro/**",
     "supabase/functions/**",
     "coverage/**",
     "dist/**",

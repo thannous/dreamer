@@ -1,5 +1,13 @@
 # Dreamer VNext TI-429 device harness
 
+**Retired on 2026-10-14.** The harness (`maestro/dreamer-vnext-ti429-matrix.json`,
+`scripts/run-dreamer-vnext-ti429-harness.js`, the `test:e2e:release:ti429:*` scripts and
+their Maestro flows) was removed with Maestro, by owner decision. It drove the base app on
+a physical Motorola, which TesterArmy's owned emulator/Simulator targets deliberately
+exclude, so it has no TesterArmy counterpart. The commands below no longer exist; this
+page stays as the record of the measurement contract. The data-preservation rules for a
+personal or Play-installed base app remain in [AGENTS](../../../AGENTS.md) (Project Rules).
+
 Scope notice, owner policy updated 2026-10-06: this document records the TI-429
 base-app harness and its original data-preservation contract. Its base-only and
 retired-QA statements apply to that measurement package, not every future native

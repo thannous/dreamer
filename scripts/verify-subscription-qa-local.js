@@ -25,9 +25,6 @@ const syntaxFiles = [
   'scripts/update-supabase-play-integrity-secrets-state.js',
   'scripts/android-tooling.js',
   'scripts/check-android-release-gates.js',
-  'scripts/run-subscription-teststore-purchase.js',
-  'scripts/run-subscription-teststore-restore.js',
-  'scripts/run-subscription-account-switch.js',
   'scripts/check-android-adb-device.js',
   'scripts/check-play-install-source.js',
   'scripts/check-play-qa-device.js',
@@ -47,9 +44,6 @@ const unitTestFiles = [
   'scripts/update-google-oauth-android-client-state.test.js',
   'scripts/update-google-play-payments-profile-state.test.js',
   'scripts/update-supabase-play-integrity-secrets-state.test.js',
-  'scripts/run-subscription-teststore-purchase.test.js',
-  'scripts/run-subscription-teststore-restore.test.js',
-  'scripts/run-subscription-account-switch.test.js',
   'scripts/verify-subscription-qa-local.test.js',
   'scripts/check-android-release-gates.test.js',
   'scripts/check-android-adb-device.test.js',
@@ -90,8 +84,8 @@ const commands = [
     },
     expectedStdoutIncludes: [
       '## Evidence Commands',
-      'OK | Authenticated Test Store paywall flow exists',
-      'Authenticated Test Store paywall',
+      'OK | Mock subscription scenarios have TesterArmy journeys',
+      'OK | Manual Test Store checklist exists',
       'npm run subscription:qa:evidence -- --gate play_monthly',
       '--installer-package-name com.android.vending',
       '## Current Session Readiness',
@@ -150,42 +144,6 @@ const commands = [
       'RevenueCat release smoke is BLOCKED: 2 evidence assertion(s) still require validation.',
     ],
     forbiddenStdoutIncludes: ['Blocked checks:'],
-  },
-  {
-    label: 'preflight: guarded Test Store monthly purchase CLI',
-    command: process.execPath,
-    args: ['scripts/run-subscription-teststore-purchase.js', '--preflight', '--plan', 'monthly', '--device', 'emulator-5554'],
-    env: {
-      REVENUECAT_QA_EMAIL: 'tester@example.com',
-      REVENUECAT_QA_PASSWORD: 'password',
-    },
-  },
-  {
-    label: 'preflight: guarded Test Store annual purchase CLI',
-    command: process.execPath,
-    args: ['scripts/run-subscription-teststore-purchase.js', '--preflight', '--plan', 'annual', '--device', 'emulator-5554'],
-    env: {
-      REVENUECAT_QA_EMAIL: 'tester@example.com',
-      REVENUECAT_QA_PASSWORD: 'password',
-    },
-  },
-  {
-    label: 'preflight: guarded Test Store restore CLI',
-    command: process.execPath,
-    args: ['scripts/run-subscription-teststore-restore.js', '--preflight', '--device', 'emulator-5554'],
-    env: {
-      REVENUECAT_QA_EMAIL: 'tester@example.com',
-    },
-  },
-  {
-    label: 'preflight: account switch CLI',
-    command: process.execPath,
-    args: ['scripts/run-subscription-account-switch.js', '--preflight', '--device', 'emulator-5554'],
-    env: {
-      REVENUECAT_QA_EMAIL: 'paid@example.com',
-      REVENUECAT_QA_SWITCH_FREE_EMAIL: 'free@example.com',
-      REVENUECAT_QA_SWITCH_FREE_PASSWORD: 'password',
-    },
   },
 ];
 

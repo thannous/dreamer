@@ -30,7 +30,7 @@ where contrast and spacing regressions hide.
 
 Tailwind v4 auto-detects sources from `global.css`'s directory — the repo root — *in
 addition* to the `@source` rules. Unchecked, it compiles utilities out of Markdown prose,
-generated marketing HTML and Maestro flows. This is not merely wasteful: a class quoted in
+generated marketing HTML and test fixtures. This is not merely wasteful: a class quoted in
 documentation as **an example of a mistake** becomes a real rule in the bundle (that is
 exactly how `.border-[hairlineWidth()]{border-color:1px}` once shipped). `global.css`
 therefore carries an explicit `@source not` list. Add to it when a top-level directory

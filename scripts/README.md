@@ -15,9 +15,9 @@ connects these commands to implementation paths and current runbooks.
 | SEO | `seo:gsc:export`, `seo:backlinks:check` | GSC export writes a dated external-data report; backlink check fetches the tracked public referring pages but never rewrites the CSV. |
 | Web E2E | `test:e2e:web`, `test:e2e:web:report` | Playwright and Chromium; simulated services. See [the E2E guide](../e2e/README.md). |
 | Backend E2E | `test:e2e:backend`, `start:backend-e2e` | Disposable local backend and browser artifacts; default Docker, or `test:e2e:backend -- --runtime native` for the experimental Docker-free stack on supported hosts. See [backend qualification](../doc_web_interne/docs/e2e-backend-qualification.md). |
-| Android E2E | Other `test:e2e:*` commands | Maestro, emulator/device and matching binary/runtime profile; each flow has its own data and payment safeguards. |
+| TesterArmy E2E | `test:testerarmy*`, `agent-device:*` | TesterArmy on web, an owned emulator or a named iOS Simulator; native runs need an identified Release build (`build`) and an explicit `E2E_DEVICE`, and take the device lock. See [the TesterArmy guide](../tools/e2e/README.md). Maestro and its `test:e2e:*` Android commands were retired on 2026-10-14. |
 | Mobile release | `release:*` | `prepare` writes manifests; `versions:sync` writes local mirrors; `build` starts a remote EAS build and requires explicit authorization. See [the release guide](../doc_web_interne/docs/MOBILE_VERSIONING.md). |
-| Android release | `android:gates:*`, `android:release:local`, `build:apk:*` | May require ADB, a physical device, EAS credentials, or local build tooling. |
+| Android release | `android:gates:*`, `android:release:local`, `build:apk:*` | May require ADB, a physical device, EAS credentials, or local build tooling. `android:gates:strict` requires a qualified TesterArmy run of the `production-apk` candidate under `tools/e2e/.e2e/dreamer-android/` (same commit as the release and its build, clean tree, intact manifest, candidate APK in `QA_ANDROID_RELEASE_APK`, stable and clean source snapshots). The real voice check is an optional manual test (owner decision 2026-10-17). |
 | Subscriptions | `subscription:qa:*` | Some commands update local QA evidence; see the RevenueCat runbook before use. |
 | Backend/security | `db:contract:*`, `security:audit:*` | Database checks require an explicit local or remote connection. |
 
@@ -35,7 +35,7 @@ On macOS, select an already-installed JDK 17 with
 `"$JAVA_HOME/bin/java" -version`. On other hosts, set `JAVA_HOME` to the installed
 JDK 17 directory. `ANDROID_HOME` or `ANDROID_SDK_ROOT` locates the SDK; the shared
 `android-tooling.js` resolver also checks standard host SDK locations for ADB.
-Use `ADB_BIN` for an explicit executable and `MAESTRO_BIN` for a Maestro runner.
+Use `ADB_BIN` for an explicit executable.
 Check `gh --version` before CLI-based PR operations, or use the connected GitHub
 capability. Keep absolute tool paths in local configuration.
 

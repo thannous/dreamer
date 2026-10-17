@@ -1,6 +1,0 @@
-url: "http://localhost:8081"
----
-- runFlow: subflows/web-select-existing-mock-profile.yml
-- tapOn: "(Stats|Statistiques)"
-- waitForAnimationToEnd
-- assertVisible: "(Stats|Statistiques)"

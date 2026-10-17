@@ -152,7 +152,7 @@ plugins: [['babel-plugin-react-compiler', { target: '19' }]]
 
 ### 4. Testing Strategy
 - [ ] Add unit tests for hooks (useRecordingSession, useDreamSaving)
-- [ ] Add integration tests with Maestro for recording flow
+- [ ] Add TesterArmy integration tests for recording flow
 - [ ] Performance regression tests with Reassure
 
 ---

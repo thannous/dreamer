@@ -137,8 +137,8 @@ https://docs.expo.dev/guides/using-e2e/. Lire `../../tools/e2e/README.md`.
 `E2E_DEVICE=<serial-emulateur> npm run test:testerarmy:mobile -- android` vise un
 build Release installé ; utiliser `ios` avec le nom exact d'un simulateur iOS.
 Les tests natifs effacent l'état de cette app sur le simulateur dédié sélectionné.
-Conserver les assertions Maestro encore pertinentes jusqu'à leur remplacement
-exécuté. Une attente devenue obsolète se révise avec sa raison produit et sa
+Les flux Maestro ont été retirés le 2026-10-14 ; la couverture native passe par
+`../../tools/e2e/tests/meditation.mobile.e2e.ts`. Une attente devenue obsolète se révise avec sa raison produit et sa
 preuve actuelle ; elle ne bloque pas automatiquement l'adoption. Aucun contrôle
 CI obligatoire n'est contourné implicitement. Respecter les règles parentes.
 

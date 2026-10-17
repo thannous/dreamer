@@ -5,7 +5,7 @@ const { buildCatalog, classifyScript, scriptSafety } = require('./list-scripts')
 describe('script catalog', () => {
   it('groups the main operational families', () => {
     expect(classifyScript('start:mock')).toBe('Development');
-    expect(classifyScript('test:e2e:smoke')).toBe('Android E2E');
+    expect(classifyScript('test:testerarmy:mobile')).toBe('TesterArmy E2E');
     expect(classifyScript('docs:check')).toBe('Site');
     expect(classifyScript('subscription:qa:report')).toBe('Subscriptions');
     expect(classifyScript('verify:pr')).toBe('Quality');
@@ -27,7 +27,8 @@ describe('script catalog', () => {
     expect(classifyScript('test:e2e:web:report')).toBe('Web E2E');
     expect(classifyScript('test:e2e:backend')).toBe('Backend E2E');
     expect(classifyScript('start:backend-e2e')).toBe('Backend E2E');
-    expect(classifyScript('test:e2e:journeys')).toBe('Android E2E');
+    expect(classifyScript('test:testerarmy')).toBe('TesterArmy E2E');
+    expect(classifyScript('agent-device:inspect')).toBe('TesterArmy E2E');
     expect(classifyScript('release:build')).toBe('Mobile release');
     expect(classifyScript('release:check')).toBe('Mobile release');
   });
@@ -37,11 +38,9 @@ describe('script catalog', () => {
     expect(classifyScript('test:auth-setup')).toBe('Test branch E2E');
     expect(classifyScript('test:e2e:branch')).toBe('Test branch E2E');
     expect(classifyScript('test:env:check')).toBe('Test branch E2E');
-    expect(classifyScript('test:e2e:branch:mobile')).toBe('Test branch E2E');
     expect(scriptSafety('test:seed-users')).toBe('writes the Supabase test branch (accounts, dreams, quota, tier)');
     expect(scriptSafety('test:auth-setup')).toBe('writes session tokens to .auth/');
     expect(scriptSafety('test:e2e:branch')).toBe('writes session tokens to .auth/');
-    expect(scriptSafety('test:e2e:branch:mobile')).toBe('signs the device app out and in; writes test-results/e2e-branch-mobile/run.json');
     expect(scriptSafety('test:env:check')).toBe('read-only or runtime');
   });
 

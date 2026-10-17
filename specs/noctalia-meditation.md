@@ -52,7 +52,7 @@ L'accueil personnalisé, les univers et la progression existants répondent à c
 | react-native-purchases | `^9.6.7` | RevenueCat (paywall) |
 | @shopify/flash-list | `2.0.2` | listes de sessions |
 | Jest + jest-expo | aligné SDK 57 | tests unitaires |
-| Maestro | — | E2E Android |
+| TesterArmy (`tools/e2e/`) | `e2e` 0.21.0 | E2E web et natif (Android, iOS Simulator) |
 
 Plateformes : **iOS et Android**. Web non ciblé en v1 (le bundle doit néanmoins builder sans erreur).
 
@@ -139,7 +139,6 @@ apps/meditation/
 │   ├── images/artwork/               # visuels de sessions
 │   └── fonts/
 ├── tests/
-├── maestro/
 ├── tailwind.config.js
 ├── global.css
 ├── app.json / app.config.ts
@@ -525,10 +524,10 @@ Le jour venu, la marche est courte : Supabase est déjà en place pour Noctalia,
 |---|---|---|
 | Unitaire | Jest + jest-expo + `@testing-library/react-native` | `useBreathEngine` (durées de phases), `useStreak` (bascule de jour, fuseau, rupture), sélection de la session du jour, gating premium, formatage des durées |
 | Composant | RNTL | `PlayerControls`, `SessionCard`, `PlanCard`, états vides |
-| E2E | Maestro (Android) | onboarding complet → lecture d'une session → fin → série incrémentée ; respiration 1 min ; paywall depuis une session premium ; bascule de thème ; changement de langue |
+| E2E | TesterArmy (`tools/e2e/tests/meditation.mobile.e2e.ts`, `meditation.web.e2e.ts`) | natif : onboarding persistant et onglets, respiration démarrage/pause/reprise/sortie, changement de langue immédiat et après redémarrage, lecture d'une session embarquée avec saut de 15 s et reprise. Paywall, bascule de thème et série incrémentée n'ont pas de parcours E2E |
 | Statique | `tsc --noEmit` (TS 6, strict), ESLint (config Expo) | zéro erreur, zéro warning sur `scripts` |
 
-`testID` ajoutés uniquement là où Maestro en a besoin, centralisés dans `lib/testIDs.ts` (convention Noctalia).
+`testID` ajoutés uniquement là où l'automatisation en a besoin, centralisés dans `lib/testIDs.ts` (convention Noctalia).
 
 ---
 
@@ -583,7 +582,7 @@ Deep links croisés : `noctalia://record` depuis `/session-complete` (« Noter m
 | **L5 — Profil & séries** | Journal de pratique, séries, statistiques, calendrier | Écran 11 |
 | **L6 — Réglages** | Réglages, profil local + photo, langue, rappels planifiés (`notificationService` + mock), aide/FAQ, légal | Écrans 18–22, 24 |
 | **L7 — Monétisation** | RevenueCat (+ magasin simulé), règles d'accès pures, paywall contextuel, gating sur trois points de déclenchement | Écran 17 |
-| **L8 — Finition** | ✅ 4 locales · ✅ accessibilité · ✅ flux Maestro (écrits, non exécutés) · ✅ icône et splash · ✅ icônes et états vides · ✅ fonds vidéo · ⬜ préparation stores | Release candidate |
+| **L8 — Finition** | ✅ 4 locales · ✅ accessibilité · ✅ flux Maestro (écrits, non exécutés ; retirés le 2026-10-14) · ✅ icône et splash · ✅ icônes et états vides · ✅ fonds vidéo · ⬜ préparation stores | Release candidate |
 
 ---
 
@@ -624,4 +623,4 @@ Deep links croisés : `noctalia://record` depuis `/session-complete` (« Noter m
 - [ ] Téléchargement store ≤ 60 Mo (iOS) / ≤ 50 Mo (Android) ; une session distante déjà écoutée se relit hors ligne.
 - [ ] Aucune référence à un compte ou à un backend applicatif dans le code livré (`ACCOUNTS_ENABLED=false` → `/(auth)/*` injoignable).
 - [ ] `tsc --noEmit` et `eslint` passent sans erreur.
-- [~] Le parcours E2E Maestro « onboarding → session → fin » passe sur émulateur Android. *(L8 : six flux écrits et ancrés sur 37 testID ; un test statique vérifie que chaque ancre ciblée existe réellement dans le code. **Jamais exécutés** — ni Maestro CLI ni émulateur sur cette machine.)*
+- [~] Le parcours E2E « onboarding → session → fin » passe sur émulateur Android. *(L8 : six flux Maestro écrits et ancrés sur 37 testID, **jamais exécutés** sur cette machine, puis retirés le 2026-10-14 avec Maestro. Remplacés par `tools/e2e/tests/meditation.mobile.e2e.ts` (`npm run test:testerarmy:mobile -- meditation android`) : onboarding et lecture d'une session embarquée ; la fin de session et la série incrémentée n'y sont pas vérifiées.)*

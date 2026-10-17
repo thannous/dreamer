@@ -14,8 +14,8 @@ driving the login screen. dreamer is the reference for the other repos.
   ref) goes into that file through a reviewed PR. Never put a fake ref there.
 - **Built and tested with mocked fetch only:** `npm run test:seed-users`,
   `npm run test:auth-setup`, the opt-in Playwright suite `npm run test:e2e:branch`,
-  the guarded Expo start `scripts/start-branch-e2e.mjs` and the Maestro flow
-  `maestro/e2e-account-sign-in.yml`. None has run against a real branch yet.
+  and the guarded Expo start `scripts/start-branch-e2e.mjs`. None has run against a
+  real branch yet. There is no mobile journey for now (see [Mobile](#mobile)).
 - The only other non-production backend is the disposable local stack of
   `npm run test:e2e:backend` (Docker, `127.0.0.1:56321`); it is unchanged.
 
@@ -136,8 +136,8 @@ before any request and print no key, password or token.
    true` for premium (the fixture's values), `p_tier 'free', p_is_active false` for
    free, `p_source 'e2e-seed'`, a fresh `p_source_event_id`. Idempotent: a second run
    resets the same two accounts and never touches another user. Passwords must be at
-   least 12 characters of printable ASCII without spaces (the seed and the Maestro
-   wrapper refuse others: Maestro cannot type Unicode on Android).
+   least 12 characters of printable ASCII without spaces (the seed refuses others:
+   Android test drivers cannot type Unicode, and a native journey will type them).
 2. `npm run test:auth-setup` (`scripts/test-auth-setup.mjs`), with the publishable
    (anon) key: password grant (`POST /auth/v1/token?grant_type=password`) per
    account, checks the session belongs to that account, and writes a Playwright
@@ -199,55 +199,18 @@ open signed in. The TesterArmy engine (`tools/e2e`) keeps its mocked services; i
 can load the same `.auth/<account>.json` later if a real-backend TesterArmy journey
 is wanted.
 
-## Mobile (Maestro)
+## Mobile
 
-No deep link and no app code. `maestro/e2e-account-sign-in.yml` opens Settings and
-runs `maestro/subflows/sign-in-e2e-account.yml`, which types the account into the
-existing EmailAuthCard form (`settings-account-open-signin`, `input.auth.email`,
-`input.auth.password`, `btn.auth.signIn`), then copies `text.auth.email` and
-asserts it equals `MAESTRO_E2E_EMAIL` exactly (so autofill cannot sign in the
-other shared account unnoticed). It fails fast if the credentials were not loaded.
-System password prompts are dismissed without their localized text (the autofill
-decline button by resource id, otherwise a bounded back press while the app
-screen is hidden); if a prompt still blocks the run, set the device locale to
-English. A device already signed in (any account) is signed out first (`btn.auth.signOut`),
-so reruns work; use a dev client kept for tests.
-
-Credentials are never typed or expanded in the shell. `npm run
-test:e2e:branch:mobile -- <free|premium>` (`scripts/maestro-branch-sign-in.mjs`)
-loads `.env.test.local` with the guard's own loader, runs the guard (production
-and unlisted projects refused), builds the email from `E2E_ACCOUNT_DOMAIN`, and
-starts `maestro test` with only `MAESTRO_E2E_EMAIL` / `MAESTRO_E2E_PASSWORD` in its
-environment (Maestro reads `MAESTRO_*` shell variables; nothing on the command
-line, no other `E2E_*` value). After the tier only `--device <id>` is accepted;
-`-e`/`--env` and any other Maestro argument are refused, so the flow cannot be
-pointed at another account. Before Maestro starts the wrapper writes
-`test-results/e2e-branch-mobile/run-<timestamp>-<pid>.json` (one file per run, so
-two devices can run at once; source SHA, `dirty`, branch ref, app id,
-tier, flow, rerun command; no secret) with `outcome.status: running`, then sets
-`passed` (exit 0, no signal), `failed` (exit code or signal) or `error` (Maestro
-did not start) when it ends. A dev-loop record, not release evidence. Maestro's own
-output for that run goes to `test-results/e2e-branch-mobile/run-<timestamp>-<pid>/`
-(`--debug-output`). Maestro 2.10.0 writes the typed password and its env into
-`maestro.log` and `commands-*.json` and has no redaction option (`inputText`
-`redact` is still an upstream PR), so when the run ends (exit, error or
-SIGINT/SIGTERM/SIGHUP) the wrapper replaces the exact password, raw and
-JSON-escaped, with `[redacted]` in that folder and in every
-`~/.maestro/tests/<stamp>/` folder created during the run. Older folders are not
-touched; if you ran the flow before this wrapper existed, delete them. Metro stays in the foreground, so use two terminals
-on the machine that runs the tests, with the dev client connected to that Metro:
-
-```sh
-# terminal 1: Metro against the branch (guarded; refuses production); leave it running
-node scripts/start-branch-e2e.mjs
-
-# terminal 2: once Metro is up and the dev client is connected
-npm run test:e2e:branch:mobile -- free
-npm run test:e2e:branch:mobile -- premium
-```
-
-A release build talks to production, where these accounts do not exist, so the
-flow fails there by design.
+No mobile journey for now. The Maestro sign-in (`npm run test:e2e:branch:mobile`,
+`scripts/maestro-branch-sign-in.mjs`, `maestro/e2e-account-sign-in.yml`) was retired
+with Maestro on 2026-10-14 without ever running: the branch does not exist and the
+allowlist is empty. When the branch exists, a TesterArmy native journey
+(`tools/e2e/`) will sign the shared accounts into the existing EmailAuthCard form
+(`settings-account-open-signin`, `input.auth.email`, `input.auth.password`,
+`btn.auth.signIn`), check that `text.auth.email` is exactly the expected account,
+and take its credentials from `.env.test.local` through the guard, never from the
+command line. It needs a build pointed at the branch: a release build talks to
+production, where these accounts do not exist.
 
 ## supabase/config.toml: unchanged (decision)
 

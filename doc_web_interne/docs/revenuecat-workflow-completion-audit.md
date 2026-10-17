@@ -24,6 +24,13 @@ scenarios pour les changements Billing et les campagnes QA periodiques.
 Les preuves datees ci-dessous decrivent la campagne de mai 2026. Elles ne remplacent pas le
 release smoke courant defini plus haut.
 
+Les flows `maestro/*`, `scripts/run-maestro-android.js` et les scripts `test:e2e:subscription-*`
+cites dans cet audit ont ete retires le 2026-10-14 avec Maestro : ce sont des preuves historiques,
+pas des commandes a relancer. Les scenarios mock passent par les parcours TesterArmy Dreamer web
+(`tools/e2e/tests/dreamer-billing.web.e2e.ts`, `dreamer-journeys`, `dreamer-plus-channels`) ;
+achat, restore et changement de compte Test Store suivent la
+[checklist manuelle](revenuecat-qa-workflow.md#2-revenuecat-test-store--checklist-manuelle).
+
 | Critere | Artefact | Preuve actuelle | Statut |
 | --- | --- | --- | --- |
 | Visualiser les profils utilisateur subscription | `components/subscription/SubscriptionQALab.tsx` | QA Lab expose guest, new free, existing free, plus user, mode, user, tier, product, renews, quota, auth; les details d'action purchase/restore/refresh/probe affichent aussi `appUserId` quand l'utilisateur est connecte | Fait |
