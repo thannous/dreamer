@@ -291,7 +291,7 @@ Choose validation by the behavior and risk changed, not by the number of files o
 - Missing native evidence stays unqualified; do not replace it with repeated unit tests or claim a mock proves persistence or production behavior.
 - For TalkBack qualification, follow [the short Motorola protocol](doc_web_interne/docs/qualification-talkback.md): validate focus/gesture/audio measurement with a short pilot before a full journey, distinguish keyboard/ADB evidence from physical gestures, and restore/re-read device settings even after failure. For a requested fix, continue from the reproduced defect to correction and the authorized retest.
 
-See [the proportional validation guide](doc_web_interne/docs/validation-proportionnee.md) for examples. Available commands, selected according to the risk above:
+For a substantial change, follow the [focused review procedure](doc_web_interne/docs/validation-proportionnee.md#revue-ciblée-et-convergente): one independent review of the final diff and its evidence, then review the corrections rather than restarting the whole review. Available commands, selected according to the risk above:
 
 - Tests: `npm run test:related -- <files>`, `npm run test:file -- <test-files>`, `npm run test:changed`, or `npm test` when broader coverage is justified.
 - Types and lint: `npm run typecheck:app`, `npm run typecheck:tests`, `npx expo lint <touched-paths>`, `npm run lint`.
