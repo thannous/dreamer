@@ -54,10 +54,17 @@
 // so verify runs on one machine wait for each other ("waiting for lock").
 // A step killed by a signal counts as failed.
 //
+// The checks that run go side by side, up to VERIFY_LOCAL_JOBS at a time (by
+// default the processors available here), under one hold of the heavy lock,
+// each one's output printed in one piece when it ends; a check marked
+// exclusive runs alone afterwards. After a failure no other check starts.
+// VERIFY_LOCAL_JOBS=1 runs them one at a time in the config's order, their
+// output live, as before.
+//
 // Exit codes: 0 passed, 1 failed, 2 incomplete (a required specialised check
 // could not run here; see --external), 64 usage or configuration error.
 
-import { spawnSync } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { createHash, randomBytes } from 'node:crypto';
 import {
   appendFileSync,
@@ -181,6 +188,9 @@ export function normaliseConfig(raw) {
       specialised: Boolean(check.specialised),
       requires: check.requires ?? null,
       install: Boolean(check.install),
+      // Runs alone, after the checks that run side by side (it writes into
+      // the copy, starts servers or takes fixed ports).
+      exclusive: Boolean(check.exclusive),
       env: check.env ?? {},
     };
   });
@@ -1050,6 +1060,108 @@ function runShell(command, { cwd, env, log, shell = posixShell(env) }) {
   return { status: status === 0 && killed ? 1 : status, durationMs: Date.now() - started, killed };
 }
 
+/**
+ * How many checks run side by side: VERIFY_LOCAL_JOBS (a whole number, 1 for
+ * one at a time, at most 64), else the processors available here.
+ */
+export function verifyJobs(env = process.env) {
+  const raw = String(env.VERIFY_LOCAL_JOBS ?? '').trim();
+  if (/^\d+$/.test(raw) && Number(raw) >= 1) return Math.min(Number(raw), 64);
+  return Math.max(1, typeof os.availableParallelism === 'function' ? os.availableParallelism() : os.cpus().length);
+}
+
+/**
+ * Takes the machine-wide heavy lock once for the checks that run side by side:
+ * a holder, `flock -o <lock>` around a shell that waits for this engine's pipe
+ * to close, in a process group of its own. It frees the lock when released,
+ * and when this engine dies however it dies (its pipe closes). The steps get
+ * HEAVY_LOCK_HELD, so they and the runs nested in them do not wait for it.
+ */
+export async function holdHeavyLock(env, log) {
+  const lock = env.VERIFY_LOCAL_HEAVY_LOCK || HEAVY_LOCK;
+  const none = { env: {}, release: () => {} };
+  if (env[HEAVY_LOCK_HELD] === lock) return none;
+  if (process.platform === 'win32') {
+    log(`${PREFIX} Windows: these steps run without the lock ${lock} and without a supervised process group.`);
+    return none;
+  }
+  if (!hasFlock(env)) {
+    log(`${PREFIX} flock is not installed here: these steps run without the lock ${lock}.`);
+    return none;
+  }
+  const free = spawnSync('flock', ['--nonblock', lock, 'true'], { env, stdio: 'ignore' });
+  if (free.error || free.status !== 0) log(`${PREFIX} waiting for lock ${lock} (another heavy check runs on this machine)...`);
+  const holder = spawn('flock', ['-o', lock, '/bin/sh', '-c', 'echo locked; exec cat >/dev/null'], { env, stdio: ['pipe', 'pipe', 'inherit'], detached: true });
+  await new Promise((resolve, reject) => {
+    let output = '';
+    holder.stdout.on('data', (data) => { output += data; if (output.includes('locked\n')) resolve(); });
+    holder.on('error', reject);
+    holder.on('exit', () => reject(new Error(`could not take the lock ${lock}`)));
+  });
+  return {
+    env: { [HEAVY_LOCK_HELD]: lock },
+    release: () => {
+      try { holder.stdin.end(); } catch {}
+      try { process.kill(-holder.pid, 'SIGKILL'); } catch {}
+    },
+  };
+}
+
+/**
+ * Runs one step like runShell, without blocking, its output (stdout and
+ * stderr together) written to a file under outputDir and returned once the
+ * step ends, so steps that run side by side do not mix their lines. The step
+ * is supervised like runShell's (its process group, tied to this engine)
+ * but takes no lock: holdHeavyLock holds it for all of them.
+ */
+export async function runShellAsync(command, { cwd, env, log, shell = posixShell(env), outputDir }) {
+  log(`${PREFIX} $ ${command}`);
+  const started = Date.now();
+  const file = path.join(outputDir, `step-${randomBytes(6).toString('hex')}.log`);
+  const fd = openSync(file, 'w');
+  let child;
+  try {
+    child = process.platform === 'win32'
+      ? spawn(shell, ['-c', command], { cwd, env, stdio: ['ignore', fd, fd] })
+      : spawn(process.execPath, ['-e', STEP_SUPERVISOR, JSON.stringify([stepGrace(env), null, process.pid, currentCopy ? copyPaths(currentCopy) : [], shell, '-c', command])], {
+        cwd,
+        env,
+        stdio: ['ignore', fd, fd, 'pipe'],
+      });
+  } finally {
+    closeSync(fd);
+  }
+  const { code, signal, error } = await new Promise((resolve) => {
+    child.on('error', (failure) => resolve({ error: failure }));
+    child.on('exit', (exitCode, exitSignal) => resolve({ code: exitCode, signal: exitSignal }));
+  });
+  child.stdio[3]?.destroy();
+  const output = readFileSync(file, 'utf8');
+  rmSync(file, { force: true });
+  // A step killed by a signal (directly, or through its supervisor as 128 + signal) failed.
+  const killed = signal ?? (code > 128 ? `signal ${code - 128}` : null);
+  if (killed) log(`${PREFIX} the step was killed (${killed}): it counts as failed.`);
+  const status = error || signal ? 1 : (code ?? 1);
+  return { status: status === 0 && killed ? 1 : status, durationMs: Date.now() - started, killed, output: error ? `${output}${error.message}\n` : output };
+}
+
+/**
+ * Runs items through runOne, up to `jobs` at a time, in order. Once runOne
+ * returns false, no further item starts; the running ones end.
+ */
+export async function runPool(items, jobs, runOne) {
+  let next = 0;
+  let stopped = false;
+  const worker = async () => {
+    while (!stopped && next < items.length) {
+      const item = items[next];
+      next += 1;
+      if (!(await runOne(item))) stopped = true;
+    }
+  };
+  await Promise.all(Array.from({ length: Math.max(1, Math.min(jobs, items.length)) }, worker));
+}
+
 function quiet(command, { cwd, env, shell = posixShell(env) }) {
   const result = spawnSync(shell, ['-c', command], { cwd, env, stdio: 'ignore' });
   return !result.error && result.status === 0;
@@ -1512,77 +1624,136 @@ export async function verify(kind, argv = [], {
   let worktree = null;
   let failed = false;
   let incomplete = false;
+  const jobs = verifyJobs(env);
+
+  // What a check needs before it runs: out of scope, reused, unavailable or
+  // passed elsewhere are recorded at once (null); a check to run returns its entry.
+  const decide = (check, record) => {
+    const fingerprint = checkFingerprint({ check, files, tree, sha, environment, mergeBase: scope?.mergeBase ?? null });
+    const entry = { name: check.name, command: check.command, fingerprint, specialised: check.specialised };
+    if (check.targets) entry.targets = check.targets;
+
+    // `when` narrows a PR to the paths it changes; a release runs every check.
+    if (check.when && kind === 'pr') {
+      const touched = scope ? scope.files.filter((file) => matchesAny(file, check.when)) : null;
+      if (touched && touched.length === 0) {
+        record({ ...entry, result: 'skipped', reason: `no change under ${check.when.join(', ')} since ${base.ref}` });
+        log(`${PREFIX} ${check.name}: out of scope (no change under ${check.when.join(', ')}).`);
+        return null;
+      }
+    }
+    // A PR reuses a result whose inputs are identical, from any tree; a
+    // release has no proofs to reuse.
+    const reusable = open.has(check.name) ? null : findReusable(proofs, fingerprint);
+    if (reusable) {
+      record({ ...entry, result: 'passed', reused: true, reusedFrom: reusable });
+      log(`${PREFIX} ${check.name}: reused (same inputs passed on ${reusable.sha.slice(0, 12)}).`);
+      return null;
+    }
+    if (check.requires && !probe(check)) {
+      if (options.external[check.name]) {
+        record({ ...entry, result: 'passed', external: options.external[check.name] });
+        log(`${PREFIX} ${check.name}: cannot run here, passed elsewhere (${options.external[check.name]}).`);
+        return null;
+      }
+      incomplete = true;
+      const hint = check.requires.hint ?? 'run it where it can run, then pass --external';
+      record({ ...entry, result: 'unavailable', reason: `\`${check.requires.command}\` failed here: ${hint}` });
+      log(`${PREFIX} ${check.name}: cannot run here (\`${check.requires.command}\` failed). ${hint}.`);
+      return null;
+    }
+    return entry;
+  };
+  // The isolated copy, made once before the first check that runs. Returns
+  // the failure reason, or null.
+  const ensureWorktree = () => {
+    if (worktree) return null;
+    // Checks may keep caches (Turbo, ESLint, tsc) in the shared git directory.
+    const shared = { VERIFY_LOCAL_COMMON_DIR: commonDir, VERIFY_LOCAL_ROOT: root };
+    worktree = prepareWorktree({ git, root, sha, files, config, env: { ...env, ...shared }, log, worktreeRoot, shell });
+    worktree.env = { ...shared, TMPDIR: worktree.tmp, TMP: worktree.tmp, TEMP: worktree.tmp };
+    if (worktree.error) log(`${PREFIX} ${worktree.error}.`);
+    return worktree.error ?? null;
+  };
+  const install = () => {
+    const installError = installInWorktree(worktree, config, { ...env, ...worktree.env }, log, shell);
+    if (installError) log(`${PREFIX} ${installError}.`);
+    return installError;
+  };
+  const stepEnv = (check, extra = {}) => ({ ...env, ...check.env, ...worktree.env, ...extra, VERIFY_LOCAL_KIND: kind, VERIFY_LOCAL_SHA: sha, VERIFY_LOCAL_TREE: tree });
+  const outcome = (entry, run) => ({ ...entry, result: run.status === 0 ? 'passed' : 'failed', durationMs: run.durationMs, ...(run.killed ? { reason: `killed (${run.killed})` } : {}) });
+  const said = (check, run) => log(`${PREFIX} ${check.name}: ${run.status === 0 ? 'passed' : `failed (exit ${run.status})`} in ${Math.round(run.durationMs / 1000)} s.`);
 
   try {
-    for (const check of selected) {
-      const fingerprint = checkFingerprint({ check, files, tree, sha, environment, mergeBase: scope?.mergeBase ?? null });
-      const entry = { name: check.name, command: check.command, fingerprint, specialised: check.specialised };
-      if (check.targets) entry.targets = check.targets;
-
-      // `when` narrows a PR to the paths it changes; a release runs every check.
-      if (check.when && kind === 'pr') {
-        const touched = scope ? scope.files.filter((file) => matchesAny(file, check.when)) : null;
-        if (touched && touched.length === 0) {
-          results.push({ ...entry, result: 'skipped', reason: `no change under ${check.when.join(', ')} since ${base.ref}` });
-          log(`${PREFIX} ${check.name}: out of scope (no change under ${check.when.join(', ')}).`);
-          continue;
-        }
-      }
-      // A PR reuses a result whose inputs are identical, from any tree; a
-      // release has no proofs to reuse.
-      const reusable = open.has(check.name) ? null : findReusable(proofs, fingerprint);
-      if (reusable) {
-        results.push({ ...entry, result: 'passed', reused: true, reusedFrom: reusable });
-        log(`${PREFIX} ${check.name}: reused (same inputs passed on ${reusable.sha.slice(0, 12)}).`);
-        continue;
-      }
-      if (check.requires && !probe(check)) {
-        if (options.external[check.name]) {
-          results.push({ ...entry, result: 'passed', external: options.external[check.name] });
-          log(`${PREFIX} ${check.name}: cannot run here, passed elsewhere (${options.external[check.name]}).`);
-          continue;
-        }
-        incomplete = true;
-        const hint = check.requires.hint ?? 'run it where it can run, then pass --external';
-        results.push({ ...entry, result: 'unavailable', reason: `\`${check.requires.command}\` failed here: ${hint}` });
-        log(`${PREFIX} ${check.name}: cannot run here (\`${check.requires.command}\` failed). ${hint}.`);
-        continue;
-      }
-
-      if (!worktree) {
-        // Checks may keep caches (Turbo, ESLint) in the shared git directory.
-        const shared = { VERIFY_LOCAL_COMMON_DIR: commonDir, VERIFY_LOCAL_ROOT: root };
-        worktree = prepareWorktree({ git, root, sha, files, config, env: { ...env, ...shared }, log, worktreeRoot, shell });
-        worktree.env = { ...shared, TMPDIR: worktree.tmp, TMP: worktree.tmp, TEMP: worktree.tmp };
-        if (worktree.error) {
+    if (jobs <= 1) {
+      // One check at a time, in the config's order, its output live.
+      for (const check of selected) {
+        const entry = decide(check, (record) => results.push(record));
+        if (!entry) continue;
+        const error = ensureWorktree() ?? (check.install ? install() : null);
+        if (error) {
           failed = true;
-          results.push({ ...entry, result: 'failed', reason: worktree.error });
-          log(`${PREFIX} ${worktree.error}.`);
+          results.push({ ...entry, result: 'failed', reason: error });
+          break;
+        }
+        const run = runShell(check.command, { cwd: worktree.dir, env: stepEnv(check), log, shell });
+        results.push(outcome(entry, run));
+        said(check, run);
+        if (run.status !== 0) {
+          failed = true;
           break;
         }
       }
-      if (check.install) {
-        const installError = installInWorktree(worktree, config, { ...env, ...worktree.env }, log, shell);
-        if (installError) {
-          failed = true;
-          results.push({ ...entry, result: 'failed', reason: installError });
-          log(`${PREFIX} ${installError}.`);
-          break;
-        }
-      }
-      const run = runShell(check.command, {
-        cwd: worktree.dir,
-        env: { ...env, ...check.env, ...worktree.env, VERIFY_LOCAL_KIND: kind, VERIFY_LOCAL_SHA: sha, VERIFY_LOCAL_TREE: tree },
-        log,
-        shell,
+    } else {
+      // Every check is decided first, then those to run go side by side (up
+      // to `jobs` at a time), each one's output printed in one piece when it
+      // ends; exclusive checks follow, one at a time. After a failure no
+      // other check starts; the running ones end and are recorded. The
+      // proof lists the checks in the config's order.
+      const slots = [];
+      const toRun = [];
+      selected.forEach((check, index) => {
+        const entry = decide(check, (record) => { slots[index] = record; });
+        if (entry) toRun.push({ index, check, entry });
       });
-      const passed = run.status === 0;
-      results.push({ ...entry, result: passed ? 'passed' : 'failed', durationMs: run.durationMs, ...(run.killed ? { reason: `killed (${run.killed})` } : {}) });
-      log(`${PREFIX} ${check.name}: ${passed ? 'passed' : `failed (exit ${run.status})`} in ${Math.round(run.durationMs / 1000)} s.`);
-      if (!passed) {
-        failed = true;
-        break;
+      if (toRun.length) {
+        const error = ensureWorktree() ?? (toRun.some((item) => item.check.install) ? install() : null);
+        if (error) {
+          failed = true;
+          slots[toRun[0].index] = { ...toRun[0].entry, result: 'failed', reason: error };
+        }
       }
+      const side = failed ? [] : toRun.filter((item) => !item.check.exclusive);
+      const alone = failed ? [] : toRun.filter((item) => item.check.exclusive);
+      if (side.length === 1) alone.unshift(side.pop());
+      if (side.length) {
+        const started = Date.now();
+        const held = await holdHeavyLock(env, log);
+        try {
+          await runPool(side, jobs, async ({ index, check, entry }) => {
+            const run = await runShellAsync(check.command, { cwd: worktree.dir, env: stepEnv(check, held.env), log, shell, outputDir: worktree.tmp });
+            if (run.output) {
+              log(`${PREFIX} ${check.name} output:`);
+              for (const line of run.output.replace(/\n$/, '').split('\n')) log(line);
+            }
+            slots[index] = outcome(entry, run);
+            said(check, run);
+            if (run.status !== 0) failed = true;
+            return run.status === 0;
+          });
+        } finally {
+          held.release();
+        }
+        log(`${PREFIX} ${side.length} checks ran side by side (up to ${Math.min(jobs, side.length)} at a time) in ${Math.round((Date.now() - started) / 1000)} s.`);
+      }
+      for (const { index, check, entry } of alone) {
+        if (failed) break;
+        const run = runShell(check.command, { cwd: worktree.dir, env: stepEnv(check), log, shell });
+        slots[index] = outcome(entry, run);
+        said(check, run);
+        if (run.status !== 0) failed = true;
+      }
+      results.push(...slots.filter(Boolean));
     }
   } finally {
     if (worktree?.dir) {

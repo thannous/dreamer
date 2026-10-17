@@ -143,11 +143,40 @@ const DREAMER_PASSES = [
   "EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=false E2E_WEB_LOCALE=en-US node tools/e2e/run.mjs dreamer web run --grep 'feature sheets stay disabled by default'",
 ].join(' && ');
 
+// tsc keeps its incremental state from one run to the next (--incremental).
+// The state is restored from and saved to the shared git directory, one per
+// checkout (node_modules resolves to that checkout's), and sits at the root of
+// the isolated copy so the paths it records stay the same from one copy to the
+// next. tsc re-checks every file whose content changed and every file that
+// depends on it, and drops a state written by another TypeScript version or
+// with other options, so a restored state never hides an error. It is saved
+// only after a pass.
+const TSC_STATE = '"$VERIFY_LOCAL_COMMON_DIR/verify-cache/tsc/$(printf %s "$VERIFY_LOCAL_ROOT" | cksum | cut -d " " -f 1)"';
+const incrementalTypecheck = (script, name) => [
+  `state=${TSC_STATE}`,
+  'mkdir -p "$state"',
+  `{ cp "$state/${name}.tsbuildinfo" .verify-${name}.tsbuildinfo 2>/dev/null || true; }`,
+  `npm run ${script} -- --incremental --tsBuildInfoFile .verify-${name}.tsbuildinfo`,
+  `cp .verify-${name}.tsbuildinfo "$state/${name}.tsbuildinfo.$$"`,
+  `mv -f "$state/${name}.tsbuildinfo.$$" "$state/${name}.tsbuildinfo"`,
+].join(' && ');
+
+// ESLint spreads the files over the processors here (--concurrency auto):
+// the same rules on the same files, about 2.7 times faster. No ESLint cache:
+// import/no-unresolved, import/namespace and import/export read other files,
+// which a per-file cache would not re-check when only those files change.
+// lint-scripts lints a few files (about 2 s), where ESLint warns that
+// concurrency costs more than it saves. expo lint keeps an ESLint cache in
+// .expo/cache/eslint/ of the copy, empty at the start of each run; lint-scripts
+// gets its own, since both run together.
+const LINT_CONCURRENCY = '-- -- --concurrency auto';
+const LINT_SCRIPTS_CACHE = '-- -- --cache-location=.expo/cache/eslint-scripts/';
+
 // sha256 of this repository's own copy of scripts/verify-local.mjs. The engine
 // tests compare the file with it, so an engine edit is a deliberate change of
 // this pin. No other repository is read or compared.
 export const ENGINE_SHA256 =
-  '6213a26ed55c7e388238e207cc6878299b8d728b9d29e5f743105881d408326b';
+  'fedb4a99ce5dd141b3c889bcb5e9509e9ad74dfbc70b6d9ed8145e881f7ecc07';
 
 export default {
   mainBranch: 'master',
@@ -293,10 +322,10 @@ export default {
       command: 'node --test scripts/lib/backend-e2e-local.test.cjs',
       inputs: ['scripts/lib/backend-e2e-local.cjs', 'scripts/lib/backend-e2e-local.test.cjs', 'scripts/run-backend-e2e.cjs'],
     },
-    { name: 'typecheck-app', command: 'npm run typecheck:app', exclude: DOCS },
-    { name: 'typecheck-tests', command: 'npm run typecheck:tests', exclude: DOCS },
-    { name: 'lint', command: 'npm run lint', exclude: DOCS },
-    { name: 'lint-scripts', command: 'npm run lint:scripts', exclude: DOCS },
+    { name: 'typecheck-app', command: incrementalTypecheck('typecheck:app', 'app'), exclude: DOCS },
+    { name: 'typecheck-tests', command: incrementalTypecheck('typecheck:tests', 'tests'), exclude: DOCS },
+    { name: 'lint', command: `npm run lint ${LINT_CONCURRENCY}`, exclude: DOCS },
+    { name: 'lint-scripts', command: `npm run lint:scripts ${LINT_SCRIPTS_CACHE}`, exclude: DOCS },
     // Root Jest tests related to the files changed since the merge-base with
     // origin/master (scripts/run-jest-changed.js). Whole tree: tests read files.
     // Picks its tests from the diff: reused only against the same merge base.
@@ -311,12 +340,14 @@ export default {
     { name: 'db-contracts', command: DB_CONTRACTS },
 
     // ---- verify:pr, only when the commit changes that surface since origin/master.
-    { name: 'site', command: 'npm run docs:build && npm run docs:check', when: SITE },
+    // Exclusive checks run alone, after the others: they write generated
+    // output into the copy, install packages, or start servers on fixed ports.
+    { name: 'site', command: 'npm run docs:build && npm run docs:check', when: SITE, exclusive: true },
     { name: 'ci-contracts', command: CI_CONTRACTS, when: ['.circleci/'] },
     { name: 'eas-workflow-contracts', command: EAS_WORKFLOW_CONTRACTS, when: EAS_WORKFLOWS },
     // A bad version pin fails before push rather than at publication (offline, 0.1 s).
     { name: 'mobile-versions', command: 'node scripts/mobile-release.js verify --app all', inputs: MOBILE_VERSIONS, when: MOBILE_VERSIONS },
-    { name: 'meditation', command: MEDITATION_CHECKS, when: MEDITATION, releaseAlways: true, requires: MEDITATION_DEPS },
+    { name: 'meditation', command: MEDITATION_CHECKS, when: MEDITATION, releaseAlways: true, requires: MEDITATION_DEPS, exclusive: true },
     { name: 'edge-functions', command: EDGE_CHECKS, when: EDGE, releaseAlways: true, specialised: true, requires: DENO },
 
     // ---- verify:release only: the full local validation, then the delivered builds.
@@ -325,19 +356,21 @@ export default {
       command: `EXPO_OFFLINE=1 npm run dependencies:check && npm run boundaries:check && node scripts/mobile-release.js verify --app all && ${CI_CONTRACTS}`,
       kinds: ['release'],
     },
-    { name: 'jest-full', command: 'npm run test:fast', kinds: ['release'] },
+    // The whole suite with its workers: alone, so its timing-sensitive tests keep the processors.
+    { name: 'jest-full', command: 'npm run test:fast', kinds: ['release'], exclusive: true },
     // noctalia.app (Cloudflare Pages) and the Vercel web app, rebuilt for the delivered commit.
     // `targets: ['app']` marks what only an app release runs (npm run
     // verify:release, which web:deploy:prod requires); npm run
     // verify:release:site, enough for the static site, leaves it out.
-    { name: 'site-build', command: 'npm run docs:build && npm run docs:check', kinds: ['release'], perCommit: true },
-    { name: 'web-build', command: 'npm run build:web', kinds: ['release'], targets: ['app'], perCommit: true },
+    { name: 'site-build', command: 'npm run docs:build && npm run docs:check', kinds: ['release'], perCommit: true, exclusive: true },
+    { name: 'web-build', command: 'npm run build:web', kinds: ['release'], targets: ['app'], perCommit: true, exclusive: true },
     {
       name: 'e2e-backend',
       command: 'npm run test:e2e:backend',
       kinds: ['release'],
       targets: ['app'],
       specialised: true,
+      exclusive: true,
       requires: {
         command: 'docker info',
         hint: 'run it locally where you run verify:pr (Docker for the disposable local Supabase, Chromium via `npx playwright install chromium`); if this machine cannot, pass --external e2e-backend="owner-machine: <host> <note> on <SHA>" from the machine that ran it; until then the proof is incomplete: do not push, report it as a blocker',
@@ -355,16 +388,18 @@ export default {
       command: 'npm run docs:build && npm run test:testerarmy:site',
       kinds: ['release'],
       specialised: true,
+      exclusive: true,
       requires: TESTERARMY,
     },
-    { name: 'testerarmy-dreamer', command: DREAMER_PASSES, kinds: ['release'], targets: ['app'], specialised: true, requires: TESTERARMY },
-    { name: 'testerarmy-lucid', command: 'npm run test:testerarmy:lucid', kinds: ['release'], targets: ['app'], specialised: true, requires: TESTERARMY },
+    { name: 'testerarmy-dreamer', command: DREAMER_PASSES, kinds: ['release'], targets: ['app'], specialised: true, requires: TESTERARMY, exclusive: true },
+    { name: 'testerarmy-lucid', command: 'npm run test:testerarmy:lucid', kinds: ['release'], targets: ['app'], specialised: true, requires: TESTERARMY, exclusive: true },
     {
       name: 'testerarmy-meditation',
       command: 'npm run test:testerarmy:meditation',
       kinds: ['release'],
       targets: ['app'],
       specialised: true,
+      exclusive: true,
       requires: { command: `${TESTERARMY.command} && ${MEDITATION_DEPS.command}`, hint: `${TESTERARMY.hint}; ${MEDITATION_DEPS.hint}` },
     },
   ],
