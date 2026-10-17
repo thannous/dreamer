@@ -46,7 +46,8 @@ async function selectTheme(page: Page, theme: 'light' | 'dark' | 'auto') {
   await page.getByTestId('btn.header.trends.settings').click();
   await page.getByTestId(`quick-settings.theme.${theme}`).click();
   await page.getByTestId('quick-settings.close').click();
-  await expect(page.getByTestId('quick-settings.close')).not.toBeInViewport();
+  // The whole drawer, not its close button: the button leaves the viewport while the drawer still covers half the page.
+  await expect(page.getByTestId('quick-settings.drawer')).not.toBeInViewport();
 }
 
 async function expectWithinScreen(page: Page, ids: string[]) {
