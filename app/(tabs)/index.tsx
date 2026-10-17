@@ -1,7 +1,7 @@
 import { useQuickSettings } from '@/context/QuickSettingsContext';
-import { router, useFocusEffect } from "expo-router";
+import { router, useFocusEffect, useIsFocused } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
+import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Platform,
   Pressable,
@@ -141,13 +141,21 @@ function InspirationScreen() {
     return dreams.reduce<(typeof dreams)[number] | null>((latest, dream) =>
       getLocalDateKey(new Date(dream.id)) === todayKey && (!latest || dream.id > latest.id) ? dream : latest, null);
   }, [dreams, now, todayState]);
+  // Reported when seen: Home stays mounted behind the other tabs, where every dream saved
+  // or synced recomputes this state. Each day's state is reported once while Home is
+  // visible, or when Home is shown again after it changed; a new local day is a new view.
+  const homeFocused = useIsFocused();
+  const reportedTodayStateRef = useRef<string | null>(null);
   useEffect(() => {
-    if (!todayState) return;
+    if (!todayState || !homeFocused) return;
+    const shown = JSON.stringify([getLocalDateKey(new Date(now)), todayState.id, todayState.reason]);
+    if (reportedTodayStateRef.current === shown) return;
+    reportedTodayStateRef.current = shown;
     void trackProductEvent("home_today_viewed", {
       state: todayState.id,
       reason: todayState.reason,
     });
-  }, [todayState]);
+  }, [homeFocused, now, todayState]);
 
   const sleepSoundsAvailable = isSleepSoundsAvailable(Platform.OS);
   const sleepCopy = useMemo(

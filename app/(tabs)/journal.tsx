@@ -39,7 +39,7 @@ import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useTranslation } from '@/hooks/useTranslation';
 import { blurActiveElement } from '@/lib/accessibility';
-import { applyFilters, getUniqueDreamTypes, getUniqueThemes, sortDreamsByDate, type JournalAnalysisStatusFilter, type JournalQuickFilter } from '@/lib/dreamFilters';
+import { createNarrowingFilter, getUniqueDreamTypes, getUniqueThemes, sortDreamsByDate, type JournalAnalysisStatusFilter, type JournalQuickFilter } from '@/lib/dreamFilters';
 import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
 import { parseJournalFilterParams, type JournalFilterRouteParams } from '@/lib/journalFilterLink';
 import { getDreamThumbnailCacheKey, getDreamThumbnailUri, preloadImage } from '@/lib/imageUtils';
@@ -294,8 +294,10 @@ function JournalListScreen() {
     [t]
   );
 
+  // Typing narrows the previous matches instead of searching the whole journal again.
+  const [narrowingFilter] = useState(createNarrowingFilter);
   const filteredDreams = useMemo(() => {
-    const baseDreams = applyFilters(dreams, {
+    const baseDreams = narrowingFilter(dreams, {
       searchQuery: deferredSearchQuery,
       theme: selectedTheme,
       dreamType: selectedDreamType,
@@ -311,6 +313,8 @@ function JournalListScreen() {
         dreamTypeLabelResolver: (dreamType) => getDreamTypeLabel(dreamType, t),
         dreamMemoryLabelResolver: resolveDreamMemorySearchLabel,
       },
+      // Both resolvers read the current language through `t`.
+      labelsSource: t,
     });
 
     const orderedDreams = baseDreams;
@@ -330,6 +334,7 @@ function JournalListScreen() {
     resolveDreamMemorySearchLabel,
     t,
     sortOrder,
+    narrowingFilter,
   ]);
 
   const rememberPrefetchedUri = useCallback((uri: string): boolean => {

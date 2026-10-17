@@ -375,8 +375,13 @@ function JournalDetailScreen() {
   // The journal's pages in the order they were written: a later dream lies one page on.
   const neighbours = useMemo(() => {
     if (!dream) return { newer: null, older: null, folio: undefined };
-    const pages = sortDreams(dreams);
-    const index = pages.findIndex((page) => getDreamIdentityKey(page) === getDreamIdentityKey(dream));
+    // Recomputed on every page turn. The journal is stored newest-first, so it is checked
+    // rather than copied and sorted, and the page is found by reference before by key.
+    const pages = dreams.every((page, index) => index === 0 || dreams[index - 1].id >= page.id)
+      ? dreams : sortDreams(dreams);
+    const exactIndex = pages.indexOf(dream);
+    const dreamKey = exactIndex < 0 ? getDreamIdentityKey(dream) : null;
+    const index = exactIndex >= 0 ? exactIndex : pages.findIndex((page) => getDreamIdentityKey(page) === dreamKey);
     return {
       newer: index > 0 ? pages[index - 1] : null,
       older: index >= 0 && index < pages.length - 1 ? pages[index + 1] : null,
