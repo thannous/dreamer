@@ -31,8 +31,10 @@ let mockPlatformOS: 'web' | 'ios' | 'android' = 'web';
 let mockSleepSoundsAvailable = false;
 let mockForeground: (() => void) | undefined;
 
+let mockHomeFocused = true;
 jest.mock('expo-router', () => ({
   router: { push: mockPush },
+  useIsFocused: () => mockHomeFocused,
   useFocusEffect: (callback: () => void | (() => void)) => {
     const React = require('react');
     React.useEffect(callback, [callback]);
@@ -333,6 +335,7 @@ async function renderHome(dreams: DreamAnalysis[], loaded = true) {
 
 describe('Home Accueil Aujourd’hui', () => {
   beforeEach(() => {
+    mockHomeFocused = true;
     mockBottomInset = 0;
     mockWidth = 390;
     mockHeight = 844;
@@ -539,6 +542,27 @@ describe('Home Accueil Aujourd’hui', () => {
     fireEvent.click(screen.getByTestId(TID.Button.HomeResourcesRitual));
     expect(mockPush).toHaveBeenCalledWith('/ritual/starter');
     expect(screen.queryByTestId(TID.Component.InspirationTip)).toBeNull();
+  });
+
+  it('reports a today state only while Home is the visible tab', async () => {
+    mockHomeFocused = false;
+    const view = await renderHome([]);
+    expect(todayViewedCount()).toBe(0);
+
+    // A dream saved from another tab changes the state Home would show.
+    mockUseDreamsData.mockReturnValue({ dreams: [buildDream({ id: noonToday })], loaded: true });
+    await act(async () => { view.rerender(<HomeScreen />); });
+    expect(todayViewedCount()).toBe(0);
+
+    mockHomeFocused = true;
+    await act(async () => { view.rerender(<HomeScreen />); });
+    expect(todayViewedCount()).toBe(1);
+    expect(mockTrackProductEvent).toHaveBeenLastCalledWith('home_today_viewed', expect.objectContaining({ state: 'continue_today' }));
+
+    // The same state seen again is not a new view.
+    mockUseDreamsData.mockReturnValue({ dreams: [buildDream({ id: noonToday, title: 'Synced' })], loaded: true });
+    await act(async () => { view.rerender(<HomeScreen />); });
+    expect(todayViewedCount()).toBe(1);
   });
 
   it('rebranche continue_today then capture_due when the local date changes while Home stays open', async () => {
