@@ -50,7 +50,7 @@ async function newDream(screen: Screen) {
   await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
 }
 
-test('a personal symbol is born when first opened, then the reading follows each symbol across dreams',
+test('a personal symbol is born when first opened, then the reading and Tendances follow each symbol across dreams',
   async ({ app, screen, browser }) => {
     await isolateWeb(browser, app);
     await startPlus(app, screen, browser);
@@ -118,6 +118,31 @@ test('a personal symbol is born when first opened, then the reading follows each
     // The thread opens the first dream.
     await screen.getByTestId(/^dreamSymbol\.appearance\./, { visible: true }).tap();
     await expect(screen.getByTestId('sheet.dreamSymbol')).toBeHidden();
+    await expect(screen.getByTestId('component.transcriptCard', { visible: true })).toContainText(first);
+
+    // Tendances names the symbols that came back this month. Opened from there, no dream is
+    // being read: every dream of the thread opens.
+    await screen.getByTestId('btn.navigateJournal', { visible: true }).tap();
+    await screen.getByTestId('tab.stats', { visible: true }).tap();
+    const periodSymbols = screen.getByTestId('trends.returns.symbols', { visible: true });
+    await periodSymbols.scrollIntoView();
+    const trendsLight = screen.getByTestId('trends.returns.symbol.p.guiding-light', { visible: true });
+    await expect(screen.getByTestId('trends.returns.symbol.d.water', { visible: true }))
+      .toHaveAttribute('aria-label', 'Water, 2 of 7');
+    await expect(trendsLight).toHaveAttribute('aria-label', 'Light, Your symbol, 2 of 7');
+    await expect(screen.getByTestId(/^trends\.returns\.symbol\./, { visible: true })).toHaveCount(3);
+    await settledMotion(browser);
+    await app.screenshot('trends-returning-symbols');
+    await trendsLight.tap();
+    // A reading opened earlier can keep its closed sheet in the page: only the open one counts.
+    await expect(screen.getByTestId('text.dreamSymbol.title', { visible: true })).toContainText('Light');
+    await expect(sheet).not.toContainText(/this dream/i);
+    const traces = screen.getByTestId(/^dreamSymbol\.appearance\./, { visible: true });
+    await expect(traces).toHaveCount(2);
+    await settledMotion(browser);
+    await app.screenshot('trends-symbol-thread');
+    await traces.first().tap();
+    await expect(screen.getByTestId('sheet.dreamSymbol', { visible: true })).toHaveCount(0);
     await expect(screen.getByTestId('component.transcriptCard', { visible: true })).toContainText(first);
 
     // From there, the dictionary's full entry.
