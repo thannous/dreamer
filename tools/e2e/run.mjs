@@ -4,7 +4,7 @@ import { createHash, randomUUID } from 'node:crypto';
 import { createRequire } from 'node:module';
 import { availableParallelism, homedir, tmpdir } from 'node:os';
 import { delimiter, join, resolve, basename, dirname } from 'node:path';
-import { fileURLToPath, pathToFileURL } from 'node:url';
+import { fileURLToPath } from 'node:url';
 import { SDK_PINS, digest, sourceSnapshot, compareSnapshots, verifyReport, aggregateReports, writeOnce, preserveStatus, directoryFiles, hashFiles, createAttemptOutput, verifyEvidenceFiles, verifyNativeCleanup, campaignFailureRecord, startSdkProgress } from './qualification.mjs';
 import { normalizeAvdName, appInputs, nativeInputs, binaryInputs, releaseMetadata, validateReleaseReceipt, verifyInstalledRelease, runWithInstallDiagnostics, validateBuildCommand, archiveReleaseBinary } from './native-release.mjs';
 
@@ -56,7 +56,7 @@ const cli = join(cwd, 'node_modules/e2e/dist/cli/bin.js');
 if (!existsSync(cli)) throw new Error('Install with npm run test:testerarmy:setup first.');
 // Load the pinned browser matchers before the CLI installs TypeScript hooks.
 // Node arguments apply only to the web CLI, never Expo, native or inspection.
-const webNodeArgs = platform === 'web' ? ['--import', pathToFileURL(join(cwd, 'preload-web-matchers.mjs')).href] : [];
+const webNodeArgs = platform === 'web' ? ['--import', join(cwd, 'preload-web-matchers.mjs')] : [];
 const env = { ...process.env, E2E_PRODUCT: product, E2E_PLATFORM: platform, E2E_TELEMETRY_DISABLED: '1', DO_NOT_TRACK: '1' };
 // Local web files run in parallel against the one local server, each attempt in its
 // own browser context and storage: half the cores, at most four. CI keeps e2e's single
@@ -72,7 +72,7 @@ function cliEnvironment() {
     E2E_APP_NODE_OPTIONS_PRESENT: Object.hasOwn(env, 'NODE_OPTIONS') ? '1' : '0',
     // Workers do not retain the CLI's execArgv. Construct this after output and
     // PATH are set; only this process family receives the matcher preload.
-    NODE_OPTIONS: `${env.NODE_OPTIONS ?? ''} --import ${JSON.stringify(pathToFileURL(join(cwd, 'preload-web-matchers.mjs')).href)}`.trim(),
+    NODE_OPTIONS: `${env.NODE_OPTIONS ?? ''} --import ${JSON.stringify(join(cwd, 'preload-web-matchers.mjs'))}`.trim(),
   };
 }
 env.PATH = [dirname(process.execPath), env.PATH].join(delimiter);
