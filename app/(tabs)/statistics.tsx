@@ -339,7 +339,7 @@ function StatisticsScreen() {
               <View ref={returnsRef} onLayout={reveal} className="border-t border-line pt-7">
                 <TrendsReturns trends={trends} lit={returnsLit || reduced} ink={ink} t={t} formatNumber={formatNumber}
                   onOpenUnanalyzed={() => openJournal(trends, { analysis: 'unanalyzed' })}
-                  onOpenType={(type: DreamType) => openJournal(trends, { dreamType: type })} />
+                  onOpenType={(type: DreamType) => openJournal(trends, { dreamType: type, analysis: 'analyzed' })} />
               </View>
               {compact ? <View testID="trends.layout.compact" /> : null}
             </View>

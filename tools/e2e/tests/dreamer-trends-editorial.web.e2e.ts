@@ -204,10 +204,11 @@ test('each door opens the journal on exactly those dreams, and the period change
   await expect(page.getByTestId('trends.figure.dreams.value')).toHaveText('8');
   await expect(page.getByTestId('trends.nights.month.2026-09')).toContainText('7');
   await expect(page.getByTestId('trends.nights.month.2026-10')).toContainText('1');
-  await page.getByTestId('trends.returns.type.lucid-dream').click();
+  // A type counts analyzed dreams only, so its door leaves out The Broken Mirror, symbolic but unread.
+  await page.getByTestId('trends.returns.type.symbolic-dream').click();
   await expect(page.getByTestId('btn.filterDate')).toHaveCount(0);
-  await expect(journalItems(page)).toHaveCount(1);
-  await expect(journalItems(page)).toContainText('Garden in the Clouds');
+  await expect(journalItems(page)).toHaveCount(4);
+  await expect(journalItems(page).filter({ hasText: 'The Broken Mirror' })).toHaveCount(0);
 });
 
 {

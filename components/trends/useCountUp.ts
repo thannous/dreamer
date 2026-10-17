@@ -14,6 +14,9 @@ export function useCountUp(target: number, { fromZero, still, delay = 0 }: {
 }): number {
   const [shown, setShown] = useState(() => (fromZero && !still ? 0 : target));
   const shownRef = useRef(shown);
+  // Held still, the value is the target; keep the state there too, so leaving reduced
+  // motion later starts from what was on screen, not from a value seen before it.
+  if (still && shown !== target) setShown(target);
 
   useEffect(() => {
     const from = shownRef.current;

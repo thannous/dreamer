@@ -384,7 +384,7 @@ describe('Tendances screen', () => {
     fireEvent.click(screen.getByTestId('returns.type'));
     expect(mockNavigate).toHaveBeenLastCalledWith({
       pathname: '/(tabs)/journal',
-      params: { filter: expect.any(String), type: 'Nightmare' },
+      params: { filter: expect.any(String), type: 'Nightmare', analysis: 'analyzed' },
     });
   });
 
