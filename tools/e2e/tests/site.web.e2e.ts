@@ -92,3 +92,148 @@ test('symbol artwork fills the page from behind the navbar up to 2560px', { time
     await app.screenshot('symbol-' + id + '-' + width);
   }
 });
+
+// Living-painting pilot of the French tiger page (mist + lantern glow). The
+// script, its layers and the tag that loads them are only checkable in a real
+// browser: decoded layers, running CSS animations, media queries and the
+// pause control. The painting itself must never move or change.
+const TIGER_PILOT = '/js/tiger-living/4a2c0644fe77/tiger-living-painting.js';
+const TIGER_PAUSE = 'Pause de l’animation du décor';
+
+function readTigerPilot() {
+  const hero = document.querySelector<HTMLElement>('.symbol-hero')!;
+  const img = hero.querySelector<HTMLImageElement>('.symbol-hero-media img')!;
+  const stage = hero.querySelector<HTMLElement>('.tlp-stage');
+  const mist = hero.querySelector<HTMLImageElement>('.tlp-mist-tex');
+  const glow = hero.querySelector<HTMLElement>('.tlp-glow');
+  const box = img.getBoundingClientRect();
+  const frame = stage?.getBoundingClientRect();
+  return {
+    living: hero.getAttribute('data-tiger-living'),
+    state: hero.getAttribute('data-tiger-motion-state'),
+    reasons: hero.getAttribute('data-tiger-motion-reasons'),
+    painting: { src: img.currentSrc, left: box.left, top: box.top, width: box.width, height: box.height },
+    paintingAnimations: img.getAnimations().length,
+    stage: frame ? { left: frame.left, top: frame.top, width: frame.width, height: frame.height } : null,
+    mistSrc: mist ? mist.currentSrc : null,
+    mistTransform: mist ? getComputedStyle(mist).transform : null,
+    glowOpacity: glow ? getComputedStyle(glow).opacity : null,
+    // Layer keyframes only: the stage's fade-in is a transition, not motion.
+    playStates: document.getAnimations()
+      .filter(animation => animation instanceof CSSAnimation && (animation.effect as KeyframeEffect | null)?.target?.closest('.tlp-stage'))
+      .map(animation => animation.playState),
+    toggles: hero.querySelectorAll('.tlp-toggle').length,
+  };
+}
+
+function readPilotLoads() {
+  return {
+    scripts: document.querySelectorAll('script[src*="tiger-living"]').length,
+    requests: performance.getEntriesByType('resource').filter(entry => entry.name.includes('/tiger-living/')).length,
+    stages: document.querySelectorAll('.tlp-stage, .tlp-toggle').length,
+    marked: document.querySelector('.symbol-hero')?.hasAttribute('data-tiger-living') ?? null,
+    loaded: document.readyState === 'complete',
+  };
+}
+
+type TigerPilot = Awaited<ReturnType<typeof readTigerPilot>>;
+
+const expectStillPainting = (now: TigerPilot, before: TigerPilot['painting']) => {
+  expect(now.painting).toEqual(before);
+  expect(now.painting.src).toMatch(/\/tiger-v1-[0-9]+w\.(?:webp|avif)$/);
+  expect(now.paintingAnimations).toBe(0);
+};
+
+test('the French tiger painting gains mist and lantern glow that pause, resume and respect reduced motion', { timeout: 180_000 }, async ({ app, browser, screen }) => {
+  for (const [width, height, mistLayer] of [[2560, 1440, 'mist.webp'], [390, 844, 'mist-mobile.webp']] as const) {
+    // The harness allows only route and viewport steps before the first app.open;
+    // each pass ends with reduced motion turned back off.
+    await browser.setViewport({ width, height });
+    await app.open('/fr/symboles/tigre.html');
+    await expect(screen.getByRole('heading', { level: 1 })).toBeVisible();
+    await expect.poll(() => browser.evaluate(readTigerPilot).then(read => read.living), { timeout: 15_000 }).toBe('ready');
+    const first = await browser.evaluate(readTigerPilot);
+    expect(first.state).toBe('running');
+    expect(first.mistSrc).toMatch(new RegExp('/js/tiger-living/4a2c0644fe77/assets/' + mistLayer.replace('.', '\\.') + '$'));
+    // The layers sit on the painted frame (16:9 hero, object-fit contain).
+    for (const key of ['left', 'top', 'width', 'height'] as const) expect(first.stage![key]).toBeCloseTo(first.painting[key], 0);
+    expect(first.playStates.length).toBeGreaterThan(0);
+    expect(first.playStates.every(state => state === 'running')).toBe(true);
+
+    // Layers move while the painting stays put.
+    await expect.poll(() => browser.evaluate(readTigerPilot).then(read => read.mistTransform), { timeout: 10_000 }).not.toBe(first.mistTransform);
+    await expect.poll(() => browser.evaluate(readTigerPilot).then(read => read.glowOpacity), { timeout: 10_000 }).not.toBe(first.glowOpacity);
+    expectStillPainting(await browser.evaluate(readTigerPilot), first.painting);
+
+    // Pause with a tap, resume from the keyboard; the control keeps a 44px target.
+    const toggle = screen.getByRole('button', TIGER_PAUSE);
+    await expect(toggle).toBeVisible();
+    const target = (await toggle.boundingBox())!;
+    expect(Math.min(target.width, target.height)).toBeGreaterThanOrEqual(44);
+    await toggle.tap();
+    await expect(toggle).toHaveAttribute('aria-pressed', 'true');
+    const paused = await browser.evaluate(readTigerPilot);
+    expect([paused.state, paused.reasons]).toEqual(['paused', 'user']);
+    expect(paused.playStates.length).toBeGreaterThan(0);
+    expect(paused.playStates.every(state => state === 'paused')).toBe(true);
+    await toggle.press('Enter');
+    await expect(toggle).toHaveAttribute('aria-pressed', 'false');
+    const resumed = await browser.evaluate(readTigerPilot);
+    expect(resumed.state).toBe('running');
+    expect(resumed.playStates.every(state => state === 'running')).toBe(true);
+    await expect.poll(() => browser.evaluate(readTigerPilot).then(read => read.mistTransform), { timeout: 10_000 }).not.toBe(resumed.mistTransform);
+
+    // Scrolled away, the layers stop; back in view, they run again.
+    await browser.evaluate(() => { window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }); return window.scrollY; });
+    await expect.poll(() => browser.evaluate(readTigerPilot).then(read => [read.state, read.reasons])).toEqual(['paused', 'offscreen']);
+    expect(await browser.evaluate(() => { window.scrollTo({ top: 0, behavior: 'instant' }); return window.scrollY; })).toBe(0);
+    await expect.poll(() => browser.evaluate(readTigerPilot).then(read => read.state)).toBe('running');
+
+    // A live reduced-motion preference stops every layer animation and hides the control.
+    await browser.emulateMedia({ reducedMotion: 'reduce' });
+    await expect.poll(() => browser.evaluate(readTigerPilot).then(read => read.state)).toBe('reduced');
+    await expect(toggle).toBeHidden();
+    const reduced = await browser.evaluate(readTigerPilot);
+    expect(reduced.playStates).toEqual([]);
+    expect(reduced.mistTransform).toBe('none');
+    expectStillPainting(reduced, first.painting);
+    await app.screenshot('tiger-living-reduced-' + width);
+    await browser.emulateMedia({ reducedMotion: 'no-preference' });
+    await expect.poll(() => browser.evaluate(readTigerPilot).then(read => read.state)).toBe('running');
+    await expect(toggle).toBeVisible();
+    await app.screenshot('tiger-living-' + width);
+  }
+});
+
+test('a broken layer or reduced motion from the first load keeps the tiger painting still', async ({ app, browser, screen }) => {
+  await browser.setViewport({ width: 1920, height: 1080 });
+  await browser.route('**/js/tiger-living/4a2c0644fe77/assets/lantern-glow.webp', route => route.fulfill({ status: 404, body: '' }));
+  await app.open('/fr/symboles/tigre.html');
+  await expect.poll(() => browser.evaluate(readTigerPilot).then(read => read.living), { timeout: 15_000 }).toBe('off');
+  const broken = await browser.evaluate(readTigerPilot);
+  expect([broken.stage, broken.toggles, broken.state, broken.playStates]).toEqual([null, 0, null, []]);
+  expect(broken.painting.src).toMatch(/\/tiger-v1-[0-9]+w\.(?:webp|avif)$/);
+  expect(broken.paintingAnimations).toBe(0);
+
+  await browser.unroute('**/js/tiger-living/4a2c0644fe77/assets/lantern-glow.webp');
+  await browser.emulateMedia({ reducedMotion: 'reduce' });
+  await app.open('/fr/symboles/tigre.html');
+  await expect.poll(() => browser.evaluate(readTigerPilot).then(read => read.living), { timeout: 15_000 }).toBe('ready');
+  const reduced = await browser.evaluate(readTigerPilot);
+  expect(reduced.state).toBe('reduced');
+  expect(reduced.playStates).toEqual([]);
+  expect(reduced.mistTransform).toBe('none');
+  expectStillPainting(reduced, broken.painting);
+  await expect(screen.getByRole('button', TIGER_PAUSE)).toBeHidden();
+});
+
+test('no other symbol or language loads the living-painting pilot', async ({ app, browser, screen }) => {
+  const html = readFileSync(new URL('../../../docs/fr/symboles/tigre.html', import.meta.url), 'utf8');
+  expect(html).toContain(`<script src="${TIGER_PILOT}" defer></script>`);
+  for (const path of ['/fr/symboles/cerf.html', '/en/symbols/tiger.html', '/es/simbolos/tigre.html', '/de/traumsymbole/tiger.html', '/it/simboli/tigre.html']) {
+    await app.open(path);
+    await expect(screen.getByRole('heading', { level: 1 })).toBeVisible();
+    await expect.poll(() => browser.evaluate(readPilotLoads).then(read => read.loaded)).toBe(true);
+    expect(await browser.evaluate(readPilotLoads)).toEqual({ scripts: 0, requests: 0, stages: 0, marked: false, loaded: true });
+  }
+});
