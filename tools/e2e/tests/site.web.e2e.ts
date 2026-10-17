@@ -428,3 +428,163 @@ test('only the French tiger page loads the living-painting pilot, from a folder 
     expect(await browser.evaluate(readPilotLoads)).toEqual({ scripts: 0, requests: 0, stages: 0, marked: false, ratio: 1.78, objectFit: 'contain', loaded: true });
   }
 });
+
+// Atlas composition of the same page: the rail beside the opening plate only,
+// reading, three scene cards and the tiger art side by side, then a band and
+// the rest across the whole frame; one column on a phone. The native scene
+// selector must show, in the band, the opening question and the next sentence
+// of the matching published variation card.
+function readAtlas() {
+  const rect = (selector: string) => {
+    const node = document.querySelector(selector);
+    if (!node || getComputedStyle(node).display === 'none') return null;
+    const r = node.getBoundingClientRect();
+    return { left: r.left, top: r.top + window.scrollY, right: r.right, bottom: r.bottom + window.scrollY, width: r.width };
+  };
+  const flat = (node: Element | null) => (node?.textContent ?? '').replace(/\s+/g, '');
+  const visible = Array.from(document.querySelectorAll<HTMLElement>('.atlas-scene-result')).filter(node => getComputedStyle(node).display !== 'none');
+  const checked = document.querySelector<HTMLInputElement>('.atlas-scene-input:checked');
+  const label = checked ? document.querySelector(`label[for="${checked.id}"] .atlas-scene-variation`)?.textContent?.trim() ?? null : null;
+  const card = Array.from(document.querySelectorAll('#variations .variation-card')).find(node => node.querySelector('h4')?.textContent?.trim() === label);
+  return {
+    viewport: document.documentElement.clientWidth,
+    viewportHeight: window.innerHeight,
+    overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth,
+    article: rect('article.atlas'), rail: rect('.atlas-rail'), reading: rect('.atlas-reading'), scenes: rect('.atlas-scenes'),
+    decor: rect('.atlas-decor'), band: rect('.atlas-band'), reflection: rect('#reflexion'), relatedBox: rect('#associes'),
+    columns: Array.from(document.querySelectorAll('.atlas-band > .atlas-column')).map(node => {
+      const r = node.getBoundingClientRect();
+      return { left: r.left, top: Math.round(r.top + window.scrollY), right: r.right };
+    }),
+    cardsRight: Math.max(...Array.from(document.querySelectorAll('.atlas-scene')).map(node => node.getBoundingClientRect().right)),
+    checked: checked?.value ?? null,
+    shown: visible.map(node => ({
+      scene: node.dataset.scene ?? '',
+      inBand: Boolean(node.closest('#reflexion')),
+      question: node.querySelector('.atlas-scene-question')!.textContent!.trim(),
+      excerpt: node.querySelector('.atlas-scene-excerpt')!.textContent!.trim(),
+    })),
+    card: card ? card.querySelector('p')!.textContent!.replace(/[ \t\r\n]+/g, ' ').trim() : null, // keeps French non-breaking spaces
+    zones: { meaning: flat(document.querySelector('#meaning')), journal: flat(document.querySelector('#journal')), lecture: flat(document.querySelector('#lecture')) },
+    headings: Array.from(document.querySelectorAll('article.atlas :is(h2, h3, h4)')).map(node => Number(node.tagName.slice(1))),
+    chapters: Array.from(document.querySelectorAll('article.atlas h2')).map(node => node.textContent!.trim()),
+    ids: ['meaning', 'scenes', 'reflexion', 'journal', 'garder-noctalia', 'associes', 'lecture', 'questions', 'variations', 'faq'].filter(id => document.getElementById(id)),
+    railTargets: Array.from(document.querySelectorAll<HTMLAnchorElement>('.atlas-rail a')).map(link => Boolean(document.getElementById(link.hash.slice(1)))),
+    counts: {
+      opening: document.querySelectorAll('#meaning .prose > p').length,
+      continuation: document.querySelectorAll('#lecture .prose > p').length,
+      journal: document.querySelectorAll('#journal blockquote').length,
+      variations: document.querySelectorAll('#variations .variation-card').length,
+      questions: document.querySelectorAll('#questions .symbol-question-item').length,
+      faq: document.querySelectorAll('#faq .symbol-faq-card').length,
+    },
+    related: Array.from(document.querySelectorAll<HTMLAnchorElement>('#associes a.symbol-link')).map(link => link.getAttribute('href')),
+    decorLoads: performance.getEntriesByType('resource').filter(entry => entry.name.includes('/atlas-tiger-v1/tiger-atlas-vignette')).length,
+  };
+}
+
+type Atlas = Awaited<ReturnType<typeof readAtlas>>;
+
+// The band shows the opening question of the selected card and the sentence after it.
+const expectPublishedScene = (atlas: Atlas, scene: string) => {
+  expect(atlas.checked).toBe(scene);
+  expect(atlas.shown.map(shown => [shown.scene, shown.inBand])).toEqual([[scene, true]]);
+  const [{ question, excerpt }] = atlas.shown;
+  expect(question.endsWith('?')).toBe(true);
+  expect(atlas.card!.startsWith(question)).toBe(true);
+  expect(atlas.card!.slice(question.length).trim().startsWith(excerpt)).toBe(true);
+};
+
+test('the French tiger atlas sets its chapters side by side and shows each published scene from mouse or keyboard', { timeout: 180_000 }, async ({ app, browser, screen }) => {
+  // Every paragraph of the published interpretation, whole, in its zone: the first opens the plate,
+  // the fictional journal sits in the band, the others follow in the continuation.
+  const extended = JSON.parse(readFileSync(new URL('../../../data/dream-symbols-extended.json', import.meta.url), 'utf8')) as {
+    symbols: Record<string, { fr: { fullInterpretation: string } }>;
+  };
+  const source = (extended.symbols.tiger.fr.fullInterpretation.match(/<p>[\s\S]*?<\/p>/g) ?? [])
+    .map(paragraph => paragraph.replace(/<[^>]+>/g, '').replace(/&#0?39;/g, "'").replace(/&amp;/g, '&').replace(/\s+/g, ''));
+  expect(source).toHaveLength(5);
+
+  for (const [width, height] of [[1586, 992], [1920, 1080]] as const) {
+    await browser.setViewport({ width, height });
+    await app.open('/fr/symboles/tigre.html');
+    await expect(screen.getByRole('heading', { level: 1 })).toBeVisible();
+    const wide = await browser.evaluate(readAtlas);
+    // About 90 % of the width; rail | reading | cards | art in the opening, never art behind the reading,
+    // and the tiger's face (right 44 % of the art) clear of the cards.
+    expect(wide.article!.width).toBeGreaterThanOrEqual(wide.viewport * 0.88);
+    expect(wide.rail!.right).toBeLessThanOrEqual(wide.reading!.left);
+    expect(wide.reading!.right).toBeLessThanOrEqual(wide.scenes!.left);
+    expect(wide.scenes!.top).toBeLessThan(wide.reading!.bottom);
+    expect(wide.decor!.left).toBeGreaterThanOrEqual(wide.reading!.right);
+    expect(wide.decor!.width).toBeGreaterThanOrEqual(500);
+    expect(wide.decor!.left + wide.decor!.width * 0.56).toBeGreaterThanOrEqual(wide.cardsRight - 1);
+    // The band and the rest span the whole frame, under the rail, in three columns.
+    expect(wide.rail!.bottom).toBeLessThanOrEqual(wide.band!.top);
+    expect(wide.band!.left).toBeCloseTo(wide.article!.left, 0);
+    expect(wide.band!.right).toBeCloseTo(wide.article!.right, 0);
+    expect(wide.relatedBox!.left).toBeCloseTo(wide.article!.left, 0);
+    expect(wide.columns).toHaveLength(3);
+    expect(new Set(wide.columns.map(column => column.top)).size).toBe(1);
+    for (let i = 1; i < wide.columns.length; i += 1) expect(wide.columns[i].left).toBeGreaterThanOrEqual(wide.columns[i - 1].right - 1);
+    expect(wide.overflow).toBe(false);
+    await app.screenshot('tiger-atlas-' + width);
+  }
+
+  const wide = await browser.evaluate(readAtlas);
+  // Every published block, anchor and link survives, under a coherent h2 > h3 > h4 outline.
+  expect(wide.ids).toEqual(['meaning', 'scenes', 'reflexion', 'journal', 'garder-noctalia', 'associes', 'lecture', 'questions', 'variations', 'faq']);
+  expect(wide.railTargets.every(Boolean)).toBe(true);
+  expect(wide.counts).toEqual({ opening: 1, continuation: 3, journal: 1, variations: 6, questions: 3, faq: 4 });
+  source.forEach((paragraph, index) => {
+    // The journal example keeps its label as the figure caption, without the trailing colon.
+    const journal = paragraph.match(/^Exemplefictifdejournal\s*:/);
+    const zone = journal ? 'journal' : index === 0 ? 'meaning' : 'lecture';
+    if (journal) expect(wide.zones.journal.startsWith('Exemplefictifdejournal')).toBe(true);
+    expect(wide.zones[zone].includes(journal ? paragraph.slice(journal[0].length) : paragraph), `interpretation paragraph ${index + 1} is whole in #${zone}`).toBe(true);
+  });
+  expect(wide.chapters).toEqual(['Reconnaître la scène', 'Ce qu’elle éveille', 'Relier à votre histoire']);
+  expect(wide.headings[0]).toBe(2);
+  wide.headings.forEach((level, index) => { if (index) expect(level).toBeLessThanOrEqual(wide.headings[index - 1] + 1); });
+  expect(wide.related).toEqual(['/fr/symboles/lion', '/fr/symboles/chat', '/fr/symboles/poursuite', '/fr/symboles/loup']);
+  expectPublishedScene(wide, 'poursuite');
+
+  // Mouse on the visible cards, then the arrow keys of the native radio group, back round to the first.
+  await screen.getByText('Il est calme').tap(); // the native radio is visually hidden behind its card
+  await expect(screen.getByRole('radio', { name: /^Il est calme/ })).toBeChecked();
+  expectPublishedScene(await browser.evaluate(readAtlas), 'calme');
+  await screen.getByRole('radio', { name: /^Il est calme/ }).press('ArrowDown');
+  await expect(screen.getByRole('radio', { name: /^Il est en cage/ })).toBeChecked();
+  expectPublishedScene(await browser.evaluate(readAtlas), 'cage');
+  await screen.getByRole('radio', { name: /^Il est en cage/ }).press('ArrowDown');
+  await expect(screen.getByRole('radio', { name: /^Il me poursuit/ })).toBeChecked();
+  expectPublishedScene(await browser.evaluate(readAtlas), 'poursuite');
+
+  // A phone: one column without overflow, the choices right after the opening and the
+  // reflection right after them, and the hidden art never fetched.
+  await browser.setViewport({ width: 390, height: 844 });
+  await app.open('/fr/symboles/tigre.html');
+  await expect(screen.getByRole('heading', { level: 1 })).toBeVisible();
+  await screen.getByText('Il est en cage').tap();
+  const phone = await browser.evaluate(readAtlas);
+  expect(phone.overflow).toBe(false);
+  expect([phone.rail, phone.decor, phone.decorLoads]).toEqual([null, null, 0]);
+  expect(phone.scenes!.top).toBeGreaterThanOrEqual(phone.reading!.bottom);
+  expect(phone.scenes!.top - phone.article!.top).toBeLessThan(2 * phone.viewportHeight);
+  expect(phone.reflection!.top).toBeGreaterThanOrEqual(phone.scenes!.bottom);
+  expect(phone.columns.map(column => column.left)).toEqual(phone.columns.map(() => phone.columns[0].left));
+  expectPublishedScene(phone, 'cage');
+  await app.screenshot('tiger-atlas-390');
+  // Past the hero the shared navbar gets a ground over the text (it stays transparent on the hero).
+  const navGround = () => browser.evaluate(() => getComputedStyle(document.querySelector('#navbar')!).backgroundColor);
+  for (const [top, transparent] of [[1127, false], [760, false], [0, true]] as const) {
+    expect(await browser.evaluate(scrollToY, top)).toBe(top);
+    if (transparent) await expect.poll(navGround).toBe('rgba(0, 0, 0, 0)');
+    else await expect.poll(navGround).toMatch(/^rgba\(10, 5, 20, 0\.9\d*\)$/);
+  }
+
+  // The other languages keep the shared single-column article.
+  await app.open('/en/symbols/tiger.html');
+  await expect(screen.getByRole('heading', { level: 1 })).toBeVisible();
+  expect(await browser.evaluate(() => [document.querySelectorAll('article.atlas, .atlas-scene-input').length, document.querySelectorAll('article.max-w-3xl').length])).toEqual([0, 1]);
+});
