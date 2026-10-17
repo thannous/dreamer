@@ -334,6 +334,56 @@ export function applyFilters(
   });
 }
 
+export interface NarrowingFilterOptions extends ApplyFiltersOptions {
+  /**
+   * What the search label resolvers depend on (the translation function, say). Callers
+   * usually rebuild the resolvers on each call, so their identity cannot tell a language
+   * change; a new source filters everything again.
+   */
+  labelsSource?: unknown;
+}
+
+/**
+ * `applyFilters` for a search typed one key at a time. When only the query grew (the new
+ * query contains the previous one, over the same dreams and other filters), any dream
+ * matching the new query also matched the previous one, so only the previous matches are
+ * searched instead of the whole journal. Any other change searches everything again.
+ */
+export function createNarrowingFilter() {
+  let last: {
+    dreams: DreamAnalysis[];
+    scope: string;
+    labelsSource: unknown;
+    query: string;
+    result: DreamAnalysis[];
+  } | null = null;
+
+  return (dreams: DreamAnalysis[], filters: DreamFilters, options: NarrowingFilterOptions = {}): DreamAnalysis[] => {
+    const query = filters.searchQuery?.trim().toLowerCase() ?? '';
+    const scope = JSON.stringify([
+      filters.theme ?? null,
+      filters.dreamType ?? null,
+      filters.startDate?.getTime() ?? null,
+      filters.endDate?.getTime() ?? null,
+      Boolean(filters.favoritesOnly),
+      Boolean(filters.analyzedOnly),
+      Boolean(filters.exploredOnly),
+      Boolean(filters.rememberedOnly),
+      Boolean(filters.needsExplorationOnly),
+      filters.analysisStatus ?? null,
+      Boolean(filters.recurringOnly),
+    ]);
+    const narrows = last !== null
+      && last.dreams === dreams
+      && last.scope === scope
+      && last.labelsSource === options.labelsSource
+      && query.includes(last.query);
+    const result = applyFilters(narrows && last ? last.result : dreams, filters, options);
+    last = { dreams, scope, labelsSource: options.labelsSource, query, result };
+    return result;
+  };
+}
+
 /**
  * Sort dreams by date (newest first)
  */
