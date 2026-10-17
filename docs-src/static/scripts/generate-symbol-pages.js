@@ -878,10 +878,7 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
     lang
   );
   const responsiveIllustration = resolveResponsiveSymbolIllustration(illustration);
-  const containedHero = getGeneratedSymbolImage(symbol.id, SYMBOL_IMAGE_REGISTRY)?.heroLayout === 'contained';
-  const heroImageSizes = containedHero
-    ? '(min-resolution: 3.01dppx) min(100vw, 400px), (min-resolution: 2.01dppx) min(100vw, 533px), (min-resolution: 1.01dppx) min(100vw, 800px), min(100vw, 1600px)'
-    : '100vw';
+  const heroImageSizes = '(min-width: 2560px) 2560px, 100vw';
   const preferredImageUrl = responsiveIllustration
     ? `https://noctalia.app${responsiveIllustration.src}`
     : DEFAULT_SOCIAL_IMAGE;
@@ -1207,10 +1204,16 @@ ${renderSharedComponentStyles()}
         .symbol-page-main {
             position: relative;
             padding-top: 0 !important;
+            padding-inline: 0;
+        }
+        .symbol-page-main > article {
+            width: calc(100% - 2rem);
+            max-width: 48rem;
+            margin-inline: auto;
         }
         .symbol-breadcrumb {
             margin-bottom: auto;
-            padding-top: clamp(6.5rem, 9vw, 8rem);
+            padding-top: 0;
             font-size: 0.8rem;
             letter-spacing: 0.03em;
             color: var(--cream-45);
@@ -1221,13 +1224,12 @@ ${renderSharedComponentStyles()}
         .symbol-breadcrumb .text-dream-cream { color: var(--cream-88); }
         .symbol-hero {
             position: relative;
-            left: 50%;
-            width: 100vw;
-            min-height: max(42rem, 100svh);
-            margin-left: -50vw;
+            width: 100%;
+            max-width: 2560px;
+            aspect-ratio: 16 / 9;
+            margin: 0 auto;
             isolation: isolate;
             overflow: hidden;
-            border-bottom: 1px solid var(--line);
             background: #090413;
         }
         .symbol-hero-figure {
@@ -1249,7 +1251,7 @@ ${renderSharedComponentStyles()}
             width: 100%;
             height: 100%;
             display: block;
-            object-fit: cover;
+            object-fit: contain;
             object-position: center;
         }
         .symbol-hero::after {
@@ -1266,14 +1268,15 @@ ${renderSharedComponentStyles()}
                 #0a0512 100%);
         }
         .symbol-hero-overlay {
-            position: relative;
+            position: absolute;
+            inset: 0;
             z-index: 2;
             display: flex;
             flex-direction: column;
             width: min(100%, 48rem);
-            min-height: max(42rem, 100svh);
+            height: 100%;
             margin: 0 auto;
-            padding: 0 1rem clamp(3rem, 7vh, 5rem);
+            padding: 6.5rem 1rem clamp(3rem, 7vh, 5rem);
         }
         .symbol-hero-copy {
             width: 100%;
@@ -1580,18 +1583,15 @@ ${renderSharedComponentStyles()}
         @media (max-width: 767px) {
             .symbol-page-main {
                 padding-top: 0 !important;
-                padding-left: 1rem !important;
-                padding-right: 1rem !important;
+                padding-inline: 0;
                 padding-bottom: 3.5rem !important;
             }
             .symbol-breadcrumb { display: none; }
             .symbol-hero {
-                min-height: clamp(30rem, 125vw, 43rem);
                 margin-bottom: 0 !important;
             }
             .symbol-hero-overlay {
-                min-height: clamp(30rem, 125vw, 43rem);
-                padding: 6.5rem 1rem clamp(2rem, 5vw, 3rem);
+                padding: 5rem 1rem 1.25rem;
             }
             .symbol-hero-chips { display: none !important; }
             .symbol-category-chip { display: none !important; }
@@ -1663,17 +1663,6 @@ ${renderSharedComponentStyles()}
             }
             .variation-card { padding-left: 2.5rem; }
         }
-        /* Keep complete 16:9 artwork within its native pixel budget, including Retina screens. */
-        .symbol-hero-contained { --symbol-image-width: 1600px; min-height: 0; padding-top: 5rem; }
-        .symbol-hero-contained .symbol-hero-figure { position: relative; inset: auto; width: min(100%, var(--symbol-image-width)); height: auto; aspect-ratio: 16 / 9; margin: 0 auto; }
-        .symbol-hero-contained .symbol-hero-media { position: relative; inset: auto; height: auto; aspect-ratio: 16 / 9; }
-        .symbol-hero-contained .symbol-hero-media img { height: auto; aspect-ratio: 16 / 9; object-fit: contain; }
-        .symbol-hero-contained::after { display: none; }
-        .symbol-hero-contained .symbol-hero-overlay { min-height: 0; padding: 1.5rem 1rem 2.5rem; }
-        .symbol-hero-contained .symbol-breadcrumb { padding-top: 0; margin-bottom: 1.5rem; }
-        @media (min-resolution: 1.01dppx) { .symbol-hero-contained { --symbol-image-width: 800px; } }
-        @media (min-resolution: 2.01dppx) { .symbol-hero-contained { --symbol-image-width: 533px; } }
-        @media (min-resolution: 3.01dppx) { .symbol-hero-contained { --symbol-image-width: 400px; } }
     </style>
 
     <!-- Schema.org DefinedTerm -->
@@ -1694,11 +1683,9 @@ ${faqPageJsonLd ? `    <!-- Schema.org FAQPage -->\n${renderJsonLd(faqPageJsonLd
     <!-- Navbar -->
 ${renderPseoNav(lang, currentPaths, 'dictionary')}
 
-    <main class="symbol-page-main pt-32 pb-20 px-4">
-        <article class="max-w-3xl mx-auto">
-
+    <main class="symbol-page-main pb-20">
             <!-- Header -->
-            <header class="symbol-hero${containedHero ? ' symbol-hero-contained' : ''}" data-image-seo-hero="true">
+            <header class="symbol-hero" data-image-seo-hero="true">
                 <figure class="symbol-hero-figure" data-image-seo-role="symbol-hero" data-image-asset-id="symbol.${escapeHtml(symbol.id)}">
 ${heroPictureHtml}
                     ${illustration?.caption ? `<figcaption class="symbol-hero-caption">${escapeHtml(illustration.caption)}</figcaption>` : ''}
@@ -1728,6 +1715,7 @@ ${heroPictureHtml}
                 </div>
             </header>
 
+        <article class="max-w-3xl mx-auto">
             <p class="symbol-summary text-lg leading-relaxed">
                 ${escapeHtml(symbolData.shortDescription)}
             </p>
