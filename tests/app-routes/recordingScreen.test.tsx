@@ -218,6 +218,7 @@ jest.doMock('react-native', () => {
       },
     },
     Keyboard: {
+      isVisible: () => false,
       addListener: (event: string, listener: () => void) => {
         mockKeyboardListeners[event] = listener;
         return { remove: () => { delete mockKeyboardListeners[event]; } };

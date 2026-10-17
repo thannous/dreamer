@@ -28,6 +28,7 @@ import { useDreamsData, useDreamsActions } from '@/context/DreamsContext';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useOnboarding } from '@/context/OnboardingContext';
+import { useKeyboardVisible } from '@/hooks/useKeyboardVisible';
 import { useQuota } from '@/hooks/useQuota';
 import { getSavedAnalysisAction } from '@/lib/savedAnalysisAccess';
 import { useQuickSettings } from '@/context/QuickSettingsContext';
@@ -309,7 +310,7 @@ function RecordingScreen() {
     useState<DreamStrongestFragment | undefined>();
   const [showRememberedDetailsSheet, setShowRememberedDetailsSheet] = useState(false);
   const [inputMode, setInputMode] = useState<RecordingInputModePreference>('text');
-  const [keyboardVisible, setKeyboardVisible] = useState(false);
+  const keyboardVisible = useKeyboardVisible();
   const [footerHeight, setFooterHeight] = useState(0);
   const [bottomNavHeight, setBottomNavHeight] = useState(0);
   const appliedRouteEntriesRef = useRef<Set<string>>(new Set());
@@ -427,19 +428,6 @@ function RecordingScreen() {
       isActive = false;
     };
   }, [onboardingScope]);
-
-  useEffect(() => {
-    const show = Keyboard.addListener('keyboardDidShow', () => {
-      setKeyboardVisible(true);
-    });
-    const hide = Keyboard.addListener('keyboardDidHide', () => {
-      setKeyboardVisible(false);
-    });
-    return () => {
-      show.remove();
-      hide.remove();
-    };
-  }, []);
 
   const handleOfflineModelPromptShow = useCallback(
     async (locale: string) => {
