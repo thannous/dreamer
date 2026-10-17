@@ -211,9 +211,9 @@ describe('ExploreScreen', () => {
     }
   });
 
-  it('renders the intro and the three core cards with their routes', async () => {
+  it('renders the header and the three core cards with their routes', async () => {
     render(<ExploreScreen />);
-    expect(await screen.findByText('explore.intro')).toBeTruthy();
+    expect(await screen.findByText('explore.title')).toBeTruthy();
     expect(screen.getByTestId(TID.Button.ExplorerSymbols)).toBeTruthy();
     expect(screen.getByTestId(TID.Button.ExplorerGuides)).toBeTruthy();
     expect(screen.getByTestId(TID.Button.ExplorerRitual)).toBeTruthy();
@@ -317,7 +317,7 @@ describe('ExploreScreen', () => {
   it('shows the sleep sounds card only when the feature is available', async () => {
     mockSleepSoundsAvailable = false;
     const hidden = render(<ExploreScreen />);
-    await screen.findByText('explore.intro');
+    await screen.findByText('explore.title');
     expect(screen.queryByTestId(TID.Button.ExplorerSleepSounds)).toBeNull();
     hidden.unmount();
     cleanup();
