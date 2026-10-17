@@ -226,14 +226,17 @@ candidate's (`QA_ANDROID_VERSION_CODE`, else `app.json`). The run must also be o
 the commit under qualification, from a clean working tree whose source stayed
 stable, without `--grep`, `--tag`, `--exclude-tag`, `--tag-mode` or `--shard`; its
 build receipt must name that same commit as its source; its folder must be
-complete and pass `verifyEvidenceFiles`; and the APK it tested and installed must
+complete and pass `verifyEvidenceFiles`; its `source-start.json` and
+`source-end.json` must both name that commit, record an empty working tree and
+hold equal file maps (`compareSnapshots`), whatever `end.json` says, since
+`end.json` is outside the run manifest; and the APK it tested and installed must
 have the sha256 of the candidate APK named by `QA_ANDROID_RELEASE_APK`. Build that profile with
 the native build command below (`E2E_BUILD_PROFILE=production-apk`), then run
 `E2E_DEVICE=<emulator-serial> E2E_RELEASE_RECEIPT=<its release.json> npm run test:testerarmy:mobile -- dreamer android run --install-release`.
 Its journeys stay offline; they do not prove purchases, real voice or backend
 accounts. Real voice and RevenueCat Test Store purchases follow the manual
-checklists (the voice one stays blocking in `android:gates:strict` until
-`scripts/record-android-voice-checklist.js` records it for the candidate) of `doc_web_interne/docs/android-expo57-qa-runbook.md` and
+checklists (the voice one is an optional manual test that does not block
+`android:gates:strict`, owner decision 2026-10-17) of `doc_web_interne/docs/android-expo57-qa-runbook.md` and
 `doc_web_interne/docs/revenuecat-qa-workflow.md`.
 
 ## Native Release provenance and diagnostic handoff

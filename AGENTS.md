@@ -389,8 +389,12 @@ lucid or meditation. Run setup/browser installation once through package scripts
 Maestro was retired on 2026-10-14 (owner decision): the Android release evidence is a
 local TesterArmy run of a `production-apk` Release build on an emulator, which
 `npm run android:gates:strict` requires for the candidate versionCode, commit and APK.
-Real voice stays blocking there until `scripts/record-android-voice-checklist.js`
-records a passing manual checklist for the candidate. Real voice and
+The gate derives stability and cleanliness from the run's `source-start.json` and
+`source-end.json` (same release commit, empty working trees, equal file maps);
+`end.json` is not in the run manifest, so it is only an extra condition.
+Owner decision 2026-10-17 (thanh): the Android real voice check is an optional
+manual test and does not block the release gate; `android:gates:strict` lists it
+as `manual`, which passes. Real voice and
 RevenueCat Test Store purchases follow the manual checklists of
 `doc_web_interne/docs/android-expo57-qa-runbook.md` and `doc_web_interne/docs/revenuecat-qa-workflow.md`.
 

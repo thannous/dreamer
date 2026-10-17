@@ -107,6 +107,7 @@ function writeTesterArmyRun(root, {
   sourceStable = true,
   sourceClean = true,
   apkBytes = CANDIDATE_APK_BYTES,
+  sourceEnd = {},
 } = {}) {
   const runDir = `tools/e2e/.e2e/dreamer-android/${name}`;
   writeFile(root, CANDIDATE_APK, CANDIDATE_APK_BYTES);
@@ -120,8 +121,16 @@ function writeTesterArmyRun(root, {
     command: ['node', 'tools/e2e/run.mjs', product, 'android', 'run', ...args],
   });
   writeJson(root, `${runDir}/release-used.json`, { profile: { name: profile }, source: { revision: buildRevision }, binary });
-  writeJson(root, `${runDir}/source-start.json`, { revision });
-  writeJson(root, `${runDir}/source-end.json`, { revision });
+  // The shape of tools/e2e/qualification.mjs sourceSnapshot, as the #387 runner
+  // writes it before and after the run (source-end.json comes before files.json).
+  const sourceFiles = {
+    'app.json': sha256('app.json bytes'),
+    'app/recording.tsx': sha256('recording bytes'),
+    'package.json': sha256('package.json bytes'),
+  };
+  const snapshot = { revision, workingTree, files: sourceFiles, outputs: {}, allowedOutputPrefixes: [] };
+  writeJson(root, `${runDir}/source-start.json`, snapshot);
+  writeJson(root, `${runDir}/source-end.json`, { ...snapshot, ...sourceEnd });
   writeJson(root, `${runDir}/collection.json`, { pairs: [{ file: 'tests/dreamer.mobile.e2e.ts' }] });
   writeJson(root, `${runDir}/report.json`, {
     run: { vcs: { commit: revision }, status: 'passed', exitCode: 0, summary: { failed: 0, interrupted: 0 } },
@@ -142,21 +151,6 @@ function writeTesterArmyRun(root, {
     stability: { sourceStable, sourceClean },
   });
   return runDir;
-}
-
-const VOICE_RECORD = 'doc_web_interne/docs/android-voice-analysis-evidence.local.json';
-function writeVoiceRecord(root, overrides = {}) {
-  const { buildVoiceRecord } = require('./record-android-voice-checklist');
-  writeJson(root, VOICE_RECORD, {
-    ...buildVoiceRecord({
-      versionCode: 33,
-      tester: 'qa-free',
-      deviceId: 'ZY22K',
-      installerPackageName: 'com.android.vending',
-      testedAt: '2026-10-15T09:00:00.000Z',
-    }),
-    ...overrides,
-  });
 }
 
 function setupFixture({ versionCode = 33 } = {}) {
@@ -239,7 +233,6 @@ function setupFixture({ versionCode = 33 } = {}) {
     ['on:', '  workflow_dispatch: {}', 'jobs:', '  build_on_demand:', '    type: build', ''].join('\n')
   );
   writeTesterArmyRun(root, { versionCode });
-  writeVoiceRecord(root, { versionCode: String(versionCode) });
   return root;
 }
 
@@ -1027,6 +1020,48 @@ describe('android release gate preflight', () => {
       expect(testerArmyCheck(report).details).toContain(reason);
     });
 
+    // end.json is not covered by files.json, so these runs keep an end.json that
+    // says exit 0, qualified, stable and clean: the gate must still read the
+    // source snapshots itself.
+    it.each([
+      ['source-end.json shows a changed file map', { sourceEnd: { files: { 'app.json': sha256('app.json bytes'), 'app/recording.tsx': sha256('edited during the run'), 'package.json': sha256('package.json bytes') } } }, 'source file map changed during the run'],
+      ['source-end.json shows a file added during the run', { sourceEnd: { files: { 'app.json': sha256('app.json bytes'), 'app/new.tsx': sha256('new'), 'app/recording.tsx': sha256('recording bytes'), 'package.json': sha256('package.json bytes') } } }, 'source file map changed during the run'],
+      ['source-end.json shows a dirty working tree', { sourceEnd: { workingTree: ' M app/recording.tsx' } }, 'source-end.json records a dirty working tree'],
+      ['source-end.json names another commit', { sourceEnd: { revision: OTHER_REVISION } }, 'source-end.json names fedcba987654, not 0123456789ab'],
+      ['source-end.json has no file map', { sourceEnd: { files: {} } }, 'source-end.json has no source file map'],
+    ])('blocks qualification when end.json says OK but %s', (_name, overrides, reason) => {
+      const root = qualificationRoot();
+      const runDir = writeTesterArmyRun(root, overrides);
+      expect(JSON.parse(fs.readFileSync(path.join(root, runDir, 'end.json'), 'utf8'))).toMatchObject({
+        exitCode: 0,
+        applicationQualified: true,
+        stability: { sourceStable: true, sourceClean: true },
+      });
+
+      const report = checkAndroidReleaseGates({ rootDir: root, spawn: spawnWithTools() });
+
+      expect(report.ok).toBe(false);
+      expect(testerArmyCheck(report)).toMatchObject({ status: 'blocked' });
+      expect(testerArmyCheck(report).details).toContain(reason);
+    });
+
+    it('blocks qualification when only end.json is rewritten to say OK over a refused run', () => {
+      const root = qualificationRoot();
+      const runDir = writeTesterArmyRun(root, { sourceEnd: { workingTree: ' M app.json' }, sourceStable: false, sourceClean: false, exitCode: 3, applicationQualified: false });
+      writeJson(root, `${runDir}/end.json`, {
+        finishedAt: '2026-10-15T10:00:00.000Z',
+        exitCode: 0,
+        applicationQualified: true,
+        stability: { sourceStable: true, sourceClean: true },
+      });
+
+      const report = checkAndroidReleaseGates({ rootDir: root, spawn: spawnWithTools() });
+
+      expect(report.ok).toBe(false);
+      expect(testerArmyCheck(report)).toMatchObject({ status: 'blocked' });
+      expect(testerArmyCheck(report).details).toContain('source-end.json records a dirty working tree');
+    });
+
     it.each([
       ['a file was edited after files.json', (root, runDir) => writeJson(root, `${runDir}/qualification.json`, { revision: RUN_REVISION, target: 'dreamer-android', passed: [{}, {}] }), 'EVIDENCE_CHANGED'],
       ['a file was added after files.json', (root, runDir) => writeFile(root, `${runDir}/results/extra.txt`, 'x'), 'EVIDENCE_CHANGED'],
@@ -1097,45 +1132,22 @@ describe('android release gate preflight', () => {
       expect(testerArmyCheck(report).details).toContain('versionCode 41');
     });
 
-    it('passes the voice check with a passing manual record for the candidate', () => {
-      const root = qualificationRoot();
-      writeTesterArmyRun(root);
-      writeVoiceRecord(root);
+    it('lists the real voice journey as an optional manual checklist', () => {
+      const report = checkAndroidReleaseGates({ rootDir: qualificationRoot(), spawn: spawnWithTools() });
 
-      const report = checkAndroidReleaseGates({ rootDir: root, spawn: spawnWithTools() });
-
-      expect(voiceCheck(report)).toMatchObject({ status: 'pass' });
-      expect(report.ok).toBe(true);
-    });
-
-    it.each([
-      ['there is no record', null, 'no record'],
-      ['the record is for another versionCode', { versionCode: '32' }, 'versionCode 32, not 33'],
-      ['the record did not pass', { result: 'fail' }, 'its result is fail'],
-      ['a step is unchecked', { steps: { french_language_selected: true } }, 'unchecked steps'],
-      ['the candidate was not installed from Play', { installerPackageName: 'com.android.shell' }, 'not installed from Play'],
-      ['the record is not a voice checklist record', { kind: 'something-else' }, 'not a voice checklist record'],
-    ])('keeps qualification blocked on voice when %s', (_name, overrides, reason) => {
-      const root = qualificationRoot();
-      writeTesterArmyRun(root);
-      if (overrides) writeVoiceRecord(root, overrides);
-      else fs.rmSync(path.join(root, VOICE_RECORD));
-
-      const report = checkAndroidReleaseGates({ rootDir: root, spawn: spawnWithTools() });
-
-      expect(report.ok).toBe(false);
-      expect(voiceCheck(report)).toMatchObject({ status: 'blocked' });
-      expect(voiceCheck(report).details).toContain(reason);
+      expect(voiceCheck(report)).toMatchObject({ status: 'manual' });
       expect(voiceCheck(report).remediation).toContain('doc_web_interne/docs/android-release-checklist.md');
     });
 
-    it('defers the voice record to qualification during prebuild', () => {
-      const root = setupFixture({ versionCode: 41 });
-      fs.rmSync(path.join(root, VOICE_RECORD));
+    it('passes strict qualification with the voice check left manual (owner decision 2026-10-17)', () => {
+      const root = qualificationRoot();
+      writeTesterArmyRun(root);
 
-      const report = checkAndroidReleaseGates({ rootDir: root, spawn: spawnWithTools(), phase: 'prebuild' });
+      const report = checkAndroidReleaseGates({ rootDir: root, spawn: spawnWithTools() });
 
       expect(voiceCheck(report)).toMatchObject({ status: 'manual' });
+      expect(testerArmyCheck(report)).toMatchObject({ status: 'pass' });
+      expect(report.ok).toBe(true);
     });
   });
 

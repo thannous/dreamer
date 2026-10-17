@@ -65,14 +65,13 @@ const EDGE = ['supabase/functions/', 'supabase/lib/', 'supabase/migrations/', 'd
 // The EAS workflow contracts. These suites read .eas/workflows and eas.json as
 // files, so Jest's related-test selection (jest-changed) never picks them when
 // only a workflow changes.
-// The release gate also loads the voice checklist record and the TesterArmy
-// evidence engine (tools/e2e/qualification.mjs verifyEvidenceFiles).
+// The release gate also loads the TesterArmy evidence engine
+// (tools/e2e/qualification.mjs verifyEvidenceFiles and compareSnapshots).
 const EAS_WORKFLOWS = [
   '.eas/workflows/',
   'eas.json',
   'scripts/check-android-release-ref.js',
   'scripts/check-android-release-gates.js',
-  'scripts/record-android-voice-checklist.js',
   'tools/e2e/qualification.mjs',
 ];
 const EAS_WORKFLOW_CONTRACTS = [
@@ -191,7 +190,6 @@ export default {
     // The release guards eas-workflow-contracts tests, and its suites.
     'scripts/check-android-release-ref.js',
     'scripts/check-android-release-gates.js',
-    'scripts/record-android-voice-checklist.js',
     'tools/e2e/qualification.mjs',
     'scripts/android-release-smoke-workflow.test.js',
     'scripts/check-android-release-ref.test.js',

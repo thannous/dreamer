@@ -24,7 +24,6 @@ const {
 const {
   getSupabasePlayIntegritySecretIssues,
 } = require('./update-supabase-play-integrity-secrets-state');
-const { VOICE_RECORD_PATH, voiceRecordProblem } = require('./record-android-voice-checklist');
 
 const ROOT = path.resolve(__dirname, '..');
 const PLAY_INTEGRITY_PROJECT_NUMBER_KEY = 'EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER';
@@ -805,21 +804,55 @@ const TESTERARMY_SELECTION_FLAGS = new Set([
 const FULL_SHA = /^[a-f0-9]{40}$/;
 const CANDIDATE_APK_ENV = 'QA_ANDROID_RELEASE_APK';
 
-// The engine's own manifest check (tools/e2e/qualification.mjs
-// verifyEvidenceFiles): files.json must list the sha256 of every file of the
-// run folder except itself and end.json. It is ESM, so it runs in a child Node.
+// The engine's own checks, in a child Node because tools/e2e/qualification.mjs
+// is ESM: verifyEvidenceFiles (files.json must list the sha256 of every file of
+// the run folder except itself and end.json), then compareSnapshots on
+// source-start.json and source-end.json. end.json is not covered by files.json,
+// so the gate derives stability and cleanliness from the snapshots itself.
 const EVIDENCE_ENGINE = path.join(ROOT, 'tools/e2e/qualification.mjs');
-function verifyRunManifest(runDir) {
+function verifyRunWithEngine(runDir) {
   const script =
-    `import { verifyEvidenceFiles } from ${JSON.stringify(pathToFileURL(EVIDENCE_ENGINE).href)};\n` +
-    'try { verifyEvidenceFiles(process.argv[1]); } catch (error) { console.error(error.message); process.exit(1); }';
+    `import { verifyEvidenceFiles, compareSnapshots } from ${JSON.stringify(pathToFileURL(EVIDENCE_ENGINE).href)};\n` +
+    "import { readFileSync } from 'fs';\n" +
+    "import { join } from 'path';\n" +
+    'const dir = process.argv[1];\n' +
+    'try { verifyEvidenceFiles(dir); } catch (error) { console.error(error.message); process.exit(1); }\n' +
+    "const read = (name) => JSON.parse(readFileSync(join(dir, name), 'utf8'));\n" +
+    "try { process.stdout.write(JSON.stringify(compareSnapshots(read('source-start.json'), read('source-end.json')))); }\n" +
+    "catch { console.error('SOURCE_SNAPSHOT_UNREADABLE'); process.exit(1); }";
   const result = spawnSync(process.execPath, ['--input-type=module', '-e', script, runDir], {
     encoding: 'utf8',
     timeout: 60000,
   });
-  if (result.status === 0) return null;
-  const code = String(result.stderr || '').trim().split('\n').pop() || 'unknown error';
-  return `its manifest check failed (${code})`;
+  if (result.status !== 0) {
+    const code = String(result.stderr || '').trim().split('\n').pop() || 'unknown error';
+    return { problem: `its manifest check failed (${code})` };
+  }
+  try {
+    return { stability: JSON.parse(result.stdout) };
+  } catch {
+    return { problem: 'its manifest check failed (no snapshot comparison)' };
+  }
+}
+
+// Why the source snapshots the runner wrote around the run do not prove a
+// clean, unchanged checkout of the release commit, or null when they do.
+function sourceSnapshotProblem({ runDir, stability, revision, io }) {
+  const start = readRunJson(runDir, 'source-start.json', io);
+  const end = readRunJson(runDir, 'source-end.json', io);
+  for (const [name, snapshot] of [['source-start.json', start], ['source-end.json', end]]) {
+    if (!snapshot || typeof snapshot !== 'object') return `${name} is unreadable`;
+    if (snapshot.revision !== revision) {
+      return `${name} names ${String(snapshot.revision).slice(0, 12)}, not ${revision.slice(0, 12)}`;
+    }
+    if (snapshot.workingTree !== '') return `${name} records a dirty working tree`;
+    if (!snapshot.files || typeof snapshot.files !== 'object' || !Object.keys(snapshot.files).length) {
+      return `${name} has no source file map`;
+    }
+  }
+  if (stability?.sourceStable !== true) return 'its source file map changed during the run (source-start.json and source-end.json differ)';
+  if (stability.sourceClean !== true) return 'its source snapshots record a dirty working tree';
+  return null;
 }
 
 const SHA256 = /^[a-f0-9]{64}$/;
@@ -842,8 +875,8 @@ function testerArmyRunProblem({ runDir, end, evidence, release, revision, candid
     if (!existsSync(path.join(runDir, name))) return `${name} is missing`;
   }
   if (!existsSync(path.join(runDir, 'files.json'))) return 'files.json is missing';
-  const manifestProblem = verifyRunManifest(runDir);
-  if (manifestProblem) return manifestProblem;
+  const engine = verifyRunWithEngine(runDir);
+  if (engine.problem) return engine.problem;
   const command = Array.isArray(evidence.command) ? evidence.command.map(String) : null;
   if (!command || command[4] !== 'run') return 'evidence.json does not record a run command';
   const filter = command.find((arg) => TESTERARMY_SELECTION_FLAGS.has(arg));
@@ -851,6 +884,9 @@ function testerArmyRunProblem({ runDir, end, evidence, release, revision, candid
   if (!revision) return 'the current commit cannot be read';
   if (evidence.revision !== revision) return `it ran on ${String(evidence.revision).slice(0, 12)}, not ${revision.slice(0, 12)}`;
   if (evidence.workingTree !== '') return 'it ran on a modified working tree';
+  const snapshotProblem = sourceSnapshotProblem({ runDir, stability: engine.stability, revision, io });
+  if (snapshotProblem) return snapshotProblem;
+  // end.json is not in files.json: its stability is an extra condition only.
   if (end.stability?.sourceStable !== true || end.stability.sourceClean !== true) {
     return 'its source changed or was not clean during the run';
   }
@@ -992,50 +1028,6 @@ function getTesterArmyReleaseCheck({ prebuild, versionCode, spawn, env, ...io })
     status: 'blocked',
     details: `No TesterArmy run under ${TESTERARMY_ANDROID_RUNS} (${found.runs} run(s) found) qualified an installed ${TESTERARMY_RELEASE_PROFILE} build of ${EXPECTED_ANDROID_PACKAGE_NAME} versionCode ${versionCode} on ${revision ? revision.slice(0, 12) : 'the current commit'}.${found.rejected.length ? ` Rejected: ${found.rejected.join('; ')}.` : ''}`,
     remediation: `On an emulator, on this commit with a clean working tree and without --grep, --tag or --shard, ${TESTERARMY_RELEASE_COMMANDS}; the run must end with applicationQualified true and test the APK named by ${CANDIDATE_APK_ENV}.`,
-  };
-}
-
-// Real speech needs a person: the Maestro voice receipt is gone, and a person
-// runs the manual checklist instead. Qualification stays blocked until a
-// structured, passing record of that checklist exists for the candidate
-// versionCode (scripts/record-android-voice-checklist.js).
-function getVoiceChecklistCheck({ prebuild, versionCode, rootDir, existsSync, readFileSync }) {
-  const remediation = `Run the manual voice checklist of ${VOICE_MANUAL_CHECKLIST} on the Play-installed candidate, then record it with node scripts/record-android-voice-checklist.js --version-code ${versionCode || '<n>'} ... --all-steps-passed.`;
-  if (prebuild) {
-    return {
-      status: 'manual',
-      details: `Deferred until the candidate (versionCode ${versionCode || 'missing'}) is installed from Play.`,
-      remediation,
-    };
-  }
-  if (!versionCode) {
-    return {
-      status: 'blocked',
-      details: 'No candidate versionCode to match a voice checklist record against.',
-      remediation: 'Fix the Android release candidate versionCode check first.',
-    };
-  }
-  const recordPath = path.join(rootDir, VOICE_RECORD_PATH);
-  let record = null;
-  if (existsSync(recordPath)) {
-    try {
-      record = JSON.parse(readFileSync(recordPath, 'utf8'));
-    } catch {
-      record = null;
-    }
-  }
-  const problem = voiceRecordProblem(record, versionCode);
-  if (!problem) {
-    return {
-      status: 'pass',
-      details: `${VOICE_RECORD_PATH} records a passing manual voice checklist for versionCode ${versionCode} (${record.testedAt}, ${record.deviceId}).`,
-      remediation: 'None.',
-    };
-  }
-  return {
-    status: 'blocked',
-    details: `No passing manual voice checklist record for versionCode ${versionCode} in ${VOICE_RECORD_PATH}: ${problem}.`,
-    remediation,
   };
 }
 
@@ -1268,19 +1260,15 @@ function checkAndroidReleaseGates({
     testerArmyCheck.remediation
   );
 
-  const voiceCheck = getVoiceChecklistCheck({
-    prebuild,
-    versionCode: androidCandidateVersionCode,
-    rootDir,
-    existsSync,
-    readFileSync,
-  });
+  // Real speech needs a person: the automated voice receipt went with Maestro
+  // (owner decision 2026-10-14). The manual checklist is an optional test and
+  // does not block the release gate (owner decision 2026-10-17).
   addCheck(
     checks,
-    voiceCheck.status,
+    'manual',
     'Release voice transcription, save and analysis',
-    voiceCheck.details,
-    voiceCheck.remediation
+    `No automated check: real speech recognition needs a person speaking to the installed candidate (versionCode ${androidCandidateVersionCode || 'missing'}). Optional manual test, not blocking.`,
+    `Optionally run the manual voice checklist of ${VOICE_MANUAL_CHECKLIST} on the candidate and note its result with the release evidence.`
   );
 
   const adbCommand = resolveCommand('adb', { spawn, existsSync, env, platform });
