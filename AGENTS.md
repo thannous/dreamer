@@ -2,6 +2,15 @@
 
 Noctalia is an Expo/React Native dream-journal app with a Supabase backend and a generated multilingual marketing site.
 
+## Shared instructions for every agent
+
+Use `AGENTS.md` as the single source of project instructions for every agent,
+including Codex, Claude and other assistants. This root guide carries the shared
+rules; [Meditation's AGENTS.md](apps/meditation/AGENTS.md) adds the rules specific
+to that subproject. Read both when working on Meditation. Keep specialized
+product and QA guidance in their linked documents, and keep role prompts and
+skills aligned with these guides instead of maintaining provider-specific copies.
+
 Start with the [repository task index](doc_web_interne/docs/README.md) for feature
 entry points and current guides. Run `mise exec -- npm run scripts:list` for the
 command catalog; [scripts/README.md](scripts/README.md) explains prerequisites and effects.
@@ -36,7 +45,7 @@ Production for the Vercel app and for https://noctalia.app is manual. A push to 
   own Expo Router root, `routes/lucid/` (`routes/lucid/lucid/`); Dreamer's `app/`
   no longer contains them, and its lucid ritual opens the Lucid app. Read
   `specs/noctalia-lucid-trainer.md` for its scope and sleep/wellbeing safeguards.
-- Meditation is a separate package at `apps/meditation/`; read its local guide
+- Meditation is a separate package at `apps/meditation/`; read its [local AGENTS.md](apps/meditation/AGENTS.md)
   and run its commands there. Its theme and service paths replace journal-specific paths.
 - Device scope follows the current requested product and work package. The TI-429
   VNext base-package rule ended with its harness (retired 2026-10-14, see Project Rules).
@@ -291,7 +300,7 @@ Choose validation by the behavior and risk changed, not by the number of files o
 - Missing native evidence stays unqualified; do not replace it with repeated unit tests or claim a mock proves persistence or production behavior.
 - For TalkBack qualification, follow [the short Motorola protocol](doc_web_interne/docs/qualification-talkback.md): validate focus/gesture/audio measurement with a short pilot before a full journey, distinguish keyboard/ADB evidence from physical gestures, and restore/re-read device settings even after failure. For a requested fix, continue from the reproduced defect to correction and the authorized retest.
 
-See [the proportional validation guide](doc_web_interne/docs/validation-proportionnee.md) for examples. Available commands, selected according to the risk above:
+For a substantial change, follow the [focused review procedure](doc_web_interne/docs/validation-proportionnee.md#revue-ciblée-et-convergente): one independent review of the final diff and its evidence, then review the corrections rather than restarting the whole review. Available commands, selected according to the risk above:
 
 - Tests: `npm run test:related -- <files>`, `npm run test:file -- <test-files>`, `npm run test:changed`, or `npm test` when broader coverage is justified.
 - Types and lint: `npm run typecheck:app`, `npm run typecheck:tests`, `npx expo lint <touched-paths>`, `npm run lint`.
