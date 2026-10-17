@@ -65,7 +65,15 @@ const EDGE = ['supabase/functions/', 'supabase/lib/', 'supabase/migrations/', 'd
 // The EAS workflow contracts. These suites read .eas/workflows and eas.json as
 // files, so Jest's related-test selection (jest-changed) never picks them when
 // only a workflow changes.
-const EAS_WORKFLOWS = ['.eas/workflows/', 'eas.json', 'scripts/check-android-release-ref.js', 'scripts/check-android-release-gates.js'];
+// The release gate also loads the TesterArmy evidence engine
+// (tools/e2e/qualification.mjs verifyEvidenceFiles and compareSnapshots).
+const EAS_WORKFLOWS = [
+  '.eas/workflows/',
+  'eas.json',
+  'scripts/check-android-release-ref.js',
+  'scripts/check-android-release-gates.js',
+  'tools/e2e/qualification.mjs',
+];
 const EAS_WORKFLOW_CONTRACTS = [
   'npm run test:file --',
   'scripts/android-release-smoke-workflow.test.js',
@@ -182,6 +190,7 @@ export default {
     // The release guards eas-workflow-contracts tests, and its suites.
     'scripts/check-android-release-ref.js',
     'scripts/check-android-release-gates.js',
+    'tools/e2e/qualification.mjs',
     'scripts/android-release-smoke-workflow.test.js',
     'scripts/check-android-release-ref.test.js',
     'scripts/check-android-release-gates.test.js',
@@ -208,7 +217,6 @@ export default {
     'scripts/test-seed-users.mjs',
     'scripts/test-auth-setup.mjs',
     'scripts/start-branch-e2e.mjs',
-    'scripts/maestro-branch-sign-in.mjs',
     'scripts/test-test-seed-auth.mjs',
     // The Expo runner re-checks a guarded branch run (marker from start-branch-e2e).
     'scripts/expo-safe-runner.js',
@@ -273,8 +281,6 @@ export default {
         'supabase/migrations/20260722124500_add_ai_sync_admission_control.sql',
         'supabase/functions/api/services/aiAdmission.ts',
         'supabase/functions/api/services/storage.ts',
-        'maestro/e2e-account-sign-in.yml',
-        'maestro/subflows/**',
         'playwright.branch.config.ts',
         '.gitignore',
         // The production ref is pinned against app.json.

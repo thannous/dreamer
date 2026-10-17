@@ -23,7 +23,8 @@ for a manual or API trigger (GitHub App
 - `supabase/functions/`, `supabase/migrations/`: Edge Functions and database changes.
 - `docs-src/`: editable marketing-site source. Follow `docs-src/README.md`.
 - `docs/`: ignored generated output; never edit or commit it. Rebuild it from `docs-src/`.
-- `data/`, `scripts/`, `maestro/`: generator inputs, tooling, and Android E2E flows.
+- `data/`, `scripts/`: generator inputs and tooling.
+- `tools/e2e/`: TesterArmy E2E journeys (web, emulator, Simulator) and their runner.
 - `tests/` and colocated `__tests__/`: route, integration, unit, and performance tests.
 - `doc_web_interne/docs/`: internal runbooks, QA evidence, and plans.
 
@@ -38,7 +39,7 @@ Production for the Vercel app and for https://noctalia.app is manual. A push to 
 - Meditation is a separate package at `apps/meditation/`; read its local guide
   and run its commands there. Its theme and service paths replace journal-specific paths.
 - Device scope follows the current requested product and work package. The TI-429
-  VNext base-package decision applies to that historical harness, not all future QA.
+  VNext base-package rule ended with its harness (retired 2026-10-14, see Project Rules).
   Resolve an app-specific profile and owned data before device work; do not reuse
   Dreamer's allowlist for Lucid or Meditation. Missing access does not block local work.
 - Do not send private project content to free third-party inference endpoints.
@@ -180,14 +181,14 @@ Sprint deliverables and success criteria: [four process improvements](doc_web_in
 
 ## Project Rules
 
-- For the Dreamer VNext goal, Motorola validations run only against the base app
-  `com.tanuki75.noctalia` / scheme `noctalia`, never a `.qa` app; distinguish local-build vs Play
-  install source and verify signature/version before any install; never uninstall or clear app
-  data to force an install. An older goal text mentioning a QA device does not override this
-  user decision.
-  This restriction belongs to TI-429's base-app measurement scope. Other requested native
-  QA may use a separate owned app/profile through its canonical runner when data ownership
-  and signing are established; it must not claim base/Play equivalence or bypass TI-429 guards.
+- TI-429's Maestro harness (Dreamer VNext measurements on the Motorola, base app only) was
+  retired with Maestro on 2026-10-14: it drove a physical phone, which TesterArmy's owned
+  emulator/Simulator targets exclude, so its base-app-only rule no longer restricts automated
+  QA. What stays: on the base app `com.tanuki75.noctalia` (a personal or
+  Play-installed phone), distinguish local-build vs Play install source and verify
+  signature/version before any install, and never uninstall or clear app data to force an
+  install. Native QA runs on an owned emulator/Simulator or separate owned app/profile through
+  TesterArmy (`tools/e2e/`) and must not claim base/Play equivalence.
 - Start with `git status --short`; preserve all unrelated and pre-existing changes.
 - Read applicable local instructions and the implementation or tests needed to understand
   the requested change. Consult specialized references when the affected behavior requires
@@ -243,11 +244,11 @@ Faits propres à ce dépôt, pas des règles (la règle est la section [Livraiso
 
 
 - `npm run verify:pr` lance ici : tests du moteur, `typecheck:app`, `typecheck:tests`, `lint`, `lint:scripts`, tests Jest liés au diff (`test:changed`), contrats statiques de la base ; selon les chemins changés, `docs:build` et `docs:check` (site), tests du classificateur CircleCI (`.circleci/`), versions mobiles épinglées (`mobile-release.js verify`), Meditation (`apps/meditation`, demande `npm ci` dans `apps/meditation` du checkout principal) et Edge Functions sous Deno. `npm run verify:release` relance tout sur le commit livré de `master` et y ajoute les contrôles `release` de `verify-local.config.mjs` (validation complète locale), le site et l'app web reconstruits pour ce commit. `npm run verify:release:site` fait la même course sans les contrôles de la cible `app` (build de l'app web, `e2e-backend`, campagnes TesterArmy Dreamer, Lucid et Meditation) : elle suffit pour publier le site seul, pas l'app.
-- Contrôles spécialisés : Edge Functions sous Deno (`edge-functions`, quand `supabase/functions`, `supabase/lib`, `supabase/migrations` ou `deno.lock` changent ; toujours en publication) ; base et navigateur (`e2e-backend` : Supabase local sous Docker et Chromium, en publication de l'app) ; navigateur (`testerarmy-*` : campagne TesterArmy du site à chaque publication ; Dreamer en quatre passes, Lucid et Meditation en publication de l'app). Lance-les en local là où tu lances `verify:pr` ; si cette machine ne peut pas, passe `--external <contrôle>="owner-machine: <hôte> <note> on <SHA>"` depuis la machine qui les a lancés ; tant que la preuve est `incomplete`, ne pousse pas et signale-le comme bloquant. Les vérifications sur appareil, Maestro et les builds EAS restent hors de ces commandes (voir Delivery and QA Continuity) ; un build EAS demande le feu vert explicite du propriétaire.
+- Contrôles spécialisés : Edge Functions sous Deno (`edge-functions`, quand `supabase/functions`, `supabase/lib`, `supabase/migrations` ou `deno.lock` changent ; toujours en publication) ; base et navigateur (`e2e-backend` : Supabase local sous Docker et Chromium, en publication de l'app) ; navigateur (`testerarmy-*` : campagne TesterArmy du site à chaque publication ; Dreamer en quatre passes, Lucid et Meditation en publication de l'app). Lance-les en local là où tu lances `verify:pr` ; si cette machine ne peut pas, passe `--external <contrôle>="owner-machine: <hôte> <note> on <SHA>"` depuis la machine qui les a lancés ; tant que la preuve est `incomplete`, ne pousse pas et signale-le comme bloquant. Les vérifications sur appareil, les parcours TesterArmy natifs et les builds EAS restent hors de ces commandes (voir Delivery and QA Continuity) ; un build EAS demande le feu vert explicite du propriétaire.
 - CI : aucune CI externe n'est exigée. CircleCI ne tourne que sur un lancement API ou manuel (`pipeline.event.name` ou `pipeline.trigger.type` à `api`, ou `force_full_validation`) ; les EAS Workflows de `.eas/workflows/` (`e2e-test-android`, `e2e-test-ios`, `android-release-smoke`, `android-release-qualification`) ne se lancent que par `workflow_dispatch`, plus sur une PR ni sur un tag `v*` ; les deux workflows de release exigent l'entrée `release_tag` et se lancent depuis l'étiquette (`eas workflow:run <fichier> --ref vX.Y.Z -F release_tag=vX.Y.Z` ; sans `--ref`, la CLI envoie le dossier local) ; `scripts/check-android-release-ref.js` compare l'étiquette à `app.json`, échoue si elle manque, et échoue si EAS fournit une ref qui n'est pas cette étiquette. Le propriétaire coupe la livraison du webhook CircleCI et les aperçus Git Cloudflare Pages `noctalia` dans leurs tableaux de bord.
 - Moteur : les étapes lourdes (installations, contrôles) prennent le verrou de la machine `/tmp/fleet-verify-heavy.lock` (`flock`) ; un second `verify` sur la même machine attend (« waiting for lock ») ; sans `flock` (macOS par exemple), les étapes tournent sans verrou et le run le dit ; un contrôle tué par un signal compte comme échoué. `externalSources: []` dans `verify-local.config.mjs` : aucun lien `https://` n'est accepté par `--external`, seule une preuve `owner-machine: <hôte> <note> on <SHA>` compte.
 - Publication du site en production : `npm run docs:deploy:prod` refuse, sans aucune option de contournement, sauf si `HEAD` est `origin/master` après `git fetch`, si le checkout est propre et si une preuve `release` passée de `npm run verify:release:site` (ou de `npm run verify:release`) existe pour l'arbre de `HEAD` et ce commit (`scripts/check-site-publish-proof.mjs`, via `checkReleaseProof` du moteur) ; juste avant l'envoi, la garde refait le fetch et tous les contrôles, et doit retrouver le même `HEAD`, qui étiquette l'envoi. `npm run web:deploy:prod` (app web Vercel) passe par la même garde, deux fois, avant le déploiement Vercel de production, et exige en plus que la preuve couvre la cible `app`, c'est-à-dire celle de `npm run verify:release`. L'aperçu (`npm run docs:deploy:preview`) n'est pas gardé, mais n'accepte que la branche d'aperçu exacte `preview` (comparaison octet par octet) et refuse toute autre valeur.
-- Connexion de test partagée ([doc](doc_web_interne/docs/test-login.md)) : cible = branche Supabase persistante `e2e` de la production (pas encore créée, allowlist vide, donc tout refuse). `npm run test:seed-users` (crée ou remet à zéro `e2e+free@` / `e2e+premium@`, premium via `apply_subscription_state_update`), `npm run test:auth-setup` (connexion par mot de passe, sessions Playwright dans `.auth/<compte>.json`), `npm run test:e2e:branch` (suite Playwright optionnelle, serveur `scripts/start-branch-e2e.mjs`) et `npm run test:e2e:branch:mobile -- <free|premium>` (Maestro `maestro/e2e-account-sign-in.yml`, identifiants chargés depuis `.env.test.local` par le script, Metro dans un autre terminal). `supabase/config.toml` n'est pas modifié : la branche se règle dans le tableau de bord, sans intégration GitHub. Tout script qui écrit des comptes de test ou s'y connecte passe d'abord par `scripts/test-supabase-guard.mjs` (`runGuarded`), avant tout appel réseau : refus du projet de production `usuyppgsmmowzizhaoqj`, de toute ref absente de `scripts/test-supabase-targets.json` (vide : tout est refusé) et de tout e-mail autre que `e2e+free@<domaine>` / `e2e+premium@<domaine>`, sans contournement. Identifiants uniquement dans `.env.test.local` (ignoré par Git, noms dans `.env.test.example` : `E2E_SUPABASE_URL`, `E2E_SUPABASE_PROJECT_REF`, `E2E_SUPABASE_ANON_KEY`, `E2E_SUPABASE_SERVICE_ROLE_KEY`, `E2E_ACCOUNT_DOMAIN`, `E2E_FREE_PASSWORD`, `E2E_PREMIUM_PASSWORD`), jamais en `EXPO_PUBLIC_*`. `npm run test:env:check` vérifie la cible sans requête. Les sessions iront dans `.auth/` (ignoré).
+- Connexion de test partagée ([doc](doc_web_interne/docs/test-login.md)) : cible = branche Supabase persistante `e2e` de la production (pas encore créée, allowlist vide, donc tout refuse). `npm run test:seed-users` (crée ou remet à zéro `e2e+free@` / `e2e+premium@`, premium via `apply_subscription_state_update`), `npm run test:auth-setup` (connexion par mot de passe, sessions Playwright dans `.auth/<compte>.json`), `npm run test:e2e:branch` (suite Playwright optionnelle, serveur `scripts/start-branch-e2e.mjs`) ; pas de parcours mobile pour l'instant : `test:e2e:branch:mobile` (Maestro) a été retiré le 2026-10-14 sans avoir pu tourner (allowlist vide), et un parcours TesterArmy natif sera écrit quand la branche existera. `supabase/config.toml` n'est pas modifié : la branche se règle dans le tableau de bord, sans intégration GitHub. Tout script qui écrit des comptes de test ou s'y connecte passe d'abord par `scripts/test-supabase-guard.mjs` (`runGuarded`), avant tout appel réseau : refus du projet de production `usuyppgsmmowzizhaoqj`, de toute ref absente de `scripts/test-supabase-targets.json` (vide : tout est refusé) et de tout e-mail autre que `e2e+free@<domaine>` / `e2e+premium@<domaine>`, sans contournement. Identifiants uniquement dans `.env.test.local` (ignoré par Git, noms dans `.env.test.example` : `E2E_SUPABASE_URL`, `E2E_SUPABASE_PROJECT_REF`, `E2E_SUPABASE_ANON_KEY`, `E2E_SUPABASE_SERVICE_ROLE_KEY`, `E2E_ACCOUNT_DOMAIN`, `E2E_FREE_PASSWORD`, `E2E_PREMIUM_PASSWORD`), jamais en `EXPO_PUBLIC_*`. `npm run test:env:check` vérifie la cible sans requête. Les sessions iront dans `.auth/` (ignoré).
 
 ## Validation
 
@@ -297,7 +298,7 @@ See [the proportional validation guide](doc_web_interne/docs/validation-proporti
 - Jest projects: `npm run test:node`, `npm run test:expo`; performance: `npm run test:perf`. If Watchman is blocked, rerun focused Jest checks with `--watchman=false`.
 - Site: edit sources only, then run `npm run docs:build` and `npm run docs:check`; reserve `npm run docs:release-check` for release-ready work. `docs:build` includes the `docs-src/experience/` bundle. Use `npm run docs:dev` for live editing.
 - Backend: `npm run db:contract:check` or `npm run db:contract:check:local`.
-- Android: `npm run android:gates`, `npm run security:audit:mobile`, and the smallest applicable `test:e2e:*` script; `test:e2e:android:all` is not the default.
+- Android: `npm run android:gates`, `npm run security:audit:mobile`, and the smallest applicable TesterArmy native selection (`npm run test:testerarmy:mobile -- <product> android` with `--grep`).
 
 Commit source inputs and tracked manifests, never generated `docs/`. Deployment commands always require explicit publication intent.
 
@@ -372,7 +373,7 @@ TesterArmy remains the default. Existing coverage protects current functional co
 historical counterexamples inform work but do not freeze obsolete UI or block adoption
 automatically. Preserve the old result and explain any revised expectation or retired
 criterion against the current product contract. Keep the existing CI jobs and local checks
-until an explicit reviewed pipeline change; retain still-relevant Playwright/Maestro/API assertions until their
+until an explicit reviewed pipeline change; retain still-relevant Playwright/API assertions until their
 replacement passes. A compatible framework upgrade within the requested work may be
 piloted on a representative journey, pinned and adopted after its checks pass without
 another generic permission request. Keep model
@@ -385,7 +386,17 @@ select the other web products. For a native installed Release build use
 `E2E_DEVICE=<emulator-serial> npm run test:testerarmy:mobile -- <product> android`
 or an explicitly named iOS Simulator with `<product> ios`. Product is dreamer,
 lucid or meditation. Run setup/browser installation once through package scripts.
-Existing `test:e2e:*` scripts remain compatibility/coverage gates.
+Maestro was retired on 2026-10-14 (owner decision): the Android release evidence is a
+local TesterArmy run of a `production-apk` Release build on an emulator, which
+`npm run android:gates:strict` requires for the candidate versionCode, commit and APK.
+The gate derives stability and cleanliness from the run's `source-start.json` and
+`source-end.json` (same release commit, empty working trees, equal file maps);
+`end.json` is not in the run manifest, so it is only an extra condition.
+Owner decision 2026-10-17 (thanh): the Android real voice check is an optional
+manual test and does not block the release gate; `android:gates:strict` lists it
+as `manual`, which passes. Real voice and
+RevenueCat Test Store purchases follow the manual checklists of
+`doc_web_interne/docs/android-expo57-qa-runbook.md` and `doc_web_interne/docs/revenuecat-qa-workflow.md`.
 
 
 For native inspection/exploration, use the official `agent-device` skill with

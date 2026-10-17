@@ -257,7 +257,7 @@ Validations relancées sur l’état consolidé :
 | `git diff --check` | Passe |
 | Audit sécurité mobile | 0 fail, 6 warnings, 3 manuels, 14 pass |
 
-Les gates Android générales du dépôt donnent `10 pass, 1 fail, 4 blocked, 4 manual`. Elles ne prouvent pas le compagnon Lucid : aucun appareil n’était connecté, Maestro était absent et les états Play/RevenueCat n’étaient pas finalisés.
+Les gates Android générales du dépôt donnent `10 pass, 1 fail, 4 blocked, 4 manual`. Elles ne prouvent pas le compagnon Lucid : aucun appareil n’était connecté, Maestro (retiré le 2026-10-14) était absent et les états Play/RevenueCat n’étaient pas finalisés.
 
 ### Limites des preuves
 

@@ -90,7 +90,6 @@ if (unknownArgs.length > 0) {
 }
 
 const EXPECTED = {
-  purchaseApproval: 'I_APPROVE_TEST_STORE_PURCHASE',
   testStoreKey: 'test_zqltcBoDiTWPWmuyXTXTbYkJPrz',
   playStoreKey: 'goog_BFWJqTqAtQUnwYisczZcZrnsanw',
   entitlement: 'Noctalia Plus',
@@ -828,22 +827,10 @@ const mockEnv = readEnv('.env.mock');
 const testStoreEnv = readEnv('.env.teststore');
 const playStoreEnv = fs.existsSync(path.join(ROOT, '.env.playstore')) ? readEnv('.env.playstore') : {};
 const subscriptionConstants = read('constants/subscription.ts');
-const purchaseRunner = read('scripts/run-subscription-teststore-purchase.js');
 const apkBuildRunner = read('scripts/build-android-apk.js');
-const restoreRunner = fs.existsSync(path.join(ROOT, 'scripts/run-subscription-teststore-restore.js'))
-  ? read('scripts/run-subscription-teststore-restore.js')
-  : '';
-const accountSwitchRunner = fs.existsSync(path.join(ROOT, 'scripts/run-subscription-account-switch.js'))
-  ? read('scripts/run-subscription-account-switch.js')
-  : '';
-const authenticatedTestStorePaywallFlowPath =
-  'maestro/subscription-teststore-paywall-auth.yml';
-const authenticatedTestStorePaywallFlow = fs.existsSync(
-  path.join(ROOT, authenticatedTestStorePaywallFlowPath)
-)
-  ? read(authenticatedTestStorePaywallFlowPath)
-  : '';
-const maestroRunner = read('scripts/run-maestro-android.js');
+const mockBillingJourneysPath = 'tools/e2e/tests/dreamer-billing.web.e2e.ts';
+const manualTestStoreChecklistPath = 'doc_web_interne/docs/revenuecat-qa-workflow.md';
+const manualTestStoreChecklistHeading = '## 2. RevenueCat Test Store : checklist manuelle';
 const evidenceExample = readJson('doc_web_interne/docs/revenuecat-qa-evidence.example.json');
 const gitignore = read('.gitignore');
 const evidenceResult = readEvidenceResult();
@@ -906,96 +893,15 @@ const checks = [
     EXPECTED.offering
   ),
   check(
-    'Subscription QA Maestro flow exists',
-    fs.existsSync(path.join(ROOT, 'maestro/subscription-qa-lab.yml')),
-    'maestro/subscription-qa-lab.yml'
+    'Mock subscription scenarios have TesterArmy journeys',
+    fs.existsSync(path.join(ROOT, mockBillingJourneysPath)),
+    mockBillingJourneysPath
   ),
   check(
-    'Test Store readiness Maestro flow exists',
-    fs.existsSync(path.join(ROOT, 'maestro/subscription-teststore-readiness.yml')),
-    'maestro/subscription-teststore-readiness.yml'
-  ),
-  check(
-    'Authenticated Test Store paywall flow exists',
-    Boolean(authenticatedTestStorePaywallFlow) &&
-      pkg.scripts['test:e2e:release:teststore:paywall:local'] ===
-        'node ./scripts/run-maestro-android.js --suite release-teststore-paywall --retries 0 --no-start-metro' &&
-      maestroRunner.includes("'release-teststore-paywall':") &&
-      maestroRunner.includes(authenticatedTestStorePaywallFlowPath) &&
-      authenticatedTestStorePaywallFlow.includes('text.subscription.qa.mode') &&
-      authenticatedTestStorePaywallFlow.includes('packages 2.*') &&
-      authenticatedTestStorePaywallFlow.includes('btn.paywall.selectMonthly') &&
-      authenticatedTestStorePaywallFlow.includes('btn.paywall.selectAnnual') &&
-      authenticatedTestStorePaywallFlow.includes('btn.paywall.purchase') &&
-      authenticatedTestStorePaywallFlow.includes('btn.paywall.restore') &&
-      !/- tapOn:\s*\n\s+id: btn\.paywall\.(?:purchase|restore)/.test(
-        authenticatedTestStorePaywallFlow
-      ),
-    `${authenticatedTestStorePaywallFlowPath} verifies Test Store mode, two packages and the real paywall without a transaction`
-  ),
-  check(
-    'Guarded Test Store purchase flow exists',
-    fs.existsSync(path.join(ROOT, 'maestro/subscription-teststore-purchase-manual.yml')) &&
-      fs.existsSync(path.join(ROOT, 'scripts/run-subscription-teststore-purchase.js')) &&
-      purchaseRunner.includes('test:e2e:release:teststore:local') &&
-      purchaseRunner.includes('A specific QA target is required'),
-    'maestro/subscription-teststore-purchase-manual.yml via scripts/run-subscription-teststore-purchase.js'
-  ),
-  check(
-    'Google Test Store purchase flow exists',
-    fs.existsSync(path.join(ROOT, 'maestro/subscription-teststore-purchase-google-manual.yml')) &&
-      purchaseRunner.includes('REVENUECAT_QA_AUTH') &&
-      purchaseRunner.includes('subscription-teststore-purchase-google-manual.yml') &&
-      read('maestro/subscription-teststore-purchase-google-manual.yml').includes('QA_EMAIL_REGEX') &&
-      !read('maestro/subscription-teststore-purchase-google-manual.yml').includes('QA_EMAIL}.*'),
-    'REVENUECAT_QA_AUTH=google -> maestro/subscription-teststore-purchase-google-manual.yml'
-  ),
-  check(
-    'Test Store restore flow exists',
-    fs.existsSync(path.join(ROOT, 'maestro/subscription-teststore-restore-google-manual.yml')) &&
-      fs.existsSync(path.join(ROOT, 'scripts/run-subscription-teststore-restore.js')) &&
-      restoreRunner.includes('I_APPROVE_TEST_STORE_RESTORE') &&
-      restoreRunner.includes('test:e2e:release:teststore:local') &&
-      pkg.scripts['test:e2e:subscription-teststore:restore:preflight']?.includes('--preflight'),
-    'maestro/subscription-teststore-restore-google-manual.yml via guarded standalone Release restore runner'
-  ),
-  check(
-    'Test Store signout guard exists',
-    fs.existsSync(path.join(ROOT, 'maestro/subscription-teststore-signout-guard.yml')),
-    'maestro/subscription-teststore-signout-guard.yml'
-  ),
-  check(
-    'Account switch email flow exists',
-    fs.existsSync(path.join(ROOT, 'maestro/subscription-teststore-account-switch-free-email-manual.yml')) &&
-      fs.existsSync(path.join(ROOT, 'scripts/run-subscription-account-switch.js')) &&
-      accountSwitchRunner.includes('REVENUECAT_QA_SWITCH_FREE_EMAIL') &&
-      accountSwitchRunner.includes('REVENUECAT_QA_EMAIL') &&
-      accountSwitchRunner.includes('test:e2e:release:teststore:local') &&
-      pkg.scripts['test:e2e:subscription-teststore:account-switch:preflight']?.includes('--preflight'),
-    'REVENUECAT_QA_SWITCH_FREE_EMAIL -> maestro/subscription-teststore-account-switch-free-email-manual.yml'
-  ),
-  check(
-    'Transactional Test Store flows use standalone Release',
-    [
-      'maestro/subscription-teststore-purchase-manual.yml',
-      'maestro/subscription-teststore-purchase-google-manual.yml',
-      'maestro/subscription-teststore-restore-google-manual.yml',
-      'maestro/subscription-teststore-account-switch-free-email-manual.yml',
-    ].every((flow) => {
-      const source = read(flow);
-      return !source.includes('open-mock-app.yml') &&
-        !source.includes('expo-development-client') &&
-        !source.includes('10.0.2.2') &&
-        source.includes('open-release-app-');
-    }),
-    'purchase, restore and account-switch run from an installed Release bundle with Metro disabled'
-  ),
-  check(
-    'Test Store purchase preflight exists',
-    purchaseRunner.includes('--preflight') &&
-      purchaseRunner.includes('Test Store purchase preflight passed') &&
-      pkg.scripts['test:e2e:subscription-teststore:purchase:preflight']?.includes('--preflight'),
-    'npm run test:e2e:subscription-teststore:purchase:preflight'
+    'Manual Test Store checklist exists',
+    fs.existsSync(path.join(ROOT, manualTestStoreChecklistPath)) &&
+      read(manualTestStoreChecklistPath).includes(manualTestStoreChecklistHeading),
+    `${manualTestStoreChecklistPath}: readiness, paywall, purchase, restore and account switch on an installed Release`
   ),
   check(
     'Local subscription QA verifier exists',
@@ -1201,91 +1107,77 @@ const scenarios = [
     'Mock guest',
     'No account',
     'Guest quotas, paywall CTA to auth',
-    'maestro/subscription-qa-lab.yml',
+    'TesterArmy Dreamer web journeys on mock billing (tools/e2e/tests/dreamer-billing, dreamer-journeys, dreamer-plus-channels)',
   ],
   [
     'Automated',
     'Mock new free',
     'Mock service',
     'Free tier, no entitlement, quota-limited',
-    'maestro/subscription-qa-lab.yml',
+    'TesterArmy Dreamer web journeys on mock billing (tools/e2e/tests/dreamer-billing, dreamer-journeys, dreamer-plus-channels)',
   ],
   [
     'Automated',
     'Mock existing free',
     'Mock service',
     'Dream history, quota-limited, paywall opens',
-    'maestro/subscription-qa-lab.yml',
+    'TesterArmy Dreamer web journeys on mock billing (tools/e2e/tests/dreamer-billing, dreamer-journeys, dreamer-plus-channels)',
   ],
   [
     'Automated',
     'Mock monthly',
     'Mock service',
     'Plus active, product mock_monthly, unlimited quotas',
-    'maestro/subscription-qa-lab.yml',
+    'TesterArmy Dreamer web journeys on mock billing (tools/e2e/tests/dreamer-billing, dreamer-journeys, dreamer-plus-channels)',
   ],
   [
     'Automated',
     'Mock annual',
     'Mock service',
     'Plus active, product mock_annual, unlimited quotas',
-    'maestro/subscription-qa-lab.yml',
+    'TesterArmy Dreamer web journeys on mock billing (tools/e2e/tests/dreamer-billing, dreamer-journeys, dreamer-plus-channels)',
   ],
   [
     'Automated',
     'Mock cancelled',
     'Mock service',
     'Plus active, willRenew=false, expiry visible',
-    'maestro/subscription-qa-lab.yml',
+    'TesterArmy Dreamer web journeys on mock billing (tools/e2e/tests/dreamer-billing, dreamer-journeys, dreamer-plus-channels)',
   ],
   [
     'Automated',
     'Mock expired',
     'Mock service',
     'Free inactive, expired date visible',
-    'maestro/subscription-qa-lab.yml',
-  ],
-  [
-    'Automated',
-    'Test Store readiness',
-    'RevenueCat Test Store',
-    'Offering packages and prices load without purchase',
-    'maestro/subscription-teststore-readiness.yml',
-  ],
-  [
-    'Automated',
-    'Authenticated Test Store paywall',
-    'RevenueCat Test Store',
-    'Test Store mode, two packages, monthly/annual and purchase/restore controls without a transaction',
-    authenticatedTestStorePaywallFlowPath,
+    'TesterArmy Dreamer web journeys on mock billing (tools/e2e/tests/dreamer-billing, dreamer-journeys, dreamer-plus-channels)',
   ],
   [
     'Manual purchase gate',
     'Test Store monthly',
     'RevenueCat Test Store',
     'Package $rc_monthly -> product monthly',
-    'Requires signed-in test user and explicit purchase approval',
+    'Manual Test Store checklist (readiness, paywall, purchase) with a signed-in test user, then structured evidence',
   ],
   [
     'Manual purchase gate',
     'Test Store annual',
     'RevenueCat Test Store',
     'Package $rc_annual -> product yearly',
-    'Requires signed-in test user and explicit purchase approval',
+    'Manual Test Store checklist (readiness, paywall, purchase) with a signed-in test user, then structured evidence',
   ],
   [
     'Manual purchase gate',
     'Restore after reinstall',
     'Test Store or Play',
     'Same app user id restores entitlement',
-    'maestro/subscription-teststore-restore-google-manual.yml plus structured evidence',
+    'Manual Test Store checklist (restore after reinstall) plus structured evidence',
   ],
   [
     'Manual purchase gate',
     'Account switch',
     'Test Store or Play',
     'Plus user logout does not leak to free user',
-    'maestro/subscription-teststore-signout-guard.yml covers logout/no-leak; run test:e2e:subscription-teststore:account-switch with a second real email account to close this gate',
+    'Manual Test Store checklist (account switch) with a second real email account, then structured evidence',
   ],
   [
     'External store gate',
@@ -1481,11 +1373,6 @@ const runtimeReadiness = [
     `REVENUECAT_QA_AUTH=${testStoreAuthMode}, REVENUECAT_QA_EMAIL=${envState('REVENUECAT_QA_EMAIL')}, REVENUECAT_QA_PASSWORD=${envState(
       'REVENUECAT_QA_PASSWORD'
     )}`,
-  ],
-  [
-    process.env.REVENUECAT_QA_APPROVAL === EXPECTED.purchaseApproval ? 'READY' : 'NOT SET',
-    'Test Store purchase approval',
-    'Required only before a guarded Test Store purchase; preflight must not require approval',
   ],
   [
     process.env.REVENUECAT_QA_SWITCH_FREE_EMAIL && process.env.REVENUECAT_QA_SWITCH_FREE_PASSWORD

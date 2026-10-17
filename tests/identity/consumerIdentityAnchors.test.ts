@@ -11,13 +11,6 @@ const buildAndroidReleaseLocal = require('../../scripts/build-android-release-lo
   PRODUCTION_ANDROID_PACKAGE: string;
 };
 
-const runMaestroAndroid = require('../../scripts/run-maestro-android.js') as {
-  PRODUCTION_ANDROID_APP_ID: string;
-  QA_ANDROID_APP_ID: string;
-  PRODUCTION_DEEP_LINK_SCHEME: string;
-  QA_DEEP_LINK_SCHEME: string;
-};
-
 describe('consumer identity anchors', () => {
   const dreamProduction = getNoctaliaIdentity('dream', 'production');
   const dreamQa = getNoctaliaIdentity('dream', 'qa');
@@ -43,14 +36,5 @@ describe('consumer identity anchors', () => {
     expect(buildAndroidReleaseLocal.DREAMER_QA_ANDROID_PACKAGE).toBe(
       dreamQa.androidApplicationId
     );
-  });
-
-  it('keeps the Maestro Android runner on the Dream production and QA matrix rows', () => {
-    expect(runMaestroAndroid.PRODUCTION_ANDROID_APP_ID).toBe(
-      dreamProduction.androidApplicationId
-    );
-    expect(runMaestroAndroid.QA_ANDROID_APP_ID).toBe(dreamQa.androidApplicationId);
-    expect(runMaestroAndroid.PRODUCTION_DEEP_LINK_SCHEME).toBe(dreamProduction.scheme);
-    expect(runMaestroAndroid.QA_DEEP_LINK_SCHEME).toBe(dreamQa.scheme);
   });
 });

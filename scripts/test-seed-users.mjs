@@ -16,8 +16,9 @@ import { readTestEnv, runGuarded } from './test-supabase-guard.mjs';
 const PAGE_SIZE = 200;
 const MAX_PAGES = 50;
 const MIN_PASSWORD_LENGTH = 12;
-// Printable ASCII without spaces: Maestro inputText cannot type Unicode on
-// Android, so a fixture password must be enterable by the mobile flow too.
+// Printable ASCII without spaces: Android text input from a test driver
+// (adb input text) cannot type Unicode, so a fixture password must stay
+// enterable by the future native sign-in journey too.
 export const PASSWORD_PATTERN = /^[\x21-\x7E]+$/;
 
 export const TIER_STATE = Object.freeze({
@@ -36,7 +37,7 @@ export function readSeedSecrets(env) {
       throw new Error(`test-seed-users: E2E_${tier.toUpperCase()}_PASSWORD must be at least ${MIN_PASSWORD_LENGTH} characters. Nothing was sent.`);
     }
     if (!PASSWORD_PATTERN.test(password)) {
-      throw new Error(`test-seed-users: E2E_${tier.toUpperCase()}_PASSWORD must use printable ASCII without spaces (Maestro cannot type other characters on Android). Nothing was sent.`);
+      throw new Error(`test-seed-users: E2E_${tier.toUpperCase()}_PASSWORD must use printable ASCII without spaces (Android test drivers cannot type other characters). Nothing was sent.`);
     }
   }
   return secrets;

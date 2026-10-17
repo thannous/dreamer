@@ -168,7 +168,7 @@ describe('immersive home journey', () => {
     }
   );
 
-  it('preserves the Maestro screen anchor and opens the single recommended ritual', async () => {
+  it('preserves the screen automation anchor and opens the single recommended ritual', async () => {
     const view = renderHome();
 
     await act(async () => {

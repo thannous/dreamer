@@ -224,7 +224,7 @@ else
     scripts/lib/*|scripts/docs-*|scripts/build-content-manifest.js|scripts/build-site-manifest.js|scripts/build-experience.js|scripts/build-guides-pages.js|scripts/check-article-date-contract.js|scripts/check-blog-crosslinking-plan.js|scripts/check-content-hub-contract.js|scripts/check-content-release-gates.js|scripts/check-docs-*|scripts/check-image-seo-contract.js|scripts/check-intent-ownership.js|scripts/check-public-url-stability.js|scripts/check-symbol-*|scripts/check-web-performance-contract.js|scripts/generate-image-seo-assets.js|scripts/generate-sitemap*.js|scripts/generate-symbol-*.js|scripts/validate-i18n-seo.js|scripts/audit-blog-i18n-parity.js|scripts/audit-content-parity.js|scripts/serve-docs.js|scripts/site-shell-*.test.js)
       run_site=true
       ;;
-    app/*|components/*|constants/*|context/*|hooks/*|lib/*|services/*|tests/*|__mocks__/*|assets/*|mock-data/*|maestro/*|plugins/*|script/*)
+    app/*|components/*|constants/*|context/*|hooks/*|lib/*|services/*|tests/*|__mocks__/*|assets/*|mock-data/*|plugins/*|script/*)
       run_noctalia=true
       ;;
     app.config.ts|app.json|eas.json|global.css|babel.config.js|react-native.config.js|eslint.config.js|jest.config.js|jest.config.*.js|jest.setup.ts|metro.config.js|tsconfig.json|tsconfig.test.json|uniwind-env.d.ts|uniwind-types.d.ts|vitest.config.mts|vitest.setup.ts|workbox-config.js)

@@ -7,6 +7,13 @@ Pour un candidat actuel, partir du [guide mobile](MOBILE_VERSIONING.md), de la
 Les règles actuelles d'AGENTS.md et les autorisations de la session priment sur
 ce protocole ancien ; il ne justifie pas une installation ou un effacement.
 
+Maestro a été retiré le 14 octobre 2026 : les commandes `test:e2e:*` et
+`android:play-upgrade:*` citées plus bas n'existent plus. Elles restent ici comme
+trace de la campagne v34. Aujourd'hui, les parcours Release tournent avec
+TesterArmy sur émulateur ([guide](../../tools/e2e/README.md#android-release-evidence)),
+la voix réelle suit la [checklist manuelle voix](android-release-checklist.md#checklist-manuelle-voix)
+et le Test Store la [checklist manuelle RevenueCat](revenuecat-qa-workflow.md#2-revenuecat-test-store--checklist-manuelle).
+
 La politique observée le 9 août 2026 utilisait un
 `subscription:qa:release-smoke` à trois assertions : candidat installé depuis
 Play, restauration du compte payant, isolation du compte gratuit. La couverture
@@ -182,6 +189,9 @@ Chemins encore non verrouillés : `measure-android-performance`,
 
 ## 4. Préparer le baseline Play v33
 
+*Historique.* Le harnais d'upgrade Play `33 -> 34` (`android:play-upgrade:*`) a
+été retiré le 14 octobre 2026 : il ne visait que cette transition, déjà livrée.
+
 Préparation neuve, une seule fois :
 
 ```bash
@@ -263,6 +273,10 @@ versionCode 34 et la date de vérification. Conserver ce fichier local avec les
 traces Maestro jusqu'à l'enregistrement des preuves de release.
 
 ## 6. Rebuild et tests standalone
+
+*Historique (Maestro, retiré le 14 octobre 2026).* Les parcours Release hors
+ligne tournent désormais avec TesterArmy ; les parcours connectés à un vrai
+compte attendent la branche Supabase de test.
 
 Utiliser un émulateur distinct du téléphone Play :
 
@@ -389,6 +403,10 @@ ce flow lorsqu'une ancienne déconnexion place l'application sur l'écran limit�
 « Connexion requise », où le QA Lab n'est volontairement pas rendu.
 
 ## 7. Achat, restore et changement de compte
+
+*Historique.* Les runners gardés d'achat, de restore et de changement de compte
+(Maestro) ont été retirés le 14 octobre 2026 ; suivre la
+[checklist manuelle RevenueCat](revenuecat-qa-workflow.md#2-revenuecat-test-store--checklist-manuelle).
 
 Toujours commencer par le preflight non destructif.
 

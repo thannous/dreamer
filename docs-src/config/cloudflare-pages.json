@@ -19,7 +19,6 @@
       "tests/*",
       "__mocks__/*",
       "mock-data/*",
-      "maestro/*",
       "marketing/*",
       "specs/*",
       "doc_web_interne/*",

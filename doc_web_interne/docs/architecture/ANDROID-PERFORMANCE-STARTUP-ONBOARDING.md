@@ -50,12 +50,11 @@ EXPO_PUBLIC_PERFORMANCE_TRACING=true npm run android:release:local -- \
 # CPU attribution with Release optimizations and shell profiling enabled:
 EXPO_PUBLIC_PERFORMANCE_TRACING=true npm run android:release:local -- \
   --profileable --install --device <serial> --abi <arm64-v8a-or-x86_64>
-
-npm run test:e2e:onboarding
-node ./scripts/run-maestro-android.js \
-  --flow maestro/release-notification-permission.yml \
-  --retries 0 --no-start-metro
 ```
+
+The onboarding and notification-permission Maestro flows used in this campaign were
+retired with Maestro on 2026-10-14; drive the installed Release with
+`npm run test:testerarmy:mobile -- dreamer android` (see `tools/e2e/README.md`).
 
 `--profileable` is accepted only by the production APK profile. It enables
 shell profiling but does not make the package debuggable. The generated Gradle

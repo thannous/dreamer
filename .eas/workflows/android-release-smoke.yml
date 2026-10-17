@@ -5,6 +5,8 @@
 # is the tag. scripts/check-android-release-ref.js fails when release_tag is
 # missing or does not match app.json, and when EAS reports a ref that is not
 # that tag. An EAS build needs the owner's explicit go.
+# It builds and identifies the release-smoke APK; its journeys run locally with
+# TesterArmy (tools/e2e/README.md), not as an EAS job.
 name: Android Release Smoke
 
 on:
@@ -56,20 +58,3 @@ jobs:
       - uses: eas/checkout
       - name: Match EAS build and app versionCode
         run: node ./scripts/check-android-release-ref.js
-
-  maestro_android_release_smoke:
-    name: Run Android release smoke flows
-    needs: [build_android_release_smoke, validate_android_release_build]
-    type: maestro
-    params:
-      build_id: ${{ needs.build_android_release_smoke.outputs.build_id }}
-      flow_path:
-        - maestro/release-smoke.yml
-        - maestro/release-lifecycle.yml
-        - maestro/release-permissions.yml
-        - maestro/release-offline-local.yml
-      android_system_image_package: system-images;android-35;google_apis;x86_64
-      device_identifier:
-        android: pixel_6
-      record_screen: true
-      retries: 0

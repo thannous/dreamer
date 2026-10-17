@@ -30,7 +30,7 @@ function bump(version, level) {
 
 // Conservative shared-runtime routing. App-specific paths do not bump siblings.
 function affects(app, file) {
-  if (/(^|\/)(__tests__|tests|maestro)\//.test(file)
+  if (/(^|\/)(__tests__|tests)\//.test(file)
       || /\.(test|spec)\.[cm]?[jt]sx?$/.test(file) || /\.md$/.test(file)) return false;
   if (file.startsWith('apps/meditation/')) return app === 'meditation';
   if (file.startsWith('apps/') || file.startsWith('docs') || file.startsWith('release/')) return false;

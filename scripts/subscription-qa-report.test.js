@@ -311,22 +311,11 @@ describe('subscription QA report release gate', () => {
     expect(result.status).toBe(1);
     expect(result.stdout).toContain('OK | EAS Play Store profiles use Google Play key');
     expect(result.stdout).toContain('preview:goog_B...sanw');
-    expect(result.stdout).toContain('OK | Test Store purchase preflight exists');
-    expect(result.stdout).toContain('npm run test:e2e:subscription-teststore:purchase:preflight');
-    expect(result.stdout).toContain('OK | Authenticated Test Store paywall flow exists');
-    expect(result.stdout).toContain('maestro/subscription-teststore-paywall-auth.yml');
-    expect(result.stdout).toContain('| Automated | Authenticated Test Store paywall |');
-    expect(result.stdout).toContain('without a transaction');
-    expect(result.stdout).toContain('OK | Google Test Store purchase flow exists');
-    expect(result.stdout).toContain('REVENUECAT_QA_AUTH=google -> maestro/subscription-teststore-purchase-google-manual.yml');
-    expect(result.stdout).toContain('OK | Test Store restore flow exists');
-    expect(result.stdout).toContain('guarded standalone Release restore runner');
-    expect(result.stdout).toContain('OK | Test Store signout guard exists');
-    expect(result.stdout).toContain('maestro/subscription-teststore-signout-guard.yml');
-    expect(result.stdout).toContain('OK | Account switch email flow exists');
-    expect(result.stdout).toContain('REVENUECAT_QA_SWITCH_FREE_EMAIL -> maestro/subscription-teststore-account-switch-free-email-manual.yml');
-    expect(result.stdout).toContain('OK | Transactional Test Store flows use standalone Release');
-    expect(result.stdout).toContain('purchase, restore and account-switch run from an installed Release bundle with Metro disabled');
+    expect(result.stdout).toContain('OK | Mock subscription scenarios have TesterArmy journeys');
+    expect(result.stdout).toContain('tools/e2e/tests/dreamer-billing.web.e2e.ts');
+    expect(result.stdout).toContain('OK | Manual Test Store checklist exists');
+    expect(result.stdout).toContain('| Automated | Mock monthly |');
+    expect(result.stdout).not.toContain('maestro/');
     expect(result.stdout).toContain('OK | Local subscription QA verifier exists');
     expect(result.stdout).toContain('npm run subscription:qa:verify-local');
     expect(result.stdout).toContain('OK | Production APK build is gated by subscription QA');
@@ -383,9 +372,8 @@ describe('subscription QA report release gate', () => {
     expect(result.stdout).toContain('npm run android:supabase-play-integrity-secrets-state');
     expect(result.stdout).toContain('Supabase Play Integrity secrets snapshot');
     expect(result.stdout).toContain('Manual or external gates remaining: 7');
-    expect(result.stdout).toContain('Offering packages and prices load without purchase');
-    expect(result.stdout).toContain('maestro/subscription-teststore-restore-google-manual.yml plus structured evidence');
-    expect(result.stdout).toContain('run test:e2e:subscription-teststore:account-switch with a second real email account');
+    expect(result.stdout).toContain('Manual Test Store checklist (restore after reinstall) plus structured evidence');
+    expect(result.stdout).toContain('Manual Test Store checklist (account switch) with a second real email account');
     expect(result.stdout).toContain('## Evidence Commands');
     expect(result.stdout).toContain(
       `npm run subscription:qa:evidence -- --gate account_switch --tester <tester-email> --app-user-id <revenuecat-app-user-uuid> --version-code ${ANDROID_CANDIDATE_VERSION_CODE} --evidence "paid account remains plus while second account remains free / inactive after logout and login"`

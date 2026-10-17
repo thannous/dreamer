@@ -21,18 +21,6 @@ function getAdbCandidates(env = process.env, platform = process.platform) {
   );
 }
 
-function getMaestroCandidates(env = process.env) {
-  const candidates = [];
-  if (env.MAESTRO_CLI_PATH) {
-    candidates.push(env.MAESTRO_CLI_PATH);
-  }
-  candidates.push(
-    '/opt/homebrew/opt/maestro/bin/maestro',
-    '/usr/local/opt/maestro/bin/maestro'
-  );
-  return Array.from(new Set(candidates));
-}
-
 function resolveCommand(command, {
   spawn = spawnSync,
   existsSync = fs.existsSync,
@@ -47,10 +35,6 @@ function resolveCommand(command, {
 
   if (command === 'adb') {
     return getAdbCandidates(env, platform).find((candidate) => existsSync(candidate)) || null;
-  }
-
-  if (command === 'maestro') {
-    return getMaestroCandidates(env).find((candidate) => existsSync(candidate)) || null;
   }
 
   return null;
@@ -89,7 +73,6 @@ function commandExists(command, spawn = spawnSync) {
 module.exports = {
   commandExists,
   getAdbCandidates,
-  getMaestroCandidates,
   resolveCommand,
   resolveNpmInvocation,
 };

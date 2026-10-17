@@ -13,7 +13,6 @@ const {
   defaultMetroPortForOwner,
   findDeviceArg,
   fingerprintDevice,
-  inferLockOwnerFromSuite,
   isEmulatorSerial,
   parseAndroidId,
   parseLockOwner,
@@ -83,7 +82,7 @@ describe('android-device-lock', () => {
       nowMs: 1_700_000_000_000,
       pid: 111,
       token: 'token-dreamer',
-      command: 'npm run test:e2e:release:ti429:local',
+      command: 'npm run android:release:local',
     });
     expect(first.owner).toBe('dreamer');
     expect(first.stolen).toBe(false);
@@ -414,15 +413,13 @@ describe('android-device-lock', () => {
     )).toEqual(['192.168.1.176:40537']);
   });
 
-  it('keeps product Metro ports stable and infers owners from existing suites', () => {
+  it('keeps product Metro ports stable and parses lock owners', () => {
     expect(PRODUCT_METRO_PORTS).toEqual({
       dreamer: 8081,
       lucid: 8082,
       meditation: 8083,
     });
     expect(defaultMetroPortForOwner('lucid')).toBe(8082);
-    expect(inferLockOwnerFromSuite('lucid')).toBe('lucid');
-    expect(inferLockOwnerFromSuite('release-ti429')).toBe('dreamer');
     expect(parseLockOwner('meditation')).toBe('meditation');
     expect(() => parseLockOwner('dream')).toThrow('must be one of');
   });
@@ -437,16 +434,16 @@ describe('android-device-lock', () => {
       '--device',
       '192.168.1.176:40537',
       '--',
-      'maestro',
-      'test',
-      'maestro/smoke.yml',
+      'npx',
+      'expo',
+      'run:android',
     ], {
       env,
       lockDir,
       spawn: spawnAndroidId(),
       spawnCommand: (command, args, options) => {
-        expect(command).toBe('maestro');
-        expect(args).toEqual(['test', 'maestro/smoke.yml']);
+        expect(command).toBe('npx');
+        expect(args).toEqual(['expo', 'run:android']);
         expect(options.env.ANDROID_SERIAL).toBe('192.168.1.176:40537');
         const files = fs.readdirSync(lockDir).filter((name) => !name.endsWith('.steal'));
         expect(files).toHaveLength(1);
@@ -465,9 +462,9 @@ describe('android-device-lock', () => {
       'meditation',
       '--steal-lock',
       '--',
-      'maestro',
-      'test',
-      'maestro/smoke.yml',
+      'npx',
+      'expo',
+      'run:android',
       '--device',
       'ZY22LJM555',
     ])).toEqual({
@@ -477,8 +474,8 @@ describe('android-device-lock', () => {
         stealLock: true,
         ttlMs: null,
       },
-      command: ['maestro', 'test', 'maestro/smoke.yml', '--device', 'ZY22LJM555'],
+      command: ['npx', 'expo', 'run:android', '--device', 'ZY22LJM555'],
     });
-    expect(findDeviceArg(['maestro', 'test', '--device', 'ZY22LJM555'])).toBe('ZY22LJM555');
+    expect(findDeviceArg(['npx', 'expo', 'run:android', '--device', 'ZY22LJM555'])).toBe('ZY22LJM555');
   });
 });

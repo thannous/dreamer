@@ -161,13 +161,13 @@ Commandes:
 npm run start:mock
 npm run subscription:qa:verify-local
 npm run subscription:qa:report
-npm run test:e2e:subscription-qa -- --no-restart-metro --retries 0
+mise exec -- npm run test:testerarmy -- run --grep 'mock'
 ```
 
-Si Metro vient d'etre lance avec un autre fichier d'environnement, ne pas utiliser
-`--no-restart-metro` pour le premier run. Redemarrer Metro charge le bon bundle
-mock/Test Store; `--no-restart-metro` sert ensuite aux relances rapides dans la
-meme couche.
+Les scenarios mock sont automatises par les parcours TesterArmy web de Dreamer
+(`tools/e2e/tests/dreamer-billing.web.e2e.ts`, `dreamer-journeys`, `dreamer-plus-channels`; voir
+`tools/e2e/README.md`). Le flow Maestro natif `subscription-qa-lab.yml` a ete retire le
+2026-10-14 avec Maestro; le lab reste ouvrable a la main dans une build mock.
 
 Dans l'app: `Settings -> Subscription QA Lab`.
 
@@ -203,16 +203,13 @@ Pour revalider uniquement le harnais local sans demarrer Metro ni toucher au Sto
 npm run subscription:qa:verify-local
 ```
 
-Cette commande inclut les preflights d'achat monthly et annual avec un compte factice. Elle valide
-le chemin CLI garde, mais ne lance pas Maestro et ne peut pas ouvrir le Store sans
-`REVENUECAT_QA_APPROVAL`. Elle verifie aussi, avec un chemin de preuve isole, que les assertions
+Elle verifie aussi, avec un chemin de preuve isole, que les assertions
 de restauration et d'isolation restent bloquees sans preuve et que ce blocage ne vient pas d'un
 check local casse.
 
 `npm run subscription:qa:report` affiche aussi `Current Session Readiness`. Cette section est le
 premier diagnostic a lire avant de reprendre les tests reels: elle indique si les variables
-`REVENUECAT_QA_EMAIL` / `REVENUECAT_QA_PASSWORD` sont presentes, si l'approbation d'achat Test Store
-est definie, rappelle d'extraire l'app user id device avant d'enregistrer une preuve, rappelle de
+`REVENUECAT_QA_EMAIL` / `REVENUECAT_QA_PASSWORD` sont presentes, rappelle d'extraire l'app user id device avant d'enregistrer une preuve, rappelle de
 verifier `npm run android:device` jusqu'a `ADB: READY`, puis distingue les snapshots Google Play
 directs des snapshots RevenueCat store-state pour monthly et annual. Si Google Play direct est
 `monthly/P1M/ACTIVE` mais RevenueCat lit encore le produit mensuel en `annual/P1Y`, le rapport affiche
@@ -276,8 +273,8 @@ dans les commandes `npm run subscription:qa:evidence` des gates `play_*`.
 Le meme preflight affiche aussi un signal `ui: READY` ou `ui: WARN` lu via
 `adb shell dumpsys window policy`. `ui: WARN` ne bloque pas l'impression des `evidenceArgs`, mais il
 signale que le telephone est verrouille, endormi ou dans un etat UI inconnu. Dans ce cas, deverrouiller
-le telephone et garder l'ecran allume avant de reprendre Google Sign-In, Play Billing, Restore ou les
-flows Maestro pilotes par UI. Avant un achat ou restore pilote par l'agent, preferer
+le telephone et garder l'ecran allume avant de reprendre Google Sign-In, Play Billing ou Restore.
+Avant un achat ou restore, preferer
 `android:play-qa-device:wait -- --device <adb-id> --require-ui-ready`: cette variante continue a
 poller tant que l'app est Play-installed mais que le telephone n'est pas encore reveille et
 deverrouille.
@@ -544,21 +541,26 @@ Quand des gates restent ouvertes, le rapport affiche aussi `Evidence Commands` a
 `npm run subscription:qa:evidence -- ...` pre-remplies pour `account_switch` et les gates Play.
 Si le fichier JSON est mal forme, le rapport reste lisible et bloque sur `Local evidence file parses`.
 
-## 2. RevenueCat Test Store
+## 2. RevenueCat Test Store : checklist manuelle
 
 Objectif: tester le vrai SDK RevenueCat sans Google Play Billing.
 
-Commandes:
+Ces parcours ne sont pas automatises. Ils touchent un vrai compte, une vraie
+session Google ou email et une transaction Test Store: les runners Maestro qui les
+pilotaient (`test:e2e:subscription-teststore*`, readiness, paywall authentifie,
+achat, restore, changement de compte) ont ete retires le 2026-10-14. Une personne
+les execute sur la build `revenuecat-teststore`, puis enregistre la preuve
+structuree avec `npm run subscription:qa:evidence`. TesterArmy couvre seulement
+les memes parcours en mock (section 1).
+
+Preparation:
 
 ```bash
-npm run start:teststore
-npm run test:e2e:subscription-teststore -- --retries 0
 npx eas build -p android --profile revenuecat-teststore
 ```
 
-Pour passer de mock a Test Store, redemarrer Metro ou lancer le test sans
-`--no-restart-metro`. Un Metro encore charge avec `.env.mock` affichera
-`Mock services` meme si `.env.local` vient d'etre remplace par `.env.teststore`.
+Un build EAS demande le feu vert explicite du proprietaire. Installer l'APK sur un
+emulateur QA possede (`QA_EMULATOR_DEVICE`), jamais sur un telephone personnel.
 
 Configuration attendue:
 
@@ -574,95 +576,42 @@ Configuration attendue:
 - packages: `$rc_monthly`, `$rc_annual`
 - produits Test Store: `monthly`, `yearly`
 
-Couverture automatisee:
+Il n'existe aucun parcours d'annulation Test Store. Les etats cancelled/expired du
+Mock Lab sont simules. La preuve reelle d'annulation ou d'expiration appartient
+exclusivement a `play_cancellation_and_expiry`: build Internal Testing installe
+depuis Play sur telephone physique, webhook RevenueCat et convergence backend observes.
 
-- readiness SDK sans achat: `Probe SDK` charge les packages Test Store
+Checklist (cocher chaque ligne pour le candidat, avec capture d'ecran locale):
 
-Scenarios manuels a revalider avec accord explicite d'achat pour chaque nouveau candidat:
+| # | Etape | Preuve a capturer |
+| --- | --- | --- |
+| 1 | Lancer l'APK installe, Metro arrete | l'app demarre sans `expo-development-client` ni bundler |
+| 2 | Readiness sans achat: `Settings -> Subscription QA Lab` | le lab affiche `RevenueCat Test Store`, le moteur effectivement resolu par le service d'achat |
+| 3 | `Probe SDK` | `SDK probe completed`, `packages 2`, `$rc_monthly`, `$rc_annual` et leurs prix |
+| 4 | Se connecter avec le compte A (session Google deja presente) | `User` affiche l'id du testeur, `Auth` affiche `ready` |
+| 5 | Ouvrir le paywall | mode Test Store, deux offres, mensuel et annuel selectionnables, boutons Acheter et Restaurer visibles; ne rien acheter a cette etape |
+| 6 | Achat mensuel, apres accord explicite du proprietaire | `monthly purchase completed`, `Tier` passe a `plus / active`, quotas illimites; preuve `test_store_monthly` |
+| 7 | Achat annuel, apres accord explicite | `annual purchase completed`, `plus / active`; preuve `test_store_annual` |
+| 8 | Restore: effacer les donnees de l'app sur l'emulateur QA possede, se reconnecter au meme compte, `Restaurer les achats` | `Restore completed`, meme app user id, `plus / active`; preuve `restore_after_reinstall` |
+| 9 | Changement de compte: se deconnecter du compte A, se connecter au compte B (`.env.qa.local`) | le compte B reste `free / inactive`, aucune fuite d'entitlement; preuve `account_switch` |
+| 10 | Se reconnecter au compte A | `plus / active` revient |
+| 11 | Relancer `npm run subscription:qa:report` | les gates enregistrees passent pour `QA_ANDROID_VERSION_CODE` |
 
-- achat mensuel Test Store
-- achat annuel Test Store
-- restore sur le meme utilisateur apres clear-state controle
-- refresh apres changement externe RevenueCat
-- switch compte apres achat vers un second compte reel non abonne
-
-Il n'existe aucun runner d'annulation Test Store. Le flow `subscription-teststore-signout-guard`
-verifie uniquement l'absence de fuite d'entitlement apres deconnexion. Les etats cancelled/expired
-du Mock Lab sont simules. La preuve reelle d'annulation ou d'expiration appartient exclusivement a
-`play_cancellation_and_expiry`: build Internal Testing installe depuis Play sur telephone physique,
-webhook RevenueCat et convergence backend observes.
-
-Preuve attendue:
-
-- le lab affiche `RevenueCat Test Store`
-- ce libellé correspond au moteur effectivement résolu par le service d'achat,
-  pas uniquement à la variable Expo affichée par l'interface
-- `Probe SDK` affiche `SDK probe completed` et `packages 2`
-- `Tier` passe a `plus / active`
-- `Server version` augmente apres refresh serveur
-- les quotas deviennent illimites
+Enregistrer chaque preuve avec l'app user id lu par
+`npm run subscription:qa:device-app-user-id` et `--version-code "${QA_ANDROID_VERSION_CODE}"`
+(commandes exactes dans la section `Evidence Commands` du rapport). La convergence serveur
+(`Server version` qui augmente apres refresh) reste a prouver separement: l'UI `plus / active`
+ne la demontre pas.
 
 Preuve locale actuelle:
 
-- Le fichier local contient maintenant des preuves `passed` qualifiantes v34
+- Le fichier local contient des preuves `passed` qualifiantes v34
   pour `test_store_monthly`, `test_store_annual`, `restore_after_reinstall` et
   `account_switch`.
 - Les trois gates `play_*` restent historiques sur un ancien candidat et sont
   donc ouvertes pour v34.
 - Seuls `subscription:qa:report` et `subscription:qa:release-smoke` sur le fichier courant font foi;
   une mention historique dans cette documentation ne ferme jamais une gate.
-
-Checklist d'achat Test Store:
-
-| Etape | Preuve a capturer | Statut |
-| --- | --- | --- |
-| Compte test connecte | `User` affiche l'id/email du testeur et `Auth` affiche `ready` | manuel |
-| Probe SDK | `SDK probe completed`, `packages 2`, `$rc_monthly`, `$rc_annual` | automatise |
-| Achat mensuel | action `monthly purchase completed`, entitlement persistant `plus / active` | verifie v34 |
-| Achat annuel | action `annual purchase completed`, entitlement `plus / active` | verifie v34 |
-| Convergence serveur | `purchase()` / `restore()` tentent la synchronisation backend; les flows Test Store prouvent seulement le resultat UI `plus / active` | a prouver separement |
-| Restore | action `Restore completed` apres effacement controle et reconnexion exacte | verifie v34 |
-| Switch compte | un second compte reste `free / inactive` apres logout/login | verifie v34 |
-
-Flow d'achat garde par approbation explicite:
-
-Preflight sans achat, utile avant de demander l'approbation:
-
-```bash
-REVENUECAT_QA_EMAIL="${QA_PRIMARY_EMAIL}" \
-REVENUECAT_QA_AUTH=google \
-npm run test:e2e:subscription-teststore:purchase:preflight -- \
-  --plan monthly \
-  --device "${QA_EMULATOR_DEVICE}"
-```
-
-Le preflight valide le plan, les identifiants et les arguments Maestro, affiche le compte test masque,
-puis s'arrete sans lancer Maestro ni ouvrir le Store.
-
-```bash
-REVENUECAT_QA_APPROVAL=I_APPROVE_TEST_STORE_PURCHASE \
-REVENUECAT_QA_EMAIL="${QA_PRIMARY_EMAIL}" \
-REVENUECAT_QA_AUTH=google \
-npm run test:e2e:subscription-teststore:purchase -- \
-  --plan monthly \
-  --device "${QA_EMULATOR_DEVICE}"
-```
-
-Changer `--plan monthly` en `--plan annual` pour le second abonnement. Le wrapper refuse de lancer
-le flow si `REVENUECAT_QA_APPROVAL` n'est pas exactement `I_APPROVE_TEST_STORE_PURCHASE`.
-
-Ordre de reprise v34 recommande:
-
-1. `purchase:preflight`, puis achat mensuel et preuve `test_store_monthly` avec
-   `--version-code "${QA_ANDROID_VERSION_CODE}"`.
-2. Meme sequence pour l'annuel et `test_store_annual`.
-3. `restore:preflight`, puis restore avec `REVENUECAT_QA_RESTORE_APPROVAL` et
-   `REVENUECAT_QA_CLEAR_STATE_APPROVAL` sur `QA_EMULATOR_DEVICE`. Ne jamais passer
-   `--allow-physical` dans cette sequence locale.
-4. Depuis le compte Plus confirme, `account-switch:preflight`, puis le flow garde avec
-   `REVENUECAT_QA_SWITCH_APPROVAL`; il doit finir sur le second compte `free / inactive`.
-5. Reconnecter le compte QA principal, puis relancer `subscription:qa:report` et le
-   `subscription:qa:release-smoke` sur le candidat Play.
 
 ## 3. Google Play Internal Testing
 
@@ -672,49 +621,13 @@ Prealable avant build Play: les changements QA RevenueCat doivent etre dans un c
 reutiliser l'id d'un ancien build: renseigner `QA_EAS_BUILD_ID` avec le build v34 effectivement
 installe depuis la piste Internal Testing.
 
-Scope de commit recommande pour eviter de melanger les changements SEO/docs non lies:
-
-Le gros scope ci-dessous documente le commit d'implementation QA historique. Pour le suivi du
-candidat v34, le scope documentaire actif est seulement:
+Scope de commit recommande pour le suivi du candidat, sans melanger des changements non lies:
 
 ```bash
 git add \
   doc_web_interne/docs/revenuecat-qa-workflow.md \
   doc_web_interne/docs/revenuecat-workflow-completion-audit.md
 git commit -m "docs(revenuecat): record Play QA validation status"
-```
-
-```bash
-git add \
-  .env.mock .env.teststore .env.playstore .gitignore app.json \
-  'app/(tabs)/settings.tsx' constants/subscription.ts eas.json lib/env.ts lib/testIDs.ts \
-  package.json package-lock.json \
-  components/subscription/SubscriptionQALab.tsx \
-  maestro/subscription-qa-lab.yml \
-  maestro/subscription-teststore-readiness.yml \
-  maestro/subscription-teststore-purchase-manual.yml \
-  scripts/subscription-qa-report.js \
-  scripts/subscription-qa-report.test.js \
-  scripts/run-subscription-teststore-purchase.js \
-  scripts/run-subscription-teststore-purchase.test.js \
-  scripts/update-subscription-qa-evidence.js \
-  scripts/update-subscription-qa-evidence.test.js \
-  scripts/update-google-play-payments-profile-state.js \
-  scripts/update-google-play-payments-profile-state.test.js \
-  scripts/update-supabase-play-integrity-secrets-state.js \
-  scripts/update-supabase-play-integrity-secrets-state.test.js \
-  scripts/verify-subscription-qa-local.js \
-  scripts/verify-subscription-qa-local.test.js \
-  doc_web_interne/docs/google-play-payments-profile-state.example.json \
-  doc_web_interne/docs/supabase-play-integrity-secrets-state.example.json \
-  doc_web_interne/docs/revenuecat-qa-evidence.example.json \
-  doc_web_interne/docs/revenuecat-qa-workflow.md \
-  doc_web_interne/docs/revenuecat-workflow-completion-audit.md \
-  services/mocks/subscriptionServiceMock.ts \
-  services/mocks/subscriptionServiceMock.test.ts \
-  tests/app-routes/settingsScreen.test.tsx
-git commit -m "test(revenuecat): add subscription QA workflow"
-git push
 ```
 
 Commandes:
