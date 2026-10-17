@@ -92,8 +92,9 @@ export function DreamSymbolSheet({ index, dream, linkKey, onSelect, onClose }: {
     setShown({
       open: visible,
       key: linkKey ?? shown.key,
-      // Captured on opening: the birth keeps being told once the confirmation lands.
-      born: next && isNewPersonalSymbol(next) ? next.linkKey : visible && !shown.open ? null : shown.born,
+      // Captured on opening: the birth keeps being told once the confirmation lands. Only a
+      // reading tells it; opened from elsewhere, the symbol has already come back.
+      born: dream && next && isNewPersonalSymbol(next) ? next.linkKey : visible && !shown.open ? null : shown.born,
     });
   }
   const symbol = shown.key ? index.symbols.get(shown.key) : undefined;

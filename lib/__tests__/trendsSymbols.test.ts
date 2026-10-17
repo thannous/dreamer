@@ -2,8 +2,9 @@ import { buildSymbolIndex } from '../symbolLinks';
 import { getPeriodSymbols } from '../trendsSymbols';
 import type { DreamAnalysis, DreamSymbolInsight } from '../types';
 
-// Isolation control: the web journey's mock readings all fall inside the period. A symbol
-// that came back before the period, and not within it, must not read as returning now.
+// Isolation control: the web journey's mock readings all fall inside the period and name
+// the same three symbols. A symbol that came back before the period, and not within it,
+// must not read as returning now; past three ties, the dreamer's own symbol stays.
 
 const night = (day: number, symbols: DreamSymbolInsight[]): DreamAnalysis => ({
   id: Date.UTC(2026, 9, day, 6),
@@ -22,6 +23,7 @@ const night = (day: number, symbols: DreamSymbolInsight[]): DreamAnalysis => ({
 const water = { name: 'Water', meaning: 'Calm.', symbolId: 'water' };
 const cat = { name: 'Cat', meaning: 'Waiting.', symbolId: 'cat' };
 const lamp = { name: 'Lamp', meaning: 'Mine.', key: 'grandmother-lamp' };
+const door = { name: 'Door', meaning: 'Open.', symbolId: 'door' };
 
 describe('getPeriodSymbols', () => {
   it('counts only the period’s dreams and keeps the symbols that came back in it', () => {
@@ -38,6 +40,17 @@ describe('getPeriodSymbols', () => {
     expect(getPeriodSymbols(index, period).map(({ symbol, count }) => [symbol.linkKey, count])).toEqual([
       ['d:water', 3],
       ['p:grandmother-lamp', 2],
+    ]);
+  });
+
+  it('keeps the dreamer’s own symbol when more symbols tie than the section shows', () => {
+    const dreams = [night(3, [cat, door, water, lamp]), night(5, [cat, door, water, lamp])];
+    const index = buildSymbolIndex(dreams, 'en');
+
+    expect(getPeriodSymbols(index, dreams.map((dream) => dream.id)).map(({ symbol }) => symbol.linkKey)).toEqual([
+      'p:grandmother-lamp',
+      'd:cat',
+      'd:door',
     ]);
   });
 });

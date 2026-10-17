@@ -144,8 +144,13 @@ function StatisticsScreen() {
   const today = useEndOfLocalDay();
   const trends = useMemo(() => buildDreamTrends(dreams, { period, now: today }), [dreams, period, today]);
   // The journal's symbols, read only once enough dreams are; the index is the one the readings share.
+  // An open page keeps it, so the sheet closes as it should even if the period stops being ready.
   const { ready, analyzedIds } = trends.patterns;
-  const symbolIndex = useMemo(() => (ready ? getSymbolIndex(dreams, currentLang) : null), [currentLang, dreams, ready]);
+  const symbolsShown = ready || openSymbol !== null;
+  const symbolIndex = useMemo(
+    () => (symbolsShown ? getSymbolIndex(dreams, currentLang) : null),
+    [currentLang, dreams, symbolsShown],
+  );
   const periodSymbols = useMemo(
     () => (symbolIndex ? getPeriodSymbols(symbolIndex, analyzedIds) : []),
     [analyzedIds, symbolIndex],
