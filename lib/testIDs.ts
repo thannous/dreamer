@@ -199,6 +199,8 @@ export const TID = {
     WhatsNewClose: 'btn.whatsNew.close',
     WhatsNewPrimary: 'btn.whatsNew.primary',
     WhatsNewLater: 'btn.whatsNew.later',
+    DreamSymbolClose: 'btn.dreamSymbol.close',
+    DreamSymbolReadMore: 'btn.dreamSymbol.readMore',
   },
   Tab: {
     Home: 'tab.home',
@@ -212,6 +214,10 @@ export const TID = {
     Dreams: 'list.dreams',
     DreamItem: (id: number | string) => `dream.item.${id}`,
     SymbolItem: (id: string) => `symbol.item.${id}`,
+    /** A symbol of a dream's reading, by its link: `d:water` is `dream.symbol.d.water`. */
+    DreamSymbol: (linkKey: string) => `dream.symbol.${linkKey.replace(':', '.')}`,
+    DreamSymbolAppearance: (dreamId: number) => `dreamSymbol.appearance.${dreamId}`,
+    DreamSymbolCompanion: (linkKey: string) => `dreamSymbol.companion.${linkKey.replace(':', '.')}`,
   },
   Modal: {
     Theme: 'modal.theme',
@@ -289,6 +295,9 @@ export const TID = {
     PaywallInfo: 'toast.paywall.info',
   },
   Text: {
+    DreamSymbolTitle: 'text.dreamSymbol.title',
+    DreamSymbolStatus: 'text.dreamSymbol.status',
+    DreamSymbolBorn: 'text.dreamSymbol.born',
     AuthEmail: 'text.auth.email',
     AuthEmailVerificationStatus: 'text.auth.emailVerificationStatus',
     AuthForgotPasswordStatus: 'text.auth.forgotPasswordStatus',
@@ -348,6 +357,7 @@ export const TID = {
     OnboardingPrivacy: 'sheet.onboarding.privacy',
     AnalysisOffer: 'sheet.recording.analysisOffer',
     RememberedDreamDetails: 'sheet.recording.remembered.details',
+    DreamSymbol: 'sheet.dreamSymbol',
   },
   BottomSheet: {
     PaywallError: 'bottomSheet.paywall.error',

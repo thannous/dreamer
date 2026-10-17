@@ -1,18 +1,22 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Text, View, type ViewProps } from 'react-native';
 import { useReducedMotion } from 'react-native-reanimated';
 import { Reveal } from '@/components/motion';
 import { MarkdownText } from '@/components/ui/MarkdownText';
+import { useDreamsData } from '@/context/DreamsContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { isPoeticDreamQuote } from '@/lib/dreamQuote';
 import { markPerformance, performanceTraceId } from '@/lib/performanceTrace';
+import { getSymbolIndex, isNewPersonalSymbol, symbolLinkKey } from '@/lib/symbolLinks';
 import { TID } from '@/lib/testIDs';
 import { useIsDecorativeCopy, useLiveTestID } from './DecorativeCopy';
-import { BookOrnament, BookSectionMark, BookStar, BookSubheading, useBookBody } from './JournalBook';
+import { BookOrnament, BookSectionMark, BookSubheading, useBookBody } from './JournalBook';
 import type { DreamAnalysis } from '@/lib/types';
 import { DreamReadingWait } from './story/DreamReadingWait';
 import { DreamSymbolConstellation, MAX_CONSTELLATION_STARS } from './story/DreamSymbolConstellation';
 import { DREAM_STORY, chaptersDelay, reducedDelay } from './story/dreamStoryMotion';
+import { DreamSymbolEntry } from './symbols/DreamSymbolEntry';
+import { DreamSymbolSheet } from './symbols/DreamSymbolSheet';
 
 /** Chapters follow one another slowly enough to read as a sequence, not as a list loading. */
 const CHAPTER_STEP_MS = 160;
@@ -34,7 +38,8 @@ function Chapter({ reveal, delay, className, children }: {
  * It is Act II of the dream story: a waiting state while the analysis runs, then the
  * dream's symbols as a constellation and the reading in chapters, ending on its quote.
  * It is set as the rest of the page is, as a book: serif body text, justified, and parts
- * opened by an ornament.
+ * opened by an ornament. Each symbol is followed through the journal: it opens its page,
+ * with the dreams it went through.
  */
 export function DreamAnalysisContent({ dream, pending, reveal = false, onLayout }: {
   dream: DreamAnalysis;
@@ -43,8 +48,11 @@ export function DreamAnalysisContent({ dream, pending, reveal = false, onLayout 
   reveal?: boolean;
   onLayout?: ViewProps['onLayout'];
 }) {
-  const { t } = useTranslation();
+  const { t, currentLang } = useTranslation();
   const reduced = useReducedMotion();
+  const { dreams } = useDreamsData();
+  const symbolIndex = useMemo(() => getSymbolIndex(dreams, currentLang), [currentLang, dreams]);
+  const [openSymbol, setOpenSymbol] = useState<string | null>(null);
   const tid = useLiveTestID();
   const decorative = useIsDecorativeCopy();
   useEffect(() => {
@@ -54,15 +62,20 @@ export function DreamAnalysisContent({ dream, pending, reveal = false, onLayout 
   }, [decorative, pending, dream.analysisRequestId]);
   const body = useBookBody();
   const question = useBookBody(true);
-  const insights = [
-    { key: 'symbols', heading: t('journal.detail.symbols_header'), items: dream.symbols?.map(item => ({ name: item.name, text: item.meaning })) },
-    { key: 'emotions', heading: t('journal.detail.emotions_header'), items: dream.emotions?.map(item => ({ name: item.name, text: item.insight })) },
-  ];
-  const symbolNames = (dream.symbols ?? [])
-    .map(item => item.name?.trim())
-    .filter((name): name is string => Boolean(name));
-  const firstChapter = symbolNames.length
-    ? chaptersDelay(Math.min(symbolNames.length, MAX_CONSTELLATION_STARS))
+  const symbols = (dream.symbols ?? []).flatMap((insight) => {
+    const name = insight.name?.trim();
+    if (!name) return [];
+    const linkKey = symbolLinkKey(insight);
+    return [{ insight, linked: linkKey ? symbolIndex.symbols.get(linkKey) : undefined }];
+  });
+  const stars = symbols.map(({ insight, linked }) => ({
+    name: insight.name.trim(),
+    count: linked?.appearances.length ?? 1,
+    fresh: linked ? isNewPersonalSymbol(linked) : false,
+  }));
+  const emotions = dream.emotions?.map(item => ({ name: item.name, text: item.insight }));
+  const firstChapter = stars.length
+    ? chaptersDelay(Math.min(stars.length, MAX_CONSTELLATION_STARS))
     : DREAM_STORY.revealLead;
   // Under reduce motion the chapters fade in together with the constellation, without the sequence.
   const chapterDelay = (index: number) => {
@@ -78,24 +91,30 @@ export function DreamAnalysisContent({ dream, pending, reveal = false, onLayout 
         <DreamReadingWait />
       ) : (
         <>
-          {symbolNames.length ? <DreamSymbolConstellation names={symbolNames} play={reveal} /> : null}
+          {stars.length ? <DreamSymbolConstellation stars={stars} play={reveal} /> : null}
           <Chapter reveal={reveal} delay={chapterDelay(0)}>
             <MarkdownText variant="reading" style={body}>{dream.interpretation ?? ''}</MarkdownText>
           </Chapter>
-          {insights.map((section, sectionIndex) => section.items?.length ? (
-            <Chapter key={section.key} reveal={reveal} delay={chapterDelay(sectionIndex + 1)} className="mt-3 gap-4">
-              <BookSubheading>{section.heading}</BookSubheading>
-              {section.items.map((item, index) => (
+          {symbols.length ? (
+            <Chapter reveal={reveal} delay={chapterDelay(1)} className="mt-3 gap-5">
+              <BookSubheading>{t('journal.detail.symbols_header')}</BookSubheading>
+              {symbols.map(({ insight, linked }, index) => (
+                <DreamSymbolEntry key={`${insight.name}-${index}`} insight={insight} symbol={linked} index={symbolIndex}
+                  body={body} onOpen={decorative ? undefined : setOpenSymbol} />
+              ))}
+            </Chapter>
+          ) : null}
+          {emotions?.length ? (
+            <Chapter reveal={reveal} delay={chapterDelay(2)} className="mt-3 gap-4">
+              <BookSubheading>{t('journal.detail.emotions_header')}</BookSubheading>
+              {emotions.map((item, index) => (
                 <View key={`${item.name}-${index}`} className="gap-1">
-                  <View className="flex-row items-center gap-2">
-                    {section.key === 'symbols' ? <BookStar size={4} /> : null}
-                    <Text className="shrink font-serif-bold-italic text-[17px] leading-6 text-ivory">{item.name}</Text>
-                  </View>
+                  <Text className="shrink font-serif-bold-italic text-[17px] leading-6 text-ivory">{item.name}</Text>
                   <MarkdownText variant="reading" style={body}>{item.text}</MarkdownText>
                 </View>
               ))}
             </Chapter>
-          ) : null)}
+          ) : null}
           {dream.reflectionQuestions?.length ? (
             <Chapter reveal={reveal} delay={chapterDelay(3)} className="mt-3">
               <View testID={tid(TID.Component.DreamDetailReflectionZone)} className="gap-3">
@@ -115,6 +134,10 @@ export function DreamAnalysisContent({ dream, pending, reveal = false, onLayout 
             </Chapter>
           ) : null}
         </>
+      )}
+      {decorative ? null : (
+        <DreamSymbolSheet index={symbolIndex} dream={dream} linkKey={openSymbol}
+          onSelect={setOpenSymbol} onClose={() => setOpenSymbol(null)} />
       )}
     </View>
   );

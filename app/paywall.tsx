@@ -25,6 +25,7 @@ import { useQuota } from '@/hooks/useQuota';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getPaywallTrigger, trackProductEvent } from '@/lib/analytics';
+import { markStoreReviewPaywallSeen } from '@/lib/storeReview';
 import { createScopedLogger } from '@/lib/logger';
 import { clearReturnToPaywallIntent, requestReturnToPaywallIntent } from '@/lib/navigationIntents';
 import {
@@ -114,6 +115,12 @@ function PaywallScreen() {
       setShowErrorSheet(true);
     }
   }, [error]);
+
+  // Keeps rating requests away from the paywall and the minutes after it.
+  useEffect(() => {
+    markStoreReviewPaywallSeen();
+    return () => markStoreReviewPaywallSeen();
+  }, []);
 
   useEffect(() => {
     if (loading) {

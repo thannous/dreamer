@@ -1,4 +1,5 @@
 import { isDreamAnalyzed, isDreamExplored } from '@/lib/dreamUsage';
+import { symbolLinkKey } from '@/lib/symbolLinks';
 import type { DreamAnalysis, DreamTheme } from '@/lib/types';
 
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -8,7 +9,7 @@ export type PersonalReading = {
   /** Dreams recorded in the window (any status). */
   windowDreamCount: number;
   analyzedInWindow: number;
-  /** Symbol present in ≥ 2 analyzed dreams of the window, most frequent first. */
+  /** Symbol present in ≥ 2 analyzed dreams of the window, most frequent first, by its newest name. */
   recurringSymbol: { name: string; count: number } | null;
   /** Theme present in ≥ 2 analyzed dreams of the window when no symbol repeats. */
   recurringTheme: { theme: DreamTheme; count: number } | null;
@@ -17,8 +18,6 @@ export type PersonalReading = {
   /** Most recent dream still waiting for an analysis (any age). */
   dreamToAnalyze: DreamAnalysis | null;
 };
-
-const normalize = (name: string): string => name.trim().toLowerCase();
 
 /**
  * The home screen's "reading of the day": what keeps coming back in the last
@@ -50,7 +49,8 @@ export function buildPersonalReading(dreams: DreamAnalysis[], now: number = Date
     if (dream.theme) themeCounts.set(dream.theme, (themeCounts.get(dream.theme) ?? 0) + 1);
     const seen = new Set<string>();
     for (const symbol of dream.symbols ?? []) {
-      const key = normalize(symbol?.name ?? '');
+      // The same symbol under another name or in another language is still the same one.
+      const key = symbol ? symbolLinkKey(symbol) : null;
       if (!key || seen.has(key)) continue;
       seen.add(key);
       const entry = symbolCounts.get(key) ?? { name: symbol.name.trim(), count: 0 };
