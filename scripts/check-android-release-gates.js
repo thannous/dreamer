@@ -5,6 +5,7 @@ const { createHash } = require('crypto');
 const fs = require('fs');
 const path = require('path');
 const { spawnSync } = require('child_process');
+const { pathToFileURL } = require('url');
 const {
   commandExists,
   getAdbCandidates,
@@ -23,6 +24,7 @@ const {
 const {
   getSupabasePlayIntegritySecretIssues,
 } = require('./update-supabase-play-integrity-secrets-state');
+const { VOICE_RECORD_PATH, voiceRecordProblem } = require('./record-android-voice-checklist');
 
 const ROOT = path.resolve(__dirname, '..');
 const PLAY_INTEGRITY_PROJECT_NUMBER_KEY = 'EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER';
@@ -801,35 +803,32 @@ const TESTERARMY_SELECTION_FLAGS = new Set([
   '--shard',
 ]);
 const FULL_SHA = /^[a-f0-9]{40}$/;
+const CANDIDATE_APK_ENV = 'QA_ANDROID_RELEASE_APK';
 
-function runFolderHashes(runDir, readdirSync, readFileSync) {
-  const hashes = {};
-  const walk = (dir) => {
-    const entries = readdirSync(dir, { withFileTypes: true })
-      .slice()
-      .sort((a, b) => String(a.name).localeCompare(String(b.name)));
-    for (const entry of entries) {
-      const full = path.join(dir, String(entry.name));
-      const relative = path.relative(runDir, full).split(path.sep).join('/');
-      if (entry.isSymbolicLink()) throw new Error('symlink');
-      if (entry.isDirectory()) walk(full);
-      else if (entry.isFile() && relative !== 'files.json' && relative !== 'end.json') {
-        hashes[relative] = createHash('sha256').update(readFileSync(full)).digest('hex');
-      }
-    }
-  };
-  walk(runDir);
-  return hashes;
+// The engine's own manifest check (tools/e2e/qualification.mjs
+// verifyEvidenceFiles): files.json must list the sha256 of every file of the
+// run folder except itself and end.json. It is ESM, so it runs in a child Node.
+const EVIDENCE_ENGINE = path.join(ROOT, 'tools/e2e/qualification.mjs');
+function verifyRunManifest(runDir) {
+  const script =
+    `import { verifyEvidenceFiles } from ${JSON.stringify(pathToFileURL(EVIDENCE_ENGINE).href)};\n` +
+    'try { verifyEvidenceFiles(process.argv[1]); } catch (error) { console.error(error.message); process.exit(1); }';
+  const result = spawnSync(process.execPath, ['--input-type=module', '-e', script, runDir], {
+    encoding: 'utf8',
+    timeout: 60000,
+  });
+  if (result.status === 0) return null;
+  const code = String(result.stderr || '').trim().split('\n').pop() || 'unknown error';
+  return `its manifest check failed (${code})`;
 }
 
-function sameHashes(declared, actual) {
-  if (!declared || typeof declared !== 'object' || Array.isArray(declared)) return false;
-  const declaredKeys = Object.keys(declared).sort();
-  const actualKeys = Object.keys(actual).sort();
-  return (
-    declaredKeys.length === actualKeys.length &&
-    declaredKeys.every((key, index) => key === actualKeys[index] && declared[key] === actual[key])
-  );
+const SHA256 = /^[a-f0-9]{64}$/;
+function fileSha256(filePath, readFileSync) {
+  try {
+    return createHash('sha256').update(readFileSync(filePath)).digest('hex');
+  } catch {
+    return null;
+  }
 }
 
 // Why a run folder does not prove the full release suite on this revision, or
@@ -837,19 +836,14 @@ function sameHashes(declared, actual) {
 // and collection when it wrote qualification.json; this checks that the folder
 // is complete and unchanged since, that it ran unfiltered and that every
 // receipt names the same commit as the checkout under qualification.
-function testerArmyRunProblem({ runDir, end, evidence, release, revision, io }) {
-  const { existsSync, readFileSync, readdirSync } = io;
+function testerArmyRunProblem({ runDir, end, evidence, release, revision, candidateApkSha256, io }) {
+  const { existsSync } = io;
   for (const name of TESTERARMY_RUN_FILES) {
     if (!existsSync(path.join(runDir, name))) return `${name} is missing`;
   }
-  const declared = readRunJson(runDir, 'files.json', io);
-  let actual;
-  try {
-    actual = runFolderHashes(runDir, readdirSync, readFileSync);
-  } catch {
-    return 'the run folder cannot be hashed';
-  }
-  if (!sameHashes(declared, actual)) return 'files.json does not match the run folder';
+  if (!existsSync(path.join(runDir, 'files.json'))) return 'files.json is missing';
+  const manifestProblem = verifyRunManifest(runDir);
+  if (manifestProblem) return manifestProblem;
   const command = Array.isArray(evidence.command) ? evidence.command.map(String) : null;
   if (!command || command[4] !== 'run') return 'evidence.json does not record a run command';
   const filter = command.find((arg) => TESTERARMY_SELECTION_FLAGS.has(arg));
@@ -860,7 +854,21 @@ function testerArmyRunProblem({ runDir, end, evidence, release, revision, io }) 
   if (end.stability?.sourceStable !== true || end.stability.sourceClean !== true) {
     return 'its source changed or was not clean during the run';
   }
-  if (!FULL_SHA.test(String(release.source?.revision))) return 'release-used.json has no source revision';
+  if (release.source?.revision !== revision) {
+    return `its build came from ${String(release.source?.revision).slice(0, 12)}, not ${revision.slice(0, 12)}`;
+  }
+  if (!candidateApkSha256) return 'the candidate APK cannot be read';
+  const installedStart = readRunJson(runDir, 'installed-start.json', io);
+  const installedEnd = readRunJson(runDir, 'installed-end.json', io);
+  const testedHashes = [
+    release.binary?.sha256,
+    evidence.binary?.sha256,
+    installedStart?.binarySha256,
+    installedEnd?.binarySha256,
+  ];
+  if (testedHashes.some((hash) => !SHA256.test(String(hash)) || hash !== candidateApkSha256)) {
+    return `the tested APK is not the candidate APK (sha256 ${candidateApkSha256.slice(0, 12)})`;
+  }
   const qualification = readRunJson(runDir, 'qualification.json', io);
   if (
     qualification?.revision !== revision ||
@@ -902,6 +910,7 @@ function findTesterArmyReleaseRun({
   rootDir,
   versionCode,
   revision,
+  candidateApkSha256,
   existsSync,
   readFileSync,
   readdirSync,
@@ -930,7 +939,7 @@ function findTesterArmyReleaseRun({
     ) {
       continue;
     }
-    const problem = testerArmyRunProblem({ runDir, end, evidence, release, revision, io });
+    const problem = testerArmyRunProblem({ runDir, end, evidence, release, revision, candidateApkSha256, io });
     if (problem) {
       rejected.push(`${name}: ${problem}`);
       continue;
@@ -946,7 +955,7 @@ function findTesterArmyReleaseRun({
   return { run: null, runs: names.length, rejected };
 }
 
-function getTesterArmyReleaseCheck({ prebuild, versionCode, spawn, ...io }) {
+function getTesterArmyReleaseCheck({ prebuild, versionCode, spawn, env, ...io }) {
   if (prebuild) {
     return {
       status: 'manual',
@@ -961,8 +970,17 @@ function getTesterArmyReleaseCheck({ prebuild, versionCode, spawn, ...io }) {
       remediation: 'Fix the Android release candidate versionCode check first.',
     };
   }
+  const apk = env?.[CANDIDATE_APK_ENV];
+  if (!apk) {
+    return {
+      status: 'blocked',
+      details: `${CANDIDATE_APK_ENV} is not set, so the tested APK cannot be compared with the release candidate.`,
+      remediation: `Set ${CANDIDATE_APK_ENV} to the candidate production-apk file (the release.apk of its build receipt).`,
+    };
+  }
+  const candidateApkSha256 = fileSha256(path.resolve(io.rootDir, apk), io.readFileSync);
   const revision = readCurrentRevision(io.rootDir, spawn);
-  const found = findTesterArmyReleaseRun({ versionCode, revision, ...io });
+  const found = findTesterArmyReleaseRun({ versionCode, revision, candidateApkSha256, ...io });
   if (found.run) {
     return {
       status: 'pass',
@@ -973,7 +991,51 @@ function getTesterArmyReleaseCheck({ prebuild, versionCode, spawn, ...io }) {
   return {
     status: 'blocked',
     details: `No TesterArmy run under ${TESTERARMY_ANDROID_RUNS} (${found.runs} run(s) found) qualified an installed ${TESTERARMY_RELEASE_PROFILE} build of ${EXPECTED_ANDROID_PACKAGE_NAME} versionCode ${versionCode} on ${revision ? revision.slice(0, 12) : 'the current commit'}.${found.rejected.length ? ` Rejected: ${found.rejected.join('; ')}.` : ''}`,
-    remediation: `On an emulator, on this commit with a clean working tree and without --grep, --tag or --shard, ${TESTERARMY_RELEASE_COMMANDS}; the run must end with applicationQualified true.`,
+    remediation: `On an emulator, on this commit with a clean working tree and without --grep, --tag or --shard, ${TESTERARMY_RELEASE_COMMANDS}; the run must end with applicationQualified true and test the APK named by ${CANDIDATE_APK_ENV}.`,
+  };
+}
+
+// Real speech needs a person: the Maestro voice receipt is gone, and a person
+// runs the manual checklist instead. Qualification stays blocked until a
+// structured, passing record of that checklist exists for the candidate
+// versionCode (scripts/record-android-voice-checklist.js).
+function getVoiceChecklistCheck({ prebuild, versionCode, rootDir, existsSync, readFileSync }) {
+  const remediation = `Run the manual voice checklist of ${VOICE_MANUAL_CHECKLIST} on the Play-installed candidate, then record it with node scripts/record-android-voice-checklist.js --version-code ${versionCode || '<n>'} ... --all-steps-passed.`;
+  if (prebuild) {
+    return {
+      status: 'manual',
+      details: `Deferred until the candidate (versionCode ${versionCode || 'missing'}) is installed from Play.`,
+      remediation,
+    };
+  }
+  if (!versionCode) {
+    return {
+      status: 'blocked',
+      details: 'No candidate versionCode to match a voice checklist record against.',
+      remediation: 'Fix the Android release candidate versionCode check first.',
+    };
+  }
+  const recordPath = path.join(rootDir, VOICE_RECORD_PATH);
+  let record = null;
+  if (existsSync(recordPath)) {
+    try {
+      record = JSON.parse(readFileSync(recordPath, 'utf8'));
+    } catch {
+      record = null;
+    }
+  }
+  const problem = voiceRecordProblem(record, versionCode);
+  if (!problem) {
+    return {
+      status: 'pass',
+      details: `${VOICE_RECORD_PATH} records a passing manual voice checklist for versionCode ${versionCode} (${record.testedAt}, ${record.deviceId}).`,
+      remediation: 'None.',
+    };
+  }
+  return {
+    status: 'blocked',
+    details: `No passing manual voice checklist record for versionCode ${versionCode} in ${VOICE_RECORD_PATH}: ${problem}.`,
+    remediation,
   };
 }
 
@@ -1192,6 +1254,7 @@ function checkAndroidReleaseGates({
     prebuild,
     versionCode: androidCandidateVersionCode,
     spawn,
+    env,
     rootDir,
     existsSync,
     readFileSync,
@@ -1205,14 +1268,19 @@ function checkAndroidReleaseGates({
     testerArmyCheck.remediation
   );
 
-  // Real speech needs a person: the automated voice receipt went with Maestro
-  // (owner decision 2026-10-14) and the manual checklist replaces it.
+  const voiceCheck = getVoiceChecklistCheck({
+    prebuild,
+    versionCode: androidCandidateVersionCode,
+    rootDir,
+    existsSync,
+    readFileSync,
+  });
   addCheck(
     checks,
-    'manual',
+    voiceCheck.status,
     'Release voice transcription, save and analysis',
-    `No automated check: real speech recognition needs a person speaking to the installed candidate (versionCode ${androidCandidateVersionCode || 'missing'}).`,
-    `Run the manual voice checklist of ${VOICE_MANUAL_CHECKLIST} on the candidate and record its result with the release evidence.`
+    voiceCheck.details,
+    voiceCheck.remediation
   );
 
   const adbCommand = resolveCommand('adb', { spawn, existsSync, env, platform });

@@ -99,8 +99,11 @@ E2E_DEVICE=<emulator-serial> E2E_RELEASE_RECEIPT=<release.json imprimé> \
 - [ ] Le `versionCode` du build local est celui du candidat (`QA_ANDROID_VERSION_CODE`
   quand EAS attribue le compteur) ; sinon `android:gates:strict` reste bloqué.
 - [ ] Le run est fait sur le commit qualifié, arbre de travail propre, sans filtre
-  (`--grep`, `--tag`, `--exclude-tag`, `--tag-mode`, `--shard`) ; son dossier est
-  complet et conforme à son `files.json`. Un run d'un autre commit ne compte pas.
+  (`--grep`, `--tag`, `--exclude-tag`, `--tag-mode`, `--shard`), sur un build dont
+  la source est ce même commit ; son dossier est complet et passe
+  `verifyEvidenceFiles` (son `files.json`). Un run d'un autre commit ne compte pas.
+- [ ] `QA_ANDROID_RELEASE_APK` désigne l'APK candidat ; son sha256 doit être celui
+  de l'APK testé et installé par le run.
 - [ ] Ces parcours restent hors ligne : ils ne prouvent ni achat, ni voix réelle, ni compte backend.
 
 - [ ] Vérifier la release sur la piste Test interne et son accès aux testeurs.
@@ -137,8 +140,10 @@ Installer depuis la piste Internal Testing, pas en sideload.
 La reconnaissance vocale réelle demande une personne qui parle au candidat : elle
 n'est pas automatisable sur émulateur (l'injection audio y faisait quitter
 l'émulateur). Le parcours Maestro `release-auth-voice-analysis` et son reçu
-automatique sont retirés depuis le 14 octobre 2026 ; `android:gates:strict`
-affiche désormais cette étape comme manuelle.
+automatique sont retirés depuis le 14 octobre 2026. `android:gates:strict` reste
+bloqué tant qu'un relevé structuré de cette checklist, réussi pour le `versionCode`
+du candidat, n'existe pas dans `doc_web_interne/docs/android-voice-analysis-evidence.local.json`
+(local, ignoré par git).
 
 Sur le candidat installé depuis Play, connecté au compte QA `qa-free` :
 
@@ -150,7 +155,7 @@ Sur le candidat installé depuis Play, connecté au compte QA `qa-free` :
 - [ ] Lancer l'analyse : l'interprétation s'affiche pour ce rêve, avec la carte de transcription.
 - [ ] Se déconnecter : l'app revient en invité.
 - [ ] Repasser en saisie texte pendant un brouillon vocal : le texte déjà transcrit est conservé.
-- [ ] Noter le `versionCode` installé, l'appareil, la date et le résultat dans le relevé de release ; ne commiter ni enregistrement audio ni capture contenant des données privées.
+- [ ] Si toutes les étapes ont réussi, enregistrer le relevé : `node scripts/record-android-voice-checklist.js --version-code <n> --tester <libellé> --device-id <adb-id> --installer-package-name com.android.vending --all-steps-passed`. Si une étape échoue, ne rien enregistrer : la release reste bloquée. Ne commiter ni enregistrement audio ni capture contenant des données privées.
 
 ## 5. Play Console
 

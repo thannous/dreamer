@@ -69,6 +69,11 @@ function validEnv() {
 }
 
 const RUN_REVISION = '0123456789abcdef0123456789abcdef01234567';
+const OTHER_REVISION = 'fedcba9876543210fedcba9876543210fedcba98';
+// Relative to each fixture root; the gate resolves QA_ANDROID_RELEASE_APK there.
+const CANDIDATE_APK = 'build/release.apk';
+const CANDIDATE_APK_BYTES = 'candidate apk bytes';
+const sha256 = (value) => require('crypto').createHash('sha256').update(value).digest('hex');
 
 function hashRunFolder(root, runDir) {
   const base = path.join(root, runDir);
@@ -78,13 +83,11 @@ function hashRunFolder(root, runDir) {
       const full = path.join(dir, entry.name);
       const relative = path.relative(base, full).split(path.sep).join('/');
       if (entry.isDirectory()) walk(full);
-      else if (relative !== 'files.json' && relative !== 'end.json') {
-        hashes[relative] = require('crypto').createHash('sha256').update(fs.readFileSync(full)).digest('hex');
-      }
+      else if (relative !== 'files.json' && relative !== 'end.json') hashes[relative] = sha256(fs.readFileSync(full));
     }
   };
   walk(base);
-  return hashes;
+  return Object.fromEntries(Object.entries(hashes).sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)));
 }
 
 // The files tools/e2e/run.mjs writes for a qualified native run of a Release
@@ -98,24 +101,25 @@ function writeTesterArmyRun(root, {
   applicationQualified = true,
   exitCode = 0,
   revision = RUN_REVISION,
+  buildRevision = revision,
   workingTree = '',
   args = ['--install-release'],
   sourceStable = true,
   sourceClean = true,
+  apkBytes = CANDIDATE_APK_BYTES,
 } = {}) {
   const runDir = `tools/e2e/.e2e/dreamer-android/${name}`;
+  writeFile(root, CANDIDATE_APK, CANDIDATE_APK_BYTES);
+  const binary = { bundle, version: '2.0.2', build: String(versionCode), sha256: sha256(apkBytes), path: `/builds/${name}/release.apk` };
   writeJson(root, `${runDir}/evidence.json`, {
     product,
     platform: 'android',
     revision,
     workingTree,
+    binary,
     command: ['node', 'tools/e2e/run.mjs', product, 'android', 'run', ...args],
   });
-  writeJson(root, `${runDir}/release-used.json`, {
-    profile: { name: profile },
-    source: { revision },
-    binary: { bundle, version: '2.0.2', build: String(versionCode) },
-  });
+  writeJson(root, `${runDir}/release-used.json`, { profile: { name: profile }, source: { revision: buildRevision }, binary });
   writeJson(root, `${runDir}/source-start.json`, { revision });
   writeJson(root, `${runDir}/source-end.json`, { revision });
   writeJson(root, `${runDir}/collection.json`, { pairs: [{ file: 'tests/dreamer.mobile.e2e.ts' }] });
@@ -127,8 +131,8 @@ function writeTesterArmyRun(root, {
     target: 'dreamer-android',
     passed: [{ targetId: 'dreamer-android', testId: 'release' }],
   });
-  writeJson(root, `${runDir}/installed-start.json`, { bundle });
-  writeJson(root, `${runDir}/installed-end.json`, { bundle });
+  writeJson(root, `${runDir}/installed-start.json`, { bundle, binarySha256: binary.sha256, buildSource: buildRevision });
+  writeJson(root, `${runDir}/installed-end.json`, { bundle, binarySha256: binary.sha256, buildSource: buildRevision });
   writeFile(root, `${runDir}/results/release/trace.md`, 'trace');
   writeJson(root, `${runDir}/files.json`, hashRunFolder(root, runDir));
   writeJson(root, `${runDir}/end.json`, {
@@ -138,6 +142,21 @@ function writeTesterArmyRun(root, {
     stability: { sourceStable, sourceClean },
   });
   return runDir;
+}
+
+const VOICE_RECORD = 'doc_web_interne/docs/android-voice-analysis-evidence.local.json';
+function writeVoiceRecord(root, overrides = {}) {
+  const { buildVoiceRecord } = require('./record-android-voice-checklist');
+  writeJson(root, VOICE_RECORD, {
+    ...buildVoiceRecord({
+      versionCode: 33,
+      tester: 'qa-free',
+      deviceId: 'ZY22K',
+      installerPackageName: 'com.android.vending',
+      testedAt: '2026-10-15T09:00:00.000Z',
+    }),
+    ...overrides,
+  });
 }
 
 function setupFixture({ versionCode = 33 } = {}) {
@@ -220,6 +239,7 @@ function setupFixture({ versionCode = 33 } = {}) {
     ['on:', '  workflow_dispatch: {}', 'jobs:', '  build_on_demand:', '    type: build', ''].join('\n')
   );
   writeTesterArmyRun(root, { versionCode });
+  writeVoiceRecord(root, { versionCode: String(versionCode) });
   return root;
 }
 
@@ -288,6 +308,14 @@ function writeSupabasePlayIntegritySecretsSnapshot(root, overrides = {}) {
 }
 
 describe('android release gate preflight', () => {
+  const previousApk = process.env.QA_ANDROID_RELEASE_APK;
+  beforeEach(() => {
+    process.env.QA_ANDROID_RELEASE_APK = CANDIDATE_APK;
+  });
+  afterAll(() => {
+    if (previousApk === undefined) delete process.env.QA_ANDROID_RELEASE_APK;
+    else process.env.QA_ANDROID_RELEASE_APK = previousApk;
+  });
   function npmRunScript(args) {
     const runIndex = args.indexOf('run');
     return runIndex === -1 ? null : args[runIndex + 1];
@@ -932,6 +960,7 @@ describe('android release gate preflight', () => {
     const TITLE = 'TesterArmy Android Release journeys (production-apk)';
     const VOICE_TITLE = 'Release voice transcription, save and analysis';
     const testerArmyCheck = (report) => report.checks.find((check) => check.title === TITLE);
+    const voiceCheck = (report) => report.checks.find((check) => check.title === VOICE_TITLE);
 
     function qualificationRoot(versionCode = 33) {
       const root = setupFixture({ versionCode });
@@ -979,13 +1008,15 @@ describe('android release gate preflight', () => {
     });
 
     it.each([
-      ['ran on another commit', { revision: 'fedcba9876543210fedcba9876543210fedcba98' }, 'not 0123456789ab'],
+      ['is stale: it ran on another commit', { revision: OTHER_REVISION, buildRevision: OTHER_REVISION }, 'not 0123456789ab'],
+      ['tested a build from another source commit', { buildRevision: OTHER_REVISION }, 'its build came from fedcba987654'],
       ['ran on a modified working tree', { workingTree: ' M app.json' }, 'modified working tree'],
       ['saw its source change during the run', { sourceStable: false }, 'source changed'],
+      ['tested another APK than the candidate', { apkBytes: 'another apk' }, 'not the candidate APK'],
       ['was filtered with --grep', { args: ['--grep', 'onboarding', '--install-release'] }, 'filtered with --grep'],
       ['was filtered with --tag', { args: ['--tag', '@smoke'] }, 'filtered with --tag'],
       ['was one shard', { args: ['--shard', '1/2'] }, 'filtered with --shard'],
-    ])('rejects a qualified run of the candidate that %s', (_name, overrides, reason) => {
+    ])('blocks qualification when the qualified run of the candidate %s', (_name, overrides, reason) => {
       const root = qualificationRoot();
       writeTesterArmyRun(root, overrides);
 
@@ -996,26 +1027,33 @@ describe('android release gate preflight', () => {
       expect(testerArmyCheck(report).details).toContain(reason);
     });
 
-    it('rejects a run folder that is incomplete or changed after its manifest', () => {
-      const missing = qualificationRoot();
-      const missingDir = writeTesterArmyRun(missing);
-      fs.rmSync(path.join(missing, missingDir, 'report.json'));
-      const edited = qualificationRoot();
-      const editedDir = writeTesterArmyRun(edited);
-      writeJson(edited, `${editedDir}/qualification.json`, { revision: RUN_REVISION, target: 'dreamer-android', passed: [{}, {}] });
-      const handWritten = qualificationRoot();
-      const handDir = writeTesterArmyRun(handWritten);
-      fs.rmSync(path.join(handWritten, handDir, 'files.json'));
+    it.each([
+      ['a file was edited after files.json', (root, runDir) => writeJson(root, `${runDir}/qualification.json`, { revision: RUN_REVISION, target: 'dreamer-android', passed: [{}, {}] }), 'EVIDENCE_CHANGED'],
+      ['a file was added after files.json', (root, runDir) => writeFile(root, `${runDir}/results/extra.txt`, 'x'), 'EVIDENCE_CHANGED'],
+      ['a file listed in files.json is gone', (root, runDir) => fs.rmSync(path.join(root, runDir, 'results/release/trace.md')), 'EVIDENCE_CHANGED'],
+      ['files.json is missing', (root, runDir) => fs.rmSync(path.join(root, runDir, 'files.json')), 'files.json is missing'],
+      ['a required file is missing', (root, runDir) => fs.rmSync(path.join(root, runDir, 'report.json')), 'report.json is missing'],
+    ])('blocks qualification when %s (engine verifyEvidenceFiles)', (_name, tamper, reason) => {
+      const root = qualificationRoot();
+      const runDir = writeTesterArmyRun(root);
+      tamper(root, runDir);
 
-      const details = [missing, edited, handWritten].map((root) => {
-        const report = checkAndroidReleaseGates({ rootDir: root, spawn: spawnWithTools() });
-        expect(testerArmyCheck(report)).toMatchObject({ status: 'blocked' });
-        return testerArmyCheck(report).details;
-      });
+      const report = checkAndroidReleaseGates({ rootDir: root, spawn: spawnWithTools() });
 
-      expect(details[0]).toContain('report.json is missing');
-      expect(details[1]).toContain('files.json does not match the run folder');
-      expect(details[2]).toContain('files.json does not match the run folder');
+      expect(report.ok).toBe(false);
+      expect(testerArmyCheck(report)).toMatchObject({ status: 'blocked' });
+      expect(testerArmyCheck(report).details).toContain(reason);
+    });
+
+    it('blocks qualification without the candidate APK to compare', () => {
+      const root = qualificationRoot();
+      writeTesterArmyRun(root);
+      delete process.env.QA_ANDROID_RELEASE_APK;
+
+      const report = checkAndroidReleaseGates({ rootDir: root, spawn: spawnWithTools() });
+
+      expect(testerArmyCheck(report)).toMatchObject({ status: 'blocked' });
+      expect(testerArmyCheck(report).details).toContain('QA_ANDROID_RELEASE_APK is not set');
     });
 
     it('blocks qualification when the current commit cannot be read', () => {
@@ -1059,12 +1097,45 @@ describe('android release gate preflight', () => {
       expect(testerArmyCheck(report).details).toContain('versionCode 41');
     });
 
-    it('lists the real voice journey as a manual checklist', () => {
-      const report = checkAndroidReleaseGates({ rootDir: qualificationRoot(), spawn: spawnWithTools() });
-      const voice = report.checks.find((check) => check.title === VOICE_TITLE);
+    it('passes the voice check with a passing manual record for the candidate', () => {
+      const root = qualificationRoot();
+      writeTesterArmyRun(root);
+      writeVoiceRecord(root);
 
-      expect(voice).toMatchObject({ status: 'manual' });
-      expect(voice.remediation).toContain('doc_web_interne/docs/android-release-checklist.md');
+      const report = checkAndroidReleaseGates({ rootDir: root, spawn: spawnWithTools() });
+
+      expect(voiceCheck(report)).toMatchObject({ status: 'pass' });
+      expect(report.ok).toBe(true);
+    });
+
+    it.each([
+      ['there is no record', null, 'no record'],
+      ['the record is for another versionCode', { versionCode: '32' }, 'versionCode 32, not 33'],
+      ['the record did not pass', { result: 'fail' }, 'its result is fail'],
+      ['a step is unchecked', { steps: { french_language_selected: true } }, 'unchecked steps'],
+      ['the candidate was not installed from Play', { installerPackageName: 'com.android.shell' }, 'not installed from Play'],
+      ['the record is not a voice checklist record', { kind: 'something-else' }, 'not a voice checklist record'],
+    ])('keeps qualification blocked on voice when %s', (_name, overrides, reason) => {
+      const root = qualificationRoot();
+      writeTesterArmyRun(root);
+      if (overrides) writeVoiceRecord(root, overrides);
+      else fs.rmSync(path.join(root, VOICE_RECORD));
+
+      const report = checkAndroidReleaseGates({ rootDir: root, spawn: spawnWithTools() });
+
+      expect(report.ok).toBe(false);
+      expect(voiceCheck(report)).toMatchObject({ status: 'blocked' });
+      expect(voiceCheck(report).details).toContain(reason);
+      expect(voiceCheck(report).remediation).toContain('doc_web_interne/docs/android-release-checklist.md');
+    });
+
+    it('defers the voice record to qualification during prebuild', () => {
+      const root = setupFixture({ versionCode: 41 });
+      fs.rmSync(path.join(root, VOICE_RECORD));
+
+      const report = checkAndroidReleaseGates({ rootDir: root, spawn: spawnWithTools(), phase: 'prebuild' });
+
+      expect(voiceCheck(report)).toMatchObject({ status: 'manual' });
     });
   });
 
@@ -1225,7 +1296,7 @@ describe('android release gate preflight', () => {
     const report = checkAndroidReleaseGates({
       rootDir: root,
       spawn,
-      env: { HOME: fakeHome },
+      env: { HOME: fakeHome, QA_ANDROID_RELEASE_APK: CANDIDATE_APK },
       platform: 'darwin',
     });
 

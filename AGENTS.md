@@ -388,7 +388,9 @@ or an explicitly named iOS Simulator with `<product> ios`. Product is dreamer,
 lucid or meditation. Run setup/browser installation once through package scripts.
 Maestro was retired on 2026-10-14 (owner decision): the Android release evidence is a
 local TesterArmy run of a `production-apk` Release build on an emulator, which
-`npm run android:gates:strict` requires for the candidate versionCode. Real voice and
+`npm run android:gates:strict` requires for the candidate versionCode, commit and APK.
+Real voice stays blocking there until `scripts/record-android-voice-checklist.js`
+records a passing manual checklist for the candidate. Real voice and
 RevenueCat Test Store purchases follow the manual checklists of
 `doc_web_interne/docs/android-expo57-qa-runbook.md` and `doc_web_interne/docs/revenuecat-qa-workflow.md`.
 
