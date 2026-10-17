@@ -48,7 +48,6 @@ import {
   buildDraftDream as buildDraftDreamPure,
   buildRememberedDream,
 } from '@/lib/dreamUtils';
-import { isMockModeEnabled } from '@/lib/env';
 import { DreamPersistenceError } from '@/lib/dreamStorageRead';
 import { getDreamIdentityKey, resolveDreamTarget } from '@/lib/dreamIdentity';
 import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
@@ -138,7 +137,6 @@ import { useHeaderScroll } from '@/components/ui/headerStretch';
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 
 const log = createScopedLogger('[Recording]');
-const isMockMode = isMockModeEnabled();
 
 /**
  * Answers to the capture questions are woven into the account by the faithful formatter:
@@ -633,6 +631,9 @@ function RecordingScreen() {
         handsFreeRestartInFlightRef.current = false;
         void forceStopRecording('blur');
         blurActiveElement();
+        // On native the editor stays first responder of this hidden screen, and iOS
+        // gives it the keyboard back as soon as the capture is shown again.
+        Keyboard.dismiss();
       };
     }, [forceStopRecording])
   );
@@ -1699,16 +1700,6 @@ function RecordingScreen() {
     setVoiceFallbackReason(null);
     await toggleRecording();
   }, [completeRecordingVoiceHint, isHydrated, toggleRecording]);
-
-  const previousInputModeRef = useRef(inputMode);
-  useEffect(() => {
-    const previousInputMode = previousInputModeRef.current;
-    previousInputModeRef.current = inputMode;
-
-    if (inputMode === 'text' && previousInputMode !== 'text' && !isMockMode) {
-      focusTranscriptEnd(baseTranscriptRef.current || transcript);
-    }
-  }, [focusTranscriptEnd, inputMode, transcript]);
 
   const handleMicRationaleClose = useCallback(() => {
     hasSeenMicRationaleRef.current = true;
