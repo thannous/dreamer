@@ -575,6 +575,13 @@ test('the French tiger atlas sets its chapters side by side and shows each publi
   expect(phone.columns.map(column => column.left)).toEqual(phone.columns.map(() => phone.columns[0].left));
   expectPublishedScene(phone, 'cage');
   await app.screenshot('tiger-atlas-390');
+  // Past the hero the shared navbar gets a ground over the text (it stays transparent on the hero).
+  const navGround = () => browser.evaluate(() => getComputedStyle(document.querySelector('#navbar')!).backgroundColor);
+  for (const [top, transparent] of [[1127, false], [760, false], [0, true]] as const) {
+    expect(await browser.evaluate(scrollToY, top)).toBe(top);
+    if (transparent) await expect.poll(navGround).toBe('rgba(0, 0, 0, 0)');
+    else await expect.poll(navGround).toMatch(/^rgba\(10, 5, 20, 0\.9\d*\)$/);
+  }
 
   // The other languages keep the shared single-column article.
   await app.open('/en/symbols/tiger.html');

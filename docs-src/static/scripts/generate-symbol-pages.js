@@ -1158,6 +1158,15 @@ function renderTigerAtlasArticle(c) {
                 </div>
             </div>
             <script>
+                // On a phone the shared navbar never compacts and stays transparent: past the hero
+                // it would sit on the text, so it gets a ground there; back on the hero it clears.
+                (() => {
+                    const nav = document.getElementById('navbar');
+                    const hero = document.querySelector('.symbol-hero');
+                    if (!nav || !hero || !('IntersectionObserver' in window)) return;
+                    const top = Math.round(nav.getBoundingClientRect().height);
+                    new IntersectionObserver(([entry]) => nav.classList.toggle('atlas-nav-solid', !entry.isIntersecting), { rootMargin: '-' + top + 'px 0px 0px 0px' }).observe(hero);
+                })();
                 // The rail marks the chapter crossing the upper third of the screen; anchors work without it.
                 (() => {
                     const links = Array.from(document.querySelectorAll('.atlas-rail-chapter'));
@@ -1352,6 +1361,14 @@ const TIGER_ATLAS_CSS = `
         .atlas .variation-card:last-child, .atlas .symbol-faq-card:last-child { border-bottom: 0; }
         .atlas .symbol-faq { scroll-margin-top: 7rem; }
         .atlas-back { text-align: left; }
+        @media (max-width: 767px) {
+            #navbar.atlas-nav-solid, body.symbol-jump-fixed #navbar {
+                background: rgba(10, 5, 20, 0.92);
+                backdrop-filter: blur(18px);
+                -webkit-backdrop-filter: blur(18px);
+                box-shadow: 0 12px 34px rgba(0, 0, 0, 0.24);
+            }
+        }
 
         @media (min-width: 768px) {
             .symbol-page-main > article.atlas { width: min(90vw, 2304px); }
