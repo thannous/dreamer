@@ -1,4 +1,5 @@
 import { offeredDreamThemes } from './dreamThemes.ts';
+import { parseKnownDreamSymbols, type KnownDreamSymbol } from './dreamSymbols.ts';
 import { isAiLanguage } from './aiLanguage.ts';
 import { corsHeaders } from './constants.ts';
 import { boundTranscriptForPrompt } from './prompts.ts';
@@ -88,8 +89,8 @@ export const parseLegacyImageTranscriptInput = (
 };
 
 export const parseDreamTextInput = (
-  body: { transcript?: unknown; lang?: unknown; themes?: unknown }
-): { transcript: string; lang: string; themes: string[] } | Response => {
+  body: { transcript?: unknown; lang?: unknown; themes?: unknown; knownSymbols?: unknown }
+): { transcript: string; lang: string; themes: string[]; knownSymbols: KnownDreamSymbol[] } | Response => {
   const transcript = validateBoundedText(body?.transcript, {
     field: 'transcript',
     maxChars: AI_REQUEST_LIMITS.transcriptRequestChars,
@@ -107,6 +108,8 @@ export const parseDreamTextInput = (
     transcript: transcript.value,
     lang: normalizeAiLanguage(language.value || 'en'),
     themes: offeredDreamThemes(body?.themes),
+    // The dreamer's own symbols, kept from their journal: bounded data for the prompt.
+    knownSymbols: parseKnownDreamSymbols(body?.knownSymbols),
   };
 };
 
