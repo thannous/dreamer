@@ -33,6 +33,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { getAppVersionString } from '@/lib/appVersion';
 import { getExpoPublicEnvValue, isMockModeEnabled } from '@/lib/env';
 import { buildPaywallHref } from '@/lib/paywallRoute';
+import { canOpenStoreReviewPage, openStoreReviewPage } from '@/lib/storeReview';
 
 /**
  * `Host` is an @expo/ui component and the returning-guest card is a `GlassCard`, so
@@ -240,6 +241,7 @@ export default function SettingsScreen() {
             footer={user ? <View testID="settings-signout-footer"><SettingsSignOutAction /></View> : undefined}
             onOpenSubscription={handleOpenPaywall}
             onReplayOnboarding={returningGuestBlocked ? undefined : () => router.push({ pathname: '/onboarding', params: { replay: '1' } })}
+            onRateApp={returningGuestBlocked || !canOpenStoreReviewPage() ? undefined : () => void openStoreReviewPage()}
             quota={quota}
             returningGuestBlocked={returningGuestBlocked}
             subscriptionSubtitle={t('settings.plus.subtitle')}
