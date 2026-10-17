@@ -108,6 +108,12 @@ export interface DreamMemoryMetadata {
 export interface DreamSymbolInsight {
   name: string;
   meaning: string;
+  /** The symbol dictionary entry this symbol is, linking it across dreams and languages. */
+  symbolId?: string;
+  /** For a symbol the dictionary does not know: the dreamer's own key, stable from dream to dream. */
+  key?: string;
+  /** When the dreamer first opened this personal symbol, which makes it theirs. */
+  confirmedAt?: number;
 }
 
 export interface DreamEmotionInsight {

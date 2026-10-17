@@ -228,6 +228,7 @@ jest.doMock('expo-router', () => ({
   useFocusEffect: () => {},
   useNavigation: () => ({ setOptions: jest.fn() }),
   usePathname: () => '/journal',
+  useLocalSearchParams: () => ({}),
 }));
 
 jest.doMock('react-native', () => {

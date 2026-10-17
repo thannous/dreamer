@@ -1,14 +1,18 @@
 import { describe, expect, it } from '@jest/globals';
 
-import { buildDreamTrends, getLocalDateKey } from '../dreamTrends';
-import type { DreamAnalysis, DreamTheme, DreamType } from '../types';
+import { buildDreamTrends } from '../dreamTrends';
+import type { DreamAnalysis } from '../types';
 
-const NOW = new Date(2026, 7, 29, 18, 0, 0).getTime();
+// Thursday 29 October 2026, evening.
+const NOW = new Date(2026, 9, 29, 18, 0, 0).getTime();
 
-const analyzed = (
-  id: number,
-  overrides: Partial<DreamAnalysis> = {},
-): DreamAnalysis => ({
+const localDay = (year: number, monthIndex: number, day: number, hour = 9): number =>
+  new Date(year, monthIndex, day, hour, 0, 0).getTime();
+
+/** `daysAgo` local days before NOW, at the given hour. */
+const nightsAgo = (daysAgo: number, hour = 7): number => localDay(2026, 9, 29 - daysAgo, hour);
+
+const analyzed = (id: number, overrides: Partial<DreamAnalysis> = {}): DreamAnalysis => ({
   id,
   transcript: 'I walked through a quiet hallway.',
   title: 'Quiet hallway',
@@ -23,472 +27,253 @@ const analyzed = (
   ...overrides,
 });
 
-const localDateKey = (timestamp: number): string => {
-  const date = new Date(timestamp);
-  const year = date.getFullYear();
-  const month = `${date.getMonth() + 1}`.padStart(2, '0');
-  const day = `${date.getDate()}`.padStart(2, '0');
-  return `${year}-${month}-${day}`;
-};
+const draft = (id: number, overrides: Partial<DreamAnalysis> = {}): DreamAnalysis => analyzed(id, {
+  interpretation: '',
+  isAnalyzed: false,
+  analyzedAt: undefined,
+  ...overrides,
+});
 
-const localDay = (year: number, monthIndex: number, day: number, hour = 9): number =>
-  new Date(year, monthIndex, day, hour, 0, 0).getTime();
-
-function expectExactlyThreeKeys(value: object) {
-  expect(Object.keys(value).sort()).toEqual(['evolution', 'patterns', 'week']);
-}
+const fear = [{ name: 'fear', insight: '' }];
+const joy = [{ name: 'joy', insight: '' }];
 
 describe('buildDreamTrends', () => {
-  it('returns exactly week, patterns and evolution with an empty journal', () => {
+  it('reads an empty journal as empty, with no comparison, theme or pattern', () => {
     const trends = buildDreamTrends([], { now: NOW });
 
-    expectExactlyThreeKeys(trends);
-    expect(trends.week).toEqual({
-      count: 0,
-      activeDays: 0,
-      rhythm: [
-        { weekday: 1, count: 0 },
-        { weekday: 2, count: 0 },
-        { weekday: 3, count: 0 },
-        { weekday: 4, count: 0 },
-        { weekday: 5, count: 0 },
-        { weekday: 6, count: 0 },
-        { weekday: 0, count: 0 },
-      ],
-      lastActivityAt: null,
-      streak: { current: 0, longest: 0 },
-      averagePerWeek: null,
-    });
-    expect(trends.patterns.empty).toBe(true);
-    expect(trends.patterns.themes).toEqual([]);
-    expect(trends.patterns.emotions).toEqual([]);
-    expect(trends.patterns.types).toEqual([]);
-    expect(trends.patterns.recurrence).toEqual({ count: 0, hasRecurrence: false });
-    expect(trends.evolution.themePoints).toEqual([]);
-    expect(trends.evolution.days).toEqual([]);
-    expect(trends.evolution.nextAction).toBe('capture_first');
-    expect(JSON.stringify(trends)).not.toMatch(/chat|message|mostDiscussed|analyzedCount|engagement/i);
+    expect(trends.empty).toBe(true);
+    expect(trends.period).toBe('30');
+    expect(trends.count).toBe(0);
+    expect(trends.countDelta).toBeNull();
+    expect(trends.activeNightsDelta).toBeNull();
+    expect(trends.themes.dominant).toBeNull();
+    expect(trends.patterns.ready).toBe(false);
+    expect(trends.averagePerWeek).toBeNull();
+    expect(trends.lastActivityAt).toBeNull();
+    expect(trends.streak).toEqual({ current: 0, longest: 0, dreamedToday: false });
   });
 
-  it('keeps a single valid dream honest and withholds a weekly average', () => {
-    const id = localDay(2026, 7, 29);
-    const trends = buildDreamTrends(
-      [
-        analyzed(id, {
-          theme: 'calm',
-          emotions: [{ name: 'fear', insight: '' }],
-        }),
-      ],
+  it('ignores invalid timestamps and dreams dated after now', () => {
+    const trends = buildDreamTrends([
+      analyzed(Number.NaN),
+      analyzed(NOW + 60_000),
+      analyzed(nightsAgo(1)),
+    ], { now: NOW });
+
+    expect(trends.count).toBe(1);
+    expect(trends.lastActivityAt).toBe(nightsAgo(1));
+  });
+
+  it('counts the 30 nights ending today and compares them with the 30 before', () => {
+    const trends = buildDreamTrends([
+      analyzed(nightsAgo(0)),
+      analyzed(nightsAgo(0, 8)),
+      analyzed(nightsAgo(10)),
+      analyzed(nightsAgo(29)),
+      // The previous 30 nights: two dreams on one night.
+      analyzed(nightsAgo(30)),
+      analyzed(nightsAgo(30, 8)),
+      // Beyond both periods.
+      analyzed(nightsAgo(90)),
+    ], { now: NOW, period: '30' });
+
+    expect(trends.range).toEqual({ start: localDay(2026, 8, 30, 0), end: localDay(2026, 9, 29, 0), nights: 30 });
+    expect(trends.count).toBe(4);
+    expect(trends.countDelta).toBe(2);
+    expect(trends.activeNights).toBe(3);
+    expect(trends.activeNightsDelta).toBe(2);
+  });
+
+  it('withholds the comparison when the previous period holds no dream', () => {
+    const trends = buildDreamTrends([analyzed(nightsAgo(2)), analyzed(nightsAgo(40))], { now: NOW, period: '7' });
+
+    expect(trends.count).toBe(1);
+    expect(trends.countDelta).toBeNull();
+    expect(trends.activeNightsDelta).toBeNull();
+    expect(trends.themes.previousCounts).toBeNull();
+  });
+
+  it('lays the 30 nights out in whole weeks from Monday, and the 7 nights as they are', () => {
+    const month = buildDreamTrends([analyzed(nightsAgo(3))], { now: NOW, period: '30' });
+    expect(month.nights.length % 7).toBe(0);
+    expect(month.nights[0].weekday).toBe(1);
+    expect(month.nights.at(-1)?.weekday).toBe(0);
+    expect(month.nights.filter((night) => night.inRange)).toHaveLength(30);
+    expect(month.nights.filter((night) => night.isToday).map((night) => night.dateKey)).toEqual(['2026-10-29']);
+    // Nights outside the period carry no dream even when the journal has one there.
+    expect(month.nights.filter((night) => !night.inRange).every((night) => night.dreams.length === 0)).toBe(true);
+    expect(month.months).toEqual([]);
+
+    const week = buildDreamTrends([analyzed(nightsAgo(3))], { now: NOW, period: '7' });
+    expect(week.nights.map((night) => night.dateKey)).toEqual([
+      '2026-10-23', '2026-10-24', '2026-10-25', '2026-10-26', '2026-10-27', '2026-10-28', '2026-10-29',
+    ]);
+    expect(week.nights.find((night) => night.dateKey === '2026-10-26')?.dreams).toHaveLength(1);
+  });
+
+  it('reads the whole journal by month from its first dream, without a previous period', () => {
+    const trends = buildDreamTrends([
+      analyzed(localDay(2026, 6, 14)),
+      analyzed(localDay(2026, 8, 2)),
+      analyzed(localDay(2026, 8, 20)),
+      analyzed(nightsAgo(1)),
+    ], { now: NOW, period: 'all' });
+
+    expect(trends.previous).toBeNull();
+    expect(trends.countDelta).toBeNull();
+    expect(trends.range.start).toBe(localDay(2026, 6, 14, 0));
+    expect(trends.nights).toEqual([]);
+    expect(trends.months).toEqual([
+      { key: '2026-07', count: 1, current: false },
+      { key: '2026-08', count: 0, current: false },
+      { key: '2026-09', count: 2, current: false },
+      { key: '2026-10', count: 1, current: true },
+    ]);
+    // 4 dreams over the 108 nights since 14 July.
+    expect(trends.averagePerWeek).toBeCloseTo(4 / (108 / 7), 5);
+  });
+
+  it('lets a theme lead only with three themed dreams and no tie', () => {
+    const lead = (themes: DreamAnalysis['theme'][]) => buildDreamTrends(
+      themes.map((theme, index) => analyzed(nightsAgo(index + 1), { theme })),
       { now: NOW },
-    );
+    ).themes;
 
-    expectExactlyThreeKeys(trends);
-    expect(trends.week.count).toBe(1);
-    expect(trends.week.activeDays).toBe(1);
-    expect(trends.week.lastActivityAt).toBe(id);
-    expect(trends.week.averagePerWeek).toBeNull();
-    expect(trends.week.streak).toEqual({ current: 1, longest: 1 });
-    expect(trends.patterns.empty).toBe(true);
-    expect(trends.patterns.emotions).toEqual([]);
-    expect(trends.evolution.nextAction).toBe('wait_for_patterns');
+    expect(lead(['mystical', 'mystical']).dominant).toBeNull();
+    expect(lead(['mystical', 'mystical', 'calm', 'calm']).dominant).toBeNull();
+    expect(lead(['mystical', 'mystical', 'calm']).dominant).toBe('mystical');
+    // A dream without a theme (a draft) counts in the period, not in the seal.
+    const withDraft = buildDreamTrends([
+      draft(nightsAgo(1), { theme: undefined }),
+      analyzed(nightsAgo(2), { theme: 'noir' }),
+    ], { now: NOW });
+    expect(withDraft.count).toBe(2);
+    expect(withDraft.themes.total).toBe(1);
   });
 
-  it('ignores invalid timestamps and future ids', () => {
-    const valid = localDay(2026, 7, 28);
-    const trends = buildDreamTrends(
-      [
-        analyzed(Number.NaN as unknown as number),
-        analyzed(Number.POSITIVE_INFINITY),
-        analyzed(NOW + 60_000, { theme: 'noir' }),
-        analyzed(valid, { theme: 'calm' }),
-      ],
-      { now: NOW },
-    );
+  it('keeps the previous period’s theme counts for the comparison under the seal', () => {
+    const trends = buildDreamTrends([
+      analyzed(nightsAgo(1), { theme: 'mystical' }),
+      analyzed(nightsAgo(2), { theme: 'mystical' }),
+      analyzed(nightsAgo(3), { theme: 'calm' }),
+      analyzed(nightsAgo(35), { theme: 'mystical' }),
+    ], { now: NOW });
 
-    expect(trends.week.count).toBe(1);
-    expect(trends.week.lastActivityAt).toBe(valid);
-    expect(trends.patterns.themes).toEqual([{ value: 'calm', count: 1 }]);
-    expect(Number.isFinite(trends.week.count)).toBe(true);
-    expect(trends.week.averagePerWeek).toBeNull();
+    expect(trends.themes.previousCounts?.mystical).toBe(1);
+    expect(trends.themes.counts.mystical - (trends.themes.previousCounts?.mystical ?? 0)).toBe(1);
   });
 
-  it('counts local week days and DST-safe rhythm without 24h arithmetic', () => {
-    const now = localDay(2026, 2, 29, 12);
-    const saturdayBefore = localDay(2026, 2, 28, 23);
-    const sundayAfter = localDay(2026, 2, 29, 1);
-    const monday = localDay(2026, 2, 23, 8);
+  it('threads the run that ends yesterday and says today is still open', () => {
+    const trends = buildDreamTrends([
+      analyzed(nightsAgo(1)),
+      analyzed(nightsAgo(2)),
+      analyzed(nightsAgo(3)),
+      analyzed(nightsAgo(6)),
+      analyzed(nightsAgo(7)),
+      analyzed(nightsAgo(8)),
+      analyzed(nightsAgo(9)),
+    ], { now: NOW, period: '7' });
 
-    const trends = buildDreamTrends(
-      [
-        analyzed(saturdayBefore, { theme: 'noir' }),
-        analyzed(sundayAfter, { theme: 'calm' }),
-        analyzed(monday, { theme: 'calm' }),
-      ],
-      { now },
-    );
-
-    expect(trends.week.count).toBe(3);
-    expect(trends.week.activeDays).toBe(3);
-    expect(trends.week.rhythm.find((day) => day.weekday === 6)?.count).toBe(1);
-    expect(trends.week.rhythm.find((day) => day.weekday === 0)?.count).toBe(1);
-    expect(trends.week.rhythm.find((day) => day.weekday === 1)?.count).toBe(1);
-    expect(getLocalDateKey(saturdayBefore)).toBe('2026-03-28');
-    expect(getLocalDateKey(sundayAfter)).toBe('2026-03-29');
-  });
-
-  it('treats consecutive local days as a streak across the DST spring-forward', () => {
-    const now = localDay(2026, 2, 30, 12);
-    const trends = buildDreamTrends(
-      [
-        analyzed(localDay(2026, 2, 28, 23), { theme: 'noir' }),
-        analyzed(localDay(2026, 2, 29, 1), { theme: 'calm' }),
-        analyzed(localDay(2026, 2, 30, 9), { theme: 'calm' }),
-      ],
-      { now },
-    );
-
-    expect(trends.week.streak).toEqual({ current: 3, longest: 3 });
-    expect(trends.week.activeDays).toBe(3);
-  });
-
-  it('splits current and longest streaks after a broken local day', () => {
-    const now = localDay(2026, 7, 29, 12);
-    const trends = buildDreamTrends(
-      [
-        analyzed(localDay(2026, 7, 29), { theme: 'calm' }),
-        analyzed(localDay(2026, 7, 28), { theme: 'calm' }),
-        analyzed(localDay(2026, 7, 25), { theme: 'noir' }),
-        analyzed(localDay(2026, 7, 24), { theme: 'noir' }),
-        analyzed(localDay(2026, 7, 23), { theme: 'mystical' }),
-        analyzed(localDay(2026, 7, 22), { theme: 'mystical' }),
-      ],
-      { now },
-    );
-
-    expect(trends.week.streak).toEqual({ current: 2, longest: 4 });
-  });
-
-  it('keeps a Sunday-to-Monday week boundary on local calendar days', () => {
-    const now = localDay(2026, 7, 24, 10);
-    const sundayNight = localDay(2026, 7, 23, 23);
-    const mondayMorning = localDay(2026, 7, 24, 1);
-    const previousMonday = localDay(2026, 7, 17, 22);
-
-    const trends = buildDreamTrends(
-      [
-        analyzed(sundayNight, { theme: 'mystical' }),
-        analyzed(mondayMorning, { theme: 'calm' }),
-        analyzed(previousMonday, { theme: 'noir' }),
-      ],
-      { now },
-    );
-
-    expect(trends.week.count).toBe(2);
-    expect(trends.week.activeDays).toBe(2);
-    expect(trends.week.lastActivityAt).toBe(mondayMorning);
-    expect(trends.evolution.themePoints.map((point) => point.dateKey)).toEqual([
-      '2026-08-17',
-      '2026-08-23',
-      '2026-08-24',
+    expect(trends.streak).toEqual({ current: 3, longest: 4, dreamedToday: false });
+    expect(trends.nights.filter((night) => night.inStreak).map((night) => night.dateKey)).toEqual([
+      '2026-10-26', '2026-10-27', '2026-10-28',
     ]);
   });
 
-  it('uses the injected calendar adapter for date keys', () => {
-    const id = Date.UTC(2026, 7, 29, 22);
-    const trends = buildDreamTrends([analyzed(id, { theme: 'calm' })], {
-      now: Date.UTC(2026, 7, 29, 23),
+  it('treats consecutive local days as a run across the spring-forward change', () => {
+    const now = localDay(2026, 2, 30, 12);
+    const trends = buildDreamTrends([
+      analyzed(localDay(2026, 2, 28, 23)),
+      analyzed(localDay(2026, 2, 29, 1)),
+      analyzed(localDay(2026, 2, 30, 9)),
+    ], { now, period: '7' });
+
+    expect(trends.streak).toEqual({ current: 3, longest: 3, dreamedToday: true });
+    expect(trends.activeNights).toBe(3);
+    expect(trends.nights).toHaveLength(7);
+  });
+
+  it('reads days from an injected calendar rather than the device clock', () => {
+    const now = Date.UTC(2026, 9, 29, 23);
+    const trends = buildDreamTrends([analyzed(Date.UTC(2026, 9, 29, 22))], {
+      now,
+      period: '7',
       calendar: {
-        localDateKey: (timestamp) => {
-          const date = new Date(timestamp);
-          const year = date.getUTCFullYear();
-          const month = `${date.getUTCMonth() + 1}`.padStart(2, '0');
-          const day = `${date.getUTCDate()}`.padStart(2, '0');
-          return `${year}-${month}-${day}`;
-        },
+        localDateKey: (timestamp) => new Date(timestamp).toISOString().slice(0, 10),
         startOfLocalDay: (timestamp) => {
           const date = new Date(timestamp);
           return Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
         },
-        addLocalDays: (start, days) => start + days * 24 * 60 * 60 * 1000,
+        addLocalDays: (start, days) => start + days * 86_400_000,
         weekday: (timestamp) => new Date(timestamp).getUTCDay(),
       },
     });
 
-    expect(trends.week.count).toBe(1);
-    expect(trends.evolution.themePoints[0]?.dateKey).toBe('2026-08-29');
+    expect(trends.nights.at(-1)).toMatchObject({ dateKey: '2026-10-29', isToday: true });
+    expect(trends.nights.at(-1)?.dreams).toHaveLength(1);
   });
 
-  it('uses the injected calendar, not 24h arithmetic, for consecutive days', () => {
-    const day0 = 1_000_000;
-    const day1 = day0 + 48 * 60 * 60 * 1000;
-    const day2 = day1 + 48 * 60 * 60 * 1000;
-    const keyFor = (timestamp: number) => {
-      if (timestamp >= day2) return '2026-08-29';
-      if (timestamp >= day1) return '2026-08-28';
-      return '2026-08-27';
-    };
-    const startFor = (timestamp: number) => {
-      if (timestamp >= day2) return day2;
-      if (timestamp >= day1) return day1;
-      return day0;
-    };
-
-    const trends = buildDreamTrends(
-      [
-        analyzed(day0, { theme: 'calm' }),
-        analyzed(day1, { theme: 'calm' }),
-        analyzed(day2, { theme: 'noir' }),
-      ],
-      {
-        now: day2,
-        calendar: {
-          localDateKey: keyFor,
-          startOfLocalDay: startFor,
-          addLocalDays: (start, days) => start + days * 48 * 60 * 60 * 1000,
-          weekday: (timestamp) => {
-            if (timestamp >= day2) return 6;
-            if (timestamp >= day1) return 5;
-            return 4;
-          },
-        },
-      },
-    );
-
-    expect(trends.week.streak).toEqual({ current: 3, longest: 3 });
-    expect(trends.week.activeDays).toBe(3);
-    expect(trends.week.averagePerWeek).toBeNull();
+  it('names the richest weekday only from four dreams and a clear winner', () => {
+    // 29 Oct 2026 is a Thursday: 1, 8 and 15 nights ago are Wednesdays.
+    const wednesdays = [1, 8, 15].map((days) => analyzed(nightsAgo(days)));
+    expect(buildDreamTrends(wednesdays, { now: NOW }).richestWeekday).toBeNull();
+    expect(buildDreamTrends([...wednesdays, analyzed(nightsAgo(2))], { now: NOW }).richestWeekday).toBe(3);
+    expect(buildDreamTrends([
+      analyzed(nightsAgo(1)), analyzed(nightsAgo(8)), analyzed(nightsAgo(2)), analyzed(nightsAgo(9)),
+    ], { now: NOW }).richestWeekday).toBeNull();
   });
 
-  it('breaks theme and type ties with code-unit order', () => {
-    const trends = buildDreamTrends(
-      [
-        analyzed(localDay(2026, 7, 23), { theme: 'noir', dreamType: 'Nightmare' }),
-        analyzed(localDay(2026, 7, 24), { theme: 'calm', dreamType: 'Lucid Dream' }),
-        analyzed(localDay(2026, 7, 25), { theme: 'noir', dreamType: 'Nightmare' }),
-        analyzed(localDay(2026, 7, 26), { theme: 'calm', dreamType: 'Lucid Dream' }),
-        analyzed(localDay(2026, 7, 27), { theme: 'mystical', dreamType: 'Symbolic Dream' }),
-      ],
-      { now: NOW },
-    );
+  it('paces the 30 nights per week over the part the journal covers, from a full week', () => {
+    const young = buildDreamTrends([analyzed(nightsAgo(2)), analyzed(nightsAgo(1))], { now: NOW });
+    expect(young.averagePerWeek).toBeNull();
 
-    expect(trends.patterns.themes.map((facet) => facet.value)).toEqual(['calm', 'noir', 'mystical']);
-    expect(trends.patterns.types.map((facet) => facet.value)).toEqual([
-      'Lucid Dream',
-      'Nightmare',
-      'Symbolic Dream',
-    ]);
-    expect(trends.patterns.empty).toBe(false);
-  });
-
-  it('includes everyday and fantastical dreams in type patterns', () => {
-    const trends = buildDreamTrends([
-      analyzed(localDay(2026, 7, 23), { dreamType: 'Everyday Dream' }),
-      analyzed(localDay(2026, 7, 24), { dreamType: 'Fantastical Dream' }),
-      analyzed(localDay(2026, 7, 25), { dreamType: 'Fantastical Dream' }),
+    const settled = buildDreamTrends([
+      analyzed(nightsAgo(13)), analyzed(nightsAgo(6)), analyzed(nightsAgo(1)),
     ], { now: NOW });
-    expect(trends.patterns.types).toEqual([
-      { value: 'Fantastical Dream', count: 2 },
-      { value: 'Everyday Dream', count: 1 },
-    ]);
+    expect(settled.averagePerWeek).toBeCloseTo(3 / 2, 5);
   });
 
-  it('treats types as honest motifs even without themes or recurrence', () => {
-    const trends = buildDreamTrends(
-      [
-        analyzed(localDay(2026, 7, 23), { dreamType: 'Nightmare' }),
-        analyzed(localDay(2026, 7, 24), { dreamType: 'Lucid Dream' }),
-        analyzed(localDay(2026, 7, 25), { dreamType: 'Nightmare' }),
-      ],
-      { now: NOW },
-    );
+  it('says what returns only from three analyzed dreams, with shares of those dreams', () => {
+    const early = buildDreamTrends([
+      analyzed(nightsAgo(1), { emotions: fear }),
+      analyzed(nightsAgo(2), { emotions: fear }),
+      draft(nightsAgo(3), { emotions: fear }),
+    ], { now: NOW });
+    expect(early.patterns).toMatchObject({ analyzed: 2, unanalyzed: 1, ready: false, emotions: [], types: [] });
 
-    expect(trends.patterns.empty).toBe(false);
-    expect(trends.patterns.types).toEqual([
+    const ready = buildDreamTrends([
+      // The same family twice in one dream counts once.
+      analyzed(nightsAgo(1), { emotions: [{ name: 'fear', insight: '' }, { name: 'afraid', insight: '' }], dreamType: 'Nightmare' }),
+      analyzed(nightsAgo(2), { emotions: fear, dreamType: 'Nightmare' }),
+      analyzed(nightsAgo(3), { emotions: joy, dreamType: 'Unknown' }),
+      analyzed(nightsAgo(4), { emotions: fear, dreamType: 'Lucid Dream' }),
+      draft(nightsAgo(5), { emotions: joy, dreamType: 'Nightmare' }),
+    ], { now: NOW });
+    expect(ready.patterns.ready).toBe(true);
+    expect(ready.patterns.analyzed).toBe(4);
+    // Joy appears in one analyzed dream only: not a pattern.
+    expect(ready.patterns.emotions).toEqual([{ family: 'fear', count: 3, share: 3 / 4, trend: null }]);
+    // Unknown is not a type, and the draft does not count.
+    expect(ready.patterns.types).toEqual([
       { value: 'Nightmare', count: 2 },
       { value: 'Lucid Dream', count: 1 },
     ]);
-    expect(trends.patterns.themes).toEqual([]);
-    expect(trends.patterns.emotions).toEqual([]);
-    expect(trends.patterns.recurrence.hasRecurrence).toBe(false);
   });
 
-  it('keeps patterns empty below the volume threshold even when types exist', () => {
-    const trends = buildDreamTrends(
-      [
-        analyzed(localDay(2026, 7, 28), { dreamType: 'Nightmare' }),
-        analyzed(localDay(2026, 7, 29), { dreamType: 'Lucid Dream' }),
-      ],
-      { now: NOW },
-    );
+  it('compares an emotion’s share with the previous period once it had three analyzed dreams', () => {
+    const current = [1, 2, 3, 4].map((days) => analyzed(nightsAgo(days), { emotions: fear }));
+    const previous = [31, 32, 33, 34].map((days, index) => analyzed(nightsAgo(days), { emotions: index === 0 ? fear : joy }));
 
-    expect(trends.patterns.types).toEqual([
-      { value: 'Lucid Dream', count: 1 },
-      { value: 'Nightmare', count: 1 },
-    ]);
-    expect(trends.patterns.empty).toBe(true);
+    const rising = buildDreamTrends([...current, ...previous], { now: NOW });
+    expect(rising.patterns.emotions[0]).toMatchObject({ family: 'fear', share: 1, trend: 'up' });
+
+    const steady = buildDreamTrends([
+      ...current,
+      ...[31, 32, 33].map((days) => analyzed(nightsAgo(days), { emotions: fear })),
+    ], { now: NOW });
+    expect(steady.patterns.emotions[0].trend).toBe('same');
+
+    const unknown = buildDreamTrends([...current, analyzed(nightsAgo(31), { emotions: fear })], { now: NOW });
+    expect(unknown.patterns.emotions[0].trend).toBeNull();
   });
-
-  it('only treats emotions as patterns when they recur and never uses chat history', () => {
-    const trends = buildDreamTrends(
-      [
-        analyzed(localDay(2026, 7, 23), {
-          theme: 'calm',
-          emotions: [
-            { name: 'fear', insight: '' },
-            { name: 'peur', insight: '' },
-            { name: 'joy', insight: '' },
-          ],
-          chatHistory: [{ id: '1', role: 'user', text: 'most discussed?' }],
-        }),
-        analyzed(localDay(2026, 7, 24), {
-          theme: 'calm',
-          emotions: [{ name: 'angoisse', insight: '' }],
-          chatHistory: [{ id: '2', role: 'model', text: 'engagement' }],
-        }),
-        analyzed(localDay(2026, 7, 25), {
-          theme: 'noir',
-          emotions: [{ name: 'grief', insight: '' }],
-        }),
-      ],
-      { now: NOW },
-    );
-
-    expect(trends.patterns.emotions).toEqual([{ value: 'fear', count: 2 }]);
-    expect(JSON.stringify(trends)).not.toMatch(/most discussed|chatHistory|totalChat/i);
-  });
-
-  it('counts recurrence from type or memory without claiming a causal evolution', () => {
-    const trends = buildDreamTrends(
-      [
-        analyzed(localDay(2026, 7, 23), { dreamType: 'Recurring Dream', theme: 'noir' }),
-        analyzed(localDay(2026, 7, 24), {
-          dreamType: 'Symbolic Dream',
-          theme: 'calm',
-          memory: { recurring: true },
-        }),
-        analyzed(localDay(2026, 7, 25), {
-          dreamType: 'Lucid Dream',
-          theme: 'calm',
-          memory: { rememberedKind: 'recurring' },
-        }),
-      ],
-      { now: NOW },
-    );
-
-    expect(trends.patterns.recurrence).toEqual({ count: 3, hasRecurrence: true });
-    expect(trends.evolution.themePoints).toEqual([
-      { dateKey: '2026-08-23', theme: 'noir', count: 1 },
-      { dateKey: '2026-08-24', theme: 'calm', count: 1 },
-      { dateKey: '2026-08-25', theme: 'calm', count: 1 },
-    ]);
-    expect(trends.evolution.days.map((day) => ({ dateKey: day.dateKey, total: day.total, dominantTheme: day.dominantTheme }))).toEqual([
-      { dateKey: '2026-08-23', total: 1, dominantTheme: 'noir' },
-      { dateKey: '2026-08-24', total: 1, dominantTheme: 'calm' },
-      { dateKey: '2026-08-25', total: 1, dominantTheme: 'calm' },
-    ]);
-    expect(trends.evolution.nextAction).toBe('review_patterns');
-  });
-
-  it('exposes a finite weekly average only after a full local week', () => {
-    const first = localDay(2026, 7, 23);
-    const dreams = [
-      analyzed(first, { theme: 'calm' }),
-      analyzed(localDay(2026, 7, 24), { theme: 'calm' }),
-      analyzed(localDay(2026, 7, 29), { theme: 'noir' }),
-    ];
-
-    const tooSoon = buildDreamTrends(dreams, { now: localDay(2026, 7, 27, 12) });
-    const ready = buildDreamTrends(dreams, { now: NOW });
-
-    expect(tooSoon.week.averagePerWeek).toBeNull();
-    expect(ready.week.averagePerWeek).toBe(3);
-    expect(Number.isFinite(ready.week.averagePerWeek)).toBe(true);
-  });
-
-  it('asks to recapture after a silent week and keep rhythm when volume is lumped', () => {
-    const silent = buildDreamTrends(
-      [
-        analyzed(localDay(2026, 7, 20), { theme: 'calm' }),
-        analyzed(localDay(2026, 7, 19), { theme: 'calm' }),
-        analyzed(localDay(2026, 7, 18), { theme: 'noir' }),
-      ],
-      { now: NOW },
-    );
-    const lumped = buildDreamTrends(
-      [
-        analyzed(localDay(2026, 7, 29, 8), { theme: 'calm' }),
-        analyzed(localDay(2026, 7, 29, 9), { theme: 'calm' }),
-        analyzed(localDay(2026, 7, 28), { theme: 'noir' }),
-      ],
-      { now: NOW },
-    );
-
-    expect(silent.evolution.nextAction).toBe('capture_this_week');
-    expect(silent.week.count).toBe(0);
-    expect(silent.week.lastActivityAt).toBe(localDay(2026, 7, 20));
-    expect(lumped.week.count).toBe(3);
-    expect(lumped.week.activeDays).toBe(2);
-    expect(lumped.evolution.nextAction).toBe('keep_rhythm');
-  });
-
-  it('bounds chronological theme points and never emits NaN', () => {
-    const dreams: DreamAnalysis[] = [];
-    for (let day = 1; day <= 40; day += 1) {
-      const theme: DreamTheme = day % 2 === 0 ? 'calm' : 'noir';
-      const type: DreamType = day % 3 === 0 ? 'Nightmare' : 'Symbolic Dream';
-      dreams.push(analyzed(localDay(2026, 6, day), { theme, dreamType: type }));
-    }
-
-    const trends = buildDreamTrends(dreams, { now: localDay(2026, 7, 10, 12) });
-    const serialized = JSON.stringify(trends);
-
-    expect(trends.evolution.themePoints.length).toBeLessThanOrEqual(30);
-    expect(trends.evolution.themePoints.map((point) => point.dateKey)).toEqual(
-      [...trends.evolution.themePoints.map((point) => point.dateKey)].sort(),
-    );
-    expect(trends.evolution.days.map((day) => day.dateKey)).toEqual(
-      [...trends.evolution.days.map((day) => day.dateKey)].sort(),
-    );
-    expect(trends.evolution.days.every((day) => day.total > 0 && Number.isFinite(day.total))).toBe(true);
-    expect(serialized).not.toMatch(/NaN|Infinity/);
-    expect(localDateKey(NOW)).toBe('2026-08-29');
-  });
-
-  it('groups chronological theme points into labelled evolution days', () => {
-    const trends = buildDreamTrends(
-      [
-        analyzed(localDay(2026, 7, 27), { theme: 'noir' }),
-        analyzed(localDay(2026, 7, 28, 8), { theme: 'calm' }),
-        analyzed(localDay(2026, 7, 28, 21), { theme: 'calm' }),
-        analyzed(localDay(2026, 7, 29), { theme: 'mystical' }),
-      ],
-      { now: NOW },
-    );
-
-    expect(trends.evolution.days).toEqual([
-      {
-        dateKey: '2026-08-27',
-        total: 1,
-        dominantTheme: 'noir',
-        themes: [{ value: 'noir', count: 1 }],
-      },
-      {
-        dateKey: '2026-08-28',
-        total: 2,
-        dominantTheme: 'calm',
-        themes: [{ value: 'calm', count: 2 }],
-      },
-      {
-        dateKey: '2026-08-29',
-        total: 1,
-        dominantTheme: 'mystical',
-        themes: [{ value: 'mystical', count: 1 }],
-      },
-    ]);
-  });
-});
-
-it('does not turn unclassified accounts into symbolic or recurring motifs', () => {
-  const dreams = [1, 2, 3].map((day) => analyzed(localDay(2026, 7, day), { dreamType: 'Unknown' }));
-  expect(buildDreamTrends(dreams, { now: NOW }).patterns.types).toEqual([]);
 });
