@@ -61,7 +61,7 @@ Deno.test('prompt keeps malicious transcript as JSON data and distinguishes omit
 });
 
 Deno.test('analysis sends the compact policy once at system level and preserves source-only output', async () => {
-  assertEquals(ANALYSIS_PROMPT_VERSION, 'analysis-2026-10-15.poetic4');
+  assertEquals(ANALYSIS_PROMPT_VERSION, 'analysis-2026-10-17.poetic5');
   // The client uses this established stamp to distinguish authored lines from old excerpts.
   assertEquals(/^analysis-\d{4}-\d{2}-\d{2}\.poetic\d+$/.test(ANALYSIS_PROMPT_VERSION), true);
   const originalFetch = globalThis.fetch;
@@ -237,4 +237,38 @@ Deno.test('reading depth stays grounded while supporting places, gestures and sp
     symbols: [{ name: 'Balcony', meaning: 'The reported height could invite a personal association with distance.' }],
     emotions: [], reflectionQuestions: ['What did looking down mean in this scene?'],
   });
+});
+
+Deno.test('a symbol links to the dictionary or to the dreamer\'s own key, never to an invented id', () => {
+  const details = sanitizeAnalysisDetails({
+    symbols: [
+      { name: 'Chaton', meaning: 'Le petit chat du seuil.', symbolId: 'CAT', key: 'kitten' },
+      { name: 'Maison de grand-mère', meaning: 'Le lieu revient.', symbolId: 'none', key: 'Grandmother House!' },
+      { name: 'Escalier inventé', meaning: 'Un escalier.', symbolId: 'staircase-of-doom', key: '' },
+      { name: 'Geste', meaning: 'Un geste répété.', symbolId: 'none', key: 'none' },
+      { name: 'Loup', meaning: 'Il attend.', symbolId: 'none', key: 'wolf' },
+    ],
+  });
+  assertEquals(details.symbols, [
+    { name: 'Chaton', meaning: 'Le petit chat du seuil.', symbolId: 'cat' },
+    { name: 'Maison de grand-mère', meaning: 'Le lieu revient.', key: 'grandmother-house' },
+    { name: 'Escalier inventé', meaning: 'Un escalier.' },
+    { name: 'Geste', meaning: 'Un geste répété.' },
+    { name: 'Loup', meaning: 'Il attend.', symbolId: 'wolf' },
+  ]);
+});
+
+Deno.test('the prompt lists the symbol index and the dreamer\'s own symbols as data', () => {
+  const prompt = buildAnalysisPrompt('A cat on the doorstep.', 'English', false, undefined, [
+    { key: 'grandmother-house', name: 'Maison de grand-mère' },
+  ]);
+  assertStringIncludes(prompt, "Noctalia's symbol index (ids): water, teeth,");
+  assertStringIncludes(prompt, '"grandmother-house"');
+  assertStringIncludes(prompt, 'reuse that exact key');
+  assertStringIncludes(prompt, 'never to impose a meaning');
+  assertEquals(prompt.endsWith(JSON.stringify('A cat on the doorstep.')), true);
+  assertStringIncludes(buildAnalysisPrompt('A cat.', 'English'), 'The dreamer has no symbols of their own yet.');
+  for (const key of ['symbolId', 'key'] as const) {
+    assertEquals(ANALYZE_DREAM_SCHEMA.properties.symbols.items.required.includes(key), true);
+  }
 });

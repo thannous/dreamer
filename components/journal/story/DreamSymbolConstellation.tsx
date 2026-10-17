@@ -19,6 +19,14 @@ const LABEL_LINE = 18;
 const ROW_GAP = 38;
 
 type Point = { x: number; y: number; high: boolean };
+
+export type ConstellationStar = {
+  name: string;
+  /** Dreams of the journal the symbol appears in, this one included. */
+  count: number;
+  /** The dreamer's own symbol, born in this dream and not opened yet. */
+  fresh: boolean;
+};
 type Rows = { high: number; low: number; height: number };
 
 /**
@@ -44,15 +52,17 @@ const layoutStars = (count: number, width: number, rows: Rows): Point[] => {
  * The dream's own symbols drawn as a constellation: the visual promise of the onboarding
  * ("Repérer"), kept with the dream's real data. Each star ignites in turn and the thread
  * to the next one draws itself; on a return visit the constellation is simply lit.
+ * As in the onboarding, a symbol that returns carries the number of its dreams and,
+ * as it lights, breathes twice, so the eye finds what repeats.
  *
  * Decorative: the reading below names every symbol with its meaning, so assistive
  * technology skips this picture rather than reading the names twice.
  */
-export function DreamSymbolConstellation({ names, play }: { names: readonly string[]; play: boolean }) {
+export function DreamSymbolConstellation({ stars: all, play }: { stars: readonly ConstellationStar[]; play: boolean }) {
   const reduced = useReducedMotion();
   const { fontScale } = useWindowDimensions();
   const [width, setWidth] = useState(0);
-  const stars = names.slice(0, MAX_CONSTELLATION_STARS);
+  const stars = all.slice(0, MAX_CONSTELLATION_STARS);
   const tid = useLiveTestID();
   const rows = useMemo(() => rowsFor(fontScale), [fontScale]);
   const points = useMemo(() => (width ? layoutStars(stars.length, width, rows) : []), [rows, stars.length, width]);
@@ -73,7 +83,7 @@ export function DreamSymbolConstellation({ names, play }: { names: readonly stri
           play={play} reduced={reduced} />
       ))}
       {points.map((point, index) => (
-        <Star key={`${index}:${stars[index]}`} point={point} index={index} name={stars[index]}
+        <Star key={`${index}:${stars[index].name}`} point={point} index={index} star={stars[index]}
           labelWidth={labelWidth} height={rows.height} play={play} reduced={reduced} />
       ))}
     </View>
@@ -82,10 +92,24 @@ export function DreamSymbolConstellation({ names, play }: { names: readonly stri
 
 const igniteDelay = (index: number) => DREAM_STORY.revealLead + index * DREAM_STORY.starStep;
 
-function Star({ point, index, name, labelWidth, height, play, reduced }: {
-  point: Point; index: number; name: string; labelWidth: number; height: number; play: boolean; reduced: boolean;
+function Star({ point, index, star, labelWidth, height, play, reduced }: {
+  point: Point; index: number; star: ConstellationStar; labelWidth: number; height: number; play: boolean; reduced: boolean;
 }) {
   const delay = igniteDelay(index);
+  const returns = star.count > 1;
+  // Once lit, a returning or newborn symbol breathes twice, then rests; a return visit is at rest.
+  const breathe = useMemo<CSSStyle<ViewStyle>>(() => (play && !reduced && (returns || star.fresh) ? {
+    animationName: {
+      from: { opacity: 0.16, transform: [{ scale: 1 }] },
+      to: { opacity: 0.42, transform: [{ scale: 1.45 }] },
+    },
+    animationDuration: 1100,
+    animationDelay: delay + DREAM_STORY.starIgnite + 300,
+    animationIterationCount: 4,
+    animationDirection: 'alternate',
+    animationTimingFunction: EASE.inOut,
+    animationFillMode: 'both',
+  } : {}), [delay, play, reduced, returns, star.fresh]);
   const ignite = useMemo<CSSStyle<ViewStyle>>(() => (play ? {
     animationName: {
       '0%': { opacity: 0, transform: [{ scale: reduced ? 1 : 0.6 }] },
@@ -114,8 +138,16 @@ function Star({ point, index, name, labelWidth, height, play, reduced }: {
         className="absolute items-center justify-center"
         style={[{ left: point.x - HALO / 2, top: point.y - HALO / 2, width: HALO, height: HALO }, ignite] as StyleProp<ViewStyle>}
       >
-        <View className="absolute rounded-full bg-champagne" style={{ width: HALO, height: HALO, opacity: 0.16 }} />
+        <Animated.View className="absolute rounded-full bg-champagne"
+          style={[{ width: HALO, height: HALO, opacity: 0.16 }, breathe] as StyleProp<ViewStyle>} />
         <View className="rounded-full bg-champagne" style={{ width: STAR, height: STAR }} />
+        {returns ? (
+          <View className="absolute items-center justify-center rounded-full border border-champagne bg-ink"
+            // Beside the star, between the labels above and below it.
+            style={{ left: HALO - 1, top: (HALO - 18) / 2, minWidth: 18, height: 18, paddingHorizontal: 3 }}>
+            <Text allowFontScaling={false} className="font-sans-medium text-[10px] leading-[14px] text-champagne-on">{star.count}</Text>
+          </View>
+        ) : null}
       </Animated.View>
       <Animated.View
         className={`absolute items-center ${point.high ? 'justify-end' : 'justify-start'}`}
@@ -128,7 +160,7 @@ function Star({ point, index, name, labelWidth, height, play, reduced }: {
         }, label] as StyleProp<ViewStyle>}
       >
         <Text numberOfLines={2} className="text-center font-display-medium text-[14px] leading-[18px] text-ivory">
-          {name}
+          {star.name}
         </Text>
       </Animated.View>
     </>

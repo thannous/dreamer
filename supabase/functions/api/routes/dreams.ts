@@ -290,7 +290,7 @@ export async function handleAnalyzeDream(ctx: ApiContext): Promise<Response> {
     if (parsedInput instanceof Response) return parsedInput;
     const invalidRequestId = validateAnalysisRequestId(body);
     if (invalidRequestId) return invalidRequestId;
-    const { transcript, lang, themes } = parsedInput;
+    const { transcript, lang, themes, knownSymbols } = parsedInput;
     const { text: promptTranscript, truncated: truncatedForPrompt } = boundTranscriptForPrompt(transcript);
     const fingerprint = guestCheck.fingerprint;
 
@@ -373,7 +373,7 @@ export async function handleAnalyzeDream(ctx: ApiContext): Promise<Response> {
       quotaUsed = { analysis: toCount((quotaResult as any)?.new_count) };
     }
 
-    const analysis = await runDreamAnalysis({ apiKey, anthropicApiKey: Deno.env.get('ANTHROPIC_API_KEY'), claudeTimeoutMs: CLAUDE_SYNC_ANALYSIS_TIMEOUT_MS, transcript: promptTranscript, truncatedForPrompt, lang, themes, route: '/analyzeDream' });
+    const analysis = await runDreamAnalysis({ apiKey, anthropicApiKey: Deno.env.get('ANTHROPIC_API_KEY'), claudeTimeoutMs: CLAUDE_SYNC_ANALYSIS_TIMEOUT_MS, transcript: promptTranscript, truncatedForPrompt, lang, themes, knownSymbols, route: '/analyzeDream' });
 
     console.log('[api] /analyzeDream success', {
       titleLength: analysis.title.length,
@@ -410,7 +410,7 @@ export async function handleAnalyzeDreamFull(ctx: ApiContext): Promise<Response>
     if (parsedInput instanceof Response) return parsedInput;
     const invalidRequestId = validateAnalysisRequestId(body);
     if (invalidRequestId) return invalidRequestId;
-    const { transcript, lang, themes } = parsedInput;
+    const { transcript, lang, themes, knownSymbols } = parsedInput;
     const { text: promptTranscript, truncated: truncatedForPrompt } = boundTranscriptForPrompt(transcript);
 
     const admission = await admitSynchronousAiRequest({
@@ -444,7 +444,7 @@ export async function handleAnalyzeDreamFull(ctx: ApiContext): Promise<Response>
     const quotaUsed = quotaClaim.quotaUsed;
     const imageModel = resolveImageModel(quotaClaim.tier);
 
-    const analysis = await runDreamAnalysis({ apiKey, anthropicApiKey: Deno.env.get('ANTHROPIC_API_KEY'), claudeTimeoutMs: CLAUDE_SYNC_ANALYSIS_TIMEOUT_MS, transcript: promptTranscript, truncatedForPrompt, lang, themes, route: '/analyzeDreamFull' });
+    const analysis = await runDreamAnalysis({ apiKey, anthropicApiKey: Deno.env.get('ANTHROPIC_API_KEY'), claudeTimeoutMs: CLAUDE_SYNC_ANALYSIS_TIMEOUT_MS, transcript: promptTranscript, truncatedForPrompt, lang, themes, knownSymbols, route: '/analyzeDreamFull' });
     const imagePrompt = analysis.imagePrompt;
 
     const { imageBase64, mimeType } = await generateImageFromPrompt({

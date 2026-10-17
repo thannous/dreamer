@@ -176,12 +176,12 @@ describe('content hub registry', () => {
     ]);
   });
 
-  it('selects the existing 8 categories and 160 symbols without rendering them', () => {
+  it('selects the existing 8 categories and 200 symbols without rendering them', () => {
     const registry = loadContentHubRegistry({ rootDir: ROOT_DIR });
     const members = registry.selectMembers('dream-symbols');
 
     expect(members.filter((pageId) => pageId.startsWith('symbolCategory.'))).toHaveLength(8);
-    expect(members.filter((pageId) => pageId.startsWith('symbol.'))).toHaveLength(160);
+    expect(members.filter((pageId) => pageId.startsWith('symbol.'))).toHaveLength(200);
     expect(registry.getHubByPageId('guide.dictionary')?.renderMode).toBe('validateOnly');
   });
 

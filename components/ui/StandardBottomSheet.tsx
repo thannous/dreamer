@@ -1,4 +1,4 @@
-import type { ViewInstance } from 'react-native';
+import type { ScrollViewInstance, ViewInstance } from 'react-native';
 import React, { useEffect, useMemo, useRef } from 'react';
 import {
   AccessibilityInfo,
@@ -72,7 +72,7 @@ export type StandardBottomSheetProps = {
   onClose: () => void;
   /** Main title text */
   title: string;
-  /** Re-focus the heading when an in-sheet chapter changes. */
+  /** Re-focus the heading, and return to the top, when an in-sheet chapter changes. */
   focusKey?: string;
   /** Optional decorative icon above the title */
   headerIcon?: BottomSheetActionIcon;
@@ -170,9 +170,12 @@ export function StandardBottomSheet({
   const insets = useSafeAreaInsets();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const titleRef = useRef<ViewInstance | null>(null);
+  const scrollRef = useRef<ScrollViewInstance | null>(null);
 
   useEffect(() => {
     if (!visible) return;
+    // A new chapter starts at its top, not where the reader left the previous one.
+    scrollRef.current?.scrollTo({ y: 0, animated: false });
     const timer = setTimeout(() => {
       if (process.env.EXPO_OS === 'web') {
         titleRef.current?.focus();
@@ -263,7 +266,7 @@ export function StandardBottomSheet({
           </Pressable>
         </View>
       ) : null}
-      <ScrollView scrollEnabled={bodyScrollEnabled} showsVerticalScrollIndicator={showsVerticalScrollIndicator} style={{ flexShrink: 1 }} nestedScrollEnabled keyboardShouldPersistTaps="handled">
+      <ScrollView ref={scrollRef} scrollEnabled={bodyScrollEnabled} showsVerticalScrollIndicator={showsVerticalScrollIndicator} style={{ flexShrink: 1 }} nestedScrollEnabled keyboardShouldPersistTaps="handled">
 
       {/* Title */}
       {headerIcon ? (
