@@ -871,6 +871,286 @@
       "height": 900,
       "category": "people",
       "subject": "Zombie"
+    },
+    "sex": {
+      "src": "/img/symbols/placeholders-2026-10/sex.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "actions",
+      "subject": "Sex"
+    },
+    "cheating": {
+      "src": "/img/symbols/placeholders-2026-10/cheating.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "actions",
+      "subject": "Cheating / Infidelity"
+    },
+    "kissing": {
+      "src": "/img/symbols/placeholders-2026-10/kissing.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "actions",
+      "subject": "Kissing"
+    },
+    "attack": {
+      "src": "/img/symbols/placeholders-2026-10/attack.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "actions",
+      "subject": "Being Attacked"
+    },
+    "killing": {
+      "src": "/img/symbols/placeholders-2026-10/killing.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "actions",
+      "subject": "Killing Someone"
+    },
+    "fighting": {
+      "src": "/img/symbols/placeholders-2026-10/fighting.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "actions",
+      "subject": "Fighting"
+    },
+    "eating": {
+      "src": "/img/symbols/placeholders-2026-10/eating.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "actions",
+      "subject": "Eating / Food"
+    },
+    "kidnapping": {
+      "src": "/img/symbols/placeholders-2026-10/kidnapping.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "actions",
+      "subject": "Kidnapping"
+    },
+    "moving-house": {
+      "src": "/img/symbols/placeholders-2026-10/moving-house.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "actions",
+      "subject": "Moving House"
+    },
+    "war": {
+      "src": "/img/symbols/placeholders-2026-10/war.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "actions",
+      "subject": "War"
+    },
+    "vomiting": {
+      "src": "/img/symbols/placeholders-2026-10/vomiting.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "body",
+      "subject": "Vomiting"
+    },
+    "nails": {
+      "src": "/img/symbols/placeholders-2026-10/nails.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "body",
+      "subject": "Nails (fingernails)"
+    },
+    "tsunami": {
+      "src": "/img/symbols/placeholders-2026-10/tsunami.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "nature",
+      "subject": "Tsunami"
+    },
+    "flowers": {
+      "src": "/img/symbols/placeholders-2026-10/flowers.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "nature",
+      "subject": "Flowers"
+    },
+    "tiger": {
+      "src": "/img/symbols/placeholders-2026-10/tiger.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "animals",
+      "subject": "Tiger"
+    },
+    "deer": {
+      "src": "/img/symbols/placeholders-2026-10/deer.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "animals",
+      "subject": "Deer"
+    },
+    "pig": {
+      "src": "/img/symbols/placeholders-2026-10/pig.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "animals",
+      "subject": "Pig"
+    },
+    "monkey": {
+      "src": "/img/symbols/placeholders-2026-10/monkey.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "animals",
+      "subject": "Monkey"
+    },
+    "lizard": {
+      "src": "/img/symbols/placeholders-2026-10/lizard.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "animals",
+      "subject": "Lizard"
+    },
+    "bat": {
+      "src": "/img/symbols/placeholders-2026-10/bat.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "animals",
+      "subject": "Bat"
+    },
+    "toilet": {
+      "src": "/img/symbols/placeholders-2026-10/toilet.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "places",
+      "subject": "Toilet"
+    },
+    "church": {
+      "src": "/img/symbols/placeholders-2026-10/church.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "places",
+      "subject": "Church"
+    },
+    "beach": {
+      "src": "/img/symbols/placeholders-2026-10/beach.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "places",
+      "subject": "Beach"
+    },
+    "castle": {
+      "src": "/img/symbols/placeholders-2026-10/castle.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "places",
+      "subject": "Castle"
+    },
+    "swimming-pool": {
+      "src": "/img/symbols/placeholders-2026-10/swimming-pool.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "places",
+      "subject": "Swimming Pool"
+    },
+    "alien": {
+      "src": "/img/symbols/placeholders-2026-10/alien.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "people",
+      "subject": "Aliens"
+    },
+    "celebrity": {
+      "src": "/img/symbols/placeholders-2026-10/celebrity.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "people",
+      "subject": "Celebrity"
+    },
+    "boss": {
+      "src": "/img/symbols/placeholders-2026-10/boss.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "people",
+      "subject": "Boss"
+    },
+    "crush": {
+      "src": "/img/symbols/placeholders-2026-10/crush.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "people",
+      "subject": "Crush"
+    },
+    "witch": {
+      "src": "/img/symbols/placeholders-2026-10/witch.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "people",
+      "subject": "Witch"
+    },
+    "clown": {
+      "src": "/img/symbols/placeholders-2026-10/clown.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "people",
+      "subject": "Clown"
+    },
+    "gun": {
+      "src": "/img/symbols/placeholders-2026-10/gun.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "objects",
+      "subject": "Gun"
+    },
+    "knife": {
+      "src": "/img/symbols/placeholders-2026-10/knife.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "objects",
+      "subject": "Knife"
+    },
+    "wallet": {
+      "src": "/img/symbols/placeholders-2026-10/wallet.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "objects",
+      "subject": "Wallet"
+    },
+    "doll": {
+      "src": "/img/symbols/placeholders-2026-10/doll.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "objects",
+      "subject": "Doll"
+    },
+    "gold": {
+      "src": "/img/symbols/placeholders-2026-10/gold.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "objects",
+      "subject": "Gold"
+    },
+    "coffin": {
+      "src": "/img/symbols/placeholders-2026-10/coffin.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "objects",
+      "subject": "Coffin"
+    },
+    "stars": {
+      "src": "/img/symbols/placeholders-2026-10/stars.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "celestial",
+      "subject": "Stars"
+    },
+    "sky": {
+      "src": "/img/symbols/placeholders-2026-10/sky.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "celestial",
+      "subject": "Sky"
+    },
+    "god": {
+      "src": "/img/symbols/placeholders-2026-10/god.webp",
+      "width": 1600,
+      "height": 900,
+      "category": "celestial",
+      "subject": "God"
     }
   }
 }

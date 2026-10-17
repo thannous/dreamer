@@ -52,7 +52,7 @@ for (const theme of ['light', 'dark'] as const) {
     expect(searchBox.y).toBeLessThan((await modes.boundingBox())!.y);
     await page.getByTestId('symbol-letter-D').click();
     await expect(page.getByTestId('symbol-letter-D')).toHaveAttribute('aria-pressed', 'true');
-    await expect(page.getByTestId('symbol-list').getByTestId(/^symbol\.item\./)).toHaveCount(6);
+    await expect(page.getByTestId('symbol-list').getByTestId(/^symbol\.item\./)).toHaveCount(8);
     for (const [id, name] of [['deceased-person', 'Défunt / Personne décédée'], ['teeth', 'Dents (perdre ses dents)']]) {
       const row = page.getByTestId(`symbol.item.${id}`);
       await completeTitle(row.getByText(name, { exact: true }), row);
