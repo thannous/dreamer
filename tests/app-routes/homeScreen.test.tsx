@@ -565,6 +565,28 @@ describe('Home Accueil Aujourd’hui', () => {
     expect(todayViewedCount()).toBe(1);
   });
 
+  it('reports the same today state again on a new local day', async () => {
+    const intervalCallbacks: (() => void)[] = [];
+    const setIntervalSpy = jest.spyOn(global, 'setInterval').mockImplementation((handler: TimerHandler) => {
+      if (typeof handler === 'function') intervalCallbacks.push(handler as () => void);
+      return 0 as unknown as ReturnType<typeof setInterval>;
+    });
+    jest.spyOn(global, 'clearInterval').mockImplementation(() => undefined);
+
+    await renderHome([]);
+    const firstState = screen.getByTestId(TID.Text.HomeTodayState).textContent;
+    expect(todayViewedCount()).toBe(1);
+
+    nowMs = tomorrow;
+    await act(async () => {
+      intervalCallbacks.forEach((callback) => callback());
+      await Promise.resolve();
+    });
+    expect(screen.getByTestId(TID.Text.HomeTodayState).textContent).toBe(firstState);
+    expect(todayViewedCount()).toBe(2);
+    setIntervalSpy.mockRestore();
+  });
+
   it('rebranche continue_today then capture_due when the local date changes while Home stays open', async () => {
     const intervalCallbacks: (() => void)[] = [];
     const setIntervalSpy = jest.spyOn(global, 'setInterval').mockImplementation((handler: TimerHandler) => {

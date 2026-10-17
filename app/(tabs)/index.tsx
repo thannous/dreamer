@@ -142,20 +142,20 @@ function InspirationScreen() {
       getLocalDateKey(new Date(dream.id)) === todayKey && (!latest || dream.id > latest.id) ? dream : latest, null);
   }, [dreams, now, todayState]);
   // Reported when seen: Home stays mounted behind the other tabs, where every dream saved
-  // or synced recomputes this state. Each state is reported once while Home is visible,
-  // or when Home is shown again after it changed.
+  // or synced recomputes this state. Each day's state is reported once while Home is
+  // visible, or when Home is shown again after it changed; a new local day is a new view.
   const homeFocused = useIsFocused();
   const reportedTodayStateRef = useRef<string | null>(null);
   useEffect(() => {
     if (!todayState || !homeFocused) return;
-    const shown = JSON.stringify([todayState.id, todayState.reason]);
+    const shown = JSON.stringify([getLocalDateKey(new Date(now)), todayState.id, todayState.reason]);
     if (reportedTodayStateRef.current === shown) return;
     reportedTodayStateRef.current = shown;
     void trackProductEvent("home_today_viewed", {
       state: todayState.id,
       reason: todayState.reason,
     });
-  }, [homeFocused, todayState]);
+  }, [homeFocused, now, todayState]);
 
   const sleepSoundsAvailable = isSleepSoundsAvailable(Platform.OS);
   const sleepCopy = useMemo(
