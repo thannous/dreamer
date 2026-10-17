@@ -428,3 +428,107 @@ test('only the French tiger page loads the living-painting pilot, from a folder 
     expect(await browser.evaluate(readPilotLoads)).toEqual({ scripts: 0, requests: 0, stages: 0, marked: false, ratio: 1.78, objectFit: 'contain', loaded: true });
   }
 });
+
+// Atlas composition of the same page: chapters side by side on a wide screen,
+// one column on a phone, and a native three-scene selector whose question and
+// excerpt must come verbatim from the matching published variation card.
+function readAtlas() {
+  const rect = (selector: string) => {
+    const node = document.querySelector(selector);
+    if (!node || getComputedStyle(node).display === 'none') return null;
+    const r = node.getBoundingClientRect();
+    return { left: r.left, top: r.top + window.scrollY, right: r.right, bottom: r.bottom + window.scrollY, width: r.width };
+  };
+  const visible = Array.from(document.querySelectorAll<HTMLElement>('.atlas-scene-result')).filter(node => getComputedStyle(node).display !== 'none');
+  const checked = document.querySelector<HTMLInputElement>('.atlas-scene-input:checked');
+  const label = checked ? document.querySelector(`label[for="${checked.id}"] .atlas-scene-variation`)?.textContent?.trim() ?? null : null;
+  const card = Array.from(document.querySelectorAll('#variations .variation-card')).find(node => node.querySelector('h3')?.textContent?.trim() === label);
+  return {
+    viewport: document.documentElement.clientWidth,
+    overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth,
+    article: rect('article.atlas'), rail: rect('.atlas-rail'), reading: rect('.atlas-reading'), scenes: rect('.atlas-scenes'),
+    decor: rect('.atlas-decor'), band: Array.from(document.querySelectorAll('.atlas-band > .atlas-column')).map(node => {
+      const r = node.getBoundingClientRect();
+      return { left: r.left, top: Math.round(r.top + window.scrollY), right: r.right };
+    }),
+    checked: checked?.value ?? null,
+    shown: visible.map(node => ({ scene: node.dataset.scene ?? '', question: node.querySelector('.atlas-scene-question')!.textContent!.trim(), excerpt: node.querySelector('.atlas-scene-excerpt')!.textContent!.trim() })),
+    card: card ? card.querySelector('p')!.textContent!.replace(/[ \t\r\n]+/g, ' ').trim() : null, // keeps French non-breaking spaces
+    ids: ['meaning', 'scenes', 'variations', 'questions', 'faq', 'journal', 'associes', 'garder-noctalia'].filter(id => document.getElementById(id)),
+    railTargets: Array.from(document.querySelectorAll<HTMLAnchorElement>('.atlas-rail a')).map(link => Boolean(document.getElementById(link.hash.slice(1)))),
+    counts: {
+      reading: document.querySelectorAll('#meaning .prose > p').length,
+      journal: document.querySelectorAll('#journal blockquote').length,
+      variations: document.querySelectorAll('#variations .variation-card').length,
+      questions: document.querySelectorAll('#questions .symbol-question-item').length,
+      faq: document.querySelectorAll('#faq .symbol-faq-card').length,
+    },
+    related: Array.from(document.querySelectorAll<HTMLAnchorElement>('#associes a.symbol-link')).map(link => link.getAttribute('href')),
+    decorLoads: performance.getEntriesByType('resource').filter(entry => entry.name.includes('/atlas-tiger-v1/tiger-atlas-vignette')).length,
+  };
+}
+
+type Atlas = Awaited<ReturnType<typeof readAtlas>>;
+
+// The visible question and excerpt are the opening question and the next sentence of the selected card.
+const expectPublishedScene = (atlas: Atlas, scene: string) => {
+  expect(atlas.checked).toBe(scene);
+  expect(atlas.shown.map(shown => shown.scene)).toEqual([scene]);
+  const [{ question, excerpt }] = atlas.shown;
+  expect(question.endsWith('?')).toBe(true);
+  expect(atlas.card!.startsWith(question)).toBe(true);
+  expect(atlas.card!.slice(question.length).trim().startsWith(excerpt)).toBe(true);
+};
+
+test('the French tiger atlas sets its chapters side by side and shows each published scene from mouse or keyboard', { timeout: 180_000 }, async ({ app, browser, screen }) => {
+  await browser.setViewport({ width: 1920, height: 1080 });
+  await app.open('/fr/symboles/tigre.html');
+  await expect(screen.getByRole('heading', { level: 1 })).toBeVisible();
+  const wide = await browser.evaluate(readAtlas);
+  // About 90 % of the width, rail | reading | scenes in one row, the decor never behind the reading.
+  expect(wide.article!.width).toBeGreaterThanOrEqual(wide.viewport * 0.88);
+  expect(wide.rail!.right).toBeLessThanOrEqual(wide.reading!.left);
+  expect(wide.reading!.right).toBeLessThanOrEqual(wide.scenes!.left);
+  expect(wide.scenes!.top).toBeLessThan(wide.reading!.bottom);
+  expect(wide.decor!.left).toBeGreaterThanOrEqual(wide.reading!.right);
+  expect(wide.band).toHaveLength(3);
+  expect(new Set(wide.band.map(column => column.top)).size).toBe(1);
+  for (let i = 1; i < wide.band.length; i += 1) expect(wide.band[i].left).toBeGreaterThanOrEqual(wide.band[i - 1].right - 1);
+  expect(wide.overflow).toBe(false);
+  // Every published block, anchor and link survives the new layout.
+  expect(wide.ids).toEqual(['meaning', 'scenes', 'variations', 'questions', 'faq', 'journal', 'associes', 'garder-noctalia']);
+  expect(wide.railTargets.every(Boolean)).toBe(true);
+  expect(wide.counts).toEqual({ reading: 4, journal: 1, variations: 6, questions: 3, faq: 4 });
+  expect(wide.related).toEqual(['/fr/symboles/lion', '/fr/symboles/chat', '/fr/symboles/poursuite', '/fr/symboles/loup']);
+  expectPublishedScene(wide, 'poursuite');
+  await app.screenshot('tiger-atlas-1920');
+
+  // Mouse, then the arrow keys of the native radio group, back round to the first scene.
+  await screen.getByText('Il est calme').tap(); // the visible card; the native radio is visually hidden
+  await expect(screen.getByRole('radio', { name: /^Il est calme/ })).toBeChecked();
+  expectPublishedScene(await browser.evaluate(readAtlas), 'calme');
+  await screen.getByRole('radio', { name: /^Il est calme/ }).press('ArrowDown');
+  await expect(screen.getByRole('radio', { name: /^Il est en cage/ })).toBeChecked();
+  expectPublishedScene(await browser.evaluate(readAtlas), 'cage');
+  await screen.getByRole('radio', { name: /^Il est en cage/ }).press('ArrowDown');
+  await expect(screen.getByRole('radio', { name: /^Il me poursuit/ })).toBeChecked();
+  expectPublishedScene(await browser.evaluate(readAtlas), 'poursuite');
+
+  // A phone keeps one column without overflow and never fetches the hidden decor.
+  await browser.setViewport({ width: 390, height: 844 });
+  await app.open('/fr/symboles/tigre.html');
+  await expect(screen.getByRole('heading', { level: 1 })).toBeVisible();
+  await screen.getByText('Il est en cage').tap();
+  const phone = await browser.evaluate(readAtlas);
+  expect(phone.overflow).toBe(false);
+  expect([phone.rail, phone.decor, phone.decorLoads]).toEqual([null, null, 0]);
+  expect(phone.scenes!.top).toBeGreaterThanOrEqual(phone.reading!.bottom);
+  expect(phone.band.map(column => column.left)).toEqual(phone.band.map(() => phone.band[0].left));
+  expectPublishedScene(phone, 'cage');
+  await app.screenshot('tiger-atlas-390');
+
+  // The other languages keep the shared single-column article.
+  await app.open('/en/symbols/tiger.html');
+  await expect(screen.getByRole('heading', { level: 1 })).toBeVisible();
+  expect(await browser.evaluate(() => [document.querySelectorAll('article.atlas, .atlas-scene-input').length, document.querySelectorAll('article.max-w-3xl').length])).toEqual([0, 1]);
+});

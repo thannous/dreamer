@@ -873,9 +873,501 @@ function tigerLivingStyleHtml() {
         @media ${TIGER_LIVING.media} {
             .symbol-hero--living { aspect-ratio: auto; height: 75vh; height: 75svh; }
             .symbol-hero--living .symbol-hero-media img { object-fit: cover; object-position: 50% 35%; }
-        }
+        }${TIGER_ATLAS_CSS}
     </style>`;
 }
+
+// Atlas composition of the same pilot page (the chosen "Atlas illustré"
+// mockup): a chapter rail, the reading column beside a three-scene selector
+// and its illustrated backdrop, a band with the reflection questions, the
+// fictional journal example and the app, then the related symbols and every
+// other published block. Every text comes from the symbol's data: a scene shows
+// the opening question of its variation card and the sentence after it, and the
+// build fails if a card, its question, the journal example, the caveat or an
+// image file disappears.
+const TIGER_ATLAS_IMAGES = '/img/symbols/atlas-tiger-v1';
+const TIGER_ATLAS = {
+  navLabel: 'Dans cette fiche',
+  kicker: 'Atlas des rêves',
+  onThisPage: 'Sur cette page',
+  chapters: [
+    { id: 'reconnaitre', title: 'Reconnaître la scène' },
+    { id: 'eveille', title: 'Ce qu’elle éveille' },
+    { id: 'relier', title: 'Relier à votre histoire' },
+  ],
+  journalLead: 'Exemple fictif de journal :',
+  caveat: 'Ce sont des pistes à confronter à votre vie actuelle',
+  scenes: {
+    id: 'scenes',
+    kicker: 'Scènes courantes',
+    title: 'Quelle scène ressemble le plus à votre rêve ?',
+    legend: 'Choisir une scène',
+    source: 'Lire la variante',
+    choices: [
+      { id: 'poursuite', label: 'Il me poursuit', variation: 'Un tigre qui attaque ou vous poursuit', image: 'pursuit' },
+      { id: 'calme', label: 'Il est calme', variation: 'Un tigre calme ou apprivoisé', image: 'calm' },
+      { id: 'cage', label: 'Il est en cage', variation: 'Un tigre en cage ou un petit tigre', image: 'cage' },
+    ],
+  },
+  reflectionKicker: 'Réflexion',
+  keepKicker: 'Continuer dans Noctalia',
+  relatedLead: 'Explorer d’autres symboles proches :',
+  // Fingerprinted files from docs-src/static/img/symbols/atlas-tiger-v1 (assets-manifest.json).
+  images: {
+    pursuit: { width: 320, height: 180, avif: { 320: 'tiger-pursuit-320-f1ce09fe543d.avif', 640: 'tiger-pursuit-640-112fb4ac41a6.avif' }, webp: { 320: 'tiger-pursuit-320-05b0f7866689.webp', 640: 'tiger-pursuit-640-54f668afdf3d.webp' } },
+    calm: { width: 320, height: 180, avif: { 320: 'tiger-calm-320-4bb28e7a6b72.avif', 640: 'tiger-calm-640-f928699ca141.avif' }, webp: { 320: 'tiger-calm-320-ccf237942860.webp', 640: 'tiger-calm-640-d0dfdd8f3b83.webp' } },
+    cage: { width: 320, height: 180, avif: { 320: 'tiger-cage-320-c7c194529c9e.avif', 640: 'tiger-cage-640-17ac80fe1837.avif' }, webp: { 320: 'tiger-cage-320-057946eb9ebd.webp', 640: 'tiger-cage-640-f21bb88f0cdd.webp' } },
+    decor: { width: 1402, height: 1122, avif: { 700: 'tiger-atlas-vignette-700-4e8dfc5cbde1.avif', 1402: 'tiger-atlas-vignette-1402-9962f65e3b08.avif' }, webp: { 700: 'tiger-atlas-vignette-700-c59a48b34c27.webp', 1402: 'tiger-atlas-vignette-1402-52162fa918f0.webp' } },
+  },
+  sceneSizes: '(min-width: 768px) 8.5rem, 6.5rem',
+  // The decor exists from 1024px only: no source matches below, so phones never fetch it.
+  decorMedia: '(min-width: 1024px)',
+  decorSizes: '(min-width: 1800px) min(40vw, 52rem), 30vw',
+};
+
+function plainText(html) {
+  return String(html)
+    .replace(/<[^>]+>/g, '')
+    .replace(/&#0?39;|&apos;/g, "'")
+    .replace(/&quot;/g, '"')
+    .replace(/&amp;/g, '&')
+    .replace(/[ \t\r\n\f\v]+/g, ' ')
+    .trim();
+}
+
+// Compares French copy whatever its non-breaking spaces (one character for one, so indexes match).
+function looseSpaces(text) {
+  return text.replace(/[\u00a0\u202f]/g, ' ');
+}
+
+// The whole sentence of `text` that starts with `prefix`.
+function sentenceStarting(text, prefix, where) {
+  const start = looseSpaces(text).indexOf(prefix);
+  if (start === -1) throw new Error(`Tiger atlas: "${prefix}" no longer appears in ${where}`);
+  const end = text.slice(start).search(/[.?!](\s|$)/);
+  return text.slice(start, end === -1 ? undefined : start + end + 1);
+}
+
+function tigerAtlasSrcset(files) {
+  return Object.entries(files).map(([width, file]) => {
+    const relative = path.join('static', TIGER_ATLAS_IMAGES, file);
+    if (!fs.existsSync(path.join(DOCS_SRC_DIR, relative))) throw new Error(`Tiger atlas: missing image docs-src/${relative}`);
+    return `${TIGER_ATLAS_IMAGES}/${file} ${width}w`;
+  }).join(', ');
+}
+
+function renderTigerAtlasScenePicture(image) {
+  return `<picture class="atlas-scene-thumb">
+                                        <source type="image/avif" srcset="${tigerAtlasSrcset(image.avif)}" sizes="${TIGER_ATLAS.sceneSizes}">
+                                        <img src="${TIGER_ATLAS_IMAGES}/${image.webp[320]}" srcset="${tigerAtlasSrcset(image.webp)}" sizes="${TIGER_ATLAS.sceneSizes}" alt="" width="${image.width}" height="${image.height}" loading="lazy" decoding="async">
+                                    </picture>`;
+}
+
+function renderTigerAtlasDecor() {
+  const image = TIGER_ATLAS.images.decor;
+  const { decorMedia: media, decorSizes: sizes } = TIGER_ATLAS;
+  return `<picture class="atlas-decor" aria-hidden="true">
+                        <source media="${media}" type="image/avif" srcset="${tigerAtlasSrcset(image.avif)}" sizes="${sizes}">
+                        <source media="${media}" type="image/webp" srcset="${tigerAtlasSrcset(image.webp)}" sizes="${sizes}">
+                        <img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" width="${image.width}" height="${image.height}" loading="lazy" decoding="async">
+                    </picture>`;
+}
+
+// The existing final CTA links (same URLs, tracking and copy), laid out for a
+// column. The browser-journal promotion is paused sitewide (styles.min.css hides
+// its link and [data-web-app-cta]); its note follows the same switch, and Google
+// Play leads meanwhile.
+function renderTigerAtlasActions(lang, content, pagePath) {
+  const copy = SYMBOL_CONVERSION_COPY[lang] || SYMBOL_CONVERSION_COPY.en;
+  const sharedLocale = SHARED_LOCALES[lang] || SHARED_LOCALES.en;
+  return `<div class="atlas-actions">
+                            <a${conversionLinkAttributes(pagePath, 'final', 'web')} href="${getWebAppUrl(lang, { medium: 'symbol_page', content })}" class="symbol-webapp-cta atlas-primary" rel="noopener"><i data-lucide="arrow-up-right" class="w-5 h-5"></i>${escapeHtml(sharedLocale.webAppCta)}</a>
+                            <a${conversionLinkAttributes(pagePath, 'final', 'play')} href="${getAndroidStoreUrl(lang)}" class="atlas-primary" rel="nofollow noopener noreferrer" target="_blank"><i data-lucide="arrow-up-right" class="w-5 h-5"></i>${escapeHtml(copy.store)}</a>
+                            <a href="${getSymbolCtaUrl(lang)}" class="atlas-secondary"><i data-lucide="arrow-right" class="w-4 h-4"></i>${escapeHtml(copy.details)}</a>
+                        </div>
+                        <p class="symbol-webapp-note atlas-note" data-web-app-cta>${escapeHtml(sharedLocale.webAppNote)}</p>`;
+}
+
+function renderTigerAtlasArticle(c) {
+  const atlas = TIGER_ATLAS;
+  const paragraphs = c.interpretationHtml.match(/<p>[\s\S]*?<\/p>/g) || [];
+  if (paragraphs.join('').replace(/\s+/g, '') !== c.interpretationHtml.replace(/\s+/g, '')) {
+    throw new Error('Tiger atlas: the interpretation is no longer a plain list of paragraphs');
+  }
+  const journal = paragraphs.find((p) => looseSpaces(plainText(p)).startsWith(atlas.journalLead));
+  if (!journal) throw new Error(`Tiger atlas: the interpretation lost its "${atlas.journalLead}" paragraph`);
+  const journalBody = journal.slice(journal.indexOf('</strong>') + '</strong>'.length, -'</p>'.length).trim();
+  const quote = journalBody.match(/^«[^»]+»/);
+  if (!quote) throw new Error('Tiger atlas: the journal example no longer opens with its quoted dream');
+  const reading = paragraphs.filter((p) => p !== journal);
+  const caveat = sentenceStarting(plainText(c.interpretationHtml), atlas.caveat, 'the interpretation');
+
+  const scenes = atlas.scenes.choices.map((choice, index) => {
+    const variation = c.variations.find((v) => looseSpaces(plainText(v.context)) === choice.variation);
+    if (!variation) throw new Error(`Tiger atlas: variation "${choice.variation}" is missing`);
+    const meaning = plainText(variation.meaning);
+    const question = meaning.slice(0, meaning.indexOf('?') + 1);
+    const rest = meaning.slice(question.length).trim();
+    if (!question || !rest) throw new Error(`Tiger atlas: variation "${choice.variation}" no longer opens with a question`);
+    return { ...choice, checked: index === 0, question, excerpt: sentenceStarting(rest, looseSpaces(rest.slice(0, 12)), `variation "${choice.variation}"`) };
+  });
+  const sceneChoicesHtml = scenes.map((scene) => `
+                                <input class="atlas-scene-input" type="radio" name="atlas-scene" id="atlas-scene-${scene.id}" value="${scene.id}"${scene.checked ? ' checked' : ''}>
+                                <label class="atlas-scene" for="atlas-scene-${scene.id}">
+                                    ${renderTigerAtlasScenePicture(atlas.images[scene.image])}
+                                    <span class="atlas-scene-text">
+                                        <span class="atlas-scene-label">${escapeHtml(scene.label)}</span>
+                                        <span class="atlas-scene-variation">${escapeHtml(scene.variation)}</span>
+                                    </span>
+                                    <span class="atlas-scene-mark" aria-hidden="true"><i data-lucide="arrow-right" class="w-4 h-4"></i></span>
+                                </label>`).join('');
+  const sceneResultsHtml = scenes.map((scene) => `
+                            <div class="atlas-scene-result" data-scene="${scene.id}">
+                                <p class="atlas-scene-question">${escapeHtml(scene.question)}</p>
+                                <p class="atlas-scene-excerpt">${escapeHtml(scene.excerpt)}</p>
+                                <a class="atlas-link" href="#variations">${escapeHtml(atlas.scenes.source)} « ${escapeHtml(scene.variation)} »</a>
+                            </div>`).join('');
+
+  const pageLinks = [
+    { href: 'meaning', label: c.sheetLabels.meaning },
+    { href: atlas.scenes.id, label: atlas.scenes.kicker },
+    { href: 'questions', label: c.sheetLabels.questions },
+    { href: 'journal', label: atlas.journalLead.replace(/\s*:$/, '') },
+    { href: 'associes', label: c.t.section_related_symbols },
+    { href: 'variations', label: c.sheetLabels.variations },
+    { href: 'faq', label: c.t.section_faq },
+  ];
+  const chapterAt = (index) => `id="${atlas.chapters[index].id}" data-atlas-chapter`;
+
+  return `<article class="atlas">
+            <nav class="atlas-rail" aria-label="${escapeHtml(atlas.navLabel)}">
+                <ol class="atlas-rail-chapters">${atlas.chapters.map((chapter, index) => `
+                    <li><a href="#${chapter.id}" class="atlas-rail-chapter"${index === 0 ? ' aria-current="true"' : ''}><span class="atlas-num">${String(index + 1).padStart(2, '0')}</span><span>${escapeHtml(chapter.title)}</span></a></li>`).join('')}
+                </ol>
+                <p class="atlas-kicker">${escapeHtml(atlas.onThisPage)}</p>
+                <ul class="atlas-rail-links">${pageLinks.map((link) => `
+                    <li><a href="#${link.href}">${escapeHtml(link.label)}</a></li>`).join('')}
+                </ul>
+            </nav>
+
+            <div class="atlas-body">
+                <div class="atlas-plate" ${chapterAt(0)}>
+                    <div class="atlas-reading">
+                        <p class="atlas-kicker">${escapeHtml(atlas.kicker)}</p>
+                        <p class="atlas-chapter-title">${escapeHtml(atlas.chapters[0].title)}</p>
+                        <p class="symbol-summary atlas-lead">${escapeHtml(c.symbolData.shortDescription)}</p>
+
+                        <nav class="symbol-jump-nav" aria-label="${escapeHtml(c.sheetLabels.jumpNav)}" style="grid-template-columns: repeat(${c.jumpCount}, minmax(0, 1fr));">${c.jumpNavHtml}
+                        </nav>
+                        <!-- Main Interpretation -->
+                        <section id="meaning" class="symbol-meaning atlas-meaning">
+                            <h2 class="atlas-h2">${c.t.section_interpretation}</h2>
+                            <div class="prose prose-invert prose-purple max-w-none leading-relaxed space-y-4">
+                                ${reading.join('\n                                ')}
+                            </div>
+                        </section>
+                    </div>
+                    <section class="atlas-scenes" id="${atlas.scenes.id}" aria-labelledby="atlas-scenes-title">
+                        <p class="atlas-kicker">${escapeHtml(atlas.scenes.kicker)}</p>
+                        <h2 class="atlas-scenes-title" id="atlas-scenes-title">${escapeHtml(atlas.scenes.title)}</h2>
+                        <fieldset class="atlas-scene-list">
+                            <legend class="atlas-sr">${escapeHtml(atlas.scenes.legend)}</legend>${sceneChoicesHtml}
+                        </fieldset>
+                        <div class="atlas-scene-results" aria-live="polite">${sceneResultsHtml}
+                        </div>
+                        <p class="atlas-caveat">${escapeHtml(caveat)}</p>
+                    </section>
+                    ${renderTigerAtlasDecor()}
+                </div>
+
+                <div class="atlas-band" ${chapterAt(1)}>
+                    <!-- Ask Yourself -->
+                    <section id="questions" class="symbol-questions atlas-column">
+                        <p class="atlas-kicker">${escapeHtml(atlas.reflectionKicker)}</p>
+                        <h2 class="atlas-band-title">${c.t.section_ask_yourself}</h2>
+                        <ul>${c.askYourselfHtml}
+                        </ul>
+                    </section>
+                    <figure class="atlas-column atlas-journal" id="journal">
+                        <figcaption class="atlas-kicker"><i data-lucide="book-open" class="w-5 h-5"></i>${escapeHtml(atlas.journalLead.replace(/\s*:$/, ''))}</figcaption>
+                        <blockquote class="atlas-journal-quote"><p>${quote[0]}</p></blockquote>
+                        <p class="atlas-journal-notes">${journalBody.slice(quote[0].length).trim()}</p>
+                    </figure>
+                    <!-- CTA Section -->
+                    <aside class="atlas-column atlas-keep" id="garder-noctalia">
+                        <p class="atlas-kicker"><i data-lucide="feather" class="w-5 h-5"></i>${escapeHtml(atlas.keepKicker)}</p>
+                        <h3 class="atlas-band-title">${c.t.cta_title}</h3>
+                        <p class="atlas-keep-text">${c.t.cta_description}</p>
+                        ${c.conversionActionsHtml}
+                    </aside>
+                </div>
+
+                <div class="atlas-more" ${chapterAt(2)}>
+                    <!-- Related Symbols -->
+                    <section class="symbol-related atlas-related" id="associes" aria-labelledby="atlas-related-title">
+                        <h2 class="atlas-kicker" id="atlas-related-title"><i data-lucide="orbit" class="w-5 h-5"></i>${c.t.section_related_symbols}</h2>
+                        <p class="atlas-related-lead">${escapeHtml(atlas.relatedLead)}</p>
+                        <div class="atlas-related-links">${c.relatedSymbolsHtml}
+                        </div>
+                        <p class="atlas-related-caveat">${escapeHtml(caveat)}</p>
+                    </section>
+
+                    <!-- Variations -->
+                    <section id="variations" class="symbol-variations symbol-section">
+                        <h2 class="symbol-h2">${c.t.section_variations}</h2>
+                        <div class="atlas-variation-grid">${c.variationsHtml}
+                        </div>
+                    </section>
+
+                    <section id="faq" class="symbol-faq symbol-section">
+                        <h2 class="symbol-h2">${c.t.section_faq}</h2>
+                        <div class="atlas-faq-grid">${c.faqCardsHtml}
+                        </div>
+                    </section>${c.relatedReadingCard ? `
+
+                    <!-- Related Reading -->
+                    <section class="symbol-reading symbol-section">
+                        <h2 class="symbol-h2">${c.t.section_learn_more}</h2>${c.relatedReadingCard}
+                    </section>` : ''}
+
+                    <!-- Back to Dictionary -->
+                    <div class="mt-10 atlas-back">
+                        <a href="/${c.lang}/guides/${c.t.dictionary_slug}" class="symbol-back-link">${c.t.back_to_dictionary}</a>
+                    </div>
+                </div>
+            </div>
+            <script>
+                // The rail marks the chapter crossing the upper third of the screen; anchors work without it.
+                (() => {
+                    const links = Array.from(document.querySelectorAll('.atlas-rail-chapter'));
+                    const chapters = Array.from(document.querySelectorAll('[data-atlas-chapter]'));
+                    if (!('IntersectionObserver' in window) || links.length !== chapters.length) return;
+                    const observer = new IntersectionObserver((entries) => {
+                        entries.forEach((entry) => {
+                            if (!entry.isIntersecting) return;
+                            const current = chapters.indexOf(entry.target);
+                            links.forEach((link, index) => {
+                                if (index === current) link.setAttribute('aria-current', 'true');
+                                else link.removeAttribute('aria-current');
+                            });
+                        });
+                    }, { rootMargin: '-30% 0px -69% 0px' });
+                    chapters.forEach((chapter) => observer.observe(chapter));
+                })();
+            </script>
+        </article>`;
+}
+
+const TIGER_ATLAS_CSS = `
+        /* Atlas composition (French tiger pilot). Mobile keeps one reading column. */
+        .symbol-page-main > article.atlas { max-width: none; }
+        .atlas { --atlas-rail: 12.5rem; --atlas-gap: clamp(1.75rem, 3vw, 4.5rem); }
+        .atlas-rail, .atlas-decor { display: none; }
+        .atlas-sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+        .atlas-kicker {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin: 0 0 0.9rem;
+            font-family: 'Outfit', ui-sans-serif, system-ui, sans-serif;
+            font-size: 0.68rem;
+            font-weight: 500;
+            letter-spacing: 0.24em;
+            text-transform: uppercase;
+            color: var(--salmon);
+        }
+        .atlas-kicker svg { color: var(--salmon-dim); letter-spacing: 0; }
+        .atlas-chapter-title {
+            font-family: 'Fraunces', ui-serif, Georgia, serif;
+            font-weight: 600;
+            font-size: clamp(2.1rem, 3.6vw, 3.9rem);
+            line-height: 1.02;
+            letter-spacing: -0.02em;
+            color: var(--cream);
+            text-wrap: balance;
+        }
+        .atlas-lead.symbol-summary { margin-top: clamp(1.25rem, 2vw, 1.75rem); max-width: 38rem; color: var(--cream); }
+        .atlas-lead::after { content: ''; display: block; width: 1.5rem; height: 1px; margin-top: clamp(1.5rem, 2.5vw, 2rem); background: var(--cream-64); }
+        .atlas-meaning { padding-top: 0.25rem; }
+        .atlas-h2 {
+            font-family: 'Fraunces', ui-serif, Georgia, serif;
+            font-weight: 500;
+            font-size: 1.15rem;
+            color: var(--cream-88);
+            margin-bottom: 1rem;
+        }
+        .atlas-meaning .prose p:last-child { font-size: 0.9rem; color: var(--cream-45); }
+
+        /* Scene selector: native radios, one published question and excerpt per scene. */
+        .atlas-scenes { position: relative; z-index: 1; margin-top: clamp(2.5rem, 5vw, 3.5rem); }
+        .atlas-scenes-title {
+            font-family: 'Fraunces', ui-serif, Georgia, serif;
+            font-weight: 400;
+            font-size: clamp(1.2rem, 1.5vw, 1.4rem);
+            line-height: 1.3;
+            color: var(--cream);
+            margin-bottom: 1.25rem;
+        }
+        .atlas-scene-list { display: grid; gap: 0.75rem; margin: 0; padding: 0; border: 0; min-width: 0; }
+        .atlas-scene-input { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; pointer-events: none; }
+        .atlas-scene {
+            display: grid;
+            grid-template-columns: 6.5rem minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 1rem;
+            padding: 0 1rem 0 0;
+            min-height: 4.5rem;
+            border: 1px solid rgba(255, 247, 237, 0.16);
+            background: rgba(10, 5, 18, 0.78);
+            cursor: pointer;
+            transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.16s ease-out;
+        }
+        .atlas-scene:active { transform: scale(0.99); }
+        .atlas-scene-thumb, .atlas-scene-thumb img { display: block; width: 100%; height: 100%; }
+        .atlas-scene-thumb img { aspect-ratio: 16 / 9; object-fit: cover; }
+        .atlas-scene-text { display: grid; gap: 0.2rem; padding: 0.75rem 0; min-width: 0; }
+        .atlas-scene-label { font-family: 'Fraunces', ui-serif, Georgia, serif; font-size: 1.1rem; color: var(--cream); }
+        .atlas-scene-variation { font-size: 0.82rem; line-height: 1.4; color: var(--cream-64); }
+        .atlas-scene-mark {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.1rem;
+            height: 2.1rem;
+            border: 1px solid rgba(255, 247, 237, 0.55);
+            border-radius: 999px;
+            color: var(--cream);
+            transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+        }
+        @media (hover: hover) and (pointer: fine) {
+            .atlas-scene:hover { border-color: rgba(234, 212, 180, 0.5); }
+        }
+        .atlas-scene-input:checked + .atlas-scene { border-color: var(--salmon); background: rgba(28, 18, 40, 0.88); }
+        .atlas-scene-input:checked + .atlas-scene .atlas-scene-mark { background: var(--salmon); border-color: var(--salmon); color: #0a0512; }
+        .atlas-scene-input:focus-visible + .atlas-scene { outline: 2px solid var(--salmon); outline-offset: 3px; }
+        .atlas-scene-results { margin-top: 1.25rem; padding: 1.25rem 0 0 1.1rem; border-left: 1px solid var(--salmon-dim); }
+        .atlas-scene-result { display: none; }
+        .atlas-scene-result[data-scene="poursuite"] { display: block; }
+        .atlas-scenes:has(.atlas-scene-input:checked) .atlas-scene-result { display: none; }
+        .atlas-scenes:has(#atlas-scene-poursuite:checked) .atlas-scene-result[data-scene="poursuite"],
+        .atlas-scenes:has(#atlas-scene-calme:checked) .atlas-scene-result[data-scene="calme"],
+        .atlas-scenes:has(#atlas-scene-cage:checked) .atlas-scene-result[data-scene="cage"] { display: block; }
+        .atlas-scene-question { font-family: 'Fraunces', ui-serif, Georgia, serif; font-size: 1.12rem; line-height: 1.45; color: var(--cream); margin-bottom: 0.75rem; text-wrap: pretty; }
+        .atlas-scene-excerpt { font-size: 0.95rem; line-height: 1.65; color: var(--cream-64); margin-bottom: 0.6rem; }
+        .atlas-link, .atlas-journal-notes a { color: var(--salmon); text-decoration: underline; text-decoration-color: rgba(234, 212, 180, 0.35); text-underline-offset: 3px; }
+        .atlas-link { display: inline-flex; align-items: center; min-height: 44px; font-size: 0.85rem; }
+        .atlas-caveat { margin-top: 0.75rem; font-size: 0.8rem; font-style: italic; color: var(--cream-45); }
+
+        /* Band: reflection questions, fictional journal, the app. */
+        .atlas-band { display: grid; margin-top: clamp(3rem, 6vw, 5rem); border-top: 1px solid var(--line); }
+        .atlas-column { padding: clamp(2rem, 3vw, 2.75rem) 0; margin: 0; scroll-margin-top: 7rem; }
+        .atlas-column + .atlas-column { border-top: 1px solid var(--line); }
+        .atlas-band-title { font-family: 'Fraunces', ui-serif, Georgia, serif; font-weight: 550; font-size: clamp(1.35rem, 1.8vw, 1.75rem); line-height: 1.2; color: var(--cream); margin-bottom: 1rem; }
+        .atlas .symbol-questions ul { margin: 0; padding: 0; list-style: none; }
+        .atlas .symbol-question-item { font-size: 1.08rem; }
+        .atlas-journal-quote { margin: 0 0 1.25rem; }
+        .atlas-journal-quote p { font-family: 'Fraunces', ui-serif, Georgia, serif; font-style: italic; font-weight: 350; font-size: clamp(1.2rem, 1.5vw, 1.4rem); line-height: 1.45; color: #c9bce9; }
+        .atlas-journal-quote::after { content: ''; display: block; width: 1.5rem; height: 1px; margin-top: 1.25rem; background: var(--cream-64); }
+        .atlas-journal-notes { font-size: 0.95rem; line-height: 1.7; color: var(--cream-64); }
+        .atlas-keep-text { font-size: 0.95rem; line-height: 1.65; color: var(--cream-64); margin-bottom: 1.25rem; max-width: 30rem; }
+        .atlas-actions { display: grid; justify-items: start; gap: 0.6rem; }
+        .atlas-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            min-height: 3.25rem;
+            padding: 0 1.6rem;
+            border-radius: 999px;
+            background: var(--salmon);
+            color: #0a0512;
+            font-weight: 600;
+            transition: background-color 0.2s ease, transform 0.16s ease-out;
+        }
+        .atlas-primary:hover { background: #f1e1c8; }
+        .atlas-primary:active { transform: scale(0.97); }
+        .atlas-secondary { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 44px; font-size: 0.88rem; color: var(--cream-88); }
+        .atlas-secondary:hover { color: var(--salmon); }
+        .atlas-note { margin-top: 0.5rem; font-size: 0.75rem; color: var(--cream-45); max-width: 30rem; }
+
+        /* Related symbols line, then every other published block. */
+        .atlas-related { display: grid; gap: 0.75rem; padding: 1.75rem 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); scroll-margin-top: 7rem; }
+        .atlas-related .atlas-kicker { margin: 0; }
+        .atlas-related-lead { font-size: 0.9rem; color: var(--cream-64); }
+        .atlas-related-links { display: flex; flex-wrap: wrap; gap: 0.25rem 1.5rem; }
+        .atlas-related-caveat { text-wrap: balance; }
+        .atlas-related-links .symbol-link { border-top: 0; padding: 0.55rem 0; gap: 0.5rem; justify-content: flex-start; }
+        .atlas-related-links .symbol-link span { text-decoration: underline; text-decoration-color: rgba(255, 247, 237, 0.3); text-underline-offset: 4px; font-size: 1rem; }
+        .atlas-related-caveat { font-family: 'Fraunces', ui-serif, Georgia, serif; font-style: italic; font-size: 0.95rem; color: var(--cream-45); }
+        .atlas-more .symbol-variations { margin-top: clamp(3rem, 6vw, 4.5rem); border-top: 0; padding-top: 0; }
+        .atlas-variation-grid, .atlas-faq-grid { display: grid; grid-template-columns: minmax(0, 1fr); column-gap: var(--atlas-gap); }
+        .atlas .variation-card { padding: 1.35rem 0; }
+        .atlas .variation-card::before { content: none; }
+        .atlas .variation-card:last-child, .atlas .symbol-faq-card:last-child { border-bottom: 0; }
+        .atlas .symbol-faq { scroll-margin-top: 7rem; }
+        .atlas-back { text-align: left; }
+
+        @media (min-width: 768px) {
+            .symbol-page-main > article.atlas { width: min(90vw, 2304px); }
+            .atlas-variation-grid, .atlas-faq-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .atlas-band { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--atlas-gap); }
+            .atlas-column + .atlas-column { border-top: 0; }
+            .atlas-keep { grid-column: 1 / -1; border-top: 1px solid var(--line) !important; }
+            .atlas-scene { grid-template-columns: 8.5rem minmax(0, 1fr) auto; }
+            .atlas-related { grid-template-columns: auto minmax(0, 1fr); align-items: center; column-gap: 2rem; }
+            .atlas-related-caveat { grid-column: 1 / -1; }
+            .symbol-hero--living .symbol-hero-overlay { width: min(90vw, 2304px); padding-inline: 0; }
+        }
+        @media (min-width: 1024px) {
+            .atlas-plate { display: grid; grid-template-columns: minmax(0, 1fr) 19rem; column-gap: var(--atlas-gap); align-items: start; }
+            .atlas-reading { grid-column: 1; grid-row: 1 / span 2; }
+            .atlas-scenes { grid-column: 2; grid-row: 1; margin-top: 0; padding-top: clamp(5.5rem, 9vw, 9rem); }
+            .atlas-decor { display: block; grid-column: 2; grid-row: 2; margin-top: 2rem; }
+            .atlas-decor img { display: block; width: 100%; height: auto; }
+            .atlas-band { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 0; }
+            .atlas-column { padding-inline: clamp(1.5rem, 2.6vw, 3rem); }
+            .atlas-column:first-child { padding-left: 0; }
+            .atlas-column + .atlas-column { border-left: 1px solid var(--line); }
+            .atlas-keep { grid-column: auto; border-top: 0 !important; padding-right: 0; }
+            .atlas-related { grid-template-columns: auto auto minmax(0, 1fr) auto; column-gap: clamp(1.5rem, 2.5vw, 3rem); }
+            .atlas-related-caveat { grid-column: auto; text-align: right; }
+        }
+        @media (min-width: 1200px) {
+            .atlas { display: grid; grid-template-columns: var(--atlas-rail) minmax(0, 1fr); column-gap: var(--atlas-gap); }
+            .atlas-body { min-width: 0; }
+            .atlas-rail {
+                display: block;
+                position: sticky;
+                top: 6.5rem;
+                align-self: start;
+                max-height: calc(100vh - 8rem);
+                overflow-y: auto;
+                padding: clamp(2rem, 3vw, 3rem) 1.5rem 2rem 0;
+                border-right: 1px solid var(--line);
+            }
+            .atlas-rail ol, .atlas-rail ul { list-style: none; margin: 0; padding: 0; }
+            .atlas-rail-chapters { display: grid; gap: 1.75rem; margin-bottom: 3.5rem !important; }
+            .atlas-rail-chapter { position: relative; display: grid; grid-template-columns: 2.2rem minmax(0, 1fr); align-items: baseline; font-family: 'Fraunces', ui-serif, Georgia, serif; font-size: 0.98rem; line-height: 1.3; color: var(--cream-64); transition: color 0.2s ease; }
+            .atlas-rail-chapter .atlas-num { font-size: 1.25rem; font-variant-numeric: lining-nums; color: var(--cream-45); }
+            .atlas-rail-chapter::before { content: ''; position: absolute; left: 0; top: -0.75rem; width: 1.25rem; height: 1px; background: var(--cream-45); opacity: 0; transition: opacity 0.2s ease; }
+            .atlas-rail-chapter[aria-current="true"] { color: var(--cream); }
+            .atlas-rail-chapter[aria-current="true"] .atlas-num { color: var(--cream); }
+            .atlas-rail-chapter[aria-current="true"]::before { opacity: 1; }
+            .atlas-rail-chapter:hover { color: var(--cream); }
+            .atlas-rail-links { display: grid; gap: 0.15rem; }
+            .atlas-rail-links a { display: block; padding: 0.3rem 0; font-size: 0.82rem; color: var(--cream-45); transition: color 0.2s ease; }
+            .atlas-rail-links a:hover { color: var(--cream); }
+            .atlas-plate { padding-top: clamp(2rem, 3vw, 3rem); }
+            .atlas-variation-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            .atlas-related { grid-template-columns: auto auto minmax(0, 1fr) minmax(0, 20rem); }
+            .symbol-hero--living .symbol-hero-overlay { padding-left: calc(12.5rem + clamp(1.75rem, 3vw, 4.5rem)); }
+        }
+        @media (min-width: 1440px) {
+            .atlas-plate { grid-template-columns: minmax(0, 38rem) minmax(19rem, 24rem) minmax(0, 1fr); }
+        }
+        @media (min-width: 1800px) {
+            .atlas-plate { position: relative; grid-template-columns: minmax(0, 40rem) minmax(20rem, 26rem) minmax(0, 1fr); }
+            .atlas-decor { position: absolute; grid-column: 2 / -1; grid-row: 1; top: 0; right: 0; left: auto; width: min(100%, 52rem); margin: 0; z-index: 0; }
+        }`;
 
 // Generate HTML page for a symbol
 function generatePage(symbol, allSymbols, i18n, extended, lang) {
@@ -1142,6 +1634,19 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
   const currentPaths = Object.fromEntries(
     CONFIG.languages.map(l => [l, `/${l}/${CONFIG.symbolsPath[l]}/${symbol[l]?.slug || symbolData.slug}`])
   );
+  const atlasArticleHtml = livingPainting ? renderTigerAtlasArticle({
+    lang, t, symbolData, sheetLabels,
+    interpretationHtml: fullInterpretation,
+    variations,
+    variationsHtml,
+    askYourselfHtml,
+    faqCardsHtml,
+    relatedSymbolsHtml,
+    relatedReadingCard,
+    jumpNavHtml,
+    jumpCount: jumpItems.length,
+    conversionActionsHtml: renderTigerAtlasActions(lang, symbol.id, currentPaths[lang]),
+  }) : '';
 
   // Generate the full HTML
   return `<!DOCTYPE html>
@@ -1753,7 +2258,7 @@ ${heroPictureHtml}
                 </div>
             </header>
 
-        <article class="max-w-3xl mx-auto">
+        ${livingPainting ? atlasArticleHtml : `<article class="max-w-3xl mx-auto">
             <p class="symbol-summary text-lg leading-relaxed">
                 ${escapeHtml(symbolData.shortDescription)}
             </p>
@@ -1796,7 +2301,7 @@ ${relatedArticleHtml}
                 <a href="/${lang}/guides/${t.dictionary_slug}" class="symbol-back-link">${t.back_to_dictionary}</a>
             </div>
 
-        </article>
+        </article>`}
     </main>
 
 ${renderPseoFooter(lang, currentPaths, 'dictionary')}
