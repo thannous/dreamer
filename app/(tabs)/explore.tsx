@@ -170,7 +170,6 @@ function ExploreScreen() {
       titleKey="explore.title"
       variant="tab"
       immersive
-      subtitle={t('explore.intro')}
       actions={[
         {
           icon: 'gear',

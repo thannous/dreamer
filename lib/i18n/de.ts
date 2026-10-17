@@ -89,7 +89,6 @@ const translations: Record<string, string> = {
     'nav.settings': 'Einstellungen',
     'nav.sidebar_tagline': 'Traumtagebuch',
     'explore.title': 'Entdecken',
-    'explore.intro': 'Entdecke in deinem Tempo sanfte Wege, deine Träume zu betrachten. Symbole können Möglichkeiten öffnen, aber keine feste Antwort geben.',
     'explore.symbols.title': 'Symbole',
     'explore.symbols.body': 'Durchsuche Bilder und Themen, die dir beim Nachdenken über einen Traum helfen können.',
     'explore.guides.title': 'Leitfäden',

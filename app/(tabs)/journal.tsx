@@ -1046,6 +1046,8 @@ function JournalListScreen() {
               pinned={!searchConsumesLayout}
               titleKey="nav.journal"
               variant="tab"
+              // The title rests lower in the painting, like Today and Explore.
+              immersive
               actions={[{
                 icon: 'gear',
                 onPress: openQuickSettings,
