@@ -1682,6 +1682,7 @@ const translations: Record<string, string> = {
     'trends.returns.to_analyze': '{count} to analyze',
     'trends.returns.to_analyze_label': 'See the {count} dreams to analyze',
     'trends.returns.to_analyze_label_one': 'See the dream to analyze',
+    'trends.returns.symbols': 'Symbols',
     'trends.returns.emotions': 'Emotions',
     'trends.returns.share': '{count} of {total}',
     'trends.returns.trend.up': 'rising',

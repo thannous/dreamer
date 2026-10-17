@@ -102,6 +102,8 @@ export type DreamTrends = {
     unanalyzed: number;
     /** Enough analyzed dreams in the period to say what returns. */
     ready: boolean;
+    /** Ids of the period's analyzed dreams: what the symbols that return are counted in. */
+    analyzedIds: number[];
     emotions: DreamTrendsEmotion[];
     types: DreamTrendsFacet<DreamType>[];
   };
@@ -474,6 +476,7 @@ export function buildDreamTrends(
       analyzed: analyzedDreams.length,
       unanalyzed: periodDreams.length - analyzedDreams.length,
       ready,
+      analyzedIds: analyzedDreams.map((dream) => dream.id),
       emotions,
       types: toFacets(typeCounts),
     },

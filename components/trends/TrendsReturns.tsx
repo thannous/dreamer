@@ -3,10 +3,12 @@ import { Text, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 
 import { sparklePath } from '@/components/journal/story/sparkle';
+import { SymbolMedallion } from '@/components/journal/symbols/SymbolMedallion';
 import { PressableScale, ProgressFill } from '@/components/motion';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { getDreamTypeLabel, getEmotionFamilyLabel } from '@/lib/dreamLabels';
 import { MIN_DREAMS_FOR_TRENDS, type DreamTrends } from '@/lib/dreamTrends';
+import type { PeriodSymbol } from '@/lib/trendsSymbols';
 import type { DreamType } from '@/lib/types';
 
 import { TrendsSectionHead } from './TrendsSectionHead';
@@ -18,13 +20,15 @@ const TREND_ICONS = { up: 'arrow.up', down: 'arrow.down' } as const;
 const typeSlug = (type: DreamType) => type.toLowerCase().replace(/\s+/g, '-');
 
 /**
- * What returns across the period's analyzed dreams: the emotions that come back, with
- * their share and how it moved, and the kinds of dreams, each a door to those dreams in
- * the journal. Below three analyzed dreams nothing is said to return; the stars show how
- * far off that is.
+ * What returns across the period's analyzed dreams: the symbols that come back, each
+ * opening its page, the emotions, with their share and how it moved, and the kinds of
+ * dreams, each a door to those dreams in the journal. Below three analyzed dreams nothing
+ * is said to return; the stars show how far off that is.
  */
-export function TrendsReturns({ trends, lit, ink, t, formatNumber, onOpenUnanalyzed, onOpenType }: {
+export function TrendsReturns({ trends, symbols, lit, ink, t, formatNumber, onOpenUnanalyzed, onOpenType, onOpenSymbol }: {
   trends: DreamTrends;
+  /** The symbols that came back in the period's analyzed dreams, most present first. */
+  symbols: readonly PeriodSymbol[];
   /** The section is on screen: the bars grow then, not out of sight. */
   lit: boolean;
   ink: string;
@@ -32,6 +36,7 @@ export function TrendsReturns({ trends, lit, ink, t, formatNumber, onOpenUnanaly
   formatNumber: (value: number, options?: Intl.NumberFormatOptions) => string;
   onOpenUnanalyzed: () => void;
   onOpenType: (type: DreamType) => void;
+  onOpenSymbol: (linkKey: string) => void;
 }) {
   const { analyzed, unanalyzed, ready, emotions, types } = trends.patterns;
   const missing = Math.max(0, MIN_DREAMS_FOR_TRENDS - analyzed);
@@ -76,6 +81,31 @@ export function TrendsReturns({ trends, lit, ink, t, formatNumber, onOpenUnanaly
         </View>
       ) : (
         <View className="gap-6">
+          {symbols.length > 0 ? (
+            <View className="gap-3" testID="trends.returns.symbols">
+              <Text className="text-[11px] leading-[14px] font-sans-medium uppercase tracking-[1.4px] text-champagne-on" accessibilityRole="header">{t('trends.returns.symbols')}</Text>
+              {symbols.map(({ symbol, count }) => {
+                const share = t('trends.returns.share', { count: formatNumber(count), total: formatNumber(analyzed) });
+                const kind = symbol.kind === 'personal' ? t('journal.symbols.kind.personal') : null;
+                return (
+                  <PressableScale key={symbol.linkKey} testID={`trends.returns.symbol.${symbol.linkKey.replace(':', '.')}`}
+                    onPress={() => onOpenSymbol(symbol.linkKey)} haptic="light" accessibilityRole="button"
+                    accessibilityLabel={[symbol.name, kind, share].filter(Boolean).join(', ')}
+                    accessibilityHint={t('journal.symbols.open_hint')}
+                    className="min-h-[56px] flex-row items-center gap-3">
+                    <SymbolMedallion symbol={symbol} size={44} />
+                    <View className="min-w-0 flex-1">
+                      <Text className="text-[16px] leading-[22px] font-sans-medium text-ivory" numberOfLines={1}>{symbol.name}</Text>
+                      {kind ? <Text className="text-[12px] leading-[16px] font-sans text-champagne-on">{kind}</Text> : null}
+                    </View>
+                    <Text className="text-[13px] leading-[18px] font-sans text-ivory-muted">{share}</Text>
+                    <IconSymbol name="chevron.right" size={12} color={ink} />
+                  </PressableScale>
+                );
+              })}
+            </View>
+          ) : null}
+
           {emotions.length === 0 ? (
             <Text className="text-[15px] leading-[22px] font-sans text-ivory-muted" testID="trends.returns.none">
               {t('trends.returns.none')}
