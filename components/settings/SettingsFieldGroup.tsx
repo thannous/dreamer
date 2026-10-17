@@ -43,6 +43,8 @@ type SettingsFieldGroupProps = {
   legal?: ReactElement;
   /** Opens the welcome story again; the saved onboarding is left as it is. */
   onReplayOnboarding?: () => void;
+  /** Opens the store page to write a review; absent where there is no store (web). */
+  onRateApp?: () => void;
   footer?: ReactElement;
   onOpenSubscription: () => void;
   quota: ReactElement;
@@ -235,7 +237,7 @@ function PreferenceSheet<T extends string>({
 }
 
 type PreferenceRowProps = {
-  icon: 'sun.max.fill' | 'globe' | 'book.closed.fill' | 'arrow.clockwise';
+  icon: 'sun.max.fill' | 'globe' | 'book.closed.fill' | 'arrow.clockwise' | 'star.fill';
   isLast?: boolean;
   label: string;
   noctalia: NoctaliaDesignTokens;
@@ -320,6 +322,7 @@ export function SettingsFieldGroup({
   bottomPadding,
   legal,
   onReplayOnboarding,
+  onRateApp,
   footer,
   onOpenSubscription,
   quota,
@@ -420,7 +423,7 @@ export function SettingsFieldGroup({
             ) : null}
             <PreferenceRow
               icon="globe"
-              isLast={!onReplayOnboarding && !isHdIllustrationsEnabled()}
+              isLast={!onReplayOnboarding && !onRateApp && !isHdIllustrationsEnabled()}
               label={language.title}
               noctalia={noctalia}
               onPress={() => setLanguageSheetVisible(true)}
@@ -430,11 +433,19 @@ export function SettingsFieldGroup({
             {/* Replays the welcome story without changing the saved onboarding. */}
             {onReplayOnboarding ? <PreferenceRow
               icon="arrow.clockwise"
-              isLast={!isHdIllustrationsEnabled()}
+              isLast={!onRateApp && !isHdIllustrationsEnabled()}
               label={t('settings.onboarding_replay')}
               noctalia={noctalia}
               onPress={onReplayOnboarding}
               testID="settings-onboarding-replay"
+            /> : null}
+            {onRateApp ? <PreferenceRow
+              icon="star.fill"
+              isLast={!isHdIllustrationsEnabled()}
+              label={t('settings.rate_app')}
+              noctalia={noctalia}
+              onPress={onRateApp}
+              testID="settings-rate-app"
             /> : null}
             <IllustrationQualityPreference />
           </SettingsSection>

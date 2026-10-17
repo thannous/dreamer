@@ -3058,6 +3058,31 @@ describe('useDreamJournal', () => {
       }));
     });
 
+    // The mock analysis ignores the request context, so no journey sees a key that is not
+    // sent: the next reading would then name a returning place under a new key.
+    it('sends the dreamer\'s own symbols with a text analysis so their keys are reused', async () => {
+      setSavedDreams([
+        buildDream({ id: 1, isAnalyzed: false, analysisStatus: 'none' }),
+        buildDream({
+          id: 2, isAnalyzed: true, analysisStatus: 'done',
+          symbols: [
+            { name: 'Maison de grand-mère', meaning: 'Le seuil.', key: 'grandmother-house' },
+            { name: 'Chat', meaning: 'Il veille.', symbolId: 'cat' },
+          ],
+        }),
+      ]);
+
+      const { result } = await renderLoadedDreamJournal();
+
+      await act(async () => {
+        await result.current.analyzeDream(1, 'My dream transcript');
+      });
+
+      expect(mockAnalyzeDreamText.mock.calls[0]?.[3]?.knownSymbols).toEqual([
+        { key: 'grandmother-house', name: 'Maison de grand-mère' },
+      ]);
+    });
+
     it('reuses the analysis image prompt when queuing image generation', async () => {
       const existingDream = buildDream({
         id: 1,

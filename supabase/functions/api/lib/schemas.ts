@@ -24,8 +24,11 @@ export const ANALYZE_DREAM_SCHEMA = {
         properties: {
           name: { type: 'string' },
           meaning: { type: 'string' },
+          // A dictionary id or "none"; the list lives in the prompt and is checked on return.
+          symbolId: { type: 'string' },
+          key: { type: 'string' },
         },
-        required: ['name', 'meaning'],
+        required: ['name', 'meaning', 'symbolId', 'key'],
       },
     },
     emotions: {

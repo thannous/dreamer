@@ -2,6 +2,7 @@ import { serve } from 'https://deno.land/std@0.224.0/http/server.ts';
 import { corsHeaders } from '../api/lib/constants.ts';
 import { AI_REQUEST_LIMITS, isValidUuid } from '../api/lib/aiRequestPolicy.ts';
 import { resolveStoredTranscriptForAi } from '../api/lib/prompts.ts';
+import { collectKnownDreamSymbols, type KnownDreamSymbol } from '../api/lib/dreamSymbols.ts';
 import {
   ANALYSIS_JOB_WORKER_AUTH_HEADER,
   createAnalysisAdminClient,
@@ -33,6 +34,33 @@ const isAuthorized = (req: Request, serviceRoleKey: string): boolean => {
   const apikey = req.headers.get('apikey')?.trim();
   const workerSecret = req.headers.get(ANALYSIS_JOB_WORKER_AUTH_HEADER)?.trim();
   return apikey === serviceRoleKey || workerSecret === serviceRoleKey;
+};
+
+/** How many of the dreamer's latest readings their own symbols are gathered from. */
+const KNOWN_SYMBOL_DREAMS = 200;
+
+/** The dreamer's own symbols from their latest readings. A failed lookup only costs the links. */
+const loadKnownSymbols = async (
+  adminClient: ReturnType<typeof createAnalysisAdminClient>,
+  userId: string,
+  dreamId: number
+): Promise<KnownDreamSymbol[]> => {
+  try {
+    const { data, error } = await adminClient
+      .from('dreams')
+      .select('analysis_details')
+      .eq('user_id', userId)
+      .eq('is_analyzed', true)
+      .neq('id', dreamId)
+      .order('analyzed_at', { ascending: false, nullsFirst: false })
+      .limit(KNOWN_SYMBOL_DREAMS);
+    if (error) throw error;
+    return collectKnownDreamSymbols((data ?? []).map((row: { analysis_details?: unknown }) => row.analysis_details));
+  } catch {
+    // Never log the error: a row could carry dream content.
+    console.warn('[analysis-job-worker] known symbols unavailable');
+    return [];
+  }
 };
 
 const claimSpecificJob = async (
@@ -200,12 +228,14 @@ const processAnalysisJob = async (input: {
     if (tierError) throw tierError;
     const imageTier = tierData === 'plus' || tierData === 'premium' ? 'PLUS' : 'FREE';
     const lang = String(job.request_payload?.lang ?? 'en');
+    const knownSymbols = await loadKnownSymbols(adminClient, job.user_id, job.dream_id);
     const reading = await runDreamAnalysis({
       apiKey,
       anthropicApiKey: Deno.env.get('ANTHROPIC_API_KEY')?.trim(),
       transcript: resolvedTranscript.promptTranscript,
       truncatedForPrompt: resolvedTranscript.truncatedForPrompt,
       lang,
+      knownSymbols,
       route: '/analysis-job-worker',
     });
     // A dream its pre-analysis classed keeps that class and the name its seal wrote: the
