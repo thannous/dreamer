@@ -43,6 +43,9 @@ import { scheduleAfterStartupPaint } from '@/lib/startupPaint';
 import { lucidStartupDestination, normalizedLucidDestination } from './lucidRootNavigation';
 
 void SplashScreen.preventAutoHideAsync().catch(() => undefined);
+
+// Lucid's expo-splash-screen config in app.config.ts (imageWidth 220 on both platforms).
+const LUCID_NATIVE_SPLASH = { logoSize: 220, backgroundColor: '#201131' };
 const ROOT_VIEW_STYLE = { flex: 1 } as const;
 const KeyboardProviderComponent: React.ComponentType<React.PropsWithChildren> =
   Platform.OS !== 'web' && NativeModules?.KeyboardController
@@ -313,7 +316,11 @@ function LucidRootContent() {
         ) : null}
       </ErrorBoundary>
       {shouldShowCustomSplash && (
-        <StartupSplashScreen done={shouldFadeSplash} onDone={handleSplashFinished} />
+        <StartupSplashScreen
+          done={shouldFadeSplash}
+          nativeSplash={LUCID_NATIVE_SPLASH}
+          onDone={handleSplashFinished}
+        />
       )}
     </GestureHandlerRootView>
   );

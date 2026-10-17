@@ -41,6 +41,8 @@ const STAR_PATH = `
 export const STARTUP_SPLASH_MINIMUM_VISIBLE_MS = 150;
 
 type StartupSplashScreenProps = {
+  /** Native only: web has no native splash to match. */
+  nativeSplash?: { logoSize: number; backgroundColor: string };
   /** The first screen is ready: the splash leaves at once. */
   done?: boolean;
   /** Called once, when `done` first becomes true. */
