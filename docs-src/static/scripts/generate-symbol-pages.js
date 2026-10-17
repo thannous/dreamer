@@ -888,6 +888,12 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
   const softCta = symbolData.softCta && symbolData.softCta.href
     ? symbolData.softCta
     : null;
+  // Living-painting pilot (mist + lantern glow): French tiger page only. The
+  // folder is named after the script's sha256, so the immutable /js/* cache
+  // never serves a stale copy; its layers load relative to the script.
+  const livingPaintingScriptHtml = symbol.id === 'tiger' && lang === 'fr'
+    ? `\n    <script src="/js/tiger-living/4a2c0644fe77/tiger-living-painting.js" defer></script>`
+    : '';
 
   // Generate variations HTML
   const variationsHtml = variations.map(v => `
@@ -1844,7 +1850,7 @@ ${renderPseoFooter(lang, currentPaths, 'dictionary')}
         });
     </script>
     <script src="/js/language-dropdown.js?v=${CONFIG.cssVersion}" defer></script>
-    <script src="/js/mobile-menu.js?v=${CONFIG.cssVersion}" defer></script>
+    <script src="/js/mobile-menu.js?v=${CONFIG.cssVersion}" defer></script>${livingPaintingScriptHtml}
 </body>
 </html>`;
 }
