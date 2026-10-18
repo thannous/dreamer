@@ -4,10 +4,25 @@ const {
   DEV_EVENT_PATH,
   injectLiveReloadClient,
   isWatchableDocsPath,
+  canRebuildSymbols,
+  parseArgs,
 } = require('./docs-dev');
 
 describe('docs-dev helpers', () => {
   const rootDir = path.join('C:', 'repo', 'noctalia');
+
+  it('falls back to a full build if another source changes in the same batch', () => {
+    const options = parseArgs(['--symbol=tiger,cat', '--lang=fr']);
+    const generator = 'docs-src/static/scripts/generate-symbol-pages.js';
+    expect(canRebuildSymbols(options, [generator])).toBe(true);
+    for (const file of ['data/dream-symbols.json', 'docs-src/static/css/landing.css', 'scripts/lib/docs-renderer.js']) {
+      expect(canRebuildSymbols(options, [generator, file])).toBe(false);
+    }
+    expect(canRebuildSymbols(options, null)).toBe(false);
+    expect(canRebuildSymbols(parseArgs([]), [generator])).toBe(false);
+    expect(() => parseArgs(['--symbol=does-not-exist'])).toThrow(/Unknown/);
+    expect(() => parseArgs(['--symbol=tiger', '--lang=pt-br'])).toThrow(/Unsupported/);
+  });
 
   it('injects the live reload client before the closing body tag', () => {
     const html = '<!doctype html><html><body><main>Noctalia</main></body></html>';

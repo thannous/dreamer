@@ -175,6 +175,100 @@ describe('globs', () => {
   });
 });
 
+describe('parallel checks', () => {
+  const parallelConfig = (lint, testCommand) => CONFIG
+    .replace(`{ name: 'lint', command: 'echo lint >> "$RUN_LOG"', inputs: ['src/**'] }`,
+      () => `{ name: 'lint', command: ${JSON.stringify(lint)}, inputs: ['src/**'], parallel: true, env: { ONLY_LINT: 'yes' } }`)
+    .replace(`{ name: 'test', command: 'echo test >> "$RUN_LOG" && grep -q ok src/a.js && test -z "$GIT_DIR" && test -z "$FAIL_TEST"' }`,
+      () => `{ name: 'test', command: ${JSON.stringify(testCommand)}, parallel: true, env: { ONLY_TEST: 'yes' } }`);
+
+  test('checks really overlap, keep their own environment and have individual receipts', async () => {
+    const repo = makeRepository();
+    // Each waits for its sibling: sequential execution cannot pass. The bound
+    // avoids hanging on a scheduler regression; no performance threshold here.
+    const wait = (other) => `n=0; until test -f "$RUN_LOG.${other}"; do n=$((n+1)); test "$n" -lt 100 || exit 9; sleep 0.05; done; `;
+    repo.commit('parallel', { 'verify-local.config.mjs': parallelConfig(
+      `touch "$RUN_LOG.lint"; ${wait('test')}test "$ONLY_LINT" = yes && test -z "$ONLY_TEST" && echo lint >> "$RUN_LOG"`,
+      `touch "$RUN_LOG.test"; ${wait('lint')}test "$ONLY_TEST" = yes && test -z "$ONLY_LINT" && echo test >> "$RUN_LOG"`,
+    ) });
+    const { status, proof } = await verify('pr', [], repo.options);
+    assert.equal(status, 0, repo.lines.join('\n'));
+    assert.deepEqual(repo.runs().sort(), ['lint', 'test']);
+    for (const name of ['lint', 'test']) {
+      const check = proof.checks.find((entry) => entry.name === name);
+      assert.equal(check.result, 'passed');
+      assert.ok(check.durationMs >= 0);
+    }
+    assert.equal(repo.lines.filter((line) => line.includes('one heavy step')).length, 1);
+  });
+
+  test('a failing child keeps its passing sibling, stops later checks, and reruns the failure', async () => {
+    const repo = makeRepository();
+    repo.commit('parallel', { 'site/index.html': 'site', 'verify-local.config.mjs': parallelConfig(
+      'echo lint >> "$RUN_LOG"; test -z "$FAIL_TEST"', 'echo test >> "$RUN_LOG"',
+    ) });
+    const failed = await verify('pr', [], { ...repo.options, env: { ...repo.env, FAIL_TEST: '1' } });
+    assert.equal(failed.status, 1);
+    assert.equal(failed.proof.checks.find((entry) => entry.name === 'lint').result, 'failed');
+    assert.equal(failed.proof.checks.find((entry) => entry.name === 'test').result, 'passed');
+    assert.ok(!repo.runs().includes('site-check'), 'the serial stage after the batch cannot run');
+    repo.clearRuns();
+    const retry = await verify('pr', [], repo.options);
+    assert.equal(retry.status, 0);
+    assert.deepEqual(repo.runs(), ['lint', 'site-check']);
+    assert.equal(retry.proof.checks.find((entry) => entry.name === 'test').reused, true);
+  });
+
+  test('a killed child fails even when its sibling passes', async () => {
+    const repo = makeRepository();
+    repo.commit('parallel kill', { 'verify-local.config.mjs': parallelConfig('kill -KILL $$', 'echo test >> "$RUN_LOG"') });
+    const { status, proof } = await verify('pr', [], repo.options);
+    assert.equal(status, 1);
+    assert.equal(proof.checks.find((entry) => entry.name === 'test').result, 'passed');
+    assert.match(proof.checks.find((entry) => entry.name === 'lint').reason, /killed/);
+  });
+
+  test('parallel checks cannot mutate the shared dependency installation', () => {
+    assert.throws(() => normaliseConfig({ checks: [{ name: 'install', command: 'npm ci', parallel: true, install: true }] }), /parallel checks cannot install/);
+  });
+
+  test('a lost batch runner cannot turn missing completion receipts into a pass', {
+    skip: process.platform === 'win32' ? 'requires POSIX parent process signals' : false,
+  }, async () => {
+    const repo = makeRepository();
+    repo.commit('lost runner', { 'verify-local.config.mjs': parallelConfig('kill -KILL $PPID', 'sleep 0.1; echo test >> "$RUN_LOG"') });
+    const { status, proof } = await verify('pr', [], repo.options);
+    assert.equal(status, 1);
+    assert.ok(proof.checks.some((entry) => /completion receipt/.test(entry.reason ?? '')));
+  });
+
+  test('killing the engine stops both parallel children before releasing the machine lock', {
+    skip: process.platform !== 'linux' || !hasFlock() ? 'requires Linux process groups and flock' : false,
+  }, async () => {
+    const repo = makeRepository();
+    repo.commit('parallel orphan', { 'verify-local.config.mjs': parallelConfig(
+      'echo $$ > "$RUN_LOG.lint.pid"; sleep 300', 'echo $$ > "$RUN_LOG.test.pid"; sleep 300',
+    ) });
+    const files = ['lint', 'test'].map((name) => `${repo.env.RUN_LOG}.${name}.pid`);
+    const run = spawn(process.execPath, [ENGINE, 'pr'], { cwd: repo.work, env: repo.env, stdio: 'ignore' });
+    const wait = async (condition) => {
+      for (let i = 0; i < 200 && !condition(); i += 1) await new Promise((resolve) => setTimeout(resolve, 50));
+      return condition();
+    };
+    const lockFree = () => spawnSync('flock', ['--nonblock', repo.env.VERIFY_LOCAL_HEAVY_LOCK, 'true']).status === 0;
+    try {
+      assert.ok(await wait(() => files.every((file) => existsSync(file))), 'both children started');
+      assert.equal(lockFree(), false);
+      run.kill('SIGKILL');
+      assert.ok(await wait(lockFree), 'lock released after supervisor cleanup');
+      for (const file of files) assert.ok(await gone(Number(readFileSync(file, 'utf8'))), 'parallel child stopped');
+    } finally {
+      run.kill('SIGKILL');
+      for (const file of files) if (existsSync(file)) try { process.kill(Number(readFileSync(file, 'utf8')), 'SIGKILL'); } catch {}
+    }
+  });
+});
+
 describe('verify:pr', () => {
   test('checks the commit in an isolated copy and writes a proof keyed by tree', async () => {
     const repo = makeRepository();

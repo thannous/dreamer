@@ -53,6 +53,9 @@
 // Installs, setup and checks take the machine-wide lock HEAVY_LOCK (flock),
 // so verify runs on one machine wait for each other ("waiting for lock").
 // A step killed by a signal counts as failed.
+// Consecutive checks with parallel: true share a single supervised/locked
+// step. Each keeps its own receipt, reuse, environment and failure result.
+// Non-parallel checks are barriers; dependency installs cannot opt in.
 //
 // Exit codes: 0 passed, 1 failed, 2 incomplete (a required specialised check
 // could not run here; see --external), 64 usage or configuration error.
@@ -181,6 +184,7 @@ export function normaliseConfig(raw) {
       specialised: Boolean(check.specialised),
       requires: check.requires ?? null,
       install: Boolean(check.install),
+      parallel: check.parallel === true,
       env: check.env ?? {},
     };
   });
@@ -195,6 +199,7 @@ export function normaliseConfig(raw) {
   }
   const names = new Set();
   for (const check of checks) {
+    if (check.parallel && check.install) throw new UsageError(`check ${check.name}: parallel checks cannot install dependencies.`);
     if (names.has(check.name)) throw new UsageError(`check ${check.name} is declared twice.`);
     names.add(check.name);
     // A release proof must also prove what a PR proof proves.
@@ -1050,6 +1055,57 @@ function runShell(command, { cwd, env, log, shell = posixShell(env) }) {
   return { status: status === 0 && killed ? 1 : status, durationMs: Date.now() - started, killed };
 }
 
+// One supervised step owns the lock for the entire batch. Its children inherit
+// its process group, so the existing signal/orphan cleanup also covers them.
+// Each child writes its own receipt: a failed or killed sibling cannot hide it.
+const PARALLEL_RUNNER = `
+const { spawn } = require('node:child_process');
+const { readFileSync, writeFileSync } = require('node:fs');
+const file = process.argv[2];
+const { shell, checks, fixedEnv } = JSON.parse(readFileSync(file, 'utf8'));
+Promise.all(checks.map((check, index) => new Promise((resolve) => {
+  const started = Date.now();
+  let finished = false;
+  const finish = (status, killed = null) => {
+    if (finished) return;
+    finished = true;
+    const result = { status, durationMs: Date.now() - started, killed };
+    writeFileSync(file + '.' + index + '.json', JSON.stringify(result));
+    resolve(result);
+  };
+  const child = spawn(shell, ['-c', check.command], {
+    env: { ...process.env, ...check.env, ...fixedEnv }, stdio: 'inherit',
+  });
+  child.on('error', (error) => { process.stderr.write(error.message + '\\n'); finish(1); });
+  child.on('exit', (code, signal) => finish(code ?? 1, signal ?? (code > 128 ? 'signal ' + (code - 128) : null)));
+}))).then((results) => { process.exitCode = results.some((result) => result.status !== 0 || result.killed) ? 1 : 0; });
+`;
+
+export function runParallel(checks, { cwd, env, fixedEnv, log, shell, tmp }) {
+  const file = path.join(tmp, `parallel-${randomBytes(8).toString('hex')}`);
+  const runner = `${file}.cjs`;
+  writeFileSync(file, JSON.stringify({ shell, checks, fixedEnv }));
+  writeFileSync(runner, PARALLEL_RUNNER);
+  const quote = (value) => `'${value.replaceAll("'", "'\\''")}'`;
+  const batch = runShell(`${quote(process.execPath)} ${quote(runner)} ${quote(file)}`, { cwd, env, log, shell });
+  const results = checks.map((_, index) => {
+    try {
+      const result = JSON.parse(readFileSync(`${file}.${index}.json`, 'utf8'));
+      if (!Number.isInteger(result.status) || !Number.isFinite(result.durationMs)) throw new Error('invalid parallel receipt');
+      return result;
+    } catch {
+      return { status: 1, durationMs: batch.durationMs, killed: batch.killed, missing: true };
+    }
+  });
+  // A supervisor/runner failure still fails the batch even if every child had
+  // written a passing receipt just before it happened.
+  if (batch.status !== 0 && results.every((result) => result.status === 0 && !result.killed)) {
+    results.at(-1).status = batch.status;
+    results.at(-1).killed = batch.killed;
+  }
+  return results;
+}
+
 function quiet(command, { cwd, env, shell = posixShell(env) }) {
   const result = spawnSync(shell, ['-c', command], { cwd, env, stdio: 'ignore' });
   return !result.error && result.status === 0;
@@ -1512,9 +1568,32 @@ export async function verify(kind, argv = [], {
   let worktree = null;
   let failed = false;
   let incomplete = false;
+  let pending = [];
+  const finishParallel = () => {
+    if (pending.length === 0) return;
+    const fixedEnv = { ...worktree.env, VERIFY_LOCAL_KIND: kind, VERIFY_LOCAL_SHA: sha, VERIFY_LOCAL_TREE: tree };
+    log(`${PREFIX} parallel: ${pending.map(({ check }) => check.name).join(', ')} (one heavy step).`);
+    const runs = runParallel(pending.map(({ check }) => ({ command: check.command, env: check.env })), {
+      cwd: worktree.dir, tmp: worktree.tmp, env: { ...env, ...fixedEnv }, fixedEnv, log, shell,
+    });
+    pending.forEach(({ entry }, index) => {
+      const run = runs[index];
+      const passed = run.status === 0 && !run.killed;
+      Object.assign(entry, { result: passed ? 'passed' : 'failed', durationMs: run.durationMs });
+      if (run.missing) entry.reason = 'parallel check did not write a completion receipt';
+      else if (run.killed) entry.reason = `killed (${run.killed})`;
+      log(`${PREFIX} ${entry.name}: ${passed ? 'passed' : `failed (exit ${run.status})`} in ${Math.round(run.durationMs / 1000)} s.`);
+      if (!passed) failed = true;
+    });
+    pending = [];
+  };
 
   try {
     for (const check of selected) {
+      // Only consecutive opt-in checks overlap. Everything else is a barrier,
+      // including dependency installs, builds, and checks after a failed batch.
+      if (!check.parallel) finishParallel();
+      if (failed) break;
       const fingerprint = checkFingerprint({ check, files, tree, sha, environment, mergeBase: scope?.mergeBase ?? null });
       const entry = { name: check.name, command: check.command, fingerprint, specialised: check.specialised };
       if (check.targets) entry.targets = check.targets;
@@ -1570,6 +1649,12 @@ export async function verify(kind, argv = [], {
           break;
         }
       }
+      if (check.parallel) {
+        const resultEntry = { ...entry, result: 'failed' };
+        results.push(resultEntry);
+        pending.push({ check, entry: resultEntry });
+        continue;
+      }
       const run = runShell(check.command, {
         cwd: worktree.dir,
         env: { ...env, ...check.env, ...worktree.env, VERIFY_LOCAL_KIND: kind, VERIFY_LOCAL_SHA: sha, VERIFY_LOCAL_TREE: tree },
@@ -1584,6 +1669,7 @@ export async function verify(kind, argv = [], {
         break;
       }
     }
+    finishParallel();
   } finally {
     if (worktree?.dir) {
       if (options.keep || (failed && process.env.VERIFY_LOCAL_KEEP_FAILED === '1')) {

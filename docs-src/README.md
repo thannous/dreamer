@@ -51,6 +51,27 @@ Generated `docs/` output is intentionally not watched.
 
 ### Iterate quickly on one generated page
 
+The live server can rebuild selected symbols automatically after a generator
+edit:
+
+```bash
+npm run docs:dev -- --symbol=tiger --lang=fr
+```
+
+It starts with a full build. Subsequent edits to
+`docs-src/static/scripts/generate-symbol-pages.js` rebuild only the selected
+symbols and reload the browser. `--symbol` accepts comma-separated ids; omit
+`--lang` to regenerate their supported languages. Unknown ids/languages fail.
+Any other source edit, including one arriving alongside the generator edit,
+forces a full build. Edits received during a build are queued together.
+
+A selected-page preview deliberately blocks `docs:check` and release checks
+until a full `npm run docs:build` succeeds: other pages may still be stale.
+This mode speeds up local editing; the PR and release checks still build and
+validate the entire site.
+
+For a one-off regeneration without the live server:
+
 When only a page generator changes (for example
 `docs-src/static/scripts/generate-symbol-pages.js`), rebuild that page alone
 instead of the whole site:

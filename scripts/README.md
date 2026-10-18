@@ -57,6 +57,18 @@ EAS and Store/publication remain separate boundaries. Distribution builds use
 
 ## Maintenance rules
 
+`verify:pr` and release verification run the four independent root type/lint
+checks together, under one machine lock where `flock` is available, and retain
+one result per check. A failure waits for the siblings to finish, then blocks
+the next stage. Other checks stay sequential. The generated shared route
+declaration uses an atomic replacement so both typechecks can read it safely.
+Only TypeScript's redundant `import/namespace` lint rule is disabled; JavaScript
+imports and React Compiler rules keep their checks. Site-only changes continue
+to reuse type/lint proofs whose inputs have not changed.
+
+For a short live site loop, see [`docs:dev -- --symbol=tiger --lang=fr`](../docs-src/README.md#iterate-quickly-on-one-generated-page).
+Always run a full site build before trusting site-wide checks after a partial preview.
+
 - Reusable build and check entrypoints stay in `scripts/` and are wired from
   `package.json`.
 - Shared, testable helpers stay in `scripts/lib/`.

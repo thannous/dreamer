@@ -125,4 +125,20 @@ describe('verify-local.config.mjs', () => {
     expect(commands).toContain('node --test scripts/test-verify-local.mjs');
     expect(pr.find((check) => check.command.includes('docs:build')).when).toEqual(expect.arrayContaining(['docs-src/', 'data/']));
   });
+
+  it('reuses site-only inputs but invalidates every shared mobile source and tool', () => {
+    // These are the actual fingerprints used for reuse, not a second classifier.
+    // A browser cannot detect a stale proof accidentally accepted for app code.
+    const result = JSON.parse(execFileSync(process.execPath, [
+      '--input-type=module', '-e',
+      `import { normaliseConfig, checkFingerprint } from ${JSON.stringify(pathToFileURL(path.join(ROOT, 'scripts/verify-local.mjs')).href)};
+       const config = normaliseConfig(${JSON.stringify(config)});
+       const checks = config.checks.filter(check => ['typecheck-app', 'typecheck-tests', 'lint', 'lint-scripts'].includes(check.name));
+       const paths = ['docs-src/static/scripts/generate-symbol-pages.js', 'docs-src/static/js/main.js', 'tools/e2e/tests/site.web.e2e.ts', 'app/index.tsx', 'routes/lucid/lucid/index.tsx', 'hooks/useQuota.ts', 'data/dream-symbols.json', 'docs-src/static/img/shared.png', 'scripts/generate-shared-route-types.cjs', 'eslint.config.js', 'tsconfig.json', 'package-lock.json', 'verify-local.config.mjs'];
+       const fingerprint = (check, file, object) => checkFingerprint({check, files:[{path:file,mode:'100644',object}],tree:object,sha:object,environment:{}});
+       process.stdout.write(JSON.stringify(paths.map(file => ({file, reused:checks.filter(check => fingerprint(check,file,'a') === fingerprint(check,file,'b')).map(check=>check.name)}))));`,
+    ], { encoding: 'utf8' }));
+    for (const entry of result.slice(0, 3)) expect(entry.reused).toHaveLength(4);
+    for (const entry of result.slice(3)) expect(entry).toEqual({ file: entry.file, reused: [] });
+  });
 });

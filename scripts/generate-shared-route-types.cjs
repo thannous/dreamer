@@ -75,6 +75,14 @@ const output = [
 const destination = path.join(projectRoot, '.expo/types/noctalia-router.d.ts');
 fs.mkdirSync(path.dirname(destination), { recursive: true });
 if (!fs.existsSync(destination) || fs.readFileSync(destination, 'utf8') !== output) {
-  fs.writeFileSync(destination, output);
+  // Both typechecks can start together. Readers must see either complete
+  // declaration, never the truncated file of a writer still filling it.
+  const temporary = `${destination}.${process.pid}.${require('node:crypto').randomUUID()}.tmp`;
+  try {
+    fs.writeFileSync(temporary, output, { flag: 'wx' });
+    fs.renameSync(temporary, destination);
+  } finally {
+    fs.rmSync(temporary, { force: true });
+  }
 }
 console.log('Generated shared Dreamer and Lucid route types.');

@@ -7,6 +7,7 @@ const fs = require('fs');
 const http = require('http');
 const path = require('path');
 const { spawn } = require('child_process');
+const { markDocsBuildStarted, markDocsBuildSucceeded, markDocsBuildFailed } = require('./lib/docs-check-helpers');
 
 const ROOT_DIR = path.resolve(__dirname, '..');
 const DOCS_DIR = path.join(ROOT_DIR, 'docs');
@@ -41,9 +42,23 @@ function parseNumberArg(argv, name, fallback) {
 }
 
 function parseArgs(argv = process.argv.slice(2)) {
+  const symbol = argv.find((arg) => arg.startsWith('--symbol='))?.slice('--symbol='.length) || null;
+  const lang = argv.find((arg) => arg.startsWith('--lang='))?.slice('--lang='.length) || null;
+  if (symbol && !/^[a-z0-9-]+(?:,[a-z0-9-]+)*$/.test(symbol)) throw new Error('Invalid --symbol (use comma-separated symbol ids).');
+  if (lang && !/^[a-z]{2}(?:-[a-z]{2})?$/.test(lang)) throw new Error('Invalid --lang.');
+  if (lang && !symbol) throw new Error('--lang requires --symbol.');
+  if (symbol) {
+    const { siteConfig } = require('./lib/docs-site-config');
+    const catalog = JSON.parse(fs.readFileSync(path.join(ROOT_DIR, 'data/dream-symbols.json'), 'utf8'));
+    const ids = new Set(catalog.symbols.map((entry) => entry.id));
+    if (symbol.split(',').some((id) => !ids.has(id))) throw new Error('Unknown --symbol id.');
+    if (lang && !siteConfig.collections.symbols.languages.includes(lang)) throw new Error('Unsupported symbol --lang.');
+  }
   return {
     port: parseNumberArg(argv, 'port', Number(process.env.PORT) || DEFAULT_PORT),
     debounceMs: parseNumberArg(argv, 'debounce', DEFAULT_DEBOUNCE_MS),
+    symbol,
+    lang,
   };
 }
 
@@ -185,6 +200,27 @@ function runNpmScript(scriptName) {
   });
 }
 
+const SYMBOL_GENERATOR = 'docs-src/static/scripts/generate-symbol-pages.js';
+
+function canRebuildSymbols(options, changedPaths) {
+  return Boolean(options.symbol && changedPaths?.length && changedPaths.every((file) => file === SYMBOL_GENERATOR));
+}
+
+function rebuildSymbols(options) {
+  const target = path.join(DOCS_DIR, 'scripts', 'generate-symbol-pages.js');
+  fs.copyFileSync(path.join(ROOT_DIR, SYMBOL_GENERATOR), target);
+  const args = [target, `--id=${options.symbol}`];
+  if (options.lang) args.push(`--lang=${options.lang}`);
+  return new Promise((resolve, reject) => {
+    const child = spawn(process.execPath, args, { cwd: ROOT_DIR, stdio: 'inherit' });
+    child.on('error', reject);
+    child.on('exit', (code, signal) => {
+      if (code === 0 && !signal) resolve();
+      else reject(new Error(`Symbol rebuild failed (${signal || code}).`));
+    });
+  });
+}
+
 function send(res, statusCode, headers, body) {
   res.writeHead(statusCode, headers);
   res.end(body);
@@ -256,11 +292,17 @@ function watchDocsSources({ debounceMs, onChange }) {
   const roots = ['docs-src', 'data', 'scripts'].map((item) => path.join(ROOT_DIR, item));
   const watchers = [];
   let timer = null;
+  const changes = new Set();
 
   function schedule(filePath) {
     if (!filePath || !isWatchableDocsPath(filePath)) return;
+    changes.add(toPosixRelative(filePath));
     clearTimeout(timer);
-    timer = setTimeout(() => onChange(filePath), debounceMs);
+    timer = setTimeout(() => {
+      const batch = [...changes];
+      changes.clear();
+      onChange(batch);
+    }, debounceMs);
   }
 
   for (const root of roots) {
@@ -283,28 +325,41 @@ async function main() {
   const options = parseArgs();
   const clients = new Set();
   let building = false;
-  let queued = false;
+  const queued = new Set();
   let shuttingDown = false;
+  let buildReady = false;
 
-  async function rebuild(filePath = null) {
+  async function rebuild(changedPaths = null) {
     if (building) {
-      queued = true;
+      for (const file of changedPaths || []) queued.add(file);
       return;
     }
 
     building = true;
-    console.log(filePath ? `[docs-dev] Change detected: ${toPosixRelative(filePath)}` : '[docs-dev] Initial build');
+    const targeted = buildReady && canRebuildSymbols(options, changedPaths);
+    console.log(changedPaths ? `[docs-dev] Changes detected: ${changedPaths.join(', ')}` : '[docs-dev] Initial build');
+    const started = Date.now();
     try {
-      await runNpmScript('docs:build');
+      if (targeted) {
+        markDocsBuildStarted(ROOT_DIR);
+        await rebuildSymbols(options);
+        markDocsBuildSucceeded(ROOT_DIR, { partial: true });
+      } else {
+        await runNpmScript('docs:build');
+      }
+      buildReady = true;
       notifyReload(clients);
-      console.log('[docs-dev] Build complete. Browser reloaded.');
+      console.log(`[docs-dev] ${targeted ? 'Selected symbols' : 'Full build'} complete in ${Date.now() - started} ms. Browser reloaded.`);
     } catch (error) {
+      buildReady = false;
+      markDocsBuildFailed(ROOT_DIR, error);
       console.error(`[docs-dev] Build failed: ${error.message || error}`);
     } finally {
       building = false;
-      if (queued) {
-        queued = false;
-        rebuild();
+      if (queued.size && !shuttingDown) {
+        const next = [...queued];
+        queued.clear();
+        rebuild(next);
       }
     }
   }
@@ -354,5 +409,6 @@ module.exports = {
   DEV_EVENT_PATH,
   injectLiveReloadClient,
   isWatchableDocsPath,
+  canRebuildSymbols,
   parseArgs,
 };

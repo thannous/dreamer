@@ -63,6 +63,7 @@ function markDocsBuildStarted(rootDir) {
     status: 'building',
     startedAt: new Date().toISOString(),
     completedAt: null,
+    partial: false,
     error: null
   });
 }
@@ -87,6 +88,10 @@ function markDocsBuildFailed(rootDir, error) {
 function assertDocsBuildReady(rootDir) {
   const state = readDocsBuildState(rootDir);
   if (!state) return;
+
+  if (state.partial) {
+    throw new Error('Only selected pages were rebuilt for preview. Run `npm run docs:build` before checking the whole site.');
+  }
 
   if (state.status === 'building') {
     throw new Error(
