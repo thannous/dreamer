@@ -146,7 +146,12 @@ function createCleanCopy(commitHash, { rootDir = ROOT_DIR, parentDir } = {}) {
   if (packed.status !== 0) {
     throw new Error(`git archive of ${commitHash} failed: ${String(packed.stderr || '').trim()}`);
   }
-  const extracted = spawnSync('tar', ['-xf', archive, '-C', source], { encoding: 'utf8' });
+  // Git Bash puts GNU tar first on PATH. It interprets the drive in C:\\...
+  // as a remote host, and --force-local still cannot read the native paths.
+  const tar = process.platform === 'win32'
+    ? path.win32.join(process.env.SystemRoot || 'C:\\Windows', 'System32', 'tar.exe')
+    : 'tar';
+  const extracted = spawnSync(tar, ['-xf', archive, '-C', source], { encoding: 'utf8' });
   if (extracted.status !== 0) {
     throw new Error(`Extracting the archive of ${commitHash} failed: ${String(extracted.stderr || '').trim()}`);
   }
