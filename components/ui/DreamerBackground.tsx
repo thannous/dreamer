@@ -49,11 +49,13 @@ function PaintingLayer({ height, frame, children }: {
 /** A real opening onto the scene: copy lives on the theme's reading surface below it.
  * No paper/night wash covers the painting. Only its last stretch melts into the page.
  */
-export function DreamerArtworkWindow({ scene, style, bleedTop = 0 }: {
+export function DreamerArtworkWindow({ scene, style, bleedTop = 0, maxHeight = 240 }: {
   scene: DreamerScene;
   style?: StyleProp<ViewStyle>;
   /** The scroller's top padding the painting rises through, so it starts at the top of the screen. */
   bleedTop?: number;
+  /** The painting's height on a roomy screen, below the top bleed. */
+  maxHeight?: number;
 }) {
   const { colors, mode } = useTheme();
   const { width, height, fontScale } = useWindowDimensions();
@@ -61,7 +63,7 @@ export function DreamerArtworkWindow({ scene, style, bleedTop = 0 }: {
   const artworkKey = `${scene}:${mode}`;
   const [failedArtwork, setFailedArtwork] = useState<string | null>(null);
   const compact = height < 700 || fontScale >= 1.5;
-  const paintingHeight = Math.min(compact ? 128 : 240, width * 0.625);
+  const paintingHeight = Math.min(compact ? Math.min(128, maxHeight) : maxHeight, width * 0.625);
   const stretch = useHeaderStretchStyle(paintingHeight + bleedTop);
 
   if (failedArtwork === artworkKey) return null;
