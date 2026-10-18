@@ -57,8 +57,8 @@ export default {
         executable: 'python3', args: ['-m', 'http.server', String(port), '--bind', '127.0.0.1', '--directory', 'docs'], cwd: root,
         startupTimeout: 180_000, log: appLog,
       } : {
-        executable: 'npm',
-        args: ['run', product === 'meditation' ? 'web' : product === 'lucid' ? 'start:lucid:mock' : 'start:mock', '--', ...(product === 'meditation' ? [] : ['--web']), ...(keepMetroCache ? [] : ['--clear']), '--port', String(port)],
+        executable: process.execPath,
+        args: ['--run', product === 'meditation' ? 'web' : product === 'lucid' ? 'start:lucid:mock' : 'start:mock', '--', ...(product === 'meditation' ? [] : ['--web']), ...(keepMetroCache ? [] : ['--clear']), '--port', String(port)],
         cwd: product === 'meditation' ? `${root}apps/meditation` : root,
         env: {
           ...(appNodeOptions === undefined ? {} : { NODE_OPTIONS: appNodeOptions }),
