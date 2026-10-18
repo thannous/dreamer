@@ -60,6 +60,10 @@ const translations: Record<string, string> = {
     'error.interpretation_limit': 'You have used your included analyses. Your dream remains saved in the journal.',
     'error.chat_safety_limit': 'This dream has reached its safety limit. Its analysis remains available in your journal.',
     'error.server': 'Noctalia isn’t responding right now. Try again in a few moments.',
+    'error.screen_crashed': 'Something went wrong on this screen.',
+    'error.screen_message': 'Try again, or go back to the home screen.',
+    'error.try_again': 'Try again',
+    'error.go_home': 'Back to home',
     'error.client': 'This request couldn’t be processed. Check what you entered, then try again.',
     'error.owner_agent_limit_reached': 'You already have {limit} saved keys. Delete one before adding a new key.',
     'error.login_required': 'This device is already linked to an account. Sign in to continue.',
@@ -1864,6 +1868,9 @@ const translations: Record<string, string> = {
 
     // Legal links & account deletion
     'settings.legal.sectionTitle': 'Legal',
+    'settings.stability.title': 'Stability reports',
+    'settings.stability.description': 'Sends the app’s startup times and crashes to Expo, never your dream content.',
+    'settings.stability.toggle_label': 'Send stability reports',
     'settings.legal.privacyPolicy': 'Privacy Policy',
     'settings.legal.termsOfUse': 'Terms of Use',
     'settings.legal.accountDeletion': 'Delete account',

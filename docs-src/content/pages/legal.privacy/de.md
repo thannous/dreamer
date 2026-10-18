@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-de-1200x630.jpg",
   "twitterImageAlt": "Datenschutzerklärung",
   "publishedTime": "",
-  "modifiedTime": "2026-10-15",
+  "modifiedTime": "2026-10-18",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -36,7 +36,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Datenschutzerklärung</h1>
-<p class="text-lg text-purple-200/80 mb-10">Gültig ab 15. Oktober 2026</p>
+<p class="text-lg text-purple-200/80 mb-10">Gültig ab 18. Oktober 2026</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <div class="p-6 rounded-2xl bg-dream-salmon/5 border border-dream-salmon/20">
@@ -103,6 +103,7 @@
       <li><strong>Traumdaten:</strong> Texte, Transkripte, KI-Analysen, Zitate, Themen, Traumtypen, Favoriten, generierte Bilder und Verlauf der geführten Reflexion.</li>
       <li><strong>Audio:</strong> Wenn du die Sprachfunktion nutzt, wird deine Stimme zur Erstellung eines Transkripts verarbeitet. Noctalia speichert Audiodateien nicht dauerhaft auf seinen Servern; sie werden nur im technischen Ablauf verarbeitet. Gespeichert wird das Transkript.</li>
       <li><strong>Technische Daten:</strong> Fehler-, Leistungs- und Sicherheitsprotokolle, App-Version, Betriebssystem und ein gehashter Geräteindikator ausschließlich zur Verwaltung kostenloser Kontingente. Die Nutzungsmessung der App ist freiwillig, standardmäßig deaktiviert und beginnt erst nach deiner Aktivierung in der Einführung oder den Einstellungen. Sie hilft Noctalia, Navigation, erste Speicherungen und die Rückkehr innerhalb von sieben Tagen zu verbessern. Du kannst die App ohne Zustimmung nutzen und deine Einwilligung jederzeit in den Einstellungen widerrufen. Auf Android, iOS und in der Web-App kann Noctalia zusätzlich eine begrenzte Zahl funktionaler Ereignisse messen (angezeigter Onboarding-Schritt, getroffene Auswahl, gespeicherter Traum oder aufgerufenes Ergebnis). Dafür wird eine zufällige Journey-Kennung höchstens sieben Tage auf dem Gerät gespeichert. Diese interne Messung enthält niemals Traumtext, Titel oder Analyse und weder E-Mail-Adresse, Konto- oder Gerätekennung noch eine dauerhaft gespeicherte IP-Adresse. Sie verwendet keine Drittanbieter-Marketing-Analytics und kann in der Einführung oder den Einstellungen deaktiviert werden.</li>
+      <li><strong>Stabilitätsmessung der App:</strong> Unter Android und iOS sendet die Noctalia-App (das Traumtagebuch) technische Messwerte an Expo (EAS Observe): Startzeiten, Fehler und Abstürze, Gerätemodell und Betriebssystem, App-Version, Netzwerk-, Akku- und Stromsparstatus sowie den thermischen Zustand des Geräts beim Start und eine Zusammenfassung der Netzwerkanfragen beim Start (Anzahl, Volumen, Dauer und für die langsamste Anfrage Servername und Antwortcode). Diese Messwerte sind mit einer zufälligen Kennung der jeweiligen Installation verknüpft, die sich ändert, wenn du die App neu installierst. Grundlage ist unser berechtigtes Interesse, die App stabil und schnell zu halten. Du kannst diese Übermittlung jederzeit in den Einstellungen unter Rechtliches beenden. Wir übermitteln Expo bewusst keine Trauminhalte und keine Kontodaten. Noctalia Lucid und Noctalia Meditation senden diese Messwerte nicht.</li>
       <li><strong>Reichweitenmessung der Website:</strong> Beim Besuch von noctalia.app misst Ahrefs Web Analytics Seitenaufrufe, Referrer und gegebenenfalls Klicks auf externe Links sowie Formularübermittlungen. Außerdem werden Browser, Gerät, Betriebssystem, Sprache und ein ungefährer Standort auf Landes- und Stadtebene abgeleitet. Dabei werden weder Cookies noch dauerhafte Kennungen verwendet. Die rohe IP-Adresse wird nur vorübergehend für den ungefähren Standort und einen täglich gesalzenen Besucher-Hash genutzt und anschließend verworfen, ohne gespeichert zu werden. Konto- oder Trauminhalte werden nicht an Ahrefs übermittelt.</li>
       <li><strong>Nutzungsanalyse der Website mit deiner Einwilligung:</strong> Ausschließlich um Noctalia und diese Website zu verbessern, misst Microsoft Clarity besuchte Seiten, Klicks, Scrollvorgänge und grundlegende technische Informationen und erstellt Heatmaps sowie Sitzungsaufzeichnungen, wenn du Analytics erlaubst. Angezeigte Texte, Eingabefelder und Auswahllisten werden durch strikte Maskierung verborgen. Clarity kann die Cookies <code>_clck</code> und <code>_clsk</code> setzen. Werbespeicherung bleibt abgelehnt; Traum- oder Kontodaten senden wir nicht absichtlich an Clarity.</li>
       <li><strong>Reichweitenmessung mit deiner Einwilligung:</strong> Ausschließlich um Noctalia und diese Website zu verbessern, misst Google Analytics besuchte Seiten, Zugriffsquellen, grundlegende Interaktionen und technische Informationen (Browser, Gerät, Betriebssystem, Sprache, ungefährer Standort auf Länderebene), wenn du Analytics erlaubst. Google Analytics kann die Cookies <code>_ga</code> und <code>_ga_*</code> setzen. Werbefunktionen und Werbespeicherung bleiben deaktiviert; Traum- oder Kontodaten senden wir nicht absichtlich an Google Analytics.</li>
@@ -154,6 +155,7 @@
       <li>Audio wird nur für die technische Verarbeitung benötigt und nicht langfristig durch Noctalia gespeichert.</li>
       <li>Sicherheitsprotokolle werden maximal 12 Monate aufbewahrt; Supportaustausch in der Regel bis zu 24 Monate.</li>
       <li>Rohe Ereignisse der internen Nutzungsmessung ohne Trauminhalte werden nach 90 Tagen gelöscht. Anonyme aggregierte Statistiken, aus denen kein einzelner Verlauf mehr hervorgeht, werden höchstens 24 Monate aufbewahrt.</li>
+      <li>Expo bewahrt die Stabilitätsmesswerte der App mindestens 90 Tage auf. Expo nennt keine Höchstdauer; danach gilt seine eigene Aufbewahrungsrichtlinie.</li>
       <li>Microsoft-Clarity-Sitzungsaufzeichnungen werden 30 Tage und Heatmaps bis zu 9 Monate aufbewahrt. Deine Analytics-Einstellung bleibt höchstens 6 Monate im Browser gespeichert.</li>
       <li>Google-Analytics-Messdaten auf Nutzerebene werden höchstens 14 Monate aufbewahrt; aggregierte Statistiken können länger gespeichert bleiben.</li>
     </ul>
@@ -164,6 +166,7 @@
     <p>Noctalia verkauft deine personenbezogenen Daten nicht und zeigt keine zielgerichtete Werbung in der App.</p>
     <ul class="list-disc pl-5 mt-4 space-y-2">
       <li><strong>Technische Anbieter:</strong> insbesondere Supabase und Infrastrukturprovider.</li>
+      <li><strong>Stabilitätsmessung der App:</strong> Expo (650 Industries, Inc., USA) stellt EAS Observe bereit. Einzelheiten findest du in der <a href="https://expo.dev/privacy" class="text-dream-salmon hover:underline">Datenschutzerklärung von Expo</a>.</li>
       <li><strong>Website-Analyse:</strong> Ahrefs Pte Ltd stellt die oben beschriebene cookiefreie Reichweitenmessung bereit. Einzelheiten findest du in der <a href="https://ahrefs.com/legal/privacy-policy" class="text-dream-salmon hover:underline">Datenschutzerklärung von Ahrefs</a>.</li>
       <li><strong>Nutzungsanalyse mit Einwilligung:</strong> Microsoft stellt Clarity erst nach deiner Zustimmung bereit. Einzelheiten findest du in der <a href="https://privacy.microsoft.com/privacystatement" class="text-dream-salmon hover:underline">Datenschutzerklärung von Microsoft</a>.</li>
       <li><strong>Reichweitenmessung mit Einwilligung:</strong> Google stellt Google Analytics erst nach deiner Zustimmung bereit. Einzelheiten findest du in der <a href="https://policies.google.com/privacy" class="text-dream-salmon hover:underline">Datenschutzerklärung von Google</a>.</li>

@@ -130,9 +130,6 @@
                 "/org/bouncycastle/pqc/crypto/picnic/*.properties"
               ]
             }
-          },
-          "ios": {
-            "enableSceneSupport": true
           }
         }
       ],

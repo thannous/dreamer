@@ -46,6 +46,7 @@ module.exports = {
     '^@expo/ui/community/datetime-picker$': '<rootDir>/tests/expo-ui-datetime-picker-stub.tsx',
     '^@expo/ui$': '<rootDir>/tests/expo-ui-stub.tsx',
     '^expo-blur$': '<rootDir>/tests/expo-blur-stub.ts',
+    '^expo-observe$': '<rootDir>/tests/expo-observe-stub.ts',
     '^@expo/vector-icons/.+$': '<rootDir>/tests/expo-vector-icons-subpath-stub.ts',
     '^@expo/vector-icons$': '<rootDir>/tests/expo-vector-icons-stub.ts',
     '^expo-linear-gradient$': '<rootDir>/tests/expo-linear-gradient-stub.ts',

@@ -60,6 +60,10 @@ const translations: Record<string, string> = {
     'error.interpretation_limit': 'Você usou suas análises incluídas. Seu sonho continua salvo no diário.',
     'error.chat_safety_limit': 'Este sonho atingiu o limite de segurança. A análise continua disponível no seu diário.',
     'error.server': 'A Noctalia não está respondendo no momento. Tente novamente em alguns instantes.',
+    'error.screen_crashed': 'Algo deu errado nesta tela.',
+    'error.screen_message': 'Tente novamente ou volte para o início.',
+    'error.try_again': 'Tentar novamente',
+    'error.go_home': 'Voltar ao início',
     'error.client': 'Não foi possível processar esta solicitação. Verifique o que você digitou e tente novamente.',
     'error.owner_agent_limit_reached': 'Você já tem {limit} chaves salvas. Exclua uma antes de adicionar uma nova chave.',
     'error.login_required': 'Este dispositivo já está vinculado a uma conta. Entre para continuar.',
@@ -1864,6 +1868,9 @@ const translations: Record<string, string> = {
 
     // Legal links & account deletion
     'settings.legal.sectionTitle': 'Informações legais',
+    'settings.stability.title': 'Relatórios de estabilidade',
+    'settings.stability.description': 'Envia à Expo os tempos de inicialização e os travamentos do app, nunca o conteúdo dos seus sonhos.',
+    'settings.stability.toggle_label': 'Enviar relatórios de estabilidade',
     'settings.legal.privacyPolicy': 'Política de Privacidade',
     'settings.legal.termsOfUse': 'Termos de Uso',
     'settings.legal.accountDeletion': 'Excluir conta',
