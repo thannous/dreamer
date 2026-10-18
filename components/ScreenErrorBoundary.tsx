@@ -1,5 +1,5 @@
-import { router } from 'expo-router';
-import React, { useMemo } from 'react';
+import { router, usePathname, type ErrorBoundaryProps } from 'expo-router';
+import React, { useEffect, useMemo } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { ThemeLayout } from '@/constants/journalTheme';
@@ -7,25 +7,31 @@ import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
+import { reportStabilityError } from '@/lib/observe';
 import { ErrorBoundary } from './ErrorBoundary';
 
 interface ScreenErrorFallbackProps {
   error: Error;
   resetError: () => void;
+  /** Replaces the default reset-then-go-home; null hides the button. */
+  onGoHome?: (() => void) | null;
 }
 
 /**
  * Screen-level error fallback with themed styling and navigation options
  */
-function ScreenErrorFallback({ error, resetError }: ScreenErrorFallbackProps): React.ReactElement {
+function ScreenErrorFallback({ error, resetError, onGoHome }: ScreenErrorFallbackProps): React.ReactElement {
   const { colors, mode, shadows } = useTheme();
   const { t } = useTranslation();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
 
-  const handleGoHome = () => {
-    resetError();
-    router.replace('/(tabs)');
-  };
+  const handleGoHome =
+    onGoHome === undefined
+      ? () => {
+          resetError();
+          router.replace('/(tabs)');
+        }
+      : onGoHome;
 
   return (
     <View style={[styles.container, { backgroundColor: noctalia.screen.background }]}>
@@ -73,24 +79,45 @@ function ScreenErrorFallback({ error, resetError }: ScreenErrorFallbackProps): R
               {t('error.try_again', { defaultValue: 'Try Again' })}
             </Text>
           </Pressable>
-          <Pressable 
-            onPress={handleGoHome} 
-            style={[
-              styles.button,
-              styles.secondaryButton,
-              { backgroundColor: noctalia.surface.soft, borderColor: noctalia.surface.border },
-            ]}
-            accessibilityRole="button"
-            accessibilityLabel={t('error.go_home', { defaultValue: 'Go Home' })}
-          >
-            <Text style={[styles.buttonText, { color: noctalia.text.primary }]}>
-              {t('error.go_home', { defaultValue: 'Go Home' })}
-            </Text>
-          </Pressable>
+          {handleGoHome ? (
+            <Pressable
+              onPress={handleGoHome}
+              style={[
+                styles.button,
+                styles.secondaryButton,
+                { backgroundColor: noctalia.surface.soft, borderColor: noctalia.surface.border },
+              ]}
+              accessibilityRole="button"
+              accessibilityLabel={t('error.go_home', { defaultValue: 'Go Home' })}
+            >
+              <Text style={[styles.buttonText, { color: noctalia.text.primary }]}>
+                {t('error.go_home', { defaultValue: 'Go Home' })}
+              </Text>
+            </Pressable>
+          ) : null}
         </View>
       </View>
     </View>
   );
+}
+
+/**
+ * Fallback for Expo Router's per-screen error boundary (`unstable_screenErrorBoundary`):
+ * a screen that throws shows this card while the navigator, and the tab bar, stay mounted.
+ */
+export function RouteScreenErrorFallback({ error, retry }: ErrorBoundaryProps): React.ReactElement {
+  const pathname = usePathname();
+
+  useEffect(() => {
+    // The router's boundary catches the error before any global handler sees it.
+    reportStabilityError(error);
+  }, [error]);
+
+  // Leaves without retrying: a retry would render the broken screen, and throw, again.
+  // A broken tab keeps this card until the person comes back to it and tries again.
+  const goHome = pathname === '/' ? null : () => router.replace('/(tabs)');
+
+  return <ScreenErrorFallback error={error} resetError={() => void retry()} onGoHome={goHome} />;
 }
 
 interface ScreenErrorBoundaryProps {

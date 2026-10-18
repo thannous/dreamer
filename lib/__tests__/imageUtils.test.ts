@@ -82,7 +82,7 @@ describe('imageUtils', () => {
 
       expect(config.cachePolicy).toBe('memory-disk');
       expect(config.priority).toBe('normal');
-      expect(config.transition).toBe(200);
+      expect(config.transition).toEqual({ duration: 200, skipOnCacheHit: 'all' });
       expect(config.contentFit).toBe('cover');
     });
 
@@ -91,7 +91,7 @@ describe('imageUtils', () => {
 
       expect(config.cachePolicy).toBe('memory-disk');
       expect(config.priority).toBe('high');
-      expect(config.transition).toBe(300);
+      expect(config.transition).toEqual({ duration: 300, skipOnCacheHit: 'all' });
       expect(config.contentFit).toBe('cover');
     });
   });

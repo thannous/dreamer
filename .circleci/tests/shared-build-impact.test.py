@@ -18,7 +18,7 @@ if not BASH:
 spec = importlib.util.spec_from_file_location("impact", ROOT / ".circleci/scripts/shared-build-impact.py")
 impact = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(impact)
-CONTINUATION = (ROOT / ".circleci/continue.yml").read_text()
+CONTINUATION = (ROOT / ".circleci/tests/fixtures/validation-portfolio.yml").read_text()
 
 
 class BuildImpact(unittest.TestCase):
@@ -58,7 +58,7 @@ class BuildImpact(unittest.TestCase):
     def test_git_deployments_are_disabled(self):
         config = json.loads((ROOT / "vercel.json").read_text())
         self.assertIs(config["git"]["deploymentEnabled"], False)
-        watched = [ROOT / ".circleci/config.yml", ROOT / ".circleci/continue.yml"]
+        watched = [ROOT / ".circleci/config.yml", ROOT / ".circleci/tests/fixtures/validation-portfolio.yml"]
         github = ROOT / ".github"
         if github.is_dir():
             watched.extend(path for path in github.rglob("*") if path.is_file())

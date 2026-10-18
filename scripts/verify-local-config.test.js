@@ -1,10 +1,8 @@
 'use strict';
 
 // verify-local.config.mjs: the checks verify:pr and verify:release announce
-// must exist and must keep up with the CircleCI full portfolio, which
-// doc_web_interne/docs/circleci-migration.md names as the source of truth of
-// the full local validation. A release check runs only at publication, so a
-// renamed script or a step added to CircleCI would otherwise surface there.
+// must exist and retain the former CircleCI validation portfolio. The frozen
+// fixture prevents removing a remote job from silently dropping local coverage.
 
 const { execFileSync } = require('node:child_process');
 const { readFileSync } = require('node:fs');
@@ -25,7 +23,7 @@ const config = JSON.parse(execFileSync(process.execPath, [
 const scriptsOf = (file) => JSON.parse(readFileSync(path.join(ROOT, file), 'utf8')).scripts;
 
 function circleciCommands() {
-  const continuation = YAML.parse(readFileSync(path.join(ROOT, '.circleci/continue.yml'), 'utf8'));
+  const continuation = YAML.parse(readFileSync(path.join(ROOT, '.circleci/tests/fixtures/validation-portfolio.yml'), 'utf8'));
   const commands = [];
   const walk = (value) => {
     if (Array.isArray(value)) value.forEach(walk);
@@ -125,6 +123,24 @@ describe('verify-local.config.mjs', () => {
     expect(commands).toContain('npm run test:verify-local');
     expect(scriptsOf('package.json')['test:verify-local']).toBe('node scripts/run-verify-tests.mjs');
     expect(pr.find((check) => check.command.includes('docs:build')).when).toEqual(expect.arrayContaining(['docs-src/', 'data/']));
+  });
+
+  it('runs benchmark contracts for a change to any benchmark manifest alone', () => {
+    // These manifests can change the canonical command or browser version
+    // without touching CI YAML. A browser journey cannot detect a skipped guard.
+    const result = JSON.parse(execFileSync(process.execPath, [
+      '--input-type=module', '-e',
+      `import { normaliseConfig, matchesAny } from ${JSON.stringify(pathToFileURL(path.join(ROOT, 'scripts/verify-local.mjs')).href)};
+       const config = normaliseConfig(${JSON.stringify(config)});
+       const check = config.checks.find(check => check.name === 'ci-contracts');
+       const manifests = ['package.json', 'tools/e2e/package.json', 'tools/e2e/package-lock.json'];
+       process.stdout.write(JSON.stringify(manifests.map(file => ({file, selected:matchesAny(file, check.when)}))));`,
+    ], { encoding: 'utf8' }));
+    expect(result).toEqual([
+      { file: 'package.json', selected: true },
+      { file: 'tools/e2e/package.json', selected: true },
+      { file: 'tools/e2e/package-lock.json', selected: true },
+    ]);
   });
 
   it('reuses site-only inputs but invalidates every shared mobile source and tool', () => {

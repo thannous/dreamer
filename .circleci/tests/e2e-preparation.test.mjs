@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { parse } from 'yaml';
 
-const config = parse(readFileSync(new URL('../continue.yml', import.meta.url), 'utf8'));
+const config = parse(readFileSync(new URL('./fixtures/validation-portfolio.yml', import.meta.url), 'utf8'));
 const defaults = definitions => Object.fromEntries(Object.entries(definitions ?? {}).map(([name, value]) => [name, value.default]));
 function value(input, pipeline, parameters) {
   if (typeof input !== 'string') return input;

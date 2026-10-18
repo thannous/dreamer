@@ -88,6 +88,7 @@ const detailActionKeys = [
   'journal.detail.stale.label',
   'journal.detail.stale.banner',
   'journal.detail.stale.cta',
+  'journal.detail.stale.dismiss',
 ] as const;
 
 describe('Journal i18n - badges & filter accessibility', () => {

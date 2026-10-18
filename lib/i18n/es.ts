@@ -60,6 +60,10 @@ const translations: Record<string, string> = {
     'error.interpretation_limit': 'Has usado tus análisis incluidos. Tu sueño sigue guardado en el diario.',
     'error.chat_safety_limit': 'Este sueño alcanzó su límite de seguridad. Su análisis sigue disponible en tu diario.',
     'error.server': 'Noctalia no responde ahora mismo. Inténtalo de nuevo en unos instantes.',
+    'error.screen_crashed': 'Algo falló en esta pantalla.',
+    'error.screen_message': 'Inténtalo de nuevo o vuelve al inicio.',
+    'error.try_again': 'Reintentar',
+    'error.go_home': 'Volver al inicio',
     'error.client': 'No se pudo procesar esta solicitud. Revisa lo que escribiste e inténtalo de nuevo.',
     'error.owner_agent_limit_reached': 'Ya tienes {limit} claves guardadas. Elimina una antes de agregar una nueva.',
     'error.login_required': 'Este dispositivo ya está vinculado a una cuenta. Inicia sesión para continuar.',
@@ -627,6 +631,7 @@ const translations: Record<string, string> = {
     'journal.detail.stale.label': 'El análisis puede estar desactualizado',
     'journal.detail.stale.banner': 'Este análisis se hizo con una versión anterior del sueño. El análisis previo sigue aquí.',
     'journal.detail.stale.cta': 'Actualizar análisis',
+    'journal.detail.stale.dismiss': 'Cerrar y no volver a mostrar este aviso',
     'journal.detail.image.expand_accessibility': 'Ver la ilustración a pantalla completa',
     'journal.detail.image.close_fullscreen': 'Cerrar ilustración',
     'journal.detail.favorite.on': 'En favoritos',
@@ -1761,6 +1766,9 @@ const translations: Record<string, string> = {
 
     // Legal links & account deletion
     'settings.legal.sectionTitle': 'Legal',
+    'settings.stability.title': 'Informes de estabilidad',
+    'settings.stability.description': 'Envía a Expo los tiempos de arranque y los cierres inesperados de la app, nunca el contenido de tus sueños.',
+    'settings.stability.toggle_label': 'Enviar informes de estabilidad',
     'settings.legal.privacyPolicy': 'Política de privacidad',
     'settings.legal.termsOfUse': 'Términos de uso',
     'settings.legal.accountDeletion': 'Eliminar cuenta',
