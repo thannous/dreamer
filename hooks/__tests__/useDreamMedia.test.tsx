@@ -67,6 +67,56 @@ it('renders a dream without an illustration once, with nothing to resolve', asyn
   expect(resolve).not.toHaveBeenCalled();
 });
 
+// Native disk-cache/signing requests cannot be asserted by the web image journey.
+// Cover the deferred request and account transition here; native decoding stays E2E.
+it('loads the original on demand while keeping the resolved thumbnail visible', async () => {
+  const original = pending();
+  const thumbnail = { imageUrl: '', imageStatus: 'missing', thumbnailUrl: 'https://signed/thumb', thumbnailStatus: 'ready' };
+  resolve.mockResolvedValueOnce(thumbnail as any).mockReturnValueOnce(original.promise);
+  const illustrated = { ...dream('private/original'), thumbnailUrl: 'private/thumb' };
+  const { result: state } = renderHook(() => useDreamMedia(illustrated, { variant: 'thumbnail' }), { wrapper });
+  await act(async () => {});
+  expect(state.current).toMatchObject({ imageUrl: '', thumbnailUrl: 'https://signed/thumb', loading: false });
+  expect(resolve).toHaveBeenCalledTimes(1);
+  expect(resolve.mock.calls[0][0].imageUrl).toBe('');
+
+  await act(async () => { state.current.loadOriginal(); });
+  expect(state.current).toMatchObject({ thumbnailUrl: 'https://signed/thumb', loading: true });
+  await act(async () => original.finish({ ...thumbnail, ...result('https://signed/original') }));
+  expect(state.current).toMatchObject({ imageUrl: 'https://signed/original', thumbnailUrl: 'https://signed/thumb', loading: false });
+});
+
+it('does not carry an original request into a recycled card or another account', async () => {
+  resolve.mockImplementation(async input => ({
+    imageUrl: input.imageUrl ? 'https://signed/original' : '',
+    imageStatus: input.imageUrl ? 'ready' : 'missing',
+    thumbnailUrl: 'https://signed/thumb', thumbnailStatus: 'ready',
+  }) as any);
+  const { result: state, rerender } = renderHook(({ source }) => useDreamMedia({ ...dream(source), thumbnailUrl: `${source}-thumb` }, { variant: 'thumbnail' }), { wrapper, initialProps: { source: 'one' } });
+  await act(async () => {});
+  await act(async () => { state.current.loadOriginal(); });
+  expect(state.current.imageUrl).toBe('https://signed/original');
+  rerender({ source: 'two' });
+  expect(state.current.imageUrl).toBe('');
+  await act(async () => {});
+  expect(resolve.mock.calls.at(-1)?.[0].imageUrl).toBe('');
+  await act(async () => { state.current.loadOriginal(); });
+  userId = 'B'; rerender({ source: 'two' });
+  expect(state.current.imageUrl).toBe('');
+  await act(async () => {});
+  expect(resolve.mock.calls.at(-1)?.[0].imageUrl).toBe('');
+  expect(resolve.mock.calls.at(-1)?.[1]).toBe('B');
+});
+
+it('falls back to the original when thumbnail signing fails before native onError', async () => {
+  resolve.mockResolvedValueOnce({ imageUrl: '', imageStatus: 'missing', thumbnailStatus: 'error' } as any)
+    .mockResolvedValueOnce(result('https://signed/original') as any);
+  const { result: state } = renderHook(() => useDreamMedia({ ...dream('original'), thumbnailUrl: 'thumbnail' }, { variant: 'thumbnail' }), { wrapper });
+  await act(async () => {});
+  expect(state.current).toMatchObject({ imageUrl: 'https://signed/original', loading: false });
+  expect(resolve).toHaveBeenCalledTimes(2);
+});
+
 it('ignores a late request for an image replaced before resolution', async () => {
   const old = pending(); const replacement = pending();
   resolve.mockReturnValueOnce(old.promise).mockReturnValueOnce(replacement.promise);

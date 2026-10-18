@@ -43,6 +43,33 @@ it('signs every image on a cold start when nothing is on disk', async () => {
   expect(results.every((media: { imageUrl: string }) => media.imageUrl.startsWith('https://'))).toBe(true);
 });
 
+// The native image-cache and private signing path are not observable in the web
+// journeys. Count authorized paths here; image loading/fallback stays an E2E check.
+it('warms twenty thumbnails without signing twenty unused originals', async () => {
+  const results = await Promise.all(dreams.map(dream => resolveWithDiskCache(dream, 'user-1', false, { variant: 'thumbnail' })));
+  expect(mockSign).toHaveBeenCalledTimes(1);
+  expect(signedPaths()).toBe(20);
+  expect(mockSign.mock.calls[0][0].every((path: string) => path.endsWith('-thumb.png'))).toBe(true);
+  expect(results.every((media: { thumbnailUrl?: string }) => media.thumbnailUrl?.startsWith('https://'))).toBe(true);
+});
+
+it('warms a cached thumbnail without requesting its uncached original', async () => {
+  const signed = await resolveDreamMedia(dreams[0], 'user-1');
+  invalidateDreamMedia();
+  mockSign.mockClear();
+  mockCachePath.mockImplementation(async (key: string) => key === signed.thumbnailCacheKey ? '/cache/thumb' : null);
+
+  const media = await resolveWithDiskCache(dreams[0], 'user-1', false, { variant: 'thumbnail' });
+  expect(mockSign).not.toHaveBeenCalled();
+  expect(media).toMatchObject({ thumbnailUrl: 'file:///cache/thumb', thumbnailCacheKey: signed.thumbnailCacheKey });
+});
+
+it('keeps the original available for warm-up when no thumbnail exists', async () => {
+  const media = await resolveWithDiskCache({ ...dreams[0], thumbnailUrl: '' }, 'user-1', false, { variant: 'thumbnail' });
+  expect(mockSign).toHaveBeenCalledWith(['user-1/dream-0.png'], expect.any(Number));
+  expect(media.imageUrl).toMatch(/^https:\/\//);
+});
+
 it('shows images already on disk without any storage request, under the keys signing writes', async () => {
   const signed = await resolveDreamMedia(dreams[0], 'user-1');
   const onDisk = new Set([signed.imageCacheKey, signed.thumbnailCacheKey]);

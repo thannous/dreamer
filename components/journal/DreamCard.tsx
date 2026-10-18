@@ -81,7 +81,8 @@ export const DreamCard = memo(function DreamCard({
   const dateMarginWidth = Math.max(88, Math.ceil(64 * compactTextScale) + 12);
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t, currentLang } = useTranslation();
-  const media = useDreamMedia(dream);
+  const media = useDreamMedia(dream, { variant: 'thumbnail' });
+  const { loadOriginal } = media;
   const handlePress = useCallback(() => {
     onPress(dream);
   }, [onPress, dream]);
@@ -126,11 +127,12 @@ export const DreamCard = memo(function DreamCard({
 
   useEffect(() => {
     const shouldFallback = !!trimmedThumbnailUri && thumbnailFailures.has(accessScope, failureKey);
+    if (shouldFallback) loadOriginal();
     // Only update if state doesn't match derived reality
     if (useFullImage !== shouldFallback) {
       setUseFullImage(shouldFallback);
     }
-  }, [trimmedThumbnailUri, fullImageUri, useFullImage, accessScope, failureKey]);
+  }, [trimmedThumbnailUri, fullImageUri, useFullImage, accessScope, failureKey, loadOriginal]);
 
   const preferFullImage = useFullImage || (trimmedThumbnailUri && thumbnailFailures.has(accessScope, failureKey));
   const imageUri = preferFullImage
@@ -416,7 +418,8 @@ export const DreamCard = memo(function DreamCard({
                 if (!preferFullImage && trimmedThumbnailUri && trimmedThumbnailUri !== fullImageUri) {
                   thumbnailFailures.record(accessScope, failureKey);
                 }
-                if (!preferFullImage && fullImageUri && imageUri !== fullImageUri) {
+                if (!preferFullImage && (fullImageUri || dream.imageUrl?.trim()) && imageUri !== fullImageUri) {
+                  loadOriginal();
                   setUseFullImage(true);
                 } else {
                   // Both sources failed (or the only source failed). Do not keep
