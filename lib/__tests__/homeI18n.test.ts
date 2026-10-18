@@ -6,7 +6,7 @@ import italian from '@/lib/i18n/it';
 import pt from '@/lib/i18n/pt';
 
 const homeTodayKeys = [
-  'home.today.eyebrow',
+  'home.today.dream_eyebrow',
   'home.today.resources',
   'home.today.loading.title',
   'home.today.loading.body',

@@ -2,7 +2,7 @@ import { SubscriptionExpiryNotice } from '@/components/subscription/Subscription
 import { router, useFocusEffect, useLocalSearchParams, type Href } from 'expo-router';
 import { usePreventRemove } from 'expo-router/react-navigation';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, BackHandler, Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, BackHandler, Linking, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { DreamerArtworkWindow } from '@/components/ui/DreamerBackground';
@@ -41,6 +41,13 @@ import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 
 const log = createScopedLogger('[Paywall]');
 const PAYWALL_MAX_WIDTH = 720;
+const PAYWALL_PAINTING_HEIGHT = 170;
+/** Each store only names itself; the web keeps the line that covers both. */
+const STORE_NOTICE_KEY = Platform.select({
+  ios: 'subscription.paywall.notice.store_ios',
+  android: 'subscription.paywall.notice.store_android',
+  default: 'subscription.paywall.notice.store',
+});
 
 /**
  * The purchase button changes colour when the selection makes it purchasable. Crossing
@@ -566,6 +573,23 @@ function PaywallScreen() {
 
   return (
     <View style={rootStyle} testID={TID.Screen.Paywall}>
+      {/* Close stays in reach over the painting, whatever the scroll. It comes first so
+          keyboard and screen-reader focus meets it first; zIndex keeps it above the scroll. */}
+      <View pointerEvents="box-none" style={[styles.closeOverlay, { top: ThemeLayout.spacing.sm + insets.top }]}>
+        <ScreenContainer maxWidth={PAYWALL_MAX_WIDTH} pointerEvents="box-none">
+          <Pressable
+            onPress={handleClose}
+            disabled={busy}
+            style={({ pressed }) => [styles.closeButton, styles.closeButtonFloating, { backgroundColor: noctalia.surface.raised }, pressed && styles.closeButtonPressed]}
+            accessibilityRole="button"
+            testID={TID.Button.PaywallClose}
+          >
+            <Text style={[styles.closeLabel, { color: noctalia.accent.text }]}>
+              {t('subscription.paywall.button.close')}
+            </Text>
+          </Pressable>
+        </ScreenContainer>
+      </View>
       <ScrollView onScroll={onHeaderScroll} scrollEventThrottle={16}
         style={styles.scroll}
         contentContainerStyle={[
@@ -577,26 +601,12 @@ function PaywallScreen() {
         ]}
         contentInsetAdjustmentBehavior="automatic"
       >
-        <DreamerArtworkWindow scene="observatory" style={{ marginHorizontal: -ThemeLayout.spacing.md }} bleedTop={ThemeLayout.spacing.sm + insets.top} />
+        {/* A short window: the offer, not the sky, should hold the screen. If the painting
+            fails to load, the slot still keeps the copy clear of the floating Close. */}
+        <View style={styles.artworkSlot}>
+          <DreamerArtworkWindow scene="observatory" maxHeight={PAYWALL_PAINTING_HEIGHT} style={{ marginHorizontal: -ThemeLayout.spacing.md }} bleedTop={ThemeLayout.spacing.sm + insets.top} />
+        </View>
         <ScreenContainer maxWidth={PAYWALL_MAX_WIDTH}>
-          <View style={styles.topBar}>
-            <View style={styles.brandLockup}>
-              <IconSymbol name="moon.stars.fill" size={24} color={noctalia.accent.text} />
-              <Text style={[styles.brandName, { color: noctalia.text.primary }]}>Noctalia</Text>
-            </View>
-            <Pressable
-              onPress={handleClose}
-              disabled={busy}
-              style={({ pressed }) => [styles.closeButton, { backgroundColor: noctalia.surface.raised }, pressed && styles.closeButtonPressed]}
-              accessibilityRole="button"
-              testID={TID.Button.PaywallClose}
-            >
-              <Text style={[styles.closeLabel, { color: noctalia.accent.text }]}>
-                {t('subscription.paywall.button.close')}
-              </Text>
-            </Pressable>
-          </View>
-
           {/* The paywall is a rare screen and a pitch: the offer arrives a beat before the
               price, and the price a beat before the button. This is the one surface where
               a staggered entrance is the point rather than decoration. */}
@@ -859,26 +869,27 @@ function PaywallScreen() {
               </Pressable>
             ) : null}
 
-            {!requiresAuth ? (
+          </Reveal>
+
+          <Reveal index={4}>
+          {!requiresAuth ? (
+            <>
+              <Text style={[styles.notice, { color: noctalia.text.secondary }]}>
+                {t(STORE_NOTICE_KEY)}
+              </Text>
+              {/* A utility, not an offer: it sits with the fine print, still a full 44pt target. */}
               <Pressable
-                style={({ pressed }) => [styles.secondaryButton, pressed && styles.secondaryButtonPressed]}
+                style={({ pressed }) => [styles.restoreButton, pressed && styles.legalLinkPressed]}
                 onPress={handleRestore}
                 disabled={busy || awaitingServerAccess}
                 accessibilityRole="button"
                 testID={TID.Button.PaywallRestore}
               >
-                <Text style={[styles.secondaryLabel, { color: noctalia.text.secondary }]}>
+                <Text style={[styles.legalLink, { color: noctalia.text.secondary }]}>
                   {t('subscription.paywall.button.restore')}
                 </Text>
               </Pressable>
-            ) : null}
-          </Reveal>
-
-          <Reveal index={4}>
-          {!requiresAuth ? (
-            <Text style={[styles.notice, { color: noctalia.text.secondary }]}>
-              {t('subscription.paywall.notice.store')}
-            </Text>
+            </>
           ) : null}
 
           <View style={styles.legalLinks}>
@@ -950,22 +961,16 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 8,
   },
-  topBar: {
-    minHeight: 44,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 10,
+  closeOverlay: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    zIndex: 1,
+    paddingHorizontal: ThemeLayout.spacing.md,
   },
-  brandLockup: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  brandName: {
-    fontSize: 21,
-    lineHeight: 26,
-    fontFamily: Fonts.spaceGrotesk.bold,
+  artworkSlot: {
+    // The floating Close's row, when the painting is missing.
+    minHeight: 44 + ThemeLayout.spacing.sm,
   },
   headerTitle: {
     fontSize: 28,
@@ -1007,6 +1012,10 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  closeButtonFloating: {
+    alignSelf: 'flex-end',
+    paddingHorizontal: 14,
   },
   closeButtonPressed: {
     opacity: 0.7,
@@ -1147,7 +1156,10 @@ const styles = StyleSheet.create({
     gap: ThemeLayout.spacing.sm,
   },
   benefitList: {
-    marginBottom: ThemeLayout.spacing.md,
+    // Centred as one block under the centred title, with room on both sides.
+    alignSelf: 'center',
+    marginTop: ThemeLayout.spacing.lg20,
+    marginBottom: ThemeLayout.spacing.lg,
     gap: ThemeLayout.spacing.sm,
   },
   benefitRow: {
@@ -1163,7 +1175,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   benefitText: {
-    flex: 1,
+    flexShrink: 1,
     fontSize: 15,
     lineHeight: 22,
     fontFamily: Fonts.spaceGrotesk.regular,
@@ -1208,7 +1220,15 @@ const styles = StyleSheet.create({
   notice: {
     marginTop: 8,
     fontSize: 12,
+    lineHeight: 16,
     fontFamily: Fonts.spaceGrotesk.regular,
+    textAlign: 'center',
+  },
+  restoreButton: {
+    minHeight: 44,
+    alignSelf: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: ThemeLayout.spacing.sm,
   },
   legalLinks: {
     alignItems: 'center',
@@ -1216,7 +1236,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     gap: 8,
     justifyContent: 'center',
-    marginTop: 10,
+    marginTop: 4,
   },
   legalLink: {
     fontFamily: Fonts.spaceGrotesk.medium,

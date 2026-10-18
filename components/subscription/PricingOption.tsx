@@ -173,7 +173,6 @@ const styles = StyleSheet.create({
     gap: ThemeLayout.spacing.sm,
   },
   compactContainer: {
-    minHeight: 126,
     marginBottom: 0,
     padding: 12,
     gap: 8,
