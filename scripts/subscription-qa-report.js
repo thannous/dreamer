@@ -928,12 +928,12 @@ const checks = [
       apkBuildRunner.includes("'check-android-release-gates.js'") &&
       apkBuildRunner.includes("'--prebuild'") &&
       apkBuildRunner.includes("EXPO_NO_DOTENV: '1'") &&
-      apkBuildRunner.includes("const EAS_CLI_SPEC = 'eas-cli@21.0.0'") &&
+      apkBuildRunner.includes("const EAS_CLI_SPEC = 'eas-cli@25.1.1'") &&
       apkBuildRunner.includes("platform === 'win32' ? 'npx.cmd' : 'npx'") &&
       !apkBuildRunner.includes('rmSync') &&
       pkg.scripts['android:gates:strict'] ===
         'node ./scripts/check-android-release-gates.js',
-    'build:apk:prod uses exact EAS CLI 21.0.0 via npx, preserves .env.local, disables dotenv, and runs the prebuild release gates; android:gates:strict qualifies the candidate after Play upload'
+    'build:apk:prod uses exact EAS CLI 25.1.1 via npx, preserves .env.local, disables dotenv, and runs the prebuild release gates; android:gates:strict qualifies the candidate after Play upload'
   ),
   check(
     'RevenueCat device app user id extractor exists',

@@ -119,7 +119,7 @@ Always run a full site build before trusting site-wide checks after a partial pr
   `audit-*`; avoid permanent `fix-*` commands.
 - Active scripts must pass `npm run lint:scripts` with zero warnings.
 - Use the Node version in `.nvmrc`. Cloudflare previews use the locally pinned
-  Wrangler package; APK wrappers invoke the exact `eas-cli@21.0.0` version via
+  Wrangler package; APK wrappers invoke the exact `eas-cli@25.1.1` version via
   `npx`, as recommended by Expo Doctor.
 - Destructive or publishing commands need an explicit target and must never
   masquerade as a successful no-op help command.
