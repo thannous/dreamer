@@ -3,6 +3,7 @@
 import importlib.util
 import json
 import os
+import shutil
 from pathlib import Path
 import subprocess
 import sys
@@ -11,6 +12,9 @@ import unittest
 
 sys.dont_write_bytecode = True
 ROOT = Path(__file__).resolve().parents[2]
+BASH = shutil.which("bash")
+if not BASH:
+    raise RuntimeError("Bash is required to test CI routing")
 spec = importlib.util.spec_from_file_location("impact", ROOT / ".circleci/scripts/shared-build-impact.py")
 impact = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(impact)
@@ -85,7 +89,7 @@ class BuildImpact(unittest.TestCase):
                 env["VERCEL_ENV"] = env_value
                 if previous is not None:
                     env["VERCEL_GIT_PREVIOUS_SHA"] = previous
-                return subprocess.run(["bash", "-c", command], cwd=repo, env=env, capture_output=True).returncode
+                return subprocess.run([BASH, "-c", command], cwd=repo, env=env, capture_output=True).returncode
 
             git("init", "-q", "-b", "master")
             git("config", "user.email", "ci-test@noctalia.invalid")
@@ -138,7 +142,7 @@ class ClassificationIntegration(unittest.TestCase):
         self.git("commit", "-qm", "fixture")
         head = self.git("rev-parse", "HEAD").strip()
         output = self.repo / "result.json"
-        subprocess.run(["bash", str(ROOT / ".circleci/scripts/classify-changes.sh"), "pr", self.base, head, str(output)], cwd=self.repo, check=True, capture_output=True)
+        subprocess.run([BASH, (ROOT / ".circleci/scripts/classify-changes.sh").as_posix(), "pr", self.base, head, output.as_posix()], cwd=self.repo, check=True, capture_output=True)
         result = json.loads(output.read_text())
         for key, value in expected.items():
             self.assertEqual(result[key], value, key)

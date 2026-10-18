@@ -53,6 +53,9 @@
 // Installs, setup and checks take the machine-wide lock HEAVY_LOCK (flock),
 // so verify runs on one machine wait for each other ("waiting for lock").
 // A step killed by a signal counts as failed.
+// Consecutive checks with parallel: true share a single supervised/locked
+// step. Each keeps its own receipt, reuse, environment and failure result.
+// Non-parallel checks are barriers; dependency installs cannot opt in.
 //
 // Exit codes: 0 passed, 1 failed, 2 incomplete (a required specialised check
 // could not run here; see --external), 64 usage or configuration error.
@@ -181,6 +184,7 @@ export function normaliseConfig(raw) {
       specialised: Boolean(check.specialised),
       requires: check.requires ?? null,
       install: Boolean(check.install),
+      parallel: check.parallel === true,
       env: check.env ?? {},
     };
   });
@@ -195,6 +199,7 @@ export function normaliseConfig(raw) {
   }
   const names = new Set();
   for (const check of checks) {
+    if (check.parallel && check.install) throw new UsageError(`check ${check.name}: parallel checks cannot install dependencies.`);
     if (names.has(check.name)) throw new UsageError(`check ${check.name} is declared twice.`);
     names.add(check.name);
     // A release proof must also prove what a PR proof proves.
@@ -750,12 +755,13 @@ const posixShells = new Map();
  * refused, so a PR cannot ship its own "Git". These location rules are the
  * control; probeShell before any step is only a speed bump.
  */
-export function posixShell(env = process.env, platform = process.platform, { repoDirs = [] } = {}) {
+export function posixShell(env = process.env, platform = process.platform, { repoDirs = [], run = spawnSync } = {}) {
   if (platform !== 'win32') return '/bin/sh';
   const pathKey = Object.keys(env).find((key) => key.toUpperCase() === 'PATH');
   const searchPath = pathKey ? env[pathKey] : '';
   const key = JSON.stringify([searchPath, repoDirs]);
-  if (!posixShells.has(key)) posixShells.set(key, gitForWindowsShell(searchPath, repoDirs));
+  if (run !== spawnSync) return gitForWindowsShell(searchPath, repoDirs, run);
+  if (!posixShells.has(key)) posixShells.set(key, gitForWindowsShell(searchPath, repoDirs, run));
   return posixShells.get(key);
 }
 
@@ -831,7 +837,7 @@ function insideAny(file, dirs) {
  * and git.exe, the root, the exec path and sh.exe must all exist and resolve
  * (realpath) outside them. Anything else is null.
  */
-function gitForWindowsShell(searchPath, repoDirs) {
+function gitForWindowsShell(searchPath, repoDirs, run) {
   const outside = (file) => realPath(file) !== null && !insideAny(file, repoDirs);
   const found = searchPath.split(';').filter((dir) => absolutePathEntry(dir) && !insideAny(dir, repoDirs))
     .map((dir) => path.join(dir, 'git.exe')).find((file) => existsSync(file));
@@ -843,7 +849,7 @@ function gitForWindowsShell(searchPath, repoDirs) {
     : /^bin$/i.test(path.basename(dir)) ? path.dirname(parent) : null;
   if (!root || !outside(root)) return null;
   const env = Object.fromEntries(Object.entries(process.env).filter(([name]) => !/^GIT_/i.test(name)));
-  const exec = spawnSync(git, ['--exec-path'], { env: { ...env, PATH: searchPath }, encoding: 'utf8' });
+  const exec = run(git, ['--exec-path'], { env: { ...env, PATH: searchPath }, encoding: 'utf8' });
   if (exec.error || exec.status !== 0) return null;
   const execPath = exec.stdout.trim();
   if (!execPath || !outside(execPath)) return null;
@@ -865,13 +871,13 @@ function randomInt(min, max) {
  * shell that does not really run its script fails one of them. Returns
  * { ok, detail }.
  */
-export function probeShell(shell, env = process.env) {
+export function probeShell(shell, env = process.env, execute = spawnSync) {
   if (!shell) return { ok: false, detail: 'no shell found' };
   const run = (code) => {
     const token = randomBytes(8).toString('hex');
     const [a, b, c] = [randomInt(2, 9999), randomInt(2, 9999), randomInt(2, 9999)];
     const exit = code === 0 ? '' : `; exit ${code}`;
-    const result = spawnSync(shell, ['-c', `printf '%s %s\\n' ${token} $((${a}*${b}+${c}))${exit}`], { env, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
+    const result = execute(shell, ['-c', `printf '%s %s\\n' ${token} $((${a}*${b}+${c}))${exit}`], { env, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
     return {
       status: result.error ? 'error' : result.status,
       ok: !result.error && result.status === code && String(result.stdout).trim() === `${token} ${a * b + c}`,
@@ -927,7 +933,7 @@ export function hasPdeathsig(env = process.env) {
  * signal). INT and TERM are passed on to the group, and HUP and QUIT as TERM. A process that left
  * the group (setsid) is stopped only by the step's own teardown.
  */
-const STEP_SUPERVISOR = `
+export const STEP_SUPERVISOR = `
 const { spawn } = require('node:child_process');
 const { rmSync } = require('node:fs');
 const net = require('node:net');
@@ -1024,30 +1030,81 @@ function supervised(lock, program, args, { cwd, env }) {
   });
 }
 
-function runShell(command, { cwd, env, log, shell = posixShell(env) }) {
+export function runShell(command, { cwd, env, log, shell = posixShell(env), platform = process.platform, execute = spawnSync, flock = hasFlock, supervise = supervised }) {
   log(`${PREFIX} $ ${command}`);
   const lock = env.VERIFY_LOCAL_HEAVY_LOCK || HEAVY_LOCK;
   const started = Date.now();
   let result;
   if (env[HEAVY_LOCK_HELD] === lock) {
-    result = spawnSync(shell, ['-c', command], { cwd, env, stdio: 'inherit' });
-  } else if (process.platform === 'win32') {
+    result = execute(shell, ['-c', command], { cwd, env, stdio: 'inherit' });
+  } else if (platform === 'win32') {
     // Windows has no process groups or flock: the step runs in its sh, unsupervised and without the lock.
     log(`${PREFIX} Windows: this step runs without the lock ${lock} and without a supervised process group.`);
-    result = spawnSync(shell, ['-c', command], { cwd, env, stdio: 'inherit' });
-  } else if (!hasFlock(env)) {
+    result = execute(shell, ['-c', command], { cwd, env, stdio: 'inherit' });
+  } else if (!flock(env)) {
     log(`${PREFIX} flock is not installed here: this step runs without the lock ${lock}.`);
-    result = supervised(null, shell, ['-c', command], { cwd, env });
+    result = supervise(null, shell, ['-c', command], { cwd, env });
   } else {
-    const free = spawnSync('flock', ['--nonblock', lock, 'true'], { env, stdio: 'ignore' });
+    const free = execute('flock', ['--nonblock', lock, 'true'], { env, stdio: 'ignore' });
     if (free.error || free.status !== 0) log(`${PREFIX} waiting for lock ${lock} (another heavy check runs on this machine)...`);
-    result = supervised(lock, shell, ['-c', command], { cwd, env: { ...env, [HEAVY_LOCK_HELD]: lock } });
+    result = supervise(lock, shell, ['-c', command], { cwd, env: { ...env, [HEAVY_LOCK_HELD]: lock } });
   }
   // A step killed by a signal (directly, or through flock as 128 + signal) failed.
   const killed = result.signal ?? (result.status > 128 ? `signal ${result.status - 128}` : null);
   if (killed) log(`${PREFIX} the step was killed (${killed}): it counts as failed.`);
   const status = result.error || result.signal ? 1 : (result.status ?? 1);
   return { status: status === 0 && killed ? 1 : status, durationMs: Date.now() - started, killed };
+}
+
+// One supervised step owns the lock for the entire batch. Its children inherit
+// its process group, so the existing signal/orphan cleanup also covers them.
+// Each child writes its own receipt: a failed or killed sibling cannot hide it.
+const PARALLEL_RUNNER = `
+const { spawn } = require('node:child_process');
+const { readFileSync, writeFileSync } = require('node:fs');
+const file = process.argv[2];
+const { shell, checks, fixedEnv } = JSON.parse(readFileSync(file, 'utf8'));
+Promise.all(checks.map((check, index) => new Promise((resolve) => {
+  const started = Date.now();
+  let finished = false;
+  const finish = (status, killed = null) => {
+    if (finished) return;
+    finished = true;
+    const result = { status, durationMs: Date.now() - started, killed };
+    writeFileSync(file + '.' + index + '.json', JSON.stringify(result));
+    resolve(result);
+  };
+  const child = spawn(shell, ['-c', check.command], {
+    env: { ...process.env, ...check.env, ...fixedEnv }, stdio: 'inherit',
+  });
+  child.on('error', (error) => { process.stderr.write(error.message + '\\n'); finish(1); });
+  child.on('exit', (code, signal) => finish(code ?? 1, signal ?? (code > 128 ? 'signal ' + (code - 128) : null)));
+}))).then((results) => { process.exitCode = results.some((result) => result.status !== 0 || result.killed) ? 1 : 0; });
+`;
+
+export function runParallel(checks, { cwd, env, fixedEnv, log, shell, tmp, execute = runShell }) {
+  const file = path.join(tmp, `parallel-${randomBytes(8).toString('hex')}`);
+  const runner = `${file}.cjs`;
+  writeFileSync(file, JSON.stringify({ shell, checks, fixedEnv }));
+  writeFileSync(runner, PARALLEL_RUNNER);
+  const quote = (value) => `'${value.replaceAll("'", "'\\''")}'`;
+  const batch = execute(`${quote(process.execPath)} ${quote(runner)} ${quote(file)}`, { cwd, env, log, shell });
+  const results = checks.map((_, index) => {
+    try {
+      const result = JSON.parse(readFileSync(`${file}.${index}.json`, 'utf8'));
+      if (!Number.isInteger(result.status) || !Number.isFinite(result.durationMs)) throw new Error('invalid parallel receipt');
+      return result;
+    } catch {
+      return { status: 1, durationMs: batch.durationMs, killed: batch.killed, missing: true };
+    }
+  });
+  // A supervisor/runner failure still fails the batch even if every child had
+  // written a passing receipt just before it happened.
+  if (batch.status !== 0 && results.every((result) => result.status === 0 && !result.killed)) {
+    results.at(-1).status = batch.status;
+    results.at(-1).killed = batch.killed;
+  }
+  return results;
 }
 
 function quiet(command, { cwd, env, shell = posixShell(env) }) {
@@ -1423,6 +1480,7 @@ export async function verify(kind, argv = [], {
   proofLock = {},
   // Test seam only (the JS API, never the CLI or the environment).
   shell: shellOverride,
+  shellProbeFn = probeShell,
 } = {}) {
   const options = parseArgs(argv);
   if (options.rest.length) throw new UsageError(`unknown argument ${options.rest[0]}.`);
@@ -1453,7 +1511,7 @@ export async function verify(kind, argv = [], {
     log(`${PREFIX} no sh.exe of Git for Windows next to the git.exe on PATH (<git>/bin/sh.exe or <git>/usr/bin/sh.exe, from an absolute PATH entry, outside this repository): install Git for Windows; no check runs and no proof is written.`);
     return { status: 1, proof: null };
   }
-  const shellProbe = probeShell(shell, env);
+  const shellProbe = shellProbeFn(shell, env);
   if (!shellProbe.ok) {
     log(`${PREFIX} the shell ${shell} failed its sanity probe (${shellProbe.detail}): no check runs and no proof is written.`);
     return { status: 1, proof: null };
@@ -1512,9 +1570,32 @@ export async function verify(kind, argv = [], {
   let worktree = null;
   let failed = false;
   let incomplete = false;
+  let pending = [];
+  const finishParallel = () => {
+    if (pending.length === 0) return;
+    const fixedEnv = { ...worktree.env, VERIFY_LOCAL_KIND: kind, VERIFY_LOCAL_SHA: sha, VERIFY_LOCAL_TREE: tree };
+    log(`${PREFIX} parallel: ${pending.map(({ check }) => check.name).join(', ')} (one heavy step).`);
+    const runs = runParallel(pending.map(({ check }) => ({ command: check.command, env: check.env })), {
+      cwd: worktree.dir, tmp: worktree.tmp, env: { ...env, ...fixedEnv }, fixedEnv, log, shell,
+    });
+    pending.forEach(({ entry }, index) => {
+      const run = runs[index];
+      const passed = run.status === 0 && !run.killed;
+      Object.assign(entry, { result: passed ? 'passed' : 'failed', durationMs: run.durationMs });
+      if (run.missing) entry.reason = 'parallel check did not write a completion receipt';
+      else if (run.killed) entry.reason = `killed (${run.killed})`;
+      log(`${PREFIX} ${entry.name}: ${passed ? 'passed' : `failed (exit ${run.status})`} in ${Math.round(run.durationMs / 1000)} s.`);
+      if (!passed) failed = true;
+    });
+    pending = [];
+  };
 
   try {
     for (const check of selected) {
+      // Only consecutive opt-in checks overlap. Everything else is a barrier,
+      // including dependency installs, builds, and checks after a failed batch.
+      if (!check.parallel) finishParallel();
+      if (failed) break;
       const fingerprint = checkFingerprint({ check, files, tree, sha, environment, mergeBase: scope?.mergeBase ?? null });
       const entry = { name: check.name, command: check.command, fingerprint, specialised: check.specialised };
       if (check.targets) entry.targets = check.targets;
@@ -1570,6 +1651,12 @@ export async function verify(kind, argv = [], {
           break;
         }
       }
+      if (check.parallel) {
+        const resultEntry = { ...entry, result: 'failed' };
+        results.push(resultEntry);
+        pending.push({ check, entry: resultEntry });
+        continue;
+      }
       const run = runShell(check.command, {
         cwd: worktree.dir,
         env: { ...env, ...check.env, ...worktree.env, VERIFY_LOCAL_KIND: kind, VERIFY_LOCAL_SHA: sha, VERIFY_LOCAL_TREE: tree },
@@ -1584,6 +1671,7 @@ export async function verify(kind, argv = [], {
         break;
       }
     }
+    finishParallel();
   } finally {
     if (worktree?.dir) {
       if (options.keep || (failed && process.env.VERIFY_LOCAL_KEEP_FAILED === '1')) {
@@ -1978,10 +2066,10 @@ const SECRET_PATTERNS = [
 const NULL_ID = /^0+$/;
 
 /** Read many blobs with one `git cat-file --batch`; null when git cannot. */
-export function readBlobs(root, env, entries) {
+export function readBlobs(root, env, entries, execute = spawnSync) {
   if (entries.length === 0) return [];
   const input = `${entries.map((entry) => entry.object).join('\n')}\n`;
-  const result = spawnSync('git', ['cat-file', '--batch'], { cwd: root, env, input, maxBuffer: 512 * 1024 * 1024 });
+  const result = execute('git', ['cat-file', '--batch'], { cwd: root, env, input, maxBuffer: 512 * 1024 * 1024 });
   if (result.error || result.status !== 0) return null;
   const output = result.stdout;
   const blobs = [];
@@ -2009,6 +2097,7 @@ export async function prePush(remote, stdinText, {
   log = (line) => console.log(line),
   error = (line) => console.error(line),
   now = () => Date.now(),
+  readObjects = readBlobs,
 } = {}) {
   const started = now();
   const { root, commonDir, git } = resolveRepository(cwd, env);
@@ -2066,7 +2155,7 @@ export async function prePush(remote, stdinText, {
       }
       if (entry.size <= 2 * 1024 * 1024 && !matchesAny(file, config.hook.secretAllow)) toScan.push({ file, ...entry });
     }
-    const blobs = readBlobs(root, env, toScan);
+    const blobs = readObjects(root, env, toScan);
     if (blobs === null || blobs.length !== toScan.length) {
       problems.push(`could not read the ${toScan.length} pushed files (git cat-file --batch failed), so the secret scan did not run`);
       continue;

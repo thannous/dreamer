@@ -9,6 +9,7 @@
  * Usage:
  *   node scripts/generate-symbol-pages.js             # All symbol pages
  *   node scripts/generate-symbol-pages.js --priority=1  # Only priority 1 symbols
+ *   node scripts/generate-symbol-pages.js --id=tiger --lang=fr  # Fast single-page preview
  *   node scripts/generate-symbol-pages.js --lang=en     # Only English
  *   node scripts/generate-symbol-pages.js --categories  # Only category pages
  *   node scripts/generate-symbol-pages.js --curation    # Only curated guide pages
@@ -518,6 +519,9 @@ const args = process.argv.slice(2).reduce((acc, arg) => {
   acc[key] = value || true;
   return acc;
 }, {});
+if (args.lang && !CONFIG.languages.includes(args.lang)) {
+  throw new Error(`Unsupported --lang: ${args.lang}. Expected ${CONFIG.languages.join(', ')}.`);
+}
 
 // Load data files
 function loadData() {
@@ -2458,6 +2462,10 @@ function main() {
   // Filter by symbol id(s) if specified (comma-separated)
   if (args.id) {
     const ids = String(args.id).split(',').map(s => s.trim()).filter(Boolean);
+    const unknown = ids.filter(id => !symbols.symbols.some(symbol => symbol.id === id));
+    if (!ids.length || unknown.length) {
+      throw new Error(`Unknown --id: ${unknown.join(', ') || '(empty)'}. No pages were written.`);
+    }
     symbolsToGenerate = symbolsToGenerate.filter(s => ids.includes(s.id));
     console.log(`🔎 Filtered to ids: ${ids.join(', ')} (${symbolsToGenerate.length} symbols)`);
   }

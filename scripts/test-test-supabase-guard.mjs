@@ -289,7 +289,7 @@ test('readTestEnv takes only E2E_* names from .env.test.local, file over process
 });
 
 test('the CLI refuses today (empty allowlist), prints no secret and makes no request', () => {
-  const script = new URL('./test-supabase-guard.mjs', import.meta.url).pathname;
+  const script = fileURLToPath(new URL('./test-supabase-guard.mjs', import.meta.url));
   const secret = 'sb_secret_should_never_print';
   let out = '';
   let code = 0;

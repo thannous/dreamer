@@ -22,6 +22,7 @@
     "uniwind-env.d.ts"
   ],
   "exclude": [
+    "scripts/*.posix-native.ts",
     "apps/**",
     "**/*.test.ts",
     "**/*.test.tsx",

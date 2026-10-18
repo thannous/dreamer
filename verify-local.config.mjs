@@ -162,7 +162,7 @@ const DREAMER_PASSES = [
 // tests compare the file with it, so an engine edit is a deliberate change of
 // this pin. No other repository is read or compared.
 export const ENGINE_SHA256 =
-  '6213a26ed55c7e388238e207cc6878299b8d728b9d29e5f743105881d408326b';
+  'feaa8dc419f88c1faaff5330a5f31bfde327e355fec8307795a84cb18f893ef3';
 
 export default {
   mainBranch: 'master',
@@ -246,8 +246,8 @@ export default {
     // ---- verify:pr, reused by verify:release when the inputs are identical.
     {
       name: 'verify-local-engine',
-      command: 'node --test scripts/test-verify-local.mjs',
-      inputs: ['scripts/verify-local.mjs', 'scripts/test-verify-local.mjs', 'verify-local.config.mjs', '.gitattributes'],
+      command: 'npm run test:verify-local',
+      inputs: ['scripts/verify-local.mjs', 'scripts/test-verify-local*.mjs', 'scripts/test-platform-contracts.mjs', 'scripts/test-test-auth-permissions-native.mjs', 'scripts/test-auth-setup.mjs', 'scripts/test-support/**', 'scripts/run-verify-tests.mjs', 'verify-local.config.mjs', '.gitattributes'],
     },
     // The production publish guard of noctalia.app (docs:deploy:prod) against
     // proofs written by this engine in scratch repositories.
@@ -308,10 +308,12 @@ export default {
       command: 'node --test scripts/lib/backend-e2e-local.test.cjs',
       inputs: ['scripts/lib/backend-e2e-local.cjs', 'scripts/lib/backend-e2e-local.test.cjs', 'scripts/run-backend-e2e.cjs'],
     },
-    { name: 'typecheck-app', command: 'npm run typecheck:app', exclude: [...DOCS, ...SITE_ONLY] },
-    { name: 'typecheck-tests', command: 'npm run typecheck:tests', exclude: [...DOCS, ...SITE_ONLY] },
-    { name: 'lint', command: 'npm run lint', exclude: [...DOCS, ...SITE_ONLY] },
-    { name: 'lint-scripts', command: 'npm run lint:scripts', exclude: [...DOCS, ...SITE_ONLY] },
+    // Independent read-only checks share one supervised step and machine lock.
+    // Route declarations are atomically replaced by generate-shared-route-types.
+    { name: 'typecheck-app', command: 'npm run typecheck:app', parallel: true, exclude: [...DOCS, ...SITE_ONLY] },
+    { name: 'typecheck-tests', command: 'npm run typecheck:tests', parallel: true, exclude: [...DOCS, ...SITE_ONLY] },
+    { name: 'lint', command: 'npm run lint', parallel: true, exclude: [...DOCS, ...SITE_ONLY] },
+    { name: 'lint-scripts', command: 'npm run lint:scripts', parallel: true, exclude: [...DOCS, ...SITE_ONLY] },
     // Root Jest tests related to the files changed since the merge-base with
     // origin/master (scripts/run-jest-changed.js). Whole tree: tests read files.
     // Picks its tests from the diff: reused only against the same merge base.
