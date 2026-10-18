@@ -86,7 +86,7 @@ test('a personal symbol is born when first opened, then the reading and Tendance
     // A second dream: the same symbols come back, linked to the first. They are counted out
     // of every analyzed dream of the journal, as Tendances counts them (7 with the mock's own).
     await newDream(screen);
-    await tellAndRead(screen, 'E2E symbols: the water returns, and the same quiet light.');
+    await tellAndRead(screen, 'E2E symbols: the water returns by the café, and the same quiet light.');
     const returning = screen.getByTestId('dream.symbol.p.guiding-light', { visible: true });
     await returning.scrollIntoView();
     await expect(screen.getByTestId('dream.symbol.d.water', { visible: true }))
@@ -131,9 +131,32 @@ test('a personal symbol is born when first opened, then the reading and Tendance
     await expect(screen.getByTestId('sheet.dreamSymbol')).toBeHidden();
     await expect(screen.getByTestId('component.transcriptCard', { visible: true })).toContainText(first);
 
+    // From that reading, the journal opens on every dream of the thread, filtered on the symbol.
+    const firstLight = screen.getByTestId('dream.symbol.p.guiding-light', { visible: true });
+    await firstLight.scrollIntoView();
+    await firstLight.tap();
+    await screen.getByTestId('btn.dreamSymbol.allDreams', { visible: true }).tap();
+    await expect(screen.getByTestId('screen.journal', { visible: true })).toHaveCount(1);
+    const symbolFilter = screen.getByTestId('btn.filterSymbol', { visible: true });
+    await expect(symbolFilter).toContainText('Light');
+    const journalItems = screen.getByTestId(/^dream\.item\./, { visible: true });
+    await expect(journalItems).toHaveCount(2);
+    await settledMotion(browser);
+    await app.screenshot('journal-symbol-thread');
+    await symbolFilter.tap();
+    await expect(screen.getByTestId('btn.filterSymbol')).toHaveCount(0);
+
+    // The search ignores accents and reads the names of a reading's symbols: only the
+    // first dream says "doorway", both readings name it.
+    const search = screen.getByTestId('input.searchDreams', { visible: true });
+    await search.fill('cafe');
+    await expect(journalItems).toHaveCount(1);
+    await search.fill('doorway');
+    await expect(journalItems).toHaveCount(2);
+    await search.fill('');
+
     // Tendances names the symbols that came back this month. Opened from there, no dream is
     // being read: every dream of the thread opens.
-    await screen.getByTestId('btn.navigateJournal', { visible: true }).tap();
     await screen.getByTestId('tab.stats', { visible: true }).tap();
     const periodSymbols = screen.getByTestId('trends.returns.symbols', { visible: true });
     await periodSymbols.scrollIntoView();

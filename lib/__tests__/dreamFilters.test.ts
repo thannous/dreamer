@@ -793,6 +793,14 @@ describe('dreamFilters', () => {
       dreams = [...dreams, buildDream({ id: 1640345600000, title: 'Falling again', transcript: 'Down' })];
       expect(check('fall')).toBe(3);
       typed('falling').forEach(check);
+      // Accents and case fold away, key by key.
+      typed('Océan').forEach(check);
+      expect(check('Océan')).toBe(1);
+      // A symbol's thread keeps only its dreams; another thread searches everything again.
+      filters = { dreamIds: new Set([remembered.id]) };
+      expect(check('the')).toBe(1);
+      filters = { dreamIds: new Set([remembered.id, mockDreams[0].id]) };
+      typed('the').forEach(check);
     });
 
     it('searches only the previous matches when the query grows', () => {

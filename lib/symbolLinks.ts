@@ -22,13 +22,13 @@ export type LinkedSymbol = {
   symbolId?: string;
   /** Set for a personal symbol named by a linking analysis; older readings have none. */
   personalKey?: string;
-  /** The dictionary's name in the reader's language, otherwise the newest reading's. */
+  /** The dictionary's name in the reader's language, otherwise the one its readings use most. */
   name: string;
   /** Oldest first: the symbol's story through the journal. */
   appearances: SymbolAppearance[];
   /** The dreamer has opened this personal symbol at least once. */
   confirmed: boolean;
-  /** Symbols seen in the same dreams, most often first. */
+  /** Symbols seen in the same dreams, the most telling first (see `TELLING_COMPANIONS_FROM`). */
   companions: { linkKey: string; count: number }[];
 };
 
@@ -36,6 +36,8 @@ export type SymbolIndex = {
   symbols: ReadonlyMap<string, LinkedSymbol>;
   /** Analyzed dreams, as Tendances counts them: the "out of" of a symbol's count. */
   dreamCount: number;
+  /** An older reading's name that the dreamer's own symbol bears: `n:<name>` leads to its `p:<key>`. */
+  aliases: ReadonlyMap<string, string>;
 };
 
 export type SymbolStatus =
@@ -45,6 +47,9 @@ export type SymbolStatus =
 
 /** Personal symbols sent with an analysis request, as the API bounds them. */
 export const MAX_KNOWN_SYMBOLS = 40;
+
+/** From this many analyzed dreams, companions that meet more often than chance would have it lead. */
+export const TELLING_COMPANIONS_FROM = 15;
 
 const LEADING_ARTICLE = /^(?:the|a|an|le|la|les|l'|un|une|des|du|el|los|las|una|unos|unas|der|die|das|ein|eine|il|lo|gli|i|o|os|as|um|uma)\s+|^l'/;
 
@@ -103,22 +108,92 @@ export function symbolLinkKey(insight: Pick<DreamSymbolInsight, 'name' | 'symbol
   return dictionaryId ? `d:${dictionaryId}` : `n:${name}`;
 }
 
+/** Where a symbol of a reading leads in this journal: an older reading's name may lead to the dreamer's own symbol. */
+export function resolveLinkKey(index: SymbolIndex, insight: Pick<DreamSymbolInsight, 'name' | 'symbolId' | 'key'>): string | null {
+  const linkKey = symbolLinkKey(insight);
+  return linkKey ? index.aliases.get(linkKey) ?? linkKey : null;
+}
+
+export type ReadingSymbol = { insight: DreamSymbolInsight; linked: LinkedSymbol | undefined };
+
+/**
+ * A reading's symbols as its page shows them: one entry per symbol, even when the reading
+ * names it twice ("La mer", "L'océan"); the second meaning joins the first.
+ */
+export function readingSymbols(insights: readonly DreamSymbolInsight[] | undefined, index: SymbolIndex): ReadingSymbol[] {
+  const entries: ReadingSymbol[] = [];
+  const at = new Map<string, number>();
+  for (const insight of insights ?? []) {
+    if (!insight.name?.trim()) continue;
+    const linkKey = resolveLinkKey(index, insight);
+    const earlier = linkKey ? at.get(linkKey) : undefined;
+    if (earlier !== undefined) {
+      const { insight: first, linked } = entries[earlier];
+      const meaning = [first.meaning, insight.meaning].filter((text) => text?.trim()).join('\n\n');
+      entries[earlier] = { insight: { ...first, meaning }, linked };
+      continue;
+    }
+    if (linkKey) at.set(linkKey, entries.length);
+    entries.push({ insight, linked: linkKey ? index.symbols.get(linkKey) : undefined });
+  }
+  return entries;
+}
+
 const isLinkableDream = (dream: DreamAnalysis): boolean =>
   typeof dream.id === 'number' && Boolean(dream.symbols?.length) && Boolean(dream.isAnalyzed || dream.analysisStatus === 'done');
+
+/**
+ * A reading made before symbols carried a link says "Le phare"; a later one names the same
+ * lighthouse by its key. A name leads to the dreamer's own symbol that bears it, unless two do.
+ */
+function personalNameAliases(dreams: readonly DreamAnalysis[]): Map<string, string> {
+  const byName = new Map<string, string | null>();
+  for (const dream of dreams) {
+    for (const insight of dream.symbols ?? []) {
+      const linkKey = insight.key ? symbolLinkKey(insight) : null;
+      const name = normalizeName(insight.name ?? '');
+      if (!linkKey?.startsWith('p:') || !name) continue;
+      const known = byName.get(`n:${name}`);
+      byName.set(`n:${name}`, known === undefined || known === linkKey ? linkKey : null);
+    }
+  }
+  const aliases = new Map<string, string>();
+  for (const [name, linkKey] of byName) if (linkKey) aliases.set(name, linkKey);
+  return aliases;
+}
+
+/** The name a symbol of the dreamer's own goes by most often; at a tie, the one it was born with. */
+function commonestName(names: ReadonlyMap<string, { name: string; count: number }>, fallback: string): string {
+  let best: { name: string; count: number } | undefined;
+  for (const entry of names.values()) if (!best || entry.count > best.count) best = entry;
+  return best?.name ?? fallback;
+}
+
+/**
+ * How telling a companion is. Past a few dreams, the symbols met most are the ones met
+ * everywhere; those that meet more often than chance would have it say more.
+ */
+function companionWeight(count: number, own: number, other: number, dreamCount: number): number {
+  if (dreamCount < TELLING_COMPANIONS_FROM || count < 2 || !own || !other) return 0;
+  return (count * dreamCount) / (own * other);
+}
 
 /** One pass over the journal: every symbol with its appearances and companions. */
 export function buildSymbolIndex(dreams: readonly DreamAnalysis[], language: SymbolLanguage): SymbolIndex {
   const symbols = new Map<string, LinkedSymbol>();
   const pairs = new Map<string, Map<string, number>>();
+  const names = new Map<string, Map<string, { name: string; count: number }>>();
   let dreamCount = 0;
   const chronological = dreams.filter(isLinkableDream).sort((a, b) => a.id - b.id);
+  const aliases = personalNameAliases(chronological);
   // A reading that named no symbol still counts: "2 of 7" says the same here and in Tendances.
   for (const dream of dreams) if (isDreamAnalyzed(dream) && !isLinkableDream(dream)) dreamCount += 1;
 
   for (const dream of chronological) {
     const inDream: string[] = [];
     for (const insight of dream.symbols ?? []) {
-      const linkKey = symbolLinkKey(insight);
+      const found = symbolLinkKey(insight);
+      const linkKey = found ? aliases.get(found) ?? found : null;
       if (!linkKey || inDream.includes(linkKey)) continue;
       inDream.push(linkKey);
       let symbol = symbols.get(linkKey);
@@ -137,8 +212,15 @@ export function buildSymbolIndex(dreams: readonly DreamAnalysis[], language: Sym
         symbols.set(linkKey, symbol);
       }
       symbol.appearances.push({ dream, insight });
-      // The newest reading names a personal symbol; the dictionary names its own.
-      if (!symbol.symbolId) symbol.name = insight.name.trim();
+      if (!symbol.symbolId) {
+        // Readings word the same symbol differently; it keeps the name it goes by most often.
+        const said = names.get(linkKey) ?? new Map<string, { name: string; count: number }>();
+        const name = insight.name.trim();
+        const entry = said.get(normalizeName(name)) ?? { name, count: 0 };
+        entry.count += 1;
+        said.set(normalizeName(name), entry);
+        names.set(linkKey, said);
+      }
       if (insight.confirmedAt) symbol.confirmed = true;
     }
     if (inDream.length || isDreamAnalyzed(dream)) dreamCount += 1;
@@ -156,12 +238,19 @@ export function buildSymbolIndex(dreams: readonly DreamAnalysis[], language: Sym
     if (symbol.symbolId) {
       const entry = getSymbolById(symbol.symbolId);
       symbol.name = entry?.[language]?.name ?? entry?.en.name ?? symbol.name;
+    } else {
+      symbol.name = commonestName(names.get(symbol.linkKey) ?? new Map(), symbol.name);
     }
+  }
+  for (const symbol of symbols.values()) {
+    const own = symbol.appearances.length;
+    const weight = ({ linkKey, count }: { linkKey: string; count: number }) =>
+      companionWeight(count, own, symbols.get(linkKey)?.appearances.length ?? 0, dreamCount);
     symbol.companions = [...(pairs.get(symbol.linkKey) ?? new Map<string, number>()).entries()]
       .map(([linkKey, count]) => ({ linkKey, count }))
-      .sort((a, b) => b.count - a.count || a.linkKey.localeCompare(b.linkKey));
+      .sort((a, b) => weight(b) - weight(a) || b.count - a.count || a.linkKey.localeCompare(b.linkKey));
   }
-  return { symbols, dreamCount };
+  return { symbols, dreamCount, aliases };
 }
 
 const indexCache = new WeakMap<readonly DreamAnalysis[], Map<SymbolLanguage, SymbolIndex>>();
@@ -198,31 +287,31 @@ export function isNewPersonalSymbol(symbol: LinkedSymbol): boolean {
 }
 
 /**
- * The dreamer's own symbols, most frequent first with their newest name, for an analysis
+ * The dreamer's own symbols, most frequent first with the name they go by, for an analysis
  * to reuse their keys. Only linked readings count: an older name is not a key.
  */
 export function collectKnownSymbols(dreams: readonly DreamAnalysis[]): { key: string; name: string }[] {
-  const counts = new Map<string, { name: string; count: number; newest: number }>();
-  for (const dream of dreams) {
-    if (!isLinkableDream(dream)) continue;
+  const counts = new Map<string, { names: Map<string, { name: string; count: number }>; count: number; newest: number }>();
+  for (const dream of dreams.filter(isLinkableDream).sort((a, b) => a.id - b.id)) {
     const seen = new Set<string>();
     for (const insight of dream.symbols ?? []) {
       const key = insight.key && !insight.symbolId && !getSymbolById(insight.key) ? insight.key : undefined;
       if (!key || seen.has(key)) continue;
       seen.add(key);
-      const entry = counts.get(key);
-      if (!entry) {
-        counts.set(key, { name: insight.name.trim(), count: 1, newest: dream.id });
-        continue;
-      }
+      const entry = counts.get(key) ?? { names: new Map(), count: 0, newest: dream.id };
+      const name = insight.name.trim();
+      const said = entry.names.get(normalizeName(name)) ?? { name, count: 0 };
+      said.count += 1;
+      entry.names.set(normalizeName(name), said);
       entry.count += 1;
-      if (dream.id > entry.newest) Object.assign(entry, { name: insight.name.trim(), newest: dream.id });
+      entry.newest = dream.id;
+      counts.set(key, entry);
     }
   }
   return [...counts.entries()]
     .sort(([, a], [, b]) => b.count - a.count || b.newest - a.newest)
     .slice(0, MAX_KNOWN_SYMBOLS)
-    .map(([key, { name }]) => ({ key, name }));
+    .map(([key, { names }]) => ({ key, name: commonestName(names, key) }));
 }
 
 /**

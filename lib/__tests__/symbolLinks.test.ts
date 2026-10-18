@@ -4,13 +4,16 @@ import {
   confirmPersonalSymbol,
   getSymbolStatus,
   isNewPersonalSymbol,
+  readingSymbols,
+  TELLING_COMPANIONS_FROM,
 } from '../symbolLinks';
 import type { DreamAnalysis, DreamSymbolInsight } from '../types';
 
-// Isolation control: the web journey sees one language and new readings only. These
-// combinations (older readings named in other languages, a key the dreamer owns across
-// renamed readings, a confirmation that must touch only its own symbol) would link
-// wrongly without a visible failure in that journey.
+// Isolation control: the web journey sees one language, new readings only and a few dreams.
+// These combinations (older readings named in other languages or before keys, a key the
+// dreamer owns across renamed readings, a reading naming one symbol twice, companions past
+// fifteen dreams, a confirmation that must touch only its own symbol) would link wrongly
+// without a visible failure in that journey.
 
 const night = (day: number, symbols: DreamSymbolInsight[], overrides: Partial<DreamAnalysis> = {}): DreamAnalysis => ({
   id: Date.UTC(2026, 9, day, 6),
@@ -77,7 +80,7 @@ describe('symbol links', () => {
     expect(getSymbolStatus(index.symbols.get('d:cat')!, index)).toEqual({ kind: 'some', count: 3 });
   });
 
-  it('keeps a personal symbol by its key, under its newest name, until the dreamer opens it', () => {
+  it('keeps a personal symbol by its key, under the name it goes by most, until the dreamer opens it', () => {
     const first = night(1, [{ name: 'La maison de mamie', meaning: 'Le jardin.', key: 'grandmother-house' }]);
     const second = night(4, [
       { name: 'Maison de grand-mère', meaning: 'Elle revient.', key: 'grandmother-house' },
@@ -87,15 +90,21 @@ describe('symbol links', () => {
     const index = buildSymbolIndex([second, first], 'fr');
     const house = index.symbols.get('p:grandmother-house')!;
 
-    expect(house.name).toBe('Maison de grand-mère');
+    // At a tie, the name it was born with.
+    expect(house.name).toBe('La maison de mamie');
     expect(house.appearances).toHaveLength(2);
     expect(isNewPersonalSymbol(house)).toBe(true);
     // A dictionary id answered as a key is that dictionary symbol, never a personal one.
     expect(index.symbols.has('d:wolf')).toBe(true);
     expect(collectKnownSymbols([first, second])).toEqual([
-      { key: 'grandmother-house', name: 'Maison de grand-mère' },
+      { key: 'grandmother-house', name: 'La maison de mamie' },
       { key: 'blue-lamp', name: 'Lampe bleue' },
     ]);
+    // A third reading wording it the second way: that name now leads, here and for the analysis.
+    const third = night(6, [{ name: 'maison de grand-mère', meaning: 'Encore.', key: 'grandmother-house' }]);
+    expect(buildSymbolIndex([third, second, first], 'fr').symbols.get('p:grandmother-house')!.name)
+      .toBe('Maison de grand-mère');
+    expect(collectKnownSymbols([third, first, second])[0]).toEqual({ key: 'grandmother-house', name: 'Maison de grand-mère' });
 
     const confirmed = confirmPersonalSymbol(second, 'grandmother-house', 42);
     expect(confirmed).toEqual([
@@ -107,5 +116,56 @@ describe('symbol links', () => {
     expect(isNewPersonalSymbol(after.symbols.get('p:grandmother-house')!)).toBe(false);
     expect(isNewPersonalSymbol(after.symbols.get('p:blue-lamp')!)).toBe(true);
     expect(confirmPersonalSymbol({ ...second, symbols: confirmed! }, 'grandmother-house')).toBeNull();
+  });
+
+  it('joins an older reading to the dreamer’s own symbol that bears its name', () => {
+    const older = night(1, [{ name: 'Le phare', meaning: 'Il veille.' }]);
+    const newer = night(3, [{ name: 'Phare', meaning: 'Il revient.', key: 'lighthouse' }]);
+    const index = buildSymbolIndex([newer, older], 'fr');
+    const lighthouse = index.symbols.get('p:lighthouse')!;
+
+    expect(index.symbols.has('n:phare')).toBe(false);
+    expect(lighthouse.appearances.map(({ dream }) => dream.title)).toEqual(['Dream 1', 'Dream 3']);
+    expect(readingSymbols(older.symbols, index)[0].linked).toBe(lighthouse);
+
+    // A name two of the dreamer's symbols bear leads to neither.
+    const other = night(4, [{ name: 'Phare', meaning: 'Un autre.', key: 'harbour-light' }]);
+    const ambiguous = buildSymbolIndex([older, newer, other], 'fr');
+    expect(ambiguous.symbols.get('n:phare')!.appearances).toHaveLength(1);
+    expect(ambiguous.symbols.get('p:lighthouse')!.appearances).toHaveLength(1);
+  });
+
+  it('shows a symbol a reading names twice once, with both meanings', () => {
+    const dream = night(2, [
+      { name: 'La mer', meaning: 'Elle monte.', symbolId: 'ocean' },
+      { name: 'Loup', meaning: 'Il attend.', symbolId: 'wolf' },
+      { name: 'L’océan', meaning: 'Il recouvre tout.', symbolId: 'ocean' },
+    ]);
+    const index = buildSymbolIndex([dream], 'fr');
+    const symbols = readingSymbols(dream.symbols, index);
+
+    expect(symbols.map(({ insight }) => insight.name)).toEqual(['La mer', 'Loup']);
+    expect(symbols[0].insight.meaning).toBe('Elle monte.\n\nIl recouvre tout.');
+    expect(symbols[0].linked).toBe(index.symbols.get('d:ocean'));
+    expect(index.symbols.get('d:ocean')!.appearances).toHaveLength(1);
+  });
+
+  it('leads with companions that meet more often than chance, from fifteen dreams', () => {
+    // Water is in every dream, so it meets the cat everywhere without saying anything.
+    const dreams = Array.from({ length: TELLING_COMPANIONS_FROM }, (_, at) => {
+      const day = at + 1;
+      const symbols: DreamSymbolInsight[] = [{ name: 'Eau', meaning: '.', symbolId: 'water' }];
+      if (day <= 4) symbols.push({ name: 'Chat', meaning: '.', symbolId: 'cat' });
+      if (day <= 2) symbols.push({ name: 'Maison', meaning: '.', symbolId: 'house' });
+      if (day === 3) symbols.push({ name: 'Lune', meaning: '.', symbolId: 'moon' });
+      return night(day, symbols);
+    });
+    const companions = (journal: DreamAnalysis[]) =>
+      buildSymbolIndex(journal, 'fr').symbols.get('d:cat')!.companions.map(({ linkKey }) => linkKey);
+
+    // A single shared dream says too little to lead.
+    expect(companions(dreams)).toEqual(['d:house', 'd:water', 'd:moon']);
+    // Below fifteen dreams, the most frequent companions lead, as before.
+    expect(companions(dreams.slice(0, TELLING_COMPANIONS_FROM - 1))).toEqual(['d:water', 'd:house', 'd:moon']);
   });
 });

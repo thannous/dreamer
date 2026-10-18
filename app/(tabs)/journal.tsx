@@ -42,6 +42,7 @@ import { blurActiveElement } from '@/lib/accessibility';
 import { createNarrowingFilter, getUniqueDreamTypes, getUniqueThemes, sortDreamsByDate, type JournalAnalysisStatusFilter, type JournalQuickFilter } from '@/lib/dreamFilters';
 import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
 import { parseJournalFilterParams, type JournalFilterRouteParams } from '@/lib/journalFilterLink';
+import { getSymbolIndex } from '@/lib/symbolLinks';
 import { getDreamThumbnailCacheKey, getDreamThumbnailUri, preloadImage } from '@/lib/imageUtils';
 import { trackProductEvent } from '@/lib/analytics';
 import { TID } from '@/lib/testIDs';
@@ -109,7 +110,7 @@ function JournalListScreen() {
   const { dreams, completeness, remotePreviewAllowed, loadRemoteDreamForPreview, persistenceState, refreshState, reloadDreams, retryPersistence, toggleFavorite } = useDreams();
   const { colors, mode } = useTheme();
   const openQuickSettings = useQuickSettings();
-  const { t } = useTranslation();
+  const { t, currentLang } = useTranslation();
   const [favoriteError, setFavoriteError] = useState<string | null>(null);
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   useClearWebFocus();
@@ -203,10 +204,12 @@ function JournalListScreen() {
   const [showRecurringOnly, setShowRecurringOnly] = useState(false);
   const [analysisStatus, setAnalysisStatus] = useState<JournalAnalysisStatusFilter | null>(null);
   const [sortOrder, setSortOrder] = useState<JournalSortOrder>('newest');
+  // A symbol's link key: only the dreams of its thread.
+  const [selectedSymbol, setSelectedSymbol] = useState<string | null>(null);
 
-  // Another screen (Tendances) can open the journal on a set of dreams: its filters
-  // replace the current ones and then stay like filters set by hand (shown as chips,
-  // kept while a dream is open). The params leave the route so they apply only once.
+  // Another screen (Tendances, a symbol's sheet) can open the journal on a set of dreams:
+  // its filters replace the current ones and then stay like filters set by hand (shown as
+  // chips, kept while a dream is open). The params leave the route so they apply only once.
   const filterParams = useLocalSearchParams<JournalFilterRouteParams>();
   const filterLink = parseJournalFilterParams(filterParams);
   useEffect(() => {
@@ -220,8 +223,9 @@ function JournalListScreen() {
     setShowRememberedOnly(false);
     setShowRecurringOnly(false);
     setAnalysisStatus(link.analysis);
+    setSelectedSymbol(link.symbol);
     setSortOrder('newest');
-    router.setParams({ filter: undefined, theme: undefined, type: undefined, from: undefined, to: undefined, analysis: undefined });
+    router.setParams({ filter: undefined, theme: undefined, type: undefined, from: undefined, to: undefined, analysis: undefined, symbol: undefined });
     // Applied once per link: the parsed dates are new objects on every render.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterLink?.key]);
@@ -294,6 +298,16 @@ function JournalListScreen() {
     [t]
   );
 
+  // Perf: the index is built (and the dictionary loaded) only once a symbol filters the journal.
+  const symbolThread = useMemo(
+    () => (selectedSymbol ? getSymbolIndex(dreams, currentLang).symbols.get(selectedSymbol) ?? null : null),
+    [currentLang, dreams, selectedSymbol],
+  );
+  const symbolDreamIds = useMemo(
+    () => (selectedSymbol ? new Set(symbolThread?.appearances.map(({ dream }) => dream.id)) : null),
+    [selectedSymbol, symbolThread],
+  );
+
   // Typing narrows the previous matches instead of searching the whole journal again.
   const [narrowingFilter] = useState(createNarrowingFilter);
   const filteredDreams = useMemo(() => {
@@ -308,6 +322,7 @@ function JournalListScreen() {
       recurringOnly: showRecurringOnly,
       needsExplorationOnly: quickFilter === 'to_deepen',
       analysisStatus,
+      dreamIds: symbolDreamIds,
     }, {
       searchOptions: {
         dreamTypeLabelResolver: (dreamType) => getDreamTypeLabel(dreamType, t),
@@ -331,6 +346,7 @@ function JournalListScreen() {
     showRememberedOnly,
     showRecurringOnly,
     analysisStatus,
+    symbolDreamIds,
     resolveDreamMemorySearchLabel,
     t,
     sortOrder,
@@ -366,9 +382,11 @@ function JournalListScreen() {
     router.push({ pathname: '/journal/[id]', params: getDreamRouteParams(full) });
   }, [mediaUserId, loadRemoteDreamForPreview, reloadDreams]);
   const previewFiltersSupported = !selectedTheme && !selectedDreamType && !dateRange.start && !dateRange.end &&
-    quickFilter === 'all' && !showRememberedOnly && !showRecurringOnly && !analysisStatus && sortOrder !== 'oldest';
+    quickFilter === 'all' && !showRememberedOnly && !showRecurringOnly && !analysisStatus && !selectedSymbol &&
+    sortOrder !== 'oldest';
   const paginationScope = JSON.stringify([mediaUserId, deferredSearchQuery, selectedTheme, selectedDreamType,
-    dateRange.start, dateRange.end, quickFilter, showRememberedOnly, showRecurringOnly, analysisStatus, sortOrder]);
+    dateRange.start, dateRange.end, quickFilter, showRememberedOnly, showRecurringOnly, analysisStatus, selectedSymbol,
+    sortOrder]);
   const { visibleItems, hasMore, loadMore } = useJournalListPagination(filteredDreams, paginationScope);
   const paginationFooter = hasMore ? (
     <PressableScale onPress={loadMore} accessibilityRole="button" className="min-h-[48px] items-center justify-center p-4">
@@ -430,6 +448,7 @@ function JournalListScreen() {
     showRememberedOnly,
     showRecurringOnly,
     analysisStatus,
+    selectedSymbol,
     sortOrder,
   ]);
 
@@ -448,6 +467,7 @@ function JournalListScreen() {
     setShowRememberedOnly(false);
     setShowRecurringOnly(false);
     setAnalysisStatus(null);
+    setSelectedSymbol(null);
     setSortOrder('newest');
   }, []);
 
@@ -728,6 +748,7 @@ function JournalListScreen() {
     showRememberedOnly ||
     showRecurringOnly ||
     analysisStatus ||
+    selectedSymbol ||
     hasNonDefaultSort
   );
   const hasActiveAdvancedFilter = !!(
@@ -738,6 +759,7 @@ function JournalListScreen() {
     showRememberedOnly ||
     showRecurringOnly ||
     analysisStatus ||
+    selectedSymbol ||
     hasNonDefaultSort
   );
   const canStartRememberedDreamFromEmpty = dreams.length === 0 && !hasActiveFilter;
@@ -776,6 +798,15 @@ function JournalListScreen() {
       accessibilityLabel: t('journal.filter.accessibility.to_deepen'),
       testID: TID.Button.FilterToDeepen,
     },
+    // The symbol a sheet opened the journal on leads the active filters: it is why the list is short.
+    ...(selectedSymbol ? [{
+      id: 'symbol' as const,
+      label: symbolThread?.name ?? '',
+      active: true,
+      onPress: () => setSelectedSymbol(null),
+      accessibilityLabel: [symbolThread?.name, t('journal.filter.accessibility.symbol')].filter(Boolean).join(', '),
+      testID: TID.Button.FilterSymbol,
+    }] : []),
     ...(selectedTheme ? [{
       id: 'theme' as const,
       label: getDreamThemeLabel(selectedTheme, t) ?? t('journal.filter.theme'),
@@ -868,10 +899,12 @@ function JournalListScreen() {
     quickFilter,
     searchQuery,
     selectedDreamType,
+    selectedSymbol,
     selectedTheme,
     showRememberedOnly,
     showRecurringOnly,
     sortOrder,
+    symbolThread,
     t,
     toggleDreamTypeFilter,
     toggleThemeFilter,

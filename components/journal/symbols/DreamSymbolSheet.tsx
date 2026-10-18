@@ -9,6 +9,7 @@ import { entrance, reducedDelay } from '@/components/journal/story/dreamStoryMot
 import { sparklePath } from '@/components/journal/story/sparkle';
 import { PressableScale } from '@/components/motion';
 import { EASE } from '@/components/motion/motion';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useDreamsActions } from '@/context/DreamsContext';
@@ -17,6 +18,7 @@ import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getDreamIdentityKey } from '@/lib/dreamIdentity';
 import { getDreamRouteParams } from '@/lib/dreamRoute';
+import { toJournalFilterParams } from '@/lib/journalFilterLink';
 import { logger } from '@/lib/logger';
 import {
   confirmPersonalSymbol, isNewPersonalSymbol, type LinkedSymbol, type SymbolAppearance, type SymbolIndex,
@@ -33,6 +35,7 @@ const MEDALLION = 96;
 /** Past this, the thread keeps the symbol's first dream and its latest ones. */
 const MAX_TRACES = 6;
 const MAX_COMPANIONS = 4;
+const MAX_RELATED = 4;
 const MAX_QUESTIONS = 3;
 
 /**
@@ -95,9 +98,11 @@ export function DreamSymbolSheet({ index, dream, linkKey, onSelect, onClose }: {
     setShown({
       open: visible,
       key: linkKey ?? shown.key,
-      // Captured on opening: the birth keeps being told once the confirmation lands. Only a
-      // reading tells it; opened from elsewhere, the symbol has already come back.
-      born: dream && next && isNewPersonalSymbol(next) ? next.linkKey : visible && !shown.open ? null : shown.born,
+      // Captured on opening: the birth keeps being told once the confirmation lands. Only the
+      // reading of its first dream tells it; anywhere else, the symbol has already come back.
+      born: dream && next && isNewPersonalSymbol(next) && sameDream(next.appearances[0].dream, dream)
+        ? next.linkKey
+        : visible && !shown.open ? null : shown.born,
     });
   }
   const symbol = shown.key ? index.symbols.get(shown.key) : undefined;
@@ -194,6 +199,12 @@ function SymbolPage({ symbol, index, dream, born, language, onSelect, onClose }:
     .map((companion) => ({ ...companion, symbol: index.symbols.get(companion.linkKey) }))
     .filter((companion): companion is typeof companion & { symbol: LinkedSymbol } => Boolean(companion.symbol))
     .slice(0, MAX_COMPANIONS);
+  // The dictionary's neighbours the dreamer has dreamed too, even in other dreams: a family of images.
+  const related = (entry?.relatedSymbols ?? [])
+    .map((id) => index.symbols.get(`d:${id}`))
+    .filter((neighbour): neighbour is LinkedSymbol => neighbour !== undefined && neighbour !== symbol
+      && !companions.some((companion) => companion.linkKey === neighbour.linkKey))
+    .slice(0, MAX_RELATED);
 
   const sections: React.ReactNode[] = [];
   if (!onlyHere) {
@@ -202,6 +213,13 @@ function SymbolPage({ symbol, index, dream, born, language, onSelect, onClose }:
         onOpen={(target) => {
           onClose();
           router.push({ pathname: '/journal/[id]', params: getDreamRouteParams(target) });
+        }}
+        onOpenAll={() => {
+          onClose();
+          router.navigate({
+            pathname: '/(tabs)/journal',
+            params: toJournalFilterParams({ symbol: symbol.linkKey }, String(Date.now())),
+          });
         }} />,
     );
   }
@@ -216,18 +234,23 @@ function SymbolPage({ symbol, index, dream, born, language, onSelect, onClose }:
           {companions.map((companion) => {
             const often = companion.count >= 2 ? t('journal.symbols.companions.count', { count: companion.count }) : null;
             return (
-              <PressableScale key={companion.linkKey} onPress={() => onSelect(companion.linkKey)}
-                accessibilityRole="button"
-                accessibilityLabel={often ? `${companion.symbol.name}, ${often}` : companion.symbol.name}
-                accessibilityHint={t('journal.symbols.open_hint')}
-                testID={TID.List.DreamSymbolCompanion(companion.linkKey)}
-                className="min-h-11 flex-row items-center gap-2 rounded-full border border-champagne-soft bg-ink-soft py-1 pl-1 pr-3.5">
-                <SymbolMedallion symbol={companion.symbol} size={36} />
-                <Text className="font-sans-medium text-[14px] text-ivory">{companion.symbol.name}</Text>
-                {often ? <Text className="font-sans text-[12px] text-ivory-muted">{often}</Text> : null}
-              </PressableScale>
+              <SymbolChip key={companion.linkKey} symbol={companion.symbol} note={often}
+                testID={TID.List.DreamSymbolCompanion(companion.linkKey)} onPress={() => onSelect(companion.linkKey)} />
             );
           })}
+        </View>
+      </View>,
+    );
+  }
+  if (related.length) {
+    sections.push(
+      <View key="related" className="gap-4">
+        <BookSubheading>{t('journal.symbols.related.header')}</BookSubheading>
+        <View className="flex-row flex-wrap justify-center gap-2">
+          {related.map((neighbour) => (
+            <SymbolChip key={neighbour.linkKey} symbol={neighbour} note={null}
+              testID={TID.List.DreamSymbolRelated(neighbour.linkKey)} onPress={() => onSelect(neighbour.linkKey)} />
+          ))}
         </View>
       </View>,
     );
@@ -402,12 +425,16 @@ function AddedLine({ reduced }: { reduced: boolean }) {
  * The dreams the symbol went through, oldest first, on a thread that draws itself from
  * one to the next as each dream's star lights. Each dream opens, except the one being read.
  */
-function DreamTraces({ symbol, dream, reduced, onOpen }: {
+function DreamTraces({ symbol, dream, reduced, onOpen, onOpenAll }: {
   symbol: LinkedSymbol;
   dream: DreamAnalysis | null;
   reduced: boolean;
   onOpen: (target: DreamAnalysis) => void;
+  /** Opens the journal on every dream of the thread. */
+  onOpenAll: () => void;
 }) {
+  const { colors, mode } = useTheme();
+  const ink = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
   const { formatDate } = useLocaleFormatting();
   const all = symbol.appearances;
@@ -460,7 +487,37 @@ function DreamTraces({ symbol, dream, reduced, onOpen }: {
           );
         })}
       </View>
+      {all.length > 1 ? (
+        <PressableScale onPress={onOpenAll} accessibilityRole="button" testID={TID.Button.DreamSymbolAllDreams}
+          className="min-h-11 flex-row items-center justify-center gap-2 self-center rounded-full border border-champagne-soft px-5">
+          <Text className="font-sans-bold text-[15px] text-champagne-on">
+            {t('journal.symbols.timeline.all', { count: all.length })}
+          </Text>
+          <IconSymbol name="arrow.right" size={14} color={ink.accent.text} />
+        </PressableScale>
+      ) : null}
     </View>
+  );
+}
+
+/** Another symbol of the journal, met beside this one: tapping it opens its page in place. */
+function SymbolChip({ symbol, note, testID, onPress }: {
+  symbol: LinkedSymbol;
+  note: string | null;
+  testID: string;
+  onPress: () => void;
+}) {
+  const { t } = useTranslation();
+  return (
+    <PressableScale onPress={onPress} accessibilityRole="button"
+      accessibilityLabel={note ? `${symbol.name}, ${note}` : symbol.name}
+      accessibilityHint={t('journal.symbols.open_hint')}
+      testID={testID}
+      className="min-h-11 flex-row items-center gap-2 rounded-full border border-champagne-soft bg-ink-soft py-1 pl-1 pr-3.5">
+      <SymbolMedallion symbol={symbol} size={36} />
+      <Text className="font-sans-medium text-[14px] text-ivory">{symbol.name}</Text>
+      {note ? <Text className="font-sans text-[12px] text-ivory-muted">{note}</Text> : null}
+    </PressableScale>
   );
 }
 
