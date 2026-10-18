@@ -182,8 +182,8 @@ describe('release planning against real Git histories', () => {
     const id = '12345678-1234-4234-8234-123456789abc';
     const android = internalSubmitArgs('android', id);
     const ios = internalSubmitArgs('ios', id);
-    expect(android).toEqual(['--yes', 'eas-cli@21.0.0', 'submit', '--platform', 'android', '--profile', 'internal', '--id', id, '--non-interactive']);
-    expect(ios).toEqual(['--yes', 'eas-cli@21.0.0', 'submit', '--platform', 'ios', '--profile', 'production', '--id', id, '--non-interactive']);
+    expect(android).toEqual(['--yes', 'eas-cli@25.1.1', 'submit', '--platform', 'android', '--profile', 'internal', '--id', id, '--non-interactive']);
+    expect(ios).toEqual(['--yes', 'eas-cli@25.1.1', 'submit', '--platform', 'ios', '--profile', 'production', '--id', id, '--non-interactive', '--no-auto-testflight-setup']);
     expect([...android, ...ios]).not.toContain('--what-to-test');
     expect(() => internalSubmitArgs('android', 'latest')).toThrow('build ID');
     expect(parseArgs(['submit-internal', '--app', 'noctalia', '--platform', 'ios', '--id', id, '--dry-run']).dryRun).toBe(true);
@@ -191,13 +191,14 @@ describe('release planning against real Git histories', () => {
   it('refuses an unfinished, preview or unrelated build before internal submission', () => {
     const expected = { projectId: 'project-1', version: '3.4.4' };
     const build = { status: 'FINISHED', platform: 'ANDROID', distribution: 'STORE', buildProfile: 'production',
-      project: { id: 'project-1' }, appVersion: '3.4.4', artifacts: { buildUrl: 'https://expo.dev/app.aab' } };
+      app: { id: 'project-1' }, appVersion: '3.4.4', artifacts: { buildUrl: 'https://expo.dev/app.aab' } };
     expect(() => assertInternalBuild(build, 'android', expected)).not.toThrow();
     expect(() => assertInternalBuild({ ...build, status: 'ERRORED' }, 'android', expected)).toThrow('FINISHED');
     expect(() => assertInternalBuild({ ...build, distribution: 'INTERNAL' }, 'android', expected)).toThrow('STORE');
     expect(() => assertInternalBuild({ ...build, buildProfile: 'preview' }, 'android', expected)).toThrow('production');
     expect(() => assertInternalBuild({ ...build, platform: 'IOS' }, 'android', expected)).toThrow('platform');
-    expect(() => assertInternalBuild({ ...build, project: { id: 'other' } }, 'android', expected)).toThrow('project');
+    expect(() => assertInternalBuild({ ...build, app: { id: 'other' } }, 'android', expected)).toThrow('project');
+    expect(() => assertInternalBuild({ ...build, app: undefined, project: { id: 'project-1' } }, 'android', expected)).toThrow('project');
     expect(() => assertInternalBuild({ ...build, appVersion: '3.4.3' }, 'android', expected)).toThrow('version');
     expect(() => assertInternalBuild({ ...build, artifacts: {} }, 'android', expected)).toThrow('artifact');
   });
