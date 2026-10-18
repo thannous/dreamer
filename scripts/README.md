@@ -47,7 +47,8 @@ mise exec -- npm run android:release:local -- --help
 
 For local Android iteration, use `npm run android:iterate:local -- --abi x86_64`
 in the app's isolated native checkout (select the actual target ABI). It still
-runs Expo prebuild. Its first or invalidated build keeps the clean Release flags;
+runs Expo prebuild. SDK 58 recreates native folders by default; only a passed
+matching context uses `--no-clean`. Its first or invalidated build keeps the clean Release flags;
 only a previously successful identical native/profile/dependency/environment
 context uses Gradle's build cache and daemon without `:app:clean`. The JS/assets
 bundle task always reruns, so an asset-only edit cannot leave an old bundle

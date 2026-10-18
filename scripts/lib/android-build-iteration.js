@@ -28,7 +28,8 @@ function buildContext(root, { env, abi, profile, profileable, sideBySideQa }) {
     } else if (stat.isFile()) files[relative] = hashFile(full);
   };
   collect('android');
-  if (fs.existsSync(path.join(root, 'patches'))) collect('patches');
+  for (const directory of ['patches', 'plugins', 'release'])
+    if (fs.existsSync(path.join(root, directory))) collect(directory);
   for (const file of ['app.json', 'app.config.ts', 'package.json', 'package-lock.json',
     'metro.config.js', 'babel.config.js', 'global.css',
     'scripts/build-android-release-local.js', 'scripts/lib/android-build-iteration.js'])

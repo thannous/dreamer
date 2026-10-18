@@ -300,8 +300,10 @@ function getBuildEnv(
   return nextEnv;
 }
 
-function getPrebuildArgs() {
-  return ['expo', 'prebuild', '--platform', 'android', '--no-install'];
+function getPrebuildArgs(preserveNative = false) {
+  // SDK 58 recreates native folders by default. Only a passed identical
+  // iteration context may opt into its explicit --no-clean update.
+  return ['expo', 'prebuild', '--platform', 'android', '--no-install', ...(preserveNative ? ['--no-clean'] : [])];
 }
 
 function getApkPath(rootDir = ROOT) {
@@ -757,21 +759,29 @@ function buildLocal(options) {
     }
     abi = abi ?? deviceAbi;
   }
+  const currentContext = () => buildContext(ROOT, { env, abi, profile: options.profile,
+    profileable: options.profileable, sideBySideQa: options.sideBySideQa });
+  let preservedNative = false;
+  const prebuild = preserve => runChecked(process.platform === 'win32' ? 'npx.cmd' : 'npx', getPrebuildArgs(preserve), {
+    cwd: ROOT, env, label: 'Expo Android prebuild',
+  });
   if (options.reuseNativeProject) {
     assertReusableNativeProject(ROOT, options.profileable);
   } else {
-    const npxCommand = process.platform === 'win32' ? 'npx.cmd' : 'npx';
-    runChecked(npxCommand, getPrebuildArgs(), {
-      cwd: ROOT,
-      env,
-      label: 'Expo Android prebuild',
-    });
+    preservedNative = options.incremental && fs.existsSync(path.join(ROOT, 'android'))
+      && iterationPlan(ROOT, currentContext(), true).reuse;
+    prebuild(preservedNative);
   }
 
   const gradleWrapper = getGradleWrapper();
-  const context = buildContext(ROOT, { env, abi, profile: options.profile,
-    profileable: options.profileable, sideBySideQa: options.sideBySideQa });
-  const plan = iterationPlan(ROOT, context, options.incremental);
+  let context = currentContext();
+  let plan = iterationPlan(ROOT, context, options.incremental);
+  if (options.incremental && (!preservedNative || !plan.reuse)) {
+    // An unexpected prebuild mutation also requires full native regeneration;
+    // updating an old project cannot reliably undo a removed plugin's effects.
+    if (preservedNative) { prebuild(false); context = currentContext(); }
+    plan = { context, reuse: false, reason: 'native regeneration required or no passed matching build' };
+  }
   if (options.incremental) process.stdout.write(`[android-iteration] ${plan.reuse ? 'incremental' : 'clean'}: ${plan.reason}\n`);
   recordBuild(ROOT, plan, 'building');
   const apkPath = getApkPath();
