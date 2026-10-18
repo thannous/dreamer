@@ -8,7 +8,7 @@ const { replaceFile } = require('./replace-file.cjs');
 const STATE_FILE = '.expo/android-build-state.json';
 const LOCK_FILE = '.expo/android-build.lock';
 const GENERATED = new Set(['build', '.gradle', '.cxx', '.kotlin']);
-const SESSION_METADATA = new Set(['WSL_INTEROP', 'SHLVL', '_', 'PWD', 'OLDPWD',
+const SESSION_METADATA = new Set(['WSL_INTEROP', 'CODEX_TOOL_CALL_ID', 'SHLVL', '_', 'PWD', 'OLDPWD',
   'NPM_LIFECYCLE_EVENT', 'NPM_LIFECYCLE_SCRIPT']);
 
 function hashFile(file) {

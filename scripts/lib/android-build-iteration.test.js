@@ -56,12 +56,15 @@ describe('Android iteration safety (same cases on every host)', () => {
   });
   it('reuses across shell/WSL/npm invocations while retaining unknown build variables', () => {
     const root = fixture(), first = options(), second = options();
-    Object.assign(first.env, { WSL_INTEROP: '/run/WSL/100_interop', SHLVL: '1', _: '/bin/node', PWD: '/caller/one', OLDPWD: '/previous/one',
+    Object.assign(first.env, { WSL_INTEROP: '/run/WSL/100_interop', CODEX_TOOL_CALL_ID: 'call-one', SHLVL: '1', _: '/bin/node', PWD: '/caller/one', OLDPWD: '/previous/one',
       npm_lifecycle_event: 'android:release:local', npm_lifecycle_script: 'node build.js' });
-    Object.assign(second.env, { WSL_INTEROP: '/run/WSL/200_interop', SHLVL: '2', _: '/other/node', PWD: '/caller/two', OLDPWD: '/previous/two',
+    Object.assign(second.env, { WSL_INTEROP: '/run/WSL/200_interop', CODEX_TOOL_CALL_ID: 'call-two', SHLVL: '2', _: '/other/node', PWD: '/caller/two', OLDPWD: '/previous/two',
       NPM_LIFECYCLE_EVENT: 'android:iterate:local', NPM_LIFECYCLE_SCRIPT: 'node build.js --incremental' });
     expect(buildContext(root, first)).toBe(buildContext(root, second));
     second.env.NATIVE_BUILD_FEATURE = 'changed';
+    expect(buildContext(root, first)).not.toBe(buildContext(root, second));
+    delete second.env.NATIVE_BUILD_FEATURE;
+    second.env.CODEX_CI = '1';
     expect(buildContext(root, first)).not.toBe(buildContext(root, second));
   });
   it('ignores only generated Gradle outputs and leaves ordinary JS edits to task inputs', () => {
