@@ -19,7 +19,7 @@ function buildContext(root, { env, abi, profile, profileable, sideBySideQa }) {
   const collect = relative => {
     const full = path.join(root, relative);
     const stat = fs.lstatSync(full);
-    if (stat.isSymbolicLink()) throw new Error('Android iteration inputs must not contain symlinks.');
+    if (stat.isSymbolicLink()) throw Object.assign(new Error('Android iteration inputs must not contain symlinks.'), { code: 'ANDROID_ITERATION_INPUT_LINK' });
     if (stat.isDirectory()) {
       for (const name of fs.readdirSync(full).sort()) {
         const gradleOutput = relative === 'android' || /^android\/[^/]+$/.test(relative);
@@ -42,6 +42,16 @@ function buildContext(root, { env, abi, profile, profileable, sideBySideQa }) {
     schemaVersion: 1, root: path.resolve(root), node: process.version, platform: process.platform,
     abi, profile, profileable, sideBySideQa, environment, files,
   })).digest('hex');
+}
+
+function contextForBuild(root, inputs, incremental) {
+  try { return buildContext(root, inputs); }
+  catch (error) {
+    // The optional cache must not reject an existing clean Release project.
+    // A null context cannot prime a subsequent (strict) iteration build.
+    if (!incremental && error.code === 'ANDROID_ITERATION_INPUT_LINK') return null;
+    throw error;
+  }
 }
 
 function iterationPlan(root, context, incremental) {
@@ -85,4 +95,4 @@ function acquireBuildLock(root) {
   };
 }
 
-module.exports = { STATE_FILE, LOCK_FILE, buildContext, iterationPlan, recordBuild, acquireBuildLock };
+module.exports = { STATE_FILE, LOCK_FILE, buildContext, contextForBuild, iterationPlan, recordBuild, acquireBuildLock };

@@ -9,7 +9,7 @@ const { spawnSync } = require('node:child_process');
 const { parseEnv: parseExpoEnv } = require('@expo/env');
 const { sync: spawnPortable } = require('cross-spawn');
 const {
-  acquireBuildLock, buildContext, iterationPlan, recordBuild,
+  acquireBuildLock, contextForBuild, iterationPlan, recordBuild,
 } = require('./lib/android-build-iteration');
 
 const { resolveCommand } = require('./android-tooling');
@@ -759,8 +759,8 @@ function buildLocal(options) {
     }
     abi = abi ?? deviceAbi;
   }
-  const currentContext = () => buildContext(ROOT, { env, abi, profile: options.profile,
-    profileable: options.profileable, sideBySideQa: options.sideBySideQa });
+  const currentContext = () => contextForBuild(ROOT, { env, abi, profile: options.profile,
+    profileable: options.profileable, sideBySideQa: options.sideBySideQa }, options.incremental);
   let preservedNative = false;
   const prebuild = preserve => runChecked(process.platform === 'win32' ? 'npx.cmd' : 'npx', getPrebuildArgs(preserve), {
     cwd: ROOT, env, label: 'Expo Android prebuild',

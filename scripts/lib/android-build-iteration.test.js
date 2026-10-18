@@ -3,7 +3,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const os = require('node:os');
-const { STATE_FILE, LOCK_FILE, buildContext, iterationPlan, recordBuild, acquireBuildLock } = require('./android-build-iteration');
+const { STATE_FILE, LOCK_FILE, buildContext, contextForBuild, iterationPlan, recordBuild, acquireBuildLock } = require('./android-build-iteration');
 const { getGradleArgs, getPrebuildArgs, getOutputApkPath, runChecked } = require('../build-android-release-local');
 
 // Browser journeys cannot manufacture an interrupted build, incompatible native
@@ -82,7 +82,10 @@ describe('Android iteration safety (same cases on every host)', () => {
     const root = fixture(), lstat = fs.lstatSync;
     const adapter = jest.spyOn(fs, 'lstatSync').mockImplementation(file =>
       file === path.join(root, 'android/app/build.gradle') ? { isSymbolicLink: () => true } : lstat(file));
-    try { expect(() => buildContext(root, options())).toThrow('symlinks'); }
+    try {
+      expect(() => contextForBuild(root, options(), true)).toThrow('symlinks');
+      expect(contextForBuild(root, options(), false)).toBeNull();
+    }
     finally { adapter.mockRestore(); }
   });
   it('preserves the complete old state when atomic replacement fails', () => {
