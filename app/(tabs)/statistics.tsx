@@ -3,7 +3,7 @@ import { JournalCompletenessNotice } from '@/components/journal/JournalCompleten
 import { DreamSymbolSheet } from '@/components/journal/symbols/DreamSymbolSheet';
 import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useDeferredValue, useMemo, useRef, useState } from 'react';
 import {
   Platform,
   ScrollView,
@@ -121,12 +121,22 @@ function StatisticsScreen() {
   useClearWebFocus();
 
   const [period, setPeriod] = useState<DreamTrendsPeriod>(DEFAULT_DREAM_TRENDS_PERIOD);
+  // The switch answers a tap at once; the page follows in a render that does not hold it up.
+  const shownPeriod = useDeferredValue(period);
   const [selectedTheme, setSelectedTheme] = useState<DreamTheme | null>(null);
+  // A sign chosen in one period is let go once the page shows another.
+  const [themePeriod, setThemePeriod] = useState(shownPeriod);
+  if (themePeriod !== shownPeriod) {
+    setThemePeriod(shownPeriod);
+    setSelectedTheme(null);
+  }
   const [nightsLit, setNightsLit] = useState(false);
   const [returnsLit, setReturnsLit] = useState(false);
   const [openSymbol, setOpenSymbol] = useState<string | null>(null);
   const nightsRef = useRef<ViewInstance | null>(null);
   const returnsRef = useRef<ViewInstance | null>(null);
+  // What has lit, read by the scroll handler so it stays the same function and stops measuring.
+  const litRef = useRef({ nights: false, returns: false });
 
   const compact = width < COMPACT_BREAKPOINT;
   const largeText = Number.isFinite(fontScale) && fontScale >= 1.3;
@@ -142,7 +152,7 @@ function StatisticsScreen() {
 
   // Read on today's date, again whenever the journal, the period or the day changes.
   const today = useEndOfLocalDay();
-  const trends = useMemo(() => buildDreamTrends(dreams, { period, now: today }), [dreams, period, today]);
+  const trends = useMemo(() => buildDreamTrends(dreams, { period: shownPeriod, now: today }), [dreams, shownPeriod, today]);
   // The journal's symbols, read only once enough dreams are; the index is the one the readings share.
   // An open page keeps it, so the sheet closes as it should even if the period stops being ready.
   const { ready, analyzedIds } = trends.patterns;
@@ -157,25 +167,22 @@ function StatisticsScreen() {
   );
 
   const reveal = useCallback(() => {
-    const probe = (ref: React.RefObject<ViewInstance | null>, lit: boolean, light: (value: boolean) => void) => {
-      if (lit || !ref.current) return;
+    const probe = (ref: React.RefObject<ViewInstance | null>, section: 'nights' | 'returns', light: (value: boolean) => void) => {
+      if (litRef.current[section] || !ref.current) return;
       ref.current.measureInWindow((_x, y) => {
-        if (Number.isFinite(y) && y < height - REVEAL_MARGIN) light(true);
+        if (litRef.current[section] || !Number.isFinite(y) || y >= height - REVEAL_MARGIN) return;
+        litRef.current[section] = true;
+        light(true);
       });
     };
-    probe(nightsRef, nightsLit, setNightsLit);
-    probe(returnsRef, returnsLit, setReturnsLit);
-  }, [height, nightsLit, returnsLit]);
+    probe(nightsRef, 'nights', setNightsLit);
+    probe(returnsRef, 'returns', setReturnsLit);
+  }, [height]);
 
   const handleScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
     onHeaderScroll(event);
     reveal();
   }, [onHeaderScroll, reveal]);
-
-  const choosePeriod = useCallback((next: DreamTrendsPeriod) => {
-    setPeriod(next);
-    setSelectedTheme(null);
-  }, []);
 
   const chooseTheme = useCallback((theme: DreamTheme) => {
     setSelectedTheme((current) => (current === theme ? null : theme));
@@ -261,6 +268,86 @@ function StatisticsScreen() {
       : t('trends.compare.all', { count: formatNumber(journalWeeks) })
     : trends.countDelta != null ? t(`trends.compare.${trends.period}`) : null;
 
+  // Each section is its own element: one that lights or changes redraws only itself.
+  const periodSection = (
+    <View className="gap-5" testID="trends.section.period" accessible={false} accessibilityRole="none">
+      <TrendsPeriodSwitch period={period} onChange={setPeriod} reduced={reduced} t={t} />
+      <View className="flex-row items-start gap-3">
+        <View className="mt-[9px] h-px w-[22px] bg-champagne" />
+        <Text testID="trends.range" className="min-w-0 shrink text-[12px] leading-[18px] font-sans-medium uppercase tracking-[1.6px] text-champagne-on">
+          {[rangeLabel, compareLabel].filter(Boolean).join(' · ')}
+        </Text>
+      </View>
+      <TrendsFigures trends={trends} entrance reduced={reduced} stacked={largeText}
+        t={t} formatNumber={formatNumber} formatDate={formatDate} />
+    </View>
+  );
+
+  const sealSection = (
+    <View className="items-center gap-4" testID="trends.section.seal" accessible={false} accessibilityRole="none">
+      <PeriodSeal
+        counts={trends.themes.counts}
+        shown={shownTheme}
+        selected={selectedTheme}
+        onSelect={chooseTheme}
+        legend={shownTheme ? t('trends.seal.legend', {
+          theme: getDreamThemeLabel(shownTheme, t) ?? shownTheme,
+          count: formatNumber(shownCount),
+          total: formatNumber(trends.count),
+        }) : null}
+        dates={sealDates}
+        medalLabel={(theme) => {
+          const count = trends.themes.counts[theme];
+          return t(count === 0 ? 'trends.seal.medal_zero' : count === 1 ? 'trends.seal.medal_one' : 'trends.seal.medal', {
+            theme: getDreamThemeLabel(theme, t) ?? theme,
+            count: formatNumber(count),
+          });
+        }}
+        ink={ink}
+        glow={noctalia.atmosphere.glow}
+        star={noctalia.atmosphere.star}
+        entrance
+        reduced={reduced}
+        size={sealSize}
+      />
+      <Text testID="trends.seal.sentence" accessibilityLiveRegion="polite"
+        className="max-w-[420px] text-center text-[17px] leading-[25px] font-display text-ivory">
+        {sealSentence(trends, selectedTheme, t, formatNumber)}
+      </Text>
+      {shownTheme && shownCount > 0 ? (
+        <PressableScale testID="trends.seal.open" haptic="light" accessibilityRole="button"
+          onPress={() => openJournal(trends, { theme: shownTheme })}
+          className="min-h-[48px] flex-row items-center gap-2 rounded-full border border-champagne-soft px-5">
+          <Text className="text-[15px] font-sans-bold text-champagne-on">
+            {t(shownCount === 1 ? 'trends.seal.open_one' : 'trends.seal.open', { count: formatNumber(shownCount) })}
+          </Text>
+          <IconSymbol name="arrow.right" size={14} color={ink} />
+        </PressableScale>
+      ) : null}
+      {!selectedTheme && trends.themes.dominant ? (
+        <Text className="text-center text-[12px] leading-[16px] font-sans text-ivory-muted">{t('trends.seal.hint')}</Text>
+      ) : null}
+    </View>
+  );
+
+  const nightsSection = (
+    <View ref={nightsRef} onLayout={reveal} className="border-t border-line pt-7">
+      <TrendsNights trends={trends} lit={nightsLit} reduced={reduced} ink={ink} onAccent={noctalia.action.primaryText}
+        t={t} formatDate={formatDate} formatNumber={formatNumber} locale={locale}
+        onOpenDream={openDream} onCapture={capture} />
+    </View>
+  );
+
+  const returnsSection = (
+    <View ref={returnsRef} onLayout={reveal} className="border-t border-line pt-7">
+      <TrendsReturns trends={trends} symbols={periodSymbols} lit={returnsLit || reduced} ink={ink} t={t}
+        formatNumber={formatNumber}
+        onOpenUnanalyzed={() => openJournal(trends, { analysis: 'unanalyzed' })}
+        onOpenType={(type: DreamType) => openJournal(trends, { dreamType: type, analysis: 'analyzed' })}
+        onOpenSymbol={setOpenSymbol} />
+    </View>
+  );
+
   return (
     <View className="flex-1 bg-ink" testID="screen.trends">
       <ScrollView
@@ -295,76 +382,10 @@ function StatisticsScreen() {
             </View>
           ) : (
             <View className="gap-8 px-5 pb-5 pt-2">
-              <View className="gap-5" testID="trends.section.period" accessible={false} accessibilityRole="none">
-                <TrendsPeriodSwitch period={period} onChange={choosePeriod} reduced={reduced} t={t} />
-                <View className="flex-row items-start gap-3">
-                  <View className="mt-[9px] h-px w-[22px] bg-champagne" />
-                  <Text testID="trends.range" className="min-w-0 shrink text-[12px] leading-[18px] font-sans-medium uppercase tracking-[1.6px] text-champagne-on">
-                    {[rangeLabel, compareLabel].filter(Boolean).join(' · ')}
-                  </Text>
-                </View>
-                <TrendsFigures trends={trends} entrance reduced={reduced} stacked={largeText}
-                  t={t} formatNumber={formatNumber} formatDate={formatDate} />
-              </View>
-
-              <View className="items-center gap-4" testID="trends.section.seal" accessible={false} accessibilityRole="none">
-                <PeriodSeal
-                  counts={trends.themes.counts}
-                  shown={shownTheme}
-                  selected={selectedTheme}
-                  onSelect={chooseTheme}
-                  legend={shownTheme ? t('trends.seal.legend', {
-                    theme: getDreamThemeLabel(shownTheme, t) ?? shownTheme,
-                    count: formatNumber(shownCount),
-                    total: formatNumber(trends.count),
-                  }) : null}
-                  dates={sealDates}
-                  medalLabel={(theme) => {
-                    const count = trends.themes.counts[theme];
-                    return t(count === 0 ? 'trends.seal.medal_zero' : count === 1 ? 'trends.seal.medal_one' : 'trends.seal.medal', {
-                      theme: getDreamThemeLabel(theme, t) ?? theme,
-                      count: formatNumber(count),
-                    });
-                  }}
-                  ink={ink}
-                  glow={noctalia.atmosphere.glow}
-                  star={noctalia.atmosphere.star}
-                  entrance
-                  reduced={reduced}
-                  size={sealSize}
-                />
-                <Text testID="trends.seal.sentence" accessibilityLiveRegion="polite"
-                  className="max-w-[420px] text-center text-[17px] leading-[25px] font-display text-ivory">
-                  {sealSentence(trends, selectedTheme, t, formatNumber)}
-                </Text>
-                {shownTheme && shownCount > 0 ? (
-                  <PressableScale testID="trends.seal.open" haptic="light" accessibilityRole="button"
-                    onPress={() => openJournal(trends, { theme: shownTheme })}
-                    className="min-h-[48px] flex-row items-center gap-2 rounded-full border border-champagne-soft px-5">
-                    <Text className="text-[15px] font-sans-bold text-champagne-on">
-                      {t(shownCount === 1 ? 'trends.seal.open_one' : 'trends.seal.open', { count: formatNumber(shownCount) })}
-                    </Text>
-                    <IconSymbol name="arrow.right" size={14} color={ink} />
-                  </PressableScale>
-                ) : null}
-                {!selectedTheme && trends.themes.dominant ? (
-                  <Text className="text-center text-[12px] leading-[16px] font-sans text-ivory-muted">{t('trends.seal.hint')}</Text>
-                ) : null}
-              </View>
-
-              <View ref={nightsRef} onLayout={reveal} className="border-t border-line pt-7">
-                <TrendsNights trends={trends} lit={nightsLit} reduced={reduced} ink={ink} onAccent={noctalia.action.primaryText}
-                  t={t} formatDate={formatDate} formatNumber={formatNumber} locale={locale}
-                  onOpenDream={openDream} onCapture={capture} />
-              </View>
-
-              <View ref={returnsRef} onLayout={reveal} className="border-t border-line pt-7">
-                <TrendsReturns trends={trends} symbols={periodSymbols} lit={returnsLit || reduced} ink={ink} t={t}
-                  formatNumber={formatNumber}
-                  onOpenUnanalyzed={() => openJournal(trends, { analysis: 'unanalyzed' })}
-                  onOpenType={(type: DreamType) => openJournal(trends, { dreamType: type, analysis: 'analyzed' })}
-                  onOpenSymbol={setOpenSymbol} />
-              </View>
+              {periodSection}
+              {sealSection}
+              {nightsSection}
+              {returnsSection}
               {compact ? <View testID="trends.layout.compact" /> : null}
             </View>
           )}
