@@ -514,7 +514,9 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
       return await convergeServerSubscription('purchase', nextStatus);
     } catch (e) {
       const isCancelled = isUserCancelledError(e);
-      console.error('[useSubscription] Purchase failed', {
+      // A cancelled store sheet is an expected outcome, not an error.
+      const log = isCancelled ? console.info : console.error;
+      log(isCancelled ? '[useSubscription] Purchase cancelled' : '[useSubscription] Purchase failed', {
         timestamp: new Date().toISOString(),
         userId: user?.id,
         packageId: id,
