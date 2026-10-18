@@ -305,7 +305,7 @@ For a substantial change, follow the [focused review procedure](doc_web_interne/
 - Tests: `npm run test:related -- <files>`, `npm run test:file -- <test-files>`, `npm run test:changed`, or `npm test` when broader coverage is justified.
 - Types and lint: `npm run typecheck:app`, `npm run typecheck:tests`, `npx expo lint <touched-paths>`, `npm run lint`.
 - Jest projects: `npm run test:node`, `npm run test:expo`; performance: `npm run test:perf`. If Watchman is blocked, rerun focused Jest checks with `--watchman=false`.
-- Site: edit sources only, then run `npm run docs:build` and `npm run docs:check`; reserve `npm run docs:release-check` for release-ready work. `docs:build` includes the `docs-src/experience/` bundle. Use `npm run docs:dev` for live editing.
+- Site: edit sources only, then run `npm run docs:build` and `npm run docs:check`; reserve `npm run docs:release-check` for release-ready work. `docs:build` includes the `docs-src/experience/` bundle. Use `npm run docs:dev` for live editing. While iterating on one generated page, follow [the fast loop](docs-src/README.md#iterate-quickly-on-one-generated-page): rebuild that page alone, run only the journey you change, and one `verify:pr` per batch of changes.
 - Backend: `npm run db:contract:check` or `npm run db:contract:check:local`.
 - Android: `npm run android:gates`, `npm run security:audit:mobile`, and the smallest applicable TesterArmy native selection (`npm run test:testerarmy:mobile -- <product> android` with `--grep`).
 
