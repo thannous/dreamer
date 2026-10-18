@@ -171,7 +171,7 @@ test('globally passed SDK report refuses every non-passed executed step', () => 
 const metroRoot = fileURLToPath(new URL('../../', import.meta.url));
 function seed(entries) {
   const env = Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.startsWith('EXPO_PUBLIC_')
-    && !['NOCTALIA_APP_VARIANT', 'NOCTALIA_DREAMER_QA_BUILD', 'EXPO_ROUTER_APP_ROOT', 'EXPO_ROUTER_IMPORT_MODE'].includes(key)));
+    && !['NOCTALIA_APP_VARIANT', 'NOCTALIA_DREAMER_QA_BUILD', 'EXPO_ROUTER_APP_ROOT', 'EXPO_ROUTER_IMPORT_MODE', 'NOCTALIA_DISABLE_RC_WEB_STUB', 'EAS_BUILD'].includes(key)));
   const result = spawnSync(process.execPath, ['-e', "process.stdout.write(JSON.stringify(require('./metro.config.js').cacheVersion))"],
     { cwd: metroRoot, env: { ...env, ...Object.fromEntries(entries) }, encoding: 'utf8' });
   assert.equal(result.status, 0, 'real Metro configuration must load');
@@ -189,7 +189,9 @@ test('real Metro cache isolates compiled profiles while retaining identical inpu
     [['EXPO_PUBLIC_MOCK_MODE', 'false']], [['EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED', 'false']],
     [['EXPO_ROUTER_APP_ROOT', './routes/lucid']], [['EXPO_ROUTER_IMPORT_MODE', 'lazy']],
     [['NOCTALIA_DREAMER_QA_BUILD', '1']],
+    [['NOCTALIA_DISABLE_RC_WEB_STUB', '1']],
   ]) assert.notEqual(seed([...profile, ...changed]), dreamer, 'a changed compiled profile cannot reuse the other profile namespace');
+  assert.equal(seed([...profile, ['NOCTALIA_DISABLE_RC_WEB_STUB', '1'], ['EAS_BUILD', 'true']]), dreamer);
 });
 
 

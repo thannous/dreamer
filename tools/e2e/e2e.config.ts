@@ -25,8 +25,11 @@ const appNodeOptions = process.env.E2E_APP_NODE_OPTIONS_PRESENT === undefined
   ? process.env.NODE_OPTIONS
   : process.env.E2E_APP_NODE_OPTIONS_PRESENT === '1' ? process.env.E2E_APP_NODE_OPTIONS! : undefined;
 const device = process.env.E2E_DEVICE;
-// CI restores a Metro cache whose key includes every public build input (metro.config.js).
-const keepMetroCache = process.env.E2E_KEEP_METRO_CACHE === '1' && product !== 'meditation';
+// Dreamer/Lucid fingerprint compiled profiles in metro.config.js. Keep transforms
+// by default; 0 explicitly requests a cold diagnostic. SDK replay stays disabled.
+if (process.env.E2E_KEEP_METRO_CACHE !== undefined && !['0', '1'].includes(process.env.E2E_KEEP_METRO_CACHE))
+  throw new Error('E2E_KEEP_METRO_CACHE takes 0 or 1.');
+const keepMetroCache = process.env.E2E_KEEP_METRO_CACHE !== '0' && product !== 'meditation';
 if (native && (!device || (platform === 'android' && !/^emulator-\d+$/.test(device))))
   throw new Error('Name an explicit emulator/simulator with E2E_DEVICE; physical devices are excluded.');
 // run.mjs resolves the web worker count and records it; a native target drives its one device.
@@ -48,7 +51,7 @@ export default {
       environment: 'test' as const,
       // Static Expo routes compile during the first request; probe Metro without
       // repeatedly starting SSR bundles. app.open() and the journey verify the UI.
-      ...(product === 'meditation' ? { readyUrl: `http://127.0.0.1:${port}/status` } : {}),
+      ...(product !== 'site' ? { readyUrl: `http://127.0.0.1:${port}/status` } : {}),
       // The SDK probe never reads the response body. Against python's http.server a
       // large unread index.html races the socket close and crashes Node's HTTP parser
       // (undici `Parser.finish` assertion) before any journey runs; probe a tiny file.

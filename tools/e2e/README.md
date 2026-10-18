@@ -131,13 +131,15 @@ fails the run; it does not fall back to launching another browser.
 The web products start separate local servers on ports 8096–8099; root app
 services are mocked and external requests are blocked in app tests. Meditation
 web proves routing/storage on the web only, not native audio or purchases.
-Each Expo web start clears its Metro bundle cache; Dreamer and Lucid also set
-both variant markers explicitly. Switching products must not reuse the previous
-product's embedded Expo configuration. Environment profiles and runner guards
-still apply.
-Meditation probes Metro's `/status` endpoint during startup so repeated short
-health requests do not restart static route compilation on a cold Linux runner.
-Its test still opens the app and checks onboarding, persisted state and every tab.
+Dreamer and Lucid retain Metro transforms by default and set both variant markers
+explicitly. `E2E_KEEP_METRO_CACHE=0` requests a cold diagnostic; `1` explicitly
+retains the cache. Other values fail. The Metro fingerprint isolates public,
+native/router and effective RevenueCat resolver inputs. SDK replay remains off:
+every selected journey and assertion still executes. Meditation keeps its cold
+start until it has equivalent profile fingerprinting.
+All Expo products probe Metro's `/status` endpoint during startup so repeated
+short health requests do not restart static route compilation. Each journey
+still opens the app and checks its actual UI and state.
 Meditation web has a 180-second test and lifecycle budget: the public `app.open()`
 and `app.restart()` methods use `config.timeout`, capped by the remaining test
 budget. A per-test timeout alone does not raise that lifecycle limit. Other
@@ -298,7 +300,8 @@ the native cache does not invalidate an earlier rerun. Partial copies never
 produce a successful receipt. Local package and CocoaPods links
 are hashed with their in-checkout destinations; foreign links/cycles are refused.
 Metro's public `cacheVersion` retains its upstream seed and includes a hash of
-all `EXPO_PUBLIC_*` inputs plus the native/router profile selectors. Release
+all `EXPO_PUBLIC_*` inputs plus the native/router profile selectors and effective
+RevenueCat web-stub setting. Release
 exports in CI can disable automatic cache resets; profiles must have separate
 transform keys even when their source files are identical. Inputs are sorted
 without locale rules, and values are never printed. See the official

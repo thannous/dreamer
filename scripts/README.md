@@ -45,6 +45,19 @@ Inspect the canonical runner with:
 mise exec -- npm run android:release:local -- --help
 ```
 
+For local Android iteration, use `npm run android:iterate:local -- --abi x86_64`
+in the app's isolated native checkout (select the actual target ABI). It still
+runs Expo prebuild. Its first or invalidated build keeps the clean Release flags;
+only a previously successful identical native/profile/dependency/environment
+context uses Gradle's build cache and daemon without `:app:clean`. Ordinary JS
+edits are handled by Gradle's bundle task inputs. A failed/interrupted build,
+changed context or corrupt state forces a clean build. The checkout lock refuses
+concurrent native builds; verify the recorded PID before removing a stale lock.
+The result ends in `-iteration.apk` and cannot qualify a TesterArmy Release
+receipt. `android:release:local` keeps its clean/no-cache/no-daemon defaults.
+Do not combine `--incremental` with `--reuse-native-project`. Installation is
+still explicit and keeps the existing device, package, signing and data guards.
+
 Requested native implementation/QA includes its necessary local build, compatible
 installation on an owned disposable QA target and isolated Expo native generation.
 Check SDK/profile inputs first; reuse a compatible existing `android/` through

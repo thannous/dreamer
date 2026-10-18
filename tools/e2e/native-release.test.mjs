@@ -6,6 +6,14 @@ import { join } from 'node:path';
 import { validateReleaseReceipt, runWithInstallDiagnostics, normalizeAvdName, validateBuildCommand, nativeInputs, archiveReleaseBinary } from './native-release.mjs';
 import { virtualLinks } from './test-support/virtual-links.mjs';
 const sha = 'a'.repeat(64);
+test('iteration APK commands never qualify as Release on either path syntax', () => {
+  for (const [node, script] of [['/bin/node', '/repo/scripts/build-android-release-local.js'],
+    ['C:\\node\\node.exe', 'C:\\repo\\scripts\\build-android-release-local.js']]) {
+    validateBuildCommand([node, script, '--reuse-native-project'], 'android');
+    assert.throws(() => validateBuildCommand([node, script, '--reuse-native-project', '--incremental'], 'android'));
+    assert.throws(() => validateBuildCommand([node, script, '--incremental'], 'android'));
+  }
+});
 const receipt = () => ({ schemaVersion: 1, kind: 'noctalia-native-release', product: 'dreamer', platform: 'android',
   bundle: 'com.tanuki75.noctalia', configuration: 'Release', buildExitCode: 0, source: { revision: 'a'.repeat(40), inputDigest: sha },
   nativeInputDigest: sha, binary: { path: '/public/fixture.apk', sha256: sha, version: '3.4.5', build: '83' },
