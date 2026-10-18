@@ -4,7 +4,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 
-const EAS_CLI_VERSION = '21.0.0';
+const EAS_CLI_VERSION = '25.1.1';
 const PAGE_SIZE = 50;
 const MAX_PAGES = 100;
 const BLOCKING_STATUSES = new Set(['FINISHED', 'IN_PROGRESS', 'IN_QUEUE', 'AWAITING_BUILD']);
@@ -60,7 +60,7 @@ function findPinnedEasRoot() {
       }
     }
   }
-  throw new Error('Pinned eas-cli@21.0.0 is unavailable; no submission started');
+  throw new Error('Pinned eas-cli@25.1.1 is unavailable; no submission started');
 }
 
 function parseArgs(args) {

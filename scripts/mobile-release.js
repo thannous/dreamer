@@ -268,8 +268,10 @@ function parseArgs(args) {
 function internalSubmitArgs(platform, id) {
   if (!['android', 'ios'].includes(platform)) throw new Error('Internal submission needs --platform android|ios');
   if (!/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(id ?? '')) throw new Error('Internal submission needs an explicit EAS build ID');
-  return ['--yes', 'eas-cli@21.0.0', 'submit', '--platform', platform,
-    '--profile', platform === 'android' ? 'internal' : 'production', '--id', id, '--non-interactive'];
+  // EAS CLI 25 sets up an internal TestFlight group on every iOS submit; keep submit as it was on 21.
+  return ['--yes', 'eas-cli@25.1.1', 'submit', '--platform', platform,
+    '--profile', platform === 'android' ? 'internal' : 'production', '--id', id, '--non-interactive',
+    ...(platform === 'ios' ? ['--no-auto-testflight-setup'] : [])];
 }
 
 function assertInternalBuild(build, platform, expected) {
@@ -277,7 +279,7 @@ function assertInternalBuild(build, platform, expected) {
   if (build.platform !== platform.toUpperCase()) throw new Error(`EAS build platform does not match ${platform}`);
   if (build.distribution !== 'STORE') throw new Error('Internal Store testing requires a STORE build, not a preview/ad hoc build');
   if (build.buildProfile !== 'production') throw new Error('Internal Store testing requires the production build profile');
-  if (build.project?.id !== expected.projectId) throw new Error('EAS build belongs to a different project');
+  if (build.app?.id !== expected.projectId) throw new Error('EAS build belongs to a different project');
   if (build.appVersion !== expected.version) throw new Error('EAS build version does not match the prepared release');
   if (!build.artifacts?.buildUrl) throw new Error('EAS build has no downloadable Store artifact');
 }
@@ -332,7 +334,7 @@ function main(args = process.argv.slice(2), root = ROOT) {
     }
     const command = process.platform === 'win32' ? 'npx.cmd' : 'npx';
     const env = { ...process.env, EXPO_NO_DOTENV: '1', NOCTALIA_APP_VARIANT: 'noctalia', EXPO_PUBLIC_APP_VARIANT: 'noctalia' };
-    const inspected = spawnSync(command, ['--yes', 'eas-cli@21.0.0', 'build:view', options.id, '--json'], {
+    const inspected = spawnSync(command, ['--yes', 'eas-cli@25.1.1', 'build:view', options.id, '--json'], {
       cwd: root, env, encoding: 'utf8', stdio: ['ignore', 'pipe', 'inherit'], maxBuffer: 32 * 1024 * 1024,
     });
     if (inspected.error || inspected.status !== 0) throw new Error(`Could not inspect EAS build before submission: ${inspected.error?.message || inspected.status}`);
@@ -343,7 +345,7 @@ function main(args = process.argv.slice(2), root = ROOT) {
     assertInternalBuild(build, options.platform, { projectId: appConfig.extra?.eas?.projectId, version: appConfig.version });
     if (options.platform === 'ios') assertIosBuildSource(root, build);
     const submissionLookup = spawnSync(process.platform === 'win32' ? 'npm.cmd' : 'npm', [
-      'exec', '--yes', '--package=eas-cli@21.0.0', '--', 'node',
+      'exec', '--yes', '--package=eas-cli@25.1.1', '--', 'node',
       path.join(root, 'scripts/check-eas-internal-submission.js'),
       '--project-id', appConfig.extra.eas.projectId,
       '--platform', options.platform,
@@ -365,7 +367,7 @@ function main(args = process.argv.slice(2), root = ROOT) {
   const env = { ...process.env, EXPO_NO_DOTENV: '1', NOCTALIA_APP_VARIANT: app === 'lucid' ? 'lucid' : 'noctalia', EXPO_PUBLIC_APP_VARIANT: app === 'lucid' ? 'lucid' : 'noctalia' };
   const preflight = spawnSync(process.execPath, [path.join(root, 'scripts/check-eas-build-inputs.js'), '--app', app, '--platform', options.platform], { cwd: root, env, stdio: 'inherit' });
   if (preflight.error || preflight.status !== 0) throw new Error(`Local EAS build preflight failed; no build started: ${preflight.error?.message || preflight.status}`);
-  const result = spawnSync(process.platform === 'win32' ? 'npx.cmd' : 'npx', ['--yes', 'eas-cli@21.0.0', 'build', '--platform', options.platform, '--profile', app === 'lucid' ? 'lucid-production' : 'production'], {
+  const result = spawnSync(process.platform === 'win32' ? 'npx.cmd' : 'npx', ['--yes', 'eas-cli@25.1.1', 'build', '--platform', options.platform, '--profile', app === 'lucid' ? 'lucid-production' : 'production'], {
     cwd: app === 'meditation' ? path.join(root, 'apps/meditation') : root,
     env,
     stdio: 'inherit',
