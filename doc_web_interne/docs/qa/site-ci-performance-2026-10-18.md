@@ -324,3 +324,15 @@ Ces parcours navigateur utilisent les services mock ; ils ne qualifient aucun
 binaire Android/iOS. Les campagnes Dreamer/Meditation complètes, les builds EAS
 et la CI distante n'ont pas été rejoués. Les fichiers de parcours et leurs
 assertions ne sont pas modifiés par ce lot.
+
+### Intégration avant fusion
+
+La revalidation après intégration de master `a62ff2ccecc05f6c1a3f2663117236cc7228744d`
+(PR #419, passage à 240 symboles) a reproduit un échec de provenance du registre
+des URL : `sourceRevision=1fc0142d79942570281a4a870583b54dc4bb3a0f` n'est pas
+ancêtre de master après la fusion squash. Le manifeste du site et les sources
+du contrat HTML sont identiques entre cette révision source et le commit master.
+Seul `sourceRevision` du registre est rattaché à ce commit master pérenne ; tous
+les enregistrements, compteurs et redirections sont conservés exactement. Le
+contrôle réel d'ascendance passe et les 20 tests existants du contrat URL passent.
+Le contrôle de provenance reste actif avant la comparaison exacte des URL.
