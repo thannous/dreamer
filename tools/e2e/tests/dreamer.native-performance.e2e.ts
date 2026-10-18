@@ -28,3 +28,13 @@ test('native journal preserves reading and list position across repeated returns
   }
   await app.screenshot('synthetic-journal-return');
 });
+
+test('native direct dream link can return to the journal', async ({ app, screen, device }) => {
+  await app.open();
+  await device.openLink('noctalia://journal/1791266400000');
+  await expect(screen.getByTestId('screen.dreamDetail')).toBeVisible();
+  await expect(screen.getByText('Noctalia performance 013', { exact: true })).toBeVisible();
+  await screen.getByTestId('btn.navigateJournal').tap();
+  await expect(screen.getByTestId('screen.dreamDetail')).toBeHidden();
+  await expect(screen.getByTestId('screen.journal')).toBeVisible();
+});
