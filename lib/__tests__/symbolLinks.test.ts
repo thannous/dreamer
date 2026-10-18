@@ -119,20 +119,20 @@ describe('symbol links', () => {
   });
 
   it('joins an older reading to the dreamer’s own symbol that bears its name', () => {
-    const older = night(1, [{ name: 'Le phare', meaning: 'Il veille.' }]);
-    const newer = night(3, [{ name: 'Phare', meaning: 'Il revient.', key: 'lighthouse' }]);
+    const older = night(1, [{ name: 'Le moulin', meaning: 'Il tourne.' }]);
+    const newer = night(3, [{ name: 'Moulin', meaning: 'Il revient.', key: 'windmill' }]);
     const index = buildSymbolIndex([newer, older], 'fr');
-    const lighthouse = index.symbols.get('p:lighthouse')!;
+    const windmill = index.symbols.get('p:windmill')!;
 
-    expect(index.symbols.has('n:phare')).toBe(false);
-    expect(lighthouse.appearances.map(({ dream }) => dream.title)).toEqual(['Dream 1', 'Dream 3']);
-    expect(readingSymbols(older.symbols, index)[0].linked).toBe(lighthouse);
+    expect(index.symbols.has('n:moulin')).toBe(false);
+    expect(windmill.appearances.map(({ dream }) => dream.title)).toEqual(['Dream 1', 'Dream 3']);
+    expect(readingSymbols(older.symbols, index)[0].linked).toBe(windmill);
 
     // A name two of the dreamer's symbols bear leads to neither.
-    const other = night(4, [{ name: 'Phare', meaning: 'Un autre.', key: 'harbour-light' }]);
+    const other = night(4, [{ name: 'Moulin', meaning: 'Un autre.', key: 'water-mill' }]);
     const ambiguous = buildSymbolIndex([older, newer, other], 'fr');
-    expect(ambiguous.symbols.get('n:phare')!.appearances).toHaveLength(1);
-    expect(ambiguous.symbols.get('p:lighthouse')!.appearances).toHaveLength(1);
+    expect(ambiguous.symbols.get('n:moulin')!.appearances).toHaveLength(1);
+    expect(ambiguous.symbols.get('p:windmill')!.appearances).toHaveLength(1);
   });
 
   it('shows a symbol a reading names twice once, with both meanings', () => {

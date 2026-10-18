@@ -8,8 +8,8 @@ import { buildSymbolIndex } from '@/lib/symbolLinks';
 import type { DreamAnalysis } from '@/lib/types';
 
 // Isolation control: in the web journey the dreamer's own symbol is always opened from its
-// first reading before Tendances lists it, so a symbol never opened is not reached there,
-// and its mock analysis never names two dictionary neighbours.
+// first reading before Tendances lists it, so a symbol never opened is not reached there;
+// its mock analysis never names two dictionary neighbours, and no reading predates keys.
 
 const mockUpdateDream = jest.fn((_dream: DreamAnalysis) => Promise.resolve());
 
@@ -107,6 +107,16 @@ describe('DreamSymbolSheet', () => {
 
     expect(screen.getByText('journal.symbols.kind.personal')).toBeTruthy();
     expect(screen.queryByText('journal.symbols.born.eyebrow')).toBeNull();
+  });
+
+  it('makes a symbol theirs through a keyed reading when its first dream named it before keys', async () => {
+    mockUpdateDream.mockClear();
+    const older = { ...night(8), symbols: [{ name: 'Lamp', meaning: 'Before keys.' }] };
+    openSymbol([older, ...dreams], 'p:grandmother-lamp', older);
+
+    expect(screen.getByText('journal.symbols.born.eyebrow')).toBeTruthy();
+    await waitFor(() => expect(mockUpdateDream).toHaveBeenCalledTimes(1));
+    expect(mockUpdateDream.mock.calls[0][0].id).toBe(dreams[1].id);
   });
 
   it('shows the dictionary neighbours the dreamer has dreamed, even in other dreams', () => {

@@ -299,13 +299,16 @@ function JournalListScreen() {
   );
 
   // Perf: the index is built (and the dictionary loaded) only once a symbol filters the journal.
-  const symbolThread = useMemo(
-    () => (selectedSymbol ? getSymbolIndex(dreams, currentLang).symbols.get(selectedSymbol) ?? null : null),
-    [currentLang, dreams, selectedSymbol],
-  );
+  // An older name may since have joined the dreamer's own symbol; a symbol whose dreams are
+  // all gone filters nothing rather than emptying the journal.
+  const symbolThread = useMemo(() => {
+    if (!selectedSymbol) return null;
+    const index = getSymbolIndex(dreams, currentLang);
+    return index.symbols.get(index.aliases.get(selectedSymbol) ?? selectedSymbol) ?? null;
+  }, [currentLang, dreams, selectedSymbol]);
   const symbolDreamIds = useMemo(
-    () => (selectedSymbol ? new Set(symbolThread?.appearances.map(({ dream }) => dream.id)) : null),
-    [selectedSymbol, symbolThread],
+    () => (symbolThread ? new Set(symbolThread.appearances.map(({ dream }) => dream.id)) : null),
+    [symbolThread],
   );
 
   // Typing narrows the previous matches instead of searching the whole journal again.
@@ -382,11 +385,11 @@ function JournalListScreen() {
     router.push({ pathname: '/journal/[id]', params: getDreamRouteParams(full) });
   }, [mediaUserId, loadRemoteDreamForPreview, reloadDreams]);
   const previewFiltersSupported = !selectedTheme && !selectedDreamType && !dateRange.start && !dateRange.end &&
-    quickFilter === 'all' && !showRememberedOnly && !showRecurringOnly && !analysisStatus && !selectedSymbol &&
+    quickFilter === 'all' && !showRememberedOnly && !showRecurringOnly && !analysisStatus && !symbolThread &&
     sortOrder !== 'oldest';
   const paginationScope = JSON.stringify([mediaUserId, deferredSearchQuery, selectedTheme, selectedDreamType,
-    dateRange.start, dateRange.end, quickFilter, showRememberedOnly, showRecurringOnly, analysisStatus, selectedSymbol,
-    sortOrder]);
+    dateRange.start, dateRange.end, quickFilter, showRememberedOnly, showRecurringOnly, analysisStatus,
+    symbolThread?.linkKey ?? null, sortOrder]);
   const { visibleItems, hasMore, loadMore } = useJournalListPagination(filteredDreams, paginationScope);
   const paginationFooter = hasMore ? (
     <PressableScale onPress={loadMore} accessibilityRole="button" className="min-h-[48px] items-center justify-center p-4">
@@ -448,7 +451,7 @@ function JournalListScreen() {
     showRememberedOnly,
     showRecurringOnly,
     analysisStatus,
-    selectedSymbol,
+    symbolThread,
     sortOrder,
   ]);
 
@@ -748,7 +751,7 @@ function JournalListScreen() {
     showRememberedOnly ||
     showRecurringOnly ||
     analysisStatus ||
-    selectedSymbol ||
+    symbolThread ||
     hasNonDefaultSort
   );
   const hasActiveAdvancedFilter = !!(
@@ -759,7 +762,6 @@ function JournalListScreen() {
     showRememberedOnly ||
     showRecurringOnly ||
     analysisStatus ||
-    selectedSymbol ||
     hasNonDefaultSort
   );
   const canStartRememberedDreamFromEmpty = dreams.length === 0 && !hasActiveFilter;
@@ -774,10 +776,20 @@ function JournalListScreen() {
   }, []);
   const advancedFiltersMaxHeight = Math.min(760, Math.max(420, Math.round(height * 0.86)));
   const journalFilterItems = useMemo(() => [
+    // The symbol a sheet opened the journal on comes first: it is why the list is short, and
+    // after the quick filters it would start past the edge of a phone.
+    ...(symbolThread ? [{
+      id: 'symbol' as const,
+      label: symbolThread.name,
+      active: true,
+      onPress: () => setSelectedSymbol(null),
+      accessibilityLabel: `${symbolThread.name}, ${t('journal.filter.accessibility.symbol')}`,
+      testID: TID.Button.FilterSymbol,
+    }] : []),
     {
       id: 'all' as const,
       label: t('journal.filter.all'),
-      active: quickFilter === 'all' && !hasActiveAdvancedFilter && !searchQuery.trim(),
+      active: quickFilter === 'all' && !hasActiveAdvancedFilter && !symbolThread && !searchQuery.trim(),
       onPress: () => handleQuickFilterPress('all'),
       accessibilityLabel: t('journal.filter.accessibility.all'),
       testID: TID.Button.FilterAll,
@@ -798,15 +810,6 @@ function JournalListScreen() {
       accessibilityLabel: t('journal.filter.accessibility.to_deepen'),
       testID: TID.Button.FilterToDeepen,
     },
-    // The symbol a sheet opened the journal on leads the active filters: it is why the list is short.
-    ...(selectedSymbol ? [{
-      id: 'symbol' as const,
-      label: symbolThread?.name ?? '',
-      active: true,
-      onPress: () => setSelectedSymbol(null),
-      accessibilityLabel: [symbolThread?.name, t('journal.filter.accessibility.symbol')].filter(Boolean).join(', '),
-      testID: TID.Button.FilterSymbol,
-    }] : []),
     ...(selectedTheme ? [{
       id: 'theme' as const,
       label: getDreamThemeLabel(selectedTheme, t) ?? t('journal.filter.theme'),
@@ -899,7 +902,6 @@ function JournalListScreen() {
     quickFilter,
     searchQuery,
     selectedDreamType,
-    selectedSymbol,
     selectedTheme,
     showRememberedOnly,
     showRecurringOnly,

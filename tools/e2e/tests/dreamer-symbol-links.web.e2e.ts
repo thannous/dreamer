@@ -137,6 +137,8 @@ test('a personal symbol is born when first opened, then the reading and Tendance
     await firstLight.tap();
     await screen.getByTestId('btn.dreamSymbol.allDreams', { visible: true }).tap();
     await expect(screen.getByTestId('screen.journal', { visible: true })).toHaveCount(1);
+    // The reading closed on the way: no second set of tabs waits behind it.
+    await expect(screen.getByTestId('screen.journal')).toHaveCount(1);
     const symbolFilter = screen.getByTestId('btn.filterSymbol', { visible: true });
     await expect(symbolFilter).toContainText('Light');
     const journalItems = screen.getByTestId(/^dream\.item\./, { visible: true });

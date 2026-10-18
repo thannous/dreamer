@@ -113,8 +113,9 @@ export function DreamSymbolSheet({ index, dream, linkKey, onSelect, onClose }: {
   useEffect(() => {
     const key = symbol?.personalKey;
     if (!visible || !key || !isNewPersonalSymbol(symbol) || confirming.current.has(key)) return;
-    const appearance = symbol.appearances.find((entry) => sameDream(entry.dream, dream))
-      ?? symbol.appearances[symbol.appearances.length - 1];
+    // An older reading that joined the symbol by its name holds no key to confirm.
+    const keyed = symbol.appearances.filter((entry) => entry.insight.key === key);
+    const appearance = keyed.find((entry) => sameDream(entry.dream, dream)) ?? keyed[keyed.length - 1];
     const symbols = appearance ? confirmPersonalSymbol(appearance.dream, key) : null;
     if (!appearance || !symbols) return;
     confirming.current.add(key);
@@ -216,10 +217,13 @@ function SymbolPage({ symbol, index, dream, born, language, onSelect, onClose }:
         }}
         onOpenAll={() => {
           onClose();
-          router.navigate({
-            pathname: '/(tabs)/journal',
+          const target = {
+            pathname: '/(tabs)/journal' as const,
             params: toJournalFilterParams({ symbol: symbol.linkKey }, String(Date.now())),
-          });
+          };
+          // A reading is a screen over the tabs: return to them rather than stack another set.
+          if (dream) router.dismissTo(target);
+          else router.navigate(target);
         }} />,
     );
   }

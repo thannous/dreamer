@@ -143,8 +143,8 @@ const isLinkableDream = (dream: DreamAnalysis): boolean =>
   typeof dream.id === 'number' && Boolean(dream.symbols?.length) && Boolean(dream.isAnalyzed || dream.analysisStatus === 'done');
 
 /**
- * A reading made before symbols carried a link says "Le phare"; a later one names the same
- * lighthouse by its key. A name leads to the dreamer's own symbol that bears it, unless two do.
+ * A reading made before symbols carried a link says "Le moulin"; a later one names the same
+ * windmill by its key. A name leads to the dreamer's own symbol that bears it, unless two do.
  */
 function personalNameAliases(dreams: readonly DreamAnalysis[]): Map<string, string> {
   const byName = new Map<string, string | null>();

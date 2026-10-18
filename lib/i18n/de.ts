@@ -742,7 +742,7 @@ const translations: Record<string, string> = {
     'journal.symbols.timeline.header': 'In deinen Träumen',
     'journal.symbols.timeline.current': 'Dieser Traum',
     'journal.symbols.timeline.more': 'Und {count} weitere Träume',
-    'journal.symbols.timeline.all': 'Alle {count} Träume ansehen',
+    'journal.symbols.timeline.all': 'Die {count} Träume ansehen',
     'journal.symbols.timeline.open_hint': 'Öffnet diesen Traum.',
     'journal.symbols.companions.header': 'Oft zusammen mit',
     'journal.symbols.companions.header_once': 'An seiner Seite',
