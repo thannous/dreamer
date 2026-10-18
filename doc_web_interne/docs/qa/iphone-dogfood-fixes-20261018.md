@@ -32,8 +32,25 @@ Utiliser la configuration locale existante du helper Apple signé et libérer sa
 
 Les tests existants couvrent les erreurs de stockage et de dictée que cette courte campagne sur compte réel ne peut provoquer sans modifier l’environnement. Une ancienne assertion cachait volontairement les réponses précédentes : elle vérifie maintenant que l’ancienne réponse est lisible, tout en conservant l’assertion de champ suivant vide pour éviter le mélange des dictées.
 
-La preuve native qualifie ces parcours du client développeur, pas Release/TestFlight, les achats, Siri, VoiceOver ni la synchronisation multiappareil. Les résultats finaux sont consignés dans le rapport privé de campagne et la PR.
+La preuve native qualifie ces parcours du client développeur, pas Release/TestFlight, les achats, Siri, VoiceOver ni la synchronisation multiappareil. Les résultats sont consignés dans le rapport privé de campagne `tools/e2e/.e2e/iphone-dogfood-fixes-final/report.md` et la PR. Le pilote est agent-device 0.21.28, avec e2e 0.21.2 et @e2e-dev/mobile 0.12.3. Le client développeur attend la fin de son rechargement Metro avant les liens de navigation ; cette préparation ne qualifie pas le démarrage Release.
 
 ## Vérifications locales
 
 Les quatre premières suites ciblées existantes totalisent 68 assertions passées (dont 43 pour le rappel après adaptation de son attente historique). Lint ciblé : aucune erreur, 14 avertissements préexistants. Les deux mocks de route exposent maintenant KeyboardAvoidingView et le compteur attend le singulier : 42 assertions supplémentaires passent dans ces trois suites. Types des parcours TesterArmy : passés. Le typecheck applicatif passe avant la génération du fichier Expo ignoré ; avec `expo-env.d.ts` généré par Metro, 15 erreurs de styles Expo/React Native apparaissent dans trois fichiers inchangés. Une copie intacte du commit de base, avec les mêmes dépendances et le même fichier Expo, reproduit exactement ces 15 erreurs. Cette limite de la configuration générée reste distincte de la preuve du moteur de livraison.
+
+La validation `verify:pr` sur `65f3bb861` est passée : 1 098 tests liés au diff, types applicatifs et tests, lint et contrats statiques ; site reconstruit et contrôlé (1 664 pages, zéro erreur). Une revue indépendante de ce commit a confirmé que le placement initial du champ est réservé à une demande explicite et ne déplace pas une lecture simplement restaurée.
+
+## Résultat physique consolidé
+
+Les quatre parcours couvrant les sept constats ont chacun une exécution réussie. Il s’agit de l’union de preuves sur code concerné inchangé, pas d’une campagne complète rejouée d’un seul tenant :
+
+| Parcours | Preuve native |
+| --- | --- |
+| Quota plafonné et distinction information / suppression | regression1, test réussi, run `01a14ffb-3b8d-779b-9d11-2711468dd043` |
+| Recherche vide, Effacer au-dessus du clavier, retour à la liste | même run, test réussi |
+| Singulier du dictionnaire et textes français signalés | regression3, test réussi, run `01a15002-2171-7798-a728-952c511d1930` |
+| Capture « 1 caractère », deux réponses visibles, fin du rappel, réouverture et relance | regression12, 1/1 réussi en 206,99 s, run `01a1501b-1378-7807-a55c-ea87b5a49034` |
+
+Le dernier parcours vérifie les valeurs exactes, la position du champ avant et après saisie, l’absence du dock pendant le clavier, l’état effectivement terminé, puis la présence des deux détails après relance. Il confirme enfin la suppression du seul rêve synthétique par une recherche sans résultat, efface sa recherche et rend l’accueil. Aucun rêve personnel n’a été modifié. Les échecs des premières reprises sont conservés et ne comptent pas comme des réussites.
+
+La revue ciblée du test a demandé l’assertion de fin effective et la mesure après saisie ; ces deux contrôles sont présents dans regression12. La saisie clavier native évite l’échec de remplissage du pilote sur le second champ déplacé. Les captures et traces privées restent dans le rapport canonique cité plus haut.

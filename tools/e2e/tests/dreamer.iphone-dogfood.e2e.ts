@@ -7,6 +7,8 @@ test('iPhone caps exhausted quota and distinguishes deletion information', async
   await app.open();
   if (process.env.E2E_IPHONE_CANDIDATE_URL) {
     await device.openLink(process.env.E2E_IPHONE_CANDIDATE_URL);
+    // The dev client can expose the previous tree while Metro reloads the selected bundle.
+    await new Promise((resolve) => setTimeout(resolve, 5_000));
     await expect(screen.getByTestId('tab.home')).toBeVisible();
   }
   await device.openLink('noctalia://');
@@ -25,6 +27,8 @@ test('iPhone clears an empty search while the keyboard is open', async ({ app, s
   await app.open();
   if (process.env.E2E_IPHONE_CANDIDATE_URL) {
     await device.openLink(process.env.E2E_IPHONE_CANDIDATE_URL);
+    // The dev client can expose the previous tree while Metro reloads the selected bundle.
+    await new Promise((resolve) => setTimeout(resolve, 5_000));
     await expect(screen.getByTestId('tab.home')).toBeVisible();
   }
   await device.openLink('noctalia://journal');
@@ -47,6 +51,8 @@ test('iPhone uses singular symbol count and consistent French guide voice', asyn
   await app.open();
   if (process.env.E2E_IPHONE_CANDIDATE_URL) {
     await device.openLink(process.env.E2E_IPHONE_CANDIDATE_URL);
+    // The dev client can expose the previous tree while Metro reloads the selected bundle.
+    await new Promise((resolve) => setTimeout(resolve, 5_000));
     await expect(screen.getByTestId('tab.home')).toBeVisible();
   }
   await device.openLink('noctalia://symbol-dictionary');
@@ -68,13 +74,15 @@ test('iPhone uses singular symbol count and consistent French guide voice', asyn
 test('iPhone keeps recall answers visible and readable after completion and relaunch', async ({ app, screen, device }) => {
   const marker = `QA-IPHONE-FIX-${Date.now()}`;
   const story = `${marker}. Je marche sur une plage bleue avec un cerf-volant jaune.`;
-  const first = 'Un coquillage violet repose sur le sable.';
-  const second = 'Une petite barque verte flotte pres du rivage.';
+  const first = 'Coquillage violet.';
+  const second = 'Une barque verte.';
   let created = false;
   let draftOwned = false;
   await app.open();
   if (process.env.E2E_IPHONE_CANDIDATE_URL) {
     await device.openLink(process.env.E2E_IPHONE_CANDIDATE_URL);
+    // The dev client can expose the previous tree while Metro reloads the selected bundle.
+    await new Promise((resolve) => setTimeout(resolve, 5_000));
     await expect(screen.getByTestId('tab.home')).toBeVisible();
   }
   await device.openLink('noctalia://recording');
@@ -104,8 +112,16 @@ test('iPhone keeps recall answers visible and readable after completion and rela
       }).toBe(true);
       await answer.tap();
       await expect(device.locator('role=keyboard')).toBeVisible();
-      await answer.fill(text);
       await expect(screen.getByTestId('component.dreamDetail.actionDock')).toBeHidden();
+      await expect.poll(async () => {
+        const field = await answer.boundingBox();
+        const keyboard = await device.locator('role=keyboard').boundingBox();
+        return field && keyboard ? field.y >= 0 && field.y + field.height <= keyboard.y : false;
+      }).toBe(true);
+      // Native clear-and-fill can miss a moved input; type into the empty next field.
+      await expect(answer).toHaveValue('');
+      await answer.pressSequentially(text, { delay: 20 });
+      await expect(answer).toHaveValue(text);
       await expect.poll(async () => {
         const field = await answer.boundingBox();
         const keyboard = await device.locator('role=keyboard').boundingBox();
@@ -115,30 +131,35 @@ test('iPhone keeps recall answers visible and readable after completion and rela
       await device.dismissKeyboard();
       await screen.scrollUntilVisible(screen.getByTestId('btn.dreamRecall.submit'));
       await screen.getByTestId('btn.dreamRecall.submit').tap();
-      await expect(screen.getByTestId('dreamRecall.savedDetails')).toContainText(text);
+      await expect(screen.getByText(text, { exact: true })).toBeVisible();
     }
+    await screen.swipe({ from: { x: 420, y: 600 }, to: { x: 420, y: 200 }, duration: 400 });
     await screen.getByTestId('btn.dreamRecall.complete').tap();
+    await expect(screen.getByText('C’est assez pour l’instant', { exact: true })).toBeVisible();
+    await expect(answer).toBeHidden();
     await device.openLink('noctalia://journal');
     await screen.getByTestId('input.searchDreams').fill(marker);
     await screen.getByTestId('input.searchDreams').press('Enter');
     await expect(screen.getByTestId(/^dream.item\./)).toHaveCount(1);
     await screen.getByTestId(/^dream.item\./).tap();
     await screen.scrollUntilVisible(screen.getByTestId('dreamRecall.savedDetails'));
-    await expect(screen.getByTestId('dreamRecall.savedDetails')).toContainText(first);
-    await expect(screen.getByTestId('dreamRecall.savedDetails')).toContainText(second);
+    await expect(screen.getByText(first, { exact: true })).toBeVisible();
+    await expect(screen.getByText(second, { exact: true })).toBeVisible();
     await device.closeApp();
     await app.open();
-  if (process.env.E2E_IPHONE_CANDIDATE_URL) {
-    await device.openLink(process.env.E2E_IPHONE_CANDIDATE_URL);
-    await expect(screen.getByTestId('tab.home')).toBeVisible();
-  }
+    if (process.env.E2E_IPHONE_CANDIDATE_URL) {
+      await device.openLink(process.env.E2E_IPHONE_CANDIDATE_URL);
+      // The previous tree can remain visible during this development-client reload.
+      await new Promise((resolve) => setTimeout(resolve, 5_000));
+      await expect(screen.getByTestId('tab.home')).toBeVisible();
+    }
     await device.openLink('noctalia://journal');
     await screen.getByTestId('input.searchDreams').fill(marker);
     await screen.getByTestId('input.searchDreams').press('Enter');
     await screen.getByTestId(/^dream.item\./).tap();
     await screen.scrollUntilVisible(screen.getByTestId('dreamRecall.savedDetails'));
-    await expect(screen.getByTestId('dreamRecall.savedDetails')).toContainText(first);
-    await expect(screen.getByTestId('dreamRecall.savedDetails')).toContainText(second);
+    await expect(screen.getByText(first, { exact: true })).toBeVisible();
+    await expect(screen.getByText(second, { exact: true })).toBeVisible();
     await app.screenshot('recall-details-after-relaunch');
   } finally {
     if (!created && draftOwned) {
@@ -157,9 +178,9 @@ test('iPhone keeps recall answers visible and readable after completion and rela
       await screen.getByTestId(/^dream.item\./).tap();
       // Check ownership before deleting only this invocation's synthetic dream.
       await expect(screen.getByText(story, { exact: true }).first()).toBeVisible();
-      await screen.scrollUntilVisible(screen.getByTestId('btn.dream.delete'));
-      // Move the visible control clear of the fixed dock before touching it.
-      await screen.swipe({ from: { x: 220, y: 500 }, to: { x: 220, y: 200 }, duration: 400 });
+      // Swipe the outer right margin: the multiline input owns its own scroller.
+      await screen.swipe({ from: { x: 420, y: 600 }, to: { x: 420, y: 200 }, duration: 400 });
+      await screen.swipe({ from: { x: 420, y: 600 }, to: { x: 420, y: 200 }, duration: 400 });
       await screen.getByTestId('btn.dream.delete').tap();
       await screen.getByRole('button', 'Supprimer', { exact: true }).tap();
       await expect(screen.getByTestId('screen.journal')).toBeVisible();
