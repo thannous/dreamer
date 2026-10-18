@@ -125,8 +125,8 @@ for (const profile of ['plus', 'existing'] as const) {
     const moment = screen.getByTestId('component.dreamDetail.savedMoment', { visible: true });
     // The struck seal is the confirmation, and its words offer the next step: no toast or line announces the save.
     const next = moment.getByTestId('btn.dream.primaryCta');
-    // Set in small capitals on the seal.
-    await expect(next).toContainText(profile === 'plus' ? /analyze this dream/i : /discover noctalia plus/i);
+    // Written large under the seal; an account out of free readings is offered this dream's reading with Plus.
+    await expect(next).toContainText(profile === 'plus' ? /analyze this dream/i : /analyze this dream with plus/i);
     await expect(screen.getByTestId('text.recording.saveConfirmation')).toHaveCount(0);
     await expect(screen.getByTestId('component.transcriptCard', { visible: true })).toContainText(story);
     await expect(screen.getByTestId('component.dreamRecall.offer', { visible: true })).toContainText('Remember a little more?');
