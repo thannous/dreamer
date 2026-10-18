@@ -62,11 +62,12 @@ export const parseKnownDreamSymbols = (value: unknown): KnownDreamSymbol[] => {
 
 /**
  * The dreamer's own symbols as their saved analyses hold them (`analysis_details` rows,
- * newest first), the most frequent first and the newest name for each. A key that is a
- * dictionary id links to the dictionary, as in the app, so it takes none of the slots.
+ * newest first), the most frequent first, each under the name its readings use most (the
+ * oldest at a tie). A key that is a dictionary id links to the dictionary, so it takes none
+ * of the slots. Both follow the app's own list (`collectKnownSymbols`).
  */
 export const collectKnownDreamSymbols = (analysisDetails: readonly unknown[]): KnownDreamSymbol[] => {
-  const counts = new Map<string, { name: string; count: number; order: number }>();
+  const counts = new Map<string, { names: Map<string, { name: string; count: number; order: number }>; count: number; order: number }>();
   analysisDetails.forEach((details, order) => {
     const symbols = (details as { symbols?: unknown } | null)?.symbols;
     if (!Array.isArray(symbols)) return;
@@ -76,13 +77,21 @@ export const collectKnownDreamSymbols = (analysisDetails: readonly unknown[]): K
       const name = boundedName((symbol as { name?: unknown } | null)?.name);
       if (!key || !name || inDream.has(key) || normalizeDreamSymbolId(key)) continue;
       inDream.add(key);
-      const known = counts.get(key);
-      if (known) known.count += 1;
-      else counts.set(key, { name, count: 1, order });
+      const known = counts.get(key) ?? { names: new Map(), count: 0, order };
+      known.count += 1;
+      const said = known.names.get(name.toLowerCase()) ?? { name, count: 0, order };
+      said.count += 1;
+      // Rows come newest first: the last one seen is the oldest wording.
+      said.order = order;
+      known.names.set(name.toLowerCase(), said);
+      counts.set(key, known);
     }
   });
   return [...counts.entries()]
     .sort(([, a], [, b]) => b.count - a.count || a.order - b.order)
     .slice(0, MAX_KNOWN_SYMBOLS)
-    .map(([key, { name }]) => ({ key, name }));
+    .map(([key, { names }]) => {
+      const [{ name }] = [...names.values()].sort((a, b) => b.count - a.count || b.order - a.order);
+      return { key, name };
+    });
 };

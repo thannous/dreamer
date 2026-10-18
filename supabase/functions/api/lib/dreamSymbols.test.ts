@@ -27,17 +27,20 @@ Deno.test('known symbols from an app request are bounded, deduplicated and named
   assertEquals(parseKnownDreamSymbols('nope'), []);
 });
 
-Deno.test('known symbols from saved readings come most frequent first, newest name kept', () => {
-  const symbols = collectKnownDreamSymbols([
+Deno.test('known symbols from saved readings come most frequent first, under the name used most', () => {
+  const readings = [
     { symbols: [{ name: 'La maison de grand-mère', meaning: 'x', key: 'grandmother-house' }, { name: 'Chat', meaning: 'x', symbolId: 'cat' }] },
     null,
     { symbols: [{ name: 'Le collège', meaning: 'x', key: 'old-school' }] },
     { symbols: [{ name: 'Maison de mamie', meaning: 'x', key: 'grandmother-house' }, { name: 'Maison', meaning: 'x', key: 'grandmother-house' }] },
-  ]);
-  assertEquals(symbols, [
-    { key: 'grandmother-house', name: 'La maison de grand-mère' },
+  ];
+  // At a tie, the oldest wording, as the app names it.
+  assertEquals(collectKnownDreamSymbols(readings), [
+    { key: 'grandmother-house', name: 'Maison de mamie' },
     { key: 'old-school', name: 'Le collège' },
   ]);
+  const again = { symbols: [{ name: 'la maison de grand-mère', meaning: 'x', key: 'grandmother-house' }] };
+  assertEquals(collectKnownDreamSymbols([again, ...readings])[0], { key: 'grandmother-house', name: 'la maison de grand-mère' });
 });
 
 Deno.test('a key that is a dictionary id is not a personal symbol and takes none of the slots', () => {
