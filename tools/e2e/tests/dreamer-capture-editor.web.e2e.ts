@@ -60,7 +60,8 @@ test('capture gives the story room, respects explicit and automatic themes, and 
   for (const mode of ['light', 'dark'] as const) {
     await page.emulateMedia({ colorScheme: mode === 'light' ? 'dark' : 'light' });
     await theme(page, mode);
-    await expect(editor).toHaveCSS('background-color', mode === 'light' ? 'rgb(245, 234, 219)' : 'rgb(20, 19, 26)');
+    // Capture cards now let the painting show through; opacity must follow the selected theme too.
+    await expect(editor).toHaveCSS('background-color', mode === 'light' ? 'rgba(245, 234, 219, 0.88)' : 'rgba(20, 19, 26, 0.84)');
     await expect(editor).toHaveCSS('color', mode === 'light' ? 'rgb(56, 45, 53)' : 'rgb(255, 249, 239)');
     await expect(editor).toHaveValue(story);
     await expect(save).toBeInViewport();
@@ -71,7 +72,7 @@ test('capture gives the story room, respects explicit and automatic themes, and 
   await theme(page, 'auto');
   for (const mode of ['light', 'dark'] as const) {
     await page.emulateMedia({ colorScheme: mode });
-    await expect(editor).toHaveCSS('background-color', mode === 'light' ? 'rgb(245, 234, 219)' : 'rgb(20, 19, 26)');
+    await expect(editor).toHaveCSS('background-color', mode === 'light' ? 'rgba(245, 234, 219, 0.88)' : 'rgba(20, 19, 26, 0.84)');
     await expect(editor).toHaveValue(story);
   }
   await save.click();
