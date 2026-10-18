@@ -59,6 +59,7 @@ export function benchmark(runs, { repository = root, npmCli = process.env.npm_ex
   const report = {
     schemaVersion: 1, purpose: 'installation-benchmark', applicationQualified: false,
     sourceRevision: sha.stdout.trim(), node: process.version,
+    npmVersion: process.env.npm_config_user_agent?.match(/\bnpm\/([^\s]+)/)?.[1] ?? null,
     inputSha256: Object.fromEntries(['package.json', 'package-lock.json', 'install-browsers.mjs', 'benchmark-setup.mjs'].map(file =>
       [file, createHash('sha256').update(readFileSync(join(tool, file))).digest('hex')])),
     platform: process.platform, osRelease: release(), logicalCpus: cpus().length,

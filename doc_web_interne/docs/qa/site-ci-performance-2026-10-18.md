@@ -336,3 +336,45 @@ Seul `sourceRevision` du registre est rattaché à ce commit master pérenne ; t
 les enregistrements, compteurs et redirections sont conservés exactement. Le
 contrôle réel d'ascendance passe et les 20 tests existants du contrat URL passent.
 Le contrôle de provenance reste actif avant la comparaison exacte des URL.
+
+## CircleCI limité au benchmark manuel
+
+Sur demande du propriétaire après #418, CircleCI garde un seul job : mesure
+des installations E2E et Chromium. Il exige `run_e2e_benchmark=true` et un
+déclencheur API/manuel. Aucun typecheck, lint, Jest, build, backend, parcours
+applicatif ou publication ne s'y lance. L'ancien `force_full_validation` est retiré.
+
+La comparaison avec master `3e93154369b180ada25f08e528a7131e4b62444d` conserve les
+**26 contrôles locaux** : 24 commandes identiques, deux commandes étendues avec
+les nouveaux contrats CI/benchmark, aucune suppression. L'ancien portfolio et
+son setup sont des fixtures figées, jamais des configurations exécutées par
+CircleCI. Les tests locaux existants gardent leurs cas contre ces fixtures ;
+un contrôle d'empreinte empêche de réduire silencieusement cette référence.
+
+Les **46 gardes/contrats communs passent sur Windows et Linux**, zéro ignoré,
+inventaires comparés automatiquement. Les cas de classification, les 12 tests
+Python, le fallback Jest et les contrats de conservation du portfolio restent
+locaux. Aucun parcours E2E ni assertion applicative n'est modifié.
+
+Le reçu [du benchmark manuel](circleci-manual-benchmark-2026-10-18.json) identifie
+le commit mesuré, les versions, les neuf étapes de chaque OS, les inventaires et
+les limites. Trois répétitions, dossiers navigateur neufs et ordre alterné :
+
+| Hôte | Chromium complet, médiane | Headless shell, médiane | Gain d'installation |
+| --- | --- | --- | --- |
+| Windows | 16,615 s | 7,284 s | 9,331 s |
+| Linux / WSL2 | 16,687 s | 7,312 s | 9,375 s |
+
+Les médianes npm sont respectivement 9,300 s et 2,213 s, avec un cache vide au
+premier passage puis partagé. npm est 12.2.0 sous Windows et 11.17.0 sous Linux :
+ces valeurs ne constituent pas une comparaison de performances entre OS.
+Le collecteur final consigne aussi cette version npm, sans changer la commande
+d'installation ni l'algorithme mesuré.
+
+Rerun : `npm run test:testerarmy:benchmark` (trois répétitions), ou
+`npm run test:testerarmy:benchmark -- --runs 1` pour un pilote. Les rapports et
+logs vont sous `.tmp/e2e-benchmark/results/` ; paquets et navigateurs temporaires
+ne sont pas uploadés. Aucun gain de pipeline distant complet n'est revendiqué.
+Le benchmark porte toujours `applicationQualified:false` et ne remplace aucune
+preuve de `verify:pr`/`verify:release`. Ce lot ne rejoue ni release complète,
+build EAS, appareil natif ni campagne CircleCI distante.
