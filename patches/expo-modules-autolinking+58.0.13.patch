@@ -1,0 +1,30 @@
+diff --git a/node_modules/expo-modules-autolinking/android/expo-gradle-plugin/expo-autolinking-plugin/src/main/kotlin/expo/modules/plugin/GenerateInlineModulesTask.kt b/node_modules/expo-modules-autolinking/android/expo-gradle-plugin/expo-autolinking-plugin/src/main/kotlin/expo/modules/plugin/GenerateInlineModulesTask.kt
+--- a/node_modules/expo-modules-autolinking/android/expo-gradle-plugin/expo-autolinking-plugin/src/main/kotlin/expo/modules/plugin/GenerateInlineModulesTask.kt
++++ b/node_modules/expo-modules-autolinking/android/expo-gradle-plugin/expo-autolinking-plugin/src/main/kotlin/expo/modules/plugin/GenerateInlineModulesTask.kt
+@@ -11,2 +11,3 @@
+ import org.gradle.process.ExecOperations
+ import javax.inject.Inject
++import java.util.Base64
+@@ -53,9 +54,11 @@
+   @TaskAction
+   fun generateInlineModules() {
++    // Transport JSON without embedded command-line quotes (Windows ProcessBuilder).
++    val watched = Base64.getEncoder().encodeToString(watchedDirectoriesSerialized.get().toByteArray(Charsets.UTF_8))
+     execOperations.exec { spec ->
+       spec.workingDir(nodeWorkingDir.get().asFile)
+       spec.commandLine(
+         "node",
+         "--no-warnings",
+         "--eval",
+-        "require('expo/bin/autolinking')",
++        "process.argv.push(Buffer.from('$watched','base64').toString('utf8'));require('expo/bin/autolinking')",
+@@ -66,8 +69,7 @@ abstract class GenerateInlineModulesTask : DefaultTask() {
+         mirrorDirectory.get().asFile.absolutePath,
+         "--inline-modules-list-directory",
+         outputDirectory.get().asFile.absolutePath,
+-        "--watched-directories-serialized",
+-        watchedDirectoriesSerialized.get()
++        "--watched-directories-serialized"
+       )
+     }
+   }

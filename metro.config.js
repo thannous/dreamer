@@ -17,7 +17,7 @@ const publicBuildInputs = Object.entries(process.env)
   .filter(([key]) => ['NOCTALIA_APP_VARIANT', 'NOCTALIA_DREAMER_QA_BUILD', 'EXPO_ROUTER_APP_ROOT', 'EXPO_ROUTER_IMPORT_MODE'].includes(key) || key.startsWith('EXPO_PUBLIC_'))
   .sort(([left], [right]) => left < right ? -1 : left > right ? 1 : 0);
 config.cacheVersion = createHash('sha256')
-  .update(JSON.stringify([config.cacheVersion, publicBuildInputs]))
+  .update(JSON.stringify([config.cacheVersion, publicBuildInputs, isRevenueCatWebStubDisabled()]))
   .digest('hex');
 
 // `expo-sqlite` imports a `.wasm` asset for the web worker (wa-sqlite).

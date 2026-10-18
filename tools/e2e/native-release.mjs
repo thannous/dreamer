@@ -131,10 +131,11 @@ export function verifyInstalledRelease({ receipt, device, output, read }) {
 }
 export function validateBuildCommand(command, platform) {
   if (!Array.isArray(command) || !command.length || command.some(value => typeof value !== 'string' || !value)) refusal('BUILD_COMMAND');
-  const name = basename(command[0]);
+  if (command.includes('--incremental')) refusal('BUILD_COMMAND_NOT_CANONICAL_RELEASE');
+  const name = basename(command[0].replaceAll('\\', '/')).replace(/\.(?:exe|bat)$/i, '');
   if (platform === 'ios' && name === 'xcodebuild' && command.filter(value => value === '-configuration').length === 1 && command[command.indexOf('-configuration') + 1] === 'Release' && command.includes('build')) return;
   if (platform === 'android' && name === 'gradlew' && command.includes(':app:assembleRelease') && !command.some(value => /assembleDebug|bundleDebug|test|install/i.test(value))) return;
-  if (platform === 'android' && name === 'node' && command[1]?.endsWith('/scripts/build-android-release-local.js')
+  if (platform === 'android' && name === 'node' && command[1]?.replaceAll('\\', '/').endsWith('/scripts/build-android-release-local.js')
     && command.includes('--reuse-native-project')) return;
   refusal('BUILD_COMMAND_NOT_CANONICAL_RELEASE');
 }
