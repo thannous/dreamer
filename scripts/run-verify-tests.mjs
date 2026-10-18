@@ -13,7 +13,7 @@ if (!status && process.platform === 'linux') {
   // These commands are prerequisites of the native suite, never conditions on
   // a common case. A Linux verifier must qualify the actual cleanup as before.
   console.log('[verify-tests] additional Linux native process/lock qualification');
-  status = run(['scripts/test-verify-local-native.mjs', 'scripts/test-auth-permissions-native.mjs']);
+  status = run(['scripts/test-verify-local-native.mjs', 'scripts/test-test-auth-permissions-native.mjs']);
 } else if (!status) {
   console.log('[verify-tests] common contracts passed; Linux native qualification is a separate run on Linux');
 }

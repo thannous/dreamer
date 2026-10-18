@@ -95,4 +95,3 @@ export function makeRepository() {
   const options = { cwd: work, env, log: (line) => lines.push(line), worktreeRoot: path.join(base, 'worktrees') };
   return { base, origin, work, env, git, write, commit, runs, clearRuns, lines, options };
 }
-

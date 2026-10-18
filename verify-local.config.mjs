@@ -162,7 +162,7 @@ const DREAMER_PASSES = [
 // tests compare the file with it, so an engine edit is a deliberate change of
 // this pin. No other repository is read or compared.
 export const ENGINE_SHA256 =
-  '60ac544e0692f4a0ff054d1fd738971a3fb1d2515270258aa176894aab855759';
+  'feaa8dc419f88c1faaff5330a5f31bfde327e355fec8307795a84cb18f893ef3';
 
 export default {
   mainBranch: 'master',
@@ -247,7 +247,7 @@ export default {
     {
       name: 'verify-local-engine',
       command: 'npm run test:verify-local',
-      inputs: ['scripts/verify-local.mjs', 'scripts/test-verify-local*.mjs', 'scripts/test-platform-contracts.mjs', 'scripts/test-auth-permissions-native.mjs', 'scripts/test-auth-setup.mjs', 'scripts/test-support/**', 'scripts/run-verify-tests.mjs', 'verify-local.config.mjs', '.gitattributes'],
+      inputs: ['scripts/verify-local.mjs', 'scripts/test-verify-local*.mjs', 'scripts/test-platform-contracts.mjs', 'scripts/test-test-auth-permissions-native.mjs', 'scripts/test-auth-setup.mjs', 'scripts/test-support/**', 'scripts/run-verify-tests.mjs', 'verify-local.config.mjs', '.gitattributes'],
     },
     // The production publish guard of noctalia.app (docs:deploy:prod) against
     // proofs written by this engine in scratch repositories.
