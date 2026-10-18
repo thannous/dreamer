@@ -406,6 +406,31 @@ export async function saveReminderPromptDismissed(dismissed: boolean): Promise<v
   }
 }
 
+const STALE_ANALYSIS_BANNER_DISMISSED_KEY = 'gemini_dream_journal_stale_analysis_banner_dismissed';
+
+export async function getStaleAnalysisBannerDismissed(): Promise<boolean> {
+  console.log('[MOCK STORAGE] getStaleAnalysisBannerDismissed called');
+  try {
+    const savedPreference = mockStorage[STALE_ANALYSIS_BANNER_DISMISSED_KEY];
+    if (savedPreference) {
+      return JSON.parse(savedPreference) === true;
+    }
+  } catch (error) {
+    console.error('[MOCK STORAGE] Failed to retrieve stale analysis banner state:', error);
+  }
+  return false;
+}
+
+export async function saveStaleAnalysisBannerDismissed(dismissed: boolean): Promise<void> {
+  console.log('[MOCK STORAGE] saveStaleAnalysisBannerDismissed called:', dismissed);
+  try {
+    mockStorage[STALE_ANALYSIS_BANNER_DISMISSED_KEY] = JSON.stringify(dismissed);
+  } catch (error) {
+    console.error('[MOCK STORAGE] Failed to save stale analysis banner state:', error);
+    throw new Error('Failed to save stale analysis banner state');
+  }
+}
+
 export async function getRecordingOnboardingCompleted(): Promise<boolean> {
   console.log('[MOCK STORAGE] getRecordingOnboardingCompleted called');
   try {

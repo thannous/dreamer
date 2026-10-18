@@ -910,6 +910,29 @@ describe('journal detail saved confirmation route', () => {
     await act(async () => { finish(); });
   });
 
+  it('closes the outdated-analysis banner for good and keeps the update action', async () => {
+    const staleDream = buildDream({
+      isAnalyzed: true,
+      analysisStatus: 'done',
+      interpretation: 'A quiet city.',
+      analyzedAt: 1_700_000_000_000,
+      analysisTranscriptHash: 'v1:00000000',
+    });
+    mockDreams = [staleDream];
+    mockSearchParams = { id: '42' };
+    await act(async () => { render(<JournalDetailScreen />); });
+    expect(await screen.findByTestId(TID.Component.AnalysisStaleBanner)).toBeTruthy();
+
+    await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.AnalysisStaleDismiss)); });
+    expect(screen.queryByTestId(TID.Component.AnalysisStaleBanner)).toBeNull();
+    expect(screen.getByTestId(TID.Button.AnalysisStaleCta)).toBeTruthy();
+
+    cleanup();
+    await act(async () => { render(<JournalDetailScreen />); });
+    await waitFor(() => expect(screen.getByTestId(TID.Button.AnalysisStaleCta)).toBeTruthy());
+    expect(screen.queryByTestId(TID.Component.AnalysisStaleBanner)).toBeNull();
+  });
+
   it('does not launch an analysis from a stale or fabricated purchase URL', async () => {
     mockTier = 'free';
     mockSearchParams = { id: '42', analyzeAfterPurchase: '1', analysisOwnerId: 'user-1' };

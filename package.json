@@ -181,6 +181,7 @@
     "prepare": "node ./scripts/install-git-hooks.js",
     "postinstall": "patch-package --error-on-fail",
     "test:testerarmy:setup": "npm ci --prefix tools/e2e",
+    "test:testerarmy:benchmark": "node tools/e2e/benchmark-setup.mjs",
     "test:testerarmy:browsers": "npm run browsers:install --prefix tools/e2e --",
     "test:testerarmy": "node tools/e2e/run.mjs dreamer web",
     "test:testerarmy:lucid": "node tools/e2e/run.mjs lucid web",

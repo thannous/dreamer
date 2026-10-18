@@ -632,6 +632,7 @@ const translations: Record<string, string> = {
     'journal.detail.stale.label': 'Analyse potentiellement obsolète',
     'journal.detail.stale.banner': 'Cette analyse a été faite sur une version antérieure du rêve. L’analyse précédente reste visible.',
     'journal.detail.stale.cta': 'Mettre à jour l’analyse',
+    'journal.detail.stale.dismiss': 'Fermer et ne plus afficher ce rappel',
     'journal.detail.image.expand_accessibility': 'Voir l’illustration en plein écran',
     'journal.detail.image.close_fullscreen': 'Fermer l’illustration',
     'journal.detail.favorite.on': 'Ajouté aux favoris',

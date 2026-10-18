@@ -631,6 +631,7 @@ const translations: Record<string, string> = {
     'journal.detail.stale.label': 'L’analisi potrebbe essere obsoleta',
     'journal.detail.stale.banner': 'Questa analisi è stata fatta su una versione precedente del sogno. L’analisi precedente resta visibile.',
     'journal.detail.stale.cta': 'Aggiorna analisi',
+    'journal.detail.stale.dismiss': 'Chiudi e non mostrare più questo avviso',
     'journal.detail.image.expand_accessibility': 'Vedi l’illustrazione a schermo intero',
     'journal.detail.image.close_fullscreen': 'Chiudi illustrazione',
     'journal.detail.favorite.on': 'Nei preferiti',

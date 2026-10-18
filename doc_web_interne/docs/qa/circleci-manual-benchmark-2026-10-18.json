@@ -1,0 +1,357 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-18",
+  "sourceRevision": "56fa42f6f6027a79b9e0165b8260eadd4747ca15",
+  "command": "npm run test:testerarmy:benchmark",
+  "purpose": "manual installation benchmark, never application qualification",
+  "method": {
+    "npmCache": "isolated, empty on the first install and shared by later repetitions",
+    "browserCache": "new empty directory for each variant and repetition; no CircleCI cache restore",
+    "excluded": [
+      "root dependency install",
+      "Linux system packages",
+      "application journeys",
+      "CircleCI queue and artifact transfer"
+    ]
+  },
+  "windows": {
+    "platform": "win32",
+    "osRelease": "10.0.26200",
+    "node": "v24.19.0",
+    "npmVersion": "12.2.0",
+    "npmVersionSource": "npm --version on the same host",
+    "playwright": "1.64.0",
+    "lockSha256": "54f538e491f3a8156211ebaa8c1f759b9f7877855291c4c4e8bcbd036b503361",
+    "summary": {
+      "npm": {
+        "medianMs": 9300,
+        "samples": 3
+      },
+      "full": {
+        "medianMs": 16615,
+        "samples": 3
+      },
+      "shell": {
+        "medianMs": 7284,
+        "samples": 3
+      },
+      "chromiumSavedMs": 9331
+    },
+    "samples": [
+      {
+        "name": "npm-1",
+        "elapsedMs": 9300,
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "passed": true
+      },
+      {
+        "name": "full-1",
+        "elapsedMs": 15441,
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "passed": true,
+        "installedBytes": 752827508,
+        "installedDirectories": [
+          "chromium-1248",
+          "chromium_headless_shell-1248",
+          "ffmpeg-1013",
+          "winldd-1007"
+        ]
+      },
+      {
+        "name": "shell-1",
+        "elapsedMs": 7951,
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "passed": true,
+        "installedBytes": 295201836,
+        "installedDirectories": [
+          "chromium_headless_shell-1248",
+          "ffmpeg-1013",
+          "winldd-1007"
+        ]
+      },
+      {
+        "name": "npm-2",
+        "elapsedMs": 14386,
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "passed": true
+      },
+      {
+        "name": "shell-2",
+        "elapsedMs": 7284,
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "passed": true,
+        "installedBytes": 295201836,
+        "installedDirectories": [
+          "chromium_headless_shell-1248",
+          "ffmpeg-1013",
+          "winldd-1007"
+        ]
+      },
+      {
+        "name": "full-2",
+        "elapsedMs": 16727,
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "passed": true,
+        "installedBytes": 752827508,
+        "installedDirectories": [
+          "chromium-1248",
+          "chromium_headless_shell-1248",
+          "ffmpeg-1013",
+          "winldd-1007"
+        ]
+      },
+      {
+        "name": "npm-3",
+        "elapsedMs": 4372,
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "passed": true
+      },
+      {
+        "name": "full-3",
+        "elapsedMs": 16615,
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "passed": true,
+        "installedBytes": 752827508,
+        "installedDirectories": [
+          "chromium-1248",
+          "chromium_headless_shell-1248",
+          "ffmpeg-1013",
+          "winldd-1007"
+        ]
+      },
+      {
+        "name": "shell-3",
+        "elapsedMs": 7175,
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "passed": true,
+        "installedBytes": 295201836,
+        "installedDirectories": [
+          "chromium_headless_shell-1248",
+          "ffmpeg-1013",
+          "winldd-1007"
+        ]
+      }
+    ]
+  },
+  "linux": {
+    "platform": "linux",
+    "osRelease": "6.18.54.1-microsoft-standard-WSL2",
+    "node": "v24.19.0",
+    "npmVersion": "11.17.0",
+    "npmVersionSource": "npm --version on the same host",
+    "playwright": "1.64.0",
+    "lockSha256": "54f538e491f3a8156211ebaa8c1f759b9f7877855291c4c4e8bcbd036b503361",
+    "summary": {
+      "npm": {
+        "medianMs": 2213,
+        "samples": 3
+      },
+      "full": {
+        "medianMs": 16687,
+        "samples": 3
+      },
+      "shell": {
+        "medianMs": 7312,
+        "samples": 3
+      },
+      "chromiumSavedMs": 9375
+    },
+    "samples": [
+      {
+        "name": "npm-1",
+        "elapsedMs": 3104,
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "passed": true
+      },
+      {
+        "name": "full-1",
+        "elapsedMs": 17527,
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "passed": true,
+        "installedBytes": 711303461,
+        "installedDirectories": [
+          "chromium-1248",
+          "chromium_headless_shell-1248",
+          "ffmpeg-1013"
+        ]
+      },
+      {
+        "name": "shell-1",
+        "elapsedMs": 7280,
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "passed": true,
+        "installedBytes": 290381724,
+        "installedDirectories": [
+          "chromium_headless_shell-1248",
+          "ffmpeg-1013"
+        ]
+      },
+      {
+        "name": "npm-2",
+        "elapsedMs": 2213,
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "passed": true
+      },
+      {
+        "name": "shell-2",
+        "elapsedMs": 7312,
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "passed": true,
+        "installedBytes": 290381724,
+        "installedDirectories": [
+          "chromium_headless_shell-1248",
+          "ffmpeg-1013"
+        ]
+      },
+      {
+        "name": "full-2",
+        "elapsedMs": 16212,
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "passed": true,
+        "installedBytes": 711303461,
+        "installedDirectories": [
+          "chromium-1248",
+          "chromium_headless_shell-1248",
+          "ffmpeg-1013"
+        ]
+      },
+      {
+        "name": "npm-3",
+        "elapsedMs": 1985,
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "passed": true
+      },
+      {
+        "name": "full-3",
+        "elapsedMs": 16687,
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "passed": true,
+        "installedBytes": 711303461,
+        "installedDirectories": [
+          "chromium-1248",
+          "chromium_headless_shell-1248",
+          "ffmpeg-1013"
+        ]
+      },
+      {
+        "name": "shell-3",
+        "elapsedMs": 8292,
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "passed": true,
+        "installedBytes": 290381724,
+        "installedDirectories": [
+          "chromium_headless_shell-1248",
+          "ffmpeg-1013"
+        ]
+      }
+    ]
+  },
+  "commonTests": {
+    "count": 46,
+    "skipped": 0,
+    "sameNames": true,
+    "namesSha256": "09dcd52e21de35fca2291a1a0bfad26883c40e6a623548e59320aca7d5ce16bd",
+    "cases": [
+      "AVD protocol normalizes only the observed name plus optional OK, rejects extra targets/errors",
+      "Circle web SDK liveness emits only elapsed time, stops on close/error and leaves disabled sinks unopened",
+      "Pods links are fingerprinted with their local targets; foreign links and cycles are refused",
+      "Release source and profile fields cannot coerce array/string flags into a valid identity",
+      "SDK cleanup proof remains a qualification diagnostic even for a red body",
+      "a requested trace is the own non-empty trace page of each passed result",
+      "actual SDK passed/exit0 shape cannot hide recording cleanup or secondary error",
+      "all routing combinations retain the E2E dependency installs and every campaign shard",
+      "archived Release bytes survive a later cache rebuild, partial or existing copies never qualify",
+      "artifact bytes/hash and traversal are checked on real files",
+      "bounded repetition count and medians have the same cases on every host",
+      "campaign refuses modified or undeclared retained evidence files",
+      "cancellation reaches the installer and cannot become a successful exit",
+      "canonical descriptor refuses duplicate or Debug configuration and preserves explicit native build tools",
+      "categorization QA delay activates only for the bounded opt-in persistent mock profile",
+      "critical array/boolean and unexpected agent identities are refused",
+      "failed installation retains a nonqualifying receipt and prevents browser measurements",
+      "finding with no requested or declared media and no artifacts directory is valid",
+      "first attempt creates absent parents, collision does not overwrite prior evidence",
+      "forced interruption preserves available SDK/log bytes while missing final receipts remain nonqualifying",
+      "full and headless installs use the engine browser, even beside another root Playwright",
+      "globally passed SDK report refuses every non-passed executed step",
+      "headless preparation keeps Linux dependencies, journey typechecks and qualification guards",
+      "immutable receipts refuse an already used output",
+      "installation diagnostics are independent, SDK still runs, and invalid identity cannot disappear",
+      "mismatched matcher and engine versions fail before browser installation",
+      "missing app.open, attempt, duplicate result, foreign target/source and stale report fail",
+      "nonzero and unknown installer exits stay failures and release signal handlers",
+      "only an explicitly opted-in manual/API benchmark runs, for every trigger combination",
+      "persistent source/test input mutation fails, declared output changes do not claim source clean",
+      "primary exit and SIGINT/SIGTERM survive secondary proof failure",
+      "public collection pairs prevent a coherently shortened or wrongly skipped SDK report from passing",
+      "read receipts obey the same bounded/profile rules as their canonical build",
+      "real Metro cache isolates compiled profiles while retaining identical input reuse",
+      "real subprocess success and failure are recorded, with signal and error failures simulated everywhere",
+      "requested video missing fails while unchanged report-only bodies remain valid",
+      "same-version different binary, changed source/native inputs, nonRelease and wrong profile are refused",
+      "skips and excluded IDs are retained separately and never counted passed",
+      "spawn errors reject and release signal handlers",
+      "spawn uses arguments without shell parsing and preserves other tools browsers",
+      "the active pipeline has one setup benchmark and uploads only reports, with no validation or continuation",
+      "the former CI coverage fixtures stay unchanged while local commands retain their contracts",
+      "union uses target plus test ID and context, separates skip/exclusion and refuses uncovered required IDs",
+      "unknown switches and browsers fail before resolving any dependency",
+      "web public fixture setup precedes app.open, other UI before it and every native prefix are refused",
+      "web report must identify the exact loopback origin and engine"
+    ]
+  },
+  "localCoverage": {
+    "base": "3e93154369b180ada25f08e528a7131e4b62444d",
+    "checksBefore": 26,
+    "checksAfter": 26,
+    "removed": [],
+    "validationCommandsUnchanged": 24,
+    "extendedOnly": [
+      "ci-contracts",
+      "release-contracts"
+    ]
+  },
+  "limitations": [
+    "Local Windows and WSL2 measurements, not a remote CircleCI pipeline duration.",
+    "Compare full versus shell within one OS; npm versions and host load differ.",
+    "No journey/assertion, native profile, lockfile, backend or publication changed.",
+    "The final collector additionally records npmVersion; the timed command and download algorithm are unchanged.",
+    "Full release, native/device and remote CircleCI campaigns were not run for this configuration-only change."
+  ]
+}
