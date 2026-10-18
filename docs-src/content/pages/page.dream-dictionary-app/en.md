@@ -5,7 +5,7 @@
   "lang": "en",
   "slug": "dream-dictionary-app",
   "title": "Dream Dictionary App for Android | Noctalia",
-  "description": "Browse 160 public dream-symbol entries, compare possible meanings and connect a symbol to your own saved dream in Noctalia for Android.",
+  "description": "Browse 240 public dream-symbol entries, compare possible meanings and connect a symbol to your own saved dream in Noctalia for Android.",
   "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
   "themeColor": "#0a0514",
   "htmlClass": "",
@@ -23,22 +23,22 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Noctalia dream dictionary app",
   "publishedTime": "2026-06-04T00:00:00+02:00",
-  "modifiedTime": "2026-10-11T00:00:00+02:00",
+  "modifiedTime": "2026-10-18T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Dream Dictionary App for Android\",\"description\":\"Browse 160 public dream-symbol entries, compare possible meanings and connect a symbol to your own saved dream in Noctalia for Android.\",\"url\":\"https://noctalia.app/en/dream-dictionary-app\",\"inLanguage\":\"en\",\"dateModified\":\"2026-10-11T00:00:00+02:00\",\"about\":{\"@id\":\"https://noctalia.app/#software\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
+    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Dream Dictionary App for Android\",\"description\":\"Browse 240 public dream-symbol entries, compare possible meanings and connect a symbol to your own saved dream in Noctalia for Android.\",\"url\":\"https://noctalia.app/en/dream-dictionary-app\",\"inLanguage\":\"en\",\"dateModified\":\"2026-10-18T00:00:00+02:00\",\"about\":{\"@id\":\"https://noctalia.app/#software\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://noctalia.app/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Dream Dictionary App for Android\",\"item\":\"https://noctalia.app/en/dream-dictionary-app\"}]} ",
-    "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Is the Noctalia dream dictionary free to browse?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Yes. The public web dictionary lets you browse 160 editorial dream-symbol entries by category or A-Z without installing the app.\"}},{\"@type\":\"Question\",\"name\":\"Does one symbol always have the same meaning?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"No. The same symbol can relate to different memories, emotions and situations. Use the dictionary as a set of possibilities and compare them with the complete dream.\"}},{\"@type\":\"Question\",\"name\":\"What does the Android app add to the dictionary?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"The app adds voice or text capture, a private journal, AI reflection, mood and symbol context, generated images and follow-up questions around your saved dream.\"}},{\"@type\":\"Question\",\"name\":\"Can a dream dictionary diagnose or predict something?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"No. Dream-dictionary entries are informational prompts, not medical advice, psychological diagnosis or predictions.\"}}]}"
+    "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Is the Noctalia dream dictionary free to browse?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Yes. The public web dictionary lets you browse 240 editorial dream-symbol entries by category or A-Z without installing the app.\"}},{\"@type\":\"Question\",\"name\":\"Does one symbol always have the same meaning?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"No. The same symbol can relate to different memories, emotions and situations. Use the dictionary as a set of possibilities and compare them with the complete dream.\"}},{\"@type\":\"Question\",\"name\":\"What does the Android app add to the dictionary?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"The app adds voice or text capture, a private journal, AI reflection, mood and symbol context, generated images and follow-up questions around your saved dream.\"}},{\"@type\":\"Question\",\"name\":\"Can a dream dictionary diagnose or predict something?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"No. Dream-dictionary entries are informational prompts, not medical advice, psychological diagnosis or predictions.\"}}]}"
   ],
   "activeNav": "resources"
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Dream dictionary app for Android</h1>
-<p class="text-sm text-purple-300/70 mb-6">Updated October 11, 2026</p>
-<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia combines a public dictionary of 160 editorial dream-symbol entries with an Android journal. Look up a symbol for possible meanings, then bring it back to the full dream, your emotions and the details you captured on waking.</p>
+<p class="text-sm text-purple-300/70 mb-6">Updated October 18, 2026</p>
+<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia combines a public dictionary of 240 editorial dream-symbol entries with an Android journal. Look up a symbol for possible meanings, then bring it back to the full dream, your emotions and the details you captured on waking.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
@@ -47,7 +47,7 @@
   </section>
 
   <section class="grid md:grid-cols-3 gap-6">
-    <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">1. Look up</h2><p>Browse 160 public symbol entries by category or A-Z. Each entry presents variations, questions and possible associations.</p></div>
+    <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">1. Look up</h2><p>Browse 240 public symbol entries by category or A-Z. Each entry presents variations, questions and possible associations.</p></div>
     <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">2. Add context</h2><p>Record what the symbol did, how it looked and how you felt. A calm sea and a flood should not be read as the same scene.</p></div>
     <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">3. Compare</h2><p>Save the complete dream in the app and watch which symbols come back across entries, instead of drawing a conclusion from one lookup.</p></div>
   </section>
@@ -105,7 +105,7 @@
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Dream dictionary FAQ</h2>
     <div class="space-y-5">
-      <div><h3 class="text-white font-medium">Is the Noctalia dream dictionary free to browse?</h3><p class="mt-1">Yes. The public web dictionary lets you browse 160 editorial dream-symbol entries by category or A-Z without installing the app.</p></div>
+      <div><h3 class="text-white font-medium">Is the Noctalia dream dictionary free to browse?</h3><p class="mt-1">Yes. The public web dictionary lets you browse 240 editorial dream-symbol entries by category or A-Z without installing the app.</p></div>
       <div><h3 class="text-white font-medium">Does one symbol always have the same meaning?</h3><p class="mt-1">No. The same symbol can relate to different memories, emotions and situations. Use the dictionary as a set of possibilities and compare them with the complete dream.</p></div>
       <div><h3 class="text-white font-medium">What does the Android app add to the dictionary?</h3><p class="mt-1">The app adds voice or text capture, a private journal, AI reflection, mood and symbol context, generated images and follow-up questions around your saved dream.</p></div>
       <div><h3 class="text-white font-medium">Can a dream dictionary diagnose or predict something?</h3><p class="mt-1">No. Dream-dictionary entries are informational prompts, not medical advice, psychological diagnosis or predictions.</p></div>

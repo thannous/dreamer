@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-fr-1200x630.jpg",
   "twitterImageAlt": "Journal de rêves illustré et interprété",
   "publishedTime": "",
-  "modifiedTime": "2026-10-15",
+  "modifiedTime": "2026-10-18",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -492,7 +492,7 @@
                 <span class="oh-index" aria-hidden="true">5 h</span>
                 <h2 class="oh-h2">Dictionnaire des symboles</h2>
             </div>
-            <p class="oh-lede">Parcourez 150 symboles fréquents, chacun avec des questions de contexte et des associations possibles. Ce qui compte, c’est la scène et ce que vous y avez ressenti, plus qu’une définition figée.</p>
+            <p class="oh-lede">Parcourez 240 symboles fréquents, chacun avec des questions de contexte et des associations possibles. Ce qui compte, c’est la scène et ce que vous y avez ressenti, plus qu’une définition figée.</p>
         </div>
 
         <div class="oh-symbols reveal">
@@ -564,7 +564,7 @@
 
         <div class="oh-symbols-cta reveal">
             <a href="guides/dictionnaire-symboles-reves" class="oh-btn-quiet">
-                <i data-lucide="book-open"></i> Explorer les 150 symboles <i data-lucide="arrow-right"></i>
+                <i data-lucide="book-open"></i> Explorer les 240 symboles <i data-lucide="arrow-right"></i>
             </a>
         </div>
     </section>
