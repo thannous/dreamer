@@ -1,16 +1,11 @@
 diff --git a/node_modules/expo-modules-autolinking/android/expo-gradle-plugin/expo-autolinking-plugin/src/main/kotlin/expo/modules/plugin/GenerateInlineModulesTask.kt b/node_modules/expo-modules-autolinking/android/expo-gradle-plugin/expo-autolinking-plugin/src/main/kotlin/expo/modules/plugin/GenerateInlineModulesTask.kt
 --- a/node_modules/expo-modules-autolinking/android/expo-gradle-plugin/expo-autolinking-plugin/src/main/kotlin/expo/modules/plugin/GenerateInlineModulesTask.kt
 +++ b/node_modules/expo-modules-autolinking/android/expo-gradle-plugin/expo-autolinking-plugin/src/main/kotlin/expo/modules/plugin/GenerateInlineModulesTask.kt
-@@ -9,6 +9,7 @@ import org.gradle.api.tasks.OutputDirectory
- import org.gradle.api.tasks.TaskAction
+@@ -11,2 +11,3 @@
  import org.gradle.process.ExecOperations
  import javax.inject.Inject
 +import java.util.Base64
- 
- /**
-  * Task that mirrors the Kotlin inline modules and generates the `ExpoInlineModulesList` provider.
-@@ -52,13 +53,15 @@ abstract class GenerateInlineModulesTask : DefaultTask() {
- 
+@@ -53,9 +54,11 @@
    @TaskAction
    fun generateInlineModules() {
 +    // Transport JSON without embedded command-line quotes (Windows ProcessBuilder).
@@ -23,9 +18,6 @@ diff --git a/node_modules/expo-modules-autolinking/android/expo-gradle-plugin/ex
          "--eval",
 -        "require('expo/bin/autolinking')",
 +        "process.argv.push(Buffer.from('$watched','base64').toString('utf8'));require('expo/bin/autolinking')",
-         "expo-modules-autolinking",
-         "mirror-kotlin-inline-modules",
-         "--kotlin-files-mirror-directory",
 @@ -66,8 +69,7 @@ abstract class GenerateInlineModulesTask : DefaultTask() {
          mirrorDirectory.get().asFile.absolutePath,
          "--inline-modules-list-directory",
