@@ -49,6 +49,7 @@ export const TID = {
     FilterRemembered: 'btn.filterRemembered',
     FilterRecurring: 'btn.filterRecurring',
     FilterSearch: 'btn.filterSearch',
+    FilterSymbol: 'btn.filterSymbol',
     FilterMore: 'btn.filterMore',
     FilterStatusAll: 'btn.filterStatus.all',
     FilterStatusUnanalyzed: 'btn.filterStatus.unanalyzed',
@@ -201,6 +202,7 @@ export const TID = {
     WhatsNewLater: 'btn.whatsNew.later',
     DreamSymbolClose: 'btn.dreamSymbol.close',
     DreamSymbolBack: 'btn.dreamSymbol.back',
+    DreamSymbolAllDreams: 'btn.dreamSymbol.allDreams',
     DreamSymbolReadMore: 'btn.dreamSymbol.readMore',
   },
   Tab: {
@@ -219,6 +221,7 @@ export const TID = {
     DreamSymbol: (linkKey: string) => `dream.symbol.${linkKey.replace(':', '.')}`,
     DreamSymbolAppearance: (dreamId: number) => `dreamSymbol.appearance.${dreamId}`,
     DreamSymbolCompanion: (linkKey: string) => `dreamSymbol.companion.${linkKey.replace(':', '.')}`,
+    DreamSymbolRelated: (linkKey: string) => `dreamSymbol.related.${linkKey.replace(':', '.')}`,
     /** A star of the reading's constellation, by its symbol's link. */
     DreamSymbolStar: (linkKey: string) => `dream.constellation.${linkKey.replace(':', '.')}`,
   },
