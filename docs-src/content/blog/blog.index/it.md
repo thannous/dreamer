@@ -614,13 +614,13 @@
 <div class="p-6">
 <div class="flex items-center gap-3 mb-3">
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Riferimento</span>
-<span class="text-xs text-purple-300/60">150 simboli</span>
+<span class="text-xs text-purple-300/60">240 simboli</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
                                 Dizionario dei simboli onirici: interpretazione dalla A alla Z
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                150 simboli onirici frequenti dalla A alla Z, come punto di partenza per le tue note.
+                                240 simboli onirici frequenti dalla A alla Z, come punto di partenza per le tue note.
                             </p>
 </div>
 </a>

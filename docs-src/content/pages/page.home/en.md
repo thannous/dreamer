@@ -492,7 +492,7 @@
                 <span class="oh-index" aria-hidden="true">5 am</span>
                 <h2 class="oh-h2">Dream symbols dictionary</h2>
             </div>
-            <p class="oh-lede">Browse 150 common symbols, each with context questions and possible associations. What matters most is the scene and how you felt in it, not a fixed definition.</p>
+            <p class="oh-lede">Browse 240 common symbols, each with context questions and possible associations. What matters most is the scene and how you felt in it, not a fixed definition.</p>
         </div>
 
         <div class="oh-symbols reveal">
@@ -564,7 +564,7 @@
 
         <div class="oh-symbols-cta reveal">
             <a href="/en/guides/dream-symbols-dictionary" class="oh-btn-quiet">
-                <i data-lucide="book-open"></i> Explore all 150 symbols <i data-lucide="arrow-right"></i>
+                <i data-lucide="book-open"></i> Explore all 240 symbols <i data-lucide="arrow-right"></i>
             </a>
         </div>
     </section>

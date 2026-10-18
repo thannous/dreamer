@@ -31,13 +31,13 @@
   "jsonLd": [
     "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"headline\":\"Metodología del contenido sobre sueños\",\"description\":\"Alcance verificable, proceso editorial, límites de privacidad y estado de los datos que sustentan el contenido público de Noctalia.\",\"url\":\"https://noctalia.app/es/metodologia-contenido-suenos\",\"inLanguage\":\"es\",\"datePublished\":\"2026-07-09\",\"dateModified\":\"2026-10-10T00:00:00+02:00\",\"author\":{\"@type\":\"Person\",\"name\":\"Thanh Chau\",\"url\":\"https://noctalia.app/es/sobre#person\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Inicio\",\"item\":\"https://noctalia.app/es/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Metodología del contenido\",\"item\":\"https://noctalia.app/es/metodologia-contenido-suenos\"}]} ",
-    "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"¿Noctalia publica un conjunto verificable de 55 000 sueños de usuarios?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"No. La fuente pública actual no contiene 55 000 registros de sueños ni la procedencia necesaria para reproducir esa cifra. Noctalia no la considera una prueba científica verificada.\"}},{\"@type\":\"Question\",\"name\":\"¿Qué alcance público puede verificarse hoy?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"A 9 de julio de 2026, la fuente contiene 150 fichas editoriales de símbolos en cinco idiomas y 44 familias BlogPosting más 3 hubs temáticos, es decir, 235 archivos localizados.\"}},{\"@type\":\"Question\",\"name\":\"¿Se usan diarios privados en el diccionario público?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Los archivos públicos no incluyen entradas privadas de usuarios. Las fichas de símbolos y los artículos son contenido editorial.\"}},{\"@type\":\"Question\",\"name\":\"¿El catálogo de Noctalia es un conjunto de investigación clínica?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"No. No tiene una cohorte publicada, protocolo de muestreo, etiquetas clínicas ni estudio de validación. Debe citarse como catálogo editorial.\"}}]}"
+    "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"¿Noctalia publica un conjunto verificable de 55 000 sueños de usuarios?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"No. La fuente pública actual no contiene 55 000 registros de sueños ni la procedencia necesaria para reproducir esa cifra. Noctalia no la considera una prueba científica verificada.\"}},{\"@type\":\"Question\",\"name\":\"¿Qué alcance público puede verificarse hoy?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"A 18 de octubre de 2026, la fuente contiene 240 fichas editoriales de símbolos en cinco idiomas y 50 familias BlogPosting más 3 hubs temáticos, es decir, 265 archivos localizados.\"}},{\"@type\":\"Question\",\"name\":\"¿Se usan diarios privados en el diccionario público?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Los archivos públicos no incluyen entradas privadas de usuarios. Las fichas de símbolos y los artículos son contenido editorial.\"}},{\"@type\":\"Question\",\"name\":\"¿El catálogo de Noctalia es un conjunto de investigación clínica?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"No. No tiene una cohorte publicada, protocolo de muestreo, etiquetas clínicas ni estudio de validación. Debe citarse como catálogo editorial.\"}}]}"
   ],
   "activeNav": "resources"
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Metodología del contenido sobre sueños</h1>
-<p class="text-sm text-purple-300/70 mb-6">Publicado y comprobado el 9 de julio de 2026</p>
+<p class="text-sm text-purple-300/70 mb-6">Publicado el 9 de julio de 2026 · Comprobado el 18 de octubre de 2026</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">Este informe separa el catálogo editorial público de Noctalia de los diarios privados y de un conjunto de investigación. Explica qué puede verificarse en la fuente actual, cómo se estructura el contenido y qué conclusiones no deben extraerse.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
@@ -50,11 +50,11 @@
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Alcance público verificable</h2>
     <dl class="grid gap-5 md:grid-cols-3">
-      <div><dt class="text-sm text-purple-200/70">Fichas de símbolos</dt><dd class="text-2xl text-white font-serif">150</dd><p class="text-sm mt-1">Un registro editorial versionado por símbolo.</p></div>
+      <div><dt class="text-sm text-purple-200/70">Fichas de símbolos</dt><dd class="text-2xl text-white font-serif">240</dd><p class="text-sm mt-1">Un registro editorial versionado por símbolo.</p></div>
       <div><dt class="text-sm text-purple-200/70">Idiomas</dt><dd class="text-2xl text-white font-serif">5</dd><p class="text-sm mt-1">Español, inglés, francés, alemán e italiano.</p></div>
-      <div><dt class="text-sm text-purple-200/70">Fuentes de contenido del blog</dt><dd class="text-2xl text-white font-serif">235</dd><p class="text-sm mt-1">44 familias BlogPosting + 3 hubs temáticos = 235 archivos localizados.</p></div>
+      <div><dt class="text-sm text-purple-200/70">Fuentes de contenido del blog</dt><dd class="text-2xl text-white font-serif">265</dd><p class="text-sm mt-1">50 familias BlogPosting + 3 hubs temáticos = 265 archivos localizados.</p></div>
     </dl>
-    <p class="mt-6">Los mismos 150 identificadores tienen texto editorial ampliado. Estas cifras describen objetos publicados, no soñadores, envíos privados ni observaciones experimentales.</p>
+    <p class="mt-6">Los mismos 240 identificadores tienen texto editorial ampliado. Estas cifras describen objetos publicados, no soñadores, envíos privados ni observaciones experimentales.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
@@ -70,14 +70,14 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Cómo citar el contenido correctamente</h2>
-    <ul class="list-disc pl-5 space-y-2"><li>Descríbelo como el catálogo editorial público de símbolos de Noctalia.</li><li>Incluye la URL y la fecha del 9 de julio de 2026 al citar recuentos.</li><li>No lo presentes como estudio clínico, encuesta representativa ni conjunto de sueños de usuarios.</li><li>Para afirmaciones científicas, cita el estudio primario enlazado desde el artículo correspondiente.</li></ul>
+    <ul class="list-disc pl-5 space-y-2"><li>Descríbelo como el catálogo editorial público de símbolos de Noctalia.</li><li>Incluye la URL y la fecha del 18 de octubre de 2026 al citar recuentos.</li><li>No lo presentes como estudio clínico, encuesta representativa ni conjunto de sueños de usuarios.</li><li>Para afirmaciones científicas, cita el estudio primario enlazado desde el artículo correspondiente.</li></ul>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Preguntas sobre la metodología</h2>
     <div class="space-y-5">
       <div><h3 class="text-white font-medium">¿Noctalia publica un conjunto verificable de 55 000 sueños de usuarios?</h3><p class="mt-1">No. La fuente pública actual no contiene 55 000 registros de sueños ni la procedencia necesaria para reproducir esa cifra. Noctalia no la considera una prueba científica verificada.</p></div>
-      <div><h3 class="text-white font-medium">¿Qué alcance público puede verificarse hoy?</h3><p class="mt-1">A 9 de julio de 2026, la fuente contiene 150 fichas editoriales de símbolos en cinco idiomas y 44 familias BlogPosting más 3 hubs temáticos, es decir, 235 archivos localizados.</p></div>
+      <div><h3 class="text-white font-medium">¿Qué alcance público puede verificarse hoy?</h3><p class="mt-1">A 18 de octubre de 2026, la fuente contiene 240 fichas editoriales de símbolos en cinco idiomas y 50 familias BlogPosting más 3 hubs temáticos, es decir, 265 archivos localizados.</p></div>
       <div><h3 class="text-white font-medium">¿Se usan diarios privados en el diccionario público?</h3><p class="mt-1">Los archivos públicos no incluyen entradas privadas de usuarios. Las fichas de símbolos y los artículos son contenido editorial.</p></div>
       <div><h3 class="text-white font-medium">¿El catálogo de Noctalia es un conjunto de investigación clínica?</h3><p class="mt-1">No. No tiene una cohorte publicada, protocolo de muestreo, etiquetas clínicas ni estudio de validación. Debe citarse como catálogo editorial.</p></div>
     </div>

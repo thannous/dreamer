@@ -492,7 +492,7 @@
                 <span class="oh-index" aria-hidden="true">5:00</span>
                 <h2 class="oh-h2">Dizionario dei simboli dei sogni</h2>
             </div>
-            <p class="oh-lede">Sfoglia 150 simboli comuni, ognuno con domande di contesto e associazioni possibili. Contano la scena e ciò che hai provato, più di qualsiasi definizione fissa.</p>
+            <p class="oh-lede">Sfoglia 240 simboli comuni, ognuno con domande di contesto e associazioni possibili. Contano la scena e ciò che hai provato, più di qualsiasi definizione fissa.</p>
         </div>
 
         <div class="oh-symbols reveal">
@@ -564,7 +564,7 @@
 
         <div class="oh-symbols-cta reveal">
             <a href="guides/dizionario-simboli-sogni" class="oh-btn-quiet">
-                <i data-lucide="book-open"></i> Esplora tutti i 150 simboli <i data-lucide="arrow-right"></i>
+                <i data-lucide="book-open"></i> Esplora tutti i 240 simboli <i data-lucide="arrow-right"></i>
             </a>
         </div>
     </section>
