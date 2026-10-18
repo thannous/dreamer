@@ -8,7 +8,8 @@ import { buildSymbolIndex } from '@/lib/symbolLinks';
 import type { DreamAnalysis } from '@/lib/types';
 
 // Isolation control: in the web journey the dreamer's own symbol is always opened from its
-// first reading before Tendances lists it, so a symbol never opened is not reached there.
+// first reading before Tendances lists it, so a symbol never opened is not reached there;
+// its mock analysis never names two dictionary neighbours, and no reading predates keys.
 
 const mockUpdateDream = jest.fn((_dream: DreamAnalysis) => Promise.resolve());
 
@@ -35,7 +36,8 @@ jest.mock('react-native-reanimated', () => {
   };
 });
 jest.mock('react-native-svg', () => ({ __esModule: true, default: () => null, Path: () => null }));
-jest.mock('expo-router', () => ({ router: { push: jest.fn() } }));
+jest.mock('expo-router', () => ({ router: { push: jest.fn(), navigate: jest.fn() } }));
+jest.mock('@/components/ui/icon-symbol', () => ({ IconSymbol: () => null }));
 jest.mock('@/components/motion', () => ({
   PressableScale: ({ children, testID }: { children?: React.ReactNode; testID?: string }) => (
     <button type="button" data-testid={testID}>{children}</button>
@@ -84,18 +86,50 @@ const night = (day: number): DreamAnalysis => ({
 
 const dreams = [night(10), night(12)];
 
-function openLamp(dream: DreamAnalysis | null) {
+function openSymbol(journal: DreamAnalysis[], linkKey: string, dream: DreamAnalysis | null) {
   render(
-    <DreamSymbolSheet index={buildSymbolIndex(dreams, 'en')} dream={dream} linkKey="p:grandmother-lamp"
+    <DreamSymbolSheet index={buildSymbolIndex(journal, 'en')} dream={dream} linkKey={linkKey}
       onSelect={() => undefined} onClose={() => undefined} />,
   );
 }
 
+const openLamp = (dream: DreamAnalysis | null) => openSymbol(dreams, 'p:grandmother-lamp', dream);
+
 describe('DreamSymbolSheet', () => {
   it('tells the birth of the dreamer’s own symbol from the reading it was born in', () => {
-    openLamp(dreams[1]);
+    openLamp(dreams[0]);
 
     expect(screen.getByText('journal.symbols.born.eyebrow')).toBeTruthy();
+  });
+
+  it('does not tell a birth from a later reading: the symbol has already come back', () => {
+    openLamp(dreams[1]);
+
+    expect(screen.getByText('journal.symbols.kind.personal')).toBeTruthy();
+    expect(screen.queryByText('journal.symbols.born.eyebrow')).toBeNull();
+  });
+
+  it('makes a symbol theirs through a keyed reading when its first dream named it before keys', async () => {
+    mockUpdateDream.mockClear();
+    const older = { ...night(8), symbols: [{ name: 'Lamp', meaning: 'Before keys.' }] };
+    openSymbol([older, ...dreams], 'p:grandmother-lamp', older);
+
+    expect(screen.getByText('journal.symbols.born.eyebrow')).toBeTruthy();
+    await waitFor(() => expect(mockUpdateDream).toHaveBeenCalledTimes(1));
+    expect(mockUpdateDream.mock.calls[0][0].id).toBe(dreams[1].id);
+  });
+
+  it('shows the dictionary neighbours the dreamer has dreamed, even in other dreams', () => {
+    const journal = [
+      { ...night(10), symbols: [{ name: 'Water', meaning: 'Deep.', symbolId: 'water' }] },
+      { ...night(12), symbols: [{ name: 'Rain', meaning: 'Again.', symbolId: 'rain' }] },
+      { ...night(14), symbols: [{ name: 'Door', meaning: 'Shut.', symbolId: 'door' }] },
+    ];
+    openSymbol(journal, 'd:water', journal[0]);
+
+    expect(screen.getByText('journal.symbols.related.header')).toBeTruthy();
+    expect(screen.getByTestId('dreamSymbol.related.d.rain')).toBeTruthy();
+    expect(screen.queryByTestId('dreamSymbol.related.d.door')).toBeNull();
   });
 
   it('opened outside a reading, makes a returning symbol theirs without telling a birth', async () => {

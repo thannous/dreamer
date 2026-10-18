@@ -7,7 +7,7 @@ import { useDreamsData } from '@/context/DreamsContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { isPoeticDreamQuote } from '@/lib/dreamQuote';
 import { markPerformance, performanceTraceId } from '@/lib/performanceTrace';
-import { getSymbolIndex, isNewPersonalSymbol, symbolLinkKey } from '@/lib/symbolLinks';
+import { getSymbolIndex, isNewPersonalSymbol, readingSymbols } from '@/lib/symbolLinks';
 import { TID } from '@/lib/testIDs';
 import { useIsDecorativeCopy, useLiveTestID } from './DecorativeCopy';
 import { BookOrnament, BookSectionMark, BookSubheading, useBookBody } from './JournalBook';
@@ -62,12 +62,7 @@ export function DreamAnalysisContent({ dream, pending, reveal = false, onLayout 
   }, [decorative, pending, dream.analysisRequestId]);
   const body = useBookBody();
   const question = useBookBody(true);
-  const symbols = (dream.symbols ?? []).flatMap((insight) => {
-    const name = insight.name?.trim();
-    if (!name) return [];
-    const linkKey = symbolLinkKey(insight);
-    return [{ insight, linked: linkKey ? symbolIndex.symbols.get(linkKey) : undefined }];
-  });
+  const symbols = readingSymbols(dream.symbols, symbolIndex);
   const stars = symbols.map(({ insight, linked }) => ({
     name: insight.name.trim(),
     count: linked?.appearances.length ?? 1,
