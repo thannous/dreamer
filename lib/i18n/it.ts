@@ -89,7 +89,6 @@ const translations: Record<string, string> = {
     'nav.settings': 'Impostazioni',
     'nav.sidebar_tagline': 'Diario dei sogni',
     'explore.title': 'Esplora',
-    'explore.intro': 'Esplora con calma modi delicati per osservare i tuoi sogni. I simboli possono aprire possibilità, mai una risposta fissa.',
     'explore.symbols.title': 'Simboli',
     'explore.symbols.body': 'Immagini e temi dei tuoi sogni.',
     'explore.guides.title': 'Guide',

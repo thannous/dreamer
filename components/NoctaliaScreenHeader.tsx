@@ -116,7 +116,7 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
   // Scrolling down, the header fades away to give the page its room.
   const fadeStyle = useHeaderFadeStyle(measuredHeight);
   // Header copy over a painting keeps its contrast through a soft halo of the page's ground,
-  // so the veil over the painting can stay light.
+  // so no veil has to cover the painting.
   const paintedTextShadow = {
     textShadowColor: `${noctalia.screen.background}D9`,
     textShadowOffset: { width: 0, height: 1 },

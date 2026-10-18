@@ -14,6 +14,8 @@ export function getNoctaliaPalette(mode: ThemeMode) {
     surface: dark ? 'rgba(234, 212, 180, 0.06)' : 'rgba(255, 249, 239, 0.14)',
     actionTint: dark ? 'rgba(234, 212, 180, 0.12)' : 'rgba(124, 76, 43, 0.08)',
     raised: dark ? '#14131A' : '#F5EADB',
+    // `raised` with a light veil: the screen's painting shows through cards laid on it.
+    raisedTranslucent: dark ? 'rgba(20, 19, 26, 0.84)' : 'rgba(245, 234, 219, 0.88)',
     line: dark ? '#514637' : 'rgba(126, 83, 49, 0.25)',
     overlay: dark ? 'rgba(0, 0, 0, 0.64)' : 'rgba(38, 27, 28, 0.44)',
     onAccent: dark ? '#382D35' : '#FFF9EF',
@@ -29,12 +31,8 @@ export function getNoctaliaPalette(mode: ThemeMode) {
     // Dreamer uses curated paintings, with contrast measured behind actual copy.
     // Preserve their colour and detail rather than flattening them into the ground.
     backgroundArtwork: {
-      // One light veil: header copy keeps its contrast through a soft shadow of the ground.
+      // The journal cover's light veil. Screen headers lay no veil over their painting.
       scrim: dark ? 'rgba(3, 4, 13, 0.45)' : 'rgba(240, 228, 212, 0.60)',
-      // Directly behind header and card copy, measured without the text halo: AA over the
-      // brightest stretch of each painting (a moon, a sunlit cloud, a dark treeline on paper).
-      copy: dark ? 'rgba(3, 4, 13, 0.68)' : 'rgba(240, 228, 212, 0.84)',
-      reveal: dark ? 'rgba(3, 4, 13, 0.12)' : 'rgba(240, 228, 212, 0.25)',
       transparent: dark ? 'rgba(3, 4, 13, 0)' : 'rgba(240, 228, 212, 0)',
     },
     // Fixed contrast on artwork in every theme, including a pure-white or pure-black image:
@@ -104,7 +102,7 @@ export function getNoctaliaDesignTokens(colors: ThemeColors, mode: ThemeMode) {
     backgroundArtwork: p.backgroundArtwork,
     text: { primary: colors.textPrimary, secondary: colors.textSecondary, tertiary: colors.textTertiary, onAccent: colors.textOnAccentSurface },
     accent: { base: colors.accent, strong: colors.accentDark, soft: colors.accentLight, text: colors.accentText },
-    surface: { base: p.raised, raised: p.raised, active: p.actionTint, soft: p.surface, border: p.line, borderStrong: p.line, overlay: p.overlay },
+    surface: { base: p.raised, raised: p.raised, translucent: p.raisedTranslucent, active: p.actionTint, soft: p.surface, border: p.line, borderStrong: p.line, overlay: p.overlay },
     action: { primary: p.accent, primaryBorder: p.line, primaryText: p.onAccent, disabled: p.actionTint, disabledBorder: p.line, disabledText: p.muted },
     status: p.status,
     nav: { background: colors.navbarBg, border: colors.navbarBorder, active: colors.navbarTextActive, inactive: colors.navbarTextInactive },

@@ -6,7 +6,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
 import { TodayCard } from '@/components/home/TodayCard';
-import { NightSkyBand } from '@/components/ui/NightSkyBand';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
 import { useDreamMedia } from '@/hooks/useDreamMedia';
@@ -39,6 +38,7 @@ export function TodayHero({ state, dream, now, onPressCta, onOpenSettings }: Pro
   const insets = useSafeAreaInsets();
   const media = useDreamMedia(dream);
   const [failedUri, setFailedUri] = useState<string | null>(null);
+  const [headerHeight, setHeaderHeight] = useState(0);
   const uri = media.imageUrl
     ? withCacheBuster(media.imageUrl, getDreamImageVersion(dream ?? {}))
     : '';
@@ -63,28 +63,29 @@ export function TodayHero({ state, dream, now, onPressCta, onOpenSettings }: Pro
 
   return (
     <View className="relative bg-ink">
-      {/* No dream artwork yet: the night sky fills the opening from the top of the screen, like every tab header. */}
-      {!hasArtwork ? <NightSkyBand height={insets.top + 340} background={ground} scene="reverie" reading /> : null}
       {immersiveArtwork ? <Animated.View className="absolute left-0 right-0 top-0 overflow-hidden"
         pointerEvents="none" accessibilityElementsHidden importantForAccessibility="no-hide-descendants"
         style={[{ height: (stageHeight ?? 260) + 1, transformOrigin: 'top center' }, artworkStretch]}>
         <Animated.View style={[{ position: 'absolute', left: 0, right: 0, top: 80, bottom: -80 }, artworkDepth]}>
           <Animated.View style={[IMAGE_FILL, artworkBreath]}>{image}</Animated.View>
         </Animated.View>
-        <LinearGradient colors={[ground, `${ground}F5`, `${ground}E6`, `${ground}00`]}
-          locations={[0, 0.65, 0.84, 1]}
-          style={{ position: 'absolute', left: 0, right: 0, top: 0, height: insets.top + 190 }} />
-        <LinearGradient colors={[`${ground}00`, `${ground}C0`, ground]} locations={[0, 0.65, 1]}
-          style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 110 }} />
+        {/* The reading veil rises from just above the title, so the date reads over a bright painting. */}
+        <LinearGradient colors={[`${ground}00`, `${ground}B3`, `${ground}E0`, ground]} locations={[0, 0.3, 0.5, 1]}
+          style={{ position: 'absolute', left: 0, right: 0, bottom: 0,
+            height: Math.max(110, (stageHeight ?? 260) + 1 - Math.max(0, headerHeight - 150)) }} />
       </Animated.View> : null}
       <View className="justify-between" style={{ minHeight: stageHeight }}>
-        <View className="pb-4">
-          {/* The hero paints its own artwork or sky, so the shared header stays transparent. */}
+        <View className="pb-4" onLayout={(event) => setHeaderHeight(event.nativeEvent.layout.height)}>
+          {/* Immersive like Explorer: the title rests at the same height on every tab. Without dream
+              artwork the header paints the night sky and its veil rises from the title, as on Explorer;
+              with artwork the hero paints it, so the header stays transparent. */}
           <NoctaliaScreenHeader
+            scene="reverie"
             titleKey="nav.home"
             variant="tab"
+            immersive
             subtitle={dateLabel}
-            backdrop={false}
+            backdrop={!hasArtwork}
             actions={[{
               icon: 'gear',
               onPress: onOpenSettings,

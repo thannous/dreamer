@@ -156,7 +156,7 @@ export const RecordingTextInput = forwardRef<TextInputInstance, RecordingTextInp
             compact && showInlineActions && styles.textInputWithInlineActionsCompact,
             chat && styles.chatInput,
             {
-              backgroundColor: noctalia.surface.base,
+              backgroundColor: noctalia.surface.translucent,
               borderColor: isFocused ? noctalia.accent.base : noctalia.surface.border,
               color: noctalia.text.primary,
             },
@@ -178,7 +178,9 @@ export const RecordingTextInput = forwardRef<TextInputInstance, RecordingTextInp
               expanded && styles.inlineActionFooterExpanded,
               compact && styles.inlineActionFooterCompact,
               chat && styles.chatActions,
-              { backgroundColor: colors.backgroundCard },
+              // Same veil as the input: it overlaps the input's foot, where two layers
+              // read the same as one over the plain ground below the painting.
+              { backgroundColor: noctalia.surface.translucent },
             ]}
           >
             <View style={styles.inlineActions}>

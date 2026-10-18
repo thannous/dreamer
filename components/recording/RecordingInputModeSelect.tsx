@@ -53,7 +53,7 @@ export function RecordingInputModeSelect({
       style={[
         styles.wrap,
         {
-          backgroundColor: noctalia.surface.base,
+          backgroundColor: noctalia.surface.translucent,
           borderColor: 'transparent',
           opacity: disabled ? 0.65 : 1,
         },

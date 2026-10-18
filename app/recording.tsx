@@ -28,6 +28,7 @@ import { useDreamsData, useDreamsActions } from '@/context/DreamsContext';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useOnboarding } from '@/context/OnboardingContext';
+import { useKeyboardVisible } from '@/hooks/useKeyboardVisible';
 import { useQuota } from '@/hooks/useQuota';
 import { getSavedAnalysisAction } from '@/lib/savedAnalysisAccess';
 import { useQuickSettings } from '@/context/QuickSettingsContext';
@@ -47,7 +48,6 @@ import {
   buildDraftDream as buildDraftDreamPure,
   buildRememberedDream,
 } from '@/lib/dreamUtils';
-import { isMockModeEnabled } from '@/lib/env';
 import { DreamPersistenceError } from '@/lib/dreamStorageRead';
 import { getDreamIdentityKey, resolveDreamTarget } from '@/lib/dreamIdentity';
 import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
@@ -137,7 +137,6 @@ import { useHeaderScroll } from '@/components/ui/headerStretch';
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 
 const log = createScopedLogger('[Recording]');
-const isMockMode = isMockModeEnabled();
 
 /**
  * Answers to the capture questions are woven into the account by the faithful formatter:
@@ -309,7 +308,7 @@ function RecordingScreen() {
     useState<DreamStrongestFragment | undefined>();
   const [showRememberedDetailsSheet, setShowRememberedDetailsSheet] = useState(false);
   const [inputMode, setInputMode] = useState<RecordingInputModePreference>('text');
-  const [keyboardVisible, setKeyboardVisible] = useState(false);
+  const keyboardVisible = useKeyboardVisible();
   const [footerHeight, setFooterHeight] = useState(0);
   const [bottomNavHeight, setBottomNavHeight] = useState(0);
   const appliedRouteEntriesRef = useRef<Set<string>>(new Set());
@@ -427,19 +426,6 @@ function RecordingScreen() {
       isActive = false;
     };
   }, [onboardingScope]);
-
-  useEffect(() => {
-    const show = Keyboard.addListener('keyboardDidShow', () => {
-      setKeyboardVisible(true);
-    });
-    const hide = Keyboard.addListener('keyboardDidHide', () => {
-      setKeyboardVisible(false);
-    });
-    return () => {
-      show.remove();
-      hide.remove();
-    };
-  }, []);
 
   const handleOfflineModelPromptShow = useCallback(
     async (locale: string) => {
@@ -645,6 +631,9 @@ function RecordingScreen() {
         handsFreeRestartInFlightRef.current = false;
         void forceStopRecording('blur');
         blurActiveElement();
+        // On native the editor stays first responder of this hidden screen, and iOS
+        // gives it the keyboard back as soon as the capture is shown again.
+        Keyboard.dismiss();
       };
     }, [forceStopRecording])
   );
@@ -1711,16 +1700,6 @@ function RecordingScreen() {
     setVoiceFallbackReason(null);
     await toggleRecording();
   }, [completeRecordingVoiceHint, isHydrated, toggleRecording]);
-
-  const previousInputModeRef = useRef(inputMode);
-  useEffect(() => {
-    const previousInputMode = previousInputModeRef.current;
-    previousInputModeRef.current = inputMode;
-
-    if (inputMode === 'text' && previousInputMode !== 'text' && !isMockMode) {
-      focusTranscriptEnd(baseTranscriptRef.current || transcript);
-    }
-  }, [focusTranscriptEnd, inputMode, transcript]);
 
   const handleMicRationaleClose = useCallback(() => {
     hasSeenMicRationaleRef.current = true;

@@ -90,7 +90,6 @@ const translations: Record<string, string> = {
     'nav.settings': 'Paramètres',
     'nav.sidebar_tagline': 'Journal de rêves',
     'explore.title': 'Explorer',
-    'explore.intro': 'Avance à ton rythme parmi des pistes pour observer tes rêves. Les symboles ouvrent des possibilités, jamais une réponse figée.',
     'explore.symbols.title': 'Symboles',
     'explore.symbols.body': 'Images et thèmes de tes rêves.',
     'explore.guides.title': 'Guides',

@@ -56,6 +56,11 @@ describe('theme contrast', () => {
         expect(contrastRatio(foreground, surface)).toBeGreaterThanOrEqual(4.5);
       }
     }
+    // A translucent card over the worst stretch of painting: white at night, black on paper.
+    const translucent = compositeSurface(tokens.surface.translucent, mode === 'dark' ? '#FFFFFF' : '#000000');
+    for (const foreground of [tokens.text.primary, tokens.text.secondary, tokens.accent.text]) {
+      expect(contrastRatio(foreground, translucent)).toBeGreaterThanOrEqual(4.5);
+    }
     for (const status of Object.values(tokens.status)) {
       expect(contrastRatio(status.text, status.background)).toBeGreaterThanOrEqual(4.5);
     }
