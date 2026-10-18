@@ -13,6 +13,7 @@
     },
     "release": {
       "extends": "base",
+      "uploadSourceMaps": true,
       "android": {
         "buildType": "app-bundle"
       },
@@ -99,6 +100,7 @@
     },
     "production": {
       "extends": "base",
+      "uploadSourceMaps": true,
       "channel": "production",
       "autoIncrement": true,
       "environment": "production",
