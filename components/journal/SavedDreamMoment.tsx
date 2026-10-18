@@ -16,6 +16,7 @@ import { TID } from '@/lib/testIDs';
 import { useLiveTestID } from './DecorativeCopy';
 
 import { DREAM_STORY, entrance, paintSettle, paintSweep, twinkle } from './story/dreamStoryMotion';
+import { GlintedWords } from './story/GlintedWords';
 import {
   SEAL_EMBLEMS, SEAL_GOLD, SEAL_MEASURES, SealChoice, SealLegend, type SealMark,
 } from './story/sealMarks';
@@ -390,19 +391,24 @@ export function SavedDreamMoment({
   const words = !wordsLine && !action ? null : (
     <View className="mt-3 items-center justify-center"
       style={{ minHeight: wordsLine || action?.emphasis ? STEP_LINE : WORDS_LINE }}>
-      {action?.emphasis ? (
-        <Animated.View key={action.label}
-          className={`min-h-[48px] flex-row items-center justify-center gap-2 rounded-full px-6 py-2.5 ${
-            primaryStep ? 'bg-champagne' : 'border border-champagne'} ${action.disabled ? 'opacity-60' : ''}`}
-          style={[labelMotion, primaryStep ? {
-            boxShadow: [{ offsetX: 0, offsetY: 0, blurRadius: 20, spreadDistance: 0, color: `${noctalia.action.primary}59` }],
-          } : null] as StyleProp<ViewStyle>}>
-          {action.icon ? (
-            <IconSymbol name={action.icon} size={18} color={primaryStep ? noctalia.action.primaryText : accent} />
-          ) : null}
+      {primaryStep && action ? (
+        // The page's next step: its words in the book's type, catching the light.
+        <Animated.View key={action.label} style={labelMotion as StyleProp<ViewStyle>}
+          className={`flex-row items-center justify-center gap-2 px-2 py-2.5 ${action.disabled ? 'opacity-60' : ''}`}>
+          {action.icon ? <IconSymbol name={action.icon} size={18} color={accent} /> : null}
+          <GlintedWords testID={tid(TID.Text.DreamDetailActionTitle)} accessibilityLiveRegion="polite"
+            light={noctalia.atmosphere.sheen} glow={`${accent}${dark ? '73' : '00'}`}
+            className="text-center font-display-medium text-[21px] leading-[28px] text-champagne-on">
+            {action.label}
+          </GlintedWords>
+        </Animated.View>
+      ) : action?.emphasis ? (
+        <Animated.View key={action.label} style={labelMotion as StyleProp<ViewStyle>}
+          className={`min-h-[48px] flex-row items-center justify-center gap-2 rounded-full border border-champagne px-6 py-2.5 ${
+            action.disabled ? 'opacity-60' : ''}`}>
+          {action.icon ? <IconSymbol name={action.icon} size={18} color={accent} /> : null}
           <Text testID={tid(TID.Text.DreamDetailActionTitle)} accessibilityLiveRegion="polite"
-            className={`shrink text-center font-sans-bold ${primaryStep
-              ? 'text-[16px] leading-[22px] text-on-champagne' : 'text-[15px] leading-[20px] text-champagne-on'}`}>
+            className="shrink text-center font-sans-bold text-[15px] leading-[20px] text-champagne-on">
             {action.label}
           </Text>
         </Animated.View>
