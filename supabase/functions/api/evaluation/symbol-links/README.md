@@ -18,12 +18,16 @@ them. Each call is production's: `requestClaudeJson` with `analysisSystemInstruc
 the response schema with the legacy four themes, and `CLAUDE_MODELS.analysis`
 (`claude-haiku-5-5`, effort `medium`). No retries.
 
-Scores use every symbol as answered, normalized as production stores one, before the
-reading's dedupe, so duplicates stay visible (`scoring.ts`):
+Targets, links and dictionary ids are read from the stored readings (deduplicated, at most
+six symbols), as the dreamer would get them. Duplicates, symbols without a link and key
+lengths are read from the answers, each symbol normalized as production stores one, so
+the prompt's own rules stay visible (`scoring.ts`). Same and return elements are the
+dreamer's own (no dictionary symbol is that thing): only a shared personal key links them.
 
 | Metric | Meaning |
 | --- | --- |
-| Link recall (same, return) | B has a symbol with the link of A's target |
+| Link recall (same, return) | B has a symbol with the personal key of A's target |
+| Joined through the dictionary only (same, return) | B shares only a dictionary id with A's target, folding the dreamer's own element into a generic symbol |
 | Omission (same, return) | B neither names the target nor carries its link |
 | False links (trap) | B has a symbol with the link of A's target, which is a different thing |
 | Dictionary precision | Of the readings that name the target, those where it resolves to the expected dictionary id |
@@ -67,9 +71,10 @@ mise exec -- deno run --config=supabase/functions/deno.json --frozen \
 - `--runs=N` (default 2, at most 10) repeats every pair. `--output` must not exist yet.
 
 The default run makes 160 calls (2 runs x 20 cases x 2 variants x 2 dreams), four pairs
-at a time, in about 7 minutes. At roughly 3,000 input and 2,000 to 3,000 output tokens
-per call (thinking included), it costs about 0.20 to 0.30 USD. A hard cap stops any call
-beyond the planned count.
+at a time, in 7 to 10 minutes. At roughly 3,100 input and 3,100 output tokens per call
+(thinking included, as a production analysis measured), it costs about 0.30 USD. A hard
+cap stops any call beyond the planned count. With 12 same, 8 return and 12 trap pairs per
+variant, a gap of one or two pairs is noise.
 
 `$OUT` receives `results.json` (every call: raw response, symbols as answered and as
 stored, the known symbols sent with B, usage and timing; saved after each pair) and

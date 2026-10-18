@@ -39,8 +39,11 @@ Deno.test('known symbols from saved readings come most frequent first, under the
     { key: 'grandmother-house', name: 'Maison de mamie' },
     { key: 'old-school', name: 'Le collège' },
   ]);
-  const again = { symbols: [{ name: 'la maison de grand-mère', meaning: 'x', key: 'grandmother-house' }] };
-  assertEquals(collectKnownDreamSymbols([again, ...readings])[0], { key: 'grandmother-house', name: 'la maison de grand-mère' });
+  // Wordings group as the app groups them (case, accents, a leading article); the oldest spelling stays.
+  const again = { symbols: [{ name: 'la maison de grand-mere', meaning: 'x', key: 'grandmother-house' }] };
+  assertEquals(collectKnownDreamSymbols([again, ...readings])[0], { key: 'grandmother-house', name: 'La maison de grand-mère' });
+  const mill = (name: string) => ({ symbols: [{ name, meaning: 'x', key: 'windmill' }] });
+  assertEquals(collectKnownDreamSymbols([mill('Moulin'), mill('Le moulin'), mill('Le grand moulin')]), [{ key: 'windmill', name: 'Le moulin' }]);
 });
 
 Deno.test('a key that is a dictionary id is not a personal symbol and takes none of the slots', () => {

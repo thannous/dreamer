@@ -5,8 +5,10 @@
  *
  * Each side names its target element with a pattern over symbol names (the reading is in
  * the dream's language, so patterns cover both languages). What is expected by kind:
- * - same: one element worded differently; B's target carries A's target link.
- * - return: one element, salient in A and secondary in B; B still lists it, with A's link.
+ * - same: one element of the dreamer's own (no dictionary symbol is that thing), worded
+ *   differently; B's target carries A's target personal key. A dictionary link between them
+ *   folds the element into a generic symbol: it is counted apart, not as a link.
+ * - return: such an element, salient in A and secondary in B; B still lists it, with A's key.
  * - trap: similar words for different things; no symbol of B carries A's target link.
  * - dictionary: forms of one dictionary symbol; each target resolves to `expectedSymbolId`.
  */
@@ -190,31 +192,31 @@ export const SYMBOL_LINK_CASES: readonly SymbolLinkCase[] = [
     },
   },
   {
-    id: 'trap-castle-tower-eiffel',
+    id: 'trap-windmill-pepper-mill',
     kind: 'trap',
     lang: 'fr',
-    note: 'A castle tower, then a cardboard Eiffel tower: "tower" alone must not join them.',
+    note: 'A windmill, then a pepper mill: two "moulins" the dictionary has neither of, which a plain key must keep apart.',
     a: {
-      transcript: 'Je montais l’escalier en spirale d’une tour de château en ruine. En haut, des corbeaux tournaient autour des créneaux.',
-      target: /\btour\b|tower|donjon|ch[aâ]teau|castle/iu,
+      transcript: 'Au bout d’un chemin de terre, un moulin à vent tournait sans un souffle d’air. Je comptais ses ailes et le compte changeait à chaque fois.',
+      target: /moulin|windmill/iu,
     },
     b: {
-      transcript: 'Dans ma chambre d’enfant, il y avait une tour Eiffel en carton que j’avais construite moi-même. Elle penchait de plus en plus et je n’osais pas la toucher.',
-      target: /\btour\b|tower|eiffel/iu,
+      transcript: 'Je dînais chez ma tante. Elle me tendait un moulin à poivre en bois si lourd que je n’arrivais pas à le soulever.',
+      target: /moulin|poivre|pepper|grinder|mill/iu,
     },
   },
   {
-    id: 'trap-headlight-lighthouse',
+    id: 'trap-music-box-cardboard-box',
     kind: 'trap',
     lang: 'fr',
-    note: 'A car headlight ("phare"), then a lighthouse ("phare").',
+    note: 'A music box, then a cardboard box: "box" alone must not join them (the dictionary has no box).',
     a: {
-      transcript: 'Je conduisais de nuit sur une route de montagne. Un des phares de ma voiture s’est éteint et je ne voyais plus que la moitié du virage.',
-      target: /phare|headlight|\bfeux?\b/iu,
+      transcript: 'J’ouvrais une boîte à musique posée sur une commode. Une petite danseuse tournait sur elle-même et la mélodie ralentissait jusqu’à s’arrêter.',
+      target: /bo[iî]te|musique|music|box/iu,
     },
     b: {
-      transcript: 'Je nageais vers une côte rocheuse et un phare immense se dressait sur la falaise, tout blanc sous la lune.',
-      target: /phare|lighthouse/iu,
+      transcript: 'Je portais une vieille boîte en carton pleine de papiers dans un escalier étroit. Le fond cédait et les feuilles s’envolaient jusqu’en bas.',
+      target: /bo[iî]te|carton|cardboard|box/iu,
     },
   },
   {

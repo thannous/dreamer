@@ -38,6 +38,7 @@ import {
   scorePair,
   type ScoredSymbol,
   scoredSymbols,
+  storedSymbols,
   summarizeVariant,
   symbolsParagraph,
   type UsageTotals,
@@ -167,7 +168,14 @@ const runPair = async (apiKey: string, { run, testCase, variant }: Job): Promise
   // What the worker would load for the next dream: the stored reading's personal symbols.
   record.knownForB = collectKnownDreamSymbols([{ symbols: record.a.stored }]);
   record.b = await analyze(apiKey, variant, testCase.b.transcript, testCase.lang, record.knownForB);
-  if (record.b.status === 'ok') record.outcome = scorePair(testCase, record.a.symbols!, record.b.symbols!, record.knownForB);
+  if (record.b.status === 'ok') {
+    record.outcome = scorePair(
+      testCase,
+      { answered: record.a.symbols!, stored: storedSymbols(record.a.stored!) },
+      { answered: record.b.symbols!, stored: storedSymbols(record.b.stored!) },
+      record.knownForB
+    );
+  }
   return record;
 };
 
@@ -176,7 +184,9 @@ const pairLabel = (record: PairRecord): string => {
   if (!record.outcome.targetInA) return 'A target missing';
   if (record.kind === 'trap') return record.outcome.linked ? 'false link' : 'kept apart';
   if (record.kind === 'dictionary') return `expected id ${record.outcome.dictionaryHits}/${record.outcome.dictionaryTargets}`;
-  return record.outcome.linked ? 'linked' : record.outcome.targetInB ? 'not linked' : 'omitted in B';
+  if (record.outcome.linked) return 'linked';
+  if (record.outcome.foldedIntoDictionary) return 'joined through a dictionary symbol only';
+  return record.outcome.targetInB ? 'not linked' : 'omitted in B';
 };
 
 const percent = ({ hits, total, rate }: Ratio): string => (rate === null ? 'n/a' : `${Math.round(rate * 100)}% (${hits}/${total})`);
@@ -191,6 +201,8 @@ const caseCell = (testCase: SymbolLinkCase, records: readonly PairRecord[]): str
       ? `expected id ${done.reduce((sum, outcome) => sum + outcome.dictionaryHits, 0)}/${done.reduce((sum, outcome) => sum + outcome.dictionaryTargets, 0)}`
       : `${testCase.kind === 'trap' ? 'false link' : 'linked'} ${withA.filter((outcome) => outcome.linked).length}/${withA.length}`,
   ];
+  const folded = withA.filter((outcome) => outcome.foldedIntoDictionary).length;
+  if (folded) parts.push(`through a dictionary symbol only ${folded}`);
   if (done.length > withA.length) parts.push(`A target missing ${done.length - withA.length}`);
   if (records.length > done.length) parts.push(`failed ${records.length - done.length}`);
   return parts.join(', ');
@@ -213,6 +225,7 @@ const summaryMarkdown = (report: {
     '| --- | --- | --- |',
     row('Link recall, same pairs', (v) => percent(m[v].linkRecall.same)),
     row('Link recall, return pairs', (v) => percent(m[v].linkRecall.return)),
+    row('Joined only through a dictionary symbol, same and return pairs', (v) => percent(m[v].foldedIntoDictionary)),
     row('Target omitted in B, same pairs', (v) => percent(m[v].omission.same)),
     row('Target omitted in B, return pairs', (v) => percent(m[v].omission.return)),
     row('False links, trap pairs', (v) => percent(m[v].falseLinks)),
@@ -225,7 +238,7 @@ const summaryMarkdown = (report: {
     row('Input / output tokens', (v) => `${tokens(usage[v].inputTokens)} / ${tokens(usage[v].outputTokens)}`),
     row('Cost (USD, list price)', (v) => costUsd(usage[v]).toFixed(3)),
     '',
-    'Link, omission and false-link rates count completed pairs whose A reading named the target; dictionary precision counts every reading that named it. Failed calls carry no token counts.',
+    'Link, omission and false-link rates count completed pairs whose A reading named the target; dictionary precision counts every reading that named it. Same and return elements are the dreamer\'s own: only a shared personal key links them. Targets and links come from the stored readings (at most six symbols); duplicates, symbols without a link and key lengths from the answers. Failed calls carry no token counts.',
     `Prices: ${HAIKU_5_5_USD_PER_MTOK.input} / ${HAIKU_5_5_USD_PER_MTOK.output} USD per million input / output tokens (${HAIKU_5_5_USD_PER_MTOK.source}).`,
     '',
     '## Per case',

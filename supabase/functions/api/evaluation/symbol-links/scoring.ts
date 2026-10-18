@@ -1,7 +1,7 @@
 /** Pure scoring for the symbol-link bench. No I/O, no credentials. */
 import type { KnownDreamSymbol } from '../../lib/dreamSymbols.ts';
 import type { ClaudeUsage } from '../../services/claude.ts';
-import { sanitizeAnalysisDetails } from '../../services/dreamAnalysis.ts';
+import { type DreamAnalysisSymbol, sanitizeAnalysisDetails } from '../../services/dreamAnalysis.ts';
 import type { SymbolLinkCase, SymbolLinkKind } from './cases.ts';
 
 /** A symbol of a reading with the link the app would follow: `d:<dictionary id>` or `p:<personal key>`. */
@@ -23,6 +23,18 @@ export const scoredSymbols = (response: unknown): ScoredSymbol[] => {
       link: symbolId ? `d:${symbolId}` : key ? `p:${key}` : null,
     }));
 };
+
+/** The symbols production stored for a reading (deduplicated, at most six), with their link. */
+export const storedSymbols = (stored: readonly DreamAnalysisSymbol[]): ScoredSymbol[] =>
+  stored.map(({ name, symbolId, key }) => ({
+    name,
+    ...(symbolId ? { symbolId } : {}),
+    ...(key ? { key } : {}),
+    link: symbolId ? `d:${symbolId}` : key ? `p:${key}` : null,
+  }));
+
+/** A reading's symbols as answered (for the prompt's rules) and as stored (what the dreamer gets). */
+export type ReadingSymbols = { answered: readonly ScoredSymbol[]; stored: readonly ScoredSymbol[] };
 
 const targetsOf = (symbols: readonly ScoredSymbol[], target: RegExp): ScoredSymbol[] =>
   symbols.filter((symbol) => target.test(symbol.name));
@@ -51,9 +63,11 @@ export type PairOutcome = {
   targetInB: boolean;
   /**
    * A symbol of B carries one of the links of A's target: the thread the app would draw.
-   * Expected for same and return pairs; a false link for trap pairs.
+   * Expected for same and return pairs, through a personal key only; a false link for trap pairs.
    */
   linked: boolean;
+  /** same and return: B joins A's target only through a dictionary symbol, folding the dreamer's own element into it. */
+  foldedIntoDictionary: boolean;
   /** dictionary: sides whose target was found, and those resolving to the expected id. */
   dictionaryTargets: number;
   dictionaryHits: number;
@@ -66,31 +80,41 @@ export type PairOutcome = {
   keptNames: number;
 };
 
-/** The outcome of one pair of readings: A without known symbols, B with those A yielded. */
+/**
+ * The outcome of one pair of readings: A without known symbols, B with those A yielded.
+ * Targets, links and dictionary ids are read from what production stores, so a symbol past
+ * the cap of six counts for nothing; duplicates, symbols without a link and key lengths from
+ * the answers, to measure the prompt's own rules.
+ */
 export const scorePair = (
-  testCase: Pick<SymbolLinkCase, 'a' | 'b' | 'expectedSymbolId'>,
-  symbolsA: readonly ScoredSymbol[],
-  symbolsB: readonly ScoredSymbol[],
+  testCase: Pick<SymbolLinkCase, 'kind' | 'a' | 'b' | 'expectedSymbolId'>,
+  a: ReadingSymbols,
+  b: ReadingSymbols,
   knownForB: readonly KnownDreamSymbol[]
 ): PairOutcome => {
-  const targetsA = targetsOf(symbolsA, testCase.a.target);
-  const targetsB = targetsOf(symbolsB, testCase.b.target);
+  const targetsA = targetsOf(a.stored, testCase.a.target);
+  const targetsB = targetsOf(b.stored, testCase.b.target);
   const linksA = linksOf(targetsA);
   // Any symbol of B, not only those its pattern names: a reused link is a thread whatever B calls it.
-  const linked = symbolsB.some((symbol) => symbol.link !== null && linksA.has(symbol.link));
+  const shared = b.stored.flatMap((symbol) => (symbol.link !== null && linksA.has(symbol.link) ? [symbol.link] : []));
+  // A same or return element is the dreamer's own: only its personal key is its thread.
+  const personal = testCase.kind === 'same' || testCase.kind === 'return';
+  const linked = personal ? shared.some((link) => link.startsWith('p:')) : shared.length > 0;
   const expected = testCase.expectedSymbolId;
   const sides = [targetsA, targetsB].filter((targets) => targets.length > 0);
   const knownNames = new Map(knownForB.map((known) => [known.key, known.name]));
-  const reused = symbolsB.filter((symbol) => symbol.key !== undefined && knownNames.has(symbol.key));
+  const reused = b.stored.filter((symbol) => symbol.key !== undefined && knownNames.has(symbol.key));
+  const answered = [...a.answered, ...b.answered];
   return {
     targetInA: targetsA.length > 0,
-    targetInB: targetsB.length > 0 || linked,
+    targetInB: targetsB.length > 0 || shared.length > 0,
     linked,
+    foldedIntoDictionary: personal && !linked && shared.length > 0,
     dictionaryTargets: expected ? sides.length : 0,
     dictionaryHits: expected ? sides.filter((targets) => targets.some((symbol) => symbol.symbolId === expected)).length : 0,
-    duplicates: duplicateCount(symbolsA) + duplicateCount(symbolsB),
-    unlinked: [...symbolsA, ...symbolsB].filter((symbol) => symbol.link === null).length,
-    keyWords: [...symbolsA, ...symbolsB].flatMap((symbol) => (symbol.key ? [symbol.key.split('-').length] : [])),
+    duplicates: duplicateCount(a.answered) + duplicateCount(b.answered),
+    unlinked: answered.filter((symbol) => symbol.link === null).length,
+    keyWords: answered.flatMap((symbol) => (symbol.key ? [symbol.key.split('-').length] : [])),
     reusedKeys: reused.length,
     keptNames: reused.filter((symbol) => sameName(symbol.name, knownNames.get(symbol.key!)!)).length,
   };
@@ -133,6 +157,8 @@ export type VariantMetrics = {
   /** Pairs whose A target was missing: they cannot test a link and leave the rates below. */
   targetMissingInA: Record<SymbolLinkKind, number>;
   linkRecall: { same: Ratio; return: Ratio };
+  /** same and return pairs joined only through a dictionary symbol (not counted in recall). */
+  foldedIntoDictionary: Ratio;
   omission: { same: Ratio; return: Ratio };
   falseLinks: Ratio;
   dictionaryPrecision: Ratio;
@@ -162,6 +188,10 @@ export const summarizeVariant = (pairs: readonly ScoredPair[]): VariantMetrics =
       dictionary: ofKind('dictionary').length - withA('dictionary').length,
     },
     linkRecall: { same: recall('same'), return: recall('return') },
+    foldedIntoDictionary: ratio(
+      [...withA('same'), ...withA('return')].filter((outcome) => outcome.foldedIntoDictionary).length,
+      withA('same').length + withA('return').length
+    ),
     omission: { same: omission('same'), return: omission('return') },
     falseLinks: ratio(withA('trap').filter((outcome) => outcome.linked).length, withA('trap').length),
     dictionaryPrecision: ratio(sum((outcome) => outcome.dictionaryHits), sum((outcome) => outcome.dictionaryTargets)),

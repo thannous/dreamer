@@ -2,15 +2,19 @@
  * Frozen copy of `buildAnalysisPrompt` as it stood on master on 2026-10-18 (commit 3ec741b83,
  * prompt version analysis-2026-10-17.poetic5), before the symbol-link rules of analysis-2026-10-18.poetic6.
  * It is the `baseline` variant of the symbol-link bench: do not edit it to follow production.
+ * Its prose is frozen, the dream-type policy included. The lists both variants share come from
+ * the live code: the symbol index (240 ids since #419), the themes and the dream types.
  * The bench checks that it differs from the current prompt only on the link-fields line.
  */
 import { describeDreamThemes, LEGACY_DREAM_THEMES } from '../../lib/dreamThemes.ts';
 import { DREAM_SYMBOL_IDS } from '../../lib/dreamSymbolIds.ts';
 import type { KnownDreamSymbol } from '../../lib/dreamSymbols.ts';
 import { DREAM_TYPE_VALUES } from '../../lib/schemas.ts';
-import { DREAM_TYPE_POLICY } from '../../services/dreamAnalysis.ts';
 
 export const BASELINE_PROMPT_VERSION = 'analysis-2026-10-17.poetic5';
+
+/** `DREAM_TYPE_POLICY` as that prompt version had it. */
+const DREAM_TYPE_POLICY = `Choose a type supported by the account. Prefer explicitly established Lucid Dream, Recurring Dream or Nightmare over the broader scene categories. Lucidity requires knowing one is dreaming; recurrence requires the same dream on separate occasions, not repeated actions within one dream; a nightmare requires reported fear or distress. Otherwise use Fantastical Dream for clearly impossible scenes, transformations or imaginary creatures (for example, riding a cloud that turns into a duck). Use Everyday Dream for recognizable, plausible everyday situations (for example, shopping or talking with colleagues) without fantastical elements. Neither vividness nor a visual theme establishes lucidity or symbolism. Do not use Symbolic Dream by default or infer a hidden meaning. Use Unknown when the remembered content is too sparse or ambiguous to support a type; never force a classification.`;
 
 /** Noctalia's symbol index as the prompt lists it: ids only, the same in every language. */
 const SYMBOL_INDEX_LINE = `Noctalia's symbol index (ids): ${DREAM_SYMBOL_IDS.join(', ')}.`;

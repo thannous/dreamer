@@ -44,6 +44,20 @@ const boundedName = (value: unknown): string => {
   return value.replace(/\s+/g, ' ').trim().slice(0, MAX_NAME_LENGTH);
 };
 
+const LEADING_ARTICLE = /^(?:the|a|an|le|la|les|l'|un|une|des|du|el|los|las|una|unos|unas|der|die|das|ein|eine|il|lo|gli|i|o|os|as|um|uma)\s+|^l'/;
+
+/** One wording of a name, as the app groups them (`normalizeName` in `lib/symbolLinks.ts`): « Le moulin » is « moulin ». */
+const wordingOf = (name: string): string =>
+  name
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .toLowerCase()
+    .replace(/[’`]/g, "'")
+    .trim()
+    .replace(LEADING_ARTICLE, '')
+    .replace(/[^\p{L}\p{N}]+/gu, ' ')
+    .trim();
+
 /** The dreamer's own symbols an app sends with an analysis request, bounded and normalized. */
 export const parseKnownDreamSymbols = (value: unknown): KnownDreamSymbol[] => {
   if (!Array.isArray(value)) return [];
@@ -62,9 +76,11 @@ export const parseKnownDreamSymbols = (value: unknown): KnownDreamSymbol[] => {
 
 /**
  * The dreamer's own symbols as their saved analyses hold them (`analysis_details` rows,
- * newest first), the most frequent first, each under the name its readings use most (the
- * oldest at a tie). A key that is a dictionary id links to the dictionary, so it takes none
- * of the slots. Both follow the app's own list (`collectKnownSymbols`).
+ * newest first), the most frequent first, each under the wording its readings use most
+ * (the oldest at a tie), written as it first was. A key that is a dictionary id links to
+ * the dictionary, so it takes none of the slots. Both follow the app's own list
+ * (`collectKnownSymbols` in `lib/symbolLinks.ts`, from the app release that names
+ * symbols this way).
  */
 export const collectKnownDreamSymbols = (analysisDetails: readonly unknown[]): KnownDreamSymbol[] => {
   const counts = new Map<string, { names: Map<string, { name: string; count: number; order: number }>; count: number; order: number }>();
@@ -79,11 +95,13 @@ export const collectKnownDreamSymbols = (analysisDetails: readonly unknown[]): K
       inDream.add(key);
       const known = counts.get(key) ?? { names: new Map(), count: 0, order };
       known.count += 1;
-      const said = known.names.get(name.toLowerCase()) ?? { name, count: 0, order };
+      const wording = wordingOf(name);
+      const said = known.names.get(wording) ?? { name, count: 0, order };
       said.count += 1;
-      // Rows come newest first: the last one seen is the oldest wording.
+      // Rows come newest first: the last one seen is the oldest, kept as it was written.
+      said.name = name;
       said.order = order;
-      known.names.set(name.toLowerCase(), said);
+      known.names.set(wording, said);
       counts.set(key, known);
     }
   });
