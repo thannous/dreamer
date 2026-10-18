@@ -70,17 +70,26 @@ const getSymbolById = (id: string) => getDictionary().getSymbolById(id);
 
 let dictionaryNames: Map<string, string> | null = null;
 
+/** "Mer / Océan" or "Dents (perdre ses dents)": an older reading says "La mer" or "Dents". */
+const nameParts = (name: string): string[] => name.replace(/\s*\([^)]*\)\s*$/, '').split(/\s+\/\s+/);
+
 /** Every dictionary name in every language, so an older reading's "Cat" or "Chat" still links. */
 const getDictionaryNames = (): Map<string, string> => {
   if (dictionaryNames) return dictionaryNames;
-  dictionaryNames = new Map();
-  for (const symbol of getDictionary().getAllSymbols()) {
-    for (const language of ['en', 'fr', 'es', 'de', 'it', 'pt'] as const) {
-      const name = normalizeName(symbol[language]?.name ?? '');
-      if (name && !dictionaryNames.has(name)) dictionaryNames.set(name, symbol.id);
-    }
+  const names = new Map<string, string>();
+  const symbols = getDictionary().getAllSymbols();
+  const languages = ['en', 'fr', 'es', 'de', 'it', 'pt'] as const;
+  const add = (name: string, id: string) => {
+    const normalized = normalizeName(name);
+    if (normalized && !names.has(normalized)) names.set(normalized, id);
+  };
+  // Whole names first: a part of one entry's name never takes another entry's own name.
+  for (const symbol of symbols) for (const language of languages) add(symbol[language]?.name ?? '', symbol.id);
+  for (const symbol of symbols) {
+    for (const language of languages) for (const part of nameParts(symbol[language]?.name ?? '')) add(part, symbol.id);
   }
-  return dictionaryNames;
+  dictionaryNames = names;
+  return names;
 };
 
 /** Where a symbol of a reading leads, or null when it names nothing. */

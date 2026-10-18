@@ -46,6 +46,21 @@ describe('symbol links', () => {
     expect(getSymbolStatus(index.symbols.get('d:house')!, index)).toEqual({ kind: 'some', count: 2 });
   });
 
+  it('links an older reading named after one part of a dictionary name', () => {
+    // Seen on a real journal: "La mer" stayed apart from a new reading the analysis gave `ocean`,
+    // whose French name is "Mer / Océan"; "Route" stays the road's own entry, not the path's.
+    const dreams = [
+      night(1, [{ name: 'La mer', meaning: 'Elle monte.' }, { name: 'Dents', meaning: 'Elles tombent.' }]),
+      night(2, [{ name: 'Route', meaning: 'Elle file.' }]),
+      night(4, [{ name: 'Mer calme', meaning: 'Au loin.', symbolId: 'ocean' }]),
+    ];
+    const index = buildSymbolIndex(dreams, 'fr');
+
+    expect(index.symbols.get('d:ocean')!.appearances.map(({ dream }) => dream.title)).toEqual(['Dream 1', 'Dream 4']);
+    expect(index.symbols.has('d:teeth')).toBe(true);
+    expect(index.symbols.has('d:road')).toBe(true);
+  });
+
   it('keeps a personal symbol by its key, under its newest name, until the dreamer opens it', () => {
     const first = night(1, [{ name: 'La maison de mamie', meaning: 'Le jardin.', key: 'grandmother-house' }]);
     const second = night(4, [
