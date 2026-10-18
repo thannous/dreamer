@@ -31,6 +31,8 @@ const percent = (value: number, total: number) => `${Math.round((value / total) 
 const HALO_WIDTH = 340;
 /** The line under the seal, which the capture seal lands the dream's name below. */
 const WORDS_LINE = 18;
+/** The line under the seal when it holds a step to take, drawn as a button. */
+const STEP_LINE = 48;
 const HALO_HEIGHT = 280;
 
 // Fixed points so the sky is identical on every arrival and in screenshots.
@@ -74,6 +76,12 @@ export type SavedDreamAction = {
   /** What pressing costs or opens, for assistive technologies. */
   hint?: string | null;
   testID?: string;
+  /**
+   * A step to take is drawn as a button under the seal: filled when it is the page's
+   * next step, outlined when the page offers its next step elsewhere. Without it the
+   * words only say where the dream is.
+   */
+  emphasis?: 'primary' | 'secondary';
 };
 
 /**
@@ -378,9 +386,27 @@ export function SavedDreamMoment({
   );
   // One line, always kept, so the page under the seal never moves as the step changes;
   // keyed, so the words enter afresh when the step they offer appears or changes.
+  const primaryStep = action?.emphasis === 'primary';
   const words = !wordsLine && !action ? null : (
-    <View className="mt-3 items-center justify-center" style={{ height: WORDS_LINE }}>
-      {action ? (
+    <View className="mt-3 items-center justify-center"
+      style={{ minHeight: wordsLine || action?.emphasis ? STEP_LINE : WORDS_LINE }}>
+      {action?.emphasis ? (
+        <Animated.View key={action.label}
+          className={`min-h-[48px] flex-row items-center justify-center gap-2 rounded-full px-6 py-2.5 ${
+            primaryStep ? 'bg-champagne' : 'border border-champagne'} ${action.disabled ? 'opacity-60' : ''}`}
+          style={[labelMotion, primaryStep ? {
+            boxShadow: [{ offsetX: 0, offsetY: 0, blurRadius: 20, spreadDistance: 0, color: `${noctalia.action.primary}59` }],
+          } : null] as StyleProp<ViewStyle>}>
+          {action.icon ? (
+            <IconSymbol name={action.icon} size={18} color={primaryStep ? noctalia.action.primaryText : accent} />
+          ) : null}
+          <Text testID={tid(TID.Text.DreamDetailActionTitle)} accessibilityLiveRegion="polite"
+            className={`shrink text-center font-sans-bold ${primaryStep
+              ? 'text-[16px] leading-[22px] text-on-champagne' : 'text-[15px] leading-[20px] text-champagne-on'}`}>
+            {action.label}
+          </Text>
+        </Animated.View>
+      ) : action ? (
         <Animated.View key={action.label} style={labelMotion as StyleProp<ViewStyle>}
           className={`flex-row items-center gap-1.5 ${action.disabled ? 'opacity-60' : ''}`}>
           {action.icon ? <IconSymbol name={action.icon} size={14} color={accent} /> : null}
