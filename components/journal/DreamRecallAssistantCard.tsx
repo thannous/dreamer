@@ -1,6 +1,6 @@
 import { MarkdownText } from '@/components/ui/MarkdownText';
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { AppState, Platform, Text, TextInput, View } from 'react-native';
+import { AppState, Platform, Text, TextInput, View, type TextInputInstance } from 'react-native';
 
 import { PressableScale } from '@/components/motion';
 import { MicButton } from '@/components/recording/MicButton';
@@ -22,6 +22,7 @@ export type DreamRecallAssistantCardProps = {
   offerEligible: boolean;
   /** The user explicitly chose to complete their saved dream with this assistant. */
   startRequested?: boolean;
+  onAnswerFocus?: (input: TextInputInstance) => void;
 };
 
 type RecallActionProps = {
@@ -68,6 +69,7 @@ export function DreamRecallAssistantCard({
   originalPersistedSegmentId,
   offerEligible,
   startRequested = false,
+  onAnswerFocus,
 }: DreamRecallAssistantCardProps) {
   const { t, currentLang } = useTranslation();
   const { colors } = useTheme();
@@ -78,6 +80,7 @@ export function DreamRecallAssistantCard({
   const [isVoiceTransitioning, setIsVoiceTransitioning] = useState(false);
   const [voiceError, setVoiceError] = useState(false);
 
+  const inputRef = useRef<TextInputInstance>(null);
   const answerRef = useRef('');
   const recordingTransitionRef = useRef(false);
   const stopRecordingFromNativeEndRef = useRef<(() => void) | null>(null);
@@ -400,7 +403,22 @@ export function DreamRecallAssistantCard({
       </View>
     );
   }
-  if (state?.status === 'skipped') return null;
+  const answers = state?.turns.filter((turn) => turn.role === 'answer') ?? [];
+  const savedDetails = answers.length > 0 ? (
+    <View className="gap-3" testID="dreamRecall.savedDetails">
+      <Text accessibilityRole="header" className="font-sans-bold text-body text-ivory">
+        {String(t('dream_recall.session.saved_details'))}
+      </Text>
+      {answers.map((turn) => (
+        <Text key={turn.id} selectable className="font-sans text-body text-ivory">
+          {turn.text}
+        </Text>
+      ))}
+    </View>
+  ) : null;
+  if (state?.status === 'skipped') {
+    return savedDetails ? <View className={cardClass}>{savedDetails}</View> : null;
+  }
 
   if (!state) {
     if (!offerEligible || dismissedOffer) return null;
@@ -447,6 +465,7 @@ export function DreamRecallAssistantCard({
         <Text className="font-sans text-body-sm text-ivory-muted">
           {String(t('dream_recall.session.completed_body'))}
         </Text>
+        {savedDetails}
       </View>
     );
   }
@@ -455,6 +474,7 @@ export function DreamRecallAssistantCard({
     return (
       <View className={cardClass} testID={TID.Component.DreamRecallAssistantCard}>
         <Text className="font-sans-bold text-[18px] text-ivory">{sessionTitle}</Text>
+        {savedDetails}
         {currentQuestion ? (
           <MarkdownText>{currentQuestion.text}</MarkdownText>
         ) : null}
@@ -511,6 +531,7 @@ export function DreamRecallAssistantCard({
         </Text>
       </View>
 
+      {savedDetails}
       {currentQuestion ? (
         <>
           <MarkdownText>{currentQuestion.text}</MarkdownText>
@@ -518,6 +539,8 @@ export function DreamRecallAssistantCard({
             <Text className="font-sans text-caption text-ivory-muted">{inputLabel}</Text>
             <View className="flex-row items-start gap-2">
               <TextInput
+                ref={inputRef}
+                onFocus={() => { if (inputRef.current) onAnswerFocus?.(inputRef.current); }}
                 testID={TID.Input.DreamRecallAnswer}
                 value={answer}
                 onChangeText={(text) => {
