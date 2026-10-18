@@ -38,3 +38,33 @@ test('native direct dream link can return to the journal', async ({ app, screen,
   await expect(screen.getByTestId('screen.dreamDetail')).toBeHidden();
   await expect(screen.getByTestId('screen.journal')).toBeVisible();
 });
+
+// The larger owned fixture keeps reference013 and appends older entries. This
+// counterexample catches storage/list pagination that accidentally truncates
+// full-text search to the first presentation window of forty dreams.
+if (process.env.E2E_PERF_FIXTURE_COUNT === '5000') {
+  test('native journal searches the complete stored history and preserves the query on return', async ({ app, screen, device }) => {
+    await app.open();
+    await device.openLink('noctalia://journal');
+    await expect(screen.getByTestId('screen.journal')).toBeVisible();
+    const search = screen.getByTestId('input.searchDreams');
+    await screen.scrollUntilVisible(search, { direction: 'up' });
+    await search.fill('Grand journal phrase repere 05000');
+    const last = screen.getByRole('button', /^Noctalia charge 05000,/);
+    await expect(last).toBeVisible();
+    await expect(screen.getByRole('button', /^Noctalia performance 002,/)).toBeHidden();
+    await last.tap();
+    await expect(screen.getByText('Noctalia charge 05000', { exact: true })).toBeVisible();
+    const end = screen.getByText(/Grand journal phrase repère 05000\./);
+    await screen.scrollUntilVisible(end);
+    await expect(end).toBeVisible();
+    await app.screenshot('large-journal-last-entry');
+    await screen.scrollUntilVisible(screen.getByTestId('btn.navigateJournal'), { direction: 'up' });
+    await screen.getByTestId('btn.navigateJournal').tap();
+    await expect(screen.getByTestId('screen.dreamDetail')).toBeHidden();
+    await expect(last).toBeVisible();
+    await search.fill('');
+    await expect(screen.getByRole('button', /^Noctalia performance 002,/)).toBeVisible();
+    await expect(last).toBeHidden();
+  });
+}
