@@ -27,6 +27,7 @@ describe('journal filter links', () => {
       from: '2026-02-30',
       to: 'yesterday',
       analysis: 'all',
-    })).toEqual({ key: 'k2', theme: null, dreamType: null, start: null, end: null, analysis: null });
+      symbol: 'water',
+    })).toEqual({ key: 'k2', theme: null, dreamType: null, start: null, end: null, analysis: null, symbol: null });
   });
 });
