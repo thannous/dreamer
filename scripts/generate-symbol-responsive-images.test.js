@@ -107,15 +107,17 @@ describe('responsive symbol image inventory', () => {
 
   it('keeps card variants inside the shared responsive symbol pipeline', () => {
     expect(WIDTHS).toEqual([240, 480, 800, 1200, 1600]);
-    expect(SYMBOL_CARD_RESPONSIVE_WIDTHS).toEqual([240, 480]);
+    expect(SYMBOL_CARD_RESPONSIVE_WIDTHS).toEqual([240, 480, 800, 1200]);
   });
 
-  it('builds a 240w fallback and 240/480 srcset for dictionary cards', () => {
+  it('builds a 240w fallback and a srcset up to 1200w for dictionary cards', () => {
     const staticDir = fs.mkdtempSync(path.join(os.tmpdir(), 'noctalia-symbol-responsive-'));
     const responsiveDir = path.join(staticDir, 'img', 'seo', 'symbols-v2');
     fs.mkdirSync(responsiveDir, { recursive: true });
     fs.writeFileSync(path.join(responsiveDir, 'water-240w.webp'), 'fixture');
     fs.writeFileSync(path.join(responsiveDir, 'water-480w.webp'), 'fixture');
+    fs.writeFileSync(path.join(responsiveDir, 'water-800w.webp'), 'fixture');
+    fs.writeFileSync(path.join(responsiveDir, 'water-1200w.webp'), 'fixture');
 
     try {
       expect(
@@ -133,7 +135,7 @@ describe('responsive symbol image inventory', () => {
           height: 135,
           src: '/img/seo/symbols-v2/water-240w.webp',
           srcset:
-            '/img/seo/symbols-v2/water-240w.webp 240w, /img/seo/symbols-v2/water-480w.webp 480w',
+            '/img/seo/symbols-v2/water-240w.webp 240w, /img/seo/symbols-v2/water-480w.webp 480w, /img/seo/symbols-v2/water-800w.webp 800w, /img/seo/symbols-v2/water-1200w.webp 1200w',
           width: 240,
         })
       );

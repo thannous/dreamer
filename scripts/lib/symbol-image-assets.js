@@ -10,7 +10,7 @@ const REGISTRY_PATH = path.join(
   'config',
   'symbol-image-assets.json'
 );
-const SYMBOL_CARD_RESPONSIVE_WIDTHS = Object.freeze([240, 480]);
+const SYMBOL_CARD_RESPONSIVE_WIDTHS = Object.freeze([240, 480, 800, 1200]);
 const SYMBOL_DETAIL_RESPONSIVE_WIDTHS = Object.freeze([480, 800, 1200, 1600]);
 const SYMBOL_RESPONSIVE_WIDTHS = Object.freeze([
   ...new Set([
@@ -18,8 +18,10 @@ const SYMBOL_RESPONSIVE_WIDTHS = Object.freeze([
     ...SYMBOL_DETAIL_RESPONSIVE_WIDTHS,
   ]),
 ]);
-const SYMBOL_CARD_IMAGE_SIZES =
-  '(max-width: 767px) min(50vw, 152px), min(21vw, 240px)';
+// Cards crop the 16:9 art with object-fit: cover, so the rendered width follows the
+// box height: a 9.5rem square on mobile (~17rem wide), a full-height column (~24.5rem)
+// on desktop (~44rem wide).
+const SYMBOL_CARD_IMAGE_SIZES = '(max-width: 767px) 17rem, 44rem';
 
 function loadSymbolImageRegistry(registryPath = REGISTRY_PATH) {
   if (!fs.existsSync(registryPath)) {
