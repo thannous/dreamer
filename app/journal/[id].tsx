@@ -745,6 +745,12 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       scrollViewRef.current?.scrollResponderScrollNativeHandleToKeyboard(input, 24, true);
     }
   }, []);
+  const handleRecallLayout = useCallback((input: TextInputInstance) => {
+    if (Platform.OS !== 'web' && !input.isFocused()) {
+      // The newly opened field must be reachable before its first focus hides the dock.
+      scrollViewRef.current?.scrollResponderScrollNativeHandleToKeyboard(input, actionDockHeight + 24, true);
+    }
+  }, [actionDockHeight]);
   const handleRecallFocus = useCallback((input: TextInputInstance) => {
     recallInputRef.current = input;
     revealRecallInput();
@@ -3170,6 +3176,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
                 originalTranscript={dream.transcript}
                 originalPersistedSegmentId={dream.clientRequestId ?? (dream.remoteId != null ? getDreamIdentityKey(dream) : String(dream.id))}
                 onAnswerFocus={handleRecallFocus}
+                onAnswerLayout={handleRecallLayout}
                 offerEligible
                 startRequested
               />
@@ -3200,6 +3207,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
                   originalTranscript={dream.transcript}
                   originalPersistedSegmentId={dream.clientRequestId ?? (dream.remoteId != null ? getDreamIdentityKey(dream) : String(dream.id))}
                   onAnswerFocus={handleRecallFocus}
+                onAnswerLayout={handleRecallLayout}
                   offerEligible={recallOffer.offerEligible} />
               </ArrivalReveal>
             ) : null}

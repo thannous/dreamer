@@ -90,6 +90,7 @@ jest.mock('react-native', () => {
     return React.createElement(tag, { 'data-testid': testID, 'aria-label': accessibilityLabel, onClick: onPress }, children);
   };
   return {
+    KeyboardAvoidingView: element('div'),
     Platform: { get OS() { return mockPlatform; }, select: (values: any) => values[mockPlatform] ?? values.default },
     Keyboard: {
       // RN Web 0.21 does not implement isVisible. Leave it unset on web so a

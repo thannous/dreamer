@@ -280,6 +280,7 @@ jest.doMock('react-native', () => {
   return {
     __esModule: true,
     ScrollView: createElement('div'),
+    KeyboardAvoidingView: createElement('div'),
     Pressable: createElement('button'),
     Text: createElement('span'),
     View: createElement('div'),

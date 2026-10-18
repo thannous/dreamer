@@ -23,6 +23,7 @@ export type DreamRecallAssistantCardProps = {
   /** The user explicitly chose to complete their saved dream with this assistant. */
   startRequested?: boolean;
   onAnswerFocus?: (input: TextInputInstance) => void;
+  onAnswerLayout?: (input: TextInputInstance) => void;
 };
 
 type RecallActionProps = {
@@ -70,6 +71,7 @@ export function DreamRecallAssistantCard({
   offerEligible,
   startRequested = false,
   onAnswerFocus,
+  onAnswerLayout,
 }: DreamRecallAssistantCardProps) {
   const { t, currentLang } = useTranslation();
   const { colors } = useTheme();
@@ -81,6 +83,7 @@ export function DreamRecallAssistantCard({
   const [voiceError, setVoiceError] = useState(false);
 
   const inputRef = useRef<TextInputInstance>(null);
+  const revealRequestedRef = useRef<string | null>(null);
   const answerRef = useRef('');
   const recordingTransitionRef = useRef(false);
   const stopRecordingFromNativeEndRef = useRef<(() => void) | null>(null);
@@ -114,6 +117,7 @@ export function DreamRecallAssistantCard({
   useEffect(() => {
     if (!startRequested || loading || hydrationStatus !== 'ready' || isBusy || state || startedForDreamRef.current === dreamId) return;
     startedForDreamRef.current = dreamId;
+    revealRequestedRef.current = dreamId;
     void start();
   }, [dreamId, hydrationStatus, isBusy, loading, start, startRequested, state]);
 
@@ -439,6 +443,7 @@ export function DreamRecallAssistantCard({
             testID={TID.Button.DreamRecallStart}
             label={String(t('dream_recall.offer.start'))}
             onPress={() => {
+              revealRequestedRef.current = dreamId;
               void start();
             }}
             disabled={actionsDisabled}
@@ -488,6 +493,7 @@ export function DreamRecallAssistantCard({
             testID={TID.Button.DreamRecallResume}
             label={String(t('dream_recall.session.resume'))}
             onPress={() => {
+              revealRequestedRef.current = dreamId;
               void resume();
             }}
             disabled={actionsDisabled}
@@ -540,6 +546,12 @@ export function DreamRecallAssistantCard({
             <View className="flex-row items-start gap-2">
               <TextInput
                 ref={inputRef}
+                onLayout={() => {
+                  if (revealRequestedRef.current === dreamId && inputRef.current) {
+                    revealRequestedRef.current = null;
+                    onAnswerLayout?.(inputRef.current);
+                  }
+                }}
                 onFocus={() => { if (inputRef.current) onAnswerFocus?.(inputRef.current); }}
                 testID={TID.Input.DreamRecallAnswer}
                 value={answer}
@@ -583,6 +595,7 @@ export function DreamRecallAssistantCard({
             testID={TID.Button.DreamRecallStart}
             label={String(t('dream_recall.offer.start'))}
             onPress={() => {
+              revealRequestedRef.current = dreamId;
               void start();
             }}
             disabled={actionsDisabled}

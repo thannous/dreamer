@@ -89,13 +89,21 @@ test('iPhone keeps recall answers visible and readable after completion and rela
     await expect(input).toHaveValue('');
     await input.fill(story);
     await screen.getByText('Capturer', { exact: true }).tap();
-    await screen.getByTestId('btn.addDream').tap();
+    await screen.getByTestId('btn.saveDream').tap();
     await expect(screen.getByTestId('screen.dreamDetail')).toBeVisible();
     created = true;
     await screen.scrollUntilVisible(screen.getByTestId('btn.dreamRecall.start'));
     await screen.getByTestId('btn.dreamRecall.start').tap();
     const answer = screen.getByTestId('input.dreamRecall.answer');
     for (const text of [first, second]) {
+      await screen.scrollUntilVisible(answer);
+      await expect.poll(async () => {
+        const field = await answer.boundingBox();
+        const dock = await screen.getByTestId('component.dreamDetail.actionDock').boundingBox();
+        return field ? !dock || field.y + field.height <= dock.y : false;
+      }).toBe(true);
+      await answer.tap();
+      await expect(device.locator('role=keyboard')).toBeVisible();
       await answer.fill(text);
       await expect(screen.getByTestId('component.dreamDetail.actionDock')).toBeHidden();
       await expect.poll(async () => {
@@ -104,6 +112,8 @@ test('iPhone keeps recall answers visible and readable after completion and rela
         return field && keyboard ? field.y >= 0 && field.y + field.height <= keyboard.y : false;
       }).toBe(true);
       await app.screenshot(text === first ? 'recall-first-answer-visible' : 'recall-second-answer-visible');
+      await device.dismissKeyboard();
+      await screen.scrollUntilVisible(screen.getByTestId('btn.dreamRecall.submit'));
       await screen.getByTestId('btn.dreamRecall.submit').tap();
       await expect(screen.getByTestId('dreamRecall.savedDetails')).toContainText(text);
     }
@@ -146,8 +156,10 @@ test('iPhone keeps recall answers visible and readable after completion and rela
       await expect(screen.getByTestId(/^dream.item\./)).toHaveCount(1);
       await screen.getByTestId(/^dream.item\./).tap();
       // Check ownership before deleting only this invocation's synthetic dream.
-      await expect(screen.getByText(story)).toBeVisible();
+      await expect(screen.getByText(story, { exact: true }).first()).toBeVisible();
       await screen.scrollUntilVisible(screen.getByTestId('btn.dream.delete'));
+      // Move the visible control clear of the fixed dock before touching it.
+      await screen.swipe({ from: { x: 220, y: 500 }, to: { x: 220, y: 200 }, duration: 400 });
       await screen.getByTestId('btn.dream.delete').tap();
       await screen.getByRole('button', 'Supprimer', { exact: true }).tap();
       await expect(screen.getByTestId('screen.journal')).toBeVisible();

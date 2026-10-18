@@ -4,7 +4,7 @@ Périmètre : les sept constats IPH-01 à IPH-07 de l’exploration physique du 
 
 ## Comportement corrigé
 
-- Le clavier masque le dock d’analyse et le défilement ramène la réponse de rappel en vue, y compris après l’ajout d’une première réponse.
+- L’ouverture explicite du rappel place le champ au-dessus du dock avant le premier toucher. Le clavier masque ensuite le dock d’analyse et le défilement ramène la réponse de rappel en vue, y compris après l’ajout d’une première réponse.
 - Les détails acceptés restent lisibles pendant le rappel et après Terminer ou Passer. Ils sont lus dans le stockage local existant, sans recopier ou remplacer le récit d’origine. Cette correction de restitution n’ajoute pas de synchronisation du stockage de rappel.
 - Une consommation de 9 avec une limite de 3 est affichée `3 / 3`. La limite métier et les données reçues du serveur restent intactes.
 - La recherche sans résultat utilise un état vide compact pendant la saisie et réserve l’espace du clavier sur iOS ; Effacer reste accessible.
@@ -36,4 +36,4 @@ La preuve native qualifie ces parcours du client développeur, pas Release/TestF
 
 ## Vérifications locales
 
-Les quatre suites ciblées existantes totalisent 68 assertions passées (dont 43 pour le rappel après adaptation de son attente historique). Lint ciblé : aucune erreur, 14 avertissements préexistants. Types des parcours TesterArmy : passés. Le typecheck applicatif passe avant la génération du fichier Expo ignoré ; avec `expo-env.d.ts` généré par Metro, 15 erreurs de styles Expo/React Native apparaissent dans trois fichiers inchangés. Une copie intacte du commit de base, avec les mêmes dépendances et le même fichier Expo, reproduit exactement ces 15 erreurs. Cette limite de la configuration générée reste distincte de la preuve du moteur de livraison.
+Les quatre premières suites ciblées existantes totalisent 68 assertions passées (dont 43 pour le rappel après adaptation de son attente historique). Lint ciblé : aucune erreur, 14 avertissements préexistants. Les deux mocks de route exposent maintenant KeyboardAvoidingView et le compteur attend le singulier : 42 assertions supplémentaires passent dans ces trois suites. Types des parcours TesterArmy : passés. Le typecheck applicatif passe avant la génération du fichier Expo ignoré ; avec `expo-env.d.ts` généré par Metro, 15 erreurs de styles Expo/React Native apparaissent dans trois fichiers inchangés. Une copie intacte du commit de base, avec les mêmes dépendances et le même fichier Expo, reproduit exactement ces 15 erreurs. Cette limite de la configuration générée reste distincte de la preuve du moteur de livraison.

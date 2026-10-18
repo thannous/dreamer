@@ -54,6 +54,7 @@ jest.mock('@/hooks/useTranslation', () => ({
     t: (key: string, params?: Record<string, string | number>) => {
       const values: Record<string, string> = {
         'recording.draft_progress.count': '{count} characters',
+        'recording.draft_progress.count_one': '{count} character',
         'recording.draft_progress.ready': 'Ready to save.',
         'recording.draft_progress.saved_locally': 'Draft saved on this device',
       };
@@ -76,7 +77,7 @@ describe('RecordingDraftProgress', () => {
   });
 
   it.each([
-    [' ', '1 characters'],
+    [' ', '1 character'],
     [' \n\t ', '4 characters'],
     [' A blue door ', '13 characters'],
   ])('attaches the stable ID directly to the raw character counter for %j', (value: string, countLabel: string) => {
