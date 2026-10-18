@@ -8,6 +8,8 @@ const { replaceFile } = require('./replace-file.cjs');
 const STATE_FILE = '.expo/android-build-state.json';
 const LOCK_FILE = '.expo/android-build.lock';
 const GENERATED = new Set(['build', '.gradle', '.cxx', '.kotlin']);
+const SESSION_METADATA = new Set(['WSL_INTEROP', 'SHLVL', '_', 'PWD', 'OLDPWD',
+  'NPM_LIFECYCLE_EVENT', 'NPM_LIFECYCLE_SCRIPT']);
 
 function hashFile(file) {
   try { return createHash('sha256').update(fs.readFileSync(file)).digest('hex'); }
@@ -34,10 +36,13 @@ function buildContext(root, { env, abi, profile, profileable, sideBySideQa }) {
     'metro.config.js', 'babel.config.js', 'global.css',
     'scripts/build-android-release-local.js', 'scripts/lib/android-build-iteration.js'])
     files[file] = hashFile(path.join(root, file));
-  // Hash the complete effective environment: an unlisted build input must not
-  // silently reuse another profile. Neither values nor individual secret hashes
-  // are persisted. The bundle task reruns on every iteration, including assets.
-  const environment = Object.entries(env).sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0);
+  // Keep all effective build variables, including unknown ones. Shell/session
+  // labels are not inputs: WSL_INTEROP changes with every independent WSL call,
+  // and npm's two lifecycle labels differ between clean and iteration commands.
+  // cwd is fixed by the runner and root is hashed separately. Neither values
+  // nor individual secret hashes are persisted. The bundle always reruns.
+  const environment = Object.entries(env).filter(([key]) => !SESSION_METADATA.has(key.toUpperCase()))
+    .sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0);
   return createHash('sha256').update(JSON.stringify({
     schemaVersion: 1, root: path.resolve(root), node: process.version, platform: process.platform,
     abi, profile, profileable, sideBySideQa, environment, files,
