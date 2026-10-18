@@ -55,6 +55,8 @@ describe('docs-dev helpers', () => {
   it('ignores build outputs rewritten by docs:build itself', () => {
     expect(isWatchableDocsPath(path.join(rootDir, 'docs-src', 'static', 'js', 'experience', 'sky-ABC123.js'), rootDir)).toBe(false);
     expect(isWatchableDocsPath(path.join(rootDir, 'docs-src', 'static', 'js', 'experience'), rootDir)).toBe(false);
+    expect(isWatchableDocsPath(path.join(rootDir, 'docs-src', 'static', 'js'), rootDir)).toBe(false);
+    expect(isWatchableDocsPath(path.join(rootDir, 'docs-src', 'static', 'js', 'mobile-menu.js'), rootDir)).toBe(true);
     expect(isWatchableDocsPath(path.join(rootDir, 'docs-src', 'static', 'img', 'seo', 'sitewide-2026-07-v1', 'editorial', 'x-4x5-480.webp'), rootDir)).toBe(false);
     expect(isWatchableDocsPath(path.join(rootDir, 'docs-src', 'static', 'img', 'symbols', 'posters-v1', 'water.webp'), rootDir)).toBe(false);
     expect(isWatchableDocsPath(path.join(rootDir, 'data', 'content-manifest.json'), rootDir)).toBe(false);

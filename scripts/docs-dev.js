@@ -134,6 +134,9 @@ function isWatchableDocsPath(filePath, rootDir = ROOT_DIR) {
   if (relativePath.startsWith('node_modules/')) return false;
   if (relativePath.startsWith('tmp/')) return false;
   if (relativePath.startsWith('%TEMP%/')) return false;
+  // Windows also reports the js container when the experience bundle changes.
+  // Its files have their own watchers; this metadata event would rebuild forever.
+  if (relativePath === 'docs-src/static/js') return false;
 
   // Build outputs living under watched roots: docs:build rewrites them on
   // every run, so watching them would make each build queue the next one
