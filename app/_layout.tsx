@@ -1130,11 +1130,17 @@ function RootLayout() {
 
     return scheduleAfterStartupPaint(() => {
       markPerformance('startup.destination_painted');
-      // Before the splash's deliberate minimum, so a slower start is not hidden inside it.
-      markStartupInteractive();
       setStartupDestinationPainted(true);
     });
   }, [startupDestinationPainted, startupSplashPrerequisitesReady]);
+
+  // Not gated by the splash's deliberate minimum, so Observe sees a start faster
+  // than it, and a slower one is not hidden inside it.
+  const startupDestinationReady = languageBootstrapped && startupDestinationCommitted;
+  useEffect(() => {
+    if (!startupDestinationReady) return;
+    return scheduleAfterStartupPaint(markStartupInteractive);
+  }, [startupDestinationReady]);
 
   useEffect(() => {
     if (!shouldFadeSplash) return;
