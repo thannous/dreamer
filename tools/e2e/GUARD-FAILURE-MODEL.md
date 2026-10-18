@@ -22,6 +22,17 @@ Installed identity/build controls will also cover same-version different binarie
 missing Release provenance, incompatible profiles and staged/untracked app inputs.
 No control opens an app, takes a device, uses a model or sends feedback.
 
+Browser preparation needs isolated controls because a normal journey cannot
+safely manufacture another installed root Playwright, a cancelled download or
+a misconfigured shard preparation. The common installer tests cover engine/matcher
+version mismatch, argument parsing, process failure and cancellation. The CI
+preparation controls evaluate every product-routing combination: the same
+shards install locked dependencies and retain their qualification controls.
+Real browser journeys verify that the unchanged headless engine still runs.
+Link rejection, CocoaPods target hashing/cycles and interrupted-evidence tests
+use the same simulated link metadata over real files everywhere. Real Windows
+file symlinks require unrelated privileges; they must not exclude those cases.
+
 The native concurrency profile additionally needs an isolated check: an absent,
 invalid or out-of-range delay, or a delay outside persistent mock mode, must never
 change normal categorization timing. Device journeys cannot safely exercise a real

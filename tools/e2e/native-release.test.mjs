@@ -1,9 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, symlinkSync, rmSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { validateReleaseReceipt, runWithInstallDiagnostics, normalizeAvdName, validateBuildCommand, nativeInputs, archiveReleaseBinary } from './native-release.mjs';
+import { virtualLinks } from './test-support/virtual-links.mjs';
 const sha = 'a'.repeat(64);
 const receipt = () => ({ schemaVersion: 1, kind: 'noctalia-native-release', product: 'dreamer', platform: 'android',
   bundle: 'com.tanuki75.noctalia', configuration: 'Release', buildExitCode: 0, source: { revision: 'a'.repeat(40), inputDigest: sha },
@@ -49,22 +50,25 @@ test('canonical descriptor refuses duplicate or Debug configuration and preserve
   for (const command of [['xcodebuild', '-configuration', 'Release', '-configuration', 'Debug', 'build'], ['gradlew', ':app:assembleRelease', ':app:assembleDebug']])
     assert.throws(() => validateBuildCommand(command, command[0] === 'xcodebuild' ? 'ios' : 'android'));
 });
-test('Pods links are fingerprinted with their local targets; foreign links and cycles are refused', () => {
+test('Pods links are fingerprinted with their local targets; foreign links and cycles are refused', t => {
+  const links = virtualLinks(t);
   const root = mkdtempSync(join(tmpdir(), 'noctalia-native-inputs-'));
   const foreign = mkdtempSync(join(tmpdir(), 'noctalia-foreign-'));
   try {
     mkdirSync(join(root, 'ios', 'Pods', 'Headers'), { recursive: true }); mkdirSync(join(root, 'node_modules', 'public'), { recursive: true });
     writeFileSync(join(root, 'ios', 'Podfile.lock'), 'public pod lock'); writeFileSync(join(root, 'node_modules', 'public', 'header.h'), 'public header');
-    symlinkSync('../../../node_modules/public/header.h', join(root, 'ios', 'Pods', 'Headers', 'header.h'));
+    links.link('../../../node_modules/public/header.h', join(root, 'ios', 'Pods', 'Headers', 'header.h'));
+    const relativeLinkDigest = nativeInputs(root, 'dreamer', 'ios').digest;
     // The relative path resolves inside the owned checkout, just like installed CocoaPods headers.
-    rmSync(join(root, 'ios', 'Pods', 'Headers', 'header.h'));
-    symlinkSync(join(root, 'node_modules', 'public', 'header.h'), join(root, 'ios', 'Pods', 'Headers', 'header.h'));
+    links.unlink(join(root, 'ios', 'Pods', 'Headers', 'header.h'));
+    links.link(join(root, 'node_modules', 'public', 'header.h'), join(root, 'ios', 'Pods', 'Headers', 'header.h'));
     const initial = nativeInputs(root, 'dreamer', 'ios').digest;
+    assert.equal(initial, relativeLinkDigest);
     writeFileSync(join(root, 'node_modules', 'public', 'header.h'), 'changed header');
     assert.notEqual(nativeInputs(root, 'dreamer', 'ios').digest, initial);
-    writeFileSync(join(foreign, 'secret'), 'foreign'); symlinkSync(join(foreign, 'secret'), join(root, 'ios', 'foreign'));
-    assert.throws(() => nativeInputs(root, 'dreamer', 'ios'), /NATIVE_LINK/); rmSync(join(root, 'ios', 'foreign'));
-    symlinkSync(join(root, 'ios'), join(root, 'ios', 'cycle')); assert.throws(() => nativeInputs(root, 'dreamer', 'ios'), /NATIVE_LINK/);
+    writeFileSync(join(foreign, 'secret'), 'foreign'); links.link(join(foreign, 'secret'), join(root, 'ios', 'foreign'));
+    assert.throws(() => nativeInputs(root, 'dreamer', 'ios'), /NATIVE_LINK/); links.unlink(join(root, 'ios', 'foreign'));
+    links.link(join(root, 'ios'), join(root, 'ios', 'cycle')); assert.throws(() => nativeInputs(root, 'dreamer', 'ios'), /NATIVE_LINK/);
   } finally { rmSync(root, { recursive: true, force: true }); rmSync(foreign, { recursive: true, force: true }); }
 });
 
@@ -76,7 +80,8 @@ test('read receipts obey the same bounded/profile rules as their canonical build
   }
 });
 
-test('archived Release bytes survive a later cache rebuild, partial or existing copies never qualify', () => {
+test('archived Release bytes survive a later cache rebuild, partial or existing copies never qualify', t => {
+  const links = virtualLinks(t);
   const root = mkdtempSync(join(tmpdir(), 'noctalia-binary-archive-'));
   try {
     const original = join(root, 'app-release.apk'), output = join(root, 'output'); mkdirSync(output); writeFileSync(original, 'public release APK');
@@ -85,6 +90,6 @@ test('archived Release bytes survive a later cache rebuild, partial or existing 
     assert.equal(archiveReleaseBinary(original, 'android', join(root, 'second')).sha256.length, 64);
     assert.notEqual(archiveReleaseBinary(original, 'android', join(root, 'third')).sha256, copy.sha256);
     assert.throws(() => archiveReleaseBinary(original, 'android', output), /ARCHIVE|EEXIST/);
-    symlinkSync(original, join(root, 'foreign.apk')); assert.throws(() => archiveReleaseBinary(join(root, 'foreign.apk'), 'android', join(root, 'refused')), /SYMLINK/);
+    links.link(original, join(root, 'foreign.apk')); assert.throws(() => archiveReleaseBinary(join(root, 'foreign.apk'), 'android', join(root, 'refused')), /SYMLINK/);
   } finally { rmSync(root, { recursive: true, force: true }); }
 });

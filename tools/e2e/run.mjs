@@ -56,7 +56,8 @@ const cli = join(cwd, 'node_modules/e2e/dist/cli/bin.js');
 if (!existsSync(cli)) throw new Error('Install with npm run test:testerarmy:setup first.');
 // Load the pinned browser matchers before the CLI installs TypeScript hooks.
 // Node arguments apply only to the web CLI, never Expo, native or inspection.
-const webNodeArgs = platform === 'web' ? ['--import', join(cwd, 'preload-web-matchers.mjs')] : [];
+const matcherPreload = new URL('./preload-web-matchers.mjs', import.meta.url).href;
+const webNodeArgs = platform === 'web' ? ['--import', matcherPreload] : [];
 const env = { ...process.env, E2E_PRODUCT: product, E2E_PLATFORM: platform, E2E_TELEMETRY_DISABLED: '1', DO_NOT_TRACK: '1' };
 // Local web files run in parallel against the one local server, each attempt in its
 // own browser context and storage: half the cores, at most four. CI keeps e2e's single
@@ -72,15 +73,17 @@ function cliEnvironment() {
     E2E_APP_NODE_OPTIONS_PRESENT: Object.hasOwn(env, 'NODE_OPTIONS') ? '1' : '0',
     // Workers do not retain the CLI's execArgv. Construct this after output and
     // PATH are set; only this process family receives the matcher preload.
-    NODE_OPTIONS: `${env.NODE_OPTIONS ?? ''} --import ${JSON.stringify(join(cwd, 'preload-web-matchers.mjs'))}`.trim(),
+    NODE_OPTIONS: `${env.NODE_OPTIONS ?? ''} --import ${JSON.stringify(matcherPreload)}`.trim(),
   };
 }
-env.PATH = [dirname(process.execPath), env.PATH].join(delimiter);
+// Object spreading loses process.env's case-insensitive lookup on Windows.
+const pathKey = Object.keys(env).find(key => key.toUpperCase() === 'PATH') ?? 'PATH';
+env[pathKey] = [dirname(process.execPath), env[pathKey]].join(delimiter);
 if (process.version !== 'v24.19.0') throw new Error('PINNED_NODE_RUNTIME');
 const sdk = env.ANDROID_HOME ?? env.ANDROID_SDK_ROOT ?? (process.platform === 'darwin' ? join(homedir(), 'Library/Android/sdk') : undefined);
 if (sdk && existsSync(sdk)) {
   env.ANDROID_HOME = env.ANDROID_SDK_ROOT = sdk;
-  env.PATH = [join(sdk, 'platform-tools'), join(sdk, 'emulator'), env.PATH].join(delimiter);
+  env[pathKey] = [join(sdk, 'platform-tools'), join(sdk, 'emulator'), env[pathKey]].join(delimiter);
 }
 if (command === 'list') {
   if (platform !== 'web' && !env.E2E_DEVICE) env.E2E_DEVICE = platform === 'android' ? 'emulator-0000' : 'iPhone Simulator';
