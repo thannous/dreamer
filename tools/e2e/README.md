@@ -211,17 +211,20 @@ No original test is removed on the basis of these results.
 
 ## Continuous integration and SDK checks
 
-CircleCI runs only when triggered manually (web app or API; see the
-[CircleCI guide](../../doc_web_interne/docs/circleci-migration.md)); pushes and PRs
-rely on local runs. A manual pipeline runs the exact Dreamer and Lucid journeys in
-the Noctalia workflow, Meditation in its own workflow, and the generated site after
-`docs:build` and `docs:check`. Each job installs this package's locked e2e 0.21.2 dependencies
-and Chromium, uses one worker with no replay or model, and retains JUnit, reports, screenshots,
-trace pages and source identity under `tools/e2e/.e2e/`. Existing backend and
-quality checks remain required. `E2E_KEEP_METRO_CACHE=1` drops Metro's `--clear`
-for Dreamer and Lucid: CI restores the transforms master saved, and
-`metro.config.js` keys them by every public build input, so a profile or
-dependency change still compiles fresh. Meditation always starts cold.
+All validation runs locally through `verify:pr` and `verify:release` on Windows
+and Linux, with the same common cases and assertions. CircleCI runs only an
+optional installation benchmark (manual/API trigger plus `run_e2e_benchmark=true`);
+see the [CircleCI guide](../../doc_web_interne/docs/circleci-migration.md).
+`npm run test:testerarmy:benchmark` reproduces it locally without root dependencies:
+three isolated locked npm installs, each followed by full Chromium and headless
+shell downloads into separate empty directories, in alternating order.
+`-- --runs 1` is a quick pilot. Reports and logs are under
+`.tmp/e2e-benchmark/results/`; disposable packages/browsers stay outside that
+artifact directory. No system packages, app, suite, model, native build or device
+are launched. Timings do not qualify application behavior.
+Local journeys retain their existing reports, screenshots, trace pages and source
+identity under `tools/e2e/.e2e/`. `E2E_KEEP_METRO_CACHE=1` drops Metro's `--clear`
+for Dreamer and Lucid when explicitly requested; fingerprint isolation remains.
 
 `npm run dependencies:check` validates the installed Expo SDK's expected native
 dependencies before the app quality checks. Dreamer and Lucid share the root
@@ -397,11 +400,9 @@ the final verdict remains nonqualifying; no unknown session/recorder is killed.
 that invocation. Preserve both when reporting its verdict.
 
 For a browser campaign set one unique `E2E_CAMPAIGN_ID` on every invocation,
-then run `node tools/e2e/run.mjs <product> web collect`. CI uses the pipeline ID
-plus the product. `--shard <index>/<total>` splits one context into contiguous
-slices: CircleCI runs the Dreamer en-US journeys on eight containers, fr-FR on
-two and de-DE with stories OFF on a third, then `testerarmy-dreamer` collects their finalized
-evidence from the workspace. A missing or failed slice leaves the union
+then run `node tools/e2e/run.mjs <product> web collect` locally.
+`--shard <index>/<total>` splits one context into contiguous slices when needed;
+collect their finalized evidence under the same campaign ID. A missing or failed slice leaves the union
 incomplete, so collection fails. The collector revalidates reports, artifacts and final
 receipts and writes `campaign.json`: the actual passed union uses target/test/agent
 identity, with contexts, repeats, selected skips and exclusions kept separately.
@@ -479,13 +480,11 @@ are refused before device preflight. Use the explicit product/platform entry.
 
 ## Interrupted CI campaign evidence
 
-CircleCI web SDK runs keep complete stdout/stderr in each immutable `sdk.log`.
+Local web SDK runs keep complete stdout/stderr in each immutable `sdk.log`.
 A fixed, queryless console line every60s says only that this runner's own SDK child
 is still open and its elapsed time; it does not claim test progress. It stops on
-close/finally and never forwards SDK/app content. The main CI step has a30m
-no-output fallback after a measured ten-minute cancellation (76 runnable bodies,
-approximately22min at the observed cadence); matcher/action/lifecycle/retry budgets
-are unchanged. See [CircleCI run configuration](https://circleci.com/docs/reference/configuration-reference/#run).
+close/finally and never forwards SDK/app content. Matcher/action/lifecycle/retry
+budgets are unchanged. CircleCI no longer launches these campaigns.
 
 `web collect` still requires all exact current contexts and complete finalized
 proof for qualification. After an interruption it inspects each owned campaign

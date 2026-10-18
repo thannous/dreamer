@@ -1,10 +1,8 @@
 'use strict';
 
 // verify-local.config.mjs: the checks verify:pr and verify:release announce
-// must exist and must keep up with the CircleCI full portfolio, which
-// doc_web_interne/docs/circleci-migration.md names as the source of truth of
-// the full local validation. A release check runs only at publication, so a
-// renamed script or a step added to CircleCI would otherwise surface there.
+// must exist and retain the former CircleCI validation portfolio. The frozen
+// fixture prevents removing a remote job from silently dropping local coverage.
 
 const { execFileSync } = require('node:child_process');
 const { readFileSync } = require('node:fs');
@@ -25,7 +23,7 @@ const config = JSON.parse(execFileSync(process.execPath, [
 const scriptsOf = (file) => JSON.parse(readFileSync(path.join(ROOT, file), 'utf8')).scripts;
 
 function circleciCommands() {
-  const continuation = YAML.parse(readFileSync(path.join(ROOT, '.circleci/continue.yml'), 'utf8'));
+  const continuation = YAML.parse(readFileSync(path.join(ROOT, '.circleci/tests/fixtures/validation-portfolio.yml'), 'utf8'));
   const commands = [];
   const walk = (value) => {
     if (Array.isArray(value)) value.forEach(walk);

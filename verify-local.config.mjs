@@ -22,8 +22,8 @@
 //
 // A check without `when` is reused by a later PR run whose inputs are identical;
 // a release reuses nothing. A `when` check runs only
-// when the commit changes those paths since origin/master, like the CircleCI
-// affected portfolio; on the published master commit nothing changed, so a
+// when the commit changes those paths since origin/master; on the published
+// master commit nothing changed, so a
 // surface a release always needs carries releaseAlways, and the release-only
 // checks at the end carry the rest of the full portfolio.
 
@@ -45,7 +45,7 @@ const SITE_ONLY = [
   'tools/e2e/tests/**',
 ];
 
-// A superset of what .circleci/scripts/classify-changes.sh routes to the site.
+// Site inputs, kept at least as broad as the former CI routing.
 const SITE = ['docs-src/', 'data/', 'scripts/', 'package.json', 'package-lock.json', '.nvmrc'];
 
 // apps/meditation and the shared files .circleci/dependency-consumers.tsv routes to it.
@@ -101,9 +101,10 @@ const CI_CONTRACTS = [
   'python3 .circleci/tests/shared-build-impact.test.py',
   'bash .circleci/tests/fallback-jest.test.sh',
   'node --test .circleci/tests/e2e-preparation.test.mjs tools/e2e/install-browsers.test.mjs',
+  'node --test .circleci/tests/benchmark.test.mjs tools/e2e/benchmark-setup.test.mjs',
 ].join(' && ');
 
-// Jobs edge-contracts and edge-functions (PGlite) of .circleci/continue.yml.
+// Former CI edge-contracts and edge-functions (PGlite), now local only.
 // These tests read migrations and routes as files, so Jest's related-test
 // selection (jest-changed) never picks them.
 const DB_CONTRACTS = [
@@ -330,7 +331,7 @@ export default {
 
     // ---- verify:pr, only when the commit changes that surface since origin/master.
     { name: 'site', command: 'npm run docs:build && npm run docs:check', when: SITE },
-    { name: 'ci-contracts', command: CI_CONTRACTS, when: ['.circleci/'] },
+    { name: 'ci-contracts', command: CI_CONTRACTS, when: ['.circleci/', 'tools/e2e/benchmark-setup.mjs', 'tools/e2e/benchmark-setup.test.mjs', 'tools/e2e/install-browsers.mjs', 'tools/e2e/install-browsers.test.mjs'] },
     { name: 'eas-workflow-contracts', command: EAS_WORKFLOW_CONTRACTS, when: EAS_WORKFLOWS },
     // A bad version pin fails before push rather than at publication (offline, 0.1 s).
     { name: 'mobile-versions', command: 'node scripts/mobile-release.js verify --app all', inputs: MOBILE_VERSIONS, when: MOBILE_VERSIONS },
