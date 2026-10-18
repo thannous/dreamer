@@ -62,7 +62,8 @@ export const parseKnownDreamSymbols = (value: unknown): KnownDreamSymbol[] => {
 
 /**
  * The dreamer's own symbols as their saved analyses hold them (`analysis_details` rows,
- * newest first), the most frequent first and the newest name for each.
+ * newest first), the most frequent first and the newest name for each. A key that is a
+ * dictionary id links to the dictionary, as in the app, so it takes none of the slots.
  */
 export const collectKnownDreamSymbols = (analysisDetails: readonly unknown[]): KnownDreamSymbol[] => {
   const counts = new Map<string, { name: string; count: number; order: number }>();
@@ -73,7 +74,7 @@ export const collectKnownDreamSymbols = (analysisDetails: readonly unknown[]): K
     for (const symbol of symbols) {
       const key = normalizePersonalSymbolKey((symbol as { key?: unknown } | null)?.key);
       const name = boundedName((symbol as { name?: unknown } | null)?.name);
-      if (!key || !name || inDream.has(key)) continue;
+      if (!key || !name || inDream.has(key) || normalizeDreamSymbolId(key)) continue;
       inDream.add(key);
       const known = counts.get(key);
       if (known) known.count += 1;

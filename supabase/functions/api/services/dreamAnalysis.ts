@@ -88,7 +88,7 @@ export const buildAnalysisPrompt = (
 - "theme": the visual atmosphere, one of ${describeDreamThemes(themes)}; this is a visual choice, not a psychological claim.
 - "dreamType": one of ${DREAM_TYPE_VALUES.map((type) => JSON.stringify(type)).join(', ')}. ${DREAM_TYPE_POLICY}
 - "symbols": identify one to four salient elements when the account contains usable details (maximum six): objects, places, gestures or interactions actually present, not invented symbols. Each "name" identifies that element; its "meaning" cites the supporting detail and explains a specific tentative association, not a universal interpretation. Include meaningful non-object elements such as a repeated action or spatial contrast. Do not duplicate the main reading. An empty array is valid only when no meaningful element is available; never invent one to fill the section.
-  Each symbol also carries two link fields, used only to connect the dreamer's dreams, never to impose a meaning. "symbolId" is the id from Noctalia's symbol index below when the element plainly is that thing, in any language or form (a kitten is "cat", a front door is "door"); otherwise "none". Never stretch a match. "key" is "" when symbolId is set; otherwise a short lowercase English kebab-case key naming this specific element, such as "grandmother-house". When the element is one of the dreamer's own symbols listed below, reuse that exact key.
+  Each symbol also carries two link fields, used only to connect the dreamer's dreams, never to impose a meaning. "symbolId" is the id from Noctalia's symbol index below when the element plainly is that thing, in any language or form (a kitten is "cat", a front door is "door"); otherwise "none". Never stretch a match. "key" is "" when symbolId is set; otherwise a short lowercase English kebab-case key: the plainest noun phrase that would name this element again in another dream, such as "lighthouse" or "grandmother-house", never details of this scene (not "old-lighthouse-at-dusk"); qualifiers belong in "name" and "meaning". When the element is one of the dreamer's own symbols listed below, reuse that exact key, and its name too unless this dream's version clearly differs. When one of those symbols is actually present and salient in this dream, include it among the symbols; never invent or stretch one to keep a thread. Each symbolId other than "none" and each non-empty key appears at most once in a reading.
 - "emotions": zero to four explicitly reported feelings, each with "name" and an "insight" quoting the exact phrase reporting that feeling, without expanding its context. An empty array is valid.
 - "reflectionQuestions": for a usable remembered scene, offer one to three optional, gentle, non-leading questions anchored in distinct details. Prefer clarifying an ambiguity or inviting a personal association over generic questions. Do not presume distress, a waking-life problem or a hidden meaning; do not repeat the same question in different words. Return an empty array when no meaningful question is supported (for example, no remembered content).
 - "imagePrompt": an artistic visualization grounded in the supplied scene (max 40 words), ALWAYS in English.
@@ -135,7 +135,7 @@ export type DreamAnalysisDetails = {
  * output-quality regression can be attributed to a prompt change. It is
  * returned to the client and stored with the dream (`promptVersion`).
  */
-export const ANALYSIS_PROMPT_VERSION = 'analysis-2026-10-17.poetic5';
+export const ANALYSIS_PROMPT_VERSION = 'analysis-2026-10-18.poetic6';
 
 export type StructuredDreamAnalysis = {
   title: string;
@@ -165,10 +165,14 @@ const sanitizeNamedInsights = (
   return items;
 };
 
-/** The reading's symbols with their link: a dictionary id when it is one, else the dreamer's own key. */
+/**
+ * The reading's symbols with their link: a dictionary id when it is one, else the dreamer's own key.
+ * A later symbol with the same link as an earlier one is dropped, so one element counts once per dream.
+ */
 const sanitizeAnalysisSymbols = (value: unknown): DreamAnalysisSymbol[] => {
   if (!Array.isArray(value)) return [];
   const symbols: DreamAnalysisSymbol[] = [];
+  const links = new Set<string>();
   for (const entry of value) {
     const [named] = sanitizeNamedInsights([entry], 'meaning', 1);
     if (!named) continue;
@@ -176,6 +180,11 @@ const sanitizeAnalysisSymbols = (value: unknown): DreamAnalysisSymbol[] => {
     // A dictionary id answered as a key is still that dictionary symbol.
     const symbolId = normalizeDreamSymbolId((entry as any)?.symbolId) ?? normalizeDreamSymbolId(rawKey);
     const key = symbolId ? undefined : rawKey;
+    const link = symbolId ? `d:${symbolId}` : key ? `p:${key}` : undefined;
+    if (link) {
+      if (links.has(link)) continue;
+      links.add(link);
+    }
     symbols.push({
       name: named.name,
       meaning: named.meaning,

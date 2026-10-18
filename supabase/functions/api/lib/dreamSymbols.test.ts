@@ -1,4 +1,5 @@
 import { assertEquals } from 'https://deno.land/std@0.224.0/assert/mod.ts';
+import { DREAM_SYMBOL_IDS } from './dreamSymbolIds.ts';
 import {
   collectKnownDreamSymbols,
   MAX_KNOWN_SYMBOLS,
@@ -37,4 +38,13 @@ Deno.test('known symbols from saved readings come most frequent first, newest na
     { key: 'grandmother-house', name: 'La maison de grand-mère' },
     { key: 'old-school', name: 'Le collège' },
   ]);
+});
+
+Deno.test('a key that is a dictionary id is not a personal symbol and takes none of the slots', () => {
+  // A newer reading whose keys are all dictionary ids, then an older one with a personal key.
+  const dictionaryKeyed = DREAM_SYMBOL_IDS.slice(0, MAX_KNOWN_SYMBOLS).map((id) => ({ name: id, meaning: 'x', key: id.toUpperCase() }));
+  assertEquals(collectKnownDreamSymbols([
+    { symbols: dictionaryKeyed },
+    { symbols: [{ name: 'Le phare', meaning: 'x', key: 'lighthouse' }] },
+  ]), [{ key: 'lighthouse', name: 'Le phare' }]);
 });

@@ -61,7 +61,7 @@ Deno.test('prompt keeps malicious transcript as JSON data and distinguishes omit
 });
 
 Deno.test('analysis sends the compact policy once at system level and preserves source-only output', async () => {
-  assertEquals(ANALYSIS_PROMPT_VERSION, 'analysis-2026-10-17.poetic5');
+  assertEquals(ANALYSIS_PROMPT_VERSION, 'analysis-2026-10-18.poetic6');
   // The client uses this established stamp to distinguish authored lines from old excerpts.
   assertEquals(/^analysis-\d{4}-\d{2}-\d{2}\.poetic\d+$/.test(ANALYSIS_PROMPT_VERSION), true);
   const originalFetch = globalThis.fetch;
@@ -255,6 +255,31 @@ Deno.test('a symbol links to the dictionary or to the dreamer\'s own key, never 
     { name: 'Escalier inventé', meaning: 'Un escalier.' },
     { name: 'Geste', meaning: 'Un geste répété.' },
     { name: 'Loup', meaning: 'Il attend.', symbolId: 'wolf' },
+  ]);
+});
+
+Deno.test('a reading keeps one symbol per link, and a dropped duplicate takes no slot', () => {
+  const details = sanitizeAnalysisDetails({
+    symbols: [
+      { name: 'Le phare', meaning: 'Il éclaire la baie.', symbolId: 'none', key: 'lighthouse' },
+      { name: 'Chaton', meaning: 'Sur le seuil.', symbolId: 'cat', key: '' },
+      { name: 'La tour qui éclaire', meaning: 'La même lumière.', symbolId: 'none', key: 'Lighthouse' },
+      { name: 'Chat', meaning: 'Le même animal.', symbolId: 'none', key: 'cat' },
+      { name: 'Geste', meaning: 'Un geste répété.', symbolId: 'none', key: '' },
+      { name: 'Autre geste', meaning: 'Un autre geste.', symbolId: 'none', key: 'none' },
+      { name: 'Escalier', meaning: 'Il monte.', symbolId: 'stairs', key: '' },
+      { name: 'Fenêtre', meaning: 'Elle donne sur la mer.', symbolId: 'none', key: 'window' },
+      { name: 'Horloge', meaning: 'Elle sonne.', symbolId: 'none', key: 'clock' },
+    ],
+  });
+  assertEquals(details.symbols, [
+    { name: 'Le phare', meaning: 'Il éclaire la baie.', key: 'lighthouse' },
+    { name: 'Chaton', meaning: 'Sur le seuil.', symbolId: 'cat' },
+    // Symbols without a link are never duplicates of each other.
+    { name: 'Geste', meaning: 'Un geste répété.' },
+    { name: 'Autre geste', meaning: 'Un autre geste.' },
+    { name: 'Escalier', meaning: 'Il monte.', symbolId: 'stairs' },
+    { name: 'Fenêtre', meaning: 'Elle donne sur la mer.', key: 'window' },
   ]);
 });
 
