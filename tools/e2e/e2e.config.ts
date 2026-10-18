@@ -2,6 +2,7 @@ import type { E2EConfig } from 'e2e';
 import { mobile } from '@e2e-dev/mobile';
 import { webEngine } from './web-engine';
 import { fileURLToPath } from 'node:url';
+import { managedAppCommand } from './managed-app';
 
 const root = fileURLToPath(new URL('../../', import.meta.url));
 const product = process.env.E2E_PRODUCT ?? 'dreamer';
@@ -37,6 +38,9 @@ const requestedWorkers = process.env.E2E_WORKERS;
 if (requestedWorkers !== undefined && (native || !/^[1-9]\d?$/.test(requestedWorkers)))
   throw new Error('E2E_WORKERS takes 1-99 web workers; native runs use one device.');
 const workers = Number(requestedWorkers ?? 1);
+const appRoot = product === 'meditation' ? `${root}apps/meditation` : root;
+const managedCommand = !native && product !== 'site'
+  ? managedAppCommand(appRoot, product === 'meditation' ? 'web' : product === 'lucid' ? 'start:lucid:mock' : 'start:mock') : null;
 
 export default {
   projectId: `noctalia-${product}`,
@@ -60,9 +64,9 @@ export default {
         executable: 'python3', args: ['-m', 'http.server', String(port), '--bind', '127.0.0.1', '--directory', 'docs'], cwd: root,
         startupTimeout: 180_000, log: appLog,
       } : {
-        executable: process.execPath,
-        args: ['--run', product === 'meditation' ? 'web' : product === 'lucid' ? 'start:lucid:mock' : 'start:mock', '--', ...(product === 'meditation' ? [] : ['--web']), ...(keepMetroCache ? [] : ['--clear']), '--port', String(port)],
-        cwd: product === 'meditation' ? `${root}apps/meditation` : root,
+        executable: managedCommand!.executable,
+        args: [...managedCommand!.args, ...(product === 'meditation' ? [] : ['--web']), ...(keepMetroCache ? [] : ['--clear']), '--port', String(port)],
+        cwd: appRoot,
         env: {
           ...(appNodeOptions === undefined ? {} : { NODE_OPTIONS: appNodeOptions }),
           // Isolated validation links node_modules from the primary checkout.
