@@ -607,7 +607,7 @@ test('the French tiger atlas sets its chapters side by side and shows each publi
       hashes: links.map(link => link.hash),
       tops: links.map(link => document.querySelector(link.hash)!.getBoundingClientRect().top + window.scrollY),
       active: links.filter(link => link.classList.contains('is-active')).map(link => link.hash),
-      covered: bar.top <= Math.max(0, document.querySelector('#navbar')!.getBoundingClientRect().bottom) + 8,
+      covered: bar.top <= Math.max(0, document.querySelector('#navbar')!.getBoundingClientRect().bottom) + 1,
       barBottom: bar.bottom,
       variationsTitle: document.querySelector('#variations h3')!.getBoundingClientRect().top,
       faqTop: document.querySelector('#faq')!.getBoundingClientRect().top + window.scrollY,

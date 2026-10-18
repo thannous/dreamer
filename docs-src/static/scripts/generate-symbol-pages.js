@@ -922,7 +922,7 @@ const TIGER_ATLAS = {
     cage: { width: 320, height: 180, avif: { 320: 'tiger-cage-320-c7c194529c9e.avif', 640: 'tiger-cage-640-17ac80fe1837.avif' }, webp: { 320: 'tiger-cage-320-057946eb9ebd.webp', 640: 'tiger-cage-640-f21bb88f0cdd.webp' } },
     decor: { width: 1402, height: 1122, avif: { 700: 'tiger-atlas-vignette-700-4e8dfc5cbde1.avif', 1402: 'tiger-atlas-vignette-1402-9962f65e3b08.avif' }, webp: { 700: 'tiger-atlas-vignette-700-c59a48b34c27.webp', 1402: 'tiger-atlas-vignette-1402-52162fa918f0.webp' } },
   },
-  sceneSizes: '(min-width: 768px) 8.5rem, 6.5rem',
+  sceneSizes: '(min-width: 1440px) 8.5rem, (min-width: 1024px) 6.5rem, (min-width: 768px) 8.5rem, 6.5rem',
   // The decor exists from 1440px only, as a backdrop beside the cards: no source matches
   // below, so phones and narrower screens never fetch it.
   decorMedia: '(min-width: 1440px)',
@@ -1418,8 +1418,8 @@ const TIGER_ATLAS_CSS = `
             /* Below the fixed navbar and section bar. */
             .atlas .variation-card { scroll-margin-top: 12rem; }
             /* The navbar slides away when scrolling down: the section bar takes its place
-               instead of leaving the text visible above it. */
-            body.symbol-jump-fixed:has(#navbar.nav-scroll-hidden) .symbol-jump-nav { transform: translateY(-4.15rem); }
+               at the top instead of leaving the text visible above it. */
+            body.symbol-jump-fixed:has(#navbar.nav-scroll-hidden) .symbol-jump-nav { transform: translateY(-4.65rem); }
             #navbar.atlas-nav-solid, body.symbol-jump-fixed #navbar {
                 background: rgba(10, 5, 20, 0.92);
                 backdrop-filter: blur(18px);
@@ -1451,7 +1451,7 @@ const TIGER_ATLAS_CSS = `
             .atlas-related { grid-template-columns: auto auto minmax(0, 1fr); align-items: center; column-gap: clamp(1.5rem, 2.5vw, 3rem); }
         }
         /* Compact plate: cards wide enough for their titles on one line. */
-        @media (min-width: 1024px) and (max-width: 1439px) {
+        @media (min-width: 1024px) and (max-width: 1439.98px) {
             .atlas-plate { grid-template-columns: minmax(0, 1fr) 22rem; }
             .atlas-scene { grid-template-columns: 6.5rem minmax(0, 1fr) auto; }
         }
@@ -1489,7 +1489,7 @@ const TIGER_ATLAS_CSS = `
             .atlas-continuation .prose p { break-inside: avoid; }
             .symbol-hero--living .symbol-hero-overlay { padding-left: calc(12.5rem + clamp(1.75rem, 3vw, 4.5rem)); }
         }
-        @media (min-width: 1200px) and (max-width: 1439px) {
+        @media (min-width: 1200px) and (max-width: 1439.98px) {
             /* Room for the store button on one line. */
             .atlas-band { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.2fr); }
         }
