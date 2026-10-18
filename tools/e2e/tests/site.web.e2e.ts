@@ -430,11 +430,11 @@ test('only the French tiger page loads the living-painting pilot, from a folder 
 });
 
 // Atlas composition of the same page, read like a dictionary entry: the index beside
-// the opening plate only, reading, three scene cards and the tiger art side by side,
-// then a band (the questions to ask, the chosen scene's reading on their right) and
-// the rest across the whole frame, the app last; one column on a phone. The native
-// scene selector must show, in the band, the opening question and the next sentence
-// of the matching published variation card.
+// the opening plate only, the meaning beside the tiger art, then the three scene cards
+// with the chosen scene's reading on their right (under them on a phone), and the rest
+// across the whole frame, the app last. The native scene selector must show, beside
+// the list, the opening question and the next sentence of the matching published
+// variation card.
 function readAtlas() {
   const rect = (selector: string) => {
     const node = document.querySelector(selector);
@@ -454,19 +454,14 @@ function readAtlas() {
     viewportHeight: window.innerHeight,
     overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth,
     article: rect('article.atlas'), rail: rect('.atlas-rail'), reading: rect('.atlas-reading'), scenes: rect('.atlas-scenes'),
-    decor: rect('.atlas-decor'), band: rect('.atlas-band'), reflection: rect('#reflexion'), questionsBox: rect('#questions'), relatedBox: rect('#associes'),
-    columns: Array.from(document.querySelectorAll('.atlas-band > .atlas-column')).map(node => {
-      const r = node.getBoundingClientRect();
-      return { left: r.left, top: Math.round(r.top + window.scrollY), right: r.right };
-    }),
+    decor: rect('.atlas-decor'), list: rect('.atlas-scene-list'), reflection: rect('#reflexion'), questionsBox: rect('#questions'), relatedBox: rect('#associes'),
     questionTops: Array.from(document.querySelectorAll('#questions .symbol-question-item')).map(node => Math.round(node.getBoundingClientRect().top)),
-    cardsRight: Math.max(...Array.from(document.querySelectorAll('.atlas-scene')).map(node => node.getBoundingClientRect().right)),
     checked: checked?.value ?? null,
     checkedLabel: checked ? document.querySelector(`label[for="${checked.id}"] .atlas-scene-label`)?.textContent?.trim() ?? null : null,
     shownInView: shownBox ? shownBox.top >= 0 && shownBox.bottom <= window.innerHeight + 1 : false,
     shown: visible.map(node => ({
       scene: node.dataset.scene ?? '',
-      inBand: Boolean(node.closest('#reflexion')),
+      inReading: Boolean(node.closest('#reflexion')),
       chosen: node.querySelector('.atlas-scene-chosen')?.textContent?.replace(/\s+/g, ' ').trim() ?? null,
       question: node.querySelector('.atlas-scene-question')!.textContent!.trim(),
       excerpt: node.querySelector('.atlas-scene-excerpt')!.textContent!.trim(),
@@ -494,10 +489,10 @@ function readAtlas() {
 
 type Atlas = Awaited<ReturnType<typeof readAtlas>>;
 
-// The band names the selected card and shows its opening question and the sentence after it.
+// The reading beside the list names the selected card and shows its opening question and the sentence after it.
 const expectPublishedScene = (atlas: Atlas, scene: string) => {
   expect(atlas.checked).toBe(scene);
-  expect(atlas.shown.map(shown => [shown.scene, shown.inBand])).toEqual([[scene, true]]);
+  expect(atlas.shown.map(shown => [shown.scene, shown.inReading])).toEqual([[scene, true]]);
   const [{ question, excerpt, chosen }] = atlas.shown;
   expect(chosen).toBe(`Votre scène : ${atlas.checkedLabel}`);
   expect(question.endsWith('?')).toBe(true);
@@ -520,27 +515,21 @@ test('the French tiger atlas reads like a dictionary entry and shows each publis
     await app.open('/fr/symboles/tigre.html');
     await expect(screen.getByRole('heading', { level: 1 })).toBeVisible();
     const wide = await browser.evaluate(readAtlas);
-    // About 90 % of the width; rail | reading | cards | art in the opening, never art behind the reading,
-    // and the tiger's face (right 44 % of the art) clear of the cards.
+    // About 90 % of the width; rail | reading | art in the opening, the art never behind the reading.
     expect(wide.article!.width).toBeGreaterThanOrEqual(wide.viewport * 0.88);
     expect(wide.rail!.right).toBeLessThanOrEqual(wide.reading!.left);
-    expect(wide.reading!.right).toBeLessThanOrEqual(wide.scenes!.left);
-    expect(wide.scenes!.top).toBeLessThan(wide.reading!.bottom);
     expect(wide.decor!.left).toBeGreaterThanOrEqual(wide.reading!.right);
     expect(wide.decor!.width).toBeGreaterThanOrEqual(500);
-    expect(wide.decor!.left + wide.decor!.width * 0.56).toBeGreaterThanOrEqual(wide.cardsRight - 1);
-    // The art ends above the band; the band and the rest span the whole frame, under the index.
-    expect(wide.decor!.bottom).toBeLessThanOrEqual(wide.band!.top);
-    expect(wide.rail!.bottom).toBeLessThanOrEqual(wide.band!.top);
-    expect(wide.band!.left).toBeCloseTo(wide.article!.left, 0);
-    expect(wide.band!.right).toBeCloseTo(wide.article!.right, 0);
+    // Then the scene list with the chosen scene's reading on its right, on the same line.
+    expect(wide.scenes!.top).toBeGreaterThanOrEqual(Math.max(wide.reading!.bottom, wide.decor!.bottom));
+    expect(wide.reflection!.left).toBeGreaterThanOrEqual(wide.list!.right);
+    expect(wide.reflection!.top).toBeLessThan(wide.list!.bottom);
+    // The questions and the rest span the whole frame, under the index; the questions on one line.
+    expect(wide.rail!.bottom).toBeLessThanOrEqual(wide.questionsBox!.top);
+    expect(wide.questionsBox!.left).toBeCloseTo(wide.article!.left, 0);
+    expect(wide.questionsBox!.right).toBeCloseTo(wide.article!.right, 0);
     expect(wide.relatedBox!.left).toBeCloseTo(wide.article!.left, 0);
-    // The questions side by side on one line, the chosen scene's reading on their right, on the cards' side.
-    expect(wide.columns).toHaveLength(2);
-    expect(new Set(wide.columns.map(column => column.top)).size).toBe(1);
     expect(new Set(wide.questionTops).size).toBe(1);
-    expect(wide.questionsBox!.right).toBeLessThanOrEqual(wide.reflection!.left);
-    expect(wide.reflection!.left).toBeLessThan(wide.cardsRight);
     expect(wide.overflow).toBe(false);
     await app.screenshot('tiger-atlas-' + width);
   }
@@ -580,7 +569,7 @@ test('the French tiger atlas reads like a dictionary entry and shows each publis
   expectPublishedScene(await browser.evaluate(readAtlas), 'poursuite');
 
   // A phone: one column without overflow, the choices right after the opening, the chosen
-  // scene's reading right after them and the questions after it, and the hidden art never fetched.
+  // scene's reading right under them and the questions after it, and the hidden art never fetched.
   await browser.setViewport({ width: 390, height: 844 });
   await app.open('/fr/symboles/tigre.html');
   await expect(screen.getByRole('heading', { level: 1 })).toBeVisible();
@@ -591,9 +580,9 @@ test('the French tiger atlas reads like a dictionary entry and shows each publis
   expect([phone.rail, phone.decor, phone.decorLoads]).toEqual([null, null, 0]);
   expect(phone.scenes!.top).toBeGreaterThanOrEqual(phone.reading!.bottom);
   expect(phone.scenes!.top - phone.article!.top).toBeLessThan(2 * phone.viewportHeight);
-  expect(phone.reflection!.top).toBeGreaterThanOrEqual(phone.scenes!.bottom);
+  expect(phone.reflection!.top).toBeGreaterThanOrEqual(phone.list!.bottom);
+  expect(phone.reflection!.left).toBeCloseTo(phone.list!.left, 0);
   expect(phone.questionsBox!.top).toBeGreaterThanOrEqual(phone.reflection!.bottom);
-  expect(phone.columns.map(column => column.left)).toEqual(phone.columns.map(() => phone.columns[0].left));
   expectPublishedScene(phone, 'cage');
   await app.screenshot('tiger-atlas-390');
   // Past the hero the shared navbar gets a ground over the text (it stays transparent on the hero).

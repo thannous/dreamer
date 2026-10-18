@@ -881,9 +881,10 @@ function tigerLivingStyleHtml() {
 }
 
 // Atlas composition of the same pilot page, read like a dictionary entry: the
-// symbol is described first (summary, meaning), then its common scenes with the
-// reading of the chosen one beside the questions to ask, the detailed reading,
-// the variations, the FAQ and further reading; the app comes last. An index
+// symbol is described first (summary, meaning, beside its illustration), then its
+// common scenes with the reading of the chosen one right beside the list, the
+// questions to ask, the detailed reading, the variations, the FAQ and further
+// reading; the app comes last. An index
 // beside the opening mirrors the section titles. Every text comes from the
 // symbol's data: a scene shows the opening question of its variation card and the
 // sentence after it, and the build fails if a card, its question, the caveat or
@@ -917,9 +918,9 @@ const TIGER_ATLAS = {
     cage: { width: 320, height: 180, avif: { 320: 'tiger-cage-320-c7c194529c9e.avif', 640: 'tiger-cage-640-17ac80fe1837.avif' }, webp: { 320: 'tiger-cage-320-057946eb9ebd.webp', 640: 'tiger-cage-640-f21bb88f0cdd.webp' } },
     decor: { width: 1402, height: 1122, avif: { 700: 'tiger-atlas-vignette-700-4e8dfc5cbde1.avif', 1402: 'tiger-atlas-vignette-1402-9962f65e3b08.avif' }, webp: { 700: 'tiger-atlas-vignette-700-c59a48b34c27.webp', 1402: 'tiger-atlas-vignette-1402-52162fa918f0.webp' } },
   },
-  sceneSizes: '(min-width: 1440px) 8.5rem, (min-width: 1024px) 6.5rem, (min-width: 768px) 8.5rem, 6.5rem',
-  // The decor exists from 1440px only, as a backdrop beside the cards: no source matches
-  // below, so phones and narrower screens never fetch it.
+  sceneSizes: '(min-width: 1200px) 8.5rem, 6.5rem',
+  // The decor exists from 1440px only, beside the meaning: no source matches below, so
+  // phones and narrower screens never fetch it.
   decorMedia: '(min-width: 1440px)',
   decorSizes: 'min(52rem, 50vw)',
 };
@@ -1074,31 +1075,31 @@ function renderTigerAtlasArticle(c) {
                             </div>
                         </section>
                     </div>
+                    ${renderTigerAtlasDecor()}
+                    <!-- The scene list, and the chosen scene's reading beside it (under it on a phone) -->
                     <section class="atlas-scenes" id="${atlas.scenes.id}" aria-labelledby="atlas-scenes-title">
                         ${heading('scenes')}
                         <p class="atlas-scenes-hint">${escapeHtml(atlas.scenes.hint)}</p>
-                        <fieldset class="atlas-scene-list">
-                            <legend class="atlas-sr">${escapeHtml(atlas.scenes.legend)}</legend>${sceneChoicesHtml}
-                        </fieldset>
+                        <div class="atlas-scenes-body">
+                            <fieldset class="atlas-scene-list">
+                                <legend class="atlas-sr">${escapeHtml(atlas.scenes.legend)}</legend>${sceneChoicesHtml}
+                            </fieldset>
+                            <section class="atlas-reflection" id="reflexion" aria-label="${escapeHtml(atlas.scenes.reading)}">
+                                <div class="atlas-scene-results" id="atlas-scene-results" aria-live="polite">${sceneResultsHtml}
+                                </div>
+                                <p class="atlas-caveat">${escapeHtml(caveat)}</p>
+                            </section>
+                        </div>
                     </section>
-                    ${renderTigerAtlasDecor()}
                 </div>
             </div>
 
-            <!-- The chosen scene's reading (under the cards), beside the questions to ask -->
-            <div class="atlas-band">
-                <section class="atlas-column atlas-reflection" id="reflexion" aria-label="${escapeHtml(atlas.scenes.reading)}">
-                    <div class="atlas-scene-results" id="atlas-scene-results" aria-live="polite">${sceneResultsHtml}
-                    </div>
-                    <p class="atlas-caveat">${escapeHtml(caveat)}</p>
-                </section>
-                <!-- Ask Yourself -->
-                <section id="questions" class="atlas-column symbol-questions" aria-labelledby="atlas-questions-title">
-                    ${heading('questions')}
-                    <ul>${c.askYourselfHtml}
-                    </ul>
-                </section>
-            </div>
+            <!-- Ask Yourself -->
+            <section id="questions" class="symbol-questions symbol-section atlas-questions" aria-labelledby="atlas-questions-title">
+                ${heading('questions')}
+                <ul>${c.askYourselfHtml}
+                </ul>
+            </section>
 
             <!-- Rest of the interpretation -->
             <section id="lecture" class="symbol-meaning symbol-section atlas-continuation" aria-labelledby="atlas-lecture-title">
@@ -1135,7 +1136,7 @@ function renderTigerAtlasArticle(c) {
             <aside class="atlas-keep" id="garder-noctalia" aria-labelledby="atlas-keep-title">
                 <div>
                     <p class="atlas-kicker"><i data-lucide="feather" class="w-5 h-5"></i>${escapeHtml(atlas.keepKicker)}</p>
-                    <h2 class="atlas-band-title" id="atlas-keep-title">${c.t.cta_title}</h2>
+                    <h2 class="atlas-keep-title" id="atlas-keep-title">${c.t.cta_title}</h2>
                     <p class="atlas-keep-text">${c.t.cta_description}</p>
                 </div>
                 <div>
@@ -1158,7 +1159,7 @@ function renderTigerAtlasArticle(c) {
                     new IntersectionObserver(([entry]) => nav.classList.toggle('atlas-nav-solid', !entry.isIntersecting), { rootMargin: '-' + top + 'px 0px 0px 0px' }).observe(hero);
                 })();
                 // A clicked or tapped scene brings its reading into view, just enough to show it whole
-                // (it sits below the cards); the arrow keys change the scene without moving the page.
+                // (on a phone it sits below the cards); the arrow keys change the scene without moving the page.
                 (() => {
                     const results = document.getElementById('atlas-scene-results');
                     if (!results) return;
@@ -1197,11 +1198,12 @@ const TIGER_ATLAS_CSS = `
         .atlas-continuation .prose p { max-width: 40rem; }
         .atlas-continuation .prose p:last-child { font-size: 0.9rem; color: var(--cream-64); }
 
-        /* Scene selector: native radios, one published question and excerpt per scene. */
-        .atlas-scenes { position: relative; z-index: 1; margin-top: clamp(2.5rem, 5vw, 3.5rem); }
+        /* Scene selector: native radios, one published question and excerpt per scene, read
+           beside the list (under it on a phone). */
+        .atlas-scenes { margin-top: clamp(2.5rem, 5vw, 3.5rem); padding-top: clamp(2.25rem, 4vw, 3rem); border-top: 1px solid var(--line); }
         .atlas-scenes .symbol-h2 { margin-bottom: 0.5rem; }
         .atlas-scenes-hint { margin-bottom: 1.25rem; font-size: 0.92rem; line-height: 1.5; color: var(--cream-64); }
-        .atlas-scenes .symbol-h2, .atlas-scenes-hint { text-shadow: 0 2px 14px rgba(8, 3, 15, 0.95); }
+        .atlas-scenes-body { display: grid; gap: 1.75rem; align-items: start; }
         .atlas-scene-list { display: grid; gap: 0.75rem; margin: 0; padding: 0; border: 0; min-width: 0; }
         .atlas-scene-input { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; pointer-events: none; }
         .atlas-scene {
@@ -1267,12 +1269,10 @@ const TIGER_ATLAS_CSS = `
         .atlas .variation-card:target { border-top-color: var(--salmon); }
         .atlas .variation-card:target h3 { color: var(--salmon); }
 
-        /* Band: on a phone the chosen scene's reading right under the cards, then the
-           questions; wider, the questions on the left (side by side when they fit) and
-           the reading on their right. */
-        .atlas-band { display: grid; margin-top: 1.75rem; }
-        .atlas-column { margin: 0; padding: 0 0 clamp(2.25rem, 4vw, 3rem); scroll-margin-top: 7rem; }
-        .atlas-column + .atlas-column { border-top: 1px solid var(--line); padding-top: clamp(2.25rem, 4vw, 3rem); }
+        .atlas-reflection { max-width: 44rem; scroll-margin-top: 7rem; }
+
+        /* Questions to ask: side by side when they fit, one per line otherwise. */
+        .atlas-questions { margin-top: clamp(3rem, 6vw, 4.5rem); }
         .atlas .symbol-questions ul { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); column-gap: 1.5rem; margin: 0; padding: 0; list-style: none; }
         .atlas .symbol-question-item { font-size: 1.08rem; }
         .atlas .symbol-question-item:last-child { border-bottom: 0; }
@@ -1286,7 +1286,7 @@ const TIGER_ATLAS_CSS = `
 
         /* The app, once the symbol is explained. */
         .atlas-keep { display: grid; gap: 1.5rem; padding: clamp(2.25rem, 4vw, 3rem) 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); scroll-margin-top: 7rem; }
-        .atlas-band-title { font-family: 'Fraunces', ui-serif, Georgia, serif; font-weight: 550; font-size: clamp(1.35rem, 1.8vw, 1.75rem); line-height: 1.2; color: var(--cream); margin-bottom: 0.75rem; }
+        .atlas-keep-title { font-family: 'Fraunces', ui-serif, Georgia, serif; font-weight: 550; font-size: clamp(1.35rem, 1.8vw, 1.75rem); line-height: 1.2; color: var(--cream); margin-bottom: 0.75rem; }
         .atlas-keep-text { font-size: 0.95rem; line-height: 1.65; color: var(--cream-64); max-width: 34rem; }
         .atlas-actions { display: grid; justify-items: start; gap: 0.6rem; }
         .atlas-primary {
@@ -1335,11 +1335,8 @@ const TIGER_ATLAS_CSS = `
             .atlas-variation-grid, .atlas-faq-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
             /* No section bar here: the meaning keeps its distance from the summary. */
             .atlas-meaning { margin-top: clamp(1.75rem, 2.5vw, 2.25rem); }
-            .atlas-band { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--atlas-gap); margin-top: clamp(2.5rem, 4vw, 3rem); padding-top: clamp(2.25rem, 4vw, 3rem); border-top: 1px solid var(--line); }
-            .atlas-band .symbol-questions { grid-column: 1; grid-row: 1; }
-            .atlas-reflection { grid-column: 2; grid-row: 1; }
-            .atlas-column, .atlas-column + .atlas-column { padding-top: 0; border-top: 0; }
-            .atlas-scene { grid-template-columns: 8.5rem minmax(0, 1fr) auto; }
+            /* The list on the left, the chosen scene's reading on its right. */
+            .atlas-scenes-body { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--atlas-gap); }
             .atlas-further { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--atlas-gap); align-items: start; }
             .atlas-further > .symbol-h2 { grid-column: 1 / -1; }
             .atlas-related { margin-bottom: 0; }
@@ -1350,20 +1347,18 @@ const TIGER_ATLAS_CSS = `
             .atlas .atlas-lead.symbol-summary { font-size: clamp(1.2rem, 1.4vw, 1.45rem) !important; line-height: 1.45 !important; }
             .atlas .atlas-lead.symbol-summary { margin-top: 1rem; }
             .atlas-meaning .prose { font-size: 0.98rem; line-height: 1.7; }
-            .atlas-plate { display: grid; grid-template-columns: minmax(0, 1fr) 19rem; column-gap: var(--atlas-gap); align-items: start; }
-            .atlas-reading { grid-column: 1; grid-row: 1 / span 2; }
-            .atlas-scenes { grid-column: 2; grid-row: 1; margin-top: 0; }
+            /* The reading beside its illustration, then the scenes across the plate. */
+            .atlas-plate { display: grid; grid-template-columns: minmax(0, 38rem) minmax(0, 1fr); column-gap: var(--atlas-gap); align-items: start; }
+            .atlas-reading { grid-column: 1; grid-row: 1; }
+            .atlas-scenes { grid-column: 1 / -1; grid-row: 2; }
+            .atlas-scenes-body { grid-template-columns: minmax(0, 25rem) minmax(0, 1fr); }
         }
-        /* Compact plate: cards wide enough for their titles on one line. */
-        @media (min-width: 1024px) and (max-width: 1439.98px) {
-            .atlas-plate { grid-template-columns: minmax(0, 1fr) 22rem; }
-            .atlas-scene { grid-template-columns: 6.5rem minmax(0, 1fr) auto; }
+        @media (min-width: 1200px) {
+            .atlas-scene { grid-template-columns: 8.5rem minmax(0, 1fr) auto; }
         }
         @media (min-width: 1200px) {
             .atlas-top { display: grid; grid-template-columns: var(--atlas-rail) minmax(0, 1fr); column-gap: var(--atlas-gap); }
             .atlas-plate { min-width: 0; padding-top: clamp(2rem, 3vw, 3rem); }
-            /* The questions get two thirds of the band, room to stand side by side. */
-            .atlas-band { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); }
             /* The index lists the section titles, in page order. */
             .atlas-rail {
                 display: block;
@@ -1401,30 +1396,11 @@ const TIGER_ATLAS_CSS = `
             .symbol-hero--living .symbol-hero-overlay { padding-left: calc(12.5rem + clamp(1.75rem, 3vw, 4.5rem)); }
         }
         .atlas-decor img { display: block; width: 100%; height: auto; }
-        /* From 1440px the backdrop sits right of the reading, behind the opaque controls,
-           out into the page margin; it is never wider than leaves the tiger's face
-           (the right 44 % of the art) clear of the controls. It shares the cards' grid
-           cells, so the opening grows with it and it always ends above the band. */
+        /* From 1440px the illustration sits in the opening, beside the meaning. */
         @media (min-width: 1440px) {
-            .atlas { --atlas-choices: 23rem; }
-            .atlas-plate { grid-template-columns: minmax(0, 32rem) var(--atlas-choices) minmax(0, 1fr); }
-            .atlas-decor {
-                --atlas-bleed: calc((100vw - min(90vw, 2304px)) / 2 - 1rem);
-                display: block;
-                position: relative;
-                grid-column: 2 / -1;
-                grid-row: 1 / span 2;
-                justify-self: end;
-                align-self: start;
-                width: min(52rem, calc(100% + var(--atlas-bleed)), calc((100% + var(--atlas-bleed) - var(--atlas-choices)) / 0.44));
-                margin: 0 calc(-1 * var(--atlas-bleed)) 0 0;
-                z-index: 0;
-                pointer-events: none;
-            }
+            .atlas-decor { display: block; grid-column: 2; grid-row: 1; justify-self: center; align-self: center; width: min(52rem, 100%); pointer-events: none; }
         }
         @media (min-width: 1800px) {
-            .atlas { --atlas-choices: 25rem; }
-            .atlas-plate { grid-template-columns: minmax(0, 34rem) var(--atlas-choices) minmax(0, 1fr); }
             /* Up to QHD, wide rows hold one paragraph or answer per column. */
             .atlas-continuation .prose { columns: 3 22rem; }
             .atlas-faq-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
