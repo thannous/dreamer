@@ -246,8 +246,8 @@ export default {
     // ---- verify:pr, reused by verify:release when the inputs are identical.
     {
       name: 'verify-local-engine',
-      command: 'node --test scripts/test-verify-local.mjs',
-      inputs: ['scripts/verify-local.mjs', 'scripts/test-verify-local.mjs', 'verify-local.config.mjs', '.gitattributes'],
+      command: 'npm run test:verify-local',
+      inputs: ['scripts/verify-local.mjs', 'scripts/test-verify-local*.mjs', 'scripts/test-platform-contracts.mjs', 'scripts/test-auth-permissions-native.mjs', 'scripts/test-auth-setup.mjs', 'scripts/test-support/**', 'scripts/run-verify-tests.mjs', 'verify-local.config.mjs', '.gitattributes'],
     },
     // The production publish guard of noctalia.app (docs:deploy:prod) against
     // proofs written by this engine in scratch repositories.

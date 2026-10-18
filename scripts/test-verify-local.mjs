@@ -3,155 +3,32 @@
 
 import assert from 'node:assert/strict';
 import { spawn, spawnSync } from 'node:child_process';
-import net from 'node:net';
+
 import { createHash } from 'node:crypto';
 import { appendFileSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, readlinkSync, realpathSync, rmSync, symlinkSync, utimesSync, writeFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { after, describe, test } from 'node:test';
-import { fileURLToPath, pathToFileURL } from 'node:url';
+import { describe, test } from 'node:test';
+import { pathToFileURL } from 'node:url';
 
-import {
-  PROOF_FORMAT_VERSION,
-  ENGINE_FILE_SHA256,
-  closeUnended,
-  attemptName,
-  checkFingerprint,
-  checkReleaseProof,
-  cleanGitEnv,
-  normaliseConfig,
-  externalEvidenceIssue,
-  hasFlock,
-  hasPdeathsig,
-  loadExternalSources,
-  globToRegExp,
-  prePush,
-  readBlobs,
-  proofBlock,
-  readProof,
-  PROOF_LOCK_STALE_MS,
-  PROOF_LOCK_WAIT_MS,
-  readRunLog,
-  posixShell,
-  windowsLocalPath,
-  absolutePathEntry,
-  repositoryDirs,
-  createGit,
-  probeShell,
-  takeOverStale,
-  lockIsStale,
-  RUN_MAX_MS,
-  openChecks,
-  RUN_LOG_UNREADABLE,
-  withProofLock,
-  runLogName,
-  stepGrace,
-  status,
-  sweepStaleCopies,
-  verify,
-} from './verify-local.mjs';
+import { PROOF_FORMAT_VERSION, ENGINE_FILE_SHA256, closeUnended, attemptName, checkFingerprint, checkReleaseProof, cleanGitEnv, normaliseConfig, externalEvidenceIssue, loadExternalSources, globToRegExp, prePush, readBlobs, proofBlock, readProof, PROOF_LOCK_STALE_MS, PROOF_LOCK_WAIT_MS, readRunLog, posixShell, windowsLocalPath, absolutePathEntry, repositoryDirs, createGit, probeShell, takeOverStale, lockIsStale, RUN_MAX_MS, openChecks, RUN_LOG_UNREADABLE, withProofLock, runLogName, stepGrace, status, sweepStaleCopies, verify } from './verify-local.mjs';
 
-const ENGINE = fileURLToPath(new URL('./verify-local.mjs', import.meta.url));
-// The engine's sha256 is pinned in this repository's own verify-local.config.mjs
-// (export ENGINE_SHA256). No other repository is read or compared.
-const CONFIG_PATH = fileURLToPath(new URL('../verify-local.config.mjs', import.meta.url));
-const scratch = mkdtempSync(path.join(os.tmpdir(), 'verify-local-test-'));
-
-/** Whether a process is gone (or a zombie waiting to be reaped), within about 5 s. */
-async function gone(pid) {
-  const dead = () => {
-    try { process.kill(pid, 0); } catch { return true; }
-    try { return /^\d+ \(.*\) Z/.test(readFileSync(`/proc/${pid}/stat`, 'utf8')); } catch { return false; }
-  };
-  for (let i = 0; i < 100 && !dead(); i += 1) await new Promise((resolve) => setTimeout(resolve, 50));
-  return dead();
-}
-after(() => rmSync(scratch, { recursive: true, force: true }));
-
-const CONFIG = `export const ENGINE_SHA256 = '${ENGINE_FILE_SHA256}';
-export default {
-  mainBranch: 'main',
-  commands: { pr: 'npm run verify:pr', release: 'npm run verify:release' },
-  deps: { mode: 'link', lockfile: 'package-lock.json', install: 'echo install >> "$RUN_LOG" && mkdir -p node_modules' },
-  checks: [
-    { name: 'lint', command: 'echo lint >> "$RUN_LOG"', inputs: ['src/**'] },
-    { name: 'test', command: 'echo test >> "$RUN_LOG" && grep -q ok src/a.js && test -z "$GIT_DIR" && test -z "$FAIL_TEST"' },
-    { name: 'db', command: 'echo db >> "$RUN_LOG" && test -z "$FAIL_DB"', when: ['db/'], specialised: true, requires: { command: 'test -n "$DB_AVAILABLE"', hint: 'start the database' } },
-    { name: 'site', command: 'echo site-check >> "$RUN_LOG"', when: ['site/'], releaseAlways: true },
-    { name: 'build', command: 'echo build:$VERIFY_LOCAL_SHA >> "$RUN_LOG" && test -z "$FAIL_BUILD"', kinds: ['release'], perCommit: true },
-    { name: 'bundle', command: 'echo bundle >> "$RUN_LOG" && test ! -e node_modules/ext && test -z "$FAIL_BUNDLE"', kinds: ['release'], targets: ['app'], install: true },
-    { name: 'site-e2e', command: 'echo site >> "$RUN_LOG"', kinds: ['release'], targets: ['site'], specialised: true },
-  ],
-  hook: { maxFileBytes: 1024 * 1024, allow: ['public/*.pem'] },
-  externalSources: ['https://ci.example/run/'],
-};
-`;
-
-let counter = 0;
-
-function makeRepository() {
-  counter += 1;
-  const base = path.join(scratch, `case-${counter}`);
-  const origin = path.join(base, 'origin.git');
-  const work = path.join(base, 'work');
-  const runLog = path.join(base, 'run.log');
-  mkdirSync(base, { recursive: true });
-  const env = {
-    ...cleanGitEnv(),
-    RUN_LOG: runLog,
-    GIT_AUTHOR_NAME: 'Test',
-    GIT_AUTHOR_EMAIL: 'test@example.com',
-    GIT_COMMITTER_NAME: 'Test',
-    GIT_COMMITTER_EMAIL: 'test@example.com',
-    GIT_CONFIG_NOSYSTEM: '1',
-    HOME: base,
-    // Each fixture takes its own heavy-check lock, never the machine's.
-    VERIFY_LOCAL_HEAVY_LOCK: path.join(base, 'heavy.lock'),
-  };
-  const git = (args, cwd = work, extra = {}) => {
-    const result = spawnSync('git', args, { cwd, env: { ...env, ...extra }, encoding: 'utf8' });
-    if (result.status !== 0) throw new Error(`git ${args.join(' ')}: ${result.stderr}`);
-    return result.stdout.trim();
-  };
-  git(['init', '--quiet', '--bare', '--initial-branch=main', origin], base);
-  git(['clone', '--quiet', origin, work], base);
-  git(['checkout', '--quiet', '-b', 'main']);
-  const write = (file, content) => {
-    mkdirSync(path.dirname(path.join(work, file)), { recursive: true });
-    writeFileSync(path.join(work, file), content);
-  };
-  write('verify-local.config.mjs', CONFIG);
-  write('package.json', '{ "name": "fixture", "packageManager": "npm@11.0.0" }\n');
-  write('package-lock.json', '{ "lockfileVersion": 3 }\n');
-  write('src/a.js', 'export const value = "ok";\n');
-  write('docs/readme.md', '# fixture\n');
-  write('.gitignore', 'node_modules/\n');
-  git(['add', '-A']);
-  git(['commit', '--quiet', '-m', 'init']);
-  git(['push', '--quiet', 'origin', 'main']);
-  const commit = (message, files) => {
-    for (const [file, content] of Object.entries(files)) write(file, content);
-    git(['add', '-A']);
-    git(['commit', '--quiet', '-m', message]);
-    return git(['rev-parse', 'HEAD']);
-  };
-  const runs = () => (existsSync(runLog) ? readFileSync(runLog, 'utf8').trim().split('\n').filter(Boolean) : []);
-  const clearRuns = () => rmSync(runLog, { force: true });
-  const lines = [];
-  const options = { cwd: work, env, log: (line) => lines.push(line), worktreeRoot: path.join(base, 'worktrees') };
-  return { base, origin, work, env, git, write, commit, runs, clearRuns, lines, options };
-}
+import { ENGINE, CONFIG_PATH, scratch, CONFIG, makeRepository } from './test-support/verify-fixture.mjs';
 
 describe('engine pin', () => {
   test('the engine matches the ENGINE_SHA256 pinned in this repository config', async () => {
-    const { ENGINE_SHA256 } = await import(pathToFileURL(CONFIG_PATH).href);
+    const {
+  ENGINE_SHA256
+} = await import(pathToFileURL(CONFIG_PATH).href);
     assert.match(ENGINE_SHA256 ?? '', /^[0-9a-f]{64}$/, 'verify-local.config.mjs exports ENGINE_SHA256');
     const actual = createHash('sha256').update(readFileSync(ENGINE)).digest('hex');
     assert.equal(actual, ENGINE_SHA256, 'scripts/verify-local.mjs differs from the ENGINE_SHA256 pin of verify-local.config.mjs; update the pin after a deliberate engine edit');
   });
 
   test('the pin is the hash of the committed (LF) engine blob, and .gitattributes keeps the engine files LF', async () => {
-    const { ENGINE_SHA256 } = await import(pathToFileURL(CONFIG_PATH).href);
+    const {
+  ENGINE_SHA256
+} = await import(pathToFileURL(CONFIG_PATH).href);
     const root = path.dirname(CONFIG_PATH);
     const env = Object.fromEntries(Object.entries(process.env).filter(([name]) => !name.startsWith('GIT_')));
     const blob = spawnSync('git', ['show', 'HEAD:scripts/verify-local.mjs'], { cwd: root, env, maxBuffer: 64 * 1024 * 1024 });
@@ -191,7 +68,10 @@ describe('parallel checks', () => {
       `touch "$RUN_LOG.lint"; ${wait('test')}test "$ONLY_LINT" = yes && test -z "$ONLY_TEST" && echo lint >> "$RUN_LOG"`,
       `touch "$RUN_LOG.test"; ${wait('lint')}test "$ONLY_TEST" = yes && test -z "$ONLY_LINT" && echo test >> "$RUN_LOG"`,
     ) });
-    const { status, proof } = await verify('pr', [], repo.options);
+    const {
+  status,
+  proof
+} = await verify('pr', [], repo.options);
     assert.equal(status, 0, repo.lines.join('\n'));
     assert.deepEqual(repo.runs().sort(), ['lint', 'test']);
     for (const name of ['lint', 'test']) {
@@ -222,7 +102,10 @@ describe('parallel checks', () => {
   test('a killed child fails even when its sibling passes', async () => {
     const repo = makeRepository();
     repo.commit('parallel kill', { 'verify-local.config.mjs': parallelConfig('kill -KILL $$', 'echo test >> "$RUN_LOG"') });
-    const { status, proof } = await verify('pr', [], repo.options);
+    const {
+  status,
+  proof
+} = await verify('pr', [], repo.options);
     assert.equal(status, 1);
     assert.equal(proof.checks.find((entry) => entry.name === 'test').result, 'passed');
     assert.match(proof.checks.find((entry) => entry.name === 'lint').reason, /killed/);
@@ -232,41 +115,6 @@ describe('parallel checks', () => {
     assert.throws(() => normaliseConfig({ checks: [{ name: 'install', command: 'npm ci', parallel: true, install: true }] }), /parallel checks cannot install/);
   });
 
-  test('a lost batch runner cannot turn missing completion receipts into a pass', {
-    skip: process.platform === 'win32' ? 'requires POSIX parent process signals' : false,
-  }, async () => {
-    const repo = makeRepository();
-    repo.commit('lost runner', { 'verify-local.config.mjs': parallelConfig('kill -KILL $PPID', 'sleep 0.1; echo test >> "$RUN_LOG"') });
-    const { status, proof } = await verify('pr', [], repo.options);
-    assert.equal(status, 1);
-    assert.ok(proof.checks.some((entry) => /completion receipt/.test(entry.reason ?? '')));
-  });
-
-  test('killing the engine stops both parallel children before releasing the machine lock', {
-    skip: process.platform !== 'linux' || !hasFlock() ? 'requires Linux process groups and flock' : false,
-  }, async () => {
-    const repo = makeRepository();
-    repo.commit('parallel orphan', { 'verify-local.config.mjs': parallelConfig(
-      'echo $$ > "$RUN_LOG.lint.pid"; sleep 300', 'echo $$ > "$RUN_LOG.test.pid"; sleep 300',
-    ) });
-    const files = ['lint', 'test'].map((name) => `${repo.env.RUN_LOG}.${name}.pid`);
-    const run = spawn(process.execPath, [ENGINE, 'pr'], { cwd: repo.work, env: repo.env, stdio: 'ignore' });
-    const wait = async (condition) => {
-      for (let i = 0; i < 200 && !condition(); i += 1) await new Promise((resolve) => setTimeout(resolve, 50));
-      return condition();
-    };
-    const lockFree = () => spawnSync('flock', ['--nonblock', repo.env.VERIFY_LOCAL_HEAVY_LOCK, 'true']).status === 0;
-    try {
-      assert.ok(await wait(() => files.every((file) => existsSync(file))), 'both children started');
-      assert.equal(lockFree(), false);
-      run.kill('SIGKILL');
-      assert.ok(await wait(lockFree), 'lock released after supervisor cleanup');
-      for (const file of files) assert.ok(await gone(Number(readFileSync(file, 'utf8'))), 'parallel child stopped');
-    } finally {
-      run.kill('SIGKILL');
-      for (const file of files) if (existsSync(file)) try { process.kill(Number(readFileSync(file, 'utf8')), 'SIGKILL'); } catch {}
-    }
-  });
 });
 
 describe('verify:pr', () => {
@@ -278,7 +126,10 @@ describe('verify:pr', () => {
     repo.write('src/a.js', 'broken\n');
     repo.write('scratch.txt', 'untracked\n');
 
-    const { status, proof } = await verify('pr', [], repo.options);
+    const {
+  status,
+  proof
+} = await verify('pr', [], repo.options);
     assert.equal(status, 0);
     assert.deepEqual(repo.runs(), ['lint', 'test']);
     const tree = repo.git(['rev-parse', `${sha}^{tree}`]);
@@ -312,7 +163,10 @@ describe('verify:pr', () => {
     // The squash commit has another SHA but the same tree.
     const tree = repo.git(['rev-parse', `${head}^{tree}`]);
     const squash = repo.git(['commit-tree', tree, '-p', 'origin/main', '-m', 'squash']);
-    const { status, proof } = await verify('pr', ['--rev', squash], repo.options);
+    const {
+  status,
+  proof
+} = await verify('pr', ['--rev', squash], repo.options);
     assert.equal(status, 0);
     assert.deepEqual(repo.runs(), []);
     assert.ok(proof.checks.filter((check) => check.result === 'passed').every((check) => check.reused));
@@ -332,7 +186,10 @@ describe('verify:pr', () => {
     repo.git(['merge', '--quiet', '--no-edit', 'main']);
     repo.clearRuns();
 
-    const { status, proof } = await verify('pr', [], repo.options);
+    const {
+  status,
+  proof
+} = await verify('pr', [], repo.options);
     assert.equal(status, 0);
     assert.deepEqual(repo.runs(), ['test'], 'lint (src/** only) is reused, test (whole tree) runs');
     assert.equal(proof.checks.find((check) => check.name === 'lint').reused, true);
@@ -369,7 +226,10 @@ describe('verify:pr', () => {
     // the changed files are unknown, so nothing is out of scope.
     repo.git(['update-ref', '-d', 'refs/remotes/origin/main']);
 
-    const { status, proof } = await verify('pr', [], { ...repo.options, env: { ...repo.env, DB_AVAILABLE: '1' } });
+    const {
+  status,
+  proof
+} = await verify('pr', [], { ...repo.options, env: { ...repo.env, DB_AVAILABLE: '1' } });
     assert.equal(status, 0);
     assert.deepEqual(repo.runs(), ['lint', 'test', 'db', 'site-check']);
     assert.equal(proof.base.sha, null);
@@ -553,228 +413,15 @@ describe('verify:pr', () => {
     assert.notEqual(checkFingerprint({ ...args, check: plain, environment: { shell: { path: '/bin/sh', sha256: 'a' } } }), checkFingerprint({ ...args, check: plain, environment: { shell: { path: '/bin/sh', sha256: 'b' } } }), 'same path, other bytes');
   });
 
-  test('heavy steps wait for the machine-wide lock, and a step under it does not take it again', { skip: hasFlock() ? false : 'flock is not installed here (macOS has none by default): the engine runs steps without the lock' }, async () => {
-    const repo = makeRepository();
-    repo.git(['checkout', '--quiet', '-b', 'feature']);
-    repo.commit('feature', { 'src/b.js': '1\n' });
-    const lock = repo.env.VERIFY_LOCAL_HEAVY_LOCK;
-    const hold = (seconds) => new Promise((resolve) => {
-      const holder = spawn('flock', [lock, 'sh', '-c', `echo held; exec sleep ${seconds}`], { stdio: ['ignore', 'pipe', 'ignore'], detached: true });
-      holder.stdout.once('data', () => {
-        holder.stdout.destroy();
-        holder.unref();
-        resolve(holder);
-      });
-    });
-
-    // Free lock: no wait.
-    assert.equal((await verify('pr', ['--force'], repo.options)).status, 0);
-    assert.ok(!repo.lines.some((line) => line.includes('waiting for lock')), repo.lines.join('\n'));
-
-    // Held lock: the run says it waits, then passes once the holder is done.
-    let holder = await hold(1);
-    repo.lines.length = 0;
-    const started = Date.now();
-    assert.equal((await verify('pr', ['--force'], repo.options)).status, 0);
-    assert.ok(repo.lines.some((line) => line.includes(`waiting for lock ${lock}`)), repo.lines.join('\n'));
-    assert.ok(Date.now() - started >= 500, 'the run waited for the holder');
-
-    // A run inside a step that already holds this lock does not wait for it.
-    holder = await hold(30);
-    try {
-      repo.lines.length = 0;
-      const nested = await verify('pr', ['--force'], { ...repo.options, env: { ...repo.env, VERIFY_LOCAL_HEAVY_LOCK_HELD: lock } });
-      assert.equal(nested.status, 0);
-      assert.ok(!repo.lines.some((line) => line.includes('waiting for lock')));
-    } finally {
-      process.kill(-holder.pid, 'SIGKILL');
-    }
-  });
-
-  test('a process a check leaves behind is killed when the step ends, and the lock is free', { skip: hasFlock() ? false : 'flock is not installed here (macOS has none by default): the engine runs steps without the lock' }, async () => {
-    const repo = makeRepository();
-    repo.git(['checkout', '--quiet', '-b', 'feature']);
-    const lock = repo.env.VERIFY_LOCAL_HEAVY_LOCK;
-    const pidFile = path.join(repo.work, '..', 'background.pid');
-    const config = readFileSync(path.join(repo.work, 'verify-local.config.mjs'), 'utf8');
-    repo.commit('daemon', {
-      'verify-local.config.mjs': config.replace(`command: 'echo lint >> "$RUN_LOG"'`, () => `command: 'sleep 30 > /dev/null 2>&1 & echo $! > ${pidFile}; echo lint >> "$RUN_LOG"'`),
-    });
-    try {
-      assert.equal((await verify('pr', [], repo.options)).status, 0);
-      // The next steps of the same run did not wait for the background process either.
-      assert.ok(!repo.lines.some((line) => line.includes('waiting for lock')), repo.lines.join('\n'));
-      for (let i = 0; i < 50 && !existsSync(pidFile); i += 1) await new Promise((resolve) => setTimeout(resolve, 50));
-      assert.ok(existsSync(pidFile), 'the check left a background process');
-      assert.equal(spawnSync('flock', ['--nonblock', lock, 'true']).status, 0, 'the background process does not hold the lock');
-      assert.ok(await gone(Number(readFileSync(pidFile, 'utf8'))), 'the background process was killed with the step group');
-    } finally {
-      if (existsSync(pidFile)) try { process.kill(Number(readFileSync(pidFile, 'utf8')), 'SIGKILL'); } catch {}
-    }
-  });
-
-  test('a SIGKILLed verify run leaves no step process running and the lock free', {
-    skip: process.platform !== 'linux' ? `Linux only (${process.platform}): the test needs util-linux flock and /proc semantics`
-      : !hasFlock() ? 'flock is not installed here: the engine runs steps without the lock'
-      : false,
-  }, async () => {
-    const repo = makeRepository();
-    repo.git(['checkout', '--quiet', '-b', 'feature']);
-    const lock = repo.env.VERIFY_LOCAL_HEAVY_LOCK;
-    const stepPid = path.join(repo.work, '..', 'step.pid');
-    const childPid = path.join(repo.work, '..', 'child.pid');
-    const config = readFileSync(path.join(repo.work, 'verify-local.config.mjs'), 'utf8');
-    // The step's shell, a background child and a foreground sleep: all of them
-    // belong to the step group the engine owns.
-    repo.commit('slow', {
-      'verify-local.config.mjs': config.replace(`command: 'echo lint >> "$RUN_LOG"'`, () => `command: 'sleep 300 > /dev/null 2>&1 & echo $! > ${childPid}; echo $$ > ${stepPid}; sleep 300'`),
-    });
-    const run = spawn(process.execPath, [ENGINE, 'pr'], { cwd: repo.work, env: repo.env, stdio: 'ignore' });
-    const wait = async (condition) => {
-      for (let i = 0; i < 200 && !condition(); i += 1) await new Promise((resolve) => setTimeout(resolve, 50));
-      return condition();
-    };
-    const pids = () => [stepPid, childPid].map((file) => Number(readFileSync(file, 'utf8')));
-    try {
-      assert.ok(await wait(() => existsSync(stepPid) && existsSync(childPid)), 'the step started');
-      assert.notEqual(spawnSync('flock', ['--nonblock', lock, 'true']).status, 0, 'the step holds the lock');
-      run.kill('SIGKILL');
-      assert.ok(await wait(() => spawnSync('flock', ['--nonblock', lock, 'true']).status === 0), 'the lock is free after the run was killed');
-      for (const pid of pids()) assert.ok(await gone(pid), `step process ${pid} was killed with the run`);
-    } finally {
-      run.kill('SIGKILL');
-      for (const file of [stepPid, childPid]) if (existsSync(file)) try { process.kill(Number(readFileSync(file, 'utf8')), 'SIGKILL'); } catch {}
-    }
-  });
-
-  for (const [how, stopRun] of [
-    ['a SIGKILLed verify', (run) => run.kill('SIGKILL')],
-    // A closed terminal: HUP to the whole foreground group, the supervisor included.
-    ['a SIGHUP to the verify group', (run) => process.kill(-run.pid, 'SIGHUP')],
-    // Ctrl-backslash: QUIT to the whole foreground group.
-    ['a SIGQUIT to the verify group', (run) => process.kill(-run.pid, 'SIGQUIT')],
-  ]) test(`${how} stops the step with TERM first, so its trap frees a server it started in another session, and the lock is held until the trap is done`, {
-    skip: process.platform !== 'linux' ? `Linux only (${process.platform}): the test needs util-linux setsid and /proc semantics`
-      : spawnSync('setsid', ['--version'], { stdio: 'ignore' }).status !== 0 ? 'setsid is not installed here'
-      : !hasFlock() ? 'flock is not installed here: the engine runs steps without the lock'
-      : false,
-  }, async () => {
-    const repo = makeRepository();
-    repo.git(['checkout', '--quiet', '-b', 'feature']);
-    const dir = mkdtempSync(path.join(scratch, 'server-'));
-    const port = await new Promise((resolve) => {
-      const probe = net.createServer().listen(0, '127.0.0.1', () => { const { port: free } = probe.address(); probe.close(() => resolve(free)); });
-    });
-    // Like the verify-skillcodex launcher: the server runs in its own session
-    // (outside the step group), and the step's TERM trap stops it.
-    writeFileSync(path.join(dir, 'step.sh'), [
-      `setsid ${JSON.stringify(process.execPath)} -e "require('net').createServer().listen(${port}, '127.0.0.1')" &`,
-      `echo $! > ${dir}/server.pid`,
-      // A teardown that takes a while: the lock must stay held until it ends.
-      `trap 'kill $(cat ${dir}/server.pid); sleep 1; echo done > ${dir}/teardown.done; exit 143' TERM`,
-      `echo $$ > ${dir}/step.pid`,
-      'sleep 300 &',
-      'wait',
-      '',
-    ].join('\n'));
-    const config = readFileSync(path.join(repo.work, 'verify-local.config.mjs'), 'utf8');
-    repo.commit('server', { 'verify-local.config.mjs': config.replace(`command: 'echo lint >> "$RUN_LOG"'`, () => `command: 'sh ${dir}/step.sh'`) });
-    const listening = () => new Promise((resolve) => {
-      const socket = net.connect(port, '127.0.0.1');
-      socket.on('connect', () => { socket.destroy(); resolve(true); });
-      socket.on('error', () => resolve(false));
-    });
-    const waitFor = async (condition) => {
-      for (let i = 0; i < 200; i += 1) {
-        if (await condition()) return true;
-        await new Promise((resolve) => setTimeout(resolve, 50));
-      }
-      return condition();
-    };
-    const run = spawn(process.execPath, [ENGINE, 'pr'], { cwd: repo.work, env: repo.env, stdio: 'ignore', detached: true });
-    try {
-      assert.ok(await waitFor(async () => existsSync(path.join(dir, 'step.pid')) && await listening()), 'the step started its server');
-      stopRun(run);
-      const lockFree = () => spawnSync('flock', ['--nonblock', repo.env.VERIFY_LOCAL_HEAVY_LOCK, 'true']).status === 0;
-      assert.ok(await waitFor(async () => lockFree()), 'the lock is free once the step is stopped');
-      assert.ok(existsSync(path.join(dir, 'teardown.done')), 'the lock was held until the step teardown ended');
-      assert.ok(await waitFor(async () => !(await listening())), 'the server stopped: the port is free');
-      assert.ok(await gone(Number(readFileSync(path.join(dir, 'server.pid'), 'utf8'))), 'the server in another session is gone');
-      assert.ok(await gone(Number(readFileSync(path.join(dir, 'step.pid'), 'utf8'))), 'the step shell is gone');
-      assert.equal(spawnSync('flock', ['--nonblock', repo.env.VERIFY_LOCAL_HEAVY_LOCK, 'true']).status, 0, 'the lock is free');
-    } finally {
-      run.kill('SIGKILL');
-      for (const name of ['server.pid', 'step.pid']) {
-        const file = path.join(dir, name);
-        if (existsSync(file)) try { process.kill(Number(readFileSync(file, 'utf8')), 'SIGKILL'); } catch {}
-      }
-    }
-  });
-
-  test('a step that ignores TERM is killed after the grace period', {
-    skip: process.platform !== 'linux' ? `Linux only (${process.platform}): the test needs /proc semantics` : false,
-  }, async () => {
-    const repo = makeRepository();
-    repo.git(['checkout', '--quiet', '-b', 'feature']);
-    const pidFile = path.join(repo.work, '..', 'stubborn.pid');
-    const config = readFileSync(path.join(repo.work, 'verify-local.config.mjs'), 'utf8');
-    repo.commit('stubborn', { 'verify-local.config.mjs': config.replace(`command: 'echo lint >> "$RUN_LOG"'`, () => `command: 'trap "" TERM; echo $$ > ${pidFile}; sleep 300'`) });
-    const run = spawn(process.execPath, [ENGINE, 'pr'], { cwd: repo.work, env: { ...repo.env, VERIFY_LOCAL_STEP_GRACE_MS: '300' }, stdio: 'ignore' });
-    try {
-      for (let i = 0; i < 200 && !existsSync(pidFile); i += 1) await new Promise((resolve) => setTimeout(resolve, 50));
-      assert.ok(existsSync(pidFile), 'the step started');
-      await new Promise((resolve) => setTimeout(resolve, 100));
-      run.kill('SIGKILL');
-      assert.ok(await gone(Number(readFileSync(pidFile, 'utf8'))), 'the step that ignores TERM was killed');
-    } finally {
-      run.kill('SIGKILL');
-      if (existsSync(pidFile)) try { process.kill(Number(readFileSync(pidFile, 'utf8')), 'SIGKILL'); } catch {}
-    }
-  });
-
-  test('without flock or setpriv on PATH, a step still runs, passes or fails, and the run says how it is locked', {
-    skip: process.platform === 'win32' ? 'Windows never probes flock or setpriv: runShell takes its own Windows branch, with its own message' : false,
-  }, async () => {
-    // A PATH with every command of this one except the hidden ones, so the
-    // engine's own probes find them missing (as on macOS), on Linux too.
-    const pathWithout = (hidden) => {
-      const dir = mkdtempSync(path.join(scratch, 'path-'));
-      for (const entry of (process.env.PATH ?? '').split(path.delimiter).filter(Boolean)) {
-        let names = [];
-        try { names = readdirSync(entry); } catch { continue; }
-        for (const name of names) {
-          if (hidden.includes(name) || existsSync(path.join(dir, name))) continue;
-          try { symlinkSync(path.join(entry, name), path.join(dir, name)); } catch {}
-        }
-      }
-      return dir;
-    };
-    const unlocked = 'flock is not installed here: this step runs without the lock';
-    for (const hidden of [['flock', 'setpriv'], ['flock'], ['setpriv']]) {
-      const repo = makeRepository();
-      const env = { ...repo.env, PATH: pathWithout(hidden) };
-      assert.equal(hasFlock(env), !hidden.includes('flock') && hasFlock(), hidden.join(','));
-      assert.equal(hasPdeathsig(env), !hidden.includes('setpriv') && hasPdeathsig(), hidden.join(','));
-
-      repo.git(['checkout', '--quiet', '-b', 'feature']);
-      repo.commit('feature', { 'src/b.js': '1\n' });
-      const passed = await verify('pr', [], { ...repo.options, env });
-      assert.equal(passed.status, 0, hidden.join(','));
-      assert.ok(repo.runs().includes('lint'), 'the step ran');
-      assert.equal(repo.lines.some((entry) => entry.includes(unlocked)), !hasFlock(env), `${hidden.join(',')}: ${repo.lines.join('\n')}`);
-      repo.commit('break', { 'src/a.js': 'nope\n' });
-      const failed = await verify('pr', [], { ...repo.options, env });
-      assert.equal(failed.status, 1, hidden.join(','));
-      assert.equal(failed.proof.result, 'failed');
-    }
-  });
-
   test('a check killed by a signal fails and is never passed', async () => {
     const repo = makeRepository();
     repo.git(['checkout', '--quiet', '-b', 'feature']);
     const config = readFileSync(path.join(repo.work, 'verify-local.config.mjs'), 'utf8');
     repo.commit('killed', { 'verify-local.config.mjs': config.replace(`command: 'echo lint >> "$RUN_LOG"'`, () => `command: 'kill -KILL $$'`) });
-    const { status, proof } = await verify('pr', [], repo.options);
+    const {
+  status,
+  proof
+} = await verify('pr', [], repo.options);
     assert.equal(status, 1);
     assert.equal(proof.result, 'failed');
     const lint = proof.checks.find((check) => check.name === 'lint');
@@ -858,7 +505,10 @@ describe('verify:release and the deploy guard', () => {
     repo.env.DB_AVAILABLE = '1';
     const head = repo.commit('site', { 'site/index.html': '<p>ok</p>\n' });
     repo.git(['push', '--quiet', 'origin', 'main']);
-    const { status, proof } = await verify('release', [], repo.options);
+    const {
+  status,
+  proof
+} = await verify('release', [], repo.options);
     assert.equal(status, 0);
     assert.equal(proof.sha, head);
     assert.equal(proof.checks.find((check) => check.name === 'db').result, 'passed');
@@ -869,14 +519,12 @@ describe('verify:release and the deploy guard', () => {
     assert.deepEqual(repo.runs(), ['lint', 'test'], 'a PR run on main has no path in scope');
   });
 
-  test('checks get a temporary directory of their own, removed with the copy', {
-    skip: process.platform === 'win32' ? "Git for Windows' sh prints TMPDIR as a POSIX path (/tmp is mounted on %TEMP%), not the Windows path compared here" : false,
-  }, async () => {
+  test('checks get a temporary directory of their own, removed with the copy', async () => {
     const repo = makeRepository();
     repo.git(['checkout', '--quiet', '-b', 'feature']);
     repo.commit('feature', { 'src/b.js': '1\n' });
     const config = readFileSync(path.join(repo.work, 'verify-local.config.mjs'), 'utf8')
-      .replace("command: 'echo lint >> \"$RUN_LOG\"'", "command: 'echo lint:$TMPDIR >> \"$RUN_LOG\" && test -d \"$TMPDIR\"'");
+      .replace("command: 'echo lint >> \"$RUN_LOG\"'", `command: ${JSON.stringify("node -e \"const f=require('fs'),o=require('os');const t=o.tmpdir();if(!f.existsSync(t))process.exit(1);f.appendFileSync(process.env.RUN_LOG,'lint:'+t+'\\n')\"")} `);
     repo.commit('tmp', { 'verify-local.config.mjs': config });
     assert.equal((await verify('pr', [], repo.options)).status, 0);
     const tmp = repo.runs().find((line) => line.startsWith('lint:')).slice('lint:'.length);
@@ -1202,9 +850,19 @@ describe('verify:release and the deploy guard', () => {
     assert.equal(readFileSync(trace, 'utf8'), 'in\nout\n'.repeat(15), 'the three racers never overlapped');
   });
 
-  test('the shell for config commands: /bin/sh, the sh of Git for Windows on Windows, never from the environment', { skip: process.platform === 'win32' ? 'the fake git.exe are sh scripts' : false }, () => {
-    assert.equal(posixShell({ PATH: process.env.PATH }, 'linux'), '/bin/sh');
-    assert.equal(posixShell({ PATH: process.env.PATH, VERIFY_LOCAL_SHELL: '/bin/true' }, 'linux'), '/bin/sh', 'VERIFY_LOCAL_SHELL is ignored');
+  // Fixtures describe an install; the executable boundary is simulated on every OS.
+  const selectShell = (env, platform, options = {}) => posixShell(env, platform, {
+    ...options,
+    run: (program, args, options) => {
+      assert.deepEqual(args, ['--exec-path']);
+      assert.ok(!Object.keys(options.env).some(name => /^GIT_/i.test(name)));
+      return { status: 0, stdout: JSON.parse(readFileSync(program, 'utf8')).reported };
+    },
+  });
+
+  test('the shell for config commands: /bin/sh, the sh of Git for Windows on Windows, never from the environment', () => {
+    assert.equal(selectShell({ PATH: process.env.PATH }, 'linux'), '/bin/sh');
+    assert.equal(selectShell({ PATH: process.env.PATH, VERIFY_LOCAL_SHELL: '/bin/true' }, 'linux'), '/bin/sh', 'VERIFY_LOCAL_SHELL is ignored');
     // A Git for Windows install: <root>/<gitDir>/git.exe, whose --exec-path is
     // <root>/mingw64/libexec/git-core unless GIT_EXEC_PATH says otherwise (as real git).
     const fakeGit = (name, shells, { gitDir = 'cmd', execPath = null } = {}) => {
@@ -1217,13 +875,13 @@ describe('verify:release and the deploy guard', () => {
       mkdirSync(bin, { recursive: true });
       mkdirSync(path.join(root, 'mingw64', 'libexec', 'git-core'), { recursive: true });
       const reported = execPath ?? path.join(root, 'mingw64', 'libexec', 'git-core');
-      writeFileSync(path.join(bin, 'git.exe'), `#!/bin/sh\necho "\${GIT_EXEC_PATH:-${reported}}"\n`, { mode: 0o755 });
+      writeFileSync(path.join(bin, 'git.exe'), JSON.stringify({ reported }), { mode: 0o755 });
       return { root, env: { Path: `${bin};${path.join(scratch, 'elsewhere')}` } };
     };
     const both = fakeGit('both', ['bin/sh.exe', 'usr/bin/sh.exe']);
-    assert.equal(posixShell(both.env, 'win32'), realpathSync(path.join(both.root, 'bin', 'sh.exe')));
+    assert.equal(selectShell(both.env, 'win32'), realpathSync(path.join(both.root, 'bin', 'sh.exe')));
     const usr = fakeGit('usr', ['usr/bin/sh.exe'], { gitDir: 'mingw64/bin' });
-    assert.equal(posixShell(usr.env, 'win32'), realpathSync(path.join(usr.root, 'usr', 'bin', 'sh.exe')));
+    assert.equal(selectShell(usr.env, 'win32'), realpathSync(path.join(usr.root, 'usr', 'bin', 'sh.exe')));
     // GIT_EXEC_PATH (and any GIT_* variable) of the caller is ignored.
     const evil = mkdtempSync(path.join(scratch, 'evil-'));
     mkdirSync(path.join(evil, 'mingw64', 'libexec', 'git-core'), { recursive: true });
@@ -1233,23 +891,23 @@ describe('verify:release and the deploy guard', () => {
     process.env.GIT_EXEC_PATH = path.join(evil, 'mingw64', 'libexec', 'git-core');
     try {
       const ignored = fakeGit('ignored', ['bin/sh.exe']);
-      assert.equal(posixShell({ ...ignored.env, GIT_EXEC_PATH: process.env.GIT_EXEC_PATH }, 'win32'), realpathSync(path.join(ignored.root, 'bin', 'sh.exe')));
+      assert.equal(selectShell({ ...ignored.env, GIT_EXEC_PATH: process.env.GIT_EXEC_PATH }, 'win32'), realpathSync(path.join(ignored.root, 'bin', 'sh.exe')));
     } finally {
       if (saved === undefined) delete process.env.GIT_EXEC_PATH;
       else process.env.GIT_EXEC_PATH = saved;
     }
     // An sh outside the root of the git.exe on PATH is refused.
     const outside = fakeGit('outside', [], { execPath: path.join(evil, 'mingw64', 'libexec', 'git-core') });
-    assert.equal(posixShell(outside.env, 'win32'), null, 'exec path outside the git root');
+    assert.equal(selectShell(outside.env, 'win32'), null, 'exec path outside the git root');
     const odd = fakeGit('odd', ['bin/sh.exe'], { gitDir: 'tools' });
-    assert.equal(posixShell(odd.env, 'win32'), null, 'git.exe outside the standard layout');
+    assert.equal(selectShell(odd.env, 'win32'), null, 'git.exe outside the standard layout');
     // No sh: refused, with no fallback to a bare sh on PATH.
     const none = fakeGit('none', []);
-    assert.equal(posixShell(none.env, 'win32'), null);
-    assert.equal(posixShell({ Path: '' }, 'win32'), null, 'no git.exe on PATH');
+    assert.equal(selectShell(none.env, 'win32'), null);
+    assert.equal(selectShell({ Path: '' }, 'win32'), null, 'no git.exe on PATH');
   });
 
-  test('Windows: only an absolute PATH entry counts, and a Git root inside the repository is refused', { skip: process.platform === 'win32' ? 'the fake git.exe are sh scripts' : false }, () => {
+  test('Windows: only an absolute PATH entry counts, and a Git root inside the repository is refused', () => {
     for (const entry of ['C:\\Git\\cmd', 'c:/Git/cmd', '\\\\server\\share\\Git\\cmd']) assert.equal(absolutePathEntry(entry, 'win32'), true, entry);
     for (const entry of ['cmd', '.\\cmd', '..\\Git\\cmd', 'C:cmd', '\\Git\\cmd', '/Git/cmd']) assert.equal(absolutePathEntry(entry, 'win32'), false, entry);
     assert.equal(absolutePathEntry('cmd', 'linux'), false);
@@ -1259,7 +917,7 @@ describe('verify:release and the deploy guard', () => {
       mkdirSync(path.join(root, 'bin'), { recursive: true });
       mkdirSync(path.join(root, 'mingw64', 'libexec', 'git-core'), { recursive: true });
       writeFileSync(path.join(root, 'bin', 'sh.exe'), '');
-      writeFileSync(path.join(root, 'cmd', 'git.exe'), `#!/bin/sh\necho ${JSON.stringify(path.join(root, 'mingw64', 'libexec', 'git-core'))}\n`, { mode: 0o755 });
+      writeFileSync(path.join(root, 'cmd', 'git.exe'), JSON.stringify({ reported: path.join(root, 'mingw64', 'libexec', 'git-core') }), { mode: 0o755 });
     };
     const repo = makeRepository();
     const git = createGit(repo.work, repo.env);
@@ -1269,17 +927,17 @@ describe('verify:release and the deploy guard', () => {
     const inGitDir = path.join(repo.work, '.git', 'fake-git');
     layout(inGitDir);
     // The layouts are complete: only the repository rule refuses them.
-    assert.equal(posixShell({ Path: path.join(inGitDir, 'cmd') }, 'win32'), realpathSync(path.join(inGitDir, 'bin', 'sh.exe')));
+    assert.equal(selectShell({ Path: path.join(inGitDir, 'cmd') }, 'win32'), realpathSync(path.join(inGitDir, 'bin', 'sh.exe')));
     const cwd = process.cwd();
     process.chdir(repo.work);
     try {
       for (const entry of ['cmd', './cmd', path.join(repo.work, 'cmd'), path.join(inGitDir, 'cmd')]) {
-        assert.equal(posixShell({ Path: entry }, 'win32', { repoDirs }), null, entry);
+        assert.equal(selectShell({ Path: entry }, 'win32', { repoDirs }), null, entry);
       }
       // Through a symlink, the realpath still lands in the repository.
       const link = path.join(scratch, `repo-link-${process.pid}`);
       symlinkSync(repo.work, link);
-      assert.equal(posixShell({ Path: path.join(link, 'cmd') }, 'win32', { repoDirs }), null, 'symlink into the repository');
+      assert.equal(selectShell({ Path: path.join(link, 'cmd') }, 'win32', { repoDirs }), null, 'symlink into the repository');
     } finally {
       process.chdir(cwd);
     }
@@ -1288,11 +946,11 @@ describe('verify:release and the deploy guard', () => {
     git(['worktree', 'add', '--quiet', '--detach', other]);
     layout(other);
     const withWorktree = repositoryDirs(git, repo.work, path.join(repo.work, '.git'));
-    assert.equal(posixShell({ Path: path.join(other, 'cmd') }, 'win32', { repoDirs: withWorktree }), null, 'another worktree');
+    assert.equal(selectShell({ Path: path.join(other, 'cmd') }, 'win32', { repoDirs: withWorktree }), null, 'another worktree');
     // A valid layout outside the repository is accepted.
     const outside = mkdtempSync(path.join(scratch, 'real-git-'));
     layout(outside);
-    assert.equal(posixShell({ Path: `cmd;${path.join(outside, 'cmd')}` }, 'win32', { repoDirs: withWorktree }), realpathSync(path.join(outside, 'bin', 'sh.exe')));
+    assert.equal(selectShell({ Path: `cmd;${path.join(outside, 'cmd')}` }, 'win32', { repoDirs: withWorktree }), realpathSync(path.join(outside, 'bin', 'sh.exe')));
 
     // A checkout folder named bin on PATH, with a committed git.exe and sh.exe:
     // the computed root is its parent, outside the repository, but the entry,
@@ -1303,46 +961,50 @@ describe('verify:release and the deploy guard', () => {
     git(['worktree', 'add', '--quiet', '--detach', binCheckout]);
     mkdirSync(path.join(parent, 'mingw64', 'libexec', 'git-core'), { recursive: true });
     writeFileSync(path.join(binCheckout, 'sh.exe'), '');
-    writeFileSync(path.join(binCheckout, 'git.exe'), `#!/bin/sh\necho ${JSON.stringify(path.join(parent, 'mingw64', 'libexec', 'git-core'))}\n`, { mode: 0o755 });
+    writeFileSync(path.join(binCheckout, 'git.exe'), JSON.stringify({ reported: path.join(parent, 'mingw64', 'libexec', 'git-core') }), { mode: 0o755 });
     const binDirs = repositoryDirs(git, repo.work, path.join(repo.work, '.git'));
-    assert.equal(posixShell({ Path: binCheckout }, 'win32'), realpathSync(path.join(binCheckout, 'sh.exe')), 'the layout is complete: only the repository rule refuses it');
-    assert.equal(posixShell({ Path: binCheckout }, 'win32', { repoDirs: binDirs }), null, 'a checkout named bin on PATH');
+    assert.equal(selectShell({ Path: binCheckout }, 'win32'), realpathSync(path.join(binCheckout, 'sh.exe')), 'the layout is complete: only the repository rule refuses it');
+    assert.equal(selectShell({ Path: binCheckout }, 'win32', { repoDirs: binDirs }), null, 'a checkout named bin on PATH');
     // git.exe outside, but a symlinked sh.exe that points into the repository.
     const linked = mkdtempSync(path.join(scratch, 'linked-sh-'));
     layout(linked);
     rmSync(path.join(linked, 'bin', 'sh.exe'));
     symlinkSync(path.join(repo.work, 'bin', 'sh.exe'), path.join(linked, 'bin', 'sh.exe'));
-    assert.equal(posixShell({ Path: path.join(linked, 'cmd') }, 'win32', { repoDirs: binDirs }), null, 'sh.exe resolves into the repository');
+    assert.equal(selectShell({ Path: path.join(linked, 'cmd') }, 'win32', { repoDirs: binDirs }), null, 'sh.exe resolves into the repository');
     // A git.exe symlinked into the repository, and an exec path that does not exist.
     const linkedGit = mkdtempSync(path.join(scratch, 'linked-git-'));
     layout(linkedGit);
     rmSync(path.join(linkedGit, 'cmd', 'git.exe'));
     symlinkSync(path.join(repo.work, 'cmd', 'git.exe'), path.join(linkedGit, 'cmd', 'git.exe'));
-    assert.equal(posixShell({ Path: path.join(linkedGit, 'cmd') }, 'win32', { repoDirs: binDirs }), null, 'git.exe resolves into the repository');
+    assert.equal(selectShell({ Path: path.join(linkedGit, 'cmd') }, 'win32', { repoDirs: binDirs }), null, 'git.exe resolves into the repository');
     const noExec = mkdtempSync(path.join(scratch, 'no-exec-'));
     layout(noExec);
     rmSync(path.join(noExec, 'mingw64'), { recursive: true });
-    assert.equal(posixShell({ Path: path.join(noExec, 'cmd') }, 'win32', { repoDirs: binDirs }), null, 'the exec path must exist');
-    assert.equal(posixShell({ Path: path.join(outside, 'cmd') }, 'win32', { repoDirs: binDirs }), realpathSync(path.join(outside, 'bin', 'sh.exe')), 'a valid outside layout still passes');
+    assert.equal(selectShell({ Path: path.join(noExec, 'cmd') }, 'win32', { repoDirs: binDirs }), null, 'the exec path must exist');
+    assert.equal(selectShell({ Path: path.join(outside, 'cmd') }, 'win32', { repoDirs: binDirs }), realpathSync(path.join(outside, 'bin', 'sh.exe')), 'a valid outside layout still passes');
   });
 
-  test('the shell probe is random: a fake with a fixed answer, or one that mimics a fixed probe, fails', { skip: process.platform === 'win32' ? 'uses #!/bin/sh fakes' : false }, () => {
-    const dir = mkdtempSync(path.join(scratch, 'fake-shell-'));
-    const fixed = path.join(dir, 'fixed');
-    writeFileSync(fixed, '#!/bin/sh\necho "0123456789abcdef 42"\nexit 37\n', { mode: 0o755 });
-    // Reads the token and the exit code out of the script, as a fake built for a fixed probe would.
-    const mimic = path.join(dir, 'mimic');
-    writeFileSync(mimic, `#!/bin/sh\nt=$(printf '%s' "$2" | sed -n 's/.* \\([0-9a-f]\\{16\\}\\).*/\\1/p')\nc=$(printf '%s' "$2" | sed -n 's/.*exit \\([0-9]*\\).*/\\1/p')\necho "$t"\nexit "\${c:-0}"\n`, { mode: 0o755 });
-    for (const fake of [fixed, mimic]) assert.equal(probeShell(fake).ok, false, fake);
+  test('the shell probe rejects a fixed answer, wrong arithmetic, a false success and a launch error', () => {
+    const execute = (_program, [, script]) => {
+      const [, token, a, b, c, code = '0'] = / ([0-9a-f]{16}) \$\(\((\d+)\*(\d+)\+(\d+)\)\)(?:; exit (\d+))?/.exec(script);
+      return { status: Number(code), stdout: token + ' ' + (Number(a) * Number(b) + Number(c)) };
+    };
+    for (const platform of ['linux', 'darwin', 'win32']) {
+      const shell = platform === 'win32' ? 'C:/Git/bin/sh.exe' : '/bin/sh';
+      assert.equal(probeShell(shell, {}, execute).ok, true);
+      for (const fake of [
+        () => ({ status: 37, stdout: '0123456789abcdef 42' }),
+        (p, a) => ({ ...execute(p, a), stdout: execute(p, a).stdout.split(' ')[0] }),
+        (p, a) => ({ ...execute(p, a), status: 0 }),
+        () => ({ error: new Error('ENOENT') }),
+      ]) assert.equal(probeShell(shell, {}, fake).ok, false);
+    }
     assert.equal(probeShell(null).ok, false);
-    for (let i = 0; i < 5; i += 1) assert.equal(probeShell('/bin/sh').ok, true);
   });
 
-  test('a shell that fails its sanity probe runs no check and records no pass; the environment cannot pick the shell', {
-    skip: process.platform === 'win32' ? 'uses /bin/sh, /bin/true and /bin/false' : false,
-  }, async () => {
-    assert.deepEqual(probeShell('/bin/sh'), { ok: true, detail: 'random token, sum and exit code as asked' });
-    for (const fake of ['/bin/true', '/bin/false']) assert.equal(probeShell(fake).ok, false, fake);
+  test('a shell that fails its sanity probe runs no check and records no pass; the environment cannot pick the shell', async () => {
+    const selected = posixShell();
+    assert.equal(probeShell(selected).ok, true);
     const repo = makeRepository();
     repo.env.DB_AVAILABLE = '1';
     const head = repo.commit('site', { 'site/index.html': '<p>ok</p>\n' });
@@ -1356,7 +1018,7 @@ describe('verify:release and the deploy guard', () => {
       for (const kind of ['pr', 'release']) {
         repo.clearRuns();
         repo.lines.length = 0;
-        const run = await verify(kind, ['--force'], { ...repo.options, shell: fake });
+        const run = await verify(kind, ['--force'], { ...repo.options, shell: fake, shellProbeFn: () => ({ ok: false, detail: 'simulated invalid shell' }) });
         assert.equal(run.status, 1, `${fake} ${kind}`);
         assert.ok(repo.lines.some((line) => line.includes(`the shell ${fake} failed its sanity probe`)), repo.lines.join('\n'));
         assert.deepEqual(repo.runs(), [], 'no check ran');
@@ -1370,7 +1032,7 @@ describe('verify:release and the deploy guard', () => {
     const env = { ...repo.env, VERIFY_LOCAL_SHELL: '/bin/true' };
     assert.equal((await verify('release', ['--force'], { ...repo.options, env })).status, 0);
     assert.ok(repo.runs().includes('lint') && repo.runs().includes(`build:${head}`), repo.runs().join(','));
-    const shell = { path: '/bin/sh', probe: 'random token, sum and exit code as asked' };
+    const shell = { path: selected, probe: 'random token, sum and exit code as asked' };
     assert.deepEqual(readProof(commonDir, tree).shell, shell);
     assert.deepEqual(readRunLog(commonDir, head).at(-1).shell, shell);
     // A failing release in /bin/sh still fails with that variable set.
@@ -1553,7 +1215,9 @@ describe('verify:release and the deploy guard', () => {
     const b = repo.git(['commit-tree', tree, '-p', 'origin/main', '-m', 'same tree']);
     const block = async (rev) => {
       const lines = [];
-      const { status: code } = await proofBlock(['--rev', rev], { ...repo.options, log: (line) => lines.push(line) });
+      const {
+  status: code
+} = await proofBlock(['--rev', rev], { ...repo.options, log: (line) => lines.push(line) });
       return { code, text: lines.join('\n') };
     };
     assert.equal((await block(a)).code, 0);
@@ -1583,40 +1247,6 @@ describe('verify:release and the deploy guard', () => {
       ['\\\\server\\c$\\x', '\\\\server\\c$\\x'],
       ['\\\\localhost\\share\\x', '\\\\localhost\\share\\x'],
     ]) assert.equal(windowsLocalPath(given), wanted, given);
-  });
-
-  test('a release killed mid-way is a run that did not pass, until a later real pass', {
-    skip: process.platform === 'win32' ? 'the run is stopped with SIGKILL' : false,
-  }, async () => {
-    const repo = makeRepository();
-    repo.env.DB_AVAILABLE = '1';
-    const config = readFileSync(path.join(repo.work, 'verify-local.config.mjs'), 'utf8');
-    const flag = path.join(repo.base, 'started');
-    const head = repo.commit('slow', {
-      'site/index.html': '<p>ok</p>\n',
-      'verify-local.config.mjs': config.replace(`command: 'echo lint >> "$RUN_LOG"'`, () => `command: 'if [ -n "$SLOW" ]; then touch "$SLOW"; sleep 300; fi; echo lint >> "$RUN_LOG"'`),
-    });
-    repo.git(['push', '--quiet', 'origin', 'main']);
-    const guard = () => checkReleaseProof({ cwd: repo.work, env: repo.env, fetch: false }).failures;
-    assert.equal((await verify('release', [], repo.options)).status, 0);
-    assert.deepEqual(guard(), []);
-    const run = spawn(process.execPath, [ENGINE, 'release'], { cwd: repo.work, env: { ...repo.env, SLOW: flag }, stdio: 'ignore' });
-    const exited = new Promise((resolve) => run.on('exit', resolve));
-    for (let i = 0; i < 400 && !existsSync(flag); i += 1) await new Promise((resolve) => setTimeout(resolve, 50));
-    assert.ok(existsSync(flag), 'the release is in its first check');
-    run.kill('SIGKILL');
-    await exited;
-    const log = readRunLog(path.join(repo.work, '.git'), head);
-    assert.equal(log.at(-1).result, 'interrupted');
-    const failures = guard();
-    assert.deepEqual(failures.map((failure) => failure.check), ['proof-latest-release', 'proof-open-check']);
-    assert.match(failures[0].message, /the latest release run of [0-9a-f]{40} interrupted at /);
-    assert.match(failures[1].message, /lint \(release interrupted at /);
-    // A later real pass clears it.
-    assert.equal((await verify('release', [], repo.options)).status, 0);
-    assert.deepEqual(guard(), []);
-    // A run that ended leaves no open start behind.
-    assert.ok(!readRunLog(path.join(repo.work, '.git'), head).slice(-1).some((entry) => entry.result === 'interrupted'));
   });
 
   test('a failed release that is the first run of a commit stays open under a later PR pass', async () => {
@@ -1742,7 +1372,10 @@ describe('verify:release and the deploy guard', () => {
     writeFileSync(file, JSON.stringify({ ...forged(PROOF_FORMAT_VERSION, undefined), engine: other }));
     assert.deepEqual(guardChecks().map((failure) => failure.check), ['proof-engine']);
     assert.match(guardChecks()[0].message, /written by engine ffffffffffff, not .* pinned at HEAD/);
-    const { engine, ...noEngine } = forged(PROOF_FORMAT_VERSION, undefined);
+    const {
+  engine,
+  ...noEngine
+} = forged(PROOF_FORMAT_VERSION, undefined);
     assert.equal(engine, ENGINE_FILE_SHA256);
     writeFileSync(file, JSON.stringify(noEngine));
     assert.deepEqual(guardChecks().map((failure) => failure.check), ['proof-engine']);
@@ -1960,31 +1593,6 @@ describe('cleanup of the isolated copy', () => {
     assert.deepEqual(left(repo.options.worktreeRoot), []);
   });
 
-  for (const signal of ['SIGTERM', 'SIGKILL']) test(`a verify run stopped by ${signal} during a step leaves no isolated copy`, {
-    skip: process.platform === 'win32' ? 'Windows runs steps without the supervisor; the next run sweeps the copy' : false,
-  }, async () => {
-    const repo = makeRepository();
-    repo.git(['checkout', '--quiet', '-b', 'feature']);
-    const tmp = mkdtempSync(path.join(scratch, 'tmpdir-'));
-    const started = path.join(tmp, 'started');
-    const config = readFileSync(path.join(repo.work, 'verify-local.config.mjs'), 'utf8');
-    repo.commit('slow', { 'verify-local.config.mjs': config.replace(`command: 'echo lint >> "$RUN_LOG"'`, () => `command: 'touch ${started}; sleep 300'`) });
-    const copies = path.join(tmp, 'verify-local');
-    const run = spawn(process.execPath, [ENGINE, 'pr'], { cwd: repo.work, env: { ...repo.env, TMPDIR: tmp }, stdio: 'ignore' });
-    const wait = async (condition) => {
-      for (let i = 0; i < 300 && !condition(); i += 1) await new Promise((resolve) => setTimeout(resolve, 50));
-      return condition();
-    };
-    try {
-      assert.ok(await wait(() => existsSync(started)), 'the step started');
-      assert.ok(left(copies).some((name) => name.endsWith('.owner')), 'the copy has an owner file');
-      run.kill(signal);
-      assert.ok(await wait(() => left(copies).length === 0), `copies left: ${left(copies).join(', ')}`);
-    } finally {
-      run.kill('SIGKILL');
-    }
-  });
-
   test('a later run sweeps copies whose owner is gone, and keeps those of a live run', () => {
     const base = mkdtempSync(path.join(scratch, 'copies-'));
     const dead = spawnSync(process.execPath, ['-e', '']).pid;
@@ -2111,27 +1719,19 @@ describe('pre-push hook', () => {
     assert.equal(readBlobs(path.join(scratch, 'no-such-repository'), cleanGitEnv(), [{ file: 'a', object: 'b'.repeat(40) }]), null);
   });
 
-  // A git whose `cat-file --batch` fails or answers short; everything else is real git.
-  function fakeGit(repo, mode) {
-    const bin = path.join(repo.base, `fake-git-${mode}`);
-    mkdirSync(bin, { recursive: true });
-    const realGit = spawnSync(posixShell(), ['-c', 'command -v git'], { encoding: 'utf8' }).stdout.trim();
-    const batch = mode === 'fail'
-      ? 'exit 1'
-      : `"${realGit}" "$@" | head -c 60`;
-    writeFileSync(path.join(bin, 'git'), `#!/bin/sh\nif [ "$1" = cat-file ] && [ "$2" = --batch ]; then\n  ${batch}\n  exit $?\nfi\nexec "${realGit}" "$@"\n`, { mode: 0o755 });
-    return { ...repo.env, PATH: `${bin}:${process.env.PATH}` };
-  }
-
   for (const mode of ['fail', 'short']) {
-    test(`the hook blocks a push when cat-file ${mode === 'fail' ? 'fails' : 'answers short'}`, { skip: process.platform === 'win32' ? 'the fake git is a sh script' : false }, async () => {
+    test(`the hook blocks a push when cat-file ${mode === 'fail' ? 'fails' : 'answers short'}`, async () => {
       const repo = makeRepository();
       repo.git(['checkout', '--quiet', '-b', 'feature']);
       const fake = ['AKIA', 'ABCDEFGHIJKLMNOP'].join('');
       const sha = repo.commit('key', { 'src/config.js': `${'// padding\n'.repeat(20)}const key = "${fake}";\n` });
       const output = [];
       const result = await prePush('origin', `refs/heads/feature ${sha} refs/heads/feature ${ZERO}\n`, {
-        cwd: repo.work, env: fakeGit(repo, mode), log: (line) => output.push(line), error: (line) => output.push(line),
+        cwd: repo.work, env: repo.env,
+        readObjects: (root, env, entries) => readBlobs(root, env, entries, () => ({
+          status: mode === 'fail' ? 1 : 0,
+          stdout: Buffer.from(entries[0].object + ' blob 900\nshort'),
+        })), log: (line) => output.push(line), error: (line) => output.push(line),
       });
       assert.equal(result.status, 1, output.join('\n'));
       assert.match(output.join('\n'), /secret scan did not run/);

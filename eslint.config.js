@@ -66,6 +66,7 @@ module.exports = defineConfig([
     files: [
       '**/__tests__/**/*.{js,jsx,ts,tsx}',
       '**/*.test.{js,jsx,ts,tsx}',
+      '**/*.posix-native.ts',
       '**/*.spec.{js,jsx,ts,tsx}',
     ],
     languageOptions: {

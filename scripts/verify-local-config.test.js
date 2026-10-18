@@ -122,7 +122,8 @@ describe('verify-local.config.mjs', () => {
     for (const script of ['typecheck:app', 'typecheck:tests', 'lint', 'lint:scripts', 'test:changed', 'docs:build', 'docs:check']) {
       expect(commands).toMatch(new RegExp(`npm run ${script}(?![\\w:-])`));
     }
-    expect(commands).toContain('node --test scripts/test-verify-local.mjs');
+    expect(commands).toContain('npm run test:verify-local');
+    expect(scriptsOf('package.json')['test:verify-local']).toBe('node scripts/run-verify-tests.mjs');
     expect(pr.find((check) => check.command.includes('docs:build')).when).toEqual(expect.arrayContaining(['docs-src/', 'data/']));
   });
 

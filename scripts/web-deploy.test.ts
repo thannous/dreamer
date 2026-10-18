@@ -56,7 +56,7 @@ function listFiles(dir: string, prefix = ''): string[] {
 
 type Call = { args: string[]; cwd: string; env: Record<string, string | undefined>; files: string[]; contents: Record<string, string> };
 
-describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () => {
+describe.each(['linux', 'darwin', 'win32'])('web-deploy (%s): guarded, clean copy, pinned project, prebuilt upload', (platform) => {
   let repo: string;
   let tempRoot: string;
   let HEAD: string;
@@ -128,6 +128,7 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
       calls,
       logs,
       deps: {
+        platform,
         guardProduction: jest.fn(guardProduction),
         runCommand: fakeCli(calls, cli),
         readHead: () => git(repo, 'rev-parse', 'HEAD'),
@@ -247,7 +248,7 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
       ...NATIVE_OFF,
       PATH: '/usr/bin',
       HOME: path.join(path.dirname(build.cwd), 'build-home'),
-      ...(process.platform === 'win32' ? { USERPROFILE: path.join(path.dirname(build.cwd), 'build-home') } : {}),
+      ...(platform === 'win32' ? { USERPROFILE: path.join(path.dirname(build.cwd), 'build-home') } : {}),
       TMPDIR: '/tmp',
       HTTPS_PROXY: 'http://proxy:3128',
       NODE_EXTRA_CA_CERTS: '/etc/ca.pem',
@@ -484,7 +485,7 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
     ['SIGTERM', 143],
     ['SIGHUP', 129],
     ['SIGQUIT', 131],
-  ].filter(([signal]) => process.platform !== 'win32' || signal !== 'SIGQUIT'))('on %s during the build: stops the CLI, removes the temp copy and the env file, exits %i, deploys nothing', async (signal, code) => {
+  ])('on %s during the build: stops the CLI, removes the temp copy and the env file, exits %i, deploys nothing', async (signal, code) => {
     const proc = Object.assign(new EventEmitter(), {
       pid: process.pid,
       exit: jest.fn((exitCode: number) => {
@@ -497,6 +498,7 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
     const inner = fakeCli(calls);
     let copyDir = '';
     const setup = deps(async () => accepted(), {
+      platform: 'linux',
       proc,
       stopTree,
       runCommand: (command: string, args: string[], options: { cwd: string; env: Record<string, string | undefined>; onChild: (c: unknown) => void }) => {
@@ -525,7 +527,7 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
     ['link', 'SIGHUP', 129, 'pull'],
     ['pull', 'SIGQUIT', 131, 'build'],
     ['build', 'SIGTERM', 143, 'deploy'],
-  ].filter(([, signal]) => process.platform !== 'win32' || signal !== 'SIGQUIT'))('a %s step that exits 0 right after %s starts no further step: exit %i, no %s, copy removed', async (during, signal, code, next) => {
+  ])('a %s step that exits 0 right after %s starts no further step: exit %i, no %s, copy removed', async (during, signal, code, next) => {
     const proc = Object.assign(new EventEmitter(), {
       pid: process.pid,
       exit: jest.fn((exitCode: number) => {
@@ -538,6 +540,7 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
     const calls: Call[] = [];
     const inner = fakeCli(calls);
     const setup = deps(async () => accepted(), {
+      platform: 'linux',
       proc,
       stopTree,
       runCommand: async (command: string, args: string[], options: { cwd: string; env: Record<string, string | undefined>; onChild: (c: unknown) => void }) => {
@@ -560,193 +563,11 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
   });
 
   it('handles SIGINT, SIGTERM, SIGHUP and SIGQUIT with exit 128 + the signal number (no SIGQUIT on Windows)', () => {
-    for (const [signal, code] of Object.entries(SIGNAL_EXIT_CODES)) expect(code).toBe(128 + os.constants.signals[signal]);
+    expect(SIGNAL_EXIT_CODES).toEqual({ SIGINT: 130, SIGTERM: 143, SIGHUP: 129, SIGQUIT: 131 });
     expect(handledSignals('linux')).toEqual(['SIGINT', 'SIGTERM', 'SIGHUP', 'SIGQUIT']);
     expect(handledSignals('darwin')).toEqual(['SIGINT', 'SIGTERM', 'SIGHUP', 'SIGQUIT']);
     expect(handledSignals('win32')).toEqual(['SIGINT', 'SIGTERM', 'SIGHUP']);
   });
-
-  // Windows TerminateProcess cannot be intercepted by Node's SIGTERM handler.
-  (process.platform === 'win32' ? it.skip : it)('a real SIGTERM to a running publish removes the temp copy and exits 143', async () => {
-    const script = `
-      const { main } = require(${JSON.stringify(path.join(__dirname, 'web-deploy.js'))});
-      const { run } = require(${JSON.stringify(path.join(__dirname, 'web-deploy.js'))});
-      main(['prod'], {
-        guardProduction: async () => ({ head: ${JSON.stringify(HEAD)}, tree: 'b', message: 'ok' }),
-        rootDir: ${JSON.stringify(repo)},
-        tempRoot: ${JSON.stringify(tempRoot)},
-        log: () => {},
-        checkCli: () => ({ command: 'vercel', args: [] }),
-        runCommand: (command, args, options) => {
-          console.log('READY ' + options.cwd);
-          return run(process.execPath, ['-e', 'setTimeout(() => {}, 30000)'], options);
-        },
-      }).catch((error) => { console.error(error.message); process.exit(1); });
-    `;
-    const { spawn } = require('child_process');
-    const child = spawn(process.execPath, ['-e', script], { stdio: ['ignore', 'pipe', 'pipe'] });
-    const copy: string = await new Promise((resolve, reject) => {
-      let out = '';
-      child.stdout.on('data', (chunk: Buffer) => {
-        out += chunk.toString();
-        const match = /READY (\S+)/.exec(out);
-        if (match) resolve(match[1]);
-      });
-      child.on('exit', () => reject(new Error(`exited early: ${out}`)));
-    });
-    expect(fs.existsSync(copy)).toBe(true);
-    const exitCode = await new Promise((resolve) => {
-      child.on('exit', (codeValue: number) => resolve(codeValue));
-      child.kill('SIGTERM');
-    });
-    expect(exitCode).toBe(143);
-    expect(fs.existsSync(copy)).toBe(false);
-    expect(fs.readdirSync(tempRoot)).toEqual([]);
-  }, 20000);
-
-  const alive = (pid: number) => {
-    try {
-      process.kill(pid, 0);
-      return true;
-    } catch {
-      return false;
-    }
-  };
-  const waitFor = async (check: () => boolean, ms = 5000) => {
-    const end = Date.now() + ms;
-    while (Date.now() < end) {
-      if (check()) return true;
-      await new Promise((resolve) => setTimeout(resolve, 50));
-    }
-    return check();
-  };
-  // A fake CLI that starts a sleeping grandchild with its own stdio (so the
-  // pipes do not keep the step open), records its pid, then sleeps itself.
-  const fakeCliWithGrandchild = (pidFile: string, ignoreTerm = false) => `
-    const { spawn } = require('child_process');
-    const fs = require('fs');
-    ${ignoreTerm ? "process.on('SIGTERM', () => {});" : ''}
-    const grandchild = spawn(process.execPath, ['-e', ${JSON.stringify(`${ignoreTerm ? "process.on('SIGTERM', () => {});" : ''} setTimeout(() => {}, 60000)`)}], { stdio: 'ignore' });
-    fs.writeFileSync(${JSON.stringify(pidFile)}, String(grandchild.pid));
-    setTimeout(() => {}, 60000);
-  `;
-
-  it.each([
-    ['SIGTERM', 143],
-    ['SIGHUP', 129],
-    ['SIGQUIT', 131],
-  ])('a real %s during a step kills the CLI and its grandchild (whole process group), removes the copy, then exits %i', async (signal, code) => {
-    if (process.platform === 'win32') return;
-    const pidDir = fs.mkdtempSync(path.join(os.tmpdir(), 'web-deploy-pids-'));
-    const pidFile = path.join(pidDir, 'grandchild.pid');
-    try {
-      const script = `
-        const wd = require(${JSON.stringify(path.join(__dirname, 'web-deploy.js'))});
-        wd.main(['prod'], {
-          guardProduction: async () => ({ head: ${JSON.stringify(HEAD)}, tree: 'b', message: 'ok' }),
-          rootDir: ${JSON.stringify(repo)},
-          tempRoot: ${JSON.stringify(tempRoot)},
-          log: () => {},
-          checkCli: () => ({ command: 'vercel', args: [] }),
-          runCommand: (command, args, options) => {
-            console.log('READY ' + options.cwd);
-            return wd.run(process.execPath, ['-e', ${JSON.stringify(fakeCliWithGrandchild(pidFile))}], options);
-          },
-        }).catch((error) => { console.error(error.message); process.exit(1); });
-      `;
-      const { spawn } = require('child_process');
-      const harness = spawn(process.execPath, ['-e', script], { stdio: ['ignore', 'pipe', 'pipe'] });
-      const copy: string = await new Promise((resolve, reject) => {
-        let out = '';
-        harness.stdout.on('data', (chunk: Buffer) => {
-          out += chunk.toString();
-          const match = /READY (\S+)/.exec(out);
-          if (match) resolve(match[1]);
-        });
-        harness.on('exit', () => reject(new Error(`exited early: ${out}`)));
-      });
-      expect(await waitFor(() => fs.existsSync(pidFile) && fs.readFileSync(pidFile, 'utf8').length > 0)).toBe(true);
-      const grandchildPid = Number(fs.readFileSync(pidFile, 'utf8'));
-      expect(alive(grandchildPid)).toBe(true);
-      let stderr = '';
-      harness.stderr.on('data', (chunk: Buffer) => (stderr += chunk.toString()));
-      const exitCode = await new Promise((resolve) => {
-        harness.on('exit', (codeValue: number) => resolve(codeValue));
-        harness.kill(signal);
-      });
-      expect(exitCode).toBe(code);
-      expect(stderr).toContain(`Stopped by ${signal}`);
-      expect(stderr).toContain(`exit ${code}`);
-      expect(await waitFor(() => !alive(grandchildPid))).toBe(true);
-      expect(fs.existsSync(copy)).toBe(false);
-      expect(fs.readdirSync(tempRoot)).toEqual([]);
-    } finally {
-      fs.rmSync(pidDir, { recursive: true, force: true });
-    }
-  }, 30000);
-
-  it('stopProcessTree escalates to SIGKILL on the group when the CLI and its grandchild ignore SIGTERM', async () => {
-    if (process.platform === 'win32') return;
-    const pidDir = fs.mkdtempSync(path.join(os.tmpdir(), 'web-deploy-pids-'));
-    const pidFile = path.join(pidDir, 'grandchild.pid');
-    try {
-      let child: { pid: number } | null = null;
-      const running = run(process.execPath, ['-e', fakeCliWithGrandchild(pidFile, true)], {
-        cwd: pidDir,
-        env: { PATH: process.env.PATH },
-        write: () => {},
-        onChild: (value: { pid: number } | null) => {
-          if (value) child = value;
-        },
-      }).catch((error: Error) => error);
-      expect(await waitFor(() => fs.existsSync(pidFile) && fs.readFileSync(pidFile, 'utf8').length > 0)).toBe(true);
-      const grandchildPid = Number(fs.readFileSync(pidFile, 'utf8'));
-      const started = Date.now();
-      await stopProcessTree(child, { timeoutMs: 400 });
-      expect(Date.now() - started).toBeGreaterThanOrEqual(350);
-      expect(((await running) as Error).message).toMatch(/Command failed \(SIGKILL\)/);
-      expect(await waitFor(() => !alive(grandchildPid))).toBe(true);
-      expect(alive((child as unknown as { pid: number }).pid)).toBe(false);
-    } finally {
-      fs.rmSync(pidDir, { recursive: true, force: true });
-    }
-  }, 20000);
-
-  it('stopProcessTree waits for the whole group: a CLI that dies on SIGTERM does not end the stop while a grandchild ignores it', async () => {
-    if (process.platform === 'win32') return;
-    const pidDir = fs.mkdtempSync(path.join(os.tmpdir(), 'web-deploy-pids-'));
-    const pidFile = path.join(pidDir, 'grandchild.pid');
-    try {
-      // The CLI keeps the default SIGTERM action; only its grandchild ignores it.
-      const cli = `
-        const { spawn } = require('child_process');
-        const grandchild = spawn(process.execPath, ['-e', "process.on('SIGTERM', () => {}); setTimeout(() => {}, 60000)"], { stdio: 'ignore' });
-        require('fs').writeFileSync(${JSON.stringify(pidFile)}, String(grandchild.pid));
-        setTimeout(() => {}, 60000);
-      `;
-      let child: { pid: number } | null = null;
-      const running = run(process.execPath, ['-e', cli], {
-        cwd: pidDir,
-        env: { PATH: process.env.PATH },
-        write: () => {},
-        onChild: (value: { pid: number } | null) => {
-          if (value) child = value;
-        },
-      }).catch((error: Error) => error);
-      expect(await waitFor(() => fs.existsSync(pidFile) && fs.readFileSync(pidFile, 'utf8').length > 0)).toBe(true);
-      const grandchildPid = Number(fs.readFileSync(pidFile, 'utf8'));
-      // Let the grandchild install its SIGTERM handler.
-      await new Promise((resolve) => setTimeout(resolve, 300));
-      const started = Date.now();
-      await stopProcessTree(child, { timeoutMs: 400 });
-      expect(((await running) as Error).message).toMatch(/Command failed \(SIGTERM\)/);
-      expect(Date.now() - started).toBeGreaterThanOrEqual(350);
-      // Gone when the stop returns, before any cleanup would run.
-      expect(alive(grandchildPid)).toBe(false);
-    } finally {
-      fs.rmSync(pidDir, { recursive: true, force: true });
-    }
-  }, 20000);
 
   it('sweeps only stale noctalia-vercel-* dirs: dead owner pid, or no owner file and older than 6 hours', () => {
     const make = (name: string, pid?: string, ageMs = 0) => {
@@ -793,19 +614,53 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
     expect(setup.logs.some((line) => line.includes('removed a stale temp copy'))).toBe(true);
   });
 
-  // Windows directory access uses ACLs rather than POSIX permission bits.
-  (process.platform === 'win32' ? it.skip : it)('creates the temp copy with mode 0700', async () => {
-    let mode = 0;
-    const calls: Call[] = [];
-    const inner = fakeCli(calls);
-    const setup = deps(async () => accepted(), {
-      runCommand: (command: string, args: string[], options: { cwd: string; env: Record<string, string | undefined> }) => {
-        if (args[1] === 'link') mode = fs.statSync(path.dirname(options.cwd)).mode & 0o777;
-        inner(command, args, options);
-      },
-    });
-    await main(['prod'], setup.deps);
-    expect(mode).toBe(0o700);
+  it('requests mode 0700 for the temp copy on every host', async () => {
+    const chmod = jest.spyOn(fs, 'chmodSync');
+    try {
+      await main(['prod'], deps(async () => accepted()).deps);
+      expect(chmod).toHaveBeenCalledWith(expect.stringContaining('noctalia-vercel-'), 0o700);
+    } finally {
+      chmod.mockRestore();
+    }
+  });
+
+  it.each(['gone', 'stubborn', 'leader-only', 'EPERM'])('stops the complete process tree (%s)', async (state) => {
+    jest.useFakeTimers();
+    const signals: [number, string | number][] = [];
+    const execute = jest.fn(() => ({ status: 0 }));
+    let alive = state !== 'gone';
+    const kill = (pid: number, signal: string | number) => {
+      signals.push([pid, signal]);
+      if (signal === 0) {
+        if (state === 'EPERM' && alive) throw Object.assign(new Error('access denied'), { code: 'EPERM' });
+        if (!alive) throw Object.assign(new Error('gone'), { code: 'ESRCH' });
+      }
+      if (signal === 'SIGKILL') alive = false;
+    };
+    try {
+      const stopped = stopProcessTree({ pid: 123, closed: Promise.resolve() }, { platform, execute, kill, timeoutMs: 100 });
+      await jest.advanceTimersByTimeAsync(250);
+      await stopped;
+      if (platform === 'win32') {
+        expect(execute).toHaveBeenCalledWith('taskkill', ['/pid', '123', '/T', '/F'], { stdio: 'ignore' });
+        expect(signals).toEqual([]);
+      } else {
+        expect(execute).not.toHaveBeenCalled();
+        expect(signals.filter(([, signal]) => signal !== 0)).toEqual([
+          [-123, 'SIGTERM'], ...(state === 'gone' ? [] : [[-123, 'SIGKILL']]),
+        ]);
+        expect(alive).toBe(false);
+      }
+    } finally { jest.useRealTimers(); }
+  });
+
+  it('starts CLI children in their own POSIX group and receives completion', async () => {
+    const child = Object.assign(new EventEmitter(), { stdout: new EventEmitter(), stderr: new EventEmitter() });
+    const spawnChild = jest.fn(() => child);
+    const running = run('node', ['entry'], { platform, spawnChild, cwd: repo, env: {}, write: () => {} });
+    expect(spawnChild).toHaveBeenCalledWith('node', ['entry'], expect.objectContaining({ detached: platform !== 'win32', cwd: repo }));
+    child.emit('close', 0, null);
+    await expect(running).resolves.toBeUndefined();
   });
 
   it('names the project in every authenticated command, never --token, and never goes through npx', () => {

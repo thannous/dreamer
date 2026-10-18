@@ -755,12 +755,13 @@ const posixShells = new Map();
  * refused, so a PR cannot ship its own "Git". These location rules are the
  * control; probeShell before any step is only a speed bump.
  */
-export function posixShell(env = process.env, platform = process.platform, { repoDirs = [] } = {}) {
+export function posixShell(env = process.env, platform = process.platform, { repoDirs = [], run = spawnSync } = {}) {
   if (platform !== 'win32') return '/bin/sh';
   const pathKey = Object.keys(env).find((key) => key.toUpperCase() === 'PATH');
   const searchPath = pathKey ? env[pathKey] : '';
   const key = JSON.stringify([searchPath, repoDirs]);
-  if (!posixShells.has(key)) posixShells.set(key, gitForWindowsShell(searchPath, repoDirs));
+  if (run !== spawnSync) return gitForWindowsShell(searchPath, repoDirs, run);
+  if (!posixShells.has(key)) posixShells.set(key, gitForWindowsShell(searchPath, repoDirs, run));
   return posixShells.get(key);
 }
 
@@ -836,7 +837,7 @@ function insideAny(file, dirs) {
  * and git.exe, the root, the exec path and sh.exe must all exist and resolve
  * (realpath) outside them. Anything else is null.
  */
-function gitForWindowsShell(searchPath, repoDirs) {
+function gitForWindowsShell(searchPath, repoDirs, run) {
   const outside = (file) => realPath(file) !== null && !insideAny(file, repoDirs);
   const found = searchPath.split(';').filter((dir) => absolutePathEntry(dir) && !insideAny(dir, repoDirs))
     .map((dir) => path.join(dir, 'git.exe')).find((file) => existsSync(file));
@@ -848,7 +849,7 @@ function gitForWindowsShell(searchPath, repoDirs) {
     : /^bin$/i.test(path.basename(dir)) ? path.dirname(parent) : null;
   if (!root || !outside(root)) return null;
   const env = Object.fromEntries(Object.entries(process.env).filter(([name]) => !/^GIT_/i.test(name)));
-  const exec = spawnSync(git, ['--exec-path'], { env: { ...env, PATH: searchPath }, encoding: 'utf8' });
+  const exec = run(git, ['--exec-path'], { env: { ...env, PATH: searchPath }, encoding: 'utf8' });
   if (exec.error || exec.status !== 0) return null;
   const execPath = exec.stdout.trim();
   if (!execPath || !outside(execPath)) return null;
@@ -870,13 +871,13 @@ function randomInt(min, max) {
  * shell that does not really run its script fails one of them. Returns
  * { ok, detail }.
  */
-export function probeShell(shell, env = process.env) {
+export function probeShell(shell, env = process.env, execute = spawnSync) {
   if (!shell) return { ok: false, detail: 'no shell found' };
   const run = (code) => {
     const token = randomBytes(8).toString('hex');
     const [a, b, c] = [randomInt(2, 9999), randomInt(2, 9999), randomInt(2, 9999)];
     const exit = code === 0 ? '' : `; exit ${code}`;
-    const result = spawnSync(shell, ['-c', `printf '%s %s\\n' ${token} $((${a}*${b}+${c}))${exit}`], { env, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
+    const result = execute(shell, ['-c', `printf '%s %s\\n' ${token} $((${a}*${b}+${c}))${exit}`], { env, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
     return {
       status: result.error ? 'error' : result.status,
       ok: !result.error && result.status === code && String(result.stdout).trim() === `${token} ${a * b + c}`,
@@ -932,7 +933,7 @@ export function hasPdeathsig(env = process.env) {
  * signal). INT and TERM are passed on to the group, and HUP and QUIT as TERM. A process that left
  * the group (setsid) is stopped only by the step's own teardown.
  */
-const STEP_SUPERVISOR = `
+export const STEP_SUPERVISOR = `
 const { spawn } = require('node:child_process');
 const { rmSync } = require('node:fs');
 const net = require('node:net');
@@ -1029,24 +1030,24 @@ function supervised(lock, program, args, { cwd, env }) {
   });
 }
 
-function runShell(command, { cwd, env, log, shell = posixShell(env) }) {
+export function runShell(command, { cwd, env, log, shell = posixShell(env), platform = process.platform, execute = spawnSync, flock = hasFlock, supervise = supervised }) {
   log(`${PREFIX} $ ${command}`);
   const lock = env.VERIFY_LOCAL_HEAVY_LOCK || HEAVY_LOCK;
   const started = Date.now();
   let result;
   if (env[HEAVY_LOCK_HELD] === lock) {
-    result = spawnSync(shell, ['-c', command], { cwd, env, stdio: 'inherit' });
-  } else if (process.platform === 'win32') {
+    result = execute(shell, ['-c', command], { cwd, env, stdio: 'inherit' });
+  } else if (platform === 'win32') {
     // Windows has no process groups or flock: the step runs in its sh, unsupervised and without the lock.
     log(`${PREFIX} Windows: this step runs without the lock ${lock} and without a supervised process group.`);
-    result = spawnSync(shell, ['-c', command], { cwd, env, stdio: 'inherit' });
-  } else if (!hasFlock(env)) {
+    result = execute(shell, ['-c', command], { cwd, env, stdio: 'inherit' });
+  } else if (!flock(env)) {
     log(`${PREFIX} flock is not installed here: this step runs without the lock ${lock}.`);
-    result = supervised(null, shell, ['-c', command], { cwd, env });
+    result = supervise(null, shell, ['-c', command], { cwd, env });
   } else {
-    const free = spawnSync('flock', ['--nonblock', lock, 'true'], { env, stdio: 'ignore' });
+    const free = execute('flock', ['--nonblock', lock, 'true'], { env, stdio: 'ignore' });
     if (free.error || free.status !== 0) log(`${PREFIX} waiting for lock ${lock} (another heavy check runs on this machine)...`);
-    result = supervised(lock, shell, ['-c', command], { cwd, env: { ...env, [HEAVY_LOCK_HELD]: lock } });
+    result = supervise(lock, shell, ['-c', command], { cwd, env: { ...env, [HEAVY_LOCK_HELD]: lock } });
   }
   // A step killed by a signal (directly, or through flock as 128 + signal) failed.
   const killed = result.signal ?? (result.status > 128 ? `signal ${result.status - 128}` : null);
@@ -1081,13 +1082,13 @@ Promise.all(checks.map((check, index) => new Promise((resolve) => {
 }))).then((results) => { process.exitCode = results.some((result) => result.status !== 0 || result.killed) ? 1 : 0; });
 `;
 
-export function runParallel(checks, { cwd, env, fixedEnv, log, shell, tmp }) {
+export function runParallel(checks, { cwd, env, fixedEnv, log, shell, tmp, execute = runShell }) {
   const file = path.join(tmp, `parallel-${randomBytes(8).toString('hex')}`);
   const runner = `${file}.cjs`;
   writeFileSync(file, JSON.stringify({ shell, checks, fixedEnv }));
   writeFileSync(runner, PARALLEL_RUNNER);
   const quote = (value) => `'${value.replaceAll("'", "'\\''")}'`;
-  const batch = runShell(`${quote(process.execPath)} ${quote(runner)} ${quote(file)}`, { cwd, env, log, shell });
+  const batch = execute(`${quote(process.execPath)} ${quote(runner)} ${quote(file)}`, { cwd, env, log, shell });
   const results = checks.map((_, index) => {
     try {
       const result = JSON.parse(readFileSync(`${file}.${index}.json`, 'utf8'));
@@ -1479,6 +1480,7 @@ export async function verify(kind, argv = [], {
   proofLock = {},
   // Test seam only (the JS API, never the CLI or the environment).
   shell: shellOverride,
+  shellProbeFn = probeShell,
 } = {}) {
   const options = parseArgs(argv);
   if (options.rest.length) throw new UsageError(`unknown argument ${options.rest[0]}.`);
@@ -1509,7 +1511,7 @@ export async function verify(kind, argv = [], {
     log(`${PREFIX} no sh.exe of Git for Windows next to the git.exe on PATH (<git>/bin/sh.exe or <git>/usr/bin/sh.exe, from an absolute PATH entry, outside this repository): install Git for Windows; no check runs and no proof is written.`);
     return { status: 1, proof: null };
   }
-  const shellProbe = probeShell(shell, env);
+  const shellProbe = shellProbeFn(shell, env);
   if (!shellProbe.ok) {
     log(`${PREFIX} the shell ${shell} failed its sanity probe (${shellProbe.detail}): no check runs and no proof is written.`);
     return { status: 1, proof: null };
@@ -2064,10 +2066,10 @@ const SECRET_PATTERNS = [
 const NULL_ID = /^0+$/;
 
 /** Read many blobs with one `git cat-file --batch`; null when git cannot. */
-export function readBlobs(root, env, entries) {
+export function readBlobs(root, env, entries, execute = spawnSync) {
   if (entries.length === 0) return [];
   const input = `${entries.map((entry) => entry.object).join('\n')}\n`;
-  const result = spawnSync('git', ['cat-file', '--batch'], { cwd: root, env, input, maxBuffer: 512 * 1024 * 1024 });
+  const result = execute('git', ['cat-file', '--batch'], { cwd: root, env, input, maxBuffer: 512 * 1024 * 1024 });
   if (result.error || result.status !== 0) return null;
   const output = result.stdout;
   const blobs = [];
@@ -2095,6 +2097,7 @@ export async function prePush(remote, stdinText, {
   log = (line) => console.log(line),
   error = (line) => console.error(line),
   now = () => Date.now(),
+  readObjects = readBlobs,
 } = {}) {
   const started = now();
   const { root, commonDir, git } = resolveRepository(cwd, env);
@@ -2152,7 +2155,7 @@ export async function prePush(remote, stdinText, {
       }
       if (entry.size <= 2 * 1024 * 1024 && !matchesAny(file, config.hook.secretAllow)) toScan.push({ file, ...entry });
     }
-    const blobs = readBlobs(root, env, toScan);
+    const blobs = readObjects(root, env, toScan);
     if (blobs === null || blobs.length !== toScan.length) {
       problems.push(`could not read the ${toScan.length} pushed files (git cat-file --batch failed), so the secret scan did not run`);
       continue;

@@ -646,9 +646,9 @@ function assertReusableNativeProject(
   }
 }
 
-function assertAndroidJava17(env = process.env, spawn = spawnSync) {
+function assertAndroidJava17(env = process.env, spawn = spawnSync, platform = process.platform) {
   const command = env.JAVA_HOME
-    ? path.join(env.JAVA_HOME, 'bin', process.platform === 'win32' ? 'java.exe' : 'java')
+    ? path.join(env.JAVA_HOME, 'bin', platform === 'win32' ? 'java.exe' : 'java')
     : 'java';
   const result = spawn(command, ['-version'], {
     env,

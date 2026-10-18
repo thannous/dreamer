@@ -424,13 +424,13 @@ function buildEnv(env, buildHome, platform = process.platform) {
 // process group (spawned detached), so the group gets SIGTERM, then SIGKILL if
 // it has not closed within timeoutMs. Windows has no process groups: the tree
 // is ended with `taskkill /pid <pid> /T /F` (best effort, not exercised here).
-async function stopProcessTree(child, { platform = process.platform, kill = process.kill, timeoutMs = 5000 } = {}) {
+async function stopProcessTree(child, { platform = process.platform, kill = process.kill, execute = spawnSync, timeoutMs = 5000 } = {}) {
   if (!child || !child.pid || !child.closed) return;
   const closedWithin = (ms) =>
     Promise.race([child.closed.then(() => true), new Promise((resolve) => setTimeout(() => resolve(false), ms).unref())]);
   const signalGroup = (signal) => {
     if (platform === 'win32') {
-      spawnSync('taskkill', ['/pid', String(child.pid), '/T', '/F'], { stdio: 'ignore' });
+      execute('taskkill', ['/pid', String(child.pid), '/T', '/F'], { stdio: 'ignore' });
       return;
     }
     try {
@@ -602,17 +602,17 @@ function redact(text, secrets) {
 // Runs a CLI step without blocking the event loop, so the signal handlers can
 // run while it works. Output is captured and printed redacted once it ends.
 function run(command, args, options = {}) {
-  const { cwd = ROOT_DIR, env = process.env, write = (stream, text) => process[stream].write(text), onChild = () => {} } = options;
+  const { cwd = ROOT_DIR, env = process.env, write = (stream, text) => process[stream].write(text), onChild = () => {}, platform = process.platform, spawnChild = spawn } = options;
   return new Promise((resolve, reject) => {
     let child;
     try {
       // Detached on POSIX: its own process group, so a signal can stop the
       // CLI and every process it started (see stopProcessTree).
       // No shell: the CLI is node on a file path, on every OS.
-      child = spawn(command, args, {
+      child = spawnChild(command, args, {
         cwd,
         env,
-        detached: process.platform !== 'win32',
+        detached: platform !== 'win32',
         stdio: ['ignore', 'pipe', 'pipe'],
       });
     } catch (error) {
@@ -686,6 +686,7 @@ async function main(argv = process.argv.slice(2), deps = {}) {
     stopTree = stopProcessTree,
     checkCli = checkPinnedCli,
     killTimeoutMs = 5000,
+    platform = process.platform,
   } = deps;
   const target = parseTarget(argv);
   if (target === 'help') {
@@ -706,6 +707,7 @@ async function main(argv = process.argv.slice(2), deps = {}) {
   log(accepted.message);
 
   const parentDir = fs.mkdtempSync(path.join(tempRoot, TEMP_PREFIX));
+  fs.chmodSync(parentDir, 0o700);
   fs.writeFileSync(path.join(parentDir, OWNER_FILE), `${proc.pid ?? process.pid}\n`);
   let child = null;
   let stopping = null;
@@ -731,15 +733,15 @@ async function main(argv = process.argv.slice(2), deps = {}) {
       proc.exit(code);
     })();
   };
-  const handlers = handledSignals().map((signal) => [signal, () => onSignal(signal)]);
+  const handlers = handledSignals(platform).map((signal) => [signal, () => onSignal(signal)]);
   for (const [signal, handler] of handlers) proc.on(signal, handler);
   try {
     const source = createCleanCopy(accepted.head, { rootDir, parentDir });
     const onChild = (running) => (child = running);
-    const options = { cwd: source, env: withToken(vercelEnv(env), token), onChild };
+    const options = { cwd: source, env: withToken(vercelEnv(env, platform), token), onChild };
     const buildHome = path.join(parentDir, 'build-home');
     fs.mkdirSync(buildHome);
-    const buildOptions = { cwd: source, env: buildEnv(env, buildHome), onChild };
+    const buildOptions = { cwd: source, env: buildEnv(env, buildHome, platform), onChild };
     // Once a signal handler has started, no further step may start: a step
     // that exits 0 right after the signal (on its own or on the group
     // SIGTERM) would otherwise resume the pipeline and launch the next,

@@ -34,10 +34,10 @@ export function storageStateFor(ref, session, origin = BRANCH_WEB_ORIGIN) {
   return { cookies: [], origins: [{ origin, localStorage: [{ name: storageKey(ref), value: JSON.stringify(session) }] }] };
 }
 
-export function makeAuthAction(secrets, { dir = AUTH_DIR, log = console.log, now = () => Date.now() } = {}) {
+export function makeAuthAction(secrets, { dir = AUTH_DIR, log = console.log, now = () => Date.now(), files = fs } = {}) {
   return async ({ target, accounts, fetch }) => {
     const written = [];
-    fs.mkdirSync(dir, { recursive: true, mode: 0o700 });
+    files.mkdirSync(dir, { recursive: true, mode: 0o700 });
     for (const { tier, email } of accounts) {
       const response = await fetch(`${target.url}/auth/v1/token?grant_type=password`, {
         method: 'POST',
@@ -65,8 +65,8 @@ export function makeAuthAction(secrets, { dir = AUTH_DIR, log = console.log, now
       }
       if (!session.expires_at && session.expires_in) session.expires_at = Math.floor(now() / 1000) + Number(session.expires_in);
       const file = authFile(tier, dir);
-      fs.writeFileSync(file, `${JSON.stringify(storageStateFor(target.ref, session), null, 2)}\n`, { mode: 0o600 });
-      fs.chmodSync(file, 0o600);
+      files.writeFileSync(file, `${JSON.stringify(storageStateFor(target.ref, session), null, 2)}\n`, { mode: 0o600 });
+      files.chmodSync(file, 0o600);
       log(`[test-auth-setup] ${email}: session written to ${path.relative(ROOT_DIR, file) || file}.`);
       written.push({ tier, email, file });
     }
