@@ -1911,7 +1911,7 @@ const translations: Record<string, string> = {
     'notifications.dream_capture.saved_title': 'Dream saved',
     'notifications.dream_capture.saved_body': 'It is waiting in your journal.',
     'notifications.dream_capture.saved_channel': 'Dictated dreams',
-    'notifications.dream_capture.guest_limit_message': 'You have saved {limit} dreams without an account. The dream you dictated from the reminder is kept on this device. Create a free account to add it to your journal.',
+    'notifications.dream_capture.guest_limit_message': 'You have saved {limit} dreams without an account. The dream you dictated is kept on this device. Create a free account to add it to your journal.',
     'notifications.dream_capture.later': 'Later',
     'weekly_recap.title': 'Your week in dreams',
     'weekly_recap.subtitle': 'Seven nights, one reading. Here is what came back.',
