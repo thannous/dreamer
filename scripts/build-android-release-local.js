@@ -528,7 +528,7 @@ function inspectApkApplicationId(
   {
     env = process.env,
     platform = process.platform,
-    spawn = spawnSync,
+    spawn = spawnPortable,
     existsSync = fs.existsSync,
     readdirSync = fs.readdirSync,
     resolveCommandFn = resolveCommand,
