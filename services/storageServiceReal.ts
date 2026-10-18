@@ -35,6 +35,7 @@ const JOURNAL_LAYOUT_PREFERENCE_KEY = 'gemini_dream_journal_layout_preference';
 const RECORDING_INPUT_MODE_PREFERENCE_KEY = 'gemini_dream_journal_recording_input_mode_preference';
 const RECORDING_VOICE_STATUS_HIDDEN_KEY = 'gemini_dream_journal_recording_voice_status_hidden';
 const REMINDER_PROMPT_DISMISSED_KEY = 'gemini_dream_journal_reminder_prompt_dismissed';
+const STALE_ANALYSIS_BANNER_DISMISSED_KEY = 'gemini_dream_journal_stale_analysis_banner_dismissed';
 const RECORDING_ONBOARDING_COMPLETED_KEY = 'gemini_dream_journal_recording_onboarding_completed';
 const RECORDING_VOICE_HINT_COMPLETED_KEY = 'gemini_dream_journal_recording_voice_hint_completed_v1';
 const REMEMBERED_DREAM_PROMPT_DISMISSED_KEY = 'gemini_dream_journal_remembered_dream_prompt_dismissed';
@@ -1269,6 +1270,35 @@ export async function saveReminderPromptDismissed(dismissed: boolean): Promise<v
       console.error('Failed to save reminder prompt state:', error);
     }
     throw new Error('Failed to save reminder prompt state');
+  }
+}
+
+/**
+ * Whether the "analysis may be outdated" banner on a dream was closed. Once true it
+ * never comes back; the next-step card still offers the update.
+ */
+export async function getStaleAnalysisBannerDismissed(): Promise<boolean> {
+  try {
+    const savedPreference = await getItem(STALE_ANALYSIS_BANNER_DISMISSED_KEY);
+    if (savedPreference) {
+      return JSON.parse(savedPreference) === true;
+    }
+  } catch (error) {
+    if (__DEV__) {
+      console.error('Failed to retrieve stale analysis banner state:', error);
+    }
+  }
+  return false;
+}
+
+export async function saveStaleAnalysisBannerDismissed(dismissed: boolean): Promise<void> {
+  try {
+    await setItem(STALE_ANALYSIS_BANNER_DISMISSED_KEY, JSON.stringify(dismissed));
+  } catch (error) {
+    if (__DEV__) {
+      console.error('Failed to save stale analysis banner state:', error);
+    }
+    throw new Error('Failed to save stale analysis banner state');
   }
 }
 
