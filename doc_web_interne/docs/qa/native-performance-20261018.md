@@ -10,8 +10,11 @@ Android profileable, aucune session Metro. Aucune qualification Play/TestFlight.
 - Référence : `353c400cf1dc0e6eb8c76ea4d8276d414a4fae73`, après fusion de #437.
 - Correctif applicatif : `5deef6dd8ba9c233518c4d085dd65015c175c379`, qui intègre
   aussi les trois commits master suivants concernant Today. Les parcours mesurés
-  portent sur le journal et le détail. Les commits ultérieurs de cette PR ne
-  changent que le test et cette preuve.
+  portent sur le journal et le détail. L’intégration ultérieure de #438
+  (`d80d27b44`) change les outils de build, le cache Metro et le transport portable
+  des paramètres d’autolinking, sans changer le code applicatif de ce correctif ni
+  les versions mobiles. Les preuves physiques restent celles des binaires
+  `5deef6dd8` ; aucun nouveau build natif après cette intégration n’est revendiqué.
 - Android : 3.6.0 (83), Release arm64-v8a, certificat identique avant/après.
   SHA-256 APK : `6d177576a5a440677965db3db7122c598969b6c4a42f71ba5e8bd3b2895990f1`
   puis `f490e0698b06684ba31db32d8a05f53e7ca0deeee9b5c84475123f8a8e6e72f5`.
@@ -26,6 +29,13 @@ Android profileable, aucune session Metro. Aucune qualification Play/TestFlight.
   manquant dans cette fixture ; ce défaut de préparation n’était pas un bug app.
   La lecture de référence est « Noctalia performance 013 ». Aucun appel d’analyse,
   achat, nouveau compte ou seed de production.
+
+Après les mesures, les 200 valeurs de chaque journal ont été comparées à la
+fixture avant suppression. Les bases recopiées/probées sur les téléphones sont
+vides, réglages conservés ; le helper Android privé est désinstallé. Sur iOS,
+le wrapper de Xcode 27.1 attendait `-runFirstLaunch` pour actualiser CoreDevice.
+Le CoreDevice 642.16 déjà installé a permis les copies et leur vérification sans
+changer Xcode, la sécurité ni les permissions de l’iPhone.
 
 ## Défaut reproduit et correction
 
