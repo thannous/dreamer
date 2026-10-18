@@ -58,7 +58,8 @@ export const SYMBOL_LINK_CASES: readonly SymbolLinkCase[] = [
     },
     b: {
       transcript: 'Je suis arrivé chez mamie à vélo. Tout était pareil : les volets verts, la nappe à carreaux, le vieux buffet. Mais il n’y avait personne.',
-      target: /chez|maison|house|mamie|grand-?m[eè]re|grandmother/iu,
+      // The place, not the grandmother: « Mamie » alone is another element.
+      target: /chez|maison|house|home/iu,
     },
   },
   {

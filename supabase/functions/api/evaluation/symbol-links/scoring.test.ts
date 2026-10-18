@@ -84,19 +84,24 @@ Deno.test('targets and links come from the stored reading, duplicates from the a
   assertEquals(outcome.duplicates, 1);
 });
 
-Deno.test('dictionary targets, duplicates and key lengths are counted per reading', () => {
+Deno.test('dictionary targets are counted per stored symbol, duplicates and key lengths per answer', () => {
   const kitten = { kind: 'dictionary' as const, a: { transcript: 'Un chaton.', target: /chaton|\bchat\b/iu }, b: { transcript: 'Un matou.', target: /matou|\bchat\b/iu }, expectedSymbolId: 'cat' };
   const a = scoredSymbols({ symbols: [
     { name: 'Chaton', meaning: 'x', symbolId: 'cat', key: '' },
     { name: 'Le chat', meaning: 'x', symbolId: 'none', key: 'cat' },
     { name: 'Paillasson', meaning: 'x', symbolId: 'none', key: 'front-door-mat' },
   ] });
-  const b = scoredSymbols({ symbols: [{ name: 'Le matou', meaning: 'x', symbolId: 'none', key: 'tomcat' }] });
-  const outcome = scorePair(kitten, asStored(a), asStored(b), []);
-  assertEquals([outcome.dictionaryTargets, outcome.dictionaryHits], [2, 1]);
+  const b = scoredSymbols({ symbols: [
+    { name: 'Le matou', meaning: 'x', symbolId: 'none', key: 'tomcat' },
+    { name: 'Le chat du voisin', meaning: 'x', symbolId: 'cat', key: '' },
+  ] });
+  // Production stores A without its duplicate « Le chat ».
+  const outcome = scorePair(kitten, { answered: a, stored: [a[0], a[2]] }, asStored(b), []);
+  // Chaton and « Le chat du voisin » resolve to cat; « Le matou », linked elsewhere, does not.
+  assertEquals([outcome.dictionaryTargets, outcome.dictionaryHits], [3, 2]);
   assertEquals(outcome.duplicates, 1);
   assertEquals(outcome.keyWords, [3, 1]);
-  assertEquals(outcome.linked, false);
+  assertEquals(outcome.linked, true);
 });
 
 Deno.test('variant metrics separate recall, omission, false links and pairs missing A', () => {
@@ -112,16 +117,19 @@ Deno.test('variant metrics separate recall, omission, false links and pairs miss
     { kind: 'return', outcome: outcome({ linked: true }) },
     { kind: 'trap', outcome: outcome({ linked: true, duplicates: 2 }) },
     { kind: 'trap', outcome: outcome({}) },
+    { kind: 'trap', outcome: outcome({ targetInB: false }) },
     { kind: 'dictionary', outcome: outcome({ dictionaryTargets: 2, dictionaryHits: 1 }) },
   ]);
   assertEquals(metrics.linkRecall.same, { hits: 1, total: 3, rate: 1 / 3 });
   assertEquals(metrics.omission.same, { hits: 1, total: 3, rate: 1 / 3 });
   assertEquals(metrics.foldedIntoDictionary, { hits: 1, total: 4, rate: 0.25 });
   assertEquals(metrics.linkRecall.return, { hits: 1, total: 1, rate: 1 });
+  // The trap whose B dropped its target is an omission, not a pair kept apart.
   assertEquals(metrics.falseLinks, { hits: 1, total: 2, rate: 0.5 });
+  assertEquals(metrics.omission.trap, { hits: 1, total: 3, rate: 1 / 3 });
   assertEquals(metrics.dictionaryPrecision, { hits: 1, total: 2, rate: 0.5 });
   assertEquals(metrics.targetMissingInA, { same: 1, return: 0, trap: 0, dictionary: 0 });
-  assertEquals(metrics.duplicatesPerReading, 2 / 16);
+  assertEquals(metrics.duplicatesPerReading, 2 / 18);
   assertEquals(metrics.meanKeyWords, 2);
   assertEquals(metrics.keptNameOnReuse, { hits: 1, total: 1, rate: 1 });
   assertEquals(summarizeVariant([]).linkRecall.same.rate, null);

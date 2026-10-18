@@ -182,7 +182,7 @@ const runPair = async (apiKey: string, { run, testCase, variant }: Job): Promise
 const pairLabel = (record: PairRecord): string => {
   if (!record.outcome) return `failed (${record.b?.detail ?? record.a.detail})`;
   if (!record.outcome.targetInA) return 'A target missing';
-  if (record.kind === 'trap') return record.outcome.linked ? 'false link' : 'kept apart';
+  if (record.kind === 'trap') return record.outcome.linked ? 'false link' : record.outcome.targetInB ? 'kept apart' : 'omitted in B';
   if (record.kind === 'dictionary') return `expected id ${record.outcome.dictionaryHits}/${record.outcome.dictionaryTargets}`;
   if (record.outcome.linked) return 'linked';
   if (record.outcome.foldedIntoDictionary) return 'joined through a dictionary symbol only';
@@ -199,8 +199,13 @@ const caseCell = (testCase: SymbolLinkCase, records: readonly PairRecord[]): str
   const parts = [
     testCase.kind === 'dictionary'
       ? `expected id ${done.reduce((sum, outcome) => sum + outcome.dictionaryHits, 0)}/${done.reduce((sum, outcome) => sum + outcome.dictionaryTargets, 0)}`
-      : `${testCase.kind === 'trap' ? 'false link' : 'linked'} ${withA.filter((outcome) => outcome.linked).length}/${withA.length}`,
+      : testCase.kind === 'trap'
+        ? `false link ${withA.filter((outcome) => outcome.linked).length}/${withA.filter((outcome) => outcome.targetInB).length}`
+        : `linked ${withA.filter((outcome) => outcome.linked).length}/${withA.length}`,
   ];
+  if (testCase.kind === 'trap' && withA.some((outcome) => !outcome.targetInB)) {
+    parts.push(`omitted in B ${withA.filter((outcome) => !outcome.targetInB).length}`);
+  }
   const folded = withA.filter((outcome) => outcome.foldedIntoDictionary).length;
   if (folded) parts.push(`through a dictionary symbol only ${folded}`);
   if (done.length > withA.length) parts.push(`A target missing ${done.length - withA.length}`);
@@ -228,6 +233,7 @@ const summaryMarkdown = (report: {
     row('Joined only through a dictionary symbol, same and return pairs', (v) => percent(m[v].foldedIntoDictionary)),
     row('Target omitted in B, same pairs', (v) => percent(m[v].omission.same)),
     row('Target omitted in B, return pairs', (v) => percent(m[v].omission.return)),
+    row('Target omitted in B, trap pairs', (v) => percent(m[v].omission.trap)),
     row('False links, trap pairs', (v) => percent(m[v].falseLinks)),
     row('Dictionary precision', (v) => percent(m[v].dictionaryPrecision)),
     row('Duplicate symbols per reading', (v) => decimal(m[v].duplicatesPerReading)),
@@ -238,7 +244,7 @@ const summaryMarkdown = (report: {
     row('Input / output tokens', (v) => `${tokens(usage[v].inputTokens)} / ${tokens(usage[v].outputTokens)}`),
     row('Cost (USD, list price)', (v) => costUsd(usage[v]).toFixed(3)),
     '',
-    'Link, omission and false-link rates count completed pairs whose A reading named the target; dictionary precision counts every reading that named it. Same and return elements are the dreamer\'s own: only a shared personal key links them. Targets and links come from the stored readings (at most six symbols); duplicates, symbols without a link and key lengths from the answers. Failed calls carry no token counts.',
+    'Link, omission and false-link rates count completed pairs whose A reading named the target; false links count the trap pairs whose B named its target too; dictionary precision counts every target symbol. Same and return elements are the dreamer\'s own: only a shared personal key links them. Targets and links come from the stored readings (at most six symbols); duplicates, symbols without a link and key lengths from the answers. Failed calls carry no token counts.',
     `Prices: ${HAIKU_5_5_USD_PER_MTOK.input} / ${HAIKU_5_5_USD_PER_MTOK.output} USD per million input / output tokens (${HAIKU_5_5_USD_PER_MTOK.source}).`,
     '',
     '## Per case',

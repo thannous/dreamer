@@ -28,9 +28,9 @@ dreamer's own (no dictionary symbol is that thing): only a shared personal key l
 | --- | --- |
 | Link recall (same, return) | B has a symbol with the personal key of A's target |
 | Joined through the dictionary only (same, return) | B shares only a dictionary id with A's target, folding the dreamer's own element into a generic symbol |
-| Omission (same, return) | B neither names the target nor carries its link |
-| False links (trap) | B has a symbol with the link of A's target, which is a different thing |
-| Dictionary precision | Of the readings that name the target, those where it resolves to the expected dictionary id |
+| Omission (same, return, trap) | B neither names the target nor carries its link |
+| False links (trap) | Of the pairs where B names its target, those where B has a symbol with the link of A's target, which is a different thing |
+| Dictionary precision | Of the symbols that name the target, those that resolve to the expected dictionary id |
 | Duplicates per reading | Symbols whose link already appeared in the same reading |
 | Mean key length | Words in each personal key |
 | Known name kept | B symbols reusing a known key that also keep its name |

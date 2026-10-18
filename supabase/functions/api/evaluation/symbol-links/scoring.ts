@@ -68,7 +68,7 @@ export type PairOutcome = {
   linked: boolean;
   /** same and return: B joins A's target only through a dictionary symbol, folding the dreamer's own element into it. */
   foldedIntoDictionary: boolean;
-  /** dictionary: sides whose target was found, and those resolving to the expected id. */
+  /** dictionary: target symbols of both readings, and those resolving to the expected id. */
   dictionaryTargets: number;
   dictionaryHits: number;
   duplicates: number;
@@ -101,7 +101,8 @@ export const scorePair = (
   const personal = testCase.kind === 'same' || testCase.kind === 'return';
   const linked = personal ? shared.some((link) => link.startsWith('p:')) : shared.length > 0;
   const expected = testCase.expectedSymbolId;
-  const sides = [targetsA, targetsB].filter((targets) => targets.length > 0);
+  // Each target symbol on its own: a second one linked elsewhere is a contradiction the dreamer sees.
+  const targets = [...targetsA, ...targetsB];
   const knownNames = new Map(knownForB.map((known) => [known.key, known.name]));
   const reused = b.stored.filter((symbol) => symbol.key !== undefined && knownNames.has(symbol.key));
   const answered = [...a.answered, ...b.answered];
@@ -110,8 +111,8 @@ export const scorePair = (
     targetInB: targetsB.length > 0 || shared.length > 0,
     linked,
     foldedIntoDictionary: personal && !linked && shared.length > 0,
-    dictionaryTargets: expected ? sides.length : 0,
-    dictionaryHits: expected ? sides.filter((targets) => targets.some((symbol) => symbol.symbolId === expected)).length : 0,
+    dictionaryTargets: expected ? targets.length : 0,
+    dictionaryHits: expected ? targets.filter((symbol) => symbol.symbolId === expected).length : 0,
     duplicates: duplicateCount(a.answered) + duplicateCount(b.answered),
     unlinked: answered.filter((symbol) => symbol.link === null).length,
     keyWords: answered.flatMap((symbol) => (symbol.key ? [symbol.key.split('-').length] : [])),
@@ -159,7 +160,8 @@ export type VariantMetrics = {
   linkRecall: { same: Ratio; return: Ratio };
   /** same and return pairs joined only through a dictionary symbol (not counted in recall). */
   foldedIntoDictionary: Ratio;
-  omission: { same: Ratio; return: Ratio };
+  omission: { same: Ratio; return: Ratio; trap: Ratio };
+  /** Trap pairs whose B named its target: an omitted target is not kept apart, it is lost. */
   falseLinks: Ratio;
   dictionaryPrecision: Ratio;
   readings: number;
@@ -192,8 +194,11 @@ export const summarizeVariant = (pairs: readonly ScoredPair[]): VariantMetrics =
       [...withA('same'), ...withA('return')].filter((outcome) => outcome.foldedIntoDictionary).length,
       withA('same').length + withA('return').length
     ),
-    omission: { same: omission('same'), return: omission('return') },
-    falseLinks: ratio(withA('trap').filter((outcome) => outcome.linked).length, withA('trap').length),
+    omission: { same: omission('same'), return: omission('return'), trap: omission('trap') },
+    falseLinks: ratio(
+      withA('trap').filter((outcome) => outcome.linked).length,
+      withA('trap').filter((outcome) => outcome.targetInB).length
+    ),
     dictionaryPrecision: ratio(sum((outcome) => outcome.dictionaryHits), sum((outcome) => outcome.dictionaryTargets)),
     readings,
     duplicatesPerReading: readings ? sum((outcome) => outcome.duplicates) / readings : null,
