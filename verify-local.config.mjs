@@ -30,6 +30,21 @@
 // Markdown and planning documents feed no compiler and no linter.
 const DOCS = ['**/*.md', '**/*.mdx', 'doc_web_interne/**', 'marketing/**', 'specs/**'];
 
+// Site-only sources and the TesterArmy journeys: tsc (no allowJs; tools/e2e is
+// excluded from tsconfig.json) and the lint paths of package.json never read
+// them, and no TypeScript file imports them. The site check and the TesterArmy
+// typecheck cover them. docs-src/static/img and docs-src/static/data stay
+// inputs (app components and e2e/web import them), like data/.
+const SITE_ONLY = [
+  'docs-src/static/scripts/**',
+  'docs-src/static/js/**',
+  'docs-src/static/css/**',
+  'docs-src/templates/**',
+  'docs-src/locales/**',
+  'docs-src/experience/**',
+  'tools/e2e/tests/**',
+];
+
 // A superset of what .circleci/scripts/classify-changes.sh routes to the site.
 const SITE = ['docs-src/', 'data/', 'scripts/', 'package.json', 'package-lock.json', '.nvmrc'];
 
@@ -293,10 +308,10 @@ export default {
       command: 'node --test scripts/lib/backend-e2e-local.test.cjs',
       inputs: ['scripts/lib/backend-e2e-local.cjs', 'scripts/lib/backend-e2e-local.test.cjs', 'scripts/run-backend-e2e.cjs'],
     },
-    { name: 'typecheck-app', command: 'npm run typecheck:app', exclude: DOCS },
-    { name: 'typecheck-tests', command: 'npm run typecheck:tests', exclude: DOCS },
-    { name: 'lint', command: 'npm run lint', exclude: DOCS },
-    { name: 'lint-scripts', command: 'npm run lint:scripts', exclude: DOCS },
+    { name: 'typecheck-app', command: 'npm run typecheck:app', exclude: [...DOCS, ...SITE_ONLY] },
+    { name: 'typecheck-tests', command: 'npm run typecheck:tests', exclude: [...DOCS, ...SITE_ONLY] },
+    { name: 'lint', command: 'npm run lint', exclude: [...DOCS, ...SITE_ONLY] },
+    { name: 'lint-scripts', command: 'npm run lint:scripts', exclude: [...DOCS, ...SITE_ONLY] },
     // Root Jest tests related to the files changed since the merge-base with
     // origin/master (scripts/run-jest-changed.js). Whole tree: tests read files.
     // Picks its tests from the diff: reused only against the same merge base.
