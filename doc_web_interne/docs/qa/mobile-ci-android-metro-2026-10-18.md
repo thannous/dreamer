@@ -165,6 +165,11 @@ Les mesures identifient leurs révisions antérieures à l'intégration des mise
 à jour Expo et du démarrage applicatif arrivées sur `master` pendant l'audit.
 La preuve `verify:pr` de la PR identifie le commit livré et ses validations
 après intégration ; les APK chronométrés ne qualifient pas ce nouveau binaire.
+Les cinq exécutions navigateur par OS ont été rejouées avec les nouveaux
+lockfiles sur `451f0943f496c2b7f7fe9a611eeda7e760f96fbf`, toutes passées :
+comptes de cas, séquences API/statut et fermeture des ports identiques entre OS
+(`integratedLifecycle` du reçu). Le reformatage final du patch Expo produit le
+même fichier Kotlin que le candidat Android chronométré.
 
 Les définitions CircleCI et EAS, les suites mobiles et les contrôles de
 publication ne sont pas allégés. CircleCI reste limité au benchmark manuel

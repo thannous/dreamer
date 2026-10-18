@@ -279,7 +279,21 @@
       "testerArmyGuards": 44,
       "hostSkips": 0
     },
-    "evidenceBoundary": "Local build/browser evidence; no device, ARM64, hosted CI, EAS or iOS qualification."
+    "evidenceBoundary": "Local build/browser evidence; no device, ARM64, hosted CI, EAS or iOS qualification.",
+    "crossInvocation": {
+      "source": "8bc5b32e0",
+      "windows": {
+        "matches": true
+      },
+      "linux": {
+        "matches": true
+      },
+      "assertion": "Two independent invocations preserve the effective build context; unknown build variables still invalidate it."
+    },
+    "patchFormatting": {
+      "assertion": "The trimmed unified diff applies with patch-package and produces byte-identical Kotlin to the measured native fixture.",
+      "kotlinSha256": "ce45548868e53f456087ef0d320f8b4d872da31792d64faa930a8b73d49a8a99"
+    }
   },
   "android": {
     "toolchain": {
@@ -978,6 +992,202 @@
         "sample": 2,
         "source": "7073544153f2a6adca06d28037e9ef59c54806c2",
         "report": "1792357524281-2379838-f2f84b0a-cb24-46f9-8756-355d896780b4",
+        "summary": {
+          "discovered": 1,
+          "selected": 1,
+          "executed": 1,
+          "passed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "flaky": 0,
+          "skipped": 0
+        },
+        "portClosed": true,
+        "externalCleanup": false,
+        "stepsSha256": "efeeaf9c832c35e1d3bfe953fd8c55dcd235b44a393997a642b86e58814cb088"
+      }
+    ]
+  },
+  "integratedLifecycle": {
+    "windows": [
+      {
+        "product": "dreamer",
+        "sample": 1,
+        "source": "451f0943f496c2b7f7fe9a611eeda7e760f96fbf",
+        "report": "1792359265725-68284-fee1fcc2-73b2-4e8c-ae86-47eb11289b6b",
+        "summary": {
+          "discovered": 125,
+          "selected": 2,
+          "executed": 2,
+          "passed": 2,
+          "failed": 0,
+          "interrupted": 0,
+          "flaky": 0,
+          "skipped": 0
+        },
+        "portClosed": true,
+        "externalCleanup": false,
+        "stepsSha256": "daf887baf371062a5f56f415e8e9609dc128e6afffa1768665f6092ab8ef8994"
+      },
+      {
+        "sample": 1,
+        "source": "451f0943f496c2b7f7fe9a611eeda7e760f96fbf",
+        "report": "1792359229057-64472-f019f772-185f-4ae7-8651-3b2ac07dc0e6",
+        "summary": {
+          "discovered": 6,
+          "selected": 6,
+          "executed": 6,
+          "passed": 6,
+          "failed": 0,
+          "interrupted": 0,
+          "flaky": 0,
+          "skipped": 0
+        },
+        "portClosed": true,
+        "externalCleanup": false,
+        "product": "lucid",
+        "stepsSha256": "08950f3d348983285dedde4eebd25ed56da692f0ab0374949632ec58366e9f63"
+      },
+      {
+        "sample": 2,
+        "source": "451f0943f496c2b7f7fe9a611eeda7e760f96fbf",
+        "report": "1792359319321-65300-aa0217ea-7422-4117-9c6f-cdc0a31a29b8",
+        "summary": {
+          "discovered": 6,
+          "selected": 6,
+          "executed": 6,
+          "passed": 6,
+          "failed": 0,
+          "interrupted": 0,
+          "flaky": 0,
+          "skipped": 0
+        },
+        "portClosed": true,
+        "externalCleanup": false,
+        "product": "lucid",
+        "stepsSha256": "08950f3d348983285dedde4eebd25ed56da692f0ab0374949632ec58366e9f63"
+      },
+      {
+        "product": "meditation",
+        "sample": 1,
+        "source": "451f0943f496c2b7f7fe9a611eeda7e760f96fbf",
+        "report": "1792359325296-51176-bf70b69a-d3ab-4c57-9421-b22f65e099d4",
+        "summary": {
+          "discovered": 1,
+          "selected": 1,
+          "executed": 1,
+          "passed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "flaky": 0,
+          "skipped": 0
+        },
+        "portClosed": true,
+        "externalCleanup": false,
+        "stepsSha256": "efeeaf9c832c35e1d3bfe953fd8c55dcd235b44a393997a642b86e58814cb088"
+      },
+      {
+        "product": "meditation",
+        "sample": 2,
+        "source": "451f0943f496c2b7f7fe9a611eeda7e760f96fbf",
+        "report": "1792359364813-46528-d0fb930d-a498-46f5-9fdc-8d3a659ca6d4",
+        "summary": {
+          "discovered": 1,
+          "selected": 1,
+          "executed": 1,
+          "passed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "flaky": 0,
+          "skipped": 0
+        },
+        "portClosed": true,
+        "externalCleanup": false,
+        "stepsSha256": "efeeaf9c832c35e1d3bfe953fd8c55dcd235b44a393997a642b86e58814cb088"
+      }
+    ],
+    "linux": [
+      {
+        "product": "dreamer",
+        "sample": 1,
+        "source": "451f0943f496c2b7f7fe9a611eeda7e760f96fbf",
+        "report": "1792359360296-2440983-40630c7b-614a-461d-96df-d36a2b268fb6",
+        "summary": {
+          "discovered": 125,
+          "selected": 2,
+          "executed": 2,
+          "passed": 2,
+          "failed": 0,
+          "interrupted": 0,
+          "flaky": 0,
+          "skipped": 0
+        },
+        "portClosed": true,
+        "externalCleanup": false,
+        "stepsSha256": "daf887baf371062a5f56f415e8e9609dc128e6afffa1768665f6092ab8ef8994"
+      },
+      {
+        "sample": 1,
+        "source": "451f0943f496c2b7f7fe9a611eeda7e760f96fbf",
+        "report": "1792359227688-2431517-17a9a18a-8510-49b5-958d-383bdbc778a6",
+        "summary": {
+          "discovered": 6,
+          "selected": 6,
+          "executed": 6,
+          "passed": 6,
+          "failed": 0,
+          "interrupted": 0,
+          "flaky": 0,
+          "skipped": 0
+        },
+        "portClosed": true,
+        "externalCleanup": false,
+        "product": "lucid",
+        "stepsSha256": "08950f3d348983285dedde4eebd25ed56da692f0ab0374949632ec58366e9f63"
+      },
+      {
+        "sample": 2,
+        "source": "451f0943f496c2b7f7fe9a611eeda7e760f96fbf",
+        "report": "1792359300516-2437718-a146e998-9b5d-4de1-9dcf-fac64cf7e93e",
+        "summary": {
+          "discovered": 6,
+          "selected": 6,
+          "executed": 6,
+          "passed": 6,
+          "failed": 0,
+          "interrupted": 0,
+          "flaky": 0,
+          "skipped": 0
+        },
+        "portClosed": true,
+        "externalCleanup": false,
+        "product": "lucid",
+        "stepsSha256": "08950f3d348983285dedde4eebd25ed56da692f0ab0374949632ec58366e9f63"
+      },
+      {
+        "product": "meditation",
+        "sample": 1,
+        "source": "451f0943f496c2b7f7fe9a611eeda7e760f96fbf",
+        "report": "1792359401562-2441847-80ccca58-b06c-4011-ba34-dae5f1b4ee29",
+        "summary": {
+          "discovered": 1,
+          "selected": 1,
+          "executed": 1,
+          "passed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "flaky": 0,
+          "skipped": 0
+        },
+        "portClosed": true,
+        "externalCleanup": false,
+        "stepsSha256": "efeeaf9c832c35e1d3bfe953fd8c55dcd235b44a393997a642b86e58814cb088"
+      },
+      {
+        "product": "meditation",
+        "sample": 2,
+        "source": "451f0943f496c2b7f7fe9a611eeda7e760f96fbf",
+        "report": "1792359421782-2442716-772b6f9a-8e1b-44eb-ae50-10aeca7f81c5",
         "summary": {
           "discovered": 1,
           "selected": 1,
