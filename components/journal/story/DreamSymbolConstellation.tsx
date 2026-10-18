@@ -15,12 +15,12 @@ export const MAX_CONSTELLATION_STARS = 5;
 
 /** A star without a linked symbol is a point of light; a linked one wears its face. */
 const STAR = 9;
-const FACE = 36;
-const HALO = 52;
+const FACE = 44;
+const HALO = 60;
 const LABEL_GAP = 8;
 const LABEL_LINE = 18;
 /** Vertical distance between the high and the low row of stars. */
-const ROW_GAP = 40;
+const ROW_GAP = 44;
 
 type Point = { x: number; y: number; high: boolean };
 
@@ -37,7 +37,7 @@ type Rows = { high: number; low: number; height: number };
 
 /**
  * High stars carry their label above, low stars below, so no thread crosses a word.
- * Each label keeps room for its two lines at the reader's text size (170 points at 100 %).
+ * Each label keeps room for its two lines at the reader's text size (182 points at 100 %).
  */
 const rowsFor = (fontScale: number): Rows => {
   const label = 2 * LABEL_LINE * Math.max(fontScale, 1);
@@ -154,7 +154,7 @@ function Star({ point, index, star, labelWidth, height, play, reduced }: {
         {returns ? (
           <View className="absolute items-center justify-center rounded-full border border-champagne bg-ink"
             // On the face's upper right rim, clear of the labels above and below it.
-            style={{ left: HALO / 2 + 4, top: HALO / 2 - FACE / 2 - 6, minWidth: 18, height: 18, paddingHorizontal: 3 }}>
+            style={{ left: HALO / 2 + FACE / 2 - 14, top: HALO / 2 - FACE / 2 - 6, minWidth: 18, height: 18, paddingHorizontal: 3 }}>
             <Text allowFontScaling={false} className="font-sans-medium text-[10px] leading-[14px] text-champagne-on">{star.count}</Text>
           </View>
         ) : null}

@@ -206,7 +206,7 @@ function SymbolPage({ symbol, index, dream, born, language, onSelect, onClose }:
                 accessibilityHint={t('journal.symbols.open_hint')}
                 testID={TID.List.DreamSymbolCompanion(companion.linkKey)}
                 className="min-h-11 flex-row items-center gap-2 rounded-full border border-champagne-soft bg-ink-soft py-1 pl-1 pr-3.5">
-                <SymbolMedallion symbol={companion.symbol} size={32} />
+                <SymbolMedallion symbol={companion.symbol} size={36} />
                 <Text className="font-sans-medium text-[14px] text-ivory">{companion.symbol.name}</Text>
                 {often ? <Text className="font-sans text-[12px] text-ivory-muted">{often}</Text> : null}
               </PressableScale>
