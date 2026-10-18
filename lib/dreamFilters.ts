@@ -14,8 +14,38 @@ export interface FilterBySearchOptions {
 }
 
 /**
+ * Folds case, accents and typographic apostrophes, so "ocean" finds « Océan » and "l'eau"
+ * finds « l’eau ».
+ */
+export function foldSearchText(text: string): string {
+  return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[‘’`]/g, "'");
+}
+
+// Perf: folding a long transcript costs more than searching it, so a dream's own text is folded
+// once and kept for as long as the dream object lives (an edit replaces the object).
+const foldedDreamTexts = new WeakMap<DreamAnalysis, string>();
+
+/** The dream's own words: title, transcript, reading, type and the names of its symbols. */
+function getFoldedDreamText(dream: DreamAnalysis): string {
+  let folded = foldedDreamTexts.get(dream);
+  if (folded === undefined) {
+    folded = foldSearchText([
+      dream.title,
+      dream.transcript,
+      dream.interpretation,
+      dream.dreamType,
+      ...(dream.symbols ?? []).map((symbol) => symbol.name),
+    ]
+      .filter((value): value is string => Boolean(value))
+      .join(' '));
+    foldedDreamTexts.set(dream, folded);
+  }
+  return folded;
+}
+
+/**
  * Filter dreams by search query
- * Searches in title, transcript, and interpretation
+ * Searches in title, transcript, interpretation and symbol names, ignoring case and accents
  */
 export function filterBySearch(
   dreams: DreamAnalysis[],
@@ -25,14 +55,14 @@ export function filterBySearch(
   const trimmedQuery = query.trim();
   if (!trimmedQuery) return dreams;
 
-  const normalizedQuery = trimmedQuery.toLowerCase();
+  const normalizedQuery = foldSearchText(trimmedQuery);
   const queryHasWhitespace = /\s/.test(normalizedQuery);
 
   return dreams.filter((dream) => matchesSearch(dream, normalizedQuery, queryHasWhitespace, options));
 }
 
 /**
- * Predicate to check if a dream matches the search query.
+ * Predicate to check if a dream matches the search query, already folded.
  * Useful for single-pass filtering loops.
  */
 function matchesSearch(
@@ -41,48 +71,25 @@ function matchesSearch(
   queryHasWhitespace: boolean,
   options: FilterBySearchOptions = {}
 ): boolean {
-  // Check title (most likely match)
-  if (dream.title && dream.title.toLowerCase().includes(normalizedQuery)) return true;
+  // The dream's own words are joined with single spaces, so one check also covers a
+  // multi-word query that spans two of them (title then transcript).
+  const ownText = getFoldedDreamText(dream);
+  if (ownText.includes(normalizedQuery)) return true;
 
-  // Check transcript
-  if (dream.transcript && dream.transcript.toLowerCase().includes(normalizedQuery)) return true;
-
-  // Check interpretation
-  if (dream.interpretation && dream.interpretation.toLowerCase().includes(normalizedQuery)) return true;
-
-  // Check dream type
-  if (dream.dreamType && dream.dreamType.toLowerCase().includes(normalizedQuery)) return true;
-
-  // Perf: resolve localized labels only when needed (most searches match earlier fields).
+  // Perf: resolve localized labels only when needed (most searches match the dream's own words).
   const dreamTypeLabel = options.dreamTypeLabelResolver?.(dream.dreamType);
+  const labels = getDreamMemorySearchFields(dream, options);
+  if (dreamTypeLabel) labels.unshift(dreamTypeLabel);
+  if (labels.length === 0) return false;
 
-  // Check localized dream type label
-  if (dreamTypeLabel && dreamTypeLabel.toLowerCase().includes(normalizedQuery)) return true;
+  const foldedLabels = labels.map(foldSearchText);
+  if (foldedLabels.some((value) => value.includes(normalizedQuery))) return true;
 
-  const memorySearchFields = getDreamMemorySearchFields(dream, options);
-  if (memorySearchFields.some((value) => value.toLowerCase().includes(normalizedQuery))) {
-    return true;
-  }
-
-  // Perf: Cross-field matching only matters when the query contains whitespace because we join fields
-  // with a single space. For single-token queries, the per-field checks above are sufficient and we
-  // can skip allocating a large concatenated string + `.toLowerCase()` per dream.
+  // Perf: cross-field matching only matters when the query contains whitespace, since every
+  // field is joined with a single space.
   if (!queryHasWhitespace) return false;
 
-  // Preserve cross-field matching by checking the joined text
-  const searchableText = [
-    dream.title,
-    dream.transcript,
-    dream.interpretation,
-    dream.dreamType,
-    dreamTypeLabel,
-    ...memorySearchFields,
-  ]
-    .filter((value): value is string => Boolean(value))
-    .join(' ')
-    .toLowerCase();
-
-  return searchableText.includes(normalizedQuery);
+  return `${ownText} ${foldedLabels.join(' ')}`.includes(normalizedQuery);
 }
 
 export function isRememberedDream(dream: Pick<DreamAnalysis, 'memory'>): boolean {
@@ -220,6 +227,8 @@ export interface DreamFilters {
   needsExplorationOnly?: boolean;
   analysisStatus?: JournalAnalysisStatusFilter | null;
   recurringOnly?: boolean;
+  /** Only these dreams (the thread of a symbol); `null` or missing keeps every dream. */
+  dreamIds?: ReadonlySet<number> | null;
 }
 
 export interface ApplyFiltersOptions {
@@ -249,6 +258,7 @@ export function applyFilters(
     startDate,
     endDate,
     searchQuery,
+    dreamIds,
   } = filters;
 
   const trimmedQuery = searchQuery?.trim() ?? '';
@@ -265,6 +275,7 @@ export function applyFilters(
     !dreamType &&
     !startDate &&
     !endDate &&
+    !dreamIds &&
     !hasSearchQuery
   ) {
     // Perf: the unfiltered journal is the common path; preserve the existing sorted array
@@ -272,7 +283,7 @@ export function applyFilters(
     return dreams;
   }
 
-  const normalizedQuery = hasSearchQuery ? trimmedQuery.toLowerCase() : '';
+  const normalizedQuery = hasSearchQuery ? foldSearchText(trimmedQuery) : '';
   const queryHasWhitespace = hasSearchQuery && /\s/.test(normalizedQuery);
   const startTime = startDate ? startDate.getTime() : null;
   const endOfDayTime = endDate ? new Date(endDate).setHours(23, 59, 59, 999) : null;
@@ -280,6 +291,10 @@ export function applyFilters(
   return dreams.filter((dream) => {
     // 1. Cheapest checks: Boolean flags
     if (favoritesOnly && !dream.isFavorite) {
+      return false;
+    }
+
+    if (dreamIds && !dreamIds.has(dream.id)) {
       return false;
     }
 
@@ -353,13 +368,15 @@ export function createNarrowingFilter() {
   let last: {
     dreams: DreamAnalysis[];
     scope: string;
+    dreamIds: ReadonlySet<number> | null;
     labelsSource: unknown;
     query: string;
     result: DreamAnalysis[];
   } | null = null;
 
   return (dreams: DreamAnalysis[], filters: DreamFilters, options: NarrowingFilterOptions = {}): DreamAnalysis[] => {
-    const query = filters.searchQuery?.trim().toLowerCase() ?? '';
+    const query = foldSearchText(filters.searchQuery?.trim() ?? '');
+    const dreamIds = filters.dreamIds ?? null;
     const scope = JSON.stringify([
       filters.theme ?? null,
       filters.dreamType ?? null,
@@ -376,10 +393,11 @@ export function createNarrowingFilter() {
     const narrows = last !== null
       && last.dreams === dreams
       && last.scope === scope
+      && last.dreamIds === dreamIds
       && last.labelsSource === options.labelsSource
       && query.includes(last.query);
     const result = applyFilters(narrows && last ? last.result : dreams, filters, options);
-    last = { dreams, scope, labelsSource: options.labelsSource, query, result };
+    last = { dreams, scope, dreamIds, labelsSource: options.labelsSource, query, result };
     return result;
   };
 }

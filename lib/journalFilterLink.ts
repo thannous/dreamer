@@ -3,9 +3,9 @@ import type { JournalAnalysisStatusFilter } from '@/lib/dreamFilters';
 import type { DreamTheme, DreamType } from '@/lib/types';
 
 /**
- * Opening the journal on a set of dreams from another screen (Tendances): the filters
- * travel as route params and replace whatever the journal had. `filter` names the
- * request, so the same link pressed twice applies twice.
+ * Opening the journal on a set of dreams from another screen (Tendances, a symbol's
+ * sheet): the filters travel as route params and replace whatever the journal had.
+ * `filter` names the request, so the same link pressed twice applies twice.
  */
 export type JournalFilterRequest = {
   theme?: DreamTheme | null;
@@ -14,6 +14,8 @@ export type JournalFilterRequest = {
   from?: string | null;
   to?: string | null;
   analysis?: JournalAnalysisStatusFilter | null;
+  /** A symbol's link key (`d:water`, `p:lighthouse`): the dreams of its thread. */
+  symbol?: string | null;
 };
 
 export type JournalFilterRouteParams = {
@@ -23,6 +25,7 @@ export type JournalFilterRouteParams = {
   from?: string | string[];
   to?: string | string[];
   analysis?: string | string[];
+  symbol?: string | string[];
 };
 
 export type JournalFilterSelection = {
@@ -32,6 +35,7 @@ export type JournalFilterSelection = {
   start: Date | null;
   end: Date | null;
   analysis: JournalAnalysisStatusFilter | null;
+  symbol: string | null;
 };
 
 const DREAM_TYPES: readonly DreamType[] = [
@@ -43,6 +47,7 @@ const DREAM_TYPES: readonly DreamType[] = [
   'Fantastical Dream',
 ];
 const ANALYSIS_FILTERS: readonly JournalAnalysisStatusFilter[] = ['unanalyzed', 'analyzed', 'explored'];
+const SYMBOL_LINK_KEY = /^[dpn]:\S/;
 
 export function toJournalFilterParams(request: JournalFilterRequest, key: string): Record<string, string> {
   return {
@@ -52,6 +57,7 @@ export function toJournalFilterParams(request: JournalFilterRequest, key: string
     ...(request.from ? { from: request.from } : {}),
     ...(request.to ? { to: request.to } : {}),
     ...(request.analysis ? { analysis: request.analysis } : {}),
+    ...(request.symbol ? { symbol: request.symbol } : {}),
   };
 }
 
@@ -72,6 +78,7 @@ export function parseJournalFilterParams(params: JournalFilterRouteParams): Jour
   const theme = single(params.theme);
   const dreamType = single(params.type);
   const analysis = single(params.analysis);
+  const symbol = single(params.symbol);
   return {
     key,
     theme: DREAM_THEMES.includes(theme as DreamTheme) ? (theme as DreamTheme) : null,
@@ -81,5 +88,6 @@ export function parseJournalFilterParams(params: JournalFilterRouteParams): Jour
     analysis: ANALYSIS_FILTERS.includes(analysis as JournalAnalysisStatusFilter)
       ? (analysis as JournalAnalysisStatusFilter)
       : null,
+    symbol: SYMBOL_LINK_KEY.test(symbol ?? '') ? symbol ?? null : null,
   };
 }
