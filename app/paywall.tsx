@@ -573,6 +573,23 @@ function PaywallScreen() {
 
   return (
     <View style={rootStyle} testID={TID.Screen.Paywall}>
+      {/* Close stays in reach over the painting, whatever the scroll. It comes first so
+          keyboard and screen-reader focus meets it first; zIndex keeps it above the scroll. */}
+      <View pointerEvents="box-none" style={[styles.closeOverlay, { top: ThemeLayout.spacing.sm + insets.top }]}>
+        <ScreenContainer maxWidth={PAYWALL_MAX_WIDTH} pointerEvents="box-none">
+          <Pressable
+            onPress={handleClose}
+            disabled={busy}
+            style={({ pressed }) => [styles.closeButton, styles.closeButtonFloating, { backgroundColor: noctalia.surface.raised }, pressed && styles.closeButtonPressed]}
+            accessibilityRole="button"
+            testID={TID.Button.PaywallClose}
+          >
+            <Text style={[styles.closeLabel, { color: noctalia.accent.text }]}>
+              {t('subscription.paywall.button.close')}
+            </Text>
+          </Pressable>
+        </ScreenContainer>
+      </View>
       <ScrollView onScroll={onHeaderScroll} scrollEventThrottle={16}
         style={styles.scroll}
         contentContainerStyle={[
@@ -584,8 +601,11 @@ function PaywallScreen() {
         ]}
         contentInsetAdjustmentBehavior="automatic"
       >
-        {/* A short window: the offer, not the sky, should hold the screen. */}
-        <DreamerArtworkWindow scene="observatory" maxHeight={PAYWALL_PAINTING_HEIGHT} style={{ marginHorizontal: -ThemeLayout.spacing.md }} bleedTop={ThemeLayout.spacing.sm + insets.top} />
+        {/* A short window: the offer, not the sky, should hold the screen. If the painting
+            fails to load, the slot still keeps the copy clear of the floating Close. */}
+        <View style={styles.artworkSlot}>
+          <DreamerArtworkWindow scene="observatory" maxHeight={PAYWALL_PAINTING_HEIGHT} style={{ marginHorizontal: -ThemeLayout.spacing.md }} bleedTop={ThemeLayout.spacing.sm + insets.top} />
+        </View>
         <ScreenContainer maxWidth={PAYWALL_MAX_WIDTH}>
           {/* The paywall is a rare screen and a pitch: the offer arrives a beat before the
               price, and the price a beat before the button. This is the one surface where
@@ -899,23 +919,6 @@ function PaywallScreen() {
         </ScreenContainer>
       </ScrollView>
 
-      {/* Close stays in reach over the painting, whatever the scroll. */}
-      <View pointerEvents="box-none" style={[styles.closeOverlay, { top: ThemeLayout.spacing.sm + insets.top }]}>
-        <ScreenContainer maxWidth={PAYWALL_MAX_WIDTH} pointerEvents="box-none">
-          <Pressable
-            onPress={handleClose}
-            disabled={busy}
-            style={({ pressed }) => [styles.closeButton, styles.closeButtonFloating, { backgroundColor: noctalia.surface.raised }, pressed && styles.closeButtonPressed]}
-            accessibilityRole="button"
-            testID={TID.Button.PaywallClose}
-          >
-            <Text style={[styles.closeLabel, { color: noctalia.accent.text }]}>
-              {t('subscription.paywall.button.close')}
-            </Text>
-          </Pressable>
-        </ScreenContainer>
-      </View>
-
       {toast ? (
         <Toast
           message={toast.message}
@@ -962,7 +965,12 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     right: 0,
+    zIndex: 1,
     paddingHorizontal: ThemeLayout.spacing.md,
+  },
+  artworkSlot: {
+    // The floating Close's row, when the painting is missing.
+    minHeight: 44 + ThemeLayout.spacing.sm,
   },
   headerTitle: {
     fontSize: 28,
