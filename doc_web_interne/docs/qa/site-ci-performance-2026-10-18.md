@@ -201,7 +201,7 @@ bash .circleci/tests/classify-changes.test.sh
 
 ## Audit des CI des applications mobiles
 
-État constaté dans ce checkout : `noctalia-quality` couvre Dreamer et Lucid,
+État initial de l'audit, avant le lot ci-dessous : `noctalia-quality` couvre Dreamer et Lucid,
 `meditation-quality` couvre le package Meditation. Les parcours `testerarmy-web`
 valident les versions navigateur de ces produits ; ils ne constituent pas une
 preuve Android/iOS native. Deux workflows EAS Android, smoke et qualification,
@@ -228,3 +228,99 @@ profils, compteurs et budgets ne sont pas modifiés par cet audit.
 Références officielles consultées : [caches CircleCI](https://circleci.com/docs/guides/optimize/caching/),
 [caches EAS](https://docs.expo.dev/build-reference/caching/),
 [navigateurs Playwright en CI](https://playwright.dev/docs/ci#caching-browsers).
+
+## Optimisation de la préparation E2E mobile
+
+Lot autorisé le 18 octobre : commencer par les installations E2E et Chromium,
+mesurer avant/après, garder la couverture et les mêmes contrôles communs Windows/Linux.
+Référence : `6873cf106a6a32dab4d5be7b21fa3a923edd0567`, après intégration du
+master `ae36340e893349f5c0d406277c47563f29dc7706`.
+Le [reçu de mesure et de parité](site-ci-performance-2026-10-18-e2e.json)
+contient les répétitions, versions, empreintes et limites.
+
+### Changement retenu
+
+Les shards TesterArmy utilisent `--only-shell` : le moteur web 0.15.2 lance
+déjà `chromium.launch({ headless: true })`, sans canal alternatif. Le même
+Chromium headless shell 156.0.8078.4, révision 1248, est donc exécuté ; seul le
+téléchargement du navigateur complet inutilisé disparaît. `--with-deps`, FFmpeg,
+les versions verrouillées, `npm ci`, les contrôles types et gardes restent présents.
+L'installation locale sans option reste complète pour les essais `--headed`.
+L'installateur Node résout Playwright depuis le moteur E2E, refuse un matcher
+de version différente, conserve les navigateurs des autres projets et propage
+les annulations ainsi que les erreurs.
+
+Les commandes de campagne, les 8 shards Dreamer et 3 shards de contextes,
+Lucid, Meditation, le site et la collecte de l'union exacte ne changent pas.
+Les déclencheurs, classes de ressources, profils EAS, builds natifs et CI backend
+restent identiques. Les workflows Android ne sont pas lancés par ce lot.
+
+### Mesure avant/après
+
+Ubuntu 24.04 sous WSL2, Node 24.19.0, affinité limitée aux processeurs 0 et 1.
+Trois paires alternées, mêmes lockfiles et moteur, un répertoire navigateur
+absent à chaque essai. Les vraies commandes npm du paquet sont mesurées :
+avant, `PLAYWRIGHT_SKIP_BROWSER_GC=1 e2e-web install chromium` ; après,
+`node install-browsers.mjs --only-shell`, via `npm run browsers:install`.
+
+| Installation Chromium | Essai 1 | Essai 2 | Essai 3 | Médiane |
+| --- | ---: | ---: | ---: | ---: |
+| Avant | 17,453 s | 16,883 s | 19,077 s | 17,453 s |
+| Après | 7,802 s | 7,704 s | 7,354 s | 7,704 s |
+
+Gain médian de **9,749 s, soit 55,9 %** sur cette préparation locale.
+L'espace installé passe de 711,3 à 290,4 Mo décimaux. Ce ne sont ni des octets
+transférés par CircleCI ni un gain mesuré sur la durée totale d'une campagne.
+L'étape apt, identique avant/après, les dépendances racines et les transferts
+d'images/caches CircleCI sont exclus. La CLI officielle CircleCI 1.7.0 valide
+la configuration ; aucun accès API CircleCI n'est configuré ici, donc aucune
+mesure distante comparable n'est disponible.
+
+Pour reproduire : installer `tools/e2e` depuis son lockfile dans une copie de
+chaque révision ; exécuter trois fois la commande navigateur de chaque version
+en alternance, sous `taskset -c 0,1`, avec un `PLAYWRIGHT_BROWSERS_PATH` neuf
+à chaque fois. Conserver sortie, code de retour et temps mural. Les scripts
+de mesure et journaux bruts de ce lot sont dans `.tmp/ci-performance/`.
+
+### Installation npm : propositions écartées après mesure
+
+Le cache racine de référence est amorcé uniquement avec son propre lockfile.
+Installer les 51 paquets E2E après restauration de ce cache prend une médiane
+de 1,613 s. Le store E2E dédié donne 1,366 s, plus 0,145 s de décompression,
+soit seulement environ 0,10 s gagné avant même le transfert des 20,1 Mo du cache.
+Son premier remplissage coûte 2,044 s et sa compression 0,332 s.
+Le cache supplémentaire n'est donc pas activé. Les répétitions suivantes ne
+montrent pas non plus de gain robuste de `--prefer-offline` ; cette option
+n'est pas conservée. `npm ci` et les caches existants restent en place.
+Une image navigateur préinstallée reste à comparer sur le même exécuteur distant
+avant adoption ; sa taille de transfert ne peut pas être ignorée.
+
+### Parité et absence de réduction des tests
+
+- **40 contrôles communs passent sur chaque OS, zéro ignoré** ; inventaires
+  comparés automatiquement. Les cas d'annulation et de liens restent exécutés.
+- Les trois cas auparavant dépendants du privilège Windows de création de liens
+  simulent désormais leurs métadonnées sur les deux OS, en gardant de vrais
+  fichiers, hachages et assertions de refus. Les fonctions de garde de production
+  sont inchangées. Les 31 gardes Linux d'origine ont aussi passé avec de vrais liens.
+- Les **6 parcours Lucid** passent sur Windows et sur Linux avant/après ; mêmes
+  identifiants, mêmes inventaires d'étapes et même empreinte du fichier de tests.
+  Chaque exécution conserve rapport, six traces, manifeste et résultat qualifié.
+  Le Linux après utilise un répertoire contenant uniquement shell et FFmpeg.
+- Trois défauts Windows reproduits sont corrigés : import ESM par chemin `C:`,
+  perte du `Path` hérité lors de sa copie et lancement direct de `npm.cmd`.
+  Les preloads deviennent des URL de fichiers et les scripts de paquet sont
+  lancés par le Node épinglé avec `--run`, sur tous les OS.
+
+Rerun des contrôles communs :
+
+```sh
+node --test tools/e2e/qualification.test.mjs tools/e2e/native-release.test.mjs tools/e2e/mock-profile.test.mjs tools/e2e/install-browsers.test.mjs .circleci/tests/e2e-preparation.test.mjs
+npm run test:testerarmy:typecheck
+npm run test:testerarmy:lucid
+```
+
+Ces parcours navigateur utilisent les services mock ; ils ne qualifient aucun
+binaire Android/iOS. Les campagnes Dreamer/Meditation complètes, les builds EAS
+et la CI distante n'ont pas été rejoués. Les fichiers de parcours et leurs
+assertions ne sont pas modifiés par ce lot.

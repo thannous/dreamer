@@ -315,6 +315,19 @@ installation : le temps total facturé augmente un peu, le temps d'attente
 diminue. Le workspace Dreamer transporte environ 600 Mo de traces par
 pipeline.
 
+Les installations E2E restent verrouillées par `npm ci`. Les conteneurs
+TesterArmy installent seulement le Chromium sans fenêtre déjà utilisé par le
+moteur (`--only-shell`), avec `--with-deps` pour conserver les bibliothèques Linux.
+L'installation locale complète reste disponible pour `--headed`. Le collecteur
+installe le même paquet E2E et garde la preuve d'union ; il n'installe aucun
+navigateur. Le nombre de shards, les quatre contextes Dreamer et les assertions
+ne changent pas. Les contrôles de préparation sont aussi exécutés par
+`verify:pr` et `verify:release`.
+
+Le benchmark du 18 octobre, sa portée locale et la décision de ne pas ajouter
+un cache npm dédié sans gain net robuste sont consignés dans le
+[rapport de mesure](qa/site-ci-performance-2026-10-18.md#optimisation-de-la-préparation-e2e-mobile).
+
 ## Estimation CircleCI Free figée
 
 Hypothèses officielles figées au 20 août 2026 : 30 000 crédits/mois, Docker
