@@ -32,17 +32,17 @@ export type SymbolLinkCase = {
 export const SYMBOL_LINK_CASES: readonly SymbolLinkCase[] = [
   // ---- same: one element, worded differently.
   {
-    id: 'same-lighthouse',
+    id: 'same-windmill',
     kind: 'same',
     lang: 'fr',
-    note: 'A lighthouse named in A, only described in B.',
+    note: 'A windmill named in A, only described in B (the dictionary has no windmill).',
     a: {
-      transcript: 'Je marchais sur une plage de galets au crépuscule. Au bout de la jetée, un vieux phare blanc balayait l’eau de son faisceau. Je voulais l’atteindre avant la nuit, mais le sable me ralentissait à chaque pas.',
-      target: /phare|lighthouse/iu,
+      transcript: 'Je traversais un champ de blé sous un ciel d’orage. Sur la colline, un vieux moulin à vent tournait de plus en plus vite. Je voulais m’y abriter, mais je n’arrivais jamais à m’en approcher.',
+      target: /moulin|windmill/iu,
     },
     b: {
-      transcript: 'J’étais sur un bateau de pêche dans le brouillard. Sur un rocher, une grande tour éclairait la mer par intervalles réguliers, et le capitaine disait qu’il fallait la suivre pour rentrer au port.',
-      target: /phare|lighthouse|\btour\b|tower|lumi[eè]re|\blight\b|faisceau|beacon/iu,
+      transcript: 'Je marchais sur une petite route de campagne en fin d’après-midi. Au sommet d’une butte, une bâtisse ronde faisait tourner quatre grandes ailes de toile, et leur ombre passait sur moi à chaque tour.',
+      target: /moulin|windmill|ailes|sails|b[aâ]tisse/iu,
     },
   },
   {
@@ -118,17 +118,17 @@ export const SYMBOL_LINK_CASES: readonly SymbolLinkCase[] = [
 
   // ---- return: salient in A, secondary in B.
   {
-    id: 'return-lighthouse',
+    id: 'return-scarecrow',
     kind: 'return',
     lang: 'fr',
-    note: 'A lighthouse at the centre of A, glimpsed through a window in B.',
+    note: 'A scarecrow at the centre of A, glimpsed in a corner of B (the dictionary has no scarecrow).',
     a: {
-      transcript: 'Je vivais seule dans un phare au milieu de l’océan. Chaque soir, je montais allumer la grande lampe et j’attendais qu’un bateau réponde.',
-      target: /phare|lighthouse/iu,
+      transcript: 'J’étais au milieu d’un potager, face à un épouvantail en vieux manteau. Il tournait lentement la tête vers moi et me demandait mon nom. Je n’osais pas répondre.',
+      target: /[ée]pouvantail|scarecrow/iu,
     },
     b: {
-      transcript: 'Je préparais un dîner pour des amis dans un appartement inconnu. On riait, on cherchait des verres partout. Par la fenêtre, au loin, le phare clignotait sur la côte.',
-      target: /phare|lighthouse/iu,
+      transcript: 'Je cherchais une amie dans une salle des fêtes pleine de monde. On dansait, on riait, je ne la trouvais pas. Dans un coin, un épouvantail en vieux manteau était appuyé contre le mur.',
+      target: /[ée]pouvantail|scarecrow/iu,
     },
   },
   {

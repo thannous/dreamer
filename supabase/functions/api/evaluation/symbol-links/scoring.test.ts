@@ -10,43 +10,43 @@ import {
   symbolsParagraph,
 } from './scoring.ts';
 
-const lighthouse: Pick<SymbolLinkCase, 'a' | 'b' | 'expectedSymbolId'> = {
-  a: { transcript: 'Un phare.', target: /phare|lighthouse/iu },
-  b: { transcript: 'Une tour qui éclaire la mer.', target: /phare|\btour\b|lighthouse/iu },
+const windmill: Pick<SymbolLinkCase, 'a' | 'b' | 'expectedSymbolId'> = {
+  a: { transcript: 'Un moulin.', target: /moulin|windmill/iu },
+  b: { transcript: 'De grandes ailes qui tournent sur la colline.', target: /moulin|ailes|windmill/iu },
 };
 
 Deno.test('answered symbols are normalized as production stores them, duplicates and all', () => {
   const symbols = scoredSymbols({
     symbols: [
-      { name: 'Le phare', meaning: 'x', symbolId: 'none', key: 'Old Lighthouse' },
+      { name: 'Le moulin', meaning: 'x', symbolId: 'none', key: 'Old Windmill' },
       { name: 'Chaton', meaning: 'x', symbolId: 'none', key: 'cat' },
-      { name: 'La tour', meaning: 'x', symbolId: 'none', key: 'old-lighthouse' },
+      { name: 'Les ailes', meaning: 'x', symbolId: 'none', key: 'old-windmill' },
       { name: 'Geste', meaning: 'x', symbolId: 'none', key: '' },
       { name: '', meaning: 'not shown by the app', symbolId: 'cat', key: '' },
     ],
   });
   assertEquals(symbols, [
-    { name: 'Le phare', key: 'old-lighthouse', link: 'p:old-lighthouse' },
+    { name: 'Le moulin', key: 'old-windmill', link: 'p:old-windmill' },
     { name: 'Chaton', symbolId: 'cat', link: 'd:cat' },
-    { name: 'La tour', key: 'old-lighthouse', link: 'p:old-lighthouse' },
+    { name: 'Les ailes', key: 'old-windmill', link: 'p:old-windmill' },
     { name: 'Geste', link: null },
   ]);
   assertEquals(scoredSymbols({ symbols: 'nope' }), []);
 });
 
 Deno.test('a returning element is linked by its reused link, whatever B calls it', () => {
-  const a = scoredSymbols({ symbols: [{ name: 'Le phare', meaning: 'x', symbolId: 'none', key: 'lighthouse' }] });
-  const reused = scoredSymbols({ symbols: [{ name: 'Le signal sur le rocher', meaning: 'x', symbolId: 'none', key: 'lighthouse' }] });
-  const known = [{ key: 'lighthouse', name: 'Le phare' }];
-  const linked = scorePair(lighthouse, a, reused, known);
+  const a = scoredSymbols({ symbols: [{ name: 'Le moulin', meaning: 'x', symbolId: 'none', key: 'windmill' }] });
+  const reused = scoredSymbols({ symbols: [{ name: 'Les ailes sur la colline', meaning: 'x', symbolId: 'none', key: 'windmill' }] });
+  const known = [{ key: 'windmill', name: 'Le moulin' }];
+  const linked = scorePair(windmill, a, reused, known);
   assertEquals([linked.targetInA, linked.targetInB, linked.linked], [true, true, true]);
   assertEquals([linked.reusedKeys, linked.keptNames], [1, 0]);
 
-  const renamed = scoredSymbols({ symbols: [{ name: 'La tour', meaning: 'x', symbolId: 'none', key: 'light-tower' }] });
-  assertEquals([scorePair(lighthouse, a, renamed, known).targetInB, scorePair(lighthouse, a, renamed, known).linked], [true, false]);
+  const renamed = scoredSymbols({ symbols: [{ name: 'Les ailes', meaning: 'x', symbolId: 'none', key: 'wind-sails' }] });
+  assertEquals([scorePair(windmill, a, renamed, known).targetInB, scorePair(windmill, a, renamed, known).linked], [true, false]);
 
   const omitted = scoredSymbols({ symbols: [{ name: 'Le bateau', meaning: 'x', symbolId: 'boat', key: '' }] });
-  assertEquals([scorePair(lighthouse, a, omitted, known).targetInB, scorePair(lighthouse, a, omitted, known).linked], [false, false]);
+  assertEquals([scorePair(windmill, a, omitted, known).targetInB, scorePair(windmill, a, omitted, known).linked], [false, false]);
 });
 
 Deno.test('dictionary targets, duplicates and key lengths are counted per reading', () => {

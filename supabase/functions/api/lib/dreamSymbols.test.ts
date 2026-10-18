@@ -48,6 +48,6 @@ Deno.test('a key that is a dictionary id is not a personal symbol and takes none
   const dictionaryKeyed = DREAM_SYMBOL_IDS.slice(0, MAX_KNOWN_SYMBOLS).map((id) => ({ name: id, meaning: 'x', key: id.toUpperCase() }));
   assertEquals(collectKnownDreamSymbols([
     { symbols: dictionaryKeyed },
-    { symbols: [{ name: 'Le phare', meaning: 'x', key: 'lighthouse' }] },
-  ]), [{ key: 'lighthouse', name: 'Le phare' }]);
+    { symbols: [{ name: 'Le moulin', meaning: 'x', key: 'windmill' }] },
+  ]), [{ key: 'windmill', name: 'Le moulin' }]);
 });

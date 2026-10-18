@@ -248,7 +248,7 @@ if (import.meta.main) {
   const sample = cases[0];
   const samplePrompt = (variant: Variant, known: readonly KnownDreamSymbol[] = []) =>
     PROMPTS[variant](sample.a.transcript, aiLanguageName(sample.lang), false, THEMES, known);
-  const sampleKnown = [{ key: 'lighthouse', name: 'Le phare' }];
+  const sampleKnown = [{ key: 'windmill', name: 'Le moulin' }];
   const promptsComparable = differOnlyOnLinkFields(samplePrompt('baseline'), samplePrompt('candidate')) &&
     differOnlyOnLinkFields(samplePrompt('baseline', sampleKnown), samplePrompt('candidate', sampleKnown));
   console.log(JSON.stringify({
