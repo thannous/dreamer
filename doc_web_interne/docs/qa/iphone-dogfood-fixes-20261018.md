@@ -16,6 +16,8 @@ Périmètre : les sept constats IPH-01 à IPH-07 de l’exploration physique du 
 
 Client physique existant Noctalia 3.6.0 (11), `builtByDeveloper=true`, bundle `com.tanuki75.noctalia`, iPhone 17 Pro Max. Chargement du JavaScript corrigé par Metro dédié sur le port 8093, profil réel conservé. Aucun remplacement du binaire ni effacement des données personnelles. Le candidat de base est `e04a1d976a69d43d9d4b28fbed47a4fe534964dc` ; les ajouts natifs Siri arrivés ultérieurement sur master ne font pas partie de cette qualification du client installé.
 
+Cette campagne sur l’iPhone existant répond à la demande explicite du propriétaire dans cette conversation, avec conservation de sa session et de ses données. Cette autorisation est propre à cette campagne ; la configuration exige une cible nommée et `E2E_OWNER_IPHONE_DOGFOOD=approved`, et ne modifie pas le périmètre des campagnes natives habituelles.
+
 La campagne `tools/e2e/e2e.iphone-dogfood.config.ts` utilise un seul worker, commence chaque test par `app.open()` et ne réalise aucun achat ni suppression de compte. Le parcours de rappel crée son propre rêve synthétique, refuse d’écraser un brouillon préexistant et vérifie le marqueur avant nettoyage. Les captures privées restent dans `tools/e2e/.e2e/` ; ne pas publier les données du compte.
 
 Commande, depuis la racine du checkout, après avoir chargé le candidat dans le client iPhone :
@@ -54,3 +56,7 @@ Les quatre parcours couvrant les sept constats ont chacun une exécution réussi
 Le dernier parcours vérifie les valeurs exactes, la position du champ avant et après saisie, l’absence du dock pendant le clavier, l’état effectivement terminé, puis la présence des deux détails après relance. Il confirme enfin la suppression du seul rêve synthétique par une recherche sans résultat, efface sa recherche et rend l’accueil. Aucun rêve personnel n’a été modifié. Les échecs des premières reprises sont conservés et ne comptent pas comme des réussites.
 
 La revue ciblée du test a demandé l’assertion de fin effective et la mesure après saisie ; ces deux contrôles sont présents dans regression12. La saisie clavier native évite l’échec de remplissage du pilote sur le second champ déplacé. Les captures et traces privées restent dans le rapport canonique cité plus haut.
+
+## Suivi de revue avant fusion
+
+Les cinq résumés français modifiés (`mouth`, `horse`, `father`, `friend`, `elephant`) portent maintenant `modifiedAt: 2026-10-18`. Le contrôle éditorial contre le catalogue réel de master a reproduit les cinq erreurs avant correction, puis passe après correction. Les dates des autres langues et la date de repli du catalogue restent intactes. La copie embarquée de l’application ne contient pas ces dates ; ses octets et la preuve iPhone sont inchangés.
