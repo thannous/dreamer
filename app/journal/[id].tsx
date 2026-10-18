@@ -2847,7 +2847,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
             onPress={dismissStaleBanner}
             accessibilityRole="button"
             accessibilityLabel={t('journal.detail.stale.dismiss')}
-            className="h-6 w-6 items-center justify-center"
+            className="-m-2.5 h-11 w-11 items-center justify-center"
           >
             <IconSymbol name="xmark" size={16} color={noctalia.status.warning.icon} />
           </PressableScale>
