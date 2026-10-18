@@ -41,7 +41,7 @@ const formatUsage = (usage?: UsageEntry, unlimitedLabel?: string) => {
     return unlimitedLabel ?? 'Unlimited';
   }
   const used = usage.used ?? 0;
-  return `${Math.max(used, 0)} / ${usage.limit}`;
+  return `${Math.min(Math.max(used, 0), usage.limit)} / ${usage.limit}`;
 };
 
 const getProgress = (usage?: UsageEntry) => {
