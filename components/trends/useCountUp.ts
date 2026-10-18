@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 const COUNT_MS = 900;
+const STEP_MS = 50;
 
 /**
  * A whole number that travels to its value instead of jumping: from zero the first time
@@ -27,9 +28,17 @@ export function useCountUp(target: number, { fromZero, still, delay = 0 }: {
     if (from === target) return;
     let frame = 0;
     let started: number | null = null;
+    let drawn = -Infinity;
     const step = (time: number) => {
       started ??= time;
       const progress = Math.min(1, (time - started) / COUNT_MS);
+      // Each value shown costs a render; past about twenty a second the eye reads no
+      // more of them, so the frames between are skipped.
+      if (progress < 1 && time - drawn < STEP_MS) {
+        frame = requestAnimationFrame(step);
+        return;
+      }
+      drawn = time;
       // Decelerates into the value, like everything that arrives.
       const next = Math.round(from + (target - from) * (1 - (1 - progress) ** 3));
       shownRef.current = next;

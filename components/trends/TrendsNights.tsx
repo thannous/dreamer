@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { memo, useMemo, useState } from 'react';
 import { Image, Pressable, Text, View, type StyleProp, type ViewStyle } from 'react-native';
 import Animated, { type CSSStyle } from 'react-native-reanimated';
 import Svg, { Circle, Path } from 'react-native-svg';
@@ -24,8 +24,12 @@ const BAR_HEIGHT = 96;
 
 const capitalize = (value: string) => (value ? value.charAt(0).toLocaleUpperCase() + value.slice(1) : value);
 
-/** A night of the calendar: its star when a dream was noted, the thread of the current run through it. */
-function NightCell({ night, index, selected, lit, reduced, ink, label, onPress }: {
+/**
+ * A night of the calendar: its star when a dream was noted, the thread of the current run
+ * through it. Drawn again only when one of its own props changes, so a star lighting or a
+ * night picked leaves the rest of the month alone.
+ */
+const NightCell = memo(function NightCell({ night, index, selected, lit, reduced, ink, label, onPick }: {
   night: ThreadedNight;
   index: number;
   selected: boolean;
@@ -33,7 +37,7 @@ function NightCell({ night, index, selected, lit, reduced, ink, label, onPress }
   reduced: boolean;
   ink: string;
   label: string;
-  onPress?: () => void;
+  onPick?: (dateKey: string) => void;
 }) {
   const count = night.dreams.length;
   const star = count > 1 ? 10 : 7;
@@ -48,6 +52,20 @@ function NightCell({ night, index, selected, lit, reduced, ink, label, onPress }
     animationTimingFunction: EASE.out,
     animationFillMode: 'both',
   } : lit || reduced ? null : { opacity: 0 }) as CSSStyle<ViewStyle> | null;
+  // The star and the date are their own elements, so a star lighting redraws neither.
+  const art = count > 0 ? (
+    <Svg width={24} height={24}>
+      <Path d={sparklePath(12, 12, star)} fill={ink} />
+      {waiting ? <Circle cx={19.5} cy={4.5} r={2.6} fill="none" stroke={ink} strokeWidth={1} /> : null}
+    </Svg>
+  ) : null;
+  const day = (
+    <Text allowFontScaling={false}
+      className={`text-[11px] leading-[14px] ${count > 0 ? 'font-sans-medium text-ivory' : 'font-sans text-ivory-muted'}`}
+      style={night.inRange ? undefined : { opacity: 0.4 }}>
+      {night.dateKey.slice(8).replace(/^0/, '')}
+    </Text>
+  );
   // The run's thread joins neighbouring nights of the same row, behind their stars.
   const column = index % 7;
   const threadLeft = night.inStreak && column !== 0 && night.threadFromPrevious;
@@ -64,25 +82,16 @@ function NightCell({ night, index, selected, lit, reduced, ink, label, onPress }
           }} />
         ) : null}
         {count > 0 ? (
-          <Animated.View style={ignite as StyleProp<ViewStyle>}>
-            <Svg width={24} height={24}>
-              <Path d={sparklePath(12, 12, star)} fill={ink} />
-              {waiting ? <Circle cx={19.5} cy={4.5} r={2.6} fill="none" stroke={ink} strokeWidth={1} /> : null}
-            </Svg>
-          </Animated.View>
+          <Animated.View style={ignite as StyleProp<ViewStyle>}>{art}</Animated.View>
         ) : night.inRange ? (
           <View className="rounded-full bg-ivory-muted" style={{ width: 2.5, height: 2.5, opacity: 0.5 }} />
         ) : null}
       </View>
-      <Text allowFontScaling={false}
-        className={`text-[11px] leading-[14px] ${count > 0 ? 'font-sans-medium text-ivory' : 'font-sans text-ivory-muted'}`}
-        style={night.inRange ? undefined : { opacity: 0.4 }}>
-        {night.dateKey.slice(8).replace(/^0/, '')}
-      </Text>
+      {day}
     </>
   );
-  return onPress ? (
-    <Pressable testID={`trends.nights.night.${night.dateKey}`} onPress={onPress} accessibilityRole="button"
+  return onPick ? (
+    <Pressable testID={`trends.nights.night.${night.dateKey}`} onPress={() => onPick(night.dateKey)} accessibilityRole="button"
       accessibilityLabel={label} accessibilityState={{ selected }}
       className="items-center" style={{ width: `${100 / 7}%`, height: CELL_HEIGHT }}>
       {content}
@@ -93,7 +102,7 @@ function NightCell({ night, index, selected, lit, reduced, ink, label, onPress }
       {content}
     </View>
   );
-}
+});
 
 type ThreadedNight = DreamTrendsNight & { threadFromPrevious: boolean; threadToNext: boolean };
 
@@ -234,8 +243,9 @@ export function TrendsNights({ trends, lit, reduced, ink, onAccent, t, formatDat
           <View className="flex-row flex-wrap">
             {nights.map((night, index) => (
               <NightCell key={night.dateKey} night={night} index={index} selected={night.dateKey === selected?.dateKey}
-                lit={lit} reduced={reduced} ink={ink} label={nightLabel(night)}
-                onPress={night.dreams.length > 0 ? () => setPicked(night.dateKey) : undefined} />
+                // Only a star lights: a night without a dream keeps its props, and stays as drawn.
+                lit={lit && night.dreams.length > 0} reduced={reduced} ink={ink} label={nightLabel(night)}
+                onPick={night.dreams.length > 0 ? setPicked : undefined} />
             ))}
           </View>
         </View>

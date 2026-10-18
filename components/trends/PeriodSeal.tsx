@@ -1,5 +1,5 @@
 import { Image as Painting } from 'expo-image';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { memo, useEffect, useMemo, useState } from 'react';
 import { Image, Text, View, type StyleProp, type ViewStyle } from 'react-native';
 import Animated, {
   ReduceMotion,
@@ -61,7 +61,7 @@ const point = (radius: number, angle: number) => ({
 });
 
 /** Half an arc, drawn from its theme's place on the ring, clockwise or back, as far as its count reaches. */
-function ArcHalf({ angle, clockwise, length, color, opacity, delay }: {
+const ArcHalf = memo(function ArcHalf({ angle, clockwise, length, color, opacity, delay }: {
   angle: number;
   clockwise: boolean;
   length: number;
@@ -92,7 +92,7 @@ function ArcHalf({ angle, clockwise, length, color, opacity, delay }: {
       animatedProps={animatedProps}
     />
   );
-}
+});
 
 function Glow({ size, color, id }: { size: number; color: string; id: string }) {
   return (
@@ -108,6 +108,58 @@ function Glow({ size, color, id }: { size: number; color: string; id: string }) 
     </Svg>
   );
 }
+
+/**
+ * A sign on the orbit, in its engraved medal, with its count. Drawn again only when its
+ * own state changes: turning the ring to another sign redraws the two that trade places.
+ */
+const SealSign = memo(function SealSign({ theme, count, chosen, selected, label, ink, onSelect }: {
+  theme: DreamTheme;
+  count: number;
+  chosen: boolean;
+  selected: boolean;
+  label: string;
+  ink: string;
+  onSelect: (theme: DreamTheme) => void;
+}) {
+  return (
+    <PressableScale
+      testID={`trends.seal.sign.${theme}`}
+      onPress={() => onSelect(theme)}
+      haptic="selection"
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityState={{ selected }}
+      className="items-center justify-center"
+      style={{ width: MEDAL_TARGET, height: MEDAL_TARGET }}
+    >
+      {chosen ? (
+        <View className="absolute" pointerEvents="none" style={{ width: MEDAL * 2, height: MEDAL * 2 }}>
+          <Glow size={MEDAL * 2} color={SEAL_GOLD} id={`periodSealGlow${theme}`} />
+        </View>
+      ) : null}
+      <View className="items-center justify-center" style={{ width: MEDAL, height: MEDAL, opacity: count > 0 ? 1 : 0.42 }}>
+        <Svg width={MEDAL} height={MEDAL} style={{ position: 'absolute', left: 0, top: 0 }}>
+          <Circle cx={MEDAL / 2} cy={MEDAL / 2} r={MEDAL / 2 - 0.9} fill={chosen ? ink : 'none'}
+            fillOpacity={chosen ? 0.14 : 0} stroke={ink} strokeOpacity={chosen ? 1 : 0.72}
+            strokeWidth={chosen ? 1.5 : 0.9} />
+          <Circle cx={MEDAL / 2} cy={MEDAL / 2} r={MEDAL / 2 - 3} fill="none" stroke={ink}
+            strokeOpacity={0.42} strokeWidth={0.6} strokeDasharray="0.8 2.4" />
+        </Svg>
+        <Image source={SEAL_EMBLEMS[theme]} tintColor={ink} resizeMode="contain"
+          style={{ width: SIGN, height: SIGN }} />
+      </View>
+      {count > 0 ? (
+        <View className="absolute items-center justify-center rounded-full bg-champagne"
+          style={{ minWidth: 18, height: 18, paddingHorizontal: 4, right: -3, top: -3 }}>
+          <Text allowFontScaling={false} className="font-sans-bold text-[10px] leading-[12px] text-on-champagne">
+            {count}
+          </Text>
+        </View>
+      ) : null}
+    </PressableScale>
+  );
+});
 
 export type PeriodSealProps = {
   counts: Record<DreamTheme, number>;
@@ -314,8 +366,6 @@ export function PeriodSeal({
             {DREAM_THEMES.map((theme, index) => {
               const angle = (index * STEP * Math.PI) / 180;
               const at = point(ORBIT_RADIUS, angle);
-              const count = counts[theme];
-              const chosen = theme === top;
               return (
                 <Animated.View key={theme} className="absolute" style={[{
                   left: at.x - MEDAL_TARGET / 2,
@@ -325,41 +375,8 @@ export function PeriodSeal({
                 }, turn(-rotation)] as StyleProp<ViewStyle>}>
                   <Animated.View style={motion.uprightSpin as StyleProp<ViewStyle>}>
                     <Animated.View style={motion.medals[index] as StyleProp<ViewStyle>}>
-                      <PressableScale
-                        testID={`trends.seal.sign.${theme}`}
-                        onPress={() => onSelect(theme)}
-                        haptic="selection"
-                        accessibilityRole="button"
-                        accessibilityLabel={medalLabel(theme)}
-                        accessibilityState={{ selected: selected === theme }}
-                        className="items-center justify-center"
-                        style={{ width: MEDAL_TARGET, height: MEDAL_TARGET }}
-                      >
-                        {chosen ? (
-                          <View className="absolute" pointerEvents="none" style={{ width: MEDAL * 2, height: MEDAL * 2 }}>
-                            <Glow size={MEDAL * 2} color={SEAL_GOLD} id={`periodSealGlow${theme}`} />
-                          </View>
-                        ) : null}
-                        <View className="items-center justify-center" style={{ width: MEDAL, height: MEDAL, opacity: count > 0 ? 1 : 0.42 }}>
-                          <Svg width={MEDAL} height={MEDAL} style={{ position: 'absolute', left: 0, top: 0 }}>
-                            <Circle cx={MEDAL / 2} cy={MEDAL / 2} r={MEDAL / 2 - 0.9} fill={chosen ? ink : 'none'}
-                              fillOpacity={chosen ? 0.14 : 0} stroke={ink} strokeOpacity={chosen ? 1 : 0.72}
-                              strokeWidth={chosen ? 1.5 : 0.9} />
-                            <Circle cx={MEDAL / 2} cy={MEDAL / 2} r={MEDAL / 2 - 3} fill="none" stroke={ink}
-                              strokeOpacity={0.42} strokeWidth={0.6} strokeDasharray="0.8 2.4" />
-                          </Svg>
-                          <Image source={SEAL_EMBLEMS[theme]} tintColor={ink} resizeMode="contain"
-                            style={{ width: SIGN, height: SIGN }} />
-                        </View>
-                        {count > 0 ? (
-                          <View className="absolute items-center justify-center rounded-full bg-champagne"
-                            style={{ minWidth: 18, height: 18, paddingHorizontal: 4, right: -3, top: -3 }}>
-                            <Text allowFontScaling={false} className="font-sans-bold text-[10px] leading-[12px] text-on-champagne">
-                              {count}
-                            </Text>
-                          </View>
-                        ) : null}
-                      </PressableScale>
+                      <SealSign theme={theme} count={counts[theme]} chosen={theme === top} selected={selected === theme}
+                        label={medalLabel(theme)} ink={ink} onSelect={onSelect} />
                     </Animated.View>
                   </Animated.View>
                 </Animated.View>
