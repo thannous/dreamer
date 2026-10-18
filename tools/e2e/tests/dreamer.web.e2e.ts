@@ -356,7 +356,7 @@ test('Quick Settings changes language and theme without losing the Capture draft
   await screen.getByTestId('quick-settings.close', { visible: true }).tap();
   await expect(screen.getByRole('radio')).toHaveCount(0);
   await expect(screen.getByTestId('btn.recording.inputMode.text', { visible: true })).toContainText('Écrire');
-  for (const [theme, background] of [['dark', 'rgb(20, 19, 26)'], ['light', 'rgb(245, 234, 219)']]) {
+  for (const [theme, background] of [['dark', 'rgba(20, 19, 26, 0.84)'], ['light', 'rgba(245, 234, 219, 0.88)']]) {
     await browser.setViewport({ width: theme === 'dark' ? 390 : 1280, height: 844 });
     // Desktop Capture returns to Today for the Settings control.
     if (theme === 'light') {
