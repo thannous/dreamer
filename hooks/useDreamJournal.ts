@@ -54,6 +54,7 @@ import {
   upsertDream,
 } from '@/lib/dreamUtils';
 import { stampDreamAnalysisTranscript } from '@/lib/dreamAnalysisFreshness';
+import { collectKnownSymbols } from '@/lib/symbolLinks';
 import { coerceQuotaError, GuestDreamLimitError, QuotaError, QuotaErrorCode } from '@/lib/errors';
 import { getThumbnailUrl } from '@/lib/imageUtils';
 import { getImageJobPollDelay } from '@/lib/imageJobPolling';
@@ -1594,9 +1595,12 @@ export const useDreamJournal = () => {
 
         assertAnalysisScope();
         markPerformance('analysis.http_started', { trace: analysisTrace });
+        // The dreamer's own symbols, so a returning place or person keeps its key.
+        const knownSymbols = collectKnownSymbols(dreamsRef.current);
         const analysis = await analyzeDreamText(transcript, options?.lang, fingerprint, {
           remoteDreamId: syncedDream.remoteId,
           analysisRequestId: requestId,
+          ...(knownSymbols.length ? { knownSymbols } : {}),
         });
 
         assertAnalysisScope();

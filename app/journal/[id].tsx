@@ -63,6 +63,7 @@ import { hasAiConsent, requestAiConsent } from '@/lib/aiConsent';
 import { blurActiveElement } from '@/lib/accessibility';
 import { buildFirstValueProperties } from '@/lib/activationAnalytics';
 import { trackProductEvent } from '@/lib/analytics';
+import { recordStoreReviewAnalysisRead, requestStoreReviewIfDue } from '@/lib/storeReview';
 import {
   isRecoverablePendingAnalysis,
   isResumableAnalysisRequest,
@@ -374,8 +375,13 @@ function JournalDetailScreen() {
   // The journal's pages in the order they were written: a later dream lies one page on.
   const neighbours = useMemo(() => {
     if (!dream) return { newer: null, older: null, folio: undefined };
-    const pages = sortDreams(dreams);
-    const index = pages.findIndex((page) => getDreamIdentityKey(page) === getDreamIdentityKey(dream));
+    // Recomputed on every page turn. The journal is stored newest-first, so it is checked
+    // rather than copied and sorted, and the page is found by reference before by key.
+    const pages = dreams.every((page, index) => index === 0 || dreams[index - 1].id >= page.id)
+      ? dreams : sortDreams(dreams);
+    const exactIndex = pages.indexOf(dream);
+    const dreamKey = exactIndex < 0 ? getDreamIdentityKey(dream) : null;
+    const index = exactIndex >= 0 ? exactIndex : pages.findIndex((page) => getDreamIdentityKey(page) === dreamKey);
     return {
       newer: index > 0 ? pages[index - 1] : null,
       older: index >= 0 && index < pages.length - 1 ? pages[index + 1] : null,
@@ -554,6 +560,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   const [isGeneratingWithReference, setIsGeneratingWithReference] = useState(false);
   const hasBackfilledSubjectRef = useRef(false);
   const trackedAnalysisResultRef = useRef<string | null>(null);
+  const storeReviewAfterLeaveRef = useRef(false);
 
   useEffect(() => {
     if (isShareModalVisible) {
@@ -900,6 +907,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     void trackProductEvent('analysis_result_viewed', {
       source: isOnboardingResult ? 'recording_flow' : 'journal_detail',
     });
+    storeReviewAfterLeaveRef.current = true;
+    void recordStoreReviewAnalysisRead();
     if (onboardingState.completionReason === 'analyze') {
       void trackProductEvent(
         'first_value_viewed',
@@ -914,6 +923,12 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       });
     }
   }, [analysisState.isAnalyzed, dream, onboardingState, transitionOnboarding]);
+  // Ask once the person leaves a reading they have just seen, not while reading it.
+  useEffect(() => () => {
+    if (storeReviewAfterLeaveRef.current) {
+      void requestStoreReviewIfDue({ kind: 'analysis_read' });
+    }
+  }, []);
   const reflectionJourney = useMemo(
     () => getReflectionJourney(dream, analysisRecoveryClock, { tier }),
     [analysisRecoveryClock, dream, tier]

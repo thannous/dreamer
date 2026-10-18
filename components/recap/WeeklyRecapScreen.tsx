@@ -1,7 +1,7 @@
 import { getDreamRouteParams } from '@/lib/dreamRoute';
 import type { DreamAnalysis } from '@/lib/types';
 import { router } from 'expo-router';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -18,6 +18,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { getDreamThemeLabel, getEmotionFamilyLabel } from '@/lib/dreamLabels';
 import { buildPaywallHref } from '@/lib/paywallRoute';
 import { TID } from '@/lib/testIDs';
+import { requestStoreReviewIfDue } from '@/lib/storeReview';
 import { buildWeeklyRecap } from '@/lib/weeklyRecap';
 import { useHeaderScroll } from '@/components/ui/headerStretch';
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
@@ -41,6 +42,15 @@ function WeeklyRecapContent() {
   const [now] = useState(() => Date.now());
 
   const recap = useMemo(() => buildWeeklyRecap(dreams, now), [dreams, now]);
+  const recapDreamCountRef = useRef(0);
+  useEffect(() => {
+    recapDreamCountRef.current = loaded ? recap.dreamCount : 0;
+  }, [loaded, recap.dreamCount]);
+
+  // A full week is a good moment to ask for a rating, once the recap is closed.
+  useEffect(() => () => {
+    void requestStoreReviewIfDue({ kind: 'weekly_recap', dreamCount: recapDreamCountRef.current });
+  }, []);
 
   const rangeLabel = useMemo(() => {
     try {

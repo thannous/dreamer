@@ -2,6 +2,15 @@
 
 Noctalia is an Expo/React Native dream-journal app with a Supabase backend and a generated multilingual marketing site.
 
+## Shared instructions for every agent
+
+Use `AGENTS.md` as the single source of project instructions for every agent,
+including Codex, Claude and other assistants. This root guide carries the shared
+rules; [Meditation's AGENTS.md](apps/meditation/AGENTS.md) adds the rules specific
+to that subproject. Read both when working on Meditation. Keep specialized
+product and QA guidance in their linked documents, and keep role prompts and
+skills aligned with these guides instead of maintaining provider-specific copies.
+
 Start with the [repository task index](doc_web_interne/docs/README.md) for feature
 entry points and current guides. Run `mise exec -- npm run scripts:list` for the
 command catalog; [scripts/README.md](scripts/README.md) explains prerequisites and effects.
@@ -36,7 +45,7 @@ Production for the Vercel app and for https://noctalia.app is manual. A push to 
   own Expo Router root, `routes/lucid/` (`routes/lucid/lucid/`); Dreamer's `app/`
   no longer contains them, and its lucid ritual opens the Lucid app. Read
   `specs/noctalia-lucid-trainer.md` for its scope and sleep/wellbeing safeguards.
-- Meditation is a separate package at `apps/meditation/`; read its local guide
+- Meditation is a separate package at `apps/meditation/`; read its [local AGENTS.md](apps/meditation/AGENTS.md)
   and run its commands there. Its theme and service paths replace journal-specific paths.
 - Device scope follows the current requested product and work package. The TI-429
   VNext base-package rule ended with its harness (retired 2026-10-14, see Project Rules).
@@ -281,7 +290,7 @@ Choose validation by the behavior and risk changed, not by the number of files o
 - Apply the E2E-first policy above when adding coverage; isolation controls require a concrete failure model, not a mandatory implementation order.
 - Once checks pass, rerun only when changed code, dependencies/configuration, a failure or an unresolved risk invalidates that evidence. A documentation-only follow-up does not invalidate code tests.
 - Before every push, drafts included, run `npm run verify:pr` on the commit to push; if it fails, do not push (see [Livraison](#livraison)). The pre-push hook itself takes a few seconds and runs no suite. Agents never use `git push --no-verify` nor change `core.hooksPath`: fix a blocked push or report it as a blocker.
-- `npm run verify:pr` checks the committed head in an isolated copy (`git worktree`, `node_modules` linked from the main checkout), so uncommitted work is neither checked nor disturbed. It runs `typecheck:app`, `typecheck:tests`, `lint`, `lint:scripts`, the root Jest tests related to the diff (`test:changed`), the static database contracts and the engine tests. It adds `docs:build` and `docs:check` when site inputs changed (`docs-src/`, `data/`, `scripts/`, package files), the CI contract tests when `.circleci/` changed, the mobile version pins (`mobile-release.js verify`) when `release/`, an app manifest, a lockfile or an EAS profile changed, Meditation (`apps/meditation`, shared release files) and the Edge Functions under Deno (`supabase/functions`, `supabase/lib`, `supabase/migrations`, `deno.lock`) when theirs changed. A check that already passed on the same inputs is reused (typecheck and lint ignore Markdown and `doc_web_interne/`, `marketing/`, `specs/`). Native device checks and store builds stay outside it.
+- `npm run verify:pr` checks the committed head in an isolated copy (`git worktree`, `node_modules` linked from the main checkout), so uncommitted work is neither checked nor disturbed. It runs `typecheck:app`, `typecheck:tests`, `lint`, `lint:scripts`, the root Jest tests related to the diff (`test:changed`), the static database contracts and the engine tests. It adds `docs:build` and `docs:check` when site inputs changed (`docs-src/`, `data/`, `scripts/`, package files), the CI contract tests when `.circleci/` changed, the mobile version pins (`mobile-release.js verify`) when `release/`, an app manifest, a lockfile or an EAS profile changed, Meditation (`apps/meditation`, shared release files) and the Edge Functions under Deno (`supabase/functions`, `supabase/lib`, `supabase/migrations`, `deno.lock`) when theirs changed. A check that already passed on the same inputs is reused (typecheck and lint ignore Markdown, `doc_web_interne/`, `marketing/`, `specs/` and the site-only sources `docs-src/static/{scripts,js,css}/`, `docs-src/{templates,locales,experience}/`, `tools/e2e/tests/`, so a site-only commit reuses them). Native device checks and store builds stay outside it.
 - It compares against the local `origin/master`: fetch it first. `test:changed` uses the same merge-base; `JEST_CHANGED_SINCE=HEAD` is only an explicit working-tree delta, never proof of a committed PR.
 - Fill the PR template's verified-commit and `npm run verify:pr` result fields (`node scripts/verify-local.mjs proof-block` prints both), then say what remains unchecked (native, device) in its note. Review happens in PR comments; answer them with new commits, rerunning `npm run verify:pr` on each new head before pushing it.
 - If `origin/master` moved since the proof, merge it into the branch, rerun `npm run verify:pr` (only the checks whose inputs changed run again) before pushing, and update the PR's verified commit and result. Batch a coherent work package before pushing; coordinate ownership of a branch receiving concurrent edits.
@@ -291,7 +300,7 @@ Choose validation by the behavior and risk changed, not by the number of files o
 - Missing native evidence stays unqualified; do not replace it with repeated unit tests or claim a mock proves persistence or production behavior.
 - For TalkBack qualification, follow [the short Motorola protocol](doc_web_interne/docs/qualification-talkback.md): validate focus/gesture/audio measurement with a short pilot before a full journey, distinguish keyboard/ADB evidence from physical gestures, and restore/re-read device settings even after failure. For a requested fix, continue from the reproduced defect to correction and the authorized retest.
 
-See [the proportional validation guide](doc_web_interne/docs/validation-proportionnee.md) for examples. Available commands, selected according to the risk above:
+For a substantial change, follow the [focused review procedure](doc_web_interne/docs/validation-proportionnee.md#revue-ciblée-et-convergente): one independent review of the final diff and its evidence, then review the corrections rather than restarting the whole review. Available commands, selected according to the risk above:
 
 - Tests: `npm run test:related -- <files>`, `npm run test:file -- <test-files>`, `npm run test:changed`, or `npm test` when broader coverage is justified.
 - Types and lint: `npm run typecheck:app`, `npm run typecheck:tests`, `npx expo lint <touched-paths>`, `npm run lint`.

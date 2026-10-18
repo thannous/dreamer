@@ -62,6 +62,8 @@ export type AnalysisResult = {
 export type AnalysisRequestContext = {
   remoteDreamId?: number | null;
   analysisRequestId?: string | null;
+  /** The dreamer's own symbols, so a returning place or person keeps its key. */
+  knownSymbols?: readonly { key: string; name: string }[];
 };
 
 export type ImageJobCommandRequest = {
@@ -148,6 +150,7 @@ function buildAnalysisRequestBody(
     ...(fingerprint && { fingerprint }),
     ...(context?.remoteDreamId != null ? { remoteDreamId: context.remoteDreamId } : {}),
     ...(context?.analysisRequestId ? { analysisRequestId: context.analysisRequestId } : {}),
+    ...(context?.knownSymbols?.length ? { knownSymbols: context.knownSymbols } : {}),
   };
 }
 

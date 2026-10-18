@@ -171,11 +171,13 @@ if (__DEV__) {
   // Expo Router can emit this React 19 development warning while resolving the
   // async initial URL before the navigation container finishes mounting.
   // Supabase also logs a revoked persisted refresh token once before removing
-  // that stale local session. Both are expected recovery paths; keep every
-  // other warning and auth error visible.
+  // that stale local session. RevenueCat logs a user-cancelled purchase at
+  // ERROR level, which its default handler turns into console.error. All are
+  // expected paths; keep every other warning and auth error visible.
   LogBox.ignoreLogs([
     "Can't perform a React state update on a component that hasn't mounted yet",
     'Invalid Refresh Token: Refresh Token Not Found',
+    /^\[RevenueCat\] .*Purchase was cancelled/,
   ]);
 }
 
@@ -1029,18 +1031,23 @@ export default function RootLayout() {
   }, []);
 
   useEffect(() => {
-    if (Platform.OS === 'web' || isLucidTrainer) return;
+    if (Platform.OS === 'web' || isLucidTrainer || !startupDestinationCommitted) return;
     // Lucid moved to its own app: clear notifications the former in-app trainer
     // scheduled, so they stop firing into a route Dreamer no longer has.
     // Owner marker of services/lucidTrainerNotifications (reminders and night cues);
     // inlined so Dreamer does not bundle the Lucid domain model for this cleanup.
-    void Promise.resolve()
-      .then(() => Notifications.getAllScheduledNotificationsAsync())
-      .then((scheduled) => Promise.all(scheduled
-        .filter((request) => request.content.data?.noctaliaNotificationOwner === 'lucid-trainer')
-        .map((request) => Notifications.cancelScheduledNotificationAsync(request.identifier))))
-      .catch(() => { /* Best effort; a remaining reminder only opens the app. */ });
-  }, []);
+    // It reads every scheduled notification, so it waits until the first screen is
+    // shown and the JS thread is idle instead of running during startup.
+    const task = scheduleIdleTask(() => {
+      void Promise.resolve()
+        .then(() => Notifications.getAllScheduledNotificationsAsync())
+        .then((scheduled) => Promise.all(scheduled
+          .filter((request) => request.content.data?.noctaliaNotificationOwner === 'lucid-trainer')
+          .map((request) => Notifications.cancelScheduledNotificationAsync(request.identifier))))
+        .catch(() => { /* Best effort; a remaining reminder only opens the app. */ });
+    });
+    return () => task.cancel();
+  }, [startupDestinationCommitted]);
 
   useEffect(() => {
     if (hasBootstrappedLanguage.current) {

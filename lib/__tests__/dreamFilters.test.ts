@@ -5,6 +5,7 @@
 import { describe, expect, it, jest } from '@jest/globals';
 import {
     applyFilters,
+    createNarrowingFilter,
     filterByDateRange,
     filterByDreamType,
     filterByFavorites,
@@ -740,6 +741,75 @@ describe('dreamFilters', () => {
 
       // Then
       expect(result).toHaveLength(0);
+    });
+  });
+
+  // Isolation exception: a device journey types a few queries; it cannot compare every
+  // narrowed keystroke, backspace and scope change against a full search.
+  describe('createNarrowingFilter', () => {
+    const remembered = buildDream({
+      id: 1640259200000,
+      title: 'Old House',
+      transcript: 'The stairs again',
+      interpretation: '',
+      dreamType: 'Recurring Dream',
+      memory: { origin: 'remembered', rememberedKind: 'old', approximatePeriod: 'teen_years' },
+    });
+    const journal = [...mockDreams, remembered];
+    const labels = (language: string) => ({
+      dreamTypeLabelResolver: (type: DreamType | null | undefined) => (type ? `${language}:${type}` : undefined),
+      dreamMemoryLabelResolver: (_field: string, value: string) => `${language} ${value.replace(/_/g, ' ')}`,
+    });
+    const typed = (text: string) => Array.from({ length: text.length }, (_, index) => text.slice(0, index + 1));
+
+    it('matches a full search at every keystroke, backspace and scope change', () => {
+      const narrowing = createNarrowingFilter();
+      let dreams = [...journal, buildDream({ id: 1640302400000, title: 'Falling leaves', isFavorite: false })];
+      let language = 'fr';
+      let filters: DreamFilters = {};
+      const check = (searchQuery: string) => {
+        const options = { searchOptions: labels(language), labelsSource: language };
+        const expected = applyFilters(dreams, { ...filters, searchQuery }, options);
+        expect(narrowing(dreams, { ...filters, searchQuery }, options)).toEqual(expected);
+        return expected.length;
+      };
+
+      // Across fields (title then transcript) through the joined text, then back.
+      typed('dream swimming').forEach(check);
+      typed('dream swimming').reverse().forEach(check);
+      // Localized labels and remembered fields.
+      typed('fr:recurring').forEach(check);
+      typed('fr teen years').forEach(check);
+      // The same query matches more once the labels change language.
+      expect(check('en teen years')).toBe(0);
+      language = 'en';
+      expect(check('en teen years')).toBe(1);
+      // ...or once a filter is lifted.
+      filters = { favoritesOnly: true };
+      expect(check('fall')).toBe(1);
+      filters = {};
+      expect(check('fall')).toBe(2);
+      // ...or once the journal gains a dream.
+      dreams = [...dreams, buildDream({ id: 1640345600000, title: 'Falling again', transcript: 'Down' })];
+      expect(check('fall')).toBe(3);
+      typed('falling').forEach(check);
+    });
+
+    it('searches only the previous matches when the query grows', () => {
+      // A dream's type label is resolved only when its own text did not match.
+      const resolver = jest.fn((type: DreamType | null | undefined) => type ?? undefined);
+      const options = { searchOptions: { dreamTypeLabelResolver: resolver }, labelsSource: 'fr' };
+      const narrowing = createNarrowingFilter();
+      expect(narrowing(journal, { searchQuery: 'ocean' }, options)).toHaveLength(1);
+
+      resolver.mockClear();
+      narrowing(journal, { searchQuery: 'oceans' }, options);
+      const narrowedLookups = resolver.mock.calls.length;
+      resolver.mockClear();
+      applyFilters(journal, { searchQuery: 'oceans' }, options);
+
+      expect(narrowedLookups).toBeLessThanOrEqual(1);
+      expect(resolver.mock.calls.length).toBe(journal.length);
     });
   });
 });
