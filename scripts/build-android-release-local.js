@@ -187,6 +187,9 @@ function getGradleWrapper(rootDir = ROOT, platform = process.platform) {
 function getGradleArgs(abi, jvmArgs = DEFAULT_GRADLE_JVM_ARGS, incremental = false) {
   return [
     ...(incremental ? [] : [':app:clean']),
+    // RN's declared bundle inputs only include JS/TS. Regenerate this task even
+    // for an asset-only edit, while retaining native compilation and transforms.
+    ...(incremental ? [':app:createBundleReleaseJsAndAssets', '--rerun'] : []),
     ':app:assembleRelease',
     `-PreactNativeArchitectures=${normalizeAbi(abi)}`,
     '-Pkotlin.compiler.execution.strategy=in-process',

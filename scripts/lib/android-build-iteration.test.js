@@ -29,6 +29,7 @@ describe('Android iteration safety (same cases on every host)', () => {
     expect(getGradleArgs('x86_64')).toEqual(expect.arrayContaining([':app:clean', '--no-build-cache', '--no-daemon']));
     const args = getGradleArgs('x86_64', undefined, true);
     expect(args).toEqual(expect.arrayContaining([':app:assembleRelease', '--build-cache', '--daemon']));
+    expect(args.slice(0, 2)).toEqual([':app:createBundleReleaseJsAndAssets', '--rerun']);
     expect(args).not.toContain(':app:clean');
     expect(getOutputApkPath(root, 'production-apk', false, true, true)).toMatch(/-iteration\.apk$/);
   });

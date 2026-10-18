@@ -35,7 +35,7 @@ function buildContext(root, { env, abi, profile, profileable, sideBySideQa }) {
     files[file] = hashFile(path.join(root, file));
   // Hash the complete effective environment: an unlisted build input must not
   // silently reuse another profile. Neither values nor individual secret hashes
-  // are persisted. Ordinary JS edits remain Gradle's declared task inputs.
+  // are persisted. The bundle task reruns on every iteration, including assets.
   const environment = Object.entries(env).sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0);
   return createHash('sha256').update(JSON.stringify({
     schemaVersion: 1, root: path.resolve(root), node: process.version, platform: process.platform,

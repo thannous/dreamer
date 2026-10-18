@@ -49,8 +49,10 @@ For local Android iteration, use `npm run android:iterate:local -- --abi x86_64`
 in the app's isolated native checkout (select the actual target ABI). It still
 runs Expo prebuild. Its first or invalidated build keeps the clean Release flags;
 only a previously successful identical native/profile/dependency/environment
-context uses Gradle's build cache and daemon without `:app:clean`. Ordinary JS
-edits are handled by Gradle's bundle task inputs. A failed/interrupted build,
+context uses Gradle's build cache and daemon without `:app:clean`. The JS/assets
+bundle task always reruns, so an asset-only edit cannot leave an old bundle
+(React Native's declared file inputs cover JS/TS only). Native compilation and
+Metro transforms can still be reused. A failed/interrupted build,
 changed context or corrupt state forces a clean build. The checkout lock refuses
 concurrent native builds; verify the recorded PID before removing a stale lock.
 The result ends in `-iteration.apk` and cannot qualify a TesterArmy Release
