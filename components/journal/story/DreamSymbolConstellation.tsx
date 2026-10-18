@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Pressable, Text, View, useWindowDimensions, type StyleProp, type ViewStyle } from 'react-native';
+import { Platform, Pressable, Text, View, useWindowDimensions, type StyleProp, type ViewStyle } from 'react-native';
 import Animated, { useReducedMotion, type CSSStyle } from 'react-native-reanimated';
 
 import { PressableScale } from '@/components/motion';
@@ -89,6 +89,8 @@ export function DreamSymbolConstellation({ stars: all, play, onOpen }: {
       accessible={false}
       importantForAccessibility="no-hide-descendants"
       accessibilityElementsHidden
+      // The web ignores the two props above: hide the picture there too.
+      {...(Platform.OS === 'web' ? { 'aria-hidden': true } : {})}
       pointerEvents={onOpen ? 'box-none' : 'none'}
       onLayout={({ nativeEvent }) => setWidth(previous => previous === nativeEvent.layout.width ? previous : nativeEvent.layout.width)}
       style={{ height: rows.height }}
@@ -107,8 +109,11 @@ export function DreamSymbolConstellation({ stars: all, play, onOpen }: {
 
 const igniteDelay = (index: number) => DREAM_STORY.revealLead + index * DREAM_STORY.starStep;
 
-/** Touch only: the reading below opens the same page for assistive technology. */
-const TOUCH_ONLY = { accessible: false, focusable: false } as const;
+/**
+ * Touch only: the reading below opens the same page for assistive technology and the
+ * keyboard. The web's Pressable sets its own tab stop unless `tabIndex` says otherwise.
+ */
+const TOUCH_ONLY = { accessible: false, focusable: false, tabIndex: -1 } as const;
 
 function Star({ point, index, star, labelWidth, height, play, reduced, onOpen }: {
   point: Point; index: number; star: ConstellationStar; labelWidth: number; height: number; play: boolean; reduced: boolean;
@@ -177,7 +182,7 @@ function Star({ point, index, star, labelWidth, height, play, reduced, onOpen }:
         style={[{ left: point.x - HALO / 2, top: point.y - HALO / 2, width: HALO, height: HALO }, ignite] as StyleProp<ViewStyle>}
       >
         {open && linkKey ? (
-          <PressableScale {...TOUCH_ONLY} onPress={open} haptic="light" testID={TID.List.DreamSymbolStar(linkKey)}
+          <PressableScale {...TOUCH_ONLY} onPress={open} testID={TID.List.DreamSymbolStar(linkKey)}
             className="items-center justify-center" style={{ width: HALO, height: HALO }}>
             {face}
           </PressableScale>
