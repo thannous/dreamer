@@ -1334,6 +1334,16 @@ describe('journal detail saved confirmation route', () => {
     expect(screen.queryByTestId(TID.Component.DreamEditor)).toBeNull();
   });
 
+  it('sets the edit link beside delete and takes it away while editing', async () => {
+    render(<JournalDetailScreen />);
+    const edit = screen.getByTestId(TID.Button.EditDream);
+    expect(edit.parentElement).toBe(screen.getByTestId(TID.Button.DreamDelete).parentElement);
+
+    await act(async () => { fireEvent.click(edit); });
+    expect(screen.queryByTestId(TID.Button.EditDream)).toBeNull();
+    expect(screen.getByTestId(TID.Button.DreamDelete)).toBeTruthy();
+  });
+
   it('makes unknown analysis access explicit before the click', () => {
     mockQuotaUsage = undefined;
     render(<JournalDetailScreen />);
