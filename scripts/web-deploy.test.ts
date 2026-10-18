@@ -627,7 +627,10 @@ describe.each(['linux', 'darwin', 'win32'])('web-deploy (%s): guarded, clean cop
   it.each(['gone', 'stubborn', 'leader-only', 'EPERM'])('stops the complete process tree (%s)', async (state) => {
     jest.useFakeTimers();
     const signals: [number, string | number][] = [];
-    const execute = jest.fn(() => ({ status: 0 }));
+    let closeChild!: () => void;
+    const closed = new Promise<void>((resolve) => { closeChild = resolve; });
+    if (state === 'gone') closeChild();
+    const execute = jest.fn(() => { closeChild(); return { status: 0 }; });
     let alive = state !== 'gone';
     const kill = (pid: number, signal: string | number) => {
       signals.push([pid, signal]);
@@ -635,10 +638,11 @@ describe.each(['linux', 'darwin', 'win32'])('web-deploy (%s): guarded, clean cop
         if (state === 'EPERM' && alive) throw Object.assign(new Error('access denied'), { code: 'EPERM' });
         if (!alive) throw Object.assign(new Error('gone'), { code: 'ESRCH' });
       }
-      if (signal === 'SIGKILL') alive = false;
+      if (signal === 'SIGTERM' && state !== 'stubborn') closeChild();
+      if (signal === 'SIGKILL') { alive = false; closeChild(); }
     };
     try {
-      const stopped = stopProcessTree({ pid: 123, closed: Promise.resolve() }, { platform, execute, kill, timeoutMs: 100 });
+      const stopped = stopProcessTree({ pid: 123, closed }, { platform, execute, kill, timeoutMs: 100 });
       await jest.advanceTimersByTimeAsync(250);
       await stopped;
       if (platform === 'win32') {

@@ -145,8 +145,9 @@ retour anticipé. Le moteur Linux les exécute après les contrats communs ; la 
 native de publication se lance explicitement. Une simulation ne prouve ni les
 ACL Windows ni l'exécution native sur macOS.
 
-Code testé : `9fc001c0a`. L'inventaire comparé correspond exactement sur les deux
-OS, tous les cas passent et aucun n'est ignoré :
+Les révisions et empreintes des sources comparées figurent dans le reçu du lot.
+L'inventaire correspond exactement sur les deux OS, tous les cas passent et aucun
+n'est ignoré :
 
 | Suite commune | Windows | Linux |
 | --- | ---: | ---: |
