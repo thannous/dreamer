@@ -2,7 +2,6 @@ import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useMemo, useState } from 'react';
 import { View, useWindowDimensions } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
 import { TodayCard } from '@/components/home/TodayCard';
@@ -35,17 +34,19 @@ export function TodayHero({ state, dream, now, onPressCta, onOpenSettings }: Pro
   const tokens = getNoctaliaDesignTokens(colors, mode);
   const { t, currentLang } = useTranslation();
   const { height, fontScale } = useWindowDimensions();
-  const insets = useSafeAreaInsets();
   const media = useDreamMedia(dream);
   const [failedUri, setFailedUri] = useState<string | null>(null);
+  const [headerHeight, setHeaderHeight] = useState(0);
   const uri = media.imageUrl
     ? withCacheBuster(media.imageUrl, getDreamImageVersion(dream ?? {}))
     : '';
   const source = useMemo(() => uri ? { uri, cacheKey: media.imageCacheKey } : undefined, [uri, media.imageCacheKey]);
   const hasArtwork = Boolean(source && uri !== failedUri);
   const immersiveArtwork = hasArtwork && fontScale < 1.5;
+  // The dream's image opens over a little more than half the screen, and the title and the
+  // date rest at its foot, just above the card.
   const stageHeight = immersiveArtwork
-    ? Math.min(560, Math.max(300, height * 0.58 - insets.top))
+    ? Math.round(Math.min(600, Math.max(360, height * 0.55)))
     : undefined;
   // Pulling the page down stretches the dream's image over the gap, like every header painting.
   const artworkStretch = useHeaderStretchStyle((stageHeight ?? 260) + 1);
@@ -66,20 +67,19 @@ export function TodayHero({ state, dream, now, onPressCta, onOpenSettings }: Pro
         pointerEvents="none" accessibilityElementsHidden importantForAccessibility="no-hide-descendants"
         style={[{ height: (stageHeight ?? 260) + 1, transformOrigin: 'top center' }, artworkStretch]}>
         {/* From the top edge, behind the header, like the paintings of the other tabs. */}
-        <Animated.View style={[IMAGE_FILL, artworkDepth]}>
+        <Animated.View style={[{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }, artworkDepth]}>
           <Animated.View style={[IMAGE_FILL, artworkBreath]}>{image}</Animated.View>
         </Animated.View>
-        {/* Only its last stretch melts into the page, above the card: the dream stays visible
-            behind the title and the date, which read on their halo like the other tabs. */}
-        <LinearGradient colors={[`${ground}00`, `${ground}33`, `${ground}8C`, `${ground}D9`, ground]}
-          locations={[0, 0.3, 0.6, 0.85, 1]}
-          style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 140 }} />
+        {/* A light reading veil rises from just above the title: the dream stays visible and the date reads. */}
+        <LinearGradient colors={[`${ground}00`, `${ground}8C`, `${ground}CC`, ground]} locations={[0, 0.4, 0.7, 1]}
+          style={{ position: 'absolute', left: 0, right: 0, bottom: 0,
+            height: Math.max(110, (stageHeight ?? 260) + 1 - Math.max(0, headerHeight - 150)) }} />
       </Animated.View> : null}
-      <View className="justify-between" style={{ minHeight: stageHeight }}>
-        <View className="pb-4">
+      <View>
+        <View className="pb-4" onLayout={(event) => setHeaderHeight(event.nativeEvent.layout.height)}>
           {/* Immersive like Explorer. Without dream artwork the header paints the night sky and the
               title rests at the same height as on the other tabs; with artwork the hero paints the
-              dream and the title rests at its foot, just above the card. */}
+              dream, the header stays transparent and its title rests at the image's foot. */}
           <NoctaliaScreenHeader
             scene="reverie"
             titleKey="nav.home"
@@ -87,7 +87,7 @@ export function TodayHero({ state, dream, now, onPressCta, onOpenSettings }: Pro
             immersive
             subtitle={dateLabel}
             backdrop={!hasArtwork}
-            immersiveHeight={stageHeight ? stageHeight - 16 : undefined}
+            immersiveHeight={stageHeight ? stageHeight - 56 : undefined}
             actions={[{
               icon: 'gear',
               onPress: onOpenSettings,
