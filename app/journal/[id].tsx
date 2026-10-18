@@ -13,6 +13,7 @@ import { DreamRecallAssistantCard } from '@/components/journal/DreamRecallAssist
 import { BOOK_MEASURE, BookOrnament, BookProse, BookSectionMark, BookStar } from '@/components/journal/JournalBook';
 import { JournalCoverPlate } from '@/components/journal/JournalCoverPlate';
 import { JournalEditLink } from '@/components/journal/JournalEditLink';
+import { JournalSealShare } from '@/components/journal/JournalSealShare';
 import { JournalFolio } from '@/components/journal/JournalFolio';
 import { JournalPageEdges } from '@/components/journal/JournalPageEdges';
 import { JournalPageTurner, useJournalPageLaidOut, useJournalPageTurnedTo, useJournalPageTurnLock } from '@/components/journal/JournalPageTurner';
@@ -3158,6 +3159,10 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
             }}>
             {sealVisible ? (
               <OpenUp appear={!opensOnSavedMoment && readingInFlight}>{sealBlock}</OpenUp>
+            ) : null}
+            {sealVisible && showCompletedReading && !readingInFlight && !isEditing ? (
+              <JournalSealShare onShare={onShare} disabled={isSharing || isAnalysisLocked || shareMediaPending}
+                busy={isSharing || shareMediaPending} />
             ) : null}
             {/* The reading, under its seal and before the story it reads. */}
             <View>{renderStaleBanner()}</View>

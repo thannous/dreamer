@@ -189,6 +189,7 @@ export const TID = {
     CancelDreamEdit: 'btn.cancelDreamEdit',
     DreamFavorite: 'btn.dream.favorite',
     DreamShare: 'btn.dream.share',
+    DreamShareSeal: 'btn.dream.shareSeal',
     DreamDelete: 'btn.dream.delete',
     SavedDreamArtworkOpen: 'btn.dreamDetail.savedMoment.open',
     DreamDetailPrimaryCta: 'btn.dream.primaryCta',
