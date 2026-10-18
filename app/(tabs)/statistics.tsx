@@ -123,6 +123,8 @@ function StatisticsScreen() {
   const [period, setPeriod] = useState<DreamTrendsPeriod>(DEFAULT_DREAM_TRENDS_PERIOD);
   // The switch answers a tap at once; the page follows in a render that does not hold it up.
   const shownPeriod = useDeferredValue(period);
+  // Until the page has caught up, it still shows the last period: it takes no taps meanwhile.
+  const catchingUp = period !== shownPeriod;
   const [selectedTheme, setSelectedTheme] = useState<DreamTheme | null>(null);
   // A sign chosen in one period is let go once the page shows another.
   const [themePeriod, setThemePeriod] = useState(shownPeriod);
@@ -383,9 +385,11 @@ function StatisticsScreen() {
           ) : (
             <View className="gap-8 px-5 pb-5 pt-2">
               {periodSection}
-              {sealSection}
-              {nightsSection}
-              {returnsSection}
+              <View className="gap-8" pointerEvents={catchingUp ? 'none' : 'auto'}>
+                {sealSection}
+                {nightsSection}
+                {returnsSection}
+              </View>
               {compact ? <View testID="trends.layout.compact" /> : null}
             </View>
           )}
