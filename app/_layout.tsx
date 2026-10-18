@@ -18,7 +18,6 @@ import { DarkTheme, DefaultTheme, ThemeProvider as NavigationThemeProvider } fro
 import { useFonts } from 'expo-font';
 import { useLocales } from 'expo-localization';
 import * as Notifications from 'expo-notifications';
-import { Observe, ObserveRoot } from 'expo-observe';
 import { Stack, router, useGlobalSearchParams, useNavigationContainerRef, usePathname, useRootNavigationState, type Href } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -66,6 +65,7 @@ import { isSafeAppNotificationRoute } from '@/lib/notificationRoutes';
 import { normalizeAppLanguage, resolveEffectiveLanguage } from '@/lib/language';
 import { isDreamCaptureResponse } from '@/lib/notificationDreamCapture';
 import { createNotificationResponseTracker } from '@/lib/notificationResponse';
+import { applyStabilityReportsPreference, markStartupInteractive, wrapObservedRoot } from '@/lib/observe';
 import {
   canReuseObservedStartupDestination,
   isOnboardingTerminal,
@@ -1016,6 +1016,7 @@ function RootLayout() {
 
   useEffect(() => {
     markPerformance('startup.root_mounted');
+    void applyStabilityReportsPreference();
   }, []);
 
   useEffect(() => {
@@ -1129,6 +1130,8 @@ function RootLayout() {
 
     return scheduleAfterStartupPaint(() => {
       markPerformance('startup.destination_painted');
+      // Before the splash's deliberate minimum, so a slower start is not hidden inside it.
+      markStartupInteractive();
       setStartupDestinationPainted(true);
     });
   }, [startupDestinationPainted, startupSplashPrerequisitesReady]);
@@ -1157,7 +1160,6 @@ function RootLayout() {
 
   const handleSplashFinished = useCallback(() => {
     markPerformance('startup.interactive');
-    Observe.markInteractive();
     setShowCustomSplash(false);
   }, []);
 
@@ -1201,5 +1203,5 @@ function RootLayout() {
 }
 
 // EAS Observe records production startup times, unhandled errors and native crashes
-// (Android and iOS; a no-op on web). ObserveRoot marks the first render.
-export default ObserveRoot.wrap(RootLayout);
+// (Android and iOS; a no-op on web and in Expo Go). It marks the first render here.
+export default wrapObservedRoot(RootLayout);

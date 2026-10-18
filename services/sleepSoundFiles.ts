@@ -40,7 +40,7 @@ async function resolveSleepSoundFile(sound: SleepSoundConfig): Promise<string> {
   const legacyPlayable = keepIfPlayable(legacy);
   if (legacyPlayable && LEGACY_SOURCES[sound.id] === fileName) {
     // Same recording under the old name: keep it rather than download it again.
-    legacy.move(target);
+    await legacy.move(target);
     return target.uri;
   }
 
@@ -55,7 +55,7 @@ async function resolveSleepSoundFile(sound: SleepSoundConfig): Promise<string> {
       downloaded.delete();
       throw new Error(`Not an audio file: ${sound.remoteUrl}`);
     }
-    downloaded.move(target);
+    await downloaded.move(target);
   } catch (error) {
     // Offline, the older recording still beats silence until the new one arrives.
     if (legacyPlayable) return legacy.uri;

@@ -1864,6 +1864,9 @@ const translations: Record<string, string> = {
 
     // Legal links & account deletion
     'settings.legal.sectionTitle': 'Note legali',
+    'settings.stability.title': 'Report di stabilità',
+    'settings.stability.description': 'Invia a Expo i tempi di avvio e gli arresti anomali dell’app, mai il contenuto dei tuoi sogni.',
+    'settings.stability.toggle_label': 'Invia i report di stabilità',
     'settings.legal.privacyPolicy': 'Informativa sulla privacy',
     'settings.legal.termsOfUse': 'Termini di utilizzo',
     'settings.legal.accountDeletion': 'Elimina account',

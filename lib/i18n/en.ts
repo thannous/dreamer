@@ -1864,6 +1864,9 @@ const translations: Record<string, string> = {
 
     // Legal links & account deletion
     'settings.legal.sectionTitle': 'Legal',
+    'settings.stability.title': 'Stability reports',
+    'settings.stability.description': 'Sends the app’s startup times and crashes to Expo, never your dream content.',
+    'settings.stability.toggle_label': 'Send stability reports',
     'settings.legal.privacyPolicy': 'Privacy Policy',
     'settings.legal.termsOfUse': 'Terms of Use',
     'settings.legal.accountDeletion': 'Delete account',

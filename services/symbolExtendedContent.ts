@@ -34,9 +34,13 @@ async function download(language: SymbolLanguage): Promise<ExtendedSymbolContent
   });
   if (!isContentMap(data)) throw new Error(`Unexpected symbol content for ${language}`);
 
-  new Directory(Paths.document, DIRECTORY_SEGMENT).create({ idempotent: true, intermediates: true });
-  await cacheFile(language).write(JSON.stringify(data));
   loaded.set(language, data);
+  try {
+    new Directory(Paths.document, DIRECTORY_SEGMENT).create({ idempotent: true, intermediates: true });
+    await cacheFile(language).write(JSON.stringify(data));
+  } catch {
+    // A full disk only costs the copy for next launch; this session keeps the download.
+  }
   return data;
 }
 
