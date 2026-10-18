@@ -73,6 +73,21 @@ describe('journal records on real SQLite', () => {
     expect(refreshed[1]).toEqual({ key: 'b', text: 'external' });
     expect(refreshed[1]).not.toBe(first[1]);
   });
+  // UI persistence assertions cannot detect a temporary SQLite sort. Exercise
+  // an existing database so adding the read index also proves in-place upgrade.
+  it('reads an existing journal in stored order without a temporary sort', async () => {
+    const rows = [{ key: 'z', text: 'first' }, { key: 'a', text: 'second' }, { key: 'm', text: 'third' }];
+    await store.read('A', async () => rows);
+    await store.read('B', legacy);
+    db.exec('DROP INDEX IF EXISTS journal_records_scope_position');
+    db.close(); open();
+
+    expect(await store.read('A', legacy)).toEqual(rows);
+    expect(await store.read('B', legacy)).toEqual(await legacy());
+    const plan = db.prepare('EXPLAIN QUERY PLAN SELECT identity, position, value FROM journal_records WHERE scope=? ORDER BY position').all('A');
+    expect(plan.some(row => /TEMP B-TREE/i.test(row.detail))).toBe(false);
+    expect(Object.values(db.prepare('PRAGMA integrity_check').get())).toEqual(['ok']);
+  });
   it('rejects corrupt rows and duplicate identities instead of falling back or truncating', async () => {
     await expect(store.write('A', [{ key: 'a' }, { key: 'a' }], legacy)).rejects.toThrow();
     await store.read('A', legacy);

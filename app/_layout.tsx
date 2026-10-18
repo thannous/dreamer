@@ -24,9 +24,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Linking, LogBox, NativeModules, Platform } from 'react-native';
 import { SystemBars } from 'react-native-edge-to-edge';
 
-import StartupSplashScreen, {
-  STARTUP_SPLASH_MINIMUM_VISIBLE_MS,
-} from '@/components/StartupSplashScreen';
+import StartupSplashScreen from '@/components/StartupSplashScreen';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { RouteScreenErrorFallback } from '@/components/ScreenErrorBoundary';
 import { DesktopShell } from '@/components/navigation/DesktopShell';
@@ -46,7 +44,6 @@ import { SubscriptionProvider } from '@/context/SubscriptionContext';
 import { ThemeProvider, useTheme } from '@/context/ThemeContext';
 import { useAppState } from '@/hooks/useAppState';
 import { useAuthReturnIntent } from '@/hooks/useAuthReturnIntent';
-import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { useSplashFailsafe } from '@/hooks/useSplashFailsafe';
 import { useSubscriptionInitialize } from '@/hooks/useSubscriptionInitialize';
 // useSubscriptionMonitor est maintenant intégré dans useSubscription
@@ -988,7 +985,6 @@ function RootLayout() {
     Fraunces_700Bold,
   });
   const [showCustomSplash, setShowCustomSplash] = useState(true);
-  const [splashDelayElapsed, setSplashDelayElapsed] = useState(false);
   const [languageBootstrapped, setLanguageBootstrapped] = useState(false);
   const [startupDestinationCommitted, setStartupDestinationCommitted] = useState(false);
   // Every platform waits for the first screen's first frame: the still splash leaves
@@ -998,11 +994,8 @@ function RootLayout() {
   const splashTimedOut = useSplashFailsafe(showCustomSplash);
   const shouldShowCustomSplash = showCustomSplash;
   const fontsSettled = fontsLoaded || Boolean(fontError) || splashTimedOut;
-  const prefersReducedMotion = usePrefersReducedMotion();
-  const minimumSplashElapsed =
-    prefersReducedMotion || splashTimedOut || splashDelayElapsed;
   const startupSplashPrerequisitesReady =
-    minimumSplashElapsed && languageBootstrapped && startupDestinationCommitted;
+    languageBootstrapped && startupDestinationCommitted;
   const shouldFadeSplash =
     startupSplashPrerequisitesReady && startupDestinationPainted;
   const locales = useLocales();
@@ -1113,17 +1106,6 @@ function RootLayout() {
   }, [fontsSettled]);
 
   useEffect(() => {
-    if (!fontsSettled) return;
-    if (prefersReducedMotion || splashTimedOut) return;
-
-    const timer = setTimeout(
-      () => setSplashDelayElapsed(true),
-      STARTUP_SPLASH_MINIMUM_VISIBLE_MS
-    );
-    return () => clearTimeout(timer);
-  }, [fontsSettled, prefersReducedMotion, splashTimedOut]);
-
-  useEffect(() => {
     if (!startupSplashPrerequisitesReady || startupDestinationPainted) {
       return;
     }
@@ -1134,13 +1116,18 @@ function RootLayout() {
     });
   }, [startupDestinationPainted, startupSplashPrerequisitesReady]);
 
-  // Not gated by the splash's deliberate minimum, so Observe sees a start faster
-  // than it, and a slower one is not hidden inside it.
-  const startupDestinationReady = languageBootstrapped && startupDestinationCommitted;
+  // Measure the visible destination, after the cover has actually unmounted and
+  // its replacement has painted. Route readiness alone can still be hidden.
+  const startupInteractiveMarked = useRef(false);
   useEffect(() => {
-    if (!startupDestinationReady) return;
-    return scheduleAfterStartupPaint(markStartupInteractive);
-  }, [startupDestinationReady]);
+    if (showCustomSplash || startupInteractiveMarked.current) return;
+    return scheduleAfterStartupPaint(() => {
+      if (startupInteractiveMarked.current) return;
+      startupInteractiveMarked.current = true;
+      markPerformance('startup.interactive');
+      markStartupInteractive();
+    });
+  }, [showCustomSplash]);
 
   useEffect(() => {
     if (!shouldFadeSplash) return;
@@ -1165,7 +1152,6 @@ function RootLayout() {
   }, [startupDestinationCommitted]);
 
   const handleSplashFinished = useCallback(() => {
-    markPerformance('startup.interactive');
     setShowCustomSplash(false);
   }, []);
 
