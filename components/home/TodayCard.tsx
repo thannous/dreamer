@@ -27,9 +27,10 @@ export function TodayCard({ state, onPressCta, dreamTitle }: Props) {
 
   return (
     <View testID={TID.Component.HomeToday} className="px-6 pb-4">
-      <Text className="mb-1 font-sans-medium text-[11px] uppercase tracking-[1.8px] text-champagne-on">
-        {t(dreamTitle ? 'home.today.dream_eyebrow' : 'home.today.eyebrow')}
-      </Text>
+      {/* The screen title already says Today; the eyebrow only frames a dream's own title. */}
+      {dreamTitle ? <Text className="mb-1 font-sans-medium text-[11px] uppercase tracking-[1.8px] text-champagne-on">
+        {t('home.today.dream_eyebrow')}
+      </Text> : null}
       <Text testID={TID.Text.HomeTodayTitle} accessibilityRole="header"
         className="font-display-semibold text-[29px] leading-[32px] text-ivory">
         {title}
