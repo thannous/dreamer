@@ -37,8 +37,8 @@ test('compact resources keep their descriptions and explicit or system themes', 
       expect(bounds?.height).toBeLessThan(110);
       expect(await row.evaluate(element => element.scrollWidth <= element.clientWidth + 1)).toBe(true);
     }
-    await expect(screen).toContainText('Parcours des images et des thèmes qui peuvent nourrir ta réflexion.');
-    await expect(screen).toContainText('Retrouve des repères concrets pour te souvenir et noter tes rêves.');
+    await expect(screen).toContainText('Images et thèmes de tes rêves.');
+    await expect(screen).toContainText('Mieux te souvenir de tes rêves.');
     const change = await page.getByTestId('explorer-change-ritual').boundingBox();
     const navigation = await page.getByTestId('tab.explore').filter({ visible: true }).boundingBox();
     expect(change!.y + change!.height, 'Both ritual actions stay above navigation in the nominal viewport').toBeLessThanOrEqual(navigation!.y);
