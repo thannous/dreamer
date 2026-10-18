@@ -7,6 +7,11 @@ import { validateReleaseReceipt, runWithInstallDiagnostics, normalizeAvdName, va
 import { virtualLinks } from './test-support/virtual-links.mjs';
 const sha = 'a'.repeat(64);
 test('iteration APK commands never qualify as Release on either path syntax', () => {
+  for (const wrapper of ['/repo/android/gradlew', 'C:\\repo\\android\\gradlew.bat']) {
+    validateBuildCommand([wrapper, ':app:assembleRelease'], 'android');
+    assert.throws(() => validateBuildCommand([wrapper, ':app:assembleDebug'], 'android'));
+    assert.throws(() => validateBuildCommand([wrapper, ':app:assembleRelease', '--incremental'], 'android'));
+  }
   for (const [node, script] of [['/bin/node', '/repo/scripts/build-android-release-local.js'],
     ['C:\\node\\node.exe', 'C:\\repo\\scripts\\build-android-release-local.js']]) {
     validateBuildCommand([node, script, '--reuse-native-project'], 'android');

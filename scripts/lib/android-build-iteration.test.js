@@ -1,5 +1,5 @@
 'use strict';
-/* global describe, it, expect, afterEach */
+/* global describe, it, expect, afterEach, jest */
 const fs = require('node:fs');
 const path = require('node:path');
 const os = require('node:os');
@@ -72,5 +72,20 @@ describe('Android iteration safety (same cases on every host)', () => {
     const args = ['two words', 'quote"value', 'a&b', '$(literal)', 'C:\\two words\\file'];
     runChecked(process.execPath, ['-e', 'require("fs").writeFileSync(process.argv[1],JSON.stringify(process.argv.slice(2)))', output, ...args]);
     expect(JSON.parse(fs.readFileSync(output, 'utf8'))).toEqual(args);
+  });
+  it('refuses linked native inputs on every OS without requiring symlink privileges', () => {
+    const root = fixture(), lstat = fs.lstatSync;
+    const adapter = jest.spyOn(fs, 'lstatSync').mockImplementation(file =>
+      file === path.join(root, 'android/app/build.gradle') ? { isSymbolicLink: () => true } : lstat(file));
+    try { expect(() => buildContext(root, options())).toThrow('symlinks'); }
+    finally { adapter.mockRestore(); }
+  });
+  it('preserves the complete old state when atomic replacement fails', () => {
+    const root = fixture(); recordBuild(root, { context: 'old' }, 'passed');
+    const adapter = jest.spyOn(fs, 'renameSync').mockImplementation(() => { throw Object.assign(new Error('I/O failure'), { code: 'EIO' }); });
+    try { expect(() => recordBuild(root, { context: 'new' }, 'building')).toThrow('I/O failure'); }
+    finally { adapter.mockRestore(); }
+    expect(JSON.parse(fs.readFileSync(path.join(root, STATE_FILE), 'utf8'))).toEqual({ schemaVersion: 1, context: 'old', status: 'passed' });
+    expect(fs.readdirSync(path.join(root, '.expo'))).toEqual(['android-build-state.json']);
   });
 });
