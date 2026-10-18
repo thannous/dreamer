@@ -88,6 +88,8 @@ test('home keeps the dream image unchanged when explicit themes override the sys
   const image = page.getByTestId('image.home.today').locator('img');
   await expect(image).toBeVisible();
   await expect.poll(() => image.evaluate(el => (el as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
+  // Like the paintings since the top veil left (#394), the dream's image reaches the top edge.
+  expect((await image.boundingBox())!.y, 'The dream image starts at the top of the screen').toBeLessThanOrEqual(0);
   const originalSource = await image.getAttribute('src');
   await page.getByTestId('btn.header.home.settings').click();
   await page.getByTestId('quick-settings.language').click();
