@@ -2112,6 +2112,12 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     return () => clearTimeout(timer);
   }, [coverShown, plateUnderFlight]);
 
+  if (!dream && isDeleting) {
+    // The dream is gone from the store before router.replace lands: show the plain
+    // ground, not the "not found" page, for those few frames.
+    return <View className="flex-1 bg-ink" />;
+  }
+
   if (!dream) {
     return (
       <View className="relative flex-1 overflow-hidden bg-ink">
