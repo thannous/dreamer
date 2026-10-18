@@ -277,7 +277,14 @@ function createLucidExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
 }
 
 export default function resolveExpoConfig({ config }: ConfigContext): ExpoConfig {
-  const baseExpo = config as ExpoConfig;
+  let baseExpo = config as ExpoConfig;
+  // Measured with Uniwind and React Compiler: faster cold exports, but a slightly
+  // larger Hermes bundle. Keep this experimental transformer a local opt-in;
+  // cloud release profiles retain their validated default.
+  if (process.env.NOCTALIA_METRO_NOXCTURNAL === '1' && process.env.EAS_BUILD !== 'true') {
+    const experiments = { ...baseExpo.experiments, noxcturnalTransformWorker: true };
+    baseExpo = { ...baseExpo, experiments };
+  }
   const qaEnabled = resolveDreamerQaBuildEnabled();
   const lucidEnabled = resolveLucidBuildEnabled();
   assertDreamerQaLucidConflict(qaEnabled, lucidEnabled);
