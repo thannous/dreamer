@@ -211,7 +211,9 @@ test('auth setup writes one storageState per account in the shape the web client
     const written = await _runGuardedWithListsForTests(env(), makeAuthAction(readAuthSecrets(env()), { dir: path.join(dir, '.auth'), log: (line) => logs.push(line), now: () => 1_000_000 }), { allowedRefs: [REF], fetch: branch.fetch });
     assert.deepEqual(written.map(({ tier }) => tier), ['free', 'premium']);
     for (const { tier, file } of written) {
-      assert.equal(fs.statSync(file).mode & 0o777, 0o600);
+      // POSIX mode bits do not describe Windows ACLs. The session content and
+      // secret-redaction assertions below still run on both platforms.
+      if (process.platform !== 'win32') assert.equal(fs.statSync(file).mode & 0o777, 0o600);
       const state = JSON.parse(fs.readFileSync(file, 'utf8'));
       assert.deepEqual(state.cookies, []);
       assert.equal(state.origins.length, 1);
@@ -224,7 +226,7 @@ test('auth setup writes one storageState per account in the shape the web client
       assert.ok(session.access_token && session.refresh_token);
       assert.equal(session.expires_at, 1000 + 3600);
     }
-    assert.equal(fs.statSync(path.join(dir, '.auth')).mode & 0o777, 0o700);
+    if (process.platform !== 'win32') assert.equal(fs.statSync(path.join(dir, '.auth')).mode & 0o777, 0o700);
     const tokenCalls = branch.state.calls.filter((call) => call.url.includes('/auth/v1/token'));
     assert.equal(tokenCalls.length, 2);
     for (const call of tokenCalls) assert.equal(call.headers.apikey, ANON);
