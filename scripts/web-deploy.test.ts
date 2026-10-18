@@ -247,6 +247,7 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
       ...NATIVE_OFF,
       PATH: '/usr/bin',
       HOME: path.join(path.dirname(build.cwd), 'build-home'),
+      ...(process.platform === 'win32' ? { USERPROFILE: path.join(path.dirname(build.cwd), 'build-home') } : {}),
       TMPDIR: '/tmp',
       HTTPS_PROXY: 'http://proxy:3128',
       NODE_EXTRA_CA_CERTS: '/etc/ca.pem',
@@ -483,7 +484,7 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
     ['SIGTERM', 143],
     ['SIGHUP', 129],
     ['SIGQUIT', 131],
-  ])('on %s during the build: stops the CLI, removes the temp copy and the env file, exits %i, deploys nothing', async (signal, code) => {
+  ].filter(([signal]) => process.platform !== 'win32' || signal !== 'SIGQUIT'))('on %s during the build: stops the CLI, removes the temp copy and the env file, exits %i, deploys nothing', async (signal, code) => {
     const proc = Object.assign(new EventEmitter(), {
       pid: process.pid,
       exit: jest.fn((exitCode: number) => {
@@ -524,7 +525,7 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
     ['link', 'SIGHUP', 129, 'pull'],
     ['pull', 'SIGQUIT', 131, 'build'],
     ['build', 'SIGTERM', 143, 'deploy'],
-  ])('a %s step that exits 0 right after %s starts no further step: exit %i, no %s, copy removed', async (during, signal, code, next) => {
+  ].filter(([, signal]) => process.platform !== 'win32' || signal !== 'SIGQUIT'))('a %s step that exits 0 right after %s starts no further step: exit %i, no %s, copy removed', async (during, signal, code, next) => {
     const proc = Object.assign(new EventEmitter(), {
       pid: process.pid,
       exit: jest.fn((exitCode: number) => {
@@ -565,7 +566,8 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
     expect(handledSignals('win32')).toEqual(['SIGINT', 'SIGTERM', 'SIGHUP']);
   });
 
-  it('a real SIGTERM to a running publish removes the temp copy and exits 143', async () => {
+  // Windows TerminateProcess cannot be intercepted by Node's SIGTERM handler.
+  (process.platform === 'win32' ? it.skip : it)('a real SIGTERM to a running publish removes the temp copy and exits 143', async () => {
     const script = `
       const { main } = require(${JSON.stringify(path.join(__dirname, 'web-deploy.js'))});
       const { run } = require(${JSON.stringify(path.join(__dirname, 'web-deploy.js'))});
@@ -791,7 +793,8 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
     expect(setup.logs.some((line) => line.includes('removed a stale temp copy'))).toBe(true);
   });
 
-  it('creates the temp copy with mode 0700', async () => {
+  // Windows directory access uses ACLs rather than POSIX permission bits.
+  (process.platform === 'win32' ? it.skip : it)('creates the temp copy with mode 0700', async () => {
     let mode = 0;
     const calls: Call[] = [];
     const inner = fakeCli(calls);

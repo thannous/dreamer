@@ -147,7 +147,7 @@ function createCleanCopy(commitHash, { rootDir = ROOT_DIR, parentDir } = {}) {
     throw new Error(`git archive of ${commitHash} failed: ${String(packed.stderr || '').trim()}`);
   }
   // Git Bash puts GNU tar first on PATH. It interprets the drive in C:\\...
-  // as a remote host, and --force-local still cannot read the native paths.
+  // as a remote host and cannot read the native backslash paths.
   const tar = process.platform === 'win32'
     ? path.win32.join(process.env.SystemRoot || 'C:\\Windows', 'System32', 'tar.exe')
     : 'tar';
