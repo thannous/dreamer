@@ -66,6 +66,15 @@ Only TypeScript's redundant `import/namespace` lint rule is disabled; JavaScript
 imports and React Compiler rules keep their checks. Site-only changes continue
 to reuse type/lint proofs whose inputs have not changed.
 
+`npm run test:verify-local` runs the same common cases on every OS, including
+Linux, macOS and Windows behavior through process/filesystem adapters. Common
+tests never select or omit assertions from the host OS. On Linux the runner
+also announces and runs the native process-group, `flock`, `setsid` and POSIX
+permission qualification. These tools are prerequisites of that extra suite.
+`npm run test:tooling:native` additionally exercises real publish signals and
+descendant cleanup on Linux. Native evidence stays separate from the
+portable contracts; simulated Windows cases do not qualify Windows ACLs.
+
 For a short live site loop, see [`docs:dev -- --symbol=tiger --lang=fr`](../docs-src/README.md#iterate-quickly-on-one-generated-page).
 Always run a full site build before trusting site-wide checks after a partial preview.
 
