@@ -64,6 +64,11 @@ jest.mock('@/components/settings/useAnalyticsPreferenceController', () => ({
   }),
 }));
 
+// Stability reports exist only in a native build; lib/observe's own test covers them.
+jest.mock('@/components/settings/useStabilityReportsController', () => ({
+  useStabilityReportsController: () => ({ available: false }),
+}));
+
 const mockRequestAccountDeletion = jest.mocked(requestAccountDeletion);
 const mockFinalizeAccountDeletion = jest.mocked(finalizeAccountDeletion);
 
