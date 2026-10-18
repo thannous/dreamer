@@ -35,7 +35,7 @@ async function download(language: SymbolLanguage): Promise<ExtendedSymbolContent
   if (!isContentMap(data)) throw new Error(`Unexpected symbol content for ${language}`);
 
   new Directory(Paths.document, DIRECTORY_SEGMENT).create({ idempotent: true, intermediates: true });
-  cacheFile(language).write(JSON.stringify(data));
+  await cacheFile(language).write(JSON.stringify(data));
   loaded.set(language, data);
   return data;
 }

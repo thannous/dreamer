@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Privacy Policy",
   "publishedTime": "",
-  "modifiedTime": "2026-10-15",
+  "modifiedTime": "2026-10-18",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -36,7 +36,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Privacy Policy</h1>
-        <p class="text-lg text-purple-200/80 mb-10">Effective October 15, 2026</p>
+        <p class="text-lg text-purple-200/80 mb-10">Effective October 18, 2026</p>
 
         <div class="space-y-8 text-gray-300 leading-relaxed">
             <div class="p-6 rounded-2xl bg-dream-salmon/5 border border-dream-salmon/20">
@@ -104,6 +104,7 @@
                     <li><strong>Dream data:</strong> text transcriptions of your dreams, AI-generated analyses, shareable quotes, themes or categories, dream type, favorite status, as well as images generated to illustrate your dreams, and the history of conversations with the AI assistant about your dreams.</li>
                     <li><strong>Audio recordings:</strong> when you use the voice recording feature, your voice is processed to produce a transcript. Noctalia does not record or store your audio files on its servers: they are processed in real-time only to produce the transcript, then deleted from the technical flow. Only the transcribed text is saved in your journal.</li>
                     <li><strong>Technical and usage data:</strong> technical logs (errors, performance, security events), basic device information (operating system, app version), a hashed device identifier used solely for free-tier quota management, and technical identifiers necessary to provide the service. Optional app usage measurement is disabled by default and starts only after you enable it in the introduction or settings. It helps Noctalia improve navigation, first saves and return within seven days. You can use the app without agreeing and withdraw your consent at any time in settings. On Android, iOS and the web app, Noctalia may also measure a limited set of functional events (onboarding step viewed, choice made, dream saved or result viewed) using a random journey identifier kept on the device for no more than seven days. This first-party measurement never includes dream text, titles or analyses, nor an email address, account identifier, device identifier or persisted IP address. It uses no third-party marketing analytics tool and can be disabled from the introduction or settings.</li>
+                    <li><strong>App stability measurement:</strong> on Android and iOS, the app sends technical measurements to Expo (EAS Observe): startup times, errors and crashes, device model and operating system, app version, and network and battery state at startup. These measurements are tied to a random identifier specific to the installation, which changes if you reinstall the app. This processing is based on our legitimate interest in keeping the app stable and fast. We do not knowingly send any dream content or account data to Expo.</li>
                     <li><strong>Website audience measurement:</strong> when you visit noctalia.app, Ahrefs Web Analytics measures page views, referrers and, where applicable, outbound link clicks and form submissions. It also derives browser, device, operating system, language, and approximate country and city information. It uses no cookies or persistent identifiers. The raw IP address is used transiently for approximate location and a salted daily visitor hash, then discarded without being stored. No account data or dream content is sent to Ahrefs.</li>
                     <li><strong>Consent-based website usage analysis:</strong> solely to improve Noctalia and this website, Microsoft Clarity measures pages viewed, clicks, scrolling and basic technical information, and creates heatmaps and session recordings if you allow analytics. Displayed text, input fields and dropdowns are masked through strict masking. Clarity may set the <code>_clck</code> and <code>_clsk</code> cookies. Advertising storage remains denied, and we do not intentionally send dream content or account data to Clarity.</li>
                     <li><strong>Consent-based traffic measurement:</strong> solely to improve Noctalia and this website, Google Analytics measures pages viewed, traffic sources, basic interactions and technical information (browser, device, operating system, language, approximate country-level location) if you allow analytics. Google Analytics may set the <code>_ga</code> and <code>_ga_*</code> cookies. Advertising features and advertising storage remain disabled, and we do not intentionally send dream content or account data to Google Analytics.</li>
@@ -157,6 +158,7 @@
                     <li><strong>Audio recordings:</strong> recordings necessary for voice transcription are retained only for the time strictly necessary for technical processing (generally a few minutes) and are not stored long-term by Noctalia.</li>
                     <li><strong>Technical and security logs:</strong> retained for a maximum period of 12 months, to ensure security, incident detection and evidence in case of dispute.</li>
                     <li><strong>First-party usage measurement:</strong> raw events without dream content are deleted after 90 days. Anonymous aggregated statistics that can no longer isolate an individual journey are retained for no more than 24 months.</li>
+                    <li><strong>App stability measurement:</strong> Expo keeps these measurements for at least 90 days to compare app versions, then according to its own retention policy.</li>
                     <li><strong>Microsoft Clarity:</strong> session recordings are retained for 30 days and heatmaps for up to 9 months. Your analytics preference is stored in your browser for no more than 6 months.</li>
                     <li><strong>Google Analytics:</strong> user-level measurement data is retained for up to 14 months; aggregated statistics may be kept for longer.</li>
                     <li><strong>Support exchanges:</strong> retained for the duration necessary to handle your request and, where applicable, to defend our rights (generally up to 24 months).</li>
@@ -169,6 +171,7 @@
                 <p class="mt-4">Your data may only be shared with the following categories of recipients:</p>
                 <ul class="list-disc pl-5 mt-4 space-y-2">
                     <li><strong>Technical providers:</strong> notably Supabase (hosting, database, authentication) and cloud infrastructure providers necessary for the app's operation.</li>
+                    <li><strong>App stability measurement:</strong> Expo (650 Industries, Inc., USA) provides EAS Observe. Details are available in the <a href="https://expo.dev/privacy" class="text-dream-salmon hover:underline">Expo Privacy Policy</a>.</li>
                     <li><strong>Website analytics:</strong> Ahrefs Pte Ltd provides the cookie-free audience measurement described above. Details are available in the <a href="https://ahrefs.com/legal/privacy-policy" class="text-dream-salmon hover:underline">Ahrefs Privacy Policy</a>.</li>
                     <li><strong>Consent-based usage analysis:</strong> Microsoft provides Clarity only after you agree. Details are available in the <a href="https://privacy.microsoft.com/privacystatement" class="text-dream-salmon hover:underline">Microsoft Privacy Statement</a>.</li>
                     <li><strong>Consent-based traffic measurement:</strong> Google provides Google Analytics only after you agree. Details are available in the <a href="https://policies.google.com/privacy" class="text-dream-salmon hover:underline">Google Privacy Policy</a>.</li>

@@ -1,6 +1,7 @@
 import { Fonts } from '@/constants/theme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
+import { Observe } from 'expo-observe';
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
@@ -25,6 +26,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
+    Observe.reportError(error);
     if (__DEV__) {
       console.error('ErrorBoundary caught an error:', error, errorInfo);
     }

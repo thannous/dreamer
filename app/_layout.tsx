@@ -18,6 +18,7 @@ import { DarkTheme, DefaultTheme, ThemeProvider as NavigationThemeProvider } fro
 import { useFonts } from 'expo-font';
 import { useLocales } from 'expo-localization';
 import * as Notifications from 'expo-notifications';
+import { Observe, ObserveRoot } from 'expo-observe';
 import { Stack, router, useGlobalSearchParams, useNavigationContainerRef, usePathname, useRootNavigationState, type Href } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -28,6 +29,7 @@ import StartupSplashScreen, {
   STARTUP_SPLASH_MINIMUM_VISIBLE_MS,
 } from '@/components/StartupSplashScreen';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
+import { RouteScreenErrorFallback } from '@/components/ScreenErrorBoundary';
 import { DesktopShell } from '@/components/navigation/DesktopShell';
 import { AnalysisFlightIndicator } from '@/components/analysis/AnalysisFlightIndicator';
 import { EngagementRemindersHost } from '@/components/reminders/EngagementRemindersHost';
@@ -905,6 +907,7 @@ function RootLayoutNav({
             screenOptions={{
               animation: nonCriticalStartupEnabled ? 'default' : 'none',
             }}
+            unstable_screenErrorBoundary={isLucidTrainer ? undefined : RouteScreenErrorFallback}
           >
             <Stack.Protected guard={!isLucidTrainer}>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
@@ -969,7 +972,7 @@ function JournalRuntime({ children }: React.PropsWithChildren) {
  * Bootstraps fonts and language preference, mounts providers, and renders the
  * navigation tree (plus the still startup splash).
  */
-export default function RootLayout() {
+function RootLayout() {
   const [fontsStartedAt] = useState(() => globalThis.performance?.now?.() ?? Date.now());
   const [fontsLoaded, fontError] = useFonts({
     SpaceGrotesk_400Regular,
@@ -1154,6 +1157,7 @@ export default function RootLayout() {
 
   const handleSplashFinished = useCallback(() => {
     markPerformance('startup.interactive');
+    Observe.markInteractive();
     setShowCustomSplash(false);
   }, []);
 
@@ -1195,3 +1199,7 @@ export default function RootLayout() {
     </GestureHandlerRootView>
   );
 }
+
+// EAS Observe records production startup times, unhandled errors and native crashes
+// (Android and iOS; a no-op on web). ObserveRoot marks the first render.
+export default ObserveRoot.wrap(RootLayout);

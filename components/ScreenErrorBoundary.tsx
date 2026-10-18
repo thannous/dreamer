@@ -1,5 +1,6 @@
-import { router } from 'expo-router';
-import React, { useMemo } from 'react';
+import { Observe } from 'expo-observe';
+import { router, type ErrorBoundaryProps } from 'expo-router';
+import React, { useEffect, useMemo } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { ThemeLayout } from '@/constants/journalTheme';
@@ -91,6 +92,19 @@ function ScreenErrorFallback({ error, resetError }: ScreenErrorFallbackProps): R
       </View>
     </View>
   );
+}
+
+/**
+ * Fallback for Expo Router's per-screen error boundary (`unstable_screenErrorBoundary`):
+ * a screen that throws shows this card while the navigator, and the tab bar, stay mounted.
+ */
+export function RouteScreenErrorFallback({ error, retry }: ErrorBoundaryProps): React.ReactElement {
+  useEffect(() => {
+    // The router's boundary catches the error before any global handler sees it.
+    Observe.reportError(error);
+  }, [error]);
+
+  return <ScreenErrorFallback error={error} resetError={() => void retry()} />;
 }
 
 interface ScreenErrorBoundaryProps {

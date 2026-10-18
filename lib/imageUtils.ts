@@ -137,7 +137,8 @@ export function getImageConfig(viewType: 'thumbnail' | 'full') {
     return {
       cachePolicy: 'memory-disk' as const,
       priority: 'normal' as const,
-      transition: 200,
+      // Cached images (a revisit, a scroll back) appear at once; only network loads fade in.
+      transition: { duration: 200, skipOnCacheHit: 'all' as const },
       // Thumbnail-specific: reduce quality slightly for smaller file size
       contentFit: 'cover' as const,
     };
@@ -146,7 +147,7 @@ export function getImageConfig(viewType: 'thumbnail' | 'full') {
   return {
     cachePolicy: 'memory-disk' as const,
     priority: 'high' as const,
-    transition: 300,
+    transition: { duration: 300, skipOnCacheHit: 'all' as const },
     contentFit: 'cover' as const,
   };
 }
