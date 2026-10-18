@@ -195,7 +195,6 @@ describe('build-android-release-local', () => {
       ':app:clean',
       ':app:assembleRelease',
       '-PreactNativeArchitectures=arm64-v8a',
-      '-Pexpo.android.cmakeObjectPathMax=240',
       '-Pkotlin.compiler.execution.strategy=in-process',
       `-Dorg.gradle.jvmargs=${DEFAULT_GRADLE_JVM_ARGS}`,
       '--no-build-cache',

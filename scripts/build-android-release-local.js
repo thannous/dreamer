@@ -192,9 +192,6 @@ function getGradleArgs(abi, jvmArgs = DEFAULT_GRADLE_JVM_ARGS, incremental = fal
     ...(incremental ? [':app:createBundleReleaseJsAndAssets', '--rerun'] : []),
     ':app:assembleRelease',
     `-PreactNativeArchitectures=${normalizeAbi(abi)}`,
-    // Expo 58 raises this limit to 1024, but Android SDK Ninja 1.10.2 cannot
-    // open Windows paths over 260. Keep CMake's object-path hashing on all hosts.
-    '-Pexpo.android.cmakeObjectPathMax=240',
     '-Pkotlin.compiler.execution.strategy=in-process',
     `-Dorg.gradle.jvmargs=${jvmArgs}`,
     ...(incremental ? ['--build-cache', '--daemon'] : ['--no-build-cache', '--no-daemon']),

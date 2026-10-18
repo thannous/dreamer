@@ -25,10 +25,11 @@ connects these commands to implementation paths and current runbooks.
 
 Use the Node/Deno versions from `mise.toml` and install dependencies in the actual
 checkout. A local Android Release build also requires **JDK 17** and an Android
-SDK including CMake (AGP defaults to 3.22.1). The local runner sets
-`expo.android.cmakeObjectPathMax=240` on every host so CMake hashes long object
-paths. Expo 58 defaults to 1024, while SDK Ninja 1.10.2 cannot open Windows
-paths over 260 characters (including the Ninja shipped with CMake 3.30.5).
+SDK including CMake (AGP defaults to 3.22.1). Long Windows paths need a Ninja
+with long-path support: verify the actual `cmake/<version>/bin/ninja --version`,
+not only the CMake version. The SDK's CMake 3.30.5 on this host still shipped
+Ninja 1.10.2. Use an owned SDK/toolchain copy for experiments; do not replace a
+shared installation. The benchmark records the actual toolchain used.
 `JAVA_HOME` takes precedence over Java on PATH; the runner verifies that
 executable before version synchronization, device access, prebuild or Gradle.
 A missing, incompatible or unverifiable Java stops immediately with instructions
