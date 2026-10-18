@@ -7,6 +7,7 @@ import { DreamAnalysisContent } from '@/components/journal/DreamAnalysisContent'
 import { BOOK_MEASURE, BookOrnament, BookProse, BookSectionMark, BookStar } from '@/components/journal/JournalBook';
 import { JournalCoverPlate } from '@/components/journal/JournalCoverPlate';
 import { JournalEditLink } from '@/components/journal/JournalEditLink';
+import { JournalSealShare } from '@/components/journal/JournalSealShare';
 import { JournalFolio } from '@/components/journal/JournalFolio';
 import { JournalPageEdges } from '@/components/journal/JournalPageEdges';
 import { JournalPaper } from '@/components/journal/JournalPaper';
@@ -131,6 +132,7 @@ export function JournalPagePreview({ dream, folio, height }: { dream: DreamAnaly
               <>
                 <SavedDreamMoment phase="read" still wordsLine={false} sealing={sealMark ? { mark: sealMark, settled: true } : null}
                   date={formatDreamStamp(dream.id)} />
+                <JournalSealShare />
                 <DreamAnalysisContent dream={dream} pending={false} />
               </>
             ) : null}

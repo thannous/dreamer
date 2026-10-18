@@ -1161,6 +1161,20 @@ describe('journal detail saved confirmation route', () => {
     expect(screen.getByRole('alert').textContent).toContain('journal.detail.sync.retry_error');
   });
 
+  it('offers share between the seal and the reading, only once the reading is complete', () => {
+    mockDreams = [buildDream()];
+    const view = render(<JournalDetailScreen />);
+    expect(screen.queryByTestId(TID.Button.DreamShareSeal)).toBeNull();
+
+    mockDreams = [buildDream({ analysisStatus: 'done', isAnalyzed: true, interpretation: 'Reflection' })];
+    view.rerender(<JournalDetailScreen />);
+    const share = screen.getByTestId(TID.Button.DreamShareSeal);
+    const reading = screen.getByTestId(TID.Component.DreamDetailReadingZone);
+    expect(share.compareDocumentPosition(reading) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect((share as HTMLButtonElement).disabled).toBe(
+      (screen.getByTestId(TID.Button.DreamShare) as HTMLButtonElement).disabled);
+  });
+
   it('keeps a completed analysis inline on revisit and handles a failed retry', () => {
     mockDreams = [buildDream({ analysisStatus: 'pending' })];
     const view = render(<JournalDetailScreen />);
