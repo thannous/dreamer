@@ -71,7 +71,9 @@ const NATIVE_MD4C_FLAGS = { latexMath: false } as const;
 // Callers can pass fresh inline styles. Compare their effective values so
 // unrelated parent updates do not rerender unchanged Markdown blocks.
 function concreteStyle(style: StyleProp<TextStyle> | StyleProp<ViewStyle> | undefined): Record<string, unknown> {
-  return (StyleSheet.flatten(style) ?? {}) as Record<string, unknown>;
+  // RN 0.88's generated flatten signature is narrower than its public style
+  // aliases (notably transitionDuration). The runtime accepts both aliases.
+  return (StyleSheet.flatten(style as Parameters<typeof StyleSheet.flatten>[0]) ?? {}) as Record<string, unknown>;
 }
 
 function stylesEqual(

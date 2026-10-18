@@ -1629,10 +1629,12 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     if (dream && pending?.savedDreamId === dream.id && pending.phase === 'analysis_confirmation') {
       void transitionOnboarding({ type: 'CLEAR_PENDING_INTENT' }).catch(() => {
         console.warn('[JournalDetail] Failed to dismiss the saved dream analysis choice');
-      }).finally(() => router.replace('/(tabs)/journal'));
+      }).finally(() => router.dismissTo('/(tabs)/journal'));
       return;
     }
-    router.replace('/(tabs)/journal');
+    // Reuse the journal beneath this detail, preserving its filters and scroll.
+    // A direct link without that route still falls back to opening the journal.
+    router.dismissTo('/(tabs)/journal');
   }, [dream, onboardingState.pendingRecordingIntent, opensOnSavedMoment, transitionOnboarding]);
 
   const handleJourneyPress = useCallback(() => {
