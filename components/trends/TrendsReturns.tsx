@@ -93,7 +93,7 @@ export function TrendsReturns({ trends, symbols, lit, ink, t, formatNumber, onOp
                     accessibilityLabel={[symbol.name, kind, share].filter(Boolean).join(', ')}
                     accessibilityHint={t('journal.symbols.open_hint')}
                     className="min-h-[56px] flex-row items-center gap-3">
-                    <SymbolMedallion symbol={symbol} size={44} />
+                    <SymbolMedallion symbol={symbol} size={48} />
                     <View className="min-w-0 flex-1">
                       <Text className="text-[16px] leading-[22px] font-sans-medium text-ivory" numberOfLines={1}>{symbol.name}</Text>
                       {kind ? <Text className="text-[12px] leading-[16px] font-sans text-champagne-on">{kind}</Text> : null}

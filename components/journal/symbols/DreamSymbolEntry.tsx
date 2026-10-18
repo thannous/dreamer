@@ -17,7 +17,7 @@ import type { DreamSymbolInsight } from '@/lib/types';
 import { SymbolMedallion } from './SymbolMedallion';
 import { symbolStatusLabel } from './symbolStatusLabel';
 
-const FACE = 40;
+const FACE = 48;
 
 /**
  * A symbol of the reading, as the reading names it and with what it means in this dream.

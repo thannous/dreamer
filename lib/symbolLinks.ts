@@ -1,3 +1,4 @@
+import { isDreamAnalyzed } from '@/lib/dreamUsage';
 import type { SymbolLanguage } from '@/lib/symbolTypes';
 import type { DreamAnalysis, DreamSymbolInsight } from '@/lib/types';
 
@@ -33,7 +34,7 @@ export type LinkedSymbol = {
 
 export type SymbolIndex = {
   symbols: ReadonlyMap<string, LinkedSymbol>;
-  /** Analyzed dreams that name at least one symbol: the "out of" of a symbol's count. */
+  /** Analyzed dreams, as Tendances counts them: the "out of" of a symbol's count. */
   dreamCount: number;
 };
 
@@ -111,6 +112,8 @@ export function buildSymbolIndex(dreams: readonly DreamAnalysis[], language: Sym
   const pairs = new Map<string, Map<string, number>>();
   let dreamCount = 0;
   const chronological = dreams.filter(isLinkableDream).sort((a, b) => a.id - b.id);
+  // A reading that named no symbol still counts: "2 of 7" says the same here and in Tendances.
+  for (const dream of dreams) if (isDreamAnalyzed(dream) && !isLinkableDream(dream)) dreamCount += 1;
 
   for (const dream of chronological) {
     const inDream: string[] = [];
@@ -138,7 +141,7 @@ export function buildSymbolIndex(dreams: readonly DreamAnalysis[], language: Sym
       if (!symbol.symbolId) symbol.name = insight.name.trim();
       if (insight.confirmedAt) symbol.confirmed = true;
     }
-    if (inDream.length) dreamCount += 1;
+    if (inDream.length || isDreamAnalyzed(dream)) dreamCount += 1;
     for (const a of inDream) {
       for (const b of inDream) {
         if (a === b) continue;
