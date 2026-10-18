@@ -2934,10 +2934,10 @@ ${(rg.steps || []).map((step, index) => `                        <li class="refl
                 </section>`;
   }).join('\n\n');
 
-  // ── Build sticky bar letter links ────────────────────────────────────
+  // ── Build quick-browse letter links ──────────────────────────────────
   const presentLetters = new Set(letters);
   const displayLetters = buildDisplayLetters(letters, lang);
-  const stickyAlphaLinks = displayLetters.map((l) =>
+  const quickBrowseAlphaLinks = displayLetters.map((l) =>
     renderAlphaItem(l, presentLetters, 'letter-link text-sm', '                        ', ' style="color:rgba(255,247,237,0.64);"')
   ).join('\n');
 
@@ -3232,7 +3232,7 @@ ${renderViewTransitionHeadStyles()}
             left: 50%;
             transform: translate(-50%, -0.35rem);
             z-index: 45;
-            width: min(calc(100vw - 2rem), 72rem);
+            width: min(calc(100vw - 2rem), 34rem);
             display: none;
             opacity: 0;
             pointer-events: none;
@@ -3255,15 +3255,8 @@ ${renderViewTransitionHeadStyles()}
             pointer-events: auto;
             touch-action: manipulation;
         }
-        #stickyBar .sb-search { position: relative; flex-shrink: 0; width: min(17rem, 34vw); }
-        #stickyBar .sb-alpha { display: flex; flex-wrap: nowrap; gap: 3px; justify-content: flex-start; align-items: center; flex: 1; min-width: 0; overflow-x: auto; scrollbar-width: none; }
-        #stickyBar .sb-alpha::-webkit-scrollbar { display: none; }
-        #stickyBar .letter-link {
-          min-width: 1.7rem;
-          min-height: 1.7rem;
-          border-radius: 0.55rem;
-          font-size: 0.78rem;
-        }
+        #stickyBar .sb-search { position: relative; flex: 1 1 0; min-width: 0; }
+        #stickyBar #backToTop { margin-left: auto; }
         .sticky-status {
           display: none;
           align-items: center;
@@ -3345,27 +3338,6 @@ ${renderViewTransitionHeadStyles()}
                 right: 0;
                 width: 2.75rem;
                 height: 2.75rem;
-            }
-            #stickyBar .sb-alpha {
-                display: flex;
-                order: 4;
-                flex: 1 0 100%;
-                flex-wrap: nowrap;
-                justify-content: flex-start;
-                overflow-x: auto;
-                padding: 0.25rem 0 0.15rem;
-                scrollbar-width: none;
-            }
-            #stickyBar .letter-link {
-                min-width: 2.75rem;
-                min-height: 2.75rem;
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                flex: 0 0 2.75rem;
-            }
-            #stickyBar .sb-alpha::-webkit-scrollbar {
-                display: none;
             }
             .sticky-status {
                 display: none !important;
@@ -3483,10 +3455,6 @@ ${renderMobileAlphaHtml(letters, lang)}
                         <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
                         <span id="stickySearchStatusText" role="status" aria-live="polite" aria-atomic="true"></span>
                     </div>
-                    <!-- Alphabet -->
-                    <div id="stickyAlphabet" class="sb-alpha letter-nav">
-${stickyAlphaLinks}
-                    </div>
                     <!-- Back to top -->
                     <button id="backToTop" class="glass-button rounded-full text-purple-300/70 hover:text-white transition-colors" aria-label="${escapeHtml(uiCopy.backToTop)}" title="${escapeHtml(uiCopy.backToTop)}" style="display:none;flex-shrink:0;padding:6px;">
                         <i data-lucide="arrow-up" class="w-4 h-4"></i>
@@ -3498,7 +3466,7 @@ ${stickyAlphaLinks}
 ${renderSidebarHtml(lang, t, counts, letters)}
             <section id="categoryGridSection" class="quick-browse-panel glass-panel rounded-3xl">
                 <div class="quick-browse-alpha letter-nav" aria-label="Alphabet">
-${stickyAlphaLinks}
+${quickBrowseAlphaLinks}
                 </div>
                 <div class="quick-browse-copy">
                     <div>
@@ -3878,6 +3846,8 @@ ${symbolCatEntries}
                     started = true;
                     window.removeEventListener('scrollend', start);
                     align(4);
+                    // Correcting upward reveals the navbar (0.3s), which pushes the sticky bar down.
+                    window.setTimeout(() => align(2), 400);
                 };
                 window.addEventListener('scrollend', start, { once: true });
                 window.setTimeout(start, 1000);
