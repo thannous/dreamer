@@ -192,7 +192,10 @@ function SymbolPage({ symbol, index, dream, born, language, onSelect, onClose }:
   if (companions.length) {
     sections.push(
       <View key="companions" className="gap-4">
-        <BookSubheading>{t('journal.symbols.companions.header')}</BookSubheading>
+        {/* "Often" only once they have met in more than one dream. */}
+        <BookSubheading>
+          {t(companions.some(({ count }) => count >= 2) ? 'journal.symbols.companions.header' : 'journal.symbols.companions.header_once')}
+        </BookSubheading>
         <View className="flex-row flex-wrap justify-center gap-2">
           {companions.map((companion) => {
             const often = companion.count >= 2 ? t('journal.symbols.companions.count', { count: companion.count }) : null;

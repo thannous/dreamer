@@ -72,6 +72,7 @@ export function DreamAnalysisContent({ dream, pending, reveal = false, onLayout 
     name: insight.name.trim(),
     count: linked?.appearances.length ?? 1,
     fresh: linked ? isNewPersonalSymbol(linked) : false,
+    symbol: linked,
   }));
   const emotions = dream.emotions?.map(item => ({ name: item.name, text: item.insight }));
   const firstChapter = stars.length

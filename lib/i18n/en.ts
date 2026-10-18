@@ -742,6 +742,7 @@ const translations: Record<string, string> = {
     'journal.symbols.timeline.more': 'And {count} more dreams',
     'journal.symbols.timeline.open_hint': 'Opens this dream.',
     'journal.symbols.companions.header': 'Often with',
+    'journal.symbols.companions.header_once': 'Alongside it',
     'journal.symbols.companions.count': '{count} times',
     'journal.symbols.guide.header': 'Landmarks',
     'journal.symbols.guide.read_more': 'Read the full entry',

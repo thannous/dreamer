@@ -3,20 +3,24 @@ import { Text, View, useWindowDimensions, type StyleProp, type ViewStyle } from 
 import Animated, { useReducedMotion, type CSSStyle } from 'react-native-reanimated';
 
 import { EASE } from '@/components/motion/motion';
+import type { LinkedSymbol } from '@/lib/symbolLinks';
 import { TID } from '@/lib/testIDs';
 import { useLiveTestID } from '../DecorativeCopy';
+import { SymbolMedallion } from '../symbols/SymbolMedallion';
 
 import { DREAM_STORY, reducedDelay } from './dreamStoryMotion';
 
 /** Beyond five, labels no longer fit a phone width; the reading lists every symbol. */
 export const MAX_CONSTELLATION_STARS = 5;
 
+/** A star without a linked symbol is a point of light; a linked one wears its face. */
 const STAR = 9;
-const HALO = 26;
-const LABEL_GAP = 10;
+const FACE = 36;
+const HALO = 52;
+const LABEL_GAP = 8;
 const LABEL_LINE = 18;
 /** Vertical distance between the high and the low row of stars. */
-const ROW_GAP = 38;
+const ROW_GAP = 40;
 
 type Point = { x: number; y: number; high: boolean };
 
@@ -26,18 +30,20 @@ export type ConstellationStar = {
   count: number;
   /** The dreamer's own symbol, born in this dream and not opened yet. */
   fresh: boolean;
+  /** The symbol followed through the journal, whose face the star wears. */
+  symbol?: LinkedSymbol;
 };
 type Rows = { high: number; low: number; height: number };
 
 /**
  * High stars carry their label above, low stars below, so no thread crosses a word.
- * Each label keeps room for its two lines at the reader's text size (136 points at 100 %).
+ * Each label keeps room for its two lines at the reader's text size (170 points at 100 %).
  */
 const rowsFor = (fontScale: number): Rows => {
   const label = 2 * LABEL_LINE * Math.max(fontScale, 1);
-  const high = LABEL_GAP + label + 2;
+  const high = label + LABEL_GAP + FACE / 2 + 2;
   const low = high + ROW_GAP;
-  return { high, low, height: low + LABEL_GAP + label + 4 };
+  return { high, low, height: low + FACE / 2 + LABEL_GAP + label + 4 };
 };
 
 const layoutStars = (count: number, width: number, rows: Rows): Point[] => {
@@ -50,8 +56,10 @@ const layoutStars = (count: number, width: number, rows: Rows): Point[] => {
 
 /**
  * The dream's own symbols drawn as a constellation: the visual promise of the onboarding
- * ("Repérer"), kept with the dream's real data. Each star ignites in turn and the thread
- * to the next one draws itself; on a return visit the constellation is simply lit.
+ * ("Repérer"), kept with the dream's real data. Each star wears its symbol's face, the
+ * dictionary's plate or the painting of the dream it was born in, as the reading below
+ * does. Each star ignites in turn and the thread to the next one draws itself; on a
+ * return visit the constellation is simply lit.
  * As in the onboarding, a symbol that returns carries the number of its dreams and,
  * as it lights, breathes twice, so the eye finds what repeats.
  *
@@ -140,11 +148,13 @@ function Star({ point, index, star, labelWidth, height, play, reduced }: {
       >
         <Animated.View className="absolute rounded-full bg-champagne"
           style={[{ width: HALO, height: HALO, opacity: 0.16 }, breathe] as StyleProp<ViewStyle>} />
-        <View className="rounded-full bg-champagne" style={{ width: STAR, height: STAR }} />
+        {star.symbol
+          ? <SymbolMedallion symbol={star.symbol} size={FACE} />
+          : <View className="rounded-full bg-champagne" style={{ width: STAR, height: STAR }} />}
         {returns ? (
           <View className="absolute items-center justify-center rounded-full border border-champagne bg-ink"
-            // Beside the star, between the labels above and below it.
-            style={{ left: HALO - 1, top: (HALO - 18) / 2, minWidth: 18, height: 18, paddingHorizontal: 3 }}>
+            // On the face's upper right rim, clear of the labels above and below it.
+            style={{ left: HALO / 2 + 4, top: HALO / 2 - FACE / 2 - 6, minWidth: 18, height: 18, paddingHorizontal: 3 }}>
             <Text allowFontScaling={false} className="font-sans-medium text-[10px] leading-[14px] text-champagne-on">{star.count}</Text>
           </View>
         ) : null}
@@ -155,8 +165,8 @@ function Star({ point, index, star, labelWidth, height, play, reduced }: {
           left: point.x - labelWidth / 2,
           width: labelWidth,
           ...(point.high
-            ? { bottom: height - point.y + LABEL_GAP }
-            : { top: point.y + LABEL_GAP }),
+            ? { bottom: height - point.y + FACE / 2 + LABEL_GAP }
+            : { top: point.y + FACE / 2 + LABEL_GAP }),
         }, label] as StyleProp<ViewStyle>}
       >
         <Text numberOfLines={2} className="text-center font-display-medium text-[14px] leading-[18px] text-ivory">
