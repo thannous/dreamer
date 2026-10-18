@@ -385,8 +385,9 @@ export function SavedDreamMoment({
       ) : null}
     </View>
   );
-  // One line, always kept, so the page under the seal never moves as the step changes;
-  // keyed, so the words enter afresh when the step they offer appears or changes.
+  // One line, always kept, so the page under the seal holds still as the step changes (unless
+  // a long step wraps); keyed, so the words enter afresh when the step they offer appears or
+  // changes.
   const primaryStep = action?.emphasis === 'primary';
   const words = !wordsLine && !action ? null : (
     <View className="mt-3 items-center justify-center"

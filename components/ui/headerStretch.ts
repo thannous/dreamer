@@ -64,8 +64,8 @@ export function usePaintingDepthStyle(height: number, frame: 'scrolls' | 'fixed'
   });
 }
 
-// Test doubles of expo-router may omit useIsFocused; a mounted painting is then on screen.
-const useOnScreen: () => boolean = typeof useIsFocused === 'function' ? useIsFocused : () => true;
+// Test doubles of expo-router may omit useIsFocused; a mounted screen is then in front.
+export const useOnScreen: () => boolean = typeof useIsFocused === 'function' ? useIsFocused : () => true;
 
 /**
  * A painting breathes: a slow zoom in and out, as if the scene were still dreaming.
