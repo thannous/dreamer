@@ -92,7 +92,9 @@ export function DreamAnalysisContent({ dream, pending, reveal = false, onLayout 
         <DreamReadingWait />
       ) : (
         <>
-          {stars.length ? <DreamSymbolConstellation stars={stars} play={reveal} /> : null}
+          {stars.length ? (
+            <DreamSymbolConstellation stars={stars} play={reveal} onOpen={decorative ? undefined : setOpenSymbol} />
+          ) : null}
           <Chapter reveal={reveal} delay={chapterDelay(0)}>
             <MarkdownText variant="reading" style={body}>{dream.interpretation ?? ''}</MarkdownText>
           </Chapter>

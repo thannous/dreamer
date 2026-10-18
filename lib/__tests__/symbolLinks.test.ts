@@ -61,6 +61,22 @@ describe('symbol links', () => {
     expect(index.symbols.has('d:road')).toBe(true);
   });
 
+  it('counts a symbol out of every analyzed dream, as Tendances does', () => {
+    // Seen dogfooding: "In 2 of 2 dreams" beside "2 of 7" in Tendances; a reading without
+    // symbols was left out, so a symbol could also read "in each of your dreams" too soon.
+    const dreams = [
+      night(1, [{ name: 'Chat', meaning: 'Il veille.', symbolId: 'cat' }]),
+      night(2, [{ name: 'Chat', meaning: 'Il revient.', symbolId: 'cat' }]),
+      night(3, [{ name: 'Chat', meaning: 'Encore.', symbolId: 'cat' }]),
+      night(4, [], { analyzedAt: Date.UTC(2026, 9, 4, 7) }),
+      night(5, [], { isAnalyzed: false, analysisStatus: 'pending' }),
+    ];
+    const index = buildSymbolIndex(dreams, 'fr');
+
+    expect(index.dreamCount).toBe(4);
+    expect(getSymbolStatus(index.symbols.get('d:cat')!, index)).toEqual({ kind: 'some', count: 3 });
+  });
+
   it('keeps a personal symbol by its key, under its newest name, until the dreamer opens it', () => {
     const first = night(1, [{ name: 'La maison de mamie', meaning: 'Le jardin.', key: 'grandmother-house' }]);
     const second = night(4, [

@@ -1,7 +1,8 @@
 import React, { useMemo, useState } from 'react';
-import { Text, View, useWindowDimensions, type StyleProp, type ViewStyle } from 'react-native';
+import { Pressable, Text, View, useWindowDimensions, type StyleProp, type ViewStyle } from 'react-native';
 import Animated, { useReducedMotion, type CSSStyle } from 'react-native-reanimated';
 
+import { PressableScale } from '@/components/motion';
 import { EASE } from '@/components/motion/motion';
 import type { LinkedSymbol } from '@/lib/symbolLinks';
 import { TID } from '@/lib/testIDs';
@@ -63,10 +64,16 @@ const layoutStars = (count: number, width: number, rows: Rows): Point[] => {
  * As in the onboarding, a symbol that returns carries the number of its dreams and,
  * as it lights, breathes twice, so the eye finds what repeats.
  *
- * Decorative: the reading below names every symbol with its meaning, so assistive
- * technology skips this picture rather than reading the names twice.
+ * A star opens its symbol's page, as the reading below does. For assistive technology the
+ * picture stays decorative: the reading names every symbol with its meaning and opens it,
+ * so the names are not read twice.
  */
-export function DreamSymbolConstellation({ stars: all, play }: { stars: readonly ConstellationStar[]; play: boolean }) {
+export function DreamSymbolConstellation({ stars: all, play, onOpen }: {
+  stars: readonly ConstellationStar[];
+  play: boolean;
+  /** Absent in a drawn copy of the page, which opens nothing. */
+  onOpen?: (linkKey: string) => void;
+}) {
   const reduced = useReducedMotion();
   const { fontScale } = useWindowDimensions();
   const [width, setWidth] = useState(0);
@@ -82,7 +89,7 @@ export function DreamSymbolConstellation({ stars: all, play }: { stars: readonly
       accessible={false}
       importantForAccessibility="no-hide-descendants"
       accessibilityElementsHidden
-      pointerEvents="none"
+      pointerEvents={onOpen ? 'box-none' : 'none'}
       onLayout={({ nativeEvent }) => setWidth(previous => previous === nativeEvent.layout.width ? previous : nativeEvent.layout.width)}
       style={{ height: rows.height }}
     >
@@ -92,7 +99,7 @@ export function DreamSymbolConstellation({ stars: all, play }: { stars: readonly
       ))}
       {points.map((point, index) => (
         <Star key={`${index}:${stars[index].name}`} point={point} index={index} star={stars[index]}
-          labelWidth={labelWidth} height={rows.height} play={play} reduced={reduced} />
+          labelWidth={labelWidth} height={rows.height} play={play} reduced={reduced} onOpen={onOpen} />
       ))}
     </View>
   );
@@ -100,9 +107,15 @@ export function DreamSymbolConstellation({ stars: all, play }: { stars: readonly
 
 const igniteDelay = (index: number) => DREAM_STORY.revealLead + index * DREAM_STORY.starStep;
 
-function Star({ point, index, star, labelWidth, height, play, reduced }: {
+/** Touch only: the reading below opens the same page for assistive technology. */
+const TOUCH_ONLY = { accessible: false, focusable: false } as const;
+
+function Star({ point, index, star, labelWidth, height, play, reduced, onOpen }: {
   point: Point; index: number; star: ConstellationStar; labelWidth: number; height: number; play: boolean; reduced: boolean;
+  onOpen?: (linkKey: string) => void;
 }) {
+  const linkKey = star.symbol?.linkKey;
+  const open = onOpen && linkKey ? () => onOpen(linkKey) : undefined;
   const delay = igniteDelay(index);
   const returns = star.count > 1;
   // Once lit, a returning or newborn symbol breathes twice, then rests; a return visit is at rest.
@@ -140,24 +153,35 @@ function Star({ point, index, star, labelWidth, height, play, reduced }: {
     animationFillMode: 'both',
   } : {}), [delay, play, point.high, reduced]);
 
+  const face = (
+    <>
+      <Animated.View className="absolute rounded-full bg-champagne"
+        style={[{ width: HALO, height: HALO, opacity: 0.16 }, breathe] as StyleProp<ViewStyle>} />
+      {star.symbol
+        ? <SymbolMedallion symbol={star.symbol} size={FACE} />
+        : <View className="rounded-full bg-champagne" style={{ width: STAR, height: STAR }} />}
+      {returns ? (
+        <View className="absolute items-center justify-center rounded-full border border-champagne bg-ink"
+          // On the face's upper right rim, clear of the labels above and below it.
+          style={{ left: HALO / 2 + FACE / 2 - 14, top: HALO / 2 - FACE / 2 - 6, minWidth: 18, height: 18, paddingHorizontal: 3 }}>
+          <Text allowFontScaling={false} className="font-sans-medium text-[10px] leading-[14px] text-champagne-on">{star.count}</Text>
+        </View>
+      ) : null}
+    </>
+  );
+
   return (
     <>
       <Animated.View
         className="absolute items-center justify-center"
         style={[{ left: point.x - HALO / 2, top: point.y - HALO / 2, width: HALO, height: HALO }, ignite] as StyleProp<ViewStyle>}
       >
-        <Animated.View className="absolute rounded-full bg-champagne"
-          style={[{ width: HALO, height: HALO, opacity: 0.16 }, breathe] as StyleProp<ViewStyle>} />
-        {star.symbol
-          ? <SymbolMedallion symbol={star.symbol} size={FACE} />
-          : <View className="rounded-full bg-champagne" style={{ width: STAR, height: STAR }} />}
-        {returns ? (
-          <View className="absolute items-center justify-center rounded-full border border-champagne bg-ink"
-            // On the face's upper right rim, clear of the labels above and below it.
-            style={{ left: HALO / 2 + FACE / 2 - 14, top: HALO / 2 - FACE / 2 - 6, minWidth: 18, height: 18, paddingHorizontal: 3 }}>
-            <Text allowFontScaling={false} className="font-sans-medium text-[10px] leading-[14px] text-champagne-on">{star.count}</Text>
-          </View>
-        ) : null}
+        {open && linkKey ? (
+          <PressableScale {...TOUCH_ONLY} onPress={open} haptic="light" testID={TID.List.DreamSymbolStar(linkKey)}
+            className="items-center justify-center" style={{ width: HALO, height: HALO }}>
+            {face}
+          </PressableScale>
+        ) : face}
       </Animated.View>
       <Animated.View
         className={`absolute items-center ${point.high ? 'justify-end' : 'justify-start'}`}
@@ -169,9 +193,11 @@ function Star({ point, index, star, labelWidth, height, play, reduced }: {
             : { top: point.y + FACE / 2 + LABEL_GAP }),
         }, label] as StyleProp<ViewStyle>}
       >
-        <Text numberOfLines={2} className="text-center font-display-medium text-[14px] leading-[18px] text-ivory">
-          {star.name}
-        </Text>
+        <Pressable {...TOUCH_ONLY} onPress={open} disabled={!open}>
+          <Text numberOfLines={2} className="text-center font-display-medium text-[14px] leading-[18px] text-ivory">
+            {star.name}
+          </Text>
+        </Pressable>
       </Animated.View>
     </>
   );

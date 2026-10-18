@@ -76,30 +76,34 @@ test('a personal symbol is born when first opened, then the reading and Tendance
     await app.screenshot('personal-symbol-being-born');
     await expect(screen.getByTestId('text.dreamSymbol.born', { visible: true }))
       .toContainText('No dictionary knows it: it comes from this dream.');
-    await expect(sheet).toContainText('Added to your symbols');
+    await expect(sheet).toContainText('Followed in your journal');
     await settledMotion(browser);
     await app.screenshot('personal-symbol-born');
     await screen.getByTestId('btn.dreamSymbol.close', { visible: true }).tap();
     await expect(screen.getByTestId('sheet.dreamSymbol')).toBeHidden();
     await expect(light).toHaveAttribute('aria-label', 'Light, First appearance');
 
-    // A second dream: the same symbols come back, linked to the first.
+    // A second dream: the same symbols come back, linked to the first. They are counted out
+    // of every analyzed dream of the journal, as Tendances counts them (7 with the mock's own).
     await newDream(screen);
     await tellAndRead(screen, 'E2E symbols: the water returns, and the same quiet light.');
     const returning = screen.getByTestId('dream.symbol.p.guiding-light', { visible: true });
     await returning.scrollIntoView();
     await expect(screen.getByTestId('dream.symbol.d.water', { visible: true }))
-      .toHaveAttribute('aria-label', 'Water, In 2 of 2 dreams');
-    await expect(returning).toHaveAttribute('aria-label', 'Light, In 2 of 2 dreams');
+      .toHaveAttribute('aria-label', 'Water, In 2 of 7 dreams');
+    await expect(returning).toHaveAttribute('aria-label', 'Light, In 2 of 7 dreams');
     await settledMotion(browser);
     await returning.scrollIntoView();
     await app.screenshot('second-reading-symbols');
 
-    // The dreamer's own symbol, already theirs: its thread holds both dreams.
-    await returning.tap();
+    // The dreamer's own symbol, already theirs, opened from its star: its thread holds both dreams.
+    const lightStar = screen.getByTestId('dream.constellation.p.guiding-light', { visible: true });
+    await lightStar.scrollIntoView();
+    await lightStar.tap();
+    await expect(screen.getByTestId('text.dreamSymbol.title')).toContainText('Light');
     await expect(sheet).toContainText(/your symbol/i);
     await expect(sheet).not.toContainText(/a symbol is born/i);
-    await expect(screen.getByTestId('text.dreamSymbol.status')).toContainText('In 2 of 2 dreams');
+    await expect(screen.getByTestId('text.dreamSymbol.status')).toContainText('In 2 of 7 dreams');
     await expect(sheet).toContainText('In your dreams');
     await expect(sheet).toContainText(/this dream/i);
     await expect(screen.getByTestId(/^dreamSymbol\.appearance\./, { visible: true })).toHaveCount(1);
@@ -114,6 +118,13 @@ test('a personal symbol is born when first opened, then the reading and Tendance
     await expect(screen.getByTestId('btn.dreamSymbol.readMore', { visible: true })).toBeVisible();
     await settledMotion(browser);
     await app.screenshot('dictionary-symbol-landmarks');
+
+    // Back returns to the symbol it was opened from, then the sheet has nothing more to go back to.
+    const back = screen.getByTestId('btn.dreamSymbol.back', { visible: true });
+    await expect(back).toHaveAttribute('aria-label', 'Back to Light');
+    await back.tap();
+    await expect(screen.getByTestId('text.dreamSymbol.title')).toContainText('Light');
+    await expect(screen.getByTestId('btn.dreamSymbol.back')).toHaveCount(0);
 
     // The thread opens the first dream.
     await screen.getByTestId(/^dreamSymbol\.appearance\./, { visible: true }).tap();

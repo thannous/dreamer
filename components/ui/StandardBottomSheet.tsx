@@ -95,6 +95,8 @@ export type StandardBottomSheetProps = {
   closeIconColor?: string;
   /** Optional fixed top-right close control, with a localized accessibility label. */
   closeButton?: { label: string; testID?: string };
+  /** Optional top-left back control, beside `closeButton`, for a sheet that moved to another page. */
+  backButton?: { label: string; onPress: () => void; testID?: string };
   /** Optional opaque color for the platform host. */
   surfaceColor?: BottomSheetProps['surfaceColor'];
   /** Use the host's surface without a second content background or shadow. */
@@ -155,6 +157,7 @@ export function StandardBottomSheet({
   background,
   closeIconColor,
   closeButton,
+  backButton,
   surfaceColor,
   transparentContent = false,
   testID,
@@ -228,7 +231,17 @@ export function StandardBottomSheet({
       </View> : null}
       {closeButton ? (
         <View className="mb-2 min-h-12 flex-row items-center">
-          <View accessible={false} className="w-12" />
+          {backButton ? (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={backButton.label}
+              onPress={backButton.onPress}
+              className="h-12 w-12 items-center justify-center rounded-full"
+              testID={backButton.testID}
+            >
+              <IconSymbol name="chevron.left" size={22} color={closeIconColor ?? colors.textPrimary} />
+            </Pressable>
+          ) : <View accessible={false} className="w-12" />}
           {headerContent ? (
             <View className="flex-1 items-center justify-center">
               <Text
