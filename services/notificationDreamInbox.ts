@@ -99,6 +99,27 @@ export function subscribeNotificationDreamInbox(listener: InboxListener): () => 
 }
 
 /**
+ * Stores a dictated dream (a reminder reply or a dream told to Siri) and lets
+ * the mounted journal import it. Resolves to false when the same capture is
+ * already kept or imported.
+ *
+ * The dream is owned from the start by the journal open when it was dictated,
+ * so an expired session or another sign-in later cannot take it. A failed read
+ * fails the capture like a failed write, so the caller can try again, rather
+ * than leave a dream any journal could claim.
+ */
+export async function keepDictatedDream(parsed: NotificationDreamCapture): Promise<boolean> {
+  const ownerScope = await inboxWrite.then(() => AsyncStorage.getItem(SCOPE_KEY));
+  const capture = ownerScope ? { ...parsed, ownerScope } : parsed;
+  const added = await updateInbox((inbox) => {
+    const outcome = addNotificationDreamCapture(inbox, capture);
+    return { inbox: outcome.inbox, result: outcome.added };
+  });
+  if (added) listeners.forEach((listener) => listener());
+  return added;
+}
+
+/**
  * Handles a reminder reply wherever it arrives: the foreground listener, the
  * last response read at launch, or the Android headless task. Returns true when
  * the response was a dream reply, so callers skip the usual "open capture"
@@ -113,21 +134,9 @@ export async function captureDreamFromNotificationResponse(
     now: Date.now(),
     createClientRequestId: generateUUID,
   });
-  // Owned from the start by the journal open when the reminder was answered,
-  // so an expired session or another sign-in later cannot take it. A failed
-  // read fails the capture like a failed write: no notice, and a replayable
-  // response is tried again, rather than a reply any journal could claim.
-  const ownerScope = parsed ? await inboxWrite.then(() => AsyncStorage.getItem(SCOPE_KEY)) : null;
-  const capture = parsed && ownerScope ? { ...parsed, ownerScope } : parsed;
 
   // Keep the words first. Everything after this is feedback.
-  const added = capture
-    ? await updateInbox((inbox) => {
-        const outcome = addNotificationDreamCapture(inbox, capture);
-        return { inbox: outcome.inbox, result: outcome.added };
-      })
-    : false;
-  if (added) listeners.forEach((listener) => listener());
+  const added = parsed ? await keepDictatedDream(parsed) : false;
 
   const rawIdentifier = response?.notification?.request?.identifier;
   const identifier = typeof rawIdentifier === 'string' && rawIdentifier ? rawIdentifier : undefined;
@@ -148,7 +157,7 @@ export async function captureDreamFromNotificationResponse(
   // A duplicate delivery (Android hands a background reply to both the
   // listener and the task) must not dismiss the notice the first one posted
   // under the same identifier.
-  const duplicate = Boolean(capture) && !added;
+  const duplicate = Boolean(parsed) && !added;
   if (identifier && !replaced && !(Platform.OS === 'android' && duplicate)) {
     // Android 15+ ignores this for a replied notification; older versions and
     // iOS still remove it.

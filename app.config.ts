@@ -133,7 +133,9 @@ function createLucidExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
       name !== 'expo-speech-recognition' &&
       name !== '@react-native-google-signin/google-signin' &&
       name !== './plugins/withDisableNotificationsBootActions' &&
-      name !== './plugins/withAndroidR8Optimization'
+      name !== './plugins/withAndroidR8Optimization' &&
+      name !== 'expo-app-intents' &&
+      name !== './plugins/withAppIntentsLocalizations'
     );
   });
   const lucidGooglePlugins = resolveLucidGooglePlugin();
@@ -155,6 +157,9 @@ function createLucidExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
     NSPhotoLibraryUsageDescription: _photoLibraryUsageDescription,
     ...lucidInfoPlist
   } = baseExpo.ios?.infoPlist ?? {};
+  // The Siri action "Note a dream" writes to the journal, which Lucid does not have:
+  // its build leaves out the app-target Swift in app-intents/.
+  const { inlineModules: _inlineModules, ...lucidExperiments } = baseExpo.experiments ?? {};
 
   return {
     ...baseExpo,
@@ -266,6 +271,7 @@ function createLucidExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
       revenuecatIosKey: undefined,
       revenuecatWebKey: undefined,
     },
+    experiments: lucidExperiments,
     updates: undefined,
   };
 }

@@ -1187,7 +1187,8 @@ describe('DreamRecallAssistantCard', () => {
         expect((screen.getByTestId(TID.Input.DreamRecallAnswer) as HTMLTextAreaElement).value).toBe('');
       });
       expect(screen.getByText(QUESTION_TWO.text)).toBeTruthy();
-      expect(screen.queryByText('Rain on the glass')).toBeNull();
+      // The new question starts empty; the accepted answer remains readable in history.
+      expect(screen.getByTestId('dreamRecall.savedDetails').textContent).toContain('Rain on the glass');
     });
 
     it('stops and merges on AppState background', async () => {

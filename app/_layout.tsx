@@ -28,6 +28,7 @@ import StartupSplashScreen, {
   STARTUP_SPLASH_MINIMUM_VISIBLE_MS,
 } from '@/components/StartupSplashScreen';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
+import { RouteScreenErrorFallback } from '@/components/ScreenErrorBoundary';
 import { DesktopShell } from '@/components/navigation/DesktopShell';
 import { AnalysisFlightIndicator } from '@/components/analysis/AnalysisFlightIndicator';
 import { EngagementRemindersHost } from '@/components/reminders/EngagementRemindersHost';
@@ -64,6 +65,7 @@ import { isSafeAppNotificationRoute } from '@/lib/notificationRoutes';
 import { normalizeAppLanguage, resolveEffectiveLanguage } from '@/lib/language';
 import { isDreamCaptureResponse } from '@/lib/notificationDreamCapture';
 import { createNotificationResponseTracker } from '@/lib/notificationResponse';
+import { applyStabilityReportsPreference, markStartupInteractive, wrapObservedRoot } from '@/lib/observe';
 import {
   canReuseObservedStartupDestination,
   isOnboardingTerminal,
@@ -905,6 +907,7 @@ function RootLayoutNav({
             screenOptions={{
               animation: nonCriticalStartupEnabled ? 'default' : 'none',
             }}
+            unstable_screenErrorBoundary={isLucidTrainer ? undefined : RouteScreenErrorFallback}
           >
             <Stack.Protected guard={!isLucidTrainer}>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
@@ -969,7 +972,7 @@ function JournalRuntime({ children }: React.PropsWithChildren) {
  * Bootstraps fonts and language preference, mounts providers, and renders the
  * navigation tree (plus the still startup splash).
  */
-export default function RootLayout() {
+function RootLayout() {
   const [fontsStartedAt] = useState(() => globalThis.performance?.now?.() ?? Date.now());
   const [fontsLoaded, fontError] = useFonts({
     SpaceGrotesk_400Regular,
@@ -1013,6 +1016,7 @@ export default function RootLayout() {
 
   useEffect(() => {
     markPerformance('startup.root_mounted');
+    void applyStabilityReportsPreference();
   }, []);
 
   useEffect(() => {
@@ -1130,6 +1134,14 @@ export default function RootLayout() {
     });
   }, [startupDestinationPainted, startupSplashPrerequisitesReady]);
 
+  // Not gated by the splash's deliberate minimum, so Observe sees a start faster
+  // than it, and a slower one is not hidden inside it.
+  const startupDestinationReady = languageBootstrapped && startupDestinationCommitted;
+  useEffect(() => {
+    if (!startupDestinationReady) return;
+    return scheduleAfterStartupPaint(markStartupInteractive);
+  }, [startupDestinationReady]);
+
   useEffect(() => {
     if (!shouldFadeSplash) return;
     markPerformance('startup.custom_splash_outro_started');
@@ -1195,3 +1207,7 @@ export default function RootLayout() {
     </GestureHandlerRootView>
   );
 }
+
+// EAS Observe records production startup times, unhandled errors and native crashes
+// (Android and iOS; a no-op on web and in Expo Go). It marks the first render here.
+export default wrapObservedRoot(RootLayout);
