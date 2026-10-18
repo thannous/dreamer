@@ -25,7 +25,12 @@ connects these commands to implementation paths and current runbooks.
 
 Use the Node/Deno versions from `mise.toml` and install dependencies in the actual
 checkout. A local Android Release build also requires **JDK 17** and an Android
-SDK. `JAVA_HOME` takes precedence over Java on PATH; the runner verifies that
+SDK including CMake (AGP defaults to 3.22.1). Long Windows paths need a Ninja
+with long-path support: verify the actual `cmake/<version>/bin/ninja --version`,
+not only the CMake version. The SDK's CMake 3.30.5 on this host still shipped
+Ninja 1.10.2. Use an owned SDK/toolchain copy for experiments; do not replace a
+shared installation. The benchmark records the actual toolchain used.
+`JAVA_HOME` takes precedence over Java on PATH; the runner verifies that
 executable before version synchronization, device access, prebuild or Gradle.
 A missing, incompatible or unverifiable Java stops immediately with instructions
 for setting `JAVA_HOME`. The runner does not install or switch JDKs automatically.
@@ -44,6 +49,26 @@ Inspect the canonical runner with:
 ```sh
 mise exec -- npm run android:release:local -- --help
 ```
+
+For local Android iteration, use `npm run android:iterate:local -- --abi x86_64`
+in the app's isolated native checkout (select the actual target ABI). It still
+runs Expo prebuild. SDK 58 recreates native folders by default; only a passed
+matching context uses `--no-clean`. Its first or invalidated build keeps the clean Release flags;
+only a previously successful identical native/profile/dependency/environment
+context uses Gradle's build cache and daemon without `:app:clean`. The JS/assets
+bundle task always reruns, so an asset-only edit cannot leave an old bundle
+(React Native's declared file inputs cover JS/TS only). Native compilation can
+still be reused. RN Gradle retains its native `--reset-cache` bundle option;
+the [measured Metro transform reuse](../doc_web_interne/docs/qa/mobile-ci-android-metro-2026-10-18.md)
+belongs to the web validation harness.
+A failed/interrupted build,
+changed context or corrupt state forces a clean build. The checkout lock refuses
+concurrent native builds; verify that the recorded PID and its build descendants
+have stopped before removing a stale lock.
+The result ends in `-iteration.apk` and cannot qualify a TesterArmy Release
+receipt. `android:release:local` keeps its clean/no-cache/no-daemon defaults.
+Do not combine `--incremental` with `--reuse-native-project`. Installation is
+still explicit and keeps the existing device, package, signing and data guards.
 
 Requested native implementation/QA includes its necessary local build, compatible
 installation on an owned disposable QA target and isolated Expo native generation.

@@ -2,6 +2,7 @@ import type { E2EConfig } from 'e2e';
 import { mobile } from '@e2e-dev/mobile';
 import { webEngine } from './web-engine';
 import { fileURLToPath } from 'node:url';
+import { managedAppCommand } from './managed-app';
 
 const root = fileURLToPath(new URL('../../', import.meta.url));
 const product = process.env.E2E_PRODUCT ?? 'dreamer';
@@ -25,8 +26,11 @@ const appNodeOptions = process.env.E2E_APP_NODE_OPTIONS_PRESENT === undefined
   ? process.env.NODE_OPTIONS
   : process.env.E2E_APP_NODE_OPTIONS_PRESENT === '1' ? process.env.E2E_APP_NODE_OPTIONS! : undefined;
 const device = process.env.E2E_DEVICE;
-// CI restores a Metro cache whose key includes every public build input (metro.config.js).
-const keepMetroCache = process.env.E2E_KEEP_METRO_CACHE === '1' && product !== 'meditation';
+// Dreamer/Lucid fingerprint compiled profiles in metro.config.js. Keep transforms
+// by default; 0 explicitly requests a cold diagnostic. SDK replay stays disabled.
+if (process.env.E2E_KEEP_METRO_CACHE !== undefined && !['0', '1'].includes(process.env.E2E_KEEP_METRO_CACHE))
+  throw new Error('E2E_KEEP_METRO_CACHE takes 0 or 1.');
+const keepMetroCache = process.env.E2E_KEEP_METRO_CACHE !== '0' && product !== 'meditation';
 if (native && (!device || (platform === 'android' && !/^emulator-\d+$/.test(device))))
   throw new Error('Name an explicit emulator/simulator with E2E_DEVICE; physical devices are excluded.');
 // run.mjs resolves the web worker count and records it; a native target drives its one device.
@@ -34,6 +38,9 @@ const requestedWorkers = process.env.E2E_WORKERS;
 if (requestedWorkers !== undefined && (native || !/^[1-9]\d?$/.test(requestedWorkers)))
   throw new Error('E2E_WORKERS takes 1-99 web workers; native runs use one device.');
 const workers = Number(requestedWorkers ?? 1);
+const appRoot = product === 'meditation' ? `${root}apps/meditation` : root;
+const managedCommand = !native && product !== 'site'
+  ? managedAppCommand(appRoot, product === 'meditation' ? 'web' : product === 'lucid' ? 'start:lucid:mock' : 'start:mock') : null;
 
 export default {
   projectId: `noctalia-${product}`,
@@ -48,7 +55,7 @@ export default {
       environment: 'test' as const,
       // Static Expo routes compile during the first request; probe Metro without
       // repeatedly starting SSR bundles. app.open() and the journey verify the UI.
-      ...(product === 'meditation' ? { readyUrl: `http://127.0.0.1:${port}/status` } : {}),
+      ...(product !== 'site' ? { readyUrl: `http://127.0.0.1:${port}/status` } : {}),
       // The SDK probe never reads the response body. Against python's http.server a
       // large unread index.html races the socket close and crashes Node's HTTP parser
       // (undici `Parser.finish` assertion) before any journey runs; probe a tiny file.
@@ -57,9 +64,9 @@ export default {
         executable: 'python3', args: ['-m', 'http.server', String(port), '--bind', '127.0.0.1', '--directory', 'docs'], cwd: root,
         startupTimeout: 180_000, log: appLog,
       } : {
-        executable: process.execPath,
-        args: ['--run', product === 'meditation' ? 'web' : product === 'lucid' ? 'start:lucid:mock' : 'start:mock', '--', ...(product === 'meditation' ? [] : ['--web']), ...(keepMetroCache ? [] : ['--clear']), '--port', String(port)],
-        cwd: product === 'meditation' ? `${root}apps/meditation` : root,
+        executable: managedCommand!.executable,
+        args: [...managedCommand!.args, ...(product === 'meditation' ? [] : ['--web']), ...(keepMetroCache ? [] : ['--clear']), '--port', String(port)],
+        cwd: appRoot,
         env: {
           ...(appNodeOptions === undefined ? {} : { NODE_OPTIONS: appNodeOptions }),
           // Isolated validation links node_modules from the primary checkout.
