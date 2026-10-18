@@ -50,7 +50,7 @@ const BEAT = {
   rippleSteps: [300, 650],
   medallionLead: 480,
   medallionGrow: 900,
-  /** "Added to your symbols" follows the confirmation by this much, once the birth has been seen. */
+  /** "Followed in your journal" follows the confirmation by this much, once the birth has been seen. */
   added: 1400,
 } as const;
 
@@ -87,7 +87,10 @@ export function DreamSymbolSheet({ index, dream, linkKey, onSelect, onClose }: {
   const [shown, setShown] = useState<{ open: boolean; key: string | null; born: string | null }>(
     { open: false, key: null, born: null },
   );
+  // The symbols left for a companion, newest last: back returns to them. Each opening starts afresh.
+  const [trail, setTrail] = useState<readonly string[]>([]);
   if (shown.open !== visible || (linkKey !== null && shown.key !== linkKey)) {
+    if (visible && !shown.open && trail.length) setTrail([]);
     const next = linkKey ? index.symbols.get(linkKey) : undefined;
     setShown({
       open: visible,
@@ -117,6 +120,11 @@ export function DreamSymbolSheet({ index, dream, linkKey, onSelect, onClose }: {
 
   if (!symbol) return null;
   const dictionaryId = symbol.symbolId;
+  const previous = trail[trail.length - 1];
+  const toCompanion = (next: string) => {
+    setTrail([...trail, symbol.linkKey]);
+    onSelect(next);
+  };
   const eyebrow = born
     ? t('journal.symbols.born.eyebrow')
     : t(dictionaryId ? 'journal.symbols.kind.dictionary' : 'journal.symbols.kind.personal');
@@ -135,6 +143,14 @@ export function DreamSymbolSheet({ index, dream, linkKey, onSelect, onClose }: {
         </Text>
       )}
       closeButton={{ label: t('journal.symbols.close'), testID: TID.Button.DreamSymbolClose }}
+      backButton={previous ? {
+        label: t('journal.symbols.back', { name: index.symbols.get(previous)?.name ?? '' }),
+        testID: TID.Button.DreamSymbolBack,
+        onPress: () => {
+          setTrail(trail.slice(0, -1));
+          onSelect(previous);
+        },
+      } : undefined}
       actions={dictionaryId ? {
         primaryLabel: t('journal.symbols.guide.read_more'),
         primaryTrailingIcon: 'arrow.right',
@@ -147,7 +163,7 @@ export function DreamSymbolSheet({ index, dream, linkKey, onSelect, onClose }: {
     >
       {/* Keyed: another symbol is another page, told from its start. */}
       <SymbolPage key={`${symbol.linkKey}:${born ? 'born' : 'known'}`} symbol={symbol} index={index} dream={dream}
-        born={born} language={currentLang} onSelect={onSelect} onClose={onClose} />
+        born={born} language={currentLang} onSelect={toCompanion} onClose={onClose} />
     </StandardBottomSheet>
   );
 }
@@ -192,7 +208,10 @@ function SymbolPage({ symbol, index, dream, born, language, onSelect, onClose }:
   if (companions.length) {
     sections.push(
       <View key="companions" className="gap-4">
-        <BookSubheading>{t('journal.symbols.companions.header')}</BookSubheading>
+        {/* "Often" only once they have met in more than one dream. */}
+        <BookSubheading>
+          {t(companions.some(({ count }) => count >= 2) ? 'journal.symbols.companions.header' : 'journal.symbols.companions.header_once')}
+        </BookSubheading>
         <View className="flex-row flex-wrap justify-center gap-2">
           {companions.map((companion) => {
             const often = companion.count >= 2 ? t('journal.symbols.companions.count', { count: companion.count }) : null;
@@ -203,7 +222,7 @@ function SymbolPage({ symbol, index, dream, born, language, onSelect, onClose }:
                 accessibilityHint={t('journal.symbols.open_hint')}
                 testID={TID.List.DreamSymbolCompanion(companion.linkKey)}
                 className="min-h-11 flex-row items-center gap-2 rounded-full border border-champagne-soft bg-ink-soft py-1 pl-1 pr-3.5">
-                <SymbolMedallion symbol={companion.symbol} size={32} />
+                <SymbolMedallion symbol={companion.symbol} size={36} />
                 <Text className="font-sans-medium text-[14px] text-ivory">{companion.symbol.name}</Text>
                 {often ? <Text className="font-sans text-[12px] text-ivory-muted">{often}</Text> : null}
               </PressableScale>

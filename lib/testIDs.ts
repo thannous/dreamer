@@ -200,6 +200,7 @@ export const TID = {
     WhatsNewPrimary: 'btn.whatsNew.primary',
     WhatsNewLater: 'btn.whatsNew.later',
     DreamSymbolClose: 'btn.dreamSymbol.close',
+    DreamSymbolBack: 'btn.dreamSymbol.back',
     DreamSymbolReadMore: 'btn.dreamSymbol.readMore',
   },
   Tab: {
@@ -218,6 +219,8 @@ export const TID = {
     DreamSymbol: (linkKey: string) => `dream.symbol.${linkKey.replace(':', '.')}`,
     DreamSymbolAppearance: (dreamId: number) => `dreamSymbol.appearance.${dreamId}`,
     DreamSymbolCompanion: (linkKey: string) => `dreamSymbol.companion.${linkKey.replace(':', '.')}`,
+    /** A star of the reading's constellation, by its symbol's link. */
+    DreamSymbolStar: (linkKey: string) => `dream.constellation.${linkKey.replace(':', '.')}`,
   },
   Modal: {
     Theme: 'modal.theme',
