@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-it-1200x630.jpg",
   "twitterImageAlt": "Risorse | Noctalia - Consigli e guide per i sogni",
   "publishedTime": "",
-  "modifiedTime": "2026-07-21T00:00:00+02:00",
+  "modifiedTime": "2026-10-18T00:00:00+02:00",
   "author": "",
   "prevPath": "",
   "nextPath": "",

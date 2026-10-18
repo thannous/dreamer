@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-de-1200x630.jpg",
   "twitterImageAlt": "Traumtagebuch mit Traumillustrationen & Deutung",
   "publishedTime": "",
-  "modifiedTime": "2026-10-15",
+  "modifiedTime": "2026-10-18",
   "author": "",
   "prevPath": "",
   "nextPath": "",

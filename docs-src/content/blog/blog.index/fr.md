@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-fr-1200x630.jpg",
   "twitterImageAlt": "Ressources | Noctalia - Conseils et guides sur les rêves",
   "publishedTime": "",
-  "modifiedTime": "2026-07-21T00:00:00+02:00",
+  "modifiedTime": "2026-10-18T00:00:00+02:00",
   "author": "",
   "prevPath": "",
   "nextPath": "",
