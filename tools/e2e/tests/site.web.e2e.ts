@@ -127,7 +127,10 @@ const TIGER_PAUSE = 'Pause de l’animation du décor';
 // Painted landmarks, in source pixels: lantern centre for the glow, face bottom for the title.
 const LANDSCAPE = { w: 1600, h: 900, lantern: [292, 163] };
 const PORTRAIT = { w: 984, h: 1599, lantern: [244, 378], faceBottom: 925 };
-const PARALLAX = 0.2;
+// Half the scroll: the content rises up to the middle of the painting as the hero leaves.
+const PARALLAX = 0.5;
+// The runtime rounds the shift to the physical pixel, so half a pixel either way is exact.
+const shiftedBy = (read: { figureShift: number }, scroll: number) => Math.abs(read.figureShift - scroll * PARALLAX) <= 0.5;
 
 function tigerPilotScript() {
   const html = readFileSync(new URL('../../../docs/fr/symboles/tigre.html', import.meta.url), 'utf8');
@@ -290,11 +293,11 @@ test('the French tiger painting moves visibly, gains depth on scroll and stops o
     expect(moving.painting).toEqual(first.painting);
     expect(moving.paintingAnimations).toBe(0);
 
-    // Scroll down: painting and layers sink together by 20 % of the scroll, the mist
+    // Scroll down: painting and layers sink together by half the scroll, the mist
     // planes slide apart, the text keeps scrolling at full speed and no band opens.
     const down = Math.round(first.hero.height * 0.4);
     expect(await browser.evaluate(scrollToY, down)).toBe(down);
-    await expect.poll(() => browser.evaluate(readTigerPilot).then(read => read.figureShift)).toBeCloseTo(down * PARALLAX, 0);
+    await expect.poll(() => browser.evaluate(readTigerPilot).then(read => shiftedBy(read, down))).toBe(true);
     const scrolled = await browser.evaluate(readTigerPilot);
     expect(scrolled.hero.top).toBe(-down);
     expect(Math.sign(scrolled.mist[0].scrollShift)).toBe(-1);
@@ -304,7 +307,7 @@ test('the French tiger painting moves visibly, gains depth on scroll and stops o
     // Even at the deepest scroll, both mist textures cover their windows at either drift end.
     const deepest = Math.round(first.hero.height) - 2;
     expect(await browser.evaluate(scrollToY, deepest)).toBe(deepest);
-    await expect.poll(() => browser.evaluate(readTigerPilot).then(read => read.figureShift)).toBeCloseTo(deepest * PARALLAX, 0);
+    await expect.poll(() => browser.evaluate(readTigerPilot).then(read => shiftedBy(read, deepest))).toBe(true);
     expectCovered(await browser.evaluate(readTigerPilot));
     for (const margin of await browser.evaluate(mistCoverage)) expect(margin).toBeGreaterThanOrEqual(0);
     // And back up: everything returns to its starting place.
@@ -318,7 +321,7 @@ test('the French tiger painting moves visibly, gains depth on scroll and stops o
     const reach = await browser.evaluate(() => Math.floor(document.querySelector('.tlp-toggle')!.getBoundingClientRect().top - document.querySelector('#navbar')!.getBoundingClientRect().bottom - 4));
     expect(reach).toBeGreaterThan(10);
     expect(await browser.evaluate(scrollToY, reach)).toBe(reach);
-    await expect.poll(() => browser.evaluate(readTigerPilot).then(read => read.figureShift)).toBeCloseTo(reach * PARALLAX, 0);
+    await expect.poll(() => browser.evaluate(readTigerPilot).then(read => shiftedBy(read, reach))).toBe(true);
     const toggle = screen.getByRole('button', TIGER_PAUSE);
     await expect(toggle).toBeVisible();
     const target = (await toggle.boundingBox())!;

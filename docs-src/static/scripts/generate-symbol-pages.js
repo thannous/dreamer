@@ -849,7 +849,7 @@ function renderLegacyPseoFooter(lang, t, allSymbols, curationPages = OPTIONAL_CU
 // script. On a phone held upright the hero takes 75svh and shows a dedicated
 // portrait painting; the landscape image, SEO and cards stay shared.
 const TIGER_LIVING = {
-  dir: '/js/tiger-living/43e912703ed3',
+  dir: '/js/tiger-living/22c79c696a2f',
   media: '(max-width: 767px) and (orientation: portrait)',
   portrait: { name: 'tiger-mobile-v4', width: 984, height: 1599, widths: [480, 984] },
 };
