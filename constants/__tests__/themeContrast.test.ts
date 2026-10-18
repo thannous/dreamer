@@ -52,7 +52,7 @@ describe('theme contrast', () => {
     const base = mode === 'dark' ? DarkTheme : LightTheme;
     const tokens = getNoctaliaDesignTokens(base, mode);
     for (const surface of [tokens.screen.background, tokens.surface.raised]) {
-      for (const foreground of [tokens.text.primary, tokens.text.secondary, tokens.accent.text]) {
+      for (const foreground of [tokens.text.primary, tokens.text.secondary, tokens.accent.text, tokens.atmosphere.sheen]) {
         expect(contrastRatio(foreground, surface)).toBeGreaterThanOrEqual(4.5);
       }
     }

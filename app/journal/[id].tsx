@@ -1010,9 +1010,9 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
         return {
           icon: 'sparkles' as const,
           title: t('recording.saved_analysis.title'),
-          message: t('recording.saved_analysis.exhausted'),
+          message: t('journal.detail.analysis_exhausted'),
           step: t('journal.detail.action.analyze.step'),
-          cta: t('recording.saved_analysis.upgrade'),
+          cta: t('journal.detail.analyze_with_plus'),
           disabled: false,
         };
       }
@@ -2530,6 +2530,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
         onPress: () => {},
         disabled: true,
         testID: TID.Button.JournalIllustrate,
+        emphasis: 'secondary',
       }
         : sealIllustrates ? (visibleIllustrationCta === 'upgrade' ? {
           label: t('journal.detail.image.seal_upgrade'),
@@ -2537,6 +2538,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
           onPress: handleImageUpgrade,
           hint: t('journal.detail.image.upgrade_action'),
           testID: TID.Button.ImageUpgrade,
+          emphasis: 'secondary',
         } : {
           label: t('journal.detail.image.generate_action'),
           icon: 'sparkles',
@@ -2546,6 +2548,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
           },
           disabled: isRetryingImage || isImageJobPending,
           testID: TID.Button.JournalIllustrate,
+          emphasis: 'secondary',
         })
           : !sealReads || !detailActionCard ? null : {
             label: analysisAccessLabel ?? detailActionCard.cta,
@@ -2554,6 +2557,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
             disabled: primaryDisabled,
             hint: quotaHintLabel,
             testID: primaryButtonTestID,
+            emphasis: 'primary',
           };
 
   const renderReturnToJournal = (quiet: boolean) => (

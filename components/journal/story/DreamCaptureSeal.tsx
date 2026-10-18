@@ -752,12 +752,13 @@ export function DreamCaptureSeal({ name, mark, provisionalName, date, previousPa
             {t('journal.seal.ask_reading')}
           </Text>
         </View>
-        <View className="mt-0.5 flex-row items-center gap-6">
+        <View className="mt-2 flex-row items-center gap-6">
+          {/* The answer that reads the dream is the one drawn as a button. */}
           <PressableScale onPress={() => answerReading(true)} disabled={!asking} testID="btn.dreamCaptureSeal.readNow"
-            accessibilityRole="button" hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
-            className="flex-row items-center gap-1.5">
-            <Svg width={10} height={10}><Path d={sparklePath(5, 5, 5)} fill={ink} /></Svg>
-            <Text allowFontScaling={false} style={{ color: ink }} className="font-sans-bold text-[13px] leading-[18px]">
+            accessibilityRole="button" hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+            className="min-h-[36px] flex-row items-center gap-1.5 rounded-full bg-champagne px-4">
+            <Svg width={10} height={10}><Path d={sparklePath(5, 5, 5)} fill={noctalia.action.primaryText} /></Svg>
+            <Text allowFontScaling={false} className="font-sans-bold text-[14px] leading-[18px] text-on-champagne">
               {t('journal.seal.read_now')}
             </Text>
           </PressableScale>

@@ -88,6 +88,10 @@ export const DREAM_STORY = {
   recapLineLead: 360,
   /** The journal card's single glow, in and out. */
   epilogueHalo: 1800,
+  /** A step's words catching the light: the first pass, then one pass per cycle. */
+  glintLead: 700,
+  glintPass: 1500,
+  glintCycle: 4500,
 } as const;
 
 /**
