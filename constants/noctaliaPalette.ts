@@ -114,6 +114,9 @@ export function getNoctaliaDesignTokens(colors: ThemeColors, mode: ThemeMode) {
       veil: dark ? 'rgba(25, 35, 68, 0.42)' : 'rgba(240, 228, 212, 0.7)',
       orbit: dark ? 'rgba(234, 212, 180, 0.24)' : 'rgba(124, 76, 43, 0.12)',
       horizon: dark ? 'rgba(255, 249, 239, 0.08)' : 'rgba(124, 76, 43, 0.06)',
+      // The light a gilded word catches as a reflection crosses it: ivory by night, gold on
+      // paper, still AA there.
+      sheen: dark ? '#FFF9EF' : '#93571F',
     },
   };
 }
