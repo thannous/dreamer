@@ -107,7 +107,8 @@ async function readable(page: Page, info: ParityInfo, label: string) {
       // Read every inherited colour before hiding any parent Text node.
       for (const node of document.querySelectorAll<HTMLElement>('[data-background-contrast]')) {
         node.style.setProperty('color', 'transparent', 'important');
-        node.style.setProperty('text-shadow', 'none', 'important');
+        // Keep the painted-text halo: it is part of the actual ground behind the ink.
+        // Removing it measures a different, unprotected rendering of the screen.
         node.style.setProperty('caret-color', 'transparent', 'important');
       }
       const mask = document.createElement('style');
