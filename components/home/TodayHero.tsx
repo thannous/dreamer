@@ -66,7 +66,8 @@ export function TodayHero({ state, dream, now, onPressCta, onOpenSettings }: Pro
       {immersiveArtwork ? <Animated.View className="absolute left-0 right-0 top-0 overflow-hidden"
         pointerEvents="none" accessibilityElementsHidden importantForAccessibility="no-hide-descendants"
         style={[{ height: (stageHeight ?? 260) + 1, transformOrigin: 'top center' }, artworkStretch]}>
-        <Animated.View style={[{ position: 'absolute', left: 0, right: 0, top: 80, bottom: -80 }, artworkDepth]}>
+        {/* From the top edge, behind the header, like the paintings of the other tabs. */}
+        <Animated.View style={[IMAGE_FILL, artworkDepth]}>
           <Animated.View style={[IMAGE_FILL, artworkBreath]}>{image}</Animated.View>
         </Animated.View>
         {/* The reading veil rises from just above the title, so the date reads over a bright painting. */}
