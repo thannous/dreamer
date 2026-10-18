@@ -92,6 +92,10 @@ export function JournalPageEdges() {
   const id = useId().replace(/[^a-zA-Z0-9]/g, '');
   const corner = displayCornerRadius(insets.top);
   const turned = corner > 0 ? (corner * 0.4) / height : 0;
+  // The paths occupy only the right margin. A full-width SVG creates a full-screen
+  // bitmap on Android for every mounted preview, even though the rest is transparent.
+  const edgeWidth = Math.min(width, Math.ceil(Math.max(corner, BLOCK) + 1));
+  const edgeLeft = width - edgeWidth;
 
   return (
     <View pointerEvents="none" accessible={false} importantForAccessibility="no-hide-descendants"
@@ -100,7 +104,8 @@ export function JournalPageEdges() {
         style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: BINDING, opacity: 0.7 }} />
       <LinearGradient start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} colors={[`${leaves.inner}00`, leaves.inner]}
         style={{ position: 'absolute', right: BLOCK, top: corner * 0.5, bottom: corner * 0.5, width: SHADE, opacity: 0.6 }} />
-      <Svg width={width} height={height} style={{ position: 'absolute', left: 0, top: 0 }}>
+      <Svg width={edgeWidth} height={height} viewBox={`${edgeLeft} 0 ${edgeWidth} ${height}`}
+        style={{ position: 'absolute', right: 0, top: 0 }}>
         <Defs>
           <Gradient id={`across${id}`} x1={width - BLOCK} y1="0" x2={width} y2="0" gradientUnits="userSpaceOnUse">
             <Stop offset="0" stopColor={leaves.inner} />
@@ -113,8 +118,8 @@ export function JournalPageEdges() {
             <Stop offset={1 - turned} stopColor="#FFFFFF" stopOpacity={1} />
             <Stop offset="1" stopColor="#FFFFFF" stopOpacity={0} />
           </Gradient>
-          <Mask id={`fade${id}`} x="0" y="0" width={width} height={height} maskUnits="userSpaceOnUse">
-            <Rect x="0" y="0" width={width} height={height} fill={`url(#along${id})`} />
+          <Mask id={`fade${id}`} x={edgeLeft} y="0" width={edgeWidth} height={height} maskUnits="userSpaceOnUse">
+            <Rect x={edgeLeft} y="0" width={edgeWidth} height={height} fill={`url(#along${id})`} />
           </Mask>
         </Defs>
         <G mask={`url(#fade${id})`}>
