@@ -1,12 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, writeFileSync, mkdirSync, rmSync, symlinkSync, readFileSync } from 'node:fs';
+import { mkdtempSync, writeFileSync, mkdirSync, rmSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 import { EventEmitter } from 'node:events';
 import { fileURLToPath } from 'node:url';
+import { virtualLinks } from './test-support/virtual-links.mjs';
 import { SDK_PINS, verifyReport, preserveStatus, compareSnapshots, aggregateReports, writeOnce, createAttemptOutput, verifyEvidenceFiles, verifyNativeCleanup, campaignFailureRecord, startSdkProgress } from './qualification.mjs';
 
 const sha = value => createHash('sha256').update(value).digest('hex');
@@ -192,7 +193,8 @@ test('real Metro cache isolates compiled profiles while retaining identical inpu
 });
 
 
-test('forced interruption preserves available SDK/log bytes while missing final receipts remain nonqualifying', () => {
+test('forced interruption preserves available SDK/log bytes while missing final receipts remain nonqualifying', t => {
+  const links = virtualLinks(t);
   const output = mkdtempSync(join(tmpdir(), 'noctalia-interrupted-control-'));
   try {
     const r = report(); r.run.status = 'failed'; r.run.exitCode = 130;
@@ -209,7 +211,7 @@ test('forced interruption preserves available SDK/log bytes while missing final 
     assert.throws(() => verifyReport(r, options({ output })), /REPORT_PROVENANCE/);
     assert.equal(preserveStatus(130, [failure.code]), 130);
     assert.equal(preserveStatus(1, [failure.code]), 1);
-    symlinkSync(join(output, 'report.json'), join(output, 'app.log'));
+    links.link(join(output, 'report.json'), join(output, 'app.log'));
     assert.equal(campaignFailureRecord(output, new Error('bad payload')).retained['app.log'], undefined);
   } finally { rmSync(output, { recursive: true, force: true }); }
 });
