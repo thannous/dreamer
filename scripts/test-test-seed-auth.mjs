@@ -208,10 +208,18 @@ test('auth setup writes one storageState per account in the shape the web client
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'auth-'));
   try {
     const logs = [];
-    const written = await _runGuardedWithListsForTests(env(), makeAuthAction(readAuthSecrets(env()), { dir: path.join(dir, '.auth'), log: (line) => logs.push(line), now: () => 1_000_000 }), { allowedRefs: [REF], fetch: branch.fetch });
+    // Record the security contract while keeping the real filesystem journey.
+    // Native ACL/mode enforcement is qualified separately on the target OS.
+    const modes = new Map();
+    const files = {
+      mkdirSync(file, options) { modes.set(file, options.mode); return fs.mkdirSync(file, options); },
+      writeFileSync(file, text, options) { modes.set(file, options.mode); return fs.writeFileSync(file, text, options); },
+      chmodSync(file, mode) { modes.set(file, mode); return fs.chmodSync(file, mode); },
+    };
+    const written = await _runGuardedWithListsForTests(env(), makeAuthAction(readAuthSecrets(env()), { dir: path.join(dir, '.auth'), files, log: (line) => logs.push(line), now: () => 1_000_000 }), { allowedRefs: [REF], fetch: branch.fetch });
     assert.deepEqual(written.map(({ tier }) => tier), ['free', 'premium']);
     for (const { tier, file } of written) {
-      assert.equal(fs.statSync(file).mode & 0o777, 0o600);
+      assert.equal(modes.get(file), 0o600);
       const state = JSON.parse(fs.readFileSync(file, 'utf8'));
       assert.deepEqual(state.cookies, []);
       assert.equal(state.origins.length, 1);
@@ -224,7 +232,7 @@ test('auth setup writes one storageState per account in the shape the web client
       assert.ok(session.access_token && session.refresh_token);
       assert.equal(session.expires_at, 1000 + 3600);
     }
-    assert.equal(fs.statSync(path.join(dir, '.auth')).mode & 0o777, 0o700);
+    assert.equal(modes.get(path.join(dir, '.auth')), 0o700);
     const tokenCalls = branch.state.calls.filter((call) => call.url.includes('/auth/v1/token'));
     assert.equal(tokenCalls.length, 2);
     for (const call of tokenCalls) assert.equal(call.headers.apikey, ANON);

@@ -158,9 +158,10 @@ assert_parameters "cross-surface rename runs both sides" \
 
 git -C "$test_root" reset -q --hard "$base_revision"
 git -C "$test_root" rm -q app/index.ts
-mkdir -p "$test_root/app"
-ln -s ../docs-src/content/reference.md "$test_root/app/index.ts"
-git -C "$test_root" add app/index.ts
+# Model the committed tree, rather than requiring host symlink privileges or
+# Git for Windows' core.symlinks setting. The classifier reads these tree modes.
+link_blob="$(printf '%s' ../docs-src/content/reference.md | git -C "$test_root" hash-object -w --stdin)"
+git -C "$test_root" update-index --add --cacheinfo "120000,$link_blob,app/index.ts"
 git -C "$test_root" commit -qm "replace app source with a symlink"
 destructive_head="$(git -C "$test_root" rev-parse HEAD)"
 assert_parameters "type change fails closed" "$all_surfaces" pr "$base_revision" "$destructive_head"

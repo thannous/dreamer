@@ -54,4 +54,13 @@ describe('docs-check-helpers', () => {
     expect(() => assertDocsBuildReady(tmpRoot)).toThrow(/sitemap generation failed/i);
     expect(fs.existsSync(docsBuildStatePath(tmpRoot))).toBe(true);
   });
+
+  it('requires a full build after a selected-page preview before accepting site checks', () => {
+    markDocsBuildStarted(tmpRoot);
+    markDocsBuildSucceeded(tmpRoot, { partial: true });
+    expect(() => assertDocsBuildReady(tmpRoot)).toThrow(/Only selected pages/);
+    markDocsBuildStarted(tmpRoot);
+    markDocsBuildSucceeded(tmpRoot, { version: 'full' });
+    expect(() => assertDocsBuildReady(tmpRoot)).not.toThrow();
+  });
 });

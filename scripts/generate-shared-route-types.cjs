@@ -75,10 +75,14 @@ const output = [
 const destination = path.join(projectRoot, '.expo/types/noctalia-router.d.ts');
 fs.mkdirSync(path.dirname(destination), { recursive: true });
 if (!fs.existsSync(destination) || fs.readFileSync(destination, 'utf8') !== output) {
-  // Written aside then renamed: typecheck:app and typecheck:tests may run this
-  // at the same time, and a reader must never see a half-written file.
-  const partial = `${destination}.${process.pid}.tmp`;
-  fs.writeFileSync(partial, output);
-  fs.renameSync(partial, destination);
+  // Both typechecks can start together. Readers must see either complete
+  // declaration, never the truncated file of a writer still filling it.
+  const temporary = `${destination}.${process.pid}.${require('node:crypto').randomUUID()}.tmp`;
+  try {
+    fs.writeFileSync(temporary, output, { flag: 'wx' });
+    require('./lib/replace-file.cjs').replaceFile(temporary, destination);
+  } finally {
+    fs.rmSync(temporary, { force: true });
+  }
 }
 console.log('Generated shared Dreamer and Lucid route types.');

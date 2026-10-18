@@ -49,7 +49,7 @@ export function RecordingFooter({
           largeText && { minWidth: 0, width: Math.min(420, availableWidth || Math.max(0, width - 32)) },
           {
             backgroundColor: isSaveDisabled
-              ? colors.backgroundCard
+              ? noctalia.surface.translucent
               : noctalia.action.primary,
             borderColor: isSaveDisabled
               ? noctalia.surface.borderStrong

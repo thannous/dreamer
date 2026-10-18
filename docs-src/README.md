@@ -49,6 +49,57 @@ Watched inputs:
 
 Generated `docs/` output is intentionally not watched.
 
+### Iterate quickly on one generated page
+
+The live server can rebuild selected symbols automatically after a generator
+edit:
+
+```bash
+npm run docs:dev -- --symbol=tiger --lang=fr
+```
+
+It starts with a full build. Subsequent edits to
+`docs-src/static/scripts/generate-symbol-pages.js` rebuild only the selected
+symbols and reload the browser. `--symbol` accepts comma-separated ids; omit
+`--lang` to regenerate their supported languages. Unknown ids/languages fail.
+Any other source edit, including one arriving alongside the generator edit,
+forces a full build. Edits received during a build are queued together.
+
+A selected-page preview deliberately blocks `docs:check` and release checks
+until a full `npm run docs:build` succeeds: other pages may still be stale.
+This mode speeds up local editing; the PR and release checks still build and
+validate the entire site.
+
+For a one-off regeneration without the live server:
+
+When only a page generator changes (for example
+`docs-src/static/scripts/generate-symbol-pages.js`), rebuild that page alone
+instead of the whole site:
+
+```bash
+npm run docs:build   # once: docs/ needs the assets, data and version stamp
+cp docs-src/static/scripts/generate-symbol-pages.js docs/scripts/
+node docs/scripts/generate-symbol-pages.js --id=tiger --lang=fr
+```
+
+Measured on 2026-10-18: 0.3 s instead of about 17 s for `docs:build`, and the
+page came out byte-identical to the full build. Run the copy in `docs/scripts/`,
+never the source: the generator writes next to its own folder. `--id` takes a
+comma-separated list; category and curation pages are skipped while it is set.
+Run a full `docs:build` again when anything else changes (a file under
+`docs-src/static/js/` or `css/`, `data/`, templates, locales): only it copies
+the assets and sets the `?v=` stamp.
+
+Two more habits keep the loop short:
+
+- While iterating, run only the journey you change, for example
+  `node tools/e2e/run.mjs site web run --grep atlas`, then the whole site suite
+  (`npm run test:testerarmy:site`) once before pushing.
+- Group the requested changes into one commit and one `npm run verify:pr`
+  rather than one per change. On a site-only commit the typecheck and lint
+  checks are reused from the previous run, so `verify:pr` takes about a minute
+  (the `site` check).
+
 ### Edit an existing page
 
 1. Edit the source file under `docs-src/content/pages/<pageId>/<lang>.md`.

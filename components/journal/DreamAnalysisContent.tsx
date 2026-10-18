@@ -72,6 +72,7 @@ export function DreamAnalysisContent({ dream, pending, reveal = false, onLayout 
     name: insight.name.trim(),
     count: linked?.appearances.length ?? 1,
     fresh: linked ? isNewPersonalSymbol(linked) : false,
+    symbol: linked,
   }));
   const emotions = dream.emotions?.map(item => ({ name: item.name, text: item.insight }));
   const firstChapter = stars.length
@@ -91,7 +92,9 @@ export function DreamAnalysisContent({ dream, pending, reveal = false, onLayout 
         <DreamReadingWait />
       ) : (
         <>
-          {stars.length ? <DreamSymbolConstellation stars={stars} play={reveal} /> : null}
+          {stars.length ? (
+            <DreamSymbolConstellation stars={stars} play={reveal} onOpen={decorative ? undefined : setOpenSymbol} />
+          ) : null}
           <Chapter reveal={reveal} delay={chapterDelay(0)}>
             <MarkdownText variant="reading" style={body}>{dream.interpretation ?? ''}</MarkdownText>
           </Chapter>

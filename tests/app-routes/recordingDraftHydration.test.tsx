@@ -46,7 +46,7 @@ jest.mock('react-native', () => {
     findNodeHandle: () => 1,
     Alert: { alert: jest.fn() },
     AppState: { addEventListener: () => ({ remove: jest.fn() }) },
-    Keyboard: { addListener: () => ({ remove: jest.fn() }), dismiss: jest.fn() },
+    Keyboard: { isVisible: () => false, addListener: () => ({ remove: jest.fn() }), dismiss: jest.fn() },
     Text: ({ children }: any) => <span>{children}</span>,
     View: Box,
     ScrollView: Box,

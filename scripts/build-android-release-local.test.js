@@ -37,12 +37,12 @@ const {
 } = require('./build-android-release-local');
 
 describe('build-android-release-local', () => {
-  it('checks the JAVA_HOME executable instead of a different Java on PATH', () => {
+  it.each(['linux', 'darwin', 'win32'])('checks the JAVA_HOME executable instead of a different Java on PATH (%s)', (platform) => {
     const env = { JAVA_HOME: '/java17', PATH: '/java25/bin' };
     const spawn = jest.fn(() => ({ status: 0, stderr: 'openjdk version "17.0.16" 2025-07-15' }));
-    expect(() => assertAndroidJava17(env, spawn)).not.toThrow();
+    expect(() => assertAndroidJava17(env, spawn, platform)).not.toThrow();
     expect(spawn).toHaveBeenCalledWith(
-      path.join('/java17', 'bin', process.platform === 'win32' ? 'java.exe' : 'java'),
+      path.join('/java17', 'bin', platform === 'win32' ? 'java.exe' : 'java'),
       ['-version'],
       expect.objectContaining({ env, encoding: 'utf8' })
     );

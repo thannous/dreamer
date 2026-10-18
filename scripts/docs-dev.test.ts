@@ -4,10 +4,25 @@ const {
   DEV_EVENT_PATH,
   injectLiveReloadClient,
   isWatchableDocsPath,
+  canRebuildSymbols,
+  parseArgs,
 } = require('./docs-dev');
 
 describe('docs-dev helpers', () => {
   const rootDir = path.join('C:', 'repo', 'noctalia');
+
+  it('falls back to a full build if another source changes in the same batch', () => {
+    const options = parseArgs(['--symbol=tiger,cat', '--lang=fr']);
+    const generator = 'docs-src/static/scripts/generate-symbol-pages.js';
+    expect(canRebuildSymbols(options, [generator])).toBe(true);
+    for (const file of ['data/dream-symbols.json', 'docs-src/static/css/landing.css', 'scripts/lib/docs-renderer.js']) {
+      expect(canRebuildSymbols(options, [generator, file])).toBe(false);
+    }
+    expect(canRebuildSymbols(options, null)).toBe(false);
+    expect(canRebuildSymbols(parseArgs([]), [generator])).toBe(false);
+    expect(() => parseArgs(['--symbol=does-not-exist'])).toThrow(/Unknown/);
+    expect(() => parseArgs(['--symbol=tiger', '--lang=pt-br'])).toThrow(/Unsupported/);
+  });
 
   it('injects the live reload client before the closing body tag', () => {
     const html = '<!doctype html><html><body><main>Noctalia</main></body></html>';
@@ -40,6 +55,8 @@ describe('docs-dev helpers', () => {
   it('ignores build outputs rewritten by docs:build itself', () => {
     expect(isWatchableDocsPath(path.join(rootDir, 'docs-src', 'static', 'js', 'experience', 'sky-ABC123.js'), rootDir)).toBe(false);
     expect(isWatchableDocsPath(path.join(rootDir, 'docs-src', 'static', 'js', 'experience'), rootDir)).toBe(false);
+    expect(isWatchableDocsPath(path.join(rootDir, 'docs-src', 'static', 'js'), rootDir)).toBe(false);
+    expect(isWatchableDocsPath(path.join(rootDir, 'docs-src', 'static', 'js', 'mobile-menu.js'), rootDir)).toBe(true);
     expect(isWatchableDocsPath(path.join(rootDir, 'docs-src', 'static', 'img', 'seo', 'sitewide-2026-07-v1', 'editorial', 'x-4x5-480.webp'), rootDir)).toBe(false);
     expect(isWatchableDocsPath(path.join(rootDir, 'docs-src', 'static', 'img', 'symbols', 'posters-v1', 'water.webp'), rootDir)).toBe(false);
     expect(isWatchableDocsPath(path.join(rootDir, 'data', 'content-manifest.json'), rootDir)).toBe(false);

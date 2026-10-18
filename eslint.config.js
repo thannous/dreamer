@@ -22,6 +22,15 @@ module.exports = defineConfig([
     },
   },
   {
+    files: ['**/*.{ts,tsx}'],
+    rules: {
+      // TypeScript (and Deno for Edge Functions) already checks namespace
+      // members. Keep the import rule for JavaScript, which has no such check.
+      // https://typescript-eslint.io/troubleshooting/typed-linting/performance/#eslint-plugin-import
+      'import/namespace': 'off',
+    },
+  },
+  {
     files: ['scripts/**/*.{js,cjs,mjs}'],
     languageOptions: {
       globals: {
@@ -57,6 +66,7 @@ module.exports = defineConfig([
     files: [
       '**/__tests__/**/*.{js,jsx,ts,tsx}',
       '**/*.test.{js,jsx,ts,tsx}',
+      '**/*.posix-native.ts',
       '**/*.spec.{js,jsx,ts,tsx}',
     ],
     languageOptions: {

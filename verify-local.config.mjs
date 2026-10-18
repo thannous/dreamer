@@ -176,14 +176,14 @@ const incrementalTypecheck = (script, name) => [
   `mv -f "$state/${name}.tsbuildinfo.$$" "$state/${name}.tsbuildinfo"`,
 ].join(' && ');
 
-// ESLint spreads the files over the processors here (--concurrency auto):
-// the same rules on the same files, about 2.7 times faster. No ESLint cache:
-// import/no-unresolved, import/namespace and import/export read other files,
-// which a per-file cache would not re-check when only those files change.
-// lint-scripts lints a few files (about 2 s), where ESLint warns that
-// concurrency costs more than it saves. expo lint keeps an ESLint cache in
-// .expo/cache/eslint/ of the copy, empty at the start of each run; lint-scripts
-// gets its own, since both run together.
+// lint spreads ESLint over the processors here (--concurrency auto): the same
+// rules on the same files, about 2.7 times faster. No ESLint cache between
+// runs: import/no-unresolved and import/export (and import/namespace on
+// JavaScript) read other files, which a per-file cache would not re-check when
+// only those files change. lint-scripts lints a few files (about 2 s), where
+// ESLint warns that concurrency costs more than it saves. expo lint keeps an
+// ESLint cache in .expo/cache/eslint/ of the copy, empty at the start of each
+// run; lint-scripts gets its own, since both run in the same parallel step.
 const LINT_CONCURRENCY = '-- -- --concurrency auto';
 const LINT_SCRIPTS_CACHE = '-- -- --cache-location=.expo/cache/eslint-scripts/';
 
@@ -191,7 +191,7 @@ const LINT_SCRIPTS_CACHE = '-- -- --cache-location=.expo/cache/eslint-scripts/';
 // tests compare the file with it, so an engine edit is a deliberate change of
 // this pin. No other repository is read or compared.
 export const ENGINE_SHA256 =
-  'fedb4a99ce5dd141b3c889bcb5e9509e9ad74dfbc70b6d9ed8145e881f7ecc07';
+  'feaa8dc419f88c1faaff5330a5f31bfde327e355fec8307795a84cb18f893ef3';
 
 export default {
   mainBranch: 'master',
@@ -273,10 +273,14 @@ export default {
   ],
   checks: [
     // ---- verify:pr, reused by verify:release when the inputs are identical.
+    // Every check from here to db-contracts reads the copy and writes only its
+    // own temporary files: they share one parallel step (parallel: true),
+    // each with its own result. Measured side by side: all pass.
     {
       name: 'verify-local-engine',
-      command: 'node --test scripts/test-verify-local.mjs',
-      inputs: ['scripts/verify-local.mjs', 'scripts/test-verify-local.mjs', 'verify-local.config.mjs', '.gitattributes'],
+      command: 'npm run test:verify-local',
+      parallel: true,
+      inputs: ['scripts/verify-local.mjs', 'scripts/test-verify-local*.mjs', 'scripts/test-platform-contracts.mjs', 'scripts/test-test-auth-permissions-native.mjs', 'scripts/test-auth-setup.mjs', 'scripts/test-support/**', 'scripts/run-verify-tests.mjs', 'verify-local.config.mjs', '.gitattributes'],
     },
     // The production publish guard of noctalia.app (docs:deploy:prod) against
     // proofs written by this engine in scratch repositories.
@@ -284,6 +288,7 @@ export default {
     // web:deploy:prod), whose tests mock the guard.
     {
       name: 'site-publish-guard',
+      parallel: true,
       command: 'node --test scripts/test-check-site-publish-proof.mjs && npm run test:file -- scripts/docs-deploy.test.ts scripts/web-deploy.test.ts',
       inputs: [
         'scripts/check-site-publish-proof.mjs',
@@ -307,6 +312,7 @@ export default {
     // project missing from the allowlist, before any network call.
     {
       name: 'test-supabase-guard',
+      parallel: true,
       command: 'node --test scripts/test-test-supabase-guard.mjs scripts/test-test-seed-auth.mjs && npm run test:file -- scripts/expo-safe-runner.test.js',
       inputs: [
         'scripts/test-supabase-guard.mjs',
@@ -334,13 +340,16 @@ export default {
     // Negative target/scheduler cases cannot safely be exercised by a live browser journey.
     {
       name: 'backend-runner-guards',
+      parallel: true,
       command: 'node --test scripts/lib/backend-e2e-local.test.cjs',
       inputs: ['scripts/lib/backend-e2e-local.cjs', 'scripts/lib/backend-e2e-local.test.cjs', 'scripts/run-backend-e2e.cjs'],
     },
-    { name: 'typecheck-app', command: incrementalTypecheck('typecheck:app', 'app'), exclude: [...DOCS, ...SITE_ONLY] },
-    { name: 'typecheck-tests', command: incrementalTypecheck('typecheck:tests', 'tests'), exclude: [...DOCS, ...SITE_ONLY] },
-    { name: 'lint', command: `npm run lint ${LINT_CONCURRENCY}`, exclude: [...DOCS, ...SITE_ONLY] },
-    { name: 'lint-scripts', command: `npm run lint:scripts ${LINT_SCRIPTS_CACHE}`, exclude: [...DOCS, ...SITE_ONLY] },
+    // Independent read-only checks share one supervised step and machine lock.
+    // Route declarations are atomically replaced by generate-shared-route-types.
+    { name: 'typecheck-app', command: incrementalTypecheck('typecheck:app', 'app'), parallel: true, exclude: [...DOCS, ...SITE_ONLY] },
+    { name: 'typecheck-tests', command: incrementalTypecheck('typecheck:tests', 'tests'), parallel: true, exclude: [...DOCS, ...SITE_ONLY] },
+    { name: 'lint', command: `npm run lint ${LINT_CONCURRENCY}`, parallel: true, exclude: [...DOCS, ...SITE_ONLY] },
+    { name: 'lint-scripts', command: `npm run lint:scripts ${LINT_SCRIPTS_CACHE}`, parallel: true, exclude: [...DOCS, ...SITE_ONLY] },
     // Root Jest tests related to the files changed since the merge-base with
     // origin/master (scripts/run-jest-changed.js). Whole tree: tests read files.
     // Picks its tests from the diff: reused only against the same merge base.
@@ -349,20 +358,19 @@ export default {
     {
       name: 'jest-changed',
       perBase: true,
+      parallel: true,
       command: 'npm run test:changed -- --runInBand --watchman=false',
       env: { JEST_CHANGED_SINCE: '' },
     },
-    { name: 'db-contracts', command: DB_CONTRACTS },
+    { name: 'db-contracts', command: DB_CONTRACTS, parallel: true },
 
     // ---- verify:pr, only when the commit changes that surface since origin/master.
-    // Exclusive checks run alone, after the others: they write generated
-    // output into the copy, install packages, or start servers on fixed ports.
-    { name: 'site', command: 'npm run docs:build && npm run docs:check', when: SITE, exclusive: true },
+    { name: 'site', command: 'npm run docs:build && npm run docs:check', when: SITE },
     { name: 'ci-contracts', command: CI_CONTRACTS, when: ['.circleci/'] },
     { name: 'eas-workflow-contracts', command: EAS_WORKFLOW_CONTRACTS, when: EAS_WORKFLOWS },
     // A bad version pin fails before push rather than at publication (offline, 0.1 s).
     { name: 'mobile-versions', command: 'node scripts/mobile-release.js verify --app all', inputs: MOBILE_VERSIONS, when: MOBILE_VERSIONS },
-    { name: 'meditation', command: MEDITATION_CHECKS, when: MEDITATION, releaseAlways: true, requires: MEDITATION_DEPS, exclusive: true },
+    { name: 'meditation', command: MEDITATION_CHECKS, when: MEDITATION, releaseAlways: true, requires: MEDITATION_DEPS },
     { name: 'edge-functions', command: EDGE_CHECKS, when: EDGE, releaseAlways: true, specialised: true, requires: DENO },
 
     // ---- verify:release only: the full local validation, then the delivered builds.
@@ -371,21 +379,19 @@ export default {
       command: `EXPO_OFFLINE=1 npm run dependencies:check && npm run boundaries:check && node scripts/mobile-release.js verify --app all && ${CI_CONTRACTS}`,
       kinds: ['release'],
     },
-    // The whole suite with its workers: alone, so its timing-sensitive tests keep the processors.
-    { name: 'jest-full', command: 'npm run test:fast', kinds: ['release'], exclusive: true },
+    { name: 'jest-full', command: 'npm run test:fast', kinds: ['release'] },
     // noctalia.app (Cloudflare Pages) and the Vercel web app, rebuilt for the delivered commit.
     // `targets: ['app']` marks what only an app release runs (npm run
     // verify:release, which web:deploy:prod requires); npm run
     // verify:release:site, enough for the static site, leaves it out.
-    { name: 'site-build', command: 'npm run docs:build && npm run docs:check', kinds: ['release'], perCommit: true, exclusive: true },
-    { name: 'web-build', command: 'npm run build:web', kinds: ['release'], targets: ['app'], perCommit: true, exclusive: true },
+    { name: 'site-build', command: 'npm run docs:build && npm run docs:check', kinds: ['release'], perCommit: true },
+    { name: 'web-build', command: 'npm run build:web', kinds: ['release'], targets: ['app'], perCommit: true },
     {
       name: 'e2e-backend',
       command: 'npm run test:e2e:backend',
       kinds: ['release'],
       targets: ['app'],
       specialised: true,
-      exclusive: true,
       requires: {
         command: 'docker info',
         hint: 'run it locally where you run verify:pr (Docker for the disposable local Supabase, Chromium via `npx playwright install chromium`); if this machine cannot, pass --external e2e-backend="owner-machine: <host> <note> on <SHA>" from the machine that ran it; until then the proof is incomplete: do not push, report it as a blocker',
@@ -403,18 +409,16 @@ export default {
       command: 'npm run docs:build && npm run test:testerarmy:site',
       kinds: ['release'],
       specialised: true,
-      exclusive: true,
       requires: TESTERARMY,
     },
-    { name: 'testerarmy-dreamer', command: DREAMER_PASSES, kinds: ['release'], targets: ['app'], specialised: true, requires: TESTERARMY, exclusive: true },
-    { name: 'testerarmy-lucid', command: 'npm run test:testerarmy:lucid', kinds: ['release'], targets: ['app'], specialised: true, requires: TESTERARMY, exclusive: true },
+    { name: 'testerarmy-dreamer', command: DREAMER_PASSES, kinds: ['release'], targets: ['app'], specialised: true, requires: TESTERARMY },
+    { name: 'testerarmy-lucid', command: 'npm run test:testerarmy:lucid', kinds: ['release'], targets: ['app'], specialised: true, requires: TESTERARMY },
     {
       name: 'testerarmy-meditation',
       command: 'npm run test:testerarmy:meditation',
       kinds: ['release'],
       targets: ['app'],
       specialised: true,
-      exclusive: true,
       requires: { command: `${TESTERARMY.command} && ${MEDITATION_DEPS.command}`, hint: `${TESTERARMY.hint}; ${MEDITATION_DEPS.hint}` },
     },
   ],

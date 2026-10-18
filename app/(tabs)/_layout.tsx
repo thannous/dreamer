@@ -1,6 +1,6 @@
 import { Tabs, router, useSegments } from 'expo-router';
 import React, { useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, Keyboard, Platform, Pressable, StyleSheet, Text, View, ViewStyle, useWindowDimensions } from 'react-native';
+import { ActivityIndicator, Platform, Pressable, StyleSheet, Text, View, ViewStyle, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { HapticTab } from '@/components/haptic-tab';
@@ -19,6 +19,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useAnalysisActivity } from '@/context/AnalysisActivityContext';
 import { useStartupRoute } from '@/context/StartupRouteContext';
 import { useTheme } from '@/context/ThemeContext';
+import { useKeyboardVisible } from '@/hooks/useKeyboardVisible';
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
 
@@ -215,12 +216,7 @@ export default function TabLayout() {
   const { activeAnalysis } = useAnalysisActivity();
   const isTabsDestination = segments[0] === '(tabs)';
   const [hasEnteredTabs, setHasEnteredTabs] = useState(false);
-  const [keyboardVisible, setKeyboardVisible] = useState(() => Keyboard.isVisible());
-  useEffect(() => {
-    const show = Keyboard.addListener('keyboardDidShow', () => setKeyboardVisible(true));
-    const hide = Keyboard.addListener('keyboardDidHide', () => setKeyboardVisible(false));
-    return () => { show.remove(); hide.remove(); };
-  }, []);
+  const keyboardVisible = useKeyboardVisible();
 
   useEffect(() => {
     if (routeCommitted && isTabsDestination) {
