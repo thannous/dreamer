@@ -10,12 +10,13 @@ it('always exposes a complete declaration to readers while generators overlap', 
   const script = path.join(root, 'scripts/generate-shared-route-types.cjs');
   const destination = path.join(root, '.expo/types/noctalia-router.d.ts');
   try {
-    for (const dir of ['scripts', 'app', 'routes/lucid/lucid']) fs.mkdirSync(path.join(root, dir), { recursive: true });
+    for (const dir of ['scripts/lib', 'app', 'routes/lucid/lucid']) fs.mkdirSync(path.join(root, dir), { recursive: true });
     fs.copyFileSync(path.join(__dirname, 'generate-shared-route-types.cjs'), script);
+    fs.copyFileSync(path.join(__dirname, 'lib/replace-file.cjs'), path.join(root, 'scripts/lib/replace-file.cjs'));
     fs.symlinkSync(path.resolve(__dirname, '../node_modules'), path.join(root, 'node_modules'), 'junction');
     for (const route of ['app/index.tsx', 'routes/lucid/lucid/index.tsx']) fs.writeFileSync(path.join(root, route), 'export default function Screen() { return null; }');
     const first = spawnSync(process.execPath, [script], { cwd: root, encoding: 'utf8' });
-    expect(first.status).toBe(0);
+    expect({ code: first.status, stderr: first.stderr }).toEqual({ code: 0, stderr: '' });
     const expected = fs.readFileSync(destination, 'utf8');
     const previous = '/* previous complete declaration */\n';
     fs.writeFileSync(destination, previous);
@@ -33,14 +34,16 @@ it('always exposes a complete declaration to readers while generators overlap', 
     let results;
     try {
       results = await Promise.all(Array.from({ length: 4 }, () => new Promise((resolve, reject) => {
-        const child = spawn(process.execPath, [script], { cwd: root, stdio: 'ignore' });
+        const child = spawn(process.execPath, [script], { cwd: root, stdio: ['ignore', 'ignore', 'pipe'] });
+        let stderr = '';
+        child.stderr.on('data', (chunk) => { stderr += chunk; });
         child.on('error', reject);
-        child.on('exit', (code) => resolve(code));
+        child.on('close', (code) => resolve({ code, stderr }));
       })));
     } finally {
       clearInterval(poll);
     }
-    expect(results).toEqual([0, 0, 0, 0]);
+    expect(results).toEqual(Array.from({ length: 4 }, () => ({ code: 0, stderr: '' })));
     expect(reads).toBeGreaterThan(0);
     expect(invalid).toBeNull();
     expect(fs.readFileSync(destination, 'utf8')).toBe(expected);

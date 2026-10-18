@@ -80,7 +80,7 @@ if (!fs.existsSync(destination) || fs.readFileSync(destination, 'utf8') !== outp
   const temporary = `${destination}.${process.pid}.${require('node:crypto').randomUUID()}.tmp`;
   try {
     fs.writeFileSync(temporary, output, { flag: 'wx' });
-    fs.renameSync(temporary, destination);
+    require('./lib/replace-file.cjs').replaceFile(temporary, destination);
   } finally {
     fs.rmSync(temporary, { force: true });
   }

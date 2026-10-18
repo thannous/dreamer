@@ -155,12 +155,28 @@ n'est ignoré :
 | Garde de preuve avant publication | 16 | 16 |
 | Publication et prérequis Android | 239 | 239 |
 | Comptes, sessions et refus hors réseau | 36 | 36 |
-| Total par OS | 444 | 444 |
+| Routage CI Python | 12 | 12 |
+| Remplacement atomique et générateurs concurrents | 12 | 12 |
+| Total par OS | 468 | 468 |
 
 La qualification native Linux ajoute 14 cas moteur/permissions et 7 cas de
 publication, tous réussis. Les 192 contrats de release mobile repassent également ;
 les métadonnées des trois applications sont cohérentes. Cette preuve ne remplace
 pas une qualification du binaire Android/iOS.
+
+Deux défauts Windows supplémentaires ont été reproduits et corrigés : Python
+pouvait lancer le `bash.exe` WSL de System32 et perdre les chemins Windows ; le
+test résout maintenant l'exécutable Bash et transmet des chemins portables sur
+les deux OS. L'alias Microsoft Store `python3` de cette machine a été remplacé
+dans le PATH du run par un shim temporaire vers Python 3.11 déjà installé,
+sans changement global. Le run Linux utilise son Python 3 existant.
+
+La contention de remplacement des types a réellement produit `EPERM` sous
+Windows, sans lecture partielle. Le remplacement borne son attente cumulée de
+reprise à 980 ms et accepte une déclaration complète déjà installée par un pair seulement
+si les octets sont identiques. Une erreur persistante reste bloquante. Les mêmes
+erreurs transitoires/persistantes sont simulées sur chaque OS. Après correction,
+60 tours / 240 générateurs Windows concurrents avec lecteur continu passent.
 
 Artefacts : section moteur de `verify-pr-platform.log` (Windows, runner par défaut),
 `platform-common-linux.tap`, `publish-proof-linux.tap`, `auth-{windows,linux}.tap`,
@@ -170,12 +186,16 @@ dans `.tmp/ci-performance/`. Les sources TypeScript des tests de publication son
 transpilées sans changer les cas pour la fixture Linux ; Node `24.19.0` et Jest
 `30.5.2` sont identiques sur les deux hôtes. Les modes natifs 0600/0700 sont
 vérifiés sous Linux ; aucune connexion réelle ni publication n'est effectuée.
+Les journaux `python-contracts-{windows,linux}.log`, `atomic-{windows,linux}.json`
+et `atomic-stress-fixed.log` complètent la comparaison.
 
 ```sh
 node --test scripts/test-verify-local.mjs scripts/test-platform-contracts.mjs
 node --test scripts/test-check-site-publish-proof.mjs
 node --test scripts/test-test-supabase-guard.mjs scripts/test-test-seed-auth.mjs
 npm run test:file -- scripts/web-deploy.test.ts scripts/docs-deploy.test.ts scripts/build-android-release-local.test.js --runInBand --watchman=false
+npm run test:file -- scripts/generate-shared-route-types.test.js scripts/lib/replace-file.test.js --runInBand --watchman=false
+python3 .circleci/tests/shared-build-impact.test.py -v
 bash .circleci/tests/classify-changes.test.sh
 ```
 

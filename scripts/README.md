@@ -74,6 +74,9 @@ permission qualification. These tools are prerequisites of that extra suite.
 `npm run test:tooling:native` additionally exercises real publish signals and
 descendant cleanup on Linux. Native evidence stays separate from the
 portable contracts; simulated Windows cases do not qualify Windows ACLs.
+On Windows, the CI contract suite needs Git Bash and a real Python 3 command
+on PATH; the Microsoft Store `python3` alias is not an interpreter. The Python
+tests resolve Bash to an absolute executable, avoiding Windows' WSL launcher.
 
 For a short live site loop, see [`docs:dev -- --symbol=tiger --lang=fr`](../docs-src/README.md#iterate-quickly-on-one-generated-page).
 Always run a full site build before trusting site-wide checks after a partial preview.
