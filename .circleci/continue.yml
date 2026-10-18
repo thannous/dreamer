@@ -94,14 +94,18 @@ commands:
           paths:
             - /home/circleci/.npm
 
-  install-testerarmy:
+  install-testerarmy-dependencies:
     steps:
       - run:
-          name: Install isolated locked TesterArmy e2e 0.21.0 dependencies
+          name: Install isolated locked TesterArmy dependencies
           command: npm run test:testerarmy:setup
+
+  install-testerarmy:
+    steps:
+      - install-testerarmy-dependencies
       - run:
-          name: Install isolated Chromium and Linux browser dependencies
-          command: npm run browsers:install --prefix tools/e2e -- --with-deps
+          name: Install pinned Chromium headless shell and Linux dependencies
+          command: npm run browsers:install --prefix tools/e2e -- --with-deps --only-shell
       # Tooling checks do not depend on the shard; parallel nodes run them once.
       - run:
           name: Typecheck TesterArmy journeys
@@ -280,9 +284,7 @@ jobs:
       - checkout
       - attach_workspace:
           at: tools/e2e
-      - run:
-          name: Install isolated locked TesterArmy e2e 0.21.0 dependencies
-          command: npm run test:testerarmy:setup
+      - install-testerarmy-dependencies
       - run:
           name: Verify the exact passed-ID union and all browser contexts
           command: node tools/e2e/run.mjs << parameters.product >> web collect
@@ -337,6 +339,7 @@ jobs:
             bash .circleci/tests/classify-changes.test.sh
             python3 .circleci/tests/shared-build-impact.test.py
             bash .circleci/tests/fallback-jest.test.sh
+            node --test .circleci/tests/e2e-preparation.test.mjs
       - run:
           name: Typecheck Noctalia application
           command: npm run typecheck:app

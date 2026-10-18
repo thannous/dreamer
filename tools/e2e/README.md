@@ -107,6 +107,20 @@ mise exec -- npm run test:testerarmy:site
 mise exec -- npm run test:testerarmy:typecheck
 ```
 
+`test:testerarmy:browsers` installs the engine's exact Chromium version and
+keeps the full browser for local `--headed` runs. For headless-only hosts, use
+`npm run test:testerarmy:browsers -- --only-shell`; Linux CI adds `--with-deps`.
+The headless shell is the same executable the unchanged engine already launches.
+The portable Node installer resolves Playwright from `@e2e-dev/web`, verifies
+matcher version parity and preserves other projects' installed browsers.
+It does not reuse the root application's different Playwright installation.
+
+App commands run the existing package scripts through pinned Node's `--run`,
+including on Windows, where directly spawning `npm` cannot execute `npm.cmd`.
+Matcher preloads use file URLs and the inherited PATH keeps its original casing.
+Common guard tests simulate link metadata over real files on every OS; they need
+no Windows symlink privilege and keep the same cases and assertions.
+
 Discovery starts no engine: `mise exec -- node tools/e2e/run.mjs lucid web list`.
 To use an already open local Chrome instead of downloading or launching a test
 browser, enable its remote debugging and set `E2E_WEB_CDP_ENDPOINT` to its

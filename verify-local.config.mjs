@@ -100,6 +100,7 @@ const CI_CONTRACTS = [
   'bash .circleci/tests/classify-changes.test.sh',
   'python3 .circleci/tests/shared-build-impact.test.py',
   'bash .circleci/tests/fallback-jest.test.sh',
+  'node --test .circleci/tests/e2e-preparation.test.mjs tools/e2e/install-browsers.test.mjs',
 ].join(' && ');
 
 // Jobs edge-contracts and edge-functions (PGlite) of .circleci/continue.yml.
