@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-de-1200x630.jpg",
   "twitterImageAlt": "Traumtagebuch mit Traumillustrationen & Deutung",
   "publishedTime": "",
-  "modifiedTime": "2026-10-15",
+  "modifiedTime": "2026-10-18",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -491,7 +491,7 @@
                 <span class="oh-index" aria-hidden="true">5 Uhr</span>
                 <h2 class="oh-h2">Traumsymbol-Lexikon</h2>
             </div>
-            <p class="oh-lede">Blättere durch 150 häufige Symbole, jeweils mit Kontextfragen und möglichen Assoziationen. Was zählt, ist die Szene und wie du dich darin gefühlt hast, mehr als jede feste Definition.</p>
+            <p class="oh-lede">Blättere durch 240 häufige Symbole, jeweils mit Kontextfragen und möglichen Assoziationen. Was zählt, ist die Szene und wie du dich darin gefühlt hast, mehr als jede feste Definition.</p>
         </div>
 
         <div class="oh-symbols reveal">
@@ -563,7 +563,7 @@
 
         <div class="oh-symbols-cta reveal">
             <a href="guides/traumsymbole-lexikon" class="oh-btn-quiet">
-                <i data-lucide="book-open"></i> Alle 150 Symbole ansehen <i data-lucide="arrow-right"></i>
+                <i data-lucide="book-open"></i> Alle 240 Symbole ansehen <i data-lucide="arrow-right"></i>
             </a>
         </div>
     </section>

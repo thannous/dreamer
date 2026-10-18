@@ -48,7 +48,7 @@ Noctalia is a dream journal and dream interpretation resource for people who wan
 - German: https://noctalia.app/de/methodik-trauminhalte
 - Italian: https://noctalia.app/it/metodologia-contenuti-sogni
 
-The methodology page is the source of truth for public content counts and research limitations. The public catalog contains 150 editorial dream-symbol records localized in five languages. It is not a clinical dataset or a public dataset of private user dreams. The previously stated figure of 55,000 dreams is not independently auditable from the current public source and should not be cited as research evidence.
+The methodology page is the source of truth for public content counts and research limitations. The public catalog contains 240 editorial dream-symbol records localized in five languages. It is not a clinical dataset or a public dataset of private user dreams. The previously stated figure of 55,000 dreams is not independently auditable from the current public source and should not be cited as research evidence.
 
 ## Dream Symbol Dictionaries
 

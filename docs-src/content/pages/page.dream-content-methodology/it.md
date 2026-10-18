@@ -23,21 +23,21 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-it-1200x630.jpg",
   "twitterImageAlt": "Metodologia dei contenuti sui sogni Noctalia",
   "publishedTime": "2026-07-09T00:00:00+02:00",
-  "modifiedTime": "2026-10-10T00:00:00+02:00",
+  "modifiedTime": "2026-10-18T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"headline\":\"Metodologia dei contenuti sui sogni\",\"description\":\"Ambito verificabile, processo editoriale, limiti di privacy e stato dei dati alla base dei contenuti pubblici di Noctalia.\",\"url\":\"https://noctalia.app/it/metodologia-contenuti-sogni\",\"inLanguage\":\"it\",\"datePublished\":\"2026-07-09\",\"dateModified\":\"2026-10-10T00:00:00+02:00\",\"author\":{\"@type\":\"Person\",\"name\":\"Thanh Chau\",\"url\":\"https://noctalia.app/it/chi-siamo#person\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
+    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"headline\":\"Metodologia dei contenuti sui sogni\",\"description\":\"Ambito verificabile, processo editoriale, limiti di privacy e stato dei dati alla base dei contenuti pubblici di Noctalia.\",\"url\":\"https://noctalia.app/it/metodologia-contenuti-sogni\",\"inLanguage\":\"it\",\"datePublished\":\"2026-07-09\",\"dateModified\":\"2026-10-18T00:00:00+02:00\",\"author\":{\"@type\":\"Person\",\"name\":\"Thanh Chau\",\"url\":\"https://noctalia.app/it/chi-siamo#person\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://noctalia.app/it/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Metodologia dei contenuti\",\"item\":\"https://noctalia.app/it/metodologia-contenuti-sogni\"}]} ",
-    "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Noctalia pubblica un set verificabile di 55.000 sogni degli utenti?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"No. La fonte pubblica attuale non contiene 55.000 sogni né la provenienza necessaria a riprodurre quella cifra. Noctalia non la considera quindi una prova scientifica verificata.\"}},{\"@type\":\"Question\",\"name\":\"Quale ambito pubblico è verificabile oggi?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Al 9 luglio 2026 la fonte contiene 150 schede editoriali di simboli in cinque lingue e 44 famiglie BlogPosting più 3 hub tematici, cioè 235 file localizzati.\"}},{\"@type\":\"Question\",\"name\":\"I diari privati vengono usati nel dizionario pubblico?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"I file pubblici non includono voci private degli utenti. Le schede di simboli e gli articoli sono materiale editoriale.\"}},{\"@type\":\"Question\",\"name\":\"Il catalogo Noctalia è un set di ricerca clinica?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"No. Non ha una coorte pubblicata, un protocollo di campionamento, etichette cliniche o uno studio di validazione. Va citato come catalogo editoriale.\"}}]}"
+    "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Noctalia pubblica un set verificabile di 55.000 sogni degli utenti?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"No. La fonte pubblica attuale non contiene 55.000 sogni né la provenienza necessaria a riprodurre quella cifra. Noctalia non la considera quindi una prova scientifica verificata.\"}},{\"@type\":\"Question\",\"name\":\"Quale ambito pubblico è verificabile oggi?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Al 18 ottobre 2026 la fonte contiene 240 schede editoriali di simboli in cinque lingue e 50 famiglie BlogPosting più 3 hub tematici, cioè 265 file localizzati.\"}},{\"@type\":\"Question\",\"name\":\"I diari privati vengono usati nel dizionario pubblico?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"I file pubblici non includono voci private degli utenti. Le schede di simboli e gli articoli sono materiale editoriale.\"}},{\"@type\":\"Question\",\"name\":\"Il catalogo Noctalia è un set di ricerca clinica?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"No. Non ha una coorte pubblicata, un protocollo di campionamento, etichette cliniche o uno studio di validazione. Va citato come catalogo editoriale.\"}}]}"
   ],
   "activeNav": "resources"
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Metodologia dei contenuti sui sogni</h1>
-<p class="text-sm text-purple-300/70 mb-6">Pubblicato e verificato il 9 luglio 2026</p>
+<p class="text-sm text-purple-300/70 mb-6">Pubblicato il 9 luglio 2026 · Verificato il 18 ottobre 2026</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">Questo rapporto separa il catalogo editoriale pubblico di Noctalia dai diari privati e dai set di ricerca. Spiega ciò che si può verificare nella fonte attuale, come sono strutturati i contenuti e quali conclusioni non devono essere tratte.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
@@ -50,11 +50,11 @@
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Ambito pubblico verificabile</h2>
     <dl class="grid gap-5 md:grid-cols-3">
-      <div><dt class="text-sm text-purple-200/70">Schede di simboli</dt><dd class="text-2xl text-white font-serif">150</dd><p class="text-sm mt-1">Un record editoriale versionato per simbolo.</p></div>
+      <div><dt class="text-sm text-purple-200/70">Schede di simboli</dt><dd class="text-2xl text-white font-serif">240</dd><p class="text-sm mt-1">Un record editoriale versionato per simbolo.</p></div>
       <div><dt class="text-sm text-purple-200/70">Lingue</dt><dd class="text-2xl text-white font-serif">5</dd><p class="text-sm mt-1">Italiano, inglese, francese, spagnolo e tedesco.</p></div>
-      <div><dt class="text-sm text-purple-200/70">Fonti di contenuti del blog</dt><dd class="text-2xl text-white font-serif">235</dd><p class="text-sm mt-1">44 famiglie BlogPosting + 3 hub tematici = 235 file localizzati.</p></div>
+      <div><dt class="text-sm text-purple-200/70">Fonti di contenuti del blog</dt><dd class="text-2xl text-white font-serif">265</dd><p class="text-sm mt-1">50 famiglie BlogPosting + 3 hub tematici = 265 file localizzati.</p></div>
     </dl>
-    <p class="mt-6">Gli stessi 150 identificatori hanno testi editoriali estesi. Questi numeri descrivono oggetti pubblicati, non persone, invii privati o osservazioni sperimentali.</p>
+    <p class="mt-6">Gli stessi 240 identificatori hanno testi editoriali estesi. Questi numeri descrivono oggetti pubblicati, non persone, invii privati o osservazioni sperimentali.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
@@ -70,14 +70,14 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Come citare correttamente il contenuto</h2>
-    <ul class="list-disc pl-5 space-y-2"><li>Descrivilo come catalogo editoriale pubblico dei simboli di Noctalia.</li><li>Includi URL e data del 9 luglio 2026 quando citi i conteggi.</li><li>Non presentarlo come studio clinico, sondaggio rappresentativo o set di sogni degli utenti.</li><li>Per affermazioni scientifiche cita lo studio primario collegato dall'articolo pertinente.</li></ul>
+    <ul class="list-disc pl-5 space-y-2"><li>Descrivilo come catalogo editoriale pubblico dei simboli di Noctalia.</li><li>Includi URL e data del 18 ottobre 2026 quando citi i conteggi.</li><li>Non presentarlo come studio clinico, sondaggio rappresentativo o set di sogni degli utenti.</li><li>Per affermazioni scientifiche cita lo studio primario collegato dall'articolo pertinente.</li></ul>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Domande sulla metodologia</h2>
     <div class="space-y-5">
       <div><h3 class="text-white font-medium">Noctalia pubblica un set verificabile di 55.000 sogni degli utenti?</h3><p class="mt-1">No. La fonte pubblica attuale non contiene 55.000 sogni né la provenienza necessaria a riprodurre quella cifra. Noctalia non la considera quindi una prova scientifica verificata.</p></div>
-      <div><h3 class="text-white font-medium">Quale ambito pubblico è verificabile oggi?</h3><p class="mt-1">Al 9 luglio 2026 la fonte contiene 150 schede editoriali di simboli in cinque lingue e 44 famiglie BlogPosting più 3 hub tematici, cioè 235 file localizzati.</p></div>
+      <div><h3 class="text-white font-medium">Quale ambito pubblico è verificabile oggi?</h3><p class="mt-1">Al 18 ottobre 2026 la fonte contiene 240 schede editoriali di simboli in cinque lingue e 50 famiglie BlogPosting più 3 hub tematici, cioè 265 file localizzati.</p></div>
       <div><h3 class="text-white font-medium">I diari privati vengono usati nel dizionario pubblico?</h3><p class="mt-1">I file pubblici non includono voci private degli utenti. Le schede di simboli e gli articoli sono materiale editoriale.</p></div>
       <div><h3 class="text-white font-medium">Il catalogo Noctalia è un set di ricerca clinica?</h3><p class="mt-1">No. Non ha una coorte pubblicata, un protocollo di campionamento, etichette cliniche o uno studio di validazione. Va citato come catalogo editoriale.</p></div>
     </div>

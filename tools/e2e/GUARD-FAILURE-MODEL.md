@@ -28,6 +28,10 @@ a misconfigured shard preparation. The common installer tests cover engine/match
 version mismatch, argument parsing, process failure and cancellation. The CI
 preparation controls evaluate every product-routing combination: the same
 shards install locked dependencies and retain their qualification controls.
+The old routing cases run locally against a frozen portfolio fixture. The active
+benchmark gate exercises every trigger/opt-in combination on every OS. Benchmark
+controls reject invalid repetition counts and keep failed installs/cancellation
+nonqualifying; no journey can safely manufacture these performance-receipt failures.
 Real browser journeys verify that the unchanged headless engine still runs.
 Link rejection, CocoaPods target hashing/cycles and interrupted-evidence tests
 use the same simulated link metadata over real files everywhere. Real Windows

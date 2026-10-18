@@ -4,7 +4,7 @@ set -euo pipefail
 
 repository_root="$(git rev-parse --show-toplevel)"
 classifier="$repository_root/.circleci/scripts/classify-changes.sh"
-continuation_config="$repository_root/.circleci/continue.yml"
+continuation_config="$repository_root/.circleci/tests/fixtures/validation-portfolio.yml"
 test_root="$(mktemp -d)"
 trap 'rm -rf "$test_root"' EXIT
 
@@ -123,7 +123,7 @@ NODE
 # The gate is an OR of GitHub App event.name, trigger.type (legacy OAuth) and
 # force_full_validation. The deprecated trigger_source is not read: it neither
 # opens nor closes the gate. Every combination below is evaluated.
-SETUP_CONFIG="$repository_root/.circleci/config.yml" node - <<'NODE'
+SETUP_CONFIG="$repository_root/.circleci/tests/fixtures/legacy-setup.yml" node - <<'NODE'
 const fs = require('fs');
 const YAML = require('yaml');
 

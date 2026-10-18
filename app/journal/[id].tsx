@@ -1,4 +1,4 @@
-import type { LayoutChangeEvent, ViewInstance, ScrollViewInstance } from 'react-native';
+import type { LayoutChangeEvent, ViewInstance, ScrollViewInstance, TextInputInstance } from 'react-native';
 import { getSavedAnalysisAction } from '@/lib/savedAnalysisAccess';
 import { DreamAnalysisContent } from '@/components/journal/DreamAnalysisContent';
 import { isPoeticDreamQuote } from '@/lib/dreamQuote';
@@ -101,6 +101,7 @@ import { sortWithSelectionFirst } from '@/lib/sorting';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, DreamTheme, DreamType, ReferenceImage } from '@/lib/types';
 import { categorizeDream, generateImageWithReference } from '@/services/geminiService';
+import { getStaleAnalysisBannerDismissed, saveStaleAnalysisBannerDismissed } from '@/services/storageService';
 import * as Haptics from 'expo-haptics';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -738,6 +739,23 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   }, [updateReadingChrome]);
   const scrollViewRef = useRef<ScrollViewInstance | null>(null);
   const editorScrollRef = useRef<ScrollViewInstance | null>(null);
+  const recallInputRef = useRef<TextInputInstance | null>(null);
+  const revealRecallInput = useCallback(() => {
+    const input = recallInputRef.current;
+    if (Platform.OS !== 'web' && input?.isFocused()) {
+      scrollViewRef.current?.scrollResponderScrollNativeHandleToKeyboard(input, 24, true);
+    }
+  }, []);
+  const handleRecallLayout = useCallback((input: TextInputInstance) => {
+    if (Platform.OS !== 'web' && !input.isFocused()) {
+      // The newly opened field must be reachable before its first focus hides the dock.
+      scrollViewRef.current?.scrollResponderScrollNativeHandleToKeyboard(input, actionDockHeight + 24, true);
+    }
+  }, [actionDockHeight]);
+  const handleRecallFocus = useCallback((input: TextInputInstance) => {
+    recallInputRef.current = input;
+    revealRecallInput();
+  }, [revealRecallInput]);
   const editingStoryRef = useRef(false);
   const lastAnalysisNoticeRef = useRef<AnalysisNotice | null>(null);
   const previousDreamRef = useRef(dream);
@@ -779,12 +797,14 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
 
     const showSub = Keyboard.addListener(showEvent, () => setIsKeyboardVisible(true));
     const hideSub = Keyboard.addListener(hideEvent, () => setIsKeyboardVisible(false));
+    const shownSub = Keyboard.addListener('keyboardDidShow', revealRecallInput);
 
     return () => {
       showSub.remove();
       hideSub.remove();
+      shownSub.remove();
     };
-  }, []);
+  }, [revealRecallInput]);
 
   // Subject detection is only needed for authenticated reference-image tools.
   // Guests already receive metadata from the post-save categorization request.
@@ -886,6 +906,21 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   );
   const analysisFreshness = useMemo(() => getDreamAnalysisFreshness(dream), [dream]);
   const isAnalysisStale = analysisFreshness === 'stale';
+  // Closed once for good: the next-step card below keeps offering the update.
+  const [staleBannerDismissed, setStaleBannerDismissed] = useState(true);
+  useEffect(() => {
+    let active = true;
+    getStaleAnalysisBannerDismissed()
+      .then((dismissed) => { if (active) setStaleBannerDismissed(dismissed); })
+      .catch(() => { if (active) setStaleBannerDismissed(false); });
+    return () => { active = false; };
+  }, []);
+  const dismissStaleBanner = useCallback(() => {
+    setStaleBannerDismissed(true);
+    saveStaleAnalysisBannerDismissed(true).catch(() => {
+      // Closed for this visit; it may reappear next time.
+    });
+  }, []);
   const visibleIllustrationCta =
     quotaLoading && illustrationCta === 'quota' ? 'none' : illustrationCta;
   const canOfferImageUpgrade = visibleIllustrationCta === 'upgrade';
@@ -2798,7 +2833,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   };
 
   const renderStaleBanner = () => {
-    if (!isAnalysisStale || isEditing) {
+    if (!isAnalysisStale || isEditing || staleBannerDismissed) {
       return null;
     }
 
@@ -2820,6 +2855,15 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
               {t('journal.detail.stale.banner')}
             </Text>
           </View>
+          <PressableScale
+            testID={TID.Button.AnalysisStaleDismiss}
+            onPress={dismissStaleBanner}
+            accessibilityRole="button"
+            accessibilityLabel={t('journal.detail.stale.dismiss')}
+            className="-m-2.5 h-11 w-11 items-center justify-center"
+          >
+            <IconSymbol name="xmark" size={16} color={noctalia.status.warning.icon} />
+          </PressableScale>
         </View>
       </View>
     );
@@ -3064,6 +3108,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
         <View className="flex-1" collapsable={false}>
         <ScrollView
           ref={scrollViewRef}
+          onContentSizeChange={revealRecallInput}
           className="flex-1"
           onLayout={({ nativeEvent: { layout } }) => {
             setCoverViewport(previous => previous?.width === layout.width && previous.height === layout.height
@@ -3149,6 +3194,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
                 dreamId={getDreamRecallStorageId(dream, user?.id ?? null)}
                 originalTranscript={dream.transcript}
                 originalPersistedSegmentId={dream.clientRequestId ?? (dream.remoteId != null ? getDreamIdentityKey(dream) : String(dream.id))}
+                onAnswerFocus={handleRecallFocus}
+                onAnswerLayout={handleRecallLayout}
                 offerEligible
                 startRequested
               />
@@ -3178,6 +3225,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
                 <DreamRecallAssistantCard dreamId={getDreamRecallStorageId(dream, user?.id ?? null)}
                   originalTranscript={dream.transcript}
                   originalPersistedSegmentId={dream.clientRequestId ?? (dream.remoteId != null ? getDreamIdentityKey(dream) : String(dream.id))}
+                  onAnswerFocus={handleRecallFocus}
+                onAnswerLayout={handleRecallLayout}
                   offerEligible={recallOffer.offerEligible} />
               </ArrivalReveal>
             ) : null}
@@ -3268,7 +3317,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
           <CoverFlight source={paintedArtwork} from={coverFlight.from} to={coverFlight.to} height={coverHeight} travel={coverTravel}
             landed={coverFlight.landed} onArrived={coverFlightArrived} onGone={coverFlightGone} />
         ) : null}
-        {!isEditing && (!hasIllustratedCover || readingActionVisible) && !(sealShowsReading && !isSavedArrival) ? (
+        {!isEditing && !isKeyboardVisible && (!hasIllustratedCover || readingActionVisible) && !(sealShowsReading && !isSavedArrival) ? (
           <View testID="component.dreamDetail.actionDock"
             className={`absolute bottom-0 left-0 right-0 bg-ink px-6 pt-3 ${isSavedArrival ? '' : 'border-t border-line'}`}
             style={{ paddingBottom: Math.max(insets.bottom, 12) }}

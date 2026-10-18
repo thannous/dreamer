@@ -54,6 +54,7 @@ import React, { useCallback, useContext, useDeferredValue, useEffect, useLayoutE
 import {
   Alert,
   Keyboard,
+  KeyboardAvoidingView,
   Platform,
   Share,
   Text,
@@ -916,6 +917,7 @@ function JournalListScreen() {
     persistenceState.status === 'loading' ||
     (persistenceState.status === 'error' && persistenceState.operation === 'read') ? null : <EmptyState
       hasActiveFilter={hasActiveFilter}
+      compact={isKeyboardVisible}
       onClearFilters={handleClearFilters}
       onStartRememberedDream={
         canStartRememberedDreamFromEmpty ? handleStartRememberedDreamFromEmpty : undefined
@@ -926,6 +928,7 @@ function JournalListScreen() {
     handleClearFilters,
     handleStartRememberedDreamFromEmpty,
     hasActiveFilter,
+    isKeyboardVisible,
     persistenceState,
     refreshState,
   ]);
@@ -1062,7 +1065,7 @@ function JournalListScreen() {
   }
 
   return (
-    <View className="flex-1 bg-ink" testID={TID.Screen.Journal}>
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} className="flex-1 bg-ink" testID={TID.Screen.Journal}>
 
       {isDesktopLayout ? listHeader : (
         <Animated.View
@@ -1217,7 +1220,7 @@ function JournalListScreen() {
       sortOrder={sortOrder}
       onSortOrderChange={setSortOrder}
     />
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 

@@ -130,9 +130,6 @@
                 "/org/bouncycastle/pqc/crypto/picnic/*.properties"
               ]
             }
-          },
-          "ios": {
-            "enableSceneSupport": true
           }
         }
       ],
@@ -145,11 +142,18 @@
       "react-native-edge-to-edge",
       "expo-image",
       "expo-sharing",
-      "expo-apple-authentication"
+      "expo-apple-authentication",
+      "expo-app-intents",
+      "./plugins/withAppIntentsLocalizations"
     ],
     "experiments": {
       "typedRoutes": true,
-      "reactCompiler": true
+      "reactCompiler": true,
+      "inlineModules": {
+        "watchedDirectories": [
+          "app-intents"
+        ]
+      }
     },
     "extra": {
       "router": {},

@@ -162,4 +162,20 @@ describe('product route roots', () => {
       expect(config.plugins).not.toContain('./plugins/withAndroidR8Optimization');
     });
   });
+
+  it('compiles the Siri dream action into the journal only', () => {
+    // A Lucid build with it would let Siri confirm a dream that no journal reads.
+    withEnv({}, () => {
+      const config = resolveExpoConfig({ config: baseExpo() } as any);
+      expect(config.plugins).toContain('expo-app-intents');
+      expect(config.experiments?.inlineModules?.watchedDirectories).toEqual(['app-intents']);
+    });
+    withEnv({ NOCTALIA_APP_VARIANT: 'lucid', EXPO_PUBLIC_APP_VARIANT: 'lucid-trainer' }, () => {
+      const config = resolveExpoConfig({ config: baseExpo() } as any);
+      expect(config.plugins).not.toContain('expo-app-intents');
+      expect(config.plugins).not.toContain('./plugins/withAppIntentsLocalizations');
+      expect(config.experiments?.inlineModules).toBeUndefined();
+      expect(config.experiments?.typedRoutes).toBe(true);
+    });
+  });
 });

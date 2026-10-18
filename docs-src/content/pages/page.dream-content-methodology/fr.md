@@ -23,21 +23,21 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-fr-1200x630.jpg",
   "twitterImageAlt": "Méthodologie des contenus de rêves Noctalia",
   "publishedTime": "2026-07-09T00:00:00+02:00",
-  "modifiedTime": "2026-07-09T00:00:00+02:00",
+  "modifiedTime": "2026-10-18T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"headline\":\"Méthodologie des contenus sur les rêves\",\"description\":\"Périmètre vérifiable, méthode éditoriale, limites de confidentialité et statut des données derrière les contenus publics de Noctalia.\",\"url\":\"https://noctalia.app/fr/methodologie-contenus-reves\",\"inLanguage\":\"fr\",\"datePublished\":\"2026-07-09\",\"dateModified\":\"2026-07-09T00:00:00+02:00\",\"author\":{\"@type\":\"Person\",\"name\":\"Thanh Chau\",\"url\":\"https://noctalia.app/fr/a-propos#person\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
+    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"headline\":\"Méthodologie des contenus sur les rêves\",\"description\":\"Périmètre vérifiable, méthode éditoriale, limites de confidentialité et statut des données derrière les contenus publics de Noctalia.\",\"url\":\"https://noctalia.app/fr/methodologie-contenus-reves\",\"inLanguage\":\"fr\",\"datePublished\":\"2026-07-09\",\"dateModified\":\"2026-10-18T00:00:00+02:00\",\"author\":{\"@type\":\"Person\",\"name\":\"Thanh Chau\",\"url\":\"https://noctalia.app/fr/a-propos#person\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Accueil\",\"item\":\"https://noctalia.app/fr/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Méthodologie des contenus\",\"item\":\"https://noctalia.app/fr/methodologie-contenus-reves\"}]} ",
-    "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Noctalia publie-t-elle un jeu vérifiable de 55 000 rêves utilisateurs ?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Non. La source publique actuelle ne contient ni 55 000 rêves ni la provenance permettant de reproduire ce chiffre. Noctalia ne le traite donc pas comme une preuve scientifique vérifiée.\"}},{\"@type\":\"Question\",\"name\":\"Quel périmètre public est vérifiable aujourd'hui ?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Au 9 juillet 2026, la source contient 150 fiches éditoriales de symboles en cinq langues et 44 familles BlogPosting plus 3 hubs thématiques, soit 235 fichiers localisés.\"}},{\"@type\":\"Question\",\"name\":\"Les journaux privés alimentent-ils le dictionnaire public ?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Aucune entrée privée d'utilisateur ne figure dans les fichiers de contenus publics. Les fiches de symboles et les articles sont éditoriaux.\"}},{\"@type\":\"Question\",\"name\":\"Le catalogue Noctalia est-il une base de recherche clinique ?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Non. Il n'a ni cohorte publiée, ni protocole d'échantillonnage, ni étiquettes cliniques, ni étude de validation. Il faut le citer comme catalogue éditorial.\"}}]}"
+    "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Noctalia publie-t-elle un jeu vérifiable de 55 000 rêves utilisateurs ?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Non. La source publique actuelle ne contient ni 55 000 rêves ni la provenance permettant de reproduire ce chiffre. Noctalia ne le traite donc pas comme une preuve scientifique vérifiée.\"}},{\"@type\":\"Question\",\"name\":\"Quel périmètre public est vérifiable aujourd'hui ?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Au 18 octobre 2026, la source contient 240 fiches éditoriales de symboles en cinq langues et 50 familles BlogPosting plus 3 hubs thématiques, soit 265 fichiers localisés.\"}},{\"@type\":\"Question\",\"name\":\"Les journaux privés alimentent-ils le dictionnaire public ?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Aucune entrée privée d'utilisateur ne figure dans les fichiers de contenus publics. Les fiches de symboles et les articles sont éditoriaux.\"}},{\"@type\":\"Question\",\"name\":\"Le catalogue Noctalia est-il une base de recherche clinique ?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Non. Il n'a ni cohorte publiée, ni protocole d'échantillonnage, ni étiquettes cliniques, ni étude de validation. Il faut le citer comme catalogue éditorial.\"}}]}"
   ],
   "activeNav": "resources"
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Méthodologie des contenus sur les rêves</h1>
-<p class="text-sm text-purple-300/70 mb-6">Publié et vérifié le 9 juillet 2026</p>
+<p class="text-sm text-purple-300/70 mb-6">Publié le 9 juillet 2026 · Vérifié le 18 octobre 2026</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">Ce rapport distingue le catalogue éditorial public de Noctalia des journaux privés et d'une base de recherche. Il indique ce qui peut être vérifié dans la source actuelle, comment le contenu est structuré et quelles conclusions ne doivent pas en être tirées.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
@@ -50,11 +50,11 @@
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Périmètre public vérifiable</h2>
     <dl class="grid gap-5 md:grid-cols-3">
-      <div><dt class="text-sm text-purple-200/70">Fiches de symboles</dt><dd class="text-2xl text-white font-serif">150</dd><p class="text-sm mt-1">Une fiche éditoriale versionnée par symbole.</p></div>
+      <div><dt class="text-sm text-purple-200/70">Fiches de symboles</dt><dd class="text-2xl text-white font-serif">240</dd><p class="text-sm mt-1">Une fiche éditoriale versionnée par symbole.</p></div>
       <div><dt class="text-sm text-purple-200/70">Langues</dt><dd class="text-2xl text-white font-serif">5</dd><p class="text-sm mt-1">Français, anglais, espagnol, allemand et italien.</p></div>
-      <div><dt class="text-sm text-purple-200/70">Sources de contenus du blog</dt><dd class="text-2xl text-white font-serif">235</dd><p class="text-sm mt-1">44 familles BlogPosting + 3 hubs thématiques = 235 fichiers localisés.</p></div>
+      <div><dt class="text-sm text-purple-200/70">Sources de contenus du blog</dt><dd class="text-2xl text-white font-serif">265</dd><p class="text-sm mt-1">50 familles BlogPosting + 3 hubs thématiques = 265 fichiers localisés.</p></div>
     </dl>
-    <p class="mt-6">Les 150 identifiants de symboles disposent également de textes éditoriaux étendus. Ces nombres décrivent des objets publiés, pas des personnes, des soumissions privées ni des observations expérimentales.</p>
+    <p class="mt-6">Les 240 identifiants de symboles disposent également de textes éditoriaux étendus. Ces nombres décrivent des objets publiés, pas des personnes, des soumissions privées ni des observations expérimentales.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
@@ -70,14 +70,14 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Citer correctement ce contenu</h2>
-    <ul class="list-disc pl-5 space-y-2"><li>Parlez du catalogue éditorial public de symboles de Noctalia.</li><li>Ajoutez l'URL et la date du 9 juillet 2026 si vous reprenez les comptes.</li><li>Ne le décrivez pas comme une étude clinique, une enquête représentative ou une base de rêves utilisateurs.</li><li>Pour un fait scientifique, citez l'étude primaire reliée depuis l'article concerné.</li></ul>
+    <ul class="list-disc pl-5 space-y-2"><li>Parlez du catalogue éditorial public de symboles de Noctalia.</li><li>Ajoutez l'URL et la date du 18 octobre 2026 si vous reprenez les comptes.</li><li>Ne le décrivez pas comme une étude clinique, une enquête représentative ou une base de rêves utilisateurs.</li><li>Pour un fait scientifique, citez l'étude primaire reliée depuis l'article concerné.</li></ul>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">FAQ méthodologique</h2>
     <div class="space-y-5">
       <div><h3 class="text-white font-medium">Noctalia publie-t-elle un jeu vérifiable de 55 000 rêves utilisateurs ?</h3><p class="mt-1">Non. La source publique actuelle ne contient ni 55 000 rêves ni la provenance permettant de reproduire ce chiffre. Noctalia ne le traite donc pas comme une preuve scientifique vérifiée.</p></div>
-      <div><h3 class="text-white font-medium">Quel périmètre public est vérifiable aujourd'hui ?</h3><p class="mt-1">Au 9 juillet 2026, la source contient 150 fiches éditoriales de symboles en cinq langues et 44 familles BlogPosting plus 3 hubs thématiques, soit 235 fichiers localisés.</p></div>
+      <div><h3 class="text-white font-medium">Quel périmètre public est vérifiable aujourd'hui ?</h3><p class="mt-1">Au 18 octobre 2026, la source contient 240 fiches éditoriales de symboles en cinq langues et 50 familles BlogPosting plus 3 hubs thématiques, soit 265 fichiers localisés.</p></div>
       <div><h3 class="text-white font-medium">Les journaux privés alimentent-ils le dictionnaire public ?</h3><p class="mt-1">Aucune entrée privée d'utilisateur ne figure dans les fichiers de contenus publics. Les fiches de symboles et les articles sont éditoriaux.</p></div>
       <div><h3 class="text-white font-medium">Le catalogue Noctalia est-il une base de recherche clinique ?</h3><p class="mt-1">Non. Il n'a ni cohorte publiée, ni protocole d'échantillonnage, ni étiquettes cliniques, ni étude de validation. Il faut le citer comme catalogue éditorial.</p></div>
     </div>

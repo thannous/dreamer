@@ -14,6 +14,7 @@ import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { SettingsSection } from './SettingsSection';
 import { SettingsToggle } from './SettingsToggle';
 import { useAnalyticsPreferenceController } from '@/components/settings/useAnalyticsPreferenceController';
+import { useStabilityReportsController } from '@/components/settings/useStabilityReportsController';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -62,6 +63,8 @@ export function LegalSection() {
   const noctalia = getNoctaliaDesignTokens(colors, mode);
   const [isDeleting, setIsDeleting] = useState(false);
   const analyticsPreference = useAnalyticsPreferenceController();
+  const stabilityReports = useStabilityReportsController();
+  const hasPreferenceRows = analyticsPreference.available || stabilityReports.available;
 
   const openLegalLink = useCallback(
     (kind: LegalLinkKind) => {
@@ -151,12 +154,40 @@ export function LegalSection() {
           />
         </View>
       ) : null}
+      {stabilityReports.available ? (
+        <View
+          accessibilityRole="switch"
+          accessibilityState={{ checked: stabilityReports.enabled }}
+          aria-checked={stabilityReports.enabled}
+          accessibilityLabel={stabilityReports.toggleLabel}
+          className={analyticsPreference.available ? ROW_CLASS : ROW_CLASS.replace('border-t border-line', '')}
+          testID="settings-stability-reports"
+        >
+          <IconSymbol name="exclamationmark.triangle" size={21} color={noctalia.accent.text} />
+          <View className="flex-1 gap-0.5">
+            <Text className="flex-1 font-sans text-[15px] leading-[20px] text-ivory">
+              {stabilityReports.title}
+            </Text>
+            <Text className="font-sans text-caption text-ivory-muted">
+              {stabilityReports.error ? stabilityReports.errorMessage : stabilityReports.description}
+            </Text>
+          </View>
+          <SettingsToggle
+            disabled={stabilityReports.loading || stabilityReports.saving}
+            onValueChange={(next) => {
+              void stabilityReports.toggle(next);
+            }}
+            testID="settings-stability-reports-switch"
+            value={stabilityReports.enabled}
+          />
+        </View>
+      ) : null}
       {LEGAL_LINK_ROWS.map((row, index) => (
         <PressableScale
           accessibilityRole="link"
           key={row.kind}
           onPress={() => openLegalLink(row.kind)}
-          className={index === 0 && !analyticsPreference.available ? ROW_CLASS.replace('border-t border-line', '') : ROW_CLASS}
+          className={index === 0 && !hasPreferenceRows ? ROW_CLASS.replace('border-t border-line', '') : ROW_CLASS}
           hitSlop={NO_HIT_SLOP}
           testID={row.testID}
         >

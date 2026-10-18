@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-es-1200x630.jpg",
   "twitterImageAlt": "Diario de sueños con ilustraciones e interpretación",
   "publishedTime": "",
-  "modifiedTime": "2026-10-15",
+  "modifiedTime": "2026-10-18",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -492,7 +492,7 @@
                 <span class="oh-index" aria-hidden="true">5:00</span>
                 <h2 class="oh-h2">Diccionario de símbolos</h2>
             </div>
-            <p class="oh-lede">Recorre 150 símbolos frecuentes, cada uno con preguntas de contexto y asociaciones posibles. Lo que cuenta es la escena y lo que sentiste en ella, más que una definición fija.</p>
+            <p class="oh-lede">Recorre 240 símbolos frecuentes, cada uno con preguntas de contexto y asociaciones posibles. Lo que cuenta es la escena y lo que sentiste en ella, más que una definición fija.</p>
         </div>
 
         <div class="oh-symbols reveal">
@@ -564,7 +564,7 @@
 
         <div class="oh-symbols-cta reveal">
             <a href="guides/diccionario-simbolos-suenos" class="oh-btn-quiet">
-                <i data-lucide="book-open"></i> Explorar los 150 símbolos <i data-lucide="arrow-right"></i>
+                <i data-lucide="book-open"></i> Explorar los 240 símbolos <i data-lucide="arrow-right"></i>
             </a>
         </div>
     </section>
