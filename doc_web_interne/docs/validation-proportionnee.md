@@ -89,11 +89,10 @@ Le contrôle porte sur une copie isolée du commit (`git worktree`, avec les
 `node_modules` du checkout principal liés) : le travail non committé n'est ni
 vérifié ni déplacé, et aucun arbre propre n'est exigé. Il lance `typecheck:app`,
 `typecheck:tests`, `lint`, `lint:scripts`, les tests Jest liés au diff depuis le
-merge-base avec `origin/master` (`test:changed`, même base que CircleCI, y
-compris pour une PR empilée), les contrats statiques Supabase et Edge, et les
+merge-base avec `origin/master` (`test:changed`, y compris pour une PR empilée), les contrats statiques Supabase et Edge, et les
 tests du moteur. Selon les chemins changés depuis `origin/master`, il ajoute
 `docs:build` et `docs:check` (site : `docs-src/`, `data/`, `scripts/`, fichiers
-de paquet), les tests du classificateur CircleCI (`.circleci/`), Meditation
+de paquet), les contrats CI/benchmark (`.circleci/` et outils d’installation E2E), Meditation
 (`apps/meditation` et fichiers partagés) et les Edge Functions sous Deno
 (`supabase/functions`, `supabase/lib`, `supabase/migrations`, `deno.lock`).
 La liste exacte est dans `verify-local.config.mjs`.
@@ -125,8 +124,7 @@ celles que demandent les surfaces modifiées.
 Pendant le développement, `npm run test:changed` utilise le merge-base avec la
 référence **locale** `origin/master`. `JEST_CHANGED_SINCE=HEAD npm run test:changed`
 reste disponible pour un delta non committé : un résultat sans tests après un
-commit ne prouve rien sur la PR. Dans une pipeline CircleCI manuelle, la base
-explicite fournie par la classification reste prioritaire.
+commit ne prouve rien sur la PR. CircleCI ne lance plus de tests applicatifs.
 
 ## Après le push : vérifier la bonne révision
 
@@ -225,8 +223,8 @@ restantes n'empêchent pas de demander la fusion ; elles ne deviennent pas
 automatiquement de nouvelles tâches. Les règles de fusion et publication restent
 celles de la [livraison](regle-commune-livraison.md).
 
-CircleCI reste manuel : demander un run seulement pour un besoin précis de
-machine propre, de diagnostic ou de plateforme. Une absence de run distant ne
+CircleCI garde seulement un benchmark manuel ciblé des installations E2E/Chromium,
+sans suite de validation. Une absence de run distant ne
 se remplace pas par une répétition locale de toute l'armée ; conserver les gates
 locaux et les limites de la preuve. Après une fusion autorisée, contrôler le
 résultat intégré sur les surfaces affectées et conserver son identité ; une
