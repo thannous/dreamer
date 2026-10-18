@@ -331,7 +331,15 @@ export default {
 
     // ---- verify:pr, only when the commit changes that surface since origin/master.
     { name: 'site', command: 'npm run docs:build && npm run docs:check', when: SITE },
-    { name: 'ci-contracts', command: CI_CONTRACTS, when: ['.circleci/', 'tools/e2e/benchmark-setup.mjs', 'tools/e2e/benchmark-setup.test.mjs', 'tools/e2e/install-browsers.mjs', 'tools/e2e/install-browsers.test.mjs'] },
+    {
+      name: 'ci-contracts', command: CI_CONTRACTS,
+      when: [
+        '.circleci/', 'package.json',
+        'tools/e2e/package.json', 'tools/e2e/package-lock.json',
+        'tools/e2e/benchmark-setup.mjs', 'tools/e2e/benchmark-setup.test.mjs',
+        'tools/e2e/install-browsers.mjs', 'tools/e2e/install-browsers.test.mjs',
+      ],
+    },
     { name: 'eas-workflow-contracts', command: EAS_WORKFLOW_CONTRACTS, when: EAS_WORKFLOWS },
     // A bad version pin fails before push rather than at publication (offline, 0.1 s).
     { name: 'mobile-versions', command: 'node scripts/mobile-release.js verify --app all', inputs: MOBILE_VERSIONS, when: MOBILE_VERSIONS },

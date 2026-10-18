@@ -107,8 +107,12 @@ CircleCI. Aucun lancement distant n'est nécessaire pour valider une PR.
 
 ## Vérifier les contrats localement
 
-`verify:pr` sélectionne les contrats CI lors d'une modification `.circleci/` ou
-des scripts E2E d'installation/benchmark ; `verify:release` les lance toujours.
+`verify:pr` sélectionne les contrats CI lors d'une modification `.circleci/`,
+des scripts E2E d'installation/benchmark, de `package.json` à la racine ou des
+manifestes `tools/e2e/package.json` et `tools/e2e/package-lock.json`.
+Une modification isolée de chacun de ces manifestes est vérifiée par les tests
+de configuration avec le même sélecteur que le moteur. `verify:release` lance
+toujours les contrats CI.
 Pour itérer uniquement sur le benchmark :
 
 ```sh

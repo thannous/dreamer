@@ -125,6 +125,24 @@ describe('verify-local.config.mjs', () => {
     expect(pr.find((check) => check.command.includes('docs:build')).when).toEqual(expect.arrayContaining(['docs-src/', 'data/']));
   });
 
+  it('runs benchmark contracts for a change to any benchmark manifest alone', () => {
+    // These manifests can change the canonical command or browser version
+    // without touching CI YAML. A browser journey cannot detect a skipped guard.
+    const result = JSON.parse(execFileSync(process.execPath, [
+      '--input-type=module', '-e',
+      `import { normaliseConfig, matchesAny } from ${JSON.stringify(pathToFileURL(path.join(ROOT, 'scripts/verify-local.mjs')).href)};
+       const config = normaliseConfig(${JSON.stringify(config)});
+       const check = config.checks.find(check => check.name === 'ci-contracts');
+       const manifests = ['package.json', 'tools/e2e/package.json', 'tools/e2e/package-lock.json'];
+       process.stdout.write(JSON.stringify(manifests.map(file => ({file, selected:matchesAny(file, check.when)}))));`,
+    ], { encoding: 'utf8' }));
+    expect(result).toEqual([
+      { file: 'package.json', selected: true },
+      { file: 'tools/e2e/package.json', selected: true },
+      { file: 'tools/e2e/package-lock.json', selected: true },
+    ]);
+  });
+
   it('reuses site-only inputs but invalidates every shared mobile source and tool', () => {
     // These are the actual fingerprints used for reuse, not a second classifier.
     // A browser cannot detect a stale proof accidentally accepted for app code.
