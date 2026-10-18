@@ -24,6 +24,7 @@ type FilterItemId =
   | 'unanalyzed'
   | 'analyzed'
   | 'explored'
+  | 'symbol'
   | 'more';
 
 export type FilterBarItem = {
@@ -84,6 +85,10 @@ function RecurringIcon({ size = 16, color = '#FFFFFF' }) {
 
 function SearchFilterIcon({ size = 16, color = '#FFFFFF' }) {
   return <IconSymbol name="magnifyingglass" size={size} color={color} />;
+}
+
+function SymbolIcon({ size = 16, color = '#FFFFFF' }) {
+  return <IconSymbol name="star.fill" size={size} color={color} />;
 }
 
 function SortIcon({ size = 16, color = '#FFFFFF' }) {
@@ -178,6 +183,8 @@ const renderIcon = (id: FilterItemId, color: string) => {
       return <AnalyzedIcon size={16} color={color} />;
     case 'explored':
       return <ExploredIcon size={16} color={color} />;
+    case 'symbol':
+      return <SymbolIcon size={16} color={color} />;
     case 'more':
       return <MoreIcon size={16} color={color} />;
   }
@@ -212,6 +219,8 @@ const getAccessibilityLabel = (id: FilterItemId, t: (key: string) => string, exp
       return t('journal.filter.accessibility.analyzed');
     case 'explored':
       return t('journal.filter.accessibility.explored');
+    case 'symbol':
+      return t('journal.filter.accessibility.symbol');
     case 'more':
       return t('journal.filter.accessibility.more');
   }

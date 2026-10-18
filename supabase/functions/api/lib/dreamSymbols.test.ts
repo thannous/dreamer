@@ -1,4 +1,5 @@
 import { assertEquals } from 'https://deno.land/std@0.224.0/assert/mod.ts';
+import { DREAM_SYMBOL_IDS } from './dreamSymbolIds.ts';
 import {
   collectKnownDreamSymbols,
   MAX_KNOWN_SYMBOLS,
@@ -26,15 +27,30 @@ Deno.test('known symbols from an app request are bounded, deduplicated and named
   assertEquals(parseKnownDreamSymbols('nope'), []);
 });
 
-Deno.test('known symbols from saved readings come most frequent first, newest name kept', () => {
-  const symbols = collectKnownDreamSymbols([
+Deno.test('known symbols from saved readings come most frequent first, under the name used most', () => {
+  const readings = [
     { symbols: [{ name: 'La maison de grand-mère', meaning: 'x', key: 'grandmother-house' }, { name: 'Chat', meaning: 'x', symbolId: 'cat' }] },
     null,
     { symbols: [{ name: 'Le collège', meaning: 'x', key: 'old-school' }] },
     { symbols: [{ name: 'Maison de mamie', meaning: 'x', key: 'grandmother-house' }, { name: 'Maison', meaning: 'x', key: 'grandmother-house' }] },
-  ]);
-  assertEquals(symbols, [
-    { key: 'grandmother-house', name: 'La maison de grand-mère' },
+  ];
+  // At a tie, the oldest wording, as the app names it.
+  assertEquals(collectKnownDreamSymbols(readings), [
+    { key: 'grandmother-house', name: 'Maison de mamie' },
     { key: 'old-school', name: 'Le collège' },
   ]);
+  // Wordings group as the app groups them (case, accents, a leading article); the oldest spelling stays.
+  const again = { symbols: [{ name: 'la maison de grand-mere', meaning: 'x', key: 'grandmother-house' }] };
+  assertEquals(collectKnownDreamSymbols([again, ...readings])[0], { key: 'grandmother-house', name: 'La maison de grand-mère' });
+  const mill = (name: string) => ({ symbols: [{ name, meaning: 'x', key: 'windmill' }] });
+  assertEquals(collectKnownDreamSymbols([mill('Moulin'), mill('Le moulin'), mill('Le grand moulin')]), [{ key: 'windmill', name: 'Le moulin' }]);
+});
+
+Deno.test('a key that is a dictionary id is not a personal symbol and takes none of the slots', () => {
+  // A newer reading whose keys are all dictionary ids, then an older one with a personal key.
+  const dictionaryKeyed = DREAM_SYMBOL_IDS.slice(0, MAX_KNOWN_SYMBOLS).map((id) => ({ name: id, meaning: 'x', key: id.toUpperCase() }));
+  assertEquals(collectKnownDreamSymbols([
+    { symbols: dictionaryKeyed },
+    { symbols: [{ name: 'Le moulin', meaning: 'x', key: 'windmill' }] },
+  ]), [{ key: 'windmill', name: 'Le moulin' }]);
 });
