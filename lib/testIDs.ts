@@ -193,6 +193,7 @@ export const TID = {
     SavedDreamArtworkOpen: 'btn.dreamDetail.savedMoment.open',
     DreamDetailPrimaryCta: 'btn.dream.primaryCta',
     AnalysisStaleCta: 'btn.dream.staleCta',
+    AnalysisStaleDismiss: 'btn.dream.staleDismiss',
     JournalIllustrationExpand: 'btn.journal.illustration.expand',
     JournalIllustrationClose: 'btn.journal.illustration.close',
     ShareCopy: 'btn.share.copy',

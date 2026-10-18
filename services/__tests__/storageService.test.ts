@@ -26,6 +26,8 @@ const {
     'saveRecordingInputModePreference',
     'getRecordingVoiceStatusHidden',
     'saveRecordingVoiceStatusHidden',
+    'getStaleAnalysisBannerDismissed',
+    'saveStaleAnalysisBannerDismissed',
     'getRecordingOnboardingCompleted',
     'saveRecordingOnboardingCompleted',
     'getRecordingVoiceHintCompleted',

@@ -101,6 +101,7 @@ import { sortWithSelectionFirst } from '@/lib/sorting';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, DreamTheme, DreamType, ReferenceImage } from '@/lib/types';
 import { categorizeDream, generateImageWithReference } from '@/services/geminiService';
+import { getStaleAnalysisBannerDismissed, saveStaleAnalysisBannerDismissed } from '@/services/storageService';
 import * as Haptics from 'expo-haptics';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -886,6 +887,21 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   );
   const analysisFreshness = useMemo(() => getDreamAnalysisFreshness(dream), [dream]);
   const isAnalysisStale = analysisFreshness === 'stale';
+  // Closed once for good: the next-step card below keeps offering the update.
+  const [staleBannerDismissed, setStaleBannerDismissed] = useState(true);
+  useEffect(() => {
+    let active = true;
+    getStaleAnalysisBannerDismissed()
+      .then((dismissed) => { if (active) setStaleBannerDismissed(dismissed); })
+      .catch(() => { if (active) setStaleBannerDismissed(false); });
+    return () => { active = false; };
+  }, []);
+  const dismissStaleBanner = useCallback(() => {
+    setStaleBannerDismissed(true);
+    saveStaleAnalysisBannerDismissed(true).catch(() => {
+      // Closed for this visit; it may reappear next time.
+    });
+  }, []);
   const visibleIllustrationCta =
     quotaLoading && illustrationCta === 'quota' ? 'none' : illustrationCta;
   const canOfferImageUpgrade = visibleIllustrationCta === 'upgrade';
@@ -2804,7 +2820,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   };
 
   const renderStaleBanner = () => {
-    if (!isAnalysisStale || isEditing) {
+    if (!isAnalysisStale || isEditing || staleBannerDismissed) {
       return null;
     }
 
@@ -2826,6 +2842,15 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
               {t('journal.detail.stale.banner')}
             </Text>
           </View>
+          <PressableScale
+            testID={TID.Button.AnalysisStaleDismiss}
+            onPress={dismissStaleBanner}
+            accessibilityRole="button"
+            accessibilityLabel={t('journal.detail.stale.dismiss')}
+            className="h-6 w-6 items-center justify-center"
+          >
+            <IconSymbol name="xmark" size={16} color={noctalia.status.warning.icon} />
+          </PressableScale>
         </View>
       </View>
     );

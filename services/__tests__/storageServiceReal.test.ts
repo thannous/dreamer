@@ -793,6 +793,7 @@ describe('storageServiceReal', () => {
       await storage.saveRecordingVoiceStatusHidden(true);
       await storage.saveRecordingOnboardingCompleted(true);
       await storage.saveRememberedDreamPromptDismissed(true);
+      await storage.saveStaleAnalysisBannerDismissed(true);
       await storage.saveRitualPreference('focus');
       await storage.saveRitualStepProgress({ stepIndex: 2, completedAt: 123 } as any);
       await storage.saveFirstLaunchCompleted(true);
@@ -819,6 +820,7 @@ describe('storageServiceReal', () => {
       expect(await storage.getRecordingVoiceStatusHidden()).toBe(true);
       expect(await storage.getRecordingOnboardingCompleted()).toBe(true);
       expect(await storage.getRememberedDreamPromptDismissed()).toBe(true);
+      expect(await storage.getStaleAnalysisBannerDismissed()).toBe(true);
       expect(await storage.getRitualPreference()).toBe('focus');
       expect(await storage.getRitualStepProgress()).toEqual({ stepIndex: 2, completedAt: 123 });
       expect(await storage.getFirstLaunchCompleted()).toBe(true);

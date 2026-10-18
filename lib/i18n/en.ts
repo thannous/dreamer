@@ -627,6 +627,7 @@ const translations: Record<string, string> = {
     'journal.detail.stale.label': 'Analysis may be outdated',
     'journal.detail.stale.banner': 'This analysis was made from an earlier version of the dream. The previous analysis is still here.',
     'journal.detail.stale.cta': 'Update analysis',
+    'journal.detail.stale.dismiss': 'Close and don’t show this reminder again',
     'journal.detail.image.expand_accessibility': 'View illustration full screen',
     'journal.detail.image.close_fullscreen': 'Close illustration',
     'journal.detail.favorite.on': 'Favorited',

@@ -627,6 +627,7 @@ const translations: Record<string, string> = {
     'journal.detail.stale.label': 'El análisis puede estar desactualizado',
     'journal.detail.stale.banner': 'Este análisis se hizo con una versión anterior del sueño. El análisis previo sigue aquí.',
     'journal.detail.stale.cta': 'Actualizar análisis',
+    'journal.detail.stale.dismiss': 'Cerrar y no volver a mostrar este aviso',
     'journal.detail.image.expand_accessibility': 'Ver la ilustración a pantalla completa',
     'journal.detail.image.close_fullscreen': 'Cerrar ilustración',
     'journal.detail.favorite.on': 'En favoritos',
