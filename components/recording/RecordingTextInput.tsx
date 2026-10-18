@@ -375,7 +375,6 @@ export const RecordingTextInput = forwardRef<TextInputInstance, RecordingTextInp
               composerLayout.narrow && styles.instructionTextNarrow,
               compact && styles.instructionTextCompact,
               expanded && styles.instructionTextExpanded,
-              { alignSelf: 'flex-start', backgroundColor: noctalia.surface.translucent, borderRadius: 4, paddingHorizontal: 4 },
               { fontSize: (expanded ? 14 : compact ? 13 : 15) * controlFontScale, lineHeight: (expanded ? 20 : compact ? 18 : 21) * controlFontScale, color: noctalia.text.secondary },
             ]}
           >
