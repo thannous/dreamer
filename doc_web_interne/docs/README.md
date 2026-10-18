@@ -43,6 +43,7 @@ and `app.config.ts`. Meditation has its own package, lockfile and
 | EAS build counter mirrors | [Version synchronization](mobile-build-version-sync.md) | `release:versions:sync` writes local mirrors; `release:versions:check` verifies them. |
 | Play candidate qualification | [Android release checklist](android-release-checklist.md) | Read the candidate's actual Play/build metadata; old store snapshots are historical evidence. |
 | Local Android build prerequisites | [Android tooling](../../scripts/README.md#local-android-prerequisites) | Java 17, Android SDK, local dependencies; requested native QA includes necessary isolated generation. `android:release:local -- --help` explains prebuild and install options. |
+| Android iteration and Metro build cost | [Measured mobile CI optimizations](qa/mobile-ci-android-metro-2026-10-18.md) | Separate iteration APKs, unchanged clean Release defaults, identical Windows/Linux cases and measured cache gains. |
 | Android performance measurement | [Performance protocol](../../scripts/android/README-performance.md) | Pilot first, use the device lock and identify the installed binary. |
 | TalkBack qualification | [Motorola protocol](qualification-talkback.md) | Pilot the measurement method and restore device settings. |
 | Delivery rule | [Common delivery rule](regle-commune-livraison.md) | This repository's own copy of the four-line common rule; dreamer specifics are in AGENTS.md, "Notes dreamer". |

@@ -57,10 +57,14 @@ matching context uses `--no-clean`. Its first or invalidated build keeps the cle
 only a previously successful identical native/profile/dependency/environment
 context uses Gradle's build cache and daemon without `:app:clean`. The JS/assets
 bundle task always reruns, so an asset-only edit cannot leave an old bundle
-(React Native's declared file inputs cover JS/TS only). Native compilation and
-Metro transforms can still be reused. A failed/interrupted build,
+(React Native's declared file inputs cover JS/TS only). Native compilation can
+still be reused. RN Gradle retains its native `--reset-cache` bundle option;
+the [measured Metro transform reuse](../doc_web_interne/docs/qa/mobile-ci-android-metro-2026-10-18.md)
+belongs to the web validation harness.
+A failed/interrupted build,
 changed context or corrupt state forces a clean build. The checkout lock refuses
-concurrent native builds; verify the recorded PID before removing a stale lock.
+concurrent native builds; verify that the recorded PID and its build descendants
+have stopped before removing a stale lock.
 The result ends in `-iteration.apk` and cannot qualify a TesterArmy Release
 receipt. `android:release:local` keeps its clean/no-cache/no-daemon defaults.
 Do not combine `--incremental` with `--reuse-native-project`. Installation is
