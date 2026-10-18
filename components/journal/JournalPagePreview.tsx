@@ -7,6 +7,7 @@ import { DreamAnalysisContent } from '@/components/journal/DreamAnalysisContent'
 import { BOOK_MEASURE, BookOrnament, BookProse, BookSectionMark, BookStar } from '@/components/journal/JournalBook';
 import { JournalCoverPlate } from '@/components/journal/JournalCoverPlate';
 import { JournalEditLink } from '@/components/journal/JournalEditLink';
+import { JournalSealShare } from '@/components/journal/JournalSealShare';
 import { JournalFolio } from '@/components/journal/JournalFolio';
 import { JournalPageEdges } from '@/components/journal/JournalPageEdges';
 import { JournalPaper } from '@/components/journal/JournalPaper';
@@ -80,15 +81,14 @@ export function JournalPagePreview({ dream, folio, height }: { dream: DreamAnaly
             {dream.title || t('journal.detail.untitled_dream')}
           </Text>
         </View>
-        <View className={`${showReading ? 'mb-2' : 'mb-5'} flex-row items-center ${showReading ? 'justify-end' : 'justify-between'} gap-3`}>
-          {showReading ? null : (
+        {showReading ? null : (
+          <View className="mb-5 flex-row items-center justify-between gap-3">
             <Text allowFontScaling={false} style={{ fontSize: 13 * compactTextScale, lineHeight: 20 * compactTextScale }}
               className="shrink font-serif-italic text-[13px] leading-5 text-ivory-muted">
               {formatDreamDate(dream.id)} · {formatDreamTime(dream.id)}
             </Text>
-          )}
-          <JournalEditLink lineHeight={20 * compactTextScale} />
-        </View>
+          </View>
+        )}
         {sealMark ? null : <View className="flex-row flex-wrap items-center gap-x-2.5 gap-y-2">
           {typeShown ? (
             <Text allowFontScaling={false} style={metadataTextStyle}
@@ -131,6 +131,7 @@ export function JournalPagePreview({ dream, folio, height }: { dream: DreamAnaly
               <>
                 <SavedDreamMoment phase="read" still wordsLine={false} sealing={sealMark ? { mark: sealMark, settled: true } : null}
                   date={formatDreamStamp(dream.id)} />
+                <JournalSealShare />
                 <DreamAnalysisContent dream={dream} pending={false} />
               </>
             ) : null}
@@ -156,9 +157,13 @@ export function JournalPagePreview({ dream, folio, height }: { dream: DreamAnaly
                 <Text className="font-serif-italic text-[16px] text-ivory">{t('journal.detail.share.button_default')}</Text>
               </View>
             </View>
-            <View className="min-h-[44px] flex-row items-center justify-center gap-1.5 self-center px-3">
-              <IconSymbol name="trash" size={16} color={noctalia.status.danger.icon} />
-              <Text className="font-serif-italic text-[15px] text-danger-on">{t('journal.menu.delete')}</Text>
+            <View className="flex-row items-center justify-center self-center">
+              <JournalEditLink />
+              <View className="h-5 w-px bg-line" />
+              <View className="min-h-[44px] flex-row items-center justify-center gap-1.5 px-3">
+                <IconSymbol name="trash" size={16} color={noctalia.status.danger.icon} />
+                <Text className="font-serif-italic text-[15px] text-danger-on">{t('journal.menu.delete')}</Text>
+              </View>
             </View>
             <JournalFolio folio={folio} className="mt-8" />
           </View>

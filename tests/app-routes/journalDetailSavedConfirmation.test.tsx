@@ -1161,6 +1161,20 @@ describe('journal detail saved confirmation route', () => {
     expect(screen.getByRole('alert').textContent).toContain('journal.detail.sync.retry_error');
   });
 
+  it('offers share between the seal and the reading, only once the reading is complete', () => {
+    mockDreams = [buildDream()];
+    const view = render(<JournalDetailScreen />);
+    expect(screen.queryByTestId(TID.Button.DreamShareSeal)).toBeNull();
+
+    mockDreams = [buildDream({ analysisStatus: 'done', isAnalyzed: true, interpretation: 'Reflection' })];
+    view.rerender(<JournalDetailScreen />);
+    const share = screen.getByTestId(TID.Button.DreamShareSeal);
+    const reading = screen.getByTestId(TID.Component.DreamDetailReadingZone);
+    expect(share.compareDocumentPosition(reading) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect((share as HTMLButtonElement).disabled).toBe(
+      (screen.getByTestId(TID.Button.DreamShare) as HTMLButtonElement).disabled);
+  });
+
   it('keeps a completed analysis inline on revisit and handles a failed retry', () => {
     mockDreams = [buildDream({ analysisStatus: 'pending' })];
     const view = render(<JournalDetailScreen />);
@@ -1318,6 +1332,16 @@ describe('journal detail saved confirmation route', () => {
     expect(mockUpdateDream).toHaveBeenCalledTimes(1);
     expect(mockUpdateDream).toHaveBeenCalledWith(expect.objectContaining({ title: 'A new name', transcript: 'A new story' }));
     expect(screen.queryByTestId(TID.Component.DreamEditor)).toBeNull();
+  });
+
+  it('sets the edit link beside delete and takes it away while editing', async () => {
+    render(<JournalDetailScreen />);
+    const edit = screen.getByTestId(TID.Button.EditDream);
+    expect(edit.parentElement).toBe(screen.getByTestId(TID.Button.DreamDelete).parentElement);
+
+    await act(async () => { fireEvent.click(edit); });
+    expect(screen.queryByTestId(TID.Button.EditDream)).toBeNull();
+    expect(screen.getByTestId(TID.Button.DreamDelete)).toBeTruthy();
   });
 
   it('makes unknown analysis access explicit before the click', () => {

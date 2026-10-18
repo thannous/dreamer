@@ -13,6 +13,7 @@ import { DreamRecallAssistantCard } from '@/components/journal/DreamRecallAssist
 import { BOOK_MEASURE, BookOrnament, BookProse, BookSectionMark, BookStar } from '@/components/journal/JournalBook';
 import { JournalCoverPlate } from '@/components/journal/JournalCoverPlate';
 import { JournalEditLink } from '@/components/journal/JournalEditLink';
+import { JournalSealShare } from '@/components/journal/JournalSealShare';
 import { JournalFolio } from '@/components/journal/JournalFolio';
 import { JournalPageEdges } from '@/components/journal/JournalPageEdges';
 import { JournalPageTurner, useJournalPageLaidOut, useJournalPageTurnedTo, useJournalPageTurnLock } from '@/components/journal/JournalPageTurner';
@@ -2281,20 +2282,14 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
           )}
             </View>
           )}
-          {/* The date, unless the seal's rim carries it, and beside it the page's one way to edit it. */}
-          <View className={`${opensOnSavedMoment || (compactMetadata && sealVisible) ? 'mb-2' : 'mb-5'} flex-row items-center ${
-            compactMetadata && sealVisible ? 'justify-end' : 'justify-between'} gap-3`}>
-            {compactMetadata && sealVisible ? null : (
+          {/* The date, unless the seal's rim carries it. */}
+          {compactMetadata && sealVisible ? null : (
+            <View className={`${opensOnSavedMoment ? 'mb-2' : 'mb-5'} flex-row items-center justify-between gap-3`}>
               <Text key={`dream-date-${windowSize.fontScale}`} allowFontScaling={false} style={{ fontSize: 13 * compactTextScale, lineHeight: 20 * compactTextScale }} className="shrink font-serif-italic text-[13px] leading-5 text-ivory-muted">
                 {formatDreamDate(dream.id)} · {formatDreamTime(dream.id)}
               </Text>
-            )}
-            {compactMetadata ? (
-              <ArrivalLater play={opensOnSavedMoment} ready={!namingOn}>
-                <JournalEditLink onEdit={startEditing} disabled={isAnalysisLocked} lineHeight={20 * compactTextScale} />
-              </ArrivalLater>
-            ) : null}
-          </View>
+            </View>
+          )}
           {!isEditing && hasUncategorizedDraft && initialCategorizationPending ? (
             <Text testID="text.dreamMetadata.pending" accessibilityLiveRegion="polite" className="mb-4 font-sans text-[13px] text-ivory-muted">
               {t('journal.detail.metadata.loading')}
@@ -3165,6 +3160,10 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
             {sealVisible ? (
               <OpenUp appear={!opensOnSavedMoment && readingInFlight}>{sealBlock}</OpenUp>
             ) : null}
+            {sealVisible && showCompletedReading && !readingInFlight && !isEditing ? (
+              <JournalSealShare onShare={onShare} disabled={isSharing || isAnalysisLocked || shareMediaPending}
+                busy={isSharing || shareMediaPending} />
+            ) : null}
             {/* The reading, under its seal and before the story it reads. */}
             <View>{renderStaleBanner()}</View>
             {readingBegun ? (
@@ -3290,11 +3289,18 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
                 </PressableScale>
               </View>
 
+              <View className="flex-row items-center justify-center self-center">
+              {isEditing ? null : (
+                <>
+                  <JournalEditLink onEdit={startEditing} disabled={isAnalysisLocked} />
+                  <View accessible={false} className="h-5 w-px bg-line" />
+                </>
+              )}
               <PressableScale
                 onPress={onDelete}
                 disabled={isAnalysisLocked}
                 accessibilityState={{ disabled: isAnalysisLocked }}
-                className={`min-h-[44px] min-w-[44px] flex-row items-center justify-center gap-1.5 self-center px-3 ${isAnalysisLocked ? 'opacity-70' : ''}`}
+                className={`min-h-[44px] min-w-[44px] flex-row items-center justify-center gap-1.5 px-3 ${isAnalysisLocked ? 'opacity-70' : ''}`}
                 hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
                 accessibilityRole="button"
                 testID={TID.Button.DreamDelete}
@@ -3305,6 +3311,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
                   {t('journal.menu.delete')}
                 </Text>
               </PressableScale>
+              </View>
               <JournalFolio folio={folio} className="mt-8" turns="dream" />
             </View>
             </View>
