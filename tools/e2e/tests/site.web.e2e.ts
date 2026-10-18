@@ -430,9 +430,9 @@ test('only the French tiger page loads the living-painting pilot, from a folder 
 });
 
 // Atlas composition of the same page, read like a dictionary entry: the index beside
-// the opening plate only, the meaning beside the tiger art, then the three scene cards
-// with the chosen scene's reading on their right (under them on a phone), and the rest
-// across the whole frame, the app last. The native scene selector must show, beside
+// the opening plate only, the meaning beside the tiger art, the app, then the three scene
+// cards with the chosen scene's reading on their right (under them on a phone), and the
+// rest across the whole frame, the app again last. The native scene selector must show, beside
 // the list, the opening question and the next sentence of the matching published
 // variation card.
 function readAtlas() {
@@ -473,7 +473,7 @@ function readAtlas() {
     index: Array.from(document.querySelectorAll('.atlas-rail a')).map(words),
     // The hero title reads "Signification : Tigre": the prefix sits above the name.
     titleInOrder: document.querySelector('h1 .symbol-h1-prefix')!.getBoundingClientRect().bottom <= document.querySelector('h1 > span:not(.symbol-h1-prefix)')!.getBoundingClientRect().top,
-    ids: ['meaning', 'scenes', 'reflexion', 'questions', 'lecture', 'variations', 'faq', 'plus-loin', 'associes', 'garder-noctalia'].filter(id => document.getElementById(id)),
+    ids: ['meaning', 'continuer-noctalia', 'scenes', 'reflexion', 'questions', 'lecture', 'variations', 'faq', 'plus-loin', 'associes', 'garder-noctalia'].filter(id => document.getElementById(id)),
     railTargets: Array.from(document.querySelectorAll<HTMLAnchorElement>('.atlas-rail a')).map(link => Boolean(document.getElementById(link.hash.slice(1)))),
     counts: {
       opening: document.querySelectorAll('#meaning .prose > p').length,
@@ -535,9 +535,9 @@ test('the French tiger atlas reads like a dictionary entry and shows each publis
   }
 
   const wide = await browser.evaluate(readAtlas);
-  // Every published block, anchor and link survives in page order, the app last, under one h2 per
-  // section; the index lists those titles.
-  expect(wide.ids).toEqual(['meaning', 'scenes', 'reflexion', 'questions', 'lecture', 'variations', 'faq', 'plus-loin', 'associes', 'garder-noctalia']);
+  // Every published block, anchor and link survives in page order, the app right after the meaning
+  // and again last, under one h2 per section; the index lists the section titles.
+  expect(wide.ids).toEqual(['meaning', 'continuer-noctalia', 'scenes', 'reflexion', 'questions', 'lecture', 'variations', 'faq', 'plus-loin', 'associes', 'garder-noctalia']);
   expect(wide.railTargets.every(Boolean)).toBe(true);
   expect(wide.counts).toEqual({ opening: 1, continuation: 3, variations: 6, questions: 3, faq: 4 });
   source.forEach((paragraph, index) => {
@@ -546,7 +546,8 @@ test('the French tiger atlas reads like a dictionary entry and shows each publis
     expect(wide.zones[zone].includes(paragraph), `interpretation paragraph ${index + 1} is whole in #${zone}`).toBe(true);
   });
   const sections = ['Que signifie-t-il ?', 'Scènes courantes', 'Questions à se poser', 'Lecture détaillée', 'Variations courantes', 'FAQ', 'Pour aller plus loin'];
-  expect(wide.sections).toEqual([...sections, 'Analysez votre propre rêve dans Noctalia']);
+  const appTitle = 'Analysez votre propre rêve dans Noctalia';
+  expect(wide.sections).toEqual([sections[0], appTitle, ...sections.slice(1), appTitle]);
   expect(wide.index).toEqual(sections);
   expect(wide.titleInOrder).toBe(true);
   expect(wide.headings[0]).toBe(2);

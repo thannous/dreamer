@@ -881,10 +881,10 @@ function tigerLivingStyleHtml() {
 }
 
 // Atlas composition of the same pilot page, read like a dictionary entry: the
-// symbol is described first (summary, meaning, beside its illustration), then its
-// common scenes with the reading of the chosen one right beside the list, the
-// questions to ask, the detailed reading, the variations, the FAQ and further
-// reading; the app comes last. An index
+// symbol is described first (summary, meaning, beside its illustration), then the
+// app, its common scenes with the reading of the chosen one right beside the list,
+// the questions to ask, the detailed reading, the variations, the FAQ and further
+// reading; the app closes the page again. An index
 // beside the opening mirrors the section titles. Every text comes from the
 // symbol's data: a scene shows the opening question of its variation card and the
 // sentence after it, and the build fails if a card, its question, the caveat or
@@ -982,12 +982,12 @@ function renderTigerAtlasDecor() {
 // column. The browser-journal promotion is paused sitewide (styles.min.css hides
 // its link and [data-web-app-cta]); its note follows the same switch, and Google
 // Play leads meanwhile.
-function renderTigerAtlasActions(lang, content, pagePath) {
+function renderTigerAtlasActions(lang, content, pagePath, placement) {
   const copy = SYMBOL_CONVERSION_COPY[lang] || SYMBOL_CONVERSION_COPY.en;
   const sharedLocale = SHARED_LOCALES[lang] || SHARED_LOCALES.en;
   return `<div class="atlas-actions">
-                            <a${conversionLinkAttributes(pagePath, 'final', 'web')} href="${getWebAppUrl(lang, { medium: 'symbol_page', content })}" class="symbol-webapp-cta atlas-primary" rel="noopener"><i data-lucide="arrow-up-right" class="w-5 h-5"></i>${escapeHtml(sharedLocale.webAppCta)}</a>
-                            <a${conversionLinkAttributes(pagePath, 'final', 'play')} href="${getAndroidStoreUrl(lang)}" class="atlas-primary" rel="nofollow noopener noreferrer" target="_blank"><i data-lucide="arrow-up-right" class="w-5 h-5"></i>${escapeHtml(copy.store)}</a>
+                            <a${conversionLinkAttributes(pagePath, placement, 'web')} href="${getWebAppUrl(lang, { medium: 'symbol_page', content })}" class="symbol-webapp-cta atlas-primary" rel="noopener"><i data-lucide="arrow-up-right" class="w-5 h-5"></i>${escapeHtml(sharedLocale.webAppCta)}</a>
+                            <a${conversionLinkAttributes(pagePath, placement, 'play')} href="${getAndroidStoreUrl(lang)}" class="atlas-primary" rel="nofollow noopener noreferrer" target="_blank"><i data-lucide="arrow-up-right" class="w-5 h-5"></i>${escapeHtml(copy.store)}</a>
                             <a href="${getSymbolCtaUrl(lang)}" class="atlas-secondary"><i data-lucide="arrow-right" class="w-4 h-4"></i>${escapeHtml(copy.details)}</a>
                         </div>
                         <p class="symbol-webapp-note atlas-note" data-web-app-cta>${escapeHtml(sharedLocale.webAppNote)}</p>`;
@@ -1051,6 +1051,16 @@ function renderTigerAtlasArticle(c) {
     'plus-loin': c.t.section_learn_more,
   };
   const heading = (id) => `<h2 class="symbol-h2" id="atlas-${id}-title">${sections[id]}</h2>`;
+  const keep = (id, placement) => `<aside class="atlas-keep" id="${id}" aria-labelledby="${id}-title">
+                <div>
+                    <p class="atlas-kicker"><i data-lucide="feather" class="w-5 h-5"></i>${escapeHtml(atlas.keepKicker)}</p>
+                    <h2 class="atlas-keep-title" id="${id}-title">${c.t.cta_title}</h2>
+                    <p class="atlas-keep-text">${c.t.cta_description}</p>
+                </div>
+                <div>
+                    ${c.conversionActions(placement)}
+                </div>
+            </aside>`;
 
   return `<article class="atlas">
             <div class="atlas-top">
@@ -1076,6 +1086,8 @@ function renderTigerAtlasArticle(c) {
                         </section>
                     </div>
                     ${renderTigerAtlasDecor()}
+                    <!-- The app, right after the meaning -->
+                    ${keep('continuer-noctalia', 'inline')}
                     <!-- The scene list, and the chosen scene's reading beside it (under it on a phone) -->
                     <section class="atlas-scenes" id="${atlas.scenes.id}" aria-labelledby="atlas-scenes-title">
                         ${heading('scenes')}
@@ -1132,17 +1144,8 @@ function renderTigerAtlasArticle(c) {
                 </div>${c.relatedReadingCard ? c.relatedReadingCard.replace(/<h3>([\s\S]*?)<\/h3>/, (match, title) => `<h3>${frenchSpaces(title)}</h3>`) : ''}
             </section>
 
-            <!-- CTA Section: the app, once the symbol is explained -->
-            <aside class="atlas-keep" id="garder-noctalia" aria-labelledby="atlas-keep-title">
-                <div>
-                    <p class="atlas-kicker"><i data-lucide="feather" class="w-5 h-5"></i>${escapeHtml(atlas.keepKicker)}</p>
-                    <h2 class="atlas-keep-title" id="atlas-keep-title">${c.t.cta_title}</h2>
-                    <p class="atlas-keep-text">${c.t.cta_description}</p>
-                </div>
-                <div>
-                    ${c.conversionActionsHtml}
-                </div>
-            </aside>
+            <!-- CTA Section: the app again, once the symbol is explained -->
+            ${keep('garder-noctalia', 'final')}
 
             <!-- Back to Dictionary -->
             <div class="mt-10 atlas-back">
@@ -1288,6 +1291,8 @@ const TIGER_ATLAS_CSS = `
         .atlas-keep { display: grid; gap: 1.5rem; padding: clamp(2.25rem, 4vw, 3rem) 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); scroll-margin-top: 7rem; }
         .atlas-keep-title { font-family: 'Fraunces', ui-serif, Georgia, serif; font-weight: 550; font-size: clamp(1.35rem, 1.8vw, 1.75rem); line-height: 1.2; color: var(--cream); margin-bottom: 0.75rem; }
         .atlas-keep-text { font-size: 0.95rem; line-height: 1.65; color: var(--cream-64); max-width: 34rem; }
+        .atlas-plate > .atlas-keep { margin-top: clamp(2.5rem, 5vw, 3.5rem); border-bottom: 0; }
+        .atlas-plate > .atlas-keep + .atlas-scenes { margin-top: 0; }
         .atlas-actions { display: grid; justify-items: start; gap: 0.6rem; }
         .atlas-primary {
             display: inline-flex;
@@ -1350,7 +1355,8 @@ const TIGER_ATLAS_CSS = `
             /* The reading beside its illustration, then the scenes across the plate. */
             .atlas-plate { display: grid; grid-template-columns: minmax(0, 38rem) minmax(0, 1fr); column-gap: var(--atlas-gap); align-items: start; }
             .atlas-reading { grid-column: 1; grid-row: 1; }
-            .atlas-scenes { grid-column: 1 / -1; grid-row: 2; }
+            .atlas-plate > .atlas-keep { grid-column: 1 / -1; grid-row: 2; }
+            .atlas-scenes { grid-column: 1 / -1; grid-row: 3; }
             .atlas-scenes-body { grid-template-columns: minmax(0, 25rem) minmax(0, 1fr); }
         }
         @media (min-width: 1200px) {
@@ -1685,7 +1691,7 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
     relatedReadingCard,
     jumpNavHtml,
     jumpCount: jumpItems.length,
-    conversionActionsHtml: renderTigerAtlasActions(lang, symbol.id, currentPaths[lang]),
+    conversionActions: (placement) => renderTigerAtlasActions(lang, symbol.id, currentPaths[lang], placement),
   }) : '';
 
   // Generate the full HTML
