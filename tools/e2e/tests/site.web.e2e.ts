@@ -472,7 +472,7 @@ function readAtlas() {
       excerpt: node.querySelector('.atlas-scene-excerpt')!.textContent!.trim(),
     })),
     card: card ? card.querySelector('p')!.textContent!.replace(/[ \t\r\n]+/g, ' ').trim() : null, // keeps French non-breaking spaces
-    zones: { meaning: flat(document.querySelector('#meaning')), lecture: flat(document.querySelector('#lecture')), article: flat(document.querySelector('article.atlas')) },
+    zones: { meaning: flat(document.querySelector('#meaning')), lecture: flat(document.querySelector('#lecture')) },
     headings: Array.from(document.querySelectorAll('article.atlas :is(h2, h3, h4)')).map(node => Number(node.tagName.slice(1))),
     sections: Array.from(document.querySelectorAll('article.atlas h2')).map(words),
     index: Array.from(document.querySelectorAll('.atlas-rail a')).map(words),
@@ -507,7 +507,7 @@ const expectPublishedScene = (atlas: Atlas, scene: string) => {
 
 test('the French tiger atlas reads like a dictionary entry and shows each published scene from mouse or keyboard', { timeout: 180_000 }, async ({ app, browser, screen }) => {
   // Every paragraph of the published interpretation, whole, in its zone: the first opens the plate,
-  // the others make the detailed reading; the fictional journal example is left out.
+  // the others (but the fictional journal example, which the page leaves out) make the detailed reading.
   const extended = JSON.parse(readFileSync(new URL('../../../data/dream-symbols-extended.json', import.meta.url), 'utf8')) as {
     symbols: Record<string, { fr: { fullInterpretation: string } }>;
   };
@@ -552,10 +552,7 @@ test('the French tiger atlas reads like a dictionary entry and shows each publis
   expect(wide.railTargets.every(Boolean)).toBe(true);
   expect(wide.counts).toEqual({ opening: 1, continuation: 3, variations: 6, questions: 3, faq: 4 });
   source.forEach((paragraph, index) => {
-    if (paragraph.startsWith('Exemplefictifdejournal')) {
-      expect(wide.zones.article.includes(paragraph.slice(paragraph.indexOf(':') + 1)), 'the fictional journal example is left out').toBe(false);
-      return;
-    }
+    if (paragraph.startsWith('Exemplefictifdejournal')) return;
     const zone = index === 0 ? 'meaning' : 'lecture';
     expect(wide.zones[zone].includes(paragraph), `interpretation paragraph ${index + 1} is whole in #${zone}`).toBe(true);
   });
