@@ -24,7 +24,7 @@ export function RecordingDraftProgress({ value, persisted = false, compact = fal
   const { t } = useTranslation();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const progress = useMemo(() => getRecordingDraftProgress(value), [value]);
-  const countLabel = t('recording.draft_progress.count', { count: progress.charCount });
+  const countLabel = t(progress.charCount === 1 ? 'recording.draft_progress.count_one' : 'recording.draft_progress.count', { count: progress.charCount });
   const hint = t(`recording.draft_progress.${progress.state}`);
   const shouldShowHint = progress.state !== 'empty';
   const savedLabel = persisted ? String(t('recording.draft_progress.saved_locally')) : null;
