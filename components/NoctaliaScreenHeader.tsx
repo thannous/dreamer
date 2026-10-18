@@ -63,7 +63,7 @@ interface NoctaliaScreenHeaderProps {
    * its foot, whether the header paints it or the screen does. Compact with very large text.
    */
   immersive?: boolean;
-  /** `tab` + `immersive`: the screen paints a taller scene of this height, and the title rests at its foot. */
+  /** `immersive` only: a taller opening than the top third, for a screen that paints a bigger image. */
   immersiveHeight?: number;
   includeTopInset?: boolean;
   actions?: NoctaliaHeaderAction[];
@@ -135,7 +135,7 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
     // Same gutter as the Today hero; only the narrowest phones tighten it.
     const horizontalPadding = width <= 360 ? ThemeLayout.spacing.md : ThemeLayout.spacing.lg;
     const stageHeight = immersive && fontScale < 1.5
-      ? immersiveHeight ?? Math.round(Math.min(420, windowHeight * 0.33)) - (includeTopInset ? 0 : insets.top)
+      ? Math.round(immersiveHeight ?? Math.min(420, windowHeight * 0.33)) - (includeTopInset ? 0 : insets.top)
       : undefined;
     return (
       <Animated.View
