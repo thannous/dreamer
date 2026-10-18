@@ -25,7 +25,10 @@ connects these commands to implementation paths and current runbooks.
 
 Use the Node/Deno versions from `mise.toml` and install dependencies in the actual
 checkout. A local Android Release build also requires **JDK 17** and an Android
-SDK. `JAVA_HOME` takes precedence over Java on PATH; the runner verifies that
+SDK including **CMake 3.30.5** (`sdkmanager "cmake;3.30.5"`). The local runner
+selects this version on every host, matching React Native 0.88. AGP's default
+CMake 3.22.1 contains an older Ninja that fails on long Windows paths.
+`JAVA_HOME` takes precedence over Java on PATH; the runner verifies that
 executable before version synchronization, device access, prebuild or Gradle.
 A missing, incompatible or unverifiable Java stops immediately with instructions
 for setting `JAVA_HOME`. The runner does not install or switch JDKs automatically.

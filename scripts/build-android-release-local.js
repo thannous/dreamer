@@ -192,6 +192,9 @@ function getGradleArgs(abi, jvmArgs = DEFAULT_GRADLE_JVM_ARGS, incremental = fal
     ...(incremental ? [':app:createBundleReleaseJsAndAssets', '--rerun'] : []),
     ':app:assembleRelease',
     `-PreactNativeArchitectures=${normalizeAbi(abi)}`,
+    // AGP's default CMake 3.22.1 ships Ninja without Windows long-path support.
+    // Use RN 0.88's CMake version on every host, for clean and iterative builds.
+    '-Pandroid.cmakeVersion=3.30.5',
     '-Pkotlin.compiler.execution.strategy=in-process',
     `-Dorg.gradle.jvmargs=${jvmArgs}`,
     ...(incremental ? ['--build-cache', '--daemon'] : ['--no-build-cache', '--no-daemon']),
@@ -699,7 +702,7 @@ function printHelp() {
       'Unchanged native/profile/ABI/environment inputs allow the build cache and daemon; otherwise a clean build runs.',
       '--side-by-side-qa builds a distinct Dreamer QA package that can sit beside Play.',
       '--lock-owner and --steal-lock apply only to --install on a physical phone.',
-      'Requires Java 17; JAVA_HOME takes precedence over Java on PATH.',
+      'Requires Java 17 and Android SDK CMake 3.30.5; JAVA_HOME takes precedence over Java on PATH.',
       'Java is checked before version synchronization, prebuild or Gradle.',
       'Automatic dotenv loading remains disabled for every profile.',
       'This is a debug-signed emulator/device validation build. Distribution builds remain multi-ABI.',
