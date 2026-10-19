@@ -570,21 +570,21 @@
       "parallax": 0.45,
       "hero": {
         "landscape": [
-          { "texture": "layer", "place": { "fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.35 }, "motion": "drift", "move": [0.02, 0.01], "dur": 16, "op": [0.14, 0.36] },
-          { "texture": "accent", "place": { "fit": "cover", "zoom": 1.15, "x": 0.6, "y": 0.45 }, "motion": "pulse", "dur": 5, "op": [0.12, 0.42], "blend": "screen" }
+          { "texture": "layer", "place": { "fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.35 }, "motion": "drift", "move": [0.02, 0.01], "dur": 8, "op": [0.35, 0.75] },
+          { "texture": "accent", "place": { "fit": "cover", "zoom": 1.15, "x": 0.6, "y": 0.45 }, "motion": "pulse", "dur": 5, "op": [0.2, 0.65], "blend": "screen" }
         ],
         "portrait": [
-          { "texture": "layer", "place": { "fit": "width", "zoom": 1.1, "x": 0.5, "y": 0.35 }, "motion": "drift", "move": [0.02, 0.01], "dur": 16, "op": [0.14, 0.36] },
-          { "texture": "accent", "place": { "fit": "width", "zoom": 1.15, "x": 0.55, "y": 0.5 }, "motion": "pulse", "dur": 5, "op": [0.12, 0.42], "blend": "screen" }
+          { "texture": "layer", "place": { "fit": "width", "zoom": 1.1, "x": 0.5, "y": 0.35 }, "motion": "drift", "move": [0.02, 0.01], "dur": 8, "op": [0.35, 0.75] },
+          { "texture": "accent", "place": { "fit": "width", "zoom": 1.15, "x": 0.55, "y": 0.5 }, "motion": "pulse", "dur": 5, "op": [0.2, 0.65], "blend": "screen" }
         ]
       },
       "plate": [
-        { "texture": "layer", "place": { "fit": "width", "zoom": 1.1, "x": 0.5, "y": 0.3 }, "motion": "drift", "move": [0.02, 0.01], "dur": 16, "op": [0.14, 0.36] },
-        { "texture": "accent", "place": { "fit": "width", "zoom": 1.15, "x": 0.55, "y": 0.55 }, "motion": "pulse", "dur": 5, "op": [0.12, 0.42], "blend": "screen" }
+        { "texture": "layer", "place": { "fit": "width", "zoom": 1.1, "x": 0.5, "y": 0.3 }, "motion": "drift", "move": [0.02, 0.01], "dur": 8, "op": [0.35, 0.75] },
+        { "texture": "accent", "place": { "fit": "width", "zoom": 1.15, "x": 0.55, "y": 0.55 }, "motion": "pulse", "dur": 5, "op": [0.2, 0.65], "blend": "screen" }
       ],
       "thumb": [
-        { "texture": "layer", "place": { "fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.3 }, "motion": "drift", "move": [0.02, 0.01], "dur": 12, "op": [0.22, 0.5] },
-        { "texture": "accent", "place": { "fit": "cover", "zoom": 1.2, "x": 0.55, "y": 0.5 }, "motion": "pulse", "dur": 5, "op": [0.2, 0.6], "blend": "screen" }
+        { "texture": "layer", "place": { "fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.3 }, "motion": "drift", "move": [0.02, 0.01], "dur": 8, "op": [0.45, 0.9] },
+        { "texture": "accent", "place": { "fit": "cover", "zoom": 1.2, "x": 0.55, "y": 0.5 }, "motion": "pulse", "dur": 5, "op": [0.2, 0.65], "blend": "screen" }
       ]
     }
   },
@@ -602,20 +602,20 @@
       "hero": {
         "landscape": [
           { "texture": "layer", "place": { "fit": "cover", "zoom": 1.15, "x": 0.5, "y": 0.7 }, "motion": "drift", "move": [0.03, 0], "dur": 20, "op": [0.18, 0.42] },
-          { "texture": "accent", "place": { "fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.4 }, "motion": "flow", "move": [-0.02, 0.05], "dur": 9, "op": [0.15, 0.5], "copies": 2, "blend": "screen" }
+          { "texture": "accent", "place": { "fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.4 }, "motion": "flow", "move": [-0.02, 0.05], "dur": 9, "op": [0.3, 0.75], "copies": 2, "blend": "screen" }
         ],
         "portrait": [
           { "texture": "layer", "place": { "fit": "width", "zoom": 1.15, "x": 0.5, "y": 0.6 }, "motion": "drift", "move": [0.03, 0], "dur": 20, "op": [0.18, 0.42] },
-          { "texture": "accent", "place": { "fit": "width", "zoom": 1.1, "x": 0.5, "y": 0.4 }, "motion": "flow", "move": [-0.02, 0.05], "dur": 9, "op": [0.15, 0.5], "copies": 2, "blend": "screen" }
+          { "texture": "accent", "place": { "fit": "width", "zoom": 1.1, "x": 0.5, "y": 0.4 }, "motion": "flow", "move": [-0.02, 0.05], "dur": 9, "op": [0.3, 0.75], "copies": 2, "blend": "screen" }
         ]
       },
       "plate": [
         { "texture": "layer", "place": { "fit": "width", "zoom": 1.15, "x": 0.5, "y": 0.75 }, "motion": "drift", "move": [0.03, 0], "dur": 20, "op": [0.18, 0.42] },
-        { "texture": "accent", "place": { "fit": "width", "zoom": 1.1, "x": 0.5, "y": 0.4 }, "motion": "flow", "move": [-0.02, 0.05], "dur": 9, "op": [0.15, 0.5], "copies": 2, "blend": "screen" }
+        { "texture": "accent", "place": { "fit": "width", "zoom": 1.1, "x": 0.5, "y": 0.4 }, "motion": "flow", "move": [-0.02, 0.05], "dur": 9, "op": [0.3, 0.75], "copies": 2, "blend": "screen" }
       ],
       "thumb": [
         { "texture": "layer", "place": { "fit": "cover", "zoom": 1.15, "x": 0.5, "y": 0.7 }, "motion": "drift", "move": [0.03, 0], "dur": 14, "op": [0.25, 0.55] },
-        { "texture": "accent", "place": { "fit": "cover", "zoom": 1.2, "x": 0.5, "y": 0.4 }, "motion": "flow", "move": [-0.02, 0.05], "dur": 7, "op": [0.25, 0.75], "copies": 2, "blend": "screen" }
+        { "texture": "accent", "place": { "fit": "cover", "zoom": 1.2, "x": 0.5, "y": 0.4 }, "motion": "flow", "move": [-0.02, 0.05], "dur": 7, "op": [0.3, 0.75], "copies": 2, "blend": "screen" }
       ]
     }
   },
@@ -663,20 +663,20 @@
       "parallax": 0.45,
       "hero": {
         "landscape": [
-          { "texture": "layer", "place": { "fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.4 }, "motion": "flow", "move": [0.02, 0.06], "dur": 6, "op": [0.22, 0.5], "copies": 2 },
+          { "texture": "layer", "place": { "fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.4 }, "motion": "flow", "move": [-0.02, 0.06], "dur": 6, "op": [0.22, 0.5], "copies": 2 },
           { "texture": "accent", "place": { "fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.85 }, "motion": "pulse", "dur": 3.2, "op": [0.15, 0.55], "blend": "screen" }
         ],
         "portrait": [
-          { "texture": "layer", "place": { "fit": "width", "zoom": 1.1, "x": 0.5, "y": 0.4 }, "motion": "flow", "move": [0.02, 0.06], "dur": 6, "op": [0.22, 0.5], "copies": 2 },
+          { "texture": "layer", "place": { "fit": "width", "zoom": 1.1, "x": 0.5, "y": 0.4 }, "motion": "flow", "move": [-0.02, 0.06], "dur": 6, "op": [0.22, 0.5], "copies": 2 },
           { "texture": "accent", "place": { "fit": "width", "zoom": 1.1, "x": 0.5, "y": 0.85 }, "motion": "pulse", "dur": 3.2, "op": [0.15, 0.55], "blend": "screen" }
         ]
       },
       "plate": [
-        { "texture": "layer", "place": { "fit": "width", "zoom": 1.1, "x": 0.5, "y": 0.35 }, "motion": "flow", "move": [0.02, 0.06], "dur": 6, "op": [0.22, 0.5], "copies": 2 },
+        { "texture": "layer", "place": { "fit": "width", "zoom": 1.1, "x": 0.5, "y": 0.35 }, "motion": "flow", "move": [-0.02, 0.06], "dur": 6, "op": [0.22, 0.5], "copies": 2 },
         { "texture": "accent", "place": { "fit": "width", "zoom": 1.1, "x": 0.5, "y": 0.85 }, "motion": "pulse", "dur": 3.2, "op": [0.15, 0.55], "blend": "screen" }
       ],
       "thumb": [
-        { "texture": "layer", "place": { "fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.35 }, "motion": "flow", "move": [0.02, 0.06], "dur": 5, "op": [0.28, 0.6], "copies": 2 },
+        { "texture": "layer", "place": { "fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.35 }, "motion": "flow", "move": [-0.02, 0.06], "dur": 5, "op": [0.28, 0.6], "copies": 2 },
         { "texture": "accent", "place": { "fit": "cover", "zoom": 1.15, "x": 0.5, "y": 0.85 }, "motion": "pulse", "dur": 3.2, "op": [0.25, 0.8], "blend": "screen" }
       ]
     }
