@@ -161,8 +161,9 @@ export const DreamCard = memo(function DreamCard({
   const canExpand = reading.key === readingKey && reading.canExpand;
   const hasImage = (Boolean(imageUri) || (media.loading && Boolean(dream.imageUrl || dream.thumbnailUrl)))
     && failedImageAttempt !== imageAttemptKey;
-  // Only an illustration drifts: a text card's frame is never mounted.
-  const coverParallax = useFrameParallax(hasImage ? coverTravel : 0);
+  // Only an illustration drifts: a text card's frame is never mounted. Destructured: read
+  // through the returned object, the frame ref keeps React Compiler off this card.
+  const { frame: coverFrame, style: coverParallaxStyle } = useFrameParallax(hasImage ? coverTravel : 0);
 
   useEffect(() => {
     if ((!useFullImage && failedImageAttempt !== imageAttemptKey)
@@ -315,6 +316,9 @@ export const DreamCard = memo(function DreamCard({
           fontSize: 15 * compactTextScale, lineHeight: 22 * compactTextScale }}
         className="font-sans" testID={testID && `journal.measure.${testID}`}
         onLayout={(event) => {
+          // A page hidden behind another route (on the web) lays its cards out at zero
+          // size: keep the last real measure instead of rendering the card twice.
+          if (event.nativeEvent.layout.height <= 0) return;
           const overflows = event.nativeEvent.layout.height > 3 * 22 * compactTextScale + 1;
           setReading((previous) => previous.key !== readingKey || previous.canExpand === overflows
             ? previous : { ...previous, canExpand: overflows });
@@ -401,11 +405,13 @@ export const DreamCard = memo(function DreamCard({
             className="relative w-full overflow-hidden rounded-xl bg-ink-raised"
             // 9:16, the format the illustrations are generated in: the whole image shows. Capped on wide screens.
             style={{ minHeight: coverMinHeight }}
-            onLayout={(event) => setCoverWidth(event.nativeEvent.layout.width)}
+            onLayout={(event) => {
+              if (event.nativeEvent.layout.width > 0) setCoverWidth(event.nativeEvent.layout.width);
+            }}
             testID={testID && `journal.cover.${testID}`}
           >
-            <Animated.View ref={coverParallax.frame} style={COVER_FRAME_STYLE} pointerEvents="none">
-            <Animated.View style={[{ position: 'absolute', left: 0, right: 0, top: -coverTravel, bottom: -coverTravel }, coverParallax.style]}>
+            <Animated.View ref={coverFrame} style={COVER_FRAME_STYLE} pointerEvents="none">
+            <Animated.View style={[{ position: 'absolute', left: 0, right: 0, top: -coverTravel, bottom: -coverTravel }, coverParallaxStyle]}>
             <Image
               source={imageUri ? { uri: imageUri, cacheKey: preferFullImage ? media.imageCacheKey : thumbnailCacheKey } : null}
               style={CARD_IMAGE_STYLE}

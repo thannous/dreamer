@@ -184,7 +184,7 @@ async function measure(page, cdp, name, action) {
     // A frame over 1.5 vsyncs at 60 Hz missed at least one presentation.
     slowFrames: frames.filter((value) => value > 25).length,
     ...(args.attribute ? {
-      rendered: Object.fromEntries(Object.entries(collected.rendered).sort((a, b) => b[1] - a[1]).slice(0, 80)),
+      rendered: Object.fromEntries(Object.entries(collected.rendered).sort((a, b) => b[1] - a[1])),
     } : {}),
   };
 }
@@ -211,19 +211,26 @@ async function preparePlusProfile(page, baseURL) {
   await (await visible(page, 'btn.onboarding.intro.next')).click();
   await (await visible(page, 'btn.onboarding.skip')).click();
   await visible(page, 'screen.recording');
-  const homeTab = page.getByTestId('tab.home').filter({ visible: true });
-  if (await homeTab.isVisible()) await homeTab.click();
-  else await (await visible(page, 'btn.recording.home')).click();
+  await leaveCapture(page);
   await (await visible(page, 'btn.header.home.settings')).click();
   await (await visible(page, 'quick-settings.all')).click();
   await (await visible(page, 'settings-account-open-signin')).click();
   await (await visible(page, 'btn.mockProfile.plus')).click();
   await visible(page, 'screen.recording');
+  await leaveCapture(page);
+}
+
+// Capture shows either the tab bar or its own Home button, depending on the layout.
+async function leaveCapture(page) {
+  const exit = page.getByTestId('tab.home').filter({ visible: true })
+    .or(page.getByTestId('btn.recording.home').filter({ visible: true })).first();
+  await exit.waitFor({ state: 'visible', timeout: 30_000 });
+  await exit.click();
+  await visible(page, 'screen.home');
 }
 
 async function openTab(page, tab, screen) {
-  const button = page.getByTestId(tab).filter({ visible: true });
-  if (!(await button.isVisible())) await (await visible(page, 'btn.recording.home')).click();
+  // A throttled return transition can take a while to show the tab bar again.
   await (await visible(page, tab)).click();
   await visible(page, screen);
 }
@@ -296,7 +303,7 @@ async function run(browser, baseURL, index) {
     await wheelScroll(page, -1600);
   }));
   await page.goBack();
-  await openTab(page, 'tab.explore', 'screen.explore');
+  await visible(page, 'screen.explore');
   await (await visible(page, 'btn.explorer.ritual')).click();
   await page.waitForTimeout(800);
   results.push(await measure(page, cdp, 'ritual.scroll', async () => {
@@ -304,6 +311,7 @@ async function run(browser, baseURL, index) {
     await wheelScroll(page, -1600);
   }));
   await page.goBack();
+  await visible(page, 'screen.explore');
   // Opening a dream and returning: a stack push and pop over the retained tabs.
   await openTab(page, 'tab.journal', 'screen.journal');
   await page.waitForTimeout(600);

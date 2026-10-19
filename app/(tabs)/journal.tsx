@@ -1087,6 +1087,9 @@ function JournalListScreen() {
           className="pb-2"
           onLayout={(event) => {
             const nextHeight = event.nativeEvent.layout.height;
+            // Hidden behind another route (on the web), the chrome measures zero: keep its
+            // real height so the list is not laid out again, twice, around the visit.
+            if (nextHeight <= 0) return;
             setMeasuredHeader((current) => current.key === headerMeasureKey && current.height === nextHeight
               ? current : { key: headerMeasureKey, height: nextHeight });
           }}
