@@ -224,6 +224,9 @@ session.
 
 ### Native personas with Sol
 
+The [2026-10-20 native campaign](../../doc_web_interne/docs/qa/dreamer-native-personas-20261020.md)
+records four passing personas on each platform, the exact builds and rerun commands.
+
 First prepare an isolated native project and create its `mock-persistent`
 `release.json` with the [native Release runner](#native-release-provenance-and-diagnostic-handoff).
 Compile with mock persistence/audio enabled, the standard QA fixtures
