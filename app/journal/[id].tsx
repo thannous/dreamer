@@ -2083,8 +2083,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     if (!isSavedArrival || !captureTraceKey || namingOn) return;
     return markPerformanceAfterFrames('journal.saved_actions_reveal_elapsed',
       { trace: performanceTraceId(captureTraceKey), analysis_locked: isAnalysisLocked },
-      opensOnSavedMoment ? 120 + DURATION.normal : 0);
-  }, [captureTraceKey, isAnalysisLocked, isSavedArrival, namingOn, opensOnSavedMoment]);
+      opensOnSavedMoment && !windowHandedOver ? 120 + DURATION.normal : 0);
+  }, [captureTraceKey, isAnalysisLocked, isSavedArrival, namingOn, opensOnSavedMoment, windowHandedOver]);
   const finishNaming = useCallback(() => {
     setNaming((current) => (current.stage === 'writing' ? { ...current, stage: 'named' } : current));
   }, []);
@@ -3253,7 +3253,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
             <View>{renderSyncStatusCard()}</View>
 
             {!isEditing && (
-              <ArrivalReveal play={opensOnSavedMoment} index={1} className="mt-2 mb-5">
+              <ArrivalReveal play={opensOnSavedMoment && !windowHandedOver} index={1} className="mt-2 mb-5">
                 <View>
                   <View className="px-2 pb-4">
                     {renderTranscriptBody()}
@@ -3262,7 +3262,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
               </ArrivalReveal>
             )}
             {opensOnSavedMoment && !isEditing && !detailsOnSeal ? (
-              <ArrivalLater play ready={!namingOn}>
+              <ArrivalLater play={!windowHandedOver} ready={!namingOn}>
                 <View className="mx-2 mb-7">{renderMetadataChips()}</View>
               </ArrivalLater>
             ) : null}
@@ -3271,7 +3271,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
             {showCompletedReading && !readingInFlight ? renderFirstValueBackupCard() : null}
             {!hasIllustratedCover ? renderIllustrationSection() : null}
             {!recallRequested ? (
-              <ArrivalReveal play={opensOnSavedMoment} index={2}>
+              <ArrivalReveal play={opensOnSavedMoment && !windowHandedOver} index={2}>
                 <DreamRecallAssistantCard dreamId={getDreamRecallStorageId(dream, user?.id ?? null)}
                   originalTranscript={dream.transcript}
                   originalPersistedSegmentId={dream.clientRequestId ?? (dream.remoteId != null ? getDreamIdentityKey(dream) : String(dream.id))}
@@ -3383,7 +3383,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
                 style={{ position: 'absolute', left: 0, right: 0, top: -32, height: 32 }} />
             ) : null}
             <View className="w-full self-center" style={{ maxWidth: BOOK_MEASURE - 32 }}>
-              <ArrivalLater play={opensOnSavedMoment} ready={!namingOn}>{renderDetailActionCard()}</ArrivalLater>
+              <ArrivalLater play={opensOnSavedMoment && !windowHandedOver} ready={!namingOn}>{renderDetailActionCard()}</ArrivalLater>
             </View>
           </View>
         ) : null}

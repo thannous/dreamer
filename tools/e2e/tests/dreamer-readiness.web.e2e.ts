@@ -10,6 +10,17 @@ test('ready reading becomes readable without waiting for the symbol constellatio
     const watch = () => {
       const acknowledged = performance.getEntriesByName('noctalia.journal.save_acknowledged')[0];
       if (acknowledged) timings.saveAcknowledged ??= acknowledged.startTime;
+      for (const [name, selector] of Object.entries({
+        transcript: '[data-testid="component.transcriptCard"]',
+        dock: '[data-testid="component.dreamDetail.actionDock"] [role="button"], [data-testid="component.dreamDetail.actionDock"] button',
+      })) {
+        const content = document.querySelector<HTMLElement>(selector);
+        if (!content) continue;
+        timings[`${name}Committed`] ??= performance.now();
+        let opacity = 1;
+        for (let node: HTMLElement | null = content; node; node = node.parentElement) opacity *= Number(getComputedStyle(node).opacity);
+        if (opacity >= .95) timings[`${name}OpacityReady`] ??= performance.now();
+      }
       const action = document.querySelector<HTMLElement>('[data-testid="btn.dream.primaryCta"]');
       if (action && !document.querySelector('[data-testid="component.recording.dreamSeal"]')) {
         const box = action.getBoundingClientRect();
@@ -48,6 +59,16 @@ test('ready reading becomes readable without waiting for the symbol constellatio
   // an explicit read-later action immediately after durable save.
   await page.getByTestId(process.env.E2E_PERF_BASELINE === '1' ? 'btn.dreamCaptureSeal.readLater' : 'btn.dreamCaptureSeal.openDream').click();
   await expect(page.getByTestId('screen.dreamDetail')).toBeVisible();
+  if (process.env.E2E_PERF_BASELINE !== '1') {
+    // Data carried through the capture handoff must not replay a second entrance.
+    await expect.poll(() => page.evaluate(() => {
+      const timings = (window as unknown as { readinessTimings: Record<string, number> }).readinessTimings;
+      return ['transcript', 'dock'].every(name => timings[`${name}OpacityReady`] !== undefined);
+    })).toBe(true);
+    const arrival = await page.evaluate(() => (window as unknown as { readinessTimings: Record<string, number> }).readinessTimings);
+    expect(arrival.transcriptOpacityReady - arrival.transcriptCommitted).toBeLessThan(100);
+    expect(arrival.dockOpacityReady - arrival.dockCommitted).toBeLessThan(100);
+  }
   await page.getByTestId('btn.dream.primaryCta').click();
   const reading = page.getByTestId('component.dreamDetail.interpretation');
   await expect(reading).toContainText(/\S[\s\S]{30}/);
