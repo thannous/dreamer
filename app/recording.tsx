@@ -49,7 +49,7 @@ import {
   buildRememberedDream,
 } from '@/lib/dreamUtils';
 import { DreamPersistenceError } from '@/lib/dreamStorageRead';
-import { getDreamIdentityKey, resolveDreamTarget } from '@/lib/dreamIdentity';
+import { resolveDreamTarget } from '@/lib/dreamIdentity';
 import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
 import { markDreamNamed } from '@/lib/dreamNaming';
 import { markDreamStoryHandoff } from '@/lib/dreamStoryPrologue';
@@ -57,6 +57,7 @@ import { classifyError, GuestDreamLimitError } from '@/lib/errors';
 import { hasAiConsent } from '@/lib/aiConsent';
 import { formatCaptureNarrative } from '@/services/captureConversation';
 import {
+  getInitialDreamCategorizationKey,
   isInitialDreamCategorizationPending,
   subscribeInitialDreamCategorization,
   trackInitialDreamCategorization,
@@ -732,8 +733,10 @@ function RecordingScreen() {
     open: (read: boolean) => void;
   } | null>(null);
   const sealTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const sealHandoffCleanupRef = useRef<(() => void) | null>(null);
   useEffect(() => () => {
     if (sealTimerRef.current) clearTimeout(sealTimerRef.current);
+    sealHandoffCleanupRef.current?.();
   }, []);
   // The seal is a guarded transition: hardware Back cannot pop the capture before the
   // saved dream opens. The guard ends as the next page takes focus.
@@ -782,10 +785,18 @@ function RecordingScreen() {
   const sealOpened = useCallback((read: boolean) => {
     if (!sealing) return;
     // The seal ends on the saved moment's window and the name in its place: the page takes them over as they are.
-    markDreamStoryHandoff(sealing.target, sealWrote.current);
+    sealHandoffCleanupRef.current?.();
+    sealHandoffCleanupRef.current = markDreamStoryHandoff(sealing.target, sealWrote.current, Date.now(), () => {
+      if (sealTimerRef.current) clearTimeout(sealTimerRef.current);
+      sealTimerRef.current = null;
+      sealHandoffCleanupRef.current = null;
+      setSealing(null);
+    });
     sealing.open(read || sealing.readAtOnce);
     sealTimerRef.current = setTimeout(() => {
       sealTimerRef.current = null;
+      sealHandoffCleanupRef.current?.();
+      sealHandoffCleanupRef.current = null;
       setSealing(null);
     }, DREAM_STORY.prologueVeilHold);
   }, [sealing]);
@@ -1190,7 +1201,7 @@ function RecordingScreen() {
       setDraftDream(capturedDream);
       const isNewDream = !dreams.some((dream) => dream.id === capturedDream.id);
       const isFirstDream = dreams.length === 0;
-      const saveTrace = performanceTraceId();
+      const saveTrace = performanceTraceId(`capture:${capturedDream.clientRequestId ?? capturedDream.id}`);
       markPerformance('journal.save_requested', { trace: saveTrace });
       const savedDream = await addDream(capturedDream);
       markPerformance('journal.save_acknowledged', { trace: saveTrace });
@@ -1199,7 +1210,7 @@ function RecordingScreen() {
       }
       clearAfterSuccessfulSave();
       setDraftDream(savedDream);
-      void trackInitialDreamCategorization(getDreamIdentityKey(savedDream), async () => {
+      void trackInitialDreamCategorization(getInitialDreamCategorizationKey(savedDream), async () => {
         // Categorization sends dream text to Gemini: skip while AI consent is missing.
         if (!(await hasAiConsent())) return;
         const categorization = await categorizeDream(latestTranscript, language);
@@ -1238,18 +1249,22 @@ function RecordingScreen() {
       }
       // Written or told, a saved dream enters the story the same way: the seal, then its saved moment.
       // Its page reads it at once only when the reader said so in the journal.
-      const openSavedDream = (read: boolean) => navigateToSavedDream(savedDream, {
-        saved: true, recall: completeWithHelp, autoAnalyze: read,
-      });
+      const openSavedDream = (read: boolean) => {
+        markPerformance('journal.saved_navigation_started', { trace: saveTrace });
+        navigateToSavedDream(savedDream, { saved: true, recall: completeWithHelp, autoAnalyze: read });
+      };
       // One success haptic at the causal moment; the seal then marks its star's birth and arrival.
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
       const readAtOnce = isNewDream && !completeWithHelp && firstGuestReading;
       if (reducedMotion) {
+        // The local name is already usable. Reduced motion must not restart a
+        // naming wait on the destination after skipping the capture ceremony.
+        markDreamStoryHandoff(savedDream, { title: savedDream.title, provisional: true });
         openSavedDream(readAtOnce);
       } else {
         setPreAnalysisOver(false);
         setSealing({
-          identity: getDreamIdentityKey(savedDream),
+          identity: getInitialDreamCategorizationKey(savedDream),
           target: { id: savedDream.id, remoteId: savedDream.remoteId, clientRequestId: savedDream.clientRequestId },
           provisionalName: savedDream.title || t('journal.detail.untitled_dream'),
           previousPage: dreams.some((dream) => dream.id !== savedDream.id),

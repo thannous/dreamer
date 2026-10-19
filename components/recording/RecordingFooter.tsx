@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     ...(Platform.OS === 'web'
       ? { boxShadow: 'none' }
       : { shadowOpacity: 0, elevation: 0 }),
-  } as ViewStyle,
+  } satisfies ViewStyle,
   submitButtonText: {
     textAlign: 'center',
     flex: 1,

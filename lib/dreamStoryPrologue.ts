@@ -21,11 +21,21 @@ type Target = Exclude<DreamTarget, number>;
 
 // The dream is held by its target, not its identity key: synchronization can give it its
 // remote id while the seal plays, which changes the key but not the dream.
-let pending: { target: Target; expiresAt: number; name?: DreamStoryHandoffName } | null = null;
+let pending: { target: Target; expiresAt: number; name?: DreamStoryHandoffName; onPageReady?: () => void } | null = null;
 
-export function markDreamStoryHandoff(dream: Target, name?: DreamStoryHandoffName, now = Date.now()): void {
+export function markDreamStoryHandoff(dream: Target, name?: DreamStoryHandoffName, now = Date.now(), onPageReady?: () => void): () => void {
   const target = { id: dream.id, remoteId: dream.remoteId, clientRequestId: dream.clientRequestId };
-  pending = { target, expiresAt: now + HANDOFF_TTL_MS, ...(name ? { name } : null) };
+  const handoff = { target, expiresAt: now + HANDOFF_TTL_MS, ...(name ? { name } : null), onPageReady };
+  pending = handoff;
+  return () => { handoff.onPageReady = undefined; };
+}
+
+/** Release the capture veil once this page is laid out, rather than waiting a fixed 700ms. */
+export function markDreamStoryPageReady(dream: Target, now = Date.now()): void {
+  if (!hasDreamStoryHandoff(dream, now)) return;
+  const ready = pending?.onPageReady;
+  if (pending) pending.onPageReady = undefined;
+  ready?.();
 }
 
 /** Whether the seal has just handed this dream's window over. */

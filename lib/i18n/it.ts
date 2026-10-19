@@ -584,6 +584,7 @@ const translations: Record<string, string> = {
     'journal.seal.ask_reading': 'Avviare un\'analisi per capire questo sogno?',
     'journal.seal.read_now': 'Sì',
     'journal.seal.read_later': 'Più tardi',
+    'journal.seal.open_dream': 'Vedi il mio sogno',
     'journal.detail.account_invite.title': 'Conserva questo sogno, e tutti i prossimi',
     'journal.detail.account_invite.message': 'Per ora questo sogno è solo su questo dispositivo. Un account gratuito lo mette al sicuro e ti offre di più:',
     'journal.detail.account_invite.benefit.backup': 'Il tuo diario salvato e sincronizzato su tutti i tuoi dispositivi',
