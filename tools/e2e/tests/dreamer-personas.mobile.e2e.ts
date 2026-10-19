@@ -100,9 +100,16 @@ if (process.env.E2E_PERSONAS === '1') {
       await app.screenshot('morning-saved-for-later');
       await tap(screen, 'btn.navigateJournal', 'up');
       await openSearchResult(fixtures, 'Personas réveil');
-      // Native AX can list the footer while the fixed analysis panel covers it.
-      // Reveal the lower page before tapping its edit action.
-      await screen.swipe({ direction: 'down' });
+      // AX can list a partially covered footer as hittable. The default gesture
+      // starts on the fixed panel on iOS; drag inside the measured reading area.
+      const page = screen.getByTestId('screen.dreamDetail', { visible: true });
+      await expect(page).toBeVisible();
+      const bounds = await page.boundingBox();
+      const dock = await screen.getByTestId('component.dreamDetail.actionDock', { visible: true }).boundingBox();
+      if (!bounds || !dock) throw new Error('The dream reading area is unavailable.');
+      const x = bounds.x + bounds.width / 2;
+      await screen.swipe({ from: { x, y: dock.y - 32 },
+        to: { x, y: bounds.y + bounds.height / 4 }, duration: 350 });
       await tap(screen, 'btn.editDream');
       const editor = screen.getByTestId('input.dreamTranscript', { visible: true });
       await screen.scrollUntilVisible(editor, { direction: 'up' });
