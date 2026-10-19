@@ -549,6 +549,9 @@ const translations: Record<string, string> = {
     'journal.back_button': 'Volver',
     'journal.menu.share': 'Compartir cita',
     'journal.menu.delete': 'Eliminar sueño',
+    'journal.detail.report.button': 'Denunciar contenido generado',
+    'journal.detail.report.subject': 'Denuncia de contenido generado',
+    'journal.detail.report.body': 'Cuéntanos qué falla en el análisis, la imagen o la conversación de este sueño:\n\n\n\nReferencia del sueño: {reference}',
     "journal.original_transcript": "Mi relato",
     'journal.detail.not_found.title': 'Sueño no encontrado.',
     'journal.detail.not_found.back': 'Volver',
@@ -1705,37 +1708,8 @@ const translations: Record<string, string> = {
     'notifications.prompt.morning_14': '¿Qué historia, si hubo alguna, te dejó la noche?',
     'notifications.prompt.morning_15': 'Sin prisa. Tu diario puede guardar un sueño cuando estés listo.',
 
-    // Reference image picker
-    'reference_image.title_person': 'Agregar una foto de esta persona',
-    'reference_image.title_animal': 'Agregar una foto de este animal',
-    'reference_image.subtitle': 'Agrega una foto de referencia clara para personalizar la imagen del sueño con su apariencia.',
-    'reference_image.selected_count': '{count}/{max} fotos seleccionadas',
-    'reference_image.permission_title': 'Acceso a fotos requerido',
-    'reference_image.permission_message': 'Permite el acceso a tu biblioteca de fotos para agregar imágenes de referencia.',
-    'reference_image.compression_error_title': 'Imagen demasiado grande',
-    'reference_image.compression_error_message': 'Esta imagen no pudo comprimirse al tamaño requerido. Intenta con otra foto.',
-    'reference_image.pick_error': 'No se pudo seleccionar la imagen. Inténtalo de nuevo.',
-    'reference_image.camera_permission_title': 'Acceso a la cámara requerido',
-    'reference_image.camera_permission_message': 'Permite el acceso a la cámara para tomar una foto.',
-    'reference_image.permission_denied_permanently': 'El acceso fue denegado. Puedes habilitarlo en la configuración del dispositivo.',
-    'reference_image.open_settings': 'Abrir configuración',
-    'reference_image.take_photo': 'Tomar una foto',
-    'reference_image.pick_from_gallery': 'Elegir de la galería',
-    'reference_image.confirm': 'Confirmar',
-    'reference_image.remove_photo': 'Eliminar foto {index}',
-    'reference_image.remove_photo_hint': 'Elimina esta foto de tu selección.',
-
-    // Subject proposition
-    'subject_proposition.title_person': 'Persona detectada en tu sueño',
-    'subject_proposition.title_animal': 'Animal detectado en tu sueño',
-    'subject_proposition.message_person': 'Agrega una foto de referencia para incluir su apariencia en la imagen del sueño generada.',
-    'subject_proposition.message_animal': 'Agrega una foto de referencia para incluir su apariencia en la imagen del sueño generada.',
-    'subject_proposition.accept': 'Agregar foto',
-    'subject_proposition.skip': 'Omitir',
-
-    // Journal detail - subject actions
-    'journal.detail.add_person': 'Agregar persona',
-    'journal.detail.add_animal': 'Agregar animal',
+    // Permission settings
+    'recording.alert.open_settings': 'Abrir configuración',
 
     // Symbol dictionary
     'symbols.dictionary_title': 'Diccionario de símbolos',
@@ -1775,6 +1749,8 @@ const translations: Record<string, string> = {
     'settings.legal.privacyPolicy': 'Política de privacidad',
     'settings.legal.termsOfUse': 'Términos de uso',
     'settings.legal.accountDeletion': 'Información sobre la eliminación de la cuenta',
+    'settings.legal.contact': 'Escríbenos',
+    'contact.mail_unavailable': 'No hay ninguna app de correo en este dispositivo. Escríbenos a {email}.',
     'settings.deleteAccount.title': 'Eliminar cuenta',
     'settings.deleteAccount.description': 'Elimina permanentemente tu cuenta y todos los datos asociados.',
     'settings.deleteAccount.confirmTitle': '¿Eliminar tu cuenta?',

@@ -1,9 +1,7 @@
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { ReferenceImagePicker } from '@/components/journal/ReferenceImagePicker';
 import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
-import { REFERENCE_IMAGES } from '@/constants/appConfig';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { QUOTAS } from '@/constants/limits';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
@@ -11,9 +9,7 @@ import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
-import type { ReferenceImage, SubscriptionTier } from '@/lib/types';
-
-type ReferenceSubjectType = 'person' | 'animal' | null;
+import type { SubscriptionTier } from '@/lib/types';
 
 export function MicPermissionRationaleSheet({
   visible,
@@ -180,57 +176,6 @@ export function QuotaLimitSheet({
           </Text>
         </View>
       )}
-    </StandardBottomSheet>
-  );
-}
-
-export function ReferenceImageSheet({
-  visible,
-  subjectType,
-  referenceImages,
-  isPersisting,
-  onClose,
-  onPrimary,
-  onSecondary,
-  onImagesSelected,
-}: {
-  visible: boolean;
-  subjectType: ReferenceSubjectType;
-  referenceImages: ReferenceImage[];
-  isPersisting: boolean;
-  onClose: () => void;
-  onPrimary: () => void;
-  onSecondary: () => void;
-  onImagesSelected: (images: ReferenceImage[]) => void;
-}) {
-  const { t } = useTranslation();
-
-  if (!subjectType) {
-    return null;
-  }
-
-  return (
-    <StandardBottomSheet
-      visible={visible}
-      onClose={onClose}
-      title={subjectType === 'person'
-        ? t('reference_image.title_person')
-        : t('reference_image.title_animal')}
-      actions={{
-        primaryLabel: t('subject_proposition.accept'),
-        onPrimary,
-        primaryDisabled: referenceImages.length === 0 || isPersisting,
-        primaryLoading: isPersisting,
-        secondaryLabel: t('subject_proposition.skip'),
-        onSecondary,
-      }}
-    >
-      <ReferenceImagePicker
-        active={visible}
-        subjectType={subjectType}
-        onImagesSelected={onImagesSelected}
-        maxImages={REFERENCE_IMAGES.MAX_UPLOADS}
-      />
     </StandardBottomSheet>
   );
 }

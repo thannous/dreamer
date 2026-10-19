@@ -118,6 +118,19 @@ describe('LegalSection', () => {
     expect(openURLSpy).toHaveBeenLastCalledWith('https://noctalia.app/fr/suppression-compte/');
   });
 
+  it('lets guests write to us, and shows the address when no mail app opens', async () => {
+    mockUser = null;
+    const { getByTestId, getByText } = render(<LegalSection />);
+    expect(getByText('contact@noctalia.app')).toBeTruthy();
+
+    fireEvent.press(getByTestId('settings-legal-contact'));
+    expect(openURLSpy).toHaveBeenLastCalledWith('mailto:contact@noctalia.app');
+
+    openURLSpy.mockRejectedValueOnce(new Error('no handler'));
+    fireEvent.press(getByTestId('settings-legal-contact'));
+    await waitFor(() => expect(alertSpy).toHaveBeenLastCalledWith('settings.legal.contact', 'contact.mail_unavailable'));
+  });
+
   it('hides the delete-account action for guests', () => {
     mockUser = null;
     const { queryByTestId, getByTestId } = render(<LegalSection />);

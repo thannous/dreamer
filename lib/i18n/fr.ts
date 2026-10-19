@@ -550,6 +550,9 @@ const translations: Record<string, string> = {
     'journal.back_button': 'Retour',
     'journal.menu.share': 'Partager la citation',
     'journal.menu.delete': 'Supprimer le rêve',
+    'journal.detail.report.button': 'Signaler un contenu généré',
+    'journal.detail.report.subject': 'Signalement d’un contenu généré',
+    'journal.detail.report.body': 'Dis-nous ce qui pose problème dans l’analyse, l’image ou la conversation de ce rêve :\n\n\n\nRéférence du rêve : {reference}',
     "journal.original_transcript": "Mon récit",
     'journal.detail.not_found.title': 'Rêve introuvable.',
     'journal.detail.not_found.back': 'Retour',
@@ -1808,37 +1811,8 @@ const translations: Record<string, string> = {
     'notifications.prompt.morning_14': 'Quelle histoire, s’il y en a une, la nuit t’a-t-elle laissée ?',
     'notifications.prompt.morning_15': 'Sans urgence. Ton journal peut garder un rêve quand tu es prêt.',
 
-    // Reference image picker
-    'reference_image.title_person': 'Ajouter une photo de cette personne',
-    'reference_image.title_animal': 'Ajouter une photo de cet animal',
-    'reference_image.subtitle': 'Ajoute une photo de référence claire pour personnaliser l’image du rêve avec son apparence.',
-    'reference_image.selected_count': '{count}/{max} photos sélectionnées',
-    'reference_image.permission_title': 'Accès aux photos requis',
-    'reference_image.permission_message': 'Autorise l’accès à ta bibliothèque photo pour ajouter des images de référence.',
-    'reference_image.compression_error_title': 'Image trop volumineuse',
-    'reference_image.compression_error_message': 'Cette image n’a pas pu être compressée à la taille requise. Essaie une autre photo.',
-    'reference_image.pick_error': 'Impossible de sélectionner l’image. Réessaie.',
-    'reference_image.camera_permission_title': 'Accès à la caméra requis',
-    'reference_image.camera_permission_message': 'Autorise l’accès à la caméra pour prendre une photo.',
-    'reference_image.permission_denied_permanently': 'L’accès a été refusé. Tu peux l’autoriser dans les réglages de ton appareil.',
-    'reference_image.open_settings': 'Ouvrir les réglages',
-    'reference_image.take_photo': 'Prendre une photo',
-    'reference_image.pick_from_gallery': 'Choisir depuis la galerie',
-    'reference_image.confirm': 'Valider',
-    'reference_image.remove_photo': 'Supprimer la photo {index}',
-    'reference_image.remove_photo_hint': 'Supprime cette photo de ta sélection.',
-
-    // Subject proposition
-    'subject_proposition.title_person': 'Personne détectée dans ton rêve',
-    'subject_proposition.title_animal': 'Animal détecté dans ton rêve',
-    'subject_proposition.message_person': 'Ajoute une photo de référence pour inclure son apparence dans l’image du rêve générée.',
-    'subject_proposition.message_animal': 'Ajoute une photo de référence pour inclure son apparence dans l’image du rêve générée.',
-    'subject_proposition.accept': 'Ajouter une photo',
-    'subject_proposition.skip': 'Ignorer',
-
-    // Journal detail - subject actions
-    'journal.detail.add_person': 'Ajouter une personne',
-    'journal.detail.add_animal': 'Ajouter un animal',
+    // Permission settings
+    'recording.alert.open_settings': 'Ouvrir les réglages',
 
     // Symbol dictionary
     'symbols.dictionary_title': 'Dictionnaire des symboles',
@@ -1878,6 +1852,8 @@ const translations: Record<string, string> = {
     'settings.legal.privacyPolicy': 'Politique de confidentialité',
     'settings.legal.termsOfUse': 'Conditions d’utilisation',
     'settings.legal.accountDeletion': 'Informations sur la suppression du compte',
+    'settings.legal.contact': 'Nous écrire',
+    'contact.mail_unavailable': 'Aucune app de messagerie n’est disponible sur cet appareil. Écris-nous à {email}.',
     'settings.deleteAccount.title': 'Supprimer le compte',
     'settings.deleteAccount.description': 'Supprime définitivement ton compte et toutes les données associées.',
     'settings.deleteAccount.confirmTitle': 'Supprimer ton compte ?',

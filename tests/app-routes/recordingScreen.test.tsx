@@ -57,7 +57,6 @@ let mockPendingRecordingIntent: {
 let mockTransitionOnboarding = jest.fn().mockResolvedValue(undefined);
 let mockPlatformOS: 'android' | 'web' = 'web';
 let mockRecordingPermissionState: 'unknown' | 'granted' | 'denied' = 'unknown';
-let mockReferenceImagesEnabled = false;
 let mockViewportWidth = 390;
 let mockViewportHeight = 844;
 let mockBottomInset = 0;
@@ -425,7 +424,6 @@ jest.doMock('@/components/recording/RecordingSheets', () => ({
       </div>
     ) : null,
   QuotaLimitSheet: () => null,
-  ReferenceImageSheet: () => null,
 }));
 
 jest.doMock('@/components/recording/RememberedDreamProfileChips', () => ({
@@ -614,7 +612,6 @@ jest.doMock('@/lib/dreamUtils', () => ({
 jest.doMock('@/lib/env', () => ({
   isPerformanceTracingEnabled: () => false,
   isMockModeEnabled: () => false,
-  isReferenceImagesEnabled: () => mockReferenceImagesEnabled,
 }));
 
 jest.doMock('@/lib/locale', () => ({
@@ -663,7 +660,6 @@ jest.doMock('@/lib/transcriptMerge', () => ({
 
 jest.doMock('@/services/geminiService', () => ({
   categorizeDream: mockCategorizeDream,
-  generateImageWithReference: jest.fn(),
 }));
 
 jest.doMock('@/lib/aiConsent', () => ({
@@ -824,7 +820,6 @@ describe('Recording screen', () => {
     mockTransitionOnboarding = jest.fn().mockResolvedValue(undefined);
     mockPlatformOS = 'web';
     mockRecordingPermissionState = 'unknown';
-    mockReferenceImagesEnabled = false;
     mockViewportWidth = 390;
     mockViewportHeight = 844;
     mockBottomInset = 0;
@@ -1714,35 +1709,6 @@ describe('Recording screen', () => {
     await answerTheJournal();
     await waitFor(() => expect(mockReplace).toHaveBeenCalledTimes(1));
     expect(mockReplace).toHaveBeenCalledWith({ pathname: '/journal/[id]', params: { id: '42', saved: '1' } });
-  });
-
-  it('does not open reference photos or analysis after saving an animal dream', async () => {
-    mockReferenceImagesEnabled = true;
-    mockAddDream.mockImplementation(async (dream: DreamAnalysis) => ({
-      ...dream,
-      id: 42,
-      hasAnimal: true,
-      hasPerson: false,
-    }));
-    render(<RecordingScreen />);
-    await awaitEditorReady();
-
-    fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
-      target: { value: 'A fox waits beside a frozen lake' },
-    });
-    fireEvent.click(await screen.findByTestId('recording-save'));
-    await answerTheJournal();
-
-    await waitFor(() => {
-      expect(mockAddDream).toHaveBeenCalled();
-      expect(mockReplace).toHaveBeenCalledWith({
-        pathname: '/journal/[id]',
-        params: { id: '42', saved: '1' },
-      });
-    });
-
-    expect(screen.queryByTestId('subject-proposition')).toBeNull();
-    expect(mockAnalyzeDream).not.toHaveBeenCalled();
   });
 
   it('restores a saved draft into the editor after remount', async () => {
