@@ -54,7 +54,22 @@ export function useDreamMedia(dream?: DreamAnalysis | null, options?: { variant:
         // A mounted guest capability may be valid without an authenticated cache entry.
         if (!online && previous?.identity === identity && previous.epoch === refreshEpoch
           && previous.value.expiresAt !== undefined && previous.value.expiresAt > Date.now()) {
-          return { ...previous, originalAttempted };
+          // Keep an unexpired mounted capability only for a variant the offline
+          // resolver could not recover. A newly found disk original must win.
+          return { identity, epoch: refreshEpoch, originalAttempted, value: {
+            ...value,
+            ...(value.imageStatus !== 'ready' ? {
+              imageUrl: previous.value.imageUrl,
+              imageCacheKey: previous.value.imageCacheKey,
+              imageStatus: previous.value.imageStatus,
+            } : {}),
+            ...(value.thumbnailStatus !== 'ready' ? {
+              thumbnailUrl: previous.value.thumbnailUrl,
+              thumbnailCacheKey: previous.value.thumbnailCacheKey,
+              thumbnailStatus: previous.value.thumbnailStatus,
+            } : {}),
+            expiresAt: Math.min(previous.value.expiresAt, value.expiresAt ?? Infinity),
+          } };
         }
         return { identity, epoch: refreshEpoch, originalAttempted, value };
       });

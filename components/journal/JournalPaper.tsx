@@ -66,7 +66,7 @@ export function JournalPaper() {
       accessible={false}
       importantForAccessibility="no"
       pointerEvents="none"
-      style={[StyleSheet.absoluteFill, { opacity }]}
+      style={[StyleSheet.absoluteFill, { width: '100%', height: '100%', opacity }]}
     />
   );
 }
