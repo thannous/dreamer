@@ -303,7 +303,7 @@ Gehen Sie in den drei bis vier Tagen davor jeden Tag 15 bis 20 Minuten früher i
 <li><a href="https://doi.org/10.5664/jcsm.8780" rel="nofollow noopener noreferrer" target="_blank">Rishi et al. (2020): Daylight saving time, an American Academy of Sleep Medicine position statement. Journal of Clinical Sleep Medicine</a></li>
 <li><a href="https://doi.org/10.1177/0748730419854197" rel="nofollow noopener noreferrer" target="_blank">Roenneberg et al. (2019): Why should we abolish daylight saving time? Journal of Biological Rhythms</a></li>
 <li><a href="https://www.europarl.europa.eu/news/en/press-room/20190321IPR32107/parliament-backs-proposal-to-end-switch-between-summer-and-winter-time-in-2021" rel="nofollow noopener noreferrer" target="_blank">Europäisches Parlament (2019): Abstimmung für ein Ende der saisonalen Zeitumstellung (auf Englisch)</a></li>
-<li><a href="https://time.com/article/2026/10/07/senate-permanent-daylight-saving-time-sunshine-protection-act/" rel="nofollow noopener noreferrer" target="_blank">Time (Oktober 2026): Sunshine Protection Act und das Zögern des US-Senats (auf Englisch)</a></li>
+<li><a href="https://www.congress.gov/bill/119th-congress/house-bill/139/all-actions" rel="nofollow noopener noreferrer" target="_blank">Congress.gov: H.R.139 – Sunshine Protection Act of 2025, Gesetzgebungsschritte (auf Englisch)</a></li>
 </ul>
 <p class="mt-6 text-xs text-purple-200/60">Zuletzt aktualisiert: 9. Oktober 2026</p>
 </section>
