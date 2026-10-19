@@ -88,16 +88,18 @@ test('guest saves the exact story and reads its simulated analysis inline', asyn
 
 // App Review (2026-10-19): each card leads with the amount billed, and a guest reads why to
 // sign in and the renewal terms before any purchase.
-test('guest Plus offer leads with the billed price, the sign-in reason and the renewal terms', async ({ app, screen, browser }) => {
+// The web, like Android, leads the annual card with its monthly equivalent and bills in the
+// small line; only iOS leads with the billed amount (owner decision 2026-10-19).
+test('guest Plus offer shows the yearly bill, the sign-in reason and the renewal terms', async ({ app, screen, browser }) => {
   await isolateWeb(browser, app);
   await startGuest(app, screen, browser);
   await openQuickSettings(screen);
   await screen.getByTestId('quick-settings.plus', { visible: true }).tap();
   await expect(screen.getByTestId('screen.paywall', { visible: true })).toBeVisible();
   const annual = screen.getByTestId('btn.paywall.selectAnnual', { visible: true });
-  await expect(annual.getByTestId('btn.paywall.selectAnnual.price')).toHaveText('29,99 €');
-  await expect(annual).toContainText('per year');
-  await expect(annual.getByTestId('btn.paywall.selectAnnual.detail')).toHaveText('That’s €2.50 per month');
+  await expect(annual.getByTestId('btn.paywall.selectAnnual.price')).toHaveText('€2.50');
+  await expect(annual).toContainText('per month');
+  await expect(annual.getByTestId('btn.paywall.selectAnnual.detail')).toHaveText('Billed 29,99 € yearly');
   await expect(screen.getByTestId('btn.paywall.selectMonthly.price', { visible: true })).toHaveText('4,99 €');
   await expect(screen.getByTestId('text.paywall.authReason', { visible: true }))
     .toHaveText('Sign in to unlock and sync your subscription across devices.');

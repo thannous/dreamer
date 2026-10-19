@@ -549,7 +549,7 @@ describe('Paywall screen', () => {
     expect(screen.getByTestId(TID.Text.PaywallStoreNotice)).toBeTruthy();
   });
 
-  it('leads the annual card with the billed price on iOS and with the monthly equivalent on Android', () => {
+  it('leads the annual card with the billed price on iOS and with the monthly equivalent elsewhere', () => {
     const platform = (require('react-native') as { Platform: { OS: string } }).Platform;
     const annualCard = () => ({
       price: screen.getByTestId(`${TID.Button.PaywallSelectAnnual}.price`).textContent,
@@ -562,17 +562,19 @@ describe('Paywall screen', () => {
         price: '39,99 € subscription.paywall.option.interval.annual',
         detail: 'subscription.paywall.option.billing.annual_equivalent',
       });
-      cleanup();
 
-      platform.OS = 'android';
-      render(<PaywallScreen />);
-      expect(annualCard()).toEqual({
-        price: '3.3325 subscription.paywall.option.interval.monthly',
-        detail: 'subscription.paywall.option.billing.annual',
-      });
-      expect(screen.getByTestId(`${TID.Button.PaywallSelectMonthly}.price`).textContent).toBe(
-        '4,99 € subscription.paywall.option.interval.monthly'
-      );
+      for (const os of ['android', 'web']) {
+        cleanup();
+        platform.OS = os;
+        render(<PaywallScreen />);
+        expect(annualCard()).toEqual({
+          price: '3.3325 subscription.paywall.option.interval.monthly',
+          detail: 'subscription.paywall.option.billing.annual',
+        });
+        expect(screen.getByTestId(`${TID.Button.PaywallSelectMonthly}.price`).textContent).toBe(
+          '4,99 € subscription.paywall.option.interval.monthly'
+        );
+      }
     } finally {
       platform.OS = 'web';
     }

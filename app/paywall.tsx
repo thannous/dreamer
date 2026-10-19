@@ -423,9 +423,9 @@ function PaywallScreen() {
                 maximumFractionDigits: 2,
               })
             : '';
-          // App Store rule: the amount billed is the largest price on a card. Google Play has no
-          // such rule, and Android keeps the annual monthly equivalent large (owner decision 2026-10-19).
-          const leadsWithEquivalent = isAnnual && Platform.OS === 'android';
+          // App Store rule: the amount billed is the largest price on a card. Android and the web
+          // have no such rule and keep the annual monthly equivalent large (owner decision 2026-10-19).
+          const leadsWithEquivalent = isAnnual && Platform.OS !== 'ios';
           return {
             id: pkg.id,
             title: translateWithFallback(
