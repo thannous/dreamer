@@ -439,3 +439,10 @@ reste identique. Les binaires testés n’embarquent pas ces textes plus récent
 preuves natives réutilisées pour leur périmètre français et leurs sources exactes,
 pas de nouveau build physique revendiqué pour cette intégration documentaire.
 La preuve `verify:pr` de la tête finale figure dans la description de #439.
+
+Précondition de vérification sur ce Mac : `TMPDIR=/private/tmp`. La première
+exécution échoue dans le contrat d’installateur de navigateur sur l’équivalence
+`/var` / `/private/var` ; la relance au chemin canonique passe sans changer le test,
+le runner ni les gardes. Commande locale :
+`TMPDIR=/private/tmp mise exec -- npm run verify:pr`. Les succès à entrées identiques
+sont réutilisés par le moteur ; le premier échec reste conservé dans les reçus privés.
