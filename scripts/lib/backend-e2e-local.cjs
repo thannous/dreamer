@@ -9,18 +9,17 @@ function assertBackendTarget(status) {
   const port = Number(url.port);
   if (url.protocol !== 'http:' || url.hostname !== '127.0.0.1' || url.username || url.password ||
       url.pathname !== '/' || url.search || url.hash ||
-      (stack ? !managed || port < 20000 || port > 32767 : port !== 56321) ||
+      // Only an identified native stack qualifies (the fixed-port supplied VM mode was removed).
+      !managed || port < 20000 || port > 32767 ||
       typeof status.ANON_KEY !== 'string' || !status.ANON_KEY.trim() ||
       typeof status.SERVICE_ROLE_KEY !== 'string' || !status.SERVICE_ROLE_KEY.trim()) {
     throw new Error('Backend E2E requires an identified disposable loopback API, never a hosted backend');
   }
-  if (stack) {
-    const db = new URL(status.DB_URL);
-    const dbPort = Number(db.port);
-    if (db.protocol !== 'postgresql:' || db.hostname !== '127.0.0.1' || db.pathname !== '/postgres' ||
-        db.search || db.hash || dbPort < 20000 || dbPort > 32767 || dbPort === port) {
-      throw new Error('Managed backend E2E requires a separate loopback database port');
-    }
+  const db = new URL(status.DB_URL);
+  const dbPort = Number(db.port);
+  if (db.protocol !== 'postgresql:' || db.hostname !== '127.0.0.1' || db.pathname !== '/postgres' ||
+      db.search || db.hash || dbPort < 20000 || dbPort > 32767 || dbPort === port) {
+    throw new Error('Managed backend E2E requires a separate loopback database port');
   }
   return url;
 }

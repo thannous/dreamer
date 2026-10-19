@@ -11,6 +11,8 @@ const { spawnSync } = require('node:child_process');
 const MIN_CLI = [2, 119, 0];
 const MIN_GLIBC = [2, 35];
 const MIN_DARWIN_KERNEL = 23; // macOS 14 Sonoma
+// Printed with every refusal so whoever cannot run it knows where it can run.
+const SUPPORTED_HINT = 'needs Linux glibc>=2.35 (WSL2 on Windows) or macOS 14+ Apple silicon';
 
 const parse = (text, size) => {
   const match = new RegExp(`^(\\d+)${'\\.(\\d+)'.repeat(size - 1)}`).exec(String(text ?? '').trim());
@@ -61,11 +63,11 @@ function probe(root = path.resolve(__dirname, '..')) {
 if (require.main === module) {
   const problems = probe();
   if (problems.length) {
-    console.error(`Native Supabase runtime unavailable: ${problems.join('; ')}.`);
+    console.error(`Native Supabase runtime unavailable: ${problems.join('; ')}. Hint: ${SUPPORTED_HINT}.`);
     process.exitCode = 1;
   } else {
     console.log('Native Supabase runtime supported here.');
   }
 }
 
-module.exports = { nativeRuntimeProblems, probe };
+module.exports = { SUPPORTED_HINT, nativeRuntimeProblems, probe };
