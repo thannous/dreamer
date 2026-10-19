@@ -6,6 +6,7 @@ import { CaptureOriginal } from '@/components/recording/CaptureOriginal';
 import { getDreamRecallStorageId } from '@/lib/dreamRecallIdentity';
 import { getDreamRouteParams, resolveDreamRoute } from '@/lib/dreamRoute';
 import { getDreamIdentityKey, matchesDreamTarget } from '@/lib/dreamIdentity';
+import { markPerformance, markPerformanceAfterFrames, performanceTraceId } from '@/lib/performanceTrace';
 import { isInitialDreamCategorizationPending, subscribeInitialDreamCategorization } from '@/lib/initialDreamCategorization';
 import { useDreamMedia } from '@/hooks/useDreamMedia';
 import { Toast } from '@/components/Toast';
@@ -1414,6 +1415,17 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     return media.imageUrl ? withCacheBuster(media.imageUrl, imageVersion) : undefined;
   }, [dream?.imageUrl, media.imageUrl, imageVersion]);
 
+  const imageTraceKey = `image:${dream?.clientRequestId ?? dream?.id}`;
+  useEffect(() => {
+    if (dream?.imageUrl) markPerformance('image.reference_committed', { trace: performanceTraceId(imageTraceKey) });
+  }, [dream?.imageUrl, imageTraceKey]);
+  useEffect(() => {
+    if (displayImageUrl) markPerformance('image.source_resolved', { trace: performanceTraceId(imageTraceKey) });
+  }, [displayImageUrl, imageTraceKey]);
+  const markImageDisplayed = useCallback(() => {
+    markPerformance('image.native_displayed', { trace: performanceTraceId(imageTraceKey) });
+  }, [imageTraceKey]);
+
 
   // Define callbacks before early return (hooks must be called unconditionally)
   const onShare = useCallback(async () => {
@@ -2048,6 +2060,17 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   // A name changed meanwhile, by the reader's own hand, ends the ceremony: that name stands.
   const namingOn = naming.stage !== 'named'
     && (!naming.title || naming.title === (heldTitle ?? (dream?.title || t('journal.detail.untitled_dream'))));
+  const captureTraceKey = dream ? `capture:${dream.clientRequestId ?? dream.id}` : undefined;
+  useEffect(() => {
+    if (!isSavedArrival || !captureTraceKey) return;
+    markPerformance('journal.saved_page_committed', { trace: performanceTraceId(captureTraceKey) });
+  }, [captureTraceKey, isSavedArrival]);
+  useEffect(() => {
+    if (!isSavedArrival || !captureTraceKey || namingOn) return;
+    return markPerformanceAfterFrames('journal.saved_actions_reveal_elapsed',
+      { trace: performanceTraceId(captureTraceKey), analysis_locked: isAnalysisLocked },
+      opensOnSavedMoment ? 120 + DURATION.normal : 0);
+  }, [captureTraceKey, isAnalysisLocked, isSavedArrival, namingOn, opensOnSavedMoment]);
   const finishNaming = useCallback(() => {
     setNaming((current) => (current.stage === 'writing' ? { ...current, stage: 'named' } : current));
   }, []);
@@ -2895,7 +2918,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
         style={{ width: '100%', height: '100%' }}
         contentFit="cover"
         onError={() => setFailedCoverUri(displayImageUrl ?? null)}
-        onDisplay={() => setCoverShown(true)}
+        onLoad={() => markPerformance('image.native_loaded', { trace: performanceTraceId(imageTraceKey) })}
+        onDisplay={() => { setCoverShown(true); markImageDisplayed(); }}
         transition={turnedTo || plateRevealed ? 0 : imageConfig.transition}
         cachePolicy={imageConfig.cachePolicy}
         priority={imageConfig.priority}
@@ -2928,6 +2952,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
         ) : dream.imageUrl && !hasIllustratedCover ? (
           paintedArtwork ? (
             <DreamPaintedArtwork source={paintedArtwork} land={artworkLanding}
+              onDisplay={markImageDisplayed}
               onOpen={() => setIsIllustrationFullscreen(true)}
               onError={() => setFailedCoverUri(displayImageUrl ?? null)} />
           ) : (
@@ -3082,6 +3107,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
         handedOver={windowHandedOver} action={sealAction} sealing={sealShows}
         artwork={artworkAtArrival === false ? paintedArtwork : null} artworkAway={Boolean(coverFlight) || plateRevealed}
         landArtwork={artworkLanding} onOpenArtwork={() => setIsIllustrationFullscreen(true)}
+        onArtworkDisplay={markImageDisplayed}
         onArtworkError={() => setFailedCoverUri(displayImageUrl ?? null)}
         date={formatDreamStamp(dream.id)} still={!opensOnSavedMoment && !readingInFlight}
         announce={opensOnSavedMoment} wordsLine={opensOnSavedMoment || readingInFlight} />

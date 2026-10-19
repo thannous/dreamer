@@ -1,12 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Text, View, type ViewProps } from 'react-native';
 import { useReducedMotion } from 'react-native-reanimated';
-import { Reveal } from '@/components/motion';
+import { DURATION, Reveal } from '@/components/motion';
 import { MarkdownText } from '@/components/ui/MarkdownText';
 import { useDreamsData } from '@/context/DreamsContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { isPoeticDreamQuote } from '@/lib/dreamQuote';
-import { markPerformance, performanceTraceId } from '@/lib/performanceTrace';
+import { markPerformance, markPerformanceAfterFrames, performanceTraceId } from '@/lib/performanceTrace';
 import { getSymbolIndex, isNewPersonalSymbol, readingSymbols } from '@/lib/symbolLinks';
 import { TID } from '@/lib/testIDs';
 import { useIsDecorativeCopy, useLiveTestID } from './DecorativeCopy';
@@ -55,11 +55,6 @@ export function DreamAnalysisContent({ dream, pending, reveal = false, onLayout 
   const [openSymbol, setOpenSymbol] = useState<string | null>(null);
   const tid = useLiveTestID();
   const decorative = useIsDecorativeCopy();
-  useEffect(() => {
-    if (!decorative && !pending && dream.analysisRequestId) {
-      markPerformance('analysis.text_displayed', { trace: performanceTraceId(dream.analysisRequestId) });
-    }
-  }, [decorative, pending, dream.analysisRequestId]);
   const body = useBookBody();
   const question = useBookBody(true);
   const symbols = readingSymbols(dream.symbols, symbolIndex);
@@ -78,6 +73,14 @@ export function DreamAnalysisContent({ dream, pending, reveal = false, onLayout 
     const delay = firstChapter + index * CHAPTER_STEP_MS;
     return reduced ? reducedDelay(delay) : delay;
   };
+  const revealDelay = reveal ? (reduced ? reducedDelay(firstChapter) : firstChapter) : 0;
+  useEffect(() => {
+    if (decorative || pending || !dream.analysisRequestId) return;
+    const details = { trace: performanceTraceId(dream.analysisRequestId), reveal_delay_ms: revealDelay };
+    markPerformance('analysis.text_committed', details);
+    return markPerformanceAfterFrames('analysis.reveal_window_elapsed', details,
+      reveal ? revealDelay + DURATION.normal : 0);
+  }, [decorative, pending, dream.analysisRequestId, reveal, revealDelay]);
   const quote = dream.shareableQuote?.trim();
 
   return (

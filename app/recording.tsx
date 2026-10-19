@@ -1190,7 +1190,7 @@ function RecordingScreen() {
       setDraftDream(capturedDream);
       const isNewDream = !dreams.some((dream) => dream.id === capturedDream.id);
       const isFirstDream = dreams.length === 0;
-      const saveTrace = performanceTraceId();
+      const saveTrace = performanceTraceId(`capture:${capturedDream.clientRequestId ?? capturedDream.id}`);
       markPerformance('journal.save_requested', { trace: saveTrace });
       const savedDream = await addDream(capturedDream);
       markPerformance('journal.save_acknowledged', { trace: saveTrace });
@@ -1238,9 +1238,10 @@ function RecordingScreen() {
       }
       // Written or told, a saved dream enters the story the same way: the seal, then its saved moment.
       // Its page reads it at once only when the reader said so in the journal.
-      const openSavedDream = (read: boolean) => navigateToSavedDream(savedDream, {
-        saved: true, recall: completeWithHelp, autoAnalyze: read,
-      });
+      const openSavedDream = (read: boolean) => {
+        markPerformance('journal.saved_navigation_started', { trace: saveTrace });
+        navigateToSavedDream(savedDream, { saved: true, recall: completeWithHelp, autoAnalyze: read });
+      };
       // One success haptic at the causal moment; the seal then marks its star's birth and arrival.
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
       const readAtOnce = isNewDream && !completeWithHelp && firstGuestReading;

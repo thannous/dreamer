@@ -103,7 +103,7 @@ export type SavedDreamAction = {
  */
 export function SavedDreamMoment({
   phase = 'saved', painting = false, handedOver = false, sealing = null, artwork = null, landArtwork = true,
-  onOpenArtwork, onArtworkError, action = null, date = null, still = false, announce = false, wordsLine = true,
+  onOpenArtwork, onArtworkError, onArtworkDisplay, action = null, date = null, still = false, announce = false, wordsLine = true,
   artworkAway = false,
 }: {
   phase?: SavedDreamPhase;
@@ -125,6 +125,7 @@ export function SavedDreamMoment({
   onOpenArtwork?: () => void;
   /** The illustration could not be shown in the window. */
   onArtworkError?: () => void;
+  onArtworkDisplay?: () => void;
   action?: SavedDreamAction | null;
   /** The dream's date, engraved along the foot of the rim. */
   date?: string | null;
@@ -267,7 +268,7 @@ export function SavedDreamMoment({
         <View collapsable={false} className="absolute inset-0" style={{ opacity: artworkAway ? 0 : 1 }}>
           <Animated.View testID={tid(TID.Component.SavedDreamArtwork)} className="absolute inset-0"
             style={settle as StyleProp<ViewStyle>}>
-            <Image source={artwork} contentFit="cover" style={{ width: '100%', height: '100%' }} onError={onArtworkError} />
+            <Image source={artwork} contentFit="cover" style={{ width: '100%', height: '100%' }} onError={onArtworkError} onDisplay={onArtworkDisplay} />
           </Animated.View>
         </View>
       ) : null}

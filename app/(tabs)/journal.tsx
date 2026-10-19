@@ -406,6 +406,7 @@ function JournalListScreen() {
     </View>
   );
   const mediaGeneration = useRef(0);
+  const mediaFocused = useRef(false);
   // A new list cancels the warm-up still running for the previous one. The thumbnails already
   // warmed stay known until the account changes: their keys name the exact image, so a search
   // keystroke or a favourite does not decode the first thumbnails again.
@@ -418,13 +419,14 @@ function JournalListScreen() {
   }, [mediaUserId]);
 
   const prefetchDreamMedia = useCallback(async (entries: DreamAnalysis[]) => {
+    if (!mediaFocused.current) return;
     const generation = mediaGeneration.current;
     const resolved = await Promise.all(entries.slice(0, PREFETCH_MAX_PER_FLUSH).map(async (dream) => ({
       ...dream,
       ...await resolveWithDiskCache(dream, mediaUserId, false, { variant: 'thumbnail' }),
     })));
     for (const dream of resolved) {
-      if (generation !== mediaGeneration.current) return;
+      if (!mediaFocused.current || generation !== mediaGeneration.current) return;
       const uri = getDreamThumbnailUri(dream);
       if (uri && isLikelyOptimizedThumbnailUri(uri) && rememberPrefetchedUri(getDreamThumbnailCacheKey(dream) ?? uri)) {
         await preloadImage(uri, getDreamThumbnailCacheKey(dream));
@@ -432,10 +434,12 @@ function JournalListScreen() {
     }
   }, [mediaUserId, rememberPrefetchedUri]);
 
-  // Only warm a bounded window. Text rendering never waits for signatures.
-  useEffect(() => {
+  // Only warm a bounded, focused window. A hidden journal must not compete with reading.
+  useFocusEffect(useCallback(() => {
+    mediaFocused.current = true;
     void prefetchDreamMedia(filteredDreams.slice(0, PREFETCH_MAX_PER_FLUSH));
-  }, [filteredDreams, prefetchDreamMedia]);
+    return () => { mediaFocused.current = false; mediaGeneration.current += 1; };
+  }, [filteredDreams, prefetchDreamMedia]));
 
   // Scroll to top when filters change
   useEffect(() => {
