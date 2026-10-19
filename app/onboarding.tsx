@@ -621,7 +621,7 @@ export default function OnboardingScreen() {
             />
           </>
         ) : (
-          <NightSky step={step} leaving={isLeaving} arrival={arrival} />
+          <NightSky step={step} leaving={isLeaving} arrival={arrival} covered={(featureSheetsEnabled && activeFeature !== null) || doorPassage} />
         )}
       </View>
       <Animated.ScrollView
@@ -1010,8 +1010,7 @@ export default function OnboardingScreen() {
 
       {featureSheetsEnabled && activeFeature ? (
         <React.Suspense fallback={null}>
-          <OnboardingFeatureSheet feature={activeFeature} onClose={confirmLeaveStories}
-            onFeatureChange={setActiveFeature} ending={{
+          <OnboardingFeatureSheet feature={activeFeature} onClose={confirmLeaveStories} ending={{
               label: t('onboarding.narrative.finish_guided'),
               restartLabel: t('onboarding.narrative.restart'),
               onFinish: passThroughDoor,
