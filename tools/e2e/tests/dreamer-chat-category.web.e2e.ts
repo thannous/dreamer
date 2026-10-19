@@ -94,7 +94,7 @@ test('plus opens a symbols question once and resumes the saved exchange from its
     await expect(screen.getByText(replyText!, { exact: true, visible: true })).toHaveCount(1);
     await expect(reply).toHaveCount(1);
     expect(consentPrompts).toHaveLength(1);
-    expect(consentPrompts[0]).toMatch(/generative AI/);
+    expect(consentPrompts[0]).toContain('Anthropic (Claude) and Google (Gemini)');
     await app.screenshot('symbols-category-resumes-one-exchange');
   } finally {
     await unsubscribe();

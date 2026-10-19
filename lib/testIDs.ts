@@ -315,6 +315,8 @@ export const TID = {
     ChatMessageCounter: 'text.chat.messageCounter',
     AnalyzePromptTitle: 'text.analyzePromptTitle',
     PaywallTrialFootnote: 'text.paywall.trialFootnote',
+    PaywallAuthReason: 'text.paywall.authReason',
+    PaywallStoreNotice: 'text.paywall.storeNotice',
     WeeklyRecapCount: 'text.weeklyRecap.count',
     WeeklyRecapTheme: 'text.weeklyRecap.theme',
     WeeklyRecapSymbol: 'text.weeklyRecap.symbol',

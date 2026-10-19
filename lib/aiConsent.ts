@@ -2,14 +2,17 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert, Platform } from 'react-native';
 
 /**
- * One-time permission before a dream is shared with the third-party AI provider.
+ * One-time permission before a dream is shared with the third-party AI providers.
  *
  * App Review guideline 5.1.2(i) asks apps to disclose when personal data goes to a
  * third-party AI and to obtain explicit permission first. Analysis, quick
  * categorization, the guided conversation and illustrations all send the dream text
  * to the provider, so each entry point awaits this (or checks hasAiConsent for
  * silent background work) before calling the service. Writing and reading the journal
- * never need it.
+ * never need it. Guests are asked too: their dreams reach the same providers.
+ *
+ * The dialog has named Anthropic and Google since 2026-10-19. A grant given to the earlier
+ * text still counts: the owner chose not to ask those users again (2026-10-19).
  *
  * The web E2E fixtures pre-grant this key outside the consent journey.
  */
@@ -21,19 +24,9 @@ type Translate = (key: string) => string;
 
 let granted: boolean | null = null;
 let pending: Promise<boolean> | null = null;
-// Owner decision (2026-10-10, maintained 2026-10-11): only signed-in users are asked.
-// In mock mode a guest's analysis is a local demonstration. In production a guest's dream
-// is still sent to the AI service (/analyzeDream, /categorizeDream) without this prompt; the
-// owner accepted that App Review 5.1.2(i) and privacy risk (review on thannous/dreamer#327).
-let promptRequired = false;
-
-/** Set from the signed-in state: the consent prompt is shown to signed-in users only. */
-export function setAiConsentPromptRequired(required: boolean): void {
-  promptRequired = required;
-}
 
 export async function hasAiConsent(): Promise<boolean> {
-  if (!promptRequired || granted) return true;
+  if (granted) return true;
   try {
     granted = (await AsyncStorage.getItem(STORAGE_KEY)) === GRANTED;
   } catch {
@@ -81,5 +74,4 @@ export async function requestAiConsent(t: Translate): Promise<boolean> {
 export function resetAiConsentCacheForTests(): void {
   granted = null;
   pending = null;
-  promptRequired = false;
 }

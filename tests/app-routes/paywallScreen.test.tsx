@@ -131,18 +131,26 @@ jest.doMock('@/components/Toast', () => ({
 
 jest.doMock('@/components/subscription/PricingOption', () => ({
   PricingOption: ({
+    billingDetail,
     id,
+    intervalLabel,
     onPress,
+    price,
     testID,
     title,
   }: {
+    billingDetail?: string;
     id: string;
+    intervalLabel: string;
     onPress?: (id: string) => void;
+    price: string;
     testID?: string;
     title: string;
   }) => (
     <button data-testid={testID} onClick={() => onPress?.(id)}>
       {title}
+      <span data-testid={`${testID}.price`}>{`${price} ${intervalLabel}`}</span>
+      <span data-testid={`${testID}.detail`}>{billingDetail}</span>
     </button>
   ),
 }));
@@ -522,6 +530,53 @@ describe('Paywall screen', () => {
         outcome: 'nothing_to_restore',
       });
     });
+  });
+
+  it('does not tell a subscriber who turned renewal off that Plus renews automatically', () => {
+    const subscriber = (willRenew: boolean) => ({
+      ...mockUseSubscription(),
+      status: { tier: 'plus', isActive: true, expiryDate: '2026-12-01T00:00:00.000Z', willRenew },
+      isActive: true,
+    });
+    mockUseSubscription.mockReturnValue(subscriber(false));
+    render(<PaywallScreen />);
+    expect(screen.queryByTestId(TID.Text.PaywallStoreNotice)).toBeNull();
+    cleanup();
+
+    mockUseSubscription.mockReturnValue(subscriber(true));
+    render(<PaywallScreen />);
+    expect(screen.getByTestId(TID.Text.PaywallStoreNotice)).toBeTruthy();
+  });
+
+  it('leads the annual card with the billed price on iOS and with the monthly equivalent elsewhere', () => {
+    const platform = (require('react-native') as { Platform: { OS: string } }).Platform;
+    const annualCard = () => ({
+      price: screen.getByTestId(`${TID.Button.PaywallSelectAnnual}.price`).textContent,
+      detail: screen.getByTestId(`${TID.Button.PaywallSelectAnnual}.detail`).textContent,
+    });
+    try {
+      platform.OS = 'ios';
+      render(<PaywallScreen />);
+      expect(annualCard()).toEqual({
+        price: '39,99 € subscription.paywall.option.interval.annual',
+        detail: 'subscription.paywall.option.billing.annual_equivalent',
+      });
+
+      for (const os of ['android', 'web']) {
+        cleanup();
+        platform.OS = os;
+        render(<PaywallScreen />);
+        expect(annualCard()).toEqual({
+          price: '3.3325 subscription.paywall.option.interval.monthly',
+          detail: 'subscription.paywall.option.billing.annual',
+        });
+        expect(screen.getByTestId(`${TID.Button.PaywallSelectMonthly}.price`).textContent).toBe(
+          '4,99 € subscription.paywall.option.interval.monthly'
+        );
+      }
+    } finally {
+      platform.OS = 'web';
+    }
   });
 
   it('sends a guest to the account section and remembers to come back to the paywall', () => {
