@@ -1,7 +1,7 @@
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { NightSkyBand } from '@/components/ui/NightSkyBand';
 import type { DreamerScene } from '@/constants/dreamerArtwork';
-import { ThemeLayout } from '@/constants/journalTheme';
+import { DarkTheme, ThemeLayout } from '@/constants/journalTheme';
 import { DESKTOP_BREAKPOINT } from '@/constants/layout';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
@@ -24,6 +24,9 @@ import Animated from 'react-native-reanimated';
 import { useHeaderFadeStyle } from '@/components/ui/headerStretch';
 
 type IconName = Parameters<typeof IconSymbol>[0]['name'];
+
+// A dream's own image is painted once for both themes: what sits on it keeps the night's ink.
+const NIGHT = getNoctaliaDesignTokens(DarkTheme, 'dark');
 
 export interface NoctaliaHeaderAction {
   icon: IconName;
@@ -65,6 +68,13 @@ interface NoctaliaScreenHeaderProps {
   immersive?: boolean;
   /** `immersive` only: a taller opening than the top third, for a screen that paints a bigger image. */
   immersiveHeight?: number;
+  /**
+   * `tab` only: the screen paints an image the theme never changes (the day's dream), so the
+   * wordmark and actions keep the night's light ink whatever the theme.
+   */
+  overArtwork?: boolean;
+  /** `tab` only: the screen's own headline in place of the page title and subtitle. */
+  titleSlot?: ReactNode;
   includeTopInset?: boolean;
   actions?: NoctaliaHeaderAction[];
   chips?: NoctaliaHeaderChip[];
@@ -88,6 +98,8 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
   pinned = false,
   immersive = false,
   immersiveHeight,
+  overArtwork = false,
+  titleSlot,
 }: NoctaliaScreenHeaderProps) {
   const { colors, mode } = useTheme();
   const { t } = useTranslation();
@@ -137,6 +149,10 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
     const stageHeight = immersive && fontScale < 1.5
       ? Math.round(immersiveHeight ?? Math.min(420, windowHeight * 0.33)) - (includeTopInset ? 0 : insets.top)
       : undefined;
+    const chrome = overArtwork ? NIGHT : noctalia;
+    const chromeTextShadow = overArtwork
+      ? { ...paintedTextShadow, textShadowColor: `${NIGHT.screen.background}CC` }
+      : paintedTextShadow;
     return (
       <Animated.View
         pointerEvents={passThrough}
@@ -156,12 +172,12 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
         <View pointerEvents={passThrough} style={[styles.tabBrandRow, { paddingHorizontal: horizontalPadding }]}>
           {showBrand ? (
             <View pointerEvents={pinned ? 'none' : undefined} style={styles.tabBrand} accessible accessibilityLabel="Noctalia">
-              <IconSymbol name="moon.stars.fill" size={22} color={noctalia.accent.text} />
+              <IconSymbol name="moon.stars.fill" size={22} color={chrome.accent.text} />
               <Text
                 allowFontScaling={false}
                 numberOfLines={1}
-                style={[styles.tabBrandText, paintedTextShadow, {
-                  color: noctalia.text.primary,
+                style={[styles.tabBrandText, chromeTextShadow, {
+                  color: chrome.text.primary,
                   fontSize: styles.tabBrandText.fontSize * brandFontScale,
                   lineHeight: styles.tabBrandText.lineHeight * brandFontScale,
                 }]}
@@ -180,8 +196,8 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
                     styles.tabIconButton,
                     {
                       // A dark scrim and a hairline keep the button legible over any painting.
-                      backgroundColor: action.active ? noctalia.action.primary : `${noctalia.screen.background}B8`,
-                      borderColor: action.active ? noctalia.action.primaryBorder : noctalia.text.tertiary,
+                      backgroundColor: action.active ? chrome.action.primary : `${chrome.screen.background}B8`,
+                      borderColor: action.active ? chrome.action.primaryBorder : chrome.text.tertiary,
                     },
                     pressed && styles.pressed,
                   ]}
@@ -193,7 +209,7 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
                   <IconSymbol
                     name={action.icon}
                     size={32}
-                    color={action.active ? noctalia.action.primaryText : noctalia.text.primary}
+                    color={action.active ? chrome.action.primaryText : chrome.text.primary}
                   />
                 </Pressable>
               ))}
@@ -204,25 +220,27 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
         {stageHeight ? <View pointerEvents={passThrough} style={styles.stageSpace} /> : null}
         <View pointerEvents={pinned ? 'none' : undefined} style={{ paddingHorizontal: horizontalPadding }}
           onLayout={stageHeight ? (event) => setTitleTop(event.nativeEvent.layout.y) : undefined}>
-          <Text
-            accessibilityRole="header"
-            allowFontScaling={false}
-            style={[styles.tabTitle, paintedTextShadow, {
-              color: noctalia.text.primary,
-              fontSize: styles.tabTitle.fontSize * tabTitleScale,
-              lineHeight: styles.tabTitle.lineHeight * tabTitleScale,
-            }]}
-            numberOfLines={tabTitleScale >= 1.3 ? undefined : 1}
-            adjustsFontSizeToFit={tabTitleScale < 1.3}
-            minimumFontScale={0.8}
-          >
-            {t(titleKey)}
-          </Text>
-          {subtitle ? (
-            <Text style={[styles.tabSubtitle, paintedTextShadow, { color: noctalia.text.secondary }]} maxFontSizeMultiplier={1.6}>
-              {subtitle}
+          {titleSlot ?? <>
+            <Text
+              accessibilityRole="header"
+              allowFontScaling={false}
+              style={[styles.tabTitle, paintedTextShadow, {
+                color: noctalia.text.primary,
+                fontSize: styles.tabTitle.fontSize * tabTitleScale,
+                lineHeight: styles.tabTitle.lineHeight * tabTitleScale,
+              }]}
+              numberOfLines={tabTitleScale >= 1.3 ? undefined : 1}
+              adjustsFontSizeToFit={tabTitleScale < 1.3}
+              minimumFontScale={0.8}
+            >
+              {t(titleKey)}
             </Text>
-          ) : null}
+            {subtitle ? (
+              <Text style={[styles.tabSubtitle, paintedTextShadow, { color: noctalia.text.secondary }]} maxFontSizeMultiplier={1.6}>
+                {subtitle}
+              </Text>
+            ) : null}
+          </>}
         </View>
         {inlineSlot ? <View pointerEvents={passThrough} style={{ paddingHorizontal: horizontalPadding }}>{inlineSlot}</View> : null}
         {slot ? <View pointerEvents={passThrough} style={styles.slot}>{slot}</View> : null}

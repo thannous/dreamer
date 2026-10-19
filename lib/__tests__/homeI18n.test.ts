@@ -7,7 +7,16 @@ import pt from '@/lib/i18n/pt';
 
 const homeTodayKeys = [
   'home.today.dream_eyebrow',
+  'home.today.dream_excerpt',
   'home.today.resources',
+  'home.week.title',
+  'home.week.night_empty',
+  'home.discover.symbol_of_day',
+  'inspiration.reading.recurring_label',
+  'inspiration.reading.recurring_count',
+  'inspiration.reading.recurring_none',
+  'inspiration.reading.recurring_needs_analysis',
+  'inspiration.reading.recap_cta',
   'home.today.loading.title',
   'home.today.loading.body',
   'home.today.draft_resume.title',
