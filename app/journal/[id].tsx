@@ -31,7 +31,7 @@ import { WaitingStars } from '@/components/journal/story/WaitingStars';
 import { markDreamStoryEpilogue } from '@/lib/dreamStoryEpilogue';
 import { markDreamNamed } from '@/lib/dreamNaming';
 import { DREAM_THEMES } from '@/lib/dreamThemes';
-import { getDreamStoryHandoffName, hasDreamStoryHandoff } from '@/lib/dreamStoryPrologue';
+import { getDreamStoryHandoffName, hasDreamStoryHandoff, markDreamStoryPageReady } from '@/lib/dreamStoryPrologue';
 import { DreamShareImage } from '@/components/journal/DreamShareImage';
 import { getImageJobFailure } from '@/lib/imageJobErrors';
 import { ErrorType } from '@/lib/errors';
@@ -1133,6 +1133,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     : showCompletedReading ? 'read' : 'saved';
   const reducedMotion = useReducedMotion();
   const readingZoneTopRef = useRef<number | null>(null);
+  const [interpretationTop, setInterpretationTop] = useState<number | null>(null);
   const readingRevealScrolledRef = useRef(false);
   const isImageJobPending = illustrationSidecar === 'pending';
   const isSyncPending = dreamSyncState === 'pending';
@@ -1969,13 +1970,14 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       readingRevealScrolledRef.current = false;
       return;
     }
-    if (readingStory !== 'revealed' || readingRevealScrolledRef.current) return;
+    if (readingStory !== 'revealed' || readingRevealScrolledRef.current || interpretationTop === null) return;
     // The dock resizes as the reading lands, which re-runs this effect and cancels the
     // pending frame: only the frame that actually runs marks the reveal as handled.
     const frame = requestAnimationFrame(() => {
       readingRevealScrolledRef.current = true;
-      const top = readingZoneTopRef.current;
-      if (top == null) return;
+      const zoneTop = readingZoneTopRef.current;
+      if (zoneTop == null) return;
+      const top = zoneTop + interpretationTop;
       const visibleBottom = readingScrollOffset.current + viewportHeight - actionDockHeight;
       // The reader asked for this reading: bring it into view when it lands below the fold,
       // never pull them back up from further down the page.
@@ -1984,11 +1986,20 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       }
     });
     return () => cancelAnimationFrame(frame);
-  }, [actionDockHeight, readingContentTop, readingStory, reducedMotion, viewportHeight]);
+  }, [actionDockHeight, interpretationTop, readingContentTop, readingStory, reducedMotion, viewportHeight]);
   const pageReady = coverIntroHeight !== null && (!hasIllustratedCover || coverShown);
   useEffect(() => {
     if (pageReady) pageLaidOut();
   }, [pageLaidOut, pageReady]);
+  const handoffTarget = useMemo(() => dream && ({ id: dream.id, remoteId: dream.remoteId, clientRequestId: dream.clientRequestId }),
+    [dream?.id, dream?.remoteId, dream?.clientRequestId]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (!pageReady || !windowHandedOver || !handoffTarget) return;
+    let frame = requestAnimationFrame(() => {
+      frame = requestAnimationFrame(() => markDreamStoryPageReady(handoffTarget));
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [handoffTarget, pageReady, windowHandedOver]);
   const paintedArtwork = !coverImageFailed && displayImageUrl ? { uri: displayImageUrl, cacheKey: imageCacheKey } : null;
   // Act III keeps painting until the image can actually be shown: stored artwork is
   // saved on the dream before its signed URL resolves. Its landing plays once per visit,
@@ -2020,7 +2031,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     settled?: boolean;
   }>(() => {
     const sealed = windowHandedOver && dream ? getDreamStoryHandoffName(dream) : undefined;
-    if (sealed?.mark) return { stage: 'named', title: sealed.title, seal: sealed.mark, settled: true };
+    if (sealed) return { stage: 'named', title: sealed.title, seal: sealed.mark ?? null, settled: true };
     return { stage: opensOnSavedMoment ? 'waiting' : 'named' };
   });
   const [namingTime, setNamingTime] = useState<'early' | 'due' | 'late'>('early');
@@ -3199,6 +3210,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
                 onLayout={({ nativeEvent }) => { readingZoneTopRef.current = nativeEvent.layout.y; }}>
                 <DreamAnalysisContent dream={dream}
                   pending={isAnalysisPending || readingAwaited}
+                  onInterpretationLayout={({ nativeEvent: { layout } }) => setInterpretationTop(layout.y)}
                   reveal={readingStory === 'revealed'} />
               </OpenUp>
             ) : null}

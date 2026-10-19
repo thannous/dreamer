@@ -732,8 +732,10 @@ function RecordingScreen() {
     open: (read: boolean) => void;
   } | null>(null);
   const sealTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const sealHandoffCleanupRef = useRef<(() => void) | null>(null);
   useEffect(() => () => {
     if (sealTimerRef.current) clearTimeout(sealTimerRef.current);
+    sealHandoffCleanupRef.current?.();
   }, []);
   // The seal is a guarded transition: hardware Back cannot pop the capture before the
   // saved dream opens. The guard ends as the next page takes focus.
@@ -782,10 +784,18 @@ function RecordingScreen() {
   const sealOpened = useCallback((read: boolean) => {
     if (!sealing) return;
     // The seal ends on the saved moment's window and the name in its place: the page takes them over as they are.
-    markDreamStoryHandoff(sealing.target, sealWrote.current);
+    sealHandoffCleanupRef.current?.();
+    sealHandoffCleanupRef.current = markDreamStoryHandoff(sealing.target, sealWrote.current, Date.now(), () => {
+      if (sealTimerRef.current) clearTimeout(sealTimerRef.current);
+      sealTimerRef.current = null;
+      sealHandoffCleanupRef.current = null;
+      setSealing(null);
+    });
     sealing.open(read || sealing.readAtOnce);
     sealTimerRef.current = setTimeout(() => {
       sealTimerRef.current = null;
+      sealHandoffCleanupRef.current?.();
+      sealHandoffCleanupRef.current = null;
       setSealing(null);
     }, DREAM_STORY.prologueVeilHold);
   }, [sealing]);
@@ -1246,6 +1256,9 @@ function RecordingScreen() {
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
       const readAtOnce = isNewDream && !completeWithHelp && firstGuestReading;
       if (reducedMotion) {
+        // The local name is already usable. Reduced motion must not restart a
+        // naming wait on the destination after skipping the capture ceremony.
+        markDreamStoryHandoff(savedDream, { title: savedDream.title, provisional: true });
         openSavedDream(readAtOnce);
       } else {
         setPreAnalysisOver(false);
