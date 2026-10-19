@@ -44,6 +44,34 @@ test('native direct dream link can return to the journal', async ({ app, screen,
   await expect(screen.getByTestId('screen.journal')).toBeVisible();
 });
 
+// The text-only reference above cannot catch a stale dock after moving continuous
+// offsets to the UI runtime. This owned variant adds a long, unanalysed dream with
+// a local illustration, equivalent to one added from the photo library.
+if (process.env.E2E_PERF_FIXTURE_UI === 'framerate') {
+  test('native illustrated reading reveals its actions and keeps its return interactive', async ({ app, screen, device }) => {
+    await app.open();
+    await device.openLink('noctalia://journal/1792216800000');
+    await expect(screen.getByTestId('screen.dreamDetail')).toBeVisible();
+    await expect(screen.getByText('Noctalia performance 002', { exact: true })).toBeVisible();
+    await expect(screen.getByTestId('component.journal.illustration')).toBeVisible();
+    const dock = screen.getByTestId('component.dreamDetail.actionDock');
+    await expect(dock).toBeHidden();
+    await expect(screen.getByTestId('journal.detail.returnTab')).toBeHidden();
+    const end = screen.getByText('Fin du récit de mesure 002.', { exact: true });
+    await screen.scrollUntilVisible(end);
+    await expect(end).toBeVisible();
+    await expect(dock).toBeVisible();
+    await expect(screen.getByTestId('btn.dream.primaryCta')).toBeEnabled();
+    await app.screenshot('illustrated-reading-actions');
+    await screen.swipe({ direction: 'up', momentum: 'none' });
+    const back = screen.getByTestId('journal.detail.returnTab');
+    await expect(back).toBeVisible();
+    await back.tap();
+    await expect(screen.getByTestId('screen.dreamDetail')).toBeHidden();
+    await expect(screen.getByTestId('screen.journal')).toBeVisible();
+  });
+}
+
 // The larger owned fixture keeps reference013 and appends older entries. This
 // counterexample catches storage/list pagination that accidentally truncates
 // full-text search to the first presentation window of forty dreams.
