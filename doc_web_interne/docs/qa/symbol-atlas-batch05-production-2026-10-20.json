@@ -1,0 +1,208 @@
+{
+  "schema": "noctalia.symbol-atlas-production/1",
+  "date": "2026-10-20",
+  "publishedRevision": "ce62eb9d405aec4ba3087b1ca58f711c5d5fac08",
+  "pr": "https://github.com/thannous/dreamer/pull/457",
+  "symbols": [
+    "horse",
+    "castle",
+    "stars",
+    "flowers",
+    "baby",
+    "storm"
+  ],
+  "languages": [
+    "en",
+    "fr",
+    "es",
+    "de",
+    "it",
+    "pt-br"
+  ],
+  "deployment": {
+    "name": "noctalia",
+    "productionDeploymentsEnabled": false,
+    "id": "846998ac-142c-4aa6-99d4-1409388cf92a",
+    "url": "https://846998ac.noctalia.pages.dev",
+    "environment": "production",
+    "status": "success",
+    "commit": "ce62eb9d405aec4ba3087b1ca58f711c5d5fac08",
+    "branch": "master",
+    "aliases": [
+      "https://noctalia.app"
+    ],
+    "createdOn": "2026-10-19T22:30:18.643484Z"
+  },
+  "authorization": {
+    "source": "Direct user instruction in this Codex conversation",
+    "request": "ok lance le prochain lot de 6 symboles, Claude pour le code et toi pour les images, garde la direction artistique et les deux éléments animés par image, dans les 6 langues, puis publie et mets à jour le suivi",
+    "meaning": "Requested batch release approval; individual visual approval of every asset or translation is not claimed."
+  },
+  "release": {
+    "command": "npm run verify:release:site -- --keep",
+    "result": "passed",
+    "checks": [
+      {
+        "name": "verify-local-engine",
+        "result": "passed"
+      },
+      {
+        "name": "site-publish-guard",
+        "result": "passed"
+      },
+      {
+        "name": "test-supabase-guard",
+        "result": "passed"
+      },
+      {
+        "name": "backend-runner-guards",
+        "result": "passed"
+      },
+      {
+        "name": "repository-hygiene",
+        "result": "passed"
+      },
+      {
+        "name": "typecheck-app",
+        "result": "passed"
+      },
+      {
+        "name": "typecheck-tests",
+        "result": "passed"
+      },
+      {
+        "name": "lint",
+        "result": "passed"
+      },
+      {
+        "name": "lint-scripts",
+        "result": "passed"
+      },
+      {
+        "name": "jest-changed",
+        "result": "passed"
+      },
+      {
+        "name": "db-contracts",
+        "result": "passed"
+      },
+      {
+        "name": "site",
+        "result": "passed"
+      },
+      {
+        "name": "ci-contracts",
+        "result": "passed"
+      },
+      {
+        "name": "eas-workflow-contracts",
+        "result": "passed"
+      },
+      {
+        "name": "mobile-versions",
+        "result": "passed"
+      },
+      {
+        "name": "meditation",
+        "result": "passed"
+      },
+      {
+        "name": "edge-functions",
+        "result": "passed"
+      },
+      {
+        "name": "release-contracts",
+        "result": "passed"
+      },
+      {
+        "name": "jest-full",
+        "result": "passed"
+      },
+      {
+        "name": "site-build",
+        "result": "passed"
+      },
+      {
+        "name": "testerarmy-tooling",
+        "result": "passed"
+      },
+      {
+        "name": "testerarmy-site",
+        "result": "passed"
+      }
+    ],
+    "proofSha256": "4d15bf50bd0aa00485e244e5a0fcbe233d0e9eb6e4afe53502941fcb2dcf42c3",
+    "browserCampaign": {
+      "discovered": 15,
+      "selected": 15,
+      "executed": 15,
+      "passed": 15,
+      "failed": 0,
+      "interrupted": 0,
+      "flaky": 0,
+      "skipped": 0,
+      "revision": "ce62eb9d405aec4ba3087b1ca58f711c5d5fac08",
+      "runId": "01a15643-de11-716d-abdd-3cebe926a465",
+      "runner": {
+        "name": "e2e",
+        "version": "0.21.2"
+      },
+      "sourceClean": false,
+      "workingTree": "M docs-src/static/js/experience/experience.js\n D docs-src/static/js/experience/lenis-WVYVID6X.js\n D docs-src/static/js/experience/mini-YRBJM6WA.js\n?? docs-src/static/js/experience/lenis-TR5AWQ3M.js\n?? docs-src/static/js/experience/mini-NO4UJYRP.js",
+      "retainedMedia": "qualification/1792448648627-26366-ee14844a-ec23-425b-a518-e4e791d262e6",
+      "receipt": "qualification/1792448648627-26366-ee14844a-ec23-425b-a518-e4e791d262e6.receipt.json",
+      "receiptSha256": "206bbe89fdf79cb8d8894950eb7acc9b8b048bf0c9b60e921d9b841faa12d239"
+    }
+  },
+  "publicHttp": {
+    "pages": 186,
+    "pagesPassed": 186,
+    "images": 240,
+    "imagesPassed": 240
+  },
+  "publicBrowser": {
+    "cases": 12,
+    "distinctSymbols": 6,
+    "viewports": [
+      "2560x1440",
+      "390x844"
+    ],
+    "localesObserved": [
+      "fr",
+      "en",
+      "es",
+      "de",
+      "it",
+      "pt-br"
+    ],
+    "checks": [
+      "Hero behind navbar from page top",
+      "Phone hero 633px of 844px",
+      "No horizontal overflow",
+      "Two distinct loaded textures change transform or opacity"
+    ],
+    "coverage": "Live production views of all six new symbols. Complete canonical campaign covers all 31 Atlas symbols in six languages and both effects on every standard painted surface. Public HTTP byte identity binds those inputs to production."
+  },
+  "sources": {
+    "receipt": "doc_web_interne/docs/qa/symbol-atlas-batch05-sources-2026-10-19.json",
+    "archiveSha256": "48188e01a3c46e8284ecdab11687986700d58ceea85b6864872c309ffb44549c",
+    "newImageGen": 41,
+    "reusedTextures": 7
+  },
+  "regression": {
+    "initialCampaign": "14 passed, 1 failed: historical flowers-v1 filename expectation after migration to the shared Atlas asset manifest.",
+    "correction": "Claude updated the explicit flowers, castle and stars source contract to the hashed Atlas hero path. Other classic source expectations, all cases and layout assertions retained."
+  },
+  "artifacts": {
+    "public-http-check.json": "643404b130fb34b3d04cc6235419ce54f2b88246677ffecccb6bec788dd96226",
+    "public-browser-check.json": "c5ee7b8feac58805280f492c82fa96a0990c3930b17a504ca1028c317a4bcd7c",
+    "site-release-campaign.json": "fb7a12852d37fcb9efb46d83c392f65b95de868944264eb46fc31cf3872cef9f",
+    "release-proof.json": "4d15bf50bd0aa00485e244e5a0fcbe233d0e9eb6e4afe53502941fcb2dcf42c3"
+  },
+  "boundaries": [
+    "Marketing website only; no native app, Vercel app or backend deployed.",
+    "Mobile viewport emulation, not physical-device FPS qualification.",
+    "Existing absent FAQs remain absent.",
+    "Selection delegated to Codex, separate from individual visual approval."
+  ]
+}
