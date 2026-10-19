@@ -229,3 +229,57 @@ passes (261 tests) as part of the 17-check committed-head engine run on
 No provider evaluation was executed.
 No new native binary, device, Store, live-backend or production qualification is
 claimed by the browser/mock and isolated evidence in this work package.
+
+
+## PR #443 review and master integration
+
+The owner then explicitly requested comment resolution and merge when ready.
+`origin/master` advanced to `e9ea38a1f31d7eb0a2bee7c0f4036922cf1c5142`;
+merge `4d0b2748c` incorporates its journal/readiness and iOS work. The only
+modify/delete conflict was `AtmosphereBackground`: upstream changed two type
+annotations and introduced no consumer, so its proved removal remains. Independent
+review preserved all active upstream cases: DreamCard 4, journal compact 14 and
+journal detail 64, including categorization and performance-marker counterexamples.
+
+Both P2 review findings are corrected in `cf3c247c0`:
+
+- The path-only hygiene guard compares the existing private filename literals
+  with the POSIX basename at any depth. A real temporary Git-index reproduction
+  accepted six nested private paths before the fix; the added regression failed
+  before it and all five guard tests pass after it. Nine forbidden root/nested
+  paths, twelve public examples/profiles, exact historical exceptions, adjacent
+  refusals and preservation of local files after untracking are exercised. No
+  private payload is read and no exception is broadened. This CLI/index defect
+  occurs before an app journey; its real CLI is the relevant functional interface.
+- The current Lucid runbook removes the deleted analytics wrapper test, retains
+  the active productAnalytics provider-boundary coverage exactly once, and uses
+  `routes/lucid` for lint. All eighteen test paths and ten lint targets exist;
+  the coverage link and diff pass. Historical audit references remain dated.
+
+The first post-integration Dreamer campaign selected eight cases: six passed,
+two favorite journeys failed on an obsolete second Favorites click. Since
+upstream `02a97ad08`, return navigation retains the journal/filter/search, so
+that test click disabled its own filter. Commit `16c95866e` asserts the retained
+query instead, keeps zero results while filtered, then switches to All and
+reopens the same complete story. No application behavior or ARIA/CSS assumption
+is changed to satisfy those tests. The failed trace remains under
+`dreamer-web/1792432781267-86336-6c1ec9a0-b18c-480a-bf46-347f89674cb9`.
+
+The full eight-case rerun passes on clean `16c95866e`, one attempt each, zero
+skips/secondary errors, stable sources and `applicationQualified=true`:
+`tools/e2e/.e2e/dreamer-web/1792433088779-88002-6bda8180-4c2b-45df-9caa-df3e7be481f9`.
+It includes the three readiness cases, no-image analysis/edit/recovery, failed
+thumbnail fallback, category/chat resume and both favorite journeys. Its command
+and environment are in evidence.json: one worker, performance tracing enabled.
+These browser budgets do not qualify native framerate or accessibility. Earlier
+20-case evidence above keeps its recorded revisions and scope; it is not relabelled
+as this post-integration execution. Final-head engine proof is recorded separately.
+
+A clean root npm ci passes with the merged lockfile (including upstream expo-atlas).
+Fresh read-only audit snapshots after integration still exit 1: root 165 package
+findings (125 high, 39 moderate, 1 low), Meditation 97 (70 high, 27 moderate),
+zero critical in both. The earlier before/after audit table retains its original
+comparison context. No forced upgrade, script approval, audit suppression or
+publication was performed. The 22-warning baseline remains unchanged and passes
+a fresh lint. Raw audit and review receipts remain under the ignored
+`test-results/warning-remediation-20261019/` directory.
