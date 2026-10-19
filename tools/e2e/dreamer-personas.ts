@@ -21,11 +21,11 @@ export const dreamerPersonas = {
   },
 } as const;
 
-const context = 'Noctalia Dreamer is a dream journal. Its UI in this campaign is French. Rêve means a dream entry, Journal contains saved dreams, Favoris are favourites, and Explorer continues a reflection. Account state and AI responses are synthetic fixtures; the user goals are exercised through the real interface.';
+const context = 'Noctalia Dreamer is a dream journal. Its UI in this campaign is French. Rêve means a dream entry, Journal contains saved dreams, and Favoris are favourites. The Explorer tab contains general symbols, guides and sounds. Each dream has its own reflection and conversation; their controls follow the reading on the scrollable dream detail page. An existing exchange is reopened from that same dream. Account state and AI responses are synthetic fixtures; the user goals are exercised through the real interface.';
 const conduct = 'Use only visible app controls. Copy observed node ids verbatim, preserving every digit. If a node is not found, observe again and choose a current node id instead of repeating the missing id. Do not guess URLs or routes, use developer profile controls, delete data, create accounts or make purchases. If the visible interface prevents the goal, report that obstacle instead of inventing success.';
 
 /** Called only by the explicit E2E_PERSONAS=1 campaign; reads no login here. */
-export function createDreamerPersonaAgents(modelId = 'gpt-6-luna'): NonNullable<E2EConfig['agents']> {
+export function createDreamerPersonaAgents(modelId = 'gpt-6.1-sol'): NonNullable<E2EConfig['agents']> {
   const model = chatgpt(modelId);
   return Object.fromEntries(Object.entries(dreamerPersonas).map(([name, persona]) => [name, {
     model, context, system: `${persona.system}\n${conduct}`,

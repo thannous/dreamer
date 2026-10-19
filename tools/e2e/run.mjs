@@ -129,7 +129,7 @@ const pins = Object.fromEntries(['e2e', '@e2e-dev/web', '@e2e-dev/mobile', 'agen
 if (Object.entries(SDK_PINS).some(([name, version]) => pins[name] !== version)) throw new Error('INSTALLED_SDK_PINS');
 const campaignId = env.E2E_CAMPAIGN_ID ?? env.CIRCLE_WORKFLOW_JOB_ID ?? null;
 const context = () => ({ locale: env.E2E_WEB_LOCALE ?? (product === 'lucid' ? 'fr-FR' : 'en-US'), featureSheets: env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true',
-  ...(env.E2E_PERSONAS === '1' ? { personas: true, personaModel: env.E2E_PERSONA_MODEL?.trim() || 'gpt-6-luna' } : {}) });
+  ...(env.E2E_PERSONAS === '1' ? { personas: true, personaModel: env.E2E_PERSONA_MODEL?.trim() || 'gpt-6.1-sol' } : {}) });
 async function execute(executable, argv, logName, childEnv = env, workdir = cwd) {
   const logFd = logName ? openSync(join(output, logName), 'wx') : undefined;
   const child = spawn(executable, argv, { cwd: workdir, env: childEnv, stdio: logFd === undefined ? 'inherit' : ['ignore', logFd, logFd], detached: process.platform !== 'win32' });

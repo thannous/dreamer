@@ -194,7 +194,7 @@ E2E_PERSONAS=1 E2E_WORKERS=1 E2E_WEB_LOCALE=fr-FR mise exec -- npm run test:test
 E2E_PERSONAS=1 E2E_WORKERS=1 E2E_WEB_LOCALE=fr-FR mise exec -- npm run test:testerarmy -- run --tag personas
 ```
 
-The default model is `gpt-6-luna`; `E2E_PERSONA_MODEL` selects another model id
+The default model is `gpt-6.1-sol`; `E2E_PERSONA_MODEL` selects another model id
 served by the same login. Each goal allows at most 16 actions, 12 model calls
 and 32,000 input tokens per request. Each test has a 240-second timeout; retries
 and replay stay off. Use one worker. The full suite has seven agent goals.
