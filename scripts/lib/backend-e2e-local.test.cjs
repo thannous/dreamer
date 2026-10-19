@@ -49,3 +49,87 @@ test('fixture replay neutralizes external URLs and disables schedules without ed
     fs.rmSync(dir, { recursive: true, force: true });
   }
 });
+
+function runnerFixture(args, qualifyStatus = 0) {
+  const { runInNewContext } = require('node:vm');
+  const ownedRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'noctalia-backend-runner-test-'));
+  const calls = [];
+  const receipt = local();
+  let failure;
+  let qualifierReceipt;
+  try {
+    fs.mkdirSync(path.join(ownedRoot, 'supabase'));
+    fs.writeFileSync(path.join(ownedRoot, 'supabase/config.toml'), 'project_id = "fixture"\n[api]\nport = 54321\n[db]\nport = 54322\nsql_paths = ["./seed.sql"]\n');
+    const spawnSync = (binary, argv, options) => {
+      calls.push({ binary, argv: [...argv], env: options.env });
+      let stdout = '';
+      if (argv[0] === '--version') stdout = '2.121.0';
+      if (argv[0] === 'stack' && argv[1] === 'start') stdout = JSON.stringify({
+        id: receipt.LOCAL_E2E_STACK.id, runtime: 'native', env: receipt,
+        endpoints: { api: { address: '127.0.0.1' } },
+      });
+      if (argv[0] === 'db' && argv[1] === 'query') stdout = JSON.stringify({ rows: [{ active_jobs: 0 }] });
+      if (argv[0] === '--run' && argv[1] === 'db:qualify:local') {
+        qualifierReceipt = JSON.parse(fs.readFileSync(options.env.TI528_LOCAL_STATUS, 'utf8'));
+      }
+      return { status: argv[0] === '--run' ? qualifyStatus : 0, stdout };
+    };
+    const fakeRequire = (name) => {
+      if (name === 'node:os') return { ...os, tmpdir: () => ownedRoot };
+      if (name === 'node:child_process') return { spawnSync };
+      if (name === './lib/backend-e2e-local.cjs') return {
+        assertBackendTarget, normalizeStackStatus,
+        prepareLocalMigrations: () => ({ neutralizedUrls: 1, disabledSchedules: 1 }),
+      };
+      return require(name);
+    };
+    fakeRequire.resolve = () => path.join(ownedRoot, 'node_modules/playwright/package.json');
+    try {
+      runInNewContext(fs.readFileSync(path.join(__dirname, '../run-backend-e2e.cjs'), 'utf8'), {
+        require: fakeRequire, __dirname: path.join(ownedRoot, 'scripts'), console,
+        process: { argv: [process.execPath, 'run-backend-e2e.cjs', ...args], execPath: process.execPath,
+          platform: process.platform, env: { TI528_LOCAL_STATUS: '/unowned-status.json' } },
+      });
+    } catch (error) { failure = error; }
+    return { calls, failure, qualifierReceipt, receipt };
+  } finally { fs.rmSync(ownedRoot, { recursive: true, force: true }); }
+}
+
+test('ordinary native backend run retains browser qualification without adding TI528', () => {
+  const result = runnerFixture(['--runtime', 'native']);
+  assert.equal(result.failure, undefined);
+  assert.equal(result.calls.filter(({ argv }) => argv.includes('playwright.backend.config.ts')).length, 1);
+  assert.equal(result.calls.filter(({ argv }) => argv[0] === '--run').length, 0);
+});
+
+test('TI528 qualification uses this invocation receipt after browser journeys and before exact cleanup', () => {
+  const result = runnerFixture(['--runtime', 'native', '--qualify-ti528']);
+  assert.equal(result.failure, undefined);
+  const browser = result.calls.findIndex(({ argv }) => argv.includes('playwright.backend.config.ts'));
+  const qualification = result.calls.findIndex(({ argv }) => argv[0] === '--run' && argv[1] === 'db:qualify:local');
+  const cleanup = result.calls.findIndex(({ argv }) => argv[0] === 'stack' && argv[1] === 'destroy');
+  assert.ok(browser >= 0 && qualification > browser && cleanup > qualification);
+  assert.ok(!result.calls[browser].argv.includes('--qualify-ti528'));
+  assert.match(result.calls[browser].env.E2E_BACKEND_RERUN, /--qualify-ti528/);
+  assert.deepEqual(result.qualifierReceipt, result.receipt);
+  assert.notEqual(result.calls[qualification].env.TI528_LOCAL_STATUS, '/unowned-status.json');
+  assert.ok(result.calls[cleanup].argv.includes(result.receipt.LOCAL_E2E_STACK.id));
+});
+
+for (const args of [
+  ['--qualify-ti528'],
+  ['--runtime', 'native', '--qualify-ti528', '--prepare-only'],
+  ['--qualify-ti528', '--status-file', '/unowned-status.json'],
+]) test(`TI528 rejects incompatible ownership options ${args.join(' ')} before starting a process`, () => {
+  const result = runnerFixture(args);
+  assert.match(result.failure?.message ?? '', /--qualify-ti528/);
+  assert.equal(result.calls.length, 0);
+});
+
+test('TI528 failure remains a failed run and destroys only this invocation stack', () => {
+  const result = runnerFixture(['--runtime', 'native', '--qualify-ti528'], 23);
+  assert.match(result.failure?.message ?? '', /failed \(23\)/);
+  const cleanups = result.calls.filter(({ argv }) => argv[0] === 'stack' && argv[1] === 'destroy');
+  assert.equal(cleanups.length, 1);
+  assert.ok(cleanups[0].argv.includes(result.receipt.LOCAL_E2E_STACK.id));
+});

@@ -4,11 +4,12 @@ import { mkdtempSync, writeFileSync, mkdirSync, rmSync, readFileSync } from 'nod
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createHash } from 'node:crypto';
+import { Buffer } from 'node:buffer';
 import { spawnSync } from 'node:child_process';
 import { EventEmitter } from 'node:events';
 import { fileURLToPath } from 'node:url';
 import { virtualLinks } from './test-support/virtual-links.mjs';
-import { SDK_PINS, verifyReport, preserveStatus, compareSnapshots, aggregateReports, writeOnce, createAttemptOutput, verifyEvidenceFiles, verifyNativeCleanup, campaignFailureRecord, startSdkProgress } from './qualification.mjs';
+import { SDK_PINS, trackedDiffSha256, verifyReport, preserveStatus, compareSnapshots, aggregateReports, writeOnce, createAttemptOutput, verifyEvidenceFiles, verifyNativeCleanup, campaignFailureRecord, startSdkProgress } from './qualification.mjs';
 
 const sha = value => createHash('sha256').update(value).digest('hex');
 const before = { revision: 'a'.repeat(40), files: { 'app/recording.tsx': sha('source') }, outputs: {} };
@@ -231,4 +232,41 @@ test('Circle web SDK liveness emits only elapsed time, stops on close/error and 
   startSdkProgress(failingChild, { enabled: true, ...dependencies, write: () => { throw new Error('sink closed'); }, onError: () => { errors++; } });
   tick(); tick(); assert.equal(errors, 1); assert.equal(cleared, 2);
   assert.equal(preserveStatus(143, ['CI_PROGRESS_WRITE_FAILED']), 143);
+});
+
+// Browser/native assertions cannot exercise the wrapper's pre-SDK output limit.
+test('large real Git diffs retain complete legacy identity and refuse Git failures', async () => {
+  const fixture = mkdtempSync(join(tmpdir(), 'noctalia-large-diff-'));
+  const repository = join(fixture, 'repository');
+  mkdirSync(repository);
+  const env = { ...process.env, GIT_AUTHOR_NAME: 'Public fixture', GIT_AUTHOR_EMAIL: 'fixture@example.invalid',
+    GIT_COMMITTER_NAME: 'Public fixture', GIT_COMMITTER_EMAIL: 'fixture@example.invalid' };
+  const git = (...args) => {
+    const result = spawnSync('git', args, { cwd: repository, env, encoding: 'utf8', maxBuffer: 8 * 1024 * 1024 });
+    assert.ifError(result.error); assert.equal(result.status, 0, result.stderr);
+    return result.stdout;
+  };
+  try {
+    git('init', '-q');
+    writeFileSync(join(repository, 'public.txt'), 'public base\n');
+    git('add', 'public.txt');
+    const tree = git('write-tree').trim();
+    git('update-ref', 'HEAD', git('commit-tree', tree, '-m', 'public fixture').trim());
+    assert.equal(await trackedDiffSha256(repository, env), sha(''));
+    const content = 'public unicode café line\n'.repeat(100000);
+    writeFileSync(join(repository, 'public.txt'), content + 'public tail one\n');
+    const previous = spawnSync('git', ['diff', 'HEAD'], { cwd: repository, env, encoding: 'utf8' });
+    assert.equal(previous.error?.code, 'ENOBUFS', 'the fixture must reproduce the former default buffer limit');
+    const full = git('diff', 'HEAD');
+    assert.ok(Buffer.byteLength(full) > 2 * 1024 * 1024);
+    const first = await trackedDiffSha256(repository, env);
+    assert.equal(first, sha(full.trim()));
+    writeFileSync(join(repository, 'public.txt'), content + 'public tail two\n');
+    const changed = await trackedDiffSha256(repository, env);
+    assert.equal(changed, sha(git('diff', 'HEAD').trim()));
+    assert.notEqual(changed, first, 'changes beyond the former capture limit must change identity');
+    await assert.rejects(trackedDiffSha256(fixture, env), /git diff failed \(exit/);
+    const noGit = Object.fromEntries(Object.entries(env).filter(([key]) => key.toUpperCase() !== 'PATH'));
+    await assert.rejects(trackedDiffSha256(repository, { ...noGit, PATH: join(fixture, 'missing-bin') }), { code: 'ENOENT' });
+  } finally { rmSync(fixture, { recursive: true, force: true }); }
 });

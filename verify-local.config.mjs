@@ -137,10 +137,12 @@ const MEDITATION_DEPS = {
 };
 
 // Job edge-functions (lint runs in `lint`, PGlite in db-contracts).
+// The image worker owns regression tests outside api/; checking its entrypoint
+// alone does not execute its privacy, ownership and retry protections.
 const EDGE_CHECKS = [
   'cd supabase/functions',
   'deno check --frozen api/index.ts analysis-job-worker/index.ts image-job-worker/index.ts revenuecat-webhook/index.ts',
-  'deno test --frozen --allow-env --allow-net=deno.land --allow-read=../migrations api revenuecat-webhook',
+  'deno test --frozen --allow-env --allow-net=deno.land --allow-read=../migrations api revenuecat-webhook image-job-worker',
 ].join(' && ');
 const DENO = {
   command: 'deno --version',
@@ -184,6 +186,13 @@ export default {
   // The scripts these checks run: changing them changes what a proof proves,
   // so proof-block flags them for the owner's review like this file.
   deliveryFiles: [
+    // Owner-requested maintenance guards: changes to their policy require review.
+    'scripts/check-repository-hygiene.cjs',
+    'scripts/check-repository-hygiene.test.cjs',
+    'data/repository-hygiene-baseline.json',
+    'scripts/check-lint-warnings.js',
+    'scripts/check-lint-warnings.test.js',
+    'scripts/lint-warnings-baseline.json',
     'scripts/install-git-hooks.js',
     'scripts/run-jest-changed.js',
     // Meditation's Jest module resolution.
@@ -309,6 +318,12 @@ export default {
       name: 'backend-runner-guards',
       command: 'node --test scripts/lib/backend-e2e-local.test.cjs',
       inputs: ['scripts/lib/backend-e2e-local.cjs', 'scripts/lib/backend-e2e-local.test.cjs', 'scripts/run-backend-e2e.cjs'],
+    },
+    // CLI/index failures happen before UI journeys; keep both refusal cases local.
+    // Default whole-tree inputs are intentional: every newly tracked path matters.
+    {
+      name: 'repository-hygiene',
+      command: 'npm run repository:hygiene && npm run test:repository-hygiene',
     },
     // Independent read-only checks share one supervised step and machine lock.
     // Route declarations are atomically replaced by generate-shared-route-types.

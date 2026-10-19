@@ -1,0 +1,703 @@
+{
+  "schemaVersion": 1,
+  "targets": [
+    "app",
+    "components",
+    "hooks",
+    "lib",
+    "context",
+    "constants",
+    "services",
+    "tests",
+    "supabase/functions",
+    "scripts"
+  ],
+  "warnings": [
+    {
+      "file": "app/_layout.tsx",
+      "rule": "react-hooks/set-state-in-effect",
+      "message": "Error: Calling setState synchronously within an effect can trigger cascading renders\n\nEffects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:\n* Update external systems with the latest state from React.\n* Subscribe for updates from some external system, calling setState in a callback function when external state changes.\n\nCalling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).",
+      "sourceSha256": "0501ee5cae92f33c8d02808cc93cbe3c1f8831aca19d93e8abf1ecb364b39ed5",
+      "count": 1
+    },
+    {
+      "file": "app/_layout.tsx",
+      "rule": "react-hooks/set-state-in-effect",
+      "message": "Error: Calling setState synchronously within an effect can trigger cascading renders\n\nEffects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:\n* Update external systems with the latest state from React.\n* Subscribe for updates from some external system, calling setState in a callback function when external state changes.\n\nCalling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).",
+      "sourceSha256": "33f08c8ae413e63b428af2b02d7d3e77f6b14325a4d0812c2d8fcaf3d91ae17c",
+      "count": 1
+    },
+    {
+      "file": "app/_layout.tsx",
+      "rule": "react-hooks/set-state-in-effect",
+      "message": "Error: Calling setState synchronously within an effect can trigger cascading renders\n\nEffects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:\n* Update external systems with the latest state from React.\n* Subscribe for updates from some external system, calling setState in a callback function when external state changes.\n\nCalling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).",
+      "sourceSha256": "640336a960ef174aa65de99733a9b76a6dea633ae66e2a654e5f8f200e77b839",
+      "count": 1
+    },
+    {
+      "file": "app/_layout.tsx",
+      "rule": "react-hooks/set-state-in-effect",
+      "message": "Error: Calling setState synchronously within an effect can trigger cascading renders\n\nEffects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:\n* Update external systems with the latest state from React.\n* Subscribe for updates from some external system, calling setState in a callback function when external state changes.\n\nCalling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).",
+      "sourceSha256": "a784a7fcad1e917c4da3c1ff4ac0a7b146faeeaf29646c72418bcd5e836cf66f",
+      "count": 1
+    },
+    {
+      "file": "app/_layout.tsx",
+      "rule": "react-hooks/set-state-in-effect",
+      "message": "Error: Calling setState synchronously within an effect can trigger cascading renders\n\nEffects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:\n* Update external systems with the latest state from React.\n* Subscribe for updates from some external system, calling setState in a callback function when external state changes.\n\nCalling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).",
+      "sourceSha256": "e110eb426960ea8a6756115f9c9d4c4fb0f0e5754126d2cdfc2bb643af3590c8",
+      "count": 1
+    },
+    {
+      "file": "app/(tabs)/journal.tsx",
+      "rule": "react-hooks/refs",
+      "message": "Error: Cannot access refs during render\n\nReact refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).",
+      "sourceSha256": "74bb5ad1399cb246b1633306b1a9e4e296e8c0593abeba741b6daabc3e5e3098",
+      "count": 2
+    },
+    {
+      "file": "app/(tabs)/journal.tsx",
+      "rule": "react-hooks/refs",
+      "message": "Error: Cannot access refs during render\n\nReact refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).\n\n      …",
+      "sourceSha256": "c9ee697c83e9ee54fb52d3a6630de966562d93f4ce24f1aa6288a37cf34763ba",
+      "count": 2
+    },
+    {
+      "file": "app/(tabs)/journal.tsx",
+      "rule": "react-hooks/set-state-in-effect",
+      "message": "Error: Calling setState synchronously within an effect can trigger cascading renders\n\nEffects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:\n* Update external systems with the latest state from React.\n* Subscribe for updates from some external system, calling setState in a callback function when external state changes.\n\nCalling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).",
+      "sourceSha256": "d3ed51444fa8aae1fabba4902ee1ff2a02f4be2b205d81a020489825299e8651",
+      "count": 1
+    },
+    {
+      "file": "app/dream-chat/[id].tsx",
+      "rule": "react-hooks/exhaustive-deps",
+      "message": "React Hook useCallback has a missing dependency: 'tier'. Either include it or remove the dependency array.",
+      "sourceSha256": "f1cc6fbb16604ad86e028d8f263f719db83e131ee48fc10c8573dff74559a862",
+      "count": 1
+    },
+    {
+      "file": "app/dream-chat/[id].tsx",
+      "rule": "react-hooks/immutability",
+      "message": "Error: Cannot access variable before it is declared\n\n`sendMessage` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.\n\n\n      …",
+      "sourceSha256": "cf8ad7dcc609aa1f574914d37abc11f89cea80ea87d72ad00cadf492f78d6932",
+      "count": 1
+    },
+    {
+      "file": "app/dream-chat/[id].tsx",
+      "rule": "react-hooks/set-state-in-effect",
+      "message": "Error: Calling setState synchronously within an effect can trigger cascading renders\n\nEffects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:\n* Update external systems with the latest state from React.\n* Subscribe for updates from some external system, calling setState in a callback function when external state changes.\n\nCalling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).",
+      "sourceSha256": "0b82eb398174864b3b87414117e1975203ef9c5f9e36cfcba4933294167f5b10",
+      "count": 1
+    },
+    {
+      "file": "app/dream-chat/[id].tsx",
+      "rule": "react-hooks/set-state-in-effect",
+      "message": "Error: Calling setState synchronously within an effect can trigger cascading renders\n\nEffects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:\n* Update external systems with the latest state from React.\n* Subscribe for updates from some external system, calling setState in a callback function when external state changes.\n\nCalling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).",
+      "sourceSha256": "edb595f48d6743b6b1a1a843aafedbf155be4923812d5ad57999fe71d005e87b",
+      "count": 1
+    },
+    {
+      "file": "app/journal/[id].tsx",
+      "rule": "react-hooks/immutability",
+      "message": "Error: Cannot access variable before it is declared\n\n`handleGenerateWithReference` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.\n\n\n       …",
+      "sourceSha256": "7bddc77c22b0947c03d7786c198473112cd648bc65f5718e7d050b0a1544e4e4",
+      "count": 1
+    },
+    {
+      "file": "app/journal/[id].tsx",
+      "rule": "react-hooks/preserve-manual-memoization",
+      "message": "Compilation Skipped: Existing memoization could not be preserved\n\nReact Compiler has skipped optimizing this component because the existing manual memoization could not be preserved. The inferred dependencies did not match the manually specified dependencies, which could cause the value to change more or less frequently than expected. The inferred dependency was `dream.theme`, but the source dependencies were [analysisState.isAnalyzed, dream?.dreamType, dream?.theme, dreamThemeLabel, dreamTypeLabel]. Inferred different dependency than source.",
+      "sourceSha256": "4380e1b34916c5d363e26ccec07b850be7352b4865d6ac273bb6a876c8b4823c",
+      "count": 1
+    },
+    {
+      "file": "app/journal/[id].tsx",
+      "rule": "react-hooks/preserve-manual-memoization",
+      "message": "Compilation Skipped: Existing memoization could not be preserved\n\nReact Compiler has skipped optimizing this component because the existing manual memoization could not be preserved. The inferred dependencies did not match the manually specified dependencies, which could cause the value to change more or less frequently than expected. The inferred dependency was `dream`, but the source dependencies were [dream?.imageUrl, imageVersion]. Inferred less specific property than source.",
+      "sourceSha256": "f421263b64c17013e49ba2f99a617a842736f4cd1c8cf55b0157a8094ea97e88",
+      "count": 1
+    },
+    {
+      "file": "app/journal/[id].tsx",
+      "rule": "react-hooks/refs",
+      "message": "Error: Cannot access refs during render\n\nReact refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).",
+      "sourceSha256": "d9dc709c2bcf4e0db090e3357699bde420a6e50812c2ca7545311aa826a7cc80",
+      "count": 1
+    },
+    {
+      "file": "app/paywall.tsx",
+      "rule": "react-hooks/preserve-manual-memoization",
+      "message": "Compilation Skipped: Existing memoization could not be preserved\n\nReact Compiler has skipped optimizing this component because the existing manual memoization could not be preserved. The inferred dependencies did not match the manually specified dependencies, which could cause the value to change more or less frequently than expected. The inferred dependency was `user`, but the source dependencies were [analyticsTier, canPurchase, confirmAccessAndResume, effectiveSelectedId, paywallTrigger, purchase, selectedPlan, t, user?.id]. Inferred less specific property than source.\n\n      …",
+      "sourceSha256": "a2bf3eac550d7d567efd30359be3d0563dda5322291536382dd644c5d9a0b392",
+      "count": 1
+    },
+    {
+      "file": "app/paywall.tsx",
+      "rule": "react-hooks/set-state-in-effect",
+      "message": "Error: Calling setState synchronously within an effect can trigger cascading renders\n\nEffects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:\n* Update external systems with the latest state from React.\n* Subscribe for updates from some external system, calling setState in a callback function when external state changes.\n\nCalling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).",
+      "sourceSha256": "234cde855706ace7f6d6b9fdf8248d5c17745a5e3f5cd91e29bc7d609884b964",
+      "count": 1
+    },
+    {
+      "file": "app/recording.tsx",
+      "rule": "react-hooks/set-state-in-effect",
+      "message": "Error: Calling setState synchronously within an effect can trigger cascading renders\n\nEffects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:\n* Update external systems with the latest state from React.\n* Subscribe for updates from some external system, calling setState in a callback function when external state changes.\n\nCalling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).",
+      "sourceSha256": "aeb8db11c76b1a2c7ca102949b3d6879c106fc480e913a5ff02234b5b47b0a1f",
+      "count": 1
+    },
+    {
+      "file": "app/symbol-dictionary.tsx",
+      "rule": "react-hooks/set-state-in-effect",
+      "message": "Error: Calling setState synchronously within an effect can trigger cascading renders\n\nEffects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:\n* Update external systems with the latest state from React.\n* Subscribe for updates from some external system, calling setState in a callback function when external state changes.\n\nCalling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).",
+      "sourceSha256": "31ca8ef4e602865762db990f13c8f2a6ff2e5195e48743303bd1c4279611d2ce",
+      "count": 1
+    },
+    {
+      "file": "components/auth/__tests__/EmailAuthCard.test.tsx",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "6f1db6dc4fad05f239c8851ff70539a53db9f53ba6df935275e3329ec2ed8a85",
+      "count": 1
+    },
+    {
+      "file": "components/auth/__tests__/EmailAuthCard.test.tsx",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "8298380090a4c0addee97b4b9466b1742e03da7845be170017bb3115f2021639",
+      "count": 1
+    },
+    {
+      "file": "components/auth/__tests__/EmailAuthCard.test.tsx",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "cfb2b796dfae6574b7671602115624e79a45cc183b6995908d8e605adab4d5b3",
+      "count": 1
+    },
+    {
+      "file": "components/auth/__tests__/EmailAuthCard.test.tsx",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "d4831abfb06e3020710c22fd36689a23b28d6ee110496daf2890074e9a7de270",
+      "count": 1
+    },
+    {
+      "file": "components/auth/__tests__/EmailAuthCard.test.tsx",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "e9196b70166264021c76bc6aa2a4edf0fd1b8ba7fa8e412c40d2d073e6212967",
+      "count": 1
+    },
+    {
+      "file": "components/auth/__tests__/ResetPasswordScreen.test.tsx",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "6f1db6dc4fad05f239c8851ff70539a53db9f53ba6df935275e3329ec2ed8a85",
+      "count": 1
+    },
+    {
+      "file": "components/auth/__tests__/ResetPasswordScreen.test.tsx",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "8298380090a4c0addee97b4b9466b1742e03da7845be170017bb3115f2021639",
+      "count": 1
+    },
+    {
+      "file": "components/auth/__tests__/ResetPasswordScreen.test.tsx",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "e9196b70166264021c76bc6aa2a4edf0fd1b8ba7fa8e412c40d2d073e6212967",
+      "count": 1
+    },
+    {
+      "file": "components/auth/__tests__/ResetPasswordScreen.test.tsx",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "f8f13ccca0d0e6079b2d45ffd004891e28ba45973a50683f61c4f84d46b62e4d",
+      "count": 1
+    },
+    {
+      "file": "components/auth/EmailAuthCard.tsx",
+      "rule": "react-hooks/set-state-in-effect",
+      "message": "Error: Calling setState synchronously within an effect can trigger cascading renders\n\nEffects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:\n* Update external systems with the latest state from React.\n* Subscribe for updates from some external system, calling setState in a callback function when external state changes.\n\nCalling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).",
+      "sourceSha256": "4fcfdc109f522799582bc9da8e876c08c17d211376d994ac98afe31dc32abf57",
+      "count": 1
+    },
+    {
+      "file": "components/auth/EmailAuthCard.tsx",
+      "rule": "react-hooks/set-state-in-effect",
+      "message": "Error: Calling setState synchronously within an effect can trigger cascading renders\n\nEffects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:\n* Update external systems with the latest state from React.\n* Subscribe for updates from some external system, calling setState in a callback function when external state changes.\n\nCalling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).",
+      "sourceSha256": "7a4056d106d3f655b44fecd072f45c99e6a635cf9990ee036b37acc9f1312865",
+      "count": 1
+    },
+    {
+      "file": "components/auth/EmailVerificationBanner.tsx",
+      "rule": "react-hooks/preserve-manual-memoization",
+      "message": "Compilation Skipped: Existing memoization could not be preserved\n\nReact Compiler has skipped optimizing this component because the existing manual memoization could not be preserved. The inferred dependencies did not match the manually specified dependencies, which could cause the value to change more or less frequently than expected. The inferred dependency was `user`, but the source dependencies were [status, user?.email]. Inferred less specific property than source.\n\n     …",
+      "sourceSha256": "6fbfb83e728ffe97081f31e6ad4ecb211297fa34e4cb5fa39d722e9cf645735c",
+      "count": 1
+    },
+    {
+      "file": "components/chat/__tests__/messagesList-rerender.perf.test.tsx",
+      "rule": "react-hooks/exhaustive-deps",
+      "message": "React Hook React.useEffect has a missing dependency: 'react'. Either include it or remove the dependency array. If 'react' changes too often, find the parent component that defines it and wrap that definition in useCallback.",
+      "sourceSha256": "a4c64e421886597170598772abbf2506745ed26a1c5bc1241d07d22f55287a2a",
+      "count": 1
+    },
+    {
+      "file": "components/chat/MessagesList.tsx",
+      "rule": "react-hooks/refs",
+      "message": "Error: Cannot access refs during render\n\nReact refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).",
+      "sourceSha256": "1c8e7262754d489db7d30eeda47724563ee55d76ec16cb6757b68ad1da5e3b98",
+      "count": 2
+    },
+    {
+      "file": "components/chat/MessagesList.tsx",
+      "rule": "react-hooks/refs",
+      "message": "Error: Cannot access refs during render\n\nReact refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).",
+      "sourceSha256": "e4a529e120436c33a8b0ba89a27e81341a26ce67c4563fc5126759ea06d12d95",
+      "count": 1
+    },
+    {
+      "file": "components/lucid/LucidRootLayout.tsx",
+      "rule": "react-hooks/set-state-in-effect",
+      "message": "Error: Calling setState synchronously within an effect can trigger cascading renders\n\nEffects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:\n* Update external systems with the latest state from React.\n* Subscribe for updates from some external system, calling setState in a callback function when external state changes.\n\nCalling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).",
+      "sourceSha256": "3fe5065dd9d498f560cba24a0a21c701774b75718784b2cdacbd782dbcf1639c",
+      "count": 1
+    },
+    {
+      "file": "components/lucid/LucidRootLayout.tsx",
+      "rule": "react-hooks/set-state-in-effect",
+      "message": "Error: Calling setState synchronously within an effect can trigger cascading renders\n\nEffects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:\n* Update external systems with the latest state from React.\n* Subscribe for updates from some external system, calling setState in a callback function when external state changes.\n\nCalling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).",
+      "sourceSha256": "545c1f45870c9c9979abca6a05643d23f9779a44f5cd9fdf050d5d50ba204483",
+      "count": 1
+    },
+    {
+      "file": "components/lucid/LucidRootLayout.tsx",
+      "rule": "react-hooks/set-state-in-effect",
+      "message": "Error: Calling setState synchronously within an effect can trigger cascading renders\n\nEffects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:\n* Update external systems with the latest state from React.\n* Subscribe for updates from some external system, calling setState in a callback function when external state changes.\n\nCalling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).",
+      "sourceSha256": "5fa6347006249136d8359255df0a5a598f98d6021bccce4db9cfcbaf134f606a",
+      "count": 1
+    },
+    {
+      "file": "components/lucid/LucidRootLayout.tsx",
+      "rule": "react-hooks/set-state-in-effect",
+      "message": "Error: Calling setState synchronously within an effect can trigger cascading renders\n\nEffects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:\n* Update external systems with the latest state from React.\n* Subscribe for updates from some external system, calling setState in a callback function when external state changes.\n\nCalling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).",
+      "sourceSha256": "b27b04e14ffcbedae0558ed863c9aa64e84bead62e510e094e96d5e531d32f91",
+      "count": 1
+    },
+    {
+      "file": "context/LucidTrainerContext.tsx",
+      "rule": "@typescript-eslint/no-unused-vars",
+      "message": "'reconcileLucidDreamSignDecisions' is defined but never used.",
+      "sourceSha256": "6b7f99b95e3ca0c6c57b063c175306d42c60d945cc3834a051b544e8cd320eaa",
+      "count": 1
+    },
+    {
+      "file": "context/OnboardingContext.tsx",
+      "rule": "react-hooks/set-state-in-effect",
+      "message": "Error: Calling setState synchronously within an effect can trigger cascading renders\n\nEffects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:\n* Update external systems with the latest state from React.\n* Subscribe for updates from some external system, calling setState in a callback function when external state changes.\n\nCalling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).",
+      "sourceSha256": "4201ab054a125dbdd5e6d49d905faebb8e15128c2327f39285c73105afad5f93",
+      "count": 1
+    },
+    {
+      "file": "hooks/useDreamJournal.ts",
+      "rule": "react-hooks/set-state-in-effect",
+      "message": "Error: Calling setState synchronously within an effect can trigger cascading renders\n\nEffects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:\n* Update external systems with the latest state from React.\n* Subscribe for updates from some external system, calling setState in a callback function when external state changes.\n\nCalling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).",
+      "sourceSha256": "902ecf978ecb863ece79335ba0d019ff73cefe2afed817638b88037d5867824c",
+      "count": 1
+    },
+    {
+      "file": "hooks/useDreamPersistence.ts",
+      "rule": "react-hooks/set-state-in-effect",
+      "message": "Error: Calling setState synchronously within an effect can trigger cascading renders\n\nEffects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:\n* Update external systems with the latest state from React.\n* Subscribe for updates from some external system, calling setState in a callback function when external state changes.\n\nCalling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).",
+      "sourceSha256": "61bc8e0da5ef7e2a39b8d6b837ba0f88d56e8e725a09632abc5ef7b48a3bf02f",
+      "count": 1
+    },
+    {
+      "file": "hooks/useLucidJournalImport.ts",
+      "rule": "react-hooks/refs",
+      "message": "Error: Cannot access refs during render\n\nReact refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).",
+      "sourceSha256": "155da3d315c08aad140b346daa4eb699b209cdf1d88d05f33851af0179592057",
+      "count": 1
+    },
+    {
+      "file": "hooks/useLucidJournalImport.ts",
+      "rule": "react-hooks/refs",
+      "message": "Error: Cannot access refs during render\n\nReact refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).",
+      "sourceSha256": "e95bdb96d02035389ed93d4fc79f60162e25dfa6aad0759c1dda6bff86385de4",
+      "count": 1
+    },
+    {
+      "file": "hooks/useLucidJournalImport.ts",
+      "rule": "react-hooks/refs",
+      "message": "Error: Cannot access refs during render\n\nReact refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).",
+      "sourceSha256": "fc8c3e9e2c6ce02b16385f0a2ae1c37feb036dcc2f027355e9e6bd887fd20c1b",
+      "count": 1
+    },
+    {
+      "file": "hooks/useQuota.ts",
+      "rule": "react-hooks/purity",
+      "message": "Error: Cannot call impure function during render\n\n`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).",
+      "sourceSha256": "d8171d118e19556010680eb7b3001365c6aed91869027eb5edd26dca0c6c2609",
+      "count": 1
+    },
+    {
+      "file": "hooks/useQuota.ts",
+      "rule": "react-hooks/set-state-in-effect",
+      "message": "Error: Calling setState synchronously within an effect can trigger cascading renders\n\nEffects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:\n* Update external systems with the latest state from React.\n* Subscribe for updates from some external system, calling setState in a callback function when external state changes.\n\nCalling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).",
+      "sourceSha256": "1a5a554ac6548d77c12bb7bffa1247603ba354f364a62758e6e8809f045e8c14",
+      "count": 1
+    },
+    {
+      "file": "hooks/useRemoteJournalList.ts",
+      "rule": "react-hooks/set-state-in-effect",
+      "message": "Error: Calling setState synchronously within an effect can trigger cascading renders\n\nEffects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:\n* Update external systems with the latest state from React.\n* Subscribe for updates from some external system, calling setState in a callback function when external state changes.\n\nCalling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).",
+      "sourceSha256": "ac975e56d8973138943f3604aa2a8e50029e541475064e5a75c5676e7300809f",
+      "count": 1
+    },
+    {
+      "file": "hooks/useSubscriptionCustomerInfoListener.ts",
+      "rule": "react-hooks/refs",
+      "message": "Error: Cannot access refs during render\n\nReact refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).",
+      "sourceSha256": "f05d762ba953842a5ea50f238ccdcb9ba20025ab651caeadfc2cb63abecb79e3",
+      "count": 1
+    },
+    {
+      "file": "hooks/useSubscriptionExpiryTimer.ts",
+      "rule": "react-hooks/refs",
+      "message": "Error: Cannot access refs during render\n\nReact refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).",
+      "sourceSha256": "f05d762ba953842a5ea50f238ccdcb9ba20025ab651caeadfc2cb63abecb79e3",
+      "count": 1
+    },
+    {
+      "file": "hooks/useSubscriptionInternal.ts",
+      "rule": "react-hooks/set-state-in-effect",
+      "message": "Error: Calling setState synchronously within an effect can trigger cascading renders\n\nEffects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:\n* Update external systems with the latest state from React.\n* Subscribe for updates from some external system, calling setState in a callback function when external state changes.\n\nCalling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).",
+      "sourceSha256": "d5471899f181684ef6f4b83e84e1da87cc2a44d33c19eb98ec2fef98ea7db791",
+      "count": 1
+    },
+    {
+      "file": "lib/__tests__/aiConsent.test.ts",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "0ec38a7ee7547545710d2dc1989a65ed91fa21ea4b58e700d00c526698c09d35",
+      "count": 1
+    },
+    {
+      "file": "lib/__tests__/aiConsent.test.ts",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "2b311d7efb1ef302d66ca2b8163644aae680cc268f9193b78afda5b4105e2510",
+      "count": 1
+    },
+    {
+      "file": "lib/__tests__/observe.test.ts",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "0ec38a7ee7547545710d2dc1989a65ed91fa21ea4b58e700d00c526698c09d35",
+      "count": 1
+    },
+    {
+      "file": "lib/__tests__/storeReview.test.ts",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "0ec38a7ee7547545710d2dc1989a65ed91fa21ea4b58e700d00c526698c09d35",
+      "count": 1
+    },
+    {
+      "file": "lib/__tests__/storeReview.test.ts",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "47450536d2378a77dc7c235c8eef9964cd31fcc7cbe60fe9bc57116cd84e26e0",
+      "count": 1
+    },
+    {
+      "file": "lib/__tests__/storeReview.test.ts",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "d9908e9972a92b50308b38b4e7d794fccd9d4b8baa67a868da2102f376828337",
+      "count": 1
+    },
+    {
+      "file": "lib/__tests__/todayState.test.ts",
+      "rule": "@typescript-eslint/no-unused-vars",
+      "message": "'_ActionIsDiscriminated' is defined but never used.",
+      "sourceSha256": "bbfa2b8ad13e23c9b820943cb78d40410c587616d52bed17cdf023b8fcd6aaf6",
+      "count": 1
+    },
+    {
+      "file": "lib/__tests__/todayState.test.ts",
+      "rule": "@typescript-eslint/no-unused-vars",
+      "message": "'_ReasonIsClosed' is defined but never used.",
+      "sourceSha256": "c680cadd975a6e181e2fc8fe5dc1abaea913b07d22571e68c5748b35ae70b4e2",
+      "count": 1
+    },
+    {
+      "file": "supabase/functions/api/evaluation/ti559/chat-latency.ts",
+      "rule": "@typescript-eslint/no-unused-vars",
+      "message": "'MAX_RECENT_CHAT_MESSAGES' is defined but never used.",
+      "sourceSha256": "6095a50cf376cc746bc81ed742ac2c8b142762e5d61c16d9dd3377fa6694622e",
+      "count": 1
+    },
+    {
+      "file": "supabase/functions/api/evaluation/ti559/evaluate-models.ts",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "b7125e1813d7b7fc8db7f2926f34e580e0478aef0c75f3623a5690d7b15a7750",
+      "count": 1
+    },
+    {
+      "file": "supabase/functions/api/routes/account.test.ts",
+      "rule": "@typescript-eslint/array-type",
+      "message": "Array type using 'Array<T>' is forbidden. Use 'T[]' instead.",
+      "sourceSha256": "54ca9101a6de89513be8bf2673f886bd18f151217cbdbb1b1e66b1d01634b4a7",
+      "count": 1
+    },
+    {
+      "file": "supabase/functions/api/routes/account.test.ts",
+      "rule": "@typescript-eslint/array-type",
+      "message": "Array type using 'Array<T>' is forbidden. Use 'T[]' instead.",
+      "sourceSha256": "b2b599e859a23c6a4d5168441ea47ca949ae6541b346371bda7d298727132bd6",
+      "count": 1
+    },
+    {
+      "file": "supabase/functions/api/routes/account.ts",
+      "rule": "@typescript-eslint/array-type",
+      "message": "Array type using 'Array<T>' is forbidden. Use 'T[]' instead.",
+      "sourceSha256": "a9015823e93b4c4b11209642e874797a635996165933ed5a9f0ec6dc316409fc",
+      "count": 1
+    },
+    {
+      "file": "tests/app-routes/dreamGuides.test.tsx",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "9b12a5cd403c0fc514ea6512575eb579aaf20f91f54b494416fddad4dde172e9",
+      "count": 1
+    },
+    {
+      "file": "tests/app-routes/dreamGuides.test.tsx",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "d6a00c69a56d3e05e1d8e4fbbf8bdf54e69862fe52f1feef5745c61f9bb3c70e",
+      "count": 1
+    },
+    {
+      "file": "tests/app-routes/dreamGuides.test.tsx",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "e9196b70166264021c76bc6aa2a4edf0fd1b8ba7fa8e412c40d2d073e6212967",
+      "count": 1
+    },
+    {
+      "file": "tests/app-routes/journalCompactLayout.test.tsx",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "1afca2d6f0d4a59ed99519edc49bd6ee68b24381d97527d7e5f6343c74d8e426",
+      "count": 1
+    },
+    {
+      "file": "tests/app-routes/journalCompactLayout.test.tsx",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "630bca4501798cb0001cc266fdbdf2a27af190b9141e8f947e3f756340e6806b",
+      "count": 1
+    },
+    {
+      "file": "tests/app-routes/journalCompactLayout.test.tsx",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "6f1db6dc4fad05f239c8851ff70539a53db9f53ba6df935275e3329ec2ed8a85",
+      "count": 1
+    },
+    {
+      "file": "tests/app-routes/journalCompactLayout.test.tsx",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "8298380090a4c0addee97b4b9466b1742e03da7845be170017bb3115f2021639",
+      "count": 1
+    },
+    {
+      "file": "tests/app-routes/journalCompactLayout.test.tsx",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "bfae3ccea9ca19be46e07089c259d400966f95a4d00295a0efac6ab70f7f56c8",
+      "count": 1
+    },
+    {
+      "file": "tests/app-routes/journalCompactLayout.test.tsx",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "e9196b70166264021c76bc6aa2a4edf0fd1b8ba7fa8e412c40d2d073e6212967",
+      "count": 1
+    },
+    {
+      "file": "tests/app-routes/journalCompactLayout.test.tsx",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "f8f13ccca0d0e6079b2d45ffd004891e28ba45973a50683f61c4f84d46b62e4d",
+      "count": 1
+    },
+    {
+      "file": "tests/app-routes/lucidAuthCallback.test.tsx",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "221b1458bc89dd56b41d59a9958f20db46dca014469c48e6139bb4d74e89c4e5",
+      "count": 1
+    },
+    {
+      "file": "tests/app-routes/lucidAuthCallback.test.tsx",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "8a138393c145bdb8b33d2db496940f0a8cee2c1a4461cbfb4dc49432778ee543",
+      "count": 1
+    },
+    {
+      "file": "tests/app-routes/lucidAuthCallback.test.tsx",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "a0c2a92bee312dc476517e1f8f80e1b592124d95016579032ad7964044ae6200",
+      "count": 1
+    },
+    {
+      "file": "tests/app-routes/lucidAuthCallback.test.tsx",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "d71de22a88a15e3efd8f98331f9daa36a460fc92dd21f2ee19bb7ab6749261b1",
+      "count": 1
+    },
+    {
+      "file": "tests/app-routes/lucidAuthCallback.test.tsx",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "e9196b70166264021c76bc6aa2a4edf0fd1b8ba7fa8e412c40d2d073e6212967",
+      "count": 1
+    },
+    {
+      "file": "tests/app-routes/lucidSsildLab.test.tsx",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "6f0e549c3f02f07d185858b93210378777ba8fecc2493bd23f9f3ccb2c677423",
+      "count": 1
+    },
+    {
+      "file": "tests/app-routes/lucidSsildLab.test.tsx",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "8b43bc0b4c07a9d3565d4b04c601daab64dd78dab7de7dc50fa8271bbb9487ff",
+      "count": 1
+    },
+    {
+      "file": "tests/app-routes/lucidSsildLab.test.tsx",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "d6e235ee98103dca27ad04c13c63e7132e592a333e3493dcad4398257ade46e1",
+      "count": 1
+    },
+    {
+      "file": "tests/app-routes/lucidSsildLab.test.tsx",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "da3c1a775aca1c1eeb40dc9d16e068ae864a147d59173971a5fdc10a9d227797",
+      "count": 1
+    },
+    {
+      "file": "tests/app-routes/lucidSsildLab.test.tsx",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "e9196b70166264021c76bc6aa2a4edf0fd1b8ba7fa8e412c40d2d073e6212967",
+      "count": 1
+    },
+    {
+      "file": "tests/app-routes/paywallScreen.test.tsx",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "6f1db6dc4fad05f239c8851ff70539a53db9f53ba6df935275e3329ec2ed8a85",
+      "count": 1
+    },
+    {
+      "file": "tests/app-routes/paywallScreen.test.tsx",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "8298380090a4c0addee97b4b9466b1742e03da7845be170017bb3115f2021639",
+      "count": 1
+    },
+    {
+      "file": "tests/app-routes/paywallScreen.test.tsx",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "e9196b70166264021c76bc6aa2a4edf0fd1b8ba7fa8e412c40d2d073e6212967",
+      "count": 1
+    },
+    {
+      "file": "tests/app-routes/paywallScreen.test.tsx",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "f8f13ccca0d0e6079b2d45ffd004891e28ba45973a50683f61c4f84d46b62e4d",
+      "count": 1
+    },
+    {
+      "file": "tests/app-routes/ritualLucidTrainerBridge.test.tsx",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "8b43bc0b4c07a9d3565d4b04c601daab64dd78dab7de7dc50fa8271bbb9487ff",
+      "count": 1
+    },
+    {
+      "file": "tests/app-routes/ritualLucidTrainerBridge.test.tsx",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "e9196b70166264021c76bc6aa2a4edf0fd1b8ba7fa8e412c40d2d073e6212967",
+      "count": 1
+    },
+    {
+      "file": "tests/app-routes/ritualSleepSounds.test.tsx",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "8b43bc0b4c07a9d3565d4b04c601daab64dd78dab7de7dc50fa8271bbb9487ff",
+      "count": 1
+    },
+    {
+      "file": "tests/app-routes/ritualSleepSounds.test.tsx",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "e9196b70166264021c76bc6aa2a4edf0fd1b8ba7fa8e412c40d2d073e6212967",
+      "count": 1
+    },
+    {
+      "file": "tests/app-routes/settingsScreen.test.tsx",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "8298380090a4c0addee97b4b9466b1742e03da7845be170017bb3115f2021639",
+      "count": 1
+    },
+    {
+      "file": "tests/app-routes/settingsScreen.test.tsx",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "8b43bc0b4c07a9d3565d4b04c601daab64dd78dab7de7dc50fa8271bbb9487ff",
+      "count": 1
+    },
+    {
+      "file": "tests/app-routes/settingsScreen.test.tsx",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "e9196b70166264021c76bc6aa2a4edf0fd1b8ba7fa8e412c40d2d073e6212967",
+      "count": 1
+    },
+    {
+      "file": "tests/app-routes/weeklyRecapScreen.test.tsx",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "9b12a5cd403c0fc514ea6512575eb579aaf20f91f54b494416fddad4dde172e9",
+      "count": 1
+    },
+    {
+      "file": "tests/app-routes/weeklyRecapScreen.test.tsx",
+      "rule": "import/first",
+      "message": "Import in body of module; reorder to top.",
+      "sourceSha256": "e9196b70166264021c76bc6aa2a4edf0fd1b8ba7fa8e412c40d2d073e6212967",
+      "count": 1
+    }
+  ]
+}
