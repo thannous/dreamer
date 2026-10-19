@@ -928,5 +928,191 @@
         { "texture": "accent", "place": { "fit": "cover", "zoom": 1.15, "x": 0.5, "y": 0.15 }, "motion": "pulse", "dur": 7, "op": [0.12, 0.38], "blend": "screen" }
       ]
     }
+  },
+  "wolf": {
+    "slug": "loup",
+    "caveat": null,
+    "scenes": [
+      { "id": "solitaire", "variation": "Un loup solitaire qui vous observe" },
+      { "id": "meute", "variation": "Une meute de loups" },
+      { "id": "poursuite", "variation": "Être poursuivi par un loup" }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          { "texture": "layer", "place": { "fit": "cover", "zoom": 1.15, "x": 0.5, "y": 0.8 }, "motion": "drift", "move": [0.02, 0], "dur": 22, "op": [0.18, 0.42] },
+          { "texture": "accent", "place": { "fit": "cover", "zoom": 1.05, "x": 0.5, "y": 0.2 }, "motion": "pulse", "dur": 4.6, "op": [0.12, 0.42], "blend": "screen" }
+        ],
+        "portrait": [
+          { "texture": "layer", "place": { "fit": "width", "zoom": 1.2, "x": 0.5, "y": 0.78 }, "motion": "drift", "move": [0.02, 0], "dur": 22, "op": [0.18, 0.42] },
+          { "texture": "accent", "place": { "fit": "width", "zoom": 1.05, "x": 0.5, "y": 0.15 }, "motion": "pulse", "dur": 4.6, "op": [0.12, 0.42], "blend": "screen" }
+        ]
+      },
+      "plate": [
+        { "texture": "layer", "place": { "fit": "width", "zoom": 1.05, "x": 0.5, "y": 0.62 }, "motion": "drift", "move": [0.02, 0], "dur": 22, "op": [0.18, 0.42] },
+        { "texture": "accent", "place": { "fit": "width", "zoom": 1, "x": 0.5, "y": 0.4 }, "motion": "pulse", "dur": 4.6, "op": [0.1, 0.36], "blend": "screen" }
+      ],
+      "thumb": [
+        { "texture": "layer", "place": { "fit": "cover", "zoom": 1.15, "x": 0.5, "y": 0.75 }, "motion": "drift", "move": [0.02, 0], "dur": 22, "op": [0.25, 0.5] },
+        { "texture": "accent", "place": { "fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.25 }, "motion": "pulse", "dur": 4, "op": [0.2, 0.6], "blend": "screen" }
+      ]
+    }
+  },
+  "elevator": {
+    "slug": "ascenseur",
+    "caveat": null,
+    "scenes": [
+      { "id": "montee", "variation": "Ascenseur qui monte" },
+      { "id": "descente", "variation": "Ascenseur qui descend" },
+      { "id": "bloque", "variation": "Bloqué entre deux étages" }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          { "texture": "layer", "place": { "fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.5 }, "motion": "flow", "move": [0.003, -0.05], "dur": 12, "op": [0.18, 0.45], "copies": 2 },
+          { "texture": "accent", "place": { "fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.45 }, "motion": "drift", "move": [0, 0.035], "dur": 9, "op": [0.1, 0.35], "blend": "screen" }
+        ],
+        "portrait": [
+          { "texture": "layer", "place": { "fit": "width", "zoom": 1.15, "x": 0.5, "y": 0.55 }, "motion": "flow", "move": [0.003, -0.05], "dur": 12, "op": [0.18, 0.45], "copies": 2 },
+          { "texture": "accent", "place": { "fit": "width", "zoom": 1.1, "x": 0.5, "y": 0.45 }, "motion": "drift", "move": [0, 0.035], "dur": 9, "op": [0.1, 0.35], "blend": "screen" }
+        ]
+      },
+      "plate": [
+        { "texture": "layer", "place": { "fit": "width", "zoom": 1.05, "x": 0.5, "y": 0.5 }, "motion": "flow", "move": [0.003, -0.05], "dur": 12, "op": [0.18, 0.45], "copies": 2 },
+        { "texture": "accent", "place": { "fit": "width", "zoom": 1, "x": 0.5, "y": 0.45 }, "motion": "drift", "move": [0, 0.035], "dur": 9, "op": [0.1, 0.35], "blend": "screen" }
+      ],
+      "thumb": [
+        { "texture": "layer", "place": { "fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.55 }, "motion": "flow", "move": [0.003, -0.05], "dur": 12, "op": [0.25, 0.55], "copies": 2 },
+        { "texture": "accent", "place": { "fit": "cover", "zoom": 1.15, "x": 0.5, "y": 0.45 }, "motion": "drift", "move": [0, 0.035], "dur": 9, "op": [0.18, 0.5], "blend": "screen" }
+      ]
+    }
+  },
+  "candle": {
+    "slug": "bougie",
+    "caveat": null,
+    "scenes": [
+      { "id": "seule", "variation": "Une bougie seule dans le noir" },
+      { "id": "anniversaire", "variation": "Des bougies d'anniversaire" },
+      { "id": "ceremonie", "variation": "Allumer un cierge ou une bougie pour un défunt" }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          { "texture": "layer", "place": { "fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.3 }, "motion": "flow", "move": [0.002, -0.03], "dur": 14, "op": [0.12, 0.32], "copies": 2 },
+          { "texture": "accent", "place": { "fit": "cover", "zoom": 1.05, "x": 0.5, "y": 0.45 }, "motion": "pulse", "dur": 5.5, "op": [0.14, 0.45], "blend": "screen" }
+        ],
+        "portrait": [
+          { "texture": "layer", "place": { "fit": "width", "zoom": 1.15, "x": 0.5, "y": 0.3 }, "motion": "flow", "move": [0.002, -0.03], "dur": 14, "op": [0.12, 0.32], "copies": 2 },
+          { "texture": "accent", "place": { "fit": "width", "zoom": 1.1, "x": 0.5, "y": 0.45 }, "motion": "pulse", "dur": 5.5, "op": [0.14, 0.45], "blend": "screen" }
+        ]
+      },
+      "plate": [
+        { "texture": "layer", "place": { "fit": "width", "zoom": 1, "x": 0.5, "y": 0.35 }, "motion": "flow", "move": [0.002, -0.03], "dur": 14, "op": [0.12, 0.32], "copies": 2 },
+        { "texture": "accent", "place": { "fit": "width", "zoom": 1, "x": 0.5, "y": 0.5 }, "motion": "pulse", "dur": 5.5, "op": [0.14, 0.45], "blend": "screen" }
+      ],
+      "thumb": [
+        { "texture": "layer", "place": { "fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.3 }, "motion": "flow", "move": [0.002, -0.03], "dur": 14, "op": [0.18, 0.4], "copies": 2 },
+        { "texture": "accent", "place": { "fit": "cover", "zoom": 1.15, "x": 0.5, "y": 0.45 }, "motion": "pulse", "dur": 5, "op": [0.2, 0.55], "blend": "screen" }
+      ]
+    }
+  },
+  "book": {
+    "slug": "livre",
+    "caveat": null,
+    "scenes": [
+      { "id": "illisible", "variation": "Ne pas arriver à lire" },
+      { "id": "blanches", "variation": "Un livre aux pages blanches" },
+      { "id": "bibliotheque", "variation": "Chercher un livre dans une bibliothèque" }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          { "texture": "layer", "place": { "fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.4 }, "motion": "drift", "move": [0.012, -0.008], "dur": 18, "op": [0.15, 0.4] },
+          { "texture": "accent", "place": { "fit": "cover", "zoom": 1.05, "x": 0.35, "y": 0.3 }, "motion": "pulse", "dur": 7.5, "op": [0.1, 0.32], "blend": "screen" }
+        ],
+        "portrait": [
+          { "texture": "layer", "place": { "fit": "width", "zoom": 1.15, "x": 0.5, "y": 0.45 }, "motion": "drift", "move": [0.012, -0.008], "dur": 18, "op": [0.15, 0.4] },
+          { "texture": "accent", "place": { "fit": "width", "zoom": 1.05, "x": 0.4, "y": 0.25 }, "motion": "pulse", "dur": 7.5, "op": [0.1, 0.32], "blend": "screen" }
+        ]
+      },
+      "plate": [
+        { "texture": "layer", "place": { "fit": "width", "zoom": 1.05, "x": 0.5, "y": 0.45 }, "motion": "drift", "move": [0.012, -0.008], "dur": 18, "op": [0.15, 0.4] },
+        { "texture": "accent", "place": { "fit": "width", "zoom": 1, "x": 0.45, "y": 0.4 }, "motion": "pulse", "dur": 7.5, "op": [0.1, 0.32], "blend": "screen" }
+      ],
+      "thumb": [
+        { "texture": "layer", "place": { "fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.4 }, "motion": "drift", "move": [0.012, -0.008], "dur": 18, "op": [0.22, 0.5] },
+        { "texture": "accent", "place": { "fit": "cover", "zoom": 1.1, "x": 0.35, "y": 0.3 }, "motion": "pulse", "dur": 7.5, "op": [0.15, 0.45], "blend": "screen" }
+      ]
+    }
+  },
+  "snow": {
+    "slug": "neige",
+    "caveat": null,
+    "scenes": [
+      { "id": "chute", "variation": "Regarder la neige tomber" },
+      { "id": "bloque", "variation": "Être bloqué par la neige" },
+      { "id": "marche", "variation": "Marcher dans une neige profonde" }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          { "texture": "layer", "place": { "fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.4 }, "motion": "flow", "move": [-0.025, 0.05], "dur": 9, "op": [0.25, 0.55], "copies": 2 },
+          { "texture": "accent", "place": { "fit": "cover", "zoom": 1.15, "x": 0.5, "y": 0.85 }, "motion": "drift", "move": [0.025, 0], "dur": 20, "op": [0.15, 0.38] }
+        ],
+        "portrait": [
+          { "texture": "layer", "place": { "fit": "width", "zoom": 1.1, "x": 0.5, "y": 0.4 }, "motion": "flow", "move": [-0.025, 0.05], "dur": 9, "op": [0.25, 0.55], "copies": 2 },
+          { "texture": "accent", "place": { "fit": "width", "zoom": 1.2, "x": 0.5, "y": 0.8 }, "motion": "drift", "move": [0.025, 0], "dur": 20, "op": [0.15, 0.38] }
+        ]
+      },
+      "plate": [
+        { "texture": "layer", "place": { "fit": "width", "zoom": 1.05, "x": 0.5, "y": 0.45 }, "motion": "flow", "move": [-0.025, 0.05], "dur": 9, "op": [0.25, 0.55], "copies": 2 },
+        { "texture": "accent", "place": { "fit": "width", "zoom": 1.05, "x": 0.5, "y": 0.62 }, "motion": "drift", "move": [0.025, 0], "dur": 20, "op": [0.15, 0.38] }
+      ],
+      "thumb": [
+        { "texture": "layer", "place": { "fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.4 }, "motion": "flow", "move": [-0.025, 0.05], "dur": 9, "op": [0.3, 0.6], "copies": 2 },
+        { "texture": "accent", "place": { "fit": "cover", "zoom": 1.15, "x": 0.5, "y": 0.8 }, "motion": "drift", "move": [0.025, 0], "dur": 20, "op": [0.2, 0.45] }
+      ]
+    }
+  },
+  "desert": {
+    "slug": "desert",
+    "caveat": null,
+    "scenes": [
+      { "id": "seul", "variation": "Marcher seul dans le désert" },
+      { "id": "tempete", "variation": "Une tempête de sable" },
+      { "id": "oasis", "variation": "Trouver une oasis" }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          { "texture": "layer", "place": { "fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.75 }, "motion": "flow", "move": [0.06, 0.004], "dur": 8, "op": [0.22, 0.52], "copies": 2 },
+          { "texture": "accent", "place": { "fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.3 }, "motion": "drift", "move": [0.01, -0.004], "dur": 22, "op": [0.1, 0.3], "blend": "screen" }
+        ],
+        "portrait": [
+          { "texture": "layer", "place": { "fit": "width", "zoom": 1.15, "x": 0.5, "y": 0.75 }, "motion": "flow", "move": [0.06, 0.004], "dur": 8, "op": [0.22, 0.52], "copies": 2 },
+          { "texture": "accent", "place": { "fit": "width", "zoom": 1.1, "x": 0.5, "y": 0.25 }, "motion": "drift", "move": [0.01, -0.004], "dur": 22, "op": [0.1, 0.3], "blend": "screen" }
+        ]
+      },
+      "plate": [
+        { "texture": "layer", "place": { "fit": "width", "zoom": 1.05, "x": 0.5, "y": 0.6 }, "motion": "flow", "move": [0.06, 0.004], "dur": 8, "op": [0.22, 0.52], "copies": 2 },
+        { "texture": "accent", "place": { "fit": "width", "zoom": 1, "x": 0.5, "y": 0.4 }, "motion": "drift", "move": [0.01, -0.004], "dur": 22, "op": [0.1, 0.3], "blend": "screen" }
+      ],
+      "thumb": [
+        { "texture": "layer", "place": { "fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.7 }, "motion": "flow", "move": [0.06, 0.004], "dur": 8, "op": [0.28, 0.58], "copies": 2 },
+        { "texture": "accent", "place": { "fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.3 }, "motion": "drift", "move": [0.01, -0.004], "dur": 22, "op": [0.16, 0.42], "blend": "screen" }
+      ]
+    }
   }
 }

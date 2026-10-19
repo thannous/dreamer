@@ -999,6 +999,198 @@
           "expose": {"variation":"Ser pego pela tempestade","anchor":"pego"},
           "abri": {"variation":"Ver a tempestade de um abrigo","anchor":"abrigo"}
       } }
+    },
+    "wolf": {
+      "fr": { "caveat": null, "scenes": {
+          "solitaire": {"variation":"Un loup solitaire qui vous observe","anchor":"solitaire"},
+          "meute": {"variation":"Une meute de loups","anchor":"meute"},
+          "poursuite": {"variation":"Être poursuivi par un loup","anchor":"poursuite"}
+      } },
+      "en": { "caveat": null, "scenes": {
+          "solitaire": {"variation":"A lone wolf watching you","anchor":"lone-wolf"},
+          "meute": {"variation":"A pack of wolves","anchor":"pack"},
+          "poursuite": {"variation":"Being chased by a wolf","anchor":"chase"}
+      } },
+      "es": { "caveat": null, "scenes": {
+          "solitaire": {"variation":"Lobo que te mira o te sigue","anchor":"te-mira"},
+          "meute": {"variation":"Manada de lobos","anchor":"manada"},
+          "poursuite": {"variation":"Ser perseguido por un lobo","anchor":"persecucion"}
+      } },
+      "de": { "caveat": null, "scenes": {
+          "solitaire": {"variation":"Ein einzelner Wolf beobachtet Sie","anchor":"einzelner-wolf"},
+          "meute": {"variation":"Ein Wolfsrudel","anchor":"rudel"},
+          "poursuite": {"variation":"Von einem Wolf verfolgt werden","anchor":"verfolgung"}
+      } },
+      "it": { "caveat": null, "scenes": {
+          "solitaire": {"variation":"Lupo grigio che ti guarda, senza attaccare","anchor":"ti-guarda"},
+          "meute": {"variation":"Branco di lupi o due lupi","anchor":"branco"},
+          "poursuite": {"variation":"Essere inseguito da un lupo","anchor":"inseguimento"}
+      } },
+      "pt-br": { "caveat": null, "scenes": {
+          "solitaire": {"variation":"Lobo solitário","anchor":"solitario"},
+          "meute": {"variation":"Alcateia","anchor":"alcateia"},
+          "poursuite": {"variation":"Ser perseguido por um lobo","anchor":"perseguicao"}
+      } }
+    },
+    "elevator": {
+      "fr": { "caveat": null, "scenes": {
+          "montee": {"variation":"Ascenseur qui monte","anchor":"montee"},
+          "descente": {"variation":"Ascenseur qui descend","anchor":"descente"},
+          "bloque": {"variation":"Bloqué entre deux étages","anchor":"bloque"}
+      } },
+      "en": { "caveat": null, "scenes": {
+          "montee": {"variation":"Elevator going up","anchor":"going-up"},
+          "descente": {"variation":"Elevator going down","anchor":"going-down"},
+          "bloque": {"variation":"Stuck between floors","anchor":"stuck"}
+      } },
+      "es": { "caveat": null, "scenes": {
+          "montee": {"variation":"Ascensor que sube","anchor":"sube"},
+          "descente": {"variation":"Ascensor que baja","anchor":"baja"},
+          "bloque": {"variation":"Atascado entre dos plantas","anchor":"atascado"}
+      } },
+      "de": { "caveat": null, "scenes": {
+          "montee": {"variation":"Aufzug fährt nach oben","anchor":"nach-oben"},
+          "descente": {"variation":"Aufzug fährt nach unten","anchor":"nach-unten"},
+          "bloque": {"variation":"Zwischen zwei Stockwerken stecken bleiben","anchor":"steckenbleiben"}
+      } },
+      "it": { "caveat": null, "scenes": {
+          "montee": {"variation":"Ascensore che sale","anchor":"sale"},
+          "descente": {"variation":"Ascensore che scende","anchor":"scende"},
+          "bloque": {"variation":"Bloccati tra due piani","anchor":"bloccati"}
+      } },
+      "pt-br": { "caveat": null, "scenes": {
+          "montee": {"variation":"Elevador subindo","anchor":"subindo"},
+          "descente": {"variation":"Elevador descendo","anchor":"descendo"},
+          "bloque": {"variation":"Elevador travado","anchor":"travado"}
+      } }
+    },
+    "candle": {
+      "fr": { "caveat": null, "scenes": {
+          "seule": {"variation":"Une bougie seule dans le noir","anchor":"seule"},
+          "anniversaire": {"variation":"Des bougies d'anniversaire","anchor":"anniversaire"},
+          "ceremonie": {"variation":"Allumer un cierge ou une bougie pour un défunt","anchor":"ceremonie"}
+      } },
+      "en": { "caveat": null, "scenes": {
+          "seule": {"variation":"A single candle in the dark","anchor":"single-candle"},
+          "anniversaire": {"variation":"Birthday candles on a cake","anchor":"birthday"},
+          "ceremonie": {"variation":"Lighting candles for the dead or at a ceremony","anchor":"ceremony"}
+      } },
+      "es": { "caveat": null, "scenes": {
+          "seule": {"variation":"Una vela sola en la oscuridad","anchor":"sola"},
+          "anniversaire": {"variation":"Velas de cumpleaños en una tarta","anchor":"cumpleanos"},
+          "ceremonie": {"variation":"Encender velas por un difunto o en una ceremonia","anchor":"ceremonia"}
+      } },
+      "de": { "caveat": null, "scenes": {
+          "seule": {"variation":"Eine einzelne Kerze im Dunkeln","anchor":"einzelne-kerze"},
+          "anniversaire": {"variation":"Geburtstagskerzen auf einer Torte","anchor":"geburtstag"},
+          "ceremonie": {"variation":"Kerzen für Verstorbene oder bei einer Zeremonie","anchor":"zeremonie"}
+      } },
+      "it": { "caveat": null, "scenes": {
+          "seule": {"variation":"Una candela sola nel buio","anchor":"sola"},
+          "anniversaire": {"variation":"Le candeline sulla torta","anchor":"candeline"},
+          "ceremonie": {"variation":"Accendere candele per un defunto o in chiesa","anchor":"defunto"}
+      } },
+      "pt-br": { "caveat": null, "scenes": {
+          "seule": {"variation":"Uma vela sozinha no escuro","anchor":"sozinha"},
+          "anniversaire": {"variation":"Velas de aniversário no bolo","anchor":"aniversario"},
+          "ceremonie": {"variation":"Acender velas para quem morreu ou numa cerimônia","anchor":"cerimonia"}
+      } }
+    },
+    "book": {
+      "fr": { "caveat": null, "scenes": {
+          "illisible": {"variation":"Ne pas arriver à lire","anchor":"illisible"},
+          "blanches": {"variation":"Un livre aux pages blanches","anchor":"blanches"},
+          "bibliotheque": {"variation":"Chercher un livre dans une bibliothèque","anchor":"bibliotheque"}
+      } },
+      "en": { "caveat": null, "scenes": {
+          "illisible": {"variation":"Not being able to read","anchor":"unable-to-read"},
+          "blanches": {"variation":"A book with blank pages","anchor":"blank-pages"},
+          "bibliotheque": {"variation":"Looking for a book in a library","anchor":"library"}
+      } },
+      "es": { "caveat": null, "scenes": {
+          "illisible": {"variation":"No poder leer","anchor":"no-poder-leer"},
+          "blanches": {"variation":"Un libro en blanco","anchor":"en-blanco"},
+          "bibliotheque": {"variation":"Buscar un libro en una biblioteca","anchor":"biblioteca"}
+      } },
+      "de": { "caveat": null, "scenes": {
+          "illisible": {"variation":"Nicht lesen können","anchor":"nicht-lesen"},
+          "blanches": {"variation":"Ein Buch mit leeren Seiten","anchor":"leere-seiten"},
+          "bibliotheque": {"variation":"Ein Buch in einer Bibliothek suchen","anchor":"bibliothek"}
+      } },
+      "it": { "caveat": null, "scenes": {
+          "illisible": {"variation":"Non riuscire a leggere","anchor":"non-leggere"},
+          "blanches": {"variation":"Un libro con le pagine bianche","anchor":"pagine-bianche"},
+          "bibliotheque": {"variation":"Cercare un libro in una biblioteca","anchor":"biblioteca"}
+      } },
+      "pt-br": { "caveat": null, "scenes": {
+          "illisible": {"variation":"Não conseguir ler","anchor":"nao-conseguir-ler"},
+          "blanches": {"variation":"Um livro com páginas em branco","anchor":"paginas-em-branco"},
+          "bibliotheque": {"variation":"Procurar um livro em uma biblioteca","anchor":"biblioteca"}
+      } }
+    },
+    "snow": {
+      "fr": { "caveat": null, "scenes": {
+          "chute": {"variation":"Regarder la neige tomber","anchor":"chute"},
+          "bloque": {"variation":"Être bloqué par la neige","anchor":"bloque"},
+          "marche": {"variation":"Marcher dans une neige profonde","anchor":"marche"}
+      } },
+      "en": { "caveat": null, "scenes": {
+          "chute": {"variation":"Watching snow fall","anchor":"snowfall"},
+          "bloque": {"variation":"Being snowed in","anchor":"snowed-in"},
+          "marche": {"variation":"Walking through deep snow","anchor":"deep-snow"}
+      } },
+      "es": { "caveat": null, "scenes": {
+          "chute": {"variation":"Ver caer la nieve","anchor":"nevada"},
+          "bloque": {"variation":"Quedarte atrapado por la nieve","anchor":"atrapado"},
+          "marche": {"variation":"Caminar por nieve profunda","anchor":"nieve-profunda"}
+      } },
+      "de": { "caveat": null, "scenes": {
+          "chute": {"variation":"Dem Schneefall zusehen","anchor":"schneefall"},
+          "bloque": {"variation":"Eingeschneit sein","anchor":"eingeschneit"},
+          "marche": {"variation":"Durch tiefen Schnee gehen","anchor":"tiefer-schnee"}
+      } },
+      "it": { "caveat": null, "scenes": {
+          "chute": {"variation":"Guardare la neve che cade","anchor":"nevicata"},
+          "bloque": {"variation":"Restare bloccati dalla neve","anchor":"bloccati"},
+          "marche": {"variation":"Camminare nella neve alta","anchor":"neve-alta"}
+      } },
+      "pt-br": { "caveat": null, "scenes": {
+          "chute": {"variation":"Ver a neve cair","anchor":"neve-caindo"},
+          "bloque": {"variation":"Ficar preso pela neve","anchor":"preso"},
+          "marche": {"variation":"Caminhar na neve funda","anchor":"neve-funda"}
+      } }
+    },
+    "desert": {
+      "fr": { "caveat": null, "scenes": {
+          "seul": {"variation":"Marcher seul dans le désert","anchor":"seul"},
+          "tempete": {"variation":"Une tempête de sable","anchor":"tempete"},
+          "oasis": {"variation":"Trouver une oasis","anchor":"oasis"}
+      } },
+      "en": { "caveat": null, "scenes": {
+          "seul": {"variation":"Walking alone in the desert","anchor":"alone"},
+          "tempete": {"variation":"A sandstorm","anchor":"sandstorm"},
+          "oasis": {"variation":"Finding an oasis","anchor":"oasis"}
+      } },
+      "es": { "caveat": null, "scenes": {
+          "seul": {"variation":"Caminar solo por el desierto","anchor":"solo"},
+          "tempete": {"variation":"Una tormenta de arena","anchor":"tormenta-de-arena"},
+          "oasis": {"variation":"Encontrar un oasis","anchor":"oasis"}
+      } },
+      "de": { "caveat": null, "scenes": {
+          "seul": {"variation":"Allein durch die Wüste gehen","anchor":"allein"},
+          "tempete": {"variation":"Ein Sandsturm","anchor":"sandsturm"},
+          "oasis": {"variation":"Eine Oase finden","anchor":"oase"}
+      } },
+      "it": { "caveat": null, "scenes": {
+          "seul": {"variation":"Camminare da soli nel deserto","anchor":"da-soli"},
+          "tempete": {"variation":"Una tempesta di sabbia","anchor":"tempesta-di-sabbia"},
+          "oasis": {"variation":"Trovare un’oasi","anchor":"oasi"}
+      } },
+      "pt-br": { "caveat": null, "scenes": {
+          "seul": {"variation":"Caminhar sozinho no deserto","anchor":"sozinho"},
+          "tempete": {"variation":"Uma tempestade de areia","anchor":"tempestade-de-areia"},
+          "oasis": {"variation":"Encontrar um oásis","anchor":"oasis"}
+      } }
     }
   }
 }
