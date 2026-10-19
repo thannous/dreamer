@@ -124,11 +124,16 @@ function verifyProvenance(document, options, requirePass = true) {
   // retain their zero-model-call contract on every platform.
   const personas = options.personaModel !== undefined;
   const usage = run?.usage;
+  // A setup failure can precede the first model goal. Its completed SDK cleanup
+  // is still provable, while the application verdict continues to require calls.
+  const failedBeforeModel = !requirePass && run?.status === 'failed'
+    && Number.isSafeInteger(run.exitCode) && run.exitCode > 0
+    && usage?.modelTokens === 0 && usage?.maxModelCallsInStep === 0;
   const validUsage = personas
     ? ['web', 'ios', 'android'].includes(options.platform) && options.target === `dreamer-${options.platform}`
       && typeof options.personaModel === 'string' && !!options.personaModel.trim()
-      && Number.isSafeInteger(usage?.modelTokens) && usage.modelTokens > 0
-      && Number.isSafeInteger(usage?.maxModelCallsInStep) && usage.maxModelCallsInStep >= 1 && usage.maxModelCallsInStep <= 12
+      && (failedBeforeModel || (Number.isSafeInteger(usage?.modelTokens) && usage.modelTokens > 0
+        && Number.isSafeInteger(usage?.maxModelCallsInStep) && usage.maxModelCallsInStep >= 1 && usage.maxModelCallsInStep <= 12))
       && Number.isSafeInteger(usage?.maxActionStepsInStep) && usage.maxActionStepsInStep >= 0 && usage.maxActionStepsInStep <= 16
     : usage?.modelTokens === 0 && usage?.maxModelCallsInStep === 0;
   if (document?.schemaVersion !== 'report-1' || !run || typeof run.id !== 'string' || !run.id || run.runner?.version !== SDK_PINS.e2e

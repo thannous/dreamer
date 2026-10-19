@@ -27,7 +27,7 @@ if (process.env.E2E_PERSONAS === '1') {
     await expect(screen.getByTestId('screen.settings', { visible: true })).toBeVisible();
   }
 
-  async function startProfile({ app, screen }: NativeFixtures, profile: 'new' | 'existing' | 'plus') {
+  async function startProfile({ app, screen, platform }: NativeFixtures, profile: 'new' | 'existing' | 'plus') {
     await app.open(); // First recorded action on each owned native target.
     if (process.env.E2E_NATIVE_MOCK_MODE !== 'true' || process.env.E2E_NATIVE_MOCK_PERSISTENCE !== 'true')
       throw new Error('Personas may reset only the identified persistent mock QA app.');
@@ -44,6 +44,18 @@ if (process.env.E2E_PERSONAS === '1') {
     await tap(screen, 'quick-settings.language');
     await tap(screen, 'quick-settings.language.fr');
     await expect(screen.getByRole('radio', 'Français', { visible: true })).toBeChecked();
+    if (platform === 'android') {
+      // UI language applies before the optional speech-pack check finishes.
+      // Poll that UI condition briefly; installed packs produce no sheet.
+      const pack = screen.getByText('Pack de langue pour la reconnaissance vocale', { visible: true });
+      const deadline = Date.now() + 3_000;
+      let offered = await pack.isVisible();
+      while (!offered && Date.now() < deadline) offered = await pack.isVisible();
+      if (offered) {
+        await screen.getByRole('button', 'Annuler', { exact: true, visible: true }).tap();
+        await expect(pack).toBeHidden();
+      }
+    }
     await tap(screen, 'quick-settings.close');
     await settings(screen);
     await tap(screen, 'settings-account-open-signin', 'up');
@@ -89,7 +101,9 @@ if (process.env.E2E_PERSONAS === '1') {
       await tap(screen, 'btn.navigateJournal', 'up');
       await openSearchResult(fixtures, 'Personas réveil');
       await tap(screen, 'btn.editDream');
-      await expect(screen.getByTestId('input.dreamTranscript', { visible: true })).toHaveValue(story);
+      const editor = screen.getByTestId('input.dreamTranscript', { visible: true });
+      await screen.scrollUntilVisible(editor, { direction: 'up' });
+      await expect(editor).toHaveValue(story);
     });
 
   test('a regular journaler retrieves an older dream and finds it again in favourites',

@@ -158,6 +158,20 @@ for (const platform of ['web', 'ios', 'android']) {
       const broken = structuredClone(r);
       broken.run.results[0].attempts[0].secondaryErrors = [{ code: 'ENGINE_FAILURE', phase: 'cleanup' }];
       assert.throws(() => verifyNativeCleanup(broken, opts), /CLEANUP/);
+      // The observed Android language-sheet setup failure used no model, but
+      // SDK cleanup completed. It must remain a failed application verdict.
+      const setupFailed = structuredClone(r);
+      Object.assign(setupFailed.run, { status: 'failed', exitCode: 1 });
+      setupFailed.run.usage = { modelTokens: 0, maxModelCallsInStep: 0, maxActionStepsInStep: 0 };
+      setupFailed.run.results[0].status = 'failed';
+      Object.assign(setupFailed.run.results[0].attempts[0], { status: 'failed', steps: [{ api: 'app.open', status: 'passed' }] });
+      assert.equal(verifyNativeCleanup(setupFailed, opts), true);
+      assert.throws(() => verifyReport(setupFailed, opts), /PROVENANCE/);
+      setupFailed.run.status = 'passed'; setupFailed.run.exitCode = 0;
+      assert.throws(() => verifyNativeCleanup(setupFailed, opts), /PROVENANCE/);
+      setupFailed.run.status = 'failed'; setupFailed.run.exitCode = 1;
+      setupFailed.run.results[0].attempts[0].cleanup = 'failed';
+      assert.throws(() => verifyNativeCleanup(setupFailed, opts), /CLEANUP/);
     }
   });
 }
