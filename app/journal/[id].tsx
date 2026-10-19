@@ -725,24 +725,20 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   const updateReadingChrome = useCallback((offsetY: number) => {
     setReadingActionVisible(offsetY >= readingActionThreshold);
   }, [readingActionThreshold]);
-  const nativeReadingScroll = Platform.OS !== 'web';
   // Continuous offsets stay on the UI runtime. Only crossing the dock's threshold
   // changes React state; a long scroll never schedules a JS update per frame.
-  useAnimatedReaction(() => nativeReadingScroll ? readingScrollOffset.get() >= readingActionThreshold : null,
+  // Rotation, text scaling and measured content move the threshold without a scroll
+  // event: the reaction restarts with it and compares the latest observed offset.
+  useAnimatedReaction(() => readingScrollOffset.get() >= readingActionThreshold,
     (visible, previous) => {
-      if (visible !== null && visible !== previous) scheduleOnRN(setReadingActionVisible, visible);
-    });
+      if (visible !== previous) scheduleOnRN(setReadingActionVisible, visible);
+    }, [readingActionThreshold]);
   const handleReadingScroll = useAnimatedScrollHandler({
     onScroll: (event) => {
       readingScrollOffset.set(event.contentOffset.y);
       headerScrollY.set(event.contentOffset.y);
     },
   });
-  // Rotation, text scaling and measured content can move artwork without a scroll
-  // event. Recompute chrome before paint using the latest observed offset.
-  useLayoutEffect(() => {
-    updateReadingChrome(readingScrollOffset.get());
-  }, [readingScrollOffset, updateReadingChrome]);
   const scrollViewRef = useRef<ScrollViewInstance | null>(null);
   const editorScrollRef = useRef<ScrollViewInstance | null>(null);
   const recallInputRef = useRef<TextInputInstance | null>(null);
@@ -1596,30 +1592,29 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     void onRetryImage();
   }, [onRetryImage]);
 
-  const ensureAnalyzeAllowed = useCallback(async () => {
-    try {
-      const allowed = isPlus || (!quotaLoading && Boolean(usage?.analysis) && canAnalyzeNow) || (await canAnalyze());
-      if (!allowed) {
-        if (quotaError || quotaStatus?.guestBootstrapStatus === 'degraded'
-          || quotaStatus?.guestBootstrapStatus === 'disabled') {
-          showAnalysisNotice(t('common.error_title'), t('journal.detail.quota_check_error'), 'error');
-          return false;
-        }
-        // Don't show for paid users
-        if (isPlus) return false;
-        if (tier === 'free' && user && dream) {
-          router.push(buildAnalysisPaywallHref(dream, user.id));
-        } else if (!user) {
-          router.push(quotaStatus?.isUpgraded
-            ? '/settings?section=account&auth=signin' : '/settings?section=account&auth=signup');
-        } else {
-          setQuotaSheetMode(!user && quotaStatus?.isUpgraded ? 'login' : 'quota');
-          setShowQuotaLimitSheet(true);
-        }
+  const ensureAnalyzeAllowed = useCallback((): Promise<boolean> => {
+    const knownAllowed = isPlus || (!quotaLoading && Boolean(usage?.analysis) && canAnalyzeNow);
+    // The screen only reacts once the quota check has answered.
+    return new Promise<boolean>((resolve) => resolve(knownAllowed || canAnalyze())).then((allowed) => {
+      if (allowed) return true;
+      if (quotaError || quotaStatus?.guestBootstrapStatus === 'degraded'
+        || quotaStatus?.guestBootstrapStatus === 'disabled') {
+        showAnalysisNotice(t('common.error_title'), t('journal.detail.quota_check_error'), 'error');
         return false;
       }
-      return true;
-    } catch (error) {
+      // Don't show for paid users
+      if (isPlus) return false;
+      if (tier === 'free' && user && dream) {
+        router.push(buildAnalysisPaywallHref(dream, user.id));
+      } else if (!user) {
+        router.push(quotaStatus?.isUpgraded
+          ? '/settings?section=account&auth=signin' : '/settings?section=account&auth=signup');
+      } else {
+        setQuotaSheetMode(!user && quotaStatus?.isUpgraded ? 'login' : 'quota');
+        setShowQuotaLimitSheet(true);
+      }
+      return false;
+    }).catch((error: unknown) => {
       if (__DEV__) {
         console.error('[JournalDetail] Quota check failed:', error);
       }
@@ -1629,7 +1624,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
         'error'
       );
       return false;
-    }
+    });
   }, [canAnalyze, canAnalyzeNow, dream, isPlus, quotaError, quotaLoading, quotaStatus, showAnalysisNotice, t, tier, usage, user]);
 
   const handleQuotaLimitDismiss = useCallback(() => {
@@ -1655,16 +1650,16 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   }, []);
 
   const runAnalyze = useCallback(
-    async (replaceImage: boolean, skipAllowanceCheck = false) => {
-      if (!dream || isAnalysisLaunchBlocked || analysisLaunchInFlightRef.current) return;
+    (replaceImage: boolean, skipAllowanceCheck = false): Promise<void> => {
+      if (!dream || isAnalysisLaunchBlocked || analysisLaunchInFlightRef.current) return Promise.resolve();
       // Lock synchronously, including the asynchronous quota check and consent.
       analysisLaunchInFlightRef.current = true;
-      try {
-        if (!skipAllowanceCheck && !isResumableAnalysisRequest(dream)) {
-          const allowed = await ensureAnalyzeAllowed();
-          if (!allowed) return;
-        }
-        if (!(await requestAiConsent(t))) return;
+      const consented = skipAllowanceCheck || isResumableAnalysisRequest(dream)
+        ? requestAiConsent(t)
+        : ensureAnalyzeAllowed().then((allowed) => allowed && requestAiConsent(t));
+      // Nothing on screen changes before the quota check and the consent prompt settle.
+      return consented.then(async (granted) => {
+        if (!granted) return;
         // Only now is anything being analysed: never show progress behind the consent prompt.
         setIsAnalyzing(true);
 
@@ -1684,7 +1679,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
           analyticsSource: 'journal_detail',
         });
         setAnalysisNotice(null);
-      } catch (error) {
+      }).catch((error: unknown) => {
         if (error instanceof QuotaError) {
           if (error.code === QuotaErrorCode.LOGIN_REQUIRED && tier === 'guest') {
             setQuotaSheetMode('login');
@@ -1711,10 +1706,10 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
           const classified = classifyError(error as Error, t);
           showAnalysisNotice(t('analysis_error.title'), classified.userMessage, 'error');
         }
-      } finally {
+      }).finally(() => {
         analysisLaunchInFlightRef.current = false;
         setIsAnalyzing(false);
-      }
+      });
     },
     [
       analyzeDream,
