@@ -649,6 +649,18 @@ function JournalListScreen() {
     return Math.abs(dy) > OVERLAY_SEARCH_DRAG_SLOP && Math.abs(dy) >= Math.abs(dx);
   }, [searchConsumesLayout]);
 
+  // react-native-web dismisses on every scroll event, the list's own animated return to
+  // the top included: a search typed in a scrolled journal lost its field after the first
+  // letter. On the web only the user's wheel or drag dismisses it, as a drag does natively.
+  const dismissKeyboardOnUserScroll = useCallback(() => {
+    if (typeof Keyboard.dismiss === 'function') {
+      Keyboard.dismiss();
+    }
+  }, []);
+  const webUserScrollDismissal = isWeb
+    ? { onWheel: dismissKeyboardOnUserScroll, onTouchMove: dismissKeyboardOnUserScroll }
+    : null;
+
   const handleOverlaySearchDragGrant = useCallback(() => {
     // Forwarded overlay drags use scrollToOffset, so FlashList
     // keyboardDismissMode on-drag never runs.
@@ -1201,7 +1213,8 @@ function JournalListScreen() {
         onScroll={isWeb || searchConsumesLayout ? handleStaticListScroll : handleListScroll}
         scrollEventThrottle={16}
         keyboardShouldPersistTaps="handled"
-        keyboardDismissMode="on-drag"
+        keyboardDismissMode={isWeb ? 'none' : 'on-drag'}
+        {...webUserScrollDismissal}
         contentInsetAdjustmentBehavior="never"
         ListEmptyComponent={renderEmptyState}
         showsVerticalScrollIndicator={false}
