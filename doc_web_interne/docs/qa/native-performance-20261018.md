@@ -413,3 +413,29 @@ les quatre cas, **1/1 passe** sur l’APK final. Sur iOS, la première tentative
 que le driver conserve un suffixe lors du remplacement d’une recherche non vide.
 Le test utilise ensuite le bouton d’effacement réel et vérifie la valeur exacte
 avant chaque recherche ; cette correction n’altère pas le code applicatif.
+
+La relance `performance-native-20261019-ios-media-global` passe **1/1**, quatre
+cas, 108,55 s sur la Release 18 ; le sélecteur d’effacement tient compte de l’arbre
+AX aplati. Les captures Android et iOS confirment la miniature sombre au premier
+cas, l’original clair aux deuxième/quatrième cas et l’entrée compacte au troisième.
+La commande correspondante reprend la configuration native ci-dessus avec
+`E2E_PERF_FIXTURE_MEDIA=local` et `--grep 'native journal illustrates'`.
+
+Les deux défauts issus de la revue indépendante sont corrigés dans `eb0b83cbe`,
+revue du delta sans nouveau défaut bloquant. Les 18 tests du hook, les types app,
+tests et runner natif, ainsi que le lint ciblé passent après correction.
+
+Après qualification, les 200 valeurs de la fixture illustrée de chaque plateforme
+sont comparées aux valeurs attendues avant retrait. Android : zéro rêve invité,
+196 lignes des autres scopes conservées au nettoyage, fichiers de médias et helper
+privés retirés ; reconnexion par Google au seul compte de développement autorisé,
+identité vérifiée dans les réglages. iOS : zéro rêve invité, intégrité SQLite
+confirmée par recopie, autres bases et réglages conservés. Aucun compte supprimé.
+
+`origin/master` a ensuite été intégré depuis `967fe81f0` (#440/#441) : site et
+textes de dictionnaire, dont contenus étendus portugais/espagnols/italiens et deux
+métadescriptions portugaises. Le code des parcours français et des optimisations
+reste identique. Les binaires testés n’embarquent pas ces textes plus récents :
+preuves natives réutilisées pour leur périmètre français et leurs sources exactes,
+pas de nouveau build physique revendiqué pour cette intégration documentaire.
+La preuve `verify:pr` de la tête finale figure dans la description de #439.
