@@ -87,3 +87,43 @@ if (process.env.E2E_PERF_FIXTURE_COUNT === '5000') {
     await expect(last).toBeHidden();
   });
 }
+
+// Four local, owned illustrations: valid thumbnail, missing thumbnail, both
+// missing, and original-only. Distinct artwork lets the private screenshots prove
+// which source decoded; cover presence alone does not prove image completion.
+if (process.env.E2E_PERF_FIXTURE_MEDIA === 'local') {
+  test('native journal illustrates thumbnails and recovers readable entries after image failures', async ({ app, screen, device }) => {
+    await app.open();
+    await device.openLink('noctalia://journal');
+    await expect(screen.getByTestId('screen.journal')).toBeVisible();
+    const search = screen.getByTestId('input.searchDreams');
+    for (const index of [1, 2, 3, 4]) {
+      await screen.scrollUntilVisible(search, { direction: 'up' });
+      const title = `Noctalia performance ${String(index).padStart(3, '0')}`;
+      await search.fill(title);
+      if (process.env.E2E_PERF_PLATFORM === 'ios') await search.press('Enter');
+      else await device.dismissKeyboard();
+      const entry = screen.getByRole('button', new RegExp(`^${title},`));
+      await expect(entry).toBeVisible();
+      const id = 1792303200000 - (index - 1) * 86400000;
+      const cover = screen.getByTestId(`journal.cover.dream.item.${id}`);
+      if (index === 3) await expect(cover).toBeHidden();
+      else await screen.scrollUntilVisible(cover);
+      await app.screenshot(`native-local-media-case-${index}`);
+      await entry.tap();
+      await expect(screen.getByTestId('screen.dreamDetail')).toBeVisible();
+      await expect(screen.getByText(title, { exact: true })).toBeVisible();
+      if (index !== 3) {
+        const illustration = screen.getByTestId('btn.journal.illustration.expand');
+        await screen.scrollUntilVisible(illustration);
+        await illustration.tap();
+        await expect(screen.getByTestId('modal.journal.illustration.fullscreen')).toBeVisible();
+        await app.screenshot(`native-local-media-original-${index}`);
+        await screen.getByTestId('btn.journal.illustration.close').tap();
+      }
+      await device.openLink('noctalia://journal');
+      await expect(screen.getByTestId('screen.journal')).toBeVisible();
+      await expect(screen.getByTestId('screen.dreamDetail')).toBeHidden();
+    }
+  });
+}
