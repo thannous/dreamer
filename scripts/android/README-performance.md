@@ -143,3 +143,22 @@ includes queue wait and SQLite transaction time, not only serialization. HTTP re
 observation includes polling/network delay and is not model execution duration.
 A list paint is not synchronization completion, and an empty/loading list is not
 proof that the intended dataset was rendered. Keep the UI assertions with the trace.
+
+## Optional local Noxcturnal transformer (SDK 58)
+
+`NOCTALIA_METRO_NOXCTURNAL=1 npm run start` opts a local Metro session into
+Expo's experimental Rust transformer. The same flag works with a local
+`npx expo export --platform android --clear`. The flag is ignored when
+`EAS_BUILD=true`; the default Release transformer stays unchanged.
+
+Four alternating cold Android exports on 2026-10-19, with identical application
+inputs, Uniwind and React Compiler, measured 13.50/13.83 s with Babel and
+11.37/11.10 s with Noxcturnal. Hermes bytecode increased from about 12.47 MB to
+12.67 MB. This is bundling evidence, not a startup or frame-rate improvement.
+Expo falls back to Babel for unsupported modules, including worklets/codegen;
+do not disable those transforms to make the pilot faster. Device performance
+comparisons should identify the selected transformer and use the same setting.
+
+Expo Atlas is available as a pinned development dependency. Use
+`EXPO_ATLAS=true npx expo export --platform android` to inspect transformed module
+weights separately from the final Hermes bundle and native APK size.

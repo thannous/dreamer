@@ -14,12 +14,13 @@ import { paintSettle } from './dreamStoryMotion';
  * where its canvas was, framed, and settles once. It does not jump to the cover above
  * the reader; the cover is how a later visit opens. Pressing it opens the full view.
  */
-export function DreamPaintedArtwork({ source, land, onOpen, onError }: {
+export function DreamPaintedArtwork({ source, land, onOpen, onError, onDisplay }: {
   source: ImageSource | null;
   /** The painting has just landed: settle once. Later mounts show it at rest. */
   land: boolean;
   onOpen: () => void;
   onError: () => void;
+  onDisplay?: () => void;
 }) {
   const { t } = useTranslation();
   const reduced = useReducedMotion();
@@ -35,7 +36,7 @@ export function DreamPaintedArtwork({ source, land, onOpen, onError }: {
       style={{ aspectRatio: 4 / 5 }}
     >
       <Animated.View testID={TID.Component.DreamPaintedArtwork} style={[{ width: '100%', height: '100%' }, settle] as StyleProp<ViewStyle>}>
-        <Image source={source} contentFit="cover" onError={onError} style={{ width: '100%', height: '100%' }}
+        <Image source={source} contentFit="cover" onError={onError} onDisplay={onDisplay} style={{ width: '100%', height: '100%' }}
           placeholder={{ blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' }} />
       </Animated.View>
     </PressableScale>

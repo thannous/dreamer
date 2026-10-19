@@ -74,6 +74,7 @@ export default {
           // bundle the real modules eagerly so the same journeys work in both trees.
           EXPO_NO_METRO_LAZY: '1',
           CI: '1', EXPO_PUBLIC_MOCK_MODE: 'true', EXPO_PUBLIC_MOCK_AUDIO: 'true', EXPO_PUBLIC_MOCK_PERSISTENCE: 'true',
+          EXPO_PUBLIC_PERFORMANCE_TRACING: process.env.EXPO_PUBLIC_PERFORMANCE_TRACING === 'true' ? 'true' : 'false',
           ...(product === 'meditation' ? {} : {
             NOCTALIA_APP_VARIANT: product === 'lucid' ? 'lucid' : 'noctalia',
             EXPO_PUBLIC_APP_VARIANT: product === 'lucid' ? 'lucid' : 'noctalia',

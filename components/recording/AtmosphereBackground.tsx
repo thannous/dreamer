@@ -249,10 +249,10 @@ function AtmosphereBackgroundComponent() {
 const styles = StyleSheet.create({
   nonInteractive: {
     pointerEvents: 'none',
-  } as ViewStyle,
+  } satisfies ViewStyle,
   nativeNonInteractive: {
     pointerEvents: 'none',
-  } as ViewStyle,
+  } satisfies ViewStyle,
   rasterLayer: {
     position: 'absolute',
   },
