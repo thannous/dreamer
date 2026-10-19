@@ -74,7 +74,12 @@ if (process.env.E2E_PERF_FIXTURE_COUNT === '5000') {
     await expect(screen.getByTestId('screen.dreamDetail')).toBeHidden();
     await expect(last).toBeVisible();
     await search.fill('');
-    await device.dismissKeyboard();
+    // iOS's generic keyboard-dismiss gesture can activate the card beneath it.
+    // Submit this single-line search field through its own keyboard return key.
+    if (process.env.E2E_PERF_PLATFORM === 'ios') await search.press('Enter');
+    else await device.dismissKeyboard();
+    await expect(screen.getByTestId('screen.journal')).toBeVisible();
+    await expect(screen.getByTestId('screen.dreamDetail')).toBeHidden();
     const second = screen.getByRole('button', /^Noctalia performance 002,/);
     // The keyboard and the first card can fill the viewport after clearing.
     await screen.scrollUntilVisible(second);
