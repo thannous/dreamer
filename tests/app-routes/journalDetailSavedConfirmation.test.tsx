@@ -925,7 +925,7 @@ describe('journal detail saved confirmation route', () => {
     const view = render(<JournalDetailScreen />);
     expect(screen.queryByTestId(TID.Button.DreamReport)).toBeNull();
 
-    mockDreams = [buildDream({ remoteId: 9042, isAnalyzed: true, analysisStatus: 'done', interpretation: 'A reading.' })];
+    mockDreams = [buildDream({ remoteId: 9042, isAnalyzed: true, analysisStatus: 'done', interpretation: 'A reading.', analyzedAt: 1_700_000_000_000 })];
     view.rerender(<JournalDetailScreen />);
     await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.DreamReport)); });
 

@@ -5,7 +5,8 @@ export const CONTACT_EMAIL = 'contact@noctalia.app';
 export function buildContactMailto(subject?: string, body?: string): string {
   const query = [
     subject ? `subject=${encodeURIComponent(subject)}` : null,
-    body ? `body=${encodeURIComponent(body)}` : null,
+    // RFC 6068 writes line breaks in a mailto body as CRLF.
+    body ? `body=${encodeURIComponent(body.replace(/\r?\n/g, '\r\n'))}` : null,
   ].filter(Boolean).join('&');
   return `mailto:${CONTACT_EMAIL}${query ? `?${query}` : ''}`;
 }

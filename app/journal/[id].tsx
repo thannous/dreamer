@@ -818,9 +818,9 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
 
   const analysisState = useMemo(() => getDreamAnalysisState(dream), [dream]);
   // Analyses, AI illustrations and conversations can be reported to us.
-  const hasGeneratedContent = Boolean(dream && (dream.isAnalyzed
-    || (dream.imageUrl && dream.imageSource !== 'user')
-    || dream.chatHistory?.length));
+  const hasGeneratedContent = Boolean(dream && (analysisState.isAnalyzed
+    || analysisState.hasModelResponse
+    || (dream.imageUrl && dream.imageSource !== 'user')));
   const guestImageAvailable = useMemo(() => {
     if (quotaLoading) return false;
     const image = usage?.image;
@@ -3282,7 +3282,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
                   onPress={onReportGeneratedContent}
                   className="mt-2 min-h-[44px] flex-row items-center justify-center gap-1.5 self-center px-3"
                   hitSlop={{ top: 4, bottom: 4, left: 8, right: 8 }}
-                  accessibilityRole="button"
+                  accessibilityRole="link"
                   testID={TID.Button.DreamReport}
                 >
                   <IconSymbol name="flag" size={15} color={noctalia.text.tertiary} />
