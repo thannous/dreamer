@@ -40,8 +40,10 @@ export function WordReveal({ text, delay = 0, stagger = 90, style, align = 'cent
 /** Enough iterations of `period` to cover `span` ms, so a loop never outlives what hides it. */
 export const loopsUntil = (span: number, period: number) => Math.max(1, Math.ceil(span / period) + 1);
 
-/** A writing cursor that keeps blinking once the words have landed, `blinks` times. */
+/** A writing cursor that keeps blinking once the words have landed, at least `blinks` times. */
 function Caret({ color, delay, blinks }: { color: string; delay: number; blinks: number | 'infinite' }) {
+  // An odd count of alternate blinks ends on the hidden keyframe.
+  const count = blinks === 'infinite' ? blinks : blinks | 1;
   // Hidden while the words land (it would wait at the end of the line), then blinking.
   return <Animated.View accessible={false} style={[styles.caret, {
     backgroundColor: color,
@@ -49,7 +51,7 @@ function Caret({ color, delay, blinks }: { color: string; delay: number; blinks:
     animationName: { from: { opacity: 1 }, to: { opacity: 0 } },
     animationDuration: DURATION.slow,
     animationDelay: delay,
-    animationIterationCount: blinks,
+    animationIterationCount: count,
     animationDirection: 'alternate',
     animationTimingFunction: EASE.inOut,
     animationFillMode: 'forwards',

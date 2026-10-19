@@ -39,7 +39,7 @@ export type NightSkyProps = {
   leaving: boolean;
   /** Play the arrival (settle, halo, shooting star). False when resuming on a later step. */
   arrival: boolean;
-  /** A sheet is told over the scene: the stars hold still instead of costing every frame behind it. */
+  /** A sheet is told over the scene: under its veil the stars hold still instead of costing every frame. */
   covered?: boolean;
 };
 
