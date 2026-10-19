@@ -71,6 +71,8 @@ const SCROLL_IDLE_MS = 140;
 const PREFETCH_CACHE_LIMIT = 250;
 const PREFETCH_MAX_PER_FLUSH = 8;
 const OVERLAY_SEARCH_DRAG_SLOP = 8;
+// A list scroll this soon after the user's wheel or touch on the web is theirs.
+const USER_SCROLL_INPUT_MS = 150;
 
 /**
  * FlashList owns these through props that take a style object, and the desktop max
@@ -618,13 +620,35 @@ function JournalListScreen() {
     }
   }, [setScrolling]);
 
+  // react-native-web dismisses the keyboard on every scroll event when asked to on drag,
+  // the list's own animated return to the top included: a search typed in a scrolled
+  // journal lost its field after the first letter. On the web the list dismisses it only
+  // when it moves under a wheel or touch of the user's, as a drag does natively; a swipe
+  // of the filter chips or a wheel over a list that cannot move leaves the field alone.
+  const lastUserScrollInputRef = useRef(0);
+  const markUserScrollInput = useCallback(() => {
+    lastUserScrollInputRef.current = Date.now();
+  }, []);
+  const webUserScrollInput = isWeb
+    ? { onWheel: markUserScrollInput, onTouchMove: markUserScrollInput }
+    : null;
+  // Typing is not scrolling: the list's return to the top that a letter starts stays its own.
+  const handleSearchQueryChange = useCallback((text: string) => {
+    lastUserScrollInputRef.current = 0;
+    setSearchQuery(text);
+  }, []);
+
   // A fixed header needs only an offset for a future viewport change. FlashList
   // already delivers JS scroll events; avoid a UI worklet for every such frame.
   const handleStaticListScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
     staticScrollY.current = event.nativeEvent.contentOffset.y;
     headerScrollY.set(staticScrollY.current);
     listScrollY.set(staticScrollY.current);
-  }, [headerScrollY, listScrollY]);
+    if (isWeb && Date.now() - lastUserScrollInputRef.current < USER_SCROLL_INPUT_MS
+      && typeof Keyboard.dismiss === 'function') {
+      Keyboard.dismiss();
+    }
+  }, [headerScrollY, isWeb, listScrollY]);
 
   const handleListScroll = useAnimatedScrollHandler({
     onScroll: (event) => {
@@ -648,18 +672,6 @@ function JournalListScreen() {
     const dy = event.nativeEvent.pageY - origin.pageY;
     return Math.abs(dy) > OVERLAY_SEARCH_DRAG_SLOP && Math.abs(dy) >= Math.abs(dx);
   }, [searchConsumesLayout]);
-
-  // react-native-web dismisses on every scroll event, the list's own animated return to
-  // the top included: a search typed in a scrolled journal lost its field after the first
-  // letter. On the web only the user's wheel or drag dismisses it, as a drag does natively.
-  const dismissKeyboardOnUserScroll = useCallback(() => {
-    if (typeof Keyboard.dismiss === 'function') {
-      Keyboard.dismiss();
-    }
-  }, []);
-  const webUserScrollDismissal = isWeb
-    ? { onWheel: dismissKeyboardOnUserScroll, onTouchMove: dismissKeyboardOnUserScroll }
-    : null;
 
   const handleOverlaySearchDragGrant = useCallback(() => {
     // Forwarded overlay drags use scrollToOffset, so FlashList
@@ -981,7 +993,7 @@ function JournalListScreen() {
       testID={TID.Component.SearchBar}
       inputTestID={TID.Input.SearchDreams}
       value={searchQuery}
-      onChangeText={setSearchQuery}
+      onChangeText={handleSearchQueryChange}
       placeholder={t('journal.search_placeholder')}
     />
   );
@@ -1214,7 +1226,7 @@ function JournalListScreen() {
         scrollEventThrottle={16}
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode={isWeb ? 'none' : 'on-drag'}
-        {...webUserScrollDismissal}
+        {...webUserScrollInput}
         contentInsetAdjustmentBehavior="never"
         ListEmptyComponent={renderEmptyState}
         showsVerticalScrollIndicator={false}

@@ -10,8 +10,9 @@
 //   node scripts/perf/measure-web-fluidity.mjs --dist <web export dir> --label <name>
 //     [--runs 5] [--cpu 4] [--port 8190] [--output <dir>] [--url <running server>]
 //     [--chromium <executable>] [--attribute 1]
-// --attribute 1 also names the components rendered in each window (use a development
-// server through --url for readable names); its tree walks distort the timings.
+// --attribute 1 also names the components rendered in each window (readable names need
+// an export built with --no-minify, or a development server through --url); its tree
+// walks distort the timings, so measure timings in a separate run.
 // Build the export with:
 //   EXPO_PUBLIC_MOCK_PERSISTENCE=true node ./scripts/expo-safe-runner.js --profile .env.mock \
 //     export -p web --output-dir <web export dir>
@@ -26,6 +27,7 @@ const args = parseArgs(process.argv.slice(2));
 const dist = args.url ? null : path.resolve(required(args, 'dist'));
 const label = required(args, 'label');
 const runs = Number(args.runs ?? 5);
+const attribute = args.attribute === '1';
 const cpuRate = Number(args.cpu ?? 4);
 const port = Number(args.port ?? 8190);
 const output = path.resolve(args.output ?? path.join('test-results', 'web-fluidity'));
@@ -58,7 +60,8 @@ function serve(root) {
   const server = createServer(async (request, response) => {
     const pathname = decodeURIComponent(new URL(request.url, 'http://localhost').pathname);
     let file = path.join(root, pathname);
-    if (!file.startsWith(root)) {
+    const inside = path.relative(root, file);
+    if (inside.startsWith('..') || path.isAbsolute(inside)) {
       response.writeHead(403).end();
       return;
     }
@@ -183,7 +186,7 @@ async function measure(page, cdp, name, action) {
     frameP95Ms: p95,
     // A frame over 1.5 vsyncs at 60 Hz missed at least one presentation.
     slowFrames: frames.filter((value) => value > 25).length,
-    ...(args.attribute ? {
+    ...(attribute ? {
       rendered: Object.fromEntries(Object.entries(collected.rendered).sort((a, b) => b[1] - a[1])),
     } : {}),
   };
@@ -253,7 +256,7 @@ async function run(browser, baseURL, index) {
     serviceWorkers: 'block',
   });
   await context.addInitScript(() => window.localStorage.setItem('noctalia.aiConsent.v2', 'granted'));
-  await context.addInitScript(instrument, Boolean(args.attribute));
+  await context.addInitScript(instrument, attribute);
   await context.route('**/*', async (route) => {
     const url = new URL(route.request().url());
     if (url.origin === new URL(baseURL).origin) return route.continue();
@@ -325,7 +328,10 @@ async function run(browser, baseURL, index) {
       await page.waitForTimeout(400);
     }
   }));
-  // Typing a search in the journal, one key at a time, then clearing it.
+  // Typing a search in the journal, one key at a time, then clearing it. The list starts
+  // at its top in every build: a return from a dream can leave it elsewhere on the web.
+  await wheelScroll(page, -4000, 8);
+  await page.waitForTimeout(600);
   const search = page.getByRole('textbox', { name: 'Search dreams…' }).filter({ visible: true }).first();
   results.push(await measure(page, cdp, 'journal.search', async () => {
     await search.focus();

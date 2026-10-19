@@ -19,7 +19,10 @@ const nativeScroll = Platform.OS !== 'web'
 /** The scroller to use with `useHeaderScroll`. */
 export const HeaderScrollView = nativeScroll ? Animated.createAnimatedComponent(ScrollView) : ScrollView;
 
-/** The list to use with `useHeaderScroll`. */
+/**
+ * The list to use with `useHeaderScroll`. Not `Animated.FlatList`, which wraps every row
+ * in an animated view for layout animations these lists never use.
+ */
 export const HeaderFlatList = nativeScroll ? Animated.createAnimatedComponent(FlatList) : FlatList;
 
 const useNativeScrollHandler = nativeScroll

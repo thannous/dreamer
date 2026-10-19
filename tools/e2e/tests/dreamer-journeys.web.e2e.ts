@@ -131,9 +131,17 @@ test('a search typed in a scrolled journal keeps its field until the user scroll
   await expect(field).toBeFocused();
   await expect(page.getByTestId(/^dream\.item\./)).toHaveCount(1);
   await expect(page.getByTestId(/^dream\.item\./)).toContainText('The Infinite Library');
-  // The user's own scroll still puts the keyboard away.
+  // A wheel over a list that cannot move leaves the field; the user scrolling the whole
+  // journal puts the keyboard away, as a drag does natively.
   await page.mouse.move(195, 640);
   await page.mouse.wheel(0, 120);
+  await expect(field).toBeFocused();
+  await field.fill('');
+  await expect(field).toBeFocused();
+  await expect.poll(() => list.evaluate((node) => node.scrollTop)).toBe(0);
+  await page.mouse.move(195, 640);
+  await page.mouse.wheel(0, 400);
+  await expect.poll(() => list.evaluate((node) => node.scrollTop)).toBeGreaterThan(0);
   await expect(field).not.toBeFocused();
 });
 
