@@ -549,6 +549,9 @@ const translations: Record<string, string> = {
     'journal.back_button': 'Zurück',
     'journal.menu.share': 'Zitat teilen',
     'journal.menu.delete': 'Traum löschen',
+    'journal.detail.report.button': 'Generierten Inhalt melden',
+    'journal.detail.report.subject': 'Meldung eines generierten Inhalts',
+    'journal.detail.report.body': 'Sag uns, was an der Analyse, dem Bild oder dem Gespräch zu diesem Traum nicht stimmt:\n\n\n\nTraum-Referenz: {reference}',
     "journal.original_transcript": "Meine Erzählung",
     'journal.detail.not_found.title': 'Traum nicht gefunden.',
     'journal.detail.not_found.back': 'Zurück',
@@ -1704,37 +1707,8 @@ const translations: Record<string, string> = {
     'notifications.prompt.morning_14': 'Welche Geschichte, wenn es eine gab, hat die Nacht dir hinterlassen?',
     'notifications.prompt.morning_15': 'Keine Eile. Dein Journal kann einen Traum bewahren, wenn du soweit bist.',
 
-    // Reference image picker
-    'reference_image.title_person': 'Füge ein Foto dieser Person hinzu',
-    'reference_image.title_animal': 'Füge ein Foto dieses Tieres hinzu',
-    'reference_image.subtitle': 'Füge ein klares Referenzfoto hinzu, um das Traumbild mit dem Aussehen des Motivs zu personalisieren.',
-    'reference_image.selected_count': '{count}/{max} Fotos ausgewählt',
-    'reference_image.permission_title': 'Fotozugriff erforderlich',
-    'reference_image.permission_message': 'Bitte erlaube den Zugriff auf deine Fotobibliothek, um Referenzbilder hinzuzufügen.',
-    'reference_image.compression_error_title': 'Bild zu groß',
-    'reference_image.compression_error_message': 'Dieses Bild konnte nicht auf die erforderliche Größe komprimiert werden. Bitte versuche ein anderes Foto.',
-    'reference_image.pick_error': 'Bild konnte nicht ausgewählt werden. Bitte versuche es erneut.',
-    'reference_image.camera_permission_title': 'Kamerazugriff erforderlich',
-    'reference_image.camera_permission_message': 'Bitte erlaube den Kamerazugriff, um ein Foto aufzunehmen.',
-    'reference_image.permission_denied_permanently': 'Zugriff wurde verweigert. Du kannst ihn in den Geräteeinstellungen aktivieren.',
-    'reference_image.open_settings': 'Einstellungen öffnen',
-    'reference_image.take_photo': 'Foto aufnehmen',
-    'reference_image.pick_from_gallery': 'Aus Galerie auswählen',
-    'reference_image.confirm': 'Bestätigen',
-    'reference_image.remove_photo': 'Foto {index} entfernen',
-    'reference_image.remove_photo_hint': 'Entfernt dieses Foto aus deiner Auswahl.',
-
-    // Subject proposition
-    'subject_proposition.title_person': 'Person in deinem Traum erkannt',
-    'subject_proposition.title_animal': 'Tier in deinem Traum erkannt',
-    'subject_proposition.message_person': 'Füge ein Referenzfoto hinzu, um das Aussehen der Person im generierten Traumbild einzubeziehen.',
-    'subject_proposition.message_animal': 'Füge ein Referenzfoto hinzu, um das Aussehen des Tieres im generierten Traumbild einzubeziehen.',
-    'subject_proposition.accept': 'Foto hinzufügen',
-    'subject_proposition.skip': 'Überspringen',
-
-    // Journal detail - subject actions
-    'journal.detail.add_person': 'Person hinzufügen',
-    'journal.detail.add_animal': 'Tier hinzufügen',
+    // Permission settings
+    'recording.alert.open_settings': 'Einstellungen öffnen',
 
     // Symbol dictionary
     'symbols.dictionary_title': 'Symbollexikon',
@@ -1774,6 +1748,8 @@ const translations: Record<string, string> = {
     'settings.legal.privacyPolicy': 'Datenschutzerklärung',
     'settings.legal.termsOfUse': 'Nutzungsbedingungen',
     'settings.legal.accountDeletion': 'Informationen zur Kontolöschung',
+    'settings.legal.contact': 'Schreib uns',
+    'contact.mail_unavailable': 'Auf diesem Gerät ist keine Mail-App verfügbar. Schreib uns an {email}.',
     'settings.deleteAccount.title': 'Konto löschen',
     'settings.deleteAccount.description': 'Löscht dein Konto und alle zugehörigen Daten endgültig.',
     'settings.deleteAccount.confirmTitle': 'Konto löschen?',

@@ -34,7 +34,6 @@ import { DREAM_THEMES } from '@/lib/dreamThemes';
 import { getDreamStoryHandoffName, hasDreamStoryHandoff, markDreamStoryPageReady } from '@/lib/dreamStoryPrologue';
 import { DreamShareImage } from '@/components/journal/DreamShareImage';
 import { getImageJobFailure } from '@/lib/imageJobErrors';
-import { ErrorType } from '@/lib/errors';
 import { ImageRetry } from '@/components/journal/ImageRetry';
 import {
   AnalysisNoticeSheet,
@@ -42,7 +41,6 @@ import {
   ImageErrorSheet,
   QuotaLimitSheet,
   ReanalyzeSheet,
-  ReferenceImageSheet,
   ReplaceImageSheet,
   type AnalysisNotice,
 } from '@/components/journal/JournalDetailSheets';
@@ -61,7 +59,8 @@ import { useDreamShareComposite } from '@/hooks/useDreamShareComposite';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useQuota } from '@/hooks/useQuota';
 import { useTranslation } from '@/hooks/useTranslation';
-import { hasAiConsent, requestAiConsent } from '@/lib/aiConsent';
+import { requestAiConsent } from '@/lib/aiConsent';
+import { CONTACT_EMAIL, openContactMail } from '@/lib/contact';
 import { blurActiveElement } from '@/lib/accessibility';
 import { buildFirstValueProperties } from '@/lib/activationAnalytics';
 import { trackProductEvent } from '@/lib/analytics';
@@ -81,8 +80,8 @@ import {
   type ReflectionQuotaHint,
 } from '@/lib/dreamUsage';
 import { getDreamAnalysisFreshness } from '@/lib/dreamAnalysisFreshness';
-import { isHdIllustrationsEnabled, isMockModeEnabled, isReferenceImagesEnabled } from '@/lib/env';
-import { classifyError, QuotaError, QuotaErrorCode, type ClassifiedError } from '@/lib/errors';
+import { isHdIllustrationsEnabled, isMockModeEnabled } from '@/lib/env';
+import { classifyError, ErrorType, QuotaError, QuotaErrorCode } from '@/lib/errors';
 import { getDreamImageVersion, getImageConfig, withCacheBuster } from '@/lib/imageUtils';
 import {
   resolveJournalIllustrationAccess,
@@ -101,8 +100,8 @@ import { FreeAnalysesNudge, getFreeAnalysesNudge } from '@/components/quota/Free
 import { buildAnalysisPaywallHref, buildPaywallHref, consumePurchasedAnalysisReturn, hasPendingPurchasedAnalysisReturn } from '@/lib/paywallRoute';
 import { sortWithSelectionFirst } from '@/lib/sorting';
 import { TID } from '@/lib/testIDs';
-import type { DreamAnalysis, DreamTheme, DreamType, ReferenceImage } from '@/lib/types';
-import { categorizeDream, generateImageWithReference } from '@/services/geminiService';
+import type { DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
+import { categorizeDream } from '@/services/geminiService';
 import { getStaleAnalysisBannerDismissed, saveStaleAnalysisBannerDismissed } from '@/services/storageService';
 import * as Haptics from 'expo-haptics';
 import { Image } from 'expo-image';
@@ -557,12 +556,6 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   const [imageErrorCanRetry, setImageErrorCanRetry] = useState(true);
   const [imageErrorNeedsSubscription, setImageErrorNeedsSubscription] = useState(false);
 
-  // Reference image generation state
-  const [showReferenceSheet, setShowReferenceSheet] = useState(false);
-  const [referenceSubjectType, setReferenceSubjectType] = useState<'person' | 'animal' | null>(null);
-  const [referenceImages, setReferenceImages] = useState<ReferenceImage[]>([]);
-  const [isGeneratingWithReference, setIsGeneratingWithReference] = useState(false);
-  const hasBackfilledSubjectRef = useRef(false);
   const trackedAnalysisResultRef = useRef<string | null>(null);
   const storeReviewAfterLeaveRef = useRef(false);
 
@@ -583,9 +576,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     quotaStatus,
   } = useQuota();
   const { t } = useTranslation();
-  const referenceImagesEnabled = isReferenceImagesEnabled();
   const isPlus = tier === 'plus';
-  const canUseReference = referenceImagesEnabled && Boolean(user);
   const savedAnalysisAction = getSavedAnalysisAction({
     tier, loading: quotaLoading, error: quotaError, status: quotaStatus,
   });
@@ -822,49 +813,14 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     };
   }, [revealRecallInput]);
 
-  // Subject detection is only needed for authenticated reference-image tools.
-  // Guests already receive metadata from the post-save categorization request.
-  useEffect(() => {
-    if (!dream || !canUseReference) return;
-    if (initialCategorizationPending) return;
-    if (hasBackfilledSubjectRef.current) return;
-    if (dream.hasPerson !== undefined || dream.hasAnimal !== undefined) return;
-    if (!dream.transcript?.trim()) return;
-
-    hasBackfilledSubjectRef.current = true;
-    let cancelled = false;
-
-    (async () => {
-      try {
-        // Subject detection sends dream text to Gemini: skip while consent is missing.
-        if (!(await hasAiConsent())) {
-          hasBackfilledSubjectRef.current = false;
-          return;
-        }
-        if (cancelled) return;
-        const result = await categorizeDream(dream.transcript, language);
-        if (!cancelled && (result.hasPerson !== undefined || result.hasAnimal !== undefined)) {
-          await updateDream({
-            ...dream,
-            hasPerson: result.hasPerson,
-            hasAnimal: result.hasAnimal,
-          });
-        }
-      } catch (err) {
-        // Silently fail - this is a background optimization
-        if (__DEV__) {
-          console.warn('[JournalDetail] Lazy backfill failed:', err);
-        }
-      }
-    })();
-    // A newer title, analysis or user edit owns the dream after it changes.
-    return () => { cancelled = true; };
-  }, [canUseReference, dream, initialCategorizationPending, language, updateDream]);
-
 
   const { shareImageRef, shareComposite } = useDreamShareComposite();
 
   const analysisState = useMemo(() => getDreamAnalysisState(dream), [dream]);
+  // Analyses, AI illustrations and conversations can be reported to us.
+  const hasGeneratedContent = Boolean(dream && (dream.isAnalyzed
+    || (dream.imageUrl && dream.imageSource !== 'user')
+    || dream.chatHistory?.length));
   const guestImageAvailable = useMemo(() => {
     if (quotaLoading) return false;
     const image = usage?.image;
@@ -1336,67 +1292,6 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     }
   }, [dream, isAnalysisLocked, updateDream, t]);
 
-  // Reference image generation handlers
-  const handleReferenceImagesSelected = useCallback((images: ReferenceImage[]) => {
-    setReferenceImages(images);
-  }, []);
-
-  const handleReferenceSheetClose = useCallback(() => {
-    setShowReferenceSheet(false);
-    setReferenceSubjectType(null);
-    setReferenceImages([]);
-  }, []);
-
-  const handleGenerateWithReference = useCallback(async () => {
-    if (!dream || referenceImages.length === 0 || !canUseReference) return;
-    if (!(await requestAiConsent(t))) return;
-
-    setShowReferenceSheet(false);
-    setIsGeneratingWithReference(true);
-
-    try {
-      const imageUrl = await generateImageWithReference({
-        transcript: dream.transcript,
-        prompt: dream.transcript,
-        referenceImages,
-        previousImageUrl: dream.imageUrl || undefined,
-        lang: language,
-      });
-
-      const imageUpdatedAt = Date.now();
-      const analysisRequestId = generateUUID();
-      const updatedDream: DreamAnalysis = {
-        ...dream,
-        imageUrl,
-        thumbnailUrl: imageUrl,
-        imageGenerationFailed: false,
-        imageUpdatedAt,
-        analysisRequestId,
-        imageSource: 'ai',
-      };
-
-      await updateDream(updatedDream);
-
-      // Cleanup
-      setReferenceSubjectType(null);
-      setReferenceImages([]);
-    } catch (error) {
-      const classified = error && typeof error === 'object' && 'userMessage' in error && 'canRetry' in error
-        ? (error as ClassifiedError)
-        : classifyError(error instanceof Error ? error : new Error('Unknown error'), t);
-      if (classified.canRetry) {
-        Alert.alert(t('common.error_title'), classified.userMessage, [
-          { text: t('common.cancel'), style: 'cancel' },
-          { text: t('analysis.retry'), onPress: () => void handleGenerateWithReference() },
-        ]);
-      } else {
-        Alert.alert(t('common.error_title'), classified.userMessage);
-      }
-    } finally {
-      setIsGeneratingWithReference(false);
-    }
-  }, [canUseReference, dream, language, referenceImages, t, updateDream]);
-
   const openShareModal = useCallback(() => {
     setShareCopyStatus('idle');
     setShareModalVisible(true);
@@ -1599,6 +1494,17 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     if (!dream || isAnalysisLocked) return;
     setShowDeleteSheet(true);
   }, [dream, isAnalysisLocked]);
+
+  // The reference lets us find the reported analysis, image or conversation.
+  const onReportGeneratedContent = useCallback(() => {
+    if (!dream) return;
+    void openContactMail({
+      subject: t('journal.detail.report.subject'),
+      body: t('journal.detail.report.body', { reference: String(dream.remoteId ?? dream.clientRequestId ?? dream.id) }),
+      unavailableTitle: t('journal.detail.report.button'),
+      unavailableMessage: t('contact.mail_unavailable', { email: CONTACT_EMAIL }),
+    });
+  }, [dream, t]);
 
   const handleConfirmDelete = useCallback(() => {
     if (!dream || isAnalysisLocked || isDeleting) return;
@@ -3371,6 +3277,20 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
                 </Text>
               </PressableScale>
               </View>
+              {hasGeneratedContent ? (
+                <PressableScale
+                  onPress={onReportGeneratedContent}
+                  className="mt-2 min-h-[44px] flex-row items-center justify-center gap-1.5 self-center px-3"
+                  hitSlop={{ top: 4, bottom: 4, left: 8, right: 8 }}
+                  accessibilityRole="button"
+                  testID={TID.Button.DreamReport}
+                >
+                  <IconSymbol name="flag" size={15} color={noctalia.text.tertiary} />
+                  <Text className="font-sans text-[13px] text-ivory-muted">
+                    {t('journal.detail.report.button')}
+                  </Text>
+                </PressableScale>
+              ) : null}
               <JournalFolio folio={folio} className="mt-8" turns="dream" />
             </View>
             </View>
@@ -3616,17 +3536,6 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
             </View>
           </View>
         </Modal>
-
-        <ReferenceImageSheet
-          visible={referenceImagesEnabled && showReferenceSheet}
-          subjectType={referenceSubjectType}
-          referenceImages={referenceImages}
-          isGenerating={isGeneratingWithReference}
-          onClose={handleReferenceSheetClose}
-          onPrimary={handleGenerateWithReference}
-          onSecondary={handleReferenceSheetClose}
-          onImagesSelected={handleReferenceImagesSelected}
-        />
 
         {savedConfirmationVisible && !opensOnSavedMoment ? (
           <Toast

@@ -492,7 +492,7 @@ export function useRecordingSession({
             t('recording.alert.speech_permission_required.message'),
             [
               { text: t('common.cancel'), style: 'cancel' },
-              { text: t('reference_image.open_settings'), onPress: () => {
+              { text: t('recording.alert.open_settings'), onPress: () => {
                 void Linking.openSettings().catch((error) => log.warn('Failed to open settings', error));
               } },
             ],
