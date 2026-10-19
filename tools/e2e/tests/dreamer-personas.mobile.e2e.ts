@@ -92,7 +92,7 @@ if (process.env.E2E_PERSONAS === '1') {
     await screen.scrollUntilVisible(search, { direction: 'up' });
     // Sol may leave a shorter search in place. Confirm it is cleared before
     // entering the exact query: XCTest can fail to confirm a single replacement.
-    if (await search.inputValue()) {
+    if (platform === 'ios' && await search.inputValue()) {
       await search.fill('');
       await expect(search).toHaveValue('');
     }
@@ -139,7 +139,10 @@ if (process.env.E2E_PERSONAS === '1') {
       const { app, screen, agent } = fixtures;
       await startProfile(fixtures, 'existing');
       await agent.act('Find and open your older dream about a garden floating among the clouds.');
-      const title = screen.getByText('Garden in the Clouds', { exact: true, visible: true });
+      // iOS AX can echo the title on both a Text and its child. The final Text
+      // inside this unique running head identifies the readable title leaf.
+      const title = screen.getByTestId('journal.detail.navigation', { visible: true })
+        .getByText('Garden in the Clouds', { exact: true, visible: true }).last();
       await screen.scrollUntilVisible(title, { direction: 'up' });
       await expect(title).toBeVisible();
       const transcript = screen.getByText(/^I was walking through a beautiful garden floating among the clouds\./, { visible: true });
