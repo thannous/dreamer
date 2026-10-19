@@ -104,11 +104,12 @@ if (process.env.E2E_PERSONAS === '1') {
       await expect(savedQuestion).toBeVisible();
       const answer = screen.getByText(/^(That's an interesting question|Based on your dream,|Dreams like yours often|The elements you mentioned|I sense that this dream)/, { visible: true });
       await expect(answer).toBeVisible();
-      const response = await answer.textContent();
-      if (!response) throw new Error('The conversation has no readable assistant reply.');
       await expect(screen.getByTestId('chat.loading')).toBeHidden();
       await expect(input).toBeEnabled();
       await expect(input).not.toHaveAttribute('readonly');
+      // Capture the completed reply, not an intermediate streaming chunk.
+      const response = await answer.textContent();
+      if (!response) throw new Error('The conversation has no readable assistant reply.');
       // Go back to the journal through exact navigation; the next goal discovers
       // how to reach that same discussion again, with no new message requested.
       await screen.getByRole('button', 'Retour', { exact: true, visible: true }).tap();
