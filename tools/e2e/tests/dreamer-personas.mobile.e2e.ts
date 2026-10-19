@@ -20,6 +20,17 @@ if (process.env.E2E_PERSONAS === '1') {
     await expect(screen.getByTestId('screen.home', { visible: true })).toBeVisible();
   }
 
+  async function journal(screen: NativeFixtures['screen']) {
+    const back = screen.getByTestId('btn.navigateJournal', { visible: true });
+    await screen.scrollUntilVisible(back, { direction: 'up' });
+    // The running head can be partly under the iOS status bar while AX calls it
+    // visible. The revealed return tab remains inside the usable screen.
+    const returnTab = screen.getByTestId('journal.detail.returnTab', { visible: true });
+    if (await returnTab.isVisible()) await returnTab.tap();
+    else await back.tap();
+    await expect(screen.getByTestId('screen.journal', { visible: true })).toBeVisible();
+  }
+
   async function settings(screen: NativeFixtures['screen']) {
     await home(screen);
     await screen.getByTestId('btn.header.home.settings', { visible: true }).tap();
@@ -98,7 +109,7 @@ if (process.env.E2E_PERSONAS === '1') {
       await expect(screen.getByTestId('component.dreamDetail.readingZone')).toBeHidden();
       await expect(screen.getByTestId('screen.paywall')).toBeHidden();
       await app.screenshot('morning-saved-for-later');
-      await tap(screen, 'btn.navigateJournal', 'up');
+      await journal(screen);
       await openSearchResult(fixtures, 'Personas réveil');
       // AX can list a partially covered footer as hittable. The default gesture
       // starts on the fixed panel on iOS; drag inside the measured reading area.
@@ -131,7 +142,7 @@ if (process.env.E2E_PERSONAS === '1') {
       // This exact fixture starts outside favourites. Finding it in the filtered
       // Journal after the goal proves a change even if native AX hides icon state.
       await agent.act('Add this dream to your favourites so you can find it again later. Finish on this dream page.');
-      await tap(screen, 'btn.navigateJournal', 'up');
+      await journal(screen);
       await screen.getByRole('button', 'Afficher uniquement les favoris', { exact: true, visible: true }).tap();
       await openSearchResult(fixtures, 'Garden in the Clouds');
       await screen.scrollUntilVisible(title, { direction: 'up' });
@@ -172,7 +183,7 @@ if (process.env.E2E_PERSONAS === '1') {
       if (!response) throw new Error('The conversation has no readable assistant reply.');
       await screen.getByRole('button', 'Retour', { exact: true, visible: true }).tap();
       await screen.getByRole('button', 'Retour', { exact: true, visible: true }).tap();
-      await tap(screen, 'btn.navigateJournal', 'up');
+      await journal(screen);
       await agent.act('Reopen your existing conversation about The Infinite Library, with the earlier question and reply on screen. Do not send another message.');
       await screen.scrollUntilVisible(title, { direction: 'up' });
       await expect(title).toBeVisible();
@@ -204,7 +215,7 @@ if (process.env.E2E_PERSONAS === '1') {
       await readableStory(screen, story);
       await expect(screen.getByTestId('component.dreamDetail.readingZone')).toBeHidden();
       await app.screenshot('free-dream-preserved-after-offer');
-      await tap(screen, 'btn.navigateJournal', 'up');
+      await journal(screen);
       await settings(screen);
       const quota = screen.getByTestId('quota.analysisValue', { visible: true });
       await screen.scrollUntilVisible(quota);
