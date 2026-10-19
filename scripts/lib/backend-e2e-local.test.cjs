@@ -50,20 +50,25 @@ test('fixture replay neutralizes external URLs and disables schedules without ed
   }
 });
 
-function runnerFixture(args, qualifyStatus = 0) {
+function runnerFixture(args, qualifyStatus = 0, startStatus = 0) {
   const { runInNewContext } = require('node:vm');
   const ownedRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'noctalia-backend-runner-test-'));
   const calls = [];
   const receipt = local();
   let failure;
   let qualifierReceipt;
+  let config = '';
   try {
     fs.mkdirSync(path.join(ownedRoot, 'supabase'));
-    fs.writeFileSync(path.join(ownedRoot, 'supabase/config.toml'), 'project_id = "fixture"\n[api]\nport = 54321\n[db]\nport = 54322\nsql_paths = ["./seed.sql"]\n');
+    fs.writeFileSync(path.join(ownedRoot, 'supabase/config.toml'), 'project_id = "fixture"\n[api]\nport = 54321\n[db]\nport = 54322\nsql_paths = ["./seed.sql"]\n[experimental]\nstack = true\n');
     const spawnSync = (binary, argv, options) => {
       calls.push({ binary, argv: [...argv], env: options.env });
       let stdout = '';
       if (argv[0] === '--version') stdout = '2.121.0';
+      if (argv[0] === 'stack' && argv[1] === 'start') {
+        config = fs.readFileSync(path.join(argv[argv.indexOf('--workdir') + 1], 'supabase/config.toml'), 'utf8');
+        if (startStatus) return { status: startStatus, stdout: '' };
+      }
       if (argv[0] === 'stack' && argv[1] === 'start') stdout = JSON.stringify({
         id: receipt.LOCAL_E2E_STACK.id, runtime: 'native', env: receipt,
         endpoints: { api: { address: '127.0.0.1' } },
@@ -91,7 +96,8 @@ function runnerFixture(args, qualifyStatus = 0) {
           platform: process.platform, env: { TI528_LOCAL_STATUS: '/unowned-status.json' } },
       });
     } catch (error) { failure = error; }
-    return { calls, failure, qualifierReceipt, receipt };
+    const leftovers = fs.readdirSync(ownedRoot).filter((name) => name.startsWith('noctalia-backend-e2e-'));
+    return { calls, failure, qualifierReceipt, receipt, config, leftovers };
   } finally { fs.rmSync(ownedRoot, { recursive: true, force: true }); }
 }
 
@@ -100,6 +106,36 @@ test('ordinary native backend run retains browser qualification without adding T
   assert.equal(result.failure, undefined);
   assert.equal(result.calls.filter(({ argv }) => argv.includes('playwright.backend.config.ts')).length, 1);
   assert.equal(result.calls.filter(({ argv }) => argv[0] === '--run').length, 0);
+});
+
+test('without --runtime the runner owns a native stack, never a container runtime, and leaves no temp workdir', () => {
+  const result = runnerFixture([]);
+  assert.equal(result.failure, undefined);
+  const start = result.calls.find(({ argv }) => argv[0] === 'stack' && argv[1] === 'start');
+  assert.deepEqual(start.argv.slice(start.argv.indexOf('--runtime'), start.argv.indexOf('--runtime') + 2), ['--runtime', 'native']);
+  assert.equal(result.calls.some(({ binary }) => /^(docker|podman)/.test(path.basename(binary))), false);
+  const browser = result.calls.find(({ argv }) => argv.includes('playwright.backend.config.ts'));
+  assert.equal(browser.env.E2E_BACKEND_RUNTIME, 'native');
+  assert.deepEqual(result.leftovers, []);
+});
+
+for (const runtime of ['docker', 'podman']) test(`--runtime ${runtime} is refused before starting a process`, () => {
+  const result = runnerFixture(['--runtime', runtime]);
+  assert.match(result.failure?.message ?? '', /accepts only native/);
+  assert.equal(result.calls.length, 0);
+});
+
+test('a failed native start is a failed run, and the browser journeys never run', () => {
+  const result = runnerFixture([], 0, 1);
+  assert.match(result.failure?.message ?? '', /failed \(1\)/);
+  assert.equal(result.calls.some(({ argv }) => argv.includes('playwright.backend.config.ts')), false);
+});
+
+test('a committed stack setting is not duplicated in the disposable config', () => {
+  const result = runnerFixture([]);
+  assert.equal(result.failure, undefined);
+  assert.equal((result.config.match(/^stack = true$/gm) ?? []).length, 1);
+  assert.doesNotMatch(result.config, /^\s*port\s*=/m);
 });
 
 test('TI528 qualification uses this invocation receipt after browser journeys and before exact cleanup', () => {
@@ -117,7 +153,6 @@ test('TI528 qualification uses this invocation receipt after browser journeys an
 });
 
 for (const args of [
-  ['--qualify-ti528'],
   ['--runtime', 'native', '--qualify-ti528', '--prepare-only'],
   ['--qualify-ti528', '--status-file', '/unowned-status.json'],
 ]) test(`TI528 rejects incompatible ownership options ${args.join(' ')} before starting a process`, () => {

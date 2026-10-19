@@ -17,7 +17,8 @@ driving the login screen. dreamer is the reference for the other repos.
   and the guarded Expo start `scripts/start-branch-e2e.mjs`. None has run against a
   real branch yet. There is no mobile journey for now (see [Mobile](#mobile)).
 - The only other non-production backend is the disposable local stack of
-  `npm run test:e2e:backend` (Docker, `127.0.0.1:56321`); it is unchanged.
+  `npm run test:e2e:backend` (native Supabase runtime on loopback, no Docker); it is
+  unchanged by test-login.
 
 ## Guard (`scripts/test-supabase-guard.mjs`)
 

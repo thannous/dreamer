@@ -48,7 +48,7 @@ export default {
       kinds: ['release'],
       targets: ['app'],
       specialised: true,
-      requires: { command: 'test -n "$APP_E2E_AVAILABLE"', hint: 'run it where Docker runs or pass owner-machine evidence' },
+      requires: { command: 'test -n "$APP_E2E_AVAILABLE"', hint: 'run it where the native Supabase runtime runs or pass owner-machine evidence' },
     },
   ],
 };
@@ -228,7 +228,7 @@ test('the site publish needs no app check; a publish that asks for the app targe
 
 test('an app check left open by an app release does not block the site release that follows it', async () => {
   await withRepository(async ({ check, engine }) => {
-    // npm run verify:release where Docker is missing: app-e2e is unavailable.
+    // npm run verify:release where the native Supabase runtime is missing: app-e2e is unavailable.
     assert.equal((await engine('release', ['--target', 'app'])).status, 2);
     assert.deepEqual(failedChecks(await check()), ['proof-passed'], 'no release has passed yet');
     assert.deepEqual(failedChecks(await check({ targets: ['app'] })), ['proof-passed', 'proof-latest-release', 'proof-open-check']);
@@ -243,7 +243,7 @@ test('an app check left open by an app release does not block the site release t
 test('an app release left incomplete after a passed site release does not block the site', async () => {
   await withRepository(async ({ check, engine }) => {
     assert.equal((await engine('release')).status, 0);
-    // npm run verify:release where Docker is missing: the passed site proof is
+    // npm run verify:release where the native Supabase runtime is missing: the passed site proof is
     // kept, and the incomplete app run is now the latest release run.
     assert.equal((await engine('release', ['--target', 'app'])).status, 2);
     assert.deepEqual((await check()).failures, []);

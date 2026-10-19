@@ -37,8 +37,8 @@ const managedFile = (extra = {}) => {
   const receipt = managed(extra);
   return status(receipt.DB_URL, receipt);
 };
-test.each(['native', 'docker', 'podman'])('accepts an identified owned %s stack receipt', (runtime) => {
-  const receipt = managed({ LOCAL_E2E_STACK: { id: 'a'.repeat(64), runtime } });
+test('accepts an identified owned native stack receipt', () => {
+  const receipt = managed({ LOCAL_E2E_STACK: { id: 'a'.repeat(64), runtime: 'native' } });
   expect(readLocalStatus(managedFile(receipt))).toEqual(receipt);
 });
 test.each([
@@ -54,6 +54,9 @@ test.each([
   { LOCAL_E2E_STACK: undefined },
   { LOCAL_E2E_STACK: { id: 'unknown', runtime: 'native' } },
   { LOCAL_E2E_STACK: { id: 'a'.repeat(64), runtime: 'remote' } },
+  // Docker and Podman stacks were removed (2026-10-19); only the native runtime is owned.
+  { LOCAL_E2E_STACK: { id: 'a'.repeat(64), runtime: 'docker' } },
+  { LOCAL_E2E_STACK: { id: 'a'.repeat(64), runtime: 'podman' } },
   { SERVICE_ROLE_KEY: '' },
 ])('rejects unsafe or unidentified managed status %j before database access', (extra) => {
   expect(() => readLocalStatus(managedFile(extra))).toThrow();

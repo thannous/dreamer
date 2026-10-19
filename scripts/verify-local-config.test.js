@@ -114,7 +114,7 @@ describe('verify-local.config.mjs', () => {
   });
 
   it('verify:release runs the app checks the web app publish requires; verify:release:site leaves them out', () => {
-    // The site publish asks the guard for no target, so Docker and the app
+    // The site publish asks the guard for no target, so the backend journey and the app
     // campaigns never hold back noctalia.app. A target dropped on any side
     // would let the web app or a mobile release ship without those checks.
     const { RELEASE_TARGETS } = require('./web-deploy');
@@ -130,6 +130,16 @@ describe('verify-local.config.mjs', () => {
       ['testerarmy-lucid', ['app']],
       ['testerarmy-meditation', ['app']],
     ]);
+  });
+
+  it('e2e-backend needs the native Supabase runtime, never Docker, and really runs the journeys', () => {
+    // A failed probe leaves the check unavailable (proof incomplete); it can never pass it.
+    const check = config.checks.find((entry) => entry.name === 'e2e-backend');
+    expect(check.command).toBe('npm run test:e2e:backend');
+    expect(check.specialised).toBe(true);
+    expect(check.requires.command).toBe('node scripts/check-native-supabase-runtime.cjs');
+    expect(JSON.stringify(config.checks.map((entry) => entry.requires?.command ?? ''))).not.toMatch(/docker|podman/i);
+    expect(scriptsOf('package.json')['test:e2e:backend']).toBe('node ./scripts/run-backend-e2e.cjs');
   });
 
   it('keeps the former pre-push suite in verify:pr', () => {
