@@ -156,6 +156,68 @@ The journey opens the real Settings control, checks that preferences are
 actionable, and requires closed drawers to expose no accessible radio controls.
 It exercises the panel at 390 and 1280 pixels.
 
+## Feature personas (opt-in pilot)
+
+Dreamer's personas describe different needs, not only languages. Their English
+goals run against the French real web UI and existing synthetic mock accounts:
+
+| Persona | Account fixture | Goal and exact outcome |
+| --- | --- | --- |
+| Camille, just awake | New | Keep notes for later; reopen the one entry and recover the exact editable story without a reading or paywall. |
+| Alex, regular journaler | Existing free | Find a cloud-garden dream, add it to favourites, reopen it through that filter with its story intact. The fixture starts unfavourited. |
+| Samira, reflecting | Plus | Check the dream's title in the conversation, send one exact question, receive a simulated reply, then find the same dream, question and reply on revisit. |
+| Lucas, exhausted free quota | Existing free | Keep a dream, inspect the Plus offer, decline it and retain the story; verify free allowance and zero mock purchase/restore calls. |
+
+Definitions live in [dreamer-personas.ts](dreamer-personas.ts); journeys in
+[dreamer-personas.web.e2e.ts](tests/dreamer-personas.web.e2e.ts). Deterministic
+setup chooses the account through the mock UI. Each `agent.act()` discovers one
+functional outcome through visible controls, immediately followed by exact
+assertions. Model-reported success alone never passes a test. Exact text entry,
+setup and persistence checks use SDK locators without model calls.
+
+Use an existing ChatGPT Plus/Pro subscription through the SDK's supported login,
+after the account owner has chosen that access. No API key or paid gateway is
+enabled by installing the dependencies. Authentication stays outside Git:
+
+```sh
+cd tools/e2e
+mise exec -- npx e2e login openai
+mise exec -- npx e2e models openai
+```
+
+From the repository root, collect without login/model calls, pilot one persona,
+then run the four only after the pilot works:
+
+```sh
+E2E_PERSONAS=1 E2E_WORKERS=1 E2E_WEB_LOCALE=fr-FR mise exec -- npm run test:testerarmy -- list --tag personas
+E2E_PERSONAS=1 E2E_WORKERS=1 E2E_WEB_LOCALE=fr-FR mise exec -- npm run test:testerarmy -- run --tag persona-morning
+E2E_PERSONAS=1 E2E_WORKERS=1 E2E_WEB_LOCALE=fr-FR mise exec -- npm run test:testerarmy -- run --tag personas
+```
+
+The default model is `gpt-6.1-sol`; `E2E_PERSONA_MODEL` selects another model id
+served by the same login. Each goal allows at most 16 actions, 12 model calls
+and 32,000 input tokens per request. Each test has a 240-second timeout; retries
+and replay stay off. Use one worker. The full suite has seven agent goals.
+It is not a human usability study or a performance/framerate measurement.
+
+Without `E2E_PERSONAS=1`, no persona test is registered and ordinary regressions
+retain their zero-model-call contract. The pilot refuses other products, native
+targets, other locales and multiple workers. It uses one isolated browser context
+per test, mocks authentication/AI/billing and blocks browser traffic outside the
+local origin. Never point it at a personal account or real dream journal.
+
+The canonical runner retains each test's trace, screenshot, exact source and
+input identity, model usage, persona name and rerun environment in its unique
+`.e2e/dreamer-web/` directory. Qualification accepts model calls only for this
+explicit campaign, checks the declared persona and actual model calls, and retains
+all existing assertion, artifact and cleanup checks. A missing login or an
+unexecuted journey is not a pass. Qualify a persona campaign with its `run`;
+`collect` is reserved for the historical four-locale regression campaign and
+does not aggregate persona runs. Native personas, RTL and real service behaviour
+are outside this first pilot. See the [SDK's subscription guide](https://e2e.tester.army/docs/subscriptions)
+for access options; Claude uses an Anthropic API key rather than the Claude Code
+session.
+
 ## Historical Dreamer UI parity
 
 The 83 historical browser cases across 16 families run through TesterArmy with

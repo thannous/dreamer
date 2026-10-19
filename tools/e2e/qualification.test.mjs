@@ -118,6 +118,29 @@ test('critical array/boolean and unexpected agent identities are refused', () =>
     r => { r.run.results[0].selected = 1; }, r => { r.run.summary.passed = [1]; },
     r => { r.run.usage.modelTokens = false; }]) { const r = report(); mutate(r); assert.throws(() => verifyReport(r, options())); }
 });
+test('persona reports require the explicit web policy, declared persona and actual bounded model call', () => {
+  // A UI journey cannot safely reproduce a forged report or mislabelled agent.
+  // This control exercises that evidence boundary without calling a model.
+  const r = report();
+  r.run.targets = [{ id: 'dreamer-web', platform: 'web', baseOrigin: 'http://127.0.0.1:8096', engine: { name: 'web', version: SDK_PINS['@e2e-dev/web'] } }];
+  r.run.usage = { modelTokens: 100, maxModelCallsInStep: 1, maxActionStepsInStep: 2 };
+  for (const row of r.run.results) Object.assign(row, {
+    targetId: 'dreamer-web', platform: 'web', file: 'tests/dreamer-personas.web.e2e.ts', agent: 'morning', tags: ['persona-morning'],
+  });
+  r.run.results[0].attempts[0].steps.push({ api: 'agent.act', status: 'passed', model: { model: 'gpt-6-luna', calls: 1 } });
+  const opts = options({ target: 'dreamer-web', platform: 'web', origin: 'http://127.0.0.1:8096', personaModel: 'gpt-6-luna' });
+  assert.equal(verifyReport(r, opts).passed[0].agent, 'morning');
+  assert.throws(() => verifyReport(r, { ...opts, personaModel: undefined }), /REPORT_PROVENANCE/);
+  assert.throws(() => verifyReport(r, { ...opts, personaModel: 'another-model' }), /PERSONA_MODEL_UNPROVEN/);
+  for (const mutate of [
+    data => { data.run.usage.maxModelCallsInStep = 13; },
+    data => { data.run.results[0].agent = 'unexpected'; },
+    data => { data.run.results[0].file = 'tests/another.e2e.ts'; },
+    data => { data.run.results[0].attempts[0].steps.pop(); },
+    data => { data.run.results[0].attempts[0].steps[1].model.calls = 0; },
+    data => { data.run.results[0].attempts[0].steps.push({ api: 'expect.toBeVisible', status: 'failed' }); },
+  ]) { const changed = structuredClone(r); mutate(changed); assert.throws(() => verifyReport(changed, opts)); }
+});
 test('finding with no requested or declared media and no artifacts directory is valid', () => {
   const dir = mkdtempSync(join(tmpdir(), 'noctalia-report-only-'));
   try { assert.equal(verifyReport(report(), options({ output: dir })).artifacts.length, 0); }

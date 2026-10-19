@@ -85,6 +85,8 @@ Ouvrir aussi les ancres directement et par les liens de section. Sur mobile, `#s
 
 ## 7. Faire valider, puis étendre
 
+Décision de Thanh du 19 octobre 2026 : publier chaque lot complet sur noctalia.app, dans les six langues, après les vérifications adaptées. L'autorisation de publication vaut pour les lots demandés ; ne pas redemander un go à la fin de chacun. Conserver les contrôles de livraison et vérifier ensuite les pages publiques sur mobile et grand écran. Le suivi distingue toujours ce qui est préparé, vérifié et effectivement publié.
+
 Présenter le lot à taille desktop/mobile avec un aperçu local et appliquer les retours. Étendre dans le périmètre autorisé en réutilisant les validations et décisions existantes ; une délégation déjà acquise ne demande pas une nouvelle approbation par image. Garder cette référence unique à jour quand une décision graphique change. Les règles de Git, validation, merge et publication restent dans [AGENTS.md](../../AGENTS.md) et ses guides de livraison : s’y reporter au stade concerné, sans les dupliquer ici.
 
 **Fin :** le lot est accepté ou les corrections sont explicites. La validation d'un rendu n'est ni une publication implicite ni une autorisation d'étendre le périmètre aux autres symboles.

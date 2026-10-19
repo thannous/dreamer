@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo, useRef, useSyncExternalStore } from 'react';
+import { useState, useEffect, useCallback, useLayoutEffect, useMemo, useRef, useSyncExternalStore } from 'react';
 import type { DreamAnalysis, QuotaStatus } from '@/lib/types';
 import { AppState } from 'react-native';
 import { isMockModeEnabled } from '@/lib/env';
@@ -158,11 +158,18 @@ export function useQuota(targetInput?: QuotaTargetInput) {
 
   // Explicit refetches are events. Mount/context changes derive their pending state
   // from request identity and only commit state after the service responds.
-  const fetchQuotaStatus = useCallback(async () => {
-    if (isPaidTier || subscriptionLoading) return;
-    setQuotaRefreshing(true);
-    await requestQuotaStatus();
+  // A caller may hold a refetch from an earlier render (the QA lab refreshes the user,
+  // then refetches): it always runs the latest request, so its result is the current one.
+  const latestRequest = useRef({ skip: isPaidTier || subscriptionLoading, run: requestQuotaStatus });
+  useLayoutEffect(() => {
+    latestRequest.current = { skip: isPaidTier || subscriptionLoading, run: requestQuotaStatus };
   }, [isPaidTier, subscriptionLoading, requestQuotaStatus]);
+  const fetchQuotaStatus = useCallback(async () => {
+    const { skip, run } = latestRequest.current;
+    if (skip) return;
+    setQuotaRefreshing(true);
+    await run();
+  }, []);
 
   /**
    * Invalidate cache and refetch

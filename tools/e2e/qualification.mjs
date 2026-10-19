@@ -120,6 +120,17 @@ function tracePage(output, result) {
 function verifyProvenance(document, options, requirePass = true) {
   const run = document?.run;
   const now = Date.now();
+  // The opt-in feature campaign uses real agent calls. Ordinary regressions
+  // retain their zero-model-call contract; native targets never opt in here.
+  const personas = options.personaModel !== undefined;
+  const usage = run?.usage;
+  const validUsage = personas
+    ? options.platform === 'web' && options.target === 'dreamer-web'
+      && typeof options.personaModel === 'string' && !!options.personaModel.trim()
+      && Number.isSafeInteger(usage?.modelTokens) && usage.modelTokens > 0
+      && Number.isSafeInteger(usage?.maxModelCallsInStep) && usage.maxModelCallsInStep >= 1 && usage.maxModelCallsInStep <= 12
+      && Number.isSafeInteger(usage?.maxActionStepsInStep) && usage.maxActionStepsInStep >= 0 && usage.maxActionStepsInStep <= 16
+    : usage?.modelTokens === 0 && usage?.maxModelCallsInStep === 0;
   if (document?.schemaVersion !== 'report-1' || !run || typeof run.id !== 'string' || !run.id || run.runner?.version !== SDK_PINS.e2e
     || run.vcs?.commit !== options.revision || (requirePass && (run.exitCode !== 0 || run.status !== 'passed'))
     || run.environment?.runtime !== (options.runtime ?? `node ${process.version}`)
@@ -132,7 +143,7 @@ function verifyProvenance(document, options, requirePass = true) {
     || typeof run.startedAt !== 'string' || typeof run.finishedAt !== 'string'
     || !Number.isFinite(Date.parse(run.startedAt)) || !Number.isFinite(Date.parse(run.finishedAt)) || Date.parse(run.startedAt) < options.startedAt
     || Date.parse(run.startedAt) > now || Date.parse(run.finishedAt) < Date.parse(run.startedAt)
-    || Date.parse(run.finishedAt) > now || run.usage?.modelTokens !== 0 || run.usage?.maxModelCallsInStep !== 0)
+    || Date.parse(run.finishedAt) > now || !validUsage)
     fail('REPORT_PROVENANCE');
   return run;
 }
@@ -156,14 +167,18 @@ export function verifyReport(document, options) {
     if (selected.length !== pairs.length * repeatCount) fail('COLLECTION_INCOMPLETE');
     for (const pair of pairs) for (let repeat = 0; repeat < repeatCount; repeat++) {
       const matches = selected.filter(result => key(result) === key(pair) && result.repeat === repeat);
-      if (matches.length !== 1 || (pair.disposition === 'skip') !== (matches[0].status === 'skipped')) fail('COLLECTION_DISPOSITION');
+      if (matches.length !== 1 || (pair.disposition === 'skip') !== (matches[0].status === 'skipped')
+        || (options.personaModel !== undefined && pair.agent !== matches[0].agent)) fail('COLLECTION_DISPOSITION');
     }
   }
   for (const result of run.results) {
     if (typeof result.testId !== 'string' || !result.testId || result.targetId !== options.target
       || result.platform !== options.platform || !Number.isSafeInteger(result.repeat) || result.repeat < 0
       || typeof result.selected !== 'boolean' || !Array.isArray(result.attempts)
-      || typeof result.agent !== 'string' || result.agent !== (options.agent ?? 'default')) fail('RESULT_IDENTITY');
+      || typeof result.agent !== 'string' || (options.personaModel !== undefined
+        ? result.file !== 'tests/dreamer-personas.web.e2e.ts' || !['morning', 'archivist', 'explorer', 'free'].includes(result.agent)
+          || !result.tags?.includes(`persona-${result.agent}`)
+        : result.agent !== (options.agent ?? 'default'))) fail('RESULT_IDENTITY');
     const row = { targetId: result.targetId, testId: result.testId, repeat: result.repeat, agent: result.agent };
     const key = JSON.stringify(row);
     if (seen.has(key)) fail('DUPLICATE_RESULT');
@@ -179,6 +194,12 @@ export function verifyReport(document, options) {
         : !attempt.steps.some(step => step.api === 'app.open') || attempt.steps.slice(0, attempt.steps.findIndex(step => step.api === 'app.open')).some(step => !['browser.route', 'browser.setViewport'].includes(step.api)))
       || attempt.steps.some(step => step.status !== 'passed')
       || !Array.isArray(attempt.artifacts)) fail('LIFECYCLE_INCOMPLETE');
+    if (options.personaModel !== undefined) {
+      const goals = attempt.steps.filter(step => step.api === 'agent.act');
+      if (!goals.length || goals.some(step => step.model?.model !== options.personaModel
+        || !Number.isSafeInteger(step.model?.calls) || step.model.calls < 1 || step.model.calls > 12
+        || step.cache?.mode === 'self-finalized')) fail('PERSONA_MODEL_UNPROVEN');
+    }
     if (options.video && !attempt.artifacts.some(a => a.kind === 'video')) fail('MEDIA_VIDEO_MISSING');
     for (const artifact of attempt.artifacts) artifacts.push(artifactBytes(options.output, artifact));
     if (options.trace) artifacts.push(tracePage(options.output, result));

@@ -32,11 +32,15 @@ test('review: capture question keeps keyboard focus until a choice is made', asy
     await page.keyboard.press('Tab');
     const active = await page.evaluate(() => document.activeElement?.getAttribute('data-testid')
       ?? document.activeElement?.getAttribute('role') ?? 'outside');
-    expect(['heading', 'btn.dreamCaptureSeal.readNow', 'btn.dreamCaptureSeal.readLater']).toContain(active);
+    // Since #439 the capture modal also offers "See my dream" from the moment the save is
+    // durable: a choice too (it keeps any answer already given), so focus may rest on it.
+    expect(['heading', 'btn.dreamCaptureSeal.readNow', 'btn.dreamCaptureSeal.readLater',
+      'btn.dreamCaptureSeal.openDream']).toContain(active);
     visited.add(active);
   }
   expect(visited.has('btn.dreamCaptureSeal.readNow')).toBe(true);
   expect(visited.has('btn.dreamCaptureSeal.readLater')).toBe(true);
+  expect(visited.has('btn.dreamCaptureSeal.openDream')).toBe(true);
   await page.screenshot({ path: info.outputPath('seal-choice-focus.png') });
   await later.focus();
   await page.keyboard.press('Enter');
