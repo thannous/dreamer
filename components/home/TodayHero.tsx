@@ -14,7 +14,7 @@ import { getFormattingLocale } from '@/lib/locale';
 import { TID } from '@/lib/testIDs';
 import type { TodayState } from '@/lib/todayState';
 import type { DreamAnalysis } from '@/lib/types';
-import { useHeaderStretchStyle, usePaintingBreath, usePaintingDepthStyle } from '@/components/ui/headerStretch';
+import { useHeaderStretchStyle, usePaintingDepthStyle } from '@/components/ui/headerStretch';
 import Animated from 'react-native-reanimated';
 
 type Props = {
@@ -50,9 +50,8 @@ export function TodayHero({ state, dream, now, onPressCta, onOpenSettings }: Pro
     : undefined;
   // Pulling the page down stretches the dream's image over the gap, like every header painting.
   const artworkStretch = useHeaderStretchStyle((stageHeight ?? 260) + 1);
-  // Like the paintings: the dream's image breathes and lags behind the page as it scrolls.
+  // Like the paintings: the dream's image lags behind the page as it scrolls.
   const artworkDepth = usePaintingDepthStyle(stageHeight ?? 260);
-  const artworkBreath = usePaintingBreath();
   const locale = getFormattingLocale(currentLang ?? 'en');
   const formattedDate = new Date(now).toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long' });
   const dateLabel = formattedDate.charAt(0).toLocaleUpperCase(locale) + formattedDate.slice(1);
@@ -68,7 +67,7 @@ export function TodayHero({ state, dream, now, onPressCta, onOpenSettings }: Pro
         style={[{ height: (stageHeight ?? 260) + 1, transformOrigin: 'top center' }, artworkStretch]}>
         {/* From the top edge, behind the header, like the paintings of the other tabs. */}
         <Animated.View style={[{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }, artworkDepth]}>
-          <Animated.View style={[IMAGE_FILL, artworkBreath]}>{image}</Animated.View>
+          {image}
         </Animated.View>
         {/* A light reading veil rises from just above the title: the dream stays visible and the date reads. */}
         <LinearGradient colors={[`${ground}00`, `${ground}8C`, `${ground}CC`, ground]} locations={[0, 0.4, 0.7, 1]}

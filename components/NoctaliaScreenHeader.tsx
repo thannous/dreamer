@@ -65,8 +65,6 @@ interface NoctaliaScreenHeaderProps {
   immersive?: boolean;
   /** `immersive` only: a taller opening than the top third, for a screen that paints a bigger image. */
   immersiveHeight?: number;
-  /** `tab` only: the painting holds still instead of breathing. */
-  stillBackdrop?: boolean;
   includeTopInset?: boolean;
   actions?: NoctaliaHeaderAction[];
   chips?: NoctaliaHeaderChip[];
@@ -90,7 +88,6 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
   pinned = false,
   immersive = false,
   immersiveHeight,
-  stillBackdrop = false,
 }: NoctaliaScreenHeaderProps) {
   const { colors, mode } = useTheme();
   const { t } = useTranslation();
@@ -154,7 +151,7 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
           // its content, it ends with the header so it never covers what scrolls beneath.
           <NightSkyBand height={(measuredHeight || insets.top + 160) + (pinned ? 0 : 40)} background={noctalia.screen.background}
             scene={scene} pinned={pinned} fadeEnd={measuredHeight || undefined} fadeOnScroll={false}
-            immersive={Boolean(stageHeight)} titleTop={titleTop} still={stillBackdrop} />
+            immersive={Boolean(stageHeight)} titleTop={titleTop} />
         ) : null}
         <View pointerEvents={passThrough} style={[styles.tabBrandRow, { paddingHorizontal: horizontalPadding }]}>
           {showBrand ? (

@@ -8,7 +8,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { getDreamerArtwork, type DreamerScene } from '@/constants/dreamerArtwork';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
-import { usePaintingBreath, usePaintingDepthStyle, useHeaderStretchStyle } from './headerStretch';
+import { usePaintingDepthStyle, useHeaderStretchStyle } from './headerStretch';
 
 type Props = {
   scene: DreamerScene;
@@ -26,25 +26,20 @@ type Props = {
   immersive?: boolean;
   /** Open scene: where the title block starts, in points, so the page's ground rises behind it. */
   titleTop?: number;
-  /** The painting does not breathe: for a page whose own motion would compete with it. */
-  still?: boolean;
 };
 
 /**
- * The painting itself, alive: it breathes slowly and lags behind the page as it scrolls,
- * so the scene seems to lie deeper than the copy over it.
+ * The painting itself lags behind the page as it scrolls, so the scene seems to lie deeper
+ * than the copy over it. It does not breathe: on Android each frame of an endless zoom
+ * redrew the whole screen, so a page at rest kept the phone busy (owner decision 2026-10-20).
  */
-function PaintingLayer({ height, frame, still, children }: {
+function PaintingLayer({ height, frame, children }: {
   height: number;
   frame: 'scrolls' | 'fixed';
-  still?: boolean;
   children: React.ReactNode;
 }) {
   const depth = usePaintingDepthStyle(height, frame);
-  const breath = usePaintingBreath(still);
-  return <Animated.View style={[StyleSheet.absoluteFill, depth]}>
-    <Animated.View style={[StyleSheet.absoluteFill, breath]}>{children}</Animated.View>
-  </Animated.View>;
+  return <Animated.View style={[StyleSheet.absoluteFill, depth]}>{children}</Animated.View>;
 }
 
 /** A real opening onto the scene: copy lives on the theme's reading surface below it.
@@ -90,7 +85,7 @@ export function DreamerArtworkWindow({ scene, style, bleedTop = 0, maxHeight = 2
 }
 
 /** A static, decorative painting fades into the page's own readable ground. */
-export function DreamerBackground({ scene, height, background, pinned = false, fadeEnd, fadeOnScroll = true, fixed = false, immersive = false, titleTop, still }: Props) {
+export function DreamerBackground({ scene, height, background, pinned = false, fadeEnd, fadeOnScroll = true, fixed = false, immersive = false, titleTop }: Props) {
   const { colors, mode } = useTheme();
   const tokens = getNoctaliaDesignTokens(colors, mode);
   const insets = useSafeAreaInsets();
@@ -123,7 +118,7 @@ export function DreamerBackground({ scene, height, background, pinned = false, f
       style={[styles.band, { height, backgroundColor: ground }, stretch]}
     >
       {failedArtwork !== artworkKey ? (
-        <PaintingLayer height={height} frame={fixed ? 'fixed' : 'scrolls'} still={still}>
+        <PaintingLayer height={height} frame={fixed ? 'fixed' : 'scrolls'}>
         <Image
           testID={`image.background.${scene}`}
           accessible={false}

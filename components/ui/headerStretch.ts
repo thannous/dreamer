@@ -66,21 +66,3 @@ export function usePaintingDepthStyle(height: number, frame: 'scrolls' | 'fixed'
 
 // Test doubles of expo-router may omit useIsFocused; a mounted screen is then in front.
 export const useOnScreen: () => boolean = typeof useIsFocused === 'function' ? useIsFocused : () => true;
-
-/**
- * A painting breathes: a slow zoom in and out, as if the scene were still dreaming.
- * Only on the screen in front, and never with reduced motion or a painting held `still`.
- */
-export function usePaintingBreath(still = false) {
-  const reduced = useReducedMotion();
-  const onScreen = useOnScreen();
-  if (reduced || still) return null;
-  return {
-    animationName: { from: { transform: [{ scale: 1 }] }, to: { transform: [{ scale: 1.07 }] } },
-    animationDuration: '18s',
-    animationIterationCount: 'infinite',
-    animationDirection: 'alternate',
-    animationTimingFunction: 'ease-in-out',
-    animationPlayState: onScreen ? 'running' : 'paused',
-  } as const;
-}
