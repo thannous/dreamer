@@ -89,6 +89,13 @@ if (process.env.E2E_PERSONAS === '1') {
 
   async function openSearchResult({ screen, device, platform }: NativeFixtures, query: string) {
     const search = screen.getByTestId('input.searchDreams', { visible: true });
+    await screen.scrollUntilVisible(search, { direction: 'up' });
+    // Sol may leave a shorter search in place. Confirm it is cleared before
+    // entering the exact query: XCTest can fail to confirm a single replacement.
+    if (await search.inputValue()) {
+      await search.fill('');
+      await expect(search).toHaveValue('');
+    }
     await search.fill(query);
     if (platform === 'ios') await search.press('Enter');
     else await device.dismissKeyboard();
