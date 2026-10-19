@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-es-1200x630.jpg",
   "twitterImageAlt": "Términos de uso",
   "publishedTime": "",
-  "modifiedTime": "2026-07-09",
+  "modifiedTime": "2026-10-19",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -36,7 +36,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Términos de uso</h1>
-    <p class="text-lg text-purple-200/80 mb-10">Vigente desde el 9 de julio de 2026</p>
+    <p class="text-lg text-purple-200/80 mb-10">Vigente desde el 19 de octubre de 2026</p>
 
     <div class="space-y-8 text-gray-300 leading-relaxed">
 
@@ -72,13 +72,13 @@
           <li><strong>Usuario</strong>: cualquier persona que acceda al Servicio, con o sin cuenta.</li>
           <li><strong>Cuenta</strong>: el espacio personal creado dentro de Noctalia.</li>
           <li><strong>Contenido del Usuario</strong>: sueños, notas, transcripciones de voz, análisis de IA, imágenes generadas, títulos, etiquetas, favoritos.</li>
-          <li><strong>Suscripción Noctalia Plus</strong>: oferta de pago que proporciona funciones adicionales, actualmente facturada a través de Google Play.</li>
+          <li><strong>Suscripción Noctalia Plus</strong>: oferta de pago que proporciona funciones adicionales, facturada a través del App Store de Apple o de Google Play.</li>
         </ul>
       </section>
 
       <section>
         <h2 class="text-2xl font-serif text-white mb-4 mt-8">3. Acceso y cuenta</h2>
-        <p>Noctalia se distribuye actualmente como aplicación Android a través de Google Play. Las páginas web públicas ofrecen información del producto y recursos editoriales; no son la aplicación móvil. Otras plataformas solo se considerarán disponibles cuando Noctalia lo anuncie expresamente.</p>
+        <p>Noctalia se distribuye como aplicación móvil para iPhone a través del App Store de Apple y para Android a través de Google Play. Las páginas web públicas ofrecen información del producto y recursos editoriales; no son la aplicación móvil. Otras plataformas solo se considerarán disponibles cuando Noctalia lo anuncie expresamente.</p>
         <p class="mt-3">Algunas funciones requieren una Cuenta con un email válido y contraseña segura. Proporciona información precisa y mantenla actualizada.</p>
         <p class="mt-3">Eres el único responsable de tus credenciales y actividad. Si sospechas de un acceso no autorizado, contáctanos en
           <a href="mailto:contact@noctalia.app" class="text-dream-salmon hover:underline">contact@noctalia.app</a> inmediatamente.</p>
@@ -104,9 +104,10 @@
 
       <section>
         <h2 class="text-2xl font-serif text-white mb-4 mt-8">6. Suscripciones y pago</h2>
-        <p>Las funciones de Noctalia Plus se facturan actualmente a través de Google Play y están sujetas a sus reglas de precios, facturación, cancelación y reembolso.</p>
-        <p class="mt-3">Los precios, la duración, la renovación, las pruebas y los derechos de desistimiento aplicables se muestran en la app Android y en la pantalla de compra de Google Play. Noctalia no cobra directamente los pagos de la tienda.</p>
-        <p class="mt-3">Puedes gestionar o cancelar tu suscripción en los ajustes de suscripciones de Google Play en cualquier momento.</p>
+        <p>Noctalia Plus se factura a través de la tienda en la que te suscribes: el App Store de Apple en iPhone, Google Play en Android. Se aplican las reglas de precios, facturación, cancelación y reembolso de esa tienda.</p>
+        <p class="mt-3">Los precios, la duración, la renovación, las pruebas y los derechos de desistimiento aplicables se muestran en la app y en la pantalla de compra de la tienda. Noctalia no cobra directamente los pagos de la tienda.</p>
+        <p class="mt-3">Puedes gestionar o cancelar tu suscripción en cualquier momento en los ajustes de tu cuenta del App Store (iPhone) o en los ajustes de suscripciones de Google Play (Android).</p>
+        <p class="mt-3">Si descargaste Noctalia desde el App Store, el <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" class="text-dream-salmon hover:underline">contrato de licencia de usuario final estándar de Apple</a> (EULA) también se aplica a tu uso de la app.</p>
       </section>
 
       <section>
