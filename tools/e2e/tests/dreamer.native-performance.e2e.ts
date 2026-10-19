@@ -103,7 +103,8 @@ if (process.env.E2E_PERF_FIXTURE_MEDIA === 'local') {
       if (process.env.E2E_PERF_PLATFORM === 'ios') {
         // The physical iOS driver's replacement fill can leave a suffix of the
         // previous value. Use the real clear affordance, then assert exact input.
-        const clear = screen.getByTestId('component.searchBar').getByRole('button');
+        // The native AX tree flattens this button beside the search container.
+        const clear = screen.getByRole('button', 'Fermer', { exact: true });
         if (await clear.isVisible()) await clear.tap();
         await expect(search).toHaveValue('');
       }
