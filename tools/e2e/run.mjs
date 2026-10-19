@@ -5,7 +5,7 @@ import { createRequire } from 'node:module';
 import { availableParallelism, homedir, tmpdir } from 'node:os';
 import { delimiter, join, resolve, basename, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { SDK_PINS, digest, trackedDiffSha256, sourceSnapshot, compareSnapshots, verifyReport, aggregateReports, writeOnce, preserveStatus, directoryFiles, hashFiles, createAttemptOutput, verifyEvidenceFiles, verifyNativeCleanup, campaignFailureRecord, startSdkProgress } from './qualification.mjs';
+import { SDK_PINS, digest, trackedDiffSha256, sourceSnapshot, compareSnapshots, verifyReport, aggregateReports, writeOnce, preserveStatus, directoryFiles, hashFiles, createAttemptOutput, verifyEvidenceFiles, verifyNativeCleanup, campaignFailureRecord, startSdkProgress, startHostStallMonitor, HOST_STALL_MS } from './qualification.mjs';
 import { normalizeAvdName, appInputs, nativeInputs, binaryInputs, releaseMetadata, validateReleaseReceipt, verifyInstalledRelease, runWithInstallDiagnostics, validateBuildCommand, archiveReleaseBinary } from './native-release.mjs';
 
 const cwd = fileURLToPath(new URL('.', import.meta.url));
@@ -107,6 +107,7 @@ function webInputIdentity() {
   return Object.fromEntries(sourceFiles.map(path => [path, createHash('sha256').update(readFileSync(join(cwd, path))).digest('hex')]));
 }
 let lock;
+let hostStalls = [];
 let fd;
 let identity;
 let primary = 0;
@@ -277,7 +278,9 @@ async function runSdk() {
   writeOnce(join(output, 'collection.json'), collection);
   if (!collection.pairs?.length) throw new Error('No selected pairs.');
   sdkLaunched = true;
-  primary = await execute(process.execPath, [...webNodeArgs, cli, 'run', ...args], 'sdk.log', cliEnvironment());
+  const stopStallMonitor = startHostStallMonitor();
+  try { primary = await execute(process.execPath, [...webNodeArgs, cli, 'run', ...args], 'sdk.log', cliEnvironment()); }
+  finally { hostStalls = stopStallMonitor(); }
   if (primary === 0) {
     const report = JSON.parse(readFileSync(join(output, 'report.json'), 'utf8'));
     const proof = verifyReport(report, { target: `${product}-${platform}`, platform, revision: sourceBefore.revision,
@@ -437,13 +440,19 @@ try {
       unlinkSync(lock);
     });
   }
+  if (hostStalls.length) {
+    // A failed run during a host stall stays failed; the code says why, so it is rerun on a
+    // quiet host instead of being read as an app regression. A passed run is left as it is.
+    if ((requestedSignal ?? primary) !== 0) secondary.push('HOST_STALL');
+    console.error(`Host stall: this machine stopped running processes for ${hostStalls.map(stall => `${Math.round(Math.max(stall.wallGapMs, stall.monotonicGapMs) / 1000)} s (resumed ${stall.resumedAt})`).join(', ')}; heartbeat gap over ${HOST_STALL_MS / 1000} s. Attempt deadlines spent in it are not the app's.`);
+  }
   attempt('MANIFEST_PERSISTENCE', () => writeOnce(join(output, 'files.json'), hashFiles(output, directoryFiles(output, '.'))));
   attempt('END_PERSISTENCE', () => writeOnce(join(output, 'end.json'), {
     finishedAt: new Date().toISOString(), primaryExitCode: requestedSignal ?? primary,
     exitCode: preserveStatus(requestedSignal ?? primary, secondary), sdkLaunched, installedReady, installationDiagnostics, installationErrorDetails, stability,
     applicationQualified: command === 'run' && preserveStatus(requestedSignal ?? primary, secondary) === 0,
     ownerDecision: '2026-10-06-install-hash-diagnostic-and-release-own-wrapper-lock',
-    secondaryErrors: secondary, resourceCleanup, lockReleased: lock ? !existsSync(lock) : true,
+    secondaryErrors: secondary, resourceCleanup, lockReleased: lock ? !existsSync(lock) : true, hostStalls,
   }));
   process.exitCode = preserveStatus(requestedSignal ?? primary, secondary);
   console.log('E2E evidence: ' + output);
