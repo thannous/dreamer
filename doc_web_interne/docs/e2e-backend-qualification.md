@@ -17,7 +17,7 @@ mise exec -- npm run test:e2e:backend -- --qualify-ti528
 `--runtime native` is still accepted; any other `--runtime` is refused before a
 process starts. The second command runs all seven browser journeys, the database
 contracts, then the four TI528 suites (six integration cases) sequentially on the
-same owned stack. `--qualify-ti528` refuses `--status-file` and `--prepare-only`.
+same owned stack.
 The runner passes its own private status to TI528 and preserves stack cleanup on
 success or failure; the rerun metadata includes the option.
 
@@ -55,18 +55,12 @@ the local URL and public anon key. Startup output containing privileged keys is
 captured, and browser requests allow only the app, local Auth and local Data API.
 AI functions, analytics, OAuth providers and billing are blocked.
 
-For a CLI running in a separate local Linux VM, prepare its config with
-`npm run test:e2e:backend -- --prepare-only` (it pins API 56321 and database 56322
-and turns the stack setting off for that copy), copy the prepared Supabase directory
-into that VM, and start the CLI there. Capture `supabase status --output json` to
-a private file, then run:
+Every run owns its stack. The former supplied-VM mode (`--prepare-only` and
+`--status-file`, API pinned on 56321) ran the CLI's default container stack inside
+a VM; it was removed with Docker, and both options are refused before any process
+starts. On a machine the native runtime does not support, use another machine
+where `node scripts/check-native-supabase-runtime.cjs` passes.
 
-```sh
-mise exec -- npm run test:e2e:backend -- --status-file /absolute/private/status.json
-```
-
-This mode accepts only `http://127.0.0.1:56321`, never starts or stops the supplied
-stack, and is intended for a locally owned stack with loopback port forwarding.
 `E2E_SUPABASE_CLI` can select a local CLI executable; the default is the locked npm
 CLI (the native pilot used its launcher on macOS without changing OS security settings).
 The runner passes no `SUPABASE_*` variable to the CLI except

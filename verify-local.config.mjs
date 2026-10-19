@@ -387,7 +387,7 @@ export default {
       // succeeds the journeys really run and must pass.
       requires: {
         command: 'node scripts/check-native-supabase-runtime.cjs',
-        hint: 'run it locally where you run verify:pr (native Supabase runtime, no Docker: `npm ci` for the pinned CLI on Linux amd64/arm64 with glibc 2.35+ or macOS 14+ on Apple silicon; Chromium via `npx playwright install chromium`); if this machine cannot, pass --external e2e-backend="owner-machine: <host> <note> on <SHA>" from the machine that ran it; until then the proof is incomplete: do not push, report it as a blocker',
+        hint: 'native Supabase runtime, no Docker: needs Linux glibc>=2.35 (WSL2 on Windows) or macOS 14+ Apple silicon, the pinned CLI from `npm ci` and Chromium (`npx playwright install chromium`); if this machine cannot, a machine where the probe passes runs it and passes --external e2e-backend="owner-machine: <host> <note> on <SHA>" (the fixed evidence keyword); until then the proof is incomplete: do not push, report it as a blocker',
       },
     },
     {

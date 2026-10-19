@@ -1,5 +1,8 @@
 /* global describe, expect, it */
 const {
+  parseStatusEnv,
+  readLocalStackDbUrl,
+  resolveDbUrl,
   runGuestAnalysisIdempotencyBehaviorCheck,
   runGuestChatIdempotencyBehaviorCheck,
   runGuestQuotaImageSupportBehaviorCheck,
@@ -155,5 +158,39 @@ describe('check-db-contract guest chat idempotency behavior', () => {
     });
     expect(client.calls[2].params).toEqual(client.calls[1].params);
     expect(client.calls.at(-1)).toMatchObject({ sql: 'ROLLBACK' });
+  });
+});
+
+describe('local database URL resolution', () => {
+  // Shape printed by Supabase CLI 2.121.0 for `status --env --output-format json` on a native stack.
+  const statusEnv = '{"API_URL":"http://127.0.0.1:20710","DB_URL":"postgresql://postgres:postgres@127.0.0.1:32102/postgres"}\n';
+
+  it('--local reads DB_URL from supabase status --env instead of assuming port 54322', () => {
+    const calls = [];
+    const spawn = (binary, argv, options) => {
+      calls.push({ binary, argv, env: options.env });
+      return { status: 0, stdout: statusEnv };
+    };
+    expect(readLocalStackDbUrl({}, spawn)).toBe('postgresql://postgres:postgres@127.0.0.1:32102/postgres');
+    expect(calls[0].argv).toEqual(['status', '--env', '--output-format', 'json']);
+    expect(calls[0].binary).toMatch(/node_modules\/\.bin\/supabase$/);
+    expect(calls[0].env.SUPABASE_EXPERIMENTAL_STACK).toBe('1');
+    expect(resolveDbUrl({ local: true }, {}, () => 'from-status')).toBe('from-status');
+  });
+
+  it('--local fails instead of guessing a port when no local stack is running', () => {
+    expect(() => readLocalStackDbUrl({}, () => ({ status: 1, stdout: '' }))).toThrow(/needs a running local stack/);
+    expect(() => readLocalStackDbUrl({}, () => ({ status: 0, stdout: 'API_URL="x"\n' }))).toThrow(/needs a running local stack/);
+    expect(parseStatusEnv('{"API_URL":"x"}')).toBe(null);
+    expect(parseStatusEnv("API_URL='x'\nDB_URL='postgresql://u@127.0.0.1:25000/postgres'\n")).toBe('postgresql://u@127.0.0.1:25000/postgres');
+  });
+
+  it('explicit URLs keep priority and never call the CLI', () => {
+    const readLocal = () => { throw new Error('must not run'); };
+    expect(resolveDbUrl({ local: true, dbUrl: 'a' }, {}, readLocal)).toBe('a');
+    expect(resolveDbUrl({ local: true }, { SUPABASE_DB_URL: 'b' }, readLocal)).toBe('b');
+    expect(resolveDbUrl({ local: true }, { DATABASE_URL: 'c' }, readLocal)).toBe('c');
+    expect(resolveDbUrl({ local: true }, { SUPABASE_LOCAL_DB_URL: 'd' }, readLocal)).toBe('d');
+    expect(resolveDbUrl({ local: false }, {}, readLocal)).toBe(null);
   });
 });

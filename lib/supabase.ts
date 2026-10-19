@@ -125,8 +125,12 @@ if (!isSupabaseConfigured) {
   );
 }
 
+// Unconfigured builds get an unresolvable placeholder (RFC 2606 .invalid), never a local
+// port: local Supabase ports are assigned per project, and a guessed one could reach another project.
+export const UNCONFIGURED_SUPABASE_URL = 'http://supabase-not-configured.invalid';
+
 export const supabase = createClient(
-  SUPABASE_URL ?? 'http://localhost:54321',
+  SUPABASE_URL ?? UNCONFIGURED_SUPABASE_URL,
   SUPABASE_ANON_KEY ?? 'anon-key-not-set',
   {
     auth: {

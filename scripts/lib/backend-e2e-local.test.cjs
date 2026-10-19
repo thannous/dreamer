@@ -152,13 +152,24 @@ test('TI528 qualification uses this invocation receipt after browser journeys an
   assert.ok(result.calls[cleanup].argv.includes(result.receipt.LOCAL_E2E_STACK.id));
 });
 
+// The supplied VM mode ran the CLI's default container stack in a VM; it is gone with Docker.
 for (const args of [
+  ['--prepare-only'],
+  ['--status-file', '/unowned-status.json'],
   ['--runtime', 'native', '--qualify-ti528', '--prepare-only'],
   ['--qualify-ti528', '--status-file', '/unowned-status.json'],
-]) test(`TI528 rejects incompatible ownership options ${args.join(' ')} before starting a process`, () => {
+]) test(`removed VM mode option in ${args.join(' ')} is refused before starting a process`, () => {
   const result = runnerFixture(args);
-  assert.match(result.failure?.message ?? '', /--qualify-ti528/);
+  assert.match(result.failure?.message ?? '', /removed with the Docker VM mode/);
   assert.equal(result.calls.length, 0);
+  assert.deepEqual(result.leftovers, []);
+});
+
+test('the former VM port 56321 is no longer an accepted backend target', () => {
+  const { LOCAL_E2E_STACK, DB_URL, ...unidentified } = local();
+  assert.throws(() => assertBackendTarget({ ...unidentified, API_URL: 'http://127.0.0.1:56321' }));
+  assert.throws(() => assertBackendTarget({ ...local(), API_URL: 'http://127.0.0.1:56321' }));
+  assert.ok(LOCAL_E2E_STACK && DB_URL);
 });
 
 test('TI528 failure remains a failed run and destroys only this invocation stack', () => {

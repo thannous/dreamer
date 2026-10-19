@@ -138,6 +138,7 @@ describe('verify-local.config.mjs', () => {
     expect(check.command).toBe('npm run test:e2e:backend');
     expect(check.specialised).toBe(true);
     expect(check.requires.command).toBe('node scripts/check-native-supabase-runtime.cjs');
+    expect(check.requires.hint).toContain('needs Linux glibc>=2.35 (WSL2 on Windows) or macOS 14+ Apple silicon');
     expect(JSON.stringify(config.checks.map((entry) => entry.requires?.command ?? ''))).not.toMatch(/docker|podman/i);
     expect(scriptsOf('package.json')['test:e2e:backend']).toBe('node ./scripts/run-backend-e2e.cjs');
   });
