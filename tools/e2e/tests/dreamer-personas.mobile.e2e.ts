@@ -91,9 +91,11 @@ if (process.env.E2E_PERSONAS === '1') {
     const search = screen.getByTestId('input.searchDreams', { visible: true });
     await screen.scrollUntilVisible(search, { direction: 'up' });
     // Sol may leave a shorter search in place. Confirm it is cleared before
-    // entering the exact query: XCTest can fail to confirm a single replacement.
-    if (platform === 'ios' && await search.inputValue()) {
+    // entering the exact query. Filtering can move the mobile search chrome
+    // offscreen, so reveal it again after the result list expands.
+    if (await search.inputValue()) {
       await search.fill('');
+      await screen.scrollUntilVisible(search, { direction: 'up' });
       await expect(search).toHaveValue('');
     }
     await search.fill(query);
