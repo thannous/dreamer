@@ -1988,10 +1988,14 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       if (zoneTop == null) return;
       const top = zoneTop + interpretationTop;
       const visibleBottom = readingScrollOffset.get() + viewportHeight - actionDockHeight;
-      // The reader asked for this reading: bring it into view when it lands below the fold,
-      // never pull them back up from further down the page.
+      // The reader asked for this reading: bring it into view when its first line lands below
+      // the fold, never pull them back up from further down the page. The page stops at the
+      // head of the reading, so the constellation that just lit stays on screen, and goes
+      // further only as far as the first line needs to clear the dock.
       if (readingContentTop + top > visibleBottom - 120) {
-        scrollViewRef.current?.scrollTo({ y: Math.max(readingContentTop + top - 12, 0), animated: !reducedMotion });
+        const readingHead = readingContentTop + zoneTop - 12;
+        const firstLineClear = readingContentTop + top - (viewportHeight - actionDockHeight - 120);
+        scrollViewRef.current?.scrollTo({ y: Math.max(readingHead, firstLineClear, 0), animated: !reducedMotion });
       }
     });
     return () => cancelAnimationFrame(frame);
