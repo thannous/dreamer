@@ -1,8 +1,9 @@
 import type { E2EConfig } from 'e2e';
 import { mobile } from '@e2e-dev/mobile';
-import { webEngine } from './web-engine';
+import { webEngine, webLocale } from './web-engine';
 import { fileURLToPath } from 'node:url';
 import { managedAppCommand } from './managed-app';
+import { createDreamerPersonaAgents } from './dreamer-personas';
 
 const root = fileURLToPath(new URL('../../', import.meta.url));
 const product = process.env.E2E_PRODUCT ?? 'dreamer';
@@ -12,6 +13,11 @@ if (!products.includes(product) || !['web', 'android', 'ios'].includes(platform)
   throw new Error('Select dreamer|lucid|meditation|site and web|android|ios.');
 if (product === 'site' && platform !== 'web') throw new Error('The site has no native target.');
 const native = platform !== 'web';
+const personas = process.env.E2E_PERSONAS === '1';
+if (process.env.E2E_PERSONAS !== undefined && !['0', '1'].includes(process.env.E2E_PERSONAS))
+  throw new Error('E2E_PERSONAS takes 0 or 1.');
+if (personas && (product !== 'dreamer' || native || webLocale !== 'fr-FR'))
+  throw new Error('The feature-persona pilot requires Dreamer web and E2E_WEB_LOCALE=fr-FR.');
 const output = process.env.E2E_OUTPUT ?? `.e2e/${product}-${platform}`;
 const appLog = `${fileURLToPath(new URL('.', import.meta.url))}${output}/app.log`;
 const ports = { dreamer: 8096, lucid: 8097, meditation: 8098, site: 8099 };
@@ -38,13 +44,16 @@ const requestedWorkers = process.env.E2E_WORKERS;
 if (requestedWorkers !== undefined && (native || !/^[1-9]\d?$/.test(requestedWorkers)))
   throw new Error('E2E_WORKERS takes 1-99 web workers; native runs use one device.');
 const workers = Number(requestedWorkers ?? 1);
+if (personas && workers !== 1) throw new Error('Bound the persona pilot with E2E_WORKERS=1.');
 const appRoot = product === 'meditation' ? `${root}apps/meditation` : root;
 const managedCommand = !native && product !== 'site'
   ? managedAppCommand(appRoot, product === 'meditation' ? 'web' : product === 'lucid' ? 'start:lucid:mock' : 'start:mock') : null;
 
 export default {
   projectId: `noctalia-${product}`,
-  tests: product === 'dreamer' && !native ? 'tests/dreamer*.web.e2e.ts' : `tests/${product}.${native ? 'mobile' : 'web'}.e2e.ts`,
+  tests: personas ? 'tests/dreamer-personas.web.e2e.ts'
+    : product === 'dreamer' && !native ? 'tests/dreamer*.web.e2e.ts' : `tests/${product}.${native ? 'mobile' : 'web'}.e2e.ts`,
+  ...(personas ? { agents: createDreamerPersonaAgents(process.env.E2E_PERSONA_MODEL?.trim() || undefined) } : {}),
   targets: [{
     name: `${product}-${platform}`,
     engine: native
@@ -88,7 +97,7 @@ export default {
     },
   }],
   // app.open/restart use config.timeout, capped by the remaining test budget.
-  workers, retries: 0, timeout: product === 'meditation' && !native ? 180_000 : 120_000, assertionTimeout: 30_000,
+  workers, retries: 0, timeout: personas ? 240_000 : product === 'meditation' && !native ? 180_000 : 120_000, assertionTimeout: 30_000,
   launchTimeout: 180_000, output,
   // Every engine writes a trace page per test (results/<test>/trace.md); each pass keeps one as evidence.
   reporters: ['list', 'markdown', 'junit'], trace: 'on', cache: 'off',
