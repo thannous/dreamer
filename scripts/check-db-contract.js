@@ -3,10 +3,13 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
+const { spawnSync } = require('node:child_process');
 const { Client } = require('pg');
 
 const DEFAULT_MANIFEST_PATH = path.resolve(__dirname, '..', 'supabase', 'db-contract.manifest.json');
-const DEFAULT_LOCAL_DB_URL = 'postgresql://postgres:postgres@127.0.0.1:54322/postgres';
+const REPO_ROOT = path.resolve(__dirname, '..');
+// The local stack has no fixed port (`[experimental] stack = true`): --local asks the pinned CLI.
+const LOCAL_STATUS_COMMAND = 'supabase status --env --output-format json';
 
 function parseArgs(argv) {
   const options = {
@@ -61,20 +64,46 @@ Connection resolution:
   1. --db-url
   2. SUPABASE_DB_URL
   3. DATABASE_URL
-  4. --local -> ${DEFAULT_LOCAL_DB_URL}
+  4. --local -> SUPABASE_LOCAL_DB_URL, else DB_URL from \`${LOCAL_STATUS_COMMAND}\` (running local stack)
 
 Examples:
   npm run db:contract:check -- --local
   SUPABASE_DB_URL=postgresql://... npm run db:contract:check
-  npm run db:contract:check -- --db-url postgresql://postgres:postgres@127.0.0.1:54322/postgres
+  npm run db:contract:check -- --db-url <DB_URL printed by supabase status --env>
 `.trim());
 }
 
-function resolveDbUrl(options, env) {
+function parseStatusEnv(text) {
+  const raw = String(text ?? '').trim();
+  try {
+    const parsed = JSON.parse(raw);
+    return typeof parsed?.DB_URL === 'string' && parsed.DB_URL ? parsed.DB_URL : null;
+  } catch {
+    // Older or text output: DB_URL='...' (or double-quoted, or bare) on its own line.
+    const match = /^DB_URL=(?:'([^'\n]*)'|"([^"\n]*)"|(\S+))\s*$/m.exec(raw);
+    return match ? match[1] ?? match[2] ?? match[3] : null;
+  }
+}
+
+function readLocalStackDbUrl(env = process.env, spawn = spawnSync) {
+  const cli = path.join(REPO_ROOT, 'node_modules/.bin/supabase');
+  const result = spawn(cli, ['status', '--env', '--output-format', 'json'], {
+    cwd: REPO_ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: 60000,
+    env: { ...env, SUPABASE_EXPERIMENTAL_STACK: '1' },
+  });
+  const dbUrl = result.status === 0 ? parseStatusEnv(result.stdout) : null;
+  if (!dbUrl) {
+    // Never guess a port: a stale default could reach another project's database.
+    throw new Error(`--local needs a running local stack (\`${LOCAL_STATUS_COMMAND}\` gave no DB_URL) or SUPABASE_LOCAL_DB_URL`);
+  }
+  return dbUrl;
+}
+
+function resolveDbUrl(options, env, readLocal = readLocalStackDbUrl) {
   if (options.dbUrl) return options.dbUrl;
   if (env.SUPABASE_DB_URL) return env.SUPABASE_DB_URL;
   if (env.DATABASE_URL) return env.DATABASE_URL;
-  if (options.local) return env.SUPABASE_LOCAL_DB_URL || DEFAULT_LOCAL_DB_URL;
+  if (options.local) return env.SUPABASE_LOCAL_DB_URL || readLocal(env);
   return null;
 }
 
@@ -765,7 +794,9 @@ async function runChecks(options) {
           ? 'SUPABASE_DB_URL'
           : process.env.DATABASE_URL
             ? 'DATABASE_URL'
-            : '--local default',
+            : process.env.SUPABASE_LOCAL_DB_URL
+              ? 'SUPABASE_LOCAL_DB_URL'
+              : LOCAL_STATUS_COMMAND,
       database: sanitizeDbUrl(dbUrl),
       checkCount: checks.length,
       failures,
@@ -826,10 +857,12 @@ if (require.main === module) {
 }
 
 module.exports = {
-  DEFAULT_LOCAL_DB_URL,
+  LOCAL_STATUS_COMMAND,
   DEFAULT_MANIFEST_PATH,
   loadManifest,
   parseArgs,
+  parseStatusEnv,
+  readLocalStackDbUrl,
   resolveDbUrl,
   runChecks,
   runBehaviorChecks,

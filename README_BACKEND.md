@@ -21,7 +21,9 @@ mise exec -- npm run test:e2e:backend -- --qualify-ti528
 
 Local Supabase ports are assigned per local project (`supabase/config.toml` sets
 `[experimental] stack = true` and no fixed port): read them from `supabase status`
-instead of assuming 54321/54322.
+instead of assuming 54321/54322. `npm run db:contract:check:local` does this itself: it
+reads `DB_URL` from `supabase status --env` (or `SUPABASE_LOCAL_DB_URL`) and fails when no
+local stack is running.
 
 The [backend qualification guide](doc_web_interne/docs/e2e-backend-qualification.md)
 covers prerequisites, target guards, fixture migrations, seven browser journeys,

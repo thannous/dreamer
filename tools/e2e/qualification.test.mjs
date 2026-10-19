@@ -118,29 +118,63 @@ test('critical array/boolean and unexpected agent identities are refused', () =>
     r => { r.run.results[0].selected = 1; }, r => { r.run.summary.passed = [1]; },
     r => { r.run.usage.modelTokens = false; }]) { const r = report(); mutate(r); assert.throws(() => verifyReport(r, options())); }
 });
-test('persona reports require the explicit web policy, declared persona and actual bounded model call', () => {
-  // A UI journey cannot safely reproduce a forged report or mislabelled agent.
-  // This control exercises that evidence boundary without calling a model.
-  const r = report();
-  r.run.targets = [{ id: 'dreamer-web', platform: 'web', baseOrigin: 'http://127.0.0.1:8096', engine: { name: 'web', version: SDK_PINS['@e2e-dev/web'] } }];
-  r.run.usage = { modelTokens: 100, maxModelCallsInStep: 1, maxActionStepsInStep: 2 };
-  for (const row of r.run.results) Object.assign(row, {
-    targetId: 'dreamer-web', platform: 'web', file: 'tests/dreamer-personas.web.e2e.ts', agent: 'morning', tags: ['persona-morning'],
+for (const platform of ['web', 'ios', 'android']) {
+  test(`persona reports on ${platform} require opt-in, the declared agent/model and bounded calls`, () => {
+    // A UI journey cannot reproduce forged provenance, a wrong test file or a
+    // model accidentally enabled in ordinary regressions. Exercise that gap here.
+    const r = report(), target = `dreamer-${platform}`;
+    r.run.targets = [{ id: target, platform,
+      ...(platform === 'web' ? { baseOrigin: 'http://127.0.0.1:8096' } : {}),
+      engine: { name: platform === 'web' ? 'web' : 'mobile', version: SDK_PINS[platform === 'web' ? '@e2e-dev/web' : '@e2e-dev/mobile'] } }];
+    r.run.usage = { modelTokens: 100, maxModelCallsInStep: 1, maxActionStepsInStep: 2 };
+    for (const row of r.run.results) Object.assign(row, {
+      targetId: target, platform, file: `tests/dreamer-personas.${platform === 'web' ? 'web' : 'mobile'}.e2e.ts`,
+      agent: 'morning', tags: ['persona-morning'],
+    });
+    r.run.results[0].attempts[0].steps.push({ api: 'agent.act', status: 'passed', model: { model: 'gpt-6.1-sol', calls: 1 } });
+    const opts = options({ target, platform, origin: 'http://127.0.0.1:8096', personaModel: 'gpt-6.1-sol' });
+    assert.equal(verifyReport(r, opts).passed[0].agent, 'morning');
+    if (platform !== 'web') assert.equal(verifyNativeCleanup(r, opts), true);
+    assert.throws(() => verifyReport(r, { ...opts, personaModel: undefined }), /REPORT_PROVENANCE/);
+    assert.throws(() => verifyReport(r, { ...opts, personaModel: 'another-model' }), /PERSONA_MODEL_UNPROVEN/);
+    for (const mutate of [
+      data => { data.run.usage.maxModelCallsInStep = 13; },
+      data => { data.run.usage.maxActionStepsInStep = 17; },
+      data => { data.run.results[0].agent = 'unexpected'; },
+      data => { data.run.results[0].tags = []; },
+      data => { data.run.results[0].file = `tests/dreamer-personas.${platform === 'web' ? 'mobile' : 'web'}.e2e.ts`; },
+      data => { data.run.results[0].attempts[0].steps.pop(); },
+      data => { data.run.results[0].attempts[0].steps[1].model.calls = 0; },
+      data => { data.run.results[0].attempts[0].steps[1].cache = { mode: 'self-finalized' }; },
+      data => { data.run.results[0].attempts[0].steps.push({ api: 'expect.toBeVisible', status: 'failed' }); },
+      data => { data.run.results[0].attempts[0].steps.shift(); },
+      data => { data.run.results[0].attempts[0].cleanup = 'failed'; },
+    ]) { const changed = structuredClone(r); mutate(changed); assert.throws(() => verifyReport(changed, opts)); }
+    const foreign = structuredClone(r);
+    foreign.run.targets[0].id = `lucid-${platform}`;
+    for (const row of foreign.run.results) row.targetId = `lucid-${platform}`;
+    assert.throws(() => verifyReport(foreign, { ...opts, target: `lucid-${platform}` }), /REPORT_PROVENANCE/);
+    if (platform !== 'web') {
+      const broken = structuredClone(r);
+      broken.run.results[0].attempts[0].secondaryErrors = [{ code: 'ENGINE_FAILURE', phase: 'cleanup' }];
+      assert.throws(() => verifyNativeCleanup(broken, opts), /CLEANUP/);
+      // The observed Android language-sheet setup failure used no model, but
+      // SDK cleanup completed. It must remain a failed application verdict.
+      const setupFailed = structuredClone(r);
+      Object.assign(setupFailed.run, { status: 'failed', exitCode: 1 });
+      setupFailed.run.usage = { modelTokens: 0, maxModelCallsInStep: 0, maxActionStepsInStep: 0 };
+      setupFailed.run.results[0].status = 'failed';
+      Object.assign(setupFailed.run.results[0].attempts[0], { status: 'failed', steps: [{ api: 'app.open', status: 'passed' }] });
+      assert.equal(verifyNativeCleanup(setupFailed, opts), true);
+      assert.throws(() => verifyReport(setupFailed, opts), /PROVENANCE/);
+      setupFailed.run.status = 'passed'; setupFailed.run.exitCode = 0;
+      assert.throws(() => verifyNativeCleanup(setupFailed, opts), /PROVENANCE/);
+      setupFailed.run.status = 'failed'; setupFailed.run.exitCode = 1;
+      setupFailed.run.results[0].attempts[0].cleanup = 'failed';
+      assert.throws(() => verifyNativeCleanup(setupFailed, opts), /CLEANUP/);
+    }
   });
-  r.run.results[0].attempts[0].steps.push({ api: 'agent.act', status: 'passed', model: { model: 'gpt-6-luna', calls: 1 } });
-  const opts = options({ target: 'dreamer-web', platform: 'web', origin: 'http://127.0.0.1:8096', personaModel: 'gpt-6-luna' });
-  assert.equal(verifyReport(r, opts).passed[0].agent, 'morning');
-  assert.throws(() => verifyReport(r, { ...opts, personaModel: undefined }), /REPORT_PROVENANCE/);
-  assert.throws(() => verifyReport(r, { ...opts, personaModel: 'another-model' }), /PERSONA_MODEL_UNPROVEN/);
-  for (const mutate of [
-    data => { data.run.usage.maxModelCallsInStep = 13; },
-    data => { data.run.results[0].agent = 'unexpected'; },
-    data => { data.run.results[0].file = 'tests/another.e2e.ts'; },
-    data => { data.run.results[0].attempts[0].steps.pop(); },
-    data => { data.run.results[0].attempts[0].steps[1].model.calls = 0; },
-    data => { data.run.results[0].attempts[0].steps.push({ api: 'expect.toBeVisible', status: 'failed' }); },
-  ]) { const changed = structuredClone(r); mutate(changed); assert.throws(() => verifyReport(changed, opts)); }
-});
+}
 test('finding with no requested or declared media and no artifacts directory is valid', () => {
   const dir = mkdtempSync(join(tmpdir(), 'noctalia-report-only-'));
   try { assert.equal(verifyReport(report(), options({ output: dir })).artifacts.length, 0); }

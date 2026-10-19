@@ -37,6 +37,25 @@ jest.mock('react-native', () => ({
   Platform: { OS: 'ios' },
 }));
 
+describe('supabase client without configuration', () => {
+  it('points at an unresolvable placeholder, never a guessed local port', () => {
+    jest.resetModules();
+    mockCreateClient.mockClear();
+    delete process.env.EXPO_PUBLIC_SUPABASE_URL;
+    delete process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
+    const warn = jest.spyOn(console, 'warn').mockImplementation(() => undefined);
+    try {
+      const { isSupabaseConfigured } = require('../supabase');
+      expect(isSupabaseConfigured).toBe(false);
+      const url = mockCreateClient.mock.calls[0]?.[0] as string;
+      expect(url).toBe('http://supabase-not-configured.invalid');
+      expect(url).not.toMatch(/localhost|127\.0\.0\.1|:5432\d/);
+    } finally {
+      warn.mockRestore();
+    }
+  });
+});
+
 describe('supabase secure storage adapter', () => {
   beforeEach(() => {
     jest.resetModules();
