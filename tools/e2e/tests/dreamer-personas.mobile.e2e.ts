@@ -43,7 +43,6 @@ if (process.env.E2E_PERSONAS === '1') {
     await screen.getByTestId('btn.header.home.settings', { visible: true }).tap();
     await tap(screen, 'quick-settings.language');
     await tap(screen, 'quick-settings.language.fr');
-    await expect(screen.getByRole('radio', 'Français', { visible: true })).toBeChecked();
     if (platform === 'android') {
       // UI language applies before the optional speech-pack check finishes.
       // Poll that UI condition briefly; installed packs produce no sheet.
@@ -56,6 +55,7 @@ if (process.env.E2E_PERSONAS === '1') {
         await expect(pack).toBeHidden();
       }
     }
+    await expect(screen.getByRole('radio', 'Français', { visible: true })).toBeChecked();
     await tap(screen, 'quick-settings.all');
     await expect(screen.getByTestId('screen.settings', { visible: true })).toBeVisible();
     await tap(screen, 'settings-account-open-signin', 'up');
@@ -142,7 +142,7 @@ if (process.env.E2E_PERSONAS === '1') {
 
   test('a reflective Plus user revisits the same dream conversation without duplicating it',
     { agent: 'explorer', tags: ['personas', 'persona-explorer', 'reflection'] }, async (fixtures) => {
-      const { app, screen, agent, device } = fixtures;
+      const { app, screen, agent, device, platform } = fixtures;
       await startProfile(fixtures, 'plus');
       await agent.act('Open a free-form conversation about your older dream titled The Infinite Library.');
       const title = screen.getByText('The Infinite Library', { exact: true, visible: true });
@@ -152,11 +152,12 @@ if (process.env.E2E_PERSONAS === '1') {
       await expect(input).toBeEnabled();
       const question = 'Personas réflexion : pourquoi cette bibliothèque semblait-elle si familière ?';
       await input.fill(question);
-      await device.dismissKeyboard();
+      // The iPhone composer keeps its keyboard open; Send remains reachable.
+      if (platform === 'android') await device.dismissKeyboard();
       await tap(screen, 'chat.button.send');
       // Native Alert is visible UI, unlike the browser's dialog callback.
       await expect(screen.getByText(/Anthropic \(Claude\).*Google \(Gemini\)/, { visible: true })).toBeVisible();
-      const consent = screen.getByRole('button', 'Accepter et continuer', { exact: true, visible: true });
+      const consent = screen.getByRole('button', /^Accepter et continuer$/i, { visible: true });
       await consent.tap();
       await expect(consent).toHaveCount(0);
       const savedQuestion = screen.getByText(question, { exact: true, visible: true });
@@ -184,7 +185,7 @@ if (process.env.E2E_PERSONAS === '1') {
       await expect(input).toHaveValue(draft);
       await input.fill('');
       await expect(input).toHaveValue('');
-      await device.dismissKeyboard();
+      if (platform === 'android') await device.dismissKeyboard();
       await app.screenshot('explorer-conversation-revisited');
     });
 
