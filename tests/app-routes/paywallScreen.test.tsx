@@ -525,6 +525,22 @@ describe('Paywall screen', () => {
     });
   });
 
+  it('does not tell a subscriber who turned renewal off that Plus renews automatically', () => {
+    const subscriber = (willRenew: boolean) => ({
+      ...mockUseSubscription(),
+      status: { tier: 'plus', isActive: true, expiryDate: '2026-12-01T00:00:00.000Z', willRenew },
+      isActive: true,
+    });
+    mockUseSubscription.mockReturnValue(subscriber(false));
+    render(<PaywallScreen />);
+    expect(screen.queryByTestId(TID.Text.PaywallStoreNotice)).toBeNull();
+    cleanup();
+
+    mockUseSubscription.mockReturnValue(subscriber(true));
+    render(<PaywallScreen />);
+    expect(screen.getByTestId(TID.Text.PaywallStoreNotice)).toBeTruthy();
+  });
+
   it('sends a guest to the account section and remembers to come back to the paywall', () => {
     mockUseSubscription.mockReturnValue({
       status: { tier: 'free', isActive: false, expiryDate: null },

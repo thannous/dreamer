@@ -11,9 +11,12 @@ import { Alert, Platform } from 'react-native';
  * silent background work) before calling the service. Writing and reading the journal
  * never need it. Guests are asked too: their dreams reach the same providers.
  *
+ * v2 (2026-10-19): the dialog names Anthropic and Google. A v1 grant accepted a text that
+ * named no provider, so it no longer counts and the user is asked once more.
+ *
  * The web E2E fixtures pre-grant this key outside the consent journey.
  */
-export const AI_CONSENT_STORAGE_KEY = 'noctalia.aiConsent.v1';
+export const AI_CONSENT_STORAGE_KEY = 'noctalia.aiConsent.v2';
 const STORAGE_KEY = AI_CONSENT_STORAGE_KEY;
 const GRANTED = 'granted';
 

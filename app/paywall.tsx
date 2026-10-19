@@ -889,10 +889,13 @@ function PaywallScreen() {
           </Reveal>
 
           <Reveal index={4}>
-          {/* Renewal terms are part of the offer, so everyone reads them, guests included. */}
-          <Text style={[styles.notice, { color: noctalia.text.secondary }]} testID={TID.Text.PaywallStoreNotice}>
-            {t(STORE_NOTICE_KEY)}
-          </Text>
+          {/* Renewal terms are part of the offer, so everyone reads them, guests included. A
+              subscriber who turned renewal off reads that state above instead. */}
+          {!isActive || subscriptionStatus?.willRenew === true ? (
+            <Text style={[styles.notice, { color: noctalia.text.secondary }]} testID={TID.Text.PaywallStoreNotice}>
+              {t(STORE_NOTICE_KEY)}
+            </Text>
+          ) : null}
           {!requiresAuth ? (
             <>
               {/* A utility, not an offer: it sits with the fine print, still a full 44pt target. */}
