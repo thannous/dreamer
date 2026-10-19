@@ -1,6 +1,6 @@
 import { Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { requestAiConsent, resetAiConsentCacheForTests, setAiConsentPromptRequired } from '@/lib/aiConsent';
+import { hasAiConsent, requestAiConsent, resetAiConsentCacheForTests } from '@/lib/aiConsent';
 
 jest.mock('@react-native-async-storage/async-storage', () =>
   require('@react-native-async-storage/async-storage/jest/async-storage-mock'),
@@ -20,20 +20,17 @@ describe('requestAiConsent', () => {
   beforeEach(async () => {
     jest.spyOn(Alert, 'alert').mockImplementation(() => undefined);
     resetAiConsentCacheForTests();
-    // These cases describe a signed-in user, the only one who is prompted.
-    setAiConsentPromptRequired(true);
     await AsyncStorage.clear();
   });
 
   afterEach(() => jest.restoreAllMocks());
 
-  it('does not prompt a guest, whose analysis is a demonstration', async () => {
-    setAiConsentPromptRequired(false);
-    await expect(requestAiConsent(t)).resolves.toBe(true);
+  it('withholds silent background work until permission is given', async () => {
+    await expect(hasAiConsent()).resolves.toBe(false);
     expect(Alert.alert).not.toHaveBeenCalled();
   });
 
-  it('does not send a signed-in dream before permission', async () => {
+  it('does not send a dream before permission', async () => {
     const sendDream = jest.fn();
     const attempt = requestAiConsent(t).then((accepted) => {
       if (accepted) sendDream();

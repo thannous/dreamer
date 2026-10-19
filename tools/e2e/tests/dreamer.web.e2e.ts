@@ -20,11 +20,15 @@ async function startGuest(app: App, screen: Screen, browser: Browser) {
   await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
 }
 
-async function openSettings(screen: Screen) {
+async function openQuickSettings(screen: Screen) {
   const home = screen.getByTestId('tab.home', { visible: true });
   if (await home.isVisible()) await home.tap();
   else await screen.getByTestId('btn.recording.home', { visible: true }).tap();
   await screen.getByTestId('btn.header.home.settings', { visible: true }).tap();
+}
+
+async function openSettings(screen: Screen) {
+  await openQuickSettings(screen);
   await screen.getByTestId('quick-settings.all', { visible: true }).tap();
 }
 
@@ -59,7 +63,8 @@ test('guest saves the exact story and reads its simulated analysis inline', asyn
   await isolateWeb(browser, app);
   await startGuest(app, screen, browser);
   const story = 'E2E moonlit harbor with a golden lighthouse.';
-  // Owner decision (2026-10-10, maintained 2026-10-11): guests are not asked for AI consent.
+  // Revised 2026-10-19 (was: guests are not asked, owner decision 2026-10-10): App Review
+  // guideline 5.1.2(i) needs permission before a guest's dream reaches the AI providers too.
   const consentPrompts: string[] = [];
   const offConsent = await browser.onDialog(async (dialog) => {
     consentPrompts.push(dialog.message);
@@ -75,9 +80,33 @@ test('guest saves the exact story and reads its simulated analysis inline', asyn
   await expect(reading).toContainText('Symbols');
   expect((await reading.textContent() ?? '').length).toBeGreaterThan(100);
   await expect(screen.getByTestId('analysis.reading.modal')).toHaveCount(0);
-  expect(consentPrompts).toEqual([]);
+  expect(consentPrompts).toHaveLength(1);
+  expect(consentPrompts[0]).toContain('Anthropic (Claude) and Google (Gemini)');
   await offConsent();
   await app.screenshot('guest-saved-analysis');
+});
+
+// App Review (2026-10-19): each card leads with the amount billed, and a guest reads why to
+// sign in and the renewal terms before any purchase.
+// The web, like Android, leads the annual card with its monthly equivalent and bills in the
+// small line; only iOS leads with the billed amount (owner decision 2026-10-19).
+test('guest Plus offer shows the yearly bill, the sign-in reason and the renewal terms', async ({ app, screen, browser }) => {
+  await isolateWeb(browser, app);
+  await startGuest(app, screen, browser);
+  await openQuickSettings(screen);
+  await screen.getByTestId('quick-settings.plus', { visible: true }).tap();
+  await expect(screen.getByTestId('screen.paywall', { visible: true })).toBeVisible();
+  const annual = screen.getByTestId('btn.paywall.selectAnnual', { visible: true });
+  await expect(annual.getByTestId('btn.paywall.selectAnnual.price')).toHaveText('€2.50');
+  await expect(annual).toContainText('per month');
+  await expect(annual.getByTestId('btn.paywall.selectAnnual.detail')).toHaveText('Billed 29,99 € yearly');
+  await expect(screen.getByTestId('btn.paywall.selectMonthly.price', { visible: true })).toHaveText('4,99 €');
+  await expect(screen.getByTestId('text.paywall.authReason', { visible: true }))
+    .toHaveText('Sign in to unlock and sync your subscription across devices.');
+  await expect(screen.getByTestId('text.paywall.storeNotice', { visible: true })).toContainText('renews automatically');
+  await expect(screen.getByTestId('btn.paywall.termsOfUse', { visible: true })).toBeVisible();
+  await expect(screen.getByTestId('btn.paywall.restore')).toHaveCount(0);
+  await app.screenshot('guest-plus-offer');
 });
 
 test('free user saves, renames and finds the exact story in Journal', async ({ app, screen, browser }) => {
@@ -167,7 +196,7 @@ async function settledMotion(browser: Parameters<typeof isolateWeb>[0]) {
 test('plus account watches its saved dream being read, then lit as a constellation', async ({ app, screen, browser }) => {
   await isolateWeb(browser, app);
   await selectProfile(app, screen, browser, 'plus');
-  // A signed-in user's first analysis asks once for permission, naming generative AI only.
+  // A signed-in user's first analysis asks once for permission, naming both AI providers.
   const consentPrompts: string[] = [];
   const offConsent = await browser.onDialog(async (dialog) => {
     consentPrompts.push(dialog.message);
@@ -190,7 +219,7 @@ test('plus account watches its saved dream being read, then lit as a constellati
   await expect(screen.getByTestId('component.dreamDetail.readingWait')).toHaveCount(0);
   await expect(screen.getByTestId('component.dreamDetail.readingZone', { visible: true })).toContainText('Symbols');
   expect(consentPrompts).toHaveLength(1);
-  expect(consentPrompts[0]).toMatch(/generative AI/);
+  expect(consentPrompts[0]).toContain('Anthropic (Claude) and Google (Gemini)');
   await offConsent();
   await settledMotion(browser);
   const landed = await constellation.boundingBox();
@@ -305,6 +334,9 @@ for (const profile of ['existing', 'plus'] as const) {
     const upgrade = screen.getByRole('button', 'Upgrade to Noctalia Plus', { visible: true });
     if (profile === 'existing') {
       await upgrade.tap();
+      // Signed in, the offer can be bought and restored here: no sign-in reason is shown.
+      await expect(screen.getByTestId('btn.paywall.restore', { visible: true })).toBeVisible();
+      await expect(screen.getByTestId('text.paywall.authReason')).toHaveCount(0);
       await screen.getByTestId('btn.paywall.selectMonthly', { visible: true }).tap();
       await expect(screen.getByTestId('btn.paywall.selectMonthly', { visible: true })).toHaveAttribute('aria-checked', 'true');
       await screen.getByTestId('btn.paywall.close', { visible: true }).tap();

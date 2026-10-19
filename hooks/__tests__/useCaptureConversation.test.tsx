@@ -122,7 +122,9 @@ it('never sends the transcript to the provider before AI consent and asks a loca
   const { result } = renderHook(() => useCaptureConversation({ language: 'fr', t }));
   await act(async () => { await result.current.ask('Un jardin.'); });
   expect(request).not.toHaveBeenCalled();
-  expect(result.current).toMatchObject({ question: t(), loading: false, unavailable: true, done: false });
+  // Revised 2026-10-19 (was unavailable: true): guests are now asked for consent too, and a
+  // capture before that choice must not read as an outage.
+  expect(result.current).toMatchObject({ question: t(), loading: false, unavailable: false, done: false });
   await act(async () => { await result.current.ask('Un jardin. Une porte.'); });
   expect(request).not.toHaveBeenCalled();
   consent.mockResolvedValue(true);
