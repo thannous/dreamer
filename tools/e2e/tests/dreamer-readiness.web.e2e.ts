@@ -84,7 +84,7 @@ async function savePlusDream(page: Page, story: string) {
   await page.getByTestId('btn.saveDream').click();
 }
 
-test('capture shortcut preserves the reading already chosen and saves only once', async ({ page }, info) => {
+test('capture shortcut preserves the reading already chosen and creates one journal entry', async ({ page }, info) => {
   await savePlusDream(page, 'Shortcut choice QA: I see a doorway by a quiet lake.');
   await page.getByTestId('btn.dreamCaptureSeal.readNow').click();
   await page.getByTestId('btn.dreamCaptureSeal.openDream').dblclick();
@@ -94,13 +94,13 @@ test('capture shortcut preserves the reading already chosen and saves only once'
   await page.getByTestId('btn.navigateJournal').scrollIntoViewIfNeeded();
   await page.getByTestId('btn.navigateJournal').click();
   await expect(page.getByRole('button', { name: /^Shortcut choice QA:/ })).toHaveCount(1);
-  await page.reload();
-  // Cold navigation intentionally opens capture. Re-enter the journal before
-  // asserting persisted rows, rather than mistaking the destination for data loss.
-  await expect(page.getByTestId('screen.recording')).toBeVisible();
-  await page.getByTestId('tab.journal').filter({ visible: true }).click();
-  await expect(page.getByRole('button', { name: /^Shortcut choice QA:/ })).toHaveCount(1);
-  await page.screenshot({ path: info.outputPath('shortcut-one-durable-dream.png') });
+  await page.getByRole('button', { name: /^Shortcut choice QA:/ }).click();
+  await page.getByTestId('btn.editDream').scrollIntoViewIfNeeded();
+  await page.getByTestId('btn.editDream').click();
+  await expect(page.getByTestId('input.dreamTranscript')).toHaveValue('Shortcut choice QA: I see a doorway by a quiet lake.');
+  // Mock saveDreams intentionally uses session memory. Restart durability belongs
+  // to the real SQLite/native journey, never to a browser-mock reload assertion.
+  await page.screenshot({ path: info.outputPath('shortcut-one-journal-dream.png') });
 });
 
 const reduced = createParityTest({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });

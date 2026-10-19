@@ -7,7 +7,7 @@ import { getDreamRecallStorageId } from '@/lib/dreamRecallIdentity';
 import { getDreamRouteParams, resolveDreamRoute } from '@/lib/dreamRoute';
 import { getDreamIdentityKey, matchesDreamTarget } from '@/lib/dreamIdentity';
 import { markPerformance, markPerformanceAfterFrames, performanceTraceId } from '@/lib/performanceTrace';
-import { isInitialDreamCategorizationPending, subscribeInitialDreamCategorization } from '@/lib/initialDreamCategorization';
+import { getInitialDreamCategorizationKey, isInitialDreamCategorizationPending, subscribeInitialDreamCategorization } from '@/lib/initialDreamCategorization';
 import { useDreamMedia } from '@/hooks/useDreamMedia';
 import { Toast } from '@/components/Toast';
 import { DreamRecallAssistantCard } from '@/components/journal/DreamRecallAssistantCard';
@@ -596,7 +596,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   const canResumeAnalysis = Boolean(dream && isResumableAnalysisRequest(dream));
   const guestNeedsAccount = !user && !canResumeAnalysis
     && (savedAnalysisAction === 'signup' || savedAnalysisAction === 'login');
-  const categorizationIdentity = dream ? getDreamIdentityKey(dream) : '';
+  const categorizationIdentity = dream ? getInitialDreamCategorizationKey(dream) : '';
   const getInitialCategorizationPending = useCallback(
     () => Boolean(categorizationIdentity && isInitialDreamCategorizationPending(categorizationIdentity)),
     [categorizationIdentity]
@@ -615,7 +615,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     && !dream.theme && dream.title === deriveDraftTitle(dream.transcript, ''));
   const needsMetadataRecovery = hasUncategorizedDraft && !initialCategorizationPending;
   const recoverMetadata = useCallback(async () => {
-    if (!dream || !needsMetadataRecovery || isInitialDreamCategorizationPending(getDreamIdentityKey(dream))
+    if (!dream || !needsMetadataRecovery || isInitialDreamCategorizationPending(getInitialDreamCategorizationKey(dream))
       || metadataRecoveryInFlightRef.current) return;
     // Metadata recovery sends the dream text to the AI provider.
     if (!(await requestAiConsent(t))) return;
@@ -812,6 +812,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   // Guests already receive metadata from the post-save categorization request.
   useEffect(() => {
     if (!dream || !canUseReference) return;
+    if (initialCategorizationPending) return;
     if (hasBackfilledSubjectRef.current) return;
     if (dream.hasPerson !== undefined || dream.hasAnimal !== undefined) return;
     if (!dream.transcript?.trim()) return;
@@ -844,7 +845,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     })();
     // A newer title, analysis or user edit owns the dream after it changes.
     return () => { cancelled = true; };
-  }, [canUseReference, dream, language, updateDream]);
+  }, [canUseReference, dream, initialCategorizationPending, language, updateDream]);
 
 
   const { shareImageRef, shareComposite } = useDreamShareComposite();

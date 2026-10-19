@@ -49,7 +49,7 @@ import {
   buildRememberedDream,
 } from '@/lib/dreamUtils';
 import { DreamPersistenceError } from '@/lib/dreamStorageRead';
-import { getDreamIdentityKey, resolveDreamTarget } from '@/lib/dreamIdentity';
+import { resolveDreamTarget } from '@/lib/dreamIdentity';
 import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
 import { markDreamNamed } from '@/lib/dreamNaming';
 import { markDreamStoryHandoff } from '@/lib/dreamStoryPrologue';
@@ -57,6 +57,7 @@ import { classifyError, GuestDreamLimitError } from '@/lib/errors';
 import { hasAiConsent } from '@/lib/aiConsent';
 import { formatCaptureNarrative } from '@/services/captureConversation';
 import {
+  getInitialDreamCategorizationKey,
   isInitialDreamCategorizationPending,
   subscribeInitialDreamCategorization,
   trackInitialDreamCategorization,
@@ -1209,7 +1210,7 @@ function RecordingScreen() {
       }
       clearAfterSuccessfulSave();
       setDraftDream(savedDream);
-      void trackInitialDreamCategorization(getDreamIdentityKey(savedDream), async () => {
+      void trackInitialDreamCategorization(getInitialDreamCategorizationKey(savedDream), async () => {
         // Categorization sends dream text to Gemini: skip while AI consent is missing.
         if (!(await hasAiConsent())) return;
         const categorization = await categorizeDream(latestTranscript, language);
@@ -1263,7 +1264,7 @@ function RecordingScreen() {
       } else {
         setPreAnalysisOver(false);
         setSealing({
-          identity: getDreamIdentityKey(savedDream),
+          identity: getInitialDreamCategorizationKey(savedDream),
           target: { id: savedDream.id, remoteId: savedDream.remoteId, clientRequestId: savedDream.clientRequestId },
           provisionalName: savedDream.title || t('journal.detail.untitled_dream'),
           previousPage: dreams.some((dream) => dream.id !== savedDream.id),

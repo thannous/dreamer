@@ -1,5 +1,4 @@
 import { isPerformanceTracingEnabled } from '@/lib/env';
-import { recordPerformanceEvent } from '@/lib/observe';
 
 type PerformanceMarkDetails = Record<
   string,
@@ -21,7 +20,14 @@ export function markPerformance(
       attributes[key] = value;
     }
   }
-  recordPerformanceEvent(name, attributes);
+  try {
+    // Keep native storage/module setup lazy when diagnostics are disabled.
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { recordPerformanceEvent } = require('@/lib/observe') as typeof import('@/lib/observe');
+    recordPerformanceEvent(name, attributes);
+  } catch {
+    // User Timing and console remain usable without the optional native recorder.
+  }
   try {
     globalThis.performance?.mark?.(`noctalia.${name}`);
   } catch {
