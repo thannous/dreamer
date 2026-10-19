@@ -116,7 +116,7 @@ if (process.env.E2E_PERSONAS === '1') {
       const back = screen.getByTestId('btn.navigateJournal');
       await back.scrollIntoView();
       await back.tap();
-      await agent.act('Return to the same free-form conversation about The Infinite Library. Do not send another message.');
+      await agent.act('Reopen your existing conversation about The Infinite Library, with the earlier question and reply on screen. Do not send another message.');
       await title.scrollIntoView();
       await expect(title).toBeVisible();
       if (await latest.isVisible()) await latest.tap();
