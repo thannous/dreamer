@@ -102,14 +102,6 @@ jest.mock('@/context/ThemeContext', () => ({
   }),
 }));
 
-jest.mock('@/hooks/useJournalAnimations', () => ({
-  useScalePress: () => ({
-    animatedStyle: {},
-    onPressIn: () => {},
-    onPressOut: () => {},
-  }),
-}));
-
 jest.mock('@/hooks/useTranslation', () => ({
   useTranslation: () => ({
     t: (key: string) => key,

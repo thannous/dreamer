@@ -286,17 +286,21 @@ test('free user adds and removes a favorite without deleting its story', async (
   await selectProfile(app, screen, browser, 'existing');
   await journal(screen);
   await openDream(screen, 'Garden in the Clouds');
+  const transcript = screen.getByTestId('component.transcriptCard', { visible: true });
+  const originalStory = await transcript.textContent();
+  expect(originalStory).toContain('I was walking through a beautiful garden');
   await screen.getByTestId('btn.dream.favorite', { visible: true }).tap();
   await journal(screen);
   await screen.getByRole('button', 'Show favorites only', { visible: true }).tap();
   await openDream(screen, 'Garden in the Clouds');
   await screen.getByTestId('btn.dream.favorite', { visible: true }).tap();
   await journal(screen);
-  await screen.getByRole('button', 'Show favorites only', { visible: true }).tap();
-  await screen.getByRole('textbox', 'Search dreams…', { visible: true }).fill('Garden in the Clouds');
+  // Upstream 02a97ad08 retains the journal: a second Favorites tap would clear its filter.
+  await expect(screen.getByRole('textbox', 'Search dreams…', { visible: true })).toHaveValue('Garden in the Clouds');
   await expect(screen.getByTestId(/^dream\.item\./, { visible: true })).toHaveCount(0);
   await screen.getByRole('button', 'Show all dreams', { visible: true }).tap();
   await openDream(screen, 'Garden in the Clouds');
+  await expect(transcript).toHaveText(originalStory!);
   await app.screenshot('favorite-removal-keeps-story');
 });
 
@@ -320,8 +324,7 @@ for (const profile of ['existing', 'plus'] as const) {
     await isolateWeb(browser, app);
     await selectProfile(app, screen, browser, profile);
     await openSettings(screen);
-    // The populated historical fixture contains exactly five completed analyses; revised
-    // 2026-10-19 (was '5 / 3'): since #429 the card caps the count at the limit.
+    // The fixture keeps five completed analyses; displayed free usage caps at its allowance.
     await expect(screen.getByTestId('quota.analysisValue', { visible: true })).toHaveText(profile === 'plus' ? 'Unlimited' : '3 / 3');
     const upgrade = screen.getByRole('button', 'Upgrade to Noctalia Plus', { visible: true });
     if (profile === 'existing') {

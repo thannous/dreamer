@@ -10,7 +10,6 @@ export type ExpoPublicEnvKey =
   | 'EXPO_PUBLIC_MOCK_AUDIO'
   | 'EXPO_PUBLIC_ACCOUNTS_ENABLED'
   | 'EXPO_PUBLIC_SUBSCRIPTIONS_ENABLED'
-  | 'EXPO_PUBLIC_MEDIA_BASE_URL'
   | 'EXPO_PUBLIC_REVENUECAT_IOS_KEY'
   | 'EXPO_PUBLIC_REVENUECAT_ANDROID_KEY';
 
@@ -24,8 +23,6 @@ export function getExpoPublicEnvValue(key: ExpoPublicEnvKey): string | undefined
       return process.env.EXPO_PUBLIC_ACCOUNTS_ENABLED;
     case 'EXPO_PUBLIC_SUBSCRIPTIONS_ENABLED':
       return process.env.EXPO_PUBLIC_SUBSCRIPTIONS_ENABLED;
-    case 'EXPO_PUBLIC_MEDIA_BASE_URL':
-      return process.env.EXPO_PUBLIC_MEDIA_BASE_URL;
     case 'EXPO_PUBLIC_REVENUECAT_IOS_KEY':
       return process.env.EXPO_PUBLIC_REVENUECAT_IOS_KEY;
     case 'EXPO_PUBLIC_REVENUECAT_ANDROID_KEY':
@@ -61,6 +58,3 @@ export const areAccountsEnabled = (): boolean =>
  */
 export const areSubscriptionsEnabled = (): boolean =>
   isTrue(getExpoPublicEnvValue('EXPO_PUBLIC_SUBSCRIPTIONS_ENABLED'));
-
-export const getMediaBaseUrl = (): string | undefined =>
-  getExpoPublicEnvValue('EXPO_PUBLIC_MEDIA_BASE_URL');

@@ -562,7 +562,7 @@ Les visuels peuvent être générés (pipeline Higgsfield déjà en place côté
 }
 ```
 
-Variables `EXPO_PUBLIC_*` : `EXPO_PUBLIC_MOCK_MODE`, `EXPO_PUBLIC_REVENUECAT_IOS_KEY`, `EXPO_PUBLIC_REVENUECAT_ANDROID_KEY`, `EXPO_PUBLIC_MEDIA_BASE_URL`, `EXPO_PUBLIC_ACCOUNTS_ENABLED`. Accès **uniquement** via `lib/env.ts` avec union de clés typée et `switch` statique (règle Noctalia : pas de `process.env[key]` dynamique, jamais de secret dans `EXPO_PUBLIC_*`).
+Variables `EXPO_PUBLIC_*` : `EXPO_PUBLIC_MOCK_MODE`, `EXPO_PUBLIC_MOCK_AUDIO`, `EXPO_PUBLIC_REVENUECAT_IOS_KEY`, `EXPO_PUBLIC_REVENUECAT_ANDROID_KEY`, `EXPO_PUBLIC_ACCOUNTS_ENABLED`, `EXPO_PUBLIC_SUBSCRIPTIONS_ENABLED`. Accès **uniquement** via `lib/env.ts` avec union de clés typée et `switch` statique (règle Noctalia : pas de `process.env[key]` dynamique, jamais de secret dans `EXPO_PUBLIC_*`).
 
 Profils : `.env.mock`, `.env.real`, `.env.teststore` + `scripts/expo-safe-runner.js` repris de Noctalia.
 

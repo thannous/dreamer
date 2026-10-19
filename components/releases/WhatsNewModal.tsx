@@ -1,4 +1,3 @@
-import type { ViewInstance } from 'react-native';
 import { BlurView } from 'expo-blur';
 import { router } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -12,6 +11,7 @@ import {
   StyleSheet,
   Text,
   type TextStyle,
+  type ViewInstance,
   useWindowDimensions,
   View,
 } from 'react-native';

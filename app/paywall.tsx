@@ -26,7 +26,6 @@ import { useSubscription } from '@/hooks/useSubscription';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getPaywallTrigger, trackProductEvent } from '@/lib/analytics';
 import { markStoreReviewPaywallSeen } from '@/lib/storeReview';
-import { createScopedLogger } from '@/lib/logger';
 import { clearReturnToPaywallIntent, requestReturnToPaywallIntent } from '@/lib/navigationIntents';
 import {
   calculateAnnualDiscount,
@@ -39,7 +38,6 @@ import { TID } from '@/lib/testIDs';
 import { useHeaderScroll } from '@/components/ui/headerStretch';
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 
-const log = createScopedLogger('[Paywall]');
 const PAYWALL_MAX_WIDTH = 720;
 const PAYWALL_PAINTING_HEIGHT = 170;
 /** Each store only names itself; the web keeps the line that covers both. */
@@ -64,7 +62,8 @@ function PaywallScreen() {
   const { formatDate, formatNumber, formatTime } = useLocaleFormatting();
   const params = useLocalSearchParams<AnalysisPaywallParams & { trigger?: string }>();
   const { user } = useAuth();
-  const savedDreamReturnRoute = useMemo(() => getSavedDreamReturnRoute(params, user?.id), [params, user?.id]);
+  const userId = user?.id;
+  const savedDreamReturnRoute = useMemo(() => getSavedDreamReturnRoute(params, userId), [params, userId]);
   const exitDispatchedRef = useRef(false);
   const [exitDestination, setExitDestination] = useState<Href | null>(null);
   const navigateToDream = useCallback((destination: Href) => setExitDestination(destination), []);
@@ -86,7 +85,7 @@ function PaywallScreen() {
   const operationInFlightRef = useRef(false);
   const [operationPending, setOperationPending] = useState(false);
   const [confirmationPendingFor, setConfirmationPendingFor] = useState<string | null>(null);
-  const awaitingServerAccess = Boolean(activationPending || (user?.id && confirmationPendingFor === user.id));
+  const awaitingServerAccess = Boolean(activationPending || (userId && confirmationPendingFor === userId));
   const busy = processing || operationPending;
   const { quotaStatus } = useQuota();
   const insets = useSafeAreaInsets();
@@ -94,7 +93,7 @@ function PaywallScreen() {
   const annualDiscount = useMemo(() => calculateAnnualDiscount(packages), [packages]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [toast, setToast] = useState<{ message: string; mode: 'success' | 'info' } | null>(null);
-  const [showErrorSheet, setShowErrorSheet] = useState(false);
+  const showErrorSheet = Boolean(error);
   const viewedAnalyticsKeyRef = useRef<string | null>(null);
   const purchaseOutcomeRef = useRef<'none' | 'completed' | 'restored'>('none');
   const dismissedTrackedRef = useRef(false);
@@ -112,16 +111,8 @@ function PaywallScreen() {
   const routeTrigger = getPaywallTrigger(params.trigger);
   const paywallTrigger = isDeviceUpgraded ? 'returning_device' : routeTrigger;
   const isDreamAnalysisOffer = paywallTrigger === 'analysis_cta' && Boolean(params.dreamId)
-    && params.dreamOwnerId === user?.id;
+    && params.dreamOwnerId === userId;
   const paywallVariant = useMemo(() => getPaywallVariant(paywallTrigger), [paywallTrigger]);
-
-  useEffect(() => {
-    log.debug('error state changed', error?.message);
-    if (error) {
-      log.debug('showing error bottom sheet');
-      setShowErrorSheet(true);
-    }
-  }, [error]);
 
   // Keeps rating requests away from the paywall and the minutes after it.
   useEffect(() => {
@@ -230,7 +221,7 @@ function PaywallScreen() {
   }, [currentLang]);
 
   const confirmAccessAndResume = useCallback(async (result: Awaited<ReturnType<typeof purchase>> | null) => {
-    setConfirmationPendingFor(user?.id ?? null);
+    setConfirmationPendingFor(userId ?? null);
     let confirmed = result;
     if (!confirmed?.serverConfirmed || !confirmed.isActive || confirmed.tier !== 'plus') {
       try {
@@ -240,18 +231,17 @@ function PaywallScreen() {
         // The pending state owns this recovery; a generic error sheet would
         // obscure its retry button after a successful store transaction.
         clearError();
-        setShowErrorSheet(false);
         return false;
       }
     }
     if (!confirmed.serverConfirmed || !confirmed.isActive || confirmed.tier !== 'plus') return false;
     setConfirmationPendingFor(null);
-    const returnRoute = requestAnalysisReturnRoute(params, user?.id);
+    const returnRoute = requestAnalysisReturnRoute(params, userId);
     if (returnRoute) {
       navigateToDream(returnRoute);
     }
     return true;
-  }, [clearError, navigateToDream, params, refreshSubscription, user?.id]);
+  }, [clearError, navigateToDream, params, refreshSubscription, userId]);
 
   const handleRetryActivation = useCallback(async () => {
     if (operationInFlightRef.current || processing) return;
@@ -289,7 +279,7 @@ function PaywallScreen() {
         tier: nextStatus?.tier ?? 'plus',
       });
       if (!nextStatus?.isActive && !nextStatus?.storeActive) {
-        setConfirmationPendingFor(user?.id ?? null);
+        setConfirmationPendingFor(userId ?? null);
         return;
       }
       if (!await confirmAccessAndResume(nextStatus)) return;
@@ -304,7 +294,7 @@ function PaywallScreen() {
       operationInFlightRef.current = false;
       setOperationPending(false);
     }
-  }, [analyticsTier, canPurchase, confirmAccessAndResume, effectiveSelectedId, paywallTrigger, purchase, selectedPlan, t, user?.id]);
+  }, [analyticsTier, canPurchase, confirmAccessAndResume, effectiveSelectedId, paywallTrigger, purchase, selectedPlan, t, userId]);
 
   const handleRestore = useCallback(async () => {
     if (processing || requiresAuth || awaitingServerAccess || operationInFlightRef.current) return;
@@ -343,7 +333,6 @@ function PaywallScreen() {
   }, []);
 
   const handleCloseErrorSheet = useCallback(() => {
-    setShowErrorSheet(false);
     clearError();
   }, [clearError]);
 

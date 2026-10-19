@@ -1,3 +1,5 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 jest.mock('@react-native-async-storage/async-storage', () =>
   require('@react-native-async-storage/async-storage/jest/async-storage-mock'),
 );
@@ -6,8 +8,6 @@ jest.mock('expo-observe', () => ({
   Observe: { configure: jest.fn(), reportError: jest.fn(), markInteractive: jest.fn(), logEvent: jest.fn() },
   ObserveRoot: { wrap: jest.fn((Component: unknown) => Component) },
 }));
-
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type ObserveLib = typeof import('@/lib/observe');
 type ObserveMock = { configure: jest.Mock; reportError: jest.Mock; logEvent: jest.Mock };

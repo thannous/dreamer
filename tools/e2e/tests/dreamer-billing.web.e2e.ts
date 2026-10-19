@@ -21,9 +21,10 @@ async function setupFreeAccount(page: Page) {
   await page.getByTestId('quick-settings.all').click();
   await page.getByTestId('screen.subscription.qaLab.toggle').click();
   await expect(page.getByTestId('text.subscription.qa.mode')).toContainText('Mock services');
-  // The fixture holds five analyses; revised 2026-10-19 (was '5 / 3'): since #429 the card
-  // caps the count at the limit.
+  // The quota card caps its displayed count at the limit (iPhone fix, 2026-10-18).
+  // Historical usage stays above the free allowance; display capping grants no access.
   await expect(page.getByTestId('quota.analysisValue')).toHaveText('3 / 3');
+  await expect(page.getByText('0 analysis left', { exact: true })).toBeVisible();
 }
 
 async function offer(page: Page) {

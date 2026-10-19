@@ -2,24 +2,6 @@ import { jest } from '@jest/globals';
 
 jest.mock('react-native-enriched-markdown', () => require('react-native-enriched-markdown/jest'));
 
-// Vitest provided this helper; keep behavior stable for existing tests.
-const jestAny = jest as any;
-
-jestAny.hoisted = <T>(factory: () => T) => factory();
-jestAny.stubGlobal = (key: string, value: unknown) => {
-  Object.defineProperty(globalThis, key, {
-    configurable: true,
-    enumerable: true,
-    writable: true,
-    value,
-  });
-};
-
-if ((globalThis as any).jest) {
-  (globalThis as any).jest.hoisted = jestAny.hoisted;
-  (globalThis as any).jest.stubGlobal = jestAny.stubGlobal;
-}
-
 // Expo modules expect these globals during evaluation.
 // Keep a single definition here to avoid redefining in each test.
 (globalThis as any).__DEV__ = (globalThis as any).__DEV__ ?? false;

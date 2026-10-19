@@ -1,4 +1,3 @@
-import type { ScrollViewInstance, ViewInstance } from 'react-native';
 import React, { useEffect, useMemo, useRef } from 'react';
 import {
   AccessibilityInfo,
@@ -11,6 +10,8 @@ import {
   type StyleProp,
   type TextStyle,
   type ViewStyle,
+  type ScrollViewInstance,
+  type ViewInstance,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 

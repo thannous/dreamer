@@ -1,5 +1,3 @@
-import type { ViewToken } from '@shopify/flash-list';
-import type { TextInputInstance } from 'react-native';
 import { markPerformance } from '@/lib/performanceTrace';
 import Animated, { useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { useQuickSettings } from '@/context/QuickSettingsContext';
@@ -47,7 +45,7 @@ import { getDreamThumbnailCacheKey, getDreamThumbnailUri, preloadImage } from '@
 import { trackProductEvent } from '@/lib/analytics';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
-import { FlashList, type FlashListRef, type ListRenderItemInfo } from '@shopify/flash-list';
+import { FlashList, type FlashListRef, type ListRenderItemInfo, type ViewToken } from '@shopify/flash-list';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import React, { useCallback, useContext, useDeferredValue, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
@@ -61,7 +59,7 @@ import {
   type GestureResponderEvent,
   type NativeScrollEvent,
   type NativeSyntheticEvent,
-  type TextInput,
+  type TextInputInstance,
   View,
   useWindowDimensions,
 } from 'react-native';
@@ -213,6 +211,7 @@ function JournalListScreen() {
   // chips, kept while a dream is open). The params leave the route so they apply only once.
   const filterParams = useLocalSearchParams<JournalFilterRouteParams>();
   const filterLink = parseJournalFilterParams(filterParams);
+  // This consumes an external navigation command once, then preserves filters edited by hand.
   useEffect(() => {
     const link = filterLink;
     if (!link) return;
@@ -242,10 +241,10 @@ function JournalListScreen() {
   const prefetchedImageUrisRef = useRef(new Set<string>());
   const isNavigatingRef = useRef(false);
   const viewableRangeRef = useRef<{ min: number; max: number } | null>(null);
-  const viewabilityConfigRef = useRef({
+  const viewabilityConfig = useMemo(() => ({
     itemVisiblePercentThreshold: JOURNAL_LIST.VIEWABILITY_THRESHOLD,
     minimumViewTime: JOURNAL_LIST.MINIMUM_VIEW_TIME,
-  });
+  }), []);
 
   // A ref only: prefetch waits for scroll to rest, and no element of this screen reads it,
   // so starting or ending a scroll does not render the screen again.
@@ -569,7 +568,7 @@ function JournalListScreen() {
     await prefetchDreamMedia(currentFilteredDreams.slice(start, end + 1));
   }, [prefetchDreamMedia]);
 
-  const onViewableItemsChanged = useRef(({ viewableItems }: ViewabilityInfo) => {
+  const onViewableItemsChanged = useCallback(({ viewableItems }: ViewabilityInfo) => {
     let min = Number.POSITIVE_INFINITY;
     let max = Number.NEGATIVE_INFINITY;
 
@@ -588,7 +587,7 @@ function JournalListScreen() {
         markPerformance('journal.first_useful_content');
       }
     }
-  }).current;
+  }, []);
 
   const scheduleIdle = useCallback(() => {
     if (scrollIdleTimeoutRef.current) {
@@ -1156,7 +1155,7 @@ function JournalListScreen() {
         contentContainerStyle={listContentDesktopStyle}
         ListEmptyComponent={renderEmptyState}
         showsVerticalScrollIndicator={false}
-        viewabilityConfig={viewabilityConfigRef.current}
+        viewabilityConfig={viewabilityConfig}
         onViewableItemsChanged={onViewableItemsChanged}
         onScrollBeginDrag={handleScrollBegin}
         onScrollEndDrag={scheduleIdle}
@@ -1192,7 +1191,7 @@ function JournalListScreen() {
         contentInsetAdjustmentBehavior="never"
         ListEmptyComponent={renderEmptyState}
         showsVerticalScrollIndicator={false}
-        viewabilityConfig={viewabilityConfigRef.current}
+        viewabilityConfig={viewabilityConfig}
         onViewableItemsChanged={onViewableItemsChanged}
         onScrollBeginDrag={handleScrollBegin}
         onScrollEndDrag={scheduleIdle}

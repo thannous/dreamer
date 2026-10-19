@@ -1,102 +1,30 @@
-Backend proxy integration
+# Backend entry point
 
-Configure API base URL
-- Use env var at start time: `EXPO_PUBLIC_API_URL=http://localhost:3000`
-- Or set `extra.apiUrl` in `app.json`
-- Default fallback if unset: `http://localhost:3000`
-- For Supabase, create `.env.supabase` (see `doc_web_interne/docs/supabase-setup.md`) then run `npm run start:supabase` to load env vars automatically.
+The application resolves its API URL in [lib/config.ts](lib/config.ts):
+`EXPO_PUBLIC_API_URL`, then `app.json`'s `expo.extra.apiUrl`, then the local
+fallback. HTTP requests use [lib/http.ts](lib/http.ts).
 
-Supabase Edge Functions
-- You can deploy a single function named `api` and route inside it. Then set:
-  - `EXPO_PUBLIC_API_URL=https://<project-ref>.functions.supabase.co/api`
-  - Requests will go to `/api/analyzeDream`, `/api/generateImage`, etc.
-  - See `supabase/functions/api/index.ts` and `doc_web_interne/docs/supabase-setup.md`.
+For the current server contract, follow the actual dispatcher and route modules
+in [supabase/functions/api/index.ts](supabase/functions/api/index.ts) and
+[supabase/functions/api/routes/](supabase/functions/api/routes/). The client
+integration is in [services/geminiServiceReal.ts](services/geminiServiceReal.ts).
+Authentication, guest admission, quotas and durable job handling are defined by
+those implementations and their tests; this entry point does not duplicate an
+older public-endpoint contract or a standalone Express substitute.
 
-DB Contract Readiness
-- The checked-in contract lives at `supabase/db-contract.manifest.json`.
-- It covers the runtime objects the mobile app currently depends on for dream sync and quota flows:
-  - tables and key columns for `public.dreams`, `public.ai_jobs`, `public.quota_limits`, `public.quota_usage`, and `public.guest_usage`
-  - RPCs used by guest flows and async image jobs: `get_guest_quota_status`, `increment_guest_quota`, `release_guest_quota_claim`, and `mark_fingerprint_upgraded`
-  - quota trigger functions and `public.dreams` triggers that enforce monthly limits and per-dream chat limits
-  - critical uniqueness/index assumptions for dream sync and async image-job deduplication, plus seeded monthly `quota_limits` rows for `guest`, `free`, `plus`, and `premium`
-  - guest image quota behavior checks, so stale RPC implementations that omit `image_count` or fail to claim/release image quota now fail readiness
-- Run the readiness check against a database with:
-  - `npm run db:contract:check -- --local` after `npx supabase start`
-  - or `SUPABASE_DB_URL=postgresql://... npm run db:contract:check`
-- A failure means the live database has drifted from the checked-in contract: an expected table, column, function, trigger, index, or seeded quota row is missing or no longer matches.
+Run the existing browser and database qualification against an owned disposable
+native stack without Docker:
 
-Expected endpoints
-- POST `/transcribe`
-  - Request JSON: `{ "contentBase64": string, "encoding": "LINEAR16"|"AMR_WB"|"WEBM_OPUS", "languageCode": string, "sampleRateHertz"?: number }`
-  - Response JSON: `{ "transcript": string }`
-  - Auth: public (no Supabase JWT required)
-
-- POST `/analyzeDream`
-  - Request JSON: `{ "transcript": string }`
-  - Response JSON: `{ "title": string, "interpretation": string, "shareableQuote": string, "theme": "surreal"|"mystical"|"calm"|"noir", "dreamType": string, "imagePrompt": string }`
-  - Env required: `GEMINI_API_KEY`
-  - Optional env overrides:
-    - `GEMINI_MODEL` (dream-analysis default `gemini-3.6-flash`)
-    - `GEMINI_FALLBACK_MODEL` (dream-analysis fallback default `gemini-3.5-flash-lite`)
-    - `GEMINI_CHAT_MODEL` (chat default `gemini-3.5-flash-lite`; falls back to `GEMINI_LITE_MODEL`)
-    - `GEMINI_LITE_MODEL` (lightweight-task and chat-fallback default `gemini-3.5-flash-lite`)
-    - `IMAGEN_PLUS_MODEL` (subscriber default `gemini-3.1-flash-image`)
-    - `IMAGEN_FREE_MODEL` (free/guest default `gemini-3.1-flash-lite-image`)
-    - `IMAGEN_MODEL` (legacy subscriber-only alias for `IMAGEN_PLUS_MODEL`)
-    - Retired image preview IDs are ignored and fall back to the stable defaults above.
-
-- POST `/generateImage`
-  - Request JSON: `{ "prompt": string }`
-  - Response JSON: either `{ "imageUrl": string }` or `{ "imageBytes": base64-string }`
-  - Auth: public (temporary)
-
-- POST `/analyzeDreamFull`
-  - Request JSON: `{ "transcript": string }`
-  - Response JSON: `{ "title": string, "interpretation": string, "shareableQuote": string, "theme": "surreal"|"mystical"|"calm"|"noir", "dreamType": string, "imagePrompt": string, "imageBytes": base64-string }`
-  - Notes: Combines analysis and image generation in one call. Client can build a data URL as `data:image/jpeg;base64,${imageBytes}`.
-
-- POST `/chat`
-  - Request JSON: `{ "history": [{ "role": "user"|"model", "text": string }], "message": string, "lang": string }`
-  - Response JSON: `{ "text": string }`
-  - Auth: public (no Supabase JWT required)
-
-- POST `/tts`
-  - Request JSON: `{ "text": string }`
-  - Response JSON: `{ "audioBase64": base64-string }`
-
-Minimal Express stub (for local testing)
-```ts
-import express from 'express';
-import cors from 'cors';
-const app = express();
-app.use(cors());
-app.use(express.json({ limit: '2mb' }));
-
-app.post('/analyzeDream', (req, res) => {
-  const transcript = String(req.body?.transcript || '');
-  res.json({
-    title: transcript ? `On ${transcript.slice(0,40)}…` : 'A Journey Through Sleep',
-    interpretation: 'Your dream reflects inner thoughts seeking balance.\n\nSymbols suggest transformation and curiosity.',
-    shareableQuote: 'Between starlight and silence, a truth softly emerges.',
-    theme: 'surreal',
-    dreamType: 'Lucid Dream',
-    imagePrompt: 'A surreal nocturne with floating lights over a still sea.',
-  });
-});
-
-app.post('/generateImage', (_req, res) => {
-  res.json({ imageUrl: 'https://picsum.photos/800/1200' });
-});
-
-app.post('/chat', (req, res) => {
-  const message = String(req.body?.message || '');
-  res.json({ text: `Let’s unpack that: “${message}”. What feelings stood out most?` });
-});
-
-app.post('/tts', (req, res) => {
-  // Return silent PCM or any base64; client expects base64 string
-  res.json({ audioBase64: '' });
-});
-
-app.listen(3000, () => console.log('API on http://localhost:3000'));
+```sh
+mise exec -- npm run test:e2e:backend -- --runtime native --qualify-ti528
 ```
+
+The [backend qualification guide](doc_web_interne/docs/e2e-backend-qualification.md)
+covers prerequisites, target guards, fixture migrations, seven browser journeys,
+six TI528 integration cases and cleanup. The [database contract manifest](supabase/db-contract.manifest.json)
+records the database objects checked by `db:contract:check`.
+
+For architecture and implementation entry points, use the
+[architecture index](doc_web_interne/docs/architecture/README.md) and the
+[repository task index](doc_web_interne/docs/README.md). Production deployment
+follows [AGENTS.md](AGENTS.md) and requires its existing publication authorization.

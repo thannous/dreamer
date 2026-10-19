@@ -7,11 +7,11 @@ import { CATEGORY_BY_SLUG } from './categories';
  * this is modelled on, there is no content backend. Titles, descriptions and
  * benefits are i18n keys (`session.<id>.title`), never literals.
  *
- * 24 sessions, 8 of them free. `dream-prep` is entirely premium: it is the
- * bridge to the Noctalia journal and the reason to subscribe to both.
+ * 24 sessions, 8 marked free in catalogue metadata. Access is resolved by the
+ * app's subscription and world-ownership policies.
  *
- * Audio is NOT here. Only four sessions ship inside the bundle; the rest stream
- * from the media bucket and are wired in L3 (see spec §8.3).
+ * PlayerContext builds the timed session from the selected world's bundled
+ * sound layers in worldSounds.ts; audio sources do not live in this catalogue.
  */
 export const SESSIONS: MeditationSession[] = [
   {
@@ -215,12 +215,3 @@ export const SESSION_BY_ID: Record<SessionId, MeditationSession> = SESSIONS.redu
 
 export const sessionsInCategory = (slug: CategorySlug): MeditationSession[] =>
   SESSIONS.filter((session) => session.categorySlug === slug);
-
-export const freeSessions = (): MeditationSession[] =>
-  SESSIONS.filter((session) => !session.isPremium);
-
-/** Sessions at or under a duration, shortest first — powers the quick rows. */
-export const sessionsUpTo = (maxMinutes: number): MeditationSession[] =>
-  SESSIONS.filter((session) => session.durationSec <= maxMinutes * 60).sort(
-    (a, b) => a.durationSec - b.durationSec
-  );

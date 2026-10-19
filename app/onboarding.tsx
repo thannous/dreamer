@@ -1,4 +1,3 @@
-import type { ViewInstance } from 'react-native';
 import { scheduleIdleTask } from '@/lib/scheduleIdleTask';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
@@ -49,6 +48,7 @@ import {
   type LayoutChangeEvent,
   type TextStyle,
   type ViewStyle,
+  type ViewInstance,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, { useReducedMotion, type CSSStyle } from 'react-native-reanimated';

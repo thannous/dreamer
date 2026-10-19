@@ -3,7 +3,6 @@ import {
   greetingKey,
   resumableSession,
   searchSessions,
-  sessionOfTheDay,
   toMinutes,
 } from '@/lib/library';
 import type { SessionProgress } from '@/lib/types';
@@ -16,54 +15,6 @@ const progressFor = (
   positionSec: Math.round(SESSION_BY_ID[sessionId].durationSec * positionRatio),
   completedCount: 0,
   lastPlayedISO,
-});
-
-describe('sessionOfTheDay', () => {
-  it('returns the same session for the same day and goals', () => {
-    const a = sessionOfTheDay('2026-08-19', ['sleep']);
-    const b = sessionOfTheDay('2026-08-19', ['sleep']);
-    expect(a.id).toBe(b.id);
-  });
-
-  it('stays inside the chosen goals', () => {
-    for (const date of ['2026-08-19', '2026-08-20', '2026-08-21', '2026-09-01']) {
-      const session = sessionOfTheDay(date, ['gratitude']);
-      expect(session.categorySlug).toBe('gratitude');
-    }
-  });
-
-  it('stays inside the daily intention when a fitting session exists', () => {
-    for (const date of ['2026-08-19', '2026-08-20', '2026-08-21', '2026-09-01']) {
-      const session = sessionOfTheDay(date, ['sleep'], 5);
-      expect(session.categorySlug).toBe('sleep');
-      expect(session.durationSec).toBeLessThanOrEqual(5 * 60);
-    }
-  });
-
-  it('draws from the whole catalogue when no goal was chosen', () => {
-    const picks = new Set(
-      Array.from({ length: 60 }, (_, day) =>
-        sessionOfTheDay(`2026-08-${String((day % 28) + 1).padStart(2, '0')}`, []).categorySlug
-      )
-    );
-    // Not a distribution test — just proof the pool is not one category.
-    expect(picks.size).toBeGreaterThan(1);
-  });
-
-  it('falls back to the catalogue rather than dividing by zero on an empty pool', () => {
-    // @ts-expect-error deliberately passing a goal no session carries
-    const session = sessionOfTheDay('2026-08-19', ['nonexistent-goal']);
-    expect(SESSIONS).toContain(session);
-  });
-
-  it('does not always return the same session across dates', () => {
-    const ids = new Set(
-      Array.from({ length: 30 }, (_, day) =>
-        sessionOfTheDay(`2026-08-${String(day + 1).padStart(2, '0')}`, ['sleep']).id
-      )
-    );
-    expect(ids.size).toBeGreaterThan(1);
-  });
 });
 
 describe('resumableSession', () => {

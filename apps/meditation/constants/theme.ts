@@ -207,11 +207,3 @@ export const ArtworkGlass = {
 }>;
 
 export const Radius = { sm: 8, md: 12, lg: 16, xl: 24, artwork: 28, full: 999 } as const;
-
-export const Spacing = { xs: 4, sm: 8, md: 16, lg20: 20, lg: 24, xl: 32 } as const;
-
-/** Short centred rule used under section headers. */
-export const DecoRule = { width: 36, height: 2.5, radius: 1.5, opacity: 0.85 } as const;
-
-/** Full-width accent stripe sitting on top of featured cards. */
-export const DecoStripe = { height: 2.5, opacity: 0.95 } as const;

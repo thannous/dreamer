@@ -198,9 +198,6 @@ jest.mock('@/components/NoctaliaScreenHeader', () => ({
     </header>
   ),
 }));
-jest.mock('@/components/reminders/ReminderOptInCard', () => ({
-  ReminderOptInCard: () => null,
-}));
 jest.mock('@/components/inspiration/PersonalReadingCard', () => ({
   PersonalReadingCard: () => null,
 }));
