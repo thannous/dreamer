@@ -414,9 +414,7 @@ function PaywallScreen() {
         .map((pkg) => {
           const optionKey = pkg.interval === 'monthly' ? 'monthly' : 'annual';
           const isAnnual = pkg.interval === 'annual';
-          const intervalLabel = translateWithFallback(`subscription.paywall.option.interval.${optionKey}`);
-          // App Store rule: the amount billed is the largest price on the card. The annual
-          // plan's monthly equivalent is only a comparison, so it sits in the small line.
+          const billedInterval = translateWithFallback(`subscription.paywall.option.interval.${optionKey}`);
           const monthlyEquivalent = isAnnual
             ? formatNumber(calculateMonthlyEquivalent(pkg), {
                 style: 'currency',
@@ -425,23 +423,30 @@ function PaywallScreen() {
                 maximumFractionDigits: 2,
               })
             : '';
+          // App Store rule: the amount billed is the largest price on a card. Google Play has no
+          // such rule, and Android keeps the annual monthly equivalent large (owner decision 2026-10-19).
+          const leadsWithEquivalent = isAnnual && Platform.OS === 'android';
           return {
             id: pkg.id,
             title: translateWithFallback(
               `subscription.paywall.option.title.${optionKey}`,
               pkg.title
             ),
-            price: pkg.priceFormatted,
-            intervalLabel,
+            price: leadsWithEquivalent ? monthlyEquivalent : pkg.priceFormatted,
+            intervalLabel: leadsWithEquivalent
+              ? translateWithFallback('subscription.paywall.option.interval.monthly')
+              : billedInterval,
             billingDetail: pkg.freeTrialDays
               ? t('subscription.paywall.option.billing.trial', {
                   days: pkg.freeTrialDays,
                   price: pkg.priceFormatted,
-                  interval: intervalLabel,
+                  interval: billedInterval,
                 })
-              : isAnnual
-                ? t('subscription.paywall.option.billing.annual_equivalent', { price: monthlyEquivalent })
-                : t('subscription.paywall.option.billing.monthly'),
+              : leadsWithEquivalent
+                ? t('subscription.paywall.option.billing.annual', { price: pkg.priceFormatted })
+                : isAnnual
+                  ? t('subscription.paywall.option.billing.annual_equivalent', { price: monthlyEquivalent })
+                  : t('subscription.paywall.option.billing.monthly'),
             badge:
               pkg.freeTrialDays
                 ? t('subscription.paywall.option.badge.trial', { days: pkg.freeTrialDays })

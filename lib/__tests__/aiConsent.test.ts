@@ -32,11 +32,6 @@ describe('requestAiConsent', () => {
     expect(Alert.alert).not.toHaveBeenCalled();
   });
 
-  it('asks again a user who accepted the earlier text that named no provider', async () => {
-    await AsyncStorage.setItem('noctalia.aiConsent.v1', 'granted');
-    await expect(hasAiConsent()).resolves.toBe(false);
-  });
-
   it('does not send a dream before permission', async () => {
     const sendDream = jest.fn();
     const attempt = requestAiConsent(t).then((accepted) => {

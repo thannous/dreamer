@@ -1324,6 +1324,7 @@ const translations: Record<string, string> = {
     'subscription.paywall.option.interval.monthly': 'pro Monat',
     'subscription.paywall.option.interval.annual': 'pro Jahr',
     'subscription.paywall.option.billing.monthly': 'Monatliche Abrechnung',
+    'subscription.paywall.option.billing.annual': 'Jährlich {price} abgerechnet',
     'subscription.paywall.option.billing.annual_equivalent': "Entspricht {price} pro Monat",
     'subscription.paywall.option.description.monthly': 'Lass dein lebendiges Traumprofil jeden Monat weiter wachsen.',
     'subscription.paywall.option.description.annual': 'Bestes Angebot für engagierte Träumer.',

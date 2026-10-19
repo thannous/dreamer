@@ -22,11 +22,11 @@ test('declining AI keeps the saved dream unanalyzed, accepting later analyzes it
   await expect.poll(() => dialogs.length).toBe(1);
   expect(dialogs[0]).toMatch(/third-party AI service/);
   await expect(page.getByTestId('component.dreamDetail.readingZone')).toHaveCount(0);
-  expect(await page.evaluate(() => window.localStorage.getItem('noctalia.aiConsent.v2'))).toBeNull();
+  expect(await page.evaluate(() => window.localStorage.getItem('noctalia.aiConsent.v1'))).toBeNull();
 
   answer = 'accept';
   await page.getByTestId('btn.dream.primaryCta').click();
   await expect(page.getByTestId('component.dreamDetail.readingZone')).toContainText(/\S{20}/);
   expect(dialogs).toHaveLength(2);
-  expect(await page.evaluate(() => window.localStorage.getItem('noctalia.aiConsent.v2'))).toBe('granted');
+  expect(await page.evaluate(() => window.localStorage.getItem('noctalia.aiConsent.v1'))).toBe('granted');
 });

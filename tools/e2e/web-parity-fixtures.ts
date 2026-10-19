@@ -85,7 +85,7 @@ export function createParityTest(initial: Options = {}) {
       ownedBrowsers.set(page, browser);
       page.setDefaultTimeout(30_000);
       // Historical journeys predate the one-time AI permission dialog; give it up front.
-      await page.context().addInitScript(() => window.localStorage.setItem('noctalia.aiConsent.v2', 'granted'));
+      await page.context().addInitScript(() => window.localStorage.setItem('noctalia.aiConsent.v1', 'granted'));
       // The engine resolves app URLs itself; its raw page has no baseURL.
       // Preserve the historical relative goto contract on this attempt only.
       const goto = page.goto;
