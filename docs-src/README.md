@@ -26,6 +26,12 @@ For undated records, `meta.fallbackModifiedAt` preserves their existing date;
 fallback date when editing individual symbols. Catalogs without this optional
 field retain the `meta.lastUpdated` fallback.
 
+## Illustrated symbol pages
+
+Before generating symbol artwork, adding an Atlas entry or changing its motion, read
+[the living illustrations guideline](../doc_web_interne/docs/symbol-atlas-guidelines.md).
+It defines the approved visual direction, source files, per-image motion and review criteria.
+
 ## Daily Maintenance Workflow
 
 ### Preview changes live
@@ -136,8 +142,12 @@ collections can restrict their coverage: `collections.blog`,
 `collections.symbols`, and `collections.guides` each declare their own
 `languages` list, while static pages declare availability per page through the
 `slugs` keys of `docs-src/config/static-pages.json`. Brazilian Portuguese
-(`pt-br`) is the reference example: it covers only the pages listed in
-`static-pages.json`, never the blog, symbol, or guide collections.
+(`pt-br`) is the reference example: it covers the pages listed in
+`static-pages.json`, the symbol dictionary (240 symbols and 8 categories under
+`/pt-br/simbolos/`) and the guides (hub, dictionary and 8 curated guides), but
+never the blog. The symbol catalogs in `data/` are shared with the app and keep
+its key `pt` for this language: read them through `scripts/lib/symbol-locales.js`
+(`catalogKey`, `aliasWebLocales`), never with a second copy of the content.
 
 To add such a language:
 

@@ -10,6 +10,7 @@ const {
   siteConfig,
 } = require('../docs-site-config');
 const { escapeHtml, readJson, readSourceDocument } = require('../docs-source-utils');
+const { catalogKey } = require('../symbol-locales');
 
 const dreamSymbolsData = readJson(path.join(DATA_DIR, 'dream-symbols.json'));
 const curationPagesData = readJson(path.join(STATIC_DATA_DIR, 'curation-pages.json'));
@@ -208,10 +209,10 @@ function buildSeoFooterLinks(context) {
         if (!hasRoute(entryId, lang)) return null;
         const pageId = entryId.replace(/^guide\./, '');
         const page = (curationPagesData.pages || []).find((item) => item.id === pageId);
-        if (!page || !page[lang]?.title) return null;
+        if (!page || !page[catalogKey(lang)]?.title) return null;
         return {
           href: routePath(entryId),
-          label: page[lang].title,
+          label: page[catalogKey(lang)].title,
         };
       })
       .filter(Boolean)
@@ -221,10 +222,10 @@ function buildSeoFooterLinks(context) {
     .map((symbolId) => {
       if (!hasRoute(`symbol.${symbolId}`, lang)) return null;
       const symbol = (dreamSymbolsData.symbols || []).find((item) => item.id === symbolId);
-      if (!symbol || !symbol[lang]?.name) return null;
+      if (!symbol || !symbol[catalogKey(lang)]?.name) return null;
       return {
         href: routePath(`symbol.${symbolId}`),
-        label: symbol[lang].name,
+        label: symbol[catalogKey(lang)].name,
       };
     })
     .filter(Boolean);

@@ -32,6 +32,7 @@ and `app.config.ts`. Meditation has its own package, lockfile and
 | Work | Start here | Command or prerequisite |
 | --- | --- | --- |
 | Write or rewrite site articles, symbols and guides | [Editorial charter](charte-editoriale.md) | Voice, sourcing, typography and SEO guardrails; then `docs:build` and `docs:check`. |
+| Generate symbol illustrations, add an Atlas entry or maintain its motion | [Living illustrations guideline](symbol-atlas-guidelines.md) | Approved Tiger/six-symbol direction, shared configuration, source archive and desktop/mobile evidence. |
 | Choose checks and evolve contracts/tools | [Proportional validation](validation-proportionnee.md) | Current functional expectations, compatible measured upgrades, minimal evidence; the `pre-push` hook takes seconds (forbidden files, secrets, proof display); `npm run verify:pr` proves the commit on an isolated copy before every push, and the PR records the verified commit and the `verify:pr` result; `npm run verify:release` before a publish. |
 | Web and native user journeys | [E2E guide](../../e2e/README.md) | `test:e2e:web`, `test:testerarmy:mobile -- <product> <android\|ios>`; the guide distinguishes simulated services and native requirements. |
 | Real iPhone Sandbox billing and reuse | [iOS Sandbox preparation and retrospective](revenuecat-qa-workflow.md#ios-physique--réutiliser-la-préparation-sandbox) | Reuse the validated tester, signed driver and private profile; separate physical Apple confirmation from exact e2e continuation. |

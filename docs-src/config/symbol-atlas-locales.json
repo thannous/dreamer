@@ -1,0 +1,620 @@
+{
+  "copy": {
+    "fr": {"navLabel":"Dans cette fiche","scenes":{"title":"Scènes courantes","hint":"Choisissez celle qui ressemble le plus à votre rêve.","legend":"Choisir une scène","reading":"Lecture de la scène choisie","source":"Lire la variante","chosen":"Votre scène"},"continuationTitle":"Lecture détaillée","keepKicker":"Continuer dans Noctalia","quotes":["« "," »"],"chosenSeparator":" : ","anchors":{"keepInline":"continuer-noctalia","keepFinal":"garder-noctalia","reflection":"reflexion","reading":"lecture","further":"plus-loin","related":"associes","variation":"variante"}},
+    "en": {"navLabel":"On this page","scenes":{"title":"Common scenes","hint":"Choose the one closest to your dream.","legend":"Choose a scene","reading":"Reading of the chosen scene","source":"Read the variation","chosen":"Your scene"},"continuationTitle":"Detailed reading","keepKicker":"Continue in Noctalia","quotes":["“","”"],"chosenSeparator":": ","anchors":{"keepInline":"continue-in-noctalia","keepFinal":"keep-in-noctalia","reflection":"reflection","reading":"reading","further":"further","related":"related","variation":"variation"}},
+    "es": {"navLabel":"En esta ficha","scenes":{"title":"Escenas frecuentes","hint":"Elige la que más se parezca a tu sueño.","legend":"Elegir una escena","reading":"Lectura de la escena elegida","source":"Leer la variante","chosen":"Tu escena"},"continuationTitle":"Lectura detallada","keepKicker":"Continuar en Noctalia","quotes":["«","»"],"chosenSeparator":": ","anchors":{"keepInline":"continuar-en-noctalia","keepFinal":"guardar-en-noctalia","reflection":"reflexion","reading":"lectura","further":"para-saber-mas","related":"relacionados","variation":"variante"}},
+    "de": {"navLabel":"Auf dieser Seite","scenes":{"title":"Häufige Szenen","hint":"Wählen Sie die Szene, die Ihrem Traum am nächsten kommt.","legend":"Eine Szene wählen","reading":"Deutung der gewählten Szene","source":"Variante lesen","chosen":"Ihre Szene"},"continuationTitle":"Ausführliche Deutung","keepKicker":"In Noctalia weitermachen","quotes":["„","“"],"chosenSeparator":": ","anchors":{"keepInline":"weiter-in-noctalia","keepFinal":"behalten-in-noctalia","reflection":"reflexion","reading":"deutung","further":"weiterlesen","related":"verwandt","variation":"variante"}},
+    "it": {"navLabel":"In questa scheda","scenes":{"title":"Scene frequenti","hint":"Scegli quella che somiglia di più al tuo sogno.","legend":"Scegli una scena","reading":"Lettura della scena scelta","source":"Leggi la variante","chosen":"La tua scena"},"continuationTitle":"Lettura dettagliata","keepKicker":"Continua in Noctalia","quotes":["«","»"],"chosenSeparator":": ","anchors":{"keepInline":"continua-in-noctalia","keepFinal":"conserva-in-noctalia","reflection":"riflessione","reading":"lettura","further":"approfondire","related":"correlati","variation":"variante"}},
+    "pt-br": {"navLabel":"Nesta página","scenes":{"title":"Cenas comuns","hint":"Escolha a que mais se parece com o seu sonho.","legend":"Escolher uma cena","reading":"Leitura da cena escolhida","source":"Ler a variação","chosen":"Sua cena"},"continuationTitle":"Leitura detalhada","keepKicker":"Continuar no Noctalia","quotes":["“","”"],"chosenSeparator":": ","anchors":{"keepInline":"continuar-no-noctalia","keepFinal":"guardar-no-noctalia","reflection":"reflexao","reading":"leitura","further":"para-saber-mais","related":"relacionados","variation":"variacao"}}
+  },
+  "symbols": {
+    "tiger": {
+      "fr": { "caveat": "Ce sont des pistes à confronter à votre vie actuelle", "journalLead": "Exemple fictif de journal :", "scenes": {
+          "poursuite": {"variation":"Un tigre qui attaque ou vous poursuit","anchor":"poursuite","label":"Il me poursuit"},
+          "calme": {"variation":"Un tigre calme ou apprivoisé","anchor":"calme","label":"Il est calme"},
+          "cage": {"variation":"Un tigre en cage ou un petit tigre","anchor":"cage","label":"Il est en cage"}
+      } },
+      "en": { "caveat": "These are leads to check against your life now", "journalLead": "Fictional journal example:", "scenes": {
+          "poursuite": {"variation":"A tiger attacking or chasing you","anchor":"pursuit","label":"It chases me"},
+          "calme": {"variation":"A calm or tame tiger","anchor":"calm","label":"It is calm"},
+          "cage": {"variation":"A caged tiger or a tiger cub","anchor":"cage","label":"It is caged"}
+      } },
+      "es": { "caveat": "Son pistas para contrastar con tu vida actual", "journalLead": "Ejemplo ficticio de diario:", "scenes": {
+          "poursuite": {"variation":"Un tigre que te ataca o te persigue","anchor":"persecucion","label":"Me persigue"},
+          "calme": {"variation":"Un tigre manso o tranquilo","anchor":"calma","label":"Está tranquilo"},
+          "cage": {"variation":"Un tigre enjaulado o un cachorro de tigre","anchor":"jaula","label":"Está enjaulado"}
+      } },
+      "de": { "caveat": "Das sind Spuren, die Sie mit Ihrem jetzigen Leben abgleichen können", "journalLead": "Erfundenes Tagebuchbeispiel:", "scenes": {
+          "poursuite": {"variation":"Ein Tiger, der Sie angreift oder verfolgt","anchor":"verfolgung","label":"Er verfolgt mich"},
+          "calme": {"variation":"Ein ruhiger oder zahmer Tiger","anchor":"ruhe","label":"Er ist ruhig"},
+          "cage": {"variation":"Ein Tiger im Käfig oder ein Tigerjunges","anchor":"kaefig","label":"Er ist im Käfig"}
+      } },
+      "it": { "caveat": "Sono piste da confrontare con la tua vita di adesso", "journalLead": "Esempio inventato di diario:", "scenes": {
+          "poursuite": {"variation":"Una tigre che ti attacca o ti insegue","anchor":"inseguimento","label":"Mi insegue"},
+          "calme": {"variation":"Una tigre calma o mansueta","anchor":"calma","label":"È tranquilla"},
+          "cage": {"variation":"Una tigre in gabbia o un cucciolo di tigre","anchor":"gabbia","label":"È in gabbia"}
+      } },
+      "pt-br": { "caveat": "São pistas para comparar com a sua vida atual", "journalLead": "Exemplo fictício de diário:", "scenes": {
+          "poursuite": {"variation":"Um tigre atacando ou correndo atrás de você","anchor":"perseguicao","label":"Ele me persegue"},
+          "calme": {"variation":"Um tigre manso ou tranquilo","anchor":"calma","label":"Ele está calmo"},
+          "cage": {"variation":"Um tigre na jaula ou um filhote de tigre","anchor":"jaula","label":"Ele está na jaula"}
+      } }
+    },
+    "snake": {
+      "fr": { "caveat": "Ce sont des associations fréquentes, pas des règles", "scenes": {
+          "morsure": {"variation":"Être mordu par un serpent","anchor":"morsure"},
+          "calme": {"variation":"Un serpent calme","anchor":"calme"},
+          "mue": {"variation":"Un serpent qui mue","anchor":"mue"}
+      } },
+      "en": { "caveat": "Those are common associations, not rules", "scenes": {
+          "morsure": {"variation":"Being bitten by a snake","anchor":"bite"},
+          "calme": {"variation":"A calm snake","anchor":"calm"},
+          "mue": {"variation":"A snake shedding its skin","anchor":"shedding"}
+      } },
+      "es": { "caveat": "Son asociaciones frecuentes, no reglas", "scenes": {
+          "morsure": {"variation":"Que te muerda una serpiente","anchor":"mordedura"},
+          "calme": {"variation":"Una serpiente tranquila","anchor":"calma"},
+          "mue": {"variation":"Una serpiente mudando la piel","anchor":"muda"}
+      } },
+      "de": { "caveat": "Das sind häufige Verbindungen, keine Regeln", "scenes": {
+          "morsure": {"variation":"Von einer Schlange gebissen werden","anchor":"biss"},
+          "calme": {"variation":"Eine ruhige Schlange","anchor":"ruhe"},
+          "mue": {"variation":"Eine Schlange häutet sich","anchor":"haeutung"}
+      } },
+      "it": { "caveat": "Sono associazioni frequenti, non regole", "scenes": {
+          "morsure": {"variation":"Essere morsi da un serpente","anchor":"morso"},
+          "calme": {"variation":"Un serpente calmo","anchor":"calma"},
+          "mue": {"variation":"Un serpente che cambia pelle","anchor":"muta"}
+      } },
+      "pt-br": { "caveat": null, "scenes": {
+          "morsure": {"variation":"Ser picado por uma cobra","anchor":"picada"},
+          "calme": {"variation":"Uma cobra amigável ou calma","anchor":"calma"},
+          "mue": {"variation":"Uma cobra trocando de pele","anchor":"troca-de-pele"}
+      } }
+    },
+    "ocean": {
+      "fr": { "caveat": null, "scenes": {
+          "calme": {"variation":"Mer calme","anchor":"calme"},
+          "tempete": {"variation":"Mer agitée ou tempête","anchor":"tempete"},
+          "vague": {"variation":"Vague géante ou tsunami","anchor":"vague"}
+      } },
+      "en": { "caveat": null, "scenes": {
+          "calme": {"variation":"Calm, peaceful ocean","anchor":"calm"},
+          "tempete": {"variation":"Stormy or rough sea","anchor":"storm"},
+          "vague": {"variation":"A giant wave or tsunami","anchor":"wave"}
+      } },
+      "es": { "caveat": null, "scenes": {
+          "calme": {"variation":"Mar en calma","anchor":"calma"},
+          "tempete": {"variation":"Mar revuelto o tormenta","anchor":"tormenta"},
+          "vague": {"variation":"Ola gigante o tsunami","anchor":"ola"}
+      } },
+      "de": { "caveat": null, "scenes": {
+          "calme": {"variation":"Ruhiges, friedliches Meer","anchor":"ruhe"},
+          "tempete": {"variation":"Stürmische oder aufgewühlte See","anchor":"sturm"},
+          "vague": {"variation":"Riesenwelle oder Tsunami","anchor":"welle"}
+      } },
+      "it": { "caveat": null, "scenes": {
+          "calme": {"variation":"Mare calmo","anchor":"calma"},
+          "tempete": {"variation":"Mare agitato o in tempesta","anchor":"tempesta"},
+          "vague": {"variation":"Onda gigante o tsunami","anchor":"onda"}
+      } },
+      "pt-br": { "caveat": null, "scenes": {
+          "calme": {"variation":"Mar calmo e tranquilo","anchor":"calmo"},
+          "tempete": {"variation":"Mar tempestuoso ou agitado","anchor":"tempestade"},
+          "vague": {"variation":"Onda gigante ou tsunami","anchor":"onda"}
+      } }
+    },
+    "forest": {
+      "fr": { "caveat": null, "scenes": {
+          "sombre": {"variation":"Forêt sombre et dense","anchor":"sombre"},
+          "perdu": {"variation":"Se perdre dans une forêt","anchor":"perdu"},
+          "chemin": {"variation":"Trouver un chemin dans la forêt","anchor":"chemin"}
+      } },
+      "en": { "caveat": null, "scenes": {
+          "sombre": {"variation":"Dark, dense forest","anchor":"dark"},
+          "perdu": {"variation":"Being lost in a forest","anchor":"lost"},
+          "chemin": {"variation":"Finding a path through the forest","anchor":"path"}
+      } },
+      "es": { "caveat": null, "scenes": {
+          "sombre": {"variation":"Bosque oscuro y denso","anchor":"oscuro"},
+          "perdu": {"variation":"Perderse en un bosque","anchor":"perdido"},
+          "chemin": {"variation":"Encontrar un sendero en el bosque","anchor":"sendero"}
+      } },
+      "de": { "caveat": null, "scenes": {
+          "sombre": {"variation":"Dunkler, dichter Wald","anchor":"dunkel"},
+          "perdu": {"variation":"Sich im Wald verirren","anchor":"verirrt"},
+          "chemin": {"variation":"Einen Weg durch den Wald finden","anchor":"weg"}
+      } },
+      "it": { "caveat": null, "scenes": {
+          "sombre": {"variation":"Foresta buia e fitta","anchor":"buia"},
+          "perdu": {"variation":"Perdersi nella foresta","anchor":"perso"},
+          "chemin": {"variation":"Trovare un sentiero nella foresta","anchor":"sentiero"}
+      } },
+      "pt-br": { "caveat": null, "scenes": {
+          "sombre": {"variation":"Floresta escura e densa","anchor":"escura"},
+          "perdu": {"variation":"Estar perdido em uma floresta","anchor":"perdido"},
+          "chemin": {"variation":"Encontrar um caminho pela floresta","anchor":"caminho"}
+      } }
+    },
+    "house": {
+      "fr": { "caveat": "Ce sont des pistes à confronter à votre vie actuelle", "scenes": {
+          "inconnue": {"variation":"Une maison inconnue ou étrange","anchor":"inconnue"},
+          "enfance": {"variation":"La maison d'enfance","anchor":"enfance"},
+          "pieces": {"variation":"Découvrir de nouvelles pièces","anchor":"pieces"}
+      } },
+      "en": { "caveat": "These are leads to check against your life now", "scenes": {
+          "inconnue": {"variation":"An unknown or strange house","anchor":"unknown"},
+          "enfance": {"variation":"Your childhood home","anchor":"childhood"},
+          "pieces": {"variation":"Discovering new rooms","anchor":"rooms"}
+      } },
+      "es": { "caveat": "Son pistas para contrastar con tu vida actual", "scenes": {
+          "inconnue": {"variation":"Una casa desconocida o extraña","anchor":"desconocida"},
+          "enfance": {"variation":"La casa de la infancia o una casa antigua","anchor":"infancia"},
+          "pieces": {"variation":"Descubrir habitaciones nuevas","anchor":"habitaciones"}
+      } },
+      "de": { "caveat": "Das sind Spuren, die Sie mit Ihrem jetzigen Leben abgleichen können", "scenes": {
+          "inconnue": {"variation":"Ein unbekanntes oder seltsames Haus","anchor":"unbekannt"},
+          "enfance": {"variation":"Das Elternhaus oder Haus der Kindheit","anchor":"kindheit"},
+          "pieces": {"variation":"Neue Räume entdecken","anchor":"raeume"}
+      } },
+      "it": { "caveat": "Sono piste da confrontare con la tua vita di adesso", "scenes": {
+          "inconnue": {"variation":"Una casa sconosciuta o strana","anchor":"sconosciuta"},
+          "enfance": {"variation":"La casa dell’infanzia o una casa vecchia","anchor":"infanzia"},
+          "pieces": {"variation":"Scoprire nuove stanze","anchor":"stanze"}
+      } },
+      "pt-br": { "caveat": "São pistas para comparar com a sua vida de agora", "scenes": {
+          "inconnue": {"variation":"Uma casa desconhecida ou estranha","anchor":"desconhecida"},
+          "enfance": {"variation":"A casa da infância","anchor":"infancia"},
+          "pieces": {"variation":"Descobrir cômodos novos","anchor":"comodos"}
+      } }
+    },
+    "falling": {
+      "fr": { "caveat": "Un rêve de chute ne prédit ni accident ni échec", "scenes": {
+          "hauteur": {"variation":"Tomber d'une hauteur","anchor":"hauteur"},
+          "sursaut": {"variation":"Se réveiller en sursaut","anchor":"sursaut"},
+          "voler": {"variation":"Tomber puis voler","anchor":"voler"}
+      } },
+      "en": { "caveat": "A falling dream does not predict an accident or a failure", "scenes": {
+          "hauteur": {"variation":"Falling from a height","anchor":"height"},
+          "sursaut": {"variation":"Waking up with a jolt","anchor":"jolt"},
+          "voler": {"variation":"Falling and then flying","anchor":"flying"}
+      } },
+      "es": { "caveat": "Un sueño de caída no predice ni accidentes ni fracasos", "scenes": {
+          "hauteur": {"variation":"Caer desde una altura","anchor":"altura"},
+          "sursaut": {"variation":"Despertarte de golpe","anchor":"sobresalto"},
+          "voler": {"variation":"Caer y luego volar","anchor":"volar"}
+      } },
+      "de": { "caveat": "Ein Falltraum sagt weder Unfall noch Scheitern voraus", "scenes": {
+          "hauteur": {"variation":"Aus großer Höhe fallen","anchor":"hoehe"},
+          "sursaut": {"variation":"Beim Fallen aufwachen","anchor":"aufschrecken"},
+          "voler": {"variation":"Fallen und dann fliegen","anchor":"fliegen"}
+      } },
+      "it": { "caveat": "Un sogno di caduta non predice incidenti né fallimenti", "scenes": {
+          "hauteur": {"variation":"Cadere dall’alto","anchor":"altezza"},
+          "sursaut": {"variation":"Svegliarsi di soprassalto","anchor":"soprassalto"},
+          "voler": {"variation":"Cadere e poi volare","anchor":"volare"}
+      } },
+      "pt-br": { "caveat": null, "scenes": {
+          "hauteur": {"variation":"Cair de uma altura","anchor":"altura"},
+          "sursaut": {"variation":"Acordar com um sobressalto","anchor":"sobressalto"},
+          "voler": {"variation":"Cair e depois voar","anchor":"voar"}
+      } }
+    },
+    "butterfly": {
+      "fr": { "caveat": null, "scenes": {
+          "pose": {"variation":"Un papillon qui se pose sur vous","anchor":"pose"},
+          "chrysalide": {"variation":"Un papillon qui sort de sa chrysalide","anchor":"chrysalide"},
+          "prisonnier": {"variation":"Un papillon prisonnier dans la maison","anchor":"prisonnier"}
+      } },
+      "en": { "caveat": null, "scenes": {
+          "pose": {"variation":"A butterfly landing on you","anchor":"landing"},
+          "chrysalide": {"variation":"A butterfly emerging from its chrysalis","anchor":"chrysalis"},
+          "prisonnier": {"variation":"A butterfly trapped indoors","anchor":"trapped"}
+      } },
+      "es": { "caveat": null, "scenes": {
+          "pose": {"variation":"Una mariposa que se posa en ti","anchor":"posada"},
+          "chrysalide": {"variation":"Una mariposa que sale de la crisálida","anchor":"crisalida"},
+          "prisonnier": {"variation":"Una mariposa atrapada en casa","anchor":"atrapada"}
+      } },
+      "de": { "caveat": null, "scenes": {
+          "pose": {"variation":"Ein Schmetterling landet auf Ihnen","anchor":"landung"},
+          "chrysalide": {"variation":"Ein Schmetterling schlüpft aus der Puppe","anchor":"puppe"},
+          "prisonnier": {"variation":"Ein Schmetterling, der im Haus gefangen ist","anchor":"gefangen"}
+      } },
+      "it": { "caveat": null, "scenes": {
+          "pose": {"variation":"Una farfalla che si posa su di te","anchor":"posata"},
+          "chrysalide": {"variation":"Una farfalla che esce dalla crisalide","anchor":"crisalide"},
+          "prisonnier": {"variation":"Una farfalla intrappolata in casa","anchor":"intrappolata"}
+      } },
+      "pt-br": { "caveat": null, "scenes": {
+          "pose": {"variation":"Uma borboleta que pousa em você","anchor":"pousada"},
+          "chrysalide": {"variation":"Uma borboleta saindo da crisálida","anchor":"crisalida"},
+          "prisonnier": {"variation":"Uma borboleta presa dentro de casa","anchor":"presa"}
+      } }
+    },
+    "moon": {
+      "fr": { "caveat": null, "scenes": {
+          "pleine": {"variation":"Pleine lune","anchor":"pleine"},
+          "croissant": {"variation":"Croissant de lune ou nouvelle lune","anchor":"croissant"},
+          "double": {"variation":"Deux lunes ou plus","anchor":"double"}
+      } },
+      "en": { "caveat": null, "scenes": {
+          "pleine": {"variation":"Full moon","anchor":"full"},
+          "croissant": {"variation":"Crescent or new moon","anchor":"crescent"},
+          "double": {"variation":"Two or more moons","anchor":"two-moons"}
+      } },
+      "es": { "caveat": null, "scenes": {
+          "pleine": {"variation":"Luna llena","anchor":"llena"},
+          "croissant": {"variation":"Luna creciente o luna nueva","anchor":"creciente"},
+          "double": {"variation":"Dos lunas o más","anchor":"dos-lunas"}
+      } },
+      "de": { "caveat": null, "scenes": {
+          "pleine": {"variation":"Vollmond","anchor":"vollmond"},
+          "croissant": {"variation":"Mondsichel oder Neumond","anchor":"sichel"},
+          "double": {"variation":"Zwei oder mehrere Monde","anchor":"zwei-monde"}
+      } },
+      "it": { "caveat": null, "scenes": {
+          "pleine": {"variation":"Luna piena","anchor":"piena"},
+          "croissant": {"variation":"Luna crescente o luna nuova","anchor":"crescente"},
+          "double": {"variation":"Due o più lune","anchor":"due-lune"}
+      } },
+      "pt-br": { "caveat": null, "scenes": {
+          "pleine": {"variation":"Lua cheia","anchor":"cheia"},
+          "croissant": {"variation":"Lua nova ou lua escura","anchor":"nova"},
+          "double": {"variation":"Duas luas ou mais","anchor":"duas-luas"}
+      } }
+    },
+    "door": {
+      "fr": { "caveat": null, "scenes": {
+          "ouverte": {"variation":"Une porte ouverte","anchor":"ouverte"},
+          "verrouillee": {"variation":"Une porte fermée ou verrouillée","anchor":"verrouillee"},
+          "choix": {"variation":"Plusieurs portes à choisir","anchor":"choix"}
+      } },
+      "en": { "caveat": null, "scenes": {
+          "ouverte": {"variation":"An open door","anchor":"open"},
+          "verrouillee": {"variation":"A closed or locked door","anchor":"locked"},
+          "choix": {"variation":"Many doors to choose from","anchor":"choice"}
+      } },
+      "es": { "caveat": null, "scenes": {
+          "ouverte": {"variation":"Puertas abiertas","anchor":"abierta"},
+          "verrouillee": {"variation":"Puertas cerradas","anchor":"cerrada"},
+          "choix": {"variation":"Muchas puertas","anchor":"eleccion"}
+      } },
+      "de": { "caveat": null, "scenes": {
+          "ouverte": {"variation":"Eine offene Tür","anchor":"offen"},
+          "verrouillee": {"variation":"Eine geschlossene oder verschlossene Tür","anchor":"verschlossen"},
+          "choix": {"variation":"Viele Türen zur Auswahl","anchor":"auswahl"}
+      } },
+      "it": { "caveat": null, "scenes": {
+          "ouverte": {"variation":"Porta di casa aperta","anchor":"aperta"},
+          "verrouillee": {"variation":"Porta chiusa","anchor":"chiusa"},
+          "choix": {"variation":"Tante porte tra cui scegliere","anchor":"scelta"}
+      } },
+      "pt-br": { "caveat": null, "scenes": {
+          "ouverte": {"variation":"Uma porta aberta","anchor":"aberta"},
+          "verrouillee": {"variation":"Uma porta fechada ou trancada","anchor":"trancada"},
+          "choix": {"variation":"Muitas portas para escolher","anchor":"escolha"}
+      } }
+    },
+    "fire": {
+      "fr": { "caveat": null, "scenes": {
+          "reconfort": {"variation":"Un feu maîtrisé qui réchauffe","anchor":"reconfort"},
+          "incendie": {"variation":"Un incendie hors de contrôle","anchor":"incendie"},
+          "fumee": {"variation":"De la fumée sans flammes","anchor":"fumee"}
+      } },
+      "en": { "caveat": null, "scenes": {
+          "reconfort": {"variation":"A controlled, warming fire","anchor":"comfort"},
+          "incendie": {"variation":"A wildfire or fire out of control","anchor":"wildfire"},
+          "fumee": {"variation":"Smoke without flames","anchor":"smoke"}
+      } },
+      "es": { "caveat": null, "scenes": {
+          "reconfort": {"variation":"Un fuego controlado que calienta","anchor":"calor"},
+          "incendie": {"variation":"Un incendio fuera de control","anchor":"incendio"},
+          "fumee": {"variation":"Humo sin llamas","anchor":"humo"}
+      } },
+      "de": { "caveat": null, "scenes": {
+          "reconfort": {"variation":"Ein kontrolliertes, wärmendes Feuer","anchor":"waerme"},
+          "incendie": {"variation":"Ein Waldbrand oder unkontrolliertes Feuer","anchor":"brand"},
+          "fumee": {"variation":"Rauch ohne Flammen","anchor":"rauch"}
+      } },
+      "it": { "caveat": null, "scenes": {
+          "reconfort": {"variation":"Fuoco acceso ma sotto controllo","anchor":"calore"},
+          "incendie": {"variation":"Sognare un incendio","anchor":"incendio"},
+          "fumee": {"variation":"Fumo senza fiamme","anchor":"fumo"}
+      } },
+      "pt-br": { "caveat": null, "scenes": {
+          "reconfort": {"variation":"Um fogo controlado, que aquece","anchor":"aconchego"},
+          "incendie": {"variation":"Um incêndio florestal ou fogo descontrolado","anchor":"incendio"},
+          "fumee": {"variation":"Fumaça sem chamas","anchor":"fumaca"}
+      } }
+    },
+    "bird": {
+      "fr": { "caveat": null, "scenes": {
+          "libre": {"variation":"Un oiseau qui vole librement","anchor":"libre"},
+          "cage": {"variation":"Un oiseau en cage","anchor":"cage"},
+          "chant": {"variation":"Un oiseau qui chante","anchor":"chant"}
+      } },
+      "en": { "caveat": null, "scenes": {
+          "libre": {"variation":"A bird flying free","anchor":"free"},
+          "cage": {"variation":"A caged bird","anchor":"caged"},
+          "chant": {"variation":"A singing bird","anchor":"song"}
+      } },
+      "es": { "caveat": null, "scenes": {
+          "libre": {"variation":"Un pájaro que vuela libre","anchor":"libre"},
+          "cage": {"variation":"Un pájaro enjaulado","anchor":"jaula"},
+          "chant": {"variation":"Un pájaro que canta","anchor":"canto"}
+      } },
+      "de": { "caveat": null, "scenes": {
+          "libre": {"variation":"Ein frei fliegender Vogel","anchor":"frei"},
+          "cage": {"variation":"Ein Vogel im Käfig","anchor":"kaefig"},
+          "chant": {"variation":"Ein singender Vogel","anchor":"gesang"}
+      } },
+      "it": { "caveat": null, "scenes": {
+          "libre": {"variation":"Un uccello che vola libero","anchor":"libero"},
+          "cage": {"variation":"Un uccello in gabbia","anchor":"gabbia"},
+          "chant": {"variation":"Un uccello che canta","anchor":"canto"}
+      } },
+      "pt-br": { "caveat": null, "scenes": {
+          "libre": {"variation":"Um pássaro voando livre","anchor":"livre"},
+          "cage": {"variation":"Um pássaro na gaiola","anchor":"gaiola"},
+          "chant": {"variation":"Um pássaro cantando","anchor":"canto"}
+      } }
+    },
+    "train": {
+      "fr": { "caveat": null, "scenes": {
+          "voyage": {"variation":"Voyager en train tranquillement","anchor":"voyage"},
+          "gare": {"variation":"Attendre dans une gare","anchor":"gare"},
+          "tunnel": {"variation":"Un train dans un tunnel","anchor":"tunnel"}
+      } },
+      "en": { "caveat": null, "scenes": {
+          "voyage": {"variation":"Riding a train calmly","anchor":"journey"},
+          "gare": {"variation":"Waiting at a station","anchor":"station"},
+          "tunnel": {"variation":"A train going through a tunnel","anchor":"tunnel"}
+      } },
+      "es": { "caveat": null, "scenes": {
+          "voyage": {"variation":"Viajar en tren tranquilamente","anchor":"viaje"},
+          "gare": {"variation":"Esperar en una estación","anchor":"estacion"},
+          "tunnel": {"variation":"Un tren que atraviesa un túnel","anchor":"tunel"}
+      } },
+      "de": { "caveat": null, "scenes": {
+          "voyage": {"variation":"Ruhig mit dem Zug fahren","anchor":"reise"},
+          "gare": {"variation":"Am Bahnhof warten","anchor":"bahnhof"},
+          "tunnel": {"variation":"Ein Zug fährt durch einen Tunnel","anchor":"tunnel"}
+      } },
+      "it": { "caveat": null, "scenes": {
+          "voyage": {"variation":"Viaggiare in treno tranquillamente","anchor":"viaggio"},
+          "gare": {"variation":"Aspettare in stazione","anchor":"stazione"},
+          "tunnel": {"variation":"Un treno in galleria","anchor":"galleria"}
+      } },
+      "pt-br": { "caveat": null, "scenes": {
+          "voyage": {"variation":"Viajar de trem tranquilamente","anchor":"viagem"},
+          "gare": {"variation":"Esperar em uma estação de trem","anchor":"estacao"},
+          "tunnel": {"variation":"Um trem atravessando um túnel","anchor":"tunel"}
+      } }
+    },
+    "clock": {
+      "fr": { "caveat": null, "scenes": {
+          "arretee": {"variation":"Une horloge arrêtée","anchor":"arretee"},
+          "aiguilles": {"variation":"Des aiguilles folles ou une heure impossible","anchor":"aiguilles"},
+          "clocher": {"variation":"Une horloge publique ou de clocher","anchor":"clocher"}
+      } },
+      "en": { "caveat": null, "scenes": {
+          "arretee": {"variation":"A stopped clock","anchor":"stopped"},
+          "aiguilles": {"variation":"Spinning hands or an impossible time","anchor":"hands"},
+          "clocher": {"variation":"A clock tower or a public clock","anchor":"tower"}
+      } },
+      "es": { "caveat": null, "scenes": {
+          "arretee": {"variation":"Un reloj de pared parado","anchor":"parado"},
+          "aiguilles": {"variation":"Agujas locas o una hora imposible","anchor":"agujas"},
+          "clocher": {"variation":"Un reloj de torre o un reloj público","anchor":"torre"}
+      } },
+      "de": { "caveat": null, "scenes": {
+          "arretee": {"variation":"Eine stehengebliebene Wanduhr","anchor":"stehend"},
+          "aiguilles": {"variation":"Rasende Zeiger oder eine unmögliche Uhrzeit","anchor":"zeiger"},
+          "clocher": {"variation":"Eine Turmuhr oder eine öffentliche Uhr","anchor":"turmuhr"}
+      } },
+      "it": { "caveat": null, "scenes": {
+          "arretee": {"variation":"Un orologio da parete fermo","anchor":"fermo"},
+          "aiguilles": {"variation":"Lancette impazzite o un’ora impossibile","anchor":"lancette"},
+          "clocher": {"variation":"Un orologio su una torre o in piazza","anchor":"torre"}
+      } },
+      "pt-br": { "caveat": null, "scenes": {
+          "arretee": {"variation":"Um relógio parado","anchor":"parado"},
+          "aiguilles": {"variation":"Ponteiros malucos ou uma hora impossível","anchor":"ponteiros"},
+          "clocher": {"variation":"Um relógio de torre ou de praça","anchor":"torre"}
+      } }
+    },
+    "water": {
+      "fr": { "caveat": null, "scenes": {
+          "claire": {"variation":"Une eau claire et calme","anchor":"claire"},
+          "trouble": {"variation":"Une eau trouble ou sale","anchor":"trouble"},
+          "montee": {"variation":"Une eau qui monte ou de l'eau dans la maison","anchor":"montee"}
+      } },
+      "en": { "caveat": null, "scenes": {
+          "claire": {"variation":"Clear, calm water","anchor":"clear"},
+          "trouble": {"variation":"Murky or dirty water","anchor":"murky"},
+          "montee": {"variation":"Rising water or water in the house","anchor":"rising"}
+      } },
+      "es": { "caveat": null, "scenes": {
+          "claire": {"variation":"Agua limpia y tranquila","anchor":"limpia"},
+          "trouble": {"variation":"Agua turbia o sucia","anchor":"turbia"},
+          "montee": {"variation":"Agua que sube o agua en casa","anchor":"crecida"}
+      } },
+      "de": { "caveat": null, "scenes": {
+          "claire": {"variation":"Klares, ruhiges Wasser","anchor":"klar"},
+          "trouble": {"variation":"Trübes oder schmutziges Wasser","anchor":"truebe"},
+          "montee": {"variation":"Steigendes Wasser oder Wasser im Haus","anchor":"steigend"}
+      } },
+      "it": { "caveat": null, "scenes": {
+          "claire": {"variation":"Acqua pulita o limpida","anchor":"limpida"},
+          "trouble": {"variation":"Acqua torbida o sporca","anchor":"torbida"},
+          "montee": {"variation":"Acqua in casa o acqua che sale","anchor":"sale"}
+      } },
+      "pt-br": { "caveat": null, "scenes": {
+          "claire": {"variation":"Água limpa e calma","anchor":"limpa"},
+          "trouble": {"variation":"Água suja ou turva","anchor":"turva"},
+          "montee": {"variation":"Água subindo ou água dentro de casa","anchor":"subindo"}
+      } }
+    },
+    "dog": {
+      "fr": { "caveat": null, "scenes": {
+          "poursuite": {"variation":"Un chien qui attaque ou vous poursuit","anchor":"poursuite"},
+          "familier": {"variation":"Un chien amical : le vôtre, ou un chien que vous avez eu","anchor":"familier"},
+          "meute": {"variation":"Plusieurs chiens ou une meute","anchor":"meute"}
+      } },
+      "en": { "caveat": null, "scenes": {
+          "poursuite": {"variation":"A dog attacking or chasing you","anchor":"chase"},
+          "familier": {"variation":"Your own dog, or a dog you once had","anchor":"own-dog"},
+          "meute": {"variation":"Several dogs or a pack","anchor":"pack"}
+      } },
+      "es": { "caveat": null, "scenes": {
+          "poursuite": {"variation":"Un perro que te ataca o te persigue","anchor":"persecucion"},
+          "familier": {"variation":"Tu perro, o un perro que tuviste","anchor":"tu-perro"},
+          "meute": {"variation":"Varios perros o una jauría","anchor":"jauria"}
+      } },
+      "de": { "caveat": null, "scenes": {
+          "poursuite": {"variation":"Ein Hund, der Sie angreift oder verfolgt","anchor":"verfolgung"},
+          "familier": {"variation":"Ihr eigener Hund, ein Welpe oder ein Hund von früher","anchor":"eigener-hund"},
+          "meute": {"variation":"Mehrere Hunde oder ein Rudel","anchor":"rudel"}
+      } },
+      "it": { "caveat": null, "scenes": {
+          "poursuite": {"variation":"Un cane che ti attacca o ti insegue","anchor":"inseguimento"},
+          "familier": {"variation":"Il tuo cane, o un cane che hai avuto","anchor":"tuo-cane"},
+          "meute": {"variation":"Tanti cani o un branco","anchor":"branco"}
+      } },
+      "pt-br": { "caveat": null, "scenes": {
+          "poursuite": {"variation":"Um cachorro atacando ou correndo atrás de você","anchor":"perseguicao"},
+          "familier": {"variation":"O seu cachorro, ou um cachorro que você teve","anchor":"seu-cachorro"},
+          "meute": {"variation":"Vários cachorros ou uma matilha","anchor":"matilha"}
+      } }
+    },
+    "teeth": {
+      "fr": { "caveat": null, "scenes": {
+          "chute": {"variation":"Dents qui tombent","anchor":"chute"},
+          "casse": {"variation":"Dents qui s'effritent ou se cassent","anchor":"casse"},
+          "repousse": {"variation":"De nouvelles dents qui poussent","anchor":"repousse"}
+      } },
+      "en": { "caveat": null, "scenes": {
+          "chute": {"variation":"Teeth falling out","anchor":"falling-out"},
+          "casse": {"variation":"Crumbling or broken teeth","anchor":"broken"},
+          "repousse": {"variation":"New teeth growing in","anchor":"new-teeth"}
+      } },
+      "es": { "caveat": null, "scenes": {
+          "chute": {"variation":"Dientes que se caen","anchor":"caida"},
+          "casse": {"variation":"Dientes que se desmoronan o se rompen","anchor":"rotos"},
+          "repousse": {"variation":"Dientes nuevos que salen","anchor":"nuevos"}
+      } },
+      "de": { "caveat": null, "scenes": {
+          "chute": {"variation":"Zähne fallen aus","anchor":"ausfallen"},
+          "casse": {"variation":"Zähne zerbröckeln oder brechen","anchor":"zerbrochen"},
+          "repousse": {"variation":"Neue Zähne wachsen","anchor":"neue-zaehne"}
+      } },
+      "it": { "caveat": null, "scenes": {
+          "chute": {"variation":"Denti che cadono","anchor":"caduta"},
+          "casse": {"variation":"Denti che si sgretolano o si rompono","anchor":"rotti"},
+          "repousse": {"variation":"Denti nuovi che crescono","anchor":"nuovi"}
+      } },
+      "pt-br": { "caveat": null, "scenes": {
+          "chute": {"variation":"Dentes caindo","anchor":"caindo"},
+          "casse": {"variation":"Dentes se esfarelando","anchor":"esfarelando"},
+          "repousse": {"variation":"Nascer dentes novos","anchor":"dentes-novos"}
+      } }
+    },
+    "flying": {
+      "fr": { "caveat": null, "scenes": {
+          "libre": {"variation":"Planer librement","anchor":"libre"},
+          "difficile": {"variation":"Peiner à voler","anchor":"difficile"},
+          "ras-sol": {"variation":"Voler près du sol","anchor":"ras-sol"}
+      } },
+      "en": { "caveat": null, "scenes": {
+          "libre": {"variation":"Soaring freely","anchor":"soaring"},
+          "difficile": {"variation":"Struggling to fly","anchor":"struggling"},
+          "ras-sol": {"variation":"Flying low to the ground","anchor":"low"}
+      } },
+      "es": { "caveat": null, "scenes": {
+          "libre": {"variation":"Volar libremente","anchor":"libre"},
+          "difficile": {"variation":"Costarte volar","anchor":"dificil"},
+          "ras-sol": {"variation":"Volar cerca del suelo","anchor":"cerca-del-suelo"}
+      } },
+      "de": { "caveat": null, "scenes": {
+          "libre": {"variation":"Frei schweben","anchor":"frei"},
+          "difficile": {"variation":"Mühe beim Fliegen","anchor":"muehe"},
+          "ras-sol": {"variation":"Niedrig über dem Boden fliegen","anchor":"niedrig"}
+      } },
+      "it": { "caveat": null, "scenes": {
+          "libre": {"variation":"Librarsi liberamente","anchor":"libero"},
+          "difficile": {"variation":"Faticare a volare","anchor":"fatica"},
+          "ras-sol": {"variation":"Volare basso vicino al suolo","anchor":"basso"}
+      } },
+      "pt-br": { "caveat": null, "scenes": {
+          "libre": {"variation":"Voar livremente","anchor":"livre"},
+          "difficile": {"variation":"Ter dificuldade para voar","anchor":"dificuldade"},
+          "ras-sol": {"variation":"Voar baixo, rente ao chão","anchor":"rente-ao-chao"}
+      } }
+    },
+    "car": {
+      "fr": { "caveat": null, "scenes": {
+          "conduite": {"variation":"Conduire avec aisance","anchor":"conduite"},
+          "passager": {"variation":"Être passager","anchor":"passager"},
+          "panne": {"variation":"Voiture en panne ou qui ne démarre pas","anchor":"panne"}
+      } },
+      "en": { "caveat": null, "scenes": {
+          "conduite": {"variation":"Driving with ease","anchor":"driving"},
+          "passager": {"variation":"Being a passenger","anchor":"passenger"},
+          "panne": {"variation":"A car breaking down or not starting","anchor":"breakdown"}
+      } },
+      "es": { "caveat": null, "scenes": {
+          "conduite": {"variation":"Conducir con soltura","anchor":"conducir"},
+          "passager": {"variation":"Ir de pasajero","anchor":"pasajero"},
+          "panne": {"variation":"Coche averiado o que no arranca","anchor":"averia"}
+      } },
+      "de": { "caveat": null, "scenes": {
+          "conduite": {"variation":"Entspannt Auto fahren","anchor":"fahren"},
+          "passager": {"variation":"Beifahrer sein","anchor":"beifahrer"},
+          "panne": {"variation":"Autopanne oder ein Auto, das nicht anspringt","anchor":"panne"}
+      } },
+      "it": { "caveat": null, "scenes": {
+          "conduite": {"variation":"Guidare con disinvoltura","anchor":"guida"},
+          "passager": {"variation":"Essere passeggero","anchor":"passeggero"},
+          "panne": {"variation":"Auto guasta o che non parte","anchor":"guasto"}
+      } },
+      "pt-br": { "caveat": null, "scenes": {
+          "conduite": {"variation":"Dirigir com confiança","anchor":"dirigir"},
+          "passager": {"variation":"Estar no banco do passageiro","anchor":"passageiro"},
+          "panne": {"variation":"Carro quebrando","anchor":"quebrando"}
+      } }
+    },
+    "bridge": {
+      "fr": { "caveat": null, "scenes": {
+          "traversee": {"variation":"Traverser un pont","anchor":"traversee"},
+          "rupture": {"variation":"Un pont cassé ou effondré","anchor":"rupture"},
+          "hesitation": {"variation":"Avoir peur de traverser","anchor":"hesitation"}
+      } },
+      "en": { "caveat": null, "scenes": {
+          "traversee": {"variation":"Crossing a bridge","anchor":"crossing"},
+          "rupture": {"variation":"A broken or collapsed bridge","anchor":"broken"},
+          "hesitation": {"variation":"Being afraid to cross","anchor":"afraid"}
+      } },
+      "es": { "caveat": null, "scenes": {
+          "traversee": {"variation":"Cruzar un puente","anchor":"cruzar"},
+          "rupture": {"variation":"Puente roto","anchor":"roto"},
+          "hesitation": {"variation":"Tener miedo de cruzar","anchor":"miedo"}
+      } },
+      "de": { "caveat": null, "scenes": {
+          "traversee": {"variation":"Eine Brücke überqueren","anchor":"ueberqueren"},
+          "rupture": {"variation":"Eine kaputte oder eingestürzte Brücke","anchor":"eingestuerzt"},
+          "hesitation": {"variation":"Angst, eine Brücke zu überqueren","anchor":"angst"}
+      } },
+      "it": { "caveat": null, "scenes": {
+          "traversee": {"variation":"Attraversare un ponte","anchor":"attraversare"},
+          "rupture": {"variation":"Un ponte rotto o crollato","anchor":"crollato"},
+          "hesitation": {"variation":"Avere paura di attraversare","anchor":"paura"}
+      } },
+      "pt-br": { "caveat": null, "scenes": {
+          "traversee": {"variation":"Atravessar uma ponte com sucesso","anchor":"atravessar"},
+          "rupture": {"variation":"Uma ponte quebrada ou desabada","anchor":"quebrada"},
+          "hesitation": {"variation":"Ter medo de atravessar uma ponte","anchor":"medo"}
+      } }
+    }
+  }
+}

@@ -4,6 +4,7 @@
 const fs = require('fs');
 const path = require('path');
 const { ROOT_DIR, getCollectionLanguages } = require('./lib/docs-site-config');
+const { catalogKey } = require('./lib/symbol-locales');
 
 const SYMBOL_DATASETS = [
   {
@@ -40,13 +41,13 @@ function assertSymbolIllustrationParity() {
 
     for (const [symbolId, translations] of Object.entries(symbols)) {
       const illustratedLocales = getCollectionLanguages('symbols').filter(
-        (lang) => Boolean(translations?.[lang]?.illustration?.src)
+        (lang) => Boolean(translations?.[catalogKey(lang)]?.illustration?.src)
       );
 
       if (illustratedLocales.length === 0) continue;
 
       const missingLocales = getCollectionLanguages('symbols').filter(
-        (lang) => !translations?.[lang]?.illustration?.src
+        (lang) => !translations?.[catalogKey(lang)]?.illustration?.src
       );
 
       if (missingLocales.length > 0) {
@@ -58,7 +59,7 @@ function assertSymbolIllustrationParity() {
 
       const signatures = new Map();
       for (const lang of getCollectionLanguages('symbols')) {
-        const illustration = translations[lang].illustration;
+        const illustration = translations[catalogKey(lang)].illustration;
         const signature = imageSignature(illustration);
         if (!signatures.has(signature)) signatures.set(signature, []);
         signatures.get(signature).push(lang);
