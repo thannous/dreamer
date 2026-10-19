@@ -5,7 +5,6 @@ import {
   ActivityIndicator,
   Platform,
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -26,7 +25,7 @@ import { isLucidTrainer } from '@/lib/appVariant';
 import { onPasswordRecovery, updatePassword } from '@/lib/auth';
 import { PASSWORD_MIN_LENGTH } from '@/lib/authValidation';
 import { TID } from '@/lib/testIDs';
-import { useHeaderScroll } from '@/components/ui/headerStretch';
+import { HeaderScrollView, useHeaderScroll } from '@/components/ui/headerStretch';
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 
 type Phase = 'checking' | 'ready' | 'success' | 'expired';
@@ -327,7 +326,7 @@ const ResetPasswordScreen: React.FC = () => {
       style={[styles.container, { backgroundColor: noctalia.screen.background }]}
       testID={TID.Screen.ResetPassword}
     >
-      <ScrollView onScroll={onHeaderScroll} scrollEventThrottle={16}
+      <HeaderScrollView onScroll={onHeaderScroll} scrollEventThrottle={16}
         style={styles.scroll}
         contentContainerStyle={[
           styles.scrollContent,
@@ -348,7 +347,7 @@ const ResetPasswordScreen: React.FC = () => {
         >
           {content}
         </View>
-      </ScrollView>
+      </HeaderScrollView>
     </View>
   );
 };

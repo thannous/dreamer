@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import React, { useMemo, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { Pressable, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -24,7 +24,7 @@ import { canUseExploration360Synthesis, getExploration360SynthesisStatus } from 
 import { getDreamImageVersion, withCacheBuster } from '@/lib/imageUtils';
 import { buildPaywallHref } from '@/lib/paywallRoute';
 import { TID } from '@/lib/testIDs';
-import { useHeaderScroll } from '@/components/ui/headerStretch';
+import { HeaderScrollView, useHeaderScroll } from '@/components/ui/headerStretch';
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 
 const CATEGORY_ICONS = { symbols: 'sparkles', emotions: 'heart.fill', growth: 'leaf.fill' } as const;
@@ -71,9 +71,9 @@ function DreamCategoriesScreen() {
   };
 
   return (
-    <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
+    <ScrollPerfProvider activity={scrollPerf.activity}>
       <View style={[styles.screen, { backgroundColor: tokens.screen.background }]} testID="screen.dreamCategories">
-        <ScrollView onScroll={onHeaderScroll} scrollEventThrottle={16} contentContainerStyle={[styles.content, { paddingTop: insets.top + 8, paddingBottom: insets.bottom + 24 }]}
+        <HeaderScrollView onScroll={onHeaderScroll} scrollEventThrottle={16} contentContainerStyle={[styles.content, { paddingTop: insets.top + 8, paddingBottom: insets.bottom + 24 }]}
           onScrollBeginDrag={scrollPerf.onScrollBeginDrag} onScrollEndDrag={scrollPerf.onScrollEndDrag}
           onMomentumScrollBegin={scrollPerf.onMomentumScrollBegin} onMomentumScrollEnd={scrollPerf.onMomentumScrollEnd}>
           <DreamerArtworkWindow scene="dialogue" style={{ marginHorizontal: -32 }} bleedTop={insets.top + 8} />
@@ -139,7 +139,7 @@ function DreamCategoriesScreen() {
               {isDreamExplored(dream) ? t('dream_categories.view_chat') : t('dream_categories.free_chat_prompt')}
             </Text>
           </Pressable>
-        </ScrollView>
+        </HeaderScrollView>
         {reading ? <AnalysisReadingModal dream={dream} imageUri={media.imageUrl} imageCacheKey={media.imageCacheKey}
           imageLoadFailed={media.error} onReloadImage={() => { setFailedImage(null); media.retry(); }} onClose={() => setReading(false)} /> : null}
       </View>

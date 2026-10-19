@@ -14,7 +14,7 @@ import { dreamAuthReturnDestination } from '@/lib/authReturnIntent';
 import { ChatProvider, useKeyboardStateContext } from '@/context/ChatContext';
 import { useDreamsData, useDreamsActions } from '@/context/DreamsContext';
 import { useLanguage } from '@/context/LanguageContext';
-import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
+import { createScrollActivity, ScrollPerfProvider } from '@/context/ScrollPerfContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useChatSendLock } from '@/hooks/useChatSendLock';
 import { useChatCategoryPrompt } from '@/hooks/useChatCategoryPrompt';
@@ -199,7 +199,8 @@ function DreamChatContent() {
   const [streamingReply] = useState(createStreamingReplyChannel);
   const [hasStreamingText, setHasStreamingText] = useState(false);
   const showThinkingIndicator = isInteractionLocked && !hasStreamingText;
-  const [isScrolling, setIsScrolling] = useState(false);
+  // Read only by the composer: a drag in the conversation does not render this screen again.
+  const [scrollActivity] = useState(createScrollActivity);
   const [explorationBlocked, setExplorationBlocked] = useState(false);
   const [quotaCheckComplete, setQuotaCheckComplete] = useState(false);
   const [quotaCheckError, setQuotaCheckError] = useState<string | null>(null);
@@ -1281,7 +1282,7 @@ function DreamChatContent() {
 
   return (
     <ChatProvider isStreaming={isInteractionLocked}>
-      <ScrollPerfProvider isScrolling={isScrolling}>
+      <ScrollPerfProvider activity={scrollActivity}>
         <LinearGradient colors={gradientColors} style={styles.gradient}>
           <Pressable
             onPress={handleBackPress}
@@ -1303,7 +1304,7 @@ function DreamChatContent() {
             contentContainerStyle={styles.messagesContent}
             onRetryMessage={handleRetryMessage}
             retryA11yLabel={t('analysis.retry')}
-            onScrollStateChange={setIsScrolling}
+            onScrollStateChange={scrollActivity.set}
           />
 
           <ChatComposer

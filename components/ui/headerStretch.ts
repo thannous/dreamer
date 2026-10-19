@@ -1,19 +1,55 @@
 import { useIsFocused } from 'expo-router';
 import { useCallback } from 'react';
-import type { NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
-import { Extrapolation, interpolate, useAnimatedStyle, useReducedMotion } from 'react-native-reanimated';
+import { FlatList, Platform, ScrollView, type NativeScrollEvent, type NativeSyntheticEvent } from 'react-native';
+import Animated, {
+  Extrapolation, interpolate, useAnimatedScrollHandler, useAnimatedStyle, useReducedMotion, type SharedValue,
+} from 'react-native-reanimated';
+import { scheduleOnRN } from 'react-native-worklets';
 
 import { isRestingScroll, useHeaderScrollY } from './scrollDepth';
 
+// On native the offset reaches the header on the UI thread: a busy JavaScript thread
+// cannot hold the painting or the title back, and a scroll sends it no event per frame.
+// The web keeps the plain scroller and a JavaScript handler, as the journal list and the
+// dream page do. Test doubles of Reanimated may omit these APIs; the plain path stands in.
+const nativeScroll = Platform.OS !== 'web'
+  && typeof useAnimatedScrollHandler === 'function'
+  && typeof Animated?.createAnimatedComponent === 'function';
+
+/** The scroller to use with `useHeaderScroll`. */
+export const HeaderScrollView = nativeScroll ? Animated.createAnimatedComponent(ScrollView) : ScrollView;
+
+/** The list to use with `useHeaderScroll`. */
+export const HeaderFlatList = nativeScroll ? Animated.createAnimatedComponent(FlatList) : FlatList;
+
+const useNativeScrollHandler = nativeScroll
+  ? function useNativeScrollHandler(scrollY: SharedValue<number>, resting: boolean, onScroll?: () => void) {
+      return useAnimatedScrollHandler({
+        onScroll: (event) => {
+          if (!resting) scrollY.set(event.contentOffset.y);
+          if (onScroll) scheduleOnRN(onScroll);
+        },
+      }, [onScroll, resting, scrollY]);
+    }
+  : function useNoNativeScrollHandler(): null {
+      return null;
+    };
+
 /**
- * For a screen's main vertical scroller, with `scrollEventThrottle={16}`: publishes its
- * offset to the header, paintings and cards of the screen (wrapped in `withHeaderScroll`).
+ * For a screen's main vertical scroller (`HeaderScrollView` or `HeaderFlatList`, with
+ * `scrollEventThrottle={16}`): publishes its offset to the header, paintings and cards
+ * of the screen (wrapped in `withHeaderScroll`). `onScroll`, when given, also runs on
+ * the JavaScript thread for each scroll event; leave it out once it has nothing to do.
  */
-export function useHeaderScroll() {
+export function useHeaderScroll(onScroll?: () => void) {
   const scrollY = useHeaderScrollY();
-  return useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    if (!isRestingScroll(scrollY)) scrollY.set(event.nativeEvent.contentOffset.y);
-  }, [scrollY]);
+  const resting = isRestingScroll(scrollY);
+  const onWebScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    if (!resting) scrollY.set(event.nativeEvent.contentOffset.y);
+    onScroll?.();
+  }, [onScroll, resting, scrollY]);
+  const onNativeScroll = useNativeScrollHandler(scrollY, resting, onScroll);
+  return onNativeScroll ?? onWebScroll;
 }
 
 /**

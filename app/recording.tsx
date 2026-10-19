@@ -133,7 +133,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { SealMark } from '@/components/journal/story/sealMarks';
 import { DreamCaptureSeal } from '@/components/journal/story/DreamCaptureSeal';
 import { DREAM_STORY } from '@/components/journal/story/dreamStoryMotion';
-import { useHeaderScroll } from '@/components/ui/headerStretch';
+import { HeaderScrollView, useHeaderScroll } from '@/components/ui/headerStretch';
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 
 const log = createScopedLogger('[Recording]');
@@ -1896,7 +1896,7 @@ function RecordingScreen() {
           behavior="height"
           style={[styles.keyboardView, { paddingTop: isDesktopWeb ? insets.top : 0 }]}
         >
-          <ScrollView
+          <HeaderScrollView
             ref={scrollViewRef}
             onScroll={onHeaderScroll}
             scrollEventThrottle={16}
@@ -2050,7 +2050,7 @@ function RecordingScreen() {
 
               {inlineFooter && !chatMode ? saveFooter : null}
             </View>
-          </ScrollView>
+          </HeaderScrollView>
           {!inlineFooter && !chatMode ? (
             <View pointerEvents="box-none" style={fixedFooterStyle} onLayout={handleFooterLayout}>
               {saveFooter}

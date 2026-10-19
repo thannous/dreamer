@@ -20,7 +20,7 @@ import { useLocales } from 'expo-localization';
 import * as Notifications from 'expo-notifications';
 import { Stack, router, useGlobalSearchParams, useNavigationContainerRef, usePathname, useRootNavigationState, type Href } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Linking, LogBox, NativeModules, Platform } from 'react-native';
 import { SystemBars } from 'react-native-edge-to-edge';
 
@@ -887,6 +887,22 @@ function RootLayoutNav({
     user,
   ]);
 
+  return <RootNavigator mode={mode} nonCriticalStartupEnabled={nonCriticalStartupEnabled} />;
+}
+
+/**
+ * The providers and navigators under the root. Kept apart from RootLayoutNav, which
+ * re-renders on every route change (pathname and search params) and cannot be compiled
+ * by React Compiler: inline there, this tree was rebuilt on each navigation and every
+ * mounted tab, header and provider below it rendered again. It depends on two values.
+ */
+const RootNavigator = memo(function RootNavigator({
+  mode,
+  nonCriticalStartupEnabled,
+}: {
+  mode: ReturnType<typeof useTheme>['mode'];
+  nonCriticalStartupEnabled: boolean;
+}) {
   return (
     <NavigationThemeProvider value={mode === 'dark' ? DarkTheme : DefaultTheme}>
       <KeyboardProviderComponent>
@@ -954,7 +970,7 @@ function RootLayoutNav({
       </KeyboardProviderComponent>
     </NavigationThemeProvider>
   );
-}
+});
 
 function JournalRuntime({ children }: React.PropsWithChildren) {
   return isLucidTrainer ? <>{children}</> : <DreamsProvider>{children}</DreamsProvider>;

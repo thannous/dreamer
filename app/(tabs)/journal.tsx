@@ -48,7 +48,7 @@ import type { DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
 import { FlashList, type FlashListRef, type ListRenderItemInfo, type ViewToken } from '@shopify/flash-list';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import React, { useCallback, useContext, useDeferredValue, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useContext, useDeferredValue, useEffect, useEffectEvent, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import {
   Alert,
   Keyboard,
@@ -212,23 +212,32 @@ function JournalListScreen() {
   const filterParams = useLocalSearchParams<JournalFilterRouteParams>();
   const filterLink = parseJournalFilterParams(filterParams);
   // This consumes an external navigation command once, then preserves filters edited by hand.
+  // Applied while rendering, once per link (its parsed dates are new objects on every
+  // render): the list never renders with the previous filters, and no effect needs a
+  // lint suppression, which would keep React Compiler off this screen.
+  const filterLinkKey = filterLink?.key ?? null;
+  const [appliedFilterLinkKey, setAppliedFilterLinkKey] = useState<string | null>(null);
+  if (filterLinkKey !== appliedFilterLinkKey) {
+    setAppliedFilterLinkKey(filterLinkKey);
+    if (filterLink) {
+      setSearchQuery('');
+      setSelectedTheme(filterLink.theme);
+      setSelectedDreamType(filterLink.dreamType);
+      setDateRange({ start: filterLink.start, end: filterLink.end });
+      setQuickFilter('all');
+      setShowRememberedOnly(false);
+      setShowRecurringOnly(false);
+      setAnalysisStatus(filterLink.analysis);
+      setSelectedSymbol(filterLink.symbol);
+      setSortOrder('newest');
+    }
+  }
+  // The params leave the route so they apply only once.
   useEffect(() => {
-    const link = filterLink;
-    if (!link) return;
-    setSearchQuery('');
-    setSelectedTheme(link.theme);
-    setSelectedDreamType(link.dreamType);
-    setDateRange({ start: link.start, end: link.end });
-    setQuickFilter('all');
-    setShowRememberedOnly(false);
-    setShowRecurringOnly(false);
-    setAnalysisStatus(link.analysis);
-    setSelectedSymbol(link.symbol);
-    setSortOrder('newest');
-    router.setParams({ filter: undefined, theme: undefined, type: undefined, from: undefined, to: undefined, analysis: undefined, symbol: undefined });
-    // Applied once per link: the parsed dates are new objects on every render.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filterLink?.key]);
+    if (filterLinkKey) {
+      router.setParams({ filter: undefined, theme: undefined, type: undefined, from: undefined, to: undefined, analysis: undefined, symbol: undefined });
+    }
+  }, [filterLinkKey]);
 
   // Modal states
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
@@ -440,12 +449,14 @@ function JournalListScreen() {
     return () => { mediaFocused.current = false; mediaGeneration.current += 1; };
   }, [filteredDreams, prefetchDreamMedia]));
 
-  // Scroll to top when filters change
-  useEffect(() => {
+  // Scroll to top when filters change, not when the filtered dreams merely update.
+  const scrollFilteredListToTop = useEffectEvent(() => {
     if (filteredDreams.length > 0) {
       flatListRef.current?.scrollToOffset({ offset: 0, animated: true });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  });
+  useEffect(() => {
+    scrollFilteredListToTop();
   }, [
     deferredSearchQuery,
     selectedTheme,
