@@ -156,6 +156,32 @@ The final committed-head engine proof and E2E artifacts/receipts remain in the
 existing ignored stores. The report does not label earlier runs as a fresh final
 execution. A new engine proof is required before the branch is pushed.
 
+Browser results for this follow-up are all passed, with one attempt per test,
+zero skipped selected tests, no secondary errors and `applicationQualified=true`:
+
+| Campaign | Passed | Tested source | Artifact directory under `tools/e2e/.e2e/` |
+| --- | ---: | --- | --- |
+| Dreamer EN, billing/error/expiry, account isolation, chat/category, saved story and empty search | 15 | `74ee9fda6` (clean) | `dreamer-web/1792405408084-69291-924abbe7-2999-44ee-ade8-bd02f376df50` |
+| Dreamer FR, accents/excerpts and letter reset | 1 | `74ee9fda6` (clean) | `dreamer-web/1792405423339-71575-4a9a573a-339e-4ef5-97fb-d222a0dc3285` |
+| Lucid, onboarding safeguards and linked navigation | 2 | `93b98b0c6` (clean) | `lucid-web/1792405033160-86203-7edf9efc-ce32-408c-9a68-8ea54ebb3e9a` |
+| Meditation, onboarding persistence and tab/editorial/settings navigation | 1 | `93b98b0c6` (clean) | `meditation-web/1792404992719-13634-a28bfedf-1b35-4457-99b6-4d274c3c89a8` |
+
+Each directory retains the exact command/environment, source snapshots,
+qualification, report, trace and relevant screenshots. The effective versions
+are e2e 0.21.2 and web engine 0.15.2, on Chromium 156.0.8078.4. These browser
+runs use the existing mocked service/account fixtures with external networking
+blocked. Later report-only edits reuse this evidence; Lucid/Meditation app,
+configuration, locks and journey inputs are unchanged since their recorded run.
+The earlier failed Dreamer report and screenshots remain available; the passing
+rerun follows the explicit test corrections above. The first malformed command
+omitted `run` and launched no SDK; it is not a functional app failure.
+
+On `93b98b0c6`, `verify:pr` passed all 17 checks with no reuse: root changed-test
+selection 73 suites / 1,053 tests passed, Meditation 63 / 552 and Edge 261.
+The four opt-in DB suites / six skipped ordinary-Jest cases retain the separately
+recorded real-backend evidence from the original audit; they are not fresh DB
+executions in this follow-up. Final-head engine receipts identify any reuse.
+
 Useful reruns (the campaign receipt records the exact selections used):
 
 ```sh
