@@ -86,10 +86,6 @@ jest.mock('@/components/ui/StandardBottomSheet', () => ({
   ),
 }));
 
-jest.mock('@/components/journal/ReferenceImagePicker', () => ({
-  ReferenceImagePicker: () => null,
-}));
-
 jest.mock('@/components/ui/icon-symbol', () => ({
   IconSymbol: ({ name }: { name: string }) => <span data-testid={`icon.${name}`} />,
 }));

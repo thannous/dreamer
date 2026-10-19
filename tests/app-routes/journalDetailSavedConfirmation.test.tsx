@@ -68,7 +68,6 @@ const mockAnalyzeDream = jest.fn();
 const mockDeleteDream = jest.fn();
 const mockSetParams = jest.fn();
 let mockSearchParams: { id: string; remoteId?: string; clientRequestId?: string; saved?: string | string[]; recall?: string | string[]; autoAnalyze?: string; analyzeAfterPurchase?: string; analysisOwnerId?: string } = { id: '42', saved: '1' };
-let mockReferenceImagesEnabled = false;
 const mockCategorizeDream = jest.fn();
 const mockApplyDreamCategorization = jest.fn(async (_dream: unknown, _result: unknown) => undefined);
 let mockDreams: DreamAnalysis[] = [];
@@ -313,7 +312,6 @@ jest.mock('@/components/journal/JournalDetailSheets', () => ({
   ImageErrorSheet: () => null,
   QuotaLimitSheet: ({ visible }: any) => visible ? <div data-testid="quota-limit" /> : null,
   ReanalyzeSheet: () => null,
-  ReferenceImageSheet: () => null,
   ReplaceImageSheet: () => null,
 }));
 
@@ -462,7 +460,6 @@ jest.mock('@/hooks/useTranslation', () => ({
 jest.mock('@/lib/env', () => ({
   isHdIllustrationsEnabled: () => true,
   isMockModeEnabled: () => false,
-  isReferenceImagesEnabled: () => mockReferenceImagesEnabled,
 }));
 
 const mockTrackProductEvent = jest.fn();
@@ -472,7 +469,12 @@ jest.mock('@/lib/analytics', () => ({
 
 jest.mock('@/services/geminiService', () => ({
   categorizeDream: (...args: unknown[]) => mockCategorizeDream(...args),
-  generateImageWithReference: jest.fn(),
+}));
+
+const mockOpenContactMail = jest.fn(async (_options: { subject?: string; body?: string }) => undefined);
+jest.mock('@/lib/contact', () => ({
+  CONTACT_EMAIL: 'contact@noctalia.app',
+  openContactMail: (options: { subject?: string; body?: string }) => mockOpenContactMail(options),
 }));
 
 const { default: JournalDetailScreen } = require('@/app/journal/[id]');
@@ -481,7 +483,6 @@ describe('journal detail saved confirmation route', () => {
   beforeEach(() => {
     mockAnnounceForAccessibility.mockClear();
     mockThemeMode = 'dark';
-    mockReferenceImagesEnabled = false;
     mockCategorizeDream.mockReset();
     mockHasAiConsent.mockReset();
     mockHasAiConsent.mockResolvedValue(true);
@@ -664,41 +665,6 @@ describe('journal detail saved confirmation route', () => {
     expect(screen.getByTestId('dream-metadata-retry')).toBeTruthy();
   });
 
-  // Fast arrival can precede both categorization and remote-id promotion. The
-  // UI mock cannot schedule that native race, so keep this focused control.
-  it('does not duplicate subject detection while the first categorization owns a promoted dream', async () => {
-    mockReferenceImagesEnabled = true;
-    mockDreams = [buildDream({ remoteId: 9042, hasPerson: undefined, hasAnimal: undefined })];
-    let finish!: () => void;
-    const pendingResult = new Promise<void>((resolve) => { finish = resolve; });
-    const initial = trackInitialDreamCategorization('client:persisted-original-42', () => pendingResult);
-    const view = render(<JournalDetailScreen />);
-    expect(mockCategorizeDream).not.toHaveBeenCalled();
-    await act(async () => {
-      mockDreams = [{ ...mockDreams[0], hasPerson: false, hasAnimal: false }];
-      view.rerender(<JournalDetailScreen />);
-      finish();
-      await initial;
-    });
-    expect(mockCategorizeDream).not.toHaveBeenCalled();
-  });
-
-  it('does not restore an old draft title when subject detection finishes after enrichment', async () => {
-    mockReferenceImagesEnabled = true;
-    let finish!: (value: unknown) => void;
-    mockCategorizeDream.mockReturnValueOnce(new Promise(resolve => { finish = resolve; }));
-    mockDreams = [buildDream({ title: 'Old draft…', hasPerson: undefined, hasAnimal: undefined })];
-    const view = render(<JournalDetailScreen />);
-    await waitFor(() => expect(mockCategorizeDream).toHaveBeenCalledTimes(1));
-
-    mockDreams = [buildDream({ title: 'Generated title', theme: 'calm', hasPerson: true, hasAnimal: false })];
-    view.rerender(<JournalDetailScreen />);
-    await act(async () => { finish({ title: 'Ignored title', hasPerson: true, hasAnimal: false }); });
-
-    expect(mockUpdateDream).not.toHaveBeenCalled();
-    expect(screen.getByText('Generated title')).toBeTruthy();
-  });
-
   it('recovers generated metadata on request without spending an analysis or opening quota sheets', async () => {
     mockUser = null;
     mockTier = 'guest';
@@ -750,16 +716,6 @@ describe('journal detail saved confirmation route', () => {
   });
 
   
-  it('does not call categorizeDream for subject backfill while AI consent is missing', async () => {
-    mockReferenceImagesEnabled = true;
-    mockHasAiConsent.mockResolvedValue(false);
-    mockDreams = [buildDream({ title: 'Generated title', theme: 'calm', hasPerson: undefined, hasAnimal: undefined })];
-    render(<JournalDetailScreen />);
-    await act(async () => { await Promise.resolve(); await Promise.resolve(); });
-    expect(mockHasAiConsent).toHaveBeenCalled();
-    expect(mockCategorizeDream).not.toHaveBeenCalled();
-  });
-
   it('does not recover metadata when the user declines AI consent', async () => {
     mockRequestAiConsent.mockResolvedValue(false);
     const transcript = 'A blue door above the sea.';
@@ -958,6 +914,22 @@ describe('journal detail saved confirmation route', () => {
     expect(mockSetParams).toHaveBeenCalledWith({ analyzeAfterPurchase: undefined, analysisOwnerId: undefined });
     expect(screen.queryByText('loading.analyzing')).toBeNull();
     expect((screen.getByTestId(TID.Button.EditDream) as HTMLButtonElement).disabled).toBe(false);
+  });
+
+  it('offers a report of generated content only once the dream has some', async () => {
+    mockDreams = [buildDream({ remoteId: 9042 })];
+    const view = render(<JournalDetailScreen />);
+    expect(screen.queryByTestId(TID.Button.DreamReport)).toBeNull();
+
+    mockDreams = [buildDream({ remoteId: 9042, isAnalyzed: true, analysisStatus: 'done', interpretation: 'A reading.', analyzedAt: 1_700_000_000_000 })];
+    view.rerender(<JournalDetailScreen />);
+    await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.DreamReport)); });
+
+    expect(mockOpenContactMail).toHaveBeenCalledTimes(1);
+    expect(mockOpenContactMail.mock.calls[0][0]).toMatchObject({
+      subject: 'journal.detail.report.subject',
+      body: 'journal.detail.report.body',
+    });
   });
 
   it('locks edits and deletion while valid purchased access is propagating', async () => {
@@ -1388,6 +1360,15 @@ describe('journal detail saved confirmation route', () => {
     render(<JournalDetailScreen />);
 
     expect(screen.queryByTestId(TID.Text.RecordingSaveConfirmation)).toBeNull();
+  });
+
+  it('keeps the recall offer once saved=1 is cleared from the route', () => {
+    const view = render(<JournalDetailScreen />);
+    expect(screen.getByTestId(TID.Component.DreamRecallOffer)).toBeTruthy();
+
+    mockSearchParams = { id: '42' };
+    view.rerender(<JournalDetailScreen />);
+    expect(screen.getByTestId(TID.Component.DreamRecallOffer)).toBeTruthy();
   });
 
   it('prioritizes the requested recall assistant once while preserving the saved dream', () => {

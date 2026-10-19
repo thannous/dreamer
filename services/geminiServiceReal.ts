@@ -27,7 +27,6 @@ import type {
   DreamSymbolInsight,
   DreamTheme,
   DreamType,
-  ReferenceImageGenerationRequest,
 } from '@/lib/types';
 
 // The deployed cleanup contract accepts Storage object URLs. Convert stable
@@ -576,20 +575,4 @@ export async function generateSpeechForText(text: string): Promise<string> {
   });
   if (!res.audioBase64) throw new Error('No audio returned');
   return res.audioBase64;
-}
-
-/**
- * Reference-image generation is hard-disabled.
- */
-export async function generateImageWithReference(
-  request: ReferenceImageGenerationRequest
-): Promise<string> {
-  void request;
-  throw Object.assign(new Error('Reference image generation is disabled'), {
-    status: 410,
-    body: {
-      code: 'FEATURE_DISABLED',
-      error: 'Reference image generation is disabled',
-    },
-  });
 }

@@ -19,7 +19,6 @@ export type ExpoPublicEnvKey =
   | 'EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED'
   | 'EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER'
   | 'EXPO_PUBLIC_PERFORMANCE_TRACING'
-  | 'EXPO_PUBLIC_REFERENCE_IMAGES_ENABLED'
   | 'EXPO_PUBLIC_REVENUECAT_ANDROID_KEY'
   | 'EXPO_PUBLIC_REVENUECAT_IOS_KEY'
   | 'EXPO_PUBLIC_REVENUECAT_WEB_KEY'
@@ -62,8 +61,6 @@ export function getExpoPublicEnvValue(key: ExpoPublicEnvKey): string | undefined
       return process.env.EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER;
     case 'EXPO_PUBLIC_PERFORMANCE_TRACING':
       return process.env.EXPO_PUBLIC_PERFORMANCE_TRACING;
-    case 'EXPO_PUBLIC_REFERENCE_IMAGES_ENABLED':
-      return process.env.EXPO_PUBLIC_REFERENCE_IMAGES_ENABLED;
     case 'EXPO_PUBLIC_REVENUECAT_ANDROID_KEY':
       return process.env.EXPO_PUBLIC_REVENUECAT_ANDROID_KEY;
     case 'EXPO_PUBLIC_REVENUECAT_IOS_KEY':
@@ -122,12 +119,6 @@ export function isGuestQaLabEnabled(): boolean {
 
 export function isPerformanceTracingEnabled(): boolean {
   return (getExpoPublicEnvValue('EXPO_PUBLIC_PERFORMANCE_TRACING') ?? '').toLowerCase() === 'true';
-}
-
-export function isReferenceImagesEnabled(): boolean {
-  // Hard-disabled in code so production bundles cannot re-enable the feature
-  // via environment configuration.
-  return false;
 }
 
 export function isHdIllustrationsEnabled(): boolean {

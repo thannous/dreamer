@@ -81,9 +81,11 @@ for (const theme of ['light', 'dark'] as const) {
     await page.getByRole('button', { name: 'Terminé', exact: true }).click();
     await expect(page.getByTestId('settings-notifications-weekday-sheet')).toBeHidden();
     await expect(page.getByTestId('quota.analysisValue')).toContainText('/ 3');
-    for (const id of ['settings-legal-privacy-policy', 'settings-legal-terms-of-use', 'settings-legal-account-deletion', 'settings-delete-account']) {
+    for (const id of ['settings-legal-privacy-policy', 'settings-legal-terms-of-use', 'settings-legal-account-deletion', 'settings-legal-contact', 'settings-delete-account']) {
       await expect(page.getByTestId(id)).toHaveCount(1);
     }
+    await expect(page.getByTestId('settings-legal-contact')).toContainText('Nous écrire');
+    await expect(page.getByTestId('settings-legal-contact')).toContainText('contact@noctalia.app');
 
     await page.getByTestId('settings.back').click();
     await page.getByRole('button', { name: 'Paramètres', exact: true }).click();

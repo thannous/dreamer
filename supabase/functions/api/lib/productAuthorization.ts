@@ -9,7 +9,7 @@ const JOURNAL_ROUTES = new Set([
   'POST /analyzeDreamFull', 'POST /categorizeDream',
   'POST /analysis-jobs', 'POST /analysis-jobs/status',
   'POST /image-jobs', 'POST /image-jobs/status',
-  'POST /generateImage', 'POST /generateImageWithReference',
+  'POST /generateImage',
   'POST /quota/status', 'POST /auth/mark-upgrade',
   'POST /subscription/refresh', 'POST /subscription/sync',
 ]);

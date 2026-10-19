@@ -34,7 +34,6 @@ import { DREAM_THEMES } from '@/lib/dreamThemes';
 import { getDreamStoryHandoffName, hasDreamStoryHandoff, markDreamStoryPageReady } from '@/lib/dreamStoryPrologue';
 import { DreamShareImage } from '@/components/journal/DreamShareImage';
 import { getImageJobFailure } from '@/lib/imageJobErrors';
-import { ErrorType } from '@/lib/errors';
 import { ImageRetry } from '@/components/journal/ImageRetry';
 import {
   AnalysisNoticeSheet,
@@ -42,7 +41,6 @@ import {
   ImageErrorSheet,
   QuotaLimitSheet,
   ReanalyzeSheet,
-  ReferenceImageSheet,
   ReplaceImageSheet,
   type AnalysisNotice,
 } from '@/components/journal/JournalDetailSheets';
@@ -61,7 +59,8 @@ import { useDreamShareComposite } from '@/hooks/useDreamShareComposite';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useQuota } from '@/hooks/useQuota';
 import { useTranslation } from '@/hooks/useTranslation';
-import { hasAiConsent, requestAiConsent } from '@/lib/aiConsent';
+import { requestAiConsent } from '@/lib/aiConsent';
+import { CONTACT_EMAIL, openContactMail } from '@/lib/contact';
 import { blurActiveElement } from '@/lib/accessibility';
 import { buildFirstValueProperties } from '@/lib/activationAnalytics';
 import { trackProductEvent } from '@/lib/analytics';
@@ -81,8 +80,8 @@ import {
   type ReflectionQuotaHint,
 } from '@/lib/dreamUsage';
 import { getDreamAnalysisFreshness } from '@/lib/dreamAnalysisFreshness';
-import { isHdIllustrationsEnabled, isMockModeEnabled, isReferenceImagesEnabled } from '@/lib/env';
-import { classifyError, QuotaError, QuotaErrorCode, type ClassifiedError } from '@/lib/errors';
+import { isHdIllustrationsEnabled, isMockModeEnabled } from '@/lib/env';
+import { classifyError, ErrorType, QuotaError, QuotaErrorCode } from '@/lib/errors';
 import { getDreamImageVersion, getImageConfig, withCacheBuster } from '@/lib/imageUtils';
 import {
   resolveJournalIllustrationAccess,
@@ -101,8 +100,8 @@ import { FreeAnalysesNudge, getFreeAnalysesNudge } from '@/components/quota/Free
 import { buildAnalysisPaywallHref, buildPaywallHref, consumePurchasedAnalysisReturn, hasPendingPurchasedAnalysisReturn } from '@/lib/paywallRoute';
 import { sortWithSelectionFirst } from '@/lib/sorting';
 import { TID } from '@/lib/testIDs';
-import type { DreamAnalysis, DreamTheme, DreamType, ReferenceImage } from '@/lib/types';
-import { categorizeDream, generateImageWithReference } from '@/services/geminiService';
+import type { DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
+import { categorizeDream } from '@/services/geminiService';
 import { getStaleAnalysisBannerDismissed, saveStaleAnalysisBannerDismissed } from '@/services/storageService';
 import * as Haptics from 'expo-haptics';
 import { Image } from 'expo-image';
@@ -474,7 +473,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   const autoAnalysisExpiresAtRef = useRef<number | null>(null);
   const analysisPressInFlightRef = useRef(false);
   const purchaseAnalysisHandledRef = useRef(false);
-  const recallEligibleDreamIdRef = useRef<string | null>(
+  // The recall offer outlives the saved=1 param for the dream it was made for.
+  const [recallEligibleDreamId, setRecallEligibleDreamId] = useState<string | null>(() =>
     resolveJournalDreamRecallOfferEligible({
       dreamId: id,
       savedParam,
@@ -484,11 +484,11 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   const recallOffer = resolveJournalDreamRecallOfferEligible({
     dreamId: id,
     savedParam,
-    previouslyEligibleDreamId: recallEligibleDreamIdRef.current,
+    previouslyEligibleDreamId: recallEligibleDreamId,
   });
-  useEffect(() => {
-    recallEligibleDreamIdRef.current = recallOffer.eligibleDreamId;
-  }, [recallOffer.eligibleDreamId]);
+  if (recallOffer.eligibleDreamId !== recallEligibleDreamId) {
+    setRecallEligibleDreamId(recallOffer.eligibleDreamId);
+  }
   const {
     toggleFavorite,
     updateDream,
@@ -555,12 +555,6 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   const [imageErrorCanRetry, setImageErrorCanRetry] = useState(true);
   const [imageErrorNeedsSubscription, setImageErrorNeedsSubscription] = useState(false);
 
-  // Reference image generation state
-  const [showReferenceSheet, setShowReferenceSheet] = useState(false);
-  const [referenceSubjectType, setReferenceSubjectType] = useState<'person' | 'animal' | null>(null);
-  const [referenceImages, setReferenceImages] = useState<ReferenceImage[]>([]);
-  const [isGeneratingWithReference, setIsGeneratingWithReference] = useState(false);
-  const hasBackfilledSubjectRef = useRef(false);
   const trackedAnalysisResultRef = useRef<string | null>(null);
   const storeReviewAfterLeaveRef = useRef(false);
 
@@ -581,9 +575,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     quotaStatus,
   } = useQuota();
   const { t } = useTranslation();
-  const referenceImagesEnabled = isReferenceImagesEnabled();
   const isPlus = tier === 'plus';
-  const canUseReference = referenceImagesEnabled && Boolean(user);
   const savedAnalysisAction = getSavedAnalysisAction({
     tier, loading: quotaLoading, error: quotaError, status: quotaStatus,
   });
@@ -733,24 +725,20 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   const updateReadingChrome = useCallback((offsetY: number) => {
     setReadingActionVisible(offsetY >= readingActionThreshold);
   }, [readingActionThreshold]);
-  const nativeReadingScroll = Platform.OS !== 'web';
   // Continuous offsets stay on the UI runtime. Only crossing the dock's threshold
   // changes React state; a long scroll never schedules a JS update per frame.
-  useAnimatedReaction(() => nativeReadingScroll ? readingScrollOffset.get() >= readingActionThreshold : null,
+  // Rotation, text scaling and measured content move the threshold without a scroll
+  // event: the reaction restarts with it and compares the latest observed offset.
+  useAnimatedReaction(() => readingScrollOffset.get() >= readingActionThreshold,
     (visible, previous) => {
-      if (visible !== null && visible !== previous) scheduleOnRN(setReadingActionVisible, visible);
-    });
+      if (visible !== previous) scheduleOnRN(setReadingActionVisible, visible);
+    }, [readingActionThreshold]);
   const handleReadingScroll = useAnimatedScrollHandler({
     onScroll: (event) => {
       readingScrollOffset.set(event.contentOffset.y);
       headerScrollY.set(event.contentOffset.y);
     },
   });
-  // Rotation, text scaling and measured content can move artwork without a scroll
-  // event. Recompute chrome before paint using the latest observed offset.
-  useLayoutEffect(() => {
-    updateReadingChrome(readingScrollOffset.get());
-  }, [readingScrollOffset, updateReadingChrome]);
   const scrollViewRef = useRef<ScrollViewInstance | null>(null);
   const editorScrollRef = useRef<ScrollViewInstance | null>(null);
   const recallInputRef = useRef<TextInputInstance | null>(null);
@@ -814,49 +802,14 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     };
   }, [revealRecallInput]);
 
-  // Subject detection is only needed for authenticated reference-image tools.
-  // Guests receive metadata from the post-save categorization request once they allow AI.
-  useEffect(() => {
-    if (!dream || !canUseReference) return;
-    if (initialCategorizationPending) return;
-    if (hasBackfilledSubjectRef.current) return;
-    if (dream.hasPerson !== undefined || dream.hasAnimal !== undefined) return;
-    if (!dream.transcript?.trim()) return;
-
-    hasBackfilledSubjectRef.current = true;
-    let cancelled = false;
-
-    (async () => {
-      try {
-        // Subject detection sends dream text to Gemini: skip while consent is missing.
-        if (!(await hasAiConsent())) {
-          hasBackfilledSubjectRef.current = false;
-          return;
-        }
-        if (cancelled) return;
-        const result = await categorizeDream(dream.transcript, language);
-        if (!cancelled && (result.hasPerson !== undefined || result.hasAnimal !== undefined)) {
-          await updateDream({
-            ...dream,
-            hasPerson: result.hasPerson,
-            hasAnimal: result.hasAnimal,
-          });
-        }
-      } catch (err) {
-        // Silently fail - this is a background optimization
-        if (__DEV__) {
-          console.warn('[JournalDetail] Lazy backfill failed:', err);
-        }
-      }
-    })();
-    // A newer title, analysis or user edit owns the dream after it changes.
-    return () => { cancelled = true; };
-  }, [canUseReference, dream, initialCategorizationPending, language, updateDream]);
-
 
   const { shareImageRef, shareComposite } = useDreamShareComposite();
 
   const analysisState = useMemo(() => getDreamAnalysisState(dream), [dream]);
+  // Analyses, AI illustrations and conversations can be reported to us.
+  const hasGeneratedContent = Boolean(dream && (analysisState.isAnalyzed
+    || analysisState.hasModelResponse
+    || (dream.imageUrl && dream.imageSource !== 'user')));
   const guestImageAvailable = useMemo(() => {
     if (quotaLoading) return false;
     const image = usage?.image;
@@ -1328,67 +1281,6 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     }
   }, [dream, isAnalysisLocked, updateDream, t]);
 
-  // Reference image generation handlers
-  const handleReferenceImagesSelected = useCallback((images: ReferenceImage[]) => {
-    setReferenceImages(images);
-  }, []);
-
-  const handleReferenceSheetClose = useCallback(() => {
-    setShowReferenceSheet(false);
-    setReferenceSubjectType(null);
-    setReferenceImages([]);
-  }, []);
-
-  const handleGenerateWithReference = useCallback(async function generateWithReference() {
-    if (!dream || referenceImages.length === 0 || !canUseReference) return;
-    if (!(await requestAiConsent(t))) return;
-
-    setShowReferenceSheet(false);
-    setIsGeneratingWithReference(true);
-
-    try {
-      const imageUrl = await generateImageWithReference({
-        transcript: dream.transcript,
-        prompt: dream.transcript,
-        referenceImages,
-        previousImageUrl: dream.imageUrl || undefined,
-        lang: language,
-      });
-
-      const imageUpdatedAt = Date.now();
-      const analysisRequestId = generateUUID();
-      const updatedDream: DreamAnalysis = {
-        ...dream,
-        imageUrl,
-        thumbnailUrl: imageUrl,
-        imageGenerationFailed: false,
-        imageUpdatedAt,
-        analysisRequestId,
-        imageSource: 'ai',
-      };
-
-      await updateDream(updatedDream);
-
-      // Cleanup
-      setReferenceSubjectType(null);
-      setReferenceImages([]);
-    } catch (error) {
-      const classified = error && typeof error === 'object' && 'userMessage' in error && 'canRetry' in error
-        ? (error as ClassifiedError)
-        : classifyError(error instanceof Error ? error : new Error('Unknown error'), t);
-      if (classified.canRetry) {
-        Alert.alert(t('common.error_title'), classified.userMessage, [
-          { text: t('common.cancel'), style: 'cancel' },
-          { text: t('analysis.retry'), onPress: () => void generateWithReference() },
-        ]);
-      } else {
-        Alert.alert(t('common.error_title'), classified.userMessage);
-      }
-    } finally {
-      setIsGeneratingWithReference(false);
-    }
-  }, [canUseReference, dream, language, referenceImages, t, updateDream]);
-
   const openShareModal = useCallback(() => {
     setShareCopyStatus('idle');
     setShareModalVisible(true);
@@ -1591,6 +1483,17 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     setShowDeleteSheet(true);
   }, [dream, isAnalysisLocked]);
 
+  // The reference lets us find the reported analysis, image or conversation.
+  const onReportGeneratedContent = useCallback(() => {
+    if (!dream) return;
+    void openContactMail({
+      subject: t('journal.detail.report.subject'),
+      body: t('journal.detail.report.body', { reference: String(dream.remoteId ?? dream.clientRequestId ?? dream.id) }),
+      unavailableTitle: t('journal.detail.report.button'),
+      unavailableMessage: t('contact.mail_unavailable', { email: CONTACT_EMAIL }),
+    });
+  }, [dream, t]);
+
   const handleConfirmDelete = useCallback(() => {
     if (!dream || isAnalysisLocked || isDeleting) return;
     void deleteAndNavigate();
@@ -1689,30 +1592,29 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     void onRetryImage();
   }, [onRetryImage]);
 
-  const ensureAnalyzeAllowed = useCallback(async () => {
-    try {
-      const allowed = isPlus || (!quotaLoading && Boolean(usage?.analysis) && canAnalyzeNow) || (await canAnalyze());
-      if (!allowed) {
-        if (quotaError || quotaStatus?.guestBootstrapStatus === 'degraded'
-          || quotaStatus?.guestBootstrapStatus === 'disabled') {
-          showAnalysisNotice(t('common.error_title'), t('journal.detail.quota_check_error'), 'error');
-          return false;
-        }
-        // Don't show for paid users
-        if (isPlus) return false;
-        if (tier === 'free' && user && dream) {
-          router.push(buildAnalysisPaywallHref(dream, user.id));
-        } else if (!user) {
-          router.push(quotaStatus?.isUpgraded
-            ? '/settings?section=account&auth=signin' : '/settings?section=account&auth=signup');
-        } else {
-          setQuotaSheetMode(!user && quotaStatus?.isUpgraded ? 'login' : 'quota');
-          setShowQuotaLimitSheet(true);
-        }
+  const ensureAnalyzeAllowed = useCallback((): Promise<boolean> => {
+    const knownAllowed = isPlus || (!quotaLoading && Boolean(usage?.analysis) && canAnalyzeNow);
+    // The screen only reacts once the quota check has answered.
+    return new Promise<boolean>((resolve) => resolve(knownAllowed || canAnalyze())).then((allowed) => {
+      if (allowed) return true;
+      if (quotaError || quotaStatus?.guestBootstrapStatus === 'degraded'
+        || quotaStatus?.guestBootstrapStatus === 'disabled') {
+        showAnalysisNotice(t('common.error_title'), t('journal.detail.quota_check_error'), 'error');
         return false;
       }
-      return true;
-    } catch (error) {
+      // Don't show for paid users
+      if (isPlus) return false;
+      if (tier === 'free' && user && dream) {
+        router.push(buildAnalysisPaywallHref(dream, user.id));
+      } else if (!user) {
+        router.push(quotaStatus?.isUpgraded
+          ? '/settings?section=account&auth=signin' : '/settings?section=account&auth=signup');
+      } else {
+        setQuotaSheetMode(!user && quotaStatus?.isUpgraded ? 'login' : 'quota');
+        setShowQuotaLimitSheet(true);
+      }
+      return false;
+    }).catch((error: unknown) => {
       if (__DEV__) {
         console.error('[JournalDetail] Quota check failed:', error);
       }
@@ -1722,7 +1624,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
         'error'
       );
       return false;
-    }
+    });
   }, [canAnalyze, canAnalyzeNow, dream, isPlus, quotaError, quotaLoading, quotaStatus, showAnalysisNotice, t, tier, usage, user]);
 
   const handleQuotaLimitDismiss = useCallback(() => {
@@ -1748,16 +1650,16 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   }, []);
 
   const runAnalyze = useCallback(
-    async (replaceImage: boolean, skipAllowanceCheck = false) => {
-      if (!dream || isAnalysisLaunchBlocked || analysisLaunchInFlightRef.current) return;
+    (replaceImage: boolean, skipAllowanceCheck = false): Promise<void> => {
+      if (!dream || isAnalysisLaunchBlocked || analysisLaunchInFlightRef.current) return Promise.resolve();
       // Lock synchronously, including the asynchronous quota check and consent.
       analysisLaunchInFlightRef.current = true;
-      try {
-        if (!skipAllowanceCheck && !isResumableAnalysisRequest(dream)) {
-          const allowed = await ensureAnalyzeAllowed();
-          if (!allowed) return;
-        }
-        if (!(await requestAiConsent(t))) return;
+      const consented = skipAllowanceCheck || isResumableAnalysisRequest(dream)
+        ? requestAiConsent(t)
+        : ensureAnalyzeAllowed().then((allowed) => allowed && requestAiConsent(t));
+      // Nothing on screen changes before the quota check and the consent prompt settle.
+      return consented.then(async (granted) => {
+        if (!granted) return;
         // Only now is anything being analysed: never show progress behind the consent prompt.
         setIsAnalyzing(true);
 
@@ -1777,7 +1679,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
           analyticsSource: 'journal_detail',
         });
         setAnalysisNotice(null);
-      } catch (error) {
+      }).catch((error: unknown) => {
         if (error instanceof QuotaError) {
           if (error.code === QuotaErrorCode.LOGIN_REQUIRED && tier === 'guest') {
             setQuotaSheetMode('login');
@@ -1804,10 +1706,10 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
           const classified = classifyError(error as Error, t);
           showAnalysisNotice(t('analysis_error.title'), classified.userMessage, 'error');
         }
-      } finally {
+      }).finally(() => {
         analysisLaunchInFlightRef.current = false;
         setIsAnalyzing(false);
-      }
+      });
     },
     [
       analyzeDream,
@@ -3369,6 +3271,20 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
                 </Text>
               </PressableScale>
               </View>
+              {hasGeneratedContent ? (
+                <PressableScale
+                  onPress={onReportGeneratedContent}
+                  className="mt-2 min-h-[44px] flex-row items-center justify-center gap-1.5 self-center px-3"
+                  hitSlop={{ top: 4, bottom: 4, left: 8, right: 8 }}
+                  accessibilityRole="link"
+                  testID={TID.Button.DreamReport}
+                >
+                  <IconSymbol name="flag" size={15} color={noctalia.text.tertiary} />
+                  <Text className="font-sans text-[13px] text-ivory-muted">
+                    {t('journal.detail.report.button')}
+                  </Text>
+                </PressableScale>
+              ) : null}
               <JournalFolio folio={folio} className="mt-8" turns="dream" />
             </View>
             </View>
@@ -3614,17 +3530,6 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
             </View>
           </View>
         </Modal>
-
-        <ReferenceImageSheet
-          visible={referenceImagesEnabled && showReferenceSheet}
-          subjectType={referenceSubjectType}
-          referenceImages={referenceImages}
-          isGenerating={isGeneratingWithReference}
-          onClose={handleReferenceSheetClose}
-          onPrimary={handleGenerateWithReference}
-          onSecondary={handleReferenceSheetClose}
-          onImagesSelected={handleReferenceImagesSelected}
-        />
 
         {savedConfirmationVisible && !opensOnSavedMoment ? (
           <Toast

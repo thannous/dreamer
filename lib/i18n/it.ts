@@ -549,6 +549,9 @@ const translations: Record<string, string> = {
     'journal.back_button': 'Indietro',
     'journal.menu.share': 'Condividi citazione',
     'journal.menu.delete': 'Elimina sogno',
+    'journal.detail.report.button': 'Segnala contenuto generato',
+    'journal.detail.report.subject': 'Segnalazione di un contenuto generato',
+    'journal.detail.report.body': 'Dicci cosa non va nell’analisi, nell’immagine o nella conversazione di questo sogno:\n\n\n\nRiferimento del sogno: {reference}',
     "journal.original_transcript": "Il mio racconto",
     'journal.detail.not_found.title': 'Sogno non trovato.',
     'journal.detail.not_found.back': 'Torna indietro',
@@ -1807,37 +1810,8 @@ const translations: Record<string, string> = {
     'notifications.prompt.morning_14': 'Quale storia, se ce n’è una, ti ha lasciato la notte?',
     'notifications.prompt.morning_15': 'Senza fretta. Il diario può conservare un sogno quando sei pronto.',
 
-    // Reference image picker
-    'reference_image.title_person': 'Aggiungi una foto di questa persona',
-    'reference_image.title_animal': 'Aggiungi una foto di questo animale',
-    'reference_image.subtitle': 'Aggiungi 1 foto di riferimento chiara per personalizzare l\'immagine del sogno con le sue sembianze.',
-    'reference_image.selected_count': '{count}/{max} foto selezionate',
-    'reference_image.permission_title': 'Accesso alle foto necessario',
-    'reference_image.permission_message': 'Consenti l\'accesso alla tua libreria foto per aggiungere immagini di riferimento.',
-    'reference_image.compression_error_title': 'Immagine troppo grande',
-    'reference_image.compression_error_message': 'Questa immagine non è stata compressa alla dimensione richiesta. Prova con un\'altra foto.',
-    'reference_image.pick_error': 'Impossibile selezionare l\'immagine. Riprova.',
-    'reference_image.camera_permission_title': 'Accesso alla fotocamera necessario',
-    'reference_image.camera_permission_message': 'Consenti l\'accesso alla fotocamera per scattare una foto.',
-    'reference_image.permission_denied_permanently': 'L\'accesso è stato negato. Puoi abilitarlo nelle impostazioni del dispositivo.',
-    'reference_image.open_settings': 'Apri impostazioni',
-    'reference_image.take_photo': 'Scatta una foto',
-    'reference_image.pick_from_gallery': 'Scegli dalla galleria',
-    'reference_image.confirm': 'Conferma',
-    'reference_image.remove_photo': 'Rimuovi foto {index}',
-    'reference_image.remove_photo_hint': 'Rimuove questa foto dalla tua selezione.',
-
-    // Subject proposition
-    'subject_proposition.title_person': 'Persona rilevata nel tuo sogno',
-    'subject_proposition.title_animal': 'Animale rilevato nel tuo sogno',
-    'subject_proposition.message_person': 'Aggiungi una foto di riferimento per includere le sue sembianze nell\'immagine del sogno generata.',
-    'subject_proposition.message_animal': 'Aggiungi una foto di riferimento per includere le sue sembianze nell\'immagine del sogno generata.',
-    'subject_proposition.accept': 'Aggiungi foto',
-    'subject_proposition.skip': 'Salta',
-
-    // Journal detail - subject actions
-    'journal.detail.add_person': 'Aggiungi persona',
-    'journal.detail.add_animal': 'Aggiungi animale',
+    // Permission settings
+    'recording.alert.open_settings': 'Apri impostazioni',
 
     // Symbol dictionary
     'symbols.dictionary_title': 'Dizionario dei simboli',
@@ -1877,6 +1851,8 @@ const translations: Record<string, string> = {
     'settings.legal.privacyPolicy': 'Informativa sulla privacy',
     'settings.legal.termsOfUse': 'Termini di utilizzo',
     'settings.legal.accountDeletion': 'Informazioni sull’eliminazione dell’account',
+    'settings.legal.contact': 'Scrivici',
+    'contact.mail_unavailable': 'Su questo dispositivo non c’è un’app di posta. Scrivici a {email}.',
     'settings.deleteAccount.title': 'Elimina account',
     'settings.deleteAccount.description': 'Elimina definitivamente il tuo account e tutti i dati associati.',
     'settings.deleteAccount.confirmTitle': 'Eliminare il tuo account?',

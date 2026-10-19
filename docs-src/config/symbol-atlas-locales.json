@@ -807,6 +807,198 @@
           "brise": {"variation":"Espelho quebrado","anchor":"quebrado"},
           "absent": {"variation":"Não ver o próprio reflexo","anchor":"sem-reflexo"}
       } }
+    },
+    "horse": {
+      "fr": { "caveat": null, "scenes": {
+          "balade": {"variation":"Monter un cheval tranquillement","anchor":"balade"},
+          "emballe": {"variation":"Un cheval qui s'emballe ou n'obéit pas","anchor":"emballe"},
+          "liberte": {"variation":"Des chevaux sauvages en liberté","anchor":"liberte"}
+      } },
+      "en": { "caveat": null, "scenes": {
+          "balade": {"variation":"Riding a horse calmly","anchor":"riding"},
+          "emballe": {"variation":"A horse that bolts or will not obey","anchor":"bolting"},
+          "liberte": {"variation":"Wild horses running free","anchor":"wild-horses"}
+      } },
+      "es": { "caveat": null, "scenes": {
+          "balade": {"variation":"Montar a caballo con calma","anchor":"paseo"},
+          "emballe": {"variation":"Un caballo desbocado o que no obedece","anchor":"desbocado"},
+          "liberte": {"variation":"Caballos salvajes corriendo en libertad","anchor":"libertad"}
+      } },
+      "de": { "caveat": null, "scenes": {
+          "balade": {"variation":"Ruhig auf einem Pferd reiten","anchor":"ausritt"},
+          "emballe": {"variation":"Ein Pferd geht durch oder gehorcht nicht","anchor":"durchgehen"},
+          "liberte": {"variation":"Wilde Pferde in Freiheit","anchor":"freiheit"}
+      } },
+      "it": { "caveat": null, "scenes": {
+          "balade": {"variation":"Cavalcare tranquillamente","anchor":"cavalcata"},
+          "emballe": {"variation":"Un cavallo imbizzarrito o che non obbedisce","anchor":"imbizzarrito"},
+          "liberte": {"variation":"Cavalli selvaggi in libertà","anchor":"liberta"}
+      } },
+      "pt-br": { "caveat": null, "scenes": {
+          "balade": {"variation":"Cavalgar com confiança","anchor":"cavalgada"},
+          "emballe": {"variation":"Um cavalo que dispara ou não obedece","anchor":"disparado"},
+          "liberte": {"variation":"Cavalo selvagem correndo solto","anchor":"solto"}
+      } }
+    },
+    "castle": {
+      "fr": { "caveat": null, "scenes": {
+          "exploration": {"variation":"Explorer un château aux pièces sans fin","anchor":"exploration"},
+          "grille": {"variation":"Rester bloqué devant la grille","anchor":"grille"},
+          "ruine": {"variation":"Un château en ruine","anchor":"ruine"}
+      } },
+      "en": { "caveat": null, "scenes": {
+          "exploration": {"variation":"Exploring a castle with endless rooms","anchor":"exploring"},
+          "grille": {"variation":"Being locked out at the gate","anchor":"gate"},
+          "ruine": {"variation":"A castle in ruins","anchor":"ruins"}
+      } },
+      "es": { "caveat": null, "scenes": {
+          "exploration": {"variation":"Explorar un castillo de salas infinitas","anchor":"explorar"},
+          "grille": {"variation":"Quedarse fuera, ante la verja","anchor":"verja"},
+          "ruine": {"variation":"Un castillo en ruinas","anchor":"ruinas"}
+      } },
+      "de": { "caveat": null, "scenes": {
+          "exploration": {"variation":"Ein Schloss mit endlosen Räumen erkunden","anchor":"erkunden"},
+          "grille": {"variation":"Vor dem Burgtor ausgesperrt sein","anchor":"burgtor"},
+          "ruine": {"variation":"Eine Burgruine","anchor":"ruine"}
+      } },
+      "it": { "caveat": null, "scenes": {
+          "exploration": {"variation":"Esplorare un castello dalle stanze infinite","anchor":"esplorare"},
+          "grille": {"variation":"Restare chiusi fuori dal cancello","anchor":"cancello"},
+          "ruine": {"variation":"Un castello in rovina","anchor":"rovina"}
+      } },
+      "pt-br": { "caveat": null, "scenes": {
+          "exploration": {"variation":"Explorar um castelo de salas sem fim","anchor":"explorar"},
+          "grille": {"variation":"Ficar barrado no portão","anchor":"portao"},
+          "ruine": {"variation":"Um castelo em ruínas","anchor":"ruinas"}
+      } }
+    },
+    "stars": {
+      "fr": { "caveat": null, "scenes": {
+          "ciel": {"variation":"Un ciel plein d'étoiles","anchor":"ciel"},
+          "filante": {"variation":"Une étoile filante","anchor":"filante"},
+          "guide": {"variation":"Une étoile brillante qui guide","anchor":"guide"}
+      } },
+      "en": { "caveat": null, "scenes": {
+          "ciel": {"variation":"A sky full of stars","anchor":"sky"},
+          "filante": {"variation":"A shooting star","anchor":"shooting-star"},
+          "guide": {"variation":"One bright star guiding you","anchor":"guiding-star"}
+      } },
+      "es": { "caveat": null, "scenes": {
+          "ciel": {"variation":"Un cielo lleno de estrellas","anchor":"cielo"},
+          "filante": {"variation":"Una estrella fugaz","anchor":"fugaz"},
+          "guide": {"variation":"Una estrella brillante que te guía","anchor":"guia"}
+      } },
+      "de": { "caveat": null, "scenes": {
+          "ciel": {"variation":"Ein Himmel voller Sterne","anchor":"himmel"},
+          "filante": {"variation":"Eine Sternschnuppe","anchor":"sternschnuppe"},
+          "guide": {"variation":"Ein heller Stern, der Sie leitet","anchor":"leitstern"}
+      } },
+      "it": { "caveat": null, "scenes": {
+          "ciel": {"variation":"Un cielo pieno di stelle","anchor":"cielo"},
+          "filante": {"variation":"Una stella cadente","anchor":"cadente"},
+          "guide": {"variation":"Una stella luminosa che ti guida","anchor":"guida"}
+      } },
+      "pt-br": { "caveat": null, "scenes": {
+          "ciel": {"variation":"Um céu cheio de estrelas","anchor":"ceu"},
+          "filante": {"variation":"Uma estrela cadente","anchor":"cadente"},
+          "guide": {"variation":"Uma estrela brilhante que guia você","anchor":"guia"}
+      } }
+    },
+    "flowers": {
+      "fr": { "caveat": null, "scenes": {
+          "bouquet": {"variation":"Recevoir un bouquet","anchor":"bouquet"},
+          "fanees": {"variation":"Des fleurs fanées ou séchées","anchor":"fanees"},
+          "prairie": {"variation":"Un champ ou un pré en fleurs","anchor":"prairie"}
+      } },
+      "en": { "caveat": null, "scenes": {
+          "bouquet": {"variation":"Receiving a bouquet","anchor":"bouquet"},
+          "fanees": {"variation":"Wilted or dried flowers","anchor":"wilted"},
+          "prairie": {"variation":"A field or meadow in bloom","anchor":"meadow"}
+      } },
+      "es": { "caveat": null, "scenes": {
+          "bouquet": {"variation":"Recibir un ramo","anchor":"ramo"},
+          "fanees": {"variation":"Flores marchitas o secas","anchor":"marchitas"},
+          "prairie": {"variation":"Un campo o un prado en flor","anchor":"prado"}
+      } },
+      "de": { "caveat": null, "scenes": {
+          "bouquet": {"variation":"Einen Blumenstrauß bekommen","anchor":"strauss"},
+          "fanees": {"variation":"Verwelkte oder getrocknete Blumen","anchor":"verwelkt"},
+          "prairie": {"variation":"Eine blühende Wiese","anchor":"wiese"}
+      } },
+      "it": { "caveat": null, "scenes": {
+          "bouquet": {"variation":"Ricevere un mazzo di fiori","anchor":"mazzo"},
+          "fanees": {"variation":"Fiori appassiti o secchi","anchor":"appassiti"},
+          "prairie": {"variation":"Un prato o un campo fiorito","anchor":"prato"}
+      } },
+      "pt-br": { "caveat": null, "scenes": {
+          "bouquet": {"variation":"Ganhar um buquê","anchor":"buque"},
+          "fanees": {"variation":"Flores murchas ou secas","anchor":"murchas"},
+          "prairie": {"variation":"Um campo florido","anchor":"campo"}
+      } }
+    },
+    "baby": {
+      "fr": { "caveat": null, "scenes": {
+          "soins": {"variation":"S'occuper d'un bébé","anchor":"soins"},
+          "pleurs": {"variation":"Un bébé qui pleure","anchor":"pleurs"},
+          "trouver": {"variation":"Trouver un bébé","anchor":"trouver"}
+      } },
+      "en": { "caveat": null, "scenes": {
+          "soins": {"variation":"Caring for a baby","anchor":"caring"},
+          "pleurs": {"variation":"A crying baby","anchor":"crying"},
+          "trouver": {"variation":"Finding a baby","anchor":"finding"}
+      } },
+      "es": { "caveat": null, "scenes": {
+          "soins": {"variation":"Cuidar a un bebé","anchor":"cuidar"},
+          "pleurs": {"variation":"Un bebé llorando","anchor":"llanto"},
+          "trouver": {"variation":"Encontrar un bebé","anchor":"encontrar"}
+      } },
+      "de": { "caveat": null, "scenes": {
+          "soins": {"variation":"Sich um ein Baby kümmern","anchor":"kuemmern"},
+          "pleurs": {"variation":"Ein weinendes Baby","anchor":"weinen"},
+          "trouver": {"variation":"Ein Baby finden","anchor":"finden"}
+      } },
+      "it": { "caveat": null, "scenes": {
+          "soins": {"variation":"Prendersi cura di un bambino","anchor":"cura"},
+          "pleurs": {"variation":"Un bambino che piange","anchor":"pianto"},
+          "trouver": {"variation":"Trovare un bambino","anchor":"trovare"}
+      } },
+      "pt-br": { "caveat": null, "scenes": {
+          "soins": {"variation":"Cuidar de um bebê","anchor":"cuidar"},
+          "pleurs": {"variation":"Um bebê chorando","anchor":"choro"},
+          "trouver": {"variation":"Encontrar um bebê","anchor":"encontrar"}
+      } }
+    },
+    "storm": {
+      "fr": { "caveat": null, "scenes": {
+          "approche": {"variation":"Orage qui approche","anchor":"approche"},
+          "expose": {"variation":"Être pris dans l'orage","anchor":"expose"},
+          "abri": {"variation":"Regarder l'orage depuis un abri","anchor":"abri"}
+      } },
+      "en": { "caveat": null, "scenes": {
+          "approche": {"variation":"Approaching storm","anchor":"approaching"},
+          "expose": {"variation":"Caught in a storm","anchor":"caught"},
+          "abri": {"variation":"Watching a storm from shelter","anchor":"shelter"}
+      } },
+      "es": { "caveat": null, "scenes": {
+          "approche": {"variation":"Tormenta que se acerca","anchor":"se-acerca"},
+          "expose": {"variation":"Quedarte atrapado en la tormenta","anchor":"atrapado"},
+          "abri": {"variation":"Ver la tormenta desde un refugio","anchor":"refugio"}
+      } },
+      "de": { "caveat": null, "scenes": {
+          "approche": {"variation":"Aufziehender Sturm","anchor":"aufziehend"},
+          "expose": {"variation":"In einen Sturm geraten","anchor":"geraten"},
+          "abri": {"variation":"Den Sturm aus dem Schutz heraus beobachten","anchor":"schutz"}
+      } },
+      "it": { "caveat": null, "scenes": {
+          "approche": {"variation":"Tempesta in arrivo","anchor":"in-arrivo"},
+          "expose": {"variation":"Essere sorpresi dalla tempesta","anchor":"sorpresi"},
+          "abri": {"variation":"Guardare la tempesta da un riparo","anchor":"riparo"}
+      } },
+      "pt-br": { "caveat": null, "scenes": {
+          "approche": {"variation":"Tempestade se aproximando","anchor":"aproximando"},
+          "expose": {"variation":"Ser pego pela tempestade","anchor":"pego"},
+          "abri": {"variation":"Ver a tempestade de um abrigo","anchor":"abrigo"}
+      } }
     }
   }
 }

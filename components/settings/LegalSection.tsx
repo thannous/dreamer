@@ -10,6 +10,7 @@ import {
 import { PressableScale } from '@/components/motion';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { getLegalLink, type LegalLinkKind } from '@/constants/legalLinks';
+import { CONTACT_EMAIL, openContactMail } from '@/lib/contact';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { SettingsSection } from './SettingsSection';
 import { SettingsToggle } from './SettingsToggle';
@@ -74,6 +75,13 @@ export function LegalSection() {
     },
     [currentLang]
   );
+
+  const writeToUs = useCallback(() => {
+    void openContactMail({
+      unavailableTitle: t('settings.legal.contact'),
+      unavailableMessage: t('contact.mail_unavailable', { email: CONTACT_EMAIL }),
+    });
+  }, [t]);
 
   const runDeletion = useCallback(() => {
     if (isDeleting || !user) return;
@@ -198,6 +206,22 @@ export function LegalSection() {
           <IconSymbol name="chevron.right" size={20} color={noctalia.text.tertiary} />
         </PressableScale>
       ))}
+      <PressableScale
+        accessibilityRole="link"
+        onPress={writeToUs}
+        className={ROW_CLASS}
+        hitSlop={NO_HIT_SLOP}
+        testID="settings-legal-contact"
+      >
+        <IconSymbol name="envelope" size={21} color={noctalia.accent.text} />
+        <View className="flex-1 gap-0.5">
+          <Text className="flex-1 font-sans text-[15px] leading-[20px] text-ivory">
+            {t('settings.legal.contact')}
+          </Text>
+          <Text className="font-sans text-caption text-ivory-muted">{CONTACT_EMAIL}</Text>
+        </View>
+        <IconSymbol name="chevron.right" size={20} color={noctalia.text.tertiary} />
+      </PressableScale>
       {user ? (
         <PressableScale
           accessibilityRole="button"

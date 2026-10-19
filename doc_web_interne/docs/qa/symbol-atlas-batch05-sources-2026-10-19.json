@@ -1,0 +1,238 @@
+{
+  "schema": "noctalia.atlas-source-library/1",
+  "lot": "lot-05",
+  "symbols": [
+    "horse",
+    "castle",
+    "stars",
+    "flowers",
+    "baby",
+    "storm"
+  ],
+  "webLanguages": [
+    "en",
+    "fr",
+    "es",
+    "de",
+    "it",
+    "pt-br"
+  ],
+  "sourceArchive": {
+    "file": "source-library-batch05-v1.zip",
+    "sha256": "48188e01a3c46e8284ecdab11687986700d58ceea85b6864872c309ffb44549c",
+    "location": "output/noctalia-symbols-batch05-2026-10-19/source-library-batch05-v1.zip",
+    "availability": "local portable archive; not shipped as a public site asset"
+  },
+  "roles": 48,
+  "newBuiltInImageGenSources": 41,
+  "byteExactReusedTextures": 7,
+  "selection": "Agent-selected by Codex; delegated selection is distinct from individual visual approval. Publication explicitly requested by Thanh.",
+  "artDirection": "Approved Noctalia ink, indigo/violet paintings with local ivory/champagne light; stable bases and two independent ambient raster channels per surface",
+  "sourceHandling": "Native PNGs, prompts, hashes and generation/reuse records retained in each pack. Alpha verified by canonical atlas:pack. Canonical AVIF/WebP derivatives only, no upscaling or destructive crop.",
+  "sourceSizes": {
+    "horse": {
+      "hero": [
+        1672,
+        941
+      ],
+      "portrait": [
+        941,
+        1672
+      ],
+      "plate": [
+        1254,
+        1254
+      ],
+      "scene-balade": [
+        1672,
+        941
+      ],
+      "scene-emballe": [
+        1672,
+        941
+      ],
+      "scene-liberte": [
+        1672,
+        941
+      ],
+      "layer": [
+        1672,
+        941
+      ],
+      "accent": [
+        1672,
+        941
+      ]
+    },
+    "castle": {
+      "hero": [
+        1672,
+        941
+      ],
+      "portrait": [
+        940,
+        1672
+      ],
+      "plate": [
+        1254,
+        1254
+      ],
+      "scene-exploration": [
+        1672,
+        941
+      ],
+      "scene-grille": [
+        1672,
+        941
+      ],
+      "scene-ruine": [
+        1672,
+        941
+      ],
+      "layer": [
+        1672,
+        941
+      ],
+      "accent": [
+        1672,
+        941
+      ]
+    },
+    "stars": {
+      "hero": [
+        1672,
+        941
+      ],
+      "portrait": [
+        941,
+        1672
+      ],
+      "plate": [
+        1254,
+        1254
+      ],
+      "scene-ciel": [
+        1672,
+        941
+      ],
+      "scene-filante": [
+        1672,
+        941
+      ],
+      "scene-guide": [
+        1672,
+        941
+      ],
+      "layer": [
+        1672,
+        941
+      ],
+      "accent": [
+        1672,
+        941
+      ]
+    },
+    "flowers": {
+      "hero": [
+        1672,
+        941
+      ],
+      "portrait": [
+        941,
+        1672
+      ],
+      "plate": [
+        1254,
+        1254
+      ],
+      "scene-bouquet": [
+        1672,
+        941
+      ],
+      "scene-fanees": [
+        1672,
+        941
+      ],
+      "scene-prairie": [
+        1672,
+        941
+      ],
+      "layer": [
+        1672,
+        941
+      ],
+      "accent": [
+        1672,
+        941
+      ]
+    },
+    "baby": {
+      "hero": [
+        1672,
+        940
+      ],
+      "portrait": [
+        941,
+        1672
+      ],
+      "plate": [
+        1254,
+        1254
+      ],
+      "scene-soins": [
+        1672,
+        941
+      ],
+      "scene-pleurs": [
+        1672,
+        941
+      ],
+      "scene-trouver": [
+        1672,
+        941
+      ],
+      "layer": [
+        1672,
+        941
+      ],
+      "accent": [
+        1672,
+        941
+      ]
+    },
+    "storm": {
+      "hero": [
+        1672,
+        941
+      ],
+      "portrait": [
+        941,
+        1672
+      ],
+      "plate": [
+        1254,
+        1254
+      ],
+      "scene-approche": [
+        1672,
+        941
+      ],
+      "scene-expose": [
+        1672,
+        941
+      ],
+      "scene-abri": [
+        1672,
+        941
+      ],
+      "layer": [
+        1672,
+        941
+      ],
+      "accent": [
+        1672,
+        941
+      ]
+    }
+  }
+}
