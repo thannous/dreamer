@@ -72,13 +72,16 @@ Existing quality, native and backend gates remain in place.
 
 ## Billing without real payments
 
-`web/billing.spec.ts` adds eight journeys: monthly/annual purchase, cancelled
+Billing journeys run in TesterArmy, in `tools/e2e/tests/dreamer-billing.web.e2e.ts`
+(the former `web/billing.spec.ts` was retired on 2026-10-19 after its eight journeys
+were covered there under the same titles): monthly/annual purchase, cancelled
 checkout and retry, purchase error and recovery, restoration with/without a receipt,
-cancelled renewal followed by expiry, and receipt ownership across account switches.
+cancelled renewal followed by expiry, and receipt ownership across account switches,
+plus delayed server activation and the return to the offer after signing in.
 Expired access cannot be restored as active; journal content remains available.
 
 Run only these cases with:
-`mise exec -- npm run test:e2e:web -- e2e/web/billing.spec.ts`.
+`npm run test:testerarmy -- run --grep 'mock|restore|receipt|cancelled renewal'`.
 The browser blocks every request outside the local app and fails if the app attempts
 to contact a recognized billing or Supabase host. The suite also asserts the mock
 service mode before interacting with the paywall. No card, store account, real
