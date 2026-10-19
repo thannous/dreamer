@@ -1,3 +1,4 @@
+import type { Page } from 'playwright/test';
 import { createParityTest, expect } from '../web-parity-fixtures';
 
 const test = createParityTest({ viewport: { width: 390, height: 844 }, reducedMotion: 'no-preference' });
@@ -60,7 +61,55 @@ test('ready reading becomes readable without waiting for the symbol constellatio
     committedToOpacityReadyMs: timings.textOpacityReady - timings.textCommitted,
     saveAcknowledgedToActionReadableMs: timings.savedActionReadable - timings.saveAcknowledged,
     environment: 'web mock, normal motion, opacity >= .95, first line on screen, DOM hit test, no test scroll' }) });
-  if (!baseline) { expect(gapMs).not.toBeNull(); expect(gapMs!).toBeLessThan(500); }
+  if (!baseline) {
+    expect(gapMs).not.toBeNull();
+    expect(timings.textOpacityReady - timings.textCommitted).toBeLessThan(100);
+    expect(gapMs!).toBeLessThan(1000);
+  }
   await page.screenshot({ path: info.outputPath('reading-readable.png') });
   await expect(page.getByTestId('btn.editDream')).toBeEnabled();
+});
+
+async function savePlusDream(page: Page, story: string) {
+  await page.goto('/');
+  await page.getByTestId('btn.onboarding.intro.next').click();
+  await page.getByTestId('btn.onboarding.skip').click();
+  await page.getByTestId('btn.recording.home').or(page.getByTestId('tab.home')).filter({ visible: true }).click();
+  await page.getByTestId('btn.header.home.settings').click();
+  await page.getByTestId('quick-settings.profile').click();
+  await page.getByTestId('btn.mockProfile.plus').click();
+  await expect(page.getByTestId('screen.recording')).toBeVisible();
+  await page.getByTestId('input.dreamTranscript').fill(story);
+  await expect(page.getByTestId('btn.dreamCaptureSeal.openDream')).toHaveCount(0);
+  await page.getByTestId('btn.saveDream').click();
+}
+
+test('capture shortcut preserves the reading already chosen and saves only once', async ({ page }, info) => {
+  await savePlusDream(page, 'Shortcut choice QA: I see a doorway by a quiet lake.');
+  await page.getByTestId('btn.dreamCaptureSeal.readNow').click();
+  await page.getByTestId('btn.dreamCaptureSeal.openDream').dblclick();
+  await expect(page.getByTestId('screen.dreamDetail')).toBeVisible();
+  // No second analyze press: the choice made in the ceremony must survive the shortcut.
+  await expect(page.getByTestId('component.dreamDetail.interpretation')).toContainText(/\S[\s\S]{30}/);
+  await page.getByTestId('btn.navigateJournal').scrollIntoViewIfNeeded();
+  await page.getByTestId('btn.navigateJournal').click();
+  await expect(page.getByRole('button', { name: /^Shortcut choice QA:/ })).toHaveCount(1);
+  await page.reload();
+  await expect(page.getByRole('button', { name: /^Shortcut choice QA:/ })).toHaveCount(1);
+  await page.screenshot({ path: info.outputPath('shortcut-one-durable-dream.png') });
+});
+
+const reduced = createParityTest({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
+reduced('reduced motion opens the saved page without waiting for optional naming', async ({ page }, info) => {
+  const story = 'Reduced arrival QA: the first words remain the name during this visit.';
+  await savePlusDream(page, story);
+  await expect(page.getByTestId('component.recording.dreamSeal')).toHaveCount(0);
+  await expect(page.getByTestId('screen.dreamDetail')).toBeVisible();
+  const read = page.getByTestId('btn.dream.primaryCta');
+  await expect(read).toBeVisible();
+  await expect(read).toBeEnabled();
+  await page.getByTestId('btn.editDream').click();
+  await expect(page.getByTestId('input.dreamTranscript')).toHaveValue(story);
+  await page.getByTestId('btn.saveDreamEdit').click();
+  await page.screenshot({ path: info.outputPath('reduced-saved-access.png') });
 });

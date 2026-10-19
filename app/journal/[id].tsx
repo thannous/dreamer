@@ -1133,7 +1133,9 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     : showCompletedReading ? 'read' : 'saved';
   const reducedMotion = useReducedMotion();
   const readingZoneTopRef = useRef<number | null>(null);
-  const [interpretationTop, setInterpretationTop] = useState<number | null>(null);
+  const readingLayoutKey = dream?.analysisRequestId ?? `${dream?.id}:${dream?.analyzedAt ?? 0}`;
+  const [interpretationLayout, setInterpretationLayout] = useState<{ key: string; top: number } | null>(null);
+  const interpretationTop = interpretationLayout?.key === readingLayoutKey ? interpretationLayout.top : null;
   const readingRevealScrolledRef = useRef(false);
   const isImageJobPending = illustrationSidecar === 'pending';
   const isSyncPending = dreamSyncState === 'pending';
@@ -3210,7 +3212,9 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
                 onLayout={({ nativeEvent }) => { readingZoneTopRef.current = nativeEvent.layout.y; }}>
                 <DreamAnalysisContent dream={dream}
                   pending={isAnalysisPending || readingAwaited}
-                  onInterpretationLayout={({ nativeEvent: { layout } }) => setInterpretationTop(layout.y)}
+                  onInterpretationLayout={({ nativeEvent: { layout } }) => setInterpretationLayout((current) =>
+                    current?.key === readingLayoutKey && current.top === layout.y
+                      ? current : { key: readingLayoutKey, top: layout.y })}
                   reveal={readingStory === 'revealed'} />
               </OpenUp>
             ) : null}
