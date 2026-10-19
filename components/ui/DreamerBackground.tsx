@@ -26,19 +26,22 @@ type Props = {
   immersive?: boolean;
   /** Open scene: where the title block starts, in points, so the page's ground rises behind it. */
   titleTop?: number;
+  /** The painting does not breathe: for a page whose own motion would compete with it. */
+  still?: boolean;
 };
 
 /**
  * The painting itself, alive: it breathes slowly and lags behind the page as it scrolls,
  * so the scene seems to lie deeper than the copy over it.
  */
-function PaintingLayer({ height, frame, children }: {
+function PaintingLayer({ height, frame, still, children }: {
   height: number;
   frame: 'scrolls' | 'fixed';
+  still?: boolean;
   children: React.ReactNode;
 }) {
   const depth = usePaintingDepthStyle(height, frame);
-  const breath = usePaintingBreath();
+  const breath = usePaintingBreath(still);
   return <Animated.View style={[StyleSheet.absoluteFill, depth]}>
     <Animated.View style={[StyleSheet.absoluteFill, breath]}>{children}</Animated.View>
   </Animated.View>;
@@ -87,7 +90,7 @@ export function DreamerArtworkWindow({ scene, style, bleedTop = 0, maxHeight = 2
 }
 
 /** A static, decorative painting fades into the page's own readable ground. */
-export function DreamerBackground({ scene, height, background, pinned = false, fadeEnd, fadeOnScroll = true, fixed = false, immersive = false, titleTop }: Props) {
+export function DreamerBackground({ scene, height, background, pinned = false, fadeEnd, fadeOnScroll = true, fixed = false, immersive = false, titleTop, still }: Props) {
   const { colors, mode } = useTheme();
   const tokens = getNoctaliaDesignTokens(colors, mode);
   const insets = useSafeAreaInsets();
@@ -120,7 +123,7 @@ export function DreamerBackground({ scene, height, background, pinned = false, f
       style={[styles.band, { height, backgroundColor: ground }, stretch]}
     >
       {failedArtwork !== artworkKey ? (
-        <PaintingLayer height={height} frame={fixed ? 'fixed' : 'scrolls'}>
+        <PaintingLayer height={height} frame={fixed ? 'fixed' : 'scrolls'} still={still}>
         <Image
           testID={`image.background.${scene}`}
           accessible={false}

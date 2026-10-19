@@ -69,12 +69,12 @@ export const useOnScreen: () => boolean = typeof useIsFocused === 'function' ? u
 
 /**
  * A painting breathes: a slow zoom in and out, as if the scene were still dreaming.
- * Only on the screen in front, and never with reduced motion.
+ * Only on the screen in front, and never with reduced motion or a painting held `still`.
  */
-export function usePaintingBreath() {
+export function usePaintingBreath(still = false) {
   const reduced = useReducedMotion();
   const onScreen = useOnScreen();
-  if (reduced) return null;
+  if (reduced || still) return null;
   return {
     animationName: { from: { transform: [{ scale: 1 }] }, to: { transform: [{ scale: 1.07 }] } },
     animationDuration: '18s',

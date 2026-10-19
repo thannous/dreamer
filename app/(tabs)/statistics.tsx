@@ -204,6 +204,9 @@ function StatisticsScreen() {
       titleKey="trends.title"
       variant="tab"
       immersive
+      // The painting holds still here: on Android each frame of its breath redraws the whole
+      // page, seal included, so the page at rest kept most of the render thread busy.
+      stillBackdrop
       actions={[
         {
           icon: 'gear',

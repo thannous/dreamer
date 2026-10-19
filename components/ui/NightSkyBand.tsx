@@ -6,7 +6,7 @@ import type { DreamerScene } from '@/constants/dreamerArtwork';
  * Compatibility entry point for a painted header in either theme.
  * Decorative: hidden from assistive technology and never intercepts touches.
  */
-export function NightSkyBand({ height, background, scene = 'reverie', pinned, fadeEnd, fadeOnScroll, fixed, immersive, titleTop }: {
+export function NightSkyBand({ height, background, scene = 'reverie', pinned, fadeEnd, fadeOnScroll, fixed, immersive, titleTop, still }: {
   height: number;
   background: string;
   scene?: DreamerScene;
@@ -16,6 +16,7 @@ export function NightSkyBand({ height, background, scene = 'reverie', pinned, fa
   fixed?: boolean;
   immersive?: boolean;
   titleTop?: number;
+  still?: boolean;
 }) {
-  return <DreamerBackground height={height} background={background} scene={scene} pinned={pinned} fadeEnd={fadeEnd} fadeOnScroll={fadeOnScroll} fixed={fixed} immersive={immersive} titleTop={titleTop} />;
+  return <DreamerBackground height={height} background={background} scene={scene} pinned={pinned} fadeEnd={fadeEnd} fadeOnScroll={fadeOnScroll} fixed={fixed} immersive={immersive} titleTop={titleTop} still={still} />;
 }
