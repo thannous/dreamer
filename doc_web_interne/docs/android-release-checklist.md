@@ -87,7 +87,7 @@ TesterArmy local d'un build Release `production-apk` du candidat, installé sur 
 ```bash
 EXPO_NO_DOTENV=1 EXPO_OFFLINE=1 E2E_BUILD_PROFILE=production-apk \
   EXPO_PUBLIC_MOCK_MODE=false EXPO_PUBLIC_MOCK_PERSISTENCE=false \
-  EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=false \
+  EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=true \
   E2E_BUILD_COMMAND='["./gradlew",":app:assembleRelease","--no-daemon"]' \
   E2E_RELEASE_BINARY=android/app/build/outputs/apk/release/app-release.apk \
   mise exec -- node tools/e2e/run.mjs dreamer android build

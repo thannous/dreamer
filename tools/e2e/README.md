@@ -145,10 +145,12 @@ and `app.restart()` methods use `config.timeout`, capped by the remaining test
 budget. A per-test timeout alone does not raise that lifecycle limit. Other
 products and native targets keep 120 seconds; action/assertion limits and retries
 remain unchanged.
-For the opt-in onboarding story, use
+The app shows the onboarding story unless
+`EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=false`. The config forwards an
+explicit value to the app command: `true` only when the run sets it, as in
 `EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=true mise exec -- node tools/e2e/run.mjs dreamer web run --trace`.
-The config forwards this opt-in to the app command; without it, the story test
-is explicitly skipped and does not constitute qualification of that feature.
+Without it, the story test is explicitly skipped and does not constitute
+qualification of the shipped onboarding.
 Dreamer also verifies that Quick Settings actually selects French and both
 themes while preserving the Capture draft and language after reload. This
 guards the web click regression from using a native gesture pressable there.
@@ -253,7 +255,7 @@ as passed. Four commands jointly qualify all cases:
 EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=true E2E_WEB_LOCALE=en-US mise exec -- node tools/e2e/run.mjs dreamer web run
 EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=true E2E_WEB_LOCALE=fr-FR mise exec -- node tools/e2e/run.mjs dreamer web run --tag locale-fr-FR
 EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=true E2E_WEB_LOCALE=de-DE mise exec -- node tools/e2e/run.mjs dreamer web run --tag locale-de-DE
-EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=false E2E_WEB_LOCALE=en-US mise exec -- node tools/e2e/run.mjs dreamer web run --grep 'feature sheets stay disabled by default'
+EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=false E2E_WEB_LOCALE=en-US mise exec -- node tools/e2e/run.mjs dreamer web run --grep 'feature sheets stay disabled when switched off'
 ```
 
 The existing Dreamer CI check runs the same four passes and retains every
@@ -343,7 +345,7 @@ Example from an isolated checkout with an existing Android project:
 ```sh
 EXPO_NO_DOTENV=1 EXPO_OFFLINE=1 E2E_BUILD_PROFILE=production-apk \
   EXPO_PUBLIC_MOCK_MODE=false EXPO_PUBLIC_MOCK_PERSISTENCE=false \
-  EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=false \
+  EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=true \
   E2E_BUILD_COMMAND='["./gradlew",":app:assembleRelease","--no-daemon"]' \
   E2E_RELEASE_BINARY=android/app/build/outputs/apk/release/app-release.apk \
   mise exec -- node tools/e2e/run.mjs dreamer android build

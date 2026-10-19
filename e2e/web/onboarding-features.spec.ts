@@ -50,7 +50,7 @@ test.beforeEach(async ({ page }) => {
   await expect(page.getByText('NOCTALIA', { exact: true })).toHaveCount(0);
 });
 
-test('feature sheets stay disabled by default while onboarding and privacy remain usable', async ({ page }, testInfo) => {
+test('feature sheets stay disabled when switched off while onboarding and privacy remain usable', async ({ page }, testInfo) => {
   test.skip(process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true', 'The feature flag is enabled for this bundle.');
   for (const feature of ['capture', 'connect', 'explore']) {
     const signal = page.getByTestId(`btn.onboarding.feature.${feature}`);
@@ -93,7 +93,7 @@ test('the welcome and path remain inside the viewport without off-canvas horizon
 });
 
 test.describe('feature sheet previews', () => {
-  test.skip(process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED !== 'true', 'Feature sheets require explicit opt-in.');
+  test.skip(process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED !== 'true', 'Feature sheets are switched off for this bundle.');
 
   for (const theme of ['light', 'dark'] as const) {
     test(`each promise closes with the top-right cross and restores focus in ${theme} theme`, async ({ page }, testInfo) => {

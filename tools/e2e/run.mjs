@@ -186,7 +186,7 @@ async function buildRelease() {
   const profile = {
     name: buildEnv.E2E_BUILD_PROFILE,
     mock: buildEnv.EXPO_PUBLIC_MOCK_MODE === 'true', persistence: buildEnv.EXPO_PUBLIC_MOCK_PERSISTENCE === 'true',
-    audioMock: buildEnv.EXPO_PUBLIC_MOCK_AUDIO === 'true', featureSheets: buildEnv.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true',
+    audioMock: buildEnv.EXPO_PUBLIC_MOCK_AUDIO === 'true', featureSheets: buildEnv.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED !== 'false',
     categorizationDelayMs: Number(buildEnv.EXPO_PUBLIC_MOCK_CATEGORIZATION_DELAY_MS ?? 0),
   };
   if (!['production-apk', 'mock-persistent', 'lucid-mock', 'meditation-local'].includes(profile.name)
