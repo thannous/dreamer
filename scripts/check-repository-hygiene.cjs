@@ -17,7 +17,7 @@ function ruleFor(file) {
   const name = path.posix.basename(file);
   if (name === 'settings.local.json' || name === 'CLAUDE.local.md' || name.endsWith('.local.json')
     || name === '.env' || /^\.env.*\.local$/.test(name)
-    || ['.env.real', '.env.supabase', 'credentials.json'].includes(file)) return 'private-local-configuration';
+    || ['.env.real', '.env.supabase', 'credentials.json'].includes(name)) return 'private-local-configuration';
   if (localRoots.some(prefix => file.startsWith(prefix))
     || /(^|\/)(?:node_modules|\.auth|\.e2e|\.expo|\.cache|coverage)\//.test(file)) return 'local-or-generated-output';
   if (retiredDiagnostics.has(file) || /^[^/]+\.log$/.test(file) || /^\.tmp[-.]/.test(file)) return 'temporary-root-artifact';
