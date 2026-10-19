@@ -16,7 +16,7 @@
 //   npm run verify:release:site
 //                           before a noctalia.app publish only: the same run
 //                           without the checks of the `app` target (the web
-//                           app build, its backend journey under Docker and
+//                           app build, its native backend journey and
 //                           the TesterArmy app campaigns), which the static
 //                           site does not ship.
 //
@@ -316,8 +316,9 @@ export default {
     // Negative target/scheduler cases cannot safely be exercised by a live browser journey.
     {
       name: 'backend-runner-guards',
-      command: 'node --test scripts/lib/backend-e2e-local.test.cjs',
-      inputs: ['scripts/lib/backend-e2e-local.cjs', 'scripts/lib/backend-e2e-local.test.cjs', 'scripts/run-backend-e2e.cjs'],
+      command: 'node --test scripts/lib/backend-e2e-local.test.cjs scripts/check-native-supabase-runtime.test.cjs',
+      inputs: ['scripts/lib/backend-e2e-local.cjs', 'scripts/lib/backend-e2e-local.test.cjs', 'scripts/run-backend-e2e.cjs',
+        'scripts/check-native-supabase-runtime.cjs', 'scripts/check-native-supabase-runtime.test.cjs', 'supabase/config.toml'],
     },
     // CLI/index failures happen before UI journeys; keep both refusal cases local.
     // Default whole-tree inputs are intentional: every newly tracked path matters.
@@ -380,9 +381,13 @@ export default {
       kinds: ['release'],
       targets: ['app'],
       specialised: true,
+      // The probe only answers whether the native Supabase runtime can start here
+      // (pinned CLI 2.119+, Linux amd64/arm64 with glibc 2.35+ or macOS 14+ on Apple
+      // silicon). When it fails the check is unavailable, never passed; when it
+      // succeeds the journeys really run and must pass.
       requires: {
-        command: 'docker info',
-        hint: 'run it locally where you run verify:pr (Docker for the disposable local Supabase, Chromium via `npx playwright install chromium`); if this machine cannot, pass --external e2e-backend="owner-machine: <host> <note> on <SHA>" from the machine that ran it; until then the proof is incomplete: do not push, report it as a blocker',
+        command: 'node scripts/check-native-supabase-runtime.cjs',
+        hint: 'run it locally where you run verify:pr (native Supabase runtime, no Docker: `npm ci` for the pinned CLI on Linux amd64/arm64 with glibc 2.35+ or macOS 14+ on Apple silicon; Chromium via `npx playwright install chromium`); if this machine cannot, pass --external e2e-backend="owner-machine: <host> <note> on <SHA>" from the machine that ran it; until then the proof is incomplete: do not push, report it as a blocker',
       },
     },
     {

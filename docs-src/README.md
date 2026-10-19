@@ -333,7 +333,7 @@ then runs `docs:release-check` and uploads an allowlisted directory with
 Right before the upload it fetches and runs every check again, and must
 accept the same `HEAD`, which labels the upload. Run `npm run verify:release:site`
 first, from a clean checkout of the approved `master` SHA: it leaves out the
-app checks (`build:web`, the backend journey under Docker, the TesterArmy app
+app checks (`build:web`, the native backend journey, the TesterArmy app
 campaigns), which the static site does not ship. `docs:deploy:preview`
 is not guarded, but accepts only the exact preview branch `preview` (compared
 byte for byte) and refuses any other value. The token and account

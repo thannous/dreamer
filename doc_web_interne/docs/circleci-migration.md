@@ -31,7 +31,7 @@ Python et sur Linux, avec leurs prérequis. La configuration conserve :
 | Livraison | Moteur de preuve, gardes de publication et de comptes de test, gardes du runner backend, contrats EAS |
 | Meditation | Compatibilité Expo, frontières, types, lint et Jest du package |
 | Site | Build et contrôles du site, campagne TesterArmy site |
-| Backend | Contrats DB statiques, migrations PGlite, types/tests Deno, parcours backend local sous Docker et Chromium |
+| Backend | Contrats DB statiques, migrations PGlite, types/tests Deno, parcours backend local sur le runtime Supabase natif et Chromium |
 | Parcours web | Outillage et gardes TesterArmy, les quatre passes Dreamer, Lucid et Meditation, mêmes cas et assertions sur les deux OS |
 | Sorties livrées | Site reconstruit pour le SHA ; build web pour la cible app |
 | Contrats CI | Anciens cas de classification/fallback/préparation et nouveaux contrats du benchmark, tous exécutés localement |
@@ -51,7 +51,7 @@ le pipeline ne les lit pas. Les tests du benchmark vérifient aussi leurs emprei
 Les tests communs exécutent les mêmes cas partout, avec simulation des erreurs
 et différences de plateforme. Les suites natives propres à un OS restent une
 qualification additionnelle explicitement distincte. Une installation manquante
-(Deno, Docker, TesterArmy) laisse une preuve `incomplete` ; elle ne devient ni
+(Deno, runtime Supabase natif, TesterArmy) laisse une preuve `incomplete` ; elle ne devient ni
 un skip validant ni une différence de couverture acceptée. Exécuter le contrôle
 sur une machine équipée et fournir sa preuve avec
 `--external <contrôle>="owner-machine: <hôte> <note> on <SHA>"` si nécessaire.

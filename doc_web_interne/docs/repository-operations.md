@@ -101,7 +101,7 @@ Choose one appropriate entry point; these are alternatives, not a sequence:
 | Jest | `test:related -- <files>`, `test:file -- <tests>`, `test:changed`, or `npm test` for justified broader coverage; `test:node` and `test:expo` select projects. Use `--watchman=false` when Watchman is blocked. |
 | Types, lint, performance | `typecheck:app`, `typecheck:tests`, `npx expo lint <paths>`, `lint`; `test:perf` owns performance tests. |
 | Site | Edit source, then `docs:build` and `docs:check`; the build includes `docs-src/experience/`. Use `docs:dev` and the [single-page loop](../../docs-src/README.md#iterate-quickly-on-one-generated-page); `docs:release-check` is for release-ready work. |
-| Backend | `db:contract:check` or `db:contract:check:local`; [owned native stack qualification](e2e-backend-qualification.md) supports `test:e2e:backend -- --runtime native --qualify-ti528` without changing the release gate's default Docker command. |
+| Backend | `db:contract:check` or `db:contract:check:local`; [owned native stack qualification](e2e-backend-qualification.md) runs on the native Supabase runtime (no Docker); `test:e2e:backend -- --qualify-ti528` adds the TI528 cases to the release gate's browser journeys. |
 | Android | `android:gates`, `security:audit:mobile`, and the smallest affected TesterArmy selection (`test:testerarmy:mobile -- <product> android --grep ...`). |
 
 ## Styling and Motion
@@ -221,9 +221,9 @@ Publish one `master` SHA. From a clean checkout where `HEAD` is the fetched `ori
 commit, reusing nothing, rebuilds the site (`docs:build`, `docs:check`) and the web app
 (`build:web`) for this commit, and runs the full local validation; `node scripts/verify-local.mjs
 status` shows the proof of `HEAD`. When only the site ships, `npm run verify:release:site` is
-enough: the same run without the checks of the `app` target (`build:web`, `e2e-backend` and its
-default Docker runtime, the TesterArmy Dreamer, Lucid and Meditation campaigns). A check this
-machine cannot run (Deno, Docker, TesterArmy) leaves the proof `incomplete`: run it on a machine
+enough: the same run without the checks of the `app` target (`build:web`, `e2e-backend` on the
+native Supabase runtime, the TesterArmy Dreamer, Lucid and Meditation campaigns). A check this
+machine cannot run (Deno, native Supabase runtime, TesterArmy) leaves the proof `incomplete`: run it on a machine
 that can and rerun with `--external <check>="owner-machine: <host> <note> on <SHA>"`. `npm run
 docs:deploy:prod` (site) and `npm run web:deploy:prod` (Vercel web app) then refuse unless `HEAD` is
 `origin/master` after `git fetch`, the checkout is clean, and a passed `release` proof exists for
