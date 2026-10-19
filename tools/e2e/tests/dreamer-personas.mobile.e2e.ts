@@ -56,8 +56,8 @@ if (process.env.E2E_PERSONAS === '1') {
         await expect(pack).toBeHidden();
       }
     }
-    await tap(screen, 'quick-settings.close');
-    await settings(screen);
+    await tap(screen, 'quick-settings.all');
+    await expect(screen.getByTestId('screen.settings', { visible: true })).toBeVisible();
     await tap(screen, 'settings-account-open-signin', 'up');
     await tap(screen, `btn.mockProfile.${profile}`);
     await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
@@ -100,6 +100,9 @@ if (process.env.E2E_PERSONAS === '1') {
       await app.screenshot('morning-saved-for-later');
       await tap(screen, 'btn.navigateJournal', 'up');
       await openSearchResult(fixtures, 'Personas réveil');
+      // Native AX can list the footer while the fixed analysis panel covers it.
+      // Reveal the lower page before tapping its edit action.
+      await screen.swipe({ direction: 'down' });
       await tap(screen, 'btn.editDream');
       const editor = screen.getByTestId('input.dreamTranscript', { visible: true });
       await screen.scrollUntilVisible(editor, { direction: 'up' });
