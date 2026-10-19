@@ -19,8 +19,12 @@ test('native journal preserves reading and list position across repeated returns
     await screen.scrollUntilVisible(end);
     await expect(end).toBeVisible();
     if (cycle === 1) await app.screenshot('synthetic-reading-end');
-    await screen.scrollUntilVisible(screen.getByTestId('btn.navigateJournal'), { direction: 'up' });
-    await screen.getByTestId('btn.navigateJournal').tap();
+    // The reading's persistent return is outside its scroll view. Scrolling the
+    // running head barely into view can leave its centre under iOS's status bar:
+    // a coordinate tap there scrolls to the top instead of activating Back.
+    const back = screen.getByTestId('journal.detail.returnTab');
+    await expect(back).toBeVisible();
+    await back.tap();
     await expect(screen.getByTestId('screen.dreamDetail')).toBeHidden();
     await expect(reference).toBeVisible();
     const after = await reference.boundingBox();
@@ -59,12 +63,16 @@ if (process.env.E2E_PERF_FIXTURE_COUNT === '5000') {
     await screen.scrollUntilVisible(end);
     await expect(end).toBeVisible();
     await app.screenshot('large-journal-last-entry');
-    await screen.scrollUntilVisible(screen.getByTestId('btn.navigateJournal'), { direction: 'up' });
-    await screen.getByTestId('btn.navigateJournal').tap();
+    const back = screen.getByTestId('journal.detail.returnTab');
+    await expect(back).toBeVisible();
+    await back.tap();
     await expect(screen.getByTestId('screen.dreamDetail')).toBeHidden();
     await expect(last).toBeVisible();
     await search.fill('');
-    await expect(screen.getByRole('button', /^Noctalia performance 002,/)).toBeVisible();
+    const second = screen.getByRole('button', /^Noctalia performance 002,/);
+    // The keyboard and the first card can fill the viewport after clearing.
+    await screen.scrollUntilVisible(second);
+    await expect(second).toBeVisible();
     await expect(last).toBeHidden();
   });
 }
