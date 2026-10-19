@@ -95,6 +95,10 @@ test('capture shortcut preserves the reading already chosen and saves only once'
   await page.getByTestId('btn.navigateJournal').click();
   await expect(page.getByRole('button', { name: /^Shortcut choice QA:/ })).toHaveCount(1);
   await page.reload();
+  // Cold navigation intentionally opens capture. Re-enter the journal before
+  // asserting persisted rows, rather than mistaking the destination for data loss.
+  await expect(page.getByTestId('screen.recording')).toBeVisible();
+  await page.getByTestId('tab.journal').filter({ visible: true }).click();
   await expect(page.getByRole('button', { name: /^Shortcut choice QA:/ })).toHaveCount(1);
   await page.screenshot({ path: info.outputPath('shortcut-one-durable-dream.png') });
 });
