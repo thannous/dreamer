@@ -40,7 +40,7 @@ if (process.env.E2E_PERSONAS === '1') {
       await back.scrollIntoView();
       await back.tap();
       await screen.getByTestId('input.searchDreams').fill('Personas réveil');
-      const entry = screen.getByTestId(/^dream\.item\./);
+      const entry = screen.getByTestId(/^dream\.item\./, { visible: true });
       await expect(entry).toHaveCount(1);
       await entry.tap();
       await screen.getByTestId('btn.editDream').tap();
@@ -51,8 +51,9 @@ if (process.env.E2E_PERSONAS === '1') {
     { agent: 'archivist', tags: ['personas', 'persona-archivist', 'journal'] }, async ({ app, screen, browser, agent }) => {
       await startProfile(app, screen, browser, 'existing');
       await agent.act('Find and open your older dream about a garden floating among the clouds.');
-      await expect(screen.getByText('Garden in the Clouds', { exact: true })).toBeVisible();
-      const transcript = screen.getByTestId('component.transcriptCard');
+      const title = screen.getByRole('heading', 'Garden in the Clouds', { exact: true, visible: true });
+      await expect(title).toBeVisible();
+      const transcript = screen.getByTestId('component.transcriptCard', { visible: true });
       await expect(transcript).toContainText(/\S[\s\S]{30}/);
       const originalStory = await transcript.textContent();
       if (!originalStory) throw new Error('The retrieved dream has no readable story.');
@@ -65,10 +66,10 @@ if (process.env.E2E_PERSONAS === '1') {
       await back.tap();
       await screen.getByRole('button', 'Afficher uniquement les favoris', { exact: true }).tap();
       await screen.getByTestId('input.searchDreams').fill('Garden in the Clouds');
-      const entry = screen.getByTestId(/^dream\.item\./);
+      const entry = screen.getByTestId(/^dream\.item\./, { visible: true });
       await expect(entry).toHaveCount(1);
       await entry.tap();
-      await expect(screen.getByText('Garden in the Clouds', { exact: true })).toBeVisible();
+      await expect(title).toBeVisible();
       await expect(transcript).toHaveText(originalStory);
       await app.screenshot('archivist-favourite-reopened');
     });
@@ -77,19 +78,31 @@ if (process.env.E2E_PERSONAS === '1') {
     { agent: 'explorer', tags: ['personas', 'persona-explorer', 'reflection'] }, async ({ app, screen, browser, agent }) => {
       await startProfile(app, screen, browser, 'plus');
       await agent.act('Open a free-form conversation about your older dream titled The Infinite Library.');
-      const title = screen.getByText('The Infinite Library', { exact: true });
+      const title = screen.getByText('The Infinite Library', { exact: true, visible: true });
       await title.scrollIntoView();
       await expect(title).toBeVisible();
-      const input = screen.getByTestId('chat.input.message');
+      const input = screen.getByTestId('chat.input.message', { visible: true });
       await expect(input).toBeEnabled();
       await expect(input).not.toHaveAttribute('readonly');
       const question = 'Personas réflexion : pourquoi cette bibliothèque semblait-elle si familière ?';
       await input.fill(question);
-      await screen.getByTestId('chat.button.send').tap();
-      const latest = screen.getByRole('button', 'Jump to latest', { exact: true });
+      let consentPrompts = 0;
+      const stopConsent = await browser.onDialog(async dialog => {
+        expect(dialog.message).toContain('Anthropic (Claude)');
+        expect(dialog.message).toContain('Google (Gemini)');
+        consentPrompts++;
+        await dialog.accept();
+      });
+      const savedQuestion = screen.getByText(question, { exact: true, visible: true });
+      try {
+        await screen.getByTestId('chat.button.send', { visible: true }).tap();
+        await expect(savedQuestion).toBeVisible();
+      } finally { await stopConsent(); }
+      expect(consentPrompts).toBe(1);
+      const latest = screen.getByRole('button', 'Jump to latest', { exact: true, visible: true });
       if (await latest.isVisible()) await latest.tap();
-      await expect(screen.getByText(question, { exact: true })).toBeVisible();
-      const answer = screen.getByText(/^(That's an interesting question|Based on your dream,|Dreams like yours often|The elements you mentioned|I sense that this dream)/);
+      await expect(savedQuestion).toBeVisible();
+      const answer = screen.getByText(/^(That's an interesting question|Based on your dream,|Dreams like yours often|The elements you mentioned|I sense that this dream)/, { visible: true });
       await expect(answer).toBeVisible();
       const response = await answer.textContent();
       if (!response) throw new Error('The conversation has no readable assistant reply.');
@@ -98,8 +111,8 @@ if (process.env.E2E_PERSONAS === '1') {
       await expect(input).not.toHaveAttribute('readonly');
       // Go back to the journal through exact navigation; the next goal discovers
       // how to reach that same discussion again, with no new message requested.
-      await screen.getByRole('button', 'Retour', { exact: true }).tap();
-      await screen.getByRole('button', 'Retour', { exact: true }).tap();
+      await screen.getByRole('button', 'Retour', { exact: true, visible: true }).tap();
+      await screen.getByRole('button', 'Retour', { exact: true, visible: true }).tap();
       const back = screen.getByTestId('btn.navigateJournal');
       await back.scrollIntoView();
       await back.tap();
@@ -107,8 +120,8 @@ if (process.env.E2E_PERSONAS === '1') {
       await title.scrollIntoView();
       await expect(title).toBeVisible();
       if (await latest.isVisible()) await latest.tap();
-      await expect(screen.getByText(question, { exact: true })).toHaveCount(1);
-      await expect(screen.getByText(response, { exact: true })).toBeVisible();
+      await expect(savedQuestion).toHaveCount(1);
+      await expect(screen.getByText(response, { exact: true, visible: true })).toBeVisible();
       await expect(input).toBeEnabled();
       await expect(input).not.toHaveAttribute('readonly');
       await app.screenshot('explorer-conversation-revisited');
@@ -135,7 +148,8 @@ if (process.env.E2E_PERSONAS === '1') {
       await screen.getByTestId('tab.home', { visible: true }).tap();
       await screen.getByTestId('btn.header.home.settings', { visible: true }).tap();
       await screen.getByTestId('quick-settings.all', { visible: true }).tap();
-      await expect(screen.getByTestId('quota.analysisValue')).toHaveText('5 / 3');
+      // Current master caps displayed consumption at the free allowance.
+      await expect(screen.getByTestId('quota.analysisValue')).toHaveText('3 / 3');
       if (!await screen.getByTestId('text.subscription.qa.mode').isVisible()) {
         await screen.getByTestId('screen.subscription.qaLab.toggle').tap();
       }
