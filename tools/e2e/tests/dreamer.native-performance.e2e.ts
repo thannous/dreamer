@@ -64,8 +64,11 @@ if (process.env.E2E_PERF_FIXTURE_COUNT === '5000') {
     await screen.scrollUntilVisible(end);
     await expect(end).toBeVisible();
     await app.screenshot('large-journal-last-entry');
+    // This unanalysed entry is shorter. Bring the running head fully back below
+    // system chrome before tapping it, even if its first visible part is clipped.
+    const back = screen.getByTestId('btn.navigateJournal');
+    await screen.scrollUntilVisible(back, { direction: 'up' });
     await screen.swipe({ direction: 'up', momentum: 'none' });
-    const back = screen.getByTestId('journal.detail.returnTab');
     await expect(back).toBeVisible();
     await back.tap();
     await expect(screen.getByTestId('screen.dreamDetail')).toBeHidden();
