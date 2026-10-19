@@ -100,7 +100,15 @@ if (process.env.E2E_PERF_FIXTURE_MEDIA === 'local') {
     for (const index of [1, 2, 3, 4]) {
       await screen.scrollUntilVisible(search, { direction: 'up' });
       const title = `Noctalia performance ${String(index).padStart(3, '0')}`;
+      if (process.env.E2E_PERF_PLATFORM === 'ios') {
+        // The physical iOS driver's replacement fill can leave a suffix of the
+        // previous value. Use the real clear affordance, then assert exact input.
+        const clear = screen.getByTestId('component.searchBar').getByRole('button');
+        if (await clear.isVisible()) await clear.tap();
+        await expect(search).toHaveValue('');
+      }
       await search.fill(title);
+      await expect(search).toHaveValue(title);
       if (process.env.E2E_PERF_PLATFORM === 'ios') await search.press('Enter');
       else await device.dismissKeyboard();
       const entry = screen.getByRole('button', new RegExp(`^${title},`));
