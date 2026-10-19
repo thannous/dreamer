@@ -257,17 +257,21 @@ test('free user adds and removes a favorite without deleting its story', async (
   await selectProfile(app, screen, browser, 'existing');
   await journal(screen);
   await openDream(screen, 'Garden in the Clouds');
+  const transcript = screen.getByTestId('component.transcriptCard', { visible: true });
+  const originalStory = await transcript.textContent();
+  expect(originalStory).toContain('I was walking through a beautiful garden');
   await screen.getByTestId('btn.dream.favorite', { visible: true }).tap();
   await journal(screen);
   await screen.getByRole('button', 'Show favorites only', { visible: true }).tap();
   await openDream(screen, 'Garden in the Clouds');
   await screen.getByTestId('btn.dream.favorite', { visible: true }).tap();
   await journal(screen);
-  await screen.getByRole('button', 'Show favorites only', { visible: true }).tap();
-  await screen.getByRole('textbox', 'Search dreams…', { visible: true }).fill('Garden in the Clouds');
+  // Upstream 02a97ad08 retains the journal: a second Favorites tap would clear its filter.
+  await expect(screen.getByRole('textbox', 'Search dreams…', { visible: true })).toHaveValue('Garden in the Clouds');
   await expect(screen.getByTestId(/^dream\.item\./, { visible: true })).toHaveCount(0);
   await screen.getByRole('button', 'Show all dreams', { visible: true }).tap();
   await openDream(screen, 'Garden in the Clouds');
+  await expect(transcript).toHaveText(originalStory!);
   await app.screenshot('favorite-removal-keeps-story');
 });
 
