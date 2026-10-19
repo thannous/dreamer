@@ -742,5 +742,191 @@
         { "texture": "accent", "place": { "fit": "cover", "zoom": 1.2, "x": 0.55, "y": 0.4 }, "motion": "pulse", "dur": 3.4, "op": [0.25, 0.8], "blend": "screen" }
       ]
     }
+  },
+  "horse": {
+    "slug": "cheval",
+    "caveat": null,
+    "scenes": [
+      { "id": "balade", "variation": "Monter un cheval tranquillement" },
+      { "id": "emballe", "variation": "Un cheval qui s'emballe ou n'obéit pas" },
+      { "id": "liberte", "variation": "Des chevaux sauvages en liberté" }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          { "texture": "layer", "place": { "fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.75 }, "motion": "flow", "move": [0.05, 0.008], "dur": 10, "op": [0.2, 0.48], "copies": 2 },
+          { "texture": "accent", "place": { "fit": "cover", "zoom": 1.1, "x": 0.55, "y": 0.3 }, "motion": "pulse", "dur": 6, "op": [0.12, 0.4], "blend": "screen" }
+        ],
+        "portrait": [
+          { "texture": "layer", "place": { "fit": "width", "zoom": 1.1, "x": 0.5, "y": 0.7 }, "motion": "flow", "move": [0.05, 0.008], "dur": 10, "op": [0.2, 0.48], "copies": 2 },
+          { "texture": "accent", "place": { "fit": "width", "zoom": 1.1, "x": 0.55, "y": 0.3 }, "motion": "pulse", "dur": 6, "op": [0.12, 0.4], "blend": "screen" }
+        ]
+      },
+      "plate": [
+        { "texture": "layer", "place": { "fit": "width", "zoom": 1.1, "x": 0.5, "y": 0.7 }, "motion": "flow", "move": [0.05, 0.008], "dur": 10, "op": [0.2, 0.48], "copies": 2 },
+        { "texture": "accent", "place": { "fit": "width", "zoom": 1.1, "x": 0.55, "y": 0.3 }, "motion": "pulse", "dur": 6, "op": [0.12, 0.4], "blend": "screen" }
+      ],
+      "thumb": [
+        { "texture": "layer", "place": { "fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.7 }, "motion": "flow", "move": [0.05, 0.008], "dur": 9, "op": [0.3, 0.62], "copies": 2 },
+        { "texture": "accent", "place": { "fit": "cover", "zoom": 1.15, "x": 0.55, "y": 0.3 }, "motion": "pulse", "dur": 4.5, "op": [0.22, 0.7], "blend": "screen" }
+      ]
+    }
+  },
+  "castle": {
+    "slug": "chateau",
+    "caveat": null,
+    "scenes": [
+      { "id": "exploration", "variation": "Explorer un château aux pièces sans fin" },
+      { "id": "grille", "variation": "Rester bloqué devant la grille" },
+      { "id": "ruine", "variation": "Un château en ruine" }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          { "texture": "layer", "place": { "fit": "cover", "zoom": 1.15, "x": 0.5, "y": 0.85 }, "motion": "drift", "move": [0.03, 0], "dur": 20, "op": [0.18, 0.42] },
+          { "texture": "accent", "place": { "fit": "cover", "zoom": 1.1, "x": 0.6, "y": 0.4 }, "motion": "pulse", "dur": 5, "op": [0.15, 0.55], "blend": "screen" }
+        ],
+        "portrait": [
+          { "texture": "layer", "place": { "fit": "width", "zoom": 1.15, "x": 0.5, "y": 0.8 }, "motion": "drift", "move": [0.03, 0], "dur": 20, "op": [0.18, 0.42] },
+          { "texture": "accent", "place": { "fit": "width", "zoom": 1.1, "x": 0.6, "y": 0.4 }, "motion": "pulse", "dur": 5, "op": [0.15, 0.55], "blend": "screen" }
+        ]
+      },
+      "plate": [
+        { "texture": "layer", "place": { "fit": "width", "zoom": 1.15, "x": 0.5, "y": 0.85 }, "motion": "drift", "move": [0.03, 0], "dur": 20, "op": [0.18, 0.42] },
+        { "texture": "accent", "place": { "fit": "width", "zoom": 1.1, "x": 0.6, "y": 0.45 }, "motion": "pulse", "dur": 5, "op": [0.15, 0.55], "blend": "screen" }
+      ],
+      "thumb": [
+        { "texture": "layer", "place": { "fit": "cover", "zoom": 1.15, "x": 0.5, "y": 0.85 }, "motion": "drift", "move": [0.03, 0], "dur": 20, "op": [0.25, 0.55] },
+        { "texture": "accent", "place": { "fit": "cover", "zoom": 1.2, "x": 0.6, "y": 0.4 }, "motion": "pulse", "dur": 5, "op": [0.25, 0.75], "blend": "screen" }
+      ]
+    }
+  },
+  "stars": {
+    "slug": "etoiles",
+    "caveat": null,
+    "scenes": [
+      { "id": "ciel", "variation": "Un ciel plein d'étoiles" },
+      { "id": "filante", "variation": "Une étoile filante" },
+      { "id": "guide", "variation": "Une étoile brillante qui guide" }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          { "texture": "layer", "place": { "fit": "cover", "zoom": 1.05, "x": 0.5, "y": 0.25 }, "motion": "pulse", "dur": 4.8, "op": [0.18, 0.5], "blend": "screen" },
+          { "texture": "accent", "place": { "fit": "cover", "zoom": 1.15, "x": 0.5, "y": 0.35 }, "motion": "drift", "move": [0.015, 0.004], "dur": 24, "op": [0.12, 0.32] }
+        ],
+        "portrait": [
+          { "texture": "layer", "place": { "fit": "width", "zoom": 1.05, "x": 0.5, "y": 0.2 }, "motion": "pulse", "dur": 4.8, "op": [0.18, 0.5], "blend": "screen" },
+          { "texture": "accent", "place": { "fit": "width", "zoom": 1.15, "x": 0.5, "y": 0.3 }, "motion": "drift", "move": [0.015, 0.004], "dur": 24, "op": [0.12, 0.32] }
+        ]
+      },
+      "plate": [
+        { "texture": "layer", "place": { "fit": "width", "zoom": 1.05, "x": 0.5, "y": 0.3 }, "motion": "pulse", "dur": 4.8, "op": [0.18, 0.5], "blend": "screen" },
+        { "texture": "accent", "place": { "fit": "width", "zoom": 1.15, "x": 0.5, "y": 0.35 }, "motion": "drift", "move": [0.015, 0.004], "dur": 24, "op": [0.12, 0.32] }
+      ],
+      "thumb": [
+        { "texture": "layer", "place": { "fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.25 }, "motion": "pulse", "dur": 4.8, "op": [0.25, 0.55], "blend": "screen" },
+        { "texture": "accent", "place": { "fit": "cover", "zoom": 1.15, "x": 0.5, "y": 0.35 }, "motion": "drift", "move": [0.015, 0.004], "dur": 24, "op": [0.18, 0.42] }
+      ]
+    }
+  },
+  "flowers": {
+    "slug": "fleurs",
+    "caveat": null,
+    "scenes": [
+      { "id": "bouquet", "variation": "Recevoir un bouquet" },
+      { "id": "fanees", "variation": "Des fleurs fanées ou séchées" },
+      { "id": "prairie", "variation": "Un champ ou un pré en fleurs" }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          { "texture": "layer", "place": { "fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.35 }, "motion": "drift", "move": [0.02, 0.012], "dur": 12, "op": [0.25, 0.6] },
+          { "texture": "accent", "place": { "fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.7 }, "motion": "flow", "move": [0.004, -0.04], "dur": 10, "op": [0.18, 0.5], "copies": 2, "blend": "screen" }
+        ],
+        "portrait": [
+          { "texture": "layer", "place": { "fit": "width", "zoom": 1.1, "x": 0.5, "y": 0.35 }, "motion": "drift", "move": [0.02, 0.012], "dur": 12, "op": [0.25, 0.6] },
+          { "texture": "accent", "place": { "fit": "width", "zoom": 1.1, "x": 0.5, "y": 0.7 }, "motion": "flow", "move": [0.004, -0.04], "dur": 10, "op": [0.18, 0.5], "copies": 2, "blend": "screen" }
+        ]
+      },
+      "plate": [
+        { "texture": "layer", "place": { "fit": "width", "zoom": 1.1, "x": 0.5, "y": 0.3 }, "motion": "drift", "move": [0.02, 0.012], "dur": 12, "op": [0.25, 0.6] },
+        { "texture": "accent", "place": { "fit": "width", "zoom": 1.1, "x": 0.5, "y": 0.75 }, "motion": "flow", "move": [0.004, -0.04], "dur": 10, "op": [0.18, 0.5], "copies": 2, "blend": "screen" }
+      ],
+      "thumb": [
+        { "texture": "layer", "place": { "fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.35 }, "motion": "drift", "move": [0.02, 0.012], "dur": 12, "op": [0.35, 0.75] },
+        { "texture": "accent", "place": { "fit": "cover", "zoom": 1.15, "x": 0.5, "y": 0.7 }, "motion": "flow", "move": [0.004, -0.04], "dur": 10, "op": [0.25, 0.65], "copies": 2, "blend": "screen" }
+      ]
+    }
+  },
+  "baby": {
+    "slug": "bebe",
+    "caveat": null,
+    "scenes": [
+      { "id": "soins", "variation": "S'occuper d'un bébé" },
+      { "id": "pleurs", "variation": "Un bébé qui pleure" },
+      { "id": "trouver", "variation": "Trouver un bébé" }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          { "texture": "layer", "place": { "fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.4 }, "motion": "drift", "move": [0.004, -0.012], "dur": 16, "op": [0.15, 0.38] },
+          { "texture": "accent", "place": { "fit": "cover", "zoom": 1.1, "x": 0.3, "y": 0.35 }, "motion": "pulse", "dur": 6, "op": [0.12, 0.4], "blend": "screen" }
+        ],
+        "portrait": [
+          { "texture": "layer", "place": { "fit": "width", "zoom": 1.1, "x": 0.5, "y": 0.4 }, "motion": "drift", "move": [0.004, -0.012], "dur": 16, "op": [0.15, 0.38] },
+          { "texture": "accent", "place": { "fit": "width", "zoom": 1.1, "x": 0.3, "y": 0.3 }, "motion": "pulse", "dur": 6, "op": [0.12, 0.4], "blend": "screen" }
+        ]
+      },
+      "plate": [
+        { "texture": "layer", "place": { "fit": "width", "zoom": 1.1, "x": 0.5, "y": 0.4 }, "motion": "drift", "move": [0.004, -0.012], "dur": 16, "op": [0.15, 0.38] },
+        { "texture": "accent", "place": { "fit": "width", "zoom": 1.1, "x": 0.3, "y": 0.35 }, "motion": "pulse", "dur": 6, "op": [0.12, 0.4], "blend": "screen" }
+      ],
+      "thumb": [
+        { "texture": "layer", "place": { "fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.4 }, "motion": "drift", "move": [0.004, -0.012], "dur": 16, "op": [0.22, 0.5] },
+        { "texture": "accent", "place": { "fit": "cover", "zoom": 1.15, "x": 0.3, "y": 0.35 }, "motion": "pulse", "dur": 6, "op": [0.2, 0.6], "blend": "screen" }
+      ]
+    }
+  },
+  "storm": {
+    "slug": "orage",
+    "caveat": null,
+    "scenes": [
+      { "id": "approche", "variation": "Orage qui approche" },
+      { "id": "expose", "variation": "Être pris dans l'orage" },
+      { "id": "abri", "variation": "Regarder l'orage depuis un abri" }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          { "texture": "layer", "place": { "fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.45 }, "motion": "flow", "move": [-0.02, 0.06], "dur": 6, "op": [0.25, 0.55], "copies": 2 },
+          { "texture": "accent", "place": { "fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.15 }, "motion": "pulse", "dur": 7, "op": [0.08, 0.3], "blend": "screen" }
+        ],
+        "portrait": [
+          { "texture": "layer", "place": { "fit": "width", "zoom": 1.1, "x": 0.5, "y": 0.45 }, "motion": "flow", "move": [-0.02, 0.06], "dur": 6, "op": [0.25, 0.55], "copies": 2 },
+          { "texture": "accent", "place": { "fit": "width", "zoom": 1.1, "x": 0.5, "y": 0.1 }, "motion": "pulse", "dur": 7, "op": [0.08, 0.3], "blend": "screen" }
+        ]
+      },
+      "plate": [
+        { "texture": "layer", "place": { "fit": "width", "zoom": 1.1, "x": 0.5, "y": 0.45 }, "motion": "flow", "move": [-0.02, 0.06], "dur": 6, "op": [0.25, 0.55], "copies": 2 },
+        { "texture": "accent", "place": { "fit": "width", "zoom": 1.1, "x": 0.5, "y": 0.2 }, "motion": "pulse", "dur": 7, "op": [0.08, 0.3], "blend": "screen" }
+      ],
+      "thumb": [
+        { "texture": "layer", "place": { "fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.45 }, "motion": "flow", "move": [-0.02, 0.06], "dur": 6, "op": [0.3, 0.6], "copies": 2 },
+        { "texture": "accent", "place": { "fit": "cover", "zoom": 1.15, "x": 0.5, "y": 0.15 }, "motion": "pulse", "dur": 7, "op": [0.12, 0.38], "blend": "screen" }
+      ]
+    }
   }
 }
