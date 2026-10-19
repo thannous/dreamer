@@ -1362,6 +1362,15 @@ describe('journal detail saved confirmation route', () => {
     expect(screen.queryByTestId(TID.Text.RecordingSaveConfirmation)).toBeNull();
   });
 
+  it('keeps the recall offer once saved=1 is cleared from the route', () => {
+    const view = render(<JournalDetailScreen />);
+    expect(screen.getByTestId(TID.Component.DreamRecallOffer)).toBeTruthy();
+
+    mockSearchParams = { id: '42' };
+    view.rerender(<JournalDetailScreen />);
+    expect(screen.getByTestId(TID.Component.DreamRecallOffer)).toBeTruthy();
+  });
+
   it('prioritizes the requested recall assistant once while preserving the saved dream', () => {
     mockSearchParams = { id: '42', saved: '1', recall: '1' };
     render(<JournalDetailScreen />);

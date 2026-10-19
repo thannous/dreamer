@@ -473,7 +473,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   const autoAnalysisExpiresAtRef = useRef<number | null>(null);
   const analysisPressInFlightRef = useRef(false);
   const purchaseAnalysisHandledRef = useRef(false);
-  const recallEligibleDreamIdRef = useRef<string | null>(
+  // The recall offer outlives the saved=1 param for the dream it was made for.
+  const [recallEligibleDreamId, setRecallEligibleDreamId] = useState<string | null>(() =>
     resolveJournalDreamRecallOfferEligible({
       dreamId: id,
       savedParam,
@@ -483,11 +484,11 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   const recallOffer = resolveJournalDreamRecallOfferEligible({
     dreamId: id,
     savedParam,
-    previouslyEligibleDreamId: recallEligibleDreamIdRef.current,
+    previouslyEligibleDreamId: recallEligibleDreamId,
   });
-  useEffect(() => {
-    recallEligibleDreamIdRef.current = recallOffer.eligibleDreamId;
-  }, [recallOffer.eligibleDreamId]);
+  if (recallOffer.eligibleDreamId !== recallEligibleDreamId) {
+    setRecallEligibleDreamId(recallOffer.eligibleDreamId);
+  }
   const {
     toggleFavorite,
     updateDream,
