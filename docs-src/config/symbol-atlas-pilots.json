@@ -642,7 +642,7 @@
       },
       "plate": [
         { "texture": "layer", "place": { "fit": "width", "zoom": 1.1, "x": 0.5, "y": 0.4 }, "motion": "drift", "move": [0.008, -0.01], "dur": 14, "op": [0.15, 0.4] },
-        { "texture": "accent", "place": { "fit": "width", "zoom": 1.2, "x": 0.5, "y": 0.6 }, "motion": "pulse", "dur": 3.6, "op": [0.2, 0.75], "blend": "screen" }
+        { "texture": "accent", "place": { "fit": "width", "zoom": 1, "x": 0.5, "y": 1 }, "motion": "pulse", "dur": 3.6, "op": [0.2, 0.75], "blend": "screen" }
       ],
       "thumb": [
         { "texture": "layer", "place": { "fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.4 }, "motion": "drift", "move": [0.008, -0.01], "dur": 10, "op": [0.22, 0.55] },
