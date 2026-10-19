@@ -8,7 +8,8 @@ and compatible dependency fixes. The existing PR #443 branch
 `codex/repository-hygiene` continues from `1f508d7f8c6b44123b2c94de270f4126eb45a1d8`,
 based on `origin/master` at `967fe81f0a6012d5142483ae3ff17e19eba7133f`.
 The runtime/test corrections are commit `60688221a`; compatible lock changes are
-`f7ba01ef8`. This documentation follows them. The existing engine records the
+`f7ba01ef8`. The subsequent web-audio correction is `c4ea84f0e`.
+This documentation follows them. The existing engine records the
 final committed-head proof separately, avoiding a self-referential evidence SHA.
 
 The isolated audit checkout was clean before this follow-up. All 13 original
@@ -27,6 +28,21 @@ This work includes no merge, production, Store, EAS or real purchase operation.
 | Replacing a streaming reply channel left the previous channel's fragment visible until the new one emitted. | Read the existing channel with `useSyncExternalStore`; replacement, late emissions and empty channels retain current-conversation state. Message arrivals retain handwriting/scroll behavior without rerendering the screen for every fragment. |
 | A cleared provider purchase error remained visible in the paywall's copied local state. | Derive its visibility from the provider error, retaining its clear/retry/activation contract. The error-to-null transition passes without a dismiss click. |
 | An interrupted React render could expose a speculative subscription callback. | Listener wrappers belong to committed effects, with exact cleanup and shared SDK registration until the last subscriber leaves. Suspension and duplicate-subscriber cases protect that boundary. |
+| The web sleep-audio preload left a rejected fetch unhandled; its Expo error overlay blocked Night controls when offline. | Stream directly through a stable web player, replacing its source after commit. The real network refusal now reaches the existing failure/retry UI; retry plays a local WAV, Stop works and the browser error/rejection observer stays empty. Native source/download-first options remain identical. |
+
+The audio defect was discovered by reviewing app-error logs after navigation
+assertions passed. It predates this work: the hook, service, Expo Audio 58.0.9
+lock entry and network fixture were unchanged from `1f508d7f8`. The red recovery
+run (`lucid-web/1792405933837-86451-c719be8e-c8f4-47ea-b8fb-771f38a4ce73`)
+fails because the real error overlay intercepts the Night control, before the
+fallback assertion. It is not reported as reaching the rest of that journey.
+
+Expo's web download-first path uses a rejected `preloadAsync(...).finally(...)`
+without a catch. A direct-streaming player now keeps its identity through retry;
+recreating it would invoke focus cleanup and cancel the pending play request.
+The native path and existing blur/timer/fade behavior are unchanged. Sixteen
+existing hook tests, app/E2E types, focused lint and an independent SDK/source
+review pass. No SDK patch or error/network exclusion was added.
 
 The expiry timer already existed; this work does not claim otherwise. The
 expiry bug concerns the additional 24h allowance with a cached/unavailable
@@ -163,18 +179,25 @@ zero skipped selected tests, no secondary errors and `applicationQualified=true`
 | --- | ---: | --- | --- |
 | Dreamer EN, billing/error/expiry, account isolation, chat/category, saved story and empty search | 15 | `74ee9fda6` (clean) | `dreamer-web/1792405408084-69291-924abbe7-2999-44ee-ade8-bd02f376df50` |
 | Dreamer FR, accents/excerpts and letter reset | 1 | `74ee9fda6` (clean) | `dreamer-web/1792405423339-71575-4a9a573a-339e-4ef5-97fb-d222a0dc3285` |
-| Lucid, onboarding safeguards and linked navigation | 2 | `93b98b0c6` (clean) | `lucid-web/1792405033160-86203-7edf9efc-ce32-408c-9a68-8ea54ebb3e9a` |
+| Lucid, onboarding, linked navigation and offline audio recovery | 3 | `3dbeb353a` + captured audio patch, later committed as `c4ea84f0e` | `lucid-web/1792406122108-87825-9294b285-da76-4afc-89f2-b0d3ac4ce30b` |
 | Meditation, onboarding persistence and tab/editorial/settings navigation | 1 | `93b98b0c6` (clean) | `meditation-web/1792404992719-13634-a28bfedf-1b35-4457-99b6-4d274c3c89a8` |
 
 Each directory retains the exact command/environment, source snapshots,
 qualification, report, trace and relevant screenshots. The effective versions
 are e2e 0.21.2 and web engine 0.15.2, on Chromium 156.0.8078.4. These browser
 runs use the existing mocked service/account fixtures with external networking
-blocked. Later report-only edits reuse this evidence; Lucid/Meditation app,
-configuration, locks and journey inputs are unchanged since their recorded run.
+blocked. Later report-only edits reuse this evidence. The final Lucid snapshot's hook
+and test hashes match the committed bytes. It supersedes the earlier two-test
+Lucid navigation result, whose log exposed the audio defect. Dreamer's 16
+selected paths do not mount the affected sleep-audio screens; its other
+app/configuration/lock/journey inputs and Meditation's inputs remain unchanged.
 The earlier failed Dreamer report and screenshots remain available; the passing
 rerun follows the explicit test corrections above. The first malformed command
-omitted `run` and launched no SDK; it is not a functional app failure.
+omitted `run` and launched no SDK; it is not a functional app failure. An
+intermediate Lucid SDK run passed all three tests but its wrapper rejected an
+observer installed before the first `app.open` (`LIFECYCLE_INCOMPLETE`). The
+observer now installs after onboarding and before opening Night; the same
+unchanged guard qualifies the final rerun. The incomplete run is not counted.
 
 On `93b98b0c6`, `verify:pr` passed all 17 checks with no reuse: root changed-test
 selection 73 suites / 1,053 tests passed, Meditation 63 / 552 and Edge 261.
@@ -188,9 +211,10 @@ Useful reruns (the campaign receipt records the exact selections used):
 mise exec -- npm run lint
 mise exec -- npm run typecheck:app
 mise exec -- npm run typecheck:tests
-mise exec -- npm run test:file -- hooks/__tests__/useQuota.test.tsx hooks/__tests__/useSubscriptionExpiryTimer.test.tsx hooks/__tests__/useChatCategoryPrompt.test.tsx hooks/useSubscriptionCustomerInfoListener.test.tsx components/chat/__tests__/MessagesListStreaming.test.tsx tests/app-routes/paywallScreen.test.tsx --watchman=false
+mise exec -- npm run test:file -- hooks/__tests__/useQuota.test.tsx hooks/__tests__/useSubscriptionExpiryTimer.test.tsx hooks/__tests__/useChatCategoryPrompt.test.tsx hooks/useSubscriptionCustomerInfoListener.test.tsx components/chat/__tests__/MessagesListStreaming.test.tsx tests/app-routes/paywallScreen.test.tsx hooks/__tests__/useSleepSoundPlayer.test.ts --watchman=false
 mise exec -- npm run test:testerarmy -- run --grep "plus opens a symbols question once"
 E2E_WEB_LOCALE=fr-FR mise exec -- npm run test:testerarmy -- run --grep "search matches accents and excerpts"
+mise exec -- npm run test:testerarmy:lucid -- run --grep "Lucid requires intention|Lucid opens Night and Settings|Lucid recovers a blocked ambience"
 mise exec -- npm run verify:pr
 mise exec -- node scripts/verify-local.mjs proof-block
 ```
