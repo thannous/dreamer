@@ -1,0 +1,32 @@
+{
+  "schema": "noctalia.atlas-source-library/1",
+  "lot": "lot-04",
+  "symbols": ["cat", "mountain", "key", "rain", "stairs", "mirror"],
+  "webLanguages": ["en", "fr", "es", "de", "it", "pt-br"],
+  "sourceArchive": {
+    "file": "source-library-batch04-v1.zip",
+    "sha256": "218c84db85b3f45ec92e3f64f16a16aa7bf3615ee4afcffbdfbcf166ce700d76",
+    "location": "output/noctalia-symbols-batch04-2026-10-19/source-library-batch04-v1.zip",
+    "availability": "local portable archive; not shipped as a public site asset"
+  },
+  "roles": 48,
+  "newBuiltInImageGenSources": 41,
+  "byteExactReusedTextures": 7,
+  "selection": "Agent-selected by Codex for local review; no visual approval or publication inferred",
+  "artDirection": "Approved Noctalia ink and indigo/violet painted world; local ivory/champagne light; detailed stable paintings with two independent ambient raster channels per surface",
+  "sourceHandling": "Native PNGs, prompts, source paths and hashes retained in each pack. True alpha for plates and textures verified by atlas:pack. Canonical AVIF/WebP encoder only; no upscaling or destructive crop.",
+  "sourceSizes": {
+    "landscape": [1672, 941],
+    "portrait": [941, 1672],
+    "plate": "native dimensions recorded per pack receipt; square or near-square"
+  },
+  "implementation": {
+    "owner": "Claude Code",
+    "session": "https://claude.ai/code/session_01BMtym2S4vE9bdhymrd2tpa",
+    "firstHandoffBase": "967fe81f0a6012d5142483ae3ff17e19eba7133f",
+    "firstHandoffHead": "0ba55d7547402049de1715b1e8d8fd6d4671d221",
+    "firstPatchSha256": "540cdc420ca79ebbfdd153fc36f249c5b58bfbc8deb76208705f608ac1a85a13"
+  },
+  "qa": "Recorded separately against the integrated candidate",
+  "publication": "Not published by this work package"
+}
