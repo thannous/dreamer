@@ -10,7 +10,7 @@ let mockMediaPending = false;
 let mockTranscriptHeight = 0;
 const mockIsMockModeEnabled = jest.fn(() => false);
 
-jest.mock('@/hooks/useDreamMedia', () => ({ useDreamMedia: (dream: any) => ({ imageUrl: mockMediaPending ? undefined : dream.imageUrl, thumbnailUrl: mockMediaPending ? undefined : dream.thumbnailUrl, loading: mockMediaPending, error: false }) }));
+jest.mock('@/hooks/useDreamMedia', () => ({ useDreamMedia: (dream: any) => ({ imageUrl: mockMediaPending ? undefined : dream.imageUrl, thumbnailUrl: mockMediaPending ? undefined : dream.thumbnailUrl, loadOriginal: () => {}, loading: mockMediaPending, error: false }) }));
 
 jest.mock('@/lib/env', () => ({
   isMockModeEnabled: () => mockIsMockModeEnabled(),

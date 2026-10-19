@@ -6,7 +6,8 @@ import { CaptureOriginal } from '@/components/recording/CaptureOriginal';
 import { getDreamRecallStorageId } from '@/lib/dreamRecallIdentity';
 import { getDreamRouteParams, resolveDreamRoute } from '@/lib/dreamRoute';
 import { getDreamIdentityKey, matchesDreamTarget } from '@/lib/dreamIdentity';
-import { isInitialDreamCategorizationPending, subscribeInitialDreamCategorization } from '@/lib/initialDreamCategorization';
+import { markPerformance, markPerformanceAfterFrames, performanceTraceId } from '@/lib/performanceTrace';
+import { getInitialDreamCategorizationKey, isInitialDreamCategorizationPending, subscribeInitialDreamCategorization } from '@/lib/initialDreamCategorization';
 import { useDreamMedia } from '@/hooks/useDreamMedia';
 import { Toast } from '@/components/Toast';
 import { DreamRecallAssistantCard } from '@/components/journal/DreamRecallAssistantCard';
@@ -30,7 +31,7 @@ import { WaitingStars } from '@/components/journal/story/WaitingStars';
 import { markDreamStoryEpilogue } from '@/lib/dreamStoryEpilogue';
 import { markDreamNamed } from '@/lib/dreamNaming';
 import { DREAM_THEMES } from '@/lib/dreamThemes';
-import { getDreamStoryHandoffName, hasDreamStoryHandoff } from '@/lib/dreamStoryPrologue';
+import { getDreamStoryHandoffName, hasDreamStoryHandoff, markDreamStoryPageReady } from '@/lib/dreamStoryPrologue';
 import { DreamShareImage } from '@/components/journal/DreamShareImage';
 import { getImageJobFailure } from '@/lib/imageJobErrors';
 import { ErrorType } from '@/lib/errors';
@@ -125,14 +126,15 @@ import {
   View,
 } from 'react-native';
 import Animated, {
-  interpolate, useAnimatedReaction, useAnimatedStyle, useReducedMotion, useSharedValue, withTiming,
+  interpolate, useAnimatedReaction, useAnimatedScrollHandler, useAnimatedStyle, useReducedMotion, useSharedValue, withTiming,
 } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
-import { useHeaderScroll } from '@/components/ui/headerStretch';
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 import { useFrameParallax, useHeaderScrollY } from '@/components/ui/scrollDepth';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+
+const ReadingScrollView = Platform.OS === 'web' ? ScrollView : Animated.ScrollView;
 
 type ShareNavigator = Navigator & {
   share?: (data: { title?: string; text?: string; url?: string }) => Promise<void>;
@@ -516,7 +518,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   const coverHeight = viewportHeight;
   // The illustration lies a little deeper than the page and drifts as it scrolls.
   const coverTravel = Math.round(coverHeight * 0.06);
-  const onHeaderScroll = useHeaderScroll();
+  const headerScrollY = useHeaderScrollY();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { language } = useLanguage();
   useClearWebFocus();
@@ -593,7 +595,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   const canResumeAnalysis = Boolean(dream && isResumableAnalysisRequest(dream));
   const guestNeedsAccount = !user && !canResumeAnalysis
     && (savedAnalysisAction === 'signup' || savedAnalysisAction === 'login');
-  const categorizationIdentity = dream ? getDreamIdentityKey(dream) : '';
+  const categorizationIdentity = dream ? getInitialDreamCategorizationKey(dream) : '';
   const getInitialCategorizationPending = useCallback(
     () => Boolean(categorizationIdentity && isInitialDreamCategorizationPending(categorizationIdentity)),
     [categorizationIdentity]
@@ -612,7 +614,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     && !dream.theme && dream.title === deriveDraftTitle(dream.transcript, ''));
   const needsMetadataRecovery = hasUncategorizedDraft && !initialCategorizationPending;
   const recoverMetadata = useCallback(async () => {
-    if (!dream || !needsMetadataRecovery || isInitialDreamCategorizationPending(getDreamIdentityKey(dream))
+    if (!dream || !needsMetadataRecovery || isInitialDreamCategorizationPending(getInitialDreamCategorizationKey(dream))
       || metadataRecoveryInFlightRef.current) return;
     // Metadata recovery sends the dream text to the AI provider.
     if (!(await requestAiConsent(t))) return;
@@ -723,19 +725,32 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
   // Where the reading starts in the page: under the running head and the name, or the plate.
   const [readingContentTop, setReadingContentTop] = useState(insets.top + 76);
-  const readingScrollOffset = useRef(0);
+  const readingScrollOffset = useSharedValue(0);
   const readingContentRef = useRef<ViewInstance | null>(null);
   // Past the plate, the page's actions come in as soon as its reading is on the screen: the
   // seal and the analysis, which now come before the story, or the story itself.
+  const readingActionThreshold = Math.max(1, readingContentTop - viewportHeight + Math.min(144, viewportHeight * 0.2));
   const updateReadingChrome = useCallback((offsetY: number) => {
-    const visibleReadingHeight = Math.min(144, viewportHeight * 0.2);
-    setReadingActionVisible(offsetY >= Math.max(1, readingContentTop - viewportHeight + visibleReadingHeight));
-  }, [readingContentTop, viewportHeight]);
+    setReadingActionVisible(offsetY >= readingActionThreshold);
+  }, [readingActionThreshold]);
+  const nativeReadingScroll = Platform.OS !== 'web';
+  // Continuous offsets stay on the UI runtime. Only crossing the dock's threshold
+  // changes React state; a long scroll never schedules a JS update per frame.
+  useAnimatedReaction(() => nativeReadingScroll ? readingScrollOffset.get() >= readingActionThreshold : null,
+    (visible, previous) => {
+      if (visible !== null && visible !== previous) scheduleOnRN(setReadingActionVisible, visible);
+    });
+  const handleReadingScroll = useAnimatedScrollHandler({
+    onScroll: (event) => {
+      readingScrollOffset.set(event.contentOffset.y);
+      headerScrollY.set(event.contentOffset.y);
+    },
+  });
   // Rotation, text scaling and measured content can move artwork without a scroll
   // event. Recompute chrome before paint using the latest observed offset.
   useLayoutEffect(() => {
-    updateReadingChrome(readingScrollOffset.current);
-  }, [updateReadingChrome]);
+    updateReadingChrome(readingScrollOffset.get());
+  }, [readingScrollOffset, updateReadingChrome]);
   const scrollViewRef = useRef<ScrollViewInstance | null>(null);
   const editorScrollRef = useRef<ScrollViewInstance | null>(null);
   const recallInputRef = useRef<TextInputInstance | null>(null);
@@ -803,6 +818,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   // Guests already receive metadata from the post-save categorization request.
   useEffect(() => {
     if (!dream || !canUseReference) return;
+    if (initialCategorizationPending) return;
     if (hasBackfilledSubjectRef.current) return;
     if (dream.hasPerson !== undefined || dream.hasAnimal !== undefined) return;
     if (!dream.transcript?.trim()) return;
@@ -835,7 +851,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     })();
     // A newer title, analysis or user edit owns the dream after it changes.
     return () => { cancelled = true; };
-  }, [canUseReference, dream, language, updateDream]);
+  }, [canUseReference, dream, initialCategorizationPending, language, updateDream]);
 
 
   const { shareImageRef, shareComposite } = useDreamShareComposite();
@@ -1124,6 +1140,9 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     : showCompletedReading ? 'read' : 'saved';
   const reducedMotion = useReducedMotion();
   const readingZoneTopRef = useRef<number | null>(null);
+  const readingLayoutKey = dream?.analysisRequestId ?? `${dream?.id}:${dream?.analyzedAt ?? 0}`;
+  const [interpretationLayout, setInterpretationLayout] = useState<{ key: string; top: number } | null>(null);
+  const interpretationTop = interpretationLayout?.key === readingLayoutKey ? interpretationLayout.top : null;
   const readingRevealScrolledRef = useRef(false);
   const isImageJobPending = illustrationSidecar === 'pending';
   const isSyncPending = dreamSyncState === 'pending';
@@ -1405,6 +1424,17 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     return media.imageUrl ? withCacheBuster(media.imageUrl, imageVersion) : undefined;
   }, [dream?.imageUrl, media.imageUrl, imageVersion]);
 
+  const imageTraceKey = `image:${dream?.clientRequestId ?? dream?.id}`;
+  useEffect(() => {
+    if (dream?.imageUrl) markPerformance('image.reference_committed', { trace: performanceTraceId(imageTraceKey) });
+  }, [dream?.imageUrl, imageTraceKey]);
+  useEffect(() => {
+    if (displayImageUrl) markPerformance('image.source_resolved', { trace: performanceTraceId(imageTraceKey) });
+  }, [displayImageUrl, imageTraceKey]);
+  const markImageDisplayed = useCallback(() => {
+    markPerformance('image.native_displayed', { trace: performanceTraceId(imageTraceKey) });
+  }, [imageTraceKey]);
+
 
   // Define callbacks before early return (hooks must be called unconditionally)
   const onShare = useCallback(async () => {
@@ -1620,10 +1650,12 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     if (dream && pending?.savedDreamId === dream.id && pending.phase === 'analysis_confirmation') {
       void transitionOnboarding({ type: 'CLEAR_PENDING_INTENT' }).catch(() => {
         console.warn('[JournalDetail] Failed to dismiss the saved dream analysis choice');
-      }).finally(() => router.replace('/(tabs)/journal'));
+      }).finally(() => router.dismissTo('/(tabs)/journal'));
       return;
     }
-    router.replace('/(tabs)/journal');
+    // Reuse the journal beneath this detail, preserving its filters and scroll.
+    // A direct link without that route still falls back to opening the journal.
+    router.dismissTo('/(tabs)/journal');
   }, [dream, onboardingState.pendingRecordingIntent, opensOnSavedMoment, transitionOnboarding]);
 
   const handleJourneyPress = useCallback(() => {
@@ -1947,14 +1979,15 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       readingRevealScrolledRef.current = false;
       return;
     }
-    if (readingStory !== 'revealed' || readingRevealScrolledRef.current) return;
+    if (readingStory !== 'revealed' || readingRevealScrolledRef.current || interpretationTop === null) return;
     // The dock resizes as the reading lands, which re-runs this effect and cancels the
     // pending frame: only the frame that actually runs marks the reveal as handled.
     const frame = requestAnimationFrame(() => {
       readingRevealScrolledRef.current = true;
-      const top = readingZoneTopRef.current;
-      if (top == null) return;
-      const visibleBottom = readingScrollOffset.current + viewportHeight - actionDockHeight;
+      const zoneTop = readingZoneTopRef.current;
+      if (zoneTop == null) return;
+      const top = zoneTop + interpretationTop;
+      const visibleBottom = readingScrollOffset.get() + viewportHeight - actionDockHeight;
       // The reader asked for this reading: bring it into view when it lands below the fold,
       // never pull them back up from further down the page.
       if (readingContentTop + top > visibleBottom - 120) {
@@ -1962,11 +1995,20 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       }
     });
     return () => cancelAnimationFrame(frame);
-  }, [actionDockHeight, readingContentTop, readingStory, reducedMotion, viewportHeight]);
+  }, [actionDockHeight, interpretationTop, readingContentTop, readingScrollOffset, readingStory, reducedMotion, viewportHeight]);
   const pageReady = coverIntroHeight !== null && (!hasIllustratedCover || coverShown);
   useEffect(() => {
     if (pageReady) pageLaidOut();
   }, [pageLaidOut, pageReady]);
+  const handoffTarget = useMemo(() => dream && ({ id: dream.id, remoteId: dream.remoteId, clientRequestId: dream.clientRequestId }),
+    [dream?.id, dream?.remoteId, dream?.clientRequestId]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (!pageReady || !windowHandedOver || !handoffTarget) return;
+    let frame = requestAnimationFrame(() => {
+      frame = requestAnimationFrame(() => markDreamStoryPageReady(handoffTarget));
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [handoffTarget, pageReady, windowHandedOver]);
   const paintedArtwork = !coverImageFailed && displayImageUrl ? { uri: displayImageUrl, cacheKey: imageCacheKey } : null;
   // Act III keeps painting until the image can actually be shown: stored artwork is
   // saved on the dream before its signed URL resolves. Its landing plays once per visit,
@@ -1998,7 +2040,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     settled?: boolean;
   }>(() => {
     const sealed = windowHandedOver && dream ? getDreamStoryHandoffName(dream) : undefined;
-    if (sealed?.mark) return { stage: 'named', title: sealed.title, seal: sealed.mark, settled: true };
+    if (sealed) return { stage: 'named', title: sealed.title, seal: sealed.mark ?? null, settled: true };
     return { stage: opensOnSavedMoment ? 'waiting' : 'named' };
   });
   const [namingTime, setNamingTime] = useState<'early' | 'due' | 'late'>('early');
@@ -2038,6 +2080,17 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   // A name changed meanwhile, by the reader's own hand, ends the ceremony: that name stands.
   const namingOn = naming.stage !== 'named'
     && (!naming.title || naming.title === (heldTitle ?? (dream?.title || t('journal.detail.untitled_dream'))));
+  const captureTraceKey = dream ? `capture:${dream.clientRequestId ?? dream.id}` : undefined;
+  useEffect(() => {
+    if (!isSavedArrival || !captureTraceKey) return;
+    markPerformance('journal.saved_page_committed', { trace: performanceTraceId(captureTraceKey) });
+  }, [captureTraceKey, isSavedArrival]);
+  useEffect(() => {
+    if (!isSavedArrival || !captureTraceKey || namingOn) return;
+    return markPerformanceAfterFrames('journal.saved_actions_reveal_elapsed',
+      { trace: performanceTraceId(captureTraceKey), analysis_locked: isAnalysisLocked },
+      opensOnSavedMoment && !windowHandedOver ? 120 + DURATION.normal : 0);
+  }, [captureTraceKey, isAnalysisLocked, isSavedArrival, namingOn, opensOnSavedMoment, windowHandedOver]);
   const finishNaming = useCallback(() => {
     setNaming((current) => (current.stage === 'writing' ? { ...current, stage: 'named' } : current));
   }, []);
@@ -2075,13 +2128,13 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       }
       // The plate takes the place of the running head and the name, above the reading,
       // which stays where the reader has it: on the screen it ends just above the reading.
-      const top = readingContentTop - readingScrollOffset.current - coverHeight;
+      const top = readingContentTop - readingScrollOffset.get() - coverHeight;
       // As the page lays its picture out there, drifted for its place on the screen.
       const place = (top + coverHeight / 2 - windowSize.height / 2) / (windowSize.height / 2 + coverHeight / 2);
       const drift = reducedMotion ? 0 : -coverTravel * Math.max(-1, Math.min(1, place));
       setCoverFlight({ from: { ...centre, size: SEAL_MEASURES.medallion }, to: { top, drift }, landed: false });
     });
-  }, [coverFlight, coverHeight, coverTravel, insets.top, isEditing, isIllustrationFullscreen, readingContentTop, reducedMotion,
+  }, [coverFlight, coverHeight, coverTravel, insets.top, isEditing, isIllustrationFullscreen, readingContentTop, readingScrollOffset, reducedMotion,
     revealPlate, viewportHeight, windowSize.height]);
   useEffect(() => {
     if (!sealHoldsArtwork) return;
@@ -2111,7 +2164,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     if (place === null || place === previous) return;
     setReadingContentTop(place);
     if (!holdsReading || previous === null) return;
-    scrollViewRef.current?.scrollTo({ y: Math.max(0, readingScrollOffset.current + place - previous), animated: false });
+    scrollViewRef.current?.scrollTo({ y: Math.max(0, readingScrollOffset.get() + place - previous), animated: false });
   });
   // The flight fades once the plate shows under it, or after a moment at most.
   const plateUnderFlight = plateRevealed && Boolean(coverFlight) && !coverFlight?.landed;
@@ -2887,7 +2940,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
         style={{ width: '100%', height: '100%' }}
         contentFit="cover"
         onError={() => setFailedCoverUri(displayImageUrl ?? null)}
-        onDisplay={() => setCoverShown(true)}
+        onLoad={() => markPerformance('image.native_loaded', { trace: performanceTraceId(imageTraceKey) })}
+        onDisplay={() => { setCoverShown(true); markImageDisplayed(); }}
         transition={turnedTo || plateRevealed ? 0 : imageConfig.transition}
         cachePolicy={imageConfig.cachePolicy}
         priority={imageConfig.priority}
@@ -2920,6 +2974,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
         ) : dream.imageUrl && !hasIllustratedCover ? (
           paintedArtwork ? (
             <DreamPaintedArtwork source={paintedArtwork} land={artworkLanding}
+              onDisplay={markImageDisplayed}
               onOpen={() => setIsIllustrationFullscreen(true)}
               onError={() => setFailedCoverUri(displayImageUrl ?? null)} />
           ) : (
@@ -3074,6 +3129,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
         handedOver={windowHandedOver} action={sealAction} sealing={sealShows}
         artwork={artworkAtArrival === false ? paintedArtwork : null} artworkAway={Boolean(coverFlight) || plateRevealed}
         landArtwork={artworkLanding} onOpenArtwork={() => setIsIllustrationFullscreen(true)}
+        onArtworkDisplay={markImageDisplayed}
         onArtworkError={() => setFailedCoverUri(displayImageUrl ?? null)}
         date={formatDreamStamp(dream.id)} still={!opensOnSavedMoment && !readingInFlight}
         announce={opensOnSavedMoment} wordsLine={opensOnSavedMoment || readingInFlight} />
@@ -3101,7 +3157,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
             dock, the plate taking the running head's place), and the native mounting
             tracks those changes reliably only under parents that exist natively. */}
         <View className="flex-1" collapsable={false}>
-        <ScrollView
+        <ReadingScrollView
           ref={scrollViewRef}
           onContentSizeChange={revealRecallInput}
           className="flex-1"
@@ -3115,17 +3171,17 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
             paddingBottom: ((isEditing) ? 220 : actionDockHeight + 32) + insets.bottom,
           }}
           scrollEventThrottle={16}
-          onScroll={(event) => {
+          onScroll={Platform.OS === 'web' ? (event) => {
             const { nativeEvent } = event;
-            onHeaderScroll(event);
-            readingScrollOffset.current = nativeEvent.contentOffset.y;
+            headerScrollY.set(nativeEvent.contentOffset.y);
+            readingScrollOffset.set(nativeEvent.contentOffset.y);
             updateReadingChrome(nativeEvent.contentOffset.y);
             // The web has no end of drag or momentum: a pause in the scrolling stands for it.
             if (Platform.OS === 'web' && sealHoldsArtwork) {
               if (scrollRestRef.current) clearTimeout(scrollRestRef.current);
               scrollRestRef.current = setTimeout(releaseArtwork, SCROLL_REST_MS);
             }
-          }}
+          } : handleReadingScroll}
           // Scrolled back to a seal still holding its illustration, the reader sees it leave.
           onScrollEndDrag={sealHoldsArtwork ? releaseArtwork : undefined}
           onMomentumScrollEnd={sealHoldsArtwork ? releaseArtwork : undefined}
@@ -3165,6 +3221,9 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
                 onLayout={({ nativeEvent }) => { readingZoneTopRef.current = nativeEvent.layout.y; }}>
                 <DreamAnalysisContent dream={dream}
                   pending={isAnalysisPending || readingAwaited}
+                  onInterpretationLayout={({ nativeEvent: { layout } }) => setInterpretationLayout((current) =>
+                    current?.key === readingLayoutKey && current.top === layout.y
+                      ? current : { key: readingLayoutKey, top: layout.y })}
                   reveal={readingStory === 'revealed'} />
               </OpenUp>
             ) : null}
@@ -3202,7 +3261,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
             <View>{renderSyncStatusCard()}</View>
 
             {!isEditing && (
-              <ArrivalReveal play={opensOnSavedMoment} index={1} className="mt-2 mb-5">
+              <ArrivalReveal play={opensOnSavedMoment && !windowHandedOver} index={1} className="mt-2 mb-5">
                 <View>
                   <View className="px-2 pb-4">
                     {renderTranscriptBody()}
@@ -3211,7 +3270,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
               </ArrivalReveal>
             )}
             {opensOnSavedMoment && !isEditing && !detailsOnSeal ? (
-              <ArrivalLater play ready={!namingOn}>
+              <ArrivalLater play={!windowHandedOver} ready={!namingOn}>
                 <View className="mx-2 mb-7">{renderMetadataChips()}</View>
               </ArrivalLater>
             ) : null}
@@ -3220,7 +3279,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
             {showCompletedReading && !readingInFlight ? renderFirstValueBackupCard() : null}
             {!hasIllustratedCover ? renderIllustrationSection() : null}
             {!recallRequested ? (
-              <ArrivalReveal play={opensOnSavedMoment} index={2}>
+              <ArrivalReveal play={opensOnSavedMoment && !windowHandedOver} index={2}>
                 <DreamRecallAssistantCard dreamId={getDreamRecallStorageId(dream, user?.id ?? null)}
                   originalTranscript={dream.transcript}
                   originalPersistedSegmentId={dream.clientRequestId ?? (dream.remoteId != null ? getDreamIdentityKey(dream) : String(dream.id))}
@@ -3309,7 +3368,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
               <JournalFolio folio={folio} className="mt-8" turns="dream" />
             </View>
             </View>
-        </ScrollView>
+        </ReadingScrollView>
 
         <JournalReturnTab top={insets.top + 6} onPress={handleBackPress} />
         {coverFlight && paintedArtwork ? (
@@ -3332,7 +3391,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
                 style={{ position: 'absolute', left: 0, right: 0, top: -32, height: 32 }} />
             ) : null}
             <View className="w-full self-center" style={{ maxWidth: BOOK_MEASURE - 32 }}>
-              <ArrivalLater play={opensOnSavedMoment} ready={!namingOn}>{renderDetailActionCard()}</ArrivalLater>
+              <ArrivalLater play={opensOnSavedMoment && !windowHandedOver} ready={!namingOn}>{renderDetailActionCard()}</ArrivalLater>
             </View>
           </View>
         ) : null}

@@ -57,7 +57,12 @@ let mockPlatform = 'android';
 let mockListProps: Record<string, any> = {};
 let mockHeaderOnLayout: ((event: any) => void) | undefined;
 
-jest.mock('expo-router', () => ({ router: { push: (...args: unknown[]) => mockPush(...args) }, useFocusEffect: () => {}, useLocalSearchParams: () => ({}) }));
+jest.mock('expo-router', () => ({
+  router: { push: (...args: unknown[]) => mockPush(...args) },
+  // This adapter renders the journal as the focused route, including blur cleanup.
+  useFocusEffect: (effect: () => void | (() => void)) => require('react').useEffect(effect, [effect]),
+  useLocalSearchParams: () => ({}),
+}));
 // Model UI-runtime values separately from screen state. Only the animated host
 // subscribes; scrolling does not cause the Journal screen to render in this adapter.
 jest.mock('react-native-reanimated', () => {

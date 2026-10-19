@@ -21,6 +21,7 @@ jest.mock('@/lib/storeReview', () => ({
 jest.mock('@/lib/performanceTrace', () => ({
   markPerformance: (...args: unknown[]) => mockMarkPerformance(...args),
   performanceTraceId: () => 1,
+  markPerformanceAfterFrames: () => () => undefined,
 }));
 const mockRenderContext = React.createContext({});
 const render = (ui: React.ReactElement) => renderTree(ui, { wrapper: ({ children }) => (
@@ -177,6 +178,7 @@ jest.mock('expo-router', () => ({
     canGoBack: () => false,
     push: jest.fn(),
     replace: jest.fn(),
+    dismissTo: jest.fn(),
     setParams: mockSetParams,
   },
   useLocalSearchParams: () => mockSearchParams,
@@ -660,6 +662,25 @@ describe('journal detail saved confirmation route', () => {
 
     await act(async () => { finish(); await initial; });
     expect(screen.getByTestId('dream-metadata-retry')).toBeTruthy();
+  });
+
+  // Fast arrival can precede both categorization and remote-id promotion. The
+  // UI mock cannot schedule that native race, so keep this focused control.
+  it('does not duplicate subject detection while the first categorization owns a promoted dream', async () => {
+    mockReferenceImagesEnabled = true;
+    mockDreams = [buildDream({ remoteId: 9042, hasPerson: undefined, hasAnimal: undefined })];
+    let finish!: () => void;
+    const pendingResult = new Promise<void>((resolve) => { finish = resolve; });
+    const initial = trackInitialDreamCategorization('client:persisted-original-42', () => pendingResult);
+    const view = render(<JournalDetailScreen />);
+    expect(mockCategorizeDream).not.toHaveBeenCalled();
+    await act(async () => {
+      mockDreams = [{ ...mockDreams[0], hasPerson: false, hasAnimal: false }];
+      view.rerender(<JournalDetailScreen />);
+      finish();
+      await initial;
+    });
+    expect(mockCategorizeDream).not.toHaveBeenCalled();
   });
 
   it('does not restore an old draft title when subject detection finishes after enrichment', async () => {
@@ -1580,15 +1601,15 @@ it('renders a sparse unclassified reflection without empty insight sections', ()
 
 // An invisible preview's performance marker has no visual E2E assertion; retain
 // this isolated counterexample so latency evidence describes only live content.
-it('does not report a decorative analysis as displayed but reports the live reading', () => {
+it('does not report a decorative analysis as committed but reports the live reading', () => {
   const { DecorativeCopy } = require('@/components/journal/DecorativeCopy');
   const { DreamAnalysisContent } = require('@/components/journal/DreamAnalysisContent');
   const dream = buildDream({ analysisRequestId: 'reading-42', isAnalyzed: true,
     analysisStatus: 'done', interpretation: 'A quiet city.' });
   mockMarkPerformance.mockClear();
   const view = render(<DecorativeCopy><DreamAnalysisContent dream={dream} pending={false} /></DecorativeCopy>);
-  expect(mockMarkPerformance).not.toHaveBeenCalledWith('analysis.text_displayed', expect.anything());
+  expect(mockMarkPerformance).not.toHaveBeenCalledWith('analysis.text_committed', expect.anything());
   view.rerender(<DreamAnalysisContent dream={dream} pending={false} />);
-  expect(mockMarkPerformance).toHaveBeenCalledWith('analysis.text_displayed', { trace: 1 });
+  expect(mockMarkPerformance).toHaveBeenCalledWith('analysis.text_committed', { trace: 1, reveal_delay_ms: 0 });
   cleanup();
 });

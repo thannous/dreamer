@@ -1065,6 +1065,9 @@ export const useDreamJournal = () => {
       };
 
       if (status.status === 'succeeded' && status.resultPayload?.imageUrl) {
+        markPerformance('image.result_observed', {
+          trace: performanceTraceId(`image:${currentDream.clientRequestId ?? currentDream.id}`),
+        });
         const nextDream: DreamAnalysis = {
           ...currentDream,
           imageUrl: status.resultPayload.imageUrl,

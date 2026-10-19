@@ -40,6 +40,15 @@ export function markStartupInteractive(): void {
   journalObserve?.Observe.markInteractive();
 }
 
+/** QA timing events contain only process-local numbers and flags, never dream content/URLs. */
+export function recordPerformanceEvent(name: string, attributes: Record<string, number | boolean>): void {
+  try {
+    journalObserve?.Observe.logEvent(`noctalia.${name}`, { attributes });
+  } catch {
+    // Diagnostics must never interrupt capture, persistence or rendering.
+  }
+}
+
 /** Lets Observe mark the first render of the root layout. */
 export function wrapObservedRoot<P extends Record<string, unknown>>(
   Component: React.ComponentType<P>
