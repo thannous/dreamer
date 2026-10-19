@@ -62,7 +62,9 @@ function LucidRootNavigation({ nonCriticalStartupEnabled, onStartupCommitted }: 
   const navigation = useRootNavigationState();
   const tracker = useRef(createNotificationResponseTracker());
   const started = useRef(false);
-  const [launchUrl, setLaunchUrl] = useState<string | null | undefined>(undefined);
+  const [launchUrl, setLaunchUrl] = useState<string | null | undefined>(() =>
+    Platform.OS === 'web' ? (typeof window === 'undefined' ? null : window.location.href) : undefined
+  );
   const [notificationsReady, setNotificationsReady] = useState(false);
   const [pending, setPending] = useState<Href | null>(null);
   const [destination, setDestination] = useState<Href | null>(null);
@@ -71,14 +73,11 @@ function LucidRootNavigation({ nonCriticalStartupEnabled, onStartupCommitted }: 
 
   useEffect(() => {
     let active = true;
-    if (Platform.OS === 'web') {
-      setLaunchUrl(typeof window === 'undefined' ? null : window.location.href);
-    } else {
-      void Linking.getInitialURL().then(
-        (url) => { if (active) setLaunchUrl(url); },
-        () => { if (active) setLaunchUrl(null); }
-      );
-    }
+    if (Platform.OS === 'web') return;
+    void Linking.getInitialURL().then(
+      (url) => { if (active) setLaunchUrl(url); },
+      () => { if (active) setLaunchUrl(null); }
+    );
     return () => { active = false; };
   }, []);
 

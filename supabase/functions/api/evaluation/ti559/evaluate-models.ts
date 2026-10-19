@@ -3,9 +3,9 @@ import { aiLanguageName } from '../../lib/aiLanguage.ts';
 import { buildAnalysisPrompt, REFLECTION_POLICY, ANALYSIS_PROMPT_VERSION } from '../../services/dreamAnalysis.ts';
 import { ANALYZE_DREAM_SCHEMA } from '../../lib/schemas.ts';
 import { callGeminiWithFallback } from '../../services/gemini.ts';
-const MODELS = { before: 'gemini-3.7-flash', after: 'gemini-3.8-flash' } as const;
-
 import { validateFixtures, planPairs, preserveResponse, budgetedFetch, atomicWriteJson } from './core.ts';
+
+const MODELS = { before: 'gemini-3.7-flash', after: 'gemini-3.8-flash' } as const;
 
 if (ANALYSIS_PROMPT_VERSION !== 'analysis-2026-09-09.1') throw new Error('Review prompt drift before model comparison.');
 const fixtures = validateFixtures(JSON.parse(await Deno.readTextFile(new URL('./followup-fixtures.json', import.meta.url))), 'followup');

@@ -1,5 +1,10 @@
 /* @jest-environment jsdom */
 
+import React from 'react';
+import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { TID } from '@/lib/testIDs';
+
 jest.mock('@/lib/storeReview', () => ({
   canOpenStoreReviewPage: () => false,
   markStoreReviewPaywallSeen: jest.fn(),
@@ -8,12 +13,6 @@ jest.mock('@/lib/storeReview', () => ({
   requestStoreReviewIfDue: jest.fn(async () => false),
 }));
 jest.mock('@/components/ui/DreamerBackground', () => ({ DreamerArtworkWindow: () => null, DreamerBackground: () => null }));
-
-import React from 'react';
-import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
-
-import { TID } from '@/lib/testIDs';
 
 let mockParams: Record<string, string> = { trigger: 'settings' };
 let mockUser = { id: 'user-1' };
@@ -595,6 +594,18 @@ describe('Paywall screen', () => {
     expect(screen.getByTestId(TID.BottomSheet.PaywallError).textContent).toBe(
       'subscription.paywall.error.message'
     );
+  });
+
+  // A provider error can clear after a retry without a user dismissing the sheet.
+  // Mock browser journeys do not inject this exact billing-provider transition.
+  it('closes the error sheet when the subscription provider clears its error', () => {
+    const subscription = mockUseSubscription();
+    mockUseSubscription.mockReturnValue({ ...subscription, error: new Error('store unavailable') });
+    const view = render(<PaywallScreen />);
+    expect(screen.getByTestId(TID.BottomSheet.PaywallError)).toBeDefined();
+    mockUseSubscription.mockReturnValue({ ...subscription, error: null });
+    view.rerender(<PaywallScreen />);
+    expect(screen.queryByTestId(TID.BottomSheet.PaywallError)).toBeNull();
   });
 
   it('exposes Terms of Use and Privacy Policy links that open getLegalLink destinations', () => {

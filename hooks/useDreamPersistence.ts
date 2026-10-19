@@ -1263,6 +1263,8 @@ export function useDreamPersistence({
     userScope,
   ]);
 
+  // Load the external storage for this scope, including its observable loading/error
+  // state. Keep cancellation and scope checks around every asynchronous publication.
   // Initial load effect
   useEffect(() => {
     const mounted = { current: true };

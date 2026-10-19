@@ -1,7 +1,5 @@
 /* @jest-environment jsdom */
 
-jest.mock('@/components/ui/DreamerBackground', () => ({ DreamerArtworkWindow: () => null, DreamerBackground: () => null }));
-
 import React from 'react';
 import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
@@ -9,6 +7,8 @@ import { ThemeLayout } from '@/constants/journalTheme';
 import { getBottomNavigationLayout } from '@/constants/layout';
 import { TID } from '@/lib/testIDs';
 import { searchBarLayout } from '@/components/ui/SearchBar';
+
+jest.mock('@/components/ui/DreamerBackground', () => ({ DreamerArtworkWindow: () => null, DreamerBackground: () => null }));
 
 jest.mock('@/context/AuthContext', () => ({ AuthContext: require('react').createContext(null) }));
 jest.mock('@/services/dreamMediaService', () => ({ resolveDreamMedia: async (dream: any) => ({ imageUrl: dream.imageUrl ?? '', thumbnailUrl: dream.thumbnailUrl }) }));

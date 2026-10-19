@@ -93,6 +93,8 @@ async function mountStartup() {
 describe('dedicated Lucid composition', () => {
   beforeEach(() => {
     global.URL = NodeURL as unknown as typeof URL;
+    require('react-native').Platform.OS = 'ios';
+    window.history.replaceState({}, '', '/');
     jest.useFakeTimers(); jest.clearAllMocks(); mockPathname = '/lucid';
     mockAuthLoading = false; mockPreferenceLoaded = true; mockInitialUrl.mockResolvedValue(null);
   });
@@ -110,6 +112,15 @@ describe('dedicated Lucid composition', () => {
     expect(mockMigration).not.toHaveBeenCalled();
     expect(mockDreamMigration).not.toHaveBeenCalled();
     expect(mockMark).toHaveBeenCalledWith('startup.route_committed');
+  });
+
+  it('preserves the browser launch URL without consulting the native linking API', async () => {
+    require('react-native').Platform.OS = 'web';
+    mockPathname = '/lucid/morning';
+    window.history.replaceState({}, '', '/lucid/morning?source=notification#resume');
+    await mountStartup();
+    expect(mockInitialUrl).not.toHaveBeenCalled();
+    expect(mockReplace).toHaveBeenCalledWith('/lucid/morning?source=notification#resume');
   });
 
   it('does not wait indefinitely for preference storage', async () => {

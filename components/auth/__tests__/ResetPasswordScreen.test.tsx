@@ -1,12 +1,11 @@
 /* @jest-environment jsdom */
 
-jest.mock('@/components/ui/DreamerBackground', () => ({ DreamerArtworkWindow: () => null, DreamerBackground: () => null }));
-
 import React from 'react';
 import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
-
 import { TID } from '@/lib/testIDs';
+
+jest.mock('@/components/ui/DreamerBackground', () => ({ DreamerArtworkWindow: () => null, DreamerBackground: () => null }));
 
 type RecoveryListener = (event: string, session: unknown) => void;
 

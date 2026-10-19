@@ -1,5 +1,9 @@
 /* @jest-environment jsdom */
 
+import React from 'react';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
+
 jest.mock('@/lib/storeReview', () => ({
   canOpenStoreReviewPage: () => false,
   markStoreReviewPaywallSeen: jest.fn(),
@@ -8,10 +12,6 @@ jest.mock('@/lib/storeReview', () => ({
   requestStoreReviewIfDue: jest.fn(async () => false),
 }));
 jest.mock('@/components/ui/DreamerBackground', () => ({ DreamerArtworkWindow: () => null, DreamerBackground: () => null }));
-
-import React from 'react';
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 afterEach(() => {
   cleanup();
@@ -400,7 +400,6 @@ describe('Settings screen', () => {
   });
 });
 
-
 it.each([true, false])('returns to the calling screen with a safe direct-link fallback (history=%s)', (hasHistory: boolean) => {
   mockCanGoBack = hasHistory;
   mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
@@ -410,14 +409,12 @@ it.each([true, false])('returns to the calling screen with a safe direct-link fa
   else expect(mockReplace).toHaveBeenCalledWith('/');
 });
 
-
 it('opens the account form for the drawer sign-in entry', () => {
   mockParams = { auth: 'signin' };
   mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
   render(<SettingsScreen />);
   expect(mockInitialAccountSheetOpen).toBe(true);
 });
-
 
 it('includes subscription access in the account without general preferences', () => {
   mockParams = { section: 'account' };

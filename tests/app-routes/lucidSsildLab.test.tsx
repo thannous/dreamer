@@ -1,9 +1,6 @@
 /* @jest-environment jsdom */
-jest.mock('@/components/lucid/LucidGuideOrb', () => ({ LucidGuideOrb: ({ testID = 'lucid-guide-orb' }: { testID?: string }) => <div data-testid={testID} /> }));
-
 import React from 'react';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
-
 import { createLucidGuidedRitualPlan } from '@/lib/lucid/guidedRitual';
 import type { LucidSafetyPolicy } from '@/lib/lucid/safety';
 import {
@@ -12,6 +9,8 @@ import {
   tickLucidSsildSensoryLabSession,
   type LucidSsildSensoryLabSession,
 } from '@/lib/lucid/ssildSensoryLab';
+
+jest.mock('@/components/lucid/LucidGuideOrb', () => ({ LucidGuideOrb: ({ testID = 'lucid-guide-orb' }: { testID?: string }) => <div data-testid={testID} /> }));
 
 const NOW = 1_700_000_000_000;
 const mockBack = jest.fn();

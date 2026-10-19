@@ -1145,6 +1145,8 @@ export const useDreamJournal = () => {
     ]
   );
 
+  // Hydrate persisted jobs once the journal is ready; publish recovered image
+  // state through the same guarded storage operations as other journal updates.
   useEffect(() => {
     if (!loaded) {
       return;

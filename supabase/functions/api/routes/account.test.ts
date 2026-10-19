@@ -31,7 +31,7 @@ type FakeAdminResults = {
   removeError?: { message: string } | null;
   quotaError?: { code: string } | null;
   deleteUserError?: { message: string } | null;
-  identities?: Array<{ provider: string }>;
+  identities?: { provider: string }[];
   appMetadata?: Record<string, unknown>;
 };
 
@@ -138,7 +138,7 @@ Deno.test('/account deletion revokes Apple tokens before deleting an Apple user'
     identities: [{ provider: 'apple' }],
     appMetadata: { apple_refresh_token: 'apple-refresh' },
   });
-  const revokeCalls: Array<{ refreshToken?: string | null }> = [];
+  const revokeCalls: { refreshToken?: string | null }[] = [];
   const res = await handleDeleteAccount(context() as never, factory, async (input) => {
     revokeCalls.push(input);
   });
