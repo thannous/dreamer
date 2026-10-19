@@ -286,7 +286,6 @@ describe('build-android-release-local', () => {
       EXPO_NO_DOTENV: '1',
       EXPO_PUBLIC_MOCK_MODE: 'false',
       EXPO_PUBLIC_SUBSCRIPTION_QA_LAB: 'false',
-      EXPO_PUBLIC_REFERENCE_IMAGES_ENABLED: 'false',
       NOCTALIA_REVENUECAT_TEST_STORE_DEBUGGABLE: 'false',
     });
   });

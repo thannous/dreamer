@@ -51,7 +51,7 @@ export async function ensureImagePrompt(options: ImagePromptOptions): Promise<st
         role: 'user',
         parts: [
           {
-            text: `Generate a short, vivid, artistic image prompt (max 40 words) to visualize this dream. Do not include any other text.\nDream: ${transcript}`,
+            text: `Generate a short, vivid, artistic image prompt (max 40 words) to visualize this dream, never showing nudity or sexual content. Do not include any other text.\nDream: ${transcript}`,
           },
         ],
       },

@@ -44,7 +44,6 @@ export const submitImageGenerationJob = service.submitImageGenerationJob;
 export const getImageGenerationJobStatus = service.getImageGenerationJobStatus;
 export const submitDreamAnalysisJob = service.submitDreamAnalysisJob;
 export const getDreamAnalysisJobStatus = service.getDreamAnalysisJobStatus;
-export const generateImageWithReference = service.generateImageWithReference;
 export const startOrContinueChat = service.startOrContinueChat;
 export const resetChat = service.resetChat;
 export const generateSpeechForText = service.generateSpeechForText;

@@ -168,7 +168,7 @@ export interface DreamAnalysis {
   conflictRemoteDream?: DreamAnalysis;
   pendingSync?: boolean;
 
-  // Subject detection for reference image generation
+  // Subject detection from dream categorization
   // undefined = not yet checked, null = unknown/couldn't determine, true/false = explicitly detected
   hasPerson?: boolean | null;
   hasAnimal?: boolean | null;
@@ -363,26 +363,6 @@ export type OfflineAction =
       timestamp: number;
       retries?: number;
     };
-
-/**
- * Reference image for subject-driven image generation
- */
-export interface ReferenceImage {
-  uri: string;
-  mimeType: string;
-  type: 'person' | 'animal';
-}
-
-/**
- * Request for generating an image with reference subjects
- */
-export interface ReferenceImageGenerationRequest {
-  transcript: string;
-  prompt?: string;
-  referenceImages: ReferenceImage[];
-  previousImageUrl?: string;
-  lang?: string;
-}
 
 export type GuestDreamMigrationOwner = {
   userId: string;

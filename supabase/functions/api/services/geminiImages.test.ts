@@ -5,7 +5,12 @@ import {
   GEMINI_FLASH_LITE_MODEL,
   GEMINI_FLASH_LITE_IMAGE_MODEL,
 } from './gemini.ts';
-import { resolveImageModel, resolveImagePromptModel } from './geminiImages.ts';
+import {
+  generateImageFromPrompt,
+  IMAGE_CONTENT_RULE,
+  resolveImageModel,
+  resolveImagePromptModel,
+} from './geminiImages.ts';
 
 const envReader = (values: Record<string, string | undefined>) => (name: string) => ({ HD_ILLUSTRATIONS_ENABLED: 'true', ...values })[name];
 
@@ -104,4 +109,29 @@ Deno.test('Plus standard illustrations also use Lite despite premium overrides',
 
 Deno.test('Lite cannot be configured as the HD model after reactivation', () => {
   assertEquals(resolveImageModel('plus', envReader({ IMAGEN_HD_MODEL: GEMINI_FLASH_LITE_IMAGE_MODEL }), '4K'), GEMINI_FLASH_IMAGE_MODEL);
+});
+
+// The provider cannot be asked from a journey which rule it received, so this
+// control reads the outgoing request: a prompt written by the client or by the
+// analysis must still reach the image model with the content rule.
+Deno.test('generateImageFromPrompt sends the content rule with every prompt', async () => {
+  const originalFetch = globalThis.fetch;
+  const bodies: string[] = [];
+  globalThis.fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
+    bodies.push(await new Request(input, init).text());
+    return new Response(
+      JSON.stringify({ id: 'interaction-1', status: 'completed', output_image: { data: 'aW1hZ2U=', mime_type: 'image/png' } }),
+      { status: 200, headers: { 'content-type': 'application/json' } }
+    );
+  }) as typeof fetch;
+
+  try {
+    const result = await generateImageFromPrompt({ prompt: 'A lighthouse made of glass  ', apiKey: 'test-key', model: GEMINI_FLASH_LITE_IMAGE_MODEL });
+    assertEquals(result.imageBase64, 'aW1hZ2U=');
+    assertEquals(bodies.length, 1);
+    const sent = JSON.stringify(JSON.parse(bodies[0]));
+    assertEquals(sent.includes(JSON.stringify(`A lighthouse made of glass\n\n${IMAGE_CONTENT_RULE}`).slice(1, -1)), true);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
 });

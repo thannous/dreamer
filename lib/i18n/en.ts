@@ -549,6 +549,9 @@ const translations: Record<string, string> = {
     'journal.back_button': 'Back',
     'journal.menu.share': 'Share quote',
     'journal.menu.delete': 'Delete dream',
+    'journal.detail.report.button': 'Report generated content',
+    'journal.detail.report.subject': 'Report of generated content',
+    'journal.detail.report.body': 'Tell us what is wrong with the analysis, the image or the conversation of this dream:\n\n\n\nDream reference: {reference}',
     "journal.original_transcript": "My story",
     'journal.detail.not_found.title': 'Dream not found.',
     'journal.detail.not_found.back': 'Go back',
@@ -1807,37 +1810,8 @@ const translations: Record<string, string> = {
     'notifications.prompt.morning_14': 'What story, if any, did the night leave with you?',
     'notifications.prompt.morning_15': 'No rush. Your journal can keep a dream whenever you are ready.',
 
-    // Reference image picker
-    'reference_image.title_person': 'Add a photo of this person',
-    'reference_image.title_animal': 'Add a photo of this animal',
-    'reference_image.subtitle': 'Add 1 clear reference photo to personalize the dream image with their likeness.',
-    'reference_image.selected_count': '{count} of {max} photos selected',
-    'reference_image.permission_title': 'Photo access required',
-    'reference_image.permission_message': 'Please allow access to your photo library to add reference images.',
-    'reference_image.compression_error_title': 'Image too large',
-    'reference_image.compression_error_message': 'This image could not be compressed to the required size. Please try a different photo.',
-    'reference_image.pick_error': 'Failed to select image. Please try again.',
-    'reference_image.camera_permission_title': 'Camera access required',
-    'reference_image.camera_permission_message': 'Please allow camera access to take a photo.',
-    'reference_image.permission_denied_permanently': 'Access was denied. You can enable it in your device settings.',
-    'reference_image.open_settings': 'Open settings',
-    'reference_image.take_photo': 'Take a photo',
-    'reference_image.pick_from_gallery': 'Choose from gallery',
-    'reference_image.confirm': 'Confirm',
-    'reference_image.remove_photo': 'Remove photo {index}',
-    'reference_image.remove_photo_hint': 'Removes this photo from your selection.',
-
-    // Subject proposition
-    'subject_proposition.title_person': 'Person detected in your dream',
-    'subject_proposition.title_animal': 'Animal detected in your dream',
-    'subject_proposition.message_person': 'Add a reference photo to include their likeness in the generated dream image.',
-    'subject_proposition.message_animal': 'Add a reference photo to include their likeness in the generated dream image.',
-    'subject_proposition.accept': 'Add photo',
-    'subject_proposition.skip': 'Skip',
-
-    // Journal detail - subject actions
-    'journal.detail.add_person': 'Add person',
-    'journal.detail.add_animal': 'Add animal',
+    // Permission settings
+    'recording.alert.open_settings': 'Open settings',
 
     // Symbol dictionary
     'symbols.dictionary_title': 'Symbol dictionary',
@@ -1877,6 +1851,8 @@ const translations: Record<string, string> = {
     'settings.legal.privacyPolicy': 'Privacy Policy',
     'settings.legal.termsOfUse': 'Terms of Use',
     'settings.legal.accountDeletion': 'Account deletion information',
+    'settings.legal.contact': 'Contact us',
+    'contact.mail_unavailable': 'No mail app is available on this device. Write to us at {email}.',
     'settings.deleteAccount.title': 'Delete account',
     'settings.deleteAccount.description': 'Permanently deletes your account and all associated data.',
     'settings.deleteAccount.confirmTitle': 'Delete your account?',

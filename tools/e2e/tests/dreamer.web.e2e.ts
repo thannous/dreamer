@@ -170,6 +170,8 @@ for (const profile of ['plus', 'existing'] as const) {
     await app.screenshot(`${profile}-saved-moment`);
     // The end of the page lifts the story and the recall question above the action dock.
     await screen.getByTestId('btn.dream.delete').scrollIntoView();
+    // Nothing generated yet, so nothing to report.
+    await expect(screen.getByTestId('btn.dream.report')).toHaveCount(0);
     await app.screenshot(`${profile}-saved-story-and-recall`);
     await back.tap();
     await expect(screen.getByTestId('screen.journal', { visible: true })).toHaveCount(1);
@@ -248,6 +250,9 @@ test('plus account watches its saved dream being read, then lit as a constellati
   await expect(card).toHaveCount(1);
   await card.tap();
   await expect(screen.getByTestId('component.dreamDetail.constellation')).toContainText('Doorway');
+  // A read dream can be reported to us from the end of its page.
+  await screen.getByTestId('btn.dream.report').scrollIntoView();
+  await expect(screen.getByTestId('btn.dream.report', { visible: true })).toContainText('Report generated content');
   // The seal stays at the head of the reading, at rest.
   await expect(screen.getByTestId('component.dreamDetail.savedMoment')).toHaveCount(1);
   expect(await browser.evaluate(() => [...document.querySelectorAll('[data-testid="component.dreamDetail.constellation"]')]
