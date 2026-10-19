@@ -61,6 +61,8 @@ test('symbol artwork fills the page from behind the navbar up to 2560px', { time
     symbols: Array<{ id: string; fr: { slug: string; name: string } }>;
   };
   const ids = ['sex','cheating','kissing','attack','killing','fighting','eating','kidnapping','moving-house','war','vomiting','nails','tsunami','flowers','tiger','deer','pig','monkey','lizard','bat','toilet','church','beach','castle','swimming-pool','alien','celebrity','boss','crush','witch','clown','gun','knife','wallet','doll','gold','coffin','stars','sky','god'];
+  // Atlas pages since lot 05: their hero is the atlas painting; every other id keeps its classic artwork.
+  const atlasIds = ['flowers', 'castle', 'stars'];
   const checkLayout = (image: Awaited<ReturnType<typeof measureHero>>) => {
     expect(image.naturalWidth).toBeGreaterThan(0);
     expect(image.width).toBeCloseTo(Math.min(image.available, 2560), 0);
@@ -81,7 +83,11 @@ test('symbol artwork fills the page from behind the navbar up to 2560px', { time
     await app.open('/fr/symboles/' + symbol.fr.slug + '.html');
     await expect(screen.getByRole('heading', { level: 1 })).toBeVisible();
     const image = await browser.evaluate(measureHero);
-    expect(image.src).toMatch(new RegExp('/' + id + '-v1-[0-9]+w\\.(?:webp|avif)$'));
+    if (atlasIds.includes(id)) {
+      expect(new URL(image.src).pathname).toMatch(new RegExp('^/img/symbols/atlas-six-v2/' + id + '/hero-[0-9]+-[0-9a-f]{12}\\.(?:avif|webp)$'));
+    } else {
+      expect(image.src).toMatch(new RegExp('/' + id + '-v1-[0-9]+w\\.(?:webp|avif)$'));
+    }
     checkLayout(image);
     if (['sex', 'tiger', 'god'].includes(id)) await app.screenshot('symbol-' + id + '-wide');
   }
