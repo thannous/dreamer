@@ -7,7 +7,7 @@ export const test = base.extend<{ offlineServices: void; aiConsent: 'granted' | 
   aiConsent: ['granted', { option: true }],
   offlineServices: [async ({ context, baseURL, aiConsent }, use) => {
     if (aiConsent === 'granted') {
-      await context.addInitScript(() => window.localStorage.setItem('noctalia.aiConsent.v1', 'granted'));
+      await context.addInitScript(() => window.localStorage.setItem('noctalia.aiConsent.v2', 'granted'));
     }
     const billingRequests: string[] = [];
     await context.route('**/*', async (route) => {
