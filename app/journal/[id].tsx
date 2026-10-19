@@ -126,14 +126,15 @@ import {
   View,
 } from 'react-native';
 import Animated, {
-  interpolate, useAnimatedReaction, useAnimatedStyle, useReducedMotion, useSharedValue, withTiming,
+  interpolate, useAnimatedReaction, useAnimatedScrollHandler, useAnimatedStyle, useReducedMotion, useSharedValue, withTiming,
 } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
-import { useHeaderScroll } from '@/components/ui/headerStretch';
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 import { useFrameParallax, useHeaderScrollY } from '@/components/ui/scrollDepth';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+
+const ReadingScrollView = Platform.OS === 'web' ? ScrollView : Animated.ScrollView;
 
 type ShareNavigator = Navigator & {
   share?: (data: { title?: string; text?: string; url?: string }) => Promise<void>;
@@ -519,7 +520,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   const coverHeight = viewportHeight;
   // The illustration lies a little deeper than the page and drifts as it scrolls.
   const coverTravel = Math.round(coverHeight * 0.06);
-  const onHeaderScroll = useHeaderScroll();
+  const headerScrollY = useHeaderScrollY();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { language } = useLanguage();
   useClearWebFocus();
@@ -726,19 +727,32 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
   // Where the reading starts in the page: under the running head and the name, or the plate.
   const [readingContentTop, setReadingContentTop] = useState(insets.top + 76);
-  const readingScrollOffset = useRef(0);
+  const readingScrollOffset = useSharedValue(0);
   const readingContentRef = useRef<ViewInstance | null>(null);
   // Past the plate, the page's actions come in as soon as its reading is on the screen: the
   // seal and the analysis, which now come before the story, or the story itself.
+  const readingActionThreshold = Math.max(1, readingContentTop - viewportHeight + Math.min(144, viewportHeight * 0.2));
   const updateReadingChrome = useCallback((offsetY: number) => {
-    const visibleReadingHeight = Math.min(144, viewportHeight * 0.2);
-    setReadingActionVisible(offsetY >= Math.max(1, readingContentTop - viewportHeight + visibleReadingHeight));
-  }, [readingContentTop, viewportHeight]);
+    setReadingActionVisible(offsetY >= readingActionThreshold);
+  }, [readingActionThreshold]);
+  const nativeReadingScroll = Platform.OS !== 'web';
+  // Continuous offsets stay on the UI runtime. Only crossing the dock's threshold
+  // changes React state; a long scroll never schedules a JS update per frame.
+  useAnimatedReaction(() => nativeReadingScroll ? readingScrollOffset.get() >= readingActionThreshold : null,
+    (visible, previous) => {
+      if (visible !== null && visible !== previous) scheduleOnRN(setReadingActionVisible, visible);
+    });
+  const handleReadingScroll = useAnimatedScrollHandler({
+    onScroll: (event) => {
+      readingScrollOffset.set(event.contentOffset.y);
+      headerScrollY.set(event.contentOffset.y);
+    },
+  });
   // Rotation, text scaling and measured content can move artwork without a scroll
   // event. Recompute chrome before paint using the latest observed offset.
   useLayoutEffect(() => {
-    updateReadingChrome(readingScrollOffset.current);
-  }, [updateReadingChrome]);
+    updateReadingChrome(readingScrollOffset.get());
+  }, [readingScrollOffset, updateReadingChrome]);
   const scrollViewRef = useRef<ScrollViewInstance | null>(null);
   const editorScrollRef = useRef<ScrollViewInstance | null>(null);
   const recallInputRef = useRef<TextInputInstance | null>(null);
@@ -1981,7 +1995,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       const zoneTop = readingZoneTopRef.current;
       if (zoneTop == null) return;
       const top = zoneTop + interpretationTop;
-      const visibleBottom = readingScrollOffset.current + viewportHeight - actionDockHeight;
+      const visibleBottom = readingScrollOffset.get() + viewportHeight - actionDockHeight;
       // The reader asked for this reading: bring it into view when it lands below the fold,
       // never pull them back up from further down the page.
       if (readingContentTop + top > visibleBottom - 120) {
@@ -1989,7 +2003,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       }
     });
     return () => cancelAnimationFrame(frame);
-  }, [actionDockHeight, interpretationTop, readingContentTop, readingStory, reducedMotion, viewportHeight]);
+  }, [actionDockHeight, interpretationTop, readingContentTop, readingScrollOffset, readingStory, reducedMotion, viewportHeight]);
   const pageReady = coverIntroHeight !== null && (!hasIllustratedCover || coverShown);
   useEffect(() => {
     if (pageReady) pageLaidOut();
@@ -2120,13 +2134,13 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       }
       // The plate takes the place of the running head and the name, above the reading,
       // which stays where the reader has it: on the screen it ends just above the reading.
-      const top = readingContentTop - readingScrollOffset.current - coverHeight;
+      const top = readingContentTop - readingScrollOffset.get() - coverHeight;
       // As the page lays its picture out there, drifted for its place on the screen.
       const place = (top + coverHeight / 2 - windowSize.height / 2) / (windowSize.height / 2 + coverHeight / 2);
       const drift = reducedMotion ? 0 : -coverTravel * Math.max(-1, Math.min(1, place));
       setCoverFlight({ from: { ...centre, size: SEAL_MEASURES.medallion }, to: { top, drift }, landed: false });
     });
-  }, [coverFlight, coverHeight, coverTravel, insets.top, isEditing, isIllustrationFullscreen, readingContentTop, reducedMotion,
+  }, [coverFlight, coverHeight, coverTravel, insets.top, isEditing, isIllustrationFullscreen, readingContentTop, readingScrollOffset, reducedMotion,
     revealPlate, viewportHeight, windowSize.height]);
   useEffect(() => {
     if (!sealHoldsArtwork) return;
@@ -2156,7 +2170,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     if (place === null || place === previous) return;
     setReadingContentTop(place);
     if (!holdsReading || previous === null) return;
-    scrollViewRef.current?.scrollTo({ y: Math.max(0, readingScrollOffset.current + place - previous), animated: false });
+    scrollViewRef.current?.scrollTo({ y: Math.max(0, readingScrollOffset.get() + place - previous), animated: false });
   });
   // The flight fades once the plate shows under it, or after a moment at most.
   const plateUnderFlight = plateRevealed && Boolean(coverFlight) && !coverFlight?.landed;
@@ -3149,7 +3163,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
             dock, the plate taking the running head's place), and the native mounting
             tracks those changes reliably only under parents that exist natively. */}
         <View className="flex-1" collapsable={false}>
-        <ScrollView
+        <ReadingScrollView
           ref={scrollViewRef}
           onContentSizeChange={revealRecallInput}
           className="flex-1"
@@ -3163,17 +3177,17 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
             paddingBottom: ((isEditing) ? 220 : actionDockHeight + 32) + insets.bottom,
           }}
           scrollEventThrottle={16}
-          onScroll={(event) => {
+          onScroll={Platform.OS === 'web' ? (event) => {
             const { nativeEvent } = event;
-            onHeaderScroll(event);
-            readingScrollOffset.current = nativeEvent.contentOffset.y;
+            headerScrollY.set(nativeEvent.contentOffset.y);
+            readingScrollOffset.set(nativeEvent.contentOffset.y);
             updateReadingChrome(nativeEvent.contentOffset.y);
             // The web has no end of drag or momentum: a pause in the scrolling stands for it.
             if (Platform.OS === 'web' && sealHoldsArtwork) {
               if (scrollRestRef.current) clearTimeout(scrollRestRef.current);
               scrollRestRef.current = setTimeout(releaseArtwork, SCROLL_REST_MS);
             }
-          }}
+          } : handleReadingScroll}
           // Scrolled back to a seal still holding its illustration, the reader sees it leave.
           onScrollEndDrag={sealHoldsArtwork ? releaseArtwork : undefined}
           onMomentumScrollEnd={sealHoldsArtwork ? releaseArtwork : undefined}
@@ -3360,7 +3374,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
               <JournalFolio folio={folio} className="mt-8" turns="dream" />
             </View>
             </View>
-        </ScrollView>
+        </ReadingScrollView>
 
         <JournalReturnTab top={insets.top + 6} onPress={handleBackPress} />
         {coverFlight && paintedArtwork ? (
