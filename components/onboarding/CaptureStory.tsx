@@ -9,7 +9,7 @@ import { Fonts } from '@/constants/theme';
 import { useTranslation } from '@/hooks/useTranslation';
 import { DreamGlobe } from './DreamGlobe';
 import { StoryScene, STORY_DEMO_STEP } from './FeatureStory';
-import { WordReveal } from './story/StoryText';
+import { WordReveal, loopsUntil } from './story/StoryText';
 
 // The 800 px painting stays sharp when the camera reaches the door.
 const ARTWORK = require('../../docs-src/static/img/dreams/staircase-800w.webp');
@@ -39,7 +39,7 @@ const DOOR_LANDING_Y = 0.22;
 /** The door's middle once landed, where its light gathers. */
 const DOOR_GLOW_Y = 0.3;
 /** The telling scene, in milliseconds from the slide's arrival. */
-const TELL = { fade: 1900, light: 1900, push: 2300, pushFor: 2800, glow: 4000 } as const;
+const TELL = { fade: 1900, fadeFor: 500, light: 1900, push: 2300, pushFor: 2800, glow: 4000 } as const;
 
 function DreamCard({ height, tokens }: { height: number; tokens: NoctaliaDesignTokens }) {
   return <View accessible={false} style={[styles.card, { width: height * 0.76, height, borderColor: tokens.surface.border }]}>
@@ -137,11 +137,10 @@ export function CaptureStory({ step, reduced, tokens, stageHeight, onDreamChange
           }]}>
             <Image source={ARTWORK} style={StyleSheet.absoluteFill} contentFit="cover" />
           </Animated.View>
-          {/* Light from behind the door once we reach it. */}
+          {/* Light from behind the door once we reach it. It breathes on a wrapper: on iOS,
+              changing the opacity of the shadowed view itself rebuilds its shadow each frame. */}
           {!reduced ? <Animated.View pointerEvents="none" style={[styles.doorGlow, {
             left: cardWidth / 2 - 30, top: cardHeight * DOOR_GLOW_Y - 30,
-            backgroundColor: tokens.illustration.text,
-            boxShadow: [{ offsetX: 0, offsetY: 0, blurRadius: 40, spreadDistance: 8, color: tokens.illustration.text }],
             animationName: {
               '0%': { opacity: 0, transform: [{ scale: 0.7 }] },
               '40%': { opacity: 0.28, transform: [{ scale: 1 }] },
@@ -149,13 +148,18 @@ export function CaptureStory({ step, reduced, tokens, stageHeight, onDreamChange
             },
             animationDuration: 2400, animationDelay: TELL.glow, animationIterationCount: 'infinite', animationDirection: 'alternate',
             animationTimingFunction: EASE.inOut, animationFillMode: 'both',
-          }]} /> : null}
+          }]}>
+            <View style={[styles.doorGlowLight, {
+              backgroundColor: tokens.illustration.text,
+              boxShadow: [{ offsetX: 0, offsetY: 0, blurRadius: 40, spreadDistance: 8, color: tokens.illustration.text }],
+            }]} />
+          </Animated.View> : null}
         </View>
       </Animated.View>
     </Animated.View>
     <Animated.View pointerEvents="none" style={[styles.telling, !reduced && {
       animationName: { from: { opacity: 1 }, to: { opacity: 0 } },
-      animationDuration: 500, animationDelay: TELL.fade, animationTimingFunction: EASE.out, animationFillMode: 'both',
+      animationDuration: TELL.fadeFor, animationDelay: TELL.fade, animationTimingFunction: EASE.out, animationFillMode: 'both',
     }]}>
       <View accessible={false} style={styles.voice}>
         {VOICE_BARS.map((height, index) => <Animated.View key={index} style={[
@@ -163,11 +167,13 @@ export function CaptureStory({ step, reduced, tokens, stageHeight, onDreamChange
           !reduced && {
             animationName: { from: { opacity: 0.45, transform: [{ scaleY: 0.3 }] }, to: { opacity: 1, transform: [{ scaleY: 1 }] } },
             animationDuration: DURATION.slow, animationDelay: index * 90, animationTimingFunction: EASE.inOut,
-            animationIterationCount: 'infinite', animationDirection: 'alternate', animationFillMode: 'both',
+            // The voice stops once the fragment has faded: a hidden loop still costs a frame each time.
+            animationIterationCount: loopsUntil(TELL.fade + TELL.fadeFor, DURATION.slow), animationDirection: 'alternate', animationFillMode: 'both',
           },
         ]} />)}
       </View>
       <WordReveal text={t('onboarding.story.capture.fragment')} delay={300} stagger={150} caret={tokens.accent.text}
+        caretUntil={TELL.fade + TELL.fadeFor}
         style={[styles.fragment, { color: tokens.illustration.text, textShadowColor: tokens.illustration.scrim }]} />
     </Animated.View>
   </View>;
@@ -178,7 +184,8 @@ const styles = StyleSheet.create({
   halo: { position: 'absolute' },
   card: { borderRadius: 18, borderCurve: 'continuous', borderWidth: 1, overflow: 'hidden' },
   detailLayer: { position: 'absolute' },
-  doorGlow: { position: 'absolute', width: 60, height: 60, borderRadius: 30 },
+  doorGlow: { position: 'absolute', width: 60, height: 60 },
+  doorGlowLight: { width: 60, height: 60, borderRadius: 30 },
   detail: { position: 'absolute', borderWidth: 1, borderRadius: 16, paddingHorizontal: 12, paddingVertical: 6 },
   detailText: { fontFamily: Fonts.fraunces.medium, fontSize: 15, lineHeight: 20 },
   telling: { position: 'absolute', left: 16, right: 16, alignItems: 'center', gap: 14 },
