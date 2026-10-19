@@ -399,6 +399,25 @@ describe('useQuota', () => {
       expect(mockGetQuotaStatus).toHaveBeenCalledTimes(initialCallCount + 1);
     });
 
+    it('settles a refetch held from before the user refreshed', async () => {
+      // The subscription QA lab refreshes the user, then calls the refetch it captured
+      // before that refresh: the quota must still load for the refreshed user.
+      mockUser = { id: 'free-user', version: 1 };
+      const { result, rerender } = renderHook(() => useQuota());
+      await settleQuotaStatus(result);
+      const heldRefetch = result.current.refetch;
+
+      mockUser = { id: 'free-user', version: 2 };
+      rerender();
+      await act(async () => {
+        await heldRefetch();
+      });
+      await settleQuotaStatus(result);
+
+      expect(result.current.quotaStatus).not.toBeNull();
+      expect(mockGetQuotaStatus).toHaveBeenLastCalledWith(mockUser, 'free', undefined);
+    });
+
     it('invalidates cache and refetches', async () => {
       const { result } = renderHook(() => useQuota());
 
