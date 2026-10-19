@@ -21,7 +21,8 @@ describe('docs-dev helpers', () => {
     expect(canRebuildSymbols(options, null)).toBe(false);
     expect(canRebuildSymbols(parseArgs([]), [generator])).toBe(false);
     expect(() => parseArgs(['--symbol=does-not-exist'])).toThrow(/Unknown/);
-    expect(() => parseArgs(['--symbol=tiger', '--lang=pt-br'])).toThrow(/Unsupported/);
+    expect(parseArgs(['--symbol=tiger', '--lang=pt-br']).lang).toBe('pt-br');
+    expect(() => parseArgs(['--symbol=tiger', '--lang=ja'])).toThrow(/Unsupported/);
   });
 
   it('injects the live reload client before the closing body tag', () => {

@@ -2124,6 +2124,10 @@
             "it": {
               "slug": "",
               "path": "/it/guides/"
+            },
+            "pt-br": {
+              "slug": "",
+              "path": "/pt-br/guides/"
             }
           }
         },
@@ -2152,6 +2156,10 @@
             "it": {
               "slug": "dizionario-simboli-sogni",
               "path": "/it/guides/dizionario-simboli-sogni"
+            },
+            "pt-br": {
+              "slug": "dicionario-simbolos-sonhos",
+              "path": "/pt-br/guides/dicionario-simbolos-sonhos"
             }
           }
         },
@@ -2180,6 +2188,10 @@
             "it": {
               "slug": "simboli-sogni-comuni",
               "path": "/it/guides/simboli-sogni-comuni"
+            },
+            "pt-br": {
+              "slug": "simbolos-sonhos-mais-comuns",
+              "path": "/pt-br/guides/simbolos-sonhos-mais-comuns"
             }
           }
         },
@@ -2208,6 +2220,10 @@
             "it": {
               "slug": "simboli-sogni-spaventosi",
               "path": "/it/guides/simboli-sogni-spaventosi"
+            },
+            "pt-br": {
+              "slug": "simbolos-sonhos-assustadores",
+              "path": "/pt-br/guides/simbolos-sonhos-assustadores"
             }
           }
         },
@@ -2236,6 +2252,10 @@
             "it": {
               "slug": "simboli-sogni-positivi",
               "path": "/it/guides/simboli-sogni-positivi"
+            },
+            "pt-br": {
+              "slug": "simbolos-sonhos-positivos",
+              "path": "/pt-br/guides/simbolos-sonhos-positivos"
             }
           }
         },
@@ -2264,6 +2284,10 @@
             "it": {
               "slug": "simboli-sogni-animali",
               "path": "/it/guides/simboli-sogni-animali"
+            },
+            "pt-br": {
+              "slug": "simbolos-sonhos-animais",
+              "path": "/pt-br/guides/simbolos-sonhos-animais"
             }
           }
         },
@@ -2292,6 +2316,10 @@
             "it": {
               "slug": "simboli-sogni-acqua",
               "path": "/it/guides/simboli-sogni-acqua"
+            },
+            "pt-br": {
+              "slug": "simbolos-sonhos-agua",
+              "path": "/pt-br/guides/simbolos-sonhos-agua"
             }
           }
         },
@@ -2320,6 +2348,10 @@
             "it": {
               "slug": "sogni-morte-trasformazione",
               "path": "/it/guides/sogni-morte-trasformazione"
+            },
+            "pt-br": {
+              "slug": "sonhos-morte-transformacao",
+              "path": "/pt-br/guides/sonhos-morte-transformacao"
             }
           }
         },
@@ -2348,6 +2380,10 @@
             "it": {
               "slug": "persone-nei-sogni",
               "path": "/it/guides/persone-nei-sogni"
+            },
+            "pt-br": {
+              "slug": "pessoas-nos-sonhos",
+              "path": "/pt-br/guides/pessoas-nos-sonhos"
             }
           }
         },
@@ -2376,6 +2412,10 @@
             "it": {
               "slug": "luoghi-nei-sogni",
               "path": "/it/guides/luoghi-nei-sogni"
+            },
+            "pt-br": {
+              "slug": "lugares-nos-sonhos",
+              "path": "/pt-br/guides/lugares-nos-sonhos"
             }
           }
         }
@@ -2409,6 +2449,10 @@
             "it": {
               "slug": "acqua",
               "path": "/it/simboli/acqua"
+            },
+            "pt-br": {
+              "slug": "agua",
+              "path": "/pt-br/simbolos/agua"
             }
           }
         },
@@ -2437,6 +2481,10 @@
             "it": {
               "slug": "denti",
               "path": "/it/simboli/denti"
+            },
+            "pt-br": {
+              "slug": "dentes-perder-os-dentes",
+              "path": "/pt-br/simbolos/dentes-perder-os-dentes"
             }
           }
         },
@@ -2465,6 +2513,10 @@
             "it": {
               "slug": "cadere",
               "path": "/it/simboli/cadere"
+            },
+            "pt-br": {
+              "slug": "queda",
+              "path": "/pt-br/simbolos/queda"
             }
           }
         },
@@ -2493,6 +2545,10 @@
             "it": {
               "slug": "volare",
               "path": "/it/simboli/volare"
+            },
+            "pt-br": {
+              "slug": "voar",
+              "path": "/pt-br/simbolos/voar"
             }
           }
         },
@@ -2521,6 +2577,10 @@
             "it": {
               "slug": "serpente",
               "path": "/it/simboli/serpente"
+            },
+            "pt-br": {
+              "slug": "cobra",
+              "path": "/pt-br/simbolos/cobra"
             }
           }
         },
@@ -2549,6 +2609,10 @@
             "it": {
               "slug": "morte",
               "path": "/it/simboli/morte"
+            },
+            "pt-br": {
+              "slug": "morte",
+              "path": "/pt-br/simbolos/morte"
             }
           }
         },
@@ -2577,6 +2641,10 @@
             "it": {
               "slug": "inseguimento",
               "path": "/it/simboli/inseguimento"
+            },
+            "pt-br": {
+              "slug": "perseguicao-ser-perseguido",
+              "path": "/pt-br/simbolos/perseguicao-ser-perseguido"
             }
           }
         },
@@ -2605,6 +2673,10 @@
             "it": {
               "slug": "casa",
               "path": "/it/simboli/casa"
+            },
+            "pt-br": {
+              "slug": "casa",
+              "path": "/pt-br/simbolos/casa"
             }
           }
         },
@@ -2633,6 +2705,10 @@
             "it": {
               "slug": "oceano",
               "path": "/it/simboli/oceano"
+            },
+            "pt-br": {
+              "slug": "oceano-mar",
+              "path": "/pt-br/simbolos/oceano-mar"
             }
           }
         },
@@ -2661,6 +2737,10 @@
             "it": {
               "slug": "bambino-neonato",
               "path": "/it/simboli/bambino-neonato"
+            },
+            "pt-br": {
+              "slug": "bebe",
+              "path": "/pt-br/simbolos/bebe"
             }
           }
         },
@@ -2689,6 +2769,10 @@
             "it": {
               "slug": "cane",
               "path": "/it/simboli/cane"
+            },
+            "pt-br": {
+              "slug": "cachorro",
+              "path": "/pt-br/simbolos/cachorro"
             }
           }
         },
@@ -2717,6 +2801,10 @@
             "it": {
               "slug": "gatto",
               "path": "/it/simboli/gatto"
+            },
+            "pt-br": {
+              "slug": "gato",
+              "path": "/pt-br/simbolos/gato"
             }
           }
         },
@@ -2745,6 +2833,10 @@
             "it": {
               "slug": "ragno",
               "path": "/it/simboli/ragno"
+            },
+            "pt-br": {
+              "slug": "aranha",
+              "path": "/pt-br/simbolos/aranha"
             }
           }
         },
@@ -2773,6 +2865,10 @@
             "it": {
               "slug": "fuoco",
               "path": "/it/simboli/fuoco"
+            },
+            "pt-br": {
+              "slug": "fogo",
+              "path": "/pt-br/simbolos/fogo"
             }
           }
         },
@@ -2801,6 +2897,10 @@
             "it": {
               "slug": "alluvione",
               "path": "/it/simboli/alluvione"
+            },
+            "pt-br": {
+              "slug": "enchente",
+              "path": "/pt-br/simbolos/enchente"
             }
           }
         },
@@ -2829,6 +2929,10 @@
             "it": {
               "slug": "automobile",
               "path": "/it/simboli/automobile"
+            },
+            "pt-br": {
+              "slug": "carro",
+              "path": "/pt-br/simbolos/carro"
             }
           }
         },
@@ -2857,6 +2961,10 @@
             "it": {
               "slug": "porta",
               "path": "/it/simboli/porta"
+            },
+            "pt-br": {
+              "slug": "porta",
+              "path": "/pt-br/simbolos/porta"
             }
           }
         },
@@ -2885,6 +2993,10 @@
             "it": {
               "slug": "esame",
               "path": "/it/simboli/esame"
+            },
+            "pt-br": {
+              "slug": "prova-exame",
+              "path": "/pt-br/simbolos/prova-exame"
             }
           }
         },
@@ -2913,6 +3025,10 @@
             "it": {
               "slug": "nudita",
               "path": "/it/simboli/nudita"
+            },
+            "pt-br": {
+              "slug": "nudez",
+              "path": "/pt-br/simbolos/nudez"
             }
           }
         },
@@ -2941,6 +3057,10 @@
             "it": {
               "slug": "persona-defunta",
               "path": "/it/simboli/persona-defunta"
+            },
+            "pt-br": {
+              "slug": "pessoa-falecida",
+              "path": "/pt-br/simbolos/pessoa-falecida"
             }
           }
         },
@@ -2969,6 +3089,10 @@
             "it": {
               "slug": "uccello",
               "path": "/it/simboli/uccello"
+            },
+            "pt-br": {
+              "slug": "passaro",
+              "path": "/pt-br/simbolos/passaro"
             }
           }
         },
@@ -2997,6 +3121,10 @@
             "it": {
               "slug": "ponte",
               "path": "/it/simboli/ponte"
+            },
+            "pt-br": {
+              "slug": "ponte",
+              "path": "/pt-br/simbolos/ponte"
             }
           }
         },
@@ -3025,6 +3153,10 @@
             "it": {
               "slug": "scale",
               "path": "/it/simboli/scale"
+            },
+            "pt-br": {
+              "slug": "escada",
+              "path": "/pt-br/simbolos/escada"
             }
           }
         },
@@ -3053,6 +3185,10 @@
             "it": {
               "slug": "luna",
               "path": "/it/simboli/luna"
+            },
+            "pt-br": {
+              "slug": "lua",
+              "path": "/pt-br/simbolos/lua"
             }
           }
         },
@@ -3081,6 +3217,10 @@
             "it": {
               "slug": "sole",
               "path": "/it/simboli/sole"
+            },
+            "pt-br": {
+              "slug": "sol",
+              "path": "/pt-br/simbolos/sol"
             }
           }
         },
@@ -3109,6 +3249,10 @@
             "it": {
               "slug": "pioggia",
               "path": "/it/simboli/pioggia"
+            },
+            "pt-br": {
+              "slug": "chuva",
+              "path": "/pt-br/simbolos/chuva"
             }
           }
         },
@@ -3137,6 +3281,10 @@
             "it": {
               "slug": "foresta",
               "path": "/it/simboli/foresta"
+            },
+            "pt-br": {
+              "slug": "floresta",
+              "path": "/pt-br/simbolos/floresta"
             }
           }
         },
@@ -3165,6 +3313,10 @@
             "it": {
               "slug": "albero",
               "path": "/it/simboli/albero"
+            },
+            "pt-br": {
+              "slug": "arvore",
+              "path": "/pt-br/simbolos/arvore"
             }
           }
         },
@@ -3193,6 +3345,10 @@
             "it": {
               "slug": "montagna",
               "path": "/it/simboli/montagna"
+            },
+            "pt-br": {
+              "slug": "montanha",
+              "path": "/pt-br/simbolos/montanha"
             }
           }
         },
@@ -3221,6 +3377,10 @@
             "it": {
               "slug": "leone",
               "path": "/it/simboli/leone"
+            },
+            "pt-br": {
+              "slug": "leao",
+              "path": "/pt-br/simbolos/leao"
             }
           }
         },
@@ -3249,6 +3409,10 @@
             "it": {
               "slug": "specchio",
               "path": "/it/simboli/specchio"
+            },
+            "pt-br": {
+              "slug": "espelho",
+              "path": "/pt-br/simbolos/espelho"
             }
           }
         },
@@ -3277,6 +3441,10 @@
             "it": {
               "slug": "denaro",
               "path": "/it/simboli/denaro"
+            },
+            "pt-br": {
+              "slug": "dinheiro",
+              "path": "/pt-br/simbolos/dinheiro"
             }
           }
         },
@@ -3305,6 +3473,10 @@
             "it": {
               "slug": "sangue",
               "path": "/it/simboli/sangue"
+            },
+            "pt-br": {
+              "slug": "sangue",
+              "path": "/pt-br/simbolos/sangue"
             }
           }
         },
@@ -3333,6 +3505,10 @@
             "it": {
               "slug": "bambino",
               "path": "/it/simboli/bambino"
+            },
+            "pt-br": {
+              "slug": "crianca",
+              "path": "/pt-br/simbolos/crianca"
             }
           }
         },
@@ -3361,6 +3537,10 @@
             "it": {
               "slug": "vestiti",
               "path": "/it/simboli/vestiti"
+            },
+            "pt-br": {
+              "slug": "roupas",
+              "path": "/pt-br/simbolos/roupas"
             }
           }
         },
@@ -3389,6 +3569,10 @@
             "it": {
               "slug": "sentiero",
               "path": "/it/simboli/sentiero"
+            },
+            "pt-br": {
+              "slug": "caminho",
+              "path": "/pt-br/simbolos/caminho"
             }
           }
         },
@@ -3417,6 +3601,10 @@
             "it": {
               "slug": "telefono",
               "path": "/it/simboli/telefono"
+            },
+            "pt-br": {
+              "slug": "celular",
+              "path": "/pt-br/simbolos/celular"
             }
           }
         },
@@ -3445,6 +3633,10 @@
             "it": {
               "slug": "aereo",
               "path": "/it/simboli/aereo"
+            },
+            "pt-br": {
+              "slug": "aviao",
+              "path": "/pt-br/simbolos/aviao"
             }
           }
         },
@@ -3473,6 +3665,10 @@
             "it": {
               "slug": "treno",
               "path": "/it/simboli/treno"
+            },
+            "pt-br": {
+              "slug": "trem",
+              "path": "/pt-br/simbolos/trem"
             }
           }
         },
@@ -3501,6 +3697,10 @@
             "it": {
               "slug": "notte",
               "path": "/it/simboli/notte"
+            },
+            "pt-br": {
+              "slug": "noite-escuridao",
+              "path": "/pt-br/simbolos/noite-escuridao"
             }
           }
         },
@@ -3529,6 +3729,10 @@
             "it": {
               "slug": "chiave",
               "path": "/it/simboli/chiave"
+            },
+            "pt-br": {
+              "slug": "chave",
+              "path": "/pt-br/simbolos/chave"
             }
           }
         },
@@ -3557,6 +3761,10 @@
             "it": {
               "slug": "bocca",
               "path": "/it/simboli/bocca"
+            },
+            "pt-br": {
+              "slug": "boca",
+              "path": "/pt-br/simbolos/boca"
             }
           }
         },
@@ -3585,6 +3793,10 @@
             "it": {
               "slug": "matrimonio",
               "path": "/it/simboli/matrimonio"
+            },
+            "pt-br": {
+              "slug": "casamento",
+              "path": "/pt-br/simbolos/casamento"
             }
           }
         },
@@ -3613,6 +3825,10 @@
             "it": {
               "slug": "ospedale",
               "path": "/it/simboli/ospedale"
+            },
+            "pt-br": {
+              "slug": "hospital",
+              "path": "/pt-br/simbolos/hospital"
             }
           }
         },
@@ -3641,6 +3857,10 @@
             "it": {
               "slug": "correre",
               "path": "/it/simboli/correre"
+            },
+            "pt-br": {
+              "slug": "correr",
+              "path": "/pt-br/simbolos/correr"
             }
           }
         },
@@ -3669,6 +3889,10 @@
             "it": {
               "slug": "scuola",
               "path": "/it/simboli/scuola"
+            },
+            "pt-br": {
+              "slug": "escola",
+              "path": "/pt-br/simbolos/escola"
             }
           }
         },
@@ -3697,6 +3921,10 @@
             "it": {
               "slug": "gravidanza",
               "path": "/it/simboli/gravidanza"
+            },
+            "pt-br": {
+              "slug": "gravidez",
+              "path": "/pt-br/simbolos/gravidez"
             }
           }
         },
@@ -3725,6 +3953,10 @@
             "it": {
               "slug": "nuotare",
               "path": "/it/simboli/nuotare"
+            },
+            "pt-br": {
+              "slug": "nadar",
+              "path": "/pt-br/simbolos/nadar"
             }
           }
         },
@@ -3753,6 +3985,10 @@
             "it": {
               "slug": "piangere",
               "path": "/it/simboli/piangere"
+            },
+            "pt-br": {
+              "slug": "chorar",
+              "path": "/pt-br/simbolos/chorar"
             }
           }
         },
@@ -3781,6 +4017,10 @@
             "it": {
               "slug": "ascensore",
               "path": "/it/simboli/ascensore"
+            },
+            "pt-br": {
+              "slug": "elevador",
+              "path": "/pt-br/simbolos/elevador"
             }
           }
         },
@@ -3809,6 +4049,10 @@
             "it": {
               "slug": "scogliera",
               "path": "/it/simboli/scogliera"
+            },
+            "pt-br": {
+              "slug": "penhasco",
+              "path": "/pt-br/simbolos/penhasco"
             }
           }
         },
@@ -3837,6 +4081,10 @@
             "it": {
               "slug": "perdersi",
               "path": "/it/simboli/perdersi"
+            },
+            "pt-br": {
+              "slug": "estar-perdido",
+              "path": "/pt-br/simbolos/estar-perdido"
             }
           }
         },
@@ -3865,6 +4113,10 @@
             "it": {
               "slug": "lupo",
               "path": "/it/simboli/lupo"
+            },
+            "pt-br": {
+              "slug": "lobo",
+              "path": "/pt-br/simbolos/lobo"
             }
           }
         },
@@ -3893,6 +4145,10 @@
             "it": {
               "slug": "cavallo",
               "path": "/it/simboli/cavallo"
+            },
+            "pt-br": {
+              "slug": "cavalo",
+              "path": "/pt-br/simbolos/cavalo"
             }
           }
         },
@@ -3921,6 +4177,10 @@
             "it": {
               "slug": "ex-partner",
               "path": "/it/simboli/ex-partner"
+            },
+            "pt-br": {
+              "slug": "ex-parceiro",
+              "path": "/pt-br/simbolos/ex-parceiro"
             }
           }
         },
@@ -3949,6 +4209,10 @@
             "it": {
               "slug": "arcobaleno",
               "path": "/it/simboli/arcobaleno"
+            },
+            "pt-br": {
+              "slug": "arco-iris",
+              "path": "/pt-br/simbolos/arco-iris"
             }
           }
         },
@@ -3977,6 +4241,10 @@
             "it": {
               "slug": "tempesta",
               "path": "/it/simboli/tempesta"
+            },
+            "pt-br": {
+              "slug": "tempestade",
+              "path": "/pt-br/simbolos/tempestade"
             }
           }
         },
@@ -4005,6 +4273,10 @@
             "it": {
               "slug": "abbandono",
               "path": "/it/simboli/abbandono"
+            },
+            "pt-br": {
+              "slug": "abandono",
+              "path": "/pt-br/simbolos/abandono"
             }
           }
         },
@@ -4033,6 +4305,10 @@
             "it": {
               "slug": "incidente",
               "path": "/it/simboli/incidente"
+            },
+            "pt-br": {
+              "slug": "acidente",
+              "path": "/pt-br/simbolos/acidente"
             }
           }
         },
@@ -4061,6 +4337,10 @@
             "it": {
               "slug": "angelo",
               "path": "/it/simboli/angelo"
+            },
+            "pt-br": {
+              "slug": "anjo",
+              "path": "/pt-br/simbolos/anjo"
             }
           }
         },
@@ -4089,6 +4369,10 @@
             "it": {
               "slug": "litigio",
               "path": "/it/simboli/litigio"
+            },
+            "pt-br": {
+              "slug": "discussao",
+              "path": "/pt-br/simbolos/discussao"
             }
           }
         },
@@ -4117,6 +4401,10 @@
             "it": {
               "slug": "apocalisse",
               "path": "/it/simboli/apocalisse"
+            },
+            "pt-br": {
+              "slug": "apocalipse",
+              "path": "/pt-br/simbolos/apocalipse"
             }
           }
         },
@@ -4145,6 +4433,10 @@
             "it": {
               "slug": "madre",
               "path": "/it/simboli/madre"
+            },
+            "pt-br": {
+              "slug": "mae",
+              "path": "/pt-br/simbolos/mae"
             }
           }
         },
@@ -4173,6 +4465,10 @@
             "it": {
               "slug": "padre",
               "path": "/it/simboli/padre"
+            },
+            "pt-br": {
+              "slug": "pai",
+              "path": "/pt-br/simbolos/pai"
             }
           }
         },
@@ -4201,6 +4497,10 @@
             "it": {
               "slug": "fratello-o-sorella",
               "path": "/it/simboli/fratello-o-sorella"
+            },
+            "pt-br": {
+              "slug": "irmao-ou-irma",
+              "path": "/pt-br/simbolos/irmao-ou-irma"
             }
           }
         },
@@ -4229,6 +4529,10 @@
             "it": {
               "slug": "partner",
               "path": "/it/simboli/partner"
+            },
+            "pt-br": {
+              "slug": "parceiro",
+              "path": "/pt-br/simbolos/parceiro"
             }
           }
         },
@@ -4257,6 +4561,10 @@
             "it": {
               "slug": "amico",
               "path": "/it/simboli/amico"
+            },
+            "pt-br": {
+              "slug": "amigo",
+              "path": "/pt-br/simbolos/amigo"
             }
           }
         },
@@ -4285,6 +4593,10 @@
             "it": {
               "slug": "sconosciuto",
               "path": "/it/simboli/sconosciuto"
+            },
+            "pt-br": {
+              "slug": "desconhecido",
+              "path": "/pt-br/simbolos/desconhecido"
             }
           }
         },
@@ -4313,6 +4625,10 @@
             "it": {
               "slug": "insegnante",
               "path": "/it/simboli/insegnante"
+            },
+            "pt-br": {
+              "slug": "professor",
+              "path": "/pt-br/simbolos/professor"
             }
           }
         },
@@ -4341,6 +4657,10 @@
             "it": {
               "slug": "polizia",
               "path": "/it/simboli/polizia"
+            },
+            "pt-br": {
+              "slug": "policia",
+              "path": "/pt-br/simbolos/policia"
             }
           }
         },
@@ -4369,6 +4689,10 @@
             "it": {
               "slug": "medico",
               "path": "/it/simboli/medico"
+            },
+            "pt-br": {
+              "slug": "medico",
+              "path": "/pt-br/simbolos/medico"
             }
           }
         },
@@ -4397,6 +4721,10 @@
             "it": {
               "slug": "collega",
               "path": "/it/simboli/collega"
+            },
+            "pt-br": {
+              "slug": "colega-de-trabalho",
+              "path": "/pt-br/simbolos/colega-de-trabalho"
             }
           }
         },
@@ -4425,6 +4753,10 @@
             "it": {
               "slug": "nonna",
               "path": "/it/simboli/nonna"
+            },
+            "pt-br": {
+              "slug": "avo-2",
+              "path": "/pt-br/simbolos/avo-2"
             }
           }
         },
@@ -4453,6 +4785,10 @@
             "it": {
               "slug": "nascita",
               "path": "/it/simboli/nascita"
+            },
+            "pt-br": {
+              "slug": "nascimento",
+              "path": "/pt-br/simbolos/nascimento"
             }
           }
         },
@@ -4481,6 +4817,10 @@
             "it": {
               "slug": "funerale",
               "path": "/it/simboli/funerale"
+            },
+            "pt-br": {
+              "slug": "funeral",
+              "path": "/pt-br/simbolos/funeral"
             }
           }
         },
@@ -4509,6 +4849,10 @@
             "it": {
               "slug": "nonno",
               "path": "/it/simboli/nonno"
+            },
+            "pt-br": {
+              "slug": "avo",
+              "path": "/pt-br/simbolos/avo"
             }
           }
         },
@@ -4537,6 +4881,10 @@
             "it": {
               "slug": "aula",
               "path": "/it/simboli/aula"
+            },
+            "pt-br": {
+              "slug": "sala-de-aula",
+              "path": "/pt-br/simbolos/sala-de-aula"
             }
           }
         },
@@ -4565,6 +4913,10 @@
             "it": {
               "slug": "bagno",
               "path": "/it/simboli/bagno"
+            },
+            "pt-br": {
+              "slug": "banheiro",
+              "path": "/pt-br/simbolos/banheiro"
             }
           }
         },
@@ -4593,6 +4945,10 @@
             "it": {
               "slug": "camera-da-letto",
               "path": "/it/simboli/camera-da-letto"
+            },
+            "pt-br": {
+              "slug": "quarto",
+              "path": "/pt-br/simbolos/quarto"
             }
           }
         },
@@ -4621,6 +4977,10 @@
             "it": {
               "slug": "cucina",
               "path": "/it/simboli/cucina"
+            },
+            "pt-br": {
+              "slug": "cozinha",
+              "path": "/pt-br/simbolos/cozinha"
             }
           }
         },
@@ -4649,6 +5009,10 @@
             "it": {
               "slug": "luogo-di-lavoro",
               "path": "/it/simboli/luogo-di-lavoro"
+            },
+            "pt-br": {
+              "slug": "local-de-trabalho",
+              "path": "/pt-br/simbolos/local-de-trabalho"
             }
           }
         },
@@ -4677,6 +5041,10 @@
             "it": {
               "slug": "strada",
               "path": "/it/simboli/strada"
+            },
+            "pt-br": {
+              "slug": "estrada",
+              "path": "/pt-br/simbolos/estrada"
             }
           }
         },
@@ -4705,6 +5073,10 @@
             "it": {
               "slug": "autobus",
               "path": "/it/simboli/autobus"
+            },
+            "pt-br": {
+              "slug": "onibus",
+              "path": "/pt-br/simbolos/onibus"
             }
           }
         },
@@ -4733,6 +5105,10 @@
             "it": {
               "slug": "bicicletta",
               "path": "/it/simboli/bicicletta"
+            },
+            "pt-br": {
+              "slug": "bicicleta",
+              "path": "/pt-br/simbolos/bicicleta"
             }
           }
         },
@@ -4761,6 +5137,10 @@
             "it": {
               "slug": "barca",
               "path": "/it/simboli/barca"
+            },
+            "pt-br": {
+              "slug": "barco",
+              "path": "/pt-br/simbolos/barco"
             }
           }
         },
@@ -4789,6 +5169,10 @@
             "it": {
               "slug": "aeroporto",
               "path": "/it/simboli/aeroporto"
+            },
+            "pt-br": {
+              "slug": "aeroporto",
+              "path": "/pt-br/simbolos/aeroporto"
             }
           }
         },
@@ -4817,6 +5201,10 @@
             "it": {
               "slug": "valigia",
               "path": "/it/simboli/valigia"
+            },
+            "pt-br": {
+              "slug": "mala",
+              "path": "/pt-br/simbolos/mala"
             }
           }
         },
@@ -4845,6 +5233,10 @@
             "it": {
               "slug": "passaporto",
               "path": "/it/simboli/passaporto"
+            },
+            "pt-br": {
+              "slug": "passaporte",
+              "path": "/pt-br/simbolos/passaporte"
             }
           }
         },
@@ -4873,6 +5265,10 @@
             "it": {
               "slug": "anello",
               "path": "/it/simboli/anello"
+            },
+            "pt-br": {
+              "slug": "anel",
+              "path": "/pt-br/simbolos/anel"
             }
           }
         },
@@ -4901,6 +5297,10 @@
             "it": {
               "slug": "orologio",
               "path": "/it/simboli/orologio"
+            },
+            "pt-br": {
+              "slug": "relogio",
+              "path": "/pt-br/simbolos/relogio"
             }
           }
         },
@@ -4929,6 +5329,10 @@
             "it": {
               "slug": "libro",
               "path": "/it/simboli/libro"
+            },
+            "pt-br": {
+              "slug": "livro",
+              "path": "/pt-br/simbolos/livro"
             }
           }
         },
@@ -4957,6 +5361,10 @@
             "it": {
               "slug": "lettera",
               "path": "/it/simboli/lettera"
+            },
+            "pt-br": {
+              "slug": "carta",
+              "path": "/pt-br/simbolos/carta"
             }
           }
         },
@@ -4985,6 +5393,10 @@
             "it": {
               "slug": "capelli",
               "path": "/it/simboli/capelli"
+            },
+            "pt-br": {
+              "slug": "cabelo",
+              "path": "/pt-br/simbolos/cabelo"
             }
           }
         },
@@ -5013,6 +5425,10 @@
             "it": {
               "slug": "occhi",
               "path": "/it/simboli/occhi"
+            },
+            "pt-br": {
+              "slug": "olhos",
+              "path": "/pt-br/simbolos/olhos"
             }
           }
         },
@@ -5041,6 +5457,10 @@
             "it": {
               "slug": "mani",
               "path": "/it/simboli/mani"
+            },
+            "pt-br": {
+              "slug": "maos",
+              "path": "/pt-br/simbolos/maos"
             }
           }
         },
@@ -5069,6 +5489,10 @@
             "it": {
               "slug": "piedi",
               "path": "/it/simboli/piedi"
+            },
+            "pt-br": {
+              "slug": "pes",
+              "path": "/pt-br/simbolos/pes"
             }
           }
         },
@@ -5097,6 +5521,10 @@
             "it": {
               "slug": "cuore",
               "path": "/it/simboli/cuore"
+            },
+            "pt-br": {
+              "slug": "coracao",
+              "path": "/pt-br/simbolos/coracao"
             }
           }
         },
@@ -5125,6 +5553,10 @@
             "it": {
               "slug": "test-di-gravidanza",
               "path": "/it/simboli/test-di-gravidanza"
+            },
+            "pt-br": {
+              "slug": "teste-de-gravidez",
+              "path": "/pt-br/simbolos/teste-de-gravidez"
             }
           }
         },
@@ -5153,6 +5585,10 @@
             "it": {
               "slug": "malattia",
               "path": "/it/simboli/malattia"
+            },
+            "pt-br": {
+              "slug": "doenca",
+              "path": "/pt-br/simbolos/doenca"
             }
           }
         },
@@ -5181,6 +5617,10 @@
             "it": {
               "slug": "seminterrato",
               "path": "/it/simboli/seminterrato"
+            },
+            "pt-br": {
+              "slug": "porao",
+              "path": "/pt-br/simbolos/porao"
             }
           }
         },
@@ -5209,6 +5649,10 @@
             "it": {
               "slug": "intervento-chirurgico",
               "path": "/it/simboli/intervento-chirurgico"
+            },
+            "pt-br": {
+              "slug": "cirurgia",
+              "path": "/pt-br/simbolos/cirurgia"
             }
           }
         },
@@ -5237,6 +5681,10 @@
             "it": {
               "slug": "sanguinamento",
               "path": "/it/simboli/sanguinamento"
+            },
+            "pt-br": {
+              "slug": "sangramento",
+              "path": "/pt-br/simbolos/sangramento"
             }
           }
         },
@@ -5265,6 +5713,10 @@
             "it": {
               "slug": "annegamento",
               "path": "/it/simboli/annegamento"
+            },
+            "pt-br": {
+              "slug": "afogamento",
+              "path": "/pt-br/simbolos/afogamento"
             }
           }
         },
@@ -5293,6 +5745,10 @@
             "it": {
               "slug": "intrappolato",
               "path": "/it/simboli/intrappolato"
+            },
+            "pt-br": {
+              "slug": "estar-preso",
+              "path": "/pt-br/simbolos/estar-preso"
             }
           }
         },
@@ -5321,6 +5777,10 @@
             "it": {
               "slug": "soffitta",
               "path": "/it/simboli/soffitta"
+            },
+            "pt-br": {
+              "slug": "sotao",
+              "path": "/pt-br/simbolos/sotao"
             }
           }
         },
@@ -5349,6 +5809,10 @@
             "it": {
               "slug": "essere-in-ritardo",
               "path": "/it/simboli/essere-in-ritardo"
+            },
+            "pt-br": {
+              "slug": "estar-atrasado",
+              "path": "/pt-br/simbolos/estar-atrasado"
             }
           }
         },
@@ -5377,6 +5841,10 @@
             "it": {
               "slug": "perdere-un-treno",
               "path": "/it/simboli/perdere-un-treno"
+            },
+            "pt-br": {
+              "slug": "perder-o-trem",
+              "path": "/pt-br/simbolos/perder-o-trem"
             }
           }
         },
@@ -5405,6 +5873,10 @@
             "it": {
               "slug": "non-riuscire-a-parlare",
               "path": "/it/simboli/non-riuscire-a-parlare"
+            },
+            "pt-br": {
+              "slug": "nao-conseguir-falar",
+              "path": "/pt-br/simbolos/nao-conseguir-falar"
             }
           }
         },
@@ -5433,6 +5905,10 @@
             "it": {
               "slug": "paralisi",
               "path": "/it/simboli/paralisi"
+            },
+            "pt-br": {
+              "slug": "paralisia",
+              "path": "/pt-br/simbolos/paralisia"
             }
           }
         },
@@ -5461,6 +5937,10 @@
             "it": {
               "slug": "urlare",
               "path": "/it/simboli/urlare"
+            },
+            "pt-br": {
+              "slug": "gritar",
+              "path": "/pt-br/simbolos/gritar"
             }
           }
         },
@@ -5489,6 +5969,10 @@
             "it": {
               "slug": "nascondersi",
               "path": "/it/simboli/nascondersi"
+            },
+            "pt-br": {
+              "slug": "esconder-se",
+              "path": "/pt-br/simbolos/esconder-se"
             }
           }
         },
@@ -5517,6 +6001,10 @@
             "it": {
               "slug": "ombra",
               "path": "/it/simboli/ombra"
+            },
+            "pt-br": {
+              "slug": "sombra",
+              "path": "/pt-br/simbolos/sombra"
             }
           }
         },
@@ -5545,6 +6033,10 @@
             "it": {
               "slug": "fantasma",
               "path": "/it/simboli/fantasma"
+            },
+            "pt-br": {
+              "slug": "fantasma",
+              "path": "/pt-br/simbolos/fantasma"
             }
           }
         },
@@ -5573,6 +6065,10 @@
             "it": {
               "slug": "demone",
               "path": "/it/simboli/demone"
+            },
+            "pt-br": {
+              "slug": "demonio",
+              "path": "/pt-br/simbolos/demonio"
             }
           }
         },
@@ -5601,6 +6097,10 @@
             "it": {
               "slug": "mostro",
               "path": "/it/simboli/mostro"
+            },
+            "pt-br": {
+              "slug": "monstro",
+              "path": "/pt-br/simbolos/monstro"
             }
           }
         },
@@ -5629,6 +6129,10 @@
             "it": {
               "slug": "zombie",
               "path": "/it/simboli/zombie"
+            },
+            "pt-br": {
+              "slug": "zumbi",
+              "path": "/pt-br/simbolos/zumbi"
             }
           }
         },
@@ -5657,6 +6161,10 @@
             "it": {
               "slug": "prigione",
               "path": "/it/simboli/prigione"
+            },
+            "pt-br": {
+              "slug": "prisao",
+              "path": "/pt-br/simbolos/prisao"
             }
           }
         },
@@ -5685,6 +6193,10 @@
             "it": {
               "slug": "terremoto",
               "path": "/it/simboli/terremoto"
+            },
+            "pt-br": {
+              "slug": "terremoto",
+              "path": "/pt-br/simbolos/terremoto"
             }
           }
         },
@@ -5713,6 +6225,10 @@
             "it": {
               "slug": "tornado",
               "path": "/it/simboli/tornado"
+            },
+            "pt-br": {
+              "slug": "tornado",
+              "path": "/pt-br/simbolos/tornado"
             }
           }
         },
@@ -5741,6 +6257,10 @@
             "it": {
               "slug": "hotel",
               "path": "/it/simboli/hotel"
+            },
+            "pt-br": {
+              "slug": "hotel",
+              "path": "/pt-br/simbolos/hotel"
             }
           }
         },
@@ -5769,6 +6289,10 @@
             "it": {
               "slug": "fulmine",
               "path": "/it/simboli/fulmine"
+            },
+            "pt-br": {
+              "slug": "raio",
+              "path": "/pt-br/simbolos/raio"
             }
           }
         },
@@ -5797,6 +6321,10 @@
             "it": {
               "slug": "neve",
               "path": "/it/simboli/neve"
+            },
+            "pt-br": {
+              "slug": "neve",
+              "path": "/pt-br/simbolos/neve"
             }
           }
         },
@@ -5825,6 +6353,10 @@
             "it": {
               "slug": "centro-commerciale",
               "path": "/it/simboli/centro-commerciale"
+            },
+            "pt-br": {
+              "slug": "shopping",
+              "path": "/pt-br/simbolos/shopping"
             }
           }
         },
@@ -5853,6 +6385,10 @@
             "it": {
               "slug": "mucca",
               "path": "/it/simboli/mucca"
+            },
+            "pt-br": {
+              "slug": "vaca",
+              "path": "/pt-br/simbolos/vaca"
             }
           }
         },
@@ -5881,6 +6417,10 @@
             "it": {
               "slug": "coniglio",
               "path": "/it/simboli/coniglio"
+            },
+            "pt-br": {
+              "slug": "coelho",
+              "path": "/pt-br/simbolos/coelho"
             }
           }
         },
@@ -5909,6 +6449,10 @@
             "it": {
               "slug": "topo",
               "path": "/it/simboli/topo"
+            },
+            "pt-br": {
+              "slug": "camundongo",
+              "path": "/pt-br/simbolos/camundongo"
             }
           }
         },
@@ -5937,6 +6481,10 @@
             "it": {
               "slug": "ratto",
               "path": "/it/simboli/ratto"
+            },
+            "pt-br": {
+              "slug": "rato",
+              "path": "/pt-br/simbolos/rato"
             }
           }
         },
@@ -5965,6 +6513,10 @@
             "it": {
               "slug": "orso",
               "path": "/it/simboli/orso"
+            },
+            "pt-br": {
+              "slug": "urso",
+              "path": "/pt-br/simbolos/urso"
             }
           }
         },
@@ -5993,6 +6545,10 @@
             "it": {
               "slug": "elefante",
               "path": "/it/simboli/elefante"
+            },
+            "pt-br": {
+              "slug": "elefante",
+              "path": "/pt-br/simbolos/elefante"
             }
           }
         },
@@ -6021,6 +6577,10 @@
             "it": {
               "slug": "pesce",
               "path": "/it/simboli/pesce"
+            },
+            "pt-br": {
+              "slug": "peixe",
+              "path": "/pt-br/simbolos/peixe"
             }
           }
         },
@@ -6049,6 +6609,10 @@
             "it": {
               "slug": "squalo",
               "path": "/it/simboli/squalo"
+            },
+            "pt-br": {
+              "slug": "tubarao",
+              "path": "/pt-br/simbolos/tubarao"
             }
           }
         },
@@ -6077,6 +6641,10 @@
             "it": {
               "slug": "balena",
               "path": "/it/simboli/balena"
+            },
+            "pt-br": {
+              "slug": "baleia",
+              "path": "/pt-br/simbolos/baleia"
             }
           }
         },
@@ -6105,6 +6673,10 @@
             "it": {
               "slug": "delfino",
               "path": "/it/simboli/delfino"
+            },
+            "pt-br": {
+              "slug": "golfinho",
+              "path": "/pt-br/simbolos/golfinho"
             }
           }
         },
@@ -6133,6 +6705,10 @@
             "it": {
               "slug": "rana",
               "path": "/it/simboli/rana"
+            },
+            "pt-br": {
+              "slug": "sapo",
+              "path": "/pt-br/simbolos/sapo"
             }
           }
         },
@@ -6161,6 +6737,10 @@
             "it": {
               "slug": "farfalla",
               "path": "/it/simboli/farfalla"
+            },
+            "pt-br": {
+              "slug": "borboleta",
+              "path": "/pt-br/simbolos/borboleta"
             }
           }
         },
@@ -6189,6 +6769,10 @@
             "it": {
               "slug": "ape",
               "path": "/it/simboli/ape"
+            },
+            "pt-br": {
+              "slug": "abelha",
+              "path": "/pt-br/simbolos/abelha"
             }
           }
         },
@@ -6217,6 +6801,10 @@
             "it": {
               "slug": "formica",
               "path": "/it/simboli/formica"
+            },
+            "pt-br": {
+              "slug": "formiga",
+              "path": "/pt-br/simbolos/formiga"
             }
           }
         },
@@ -6245,6 +6833,10 @@
             "it": {
               "slug": "gufo",
               "path": "/it/simboli/gufo"
+            },
+            "pt-br": {
+              "slug": "coruja",
+              "path": "/pt-br/simbolos/coruja"
             }
           }
         },
@@ -6273,6 +6865,10 @@
             "it": {
               "slug": "aquila",
               "path": "/it/simboli/aquila"
+            },
+            "pt-br": {
+              "slug": "aguia",
+              "path": "/pt-br/simbolos/aguia"
             }
           }
         },
@@ -6301,6 +6897,10 @@
             "it": {
               "slug": "corvo",
               "path": "/it/simboli/corvo"
+            },
+            "pt-br": {
+              "slug": "corvo",
+              "path": "/pt-br/simbolos/corvo"
             }
           }
         },
@@ -6329,6 +6929,10 @@
             "it": {
               "slug": "rosa",
               "path": "/it/simboli/rosa"
+            },
+            "pt-br": {
+              "slug": "rosa",
+              "path": "/pt-br/simbolos/rosa"
             }
           }
         },
@@ -6357,6 +6961,10 @@
             "it": {
               "slug": "giardino",
               "path": "/it/simboli/giardino"
+            },
+            "pt-br": {
+              "slug": "jardim",
+              "path": "/pt-br/simbolos/jardim"
             }
           }
         },
@@ -6385,6 +6993,10 @@
             "it": {
               "slug": "deserto",
               "path": "/it/simboli/deserto"
+            },
+            "pt-br": {
+              "slug": "deserto",
+              "path": "/pt-br/simbolos/deserto"
             }
           }
         },
@@ -6413,6 +7025,10 @@
             "it": {
               "slug": "isola",
               "path": "/it/simboli/isola"
+            },
+            "pt-br": {
+              "slug": "ilha",
+              "path": "/pt-br/simbolos/ilha"
             }
           }
         },
@@ -6441,6 +7057,10 @@
             "it": {
               "slug": "grotta",
               "path": "/it/simboli/grotta"
+            },
+            "pt-br": {
+              "slug": "caverna",
+              "path": "/pt-br/simbolos/caverna"
             }
           }
         },
@@ -6469,6 +7089,10 @@
             "it": {
               "slug": "fiume",
               "path": "/it/simboli/fiume"
+            },
+            "pt-br": {
+              "slug": "rio",
+              "path": "/pt-br/simbolos/rio"
             }
           }
         },
@@ -6497,6 +7121,10 @@
             "it": {
               "slug": "lago",
               "path": "/it/simboli/lago"
+            },
+            "pt-br": {
+              "slug": "lago",
+              "path": "/pt-br/simbolos/lago"
             }
           }
         },
@@ -6525,6 +7153,10 @@
             "it": {
               "slug": "cascata",
               "path": "/it/simboli/cascata"
+            },
+            "pt-br": {
+              "slug": "cachoeira",
+              "path": "/pt-br/simbolos/cachoeira"
             }
           }
         },
@@ -6553,6 +7185,10 @@
             "it": {
               "slug": "vulcano",
               "path": "/it/simboli/vulcano"
+            },
+            "pt-br": {
+              "slug": "vulcao",
+              "path": "/pt-br/simbolos/vulcao"
             }
           }
         },
@@ -6581,6 +7217,10 @@
             "it": {
               "slug": "maschera",
               "path": "/it/simboli/maschera"
+            },
+            "pt-br": {
+              "slug": "mascara",
+              "path": "/pt-br/simbolos/mascara"
             }
           }
         },
@@ -6609,6 +7249,10 @@
             "it": {
               "slug": "cacca",
               "path": "/it/simboli/cacca"
+            },
+            "pt-br": {
+              "slug": "coco",
+              "path": "/pt-br/simbolos/coco"
             }
           }
         },
@@ -6637,6 +7281,10 @@
             "it": {
               "slug": "vermi",
               "path": "/it/simboli/vermi"
+            },
+            "pt-br": {
+              "slug": "vermes",
+              "path": "/pt-br/simbolos/vermes"
             }
           }
         },
@@ -6665,6 +7313,10 @@
             "it": {
               "slug": "scarafaggio",
               "path": "/it/simboli/scarafaggio"
+            },
+            "pt-br": {
+              "slug": "barata",
+              "path": "/pt-br/simbolos/barata"
             }
           }
         },
@@ -6693,6 +7345,10 @@
             "it": {
               "slug": "scarpe",
               "path": "/it/simboli/scarpe"
+            },
+            "pt-br": {
+              "slug": "sapatos",
+              "path": "/pt-br/simbolos/sapatos"
             }
           }
         },
@@ -6721,6 +7377,10 @@
             "it": {
               "slug": "tartarughe",
               "path": "/it/simboli/tartarughe"
+            },
+            "pt-br": {
+              "slug": "tartarugas",
+              "path": "/pt-br/simbolos/tartarugas"
             }
           }
         },
@@ -6749,6 +7409,10 @@
             "it": {
               "slug": "coccodrilli",
               "path": "/it/simboli/coccodrilli"
+            },
+            "pt-br": {
+              "slug": "crocodilos",
+              "path": "/pt-br/simbolos/crocodilos"
             }
           }
         },
@@ -6777,6 +7441,10 @@
             "it": {
               "slug": "pidocchi",
               "path": "/it/simboli/pidocchi"
+            },
+            "pt-br": {
+              "slug": "piolhos",
+              "path": "/pt-br/simbolos/piolhos"
             }
           }
         },
@@ -6805,6 +7473,10 @@
             "it": {
               "slug": "scorpioni",
               "path": "/it/simboli/scorpioni"
+            },
+            "pt-br": {
+              "slug": "escorpioes",
+              "path": "/pt-br/simbolos/escorpioes"
             }
           }
         },
@@ -6833,6 +7505,10 @@
             "it": {
               "slug": "cimitero",
               "path": "/it/simboli/cimitero"
+            },
+            "pt-br": {
+              "slug": "cemiterio",
+              "path": "/pt-br/simbolos/cemiterio"
             }
           }
         },
@@ -6861,6 +7537,10 @@
             "it": {
               "slug": "vespe",
               "path": "/it/simboli/vespe"
+            },
+            "pt-br": {
+              "slug": "vespas",
+              "path": "/pt-br/simbolos/vespas"
             }
           }
         },
@@ -6889,6 +7569,10 @@
             "it": {
               "slug": "sesso",
               "path": "/it/simboli/sesso"
+            },
+            "pt-br": {
+              "slug": "sexo",
+              "path": "/pt-br/simbolos/sexo"
             }
           }
         },
@@ -6917,6 +7601,10 @@
             "it": {
               "slug": "tradimento",
               "path": "/it/simboli/tradimento"
+            },
+            "pt-br": {
+              "slug": "traicao",
+              "path": "/pt-br/simbolos/traicao"
             }
           }
         },
@@ -6945,6 +7633,10 @@
             "it": {
               "slug": "bacio",
               "path": "/it/simboli/bacio"
+            },
+            "pt-br": {
+              "slug": "beijo",
+              "path": "/pt-br/simbolos/beijo"
             }
           }
         },
@@ -6973,6 +7665,10 @@
             "it": {
               "slug": "essere-aggrediti",
               "path": "/it/simboli/essere-aggrediti"
+            },
+            "pt-br": {
+              "slug": "ser-atacado",
+              "path": "/pt-br/simbolos/ser-atacado"
             }
           }
         },
@@ -7001,6 +7697,10 @@
             "it": {
               "slug": "uccidere",
               "path": "/it/simboli/uccidere"
+            },
+            "pt-br": {
+              "slug": "matar",
+              "path": "/pt-br/simbolos/matar"
             }
           }
         },
@@ -7029,6 +7729,10 @@
             "it": {
               "slug": "rissa",
               "path": "/it/simboli/rissa"
+            },
+            "pt-br": {
+              "slug": "briga",
+              "path": "/pt-br/simbolos/briga"
             }
           }
         },
@@ -7057,6 +7761,10 @@
             "it": {
               "slug": "mangiare",
               "path": "/it/simboli/mangiare"
+            },
+            "pt-br": {
+              "slug": "comer",
+              "path": "/pt-br/simbolos/comer"
             }
           }
         },
@@ -7085,6 +7793,10 @@
             "it": {
               "slug": "rapimento",
               "path": "/it/simboli/rapimento"
+            },
+            "pt-br": {
+              "slug": "sequestro",
+              "path": "/pt-br/simbolos/sequestro"
             }
           }
         },
@@ -7113,6 +7825,10 @@
             "it": {
               "slug": "trasloco",
               "path": "/it/simboli/trasloco"
+            },
+            "pt-br": {
+              "slug": "mudanca",
+              "path": "/pt-br/simbolos/mudanca"
             }
           }
         },
@@ -7141,6 +7857,10 @@
             "it": {
               "slug": "guerra",
               "path": "/it/simboli/guerra"
+            },
+            "pt-br": {
+              "slug": "guerra",
+              "path": "/pt-br/simbolos/guerra"
             }
           }
         },
@@ -7169,6 +7889,10 @@
             "it": {
               "slug": "vomitare",
               "path": "/it/simboli/vomitare"
+            },
+            "pt-br": {
+              "slug": "vomitar",
+              "path": "/pt-br/simbolos/vomitar"
             }
           }
         },
@@ -7197,6 +7921,10 @@
             "it": {
               "slug": "unghie",
               "path": "/it/simboli/unghie"
+            },
+            "pt-br": {
+              "slug": "unhas",
+              "path": "/pt-br/simbolos/unhas"
             }
           }
         },
@@ -7225,6 +7953,10 @@
             "it": {
               "slug": "tsunami",
               "path": "/it/simboli/tsunami"
+            },
+            "pt-br": {
+              "slug": "tsunami",
+              "path": "/pt-br/simbolos/tsunami"
             }
           }
         },
@@ -7253,6 +7985,10 @@
             "it": {
               "slug": "fiori",
               "path": "/it/simboli/fiori"
+            },
+            "pt-br": {
+              "slug": "flores",
+              "path": "/pt-br/simbolos/flores"
             }
           }
         },
@@ -7281,6 +8017,10 @@
             "it": {
               "slug": "tigre",
               "path": "/it/simboli/tigre"
+            },
+            "pt-br": {
+              "slug": "tigre",
+              "path": "/pt-br/simbolos/tigre"
             }
           }
         },
@@ -7309,6 +8049,10 @@
             "it": {
               "slug": "cervo",
               "path": "/it/simboli/cervo"
+            },
+            "pt-br": {
+              "slug": "cervo",
+              "path": "/pt-br/simbolos/cervo"
             }
           }
         },
@@ -7337,6 +8081,10 @@
             "it": {
               "slug": "maiale",
               "path": "/it/simboli/maiale"
+            },
+            "pt-br": {
+              "slug": "porco",
+              "path": "/pt-br/simbolos/porco"
             }
           }
         },
@@ -7365,6 +8113,10 @@
             "it": {
               "slug": "scimmia",
               "path": "/it/simboli/scimmia"
+            },
+            "pt-br": {
+              "slug": "macaco",
+              "path": "/pt-br/simbolos/macaco"
             }
           }
         },
@@ -7393,6 +8145,10 @@
             "it": {
               "slug": "lucertola",
               "path": "/it/simboli/lucertola"
+            },
+            "pt-br": {
+              "slug": "lagarto",
+              "path": "/pt-br/simbolos/lagarto"
             }
           }
         },
@@ -7421,6 +8177,10 @@
             "it": {
               "slug": "pipistrello",
               "path": "/it/simboli/pipistrello"
+            },
+            "pt-br": {
+              "slug": "morcego",
+              "path": "/pt-br/simbolos/morcego"
             }
           }
         },
@@ -7449,6 +8209,10 @@
             "it": {
               "slug": "gabinetto",
               "path": "/it/simboli/gabinetto"
+            },
+            "pt-br": {
+              "slug": "vaso-sanitario",
+              "path": "/pt-br/simbolos/vaso-sanitario"
             }
           }
         },
@@ -7477,6 +8241,10 @@
             "it": {
               "slug": "chiesa",
               "path": "/it/simboli/chiesa"
+            },
+            "pt-br": {
+              "slug": "igreja",
+              "path": "/pt-br/simbolos/igreja"
             }
           }
         },
@@ -7505,6 +8273,10 @@
             "it": {
               "slug": "spiaggia",
               "path": "/it/simboli/spiaggia"
+            },
+            "pt-br": {
+              "slug": "praia",
+              "path": "/pt-br/simbolos/praia"
             }
           }
         },
@@ -7533,6 +8305,10 @@
             "it": {
               "slug": "castello",
               "path": "/it/simboli/castello"
+            },
+            "pt-br": {
+              "slug": "castelo",
+              "path": "/pt-br/simbolos/castelo"
             }
           }
         },
@@ -7561,6 +8337,10 @@
             "it": {
               "slug": "piscina",
               "path": "/it/simboli/piscina"
+            },
+            "pt-br": {
+              "slug": "piscina",
+              "path": "/pt-br/simbolos/piscina"
             }
           }
         },
@@ -7589,6 +8369,10 @@
             "it": {
               "slug": "alieni",
               "path": "/it/simboli/alieni"
+            },
+            "pt-br": {
+              "slug": "extraterrestre",
+              "path": "/pt-br/simbolos/extraterrestre"
             }
           }
         },
@@ -7617,6 +8401,10 @@
             "it": {
               "slug": "persona-famosa",
               "path": "/it/simboli/persona-famosa"
+            },
+            "pt-br": {
+              "slug": "pessoa-famosa",
+              "path": "/pt-br/simbolos/pessoa-famosa"
             }
           }
         },
@@ -7645,6 +8433,10 @@
             "it": {
               "slug": "capo",
               "path": "/it/simboli/capo"
+            },
+            "pt-br": {
+              "slug": "chefe",
+              "path": "/pt-br/simbolos/chefe"
             }
           }
         },
@@ -7673,6 +8465,10 @@
             "it": {
               "slug": "persona-che-ti-piace",
               "path": "/it/simboli/persona-che-ti-piace"
+            },
+            "pt-br": {
+              "slug": "crush",
+              "path": "/pt-br/simbolos/crush"
             }
           }
         },
@@ -7701,6 +8497,10 @@
             "it": {
               "slug": "strega",
               "path": "/it/simboli/strega"
+            },
+            "pt-br": {
+              "slug": "bruxa",
+              "path": "/pt-br/simbolos/bruxa"
             }
           }
         },
@@ -7729,6 +8529,10 @@
             "it": {
               "slug": "pagliaccio",
               "path": "/it/simboli/pagliaccio"
+            },
+            "pt-br": {
+              "slug": "palhaco",
+              "path": "/pt-br/simbolos/palhaco"
             }
           }
         },
@@ -7757,6 +8561,10 @@
             "it": {
               "slug": "pistola",
               "path": "/it/simboli/pistola"
+            },
+            "pt-br": {
+              "slug": "arma-de-fogo",
+              "path": "/pt-br/simbolos/arma-de-fogo"
             }
           }
         },
@@ -7785,6 +8593,10 @@
             "it": {
               "slug": "coltello",
               "path": "/it/simboli/coltello"
+            },
+            "pt-br": {
+              "slug": "faca",
+              "path": "/pt-br/simbolos/faca"
             }
           }
         },
@@ -7813,6 +8625,10 @@
             "it": {
               "slug": "portafoglio",
               "path": "/it/simboli/portafoglio"
+            },
+            "pt-br": {
+              "slug": "carteira",
+              "path": "/pt-br/simbolos/carteira"
             }
           }
         },
@@ -7841,6 +8657,10 @@
             "it": {
               "slug": "bambola",
               "path": "/it/simboli/bambola"
+            },
+            "pt-br": {
+              "slug": "boneca",
+              "path": "/pt-br/simbolos/boneca"
             }
           }
         },
@@ -7869,6 +8689,10 @@
             "it": {
               "slug": "oro",
               "path": "/it/simboli/oro"
+            },
+            "pt-br": {
+              "slug": "ouro",
+              "path": "/pt-br/simbolos/ouro"
             }
           }
         },
@@ -7897,6 +8721,10 @@
             "it": {
               "slug": "bara",
               "path": "/it/simboli/bara"
+            },
+            "pt-br": {
+              "slug": "caixao",
+              "path": "/pt-br/simbolos/caixao"
             }
           }
         },
@@ -7925,6 +8753,10 @@
             "it": {
               "slug": "stelle",
               "path": "/it/simboli/stelle"
+            },
+            "pt-br": {
+              "slug": "estrelas",
+              "path": "/pt-br/simbolos/estrelas"
             }
           }
         },
@@ -7953,6 +8785,10 @@
             "it": {
               "slug": "cielo",
               "path": "/it/simboli/cielo"
+            },
+            "pt-br": {
+              "slug": "ceu",
+              "path": "/pt-br/simbolos/ceu"
             }
           }
         },
@@ -7981,6 +8817,10 @@
             "it": {
               "slug": "dio",
               "path": "/it/simboli/dio"
+            },
+            "pt-br": {
+              "slug": "deus",
+              "path": "/pt-br/simbolos/deus"
             }
           }
         },
@@ -8009,6 +8849,10 @@
             "it": {
               "slug": "luce",
               "path": "/it/simboli/luce"
+            },
+            "pt-br": {
+              "slug": "luz",
+              "path": "/pt-br/simbolos/luz"
             }
           }
         },
@@ -8037,6 +8881,10 @@
             "it": {
               "slug": "faro",
               "path": "/it/simboli/faro"
+            },
+            "pt-br": {
+              "slug": "farol",
+              "path": "/pt-br/simbolos/farol"
             }
           }
         },
@@ -8065,6 +8913,10 @@
             "it": {
               "slug": "finestra",
               "path": "/it/simboli/finestra"
+            },
+            "pt-br": {
+              "slug": "janela",
+              "path": "/pt-br/simbolos/janela"
             }
           }
         },
@@ -8093,6 +8945,10 @@
             "it": {
               "slug": "orologio-da-parete",
               "path": "/it/simboli/orologio-da-parete"
+            },
+            "pt-br": {
+              "slug": "relogio-de-parede",
+              "path": "/pt-br/simbolos/relogio-de-parede"
             }
           }
         },
@@ -8121,6 +8977,10 @@
             "it": {
               "slug": "stazione",
               "path": "/it/simboli/stazione"
+            },
+            "pt-br": {
+              "slug": "estacao-de-trem",
+              "path": "/pt-br/simbolos/estacao-de-trem"
             }
           }
         },
@@ -8149,6 +9009,10 @@
             "it": {
               "slug": "muro",
               "path": "/it/simboli/muro"
+            },
+            "pt-br": {
+              "slug": "muro",
+              "path": "/pt-br/simbolos/muro"
             }
           }
         },
@@ -8177,6 +9041,10 @@
             "it": {
               "slug": "biblioteca",
               "path": "/it/simboli/biblioteca"
+            },
+            "pt-br": {
+              "slug": "biblioteca",
+              "path": "/pt-br/simbolos/biblioteca"
             }
           }
         },
@@ -8205,6 +9073,10 @@
             "it": {
               "slug": "vicino-di-casa",
               "path": "/it/simboli/vicino-di-casa"
+            },
+            "pt-br": {
+              "slug": "vizinho",
+              "path": "/pt-br/simbolos/vizinho"
             }
           }
         },
@@ -8233,6 +9105,10 @@
             "it": {
               "slug": "corridoio",
               "path": "/it/simboli/corridoio"
+            },
+            "pt-br": {
+              "slug": "corredor",
+              "path": "/pt-br/simbolos/corredor"
             }
           }
         },
@@ -8261,6 +9137,10 @@
             "it": {
               "slug": "citta",
               "path": "/it/simboli/citta"
+            },
+            "pt-br": {
+              "slug": "cidade",
+              "path": "/pt-br/simbolos/cidade"
             }
           }
         },
@@ -8289,6 +9169,10 @@
             "it": {
               "slug": "via-di-citta",
               "path": "/it/simboli/via-di-citta"
+            },
+            "pt-br": {
+              "slug": "rua",
+              "path": "/pt-br/simbolos/rua"
             }
           }
         },
@@ -8317,6 +9201,10 @@
             "it": {
               "slug": "tunnel",
               "path": "/it/simboli/tunnel"
+            },
+            "pt-br": {
+              "slug": "tunel",
+              "path": "/pt-br/simbolos/tunel"
             }
           }
         },
@@ -8345,6 +9233,10 @@
             "it": {
               "slug": "labirinto",
               "path": "/it/simboli/labirinto"
+            },
+            "pt-br": {
+              "slug": "labirinto",
+              "path": "/pt-br/simbolos/labirinto"
             }
           }
         },
@@ -8373,6 +9265,10 @@
             "it": {
               "slug": "torre",
               "path": "/it/simboli/torre"
+            },
+            "pt-br": {
+              "slug": "torre",
+              "path": "/pt-br/simbolos/torre"
             }
           }
         },
@@ -8401,6 +9297,10 @@
             "it": {
               "slug": "vento",
               "path": "/it/simboli/vento"
+            },
+            "pt-br": {
+              "slug": "vento",
+              "path": "/pt-br/simbolos/vento"
             }
           }
         },
@@ -8429,6 +9329,10 @@
             "it": {
               "slug": "nebbia",
               "path": "/it/simboli/nebbia"
+            },
+            "pt-br": {
+              "slug": "neblina",
+              "path": "/pt-br/simbolos/neblina"
             }
           }
         },
@@ -8457,6 +9361,10 @@
             "it": {
               "slug": "ghiaccio",
               "path": "/it/simboli/ghiaccio"
+            },
+            "pt-br": {
+              "slug": "gelo",
+              "path": "/pt-br/simbolos/gelo"
             }
           }
         },
@@ -8485,6 +9393,10 @@
             "it": {
               "slug": "nuvole",
               "path": "/it/simboli/nuvole"
+            },
+            "pt-br": {
+              "slug": "nuvens",
+              "path": "/pt-br/simbolos/nuvens"
             }
           }
         },
@@ -8513,6 +9425,10 @@
             "it": {
               "slug": "onde",
               "path": "/it/simboli/onde"
+            },
+            "pt-br": {
+              "slug": "ondas",
+              "path": "/pt-br/simbolos/ondas"
             }
           }
         },
@@ -8541,6 +9457,10 @@
             "it": {
               "slug": "spazio",
               "path": "/it/simboli/spazio"
+            },
+            "pt-br": {
+              "slug": "espaco",
+              "path": "/pt-br/simbolos/espaco"
             }
           }
         },
@@ -8569,6 +9489,10 @@
             "it": {
               "slug": "ladro",
               "path": "/it/simboli/ladro"
+            },
+            "pt-br": {
+              "slug": "ladrao",
+              "path": "/pt-br/simbolos/ladrao"
             }
           }
         },
@@ -8597,6 +9521,10 @@
             "it": {
               "slug": "re-regina",
               "path": "/it/simboli/re-regina"
+            },
+            "pt-br": {
+              "slug": "rei-rainha",
+              "path": "/pt-br/simbolos/rei-rainha"
             }
           }
         },
@@ -8625,6 +9553,10 @@
             "it": {
               "slug": "folla",
               "path": "/it/simboli/folla"
+            },
+            "pt-br": {
+              "slug": "multidao",
+              "path": "/pt-br/simbolos/multidao"
             }
           }
         },
@@ -8653,6 +9585,10 @@
             "it": {
               "slug": "gemelli",
               "path": "/it/simboli/gemelli"
+            },
+            "pt-br": {
+              "slug": "gemeos",
+              "path": "/pt-br/simbolos/gemeos"
             }
           }
         },
@@ -8681,6 +9617,10 @@
             "it": {
               "slug": "drago",
               "path": "/it/simboli/drago"
+            },
+            "pt-br": {
+              "slug": "dragao",
+              "path": "/pt-br/simbolos/dragao"
             }
           }
         },
@@ -8709,6 +9649,10 @@
             "it": {
               "slug": "unicorno",
               "path": "/it/simboli/unicorno"
+            },
+            "pt-br": {
+              "slug": "unicornio",
+              "path": "/pt-br/simbolos/unicornio"
             }
           }
         },
@@ -8737,6 +9681,10 @@
             "it": {
               "slug": "volpe",
               "path": "/it/simboli/volpe"
+            },
+            "pt-br": {
+              "slug": "raposa",
+              "path": "/pt-br/simbolos/raposa"
             }
           }
         },
@@ -8765,6 +9713,10 @@
             "it": {
               "slug": "mosca",
               "path": "/it/simboli/mosca"
+            },
+            "pt-br": {
+              "slug": "mosca",
+              "path": "/pt-br/simbolos/mosca"
             }
           }
         },
@@ -8793,6 +9745,10 @@
             "it": {
               "slug": "medusa",
               "path": "/it/simboli/medusa"
+            },
+            "pt-br": {
+              "slug": "agua-viva",
+              "path": "/pt-br/simbolos/agua-viva"
             }
           }
         },
@@ -8821,6 +9777,10 @@
             "it": {
               "slug": "polpo",
               "path": "/it/simboli/polpo"
+            },
+            "pt-br": {
+              "slug": "polvo",
+              "path": "/pt-br/simbolos/polvo"
             }
           }
         },
@@ -8849,6 +9809,10 @@
             "it": {
               "slug": "candela",
               "path": "/it/simboli/candela"
+            },
+            "pt-br": {
+              "slug": "vela",
+              "path": "/pt-br/simbolos/vela"
             }
           }
         },
@@ -8877,6 +9841,10 @@
             "it": {
               "slug": "vetri-rotti",
               "path": "/it/simboli/vetri-rotti"
+            },
+            "pt-br": {
+              "slug": "vidro-quebrado",
+              "path": "/pt-br/simbolos/vidro-quebrado"
             }
           }
         },
@@ -8905,6 +9873,10 @@
             "it": {
               "slug": "regalo",
               "path": "/it/simboli/regalo"
+            },
+            "pt-br": {
+              "slug": "presente",
+              "path": "/pt-br/simbolos/presente"
             }
           }
         },
@@ -8933,6 +9905,10 @@
             "it": {
               "slug": "borsa",
               "path": "/it/simboli/borsa"
+            },
+            "pt-br": {
+              "slug": "bolsa",
+              "path": "/pt-br/simbolos/bolsa"
             }
           }
         },
@@ -8961,6 +9937,10 @@
             "it": {
               "slug": "esplosione",
               "path": "/it/simboli/esplosione"
+            },
+            "pt-br": {
+              "slug": "explosao",
+              "path": "/pt-br/simbolos/explosao"
             }
           }
         },
@@ -8989,6 +9969,10 @@
             "it": {
               "slug": "cercare-qualcosa",
               "path": "/it/simboli/cercare-qualcosa"
+            },
+            "pt-br": {
+              "slug": "procurar-algo",
+              "path": "/pt-br/simbolos/procurar-algo"
             }
           }
         },
@@ -9017,6 +10001,10 @@
             "it": {
               "slug": "guidare",
               "path": "/it/simboli/guidare"
+            },
+            "pt-br": {
+              "slug": "dirigir",
+              "path": "/pt-br/simbolos/dirigir"
             }
           }
         },
@@ -9045,6 +10033,10 @@
             "it": {
               "slug": "arrampicarsi",
               "path": "/it/simboli/arrampicarsi"
+            },
+            "pt-br": {
+              "slug": "escalar",
+              "path": "/pt-br/simbolos/escalar"
             }
           }
         },
@@ -9073,6 +10065,10 @@
             "it": {
               "slug": "rottura",
               "path": "/it/simboli/rottura"
+            },
+            "pt-br": {
+              "slug": "termino",
+              "path": "/pt-br/simbolos/termino"
             }
           }
         },
@@ -9101,6 +10097,10 @@
             "it": {
               "slug": "sul-palco",
               "path": "/it/simboli/sul-palco"
+            },
+            "pt-br": {
+              "slug": "palco",
+              "path": "/pt-br/simbolos/palco"
             }
           }
         },
@@ -9129,6 +10129,10 @@
             "it": {
               "slug": "natura",
               "path": "/it/simboli/natura"
+            },
+            "pt-br": {
+              "slug": "natureza",
+              "path": "/pt-br/simbolos/natureza"
             }
           }
         },
@@ -9157,6 +10161,10 @@
             "it": {
               "slug": "animali",
               "path": "/it/simboli/animali"
+            },
+            "pt-br": {
+              "slug": "animais",
+              "path": "/pt-br/simbolos/animais"
             }
           }
         },
@@ -9185,6 +10193,10 @@
             "it": {
               "slug": "corpo",
               "path": "/it/simboli/corpo"
+            },
+            "pt-br": {
+              "slug": "corpo",
+              "path": "/pt-br/simbolos/corpo"
             }
           }
         },
@@ -9213,6 +10225,10 @@
             "it": {
               "slug": "luoghi",
               "path": "/it/simboli/luoghi"
+            },
+            "pt-br": {
+              "slug": "lugares",
+              "path": "/pt-br/simbolos/lugares"
             }
           }
         },
@@ -9241,6 +10257,10 @@
             "it": {
               "slug": "oggetti",
               "path": "/it/simboli/oggetti"
+            },
+            "pt-br": {
+              "slug": "objetos",
+              "path": "/pt-br/simbolos/objetos"
             }
           }
         },
@@ -9269,6 +10289,10 @@
             "it": {
               "slug": "azioni",
               "path": "/it/simboli/azioni"
+            },
+            "pt-br": {
+              "slug": "acoes",
+              "path": "/pt-br/simbolos/acoes"
             }
           }
         },
@@ -9297,6 +10321,10 @@
             "it": {
               "slug": "persone",
               "path": "/it/simboli/persone"
+            },
+            "pt-br": {
+              "slug": "pessoas",
+              "path": "/pt-br/simbolos/pessoas"
             }
           }
         },
@@ -9325,6 +10353,10 @@
             "it": {
               "slug": "celeste",
               "path": "/it/simboli/celeste"
+            },
+            "pt-br": {
+              "slug": "celeste",
+              "path": "/pt-br/simbolos/celeste"
             }
           }
         }

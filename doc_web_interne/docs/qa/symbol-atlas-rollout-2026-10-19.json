@@ -1,0 +1,119 @@
+{
+  "schema": "noctalia.symbol-atlas-qa-summary/1",
+  "date": "2026-10-19",
+  "testedRevision": "806476e5346a0be5f0c2b334970327c3186c5d39",
+  "scope": {
+    "atlasSymbols": [
+      "water",
+      "teeth",
+      "falling",
+      "flying",
+      "snake",
+      "house",
+      "ocean",
+      "dog",
+      "fire",
+      "car",
+      "door",
+      "bird",
+      "bridge",
+      "moon",
+      "forest",
+      "train",
+      "butterfly",
+      "tiger",
+      "clock"
+    ],
+    "languages": [
+      "en",
+      "fr",
+      "es",
+      "de",
+      "it",
+      "pt-br"
+    ],
+    "atlasPages": 114,
+    "newBatch": [
+      "water",
+      "dog",
+      "teeth",
+      "flying",
+      "car",
+      "bridge"
+    ],
+    "viewports": [
+      {
+        "width": 2560,
+        "height": 1440
+      },
+      {
+        "width": 390,
+        "height": 844
+      }
+    ]
+  },
+  "environment": {
+    "os": "Ubuntu 24.04 WSL",
+    "node": "24.19.0",
+    "testerarmy": "0.21.2",
+    "webEngine": "0.15.2",
+    "playwright": "1.64.0",
+    "sourceCleanBeforeAndAfter": true
+  },
+  "commands": [
+    {
+      "command": "npm run docs:build",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run test:testerarmy:typecheck",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run test:testerarmy:site -- run --trace",
+      "exitCode": 0
+    }
+  ],
+  "run": {
+    "id": "01a15167-d948-74c4-93dd-e74bc86dc965",
+    "folder": "1792367118699-2594828-69347745-6984-433a-a3c2-d432b1d45404",
+    "passed": 15,
+    "failed": 0,
+    "interrupted": 0,
+    "flaky": 0,
+    "skipped": 0,
+    "excluded": 0,
+    "retries": 0,
+    "durationSeconds": 149.683
+  },
+  "receipt": {
+    "file": "1792367118699-2594828-69347745-6984-433a-a3c2-d432b1d45404.receipt.json",
+    "sha256": "63b714a727888540679a8e0a198cbef5d98e431b80f825c4a3c633c8de49d099",
+    "files": 130,
+    "artifacts": 118,
+    "artifactDirectory": "output/noctalia-symbols-rollout-2026-10-19/evidence/testerarmy-final/",
+    "collector": "npm run atlas:receipt --prefix apps/site -- --run <run-directory> --out <evidence-directory> --revision 806476e5346a0be5f0c2b334970327c3186c5d39 --require-clean"
+  },
+  "assertions": [
+    "114 localized Atlas pages: name-only H1, rail/anchors, default scene/card mapping, data-dependent FAQ and six-language hreflang; no overflow, desktop multi-column, mobile 75svh hero starting behind navigation.",
+    "18 standard French Atlas pages: hero, alpha plate and three scene thumbnails each have two decoded distinct environmental textures, nonzero useful alpha within the visible clipping/mask, preserved aspect ratio and temporal movement; no pause button.",
+    "Standard engine: measured scroll depth, offscreen and reduced-motion stop/resume, no desktop plate download on mobile.",
+    "Tiger legacy engine separately: landscape/portrait/orientation, temporal movement, scroll, offscreen/reduced-motion, reduced first load, failed layer; Tiger script only on its six localized pages.",
+    "Portuguese FR-to-PT-to-EN navigation, mouse/keyboard scene and card anchor; dictionary 240 symbols and eight categories; accented/unaccented Cemetery search yields exact three results with retained focus/value; open/back/clear; Places category 40 cards.",
+    "Localized classic fallback, absent Portuguese FAQ and failed thumbnail remain usable."
+  ],
+  "visualInspection": {
+    "integrator": "Codex",
+    "newBatchAllSixDesktopAndMobile": true,
+    "sceneIllustrationsAllSix": true,
+    "artDirection": "Deep ink and violet, local ivory/champagne accents, transparent navigation, organic alpha plate; small positional differences accepted.",
+    "userPixelTolerance": "User explicitly accepts small visual differences; no pixel-perfect gate."
+  },
+  "boundaries": [
+    "Temporal five-surface checks cover the 18 French standard pages sharing media and engines across translations; multilingual geometry/content checks cover all 114 pages, not every scene interaction in every language.",
+    "No actual document.hidden tab-switch runtime proof in this run.",
+    "No physical mobile device or FPS qualification.",
+    "Shared site config, external CSS and navigation inputs are not all part of each registry stage source fingerprint: changes there require QA reassessment.",
+    "This records technical QA only. User art approval, publication, verify:pr and verify:release are not inferred. No push or production deployment for this batch."
+  ]
+}

@@ -22,6 +22,7 @@ const {
   getLanguageTag,
   siteConfig,
 } = require('../../scripts/lib/docs-site-config');
+const { catalogKey } = require('../../scripts/lib/symbol-locales');
 
 const DOCS_ROOT = path.resolve(__dirname, '..');
 const ROOT_DIR = path.resolve(__dirname, '../..');
@@ -40,13 +41,7 @@ try {
 } catch {
   decodeHtmlEntities = null;
 }
-const SYMBOLS_PATH_SEGMENT = {
-  en: 'symbols',
-  fr: 'symboles',
-  es: 'simbolos',
-  de: 'traumsymbole',
-  it: 'simboli'
-};
+const SYMBOLS_PATH_SEGMENT = siteConfig.symbolsPath;
 
 function toPosix(p) {
   return p.split(path.sep).join('/');
@@ -652,12 +647,12 @@ function main() {
 
   for (const s of symbolList) {
     for (const lang of LANGS) {
-      const slug = s?.[lang]?.slug;
+      const slug = s?.[catalogKey(lang)]?.slug;
       if (!slug) {
         errors.push({
           type: 'missing-symbol-slug',
           file: 'data/dream-symbols.json',
-          detail: `symbol id="${s.id}" missing ${lang}.slug`
+          detail: `symbol id="${s.id}" missing ${catalogKey(lang)}.slug`
         });
         continue;
       }
@@ -665,7 +660,7 @@ function main() {
         errors.push({
           type: 'duplicate-symbol-slug',
           file: 'data/dream-symbols.json',
-          detail: `duplicate ${lang}.slug="${slug}"`
+          detail: `duplicate ${catalogKey(lang)}.slug="${slug}"`
         });
       }
       slugSets[lang].add(slug);
@@ -674,7 +669,7 @@ function main() {
 
   for (const s of symbolList) {
     for (const lang of LANGS) {
-      expectedSymbolFiles.push(`${lang}/${SYMBOLS_PATH_SEGMENT[lang]}/${s[lang].slug}.html`);
+      expectedSymbolFiles.push(`${lang}/${SYMBOLS_PATH_SEGMENT[lang]}/${s[catalogKey(lang)].slug}.html`);
     }
   }
 
@@ -723,12 +718,12 @@ function main() {
       }
     }
     for (const lang of LANGS) {
-      const slug = page?.slugs?.[lang];
+      const slug = page?.slugs?.[catalogKey(lang)];
       if (!slug) {
         errors.push({
           type: 'missing-curation-slug',
           file: 'data/curation-pages.json',
-          detail: `curation id="${page.id}" missing slugs.${lang}`
+          detail: `curation id="${page.id}" missing slugs.${catalogKey(lang)}`
         });
         continue;
       }

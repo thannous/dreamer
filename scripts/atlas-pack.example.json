@@ -1,0 +1,21 @@
+{
+  "schema": "noctalia.atlas-pack/1",
+  "symbolId": "moon",
+  "sceneIds": ["pleine", "croissant", "double"],
+  "provenance": {
+    "author": "Codex",
+    "tool": "image tool and version",
+    "createdAt": "2026-10-19T09:00:00Z",
+    "notes": "optional free text"
+  },
+  "roles": {
+    "hero": { "file": "hero.png", "sha256": "0000000000000000000000000000000000000000000000000000000000000000", "prompt": "the prompt or brief that produced this file" },
+    "portrait": { "file": "portrait.png", "sha256": "0000000000000000000000000000000000000000000000000000000000000000", "prompt": "…" },
+    "plate": { "file": "plate.png", "sha256": "0000000000000000000000000000000000000000000000000000000000000000", "prompt": "…" },
+    "scene-pleine": { "file": "scene-pleine.png", "sha256": "0000000000000000000000000000000000000000000000000000000000000000", "prompt": "…" },
+    "scene-croissant": { "file": "scene-croissant.png", "sha256": "0000000000000000000000000000000000000000000000000000000000000000", "prompt": "…" },
+    "scene-double": { "file": "scene-double.png", "sha256": "0000000000000000000000000000000000000000000000000000000000000000", "prompt": "…" },
+    "layer": { "file": "layer.png", "sha256": "0000000000000000000000000000000000000000000000000000000000000000", "prompt": "…" },
+    "accent": { "file": "accent.png", "sha256": "0000000000000000000000000000000000000000000000000000000000000000", "prompt": "…" }
+  }
+}

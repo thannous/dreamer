@@ -1,13 +1,13 @@
 {
   "en": {
-    "page_title": "Dream dictionary: 240 dream symbols A-Z | Noctalia",
-    "meta_description": "An A-Z dream dictionary of 240 symbols, from water, teeth and falling to snakes, houses and death, with possible meanings and questions to reread your dream.",
-    "og_title": "Dream dictionary: 240 dream symbols A-Z",
+    "page_title": "Dream dictionary: {symbolCount} dream symbols A-Z | Noctalia",
+    "meta_description": "An A-Z dream dictionary of {symbolCount} symbols, from water, teeth and falling to snakes, houses and death, with possible meanings and questions to reread your dream.",
+    "og_title": "Dream dictionary: {symbolCount} dream symbols A-Z",
     "og_description": "Find clear meanings, reflection prompts and related symbols for common dreams.",
     "twitter_title": "Dream dictionary A-Z",
-    "twitter_description": "240 dream symbols with meanings, examples and personal prompts.",
+    "twitter_description": "{symbolCount} dream symbols with meanings, examples and personal prompts.",
     "h1_text": "Dream dictionary A‑Z",
-    "intro_paragraph": "Search the dream symbol that stayed with you after waking: water, teeth, a door, a hospital, a wolf, a house or a repeated action. This A-Z dream dictionary covers 240 symbols, each with a short meaning, questions to ask yourself and related themes, so you can go from a general definition back to your own dream.",
+    "intro_paragraph": "Search the dream symbol that stayed with you after waking: water, teeth, a door, a hospital, a wolf, a house or a repeated action. This A-Z dream dictionary covers {symbolCount} symbols, each with a short meaning, questions to ask yourself and related themes, so you can go from a general definition back to your own dream.",
     "hero_search_placeholder": "Search a symbol (water, snake, falling…)",
     "sticky_search_placeholder": "Search a symbol (water, snake, falling…)",
     "no_results_text": "No symbols found for",
@@ -104,14 +104,14 @@
     }
   },
   "fr": {
-    "page_title": "Dictionnaire des rêves : 240 symboles de A à Z | Noctalia",
-    "meta_description": "Dictionnaire des rêves de A à Z : 240 symboles (eau, dents, chute, serpent, maison, mort…) avec leur sens possible et des questions pour relire votre rêve.",
-    "og_title": "Dictionnaire des rêves : 240 symboles de A à Z",
+    "page_title": "Dictionnaire des rêves : {symbolCount} symboles de A à Z | Noctalia",
+    "meta_description": "Dictionnaire des rêves de A à Z : {symbolCount} symboles (eau, dents, chute, serpent, maison, mort…) avec leur sens possible et des questions pour relire votre rêve.",
+    "og_title": "Dictionnaire des rêves : {symbolCount} symboles de A à Z",
     "og_description": "Trouvez des significations claires, des questions de réflexion et des symboles liés.",
     "twitter_title": "Dictionnaire des rêves de A à Z",
-    "twitter_description": "240 symboles de rêves avec significations, exemples et questions personnelles.",
+    "twitter_description": "{symbolCount} symboles de rêves avec significations, exemples et questions personnelles.",
     "h1_text": "Dictionnaire des rêves de A à Z",
-    "intro_paragraph": "Cherchez le symbole qui vous est resté au réveil : eau, dents, porte, hôpital, loup, maison ou action répétée. Ce dictionnaire des rêves de A à Z rassemble 240 symboles avec significations rapides, questions de réflexion et thèmes liés pour passer d’une définition générale au contexte de votre propre rêve.",
+    "intro_paragraph": "Cherchez le symbole qui vous est resté au réveil : eau, dents, porte, hôpital, loup, maison ou action répétée. Ce dictionnaire des rêves de A à Z rassemble {symbolCount} symboles avec significations rapides, questions de réflexion et thèmes liés pour passer d’une définition générale au contexte de votre propre rêve.",
     "hero_search_placeholder": "Rechercher un symbole (eau, serpent, chute…)",
     "sticky_search_placeholder": "Rechercher un symbole (eau, serpent, chute…)",
     "no_results_text": "Aucun symbole trouvé pour",
@@ -208,14 +208,14 @@
     }
   },
   "es": {
-    "page_title": "50 sueños y su significado: diccionario de 240 símbolos | Noctalia",
-    "meta_description": "Busca 50 sueños y su significado dentro de un diccionario de 240 símbolos: agua, hospital, lobo, puertas, inundaciones y más.",
+    "page_title": "50 sueños y su significado: diccionario de {symbolCount} símbolos | Noctalia",
+    "meta_description": "Busca 50 sueños y su significado dentro de un diccionario de {symbolCount} símbolos: agua, hospital, lobo, puertas, inundaciones y más.",
     "og_title": "50 sueños y su significado: diccionario de símbolos",
-    "og_description": "Explora 240 símbolos de sueños con significados claros y preguntas para interpretarlos.",
+    "og_description": "Explora {symbolCount} símbolos de sueños con significados claros y preguntas para interpretarlos.",
     "twitter_title": "50 sueños y su significado",
-    "twitter_description": "Diccionario de sueños con 240 símbolos, significados y ejemplos.",
-    "h1_text": "50 sueños y su significado, en un diccionario de 240 símbolos",
-    "intro_paragraph": "Si buscas 50 sueños y su significado, empieza por el símbolo exacto que recuerdas: hospital, lobo, puerta, agua, inundación, casa o animales. Este diccionario reúne 240 símbolos con una respuesta rápida, preguntas personales y enlaces a temas relacionados.",
+    "twitter_description": "Diccionario de sueños con {symbolCount} símbolos, significados y ejemplos.",
+    "h1_text": "50 sueños y su significado, en un diccionario de {symbolCount} símbolos",
+    "intro_paragraph": "Si buscas 50 sueños y su significado, empieza por el símbolo exacto que recuerdas: hospital, lobo, puerta, agua, inundación, casa o animales. Este diccionario reúne {symbolCount} símbolos con una respuesta rápida, preguntas personales y enlaces a temas relacionados.",
     "hero_search_placeholder": "Buscar un símbolo (agua, serpiente, caída…)",
     "sticky_search_placeholder": "Buscar un símbolo (agua, serpiente, caída…)",
     "no_results_text": "Ningún símbolo encontrado para",
@@ -293,14 +293,14 @@
     }
   },
   "de": {
-    "page_title": "Traumdeutung: Lexikon A–Z mit 240 Traumsymbolen | Noctalia",
-    "meta_description": "Traumdeutungslexikon A–Z: Durchsuche 240 Traumsymbole und vergleiche mögliche Lesarten mit der Szene, deinen Gefühlen und persönlichen Erlebnissen.",
-    "og_title": "Traumdeutung: Lexikon A–Z mit 240 Traumsymbolen",
+    "page_title": "Traumdeutung: Lexikon A–Z mit {symbolCount} Traumsymbolen | Noctalia",
+    "meta_description": "Traumdeutungslexikon A–Z: Durchsuche {symbolCount} Traumsymbole und vergleiche mögliche Lesarten mit der Szene, deinen Gefühlen und persönlichen Erlebnissen.",
+    "og_title": "Traumdeutung: Lexikon A–Z mit {symbolCount} Traumsymbolen",
     "og_description": "Nutze das Noctalia-Traumsymbole-Lexikon für mögliche Lesarten, häufig gesuchte Motive und persönliche Kontextfragen.",
     "twitter_title": "Traumdeutung: Lexikon A–Z",
-    "twitter_description": "240 Traumsymbole mit möglichen Lesarten, Beispielen und persönlichen Fragen.",
+    "twitter_description": "{symbolCount} Traumsymbole mit möglichen Lesarten, Beispielen und persönlichen Fragen.",
     "h1_text": "Traumdeutung: Lexikon A–Z",
-    "intro_paragraph": "Finde Traumsymbole von A bis Z: Suche nach Wasser, Tür, Hund, Fallen, Haus oder einem anderen Motiv. Jede der 240 Kurzdeutungen zeigt mögliche Bedeutungen, passende Kontextfragen und verwandte Symbole. Nutze sie als Ausgangspunkt und gleiche sie mit deinen Gefühlen und Erlebnissen im Traum ab.",
+    "intro_paragraph": "Finde Traumsymbole von A bis Z: Suche nach Wasser, Tür, Hund, Fallen, Haus oder einem anderen Motiv. Jede der {symbolCount} Kurzdeutungen zeigt mögliche Bedeutungen, passende Kontextfragen und verwandte Symbole. Nutze sie als Ausgangspunkt und gleiche sie mit deinen Gefühlen und Erlebnissen im Traum ab.",
     "hero_search_placeholder": "Traumsymbol suchen (Wasser, Tür, Wolf…)",
     "sticky_search_placeholder": "Traumsymbol suchen (Wasser, Tür, Wolf…)",
     "no_results_text": "Keine Symbole gefunden für",
@@ -397,14 +397,14 @@
     }
   },
   "it": {
-    "page_title": "Dizionario dei simboli dei sogni: 240 significati A-Z | Noctalia",
-    "meta_description": "Cerca 240 simboli dei sogni A-Z: acqua, denti, cadere, animali, morte, casa, ospedale, lupo e temi ricorrenti.",
-    "og_title": "Dizionario dei simboli dei sogni: 240 significati",
+    "page_title": "Dizionario dei simboli dei sogni: {symbolCount} significati A-Z | Noctalia",
+    "meta_description": "Cerca {symbolCount} simboli dei sogni A-Z: acqua, denti, cadere, animali, morte, casa, ospedale, lupo e temi ricorrenti.",
+    "og_title": "Dizionario dei simboli dei sogni: {symbolCount} significati",
     "og_description": "Trova significati chiari, domande di riflessione e simboli collegati.",
     "twitter_title": "Dizionario dei simboli dei sogni A-Z",
-    "twitter_description": "240 simboli dei sogni con significati, esempi e domande personali.",
+    "twitter_description": "{symbolCount} simboli dei sogni con significati, esempi e domande personali.",
     "h1_text": "Dizionario dei simboli dei sogni A-Z",
-    "intro_paragraph": "Cerca il simbolo che ti è rimasto al risveglio: acqua, denti, porta, ospedale, lupo, casa o un’azione ripetuta. Questo dizionario A-Z include 240 simboli con significati rapidi, domande di riflessione e temi collegati per passare da una definizione generale al contesto del tuo sogno.",
+    "intro_paragraph": "Cerca il simbolo che ti è rimasto al risveglio: acqua, denti, porta, ospedale, lupo, casa o un’azione ripetuta. Questo dizionario A-Z include {symbolCount} simboli con significati rapidi, domande di riflessione e temi collegati per passare da una definizione generale al contesto del tuo sogno.",
     "hero_search_placeholder": "Cerca un simbolo (acqua, serpente, caduta…)",
     "sticky_search_placeholder": "Cerca un simbolo (acqua, serpente, caduta…)",
     "no_results_text": "Nessun simbolo trovato per",
@@ -508,6 +508,91 @@
         }
       ],
       "footer": "Nessun simbolo dei sogni ha un unico significato universale."
+    }
+  },
+  "pt-br": {
+    "page_title": "Dicionário dos sonhos: {symbolCount} símbolos de A a Z | Noctalia",
+    "meta_description": "Dicionário dos sonhos de A a Z: {symbolCount} símbolos (água, dentes, queda, cobra, casa, morte…) com seus possíveis significados e perguntas para reler o seu sonho.",
+    "og_title": "Dicionário dos sonhos: {symbolCount} símbolos de A a Z",
+    "og_description": "Encontre significados claros, perguntas para refletir e símbolos relacionados para os sonhos mais comuns.",
+    "twitter_title": "Dicionário dos sonhos de A a Z",
+    "twitter_description": "{symbolCount} símbolos dos sonhos com significados, exemplos e perguntas pessoais.",
+    "h1_text": "Dicionário dos sonhos de A a Z",
+    "intro_paragraph": "Procure o símbolo que ficou com você ao acordar: água, dentes, uma porta, um hospital, um lobo, uma casa ou uma ação repetida. Este dicionário dos sonhos de A a Z reúne {symbolCount} símbolos, cada um com um significado curto, perguntas para você se fazer e temas relacionados, para ir de uma definição geral ao contexto do seu próprio sonho.",
+    "hero_search_placeholder": "Busque um símbolo (água, cobra, queda…)",
+    "sticky_search_placeholder": "Busque um símbolo (água, cobra, queda…)",
+    "no_results_text": "Nenhum símbolo encontrado para",
+    "browse_by_category": "Explorar por categoria",
+    "priority_links_heading": "Os mais buscados",
+    "priority_links_intro": "Comece por três dos símbolos mais buscados e escolha a situação mais parecida com o seu sonho.",
+    "priority_links": [
+      {
+        "label": "Sonhar com dentes caindo",
+        "href": "/pt-br/simbolos/dentes-perder-os-dentes",
+        "desc": "Dentes moles, quebrando ou caindo: cenas comuns e perguntas para você se fazer."
+      },
+      {
+        "label": "Sonhar com cobra",
+        "href": "/pt-br/simbolos/cobra",
+        "desc": "Uma cobra que morde, persegue ou só observa: compare as leituras possíveis."
+      },
+      {
+        "label": "Sonhar que está caindo",
+        "href": "/pt-br/simbolos/queda",
+        "desc": "Cair no vazio, acordar num sobressalto, perder o controle e pistas para o seu diário."
+      }
+    ],
+    "section_heading": "Símbolos que começam com",
+    "ask_yourself_label": "Pergunte-se:",
+    "cta_title": "Registre cada sonho e veja quais símbolos voltam.",
+    "cta_subtitle": "Fale ou digite o seu sonho ao acordar. O Noctalia reúne o dicionário de símbolos e os nossos guias para você reler o sonho no contexto dele.",
+    "cta_button": "Analisar meu sonho",
+    "faq_title": "Perguntas frequentes",
+    "faq": [
+      {
+        "q": "Como interpretar os símbolos dos sonhos?",
+        "a": "Parta da cena, não de uma definição fixa: o que aconteceu com o símbolo, como você se sentiu e o que ele lembra para você. A mesma imagem pode ser lida de outro jeito conforme as suas vivências e a sua cultura, então compare algumas leituras possíveis e fique com a que combina com a sua situação atual."
+      },
+      {
+        "q": "Os símbolos dos sonhos são universais?",
+        "a": "Nenhum significado universal de um símbolo onírico foi estabelecido. A cultura, as lembranças pessoais, os acontecimentos recentes e a emoção sentida na cena podem mudar a forma como a mesma imagem é entendida."
+      },
+      {
+        "q": "Por que eu sempre sonho com os mesmos símbolos?",
+        "a": "Um símbolo pode voltar junto com uma preocupação atual, uma lembrança ou um acontecimento comum que se repete durante o dia. Um diário de sonhos ajuda a comparar o que mudou antes de cada episódio, sem supor uma mensagem escondida."
+      }
+    ],
+    "analyze_heading": "Do significado no dicionário ao contexto do seu sonho",
+    "analyze_text": "Um dicionário diz o que um símbolo pode significar. O Noctalia ajuda com a pergunta seguinte: o que ele estava fazendo no seu sonho, com as emoções, as pessoas e o cenário de que você se lembra?",
+    "related_heading": "Artigos relacionados",
+    "related_articles": [],
+    "reflection_guide": {
+      "kicker": "Símbolos dos sonhos · Guia de reflexão",
+      "title": "Um símbolo é uma pergunta, não uma resposta",
+      "deck": "Use os dicionários como ponto de partida e depois volte à sua experiência vivida.",
+      "steps": [
+        {
+          "label": "Imagem",
+          "question": "O que apareceu exatamente?",
+          "prompt": "Descreva antes de atribuir um sentido."
+        },
+        {
+          "label": "Emoção",
+          "question": "Como você se sentiu?",
+          "prompt": "Dê nome à emoção e à intensidade dela."
+        },
+        {
+          "label": "Contexto",
+          "question": "O que há de pessoal aqui?",
+          "prompt": "Ligue memória, cultura e acontecimentos."
+        },
+        {
+          "label": "Padrão",
+          "question": "Isso se repete?",
+          "prompt": "Compare os sonhos antes de concluir."
+        }
+      ],
+      "footer": "Nenhum símbolo dos sonhos tem um significado universal único."
     }
   }
 }
