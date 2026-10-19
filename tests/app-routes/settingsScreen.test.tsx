@@ -181,10 +181,6 @@ jest.doMock('@/components/NoctaliaScreenHeader', () => ({
   NoctaliaScreenHeader: ({ titleKey, actions = [] }: any) => <div>{titleKey}{actions.map((action: any) => <button key={action.testID} data-testid={action.testID} onClick={action.onPress} />)}</div>,
 }));
 
-jest.doMock('@/components/inspiration/SectionHeading', () => ({
-  SectionHeading: () => <div data-testid="section-heading" />,
-}));
-
 jest.doMock('@/components/inspiration/GlassCard', () => ({
   FlatGlassCard: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
   StaticFlatGlassCard: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,

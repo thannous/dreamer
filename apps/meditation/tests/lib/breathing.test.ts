@@ -5,7 +5,6 @@ import {
   RING_SCALE_MAX,
   RING_SCALE_MIN,
   ringScaleFor,
-  totalCycles,
 } from '@/lib/breathing';
 
 describe('cycleDurationMs', () => {
@@ -98,12 +97,5 @@ describe('ringScaleFor', () => {
     expect(ringScaleFor('hold', 0)).toBe(RING_SCALE_MAX);
     expect(ringScaleFor('hold', 0.5)).toBe(RING_SCALE_MAX);
     expect(ringScaleFor('rest', 0.5)).toBe(RING_SCALE_MIN);
-  });
-});
-
-describe('totalCycles', () => {
-  it('counts whole cycles only', () => {
-    expect(totalCycles(PATTERN_BY_ID.calm, 1)).toBe(6);
-    expect(totalCycles(PATTERN_BY_ID['four-seven-eight'], 1)).toBe(3);
   });
 });

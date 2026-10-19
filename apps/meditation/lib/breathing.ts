@@ -89,6 +89,3 @@ export function ringKeyframes(pattern: BreathingPattern): { to: number; duration
     durationMs: phase.seconds * 1000,
   }));
 }
-
-export const totalCycles = (pattern: BreathingPattern, durationMin: number): number =>
-  Math.floor((durationMin * 60 * 1000) / cycleDurationMs(pattern));

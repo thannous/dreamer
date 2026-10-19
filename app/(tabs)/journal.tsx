@@ -1,5 +1,3 @@
-import type { ViewToken } from '@shopify/flash-list';
-import type { TextInputInstance } from 'react-native';
 import { markPerformance } from '@/lib/performanceTrace';
 import Animated, { useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { useQuickSettings } from '@/context/QuickSettingsContext';
@@ -47,7 +45,7 @@ import { getDreamThumbnailCacheKey, getDreamThumbnailUri, preloadImage } from '@
 import { trackProductEvent } from '@/lib/analytics';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
-import { FlashList, type FlashListRef, type ListRenderItemInfo } from '@shopify/flash-list';
+import { FlashList, type FlashListRef, type ListRenderItemInfo, type ViewToken } from '@shopify/flash-list';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import React, { useCallback, useContext, useDeferredValue, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
@@ -61,7 +59,7 @@ import {
   type GestureResponderEvent,
   type NativeScrollEvent,
   type NativeSyntheticEvent,
-  type TextInput,
+  type TextInputInstance,
   View,
   useWindowDimensions,
 } from 'react-native';

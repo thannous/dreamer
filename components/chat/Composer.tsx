@@ -1,4 +1,3 @@
-import type { ViewInstance, TextInputInstance } from 'react-native';
 /**
  * Floating Composer - v0-style chat input that floats above content
  * Based on patterns from https://vercel.com/blog/how-we-built-the-v0-ios-app
@@ -41,6 +40,8 @@ import {
   View,
   type LayoutChangeEvent,
   type ViewStyle,
+  type ViewInstance,
+  type TextInputInstance,
 } from 'react-native';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Pressable } from 'react-native-gesture-handler';

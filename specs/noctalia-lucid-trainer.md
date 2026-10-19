@@ -166,7 +166,6 @@ lib/lucid/
 ├── calendar.ts                     # calendrier de programme
 ├── routes.ts                       # routes sûres, porte d'onboarding
 ├── deepLinks.ts                    # passage consenti vers Noctalia
-├── analytics.ts                    # 5 événements, propriétés en liste blanche
 └── content/{en,fr,es,de,it,index,types,references}.ts
 services/
 ├── lucidTrainerStorage.ts          # état + file, verrous, export JSON/CSV
@@ -500,11 +499,14 @@ dans les réglages :
 
 Aucun n'implique un autre. Couper l'un ne coupe pas les autres.
 
-**Analytics** (`lib/lucid/analytics.ts`) : cinq événements — `lucid_activation_completed`,
+**Analytics** (`lib/productAnalytics.ts`, appelé par `context/LucidTrainerContext.tsx`
+et les routes de Lucid) : cinq événements — `lucid_activation_completed`,
 `lucid_training_completed`, `lucid_retention_observed`, `lucid_noctalia_handoff`, `lucid_conversion`.
 Chaque propriété est une **valeur d'une liste blanche fermée** ; les clés doivent correspondre
 exactement, sinon l'événement est rejeté. **Aucun texte libre ne sort jamais** : ni notes, ni titres,
-ni contenu de rêve. `createLucidAnalyticsEvent` retourne `null` si la préférence n'est pas `enabled`.
+ni contenu de rêve. Le fournisseur produit refuse l'envoi sans consentement ; les appels
+Lucid respectent aussi `analyticsConsent`. Les contrôles de consentement, de valeurs
+fermées et de rejet des propriétés privées sont vérifiés sur ce fournisseur actif.
 
 **Export et suppression** (`app/lucid/data.tsx`) :
 

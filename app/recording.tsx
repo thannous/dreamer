@@ -1,4 +1,3 @@
-import type { TextInputInstance } from 'react-native';
 import { markPerformance, performanceTraceId } from '@/lib/performanceTrace';
 import { RecordingDurationLabel } from '@/components/recording/RecordingDurationLabel';
 import { NoctaliaBottomNav } from '@/components/navigation/NoctaliaBottomNav';
@@ -124,7 +123,7 @@ import {
   type LayoutChangeEvent,
   ScrollView,
   StyleSheet,
-  TextInput,
+  type TextInputInstance,
   View,
   useWindowDimensions,
 } from 'react-native';

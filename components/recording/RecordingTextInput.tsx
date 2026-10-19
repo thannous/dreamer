@@ -1,6 +1,5 @@
-import type { TextInputInstance } from 'react-native';
 import React, { forwardRef, useMemo, useState } from 'react';
-import { Pressable, StyleSheet, Text, TextInput, View, useWindowDimensions, type TextInputProps } from 'react-native';
+import { Pressable, StyleSheet, Text, TextInput, View, useWindowDimensions, type TextInputProps, type TextInputInstance } from 'react-native';
 
 import { MicButton, type MicButtonStatus } from '@/components/recording/MicButton';
 import { getRecordingComposerLayout, LARGE_TEXT_FONT_SCALE } from '@/constants/layout';
