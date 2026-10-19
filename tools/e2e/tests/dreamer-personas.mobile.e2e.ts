@@ -103,6 +103,7 @@ if (process.env.E2E_PERSONAS === '1') {
     const entry = screen.getByTestId(/^dream\.item\./, { visible: true });
     await expect(entry).toHaveCount(1);
     await entry.tap();
+    await expect(screen.getByTestId('screen.dreamDetail', { visible: true })).toBeVisible();
   }
 
   test('a sleepy journaler keeps the exact dream for later without requesting a reading',
@@ -139,9 +140,9 @@ if (process.env.E2E_PERSONAS === '1') {
       const { app, screen, agent } = fixtures;
       await startProfile(fixtures, 'existing');
       await agent.act('Find and open your older dream about a garden floating among the clouds.');
-      // iOS AX can echo the title on both a Text and its child. The final Text
-      // inside this unique running head identifies the readable title leaf.
-      const title = screen.getByTestId('journal.detail.navigation', { visible: true })
+      // iOS AX can echo the title on both a Text and its child. Select the
+      // readable leaf within the active dream page, excluding Journal entries.
+      const title = screen.getByTestId('screen.dreamDetail', { visible: true })
         .getByText('Garden in the Clouds', { exact: true, visible: true }).last();
       await screen.scrollUntilVisible(title, { direction: 'up' });
       await expect(title).toBeVisible();
