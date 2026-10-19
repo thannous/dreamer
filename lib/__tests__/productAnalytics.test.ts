@@ -161,6 +161,60 @@ describe('first-party product analytics', () => {
     expect(await AsyncStorage.getItem('product-analytics-queue-v1')).toBeNull();
   });
 
+  // Lucid's unused event builder had these privacy checks, but its live callers
+  // send through this provider. Verify the boundary that actually queues data;
+  // browser journeys cannot safely inject private or malformed runtime payloads.
+  it('queues the five Lucid event families with only their coarse allowlisted properties', async () => {
+    const provider = createProductAnalyticsProvider();
+    const events = [
+      ['lucid_activation_completed', { goal: 'lucidity', experience: 'new', reminder_frequency: 'medium' }],
+      ['lucid_training_completed', { technique: 'ssild', phase: 'night', outcome: 'completed', duration: 'under_5m' }],
+      ['lucid_retention_observed', { week: 'week_2_4', active_days: '3_4', status: 'returning' }],
+      ['lucid_noctalia_handoff', { action: 'transfer_summary', outcome: 'fallback', transfer: 'experiment_summary' }],
+      ['lucid_conversion', { surface: 'paywall', action: 'restored', tier: 'plus' }],
+    ] as const;
+
+    for (const [eventName, properties] of events) {
+      await provider.track(eventName, properties);
+    }
+
+    const queue = JSON.parse((await AsyncStorage.getItem('product-analytics-queue-v1')) ?? '[]');
+    expect(queue.map((event: { event_name: string; properties: unknown }) => [event.event_name, event.properties]))
+      .toEqual(events);
+  });
+
+  it('rejects private, precise, and malformed Lucid properties before storage and delivery', async () => {
+    const provider = createProductAnalyticsProvider();
+    const properties = { technique: 'mild', phase: 'bedtime', outcome: 'completed', duration: '5_15m' };
+    const rejected = [
+      { ...properties, note: 'I dreamed about a private event' },
+      { ...properties, userId: 'user-123' },
+      { ...properties, occurredAt: 1_700_000_000_000 },
+      { ...properties, phase: '03:42' },
+      { ...properties, technique: 'private dream' },
+      { technique: 'mild', phase: 'bedtime', outcome: 'completed' },
+    ];
+
+    for (const payload of rejected) {
+      await provider.track('lucid_training_completed', payload as never);
+    }
+
+    expect(await AsyncStorage.getItem('product-analytics-queue-v1')).toBeNull();
+    expect(mockFetch).not.toHaveBeenCalled();
+  });
+
+  it('keeps Lucid events out of storage and delivery without explicit consent', async () => {
+    await AsyncStorage.setItem('product-analytics-preference-v1', 'disabled');
+    const provider = createProductAnalyticsProvider();
+
+    await provider.track('lucid_training_completed', {
+      technique: 'mild', phase: 'bedtime', outcome: 'completed', duration: '5_15m',
+    });
+
+    expect(await AsyncStorage.getItem('product-analytics-queue-v1')).toBeNull();
+    expect(mockFetch).not.toHaveBeenCalled();
+  });
+
   it('accepts journal layout preference changes and rejects free-form values', async () => {
     const provider = createProductAnalyticsProvider();
     const safeProperties = {

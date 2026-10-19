@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync, realpathSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { validateReleaseReceipt, runWithInstallDiagnostics, normalizeAvdName, validateBuildCommand, nativeInputs, archiveReleaseBinary } from './native-release.mjs';
@@ -72,6 +72,8 @@ test('Pods links are fingerprinted with their local targets; foreign links and c
     writeFileSync(join(root, 'ios', 'Podfile.lock'), 'public pod lock'); writeFileSync(join(root, 'node_modules', 'public', 'header.h'), 'public header');
     links.link('../../../node_modules/public/header.h', join(root, 'ios', 'Pods', 'Headers', 'header.h'));
     const relativeLinkDigest = nativeInputs(root, 'dreamer', 'ios').digest;
+    // Canonical and aliased checkout roots must see the same link and target bytes.
+    assert.equal(nativeInputs(realpathSync(root), 'dreamer', 'ios').digest, relativeLinkDigest);
     // The relative path resolves inside the owned checkout, just like installed CocoaPods headers.
     links.unlink(join(root, 'ios', 'Pods', 'Headers', 'header.h'));
     links.link(join(root, 'node_modules', 'public', 'header.h'), join(root, 'ios', 'Pods', 'Headers', 'header.h'));

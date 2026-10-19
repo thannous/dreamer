@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { Platform } from 'react-native';
 import { isMockModeEnabled } from '@/lib/env';
 
@@ -41,23 +41,19 @@ export function useSubscriptionCustomerInfoListener(
   onStatusChange?: OnStatusChange,
   enabled: boolean = true
 ) {
-  const callbackRef = useRef(onStatusChange);
-  callbackRef.current = onStatusChange;
-
-  const stableCallback = useCallback((nextStatus: SubscriptionStatus) => {
-    callbackRef.current?.(nextStatus);
-  }, []);
-
   useEffect(() => {
     if (!enabled || !onStatusChange) return;
     if (Platform.OS !== 'ios' && Platform.OS !== 'android' && !isMockModeEnabled()) return;
 
-    callbackRegistry.add(stableCallback);
+    // Each effect owns its subscriber, even when two hooks receive the same
+    // callback. Publish it only after React commits this render.
+    const callback = (nextStatus: SubscriptionStatus) => onStatusChange(nextStatus);
+    callbackRegistry.add(callback);
     ensureListener();
 
     return () => {
-      callbackRegistry.delete(stableCallback);
+      callbackRegistry.delete(callback);
       cleanupListenerIfEmpty();
     };
-  }, [enabled, onStatusChange, stableCallback]);
+  }, [enabled, onStatusChange]);
 }

@@ -99,7 +99,7 @@
   --breakpoint-desktop: 1024px; /* DESKTOP_BREAKPOINT */
 
   /* ================================================================== motion ==
-     Mirrors constants/animations.ts. Press feedback sits below the 150 ms
+     CSS feedback timings. Press feedback sits below the 150 ms
      perceptual floor; anything a finger touches uses a spring in JS instead. */
   --duration-press: 120ms;
   --duration-fast: 200ms;

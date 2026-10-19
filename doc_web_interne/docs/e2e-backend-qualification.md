@@ -16,8 +16,15 @@ The opt-in managed stack uses the pinned Supabase CLI 2.121.0 and its experiment
 native runtime without Docker:
 
 ```sh
-mise exec -- npm run test:e2e:backend -- --runtime native
+mise exec -- npm run test:e2e:backend -- --runtime native --qualify-ti528
 ```
+
+This combined command runs all seven browser journeys, the database contracts,
+then the four TI528 suites (six integration cases) sequentially on the same owned
+stack. Omit `--qualify-ti528` for browser qualification alone. The option requires
+an explicit managed `--runtime` and refuses `--status-file` and `--prepare-only`.
+The runner passes its own private status to TI528 and preserves stack cleanup on
+success or failure; the rerun metadata includes the option.
 
 Native requires macOS 14+ on Apple silicon, or Linux amd64/arm64 with glibc 2.35+.
 `--runtime docker` and `--runtime podman` select the managed container runtimes.
@@ -36,7 +43,7 @@ URLs in those copies are replaced with an unavailable loopback endpoint, and
 scheduled jobs are disabled in the same migration that creates them. Tracked
 migrations are untouched. The managed mode also asserts zero active cron jobs
 before the suite. These fixture changes prevent unattended production calls; the
-five journeys do not qualify scheduled reconciliation or AI workers.
+seven browser journeys do not qualify scheduled reconciliation or AI workers.
 The default Docker mode binds its network to loopback and uses ports 56321/56322.
 It never resets an existing project. Cleanup removes only that
 run's containers and database volumes. Unique accounts are created per test and
@@ -70,9 +77,17 @@ runtime. The report's rerun command repeats `E2E_SUPABASE_CLI` and that user whe
 `E2E_DOCKER_CLI` and `DOCKER_HOST` can select a local Docker-compatible runtime.
 No hosted test branch is required.
 
+TI528 accepts the identified managed receipt only after the shared local-target
+guard verifies the stack ID, runtime, credentials and distinct loopback API/database
+ports. The legacy TI528 procedure still requires exactly API 55321 and PostgreSQL
+55322; it does not turn arbitrary local ports into an accepted target. Its database
+contract command receives the validated URL through `SUPABASE_DB_URL`, keeping
+credentials out of npm command banners. See the [TI528 guide](architecture/NOCTALIA-TI528-LOCAL-QUALIFICATION.md)
+for the six cases and historical fixed-port procedure.
+
 ## Assertions and artifacts
 
-Five journeys cover:
+Seven browser journeys cover:
 
 1. Save via UI, verify the remote row, sign in through the UI from an empty
    browser context, edit, restart the other client, then delete and restart again.
@@ -83,6 +98,10 @@ Five journeys cover:
 4. Server-provisioned Plus shows unlimited analysis without a purchase and signs out.
 5. An offline save stays local, synchronizes exactly once after reconnection, and
    remains readable after restart.
+6. Older apps read the four legacy themes while current apps retain precise themes;
+   an older app's theme edit replaces the precise value consistently.
+7. Completed readings preserve a precise theme for current apps and its compatible
+   legacy projection for older apps.
 
 Artifacts are ignored: `test-results/e2e-backend-results.json` includes the tested
 source SHA, dirty-state marker, fixtures, rerun command and individual assertions;
@@ -91,18 +110,26 @@ per-test videos show the actual UI. Auth network traces are deliberately disable
 to avoid recording passwords/JWTs. All stories and identities are synthetic.
 
 The report also records the effective CLI version, backend runtime and migration
-fixture adjustments. Three focused isolation controls cover hosted/ambiguous
-target rejection, non-loopback runtime exposure and neutralization of scheduled
-external work (`node --test scripts/lib/backend-e2e-local.test.cjs`). These are
+fixture adjustments. Focused isolation controls cover hosted/ambiguous target
+rejection, non-loopback runtime exposure, neutralization of scheduled external
+work and the optional qualifier's ownership, ordering and failure cleanup (`node --test scripts/lib/backend-e2e-local.test.cjs`). These are
 negative safety cases that the UI journeys cannot exercise against production.
 
-A manually triggered CircleCI pipeline runs this suite in a Docker-capable machine
-alongside existing checks, on app or database contract changes; pushes and PRs do
-not trigger it, so run it locally when the change requires it. Mock web journeys remain a separate fast
-suite. Native microphone, permissions, SQLite persistence and real RevenueCat
-Test Store behavior are separate qualifications; a web pass does not prove them.
+Run this suite locally when the change requires it; `verify:release` includes the
+backend check. CircleCI now runs only the opt-in E2E/Chromium installation benchmark,
+as described in the [CI guide](circleci-migration.md). Mock web journeys remain a
+separate fast suite. Native microphone, permissions, SQLite persistence and real
+RevenueCat Test Store behavior are separate qualifications; a web pass does not
+prove them.
 
-## Findings during preparation
+On 2026-10-19, source `967fe81f` with the local audit changes passed the combined
+native command: seven browser journeys, 56 database contracts and all six TI528
+cases, with exit 0. The private diagnostic log is
+`/private/tmp/noctalia-backend-native-updated-20261019.log`. This qualifies the local
+Supabase stack and browser scenarios, without extending the result to mobile,
+Store purchases or production.
+
+## Historical findings during initial preparation
 
 Fresh replay exposed a missing `private` schema before guest-analysis import and
 missing service-role privileges on the recovered dreams baseline. The historical
@@ -113,7 +140,7 @@ The master web run after PR 229 failed with a FlashList grid measurement accessi
 a removed item while filtering favorites. The desktop web grid now discards stale
 layouts when item membership changes. Its native list identity stays unchanged.
 
-Five backend journeys passed on a fresh Postgres 17 stack; all 23 mock web
+The original five backend journeys passed on a fresh Postgres 17 stack; all 23 mock web
 journeys passed after the grid fix. The final committed revision and remote CI
 result are recorded in the PR and machine-readable reports.
 

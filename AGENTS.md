@@ -1,417 +1,216 @@
 # Repository Guide
 
-Noctalia is an Expo/React Native dream-journal app with a Supabase backend and a generated multilingual marketing site.
+Noctalia contains the Dreamer and Lucid Expo apps, a separate Meditation package,
+a Supabase backend and a generated multilingual site. This is the shared guide for
+all agents; read [Meditation's local guide](apps/meditation/AGENTS.md) for that app.
+Specialized procedures live in linked guides, not provider-specific instruction copies.
 
 ## Shared instructions for every agent
 
-Use `AGENTS.md` as the single source of project instructions for every agent,
-including Codex, Claude and other assistants. This root guide carries the shared
-rules; [Meditation's AGENTS.md](apps/meditation/AGENTS.md) adds the rules specific
-to that subproject. Read both when working on Meditation. Keep specialized
-product and QA guidance in their linked documents, and keep role prompts and
-skills aligned with these guides instead of maintaining provider-specific copies.
-
-Start with the [repository task index](doc_web_interne/docs/README.md) for feature
-entry points and current guides. Run `mise exec -- npm run scripts:list` for the
-command catalog; [scripts/README.md](scripts/README.md) explains prerequisites and effects.
-Changes are proven locally under the [common delivery rule](#livraison):
-`npm run verify:pr` before every push, `npm run verify:release` before a publish
-(`npm run verify:release:site` when only noctalia.app ships), and the PR
-records the verified commit and the `verify:pr` result; review happens in PR comments. CircleCI contains only an optional E2E/Chromium installation benchmark, enabled by
-`run_e2e_benchmark=true` together with a manual/API trigger (`pipeline.event.name=api`
-or legacy OAuth `pipeline.trigger.type=api`). Validation stays local on Windows and Linux.
-The EAS Workflows in `.eas/workflows/` run on
-`workflow_dispatch` only. Webhook pushes run nothing. Find filenames with
-`rg --files` before reading guessed paths; scoped search examples are in the task index.
-
-## Structure and Sources of Truth
-
-- `app/`: Expo Router screens and layouts.
-- `components/`, `hooks/`, `context/`: reusable UI and state logic.
-- `lib/`, `services/`, `constants/`: shared utilities, integrations, and configuration.
-- `supabase/functions/`, `supabase/migrations/`: Edge Functions and database changes.
-- `docs-src/`: editable marketing-site source. Follow `docs-src/README.md`.
-- `docs/`: ignored generated output; never edit or commit it. Rebuild it from `docs-src/`.
-- `data/`, `scripts/`: generator inputs and tooling.
-- `tools/e2e/`: TesterArmy E2E journeys (web, emulator, Simulator) and their runner.
-- `tests/` and colocated `__tests__/`: route, integration, unit, and performance tests.
-- `doc_web_interne/docs/`: internal runbooks, QA evidence, and plans.
-
-Production for the Vercel app and for https://noctalia.app is manual. A push to `master` is not a publish. See [Publishing to production](#publishing-to-production).
-
-## Subproject routing
-
-- Lucid uses the root package, not `apps/lucid/`. Its screens live only under its
-  own Expo Router root, `routes/lucid/` (`routes/lucid/lucid/`); Dreamer's `app/`
-  no longer contains them, and its lucid ritual opens the Lucid app. Read
-  `specs/noctalia-lucid-trainer.md` for its scope and sleep/wellbeing safeguards.
-- Meditation is a separate package at `apps/meditation/`; read its [local AGENTS.md](apps/meditation/AGENTS.md)
-  and run its commands there. Its theme and service paths replace journal-specific paths.
-- Device scope follows the current requested product and work package. The TI-429
-  VNext base-package rule ended with its harness (retired 2026-10-14, see Project Rules).
-  Resolve an app-specific profile and owned data before device work; do not reuse
-  Dreamer's allowlist for Lucid or Meditation. Missing access does not block local work.
-- Do not send private project content to free third-party inference endpoints.
-  Use an authorized supported model.
-
-For requested Higgsfield media, check the host's installed skills and media workflow
-policy first. These ignored machine resources may be supplied under
-`.agents/skills/WORKFLOW-POLICY.md` and
-`.agents/skills/higgsfield-video-explainer/SKILL.md`; they are not shipped by this
-checkout. Follow the installed policy, or continue local preparation and report the
-missing resource before submitting media. The video-explainer skill requires the
-live catalog for preset discovery or validation; custom-style preparation does not
-depend on it. Verify the selected model's live contract before submission.
-
-## Styling and Motion
-
-- Styling is **Uniwind** (Tailwind v4 bindings for React Native). Canonical colours live in
-  `constants/noctaliaPalette.ts`; `global.css` contains generated colour tokens. `metro.config.js` wraps
-  the config with `withUniwindConfig` as the
-  outermost wrapper. See `specs/uniwind-migration-guide.md` and `specs/adr-001-nativewind-vs-uniwind.md`.
-- Colour vocabulary: `ink` (grounds and surfaces), `ivory` (text), `champagne` (accent).
-  **`champagne` is never a text colour** — accented copy uses `text-champagne-on`, which is
-  WCAG AA on both grounds.
-- `constants/journalTheme.ts` / `constants/noctaliaDesign.ts` derive from the common palette.
-  Edit colour values there only via `constants/noctaliaPalette.ts`, then run
-  `npm run uniwind:types` (includes CSS generation). Do not hand-edit the generated
-  colour block in `global.css`; `npm run theme:check` and `npm run brand:check` verify parity.
-- Uniwind and `StyleSheet` coexist; migration is incremental. Migrate a component fully or not
-  at all — a component half in `className` is where contrast and spacing regressions hide.
-- Colour values passed as *props* (LinearGradient `colors`, icon `color=`, chart colours) stay
-  on `useTheme()`. That is expected, not debt.
-- Motion primitives are in `components/motion/` (`PressableScale`, `Reveal`, `DURATION`, `EASE`,
-  `SPRING`). Most things should not animate. Tabs never slide.
-- Missing release-device evidence does not block authorized local motion work. Report
-  motion quality as unqualified until the relevant release-device checks are complete.
-- After editing `global.css`, run `npm run uniwind:types`.
-
-## Operating Principles
-
-1. Use the Visualize skill only when a visual materially improves the explanation; concise prose or a Markdown table is sufficient otherwise
-2. Be concise, direct, and candid. Challenge weak assumptions and distinguish verified facts from uncertainty
-3. Ground research in authoritative, current sources and link important evidence
-4. Preserve the original goal and constraints; finish authorized work end to end and verify the actual result before claiming completion
-5. Ask questions only when a decision is materially ambiguous, risky, or requires approval
-6. Use relevant skills
-7. Keep changes focused and simple. Avoid unrelated edits, unnecessary abstractions, and low-signal tests
-8. Test observable behavior, review substantial changes, and validate user-facing work in the real interface when applicable
-9. Preserve unrelated work and never take destructive, production, or external actions beyond what the user authorized
-10. Report meaningful blockers, outcomes, and evidence without noisy progress
+Start with the [task index](doc_web_interne/docs/README.md), then the relevant code,
+local instructions and installed skill/API topic. Find files with `rg --files`
+before guessing paths. [package.json](package.json) owns commands;
+`mise exec -- npm run scripts:list` and [scripts/README.md](scripts/README.md)
+explain their prerequisites and effects. Use [repository operations](doc_web_interne/docs/repository-operations.md)
+for runtime, validation, native QA and publication procedures.
 
 ## Instruction Priority and Progress
 
-- Follow the user's latest explicit task instructions over conflicting defaults in this
-  guide, project configuration, skills, and their references, subject to system/developer
-  instructions and actual tool permissions. Skills guide execution; they do not add authority.
-- Reuse authorization and decisions already supplied in the conversation. Do not ask again
-  solely because a skill prescribes a confirmation, selection, questionnaire, or separate turn.
-- When the user delegates choices or requests no-question execution, make reasonable decisions
-  within that scope and continue. Identify agent-selected drafts honestly; never claim the
-  user reviewed or approved an asset when they only delegated its selection.
-- Complete independent authorized work when a capability or decision blocks one step. Report
-  the exact remaining blocker without treating missing evidence as a passed check.
-- Finish preparation and reversible checks before requesting any still-missing authorization
-  for a concrete external action. Existing release, secret, WIP and device safeguards apply.
+- Latest explicit user scope and current product contracts govern, subject to higher
+  priority instructions and tool permissions. Historical choices, reports and tests
+  are context, not permanent restrictions. Skills guide execution without adding authority.
+- Reuse existing authorization and decisions. Complete authorized reversible local work
+  autonomously; ask only for a material missing decision or an action outside scope.
+  Finish concrete preparation first and continue independent work while blocked.
+- Delegated choices allow reasonable agent selections; identify those honestly rather
+  than claiming user review. Missing, blocked or stale evidence never counts as passed.
 
 ## Autonomy for Approved Work Packages
 
-A direct request to implement or fix something authorizes work within that scope.
-A request to prepare or audit a proposal authorizes the proposal only. An explicit
-instruction to implement an identified proposal authorizes its implementation and
-applicable delivery steps: scoped fixes, appropriate validation, correction of related
-failures, commits, `npm run verify:pr` before each push, PR creation and push;
-the merge follows the [delivery rule](#livraison). Reuse that
-authorization. Explicit local-only, no-push, review-before-merge, and publication
-boundaries take precedence; a production-triggering merge requires publication intent.
+An implementation/fix request authorizes its scoped changes, validation and applicable
+commit/PR/push steps; an audit/proposal request authorizes the proposal only. Explicit
+local-only, no-push and review-before-merge boundaries prevail. A merge that deploys
+production also needs publication intent. Use four proportionate stages: frame objective,
+acceptance criteria and boundaries once; prepare; implement and validate; verify each
+requested delivery result. Optional targets do not become blockers without a new risk
+or explicit requirement. Native builds, full suites and review follow the affected risk.
 
-Keep execution to four gates, with detail proportional to the work:
-
-1. Frame the objective, blocking acceptance criteria, and authorization boundaries once.
-   Distinguish required thresholds from working performance targets and optional improvements;
-   do not turn the latter into closure blockers without an explicit requirement or new risk.
-2. Prepare the repository, environment, and validation method needed for that objective.
-3. Implement and validate according to the risk table below, reusing still-valid evidence.
-   Independent review, native builds, and full suites depend on risk and applicable release
-   requirements; they are not mandatory for every change.
-4. Deliver within the approved scope, run `npm run verify:pr` on the final PR head before
-   merge, and verify the actual result at each requested delivery stage. Local checks, merge,
-   deployment, device installation, and public availability remain distinct evidence.
-
-Ask only for a material unresolved product decision or an action outside the approved scope,
-including an unauthorized expense, destructive operation, or publication. Production deploys,
-store submissions and EAS builds must be explicitly included in the authorization;
-a merge that triggers production deployment also requires publication intent. Requested
-native implementation or QA includes the necessary local build, isolated native generation
-and compatible installation on its owned disposable QA target. It does not authorize
-overwriting a personal app, resetting unowned data, adding a provider or raising a budget.
-Continue independent authorized work while a decision is pending. These rules do not override
-tool approvals, data preservation, device safeguards, or higher-priority instructions.
-
-Avoid preventable rework: verify dependency compatibility before expensive builds, typecheck
-new or changed tests before the first push, and pilot a measurement method on one sample before
-scaling it. For device checks, identify the installed binary and supported entry points;
-do not assume an older Play build accepts current deep links. On a personal or shared app,
-preserve data and check signature compatibility; a destructive reinstall requires its own
-authorization and a concrete preservation plan. Disposable QA app state uses its existing
-profile, without a redundant personal-data backup workflow. Batch independent
-checks and small corrections, and keep one concise evidence record for the work package.
-
-## Delivery and QA Continuity
-
-1. Identify each mobile release candidate in the existing evidence record: source SHA,
-   platform, binary version/build and install source, OTA update/runtime/channel if applicable,
-   and relevant backend revision or migration state. Mark unknown fields explicitly. Decide
-   whether delivery needs a native build, OTA, or backend deployment; only qualify changes
-   actually present in the tested environment.
-   For Noctalia build counters, use `npm run release:versions:sync` and verify with
-   `npm run release:versions:check`; see [version synchronization](doc_web_interne/docs/mobile-build-version-sync.md).
-   Keep EAS as the counter source; never change a Store or EAS counter to match stale local files.
-2. Before an affected device journey, check the approved existing account, preserved local
-   data, quota/entitlement state, test-payment mode when applicable, and supported UI entry
-   points. Use stable automation targets and existing device coordination. An environment
-   blocker is not an app failure; do not create another account or reset data to bypass it.
-3. Before retrying a failed build, submission, or backend deployment, record its stage,
-   exact error, and changed condition that justifies the retry. Reuse canonical preflights
-   and check existing submissions. For migration drift, compare tracked SQL, applied history,
-   and actual schema before proposing a repair; never reconcile history blindly.
-4. Keep one compact handoff per work package: integration owner, scope and existing
-   authorizations, candidate identity, valid evidence, unresolved blocker, and next action.
-   Reuse decisions and unchanged evidence. Keep private QA artifacts out of Git; tracked
-   summaries must be redacted. These records do not grant additional action permissions.
-
-Keep evidence proportional: one canonical report and receipt with the useful failure
-log/media and exact rerun command. Reference that immutable output rather than copying
-and fully rehashing it at each review or status update. Recheck when bytes are transferred,
-inputs change, corruption is suspected or an applicable release check requires it. Current
-runner identity/artifact checks remain in use; duplicate ad hoc collectors are unnecessary.
-
-Sprint deliverables and success criteria: [four process improvements](doc_web_interne/docs/process-sprint-2026-09-28.md).
+Production deploys, Store submissions, EAS builds, destructive database actions,
+new providers, extra spending and access changes require their own authorization.
+Requested native work includes necessary local builds, isolated native generation and
+compatible installation on an owned disposable QA target. It does not authorize
+replacing a personal app, resetting unowned data or increasing a budget.
 
 ## Project Rules
 
-- TI-429's Maestro harness (Dreamer VNext measurements on the Motorola, base app only) was
-  retired with Maestro on 2026-10-14: it drove a physical phone, which TesterArmy's owned
-  emulator/Simulator targets exclude, so its base-app-only rule no longer restricts automated
-  QA. What stays: on the base app `com.tanuki75.noctalia` (a personal or
-  Play-installed phone), distinguish local-build vs Play install source and verify
-  signature/version before any install, and never uninstall or clear app data to force an
-  install. Native QA runs on an owned emulator/Simulator or separate owned app/profile through
-  TesterArmy (`tools/e2e/`) and must not claim base/Play equivalence.
-- Start with `git status --short`; preserve all unrelated and pre-existing changes.
-- Read applicable local instructions and the implementation or tests needed to understand
-  the requested change. Consult specialized references when the affected behavior requires
-  them. Reuse established patterns and dependencies.
-- Treat `package.json` as the command source of truth; do not invent parallel wrappers.
-- Requested native implementation or QA authorizes a necessary local `expo prebuild`
-  in its isolated worktree, including generation required by `expo run:android`/`run:ios`.
-  Check SDK compatibility and the app-specific profile first, reuse compatible existing
-  projects, prefer explicit `--no-install` generation, and record resulting native inputs.
-  Do not regenerate the primary checkout or another task's project. No separate confirmation
-  is needed for this same local scope; unrelated platforms, personal data, EAS/Store and
-  publication retain their boundaries. `script/build_and_run.sh` start modes do not prebuild.
-- Never run EAS builds, store submissions, production deploys, or destructive database
-  commands without explicit authorization.
-- Never commit secrets or temporary logs. Every `EXPO_PUBLIC_*` value is client-visible.
-- Distinguish patch failures from baseline, environment, Watchman, emulator, and network failures.
-- On macOS, start Expo or Metro through the canonical package script with required outside-sandbox approval so React Native DevTools can register with AppKit. Do not patch Expo or React Native middleware to disable the standalone DevTools shell.
+- Start with `git status --short`; preserve unrelated WIP and personal app data. Use the
+  existing checkout, isolating conflicts with a worktree. Reuse compatible dependencies
+  and patterns; check compatibility before expensive builds and typecheck changed tests
+  before a push. Do not regenerate the primary checkout's native projects.
+- Preserve secrets and private formative feedback. Never commit `.env`,
+  `CLAUDE.local.md`, `settings.local.json`, credentials or temporary logs. Every
+  `EXPO_PUBLIC_*` value is client-visible. Do not send private project content to free
+  third-party inference endpoints or unauthorized providers. Durable redacted evidence
+  is allowed; [repository layout](doc_web_interne/docs/repository-layout.md) defines locations.
+- On a personal or Play-installed base app (`com.tanuki75.noctalia`), identify install
+  source/version/signature and preserve data; never uninstall or clear it to force an
+  install. A destructive reinstall needs separate authorization and a preservation plan.
+  Owned disposable QA uses its existing profile. Do not claim base/Play equivalence.
+- Keep mandatory platform/security checks, hooks and local validation coverage intact.
+  Never use `git push --no-verify` or change `core.hooksPath`. A delivery-control change
+  needs separately justified scope. Distinguish patch bugs from baseline/environment,
+  Watchman, device and network failures; fix genuine bugs rather than hiding failures.
+- On macOS, start Expo/Metro through canonical scripts with required outside-sandbox
+  approval for AppKit/React Native DevTools. Do not disable its standalone shell by
+  patching Expo or React Native middleware.
+
+## Structure and Sources of Truth
+
+Use the [repository layout](doc_web_interne/docs/repository-layout.md) for app roots,
+source assets, generated output, private QA and preserved history. Edit `docs-src/`
+and canonical `data/` inputs, rebuild ignored `docs/`, and never commit generated site
+output. Keep reusable procedures in current guides and dated results in their existing
+evidence locations; age alone is not removal proof.
+
+## Subproject routing
+
+- Dreamer uses `app/`. Lucid shares the root package and uses only `routes/lucid/`
+  (`routes/lucid/lucid/`); Dreamer's ritual opens Lucid. Follow its
+  [specification and sleep/wellbeing safeguards](specs/noctalia-lucid-trainer.md).
+- Meditation lives in `apps/meditation/`, with its own package/lockfile and
+  [local instructions](apps/meditation/AGENTS.md); run its commands there.
+- Resolve the requested product, app-specific profile and owned data before device
+  work. Do not reuse Dreamer's allowlist for the other apps. Missing device access
+  does not block authorized local work. TI-429/Maestro is retired; current native
+  procedures are in [repository operations](doc_web_interne/docs/repository-operations.md#native-journeys-and-inspection).
 
 ## Essential Commands
 
-`mise.toml` pins Node and Deno to the CI versions. Run `mise install`, then use
-`mise exec -- <command>` unless your shell already activates the project tools.
-Install root dependencies from the repository root. Meditation uses a separate
-lockfile and additionally requires `mise exec -- npm ci` in `apps/meditation`.
+Install the versions in `mise.toml` with `mise install`, then use `mise exec --`
+unless already activated. Run `npm ci` at root and separately in Meditation.
+Use existing package scripts and [runtime prerequisites](doc_web_interne/docs/repository-operations.md#runtime-and-prerequisites);
+`script/build_and_run.sh` is the canonical desktop/runtime entry point. Optional
+machine settings and skills are private resources, not distributed requirements.
+Backend requests use `lib/http.ts`; URL resolution lives in `lib/config.ts`.
 
-- Install: `npm ci` (reproducible), `npm install` (update), `npx expo install <package>` (Expo-compatible package).
-- Run: `npm run start`, `npm run web`, `npm run android`, `npm run ios`.
-- Runtime modes: `npm run start:mock`, `npm run start:real`, `npm run start:teststore`, `npm run start:playstore`, `npm run start:supabase`.
-- Expo Go: run `NOCTALIA_DISABLE_RC_WEB_STUB=1 npm run start -- --go` so Metro bundles RevenueCat's real web SDK (Expo Go runs
-  react-native-purchases in browser mode). Local Expo Go only; EAS builds ignore it (`EAS_BUILD`). No npm script: `package.json` scripts feed the runtime fingerprint.
-- Diagnose: `npx expo-doctor`.
-- Mobile release: follow [MOBILE_VERSIONING.md](doc_web_interne/docs/MOBILE_VERSIONING.md); use `release:build` for its local checks and pinned EAS CLI.
-- Local Android Release: Java 17 and Android SDK are required. The runner checks Java before build preparation; see [tooling prerequisites](scripts/README.md#local-android-prerequisites).
+## Styling and Motion
 
-Backend URL resolution uses `EXPO_PUBLIC_API_URL`, then `app.json` `expo.extra.apiUrl`; see `lib/config.ts`. Use `lib/http.ts` for network requests and its timeout/auth conventions.
-
-The canonical desktop/runtime entry point is `script/build_and_run.sh`, which keeps
-Metro in the foreground. An optional local `.codex/environments/environment.toml`
-can delegate desktop Run actions to it; this checkout does not ship that file.
-Use the package scripts when it is absent. See `./script/build_and_run.sh --help`
-for supported modes.
-
-## Livraison
-
-1. Avant de push, l'agent lance `npm run verify:pr` sur sa machine. Si ça échoue, il ne pousse pas.
-2. La PR indique le commit vérifié et le résultat.
-3. Sur demande explicite de thanh, l'agent peut fusionner la PR quand les commentaires sont réglés et que rien ne bloque. Aucune relecture ni intervention du CTO n'est imposée.
-4. Rien ne part en prod sans le go de thanh.
-
-## Notes dreamer
-
-Faits propres à ce dépôt, pas des règles (la règle est la section [Livraison](#livraison)).
-
-
-- `npm run verify:pr` lance ici : tests du moteur, `typecheck:app`, `typecheck:tests`, `lint`, `lint:scripts`, tests Jest liés au diff (`test:changed`), contrats statiques de la base ; selon les chemins changés, `docs:build` et `docs:check` (site), contrats CI et benchmark (`.circleci/`, installateur/benchmark E2E), versions mobiles épinglées (`mobile-release.js verify`), Meditation (`apps/meditation`, demande `npm ci` dans `apps/meditation` du checkout principal) et Edge Functions sous Deno. `npm run verify:release` relance tout sur le commit livré de `master` et y ajoute les contrôles `release` de `verify-local.config.mjs` (validation complète locale), le site et l'app web reconstruits pour ce commit. `npm run verify:release:site` fait la même course sans les contrôles de la cible `app` (build de l'app web, `e2e-backend`, campagnes TesterArmy Dreamer, Lucid et Meditation) : elle suffit pour publier le site seul, pas l'app.
-- Contrôles spécialisés : Edge Functions sous Deno (`edge-functions`, quand `supabase/functions`, `supabase/lib`, `supabase/migrations` ou `deno.lock` changent ; toujours en publication) ; base et navigateur (`e2e-backend` : Supabase local sous Docker et Chromium, en publication de l'app) ; navigateur (`testerarmy-*` : campagne TesterArmy du site à chaque publication ; Dreamer en quatre passes, Lucid et Meditation en publication de l'app). Lance-les en local là où tu lances `verify:pr` ; si cette machine ne peut pas, passe `--external <contrôle>="owner-machine: <hôte> <note> on <SHA>"` depuis la machine qui les a lancés ; tant que la preuve est `incomplete`, ne pousse pas et signale-le comme bloquant. Les vérifications sur appareil, les parcours TesterArmy natifs et les builds EAS restent hors de ces commandes (voir Delivery and QA Continuity) ; un build EAS demande le feu vert explicite du propriétaire.
-- CI : aucune CI externe n'est exigée. CircleCI garde seulement le benchmark E2E/Chromium : `run_e2e_benchmark=true` et lancement API ou manuel (`pipeline.event.name` ou `pipeline.trigger.type` à `api`), aucun contrôle applicatif ; les EAS Workflows de `.eas/workflows/` (`e2e-test-android`, `e2e-test-ios`, `android-release-smoke`, `android-release-qualification`) ne se lancent que par `workflow_dispatch`, plus sur une PR ni sur un tag `v*` ; les deux workflows de release exigent l'entrée `release_tag` et se lancent depuis l'étiquette (`eas workflow:run <fichier> --ref vX.Y.Z -F release_tag=vX.Y.Z` ; sans `--ref`, la CLI envoie le dossier local) ; `scripts/check-android-release-ref.js` compare l'étiquette à `app.json`, échoue si elle manque, et échoue si EAS fournit une ref qui n'est pas cette étiquette. Le propriétaire coupe la livraison du webhook CircleCI et les aperçus Git Cloudflare Pages `noctalia` dans leurs tableaux de bord.
-- Moteur : les étapes lourdes (installations, contrôles) prennent le verrou de la machine `/tmp/fleet-verify-heavy.lock` (`flock`) ; un second `verify` sur la même machine attend (« waiting for lock ») ; sans `flock` (macOS par exemple), les étapes tournent sans verrou et le run le dit ; un contrôle tué par un signal compte comme échoué. `externalSources: []` dans `verify-local.config.mjs` : aucun lien `https://` n'est accepté par `--external`, seule une preuve `owner-machine: <hôte> <note> on <SHA>` compte.
-- Publication du site en production : `npm run docs:deploy:prod` refuse, sans aucune option de contournement, sauf si `HEAD` est `origin/master` après `git fetch`, si le checkout est propre et si une preuve `release` passée de `npm run verify:release:site` (ou de `npm run verify:release`) existe pour l'arbre de `HEAD` et ce commit (`scripts/check-site-publish-proof.mjs`, via `checkReleaseProof` du moteur) ; juste avant l'envoi, la garde refait le fetch et tous les contrôles, et doit retrouver le même `HEAD`, qui étiquette l'envoi. `npm run web:deploy:prod` (app web Vercel) passe par la même garde, deux fois, avant le déploiement Vercel de production, et exige en plus que la preuve couvre la cible `app`, c'est-à-dire celle de `npm run verify:release`. L'aperçu (`npm run docs:deploy:preview`) n'est pas gardé, mais n'accepte que la branche d'aperçu exacte `preview` (comparaison octet par octet) et refuse toute autre valeur.
-- Connexion de test partagée ([doc](doc_web_interne/docs/test-login.md)) : cible = branche Supabase persistante `e2e` de la production (pas encore créée, allowlist vide, donc tout refuse). `npm run test:seed-users` (crée ou remet à zéro `e2e+free@` / `e2e+premium@`, premium via `apply_subscription_state_update`), `npm run test:auth-setup` (connexion par mot de passe, sessions Playwright dans `.auth/<compte>.json`), `npm run test:e2e:branch` (suite Playwright optionnelle, serveur `scripts/start-branch-e2e.mjs`) ; pas de parcours mobile pour l'instant : `test:e2e:branch:mobile` (Maestro) a été retiré le 2026-10-14 sans avoir pu tourner (allowlist vide), et un parcours TesterArmy natif sera écrit quand la branche existera. `supabase/config.toml` n'est pas modifié : la branche se règle dans le tableau de bord, sans intégration GitHub. Tout script qui écrit des comptes de test ou s'y connecte passe d'abord par `scripts/test-supabase-guard.mjs` (`runGuarded`), avant tout appel réseau : refus du projet de production `usuyppgsmmowzizhaoqj`, de toute ref absente de `scripts/test-supabase-targets.json` (vide : tout est refusé) et de tout e-mail autre que `e2e+free@<domaine>` / `e2e+premium@<domaine>`, sans contournement. Identifiants uniquement dans `.env.test.local` (ignoré par Git, noms dans `.env.test.example` : `E2E_SUPABASE_URL`, `E2E_SUPABASE_PROJECT_REF`, `E2E_SUPABASE_ANON_KEY`, `E2E_SUPABASE_SERVICE_ROLE_KEY`, `E2E_ACCOUNT_DOMAIN`, `E2E_FREE_PASSWORD`, `E2E_PREMIUM_PASSWORD`), jamais en `EXPO_PUBLIC_*`. `npm run test:env:check` vérifie la cible sans requête. Les sessions iront dans `.auth/` (ignoré).
+Uniwind is canonical. Edit shared colours in `constants/noctaliaPalette.ts`, derive
+journal/design themes from it, and regenerate tokens with `npm run uniwind:types`
+after palette or `global.css` changes; do not hand-edit its generated colour block.
+`champagne` is a fill, never text: use `text-champagne-on`. Migrate a component fully;
+props such as gradient/icon colours stay on `useTheme()`. Use existing motion primitives;
+tabs never slide. [Styling procedure](doc_web_interne/docs/repository-operations.md#styling-and-motion)
+links the migration and token checks. Unchecked release-device motion remains unqualified.
 
 ## Validation
 
-- Prefer real E2E journeys for functional outcomes, with exact assertions and a repeatable
-  artifact. Use a focused isolation control when it detects a concrete failure that the
-  journey cannot safely or reliably exercise; avoid tests mirroring implementation details.
-- State that failure and the E2E gap before expanding isolated coverage. Reproduce before
-  fixing when practical; test-writing chronology is not a separate permission or closure gate.
+Choose checks by changed behavior and risk, using
+[proportional validation](doc_web_interne/docs/validation-proportionnee.md):
 
-For an isolation-test exception, record the failure modes and the gap in existing E2E
-coverage in the work package. Keep
-only tests that detect a concrete failure the E2E assertions would miss. Avoid
-implementation-shape checks, cosmetic copy assertions, and duplicate happy paths.
-
-An E2E artifact must identify the tested revision/build, environment, fixtures or
-preconditions, exact rerun command, assertions and pass/fail result, with a trace,
-recording, screenshots or machine-readable report as appropriate. A screenshot alone
-is not proof of unobserved behavior. Redact secrets and private user content.
-
-Choose validation by the behavior and risk changed, not by the number of files or a fixed checklist.
-
-| Change | Default validation |
+| Change | Required scope |
 | --- | --- |
-| Documentation or copy with no layout/behavior impact | Read the diff, check affected links and `git diff --check`; no app tests/builds. |
-| Small visual adjustment | Focused lint and inspection of the affected screen, including relevant contrast/text scaling; no full suite by default. |
-| Functional behavior | The affected E2E journey with a repeatable evidence artifact, plus relevant lint/types. Use existing isolation tests only for documented gaps. |
-| Storage, accounts, sync, payments, shared runtime or build configuration | E2E failure/recovery journeys with evidence artifacts; isolation tests for documented gaps and native checks where the risk requires them. |
+| Docs/copy without layout or behavior impact | Read diff, check affected links and `git diff --check`; no app suites/builds. |
+| Small visual change | Focused lint and affected-screen inspection, including relevant contrast/text scaling. |
+| Functional behavior | Affected real E2E journey and artifact, relevant lint/types and concrete regression checks. |
+| Storage, accounts, sync, purchases, shared runtime/build configuration | Relevant failure/recovery journeys and isolated/native checks for the actual risk. |
 
-- Pick one appropriate focused test entry point; the commands below are alternatives, not a sequence to run in full.
-- Apply the E2E-first policy above when adding coverage; isolation controls require a concrete failure model, not a mandatory implementation order.
-- Once checks pass, rerun only when changed code, dependencies/configuration, a failure or an unresolved risk invalidates that evidence. A documentation-only follow-up does not invalidate code tests.
-- Before every push, drafts included, run `npm run verify:pr` on the commit to push; if it fails, do not push (see [Livraison](#livraison)). The pre-push hook itself takes a few seconds and runs no suite. Agents never use `git push --no-verify` nor change `core.hooksPath`: fix a blocked push or report it as a blocker.
-- `npm run verify:pr` checks the committed head in an isolated copy (`git worktree`, `node_modules` linked from the main checkout), so uncommitted work is neither checked nor disturbed. It runs `typecheck:app`, `typecheck:tests`, `lint`, `lint:scripts`, the root Jest tests related to the diff (`test:changed`), the static database contracts and the engine tests. It adds `docs:build` and `docs:check` when site inputs changed (`docs-src/`, `data/`, `scripts/`, package files), the CI/benchmark contract tests when `.circleci/` or E2E installation/benchmark tooling changed, the mobile version pins (`mobile-release.js verify`) when `release/`, an app manifest, a lockfile or an EAS profile changed, Meditation (`apps/meditation`, shared release files) and the Edge Functions under Deno (`supabase/functions`, `supabase/lib`, `supabase/migrations`, `deno.lock`) when theirs changed. A check that already passed on the same inputs is reused (typecheck and lint ignore Markdown, `doc_web_interne/`, `marketing/`, `specs/` and the site-only sources `docs-src/static/{scripts,js,css}/`, `docs-src/{templates,locales,experience}/`, `tools/e2e/tests/`, so a site-only commit reuses them). Native device checks and store builds stay outside it.
-- It compares against the local `origin/master`: fetch it first. `test:changed` uses the same merge-base; `JEST_CHANGED_SINCE=HEAD` is only an explicit working-tree delta, never proof of a committed PR.
-- Fill the PR template's verified-commit and `npm run verify:pr` result fields (`node scripts/verify-local.mjs proof-block` prints both), then say what remains unchecked (native, device) in its note. Review happens in PR comments; answer them with new commits, rerunning `npm run verify:pr` on each new head before pushing it.
-- If `origin/master` moved since the proof, merge it into the branch, rerun `npm run verify:pr` (only the checks whose inputs changed run again) before pushing, and update the PR's verified commit and result. Batch a coherent work package before pushing; coordinate ownership of a branch receiving concurrent edits.
-- CircleCI runs only the installation benchmark when `run_e2e_benchmark=true` and `pipeline.event.name` or `pipeline.trigger.type` is `api`. It runs no validation suite. Automatic webhook pushes run nothing, and neither a merge nor a publish waits for it. Release branches, tags and a validated mobile release commit, which used to get CircleCI's full portfolio, now require `npm run verify:release` on the exact SHA; run a specialised check locally where you run `verify:pr`, and if this machine cannot, pass `--external <check>="owner-machine: <host> <note> on <SHA>"` from the machine that ran it; while the proof is `incomplete`, do not push and report it as a blocker. `--external` accepts no CI link (`externalSources: []`). The EAS Workflows in `.eas/workflows/` start on `workflow_dispatch` only, never on a pull request or a tag. See [the delivery rule](doc_web_interne/docs/regle-commune-livraison.md) and [the CircleCI guide](doc_web_interne/docs/circleci-migration.md).
-- Keep the hook and local validation coverage intact. CircleCI is a manual performance benchmark, never a substitute for local validation; its frozen former portfolio is retained only as a local coverage fixture. Changes to delivery controls need a separately justified scope. `scripts/verify-local.mjs` and its tests are this repository's own copy of the engine: it pins its own `ENGINE_SHA256` and verifies it locally. The same file in every repository is recommended, so port an engine fix to the others, but nothing checks that across repositories.
-- Minor follow-up fixes need a focused delta review when relevant, not a new full review/test cycle. Reuse evidence for unchanged code and identify the revision it covers.
-- Missing native evidence stays unqualified; do not replace it with repeated unit tests or claim a mock proves persistence or production behavior.
-- For TalkBack qualification, follow [the short Motorola protocol](doc_web_interne/docs/qualification-talkback.md): validate focus/gesture/audio measurement with a short pilot before a full journey, distinguish keyboard/ADB evidence from physical gestures, and restore/re-read device settings even after failure. For a requested fix, continue from the reproduced defect to correction and the authorized retest.
+Use isolation tests only for a named failure the journey cannot safely/reliably cover;
+record that gap. Avoid implementation-shape tests, cosmetic copy assertions and duplicate
+happy paths. Reproduce before fixing when practical; test/code chronology is not a gate.
+Update obsolete expectations to intentional current behavior with a reason and meaningful
+counterexample, preserving still-relevant coverage and honest historical results.
 
-For a substantial change, follow the [focused review procedure](doc_web_interne/docs/validation-proportionnee.md#revue-ciblée-et-convergente): one independent review of the final diff and its evidence, then review the corrections rather than restarting the whole review. Available commands, selected according to the risk above:
-
-- Tests: `npm run test:related -- <files>`, `npm run test:file -- <test-files>`, `npm run test:changed`, or `npm test` when broader coverage is justified.
-- Types and lint: `npm run typecheck:app`, `npm run typecheck:tests`, `npx expo lint <touched-paths>`, `npm run lint`.
-- Jest projects: `npm run test:node`, `npm run test:expo`; performance: `npm run test:perf`. If Watchman is blocked, rerun focused Jest checks with `--watchman=false`.
-- Site: edit sources only, then run `npm run docs:build` and `npm run docs:check`; reserve `npm run docs:release-check` for release-ready work. `docs:build` includes the `docs-src/experience/` bundle. Use `npm run docs:dev` for live editing. While iterating on one generated page, follow [the fast loop](docs-src/README.md#iterate-quickly-on-one-generated-page): rebuild that page alone, run only the journey you change, and one `verify:pr` per batch of changes.
-- Backend: `npm run db:contract:check` or `npm run db:contract:check:local`.
-- Android: `npm run android:gates`, `npm run security:audit:mobile`, and the smallest applicable TesterArmy native selection (`npm run test:testerarmy:mobile -- <product> android` with `--grep`).
-
-Commit source inputs and tracked manifests, never generated `docs/`. Deployment commands always require explicit publication intent.
-
-## Publishing to production
-
-Production publishes are manual. They happen only with thanh's go. A Git push or merge to `master` must not deploy production by itself.
-
-Publish one `master` SHA. From a clean checkout where `HEAD` is the fetched `origin/master`, run `npm run verify:release` and publish only when it ends `passed`. It reruns every check on this commit, reusing nothing, rebuilds the site (`docs:build`, `docs:check`) and the web app (`build:web`) for this commit, and runs the full local validation; `node scripts/verify-local.mjs status` shows the proof of `HEAD`. When only the site ships, `npm run verify:release:site` is enough: the same run without the checks of the `app` target (`build:web`, `e2e-backend` and its Docker, the TesterArmy Dreamer, Lucid and Meditation campaigns). A check this machine cannot run (Deno, Docker, TesterArmy) leaves the proof `incomplete`: run it on a machine that can and rerun with `--external <check>="owner-machine: <host> <note> on <SHA>"`. `npm run docs:deploy:prod` (site) and `npm run web:deploy:prod` (Vercel web app) then refuse unless `HEAD` is `origin/master` after `git fetch`, the checkout is clean, and a passed `release` proof exists for this `master` SHA (`scripts/check-site-publish-proof.mjs`, through the engine's `checkReleaseProof`); `web:deploy:prod` also requires that proof to cover the `app` target, which only `npm run verify:release` does. There is no override flag or variable. Only then does the site publish run `docs:release-check` before the upload. After the publish, check production (health, touched pages) and record the SHA and the deployment.
-
-### Vercel (noctalia.vercel.app and dream.noctalia.app)
-
-Project `thanhs-projects-9baa3976/noctalia`. `vercel.json` sets `git.deploymentEnabled` to `false`, so no branch, including `master`, creates a Git deployment. Preview deployments from Git stop as well. `ignoreCommand` does not start a deployment. It only skips or continues a build that Vercel has already started, and Git pushes no longer start one. No GitHub Action and no CircleCI job runs the Vercel CLI. CircleCI does not run on webhook pushes, and its jobs do not publish.
-
-The only production publish of this project is the npm script below. From a clean checkout where `HEAD` is the fetched `origin/master`, run `npm run verify:release` on that SHA until it ends `passed`, then set `VERCEL_TOKEN` (do not commit it) and run:
-
-```sh
-npm run web:deploy:prod
-```
-
-`scripts/web-deploy.js` runs the same publish guard as `docs:deploy:prod` (`scripts/check-site-publish-proof.mjs`: `HEAD` is `origin/master` after `git fetch`, clean checkout, passed `release` proof of `HEAD` that covers the `app` target; no override flag or variable). It then extracts a clean copy of that `HEAD` (`git archive`) into a temp dir and, in that copy only: `vercel link` for `thanhs-projects-9baa3976/noctalia` (the resulting `.vercel/project.json` must carry the pinned `projectId` and `orgId`, else it refuses), `vercel pull --environment=production`, `vercel build --prod`, the guard again right before the deploy (it must accept the same `HEAD`), then `vercel deploy --prebuilt --prod` labelled with `--meta gitCommitSha=<HEAD>`. Only `.vercel/output` is uploaded, which stays under the Hobby CLI upload limit; untracked or ignored files (`dist/`, `.env*`, caches) cannot ship. Every Vercel call names `--scope` and `--project` and gets an allowlisted environment only (`PATH`, `HOME`, `TMPDIR`, proxy and CA variables when set, the Windows essentials on Windows), so no local `EXPO_PUBLIC_*`, `NOCTALIA_*`, `NODE_ENV` or `VERCEL_PROJECT_ID` can reach the production bundle or pick the project. `vercel build`, which runs `npm install` and the project build command, gets that allowlist without `VERCEL_TOKEN` and with `HOME` set to an empty dir in the temp copy (npm keeps its cache through `npm_config_cache`), and no `--project`/`--scope`: it builds from the checked local link and the pulled settings. The script reads `VERCEL_TOKEN` once at start, removes it from its own `process.env` (so the guard's `git` calls and `vercel build` do not inherit it) and passes it only into the environment of `link`, `pull` and `deploy`. This is not isolation: dependency install scripts and the build command run as the same user, so they can still read the environment this process and its `npm run` parent were started with (`/proc/<pid>/environ` on Linux) and find the real `HOME` (`os.userInfo()`) with any `vercel login` auth file in it. Only a separate user or a container isolates the token from them. The pulled env file stays in the temp copy (created with mode 0700), its values and the token are redacted from the printed CLI output, and the temp dir is removed on success, on failure and on SIGINT, SIGTERM, SIGHUP (terminal closed, SSH dropped) or SIGQUIT, with exit 128 + the signal number (130, 143, 129, 131) and a message naming the signal. Each Vercel step runs in its own process group and session; on a signal the whole group gets SIGTERM, then SIGKILL if the group (not only the CLI) is still there after 5 seconds, and the script waits until the group is gone before cleaning up and exiting. Once a handler has started, no further step starts, even if the running one exits 0 just after the signal. A signal during `deploy` may come after the upload finished: check the Vercel dashboard. Windows has no SIGQUIT. On Windows (no process groups) it uses `taskkill /T /F` on the step's tree, untested. If the script itself is killed with SIGKILL, which cannot be handled, the step's group is not stopped and the temp copy stays until the next run sweeps it. At start the script removes stale `noctalia-vercel-*` dirs under the system temp dir left by a killed run: only real directories owned by the user whose recorded owner pid is no longer alive, or without an owner pid and older than 6 hours. The Vercel CLI is the exact devDependency `vercel@62.2.0` (`package.json` and `package-lock.json`, installed by `npm ci`), never run through `npx` or `node_modules/.bin`: the script runs `node` on the package's own entry (`bin.vercel`, `dist/vc.js`) after checking, before the guard and with nothing run on a refusal, that `node_modules/vercel` and that entry are real files of this checkout (realpath inside `<repo>/node_modules/vercel`, no symlink or `npm link`, so a checkout whose `node_modules` or `node_modules/vercel` is a link, like the `verify:pr` scratch worktree, is refused: deploy from the main checkout after `npm ci`), that `package.json` there is `vercel` `62.2.0`, that `package-lock.json` pins its version and integrity, that npm's install record `node_modules/.package-lock.json` matches the lock for `vercel` and its whole resolved dependency closure (hoisted `@vercel/*` and the rest, and nested entries), and that a sha256 over every file of the package (except its nested `node_modules`) equals the value committed in the script. A version bump updates the version, integrity and file hash together (follow-up: npm marks 62.2.0 deprecated for its `vc upgrade` bug, which this script never runs). Every Vercel call gets `VERCEL_CLI_USE_NATIVE_BINARY=0`, so `dist/vc.js` does not hand over to the optional native binary (the default on macOS), which the hash does not cover. Same-user limit: `node_modules` is not tracked, so code running as the same user can still change it between the check and the run, or change a dependency the hash does not cover. The stale-copy sweep runs before this check, so a refused run still removes old copies. It reads `VERCEL_TOKEN` from the environment, never from argv. Never call the Vercel CLI for a production deploy by hand: it skips the guard.
-
-A rollback that promotes an earlier deployment (Vercel dashboard or `vercel promote`) is a production change outside this guard: only thanh decides it, for a deployment that was itself published through `npm run web:deploy:prod`, and the SHA and reason are recorded.
-
-### Cloudflare Pages (https://noctalia.app)
-
-Project `noctalia`. There is no `wrangler.toml` and no `pages_build_output_dir`. CircleCI and GitHub Actions do not run `wrangler pages deploy`. `docs-src/config/cloudflare-pages.json` records the build settings. A Git push does not apply that file. Production auto-deploy is the Cloudflare Pages Git integration, which is a dashboard setting. Turn it off before treating `master` as publish-on-decision:
-
-1. Open Workers & Pages and select the Pages project `noctalia`.
-2. Open Build, then edit Branch control, and turn off Enable automatic production branch deployments. The same control is labeled Settings, Builds and deployments, production branch, in older dashboard copy.
-3. Set Preview branch to None as well: under the delivery rule, previews are on demand only (`npm run docs:deploy:preview`), never one per pushed branch. Preview deployments do not update `noctalia.app`.
-
-Until step 2 is saved, a push to `master` still publishes the site.
-
-After that, from a clean checkout where `HEAD` is the fetched `origin/master`, run `npm run verify:release:site` (or `npm run verify:release`) on that SHA until it ends `passed`, then set `CLOUDFLARE_API_TOKEN` (Pages edit) and `CLOUDFLARE_ACCOUNT_ID`. Do not commit either value.
-
-```sh
-npm run docs:deploy:prod
-```
-
-That first runs the publish guard (`HEAD` is `origin/master` after a fetch, clean checkout, passed `release` proof of `HEAD`; no override), then `docs:release-check`, stages allowlisted runtime files, runs the guard again right before the upload (it must accept the same `HEAD`, which labels the upload), and uploads them with Wrangler. The command it runs is `npx wrangler pages deploy <staging> --project-name noctalia --branch master --commit-hash <HEAD>`. `--branch master` is the production branch, so the upload updates `noctalia.app`. Flags are the ones documented for `wrangler pages deploy`: `--project-name`, `--branch`, `--commit-hash`.
-
-Do not upload with a raw `npx wrangler pages deploy ... --branch master`: it skips the publish guard and the allowlist, which refuses internal files that a raw `docs/` upload would include. `npm run docs:deploy:prod` is the only production publish of `noctalia.app`. Cloudflare documents that a Git-connected Pages project can take these Wrangler uploads after automatic deployments are disabled. The project stays Git-connected. It does not become a Direct Upload-only project.
-
-## Code and Test Conventions
-
-- Use strict TypeScript, 2-space indentation, focused typed functions, function components, PascalCase components, and `useX` hooks.
-- Reuse components, theme constants, service boundaries, and i18n patterns. Keep hook dependencies correct; memoize only for a clear or measured rerender issue.
-- For justified React Native isolation tests, use `@testing-library/react-native`. Name tests `*.test.ts` or `*.test.tsx`, colocated or under `__tests__/`; keep them deterministic and behavior-focused.
-- In React tests, await asynchronous interactions inside `act` (or the library's async event helpers) and resolve test-controlled promises inside awaited `act` before asserting committed UI state. Do not repair timing races by inflating timeouts. Copy-contract tests should preserve meaning such as optionality and saved state rather than require obsolete cosmetic wording.
-- Add `testID` only for stable automation or UI targeting. Validate affected mobile surfaces and capture screenshots or recordings when useful.
-
-## Official References
-
-- Expo: https://docs.expo.dev/llms-full.txt
-- React Native: https://reactnative.dev/docs/getting-started
+After passing checks, rerun only when changed inputs, failure, risk or an applicable
+release check invalidates them. Documentation-only updates do not invalidate code proof.
+A substantial change gets one independent final-diff review; corrections get focused delta
+review unless scope/risk changes. Prefer existing runners over parallel wrappers/collectors.
 
 ## E2E framework preference (owner decisions, 2026-10-05 and 2026-10-06)
 
-Use TesterArmy `e2e` for new and affected E2E journeys across every project,
-subproject and worktree. Reference: https://docs.expo.dev/guides/using-e2e/.
-Read the official `e2e` skill and the relevant topic from the project's installed
-version before writing or running tests. Use `@e2e-dev/mobile` for native apps and
-`@e2e-dev/web` for browser apps. API/CLI-only projects need an appropriate real
-interface journey; do not invent a mobile or browser target when none exists.
-Reuse project runners, device ownership checks, fixtures and environment guards.
-Native qualification uses an identified installed Release build, one worker per
-device, and `app.open()` at each test start. Follow existing build/prebuild rules.
-Use one goal per `agent.act()` and exact assertions for critical outcomes; exact
-steps need no model. Preserve reports, failures, screenshots/traces, build/source
-identity and the exact rerun command. A stale/missing replay is not a passed check.
-TesterArmy remains the default. Existing coverage protects current functional contracts;
-historical counterexamples inform work but do not freeze obsolete UI or block adoption
-automatically. Preserve the old result and explain any revised expectation or retired
-criterion against the current product contract. Keep the existing CI jobs and local checks
-until an explicit reviewed pipeline change; retain still-relevant Playwright/API assertions until their
-replacement passes. A compatible framework upgrade within the requested work may be
-piloted on a representative journey, pinned and adopted after its checks pass without
-another generic permission request. Keep model
-calls within existing authorized providers and budgets, and never export private
-test content, credentials or feedback without authorization.
+TesterArmy `e2e` is the default for new/affected journeys across all apps/worktrees:
+`@e2e-dev/web` for browsers, `@e2e-dev/mobile` for native; API/CLI uses its real interface.
+Read the installed skill/topic, reuse guarded runners/fixtures and keep provider budgets.
+Native qualification identifies an installed Release, uses one worker per owned device
+and starts with `app.open()`. Use one goal per `agent.act()` and exact assertions for
+critical outcomes; exact steps need no model. A compatible pinned upgrade may be piloted
+and adopted within scope after relevant checks pass. Keep relevant Playwright/API coverage
+until its replacement passes. [Tools and native procedures](doc_web_interne/docs/repository-operations.md#native-journeys-and-inspection)
+cover locks, commands, inspection and release gates; inspection alone proves no journey.
 
-Read `tools/e2e/README.md`. `npm run test:testerarmy` runs Dreamer web;
-`test:testerarmy:lucid`, `test:testerarmy:meditation`, and `test:testerarmy:site`
-select the other web products. For a native installed Release build use
-`E2E_DEVICE=<emulator-serial> npm run test:testerarmy:mobile -- <product> android`
-or an explicitly named iOS Simulator with `<product> ios`. Product is dreamer,
-lucid or meditation. Run setup/browser installation once through package scripts.
-Maestro was retired on 2026-10-14 (owner decision): the Android release evidence is a
-local TesterArmy run of a `production-apk` Release build on an emulator, which
-`npm run android:gates:strict` requires for the candidate versionCode, commit and APK.
-The gate derives stability and cleanliness from the run's `source-start.json` and
-`source-end.json` (same release commit, empty working trees, equal file maps);
-`end.json` is not in the run manifest, so it is only an extra condition.
-Owner decision 2026-10-17 (thanh): the Android real voice check is an optional
-manual test and does not block the release gate; `android:gates:strict` lists it
-as `manual`, which passes. Real voice and
-RevenueCat Test Store purchases follow the manual checklists of
-`doc_web_interne/docs/android-expo57-qa-runbook.md` and `doc_web_interne/docs/revenuecat-qa-workflow.md`.
+## Delivery and QA Continuity
 
+Keep one canonical report/receipt: owner, scope/authorization, revision/build/install
+source, relevant backend/OTA identity, environment/fixtures, assertions, result, useful
+failure log/media, exact rerun command, limits and next action. Mark unknown identity fields.
+Local checks, mock behavior, native/device QA, merge, deployment and Store state are distinct.
+A screenshot alone does not prove unobserved behavior. Private artifacts stay outside Git;
+tracked summaries are redacted. Reuse unchanged immutable outputs without duplicate full
+copies or rehashes; recheck changed/transferred/suspect inputs and required release checks.
 
-For native inspection/exploration, use the official `agent-device` skill with
-`npm run agent-device:inspect -- <product> <android|ios>` or
-`npm run agent-device:mcp -- <product> <android|ios>`, and explicit `E2E_DEVICE`.
-Read `tools/e2e/README.md`. These reuse the test runner's installed-build checks
-and exclusive device lock; direct CLI/MCP must not bypass ownership. Inspection
-captures UI evidence without resets and does not qualify a user journey. New
-regression tests remain TesterArmy tests; do not introduce a separate `.ad` gate.
+Before device journeys check the approved existing account, preserved data, quota/entitlement,
+payment mode and entry points. Do not create replacement accounts or reset data to bypass
+an environment blocker. Record stage/error and changed conditions before retrying failed
+builds/submissions/deployments; compare SQL, migration history and schema before drift repair.
+Follow [candidate continuity](doc_web_interne/docs/repository-operations.md#candidate-and-qa-continuity),
+[EAS counter synchronization](doc_web_interne/docs/mobile-build-version-sync.md) and
+[TalkBack's pilot/restoration protocol](doc_web_interne/docs/qualification-talkback.md).
+
+## Livraison
+
+1. Avant chaque push, drafts inclus, lancer `npm run verify:pr` sur le commit à pousser ; échec ou preuve `incomplete` : ne pas pousser.
+2. La PR indique le commit vérifié, le résultat et les limites. Traiter la revue dans ses commentaires ; chaque nouveau head envoyé est vérifié.
+3. Sur demande explicite de thanh, fusion possible quand les commentaires sont réglés et rien ne bloque ; aucune intervention du CTO imposée.
+4. Rien ne part en production sans le go de thanh.
+
+Le [guide de validation](doc_web_interne/docs/validation-proportionnee.md#prouver-avant-de-pousser)
+détaille fetch, merge-base, worktree isolé, preuve, nouvelle tête et intégration de master.
+
+## Notes dreamer
+
+[Local validation and CI](doc_web_interne/docs/repository-operations.md#local-validation-and-ci)
+explains conditional checks and the release targets. CircleCI is only an optional manual/API
+installation benchmark (`run_e2e_benchmark=true`), with no application validation; webhooks
+run nothing. EAS workflows use `workflow_dispatch` only. Local coverage remains mandatory;
+missing specialized prerequisites need a valid owner-machine proof, never a skip or CI link.
+See [the current CI guide](doc_web_interne/docs/circleci-migration.md).
+
+## Publishing to production
+
+Production is manual; a push/merge must not deploy. Publish only an authorized fetched
+`origin/master` SHA from a clean checkout with passed `verify:release` proof, or
+`verify:release:site` for the site alone. Only `web:deploy:prod` (Vercel) and
+`docs:deploy:prod` (Cloudflare) publish production: never raw CLIs. Their guards run again
+before upload, with no override; app publishing requires the app target. Check production
+health/touched routes and record SHA/deployment. Only thanh decides a rollback of a
+previously guarded deployment, recording SHA/reason.
+
+### Vercel (noctalia.vercel.app and dream.noctalia.app)
+
+Follow the [Vercel procedure](doc_web_interne/docs/repository-operations.md#vercel-noctaliavercelapp-and-dreamnoctaliaapp)
+for the pinned CLI, identity/environment safeguards, cleanup and signal limitations.
+
+### Cloudflare Pages (https://noctalia.app)
+
+Follow the [Pages procedure](doc_web_interne/docs/repository-operations.md#cloudflare-pages-httpsnoctaliaapp).
+Automatic production and preview Git deployments must be disabled in its dashboard;
+a tracked configuration file does not change that dashboard setting.
+
+## Code and Test Conventions
+
+Use strict TypeScript, 2-space indentation, typed focused functions, function components,
+PascalCase components and `useX` hooks. Reuse components/themes/services/i18n, keep hook
+dependencies correct and memoize for a clear/measured issue. Justified React Native
+isolation tests use `@testing-library/react-native`, deterministic `*.test.ts[x]` files,
+and awaited async interactions/promises in `act`; increased timeouts do not repair races.
+Copy tests protect meaning such as optionality/saved state. Add `testID` for stable targeting.
+
+## Operating Principles
+
+Be concise, candid and evidence-based; link authoritative current sources. Keep work focused,
+finish the authorized outcome, report blockers and uncertainty, and use a visualization only
+when it materially helps. Do not turn optional suggestions into delivery blockers.
+
+## Official References
+
+[Official Expo, React Native and TesterArmy references](doc_web_interne/docs/repository-operations.md#official-references).

@@ -1,12 +1,10 @@
 import { Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { requestAiConsent, resetAiConsentCacheForTests, setAiConsentPromptRequired } from '@/lib/aiConsent';
 
 jest.mock('@react-native-async-storage/async-storage', () =>
   require('@react-native-async-storage/async-storage/jest/async-storage-mock'),
 );
-
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-import { requestAiConsent, resetAiConsentCacheForTests, setAiConsentPromptRequired } from '@/lib/aiConsent';
 
 const t = (key: string) => key;
 type Button = { text?: string; onPress?: () => void };

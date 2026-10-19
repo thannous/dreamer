@@ -99,17 +99,6 @@ export type HomeRecommendation = {
   source: 'world' | 'catalogue';
 };
 
-/** The path step drives the main CTA until all three practices are complete. */
-export function recommendedSessionForWorld(
-  worldId: WorldId,
-  dateISO: string,
-  progress: Record<SessionId, SessionProgress>,
-  isPlayable?: (session: MeditationSession) => boolean,
-  preference?: HomeRecommendationPreference
-): MeditationSession {
-  return homeRecommendationForWorld(worldId, dateISO, progress, isPlayable, preference).session;
-}
-
 /**
  * Prefer a playable world practice that matches onboarding goals and duration.
  * If the world has nothing that fits the chosen pause, a free world may take a

@@ -263,12 +263,6 @@ jest.doMock('expo-linear-gradient', () => ({
 }));
 
 
-jest.doMock('@/components/journal/SubjectProposition', () => ({
-  SubjectProposition: ({ subjectType }: { subjectType: 'person' | 'animal' }) => (
-    <div data-testid="subject-proposition" data-subject-type={subjectType} />
-  ),
-}));
-
 jest.doMock('@/components/navigation/NoctaliaBottomNav', () => ({
   NoctaliaBottomNav: ({ onBarLayout }: { onBarLayout?: (event: any) => void }) => {
     mockBottomNavLayout = onBarLayout;
@@ -282,14 +276,6 @@ jest.doMock('@/components/ui/DreamerBackground', () => ({
 
 jest.doMock('@/components/recording/OfflineModelDownloadSheet', () => ({
   OfflineModelDownloadSheet: () => null,
-}));
-
-jest.doMock('@/components/recording/RecordingOnboardingSpotlightOverlay', () => ({
-  RecordingOnboardingSpotlightOverlay: () => null,
-}));
-
-jest.doMock('@/components/recording/RecordingOnboardingTour', () => ({
-  RecordingOnboardingTour: () => null,
 }));
 
 jest.doMock('@/components/recording/RecordingInputModeSelect', () => ({
@@ -666,10 +652,6 @@ jest.doMock('@/lib/recordingDraftProgress', () => ({
   getRecordingDraftProgress: (transcript: string) => ({
     state: transcript.trim() ? 'ready' : 'empty',
   }),
-}));
-
-jest.doMock('@/lib/recordingActivationInsight', () => ({
-  getRecordingActivationInsight: () => null,
 }));
 
 jest.doMock('@/lib/transcriptMerge', () => ({

@@ -41,10 +41,8 @@ const DREAM_THEME_LABEL_KEYS: Record<DreamTheme, string> = {
  * `Record<EmotionFamilyId, string>` is exhaustive on purpose: adding a family without a key
  * fails `typecheck:app` instead of rendering a raw enum id on screen.
  *
- * The type-only import above is also deliberate. This module is imported by
- * `app/(tabs)/journal.tsx`, `app/journal/[id].tsx`, six `components/journal/*` files and
- * `hooks/useDreamStatistics.ts`; a value import would pull the whole lexicon into every one
- * of those bundles.
+ * The type-only import above keeps the matching lexicon out of journal, detail
+ * and trends components that need only these translated labels.
  */
 const DREAM_EMOTION_FAMILY_LABEL_KEYS: Record<EmotionFamilyId, string> = {
   fear: 'stats.emotion.family.fear',

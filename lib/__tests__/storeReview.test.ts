@@ -1,3 +1,11 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as StoreReview from 'expo-store-review';
+import {
+  markStoreReviewPaywallSeen,
+  recordStoreReviewAnalysisRead,
+  requestStoreReviewIfDue,
+} from '@/lib/storeReview';
+
 jest.mock('@react-native-async-storage/async-storage', () =>
   require('@react-native-async-storage/async-storage/jest/async-storage-mock'),
 );
@@ -5,15 +13,6 @@ jest.mock('expo-store-review', () => ({
   isAvailableAsync: jest.fn(async () => true),
   requestReview: jest.fn(async () => undefined),
 }));
-
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as StoreReview from 'expo-store-review';
-
-import {
-  markStoreReviewPaywallSeen,
-  recordStoreReviewAnalysisRead,
-  requestStoreReviewIfDue,
-} from '@/lib/storeReview';
 
 // The native sheet cannot be observed by an E2E journey, so these cases pin the
 // pacing that keeps the app from asking too early, too often or after the paywall.

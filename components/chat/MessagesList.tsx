@@ -29,7 +29,7 @@ import { MotiView } from '@/lib/moti';
 import type { ChatMessage } from '@/lib/types';
 import { AnimatedLegendList } from '@legendapp/list/reanimated';
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import {
   Pressable,
   StyleSheet,
@@ -185,12 +185,18 @@ function BottomSpacer() {
   return <Animated.View style={animatedStyle} />;
 }
 
+const emptyStreamingReply = () => null;
+const subscribeToEmptyReply = () => () => {};
+
 /** The reply streaming in; a new fragment renders the list that reads it, not its screen. */
 function useStreamingReply(channel?: StreamingReplyChannel): StreamingReply | null {
-  const [reply, setReply] = useState(() => channel?.get() ?? null);
-  // Fragments arrive from network callbacks, after this subscription is in place.
-  useLayoutEffect(() => channel?.subscribe(setReply), [channel]);
-  return channel ? reply : null;
+  // Read the new channel in the same render: a replaced conversation must never
+  // borrow the previous channel's fragment while waiting for its next callback.
+  return useSyncExternalStore(
+    channel?.subscribe ?? subscribeToEmptyReply,
+    channel?.get ?? emptyStreamingReply,
+    channel?.get ?? emptyStreamingReply,
+  );
 }
 
 export function MessagesList({
@@ -212,24 +218,32 @@ export function MessagesList({
     [history, streaming]
   );
   const handwritingAnimatedMessages = useRef<Set<string>>(new Set());
-  const prevMessagesLengthRef = useRef(0);
-  const prevLastRoleRef = useRef<ChatMessage['role'] | undefined>(undefined);
+  const lastMessage = messages.at(-1);
+  const [transition, setTransition] = useState(() => ({
+    length: messages.length, lastId: lastMessage?.id, lastRole: lastMessage?.role,
+    previousLength: 0, previousLastRole: undefined as ChatMessage['role'] | undefined,
+  }));
+  // Track message arrivals as render state, without mutable render-time refs or
+  // another state update for each text fragment of the same streaming message.
+  if (transition.length !== messages.length || transition.lastId !== lastMessage?.id
+    || transition.lastRole !== lastMessage?.role) {
+    setTransition({
+      length: messages.length, lastId: lastMessage?.id, lastRole: lastMessage?.role,
+      previousLength: transition.length,
+      previousLastRole: transition.lastRole,
+    });
+  }
   const insets = useSafeAreaInsets();
 
-  const prevLength = prevMessagesLengthRef.current;
+  const prevLength = transition.previousLength;
   const delta = messages.length - prevLength;
   const didInitialHydrate = prevLength === 0 && messages.length > 0;
   const canHandwriteNewAiMessage =
     !didInitialHydrate &&
     messages.length > 0 &&
     messages[messages.length - 1].role === 'model' &&
-    ((delta === 1 && prevLastRoleRef.current === 'user') ||
+    ((delta === 1 && transition.previousLastRole === 'user') ||
       (delta === 2 && messages.length >= 2 && messages[messages.length - 2].role === 'user'));
-
-  useEffect(() => {
-    prevMessagesLengthRef.current = messages.length;
-    prevLastRoleRef.current = messages.length ? messages[messages.length - 1].role : undefined;
-  }, [messages]);
 
   // Apply composable hooks for chat behavior
   useKeyboardAwareMessageList();

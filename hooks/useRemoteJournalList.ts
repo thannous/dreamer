@@ -23,6 +23,8 @@ export function useRemoteJournalList(userId: string) {
       if (current.active && scope.current === current) setState(previous => ({ ...previous, loading: false, error: true }));
     } finally { current.loading = false; }
   }, [userId]);
+  // A new account starts a separate external traversal. Reset before requesting
+  // its first page so rows from the previous owner cannot enter the append state.
   useEffect(() => {
     const current = { userId, active: true, loading: false, cursor: null, complete: false };
     scope.current = current;
