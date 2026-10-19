@@ -1,5 +1,8 @@
 # Repository hygiene implementation — 2026-10-19
 
+Subsequent warning and dependency work: [warning remediation](warning-remediation-2026-10-19.md).
+The snapshots below retain their original source and audit-count boundaries.
+
 ## Scope and source
 
 Owner request: implement the five repository maintenance recommendations after the
