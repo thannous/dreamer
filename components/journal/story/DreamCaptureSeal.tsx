@@ -376,7 +376,13 @@ export function DreamCaptureSeal({ name, mark, provisionalName, date, previousPa
 
   const named = useRef(onNamed);
   const sealed = useRef(onSealed);
+  const finished = useRef(false);
   useEffect(() => { named.current = onNamed; sealed.current = onSealed; }, [onNamed, onSealed]);
+  const finish = useCallback((read: boolean) => {
+    if (finished.current) return;
+    finished.current = true;
+    sealed.current(read);
+  }, []);
 
   // The name's writing and the dive's beats, once the name is known.
   const close = useMemo(() => {
@@ -423,6 +429,16 @@ export function DreamCaptureSeal({ name, mark, provisionalName, date, previousPa
     return () => clearTimeout(timer);
   }, [asking]);
   const [answer, setAnswer] = useState<boolean | null>(null);
+  // Persistence has already completed when this modal mounts. Reading the page
+  // must not depend on the optional naming/pen/dive sequence or a network result.
+  const openDream = useCallback(() => {
+    if (finished.current) return;
+    const text = closing?.text ?? name ?? provisionalName;
+    const provisional = closing?.provisional ?? !name;
+    named.current(text, provisional, closing ? closing.mark : (name ? mark : null));
+    finish(answer === true);
+  }, [answer, closing, finish, mark, name, provisionalName]);
+
   const startedAt = useRef(0);
   const heldAt = useRef(0);
   useEffect(() => {
@@ -448,14 +464,14 @@ export function DreamCaptureSeal({ name, mark, provisionalName, date, previousPa
     if (!close || (close.pauseAt !== null && answer === null)) return;
     const ran = close.pauseAt !== null ? heldAt.current : 0;
     const read = answer === true;
-    const timers = [setTimeout(() => sealed.current(read), Math.max(0, ms(close.total) - ran))];
+    const timers = [setTimeout(() => finish(read), Math.max(0, ms(close.total) - ran))];
     if (process.env.EXPO_OS !== 'web') {
       timers.push(setTimeout(() => {
         void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft).catch(() => {});
       }, Math.max(0, ms(close.diveFrom + (CLOSE.skyIn[0] + CLOSE.skyIn[1]) / 2) - ran)));
     }
     return () => timers.forEach(clearTimeout);
-  }, [answer, close, ms]);
+  }, [answer, close, finish, ms]);
   const answerReading = useCallback((read: boolean) => {
     if (process.env.EXPO_OS !== 'web') void Haptics.selectionAsync().catch(() => {});
     setAsking(false);
@@ -775,7 +791,7 @@ export function DreamCaptureSeal({ name, mark, provisionalName, date, previousPa
 
   return (
     <Modal visible transparent animationType="none" statusBarTranslucent navigationBarTranslucent
-      onRequestClose={() => { if (asking) answerReading(false); }}>
+      onRequestClose={openDream}>
     <View
       testID={TID.Component.DreamCaptureSeal}
       accessible={false}
@@ -983,6 +999,13 @@ export function DreamCaptureSeal({ name, mark, provisionalName, date, previousPa
       ) : null}
     </View>
     {question}
+    <View pointerEvents="box-none" className="absolute bottom-0 left-0 right-0 items-center px-6"
+      style={[ABOVE_THE_SCREEN, { paddingBottom: Math.max(insets.bottom, 12) + 12 }]}>
+      <PressableScale onPress={openDream} testID="btn.dreamCaptureSeal.openDream" accessibilityRole="button"
+        className="min-h-[48px] items-center justify-center rounded-full border border-line bg-ink px-6 py-3">
+        <Text className="text-center font-sans-medium text-[15px] text-ivory">{t('journal.seal.open_dream')}</Text>
+      </PressableScale>
+    </View>
     </Modal>
   );
 }

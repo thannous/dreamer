@@ -44,8 +44,6 @@ export const DREAM_STORY = {
   starIgnite: 520,
   starStep: 360,
   thread: 420,
-  /** The reading chapters start once the last star is lit. */
-  chapterLead: 240,
   /**
    * The pace of the capture screen's seal, from the save to the saved moment: turned,
    * ringed, named, entered, filled. Its beats are set against this length; the seal itself
@@ -144,11 +142,6 @@ export const twinkle = (index: number, count: number, reduced: boolean): CSSStyl
       animationTimingFunction: EASE.inOut,
       animationFillMode: 'both',
     });
-
-/** When the reading chapters may start after `count` stars have ignited. */
-export const chaptersDelay = (count: number): number =>
-  DREAM_STORY.revealLead + Math.max(count - 1, 0) * DREAM_STORY.starStep + DREAM_STORY.starIgnite
-  + DREAM_STORY.chapterLead;
 
 /**
  * The band of light crossing a canvas while the illustration is made: a state indication

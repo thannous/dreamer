@@ -1,12 +1,12 @@
 /* @jest-environment jsdom */
 
-jest.mock('@/components/ui/DreamerBackground', () => ({ DreamerArtworkWindow: () => null, DreamerBackground: () => null }));
-
 import React from 'react';
 import { cleanup, render } from '@testing-library/react';
 import AuthCallbackScreen from '@/components/auth/AuthCallbackScreen';
 import LucidCallback from '@/routes/lucid/auth/callback';
 import LucidSuccess from '@/routes/lucid/auth/callback/success';
+
+jest.mock('@/components/ui/DreamerBackground', () => ({ DreamerArtworkWindow: () => null, DreamerBackground: () => null }));
 
 const mockReplace = jest.fn();
 let mockReturnState: { ready: boolean; intent: { destination: string; createdAt: number } | null } = { ready: true, intent: null };

@@ -1,5 +1,5 @@
 diff --git a/node_modules/expo/types/react-native-web.d.ts b/node_modules/expo/types/react-native-web.d.ts
-index 1fc21a2..1b5d299 100644
+index 1fc21a2..849b83a 100644
 --- a/node_modules/expo/types/react-native-web.d.ts
 +++ b/node_modules/expo/types/react-native-web.d.ts
 @@ -1,6 +1,5 @@
@@ -30,6 +30,15 @@ index 1fc21a2..1b5d299 100644
 -    style?: StyleProp<TextStyle>;
      /** @platform web */
      tabIndex?: number;
+     /** @platform web */
+@@ -188,7 +182,7 @@ declare module 'react-native' {
+     /** @platform web */
+     transitionDelay?: string | string[];
+     /** @platform web */
+-    transitionDuration?: string | string[];
++    transitionDuration?: RN.ViewStyle['transitionDuration'];
+     /** @platform web */
+     transitionProperty?: string | string[];
      /** @platform web */
 @@ -198,8 +192,6 @@ declare module 'react-native' {
      /** @platform web */

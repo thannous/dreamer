@@ -23,6 +23,8 @@ export function useLucidJournalImport() {
   const { userScope } = useLucidTrainer();
   const ownerKey = JSON.stringify([userScope, user?.id ?? null]);
   const owner = useRef({ key: ownerKey, scope: userScope, userId: user?.id ?? null, generation: 0 });
+  // Intentionally invalidate in render, even if this owner transition suspends.
+  // Waiting for an effect would leave the previous runtime authorized before commit.
   if (owner.current.key !== ownerKey) {
     owner.current = { key: ownerKey, scope: userScope, userId: user?.id ?? null, generation: owner.current.generation + 1 };
   }

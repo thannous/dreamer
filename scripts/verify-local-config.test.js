@@ -59,6 +59,24 @@ describe('verify-local.config.mjs', () => {
     expect(matched).toEqual(files);
   });
 
+  it('enforces index hygiene on every PR/release and retains the complete warning scope', () => {
+    // UI assertions cannot notice a newly tracked private file or a skipped CLI gate.
+    const hygiene = config.checks.find((check) => check.name === 'repository-hygiene');
+    expect(hygiene).toBeDefined();
+    expect(hygiene.kinds ?? ['pr', 'release']).toEqual(['pr', 'release']);
+    for (const key of ['when', 'targets', 'inputs', 'exclude']) expect(hygiene[key]).toBeUndefined();
+    expect(hygiene.command).toBe('npm run repository:hygiene && npm run test:repository-hygiene');
+    const scripts = scriptsOf('package.json');
+    expect(scripts.lint).toBe('npm run brand:check && npm run lint:warnings');
+    expect(scripts['lint:warnings']).toBe('node scripts/check-lint-warnings.js');
+    expect(scripts['repository:hygiene']).toBe('node scripts/check-repository-hygiene.cjs');
+    expect(scripts['test:repository-hygiene']).toBe('node --test scripts/check-repository-hygiene.test.cjs');
+    for (const file of ['scripts/lint-warnings-baseline.json', 'data/repository-hygiene-baseline.json',
+      'scripts/check-lint-warnings.js', 'scripts/check-repository-hygiene.cjs']) {
+      expect(config.deliveryFiles).toContain(file);
+    }
+  });
+
   it('names only npm scripts that exist in the package each command runs in', () => {
     const packages = { root: scriptsOf('package.json'), meditation: scriptsOf('apps/meditation/package.json') };
     const missing = [];
@@ -157,5 +175,31 @@ describe('verify-local.config.mjs', () => {
     ], { encoding: 'utf8' }));
     for (const entry of result.slice(0, 3)) expect(entry.reused).toHaveLength(4);
     for (const entry of result.slice(3)) expect(entry).toEqual({ file: entry.file, reused: [] });
+  });
+
+  it('discovers every tracked Edge test in local and coverage commands', () => {
+    // UI journeys cannot detect a worker suite silently omitted by a Deno path.
+    // Current CircleCI only benchmarks installation; local verification owns Edge execution.
+    const edgeTests = execFileSync('git', ['ls-files', '--', 'supabase/functions'], {
+      cwd: ROOT, encoding: 'utf8',
+    }).trim().split('\n')
+      .filter((file) => file.endsWith('.test.ts'))
+      .map((file) => file.slice('supabase/functions/'.length));
+    expect(edgeTests.length).toBeGreaterThan(0);
+    const commands = {
+      local: config.checks.find((check) => check.name === 'edge-functions').command,
+      coverage: scriptsOf('package.json')['test:coverage:edge'],
+    };
+    for (const [runner, command] of Object.entries(commands)) {
+      const invocations = [...command.replace(/\\\r?\n/g, ' ').matchAll(/\bdeno test ([^;&\n]+)/g)];
+      expect(invocations.length).toBeGreaterThan(0);
+      const roots = invocations.flatMap(([, argumentsText]) =>
+        argumentsText.trim().split(/\s+/).filter((argument) => !argument.startsWith('-'))
+      );
+      const omitted = edgeTests.filter((file) => !roots.some((root) =>
+        file === root || file.startsWith(`${root.replace(/\/$/, '')}/`)
+      ));
+      expect({ runner, omitted }).toEqual({ runner, omitted: [] });
+    }
   });
 });

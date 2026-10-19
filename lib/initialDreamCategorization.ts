@@ -1,3 +1,11 @@
+import { getDreamIdentityKey, type DreamTarget } from '@/lib/dreamIdentity';
+
+/** A newly saved dream keeps this key when synchronization adds its remote id. */
+export function getInitialDreamCategorizationKey(dream: DreamTarget): string {
+  return typeof dream !== 'number' && dream.clientRequestId
+    ? `client:${dream.clientRequestId}` : getDreamIdentityKey(dream);
+}
+
 // The first categorization continues after capture navigates to the journal.
 // Keep its in-flight state across those screens so recovery cannot duplicate it.
 const pending = new Map<string, Promise<void>>();

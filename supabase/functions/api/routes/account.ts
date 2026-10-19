@@ -59,7 +59,7 @@ async function deleteUserStorageObjects(
   return false;
 }
 
-function userHasAppleIdentity(user: { identities?: Array<{ provider?: string }> | null } | null): boolean {
+function userHasAppleIdentity(user: { identities?: { provider?: string }[] | null } | null): boolean {
   return Boolean(user?.identities?.some((identity) => identity.provider === 'apple'));
 }
 

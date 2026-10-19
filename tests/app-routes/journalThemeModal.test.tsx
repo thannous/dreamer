@@ -71,10 +71,6 @@ jest.doMock('@/hooks/useClearWebFocus', () => ({
   useClearWebFocus: () => {},
 }));
 
-jest.doMock('@/hooks/useJournalAnimations', () => ({
-  useModalSlide: () => ({ backdropStyle: {}, contentStyle: {} }),
-}));
-
 jest.doMock('@/hooks/useLocaleFormatting', () => ({
   useLocaleFormatting: () => ({
     formatShortDate: () => '2024-01-01',
@@ -195,10 +191,6 @@ jest.doMock('@/components/journal/DateRangePicker', () => ({
 
 jest.doMock('@/components/journal/DreamCard', () => ({
   DreamCard: () => <div />,
-}));
-
-jest.doMock('@/components/journal/TimelineIndicator', () => ({
-  TimelineIndicator: () => <div />,
 }));
 
 jest.doMock('@/components/guest/UpsellCard', () => ({

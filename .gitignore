@@ -132,3 +132,19 @@ doc_web_interne/SEO_NOCTALIA_AHREF
 
 # Vercel CLI link (vercel link, npm run web:deploy:prod)
 .vercel/
+
+# Regenerable local diagnostics and abandoned comparison staging
+/metro.log
+/metro-mock.log
+/response.json
+/sample.wav
+/sample.flac
+/sample.b64
+/tmp-stage/
+/tmp-stage-index/
+
+# Private raw QA and comparison output (tracked historical exceptions stay in Git)
+/outputs/
+/screenshots/
+/.tmp-*
+/playwright-report/

@@ -4,13 +4,15 @@ Start here to locate the implementation and current operational guide for a task
 [AGENTS.md](../../AGENTS.md) defines the repository rules; [package.json](../../package.json)
 is the command source of truth. Run `mise exec -- npm run scripts:list` for the current
 catalog, or add `-- --json` for structured output. Read [the script guide](../../scripts/README.md)
-for prerequisites and side effects.
+for prerequisites and side effects. [Repository layout](repository-layout.md) maps
+source assets, generated files, private QA and historical evidence;
+[repository operations](repository-operations.md) holds detailed runtime and publication procedures.
 
 ## Implementation entry points
 
 | Task | Screen or entry point | Logic and supporting guide |
 | --- | --- | --- |
-| Capture and save | [recording.tsx](../../app/recording.tsx) | `components/recording/`, `hooks/useDreamSaving.ts`, `hooks/useRecordingDraftPersistence.ts` |
+| Capture and save | [recording.tsx](../../app/recording.tsx) | `components/recording/`, `hooks/useCaptureConversation.ts`, `hooks/useRecordingDraftPersistence.ts`, `context/DreamsContext.tsx` |
 | Journal, filters and storage | [journal.tsx](<../../app/(tabs)/journal.tsx>) | `hooks/useDreamJournal.ts`, `hooks/useDreamPersistence.ts`, `hooks/useRemoteJournalList.ts`, `services/storageService.ts` |
 | Dream detail and reading | [dream detail](<../../app/journal/[id].tsx>) | `components/journal/`, `components/analysis/`; [appearance guide](../../components/journal/README.md) |
 | Reflection and chat | [dream chat](<../../app/dream-chat/[id].tsx>) | `components/chat/MessagesList.tsx`, `context/ChatContext.tsx` |
@@ -31,6 +33,8 @@ and `app.config.ts`. Meditation has its own package, lockfile and
 
 | Work | Start here | Command or prerequisite |
 | --- | --- | --- |
+| Repository sources, local configuration and QA artifacts | [Repository layout and hygiene](repository-layout.md) | `node scripts/check-repository-hygiene.cjs` checks tracked paths and exact historical exceptions; it is not a secret scanner. |
+| Runtime, native preparation and guarded production publication | [Repository operations](repository-operations.md) | Detailed procedures and specialist links; AGENTS retains authority and approval boundaries. |
 | Write or rewrite site articles, symbols and guides | [Editorial charter](charte-editoriale.md) | Voice, sourcing, typography and SEO guardrails; then `docs:build` and `docs:check`. |
 | Generate symbol illustrations, add an Atlas entry or maintain its motion | [Living illustrations guideline](symbol-atlas-guidelines.md) | Approved Tiger/six-symbol direction, shared configuration, source archive and desktop/mobile evidence. |
 | Choose checks and evolve contracts/tools | [Proportional validation](validation-proportionnee.md) | Current functional expectations, compatible measured upgrades, minimal evidence; the `pre-push` hook takes seconds (forbidden files, secrets, proof display); `npm run verify:pr` proves the commit on an isolated copy before every push, and the PR records the verified commit and the `verify:pr` result; `npm run verify:release` before a publish. |
@@ -39,15 +43,18 @@ and `app.config.ts`. Meditation has its own package, lockfile and
 | Live iPhone UI edits and local IPA delivery | [iPhone, Fast Refresh and Tailscale](ios-local-tailscale-ota.md) | Native Debug + `start:mock -- --dev-client --lan --port 8086` for live edits; `ios:local:build` for Release IPA validation. |
 | TesterArmy Release qualification | [Current native retrospective qualification](qa/native-retro-qualification-20261006.md) | Exact passed-ID union, immutable reports/build receipts, owner decisions and retained physical/Store/video limits. |
 | Historical native qualification | [Initial native qualification, 2026-10-06](qa/native-testerarmy-qualification-20261006.md) | Preserved earlier source/build proofs; not a substitute for the current candidate. |
-| Real local backend, recovery and isolation | [Backend qualification](e2e-backend-qualification.md) | `test:e2e:backend`; needs Chromium and a Docker-compatible runtime. |
+| Real local backend, recovery and isolation | [Backend qualification](e2e-backend-qualification.md) | `test:e2e:backend -- --runtime native --qualify-ti528` runs the browser and TI528 cases without Docker on supported hosts; Chromium required. |
 | Mobile version preparation, build and submission | [Mobile release guide](MOBILE_VERSIONING.md) | `release:plan`, `release:prepare`, `release:check`, `release:build`; build/submission require their existing authorization. |
 | EAS build counter mirrors | [Version synchronization](mobile-build-version-sync.md) | `release:versions:sync` writes local mirrors; `release:versions:check` verifies them. |
 | Play candidate qualification | [Android release checklist](android-release-checklist.md) | Read the candidate's actual Play/build metadata; old store snapshots are historical evidence. |
+| Physical Android/iOS performance | [Release measurements and journal return](qa/native-performance-20261018.md) | SDK 58, synthetic journal, cold/warm startup, FrameTimeline/Instruments, memory and retained-position regression proof. |
+| Data ready and reading access | [Readiness performance](qa/readiness-performance-20261019.md) | Save/reading/image markers, presentation waits removed, controlled before/after and explicit native qualification limits. |
+| iOS scroll fluidity | [Simulator preparation](qa/ios-framerate-20261019.md) | UI-runtime reading scroll, owned Release fixture, frame-measurement protocol and Xcode component prerequisite. |
 | Local Android build prerequisites | [Android tooling](../../scripts/README.md#local-android-prerequisites) | Java 17, Android SDK, local dependencies; requested native QA includes necessary isolated generation. `android:release:local -- --help` explains prebuild and install options. |
 | Android iteration and Metro build cost | [Measured mobile CI optimizations](qa/mobile-ci-android-metro-2026-10-18.md) | Separate iteration APKs, unchanged clean Release defaults, identical Windows/Linux cases and measured cache gains. |
 | Android performance measurement | [Performance protocol](../../scripts/android/README-performance.md) | Pilot first, use the device lock and identify the installed binary. |
 | TalkBack qualification | [Motorola protocol](qualification-talkback.md) | Pilot the measurement method and restore device settings. |
-| Delivery rule | [Common delivery rule](regle-commune-livraison.md) | This repository's own copy of the four-line common rule; dreamer specifics are in AGENTS.md, "Notes dreamer". |
+| Delivery rule | [Common delivery rule](regle-commune-livraison.md) | Four-line common rule; [local checks and current CI](repository-operations.md#local-validation-and-ci) explain repository-specific execution. |
 | Test login | [Shared test login](test-login.md) | Guard (production refused, allowlisted test projects only), env names, premium mechanism and owner steps. Seed, API login and Playwright storageState for the persistent `e2e` branch (a TesterArmy native sign-in journey will be written once the branch exists); owner dashboard steps. |
 | Local validation and manual benchmark | [CircleCI guide](circleci-migration.md) | `verify-local.config.mjs` owns all validation. CircleCI runs only the E2E/Chromium installation benchmark: manual/API trigger plus `run_e2e_benchmark=true`. Local rerun: `npm run test:testerarmy:benchmark`. |
 
@@ -75,15 +82,9 @@ version, account or store snapshot must be refreshed before a current-state clai
 
 ## Optional machine resources
 
-The canonical runtime entry point is `script/build_and_run.sh`. A local
-`.codex/environments/environment.toml` can wire desktop Run actions to it; that file
-is optional and is not distributed by this checkout. Use package scripts when it
-is absent, with the macOS approval required by AGENTS for Metro/Expo.
-
-Agent skills under `.agents/skills/` are ignored machine resources. Higgsfield hosts
-may provide `WORKFLOW-POLICY.md` and `higgsfield-video-explainer/SKILL.md` there.
-Check the host's available skills and read the installed policy before a media
-submission. If the required policy or skill is absent, prepare the brief or assets
-locally and report that specific missing resource before submitting. Do not invent
-an absent policy, copy private material to an unsupported endpoint or treat another
-host's skill installation as proof that this checkout has it.
+Local settings and installed skills are private machine resources, described in
+[repository layout](repository-layout.md#local-configuration-and-secrets).
+Use the [runtime procedure](repository-operations.md#runtime-and-prerequisites)
+and, for requested Higgsfield work, the [media procedure](repository-operations.md#requested-media).
+A missing required resource is reported before submission; it does not block
+independent local preparation.

@@ -24,6 +24,7 @@ const EmailVerificationBanner: React.FC<Props> = ({ isCompact = false }) => {
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
 
   const isVerified = Boolean(user?.email_confirmed_at);
+  const email = user?.email;
 
   const statusMessage = useMemo(() => {
     if (status === 'success') {
@@ -38,12 +39,12 @@ const EmailVerificationBanner: React.FC<Props> = ({ isCompact = false }) => {
   const statusColor = status === 'error' ? noctalia.status.danger.text : noctalia.text.secondary;
 
   const handleResend = useCallback(async () => {
-    if (!user?.email || status === 'sending') {
+    if (!email || status === 'sending') {
       return;
     }
     setStatus('sending');
     try {
-      await resendVerificationEmail(user.email);
+      await resendVerificationEmail(email);
       setStatus('success');
     } catch (error) {
       if (__DEV__) {
@@ -51,7 +52,7 @@ const EmailVerificationBanner: React.FC<Props> = ({ isCompact = false }) => {
       }
       setStatus('error');
     }
-  }, [status, user?.email]);
+  }, [email, status]);
 
   if (!user || isVerified) {
     return null;
