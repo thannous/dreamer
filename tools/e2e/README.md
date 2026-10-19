@@ -506,6 +506,14 @@ the final verdict remains nonqualifying; no unknown session/recorder is killed.
 `qualification.json` records SDK validation; only final `end.json` exit0 completes
 that invocation. Preserve both when reporting its verdict.
 
+While the SDK runs, the wrapper keeps a 1 s heartbeat. A gap of 30 s or more means
+the whole host stopped running processes (a VM snapshot or pause, heavy memory
+reclaim), so attempt deadlines expired with nothing running. `end.json` lists each
+gap in `hostStalls`, the console prints it, and a failed run also gets the secondary
+error `HOST_STALL`. It never turns a failure into a pass and never fails a pass: rerun
+the campaign on a quiet host and judge that run. A failure that shows no host stall is
+the app's or the test's.
+
 For a browser campaign set one unique `E2E_CAMPAIGN_ID` on every invocation,
 then run `node tools/e2e/run.mjs <product> web collect` locally.
 `--shard <index>/<total>` splits one context into contiguous slices when needed;
