@@ -414,29 +414,31 @@ function PaywallScreen() {
         .map((pkg) => {
           const optionKey = pkg.interval === 'monthly' ? 'monthly' : 'annual';
           const isAnnual = pkg.interval === 'annual';
-          const comparablePrice = isAnnual
-            ? formatNumber(calculateMonthlyEquivalent(pkg), {
-                style: 'currency',
-                currency: pkg.currency,
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })
-            : pkg.priceFormatted;
+          const intervalLabel = translateWithFallback(`subscription.paywall.option.interval.${optionKey}`);
+          // App Store rule: the amount billed is the largest price on the card. The annual
+          // plan's monthly equivalent is only a comparison, so it sits in the small line.
+          const monthlyEquivalent = formatNumber(calculateMonthlyEquivalent(pkg), {
+            style: 'currency',
+            currency: pkg.currency,
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          });
           return {
             id: pkg.id,
             title: translateWithFallback(
               `subscription.paywall.option.title.${optionKey}`,
               pkg.title
             ),
-            price: comparablePrice,
-            intervalLabel: translateWithFallback('subscription.paywall.option.interval.monthly'),
+            price: pkg.priceFormatted,
+            intervalLabel,
             billingDetail: pkg.freeTrialDays
               ? t('subscription.paywall.option.billing.trial', {
                   days: pkg.freeTrialDays,
                   price: pkg.priceFormatted,
+                  interval: intervalLabel,
                 })
               : isAnnual
-                ? t('subscription.paywall.option.billing.annual', { price: pkg.priceFormatted })
+                ? t('subscription.paywall.option.billing.annual_equivalent', { price: monthlyEquivalent })
                 : t('subscription.paywall.option.billing.monthly'),
             badge:
               pkg.freeTrialDays
@@ -852,7 +854,20 @@ function PaywallScreen() {
                 {t('subscription.paywall.trial_footnote', {
                   days: selectedTrialDays,
                   price: selectedPackage.priceFormatted,
+                  interval: translateWithFallback(
+                    `subscription.paywall.option.interval.${selectedPackage.interval === 'monthly' ? 'monthly' : 'annual'}`
+                  ),
                 })}
+              </Text>
+            ) : null}
+
+            {/* A guest is asked to sign in before paying: say why, right under the button. */}
+            {!isActive && requiresAuth ? (
+              <Text
+                style={[styles.authReason, { color: noctalia.text.secondary }]}
+                testID={TID.Text.PaywallAuthReason}
+              >
+                {t('subscription.paywall.notice.auth')}
               </Text>
             ) : null}
 
@@ -872,11 +887,12 @@ function PaywallScreen() {
           </Reveal>
 
           <Reveal index={4}>
+          {/* Renewal terms are part of the offer, so everyone reads them, guests included. */}
+          <Text style={[styles.notice, { color: noctalia.text.secondary }]} testID={TID.Text.PaywallStoreNotice}>
+            {t(STORE_NOTICE_KEY)}
+          </Text>
           {!requiresAuth ? (
             <>
-              <Text style={[styles.notice, { color: noctalia.text.secondary }]}>
-                {t(STORE_NOTICE_KEY)}
-              </Text>
               {/* A utility, not an offer: it sits with the fine print, still a full 44pt target. */}
               <Pressable
                 style={({ pressed }) => [styles.restoreButton, pressed && styles.legalLinkPressed]}
@@ -892,11 +908,12 @@ function PaywallScreen() {
             </>
           ) : null}
 
+          {/* Reviewers and readers tap these on a phone: each keeps a full 44pt target. */}
           <View style={styles.legalLinks}>
             <Pressable
               accessibilityRole="link"
               onPress={() => handleOpenLegalLink('termsOfUse')}
-              style={({ pressed }) => [pressed && styles.legalLinkPressed]}
+              style={({ pressed }) => [styles.legalLinkTarget, pressed && styles.legalLinkPressed]}
               testID={TID.Button.PaywallTermsOfUse}
             >
               <Text style={[styles.legalLink, { color: noctalia.text.secondary }]}>
@@ -907,7 +924,7 @@ function PaywallScreen() {
             <Pressable
               accessibilityRole="link"
               onPress={() => handleOpenLegalLink('privacyPolicy')}
-              style={({ pressed }) => [pressed && styles.legalLinkPressed]}
+              style={({ pressed }) => [styles.legalLinkTarget, pressed && styles.legalLinkPressed]}
               testID={TID.Button.PaywallPrivacyPolicy}
             >
               <Text style={[styles.legalLink, { color: noctalia.text.secondary }]}>
@@ -1201,6 +1218,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
     lineHeight: 16,
   },
+  authReason: {
+    textAlign: 'center',
+    fontSize: 13,
+    lineHeight: 18,
+    fontFamily: Fonts.spaceGrotesk.regular,
+  },
   primaryLabel: {
     fontSize: 16,
     fontFamily: Fonts.spaceGrotesk.bold,
@@ -1242,6 +1265,10 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.spaceGrotesk.medium,
     fontSize: 12,
     textDecorationLine: 'underline',
+  },
+  legalLinkTarget: {
+    minHeight: 44,
+    justifyContent: 'center',
   },
   legalLinkPressed: {
     opacity: 0.75,

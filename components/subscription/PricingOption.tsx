@@ -131,7 +131,10 @@ export const PricingOption: React.FC<PricingOptionProps> = function PricingOptio
       </View>
 
       <View style={[styles.priceRow, compact && styles.compactPriceRow]}>
-        <Text style={[styles.price, compact && styles.compactPrice, { color: noctalia.text.primary }]}>
+        <Text
+          style={[styles.price, compact && styles.compactPrice, { color: noctalia.text.primary }]}
+          testID={testID ? `${testID}.price` : undefined}
+        >
           {price}
         </Text>
         <Text style={[styles.interval, { color: noctalia.text.secondary }]}>{intervalLabel}</Text>
@@ -139,8 +142,10 @@ export const PricingOption: React.FC<PricingOptionProps> = function PricingOptio
 
       {billingDetail ? (
         <Text
-          numberOfLines={1}
+          // A trial line names its renewal price and period; two lines keep it whole.
+          numberOfLines={2}
           style={[styles.billingDetail, { color: noctalia.text.secondary }]}
+          testID={testID ? `${testID}.detail` : undefined}
         >
           {billingDetail}
         </Text>
@@ -243,8 +248,8 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.spaceGrotesk.regular,
   },
   billingDetail: {
-    fontSize: 11,
-    lineHeight: 14,
+    fontSize: 12,
+    lineHeight: 16,
     fontFamily: Fonts.spaceGrotesk.regular,
   },
 });
