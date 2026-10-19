@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-de-1200x630.jpg",
   "twitterImageAlt": "AGB: Nutzungsbedingungen der App",
   "publishedTime": "",
-  "modifiedTime": "2026-07-09",
+  "modifiedTime": "2026-10-19",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -36,7 +36,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">AGB (Nutzungsbedingungen)</h1>
-<p class="text-lg text-purple-200/80 mb-10">Gültig ab 9. Juli 2026</p>
+<p class="text-lg text-purple-200/80 mb-10">Gültig ab 19. Oktober 2026</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <div class="p-6 rounded-2xl bg-red-900/20 border border-red-500/20 flex gap-4 items-start">
@@ -59,13 +59,13 @@
       <li><strong>Nutzer:</strong> jede Person, die den Dienst mit oder ohne Konto nutzt.</li>
       <li><strong>Konto:</strong> persönlicher Bereich innerhalb von Noctalia.</li>
       <li><strong>Nutzerinhalte:</strong> Träume, Notizen, Transkripte, KI-Analysen, generierte Bilder, Titel, Tags und Favoriten.</li>
-      <li><strong>Noctalia-Plus-Abonnement:</strong> kostenpflichtiges Angebot mit zusätzlichen Funktionen, derzeit über Google Play abgerechnet.</li>
+      <li><strong>Noctalia-Plus-Abonnement:</strong> kostenpflichtiges Angebot mit zusätzlichen Funktionen, abgerechnet über den Apple App Store oder Google Play.</li>
     </ul>
   </section>
 
   <section>
     <h2 class="text-2xl font-serif text-white mb-4 mt-8">3. Zugriff und Konto</h2>
-    <p>Noctalia wird derzeit als Android-App über Google Play vertrieben. Die öffentlichen Webseiten bieten Produktinformationen und redaktionelle Inhalte; sie sind nicht die mobile App. Weitere Plattformen gelten erst nach einer ausdrücklichen Ankündigung von Noctalia als verfügbar. Verbindungs- und Gerätekosten trägst du selbst.</p>
+    <p>Noctalia wird als mobile App für das iPhone über den Apple App Store und für Android über Google Play vertrieben. Die öffentlichen Webseiten bieten Produktinformationen und redaktionelle Inhalte; sie sind nicht die mobile App. Weitere Plattformen gelten erst nach einer ausdrücklichen Ankündigung von Noctalia als verfügbar. Verbindungs- und Gerätekosten trägst du selbst.</p>
     <p class="mt-3">Du bist für Zugangsdaten und Kontonutzung verantwortlich. Bei Verdacht auf unbefugten Zugriff kontaktiere <a href="mailto:contact@noctalia.app" class="text-dream-salmon hover:underline">contact@noctalia.app</a>.</p>
   </section>
 
@@ -87,8 +87,9 @@
 
   <section>
     <h2 class="text-2xl font-serif text-white mb-4 mt-8">6. Abonnements und Zahlung</h2>
-    <p>Noctalia-Plus-Funktionen werden derzeit über Google Play abgerechnet und unterliegen dessen Preis-, Abrechnungs-, Kündigungs- und Erstattungsregeln.</p>
-    <p class="mt-3">Preis, Laufzeit, Verlängerung, Probezeit und mögliche Widerrufsrechte werden in der Android-App und im Google-Play-Kaufdialog angezeigt. Noctalia erhebt Store-Zahlungen nicht direkt. Kündigungen verwaltest du in den Google-Play-Abonnementeinstellungen.</p>
+    <p>Noctalia Plus wird über den Store abgerechnet, in dem du es abschließt: den Apple App Store auf dem iPhone, Google Play auf Android. Es gelten die Preis-, Abrechnungs-, Kündigungs- und Erstattungsregeln dieses Stores.</p>
+    <p class="mt-3">Preis, Laufzeit, Verlängerung, Probezeit und mögliche Widerrufsrechte werden in der App und im Kaufdialog des Stores angezeigt. Noctalia erhebt Store-Zahlungen nicht direkt. Kündigungen verwaltest du jederzeit in den Einstellungen deines App-Store-Accounts (iPhone) oder in den Google-Play-Abonnementeinstellungen (Android).</p>
+    <p class="mt-3">Hast du Noctalia aus dem App Store geladen, gilt für die Nutzung der App zusätzlich Apples <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" class="text-dream-salmon hover:underline">Standard-Endbenutzer-Lizenzvertrag</a> (EULA).</p>
   </section>
 
   <section>
