@@ -320,7 +320,10 @@
     "markdown-it": "14.3.0",
     "tmp": "0.2.7",
     "react-native": "$react-native",
-    "react-native-worklets": "$react-native-worklets"
+    "react-native-worklets": "$react-native-worklets",
+    "@vercel/container@13.0.0": {
+      "tar": "7.5.22"
+    }
   },
   "reanimated": {
     "staticFeatureFlags": {

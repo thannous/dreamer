@@ -11,8 +11,9 @@ checked against their preserved synchronization results.
 
 The verified cleanup is commit `f1b5b3020`; verification/tooling and policy are
 commit `15b014ef5`. This document and the reorganized guides are the following
-documentation commit. No production, Store, EAS or personal-device operation is
-part of this work. Validation of the final committed head is recorded separately
+documentation commit. A subsequent, separate security correction updates two
+development-only transitive packages after the push surfaced dependency alerts.
+No production, Store, EAS or personal-device operation is part of this work. Validation of the final committed head is recorded separately
 by the existing verification engine; older audit runs are not relabelled as
 fresh runs of that commit.
 
@@ -94,3 +95,51 @@ never reported as passed.
 An automatic approval review rejected a broad staging selection because it could
 mix personal WIP. No rejected command executed. Explicit audited paths and a
 fresh 13-file preservation check resolved that risk before commits were made.
+
+
+## Dependency security follow-up
+
+Fresh read-only `npm audit --json --package-lock-only` checks on all three current
+lockfiles found two critical package alerts in the root development toolchain.
+The installed parent chains and official maintainer advisories were checked:
+
+- `proxy-addr` **2.0.7 → 2.0.8**, through Expo MCP, the MCP SDK and Express.
+  The patch fits Express's existing range. A harmless reproduction confirmed
+  that a malformed IPv4-mapped IPv6 trust subnet accepted an untrusted address
+  before the fix; the patched version refuses it and still accepts a valid
+  trusted subnet. [Maintainer advisory](https://github.com/jshttp/proxy-addr/security/advisories/GHSA-jqcg-44mw-7w3h).
+- `tar` **7.5.11 → 7.5.22**, through Vercel's Container and node-pre-gyp.
+  Container pins the affected version, including its current upstream release,
+  so the override targets only `@vercel/container@13.0.0`. The already-patched
+  Fun copy and its redundant `yallist` entry deduplicate. The patch keeps the
+  Node >=18 contract and the same dependency ranges.
+  [Critical advisory](https://github.com/isaacs/node-tar/security/advisories/GHSA-23hp-3jrh-7fpw),
+  [later fixed advisory](https://github.com/isaacs/node-tar/security/advisories/GHSA-r292-9mhp-454m).
+
+Only these four development lock records change; all production records,
+direct dependency versions, Expo/RN versions and publication guards remain.
+A clean `npm ci` passes with the existing versioned patches. `npm ls` and parent
+resolution checks confirm that all consumers use the patched versions, and
+installed metadata matches lock versions, integrity and resolution. A real tar
+create/extract round trip, the proxy counterexample and Vercel 62.2.0's version
+command pass. Independent review has no findings. Unrelated optional bundled
+WASM lock metadata retains its original representation.
+
+Post-fix audit counts are package-level findings, including propagated alerts;
+they are not counts of independently exploitable application vulnerabilities:
+
+| Lockfile | Critical | High | Moderate | Low | Total |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Root | 0 | 129 | 23 | 1 | 153 |
+| Meditation | 0 | 39 | 11 | 0 | 50 |
+| TesterArmy | 0 | 0 | 0 | 0 | 0 |
+
+Root and Meditation audits still exit 1. Their remaining alerts require targeted
+follow-up; this work does not claim complete security qualification. npm's
+suggested Expo 58 → 44 downgrade is incompatible with the current SDK/RN
+contract. Some chains also have no published fixed package, such as the current
+`node-forge` alert. No `audit fix --force`, blanket script approval or alert
+suppression was used. Raw audit reports, the four-record lock delta and smoke
+receipt remain under ignored `test-results/repository-hygiene-20261019/`.
+Final committed-head verification is recorded by the existing engine before the
+updated branch is pushed.
