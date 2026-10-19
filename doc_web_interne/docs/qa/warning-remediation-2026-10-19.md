@@ -42,6 +42,26 @@ chat/category continuity and search remain qualified through affected TesterArmy
 journeys. The new category journey uses only supported UI links and never claims
 that an immediate negative assertion observes a future 500ms interval.
 
+## Updated E2E expectations
+
+The first integrated Dreamer selection passed three journeys and failed four.
+Three billing setups expected `5 / 3`; `QuotaStatusCard` already capped visible
+usage before this work (`1f508d7f8`, introduced by `b43a6dfcf` for the explicit
+iPhone requirement recorded in `qa/iphone-dogfood-fixes-20261018.md`). Eight stale
+expectations now require `3 / 3`. Raw usage remains five, zero remaining rights
+is asserted, and Free blocking, Plus unlimited access, cancel/error/retry,
+restore and account isolation remain exercised. No quota code was changed to
+satisfy an old display expectation.
+
+The new category journey also needed to scroll through the illustrated cover
+before the contextual action dock mounts. Its failure screenshot and trace
+show the cover, and the existing detail implementation gates that dock on
+reading visibility. The test now exposes the transcript through the real UI
+before opening categories; all exact sent-question, reply and resume assertions
+remain. Network errors in those failed reports were the analytics scripts
+intentionally blocked by the existing harness, also present in passing journeys;
+no new application-error exclusion was added.
+
 ## Lint and test configuration
 
 ESLint falls from **101 warnings to 22**, with zero new warnings or errors.
@@ -143,8 +163,8 @@ mise exec -- npm run lint
 mise exec -- npm run typecheck:app
 mise exec -- npm run typecheck:tests
 mise exec -- npm run test:file -- hooks/__tests__/useQuota.test.tsx hooks/__tests__/useSubscriptionExpiryTimer.test.tsx hooks/__tests__/useChatCategoryPrompt.test.tsx hooks/useSubscriptionCustomerInfoListener.test.tsx components/chat/__tests__/MessagesListStreaming.test.tsx tests/app-routes/paywallScreen.test.tsx --watchman=false
-mise exec -- npm run test:testerarmy -- --grep "plus opens a symbols question once"
-E2E_WEB_LOCALE=fr-FR mise exec -- npm run test:testerarmy -- --grep "search matches accents and excerpts"
+mise exec -- npm run test:testerarmy -- run --grep "plus opens a symbols question once"
+E2E_WEB_LOCALE=fr-FR mise exec -- npm run test:testerarmy -- run --grep "search matches accents and excerpts"
 mise exec -- npm run verify:pr
 mise exec -- node scripts/verify-local.mjs proof-block
 ```
@@ -153,7 +173,9 @@ The standalone historical `supabase/functions/api/evaluation/ti559/evaluate-mode
 check still fails TS2367 on its unchanged prompt-version pin
 `analysis-2026-09-09.1` versus current `analysis-2026-10-18.poetic6`. That guard is
 preserved rather than widened or updated to silence drift. The standalone
-account/chat-latency checks and account tests pass; canonical Edge verification
-remains required and separately recorded. No provider evaluation was executed.
+account/chat-latency checks and account tests pass. Canonical Edge verification
+passes (261 tests) as part of the 17-check committed-head engine run on
+`93b98b0c6`; the historical evaluation is outside that current Edge contract.
+No provider evaluation was executed.
 No new native binary, device, Store, live-backend or production qualification is
 claimed by the browser/mock and isolated evidence in this work package.

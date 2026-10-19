@@ -291,8 +291,8 @@ for (const profile of ['existing', 'plus'] as const) {
     await isolateWeb(browser, app);
     await selectProfile(app, screen, browser, profile);
     await openSettings(screen);
-    // The populated historical fixture contains exactly five completed analyses.
-    await expect(screen.getByTestId('quota.analysisValue', { visible: true })).toHaveText(profile === 'plus' ? 'Unlimited' : '5 / 3');
+    // The fixture keeps five completed analyses; displayed free usage caps at its allowance.
+    await expect(screen.getByTestId('quota.analysisValue', { visible: true })).toHaveText(profile === 'plus' ? 'Unlimited' : '3 / 3');
     const upgrade = screen.getByRole('button', 'Upgrade to Noctalia Plus', { visible: true });
     if (profile === 'existing') {
       await upgrade.tap();

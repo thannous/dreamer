@@ -38,8 +38,14 @@ async function openLibrary(screen: Screen) {
   const library = screen.getByTestId(/^dream\.item\./, { visible: true }).filter({ hasText: 'The Infinite Library' });
   await expect(library).toHaveCount(1);
   await library.tap();
+  // Illustrated dreams open on their full-screen cover. Scrolling to the
+  // story mounts the contextual action dock; the dock cannot reveal itself.
+  const transcript = screen.getByTestId('component.transcriptCard');
+  await expect(transcript).toBeAttached();
+  await transcript.scrollIntoView();
+  await expect(transcript).toBeVisible();
   const action = screen.getByTestId('component.dreamDetail.actionCard', { visible: true });
-  await action.scrollIntoView();
+  await expect(action).toBeEnabled();
   await action.tap();
   await expect(screen.getByTestId('screen.dreamCategories', { visible: true })).toBeVisible();
 }
