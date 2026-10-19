@@ -10509,6 +10509,3246 @@
         "path": "doc_web_interne/docs/qa/symbol-atlas-production-2026-10-19.json",
         "sha256": "9c79d9b8f795c9c13e460f15310bcd99df759214276c26f069f2e01f018c8e1b"
       }
+    },
+    {
+      "id": "cat",
+      "lang": "en",
+      "stage": "qa",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "77f522769c1bce505b7800c1a80568bcce90949ebc672cd2239c1dc262ebbca5",
+        "atlas": "1a281159853bd3203fab89ab5fc705b47ded6069fe407b0386c1aed58ebdb45d",
+        "assets": "4645522ae375bf8e2009ca8a50167df205e93d09ee339d666f14818c225ae67d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "cat",
+      "lang": "en",
+      "stage": "qa",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "77f522769c1bce505b7800c1a80568bcce90949ebc672cd2239c1dc262ebbca5",
+        "atlas": "1a281159853bd3203fab89ab5fc705b47ded6069fe407b0386c1aed58ebdb45d",
+        "assets": "4645522ae375bf8e2009ca8a50167df205e93d09ee339d666f14818c225ae67d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "cat",
+      "lang": "en",
+      "stage": "approval",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "77f522769c1bce505b7800c1a80568bcce90949ebc672cd2239c1dc262ebbca5",
+        "atlas": "1a281159853bd3203fab89ab5fc705b47ded6069fe407b0386c1aed58ebdb45d",
+        "assets": "4645522ae375bf8e2009ca8a50167df205e93d09ee339d666f14818c225ae67d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "cat",
+      "lang": "en",
+      "stage": "approval",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "77f522769c1bce505b7800c1a80568bcce90949ebc672cd2239c1dc262ebbca5",
+        "atlas": "1a281159853bd3203fab89ab5fc705b47ded6069fe407b0386c1aed58ebdb45d",
+        "assets": "4645522ae375bf8e2009ca8a50167df205e93d09ee339d666f14818c225ae67d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "cat",
+      "lang": "en",
+      "stage": "publication",
+      "surface": "all",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "77f522769c1bce505b7800c1a80568bcce90949ebc672cd2239c1dc262ebbca5",
+        "atlas": "1a281159853bd3203fab89ab5fc705b47ded6069fe407b0386c1aed58ebdb45d",
+        "assets": "4645522ae375bf8e2009ca8a50167df205e93d09ee339d666f14818c225ae67d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "cat",
+      "lang": "fr",
+      "stage": "qa",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "446f8b3f5f3f561978709a7ca1194a24d6b0e05e8f5940882592e8d2cf92bca0",
+        "atlas": "4b07360eaa99e9966e2b781dedb0b082baf64a16719053594f1332b21dbfd9ee",
+        "assets": "4645522ae375bf8e2009ca8a50167df205e93d09ee339d666f14818c225ae67d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "cat",
+      "lang": "fr",
+      "stage": "qa",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "446f8b3f5f3f561978709a7ca1194a24d6b0e05e8f5940882592e8d2cf92bca0",
+        "atlas": "4b07360eaa99e9966e2b781dedb0b082baf64a16719053594f1332b21dbfd9ee",
+        "assets": "4645522ae375bf8e2009ca8a50167df205e93d09ee339d666f14818c225ae67d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "cat",
+      "lang": "fr",
+      "stage": "approval",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "446f8b3f5f3f561978709a7ca1194a24d6b0e05e8f5940882592e8d2cf92bca0",
+        "atlas": "4b07360eaa99e9966e2b781dedb0b082baf64a16719053594f1332b21dbfd9ee",
+        "assets": "4645522ae375bf8e2009ca8a50167df205e93d09ee339d666f14818c225ae67d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "cat",
+      "lang": "fr",
+      "stage": "approval",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "446f8b3f5f3f561978709a7ca1194a24d6b0e05e8f5940882592e8d2cf92bca0",
+        "atlas": "4b07360eaa99e9966e2b781dedb0b082baf64a16719053594f1332b21dbfd9ee",
+        "assets": "4645522ae375bf8e2009ca8a50167df205e93d09ee339d666f14818c225ae67d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "cat",
+      "lang": "fr",
+      "stage": "publication",
+      "surface": "all",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "446f8b3f5f3f561978709a7ca1194a24d6b0e05e8f5940882592e8d2cf92bca0",
+        "atlas": "4b07360eaa99e9966e2b781dedb0b082baf64a16719053594f1332b21dbfd9ee",
+        "assets": "4645522ae375bf8e2009ca8a50167df205e93d09ee339d666f14818c225ae67d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "cat",
+      "lang": "es",
+      "stage": "qa",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "ba6d7c2d2e2d8a19ed8f847fd99e9d91f5886d38aecdfc3417e10e36ae9fee7d",
+        "atlas": "92ddc7b64bbe0e5579f27ab7429642987ff95e2157a06886b39bfe609d8c2d68",
+        "assets": "4645522ae375bf8e2009ca8a50167df205e93d09ee339d666f14818c225ae67d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "cat",
+      "lang": "es",
+      "stage": "qa",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "ba6d7c2d2e2d8a19ed8f847fd99e9d91f5886d38aecdfc3417e10e36ae9fee7d",
+        "atlas": "92ddc7b64bbe0e5579f27ab7429642987ff95e2157a06886b39bfe609d8c2d68",
+        "assets": "4645522ae375bf8e2009ca8a50167df205e93d09ee339d666f14818c225ae67d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "cat",
+      "lang": "es",
+      "stage": "approval",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "ba6d7c2d2e2d8a19ed8f847fd99e9d91f5886d38aecdfc3417e10e36ae9fee7d",
+        "atlas": "92ddc7b64bbe0e5579f27ab7429642987ff95e2157a06886b39bfe609d8c2d68",
+        "assets": "4645522ae375bf8e2009ca8a50167df205e93d09ee339d666f14818c225ae67d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "cat",
+      "lang": "es",
+      "stage": "approval",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "ba6d7c2d2e2d8a19ed8f847fd99e9d91f5886d38aecdfc3417e10e36ae9fee7d",
+        "atlas": "92ddc7b64bbe0e5579f27ab7429642987ff95e2157a06886b39bfe609d8c2d68",
+        "assets": "4645522ae375bf8e2009ca8a50167df205e93d09ee339d666f14818c225ae67d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "cat",
+      "lang": "es",
+      "stage": "publication",
+      "surface": "all",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "ba6d7c2d2e2d8a19ed8f847fd99e9d91f5886d38aecdfc3417e10e36ae9fee7d",
+        "atlas": "92ddc7b64bbe0e5579f27ab7429642987ff95e2157a06886b39bfe609d8c2d68",
+        "assets": "4645522ae375bf8e2009ca8a50167df205e93d09ee339d666f14818c225ae67d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "cat",
+      "lang": "de",
+      "stage": "qa",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "f1d4ab483e05027a78a3d3d4a680484d521c7bf7d30c31c1367542bdf92abb3e",
+        "atlas": "0614745d8d2e1b80c6cefef7534863129684d79aa9142ad33cbd90cf0029f143",
+        "assets": "4645522ae375bf8e2009ca8a50167df205e93d09ee339d666f14818c225ae67d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "cat",
+      "lang": "de",
+      "stage": "qa",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "f1d4ab483e05027a78a3d3d4a680484d521c7bf7d30c31c1367542bdf92abb3e",
+        "atlas": "0614745d8d2e1b80c6cefef7534863129684d79aa9142ad33cbd90cf0029f143",
+        "assets": "4645522ae375bf8e2009ca8a50167df205e93d09ee339d666f14818c225ae67d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "cat",
+      "lang": "de",
+      "stage": "approval",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "f1d4ab483e05027a78a3d3d4a680484d521c7bf7d30c31c1367542bdf92abb3e",
+        "atlas": "0614745d8d2e1b80c6cefef7534863129684d79aa9142ad33cbd90cf0029f143",
+        "assets": "4645522ae375bf8e2009ca8a50167df205e93d09ee339d666f14818c225ae67d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "cat",
+      "lang": "de",
+      "stage": "approval",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "f1d4ab483e05027a78a3d3d4a680484d521c7bf7d30c31c1367542bdf92abb3e",
+        "atlas": "0614745d8d2e1b80c6cefef7534863129684d79aa9142ad33cbd90cf0029f143",
+        "assets": "4645522ae375bf8e2009ca8a50167df205e93d09ee339d666f14818c225ae67d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "cat",
+      "lang": "de",
+      "stage": "publication",
+      "surface": "all",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "f1d4ab483e05027a78a3d3d4a680484d521c7bf7d30c31c1367542bdf92abb3e",
+        "atlas": "0614745d8d2e1b80c6cefef7534863129684d79aa9142ad33cbd90cf0029f143",
+        "assets": "4645522ae375bf8e2009ca8a50167df205e93d09ee339d666f14818c225ae67d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "cat",
+      "lang": "it",
+      "stage": "qa",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "1a2c096adbff8a1060071d22fb24e24df58a5116bfae6c42482752452d30ecac",
+        "atlas": "f1fe74254355f7818700bb34cc35069caff758cb0841626fb2ce145a1eee64df",
+        "assets": "4645522ae375bf8e2009ca8a50167df205e93d09ee339d666f14818c225ae67d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "cat",
+      "lang": "it",
+      "stage": "qa",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "1a2c096adbff8a1060071d22fb24e24df58a5116bfae6c42482752452d30ecac",
+        "atlas": "f1fe74254355f7818700bb34cc35069caff758cb0841626fb2ce145a1eee64df",
+        "assets": "4645522ae375bf8e2009ca8a50167df205e93d09ee339d666f14818c225ae67d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "cat",
+      "lang": "it",
+      "stage": "approval",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "1a2c096adbff8a1060071d22fb24e24df58a5116bfae6c42482752452d30ecac",
+        "atlas": "f1fe74254355f7818700bb34cc35069caff758cb0841626fb2ce145a1eee64df",
+        "assets": "4645522ae375bf8e2009ca8a50167df205e93d09ee339d666f14818c225ae67d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "cat",
+      "lang": "it",
+      "stage": "approval",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "1a2c096adbff8a1060071d22fb24e24df58a5116bfae6c42482752452d30ecac",
+        "atlas": "f1fe74254355f7818700bb34cc35069caff758cb0841626fb2ce145a1eee64df",
+        "assets": "4645522ae375bf8e2009ca8a50167df205e93d09ee339d666f14818c225ae67d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "cat",
+      "lang": "it",
+      "stage": "publication",
+      "surface": "all",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "1a2c096adbff8a1060071d22fb24e24df58a5116bfae6c42482752452d30ecac",
+        "atlas": "f1fe74254355f7818700bb34cc35069caff758cb0841626fb2ce145a1eee64df",
+        "assets": "4645522ae375bf8e2009ca8a50167df205e93d09ee339d666f14818c225ae67d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "cat",
+      "lang": "pt-br",
+      "stage": "qa",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "8e6c9e24bae9aac3cd2140605ac35da9463643a1717d3a25c9d1b1838d84a1d9",
+        "atlas": "addbfda1efbb65d9c2ca974f92ebe5400b542fbef1a0260cd80522645e837d61",
+        "assets": "4645522ae375bf8e2009ca8a50167df205e93d09ee339d666f14818c225ae67d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "cat",
+      "lang": "pt-br",
+      "stage": "qa",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "8e6c9e24bae9aac3cd2140605ac35da9463643a1717d3a25c9d1b1838d84a1d9",
+        "atlas": "addbfda1efbb65d9c2ca974f92ebe5400b542fbef1a0260cd80522645e837d61",
+        "assets": "4645522ae375bf8e2009ca8a50167df205e93d09ee339d666f14818c225ae67d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "cat",
+      "lang": "pt-br",
+      "stage": "approval",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "8e6c9e24bae9aac3cd2140605ac35da9463643a1717d3a25c9d1b1838d84a1d9",
+        "atlas": "addbfda1efbb65d9c2ca974f92ebe5400b542fbef1a0260cd80522645e837d61",
+        "assets": "4645522ae375bf8e2009ca8a50167df205e93d09ee339d666f14818c225ae67d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "cat",
+      "lang": "pt-br",
+      "stage": "approval",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "8e6c9e24bae9aac3cd2140605ac35da9463643a1717d3a25c9d1b1838d84a1d9",
+        "atlas": "addbfda1efbb65d9c2ca974f92ebe5400b542fbef1a0260cd80522645e837d61",
+        "assets": "4645522ae375bf8e2009ca8a50167df205e93d09ee339d666f14818c225ae67d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "cat",
+      "lang": "pt-br",
+      "stage": "publication",
+      "surface": "all",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "8e6c9e24bae9aac3cd2140605ac35da9463643a1717d3a25c9d1b1838d84a1d9",
+        "atlas": "addbfda1efbb65d9c2ca974f92ebe5400b542fbef1a0260cd80522645e837d61",
+        "assets": "4645522ae375bf8e2009ca8a50167df205e93d09ee339d666f14818c225ae67d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mountain",
+      "lang": "en",
+      "stage": "qa",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "7fc465d29f476de248dfb74bf283035002e22d9aa28f8b3f0a1da2ab2b3e0c98",
+        "atlas": "4aea5ad6653685beccbf4baafdc6bea84d67005c954cf48bf85819b37693537d",
+        "assets": "7cc5a6b1ec531b331c9b5fe5076d40b9213c234facb4bbf2840b1c105b4f96db",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mountain",
+      "lang": "en",
+      "stage": "qa",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "7fc465d29f476de248dfb74bf283035002e22d9aa28f8b3f0a1da2ab2b3e0c98",
+        "atlas": "4aea5ad6653685beccbf4baafdc6bea84d67005c954cf48bf85819b37693537d",
+        "assets": "7cc5a6b1ec531b331c9b5fe5076d40b9213c234facb4bbf2840b1c105b4f96db",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mountain",
+      "lang": "en",
+      "stage": "approval",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "7fc465d29f476de248dfb74bf283035002e22d9aa28f8b3f0a1da2ab2b3e0c98",
+        "atlas": "4aea5ad6653685beccbf4baafdc6bea84d67005c954cf48bf85819b37693537d",
+        "assets": "7cc5a6b1ec531b331c9b5fe5076d40b9213c234facb4bbf2840b1c105b4f96db",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mountain",
+      "lang": "en",
+      "stage": "approval",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "7fc465d29f476de248dfb74bf283035002e22d9aa28f8b3f0a1da2ab2b3e0c98",
+        "atlas": "4aea5ad6653685beccbf4baafdc6bea84d67005c954cf48bf85819b37693537d",
+        "assets": "7cc5a6b1ec531b331c9b5fe5076d40b9213c234facb4bbf2840b1c105b4f96db",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mountain",
+      "lang": "en",
+      "stage": "publication",
+      "surface": "all",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "7fc465d29f476de248dfb74bf283035002e22d9aa28f8b3f0a1da2ab2b3e0c98",
+        "atlas": "4aea5ad6653685beccbf4baafdc6bea84d67005c954cf48bf85819b37693537d",
+        "assets": "7cc5a6b1ec531b331c9b5fe5076d40b9213c234facb4bbf2840b1c105b4f96db",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mountain",
+      "lang": "fr",
+      "stage": "qa",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "2ea5e915906a4f82287d268a47c998f2a0de8c48304f8b876cd389896ab8f59a",
+        "atlas": "21bc82a96e04dc848d454dc1cdb339769c06a8ba3f8636aef826e87ed6780af9",
+        "assets": "7cc5a6b1ec531b331c9b5fe5076d40b9213c234facb4bbf2840b1c105b4f96db",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mountain",
+      "lang": "fr",
+      "stage": "qa",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "2ea5e915906a4f82287d268a47c998f2a0de8c48304f8b876cd389896ab8f59a",
+        "atlas": "21bc82a96e04dc848d454dc1cdb339769c06a8ba3f8636aef826e87ed6780af9",
+        "assets": "7cc5a6b1ec531b331c9b5fe5076d40b9213c234facb4bbf2840b1c105b4f96db",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mountain",
+      "lang": "fr",
+      "stage": "approval",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "2ea5e915906a4f82287d268a47c998f2a0de8c48304f8b876cd389896ab8f59a",
+        "atlas": "21bc82a96e04dc848d454dc1cdb339769c06a8ba3f8636aef826e87ed6780af9",
+        "assets": "7cc5a6b1ec531b331c9b5fe5076d40b9213c234facb4bbf2840b1c105b4f96db",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mountain",
+      "lang": "fr",
+      "stage": "approval",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "2ea5e915906a4f82287d268a47c998f2a0de8c48304f8b876cd389896ab8f59a",
+        "atlas": "21bc82a96e04dc848d454dc1cdb339769c06a8ba3f8636aef826e87ed6780af9",
+        "assets": "7cc5a6b1ec531b331c9b5fe5076d40b9213c234facb4bbf2840b1c105b4f96db",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mountain",
+      "lang": "fr",
+      "stage": "publication",
+      "surface": "all",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "2ea5e915906a4f82287d268a47c998f2a0de8c48304f8b876cd389896ab8f59a",
+        "atlas": "21bc82a96e04dc848d454dc1cdb339769c06a8ba3f8636aef826e87ed6780af9",
+        "assets": "7cc5a6b1ec531b331c9b5fe5076d40b9213c234facb4bbf2840b1c105b4f96db",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mountain",
+      "lang": "es",
+      "stage": "qa",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "c7af2ee2b4f70059146dd323a550eb8feaa0b03bba6663ca625cbce4b0653f73",
+        "atlas": "d6542c080b7d4db5b1e235e2e24a8f9afae8e32612ce00fecf2022366a5517ad",
+        "assets": "7cc5a6b1ec531b331c9b5fe5076d40b9213c234facb4bbf2840b1c105b4f96db",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mountain",
+      "lang": "es",
+      "stage": "qa",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "c7af2ee2b4f70059146dd323a550eb8feaa0b03bba6663ca625cbce4b0653f73",
+        "atlas": "d6542c080b7d4db5b1e235e2e24a8f9afae8e32612ce00fecf2022366a5517ad",
+        "assets": "7cc5a6b1ec531b331c9b5fe5076d40b9213c234facb4bbf2840b1c105b4f96db",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mountain",
+      "lang": "es",
+      "stage": "approval",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "c7af2ee2b4f70059146dd323a550eb8feaa0b03bba6663ca625cbce4b0653f73",
+        "atlas": "d6542c080b7d4db5b1e235e2e24a8f9afae8e32612ce00fecf2022366a5517ad",
+        "assets": "7cc5a6b1ec531b331c9b5fe5076d40b9213c234facb4bbf2840b1c105b4f96db",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mountain",
+      "lang": "es",
+      "stage": "approval",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "c7af2ee2b4f70059146dd323a550eb8feaa0b03bba6663ca625cbce4b0653f73",
+        "atlas": "d6542c080b7d4db5b1e235e2e24a8f9afae8e32612ce00fecf2022366a5517ad",
+        "assets": "7cc5a6b1ec531b331c9b5fe5076d40b9213c234facb4bbf2840b1c105b4f96db",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mountain",
+      "lang": "es",
+      "stage": "publication",
+      "surface": "all",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "c7af2ee2b4f70059146dd323a550eb8feaa0b03bba6663ca625cbce4b0653f73",
+        "atlas": "d6542c080b7d4db5b1e235e2e24a8f9afae8e32612ce00fecf2022366a5517ad",
+        "assets": "7cc5a6b1ec531b331c9b5fe5076d40b9213c234facb4bbf2840b1c105b4f96db",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mountain",
+      "lang": "de",
+      "stage": "qa",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "bbefccd834a0ec45ac23c76ce28318c31be7faa9fb4bbf8f1b37618ddd22730a",
+        "atlas": "2e2497851dd01cfbaf6980c49662705cb7fc21a4239b3a16ed83cde5165366ac",
+        "assets": "7cc5a6b1ec531b331c9b5fe5076d40b9213c234facb4bbf2840b1c105b4f96db",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mountain",
+      "lang": "de",
+      "stage": "qa",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "bbefccd834a0ec45ac23c76ce28318c31be7faa9fb4bbf8f1b37618ddd22730a",
+        "atlas": "2e2497851dd01cfbaf6980c49662705cb7fc21a4239b3a16ed83cde5165366ac",
+        "assets": "7cc5a6b1ec531b331c9b5fe5076d40b9213c234facb4bbf2840b1c105b4f96db",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mountain",
+      "lang": "de",
+      "stage": "approval",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "bbefccd834a0ec45ac23c76ce28318c31be7faa9fb4bbf8f1b37618ddd22730a",
+        "atlas": "2e2497851dd01cfbaf6980c49662705cb7fc21a4239b3a16ed83cde5165366ac",
+        "assets": "7cc5a6b1ec531b331c9b5fe5076d40b9213c234facb4bbf2840b1c105b4f96db",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mountain",
+      "lang": "de",
+      "stage": "approval",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "bbefccd834a0ec45ac23c76ce28318c31be7faa9fb4bbf8f1b37618ddd22730a",
+        "atlas": "2e2497851dd01cfbaf6980c49662705cb7fc21a4239b3a16ed83cde5165366ac",
+        "assets": "7cc5a6b1ec531b331c9b5fe5076d40b9213c234facb4bbf2840b1c105b4f96db",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mountain",
+      "lang": "de",
+      "stage": "publication",
+      "surface": "all",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "bbefccd834a0ec45ac23c76ce28318c31be7faa9fb4bbf8f1b37618ddd22730a",
+        "atlas": "2e2497851dd01cfbaf6980c49662705cb7fc21a4239b3a16ed83cde5165366ac",
+        "assets": "7cc5a6b1ec531b331c9b5fe5076d40b9213c234facb4bbf2840b1c105b4f96db",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mountain",
+      "lang": "it",
+      "stage": "qa",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "0eede890018e7949c45b759c192bcc75ccb686d6067210ef1ab2f3a1721b1705",
+        "atlas": "e8e14e59b9d8bf9f6f673f4a29470ec6ed73ad79153a8cdf9c559949d3688c94",
+        "assets": "7cc5a6b1ec531b331c9b5fe5076d40b9213c234facb4bbf2840b1c105b4f96db",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mountain",
+      "lang": "it",
+      "stage": "qa",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "0eede890018e7949c45b759c192bcc75ccb686d6067210ef1ab2f3a1721b1705",
+        "atlas": "e8e14e59b9d8bf9f6f673f4a29470ec6ed73ad79153a8cdf9c559949d3688c94",
+        "assets": "7cc5a6b1ec531b331c9b5fe5076d40b9213c234facb4bbf2840b1c105b4f96db",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mountain",
+      "lang": "it",
+      "stage": "approval",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "0eede890018e7949c45b759c192bcc75ccb686d6067210ef1ab2f3a1721b1705",
+        "atlas": "e8e14e59b9d8bf9f6f673f4a29470ec6ed73ad79153a8cdf9c559949d3688c94",
+        "assets": "7cc5a6b1ec531b331c9b5fe5076d40b9213c234facb4bbf2840b1c105b4f96db",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mountain",
+      "lang": "it",
+      "stage": "approval",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "0eede890018e7949c45b759c192bcc75ccb686d6067210ef1ab2f3a1721b1705",
+        "atlas": "e8e14e59b9d8bf9f6f673f4a29470ec6ed73ad79153a8cdf9c559949d3688c94",
+        "assets": "7cc5a6b1ec531b331c9b5fe5076d40b9213c234facb4bbf2840b1c105b4f96db",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mountain",
+      "lang": "it",
+      "stage": "publication",
+      "surface": "all",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "0eede890018e7949c45b759c192bcc75ccb686d6067210ef1ab2f3a1721b1705",
+        "atlas": "e8e14e59b9d8bf9f6f673f4a29470ec6ed73ad79153a8cdf9c559949d3688c94",
+        "assets": "7cc5a6b1ec531b331c9b5fe5076d40b9213c234facb4bbf2840b1c105b4f96db",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mountain",
+      "lang": "pt-br",
+      "stage": "qa",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "a7bda37c8fee882d3df27a4330c8012a50694211bed155c4ae2237e538cbe632",
+        "atlas": "dc4f47aa15a60182a7ec69f7007790a4bfae8707c33f4c823e0faddd2db96690",
+        "assets": "7cc5a6b1ec531b331c9b5fe5076d40b9213c234facb4bbf2840b1c105b4f96db",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mountain",
+      "lang": "pt-br",
+      "stage": "qa",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "a7bda37c8fee882d3df27a4330c8012a50694211bed155c4ae2237e538cbe632",
+        "atlas": "dc4f47aa15a60182a7ec69f7007790a4bfae8707c33f4c823e0faddd2db96690",
+        "assets": "7cc5a6b1ec531b331c9b5fe5076d40b9213c234facb4bbf2840b1c105b4f96db",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mountain",
+      "lang": "pt-br",
+      "stage": "approval",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "a7bda37c8fee882d3df27a4330c8012a50694211bed155c4ae2237e538cbe632",
+        "atlas": "dc4f47aa15a60182a7ec69f7007790a4bfae8707c33f4c823e0faddd2db96690",
+        "assets": "7cc5a6b1ec531b331c9b5fe5076d40b9213c234facb4bbf2840b1c105b4f96db",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mountain",
+      "lang": "pt-br",
+      "stage": "approval",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "a7bda37c8fee882d3df27a4330c8012a50694211bed155c4ae2237e538cbe632",
+        "atlas": "dc4f47aa15a60182a7ec69f7007790a4bfae8707c33f4c823e0faddd2db96690",
+        "assets": "7cc5a6b1ec531b331c9b5fe5076d40b9213c234facb4bbf2840b1c105b4f96db",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mountain",
+      "lang": "pt-br",
+      "stage": "publication",
+      "surface": "all",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "a7bda37c8fee882d3df27a4330c8012a50694211bed155c4ae2237e538cbe632",
+        "atlas": "dc4f47aa15a60182a7ec69f7007790a4bfae8707c33f4c823e0faddd2db96690",
+        "assets": "7cc5a6b1ec531b331c9b5fe5076d40b9213c234facb4bbf2840b1c105b4f96db",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "key",
+      "lang": "en",
+      "stage": "qa",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "dae7980da16137105d8671aee611ac8a30215ea7ea2bcb4f4dba46b819f92dce",
+        "atlas": "8631de79598e705c97a74c12179f1f3aba1eaf6033994dc34cfdef33adb0c59a",
+        "assets": "f5b9adc86ea71d56f71773f9f00c10e945338b3f06f62aa268deb0ed6d9bf51d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "key",
+      "lang": "en",
+      "stage": "qa",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "dae7980da16137105d8671aee611ac8a30215ea7ea2bcb4f4dba46b819f92dce",
+        "atlas": "8631de79598e705c97a74c12179f1f3aba1eaf6033994dc34cfdef33adb0c59a",
+        "assets": "f5b9adc86ea71d56f71773f9f00c10e945338b3f06f62aa268deb0ed6d9bf51d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "key",
+      "lang": "en",
+      "stage": "approval",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "dae7980da16137105d8671aee611ac8a30215ea7ea2bcb4f4dba46b819f92dce",
+        "atlas": "8631de79598e705c97a74c12179f1f3aba1eaf6033994dc34cfdef33adb0c59a",
+        "assets": "f5b9adc86ea71d56f71773f9f00c10e945338b3f06f62aa268deb0ed6d9bf51d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "key",
+      "lang": "en",
+      "stage": "approval",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "dae7980da16137105d8671aee611ac8a30215ea7ea2bcb4f4dba46b819f92dce",
+        "atlas": "8631de79598e705c97a74c12179f1f3aba1eaf6033994dc34cfdef33adb0c59a",
+        "assets": "f5b9adc86ea71d56f71773f9f00c10e945338b3f06f62aa268deb0ed6d9bf51d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "key",
+      "lang": "en",
+      "stage": "publication",
+      "surface": "all",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "dae7980da16137105d8671aee611ac8a30215ea7ea2bcb4f4dba46b819f92dce",
+        "atlas": "8631de79598e705c97a74c12179f1f3aba1eaf6033994dc34cfdef33adb0c59a",
+        "assets": "f5b9adc86ea71d56f71773f9f00c10e945338b3f06f62aa268deb0ed6d9bf51d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "key",
+      "lang": "fr",
+      "stage": "qa",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "23f5bea34b9701b32f3e039ae471f2cf02207d7afd6b103f7307b7e17bc4209a",
+        "atlas": "3086451d6765fb4d8f36458b8ae27207db12a92e3ac4355e4c94df63aa70273f",
+        "assets": "f5b9adc86ea71d56f71773f9f00c10e945338b3f06f62aa268deb0ed6d9bf51d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "key",
+      "lang": "fr",
+      "stage": "qa",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "23f5bea34b9701b32f3e039ae471f2cf02207d7afd6b103f7307b7e17bc4209a",
+        "atlas": "3086451d6765fb4d8f36458b8ae27207db12a92e3ac4355e4c94df63aa70273f",
+        "assets": "f5b9adc86ea71d56f71773f9f00c10e945338b3f06f62aa268deb0ed6d9bf51d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "key",
+      "lang": "fr",
+      "stage": "approval",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "23f5bea34b9701b32f3e039ae471f2cf02207d7afd6b103f7307b7e17bc4209a",
+        "atlas": "3086451d6765fb4d8f36458b8ae27207db12a92e3ac4355e4c94df63aa70273f",
+        "assets": "f5b9adc86ea71d56f71773f9f00c10e945338b3f06f62aa268deb0ed6d9bf51d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "key",
+      "lang": "fr",
+      "stage": "approval",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "23f5bea34b9701b32f3e039ae471f2cf02207d7afd6b103f7307b7e17bc4209a",
+        "atlas": "3086451d6765fb4d8f36458b8ae27207db12a92e3ac4355e4c94df63aa70273f",
+        "assets": "f5b9adc86ea71d56f71773f9f00c10e945338b3f06f62aa268deb0ed6d9bf51d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "key",
+      "lang": "fr",
+      "stage": "publication",
+      "surface": "all",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "23f5bea34b9701b32f3e039ae471f2cf02207d7afd6b103f7307b7e17bc4209a",
+        "atlas": "3086451d6765fb4d8f36458b8ae27207db12a92e3ac4355e4c94df63aa70273f",
+        "assets": "f5b9adc86ea71d56f71773f9f00c10e945338b3f06f62aa268deb0ed6d9bf51d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "key",
+      "lang": "es",
+      "stage": "qa",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "b29b66251b0975befc666bd55c75245ee72d14451349556c225901de343ad9a7",
+        "atlas": "334edde9cb78261d7d45446ea7c80376897d269a882c327d97658b58d83f4067",
+        "assets": "f5b9adc86ea71d56f71773f9f00c10e945338b3f06f62aa268deb0ed6d9bf51d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "key",
+      "lang": "es",
+      "stage": "qa",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "b29b66251b0975befc666bd55c75245ee72d14451349556c225901de343ad9a7",
+        "atlas": "334edde9cb78261d7d45446ea7c80376897d269a882c327d97658b58d83f4067",
+        "assets": "f5b9adc86ea71d56f71773f9f00c10e945338b3f06f62aa268deb0ed6d9bf51d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "key",
+      "lang": "es",
+      "stage": "approval",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "b29b66251b0975befc666bd55c75245ee72d14451349556c225901de343ad9a7",
+        "atlas": "334edde9cb78261d7d45446ea7c80376897d269a882c327d97658b58d83f4067",
+        "assets": "f5b9adc86ea71d56f71773f9f00c10e945338b3f06f62aa268deb0ed6d9bf51d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "key",
+      "lang": "es",
+      "stage": "approval",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "b29b66251b0975befc666bd55c75245ee72d14451349556c225901de343ad9a7",
+        "atlas": "334edde9cb78261d7d45446ea7c80376897d269a882c327d97658b58d83f4067",
+        "assets": "f5b9adc86ea71d56f71773f9f00c10e945338b3f06f62aa268deb0ed6d9bf51d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "key",
+      "lang": "es",
+      "stage": "publication",
+      "surface": "all",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "b29b66251b0975befc666bd55c75245ee72d14451349556c225901de343ad9a7",
+        "atlas": "334edde9cb78261d7d45446ea7c80376897d269a882c327d97658b58d83f4067",
+        "assets": "f5b9adc86ea71d56f71773f9f00c10e945338b3f06f62aa268deb0ed6d9bf51d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "key",
+      "lang": "de",
+      "stage": "qa",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "e9edb7487774adf3cb43a3e5d34391326f953effc78135d69e00bf937712f066",
+        "atlas": "5e6e7deae0a478c1fbd648504cfdd12e3ae248b0d69239d2be91b393bb692ca0",
+        "assets": "f5b9adc86ea71d56f71773f9f00c10e945338b3f06f62aa268deb0ed6d9bf51d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "key",
+      "lang": "de",
+      "stage": "qa",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "e9edb7487774adf3cb43a3e5d34391326f953effc78135d69e00bf937712f066",
+        "atlas": "5e6e7deae0a478c1fbd648504cfdd12e3ae248b0d69239d2be91b393bb692ca0",
+        "assets": "f5b9adc86ea71d56f71773f9f00c10e945338b3f06f62aa268deb0ed6d9bf51d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "key",
+      "lang": "de",
+      "stage": "approval",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "e9edb7487774adf3cb43a3e5d34391326f953effc78135d69e00bf937712f066",
+        "atlas": "5e6e7deae0a478c1fbd648504cfdd12e3ae248b0d69239d2be91b393bb692ca0",
+        "assets": "f5b9adc86ea71d56f71773f9f00c10e945338b3f06f62aa268deb0ed6d9bf51d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "key",
+      "lang": "de",
+      "stage": "approval",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "e9edb7487774adf3cb43a3e5d34391326f953effc78135d69e00bf937712f066",
+        "atlas": "5e6e7deae0a478c1fbd648504cfdd12e3ae248b0d69239d2be91b393bb692ca0",
+        "assets": "f5b9adc86ea71d56f71773f9f00c10e945338b3f06f62aa268deb0ed6d9bf51d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "key",
+      "lang": "de",
+      "stage": "publication",
+      "surface": "all",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "e9edb7487774adf3cb43a3e5d34391326f953effc78135d69e00bf937712f066",
+        "atlas": "5e6e7deae0a478c1fbd648504cfdd12e3ae248b0d69239d2be91b393bb692ca0",
+        "assets": "f5b9adc86ea71d56f71773f9f00c10e945338b3f06f62aa268deb0ed6d9bf51d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "key",
+      "lang": "it",
+      "stage": "qa",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "cedc3b9c93644ded13770f0873c9899c2fe987026dcf92691ef607dd2239b1d3",
+        "atlas": "8ee6e7dee54439bc43c48e98845567dce1f8329d0d32d0dc3cdf117e90b1db12",
+        "assets": "f5b9adc86ea71d56f71773f9f00c10e945338b3f06f62aa268deb0ed6d9bf51d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "key",
+      "lang": "it",
+      "stage": "qa",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "cedc3b9c93644ded13770f0873c9899c2fe987026dcf92691ef607dd2239b1d3",
+        "atlas": "8ee6e7dee54439bc43c48e98845567dce1f8329d0d32d0dc3cdf117e90b1db12",
+        "assets": "f5b9adc86ea71d56f71773f9f00c10e945338b3f06f62aa268deb0ed6d9bf51d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "key",
+      "lang": "it",
+      "stage": "approval",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "cedc3b9c93644ded13770f0873c9899c2fe987026dcf92691ef607dd2239b1d3",
+        "atlas": "8ee6e7dee54439bc43c48e98845567dce1f8329d0d32d0dc3cdf117e90b1db12",
+        "assets": "f5b9adc86ea71d56f71773f9f00c10e945338b3f06f62aa268deb0ed6d9bf51d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "key",
+      "lang": "it",
+      "stage": "approval",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "cedc3b9c93644ded13770f0873c9899c2fe987026dcf92691ef607dd2239b1d3",
+        "atlas": "8ee6e7dee54439bc43c48e98845567dce1f8329d0d32d0dc3cdf117e90b1db12",
+        "assets": "f5b9adc86ea71d56f71773f9f00c10e945338b3f06f62aa268deb0ed6d9bf51d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "key",
+      "lang": "it",
+      "stage": "publication",
+      "surface": "all",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "cedc3b9c93644ded13770f0873c9899c2fe987026dcf92691ef607dd2239b1d3",
+        "atlas": "8ee6e7dee54439bc43c48e98845567dce1f8329d0d32d0dc3cdf117e90b1db12",
+        "assets": "f5b9adc86ea71d56f71773f9f00c10e945338b3f06f62aa268deb0ed6d9bf51d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "key",
+      "lang": "pt-br",
+      "stage": "qa",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "dc938b9d7fa4507a25e91292a6072e1a86e0ab440820294b4555edc983fa8061",
+        "atlas": "08f75b03c9a76c42fc3812a00a814e8dd32e97cd7329b8f2eb43d064d133d477",
+        "assets": "f5b9adc86ea71d56f71773f9f00c10e945338b3f06f62aa268deb0ed6d9bf51d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "key",
+      "lang": "pt-br",
+      "stage": "qa",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "dc938b9d7fa4507a25e91292a6072e1a86e0ab440820294b4555edc983fa8061",
+        "atlas": "08f75b03c9a76c42fc3812a00a814e8dd32e97cd7329b8f2eb43d064d133d477",
+        "assets": "f5b9adc86ea71d56f71773f9f00c10e945338b3f06f62aa268deb0ed6d9bf51d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "key",
+      "lang": "pt-br",
+      "stage": "approval",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "dc938b9d7fa4507a25e91292a6072e1a86e0ab440820294b4555edc983fa8061",
+        "atlas": "08f75b03c9a76c42fc3812a00a814e8dd32e97cd7329b8f2eb43d064d133d477",
+        "assets": "f5b9adc86ea71d56f71773f9f00c10e945338b3f06f62aa268deb0ed6d9bf51d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "key",
+      "lang": "pt-br",
+      "stage": "approval",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "dc938b9d7fa4507a25e91292a6072e1a86e0ab440820294b4555edc983fa8061",
+        "atlas": "08f75b03c9a76c42fc3812a00a814e8dd32e97cd7329b8f2eb43d064d133d477",
+        "assets": "f5b9adc86ea71d56f71773f9f00c10e945338b3f06f62aa268deb0ed6d9bf51d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "key",
+      "lang": "pt-br",
+      "stage": "publication",
+      "surface": "all",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "dc938b9d7fa4507a25e91292a6072e1a86e0ab440820294b4555edc983fa8061",
+        "atlas": "08f75b03c9a76c42fc3812a00a814e8dd32e97cd7329b8f2eb43d064d133d477",
+        "assets": "f5b9adc86ea71d56f71773f9f00c10e945338b3f06f62aa268deb0ed6d9bf51d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "rain",
+      "lang": "en",
+      "stage": "qa",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "4f42da87f4e193910b83543181bbfb391fbbe01c6e602828c56b51f436bdac2b",
+        "atlas": "540d4c21c9c03ee42580547322ad7212518afa85be419b63dfd03990e6e49a8d",
+        "assets": "dea1dde697add9e89c14947b14ad7a63915040201c9cd00f28a489e983dd84d1",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "rain",
+      "lang": "en",
+      "stage": "qa",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "4f42da87f4e193910b83543181bbfb391fbbe01c6e602828c56b51f436bdac2b",
+        "atlas": "540d4c21c9c03ee42580547322ad7212518afa85be419b63dfd03990e6e49a8d",
+        "assets": "dea1dde697add9e89c14947b14ad7a63915040201c9cd00f28a489e983dd84d1",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "rain",
+      "lang": "en",
+      "stage": "approval",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "4f42da87f4e193910b83543181bbfb391fbbe01c6e602828c56b51f436bdac2b",
+        "atlas": "540d4c21c9c03ee42580547322ad7212518afa85be419b63dfd03990e6e49a8d",
+        "assets": "dea1dde697add9e89c14947b14ad7a63915040201c9cd00f28a489e983dd84d1",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "rain",
+      "lang": "en",
+      "stage": "approval",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "4f42da87f4e193910b83543181bbfb391fbbe01c6e602828c56b51f436bdac2b",
+        "atlas": "540d4c21c9c03ee42580547322ad7212518afa85be419b63dfd03990e6e49a8d",
+        "assets": "dea1dde697add9e89c14947b14ad7a63915040201c9cd00f28a489e983dd84d1",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "rain",
+      "lang": "en",
+      "stage": "publication",
+      "surface": "all",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "4f42da87f4e193910b83543181bbfb391fbbe01c6e602828c56b51f436bdac2b",
+        "atlas": "540d4c21c9c03ee42580547322ad7212518afa85be419b63dfd03990e6e49a8d",
+        "assets": "dea1dde697add9e89c14947b14ad7a63915040201c9cd00f28a489e983dd84d1",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "rain",
+      "lang": "fr",
+      "stage": "qa",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "da6cac268ea7bfa0ecfd3e02a3881db39c5ce32fe2ddfe65dc8429bcb7bfb2e7",
+        "atlas": "a413f6969d7dfdf0aeb53355c462a52a7c77ee3a0e4605d7769c46987f7b5f44",
+        "assets": "dea1dde697add9e89c14947b14ad7a63915040201c9cd00f28a489e983dd84d1",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "rain",
+      "lang": "fr",
+      "stage": "qa",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "da6cac268ea7bfa0ecfd3e02a3881db39c5ce32fe2ddfe65dc8429bcb7bfb2e7",
+        "atlas": "a413f6969d7dfdf0aeb53355c462a52a7c77ee3a0e4605d7769c46987f7b5f44",
+        "assets": "dea1dde697add9e89c14947b14ad7a63915040201c9cd00f28a489e983dd84d1",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "rain",
+      "lang": "fr",
+      "stage": "approval",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "da6cac268ea7bfa0ecfd3e02a3881db39c5ce32fe2ddfe65dc8429bcb7bfb2e7",
+        "atlas": "a413f6969d7dfdf0aeb53355c462a52a7c77ee3a0e4605d7769c46987f7b5f44",
+        "assets": "dea1dde697add9e89c14947b14ad7a63915040201c9cd00f28a489e983dd84d1",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "rain",
+      "lang": "fr",
+      "stage": "approval",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "da6cac268ea7bfa0ecfd3e02a3881db39c5ce32fe2ddfe65dc8429bcb7bfb2e7",
+        "atlas": "a413f6969d7dfdf0aeb53355c462a52a7c77ee3a0e4605d7769c46987f7b5f44",
+        "assets": "dea1dde697add9e89c14947b14ad7a63915040201c9cd00f28a489e983dd84d1",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "rain",
+      "lang": "fr",
+      "stage": "publication",
+      "surface": "all",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "da6cac268ea7bfa0ecfd3e02a3881db39c5ce32fe2ddfe65dc8429bcb7bfb2e7",
+        "atlas": "a413f6969d7dfdf0aeb53355c462a52a7c77ee3a0e4605d7769c46987f7b5f44",
+        "assets": "dea1dde697add9e89c14947b14ad7a63915040201c9cd00f28a489e983dd84d1",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "rain",
+      "lang": "es",
+      "stage": "qa",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "4f4e9db0da03bb06047dd9bbadc09c26b77b3748de89926b7406145713927d50",
+        "atlas": "1076f4d58767f67524efe7a99600127a5bf566f4f54fce01dd612483fe8c6b52",
+        "assets": "dea1dde697add9e89c14947b14ad7a63915040201c9cd00f28a489e983dd84d1",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "rain",
+      "lang": "es",
+      "stage": "qa",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "4f4e9db0da03bb06047dd9bbadc09c26b77b3748de89926b7406145713927d50",
+        "atlas": "1076f4d58767f67524efe7a99600127a5bf566f4f54fce01dd612483fe8c6b52",
+        "assets": "dea1dde697add9e89c14947b14ad7a63915040201c9cd00f28a489e983dd84d1",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "rain",
+      "lang": "es",
+      "stage": "approval",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "4f4e9db0da03bb06047dd9bbadc09c26b77b3748de89926b7406145713927d50",
+        "atlas": "1076f4d58767f67524efe7a99600127a5bf566f4f54fce01dd612483fe8c6b52",
+        "assets": "dea1dde697add9e89c14947b14ad7a63915040201c9cd00f28a489e983dd84d1",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "rain",
+      "lang": "es",
+      "stage": "approval",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "4f4e9db0da03bb06047dd9bbadc09c26b77b3748de89926b7406145713927d50",
+        "atlas": "1076f4d58767f67524efe7a99600127a5bf566f4f54fce01dd612483fe8c6b52",
+        "assets": "dea1dde697add9e89c14947b14ad7a63915040201c9cd00f28a489e983dd84d1",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "rain",
+      "lang": "es",
+      "stage": "publication",
+      "surface": "all",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "4f4e9db0da03bb06047dd9bbadc09c26b77b3748de89926b7406145713927d50",
+        "atlas": "1076f4d58767f67524efe7a99600127a5bf566f4f54fce01dd612483fe8c6b52",
+        "assets": "dea1dde697add9e89c14947b14ad7a63915040201c9cd00f28a489e983dd84d1",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "rain",
+      "lang": "de",
+      "stage": "qa",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "2519e1ce4ef0eedddad913f2e25098ec74509b87f9ae20242ff80d5348a9c0db",
+        "atlas": "fd11dd5bc02cf365d5d5adce2da90bb02e28b43ca8dc07e8e34f5c99a08f0314",
+        "assets": "dea1dde697add9e89c14947b14ad7a63915040201c9cd00f28a489e983dd84d1",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "rain",
+      "lang": "de",
+      "stage": "qa",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "2519e1ce4ef0eedddad913f2e25098ec74509b87f9ae20242ff80d5348a9c0db",
+        "atlas": "fd11dd5bc02cf365d5d5adce2da90bb02e28b43ca8dc07e8e34f5c99a08f0314",
+        "assets": "dea1dde697add9e89c14947b14ad7a63915040201c9cd00f28a489e983dd84d1",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "rain",
+      "lang": "de",
+      "stage": "approval",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "2519e1ce4ef0eedddad913f2e25098ec74509b87f9ae20242ff80d5348a9c0db",
+        "atlas": "fd11dd5bc02cf365d5d5adce2da90bb02e28b43ca8dc07e8e34f5c99a08f0314",
+        "assets": "dea1dde697add9e89c14947b14ad7a63915040201c9cd00f28a489e983dd84d1",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "rain",
+      "lang": "de",
+      "stage": "approval",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "2519e1ce4ef0eedddad913f2e25098ec74509b87f9ae20242ff80d5348a9c0db",
+        "atlas": "fd11dd5bc02cf365d5d5adce2da90bb02e28b43ca8dc07e8e34f5c99a08f0314",
+        "assets": "dea1dde697add9e89c14947b14ad7a63915040201c9cd00f28a489e983dd84d1",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "rain",
+      "lang": "de",
+      "stage": "publication",
+      "surface": "all",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "2519e1ce4ef0eedddad913f2e25098ec74509b87f9ae20242ff80d5348a9c0db",
+        "atlas": "fd11dd5bc02cf365d5d5adce2da90bb02e28b43ca8dc07e8e34f5c99a08f0314",
+        "assets": "dea1dde697add9e89c14947b14ad7a63915040201c9cd00f28a489e983dd84d1",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "rain",
+      "lang": "it",
+      "stage": "qa",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "df26359be53a88c3e856dea1300b1f583cf3e77ede812429279e06e45c915160",
+        "atlas": "b7c943fa827880cecfad585ce7a45db348c4924672577cc34df87b190b91ea4d",
+        "assets": "dea1dde697add9e89c14947b14ad7a63915040201c9cd00f28a489e983dd84d1",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "rain",
+      "lang": "it",
+      "stage": "qa",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "df26359be53a88c3e856dea1300b1f583cf3e77ede812429279e06e45c915160",
+        "atlas": "b7c943fa827880cecfad585ce7a45db348c4924672577cc34df87b190b91ea4d",
+        "assets": "dea1dde697add9e89c14947b14ad7a63915040201c9cd00f28a489e983dd84d1",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "rain",
+      "lang": "it",
+      "stage": "approval",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "df26359be53a88c3e856dea1300b1f583cf3e77ede812429279e06e45c915160",
+        "atlas": "b7c943fa827880cecfad585ce7a45db348c4924672577cc34df87b190b91ea4d",
+        "assets": "dea1dde697add9e89c14947b14ad7a63915040201c9cd00f28a489e983dd84d1",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "rain",
+      "lang": "it",
+      "stage": "approval",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "df26359be53a88c3e856dea1300b1f583cf3e77ede812429279e06e45c915160",
+        "atlas": "b7c943fa827880cecfad585ce7a45db348c4924672577cc34df87b190b91ea4d",
+        "assets": "dea1dde697add9e89c14947b14ad7a63915040201c9cd00f28a489e983dd84d1",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "rain",
+      "lang": "it",
+      "stage": "publication",
+      "surface": "all",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "df26359be53a88c3e856dea1300b1f583cf3e77ede812429279e06e45c915160",
+        "atlas": "b7c943fa827880cecfad585ce7a45db348c4924672577cc34df87b190b91ea4d",
+        "assets": "dea1dde697add9e89c14947b14ad7a63915040201c9cd00f28a489e983dd84d1",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "rain",
+      "lang": "pt-br",
+      "stage": "qa",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "a7938276703dc22f85ff87e7a176120c6207920520f93709296dbcfa7924a63e",
+        "atlas": "6a38b8c9ef33f71fcf1244e66626cc6798a1ff7179e48b9bd0ddca5ef38bceb4",
+        "assets": "dea1dde697add9e89c14947b14ad7a63915040201c9cd00f28a489e983dd84d1",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "rain",
+      "lang": "pt-br",
+      "stage": "qa",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "a7938276703dc22f85ff87e7a176120c6207920520f93709296dbcfa7924a63e",
+        "atlas": "6a38b8c9ef33f71fcf1244e66626cc6798a1ff7179e48b9bd0ddca5ef38bceb4",
+        "assets": "dea1dde697add9e89c14947b14ad7a63915040201c9cd00f28a489e983dd84d1",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "rain",
+      "lang": "pt-br",
+      "stage": "approval",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "a7938276703dc22f85ff87e7a176120c6207920520f93709296dbcfa7924a63e",
+        "atlas": "6a38b8c9ef33f71fcf1244e66626cc6798a1ff7179e48b9bd0ddca5ef38bceb4",
+        "assets": "dea1dde697add9e89c14947b14ad7a63915040201c9cd00f28a489e983dd84d1",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "rain",
+      "lang": "pt-br",
+      "stage": "approval",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "a7938276703dc22f85ff87e7a176120c6207920520f93709296dbcfa7924a63e",
+        "atlas": "6a38b8c9ef33f71fcf1244e66626cc6798a1ff7179e48b9bd0ddca5ef38bceb4",
+        "assets": "dea1dde697add9e89c14947b14ad7a63915040201c9cd00f28a489e983dd84d1",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "rain",
+      "lang": "pt-br",
+      "stage": "publication",
+      "surface": "all",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "a7938276703dc22f85ff87e7a176120c6207920520f93709296dbcfa7924a63e",
+        "atlas": "6a38b8c9ef33f71fcf1244e66626cc6798a1ff7179e48b9bd0ddca5ef38bceb4",
+        "assets": "dea1dde697add9e89c14947b14ad7a63915040201c9cd00f28a489e983dd84d1",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "stairs",
+      "lang": "en",
+      "stage": "qa",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "04fcad356c8f9d5018bef63936886c2252704054d185e1479b04a4741a8f4441",
+        "atlas": "127240ceed2d4134c612670d25767c0659f54035ac6b9232a852d30709a3265e",
+        "assets": "a786e5355dc88f12c4fd03f7d2c4394b7db9ecf9dfaddb978321220fdf87ba2d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "stairs",
+      "lang": "en",
+      "stage": "qa",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "04fcad356c8f9d5018bef63936886c2252704054d185e1479b04a4741a8f4441",
+        "atlas": "127240ceed2d4134c612670d25767c0659f54035ac6b9232a852d30709a3265e",
+        "assets": "a786e5355dc88f12c4fd03f7d2c4394b7db9ecf9dfaddb978321220fdf87ba2d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "stairs",
+      "lang": "en",
+      "stage": "approval",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "04fcad356c8f9d5018bef63936886c2252704054d185e1479b04a4741a8f4441",
+        "atlas": "127240ceed2d4134c612670d25767c0659f54035ac6b9232a852d30709a3265e",
+        "assets": "a786e5355dc88f12c4fd03f7d2c4394b7db9ecf9dfaddb978321220fdf87ba2d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "stairs",
+      "lang": "en",
+      "stage": "approval",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "04fcad356c8f9d5018bef63936886c2252704054d185e1479b04a4741a8f4441",
+        "atlas": "127240ceed2d4134c612670d25767c0659f54035ac6b9232a852d30709a3265e",
+        "assets": "a786e5355dc88f12c4fd03f7d2c4394b7db9ecf9dfaddb978321220fdf87ba2d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "stairs",
+      "lang": "en",
+      "stage": "publication",
+      "surface": "all",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "04fcad356c8f9d5018bef63936886c2252704054d185e1479b04a4741a8f4441",
+        "atlas": "127240ceed2d4134c612670d25767c0659f54035ac6b9232a852d30709a3265e",
+        "assets": "a786e5355dc88f12c4fd03f7d2c4394b7db9ecf9dfaddb978321220fdf87ba2d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "stairs",
+      "lang": "fr",
+      "stage": "qa",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "0a255a61aee912c7f3c7eb0008186292d86a48a8514bc484bef22795d6f6f88e",
+        "atlas": "ceb9c7b493444489760569435e56f28ab26686c1378cef2db8192eb0244842aa",
+        "assets": "a786e5355dc88f12c4fd03f7d2c4394b7db9ecf9dfaddb978321220fdf87ba2d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "stairs",
+      "lang": "fr",
+      "stage": "qa",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "0a255a61aee912c7f3c7eb0008186292d86a48a8514bc484bef22795d6f6f88e",
+        "atlas": "ceb9c7b493444489760569435e56f28ab26686c1378cef2db8192eb0244842aa",
+        "assets": "a786e5355dc88f12c4fd03f7d2c4394b7db9ecf9dfaddb978321220fdf87ba2d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "stairs",
+      "lang": "fr",
+      "stage": "approval",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "0a255a61aee912c7f3c7eb0008186292d86a48a8514bc484bef22795d6f6f88e",
+        "atlas": "ceb9c7b493444489760569435e56f28ab26686c1378cef2db8192eb0244842aa",
+        "assets": "a786e5355dc88f12c4fd03f7d2c4394b7db9ecf9dfaddb978321220fdf87ba2d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "stairs",
+      "lang": "fr",
+      "stage": "approval",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "0a255a61aee912c7f3c7eb0008186292d86a48a8514bc484bef22795d6f6f88e",
+        "atlas": "ceb9c7b493444489760569435e56f28ab26686c1378cef2db8192eb0244842aa",
+        "assets": "a786e5355dc88f12c4fd03f7d2c4394b7db9ecf9dfaddb978321220fdf87ba2d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "stairs",
+      "lang": "fr",
+      "stage": "publication",
+      "surface": "all",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "0a255a61aee912c7f3c7eb0008186292d86a48a8514bc484bef22795d6f6f88e",
+        "atlas": "ceb9c7b493444489760569435e56f28ab26686c1378cef2db8192eb0244842aa",
+        "assets": "a786e5355dc88f12c4fd03f7d2c4394b7db9ecf9dfaddb978321220fdf87ba2d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "stairs",
+      "lang": "es",
+      "stage": "qa",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "bda0e31793b14bf24d59b7981b8af22a20749aaa9459723b15e8b7e78e543fcd",
+        "atlas": "1af2eb7b4b6e1739417244595da6e91619e7120ecdfbc74d6ccafab55f53a514",
+        "assets": "a786e5355dc88f12c4fd03f7d2c4394b7db9ecf9dfaddb978321220fdf87ba2d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "stairs",
+      "lang": "es",
+      "stage": "qa",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "bda0e31793b14bf24d59b7981b8af22a20749aaa9459723b15e8b7e78e543fcd",
+        "atlas": "1af2eb7b4b6e1739417244595da6e91619e7120ecdfbc74d6ccafab55f53a514",
+        "assets": "a786e5355dc88f12c4fd03f7d2c4394b7db9ecf9dfaddb978321220fdf87ba2d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "stairs",
+      "lang": "es",
+      "stage": "approval",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "bda0e31793b14bf24d59b7981b8af22a20749aaa9459723b15e8b7e78e543fcd",
+        "atlas": "1af2eb7b4b6e1739417244595da6e91619e7120ecdfbc74d6ccafab55f53a514",
+        "assets": "a786e5355dc88f12c4fd03f7d2c4394b7db9ecf9dfaddb978321220fdf87ba2d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "stairs",
+      "lang": "es",
+      "stage": "approval",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "bda0e31793b14bf24d59b7981b8af22a20749aaa9459723b15e8b7e78e543fcd",
+        "atlas": "1af2eb7b4b6e1739417244595da6e91619e7120ecdfbc74d6ccafab55f53a514",
+        "assets": "a786e5355dc88f12c4fd03f7d2c4394b7db9ecf9dfaddb978321220fdf87ba2d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "stairs",
+      "lang": "es",
+      "stage": "publication",
+      "surface": "all",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "bda0e31793b14bf24d59b7981b8af22a20749aaa9459723b15e8b7e78e543fcd",
+        "atlas": "1af2eb7b4b6e1739417244595da6e91619e7120ecdfbc74d6ccafab55f53a514",
+        "assets": "a786e5355dc88f12c4fd03f7d2c4394b7db9ecf9dfaddb978321220fdf87ba2d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "stairs",
+      "lang": "de",
+      "stage": "qa",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "fd7e128e8bbf9494d5b1c2b7ae431a65f6a9d1e74e9c17d5c8d9c8b5b5bc4ef6",
+        "atlas": "8f3235418926c987d6164b10a38ac9cb892216cb967e9b0ec7ac9cc386818295",
+        "assets": "a786e5355dc88f12c4fd03f7d2c4394b7db9ecf9dfaddb978321220fdf87ba2d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "stairs",
+      "lang": "de",
+      "stage": "qa",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "fd7e128e8bbf9494d5b1c2b7ae431a65f6a9d1e74e9c17d5c8d9c8b5b5bc4ef6",
+        "atlas": "8f3235418926c987d6164b10a38ac9cb892216cb967e9b0ec7ac9cc386818295",
+        "assets": "a786e5355dc88f12c4fd03f7d2c4394b7db9ecf9dfaddb978321220fdf87ba2d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "stairs",
+      "lang": "de",
+      "stage": "approval",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "fd7e128e8bbf9494d5b1c2b7ae431a65f6a9d1e74e9c17d5c8d9c8b5b5bc4ef6",
+        "atlas": "8f3235418926c987d6164b10a38ac9cb892216cb967e9b0ec7ac9cc386818295",
+        "assets": "a786e5355dc88f12c4fd03f7d2c4394b7db9ecf9dfaddb978321220fdf87ba2d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "stairs",
+      "lang": "de",
+      "stage": "approval",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "fd7e128e8bbf9494d5b1c2b7ae431a65f6a9d1e74e9c17d5c8d9c8b5b5bc4ef6",
+        "atlas": "8f3235418926c987d6164b10a38ac9cb892216cb967e9b0ec7ac9cc386818295",
+        "assets": "a786e5355dc88f12c4fd03f7d2c4394b7db9ecf9dfaddb978321220fdf87ba2d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "stairs",
+      "lang": "de",
+      "stage": "publication",
+      "surface": "all",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "fd7e128e8bbf9494d5b1c2b7ae431a65f6a9d1e74e9c17d5c8d9c8b5b5bc4ef6",
+        "atlas": "8f3235418926c987d6164b10a38ac9cb892216cb967e9b0ec7ac9cc386818295",
+        "assets": "a786e5355dc88f12c4fd03f7d2c4394b7db9ecf9dfaddb978321220fdf87ba2d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "stairs",
+      "lang": "it",
+      "stage": "qa",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "a0e221fe71bfbc1473dc2919b0365a792dbcf47f5f9eb5b44844f9cebb20c4d2",
+        "atlas": "f7a96d42ae8283ac5c8dcf842c228b1400ae7e3004fb9a4b40cb1d989e4cc6ed",
+        "assets": "a786e5355dc88f12c4fd03f7d2c4394b7db9ecf9dfaddb978321220fdf87ba2d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "stairs",
+      "lang": "it",
+      "stage": "qa",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "a0e221fe71bfbc1473dc2919b0365a792dbcf47f5f9eb5b44844f9cebb20c4d2",
+        "atlas": "f7a96d42ae8283ac5c8dcf842c228b1400ae7e3004fb9a4b40cb1d989e4cc6ed",
+        "assets": "a786e5355dc88f12c4fd03f7d2c4394b7db9ecf9dfaddb978321220fdf87ba2d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "stairs",
+      "lang": "it",
+      "stage": "approval",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "a0e221fe71bfbc1473dc2919b0365a792dbcf47f5f9eb5b44844f9cebb20c4d2",
+        "atlas": "f7a96d42ae8283ac5c8dcf842c228b1400ae7e3004fb9a4b40cb1d989e4cc6ed",
+        "assets": "a786e5355dc88f12c4fd03f7d2c4394b7db9ecf9dfaddb978321220fdf87ba2d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "stairs",
+      "lang": "it",
+      "stage": "approval",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "a0e221fe71bfbc1473dc2919b0365a792dbcf47f5f9eb5b44844f9cebb20c4d2",
+        "atlas": "f7a96d42ae8283ac5c8dcf842c228b1400ae7e3004fb9a4b40cb1d989e4cc6ed",
+        "assets": "a786e5355dc88f12c4fd03f7d2c4394b7db9ecf9dfaddb978321220fdf87ba2d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "stairs",
+      "lang": "it",
+      "stage": "publication",
+      "surface": "all",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "a0e221fe71bfbc1473dc2919b0365a792dbcf47f5f9eb5b44844f9cebb20c4d2",
+        "atlas": "f7a96d42ae8283ac5c8dcf842c228b1400ae7e3004fb9a4b40cb1d989e4cc6ed",
+        "assets": "a786e5355dc88f12c4fd03f7d2c4394b7db9ecf9dfaddb978321220fdf87ba2d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "stairs",
+      "lang": "pt-br",
+      "stage": "qa",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "e2e877df148820ed46a712e2583d3d3b1a5eda7ad99df9b1da654df9d063a230",
+        "atlas": "049c0f79e68b31a1de72099fe93f33d0c571e714816b55292f262cf160280b53",
+        "assets": "a786e5355dc88f12c4fd03f7d2c4394b7db9ecf9dfaddb978321220fdf87ba2d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "stairs",
+      "lang": "pt-br",
+      "stage": "qa",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "e2e877df148820ed46a712e2583d3d3b1a5eda7ad99df9b1da654df9d063a230",
+        "atlas": "049c0f79e68b31a1de72099fe93f33d0c571e714816b55292f262cf160280b53",
+        "assets": "a786e5355dc88f12c4fd03f7d2c4394b7db9ecf9dfaddb978321220fdf87ba2d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "stairs",
+      "lang": "pt-br",
+      "stage": "approval",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "e2e877df148820ed46a712e2583d3d3b1a5eda7ad99df9b1da654df9d063a230",
+        "atlas": "049c0f79e68b31a1de72099fe93f33d0c571e714816b55292f262cf160280b53",
+        "assets": "a786e5355dc88f12c4fd03f7d2c4394b7db9ecf9dfaddb978321220fdf87ba2d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "stairs",
+      "lang": "pt-br",
+      "stage": "approval",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "e2e877df148820ed46a712e2583d3d3b1a5eda7ad99df9b1da654df9d063a230",
+        "atlas": "049c0f79e68b31a1de72099fe93f33d0c571e714816b55292f262cf160280b53",
+        "assets": "a786e5355dc88f12c4fd03f7d2c4394b7db9ecf9dfaddb978321220fdf87ba2d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "stairs",
+      "lang": "pt-br",
+      "stage": "publication",
+      "surface": "all",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "e2e877df148820ed46a712e2583d3d3b1a5eda7ad99df9b1da654df9d063a230",
+        "atlas": "049c0f79e68b31a1de72099fe93f33d0c571e714816b55292f262cf160280b53",
+        "assets": "a786e5355dc88f12c4fd03f7d2c4394b7db9ecf9dfaddb978321220fdf87ba2d",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mirror",
+      "lang": "en",
+      "stage": "qa",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "6c6c688405b4d5ddfae9cf28bfe862f066dd7555a5f804a943b82a1fc3389ad6",
+        "atlas": "1c213177425ecf285106bfbf1223e98a370caa91f0560ab321dd2c6d3afeee40",
+        "assets": "fd9ec68dd9b1a35de65b5043f0ab7e055f31311b5e6e09b0d5276c0402542cae",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mirror",
+      "lang": "en",
+      "stage": "qa",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "6c6c688405b4d5ddfae9cf28bfe862f066dd7555a5f804a943b82a1fc3389ad6",
+        "atlas": "1c213177425ecf285106bfbf1223e98a370caa91f0560ab321dd2c6d3afeee40",
+        "assets": "fd9ec68dd9b1a35de65b5043f0ab7e055f31311b5e6e09b0d5276c0402542cae",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mirror",
+      "lang": "en",
+      "stage": "approval",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "6c6c688405b4d5ddfae9cf28bfe862f066dd7555a5f804a943b82a1fc3389ad6",
+        "atlas": "1c213177425ecf285106bfbf1223e98a370caa91f0560ab321dd2c6d3afeee40",
+        "assets": "fd9ec68dd9b1a35de65b5043f0ab7e055f31311b5e6e09b0d5276c0402542cae",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mirror",
+      "lang": "en",
+      "stage": "approval",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "6c6c688405b4d5ddfae9cf28bfe862f066dd7555a5f804a943b82a1fc3389ad6",
+        "atlas": "1c213177425ecf285106bfbf1223e98a370caa91f0560ab321dd2c6d3afeee40",
+        "assets": "fd9ec68dd9b1a35de65b5043f0ab7e055f31311b5e6e09b0d5276c0402542cae",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mirror",
+      "lang": "en",
+      "stage": "publication",
+      "surface": "all",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "6c6c688405b4d5ddfae9cf28bfe862f066dd7555a5f804a943b82a1fc3389ad6",
+        "atlas": "1c213177425ecf285106bfbf1223e98a370caa91f0560ab321dd2c6d3afeee40",
+        "assets": "fd9ec68dd9b1a35de65b5043f0ab7e055f31311b5e6e09b0d5276c0402542cae",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mirror",
+      "lang": "fr",
+      "stage": "qa",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "2976aca358ea5da28ed8bf3f12d9ddd2af2eb3a016385e08b896552efb0277f4",
+        "atlas": "5ba4312b130438e2c12194c7f0e60e38b125e694855f4b940fa8e8b76cf5c11b",
+        "assets": "fd9ec68dd9b1a35de65b5043f0ab7e055f31311b5e6e09b0d5276c0402542cae",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mirror",
+      "lang": "fr",
+      "stage": "qa",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "2976aca358ea5da28ed8bf3f12d9ddd2af2eb3a016385e08b896552efb0277f4",
+        "atlas": "5ba4312b130438e2c12194c7f0e60e38b125e694855f4b940fa8e8b76cf5c11b",
+        "assets": "fd9ec68dd9b1a35de65b5043f0ab7e055f31311b5e6e09b0d5276c0402542cae",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mirror",
+      "lang": "fr",
+      "stage": "approval",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "2976aca358ea5da28ed8bf3f12d9ddd2af2eb3a016385e08b896552efb0277f4",
+        "atlas": "5ba4312b130438e2c12194c7f0e60e38b125e694855f4b940fa8e8b76cf5c11b",
+        "assets": "fd9ec68dd9b1a35de65b5043f0ab7e055f31311b5e6e09b0d5276c0402542cae",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mirror",
+      "lang": "fr",
+      "stage": "approval",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "2976aca358ea5da28ed8bf3f12d9ddd2af2eb3a016385e08b896552efb0277f4",
+        "atlas": "5ba4312b130438e2c12194c7f0e60e38b125e694855f4b940fa8e8b76cf5c11b",
+        "assets": "fd9ec68dd9b1a35de65b5043f0ab7e055f31311b5e6e09b0d5276c0402542cae",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mirror",
+      "lang": "fr",
+      "stage": "publication",
+      "surface": "all",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "2976aca358ea5da28ed8bf3f12d9ddd2af2eb3a016385e08b896552efb0277f4",
+        "atlas": "5ba4312b130438e2c12194c7f0e60e38b125e694855f4b940fa8e8b76cf5c11b",
+        "assets": "fd9ec68dd9b1a35de65b5043f0ab7e055f31311b5e6e09b0d5276c0402542cae",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mirror",
+      "lang": "es",
+      "stage": "qa",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "9fa60a8538706fd2d9687972a194c416866ac65ca0ebabbc375ebb475f03eb13",
+        "atlas": "ebead7e3ee064136dd2438fb0c7b071b133787fd3ffb6a8401b36d0ed1c1214b",
+        "assets": "fd9ec68dd9b1a35de65b5043f0ab7e055f31311b5e6e09b0d5276c0402542cae",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mirror",
+      "lang": "es",
+      "stage": "qa",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "9fa60a8538706fd2d9687972a194c416866ac65ca0ebabbc375ebb475f03eb13",
+        "atlas": "ebead7e3ee064136dd2438fb0c7b071b133787fd3ffb6a8401b36d0ed1c1214b",
+        "assets": "fd9ec68dd9b1a35de65b5043f0ab7e055f31311b5e6e09b0d5276c0402542cae",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mirror",
+      "lang": "es",
+      "stage": "approval",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "9fa60a8538706fd2d9687972a194c416866ac65ca0ebabbc375ebb475f03eb13",
+        "atlas": "ebead7e3ee064136dd2438fb0c7b071b133787fd3ffb6a8401b36d0ed1c1214b",
+        "assets": "fd9ec68dd9b1a35de65b5043f0ab7e055f31311b5e6e09b0d5276c0402542cae",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mirror",
+      "lang": "es",
+      "stage": "approval",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "9fa60a8538706fd2d9687972a194c416866ac65ca0ebabbc375ebb475f03eb13",
+        "atlas": "ebead7e3ee064136dd2438fb0c7b071b133787fd3ffb6a8401b36d0ed1c1214b",
+        "assets": "fd9ec68dd9b1a35de65b5043f0ab7e055f31311b5e6e09b0d5276c0402542cae",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mirror",
+      "lang": "es",
+      "stage": "publication",
+      "surface": "all",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "9fa60a8538706fd2d9687972a194c416866ac65ca0ebabbc375ebb475f03eb13",
+        "atlas": "ebead7e3ee064136dd2438fb0c7b071b133787fd3ffb6a8401b36d0ed1c1214b",
+        "assets": "fd9ec68dd9b1a35de65b5043f0ab7e055f31311b5e6e09b0d5276c0402542cae",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mirror",
+      "lang": "de",
+      "stage": "qa",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "0b1490aed63c9e9f411b428fbd37e55426a60ad3e1de506ac7b0ecd333a6f931",
+        "atlas": "1c2b6507cd781e41aebe4f94eee0090857797c6c30bcbd77f3dce99e1b6f8d77",
+        "assets": "fd9ec68dd9b1a35de65b5043f0ab7e055f31311b5e6e09b0d5276c0402542cae",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mirror",
+      "lang": "de",
+      "stage": "qa",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "0b1490aed63c9e9f411b428fbd37e55426a60ad3e1de506ac7b0ecd333a6f931",
+        "atlas": "1c2b6507cd781e41aebe4f94eee0090857797c6c30bcbd77f3dce99e1b6f8d77",
+        "assets": "fd9ec68dd9b1a35de65b5043f0ab7e055f31311b5e6e09b0d5276c0402542cae",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mirror",
+      "lang": "de",
+      "stage": "approval",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "0b1490aed63c9e9f411b428fbd37e55426a60ad3e1de506ac7b0ecd333a6f931",
+        "atlas": "1c2b6507cd781e41aebe4f94eee0090857797c6c30bcbd77f3dce99e1b6f8d77",
+        "assets": "fd9ec68dd9b1a35de65b5043f0ab7e055f31311b5e6e09b0d5276c0402542cae",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mirror",
+      "lang": "de",
+      "stage": "approval",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "0b1490aed63c9e9f411b428fbd37e55426a60ad3e1de506ac7b0ecd333a6f931",
+        "atlas": "1c2b6507cd781e41aebe4f94eee0090857797c6c30bcbd77f3dce99e1b6f8d77",
+        "assets": "fd9ec68dd9b1a35de65b5043f0ab7e055f31311b5e6e09b0d5276c0402542cae",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mirror",
+      "lang": "de",
+      "stage": "publication",
+      "surface": "all",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "0b1490aed63c9e9f411b428fbd37e55426a60ad3e1de506ac7b0ecd333a6f931",
+        "atlas": "1c2b6507cd781e41aebe4f94eee0090857797c6c30bcbd77f3dce99e1b6f8d77",
+        "assets": "fd9ec68dd9b1a35de65b5043f0ab7e055f31311b5e6e09b0d5276c0402542cae",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mirror",
+      "lang": "it",
+      "stage": "qa",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "796b02787f92e8e51ee800fd2bc5897e99471b1275429bff9f68b9f5acb0aa36",
+        "atlas": "e08ce4f30be4288bb4cba417b05f8e3d16b9cacc00f04714d1d8ed2c944f8d04",
+        "assets": "fd9ec68dd9b1a35de65b5043f0ab7e055f31311b5e6e09b0d5276c0402542cae",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mirror",
+      "lang": "it",
+      "stage": "qa",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "796b02787f92e8e51ee800fd2bc5897e99471b1275429bff9f68b9f5acb0aa36",
+        "atlas": "e08ce4f30be4288bb4cba417b05f8e3d16b9cacc00f04714d1d8ed2c944f8d04",
+        "assets": "fd9ec68dd9b1a35de65b5043f0ab7e055f31311b5e6e09b0d5276c0402542cae",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mirror",
+      "lang": "it",
+      "stage": "approval",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "796b02787f92e8e51ee800fd2bc5897e99471b1275429bff9f68b9f5acb0aa36",
+        "atlas": "e08ce4f30be4288bb4cba417b05f8e3d16b9cacc00f04714d1d8ed2c944f8d04",
+        "assets": "fd9ec68dd9b1a35de65b5043f0ab7e055f31311b5e6e09b0d5276c0402542cae",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mirror",
+      "lang": "it",
+      "stage": "approval",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "796b02787f92e8e51ee800fd2bc5897e99471b1275429bff9f68b9f5acb0aa36",
+        "atlas": "e08ce4f30be4288bb4cba417b05f8e3d16b9cacc00f04714d1d8ed2c944f8d04",
+        "assets": "fd9ec68dd9b1a35de65b5043f0ab7e055f31311b5e6e09b0d5276c0402542cae",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mirror",
+      "lang": "it",
+      "stage": "publication",
+      "surface": "all",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "796b02787f92e8e51ee800fd2bc5897e99471b1275429bff9f68b9f5acb0aa36",
+        "atlas": "e08ce4f30be4288bb4cba417b05f8e3d16b9cacc00f04714d1d8ed2c944f8d04",
+        "assets": "fd9ec68dd9b1a35de65b5043f0ab7e055f31311b5e6e09b0d5276c0402542cae",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mirror",
+      "lang": "pt-br",
+      "stage": "qa",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "f3abad9c1ad4222f3685e1371c3de112210d0089bf5c5eac24ed227bbe5a1801",
+        "atlas": "fbd73ca312f05bef24aeba37a9f00ca0a9459b41d822441523bf82b41b532a79",
+        "assets": "fd9ec68dd9b1a35de65b5043f0ab7e055f31311b5e6e09b0d5276c0402542cae",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mirror",
+      "lang": "pt-br",
+      "stage": "qa",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "f3abad9c1ad4222f3685e1371c3de112210d0089bf5c5eac24ed227bbe5a1801",
+        "atlas": "fbd73ca312f05bef24aeba37a9f00ca0a9459b41d822441523bf82b41b532a79",
+        "assets": "fd9ec68dd9b1a35de65b5043f0ab7e055f31311b5e6e09b0d5276c0402542cae",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mirror",
+      "lang": "pt-br",
+      "stage": "approval",
+      "surface": "desktop",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "f3abad9c1ad4222f3685e1371c3de112210d0089bf5c5eac24ed227bbe5a1801",
+        "atlas": "fbd73ca312f05bef24aeba37a9f00ca0a9459b41d822441523bf82b41b532a79",
+        "assets": "fd9ec68dd9b1a35de65b5043f0ab7e055f31311b5e6e09b0d5276c0402542cae",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mirror",
+      "lang": "pt-br",
+      "stage": "approval",
+      "surface": "mobile",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "f3abad9c1ad4222f3685e1371c3de112210d0089bf5c5eac24ed227bbe5a1801",
+        "atlas": "fbd73ca312f05bef24aeba37a9f00ca0a9459b41d822441523bf82b41b532a79",
+        "assets": "fd9ec68dd9b1a35de65b5043f0ab7e055f31311b5e6e09b0d5276c0402542cae",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
+    },
+    {
+      "id": "mirror",
+      "lang": "pt-br",
+      "stage": "publication",
+      "surface": "all",
+      "verdict": "accepted",
+      "date": "2026-10-19",
+      "source": {
+        "content": "f3abad9c1ad4222f3685e1371c3de112210d0089bf5c5eac24ed227bbe5a1801",
+        "atlas": "fbd73ca312f05bef24aeba37a9f00ca0a9459b41d822441523bf82b41b532a79",
+        "assets": "fd9ec68dd9b1a35de65b5043f0ab7e055f31311b5e6e09b0d5276c0402542cae",
+        "engine": "2a865f50e5aed66bcff4be81e259c397159d0173444b920153befadc93cc5110"
+      },
+      "evidence": {
+        "path": "doc_web_interne/docs/qa/symbol-atlas-batch04-production-2026-10-19.json",
+        "sha256": "958f354442e02e9176b73306055317d243e7e2cef5a7552061f0ae415b556fd9"
+      }
     }
   ]
 }
