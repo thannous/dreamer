@@ -1,6 +1,5 @@
-import type { TextInputInstance } from 'react-native';
 import React, { forwardRef, memo, useCallback, useMemo, useRef, useState } from 'react';
-import { Platform, TextInput, View, useWindowDimensions, type TextStyle } from 'react-native';
+import { Platform, TextInput, View, useWindowDimensions, type TextStyle, type TextInputInstance } from 'react-native';
 
 import { PressableScale } from '@/components/motion';
 import { IconSymbol } from '@/components/ui/icon-symbol';

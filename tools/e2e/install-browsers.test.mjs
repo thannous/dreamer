@@ -1,14 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { EventEmitter } from 'node:events';
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, realpathSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { browserInstallArgs, installBrowsers } from './install-browsers.mjs';
 
 function packages(t, matcherVersion = '1.64.0') {
-  const root = mkdtempSync(join(tmpdir(), 'browser installer '));
+  // Node resolves package entry points through filesystem aliases (e.g. /var on macOS).
+  const root = realpathSync(mkdtempSync(join(tmpdir(), 'browser installer ')));
   t.after(() => rmSync(root, { recursive: true, force: true }));
   function pkg(name, version, extra = {}) {
     const directory = join(root, 'node_modules', name);

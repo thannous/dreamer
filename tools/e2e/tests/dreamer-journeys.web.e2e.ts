@@ -183,17 +183,21 @@ test('free user adds and removes a favorite through the filtered journal', async
   await selectProfile(page, 'existing');
   await journal(page);
   await openDream(page, 'Garden in the Clouds');
+  const transcript = page.getByTestId('component.transcriptCard');
+  const originalStory = await transcript.textContent();
+  expect(originalStory).toContain('I was walking through a beautiful garden');
   await page.getByTestId('btn.dream.favorite').click();
   await journal(page);
   await page.getByRole('button', { name: 'Show favorites only', exact: true }).click();
   await openDream(page, 'Garden in the Clouds');
   await page.getByTestId('btn.dream.favorite').click();
   await journal(page);
-  await page.getByRole('button', { name: 'Show favorites only', exact: true }).click();
-  await search(page, 'Garden in the Clouds');
+  // Upstream 02a97ad08 retains the journal: a second Favorites click would clear its filter.
+  await expect(page.getByRole('textbox', { name: 'Search dreams…' })).toHaveValue('Garden in the Clouds');
   await expect(page.getByTestId(/^dream\.item\./).filter({ visible: true })).toHaveCount(0);
   await page.getByRole('button', { name: 'Show all dreams', exact: true }).click();
   await openDream(page, 'Garden in the Clouds');
+  await expect(transcript).toHaveText(originalStory!);
 });
 
 test('Plus user continues a reflection and sees the conversation on revisit', async ({ page }) => {

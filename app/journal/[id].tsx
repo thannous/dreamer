@@ -480,13 +480,11 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       previouslyEligibleDreamId: null,
     }).eligibleDreamId
   );
-  /* eslint-disable react-hooks/refs -- remember saved=1 after param clear without mutating the ref during render */
   const recallOffer = resolveJournalDreamRecallOfferEligible({
     dreamId: id,
     savedParam,
     previouslyEligibleDreamId: recallEligibleDreamIdRef.current,
   });
-  /* eslint-enable react-hooks/refs */
   useEffect(() => {
     recallEligibleDreamIdRef.current = recallOffer.eligibleDreamId;
   }, [recallOffer.eligibleDreamId]);
@@ -764,7 +762,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     revealRecallInput();
   }, [revealRecallInput]);
   const editingStoryRef = useRef(false);
-  const lastAnalysisNoticeRef = useRef<AnalysisNotice | null>(null);
+  const [lastAnalysisNotice, setLastAnalysisNotice] = useState<AnalysisNotice | null>(null);
   const previousDreamRef = useRef(dream);
 
   const sortedDreamTypes = useMemo(() => {
@@ -774,12 +772,6 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   const sortedDreamThemes = useMemo(() => {
     return sortWithSelectionFirst([...DREAM_THEMES], dream?.theme);
   }, [dream?.theme]);
-
-  useEffect(() => {
-    if (analysisNotice) {
-      lastAnalysisNoticeRef.current = analysisNotice;
-    }
-  }, [analysisNotice]);
 
   useEffect(() => {
     const changedDream = !dream || !previousDreamRef.current
@@ -1319,10 +1311,9 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     if (!dream?.imageUrl) return undefined;
     return getDreamImageVersion(dream);
   }, [dream]);
-  const imageCacheKey = useMemo(() => {
-    if (!dream?.imageUrl || !imageVersion) return undefined;
-    return `${dream.imageUrl}|${imageVersion}`;
-  }, [dream?.imageUrl, imageVersion]);
+  const imageCacheKey = dream?.imageUrl && imageVersion
+    ? `${dream.imageUrl}|${imageVersion}`
+    : undefined;
   const displayImageUrl = useMemo(() => {
     if (!dream?.imageUrl) return undefined;
     return media.imageUrl ? withCacheBuster(media.imageUrl, imageVersion) : undefined;
@@ -1584,7 +1575,9 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
 
   const showAnalysisNotice = useCallback(
     (title: string, message: string, tone: AnalysisNotice['tone'] = 'info') => {
-      setAnalysisNotice({ title, message, tone });
+      const notice = { title, message, tone };
+      setLastAnalysisNotice(notice);
+      setAnalysisNotice(notice);
     },
     []
   );
@@ -1774,7 +1767,6 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     if (consumePurchasedAnalysisReturn(getDreamRouteParams(dream), user.id)
       && !dream.isAnalyzed && dream.analysisStatus !== 'pending') {
       // Consume an external purchase-navigation event, guarded above to run once.
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       void runAnalyze(!hasExistingImage);
     }
   }, [analysisOwnerId, analyzeAfterPurchase, dream, hasExistingImage, hasPurchasedAnalysisReturn, isPlus, quotaLoading, runAnalyze, user]);
@@ -1874,7 +1866,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     setShowReplaceImageSheet(false);
   }, []);
 
-  const displayedAnalysisNotice = analysisNotice ?? lastAnalysisNoticeRef.current;
+  const displayedAnalysisNotice = analysisNotice ?? lastAnalysisNotice;
 
   const keyboardBehavior: 'padding' | 'height' | undefined = Platform.select({
     ios: 'padding',
@@ -2014,12 +2006,14 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   const readingBegun = readingInFlight || showCompletedReading;
   const sealVisible = !shouldHideHeroMedia && (opensOnSavedMoment || readingBegun);
   // On a page opened again, the seal bears the dream's type and theme as its reading left them.
+  const sealTheme = dream?.theme;
+  const sealDreamType = dream?.dreamType;
   const pageSeal = useMemo(() => {
-    if (!dream?.theme || !(dream.theme in SEAL_EMBLEMS)) return null;
-    const typed = dream.dreamType && (analysisState.isAnalyzed || dream.dreamType !== 'Symbolic Dream');
+    if (!sealTheme || !(sealTheme in SEAL_EMBLEMS)) return null;
+    const typed = sealDreamType && (analysisState.isAnalyzed || sealDreamType !== 'Symbolic Dream');
     const legend = [typed ? dreamTypeLabel : null, dreamThemeLabel].filter(Boolean).join(' · ');
-    return { mark: { theme: dream.theme, legend }, settled: true };
-  }, [analysisState.isAnalyzed, dream?.dreamType, dream?.theme, dreamThemeLabel, dreamTypeLabel]);
+    return { mark: { theme: sealTheme, legend }, settled: true };
+  }, [analysisState.isAnalyzed, sealDreamType, sealTheme, dreamThemeLabel, dreamTypeLabel]);
   const sealShows = opensOnSavedMoment ? (naming.stage === 'waiting' ? null : sealing) : pageSeal;
   // The seal's rim carries the dream's details, which the name then leaves to it.
   const detailsOnSeal = sealVisible && Boolean(sealShows?.mark);

@@ -17,6 +17,12 @@ const runtime = runtimeIndex >= 0 ? args.splice(runtimeIndex, 2)[1] : undefined;
 if (runtimeIndex >= 0 && !['native', 'docker', 'podman'].includes(runtime)) throw new Error('--runtime requires native, docker or podman');
 if (runtime && suppliedStatus) throw new Error('--runtime owns a new disposable stack; it cannot use --status-file');
 const prepareOnly = args.includes('--prepare-only');
+const qualificationIndex = args.indexOf('--qualify-ti528');
+const qualifyTi528 = qualificationIndex >= 0;
+if (qualifyTi528) args.splice(qualificationIndex, 1);
+if (qualifyTi528 && (!runtime || suppliedStatus || prepareOnly)) {
+  throw new Error('--qualify-ti528 requires an owned --runtime stack, without --status-file or --prepare-only');
+}
 const isolatedRun = !suppliedStatus && !prepareOnly;
 const workdir = isolatedRun ? fs.mkdtempSync(path.join(os.tmpdir(), 'noctalia-backend-e2e-')) : path.join(os.tmpdir(), 'noctalia-backend-e2e');
 const project = `noctalia-backend-e2e-disposable${isolatedRun ? `-${randomUUID().slice(0, 8)}` : ''}`;
@@ -28,6 +34,7 @@ const cli = process.env.E2E_SUPABASE_CLI || (!runtime && process.platform === 'd
 const docker = process.env.E2E_DOCKER_CLI || 'docker';
 const quote = arg => `'${arg.replaceAll("'", "'\"'\"'")}'`;
 const rerunArgs = [...(runtime ? ['--runtime', runtime] : []),
+  ...(qualifyTi528 ? ['--qualify-ti528'] : []),
   ...(suppliedStatus ? ['--status-file', path.resolve(suppliedStatus)] : []), ...args].map(quote).join(' ');
 // Supabase documents this one for root runs of the native runtime; other SUPABASE_* settings are dropped.
 const keptSupabaseEnv = runtime ? ['SUPABASE_NATIVE_POSTGRES_USER'] : [];
@@ -138,6 +145,11 @@ try {
       // Copies prepared here are never applied to a supplied stack. Its migration state is unknown.
       E2E_BACKEND_MIGRATION_FIXTURES: JSON.stringify(suppliedStatus ? null : migrationFixtures) },
   });
+  if (qualifyTi528) {
+    command(process.execPath, ['--run', 'db:qualify:local'], {
+      env: { ...process.env, TI528_LOCAL_STATUS: statusFile },
+    });
+  }
 } finally {
   // Only this run's randomly named disposable database is removed; no reset or --all.
   if (started && runtime) command(cli, ['stack', 'destroy', '--workdir', workdir,

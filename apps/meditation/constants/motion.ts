@@ -50,11 +50,6 @@ export const BreathScale = {
   },
 } as const;
 
-/** Chrome fades out after this long without a touch, in immersive contexts. */
-// Six seconds, not four: four is barely enough to read the ambience and
-// timer rows before they vanish under your eyes.
-export const SilenceDelayMs = 6000;
-
 export const Curve = {
   /** Default for UI transitions. */
   standard: Easing.bezier(0.32, 0.72, 0, 1),

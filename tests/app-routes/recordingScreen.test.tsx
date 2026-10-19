@@ -277,14 +277,6 @@ jest.doMock('@/components/recording/OfflineModelDownloadSheet', () => ({
   OfflineModelDownloadSheet: () => null,
 }));
 
-jest.doMock('@/components/recording/RecordingOnboardingSpotlightOverlay', () => ({
-  RecordingOnboardingSpotlightOverlay: () => null,
-}));
-
-jest.doMock('@/components/recording/RecordingOnboardingTour', () => ({
-  RecordingOnboardingTour: () => null,
-}));
-
 jest.doMock('@/components/recording/RecordingInputModeSelect', () => ({
   RecordingInputModeSelect: ({
     onChange,
@@ -657,10 +649,6 @@ jest.doMock('@/lib/recordingDraftProgress', () => ({
   getRecordingDraftProgress: (transcript: string) => ({
     state: transcript.trim() ? 'ready' : 'empty',
   }),
-}));
-
-jest.doMock('@/lib/recordingActivationInsight', () => ({
-  getRecordingActivationInsight: () => null,
 }));
 
 jest.doMock('@/lib/transcriptMerge', () => ({

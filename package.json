@@ -104,7 +104,7 @@
     "theme:generate": "node scripts/generate-theme-css.mjs",
     "theme:check": "node scripts/generate-theme-css.mjs --check",
     "uniwind:types": "npm run theme:generate && uniwind generate-artifacts --css ./global.css --theme morning --theme afterglow --dts ./uniwind-types.d.ts",
-    "lint": "npm run brand:check && expo lint app components hooks lib context constants services tests supabase/functions scripts",
+    "lint": "npm run brand:check && npm run lint:warnings",
     "lint:scripts": "expo lint scripts --max-warnings=0",
     "scripts:list": "node ./scripts/list-scripts.js",
     "typecheck:app": "node scripts/generate-shared-route-types.cjs && tsc --noEmit",
@@ -128,7 +128,7 @@
     "test:coverage": "npm run test:coverage:jest && npm run test:coverage:edge",
     "test:coverage:app": "jest --selectProjects expo --coverage --runInBand --coverageReporters=text-summary",
     "test:coverage:jest": "jest --config jest.config.coverage.js --coverage --runInBand --coverageReporters=text-summary",
-    "test:coverage:edge": "cd supabase/functions && deno test --frozen --allow-env --allow-read=../migrations --coverage=../../coverage/deno api",
+    "test:coverage:edge": "cd supabase/functions && deno test --frozen --allow-env --allow-read=../migrations --coverage=../../coverage/deno api revenuecat-webhook image-job-worker",
     "android:gates": "node ./scripts/check-android-release-gates.js --report-only",
     "android:gates:prebuild": "node ./scripts/check-android-release-gates.js --prebuild",
     "android:gates:strict": "node ./scripts/check-android-release-gates.js",
@@ -195,7 +195,10 @@
     "agent-device:inspect": "node tools/e2e/run.mjs inspect",
     "agent-device:mcp": "node tools/e2e/run.mjs mcp",
     "symbols:dictionary:sync": "node ./scripts/sync-app-symbol-dictionary.js",
-    "symbols:illustrations:sync": "node ./scripts/sync-symbol-illustrations.js"
+    "symbols:illustrations:sync": "node ./scripts/sync-symbol-illustrations.js",
+    "lint:warnings": "node scripts/check-lint-warnings.js",
+    "repository:hygiene": "node scripts/check-repository-hygiene.cjs",
+    "test:repository-hygiene": "node --test scripts/check-repository-hygiene.test.cjs"
   },
   "dependencies": {
     "@expo-google-fonts/fraunces": "^0.4.1",
@@ -229,7 +232,6 @@
     "expo-image": "~58.0.15",
     "expo-image-manipulator": "~58.0.14",
     "expo-image-picker": "~58.0.10",
-    "expo-intent-launcher": "~58.0.3",
     "expo-linear-gradient": "~58.0.3",
     "expo-linking": "~58.0.13",
     "expo-localization": "~58.0.4",
@@ -258,7 +260,6 @@
     "react-native-edge-to-edge": "^1.8.1",
     "react-native-enriched-markdown": "1.0.2",
     "react-native-gesture-handler": "~3.3.0",
-    "react-native-gifted-charts": "^1.4.64",
     "react-native-keyboard-controller": "1.22.7",
     "react-native-nitro-modules": "0.37.1",
     "react-native-purchases": "10.7.1",
@@ -320,7 +321,10 @@
     "markdown-it": "14.3.0",
     "tmp": "0.2.7",
     "react-native": "$react-native",
-    "react-native-worklets": "$react-native-worklets"
+    "react-native-worklets": "$react-native-worklets",
+    "@vercel/container@13.0.0": {
+      "tar": "7.5.22"
+    }
   },
   "reanimated": {
     "staticFeatureFlags": {

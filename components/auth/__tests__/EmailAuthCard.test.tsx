@@ -1,11 +1,11 @@
 /* @jest-environment jsdom */
-jest.mock('@/components/auth/AuthBottomSheet', () => ({ AuthBottomSheet: require('@/components/ui/StandardBottomSheet').StandardBottomSheet }));
 import React from 'react';
 import { act, cleanup, render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { Alert } from 'react-native';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
-
 import { TID } from '@/lib/testIDs';
+
+jest.mock('@/components/auth/AuthBottomSheet', () => ({ AuthBottomSheet: require('@/components/ui/StandardBottomSheet').StandardBottomSheet }));
 
 jest.mock('react-native', () => {
   const React = require('react');
