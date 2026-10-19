@@ -13,11 +13,15 @@ those implementations and their tests; this entry point does not duplicate an
 older public-endpoint contract or a standalone Express substitute.
 
 Run the existing browser and database qualification against an owned disposable
-native stack without Docker:
+stack on the native Supabase runtime (the only runtime; the project uses no Docker):
 
 ```sh
-mise exec -- npm run test:e2e:backend -- --runtime native --qualify-ti528
+mise exec -- npm run test:e2e:backend -- --qualify-ti528
 ```
+
+Local Supabase ports are assigned per local project (`supabase/config.toml` sets
+`[experimental] stack = true` and no fixed port): read them from `supabase status`
+instead of assuming 54321/54322.
 
 The [backend qualification guide](doc_web_interne/docs/e2e-backend-qualification.md)
 covers prerequisites, target guards, fixture migrations, seven browser journeys,

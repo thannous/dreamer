@@ -5,7 +5,7 @@ const path = require('node:path');
 function assertBackendTarget(status) {
   const url = new URL(status.API_URL);
   const stack = status.LOCAL_E2E_STACK;
-  const managed = stack && /^[a-f0-9]{64}$/.test(stack.id) && ['native', 'docker', 'podman'].includes(stack.runtime);
+  const managed = stack && /^[a-f0-9]{64}$/.test(stack.id) && stack.runtime === 'native';
   const port = Number(url.port);
   if (url.protocol !== 'http:' || url.hostname !== '127.0.0.1' || url.username || url.password ||
       url.pathname !== '/' || url.search || url.hash ||

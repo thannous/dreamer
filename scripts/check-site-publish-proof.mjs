@@ -33,7 +33,7 @@
 //   - a publish that asks for a release target (web:deploy:prod asks for
 //     `app`) finds a proof that does not cover it (proof-target).
 // The site publish asks for no target, so the checks of the `app` target (the
-// web app build, its backend journey under Docker, the TesterArmy app
+// web app build, its native backend journey, the TesterArmy app
 // campaigns) do not hold it back.
 // There is no override of any kind: a refused publish is fixed by publishing
 // the right commit after verify:release, never by a flag or a variable.
@@ -109,7 +109,7 @@ export async function checkSitePublishProof({ root = defaultRoot, gitEnv, fetch 
 
 // checkReleaseProof judges every run of the commit. A check of a target this
 // publish does not ask for never holds it back: e2e-backend left unavailable
-// by `npm run verify:release` on a machine without Docker must not block the
+// by `npm run verify:release` on a machine without the native Supabase runtime must not block the
 // site publish that `npm run verify:release:site` proves, whether that app run
 // came before the site run (it left the check open) or after it (it is also
 // the latest release run). Any other open or unpassed check, an unreadable run
