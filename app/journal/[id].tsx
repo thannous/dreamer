@@ -808,7 +808,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   }, [revealRecallInput]);
 
   // Subject detection is only needed for authenticated reference-image tools.
-  // Guests already receive metadata from the post-save categorization request.
+  // Guests receive metadata from the post-save categorization request once they allow AI.
   useEffect(() => {
     if (!dream || !canUseReference) return;
     if (hasBackfilledSubjectRef.current) return;

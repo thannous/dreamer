@@ -417,12 +417,14 @@ function PaywallScreen() {
           const intervalLabel = translateWithFallback(`subscription.paywall.option.interval.${optionKey}`);
           // App Store rule: the amount billed is the largest price on the card. The annual
           // plan's monthly equivalent is only a comparison, so it sits in the small line.
-          const monthlyEquivalent = formatNumber(calculateMonthlyEquivalent(pkg), {
-            style: 'currency',
-            currency: pkg.currency,
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          });
+          const monthlyEquivalent = isAnnual
+            ? formatNumber(calculateMonthlyEquivalent(pkg), {
+                style: 'currency',
+                currency: pkg.currency,
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })
+            : '';
           return {
             id: pkg.id,
             title: translateWithFallback(
