@@ -26,7 +26,6 @@ import { useSubscription } from '@/hooks/useSubscription';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getPaywallTrigger, trackProductEvent } from '@/lib/analytics';
 import { markStoreReviewPaywallSeen } from '@/lib/storeReview';
-import { createScopedLogger } from '@/lib/logger';
 import { clearReturnToPaywallIntent, requestReturnToPaywallIntent } from '@/lib/navigationIntents';
 import {
   calculateAnnualDiscount,
@@ -39,7 +38,6 @@ import { TID } from '@/lib/testIDs';
 import { useHeaderScroll } from '@/components/ui/headerStretch';
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 
-const log = createScopedLogger('[Paywall]');
 const PAYWALL_MAX_WIDTH = 720;
 const PAYWALL_PAINTING_HEIGHT = 170;
 /** Each store only names itself; the web keeps the line that covers both. */
@@ -64,7 +62,8 @@ function PaywallScreen() {
   const { formatDate, formatNumber, formatTime } = useLocaleFormatting();
   const params = useLocalSearchParams<AnalysisPaywallParams & { trigger?: string }>();
   const { user } = useAuth();
-  const savedDreamReturnRoute = useMemo(() => getSavedDreamReturnRoute(params, user?.id), [params, user?.id]);
+  const userId = user?.id;
+  const savedDreamReturnRoute = useMemo(() => getSavedDreamReturnRoute(params, userId), [params, userId]);
   const exitDispatchedRef = useRef(false);
   const [exitDestination, setExitDestination] = useState<Href | null>(null);
   const navigateToDream = useCallback((destination: Href) => setExitDestination(destination), []);
@@ -86,7 +85,7 @@ function PaywallScreen() {
   const operationInFlightRef = useRef(false);
   const [operationPending, setOperationPending] = useState(false);
   const [confirmationPendingFor, setConfirmationPendingFor] = useState<string | null>(null);
-  const awaitingServerAccess = Boolean(activationPending || (user?.id && confirmationPendingFor === user.id));
+  const awaitingServerAccess = Boolean(activationPending || (userId && confirmationPendingFor === userId));
   const busy = processing || operationPending;
   const { quotaStatus } = useQuota();
   const insets = useSafeAreaInsets();
@@ -94,7 +93,7 @@ function PaywallScreen() {
   const annualDiscount = useMemo(() => calculateAnnualDiscount(packages), [packages]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [toast, setToast] = useState<{ message: string; mode: 'success' | 'info' } | null>(null);
-  const [showErrorSheet, setShowErrorSheet] = useState(false);
+  const showErrorSheet = Boolean(error);
   const viewedAnalyticsKeyRef = useRef<string | null>(null);
   const purchaseOutcomeRef = useRef<'none' | 'completed' | 'restored'>('none');
   const dismissedTrackedRef = useRef(false);
@@ -112,16 +111,8 @@ function PaywallScreen() {
   const routeTrigger = getPaywallTrigger(params.trigger);
   const paywallTrigger = isDeviceUpgraded ? 'returning_device' : routeTrigger;
   const isDreamAnalysisOffer = paywallTrigger === 'analysis_cta' && Boolean(params.dreamId)
-    && params.dreamOwnerId === user?.id;
+    && params.dreamOwnerId === userId;
   const paywallVariant = useMemo(() => getPaywallVariant(paywallTrigger), [paywallTrigger]);
-
-  useEffect(() => {
-    log.debug('error state changed', error?.message);
-    if (error) {
-      log.debug('showing error bottom sheet');
-      setShowErrorSheet(true);
-    }
-  }, [error]);
 
   // Keeps rating requests away from the paywall and the minutes after it.
   useEffect(() => {
@@ -230,7 +221,7 @@ function PaywallScreen() {
   }, [currentLang]);
 
   const confirmAccessAndResume = useCallback(async (result: Awaited<ReturnType<typeof purchase>> | null) => {
-    setConfirmationPendingFor(user?.id ?? null);
+    setConfirmationPendingFor(userId ?? null);
     let confirmed = result;
     if (!confirmed?.serverConfirmed || !confirmed.isActive || confirmed.tier !== 'plus') {
       try {
@@ -240,18 +231,17 @@ function PaywallScreen() {
         // The pending state owns this recovery; a generic error sheet would
         // obscure its retry button after a successful store transaction.
         clearError();
-        setShowErrorSheet(false);
         return false;
       }
     }
     if (!confirmed.serverConfirmed || !confirmed.isActive || confirmed.tier !== 'plus') return false;
     setConfirmationPendingFor(null);
-    const returnRoute = requestAnalysisReturnRoute(params, user?.id);
+    const returnRoute = requestAnalysisReturnRoute(params, userId);
     if (returnRoute) {
       navigateToDream(returnRoute);
     }
     return true;
-  }, [clearError, navigateToDream, params, refreshSubscription, user?.id]);
+  }, [clearError, navigateToDream, params, refreshSubscription, userId]);
 
   const handleRetryActivation = useCallback(async () => {
     if (operationInFlightRef.current || processing) return;
@@ -289,7 +279,7 @@ function PaywallScreen() {
         tier: nextStatus?.tier ?? 'plus',
       });
       if (!nextStatus?.isActive && !nextStatus?.storeActive) {
-        setConfirmationPendingFor(user?.id ?? null);
+        setConfirmationPendingFor(userId ?? null);
         return;
       }
       if (!await confirmAccessAndResume(nextStatus)) return;
@@ -304,7 +294,7 @@ function PaywallScreen() {
       operationInFlightRef.current = false;
       setOperationPending(false);
     }
-  }, [analyticsTier, canPurchase, confirmAccessAndResume, effectiveSelectedId, paywallTrigger, purchase, selectedPlan, t, user?.id]);
+  }, [analyticsTier, canPurchase, confirmAccessAndResume, effectiveSelectedId, paywallTrigger, purchase, selectedPlan, t, userId]);
 
   const handleRestore = useCallback(async () => {
     if (processing || requiresAuth || awaitingServerAccess || operationInFlightRef.current) return;
@@ -343,7 +333,6 @@ function PaywallScreen() {
   }, []);
 
   const handleCloseErrorSheet = useCallback(() => {
-    setShowErrorSheet(false);
     clearError();
   }, [clearError]);
 
@@ -414,30 +403,39 @@ function PaywallScreen() {
         .map((pkg) => {
           const optionKey = pkg.interval === 'monthly' ? 'monthly' : 'annual';
           const isAnnual = pkg.interval === 'annual';
-          const comparablePrice = isAnnual
+          const billedInterval = translateWithFallback(`subscription.paywall.option.interval.${optionKey}`);
+          const monthlyEquivalent = isAnnual
             ? formatNumber(calculateMonthlyEquivalent(pkg), {
                 style: 'currency',
                 currency: pkg.currency,
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2,
               })
-            : pkg.priceFormatted;
+            : '';
+          // App Store rule: the amount billed is the largest price on a card. Android and the web
+          // have no such rule and keep the annual monthly equivalent large (owner decision 2026-10-19).
+          const leadsWithEquivalent = isAnnual && Platform.OS !== 'ios';
           return {
             id: pkg.id,
             title: translateWithFallback(
               `subscription.paywall.option.title.${optionKey}`,
               pkg.title
             ),
-            price: comparablePrice,
-            intervalLabel: translateWithFallback('subscription.paywall.option.interval.monthly'),
+            price: leadsWithEquivalent ? monthlyEquivalent : pkg.priceFormatted,
+            intervalLabel: leadsWithEquivalent
+              ? translateWithFallback('subscription.paywall.option.interval.monthly')
+              : billedInterval,
             billingDetail: pkg.freeTrialDays
               ? t('subscription.paywall.option.billing.trial', {
                   days: pkg.freeTrialDays,
                   price: pkg.priceFormatted,
+                  interval: billedInterval,
                 })
-              : isAnnual
+              : leadsWithEquivalent
                 ? t('subscription.paywall.option.billing.annual', { price: pkg.priceFormatted })
-                : t('subscription.paywall.option.billing.monthly'),
+                : isAnnual
+                  ? t('subscription.paywall.option.billing.annual_equivalent', { price: monthlyEquivalent })
+                  : t('subscription.paywall.option.billing.monthly'),
             badge:
               pkg.freeTrialDays
                 ? t('subscription.paywall.option.badge.trial', { days: pkg.freeTrialDays })
@@ -852,7 +850,20 @@ function PaywallScreen() {
                 {t('subscription.paywall.trial_footnote', {
                   days: selectedTrialDays,
                   price: selectedPackage.priceFormatted,
+                  interval: translateWithFallback(
+                    `subscription.paywall.option.interval.${selectedPackage.interval === 'monthly' ? 'monthly' : 'annual'}`
+                  ),
                 })}
+              </Text>
+            ) : null}
+
+            {/* A guest is asked to sign in before paying: say why, right under the button. */}
+            {!isActive && requiresAuth ? (
+              <Text
+                style={[styles.authReason, { color: noctalia.text.secondary }]}
+                testID={TID.Text.PaywallAuthReason}
+              >
+                {t('subscription.paywall.notice.auth')}
               </Text>
             ) : null}
 
@@ -872,11 +883,15 @@ function PaywallScreen() {
           </Reveal>
 
           <Reveal index={4}>
+          {/* Renewal terms are part of the offer, so everyone reads them, guests included. A
+              subscriber who turned renewal off reads that state above instead. */}
+          {!isActive || subscriptionStatus?.willRenew === true ? (
+            <Text style={[styles.notice, { color: noctalia.text.secondary }]} testID={TID.Text.PaywallStoreNotice}>
+              {t(STORE_NOTICE_KEY)}
+            </Text>
+          ) : null}
           {!requiresAuth ? (
             <>
-              <Text style={[styles.notice, { color: noctalia.text.secondary }]}>
-                {t(STORE_NOTICE_KEY)}
-              </Text>
               {/* A utility, not an offer: it sits with the fine print, still a full 44pt target. */}
               <Pressable
                 style={({ pressed }) => [styles.restoreButton, pressed && styles.legalLinkPressed]}
@@ -892,11 +907,12 @@ function PaywallScreen() {
             </>
           ) : null}
 
+          {/* Reviewers and readers tap these on a phone: each keeps a full 44pt target. */}
           <View style={styles.legalLinks}>
             <Pressable
               accessibilityRole="link"
               onPress={() => handleOpenLegalLink('termsOfUse')}
-              style={({ pressed }) => [pressed && styles.legalLinkPressed]}
+              style={({ pressed }) => [styles.legalLinkTarget, pressed && styles.legalLinkPressed]}
               testID={TID.Button.PaywallTermsOfUse}
             >
               <Text style={[styles.legalLink, { color: noctalia.text.secondary }]}>
@@ -907,7 +923,7 @@ function PaywallScreen() {
             <Pressable
               accessibilityRole="link"
               onPress={() => handleOpenLegalLink('privacyPolicy')}
-              style={({ pressed }) => [pressed && styles.legalLinkPressed]}
+              style={({ pressed }) => [styles.legalLinkTarget, pressed && styles.legalLinkPressed]}
               testID={TID.Button.PaywallPrivacyPolicy}
             >
               <Text style={[styles.legalLink, { color: noctalia.text.secondary }]}>
@@ -1201,6 +1217,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
     lineHeight: 16,
   },
+  authReason: {
+    textAlign: 'center',
+    fontSize: 13,
+    lineHeight: 18,
+    fontFamily: Fonts.spaceGrotesk.regular,
+  },
   primaryLabel: {
     fontSize: 16,
     fontFamily: Fonts.spaceGrotesk.bold,
@@ -1242,6 +1264,10 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.spaceGrotesk.medium,
     fontSize: 12,
     textDecorationLine: 'underline',
+  },
+  legalLinkTarget: {
+    minHeight: 44,
+    justifyContent: 'center',
   },
   legalLinkPressed: {
     opacity: 0.75,

@@ -1,5 +1,8 @@
 /* @jest-environment jsdom */
 
+import React from 'react';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+
 jest.mock('@/lib/storeReview', () => ({
   canOpenStoreReviewPage: () => false,
   markStoreReviewPaywallSeen: jest.fn(),
@@ -8,10 +11,6 @@ jest.mock('@/lib/storeReview', () => ({
   requestStoreReviewIfDue: jest.fn(async () => false),
 }));
 jest.mock('@/components/ui/DreamerBackground', () => ({ DreamerArtworkWindow: () => null, DreamerBackground: () => null }));
-
-
-import React from 'react';
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 
 const mockPush = jest.fn();
 const mockBack = jest.fn();

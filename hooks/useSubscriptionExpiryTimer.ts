@@ -146,7 +146,10 @@ export function useSubscriptionExpiryTimer({
   onStatusChange,
 }: UseSubscriptionExpiryTimerOptions) {
   const callbackRef = useRef(onStatusChange);
-  callbackRef.current = onStatusChange;
+  const hasStatusCallback = Boolean(onStatusChange);
+  useEffect(() => {
+    callbackRef.current = onStatusChange;
+  }, [onStatusChange]);
 
   const stableCallback = useCallback((nextStatus: SubscriptionStatus) => {
     callbackRef.current?.(nextStatus);
@@ -156,10 +159,10 @@ export function useSubscriptionExpiryTimer({
     latestUserId = enabled ? userId ?? null : null;
     setLatestStatus(enabled ? status : null);
     scheduleTimer();
-  }, [enabled, status, userId]);
+  }, [enabled, status, userId, hasStatusCallback]);
 
   useEffect(() => {
-    if (!enabled || !onStatusChange) return;
+    if (!enabled || !hasStatusCallback) return;
 
     callbackRegistry.add(stableCallback);
     scheduleTimer();
@@ -173,5 +176,5 @@ export function useSubscriptionExpiryTimer({
         lastRefreshKey = null;
       }
     };
-  }, [enabled, onStatusChange, stableCallback]);
+  }, [enabled, hasStatusCallback, stableCallback]);
 }

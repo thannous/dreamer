@@ -7,7 +7,6 @@ import {
   journeyStateForWorld,
   isSessionIncludedInOwnedWorld,
   isSessionInWorldJourney,
-  recommendedSessionForWorld,
   resumableSessionForWorld,
   sessionOfTheDayForWorld,
   sessionsForWorld,
@@ -119,7 +118,7 @@ describe('world journey recommendations', () => {
   });
 
   it('drives the main recommendation from the first incomplete path step', () => {
-    expect(recommendedSessionForWorld('forest', DATE, {}).id).toBe('anxiety-ground');
+    expect(homeRecommendationForWorld('forest', DATE, {}).session.id).toBe('anxiety-ground');
 
     const progress = {
       'anxiety-ground': {
@@ -133,7 +132,7 @@ describe('world journey recommendations', () => {
       stageId: 'deepen',
       session: { id: 'anxiety-wave' },
     });
-    expect(recommendedSessionForWorld('forest', DATE, progress).id).toBe('anxiety-wave');
+    expect(homeRecommendationForWorld('forest', DATE, progress).session.id).toBe('anxiety-wave');
   });
 });
 
@@ -176,7 +175,7 @@ describe('resumableSessionForWorld', () => {
 describe('playable home recommendation', () => {
   it('keeps the editorial step when it is already playable', () => {
     expect(
-      recommendedSessionForWorld('constellation', DATE, {}, (session) => !session.isPremium).id
+      homeRecommendationForWorld('constellation', DATE, {}, (session) => !session.isPremium).session.id
     ).toBe('sleep-descent');
   });
 
@@ -188,9 +187,9 @@ describe('playable home recommendation', () => {
       },
     };
 
-    expect(recommendedSessionForWorld('constellation', DATE, progress).id).toBe('dream-threshold');
+    expect(homeRecommendationForWorld('constellation', DATE, progress).session.id).toBe('dream-threshold');
     expect(
-      recommendedSessionForWorld('constellation', DATE, progress, (session) => !session.isPremium).id
+      homeRecommendationForWorld('constellation', DATE, progress, (session) => !session.isPremium).session.id
     ).toBe('sleep-descent');
   });
 
@@ -202,7 +201,7 @@ describe('playable home recommendation', () => {
       },
     };
 
-    expect(recommendedSessionForWorld('constellation', DATE, progress, () => false).id).toBe(
+    expect(homeRecommendationForWorld('constellation', DATE, progress, () => false).session.id).toBe(
       'dream-threshold'
     );
   });
@@ -297,13 +296,13 @@ describe('personalized home recommendation', () => {
     };
 
     expect(
-      recommendedSessionForWorld(
+      homeRecommendationForWorld(
         'constellation',
         DATE,
         progress,
         (session) => !session.isPremium,
         { goals: ['dream-prep'], dailyIntentionMin: 20 }
-      ).id
+      ).session.id
     ).toBe('sleep-descent');
   });
 });

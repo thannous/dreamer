@@ -17,6 +17,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useChatSendLock } from '@/hooks/useChatSendLock';
+import { useChatCategoryPrompt } from '@/hooks/useChatCategoryPrompt';
 import { useQuota } from '@/hooks/useQuota';
 import { useTranslation } from '@/hooks/useTranslation';
 import { requestAiConsent } from '@/lib/aiConsent';
@@ -204,7 +205,6 @@ function DreamChatContent() {
   const [quotaCheckError, setQuotaCheckError] = useState<string | null>(null);
   const quotaCheckTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isMountedRef = useRef(true);
-  const lastCategorySentKeyRef = useRef<string | null>(null);
   const lastSynthesisSentKeyRef = useRef<string | null>(null);
   const requestAbortRef = useRef<AbortController | null>(null);
 
@@ -352,12 +352,13 @@ function DreamChatContent() {
     }
   }, [dream, canExplore, t]);
 
-  // Check exploration quota on mount
+  // Synchronize the external quota service; keep its loading/error state observable.
   useEffect(() => {
     runQuotaCheck();
   }, [runQuotaCheck]);
 
-  // Initialize chat messages from dream history
+  // Restore this external conversation once per entry/language. Continuously deriving
+  // it from dream updates would overwrite a pending local or streaming message.
   useEffect(() => {
     if (!dream) return;
 
@@ -406,7 +407,6 @@ function DreamChatContent() {
       });
 
       setMessages(normalized);
-      lastCategorySentKeyRef.current = null; // allow new theme prompts when revisiting
 
       if (
         didChange &&
@@ -431,57 +431,9 @@ function DreamChatContent() {
       // Start with initial AI greeting
       const initialMessage = createChatMessage('model', t('dream_chat.initial_greeting', { title: dream.title }));
       setMessages([initialMessage]);
-      lastCategorySentKeyRef.current = null;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dreamIdentity, t]);
-
-  // Send category-specific question if category is provided
-  useEffect(() => {
-    // Wait for quota check to complete before auto-sending
-    if (!hasQuotaCheckClearance) {
-      return;
-    }
-
-    // Don't send if exploration is blocked
-    if (isQuotaGateBlocked) {
-      return;
-    }
-
-    if (!dream || !category || category === 'general' || targetMessageId) {
-      return;
-    }
-
-    // Wait until existing history is loaded into state to avoid dropping messages
-    const hasStoredHistory = Boolean(dream.chatHistory?.length);
-    const messagesReady = messages.length > 0 || !hasStoredHistory;
-    if (!messagesReady) {
-      return;
-    }
-
-    const categoryKey = `${dreamIdentity}:${category}`;
-    if (lastCategorySentKeyRef.current === categoryKey) {
-      return;
-    }
-
-    const question = getCategoryQuestion(category as CategoryType, t);
-
-    if (question) {
-      lastCategorySentKeyRef.current = categoryKey;
-      const timeoutId = setTimeout(() => {
-        const baseMessages = messages.length > 0 ? messages : dream.chatHistory ?? [];
-        sendMessage(question, undefined, {
-          baseMessages,
-          category: category as Exclude<CategoryType, 'general'>,
-        });
-      }, 500);
-
-      return () => {
-        clearTimeout(timeoutId);
-      };
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [category, dream, dreamIdentity, messages.length, t, hasQuotaCheckClearance, isQuotaGateBlocked, targetMessageId]); // sendMessage has stable dependencies via useCallback
 
   const sendMessage = useCallback(
     async (
@@ -895,12 +847,30 @@ function DreamChatContent() {
       shouldGateOnQuotaCheck,
       streamingReply,
       t,
+      tier,
       tryAcquireSendLock,
       applyServerDreamState,
       updateDream,
       user,
     ]
   );
+
+  const categoryQuestion = category ? getCategoryQuestion(category as CategoryType, t) : '';
+  const sendCategoryQuestion = useCallback(() => {
+    if (!dream || !category || category === 'general') return;
+    void sendMessage(categoryQuestion, undefined, {
+      baseMessages: messages.length > 0 ? messages : dream.chatHistory ?? [],
+      category: category as Exclude<CategoryType, 'general'>,
+    });
+  }, [category, categoryQuestion, dream, messages, sendMessage]);
+
+  useChatCategoryPrompt({
+    scopeKey: `${dreamIdentity}:${language}`,
+    promptKey: categoryQuestion ? `${dreamIdentity}:${category}` : null,
+    enabled: hasQuotaCheckClearance && !isQuotaGateBlocked && Boolean(dream) && !targetMessageId
+      && (messages.length > 0 || !dream?.chatHistory?.length),
+    onSend: sendCategoryQuestion,
+  });
 
   const handleRetryMessage = useCallback(
     (message: ChatMessage) => {

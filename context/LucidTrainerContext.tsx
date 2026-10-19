@@ -36,7 +36,6 @@ import {
 import {
   extractLucidDreamSignCandidates,
   getActiveLucidDreamSigns,
-  reconcileLucidDreamSignDecisions,
   type LucidActiveDreamSign,
   type LucidDreamSignCandidate,
 } from '@/lib/lucid/dreamSigns';

@@ -70,7 +70,8 @@ async function billingFree(fixtures: NativeBackgroundFixtures) {
   await billingSettings(screen);
   const quota = screen.getByTestId('quota.analysisValue', { visible: true });
   await screen.scrollUntilVisible(quota);
-  await expect(quota).toHaveText(/^(?:Included analyses: )?5 \/ 3$/);
+  // The fixture holds five analyses; since #429 the card caps the count at its limit.
+  await expect(quota).toHaveText(/^(?:Included analyses: )?3 \/ 3$/);
   await billingTap(screen, 'screen.subscription.qaLab.toggle');
   const mode = screen.getByTestId('text.subscription.qa.mode', { visible: true });
   await screen.scrollUntilVisible(mode);
@@ -149,7 +150,7 @@ test('Dreamer native billing empty restore keeps Free and reports no subscriptio
   await billingClose(screen, fixtures.platform === 'android');
   const quota = screen.getByTestId('quota.analysisValue', { visible: true });
   await screen.scrollUntilVisible(quota, { direction: 'up' });
-  await expect(quota).toHaveText(/^(?:Included analyses: )?5 \/ 3$/);
+  await expect(quota).toHaveText(/^(?:Included analyses: )?3 \/ 3$/);
   await billingCounts(fixtures, '0', '1');
 });
 
@@ -219,7 +220,7 @@ for (const profile of ['existing', 'new'] as const) {
     const quota = screen.getByTestId('quota.analysisValue', { visible: true });
     await screen.scrollUntilVisible(quota);
     await expect(quota).toHaveText(profile === 'existing'
-      ? /^(?:Included analyses: )?5 \/ 3$/ : /^(?:Included analyses: )?0 \/ 3$/);
+      ? /^(?:Included analyses: )?3 \/ 3$/ : /^(?:Included analyses: )?0 \/ 3$/);
     await billingCounts(fixtures, '0', '0');
   });
 }

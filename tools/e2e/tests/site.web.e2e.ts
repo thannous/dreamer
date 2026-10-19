@@ -667,6 +667,13 @@ const ATLAS_PAGES = [
   { id: 'flying', slug: 'voler', scenes: ['libre', 'difficile', 'ras-sol'] },
   { id: 'car', slug: 'voiture', scenes: ['conduite', 'passager', 'panne'] },
   { id: 'bridge', slug: 'pont', scenes: ['traversee', 'rupture', 'hesitation'] },
+  // Fourth batch.
+  { id: 'cat', slug: 'chat', scenes: ['affectueux', 'griffes', 'noir'] },
+  { id: 'mountain', slug: 'montagne', scenes: ['ascension', 'sommet', 'obstacle'] },
+  { id: 'key', slug: 'cle', scenes: ['trouver', 'perdre', 'serrure'] },
+  { id: 'rain', slug: 'pluie', scenes: ['douce', 'averse', 'fenetre'] },
+  { id: 'stairs', slug: 'escalier', scenes: ['monter', 'descendre', 'infini'] },
+  { id: 'mirror', slug: 'miroir', scenes: ['reflet', 'brise', 'absent'] },
 ] as const;
 
 type SixData = {
@@ -1051,51 +1058,51 @@ test('on a phone the French atlas heroes take 75svh from the top, behind a navba
   }
 });
 
-// The nineteen atlas pages (the tiger and the eighteen after it) in each published language: the
+// The twenty-five atlas pages (the tiger and the twenty-four after it) in each published language: the
 // same paintings, engine and layout as in French, every word from the page's own language. The list
-// is literal. A language whose catalog has no FAQ for a symbol shows no FAQ section (eleven pt-br symbols).
+// is literal. A language whose catalog has no FAQ for a symbol shows no FAQ section (seventeen pt-br symbols, one Italian).
 const ATLAS_LANGUAGES = [
   {
     tag: 'en', chosen: 'Your scene: ', source: 'Read the variation “',
     sections: ['What Does It Mean?', 'Common scenes', 'Questions to Ask Yourself', 'Detailed reading', 'Common Variations', 'FAQ', 'Learn More'],
     ids: ['meaning', 'continue-in-noctalia', 'scenes', 'reflection', 'questions', 'reading', 'variations', 'faq', 'further', 'related', 'keep-in-noctalia'],
-    pages: [['/en/symbols/tiger', 'Tiger'], ['/en/symbols/snake', 'Snake'], ['/en/symbols/ocean', 'Ocean / Sea'], ['/en/symbols/forest', 'Forest'], ['/en/symbols/house', 'House'], ['/en/symbols/falling', 'Falling'], ['/en/symbols/butterfly', 'Butterfly'], ['/en/symbols/moon', 'Moon'], ['/en/symbols/door', 'Door'], ['/en/symbols/fire', 'Fire'], ['/en/symbols/bird', 'Bird'], ['/en/symbols/train', 'Train'], ['/en/symbols/clock', 'Clock'], ['/en/symbols/water', 'Water'], ['/en/symbols/dog', 'Dog'], ['/en/symbols/teeth', 'Teeth (losing teeth)'], ['/en/symbols/flying', 'Flying'], ['/en/symbols/car', 'Car'], ['/en/symbols/bridge', 'Bridge']],
+    pages: [['/en/symbols/tiger', 'Tiger'], ['/en/symbols/snake', 'Snake'], ['/en/symbols/ocean', 'Ocean / Sea'], ['/en/symbols/forest', 'Forest'], ['/en/symbols/house', 'House'], ['/en/symbols/falling', 'Falling'], ['/en/symbols/butterfly', 'Butterfly'], ['/en/symbols/moon', 'Moon'], ['/en/symbols/door', 'Door'], ['/en/symbols/fire', 'Fire'], ['/en/symbols/bird', 'Bird'], ['/en/symbols/train', 'Train'], ['/en/symbols/clock', 'Clock'], ['/en/symbols/water', 'Water'], ['/en/symbols/dog', 'Dog'], ['/en/symbols/teeth', 'Teeth (losing teeth)'], ['/en/symbols/flying', 'Flying'], ['/en/symbols/car', 'Car'], ['/en/symbols/bridge', 'Bridge'], ['/en/symbols/cat', 'Cat'], ['/en/symbols/mountain', 'Mountain'], ['/en/symbols/key', 'Key'], ['/en/symbols/rain', 'Rain'], ['/en/symbols/stairs', 'Stairs'], ['/en/symbols/mirror', 'Mirror']],
     withoutFaq: [],
   },
   {
     tag: 'fr', chosen: 'Votre scène : ', source: 'Lire la variante « ',
     sections: ['Que signifie-t-il ?', 'Scènes courantes', 'Questions à se poser', 'Lecture détaillée', 'Variations courantes', 'FAQ', 'Pour aller plus loin'],
     ids: ['meaning', 'continuer-noctalia', 'scenes', 'reflexion', 'questions', 'lecture', 'variations', 'faq', 'plus-loin', 'associes', 'garder-noctalia'],
-    pages: [['/fr/symboles/tigre', 'Tigre'], ['/fr/symboles/serpent', 'Serpent'], ['/fr/symboles/mer', 'Mer / Océan'], ['/fr/symboles/foret', 'Forêt'], ['/fr/symboles/maison', 'Maison'], ['/fr/symboles/chute', 'Chute'], ['/fr/symboles/papillon', 'Papillon'], ['/fr/symboles/lune', 'Lune'], ['/fr/symboles/porte', 'Porte'], ['/fr/symboles/feu', 'Feu'], ['/fr/symboles/oiseau', 'Oiseau'], ['/fr/symboles/train', 'Train'], ['/fr/symboles/horloge', 'Horloge'], ['/fr/symboles/eau', 'Eau'], ['/fr/symboles/chien', 'Chien'], ['/fr/symboles/dents', 'Dents (perdre ses dents)'], ['/fr/symboles/voler', 'Voler'], ['/fr/symboles/voiture', 'Voiture'], ['/fr/symboles/pont', 'Pont']],
+    pages: [['/fr/symboles/tigre', 'Tigre'], ['/fr/symboles/serpent', 'Serpent'], ['/fr/symboles/mer', 'Mer / Océan'], ['/fr/symboles/foret', 'Forêt'], ['/fr/symboles/maison', 'Maison'], ['/fr/symboles/chute', 'Chute'], ['/fr/symboles/papillon', 'Papillon'], ['/fr/symboles/lune', 'Lune'], ['/fr/symboles/porte', 'Porte'], ['/fr/symboles/feu', 'Feu'], ['/fr/symboles/oiseau', 'Oiseau'], ['/fr/symboles/train', 'Train'], ['/fr/symboles/horloge', 'Horloge'], ['/fr/symboles/eau', 'Eau'], ['/fr/symboles/chien', 'Chien'], ['/fr/symboles/dents', 'Dents (perdre ses dents)'], ['/fr/symboles/voler', 'Voler'], ['/fr/symboles/voiture', 'Voiture'], ['/fr/symboles/pont', 'Pont'], ['/fr/symboles/chat', 'Chat'], ['/fr/symboles/montagne', 'Montagne'], ['/fr/symboles/cle', 'Clé'], ['/fr/symboles/pluie', 'Pluie'], ['/fr/symboles/escalier', 'Escalier'], ['/fr/symboles/miroir', 'Miroir']],
     withoutFaq: [],
   },
   {
     tag: 'es', chosen: 'Tu escena: ', source: 'Leer la variante «',
     sections: ['¿Qué significa?', 'Escenas frecuentes', 'Preguntas para reflexionar', 'Lectura detallada', 'Variaciones comunes', 'Preguntas frecuentes', 'Saber más'],
     ids: ['meaning', 'continuar-en-noctalia', 'scenes', 'reflexion', 'questions', 'lectura', 'variations', 'faq', 'para-saber-mas', 'relacionados', 'guardar-en-noctalia'],
-    pages: [['/es/simbolos/tigre', 'Tigre'], ['/es/simbolos/serpiente', 'Serpiente'], ['/es/simbolos/oceano', 'Océano / Mar'], ['/es/simbolos/bosque', 'Bosque'], ['/es/simbolos/casa', 'Casa'], ['/es/simbolos/caida', 'Caída'], ['/es/simbolos/mariposa', 'Mariposa'], ['/es/simbolos/luna', 'Luna'], ['/es/simbolos/puerta', 'Puerta'], ['/es/simbolos/fuego', 'Fuego'], ['/es/simbolos/pajaro', 'Pájaro'], ['/es/simbolos/tren', 'Tren'], ['/es/simbolos/reloj-de-pared', 'Reloj de pared'], ['/es/simbolos/agua', 'Agua'], ['/es/simbolos/perro', 'Perro'], ['/es/simbolos/dientes', 'Dientes (perder dientes)'], ['/es/simbolos/volar', 'Volar'], ['/es/simbolos/coche', 'Coche'], ['/es/simbolos/puente', 'Puente']],
+    pages: [['/es/simbolos/tigre', 'Tigre'], ['/es/simbolos/serpiente', 'Serpiente'], ['/es/simbolos/oceano', 'Océano / Mar'], ['/es/simbolos/bosque', 'Bosque'], ['/es/simbolos/casa', 'Casa'], ['/es/simbolos/caida', 'Caída'], ['/es/simbolos/mariposa', 'Mariposa'], ['/es/simbolos/luna', 'Luna'], ['/es/simbolos/puerta', 'Puerta'], ['/es/simbolos/fuego', 'Fuego'], ['/es/simbolos/pajaro', 'Pájaro'], ['/es/simbolos/tren', 'Tren'], ['/es/simbolos/reloj-de-pared', 'Reloj de pared'], ['/es/simbolos/agua', 'Agua'], ['/es/simbolos/perro', 'Perro'], ['/es/simbolos/dientes', 'Dientes (perder dientes)'], ['/es/simbolos/volar', 'Volar'], ['/es/simbolos/coche', 'Coche'], ['/es/simbolos/puente', 'Puente'], ['/es/simbolos/gato', 'Gato'], ['/es/simbolos/montana', 'Montaña'], ['/es/simbolos/llave', 'Llave'], ['/es/simbolos/lluvia', 'Lluvia'], ['/es/simbolos/escaleras', 'Escaleras'], ['/es/simbolos/espejo', 'Espejo']],
     withoutFaq: [],
   },
   {
     tag: 'de', chosen: 'Ihre Szene: ', source: 'Variante lesen „',
     sections: ['Was bedeutet es?', 'Häufige Szenen', 'Fragen zur Selbstreflexion', 'Ausführliche Deutung', 'Häufige Variationen', 'Häufige Fragen', 'Mehr erfahren'],
     ids: ['meaning', 'weiter-in-noctalia', 'scenes', 'reflexion', 'questions', 'deutung', 'variations', 'faq', 'weiterlesen', 'verwandt', 'behalten-in-noctalia'],
-    pages: [['/de/traumsymbole/tiger', 'Tiger'], ['/de/traumsymbole/schlange', 'Schlange'], ['/de/traumsymbole/meer', 'Meer / Ozean'], ['/de/traumsymbole/wald', 'Wald'], ['/de/traumsymbole/haus', 'Haus'], ['/de/traumsymbole/fallen', 'Fallen im Traum'], ['/de/traumsymbole/schmetterling', 'Schmetterling'], ['/de/traumsymbole/mond', 'Mond'], ['/de/traumsymbole/tuer', 'Tür'], ['/de/traumsymbole/feuer', 'Feuer'], ['/de/traumsymbole/vogel', 'Vogel'], ['/de/traumsymbole/zug', 'Zug'], ['/de/traumsymbole/wanduhr', 'Wanduhr'], ['/de/traumsymbole/wasser', 'Wasser'], ['/de/traumsymbole/hund', 'Hund'], ['/de/traumsymbole/zaehne', 'Zähne fallen aus'], ['/de/traumsymbole/fliegen', 'Fliegen'], ['/de/traumsymbole/auto', 'Auto'], ['/de/traumsymbole/bruecke', 'Brücke']],
+    pages: [['/de/traumsymbole/tiger', 'Tiger'], ['/de/traumsymbole/schlange', 'Schlange'], ['/de/traumsymbole/meer', 'Meer / Ozean'], ['/de/traumsymbole/wald', 'Wald'], ['/de/traumsymbole/haus', 'Haus'], ['/de/traumsymbole/fallen', 'Fallen im Traum'], ['/de/traumsymbole/schmetterling', 'Schmetterling'], ['/de/traumsymbole/mond', 'Mond'], ['/de/traumsymbole/tuer', 'Tür'], ['/de/traumsymbole/feuer', 'Feuer'], ['/de/traumsymbole/vogel', 'Vogel'], ['/de/traumsymbole/zug', 'Zug'], ['/de/traumsymbole/wanduhr', 'Wanduhr'], ['/de/traumsymbole/wasser', 'Wasser'], ['/de/traumsymbole/hund', 'Hund'], ['/de/traumsymbole/zaehne', 'Zähne fallen aus'], ['/de/traumsymbole/fliegen', 'Fliegen'], ['/de/traumsymbole/auto', 'Auto'], ['/de/traumsymbole/bruecke', 'Brücke'], ['/de/traumsymbole/katze', 'Katze'], ['/de/traumsymbole/berg', 'Berg'], ['/de/traumsymbole/schluessel', 'Schlüssel'], ['/de/traumsymbole/regen', 'Regen'], ['/de/traumsymbole/treppe', 'Treppe'], ['/de/traumsymbole/spiegel', 'Spiegel']],
     withoutFaq: [],
   },
   {
     tag: 'it', chosen: 'La tua scena: ', source: 'Leggi la variante «',
     sections: ['Cosa significa?', 'Scene frequenti', 'Domande da porsi', 'Lettura dettagliata', 'Variazioni comuni', 'Domande frequenti', 'Per approfondire'],
     ids: ['meaning', 'continua-in-noctalia', 'scenes', 'riflessione', 'questions', 'lettura', 'variations', 'faq', 'approfondire', 'correlati', 'conserva-in-noctalia'],
-    pages: [['/it/simboli/tigre', 'Tigre'], ['/it/simboli/serpente', 'Serpente'], ['/it/simboli/oceano', 'Mare / Oceano'], ['/it/simboli/foresta', 'Foresta'], ['/it/simboli/casa', 'Casa'], ['/it/simboli/cadere', 'Cadere'], ['/it/simboli/farfalla', 'Farfalla'], ['/it/simboli/luna', 'Luna'], ['/it/simboli/porta', 'Porta'], ['/it/simboli/fuoco', 'Incendio / Fuoco'], ['/it/simboli/uccello', 'Uccello'], ['/it/simboli/treno', 'Treno'], ['/it/simboli/orologio-da-parete', 'Orologio da parete'], ['/it/simboli/acqua', 'Acqua'], ['/it/simboli/cane', 'Cane'], ['/it/simboli/denti', 'Denti (perdere i denti)'], ['/it/simboli/volare', 'Volare'], ['/it/simboli/automobile', 'Automobile'], ['/it/simboli/ponte', 'Ponte']],
-    withoutFaq: [],
+    pages: [['/it/simboli/tigre', 'Tigre'], ['/it/simboli/serpente', 'Serpente'], ['/it/simboli/oceano', 'Mare / Oceano'], ['/it/simboli/foresta', 'Foresta'], ['/it/simboli/casa', 'Casa'], ['/it/simboli/cadere', 'Cadere'], ['/it/simboli/farfalla', 'Farfalla'], ['/it/simboli/luna', 'Luna'], ['/it/simboli/porta', 'Porta'], ['/it/simboli/fuoco', 'Incendio / Fuoco'], ['/it/simboli/uccello', 'Uccello'], ['/it/simboli/treno', 'Treno'], ['/it/simboli/orologio-da-parete', 'Orologio da parete'], ['/it/simboli/acqua', 'Acqua'], ['/it/simboli/cane', 'Cane'], ['/it/simboli/denti', 'Denti (perdere i denti)'], ['/it/simboli/volare', 'Volare'], ['/it/simboli/automobile', 'Automobile'], ['/it/simboli/ponte', 'Ponte'], ['/it/simboli/gatto', 'Gatto'], ['/it/simboli/montagna', 'Montagna'], ['/it/simboli/chiave', 'Chiave'], ['/it/simboli/pioggia', 'Pioggia'], ['/it/simboli/scale', 'Scale'], ['/it/simboli/specchio', 'Specchio']],
+    withoutFaq: ['/it/simboli/scale'],
   },
   {
     tag: 'pt-BR', chosen: 'Sua cena: ', source: 'Ler a variação “',
     sections: ['O que significa?', 'Cenas comuns', 'Perguntas para refletir', 'Leitura detalhada', 'Variações comuns', 'Perguntas frequentes', 'Para saber mais'],
     ids: ['meaning', 'continuar-no-noctalia', 'scenes', 'reflexao', 'questions', 'leitura', 'variations', 'faq', 'para-saber-mais', 'relacionados', 'guardar-no-noctalia'],
-    pages: [['/pt-br/simbolos/tigre', 'Tigre'], ['/pt-br/simbolos/cobra', 'Cobra'], ['/pt-br/simbolos/oceano-mar', 'Oceano / Mar'], ['/pt-br/simbolos/floresta', 'Floresta'], ['/pt-br/simbolos/casa', 'Casa'], ['/pt-br/simbolos/queda', 'Queda'], ['/pt-br/simbolos/borboleta', 'Borboleta'], ['/pt-br/simbolos/lua', 'Lua'], ['/pt-br/simbolos/porta', 'Porta'], ['/pt-br/simbolos/fogo', 'Fogo'], ['/pt-br/simbolos/passaro', 'Pássaro'], ['/pt-br/simbolos/trem', 'Trem'], ['/pt-br/simbolos/relogio-de-parede', 'Relógio de parede'], ['/pt-br/simbolos/agua', 'Água'], ['/pt-br/simbolos/cachorro', 'Cachorro'], ['/pt-br/simbolos/dentes-perder-os-dentes', 'Dentes (perder os dentes)'], ['/pt-br/simbolos/voar', 'Voar'], ['/pt-br/simbolos/carro', 'Carro'], ['/pt-br/simbolos/ponte', 'Ponte']],
-    withoutFaq: ['/pt-br/simbolos/cobra', '/pt-br/simbolos/oceano-mar', '/pt-br/simbolos/queda', '/pt-br/simbolos/borboleta', '/pt-br/simbolos/lua', '/pt-br/simbolos/passaro', '/pt-br/simbolos/trem', '/pt-br/simbolos/dentes-perder-os-dentes', '/pt-br/simbolos/voar', '/pt-br/simbolos/carro', '/pt-br/simbolos/ponte'],
+    pages: [['/pt-br/simbolos/tigre', 'Tigre'], ['/pt-br/simbolos/cobra', 'Cobra'], ['/pt-br/simbolos/oceano-mar', 'Oceano / Mar'], ['/pt-br/simbolos/floresta', 'Floresta'], ['/pt-br/simbolos/casa', 'Casa'], ['/pt-br/simbolos/queda', 'Queda'], ['/pt-br/simbolos/borboleta', 'Borboleta'], ['/pt-br/simbolos/lua', 'Lua'], ['/pt-br/simbolos/porta', 'Porta'], ['/pt-br/simbolos/fogo', 'Fogo'], ['/pt-br/simbolos/passaro', 'Pássaro'], ['/pt-br/simbolos/trem', 'Trem'], ['/pt-br/simbolos/relogio-de-parede', 'Relógio de parede'], ['/pt-br/simbolos/agua', 'Água'], ['/pt-br/simbolos/cachorro', 'Cachorro'], ['/pt-br/simbolos/dentes-perder-os-dentes', 'Dentes (perder os dentes)'], ['/pt-br/simbolos/voar', 'Voar'], ['/pt-br/simbolos/carro', 'Carro'], ['/pt-br/simbolos/ponte', 'Ponte'], ['/pt-br/simbolos/gato', 'Gato'], ['/pt-br/simbolos/montanha', 'Montanha'], ['/pt-br/simbolos/chave', 'Chave'], ['/pt-br/simbolos/chuva', 'Chuva'], ['/pt-br/simbolos/escada', 'Escada'], ['/pt-br/simbolos/espelho', 'Espelho']],
+    withoutFaq: ['/pt-br/simbolos/cobra', '/pt-br/simbolos/oceano-mar', '/pt-br/simbolos/queda', '/pt-br/simbolos/borboleta', '/pt-br/simbolos/lua', '/pt-br/simbolos/passaro', '/pt-br/simbolos/trem', '/pt-br/simbolos/dentes-perder-os-dentes', '/pt-br/simbolos/voar', '/pt-br/simbolos/carro', '/pt-br/simbolos/ponte', '/pt-br/simbolos/gato', '/pt-br/simbolos/montanha', '/pt-br/simbolos/chave', '/pt-br/simbolos/chuva', '/pt-br/simbolos/escada', '/pt-br/simbolos/espelho'],
   },
 ] as const;
 
@@ -1140,7 +1147,7 @@ function readLocalizedAtlas() {
   };
 }
 
-test('the nineteen atlas pages read in each of the six languages, with the French layout at 2560 and on a phone', { timeout: 900_000 }, async ({ app, browser, screen }) => {
+test('the twenty-five atlas pages read in each of the six languages, with the French layout at 2560 and on a phone', { timeout: 900_000 }, async ({ app, browser, screen }) => {
   const words = ATLAS_LANGUAGES.map(language => [language.tag, language.chosen.trim(), language.source.trim()] as const);
   for (const language of ATLAS_LANGUAGES) {
     for (const [path, title] of language.pages) {

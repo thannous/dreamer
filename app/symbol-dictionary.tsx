@@ -144,12 +144,11 @@ function SymbolDictionaryScreen() {
     [availableLetters],
   );
 
-  useEffect(() => {
-    if (browseMode !== "alphabetical") return;
-    if (selectedLetter && !availableLetters.includes(selectedLetter)) {
-      setSelectedLetter(null);
-    }
-  }, [browseMode, selectedLetter, availableLetters]);
+  // Clear an unavailable selection before committing the filtered list. Keeping
+  // the old letter behind a derived fallback would resurrect it after search.
+  if (browseMode === "alphabetical" && selectedLetter && !availableLetterSet.has(selectedLetter)) {
+    setSelectedLetter(null);
+  }
 
   const sections: Section[] = useMemo(() => {
     if (browseMode === "alphabetical") {

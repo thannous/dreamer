@@ -1,11 +1,38 @@
 import { createHash } from 'node:crypto';
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawn } from 'node:child_process';
 import { readFileSync, readdirSync, lstatSync, realpathSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join, relative, sep, resolve, basename } from 'node:path';
 
 // The locked SDK (package.json, package-lock.json); a report from another version does not qualify.
 export const SDK_PINS = { e2e: '0.21.2', '@e2e-dev/web': '0.15.2', '@e2e-dev/mobile': '0.12.3', 'agent-device': '0.21.28' };
 export const digest = bytes => createHash('sha256').update(bytes).digest('hex');
+// Preserve the former UTF-8 stdout.trim() identity without buffering a whole diff.
+// A hash copy marks the last content byte; later whitespace stays provisional.
+export async function trackedDiffSha256(root, env = process.env) {
+  const child = spawn('git', ['diff', 'HEAD'], { cwd: root, env, stdio: ['ignore', 'pipe', 'pipe'] });
+  const closed = new Promise((resolve, reject) => {
+    child.once('error', reject);
+    child.once('close', (code, signal) => {
+      if (code === 0) resolve();
+      else reject(new Error(`git diff failed (${signal ? `signal ${signal}` : `exit ${code}`}).`));
+    });
+  });
+  child.stderr.resume();
+  child.stdout.setEncoding('utf8');
+  const hashed = (async () => {
+    const hash = createHash('sha256');
+    let finalHash = hash.copy(), leading = true;
+    for await (let chunk of child.stdout) {
+      if (leading) { chunk = chunk.trimStart(); leading = chunk.length === 0; }
+      const content = chunk.trimEnd();
+      if (content.length) { hash.update(content); finalHash = hash.copy(); }
+      hash.update(chunk.slice(content.length));
+    }
+    return finalHash.digest('hex');
+  })();
+  const [, result] = await Promise.all([closed, hashed]);
+  return result;
+}
 export function writeOnce(file, value) {
   writeFileSync(file, JSON.stringify(value, null, 2) + '\n', { flag: 'wx' });
 }

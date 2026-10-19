@@ -32,6 +32,11 @@ const EXTERNAL_CHECK_HEADERS = {
 };
 const TRANSIENT_EXTERNAL_ERROR_PATTERN =
   /aborted|certificate|eai_again|econnreset|enotfound|fetch failed|network|ssl|terminated|timeout|tls/i;
+// Gateway errors some servers return to HEAD or under load (PubMed answered HEAD with 502 and a
+// single request with 200). They get a GET, then a few spaced GETs; a status that stays one of
+// these still fails, and every other status keeps its meaning (404 fails at once).
+const TRANSIENT_HTTP_STATUSES = new Set([502, 503, 504]);
+const TRANSIENT_HTTP_RETRY_DELAYS_MS = [1000, 3000];
 
 function parseArg(prefix) {
   const arg = process.argv.find((a) => a.startsWith(prefix));
@@ -269,26 +274,51 @@ function extractAnchorsFromHtml(content) {
   return ids;
 }
 
-async function checkExternalUrl(url, { timeoutMs }) {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), timeoutMs);
-  const request = (method) =>
-    fetch(url, {
-      method,
-      redirect: 'follow',
-      signal: controller.signal,
-      headers: EXTERNAL_CHECK_HEADERS
-    });
+async function checkExternalUrl(url, { timeoutMs, retryDelaysMs = TRANSIENT_HTTP_RETRY_DELAYS_MS }) {
+  // Each request gets the whole timeout, so spaced retries are never cut short by an earlier one.
+  const request = async (method) => {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      const response = await fetch(url, {
+        method,
+        redirect: 'follow',
+        signal: controller.signal,
+        headers: EXTERNAL_CHECK_HEADERS
+      });
+      // Only the status matters: release the connection for the next request.
+      response.body?.cancel().catch(() => {});
+      return response;
+    } finally {
+      clearTimeout(timeout);
+    }
+  };
   const isOkStatus = (status) => status < 400 || status === 401 || status === 403 || status === 429;
   const formatError = (error) => String(error && error.message ? error.message : error);
   const canSkipTransientNetworkError = (errorMessage) =>
     TRANSIENT_EXTERNAL_ERROR_PATTERN.test(errorMessage);
+  const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
   try {
     const res = await request('HEAD');
     if (res.status === 405 || res.status === 501) {
       const res2 = await request('GET');
       return { ok: isOkStatus(res2.status), status: res2.status };
+    }
+    if (TRANSIENT_HTTP_STATUSES.has(res.status)) {
+      // A gateway error has been seen: a GET that then fails on the network keeps that status,
+      // never the skip reserved for network errors without any HTTP answer.
+      let status = res.status;
+      for (const delay of [0, ...retryDelaysMs]) {
+        if (delay) await wait(delay);
+        try {
+          status = (await request('GET')).status;
+        } catch {
+          break;
+        }
+        if (!TRANSIENT_HTTP_STATUSES.has(status)) break;
+      }
+      return { ok: isOkStatus(status), status };
     }
     return { ok: isOkStatus(res.status), status: res.status };
   } catch {
@@ -302,8 +332,6 @@ async function checkExternalUrl(url, { timeoutMs }) {
       }
       return { ok: false, status: 0, error: errorMessage };
     }
-  } finally {
-    clearTimeout(timeout);
   }
 }
 
@@ -514,7 +542,11 @@ async function main() {
   console.log('\n✅ No broken links detected.');
 }
 
-main().catch((err) => {
-  console.error('Fatal error:', err);
-  process.exit(1);
-});
+if (require.main === module) {
+  main().catch((err) => {
+    console.error('Fatal error:', err);
+    process.exit(1);
+  });
+}
+
+module.exports = { checkExternalUrl };

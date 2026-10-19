@@ -336,10 +336,6 @@ jest.mock('@/components/journal/DreamRecallAssistantCard', () => ({
     ) : null,
 }));
 
-jest.mock('@/components/reminders/ReminderOptInCard', () => ({
-  ReminderOptInCard: () => null,
-}));
-
 jest.mock('@/components/ui/icon-symbol', () => ({
   IconSymbol: () => null,
 }));

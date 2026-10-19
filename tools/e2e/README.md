@@ -404,7 +404,7 @@ Dreamer exact web coverage also exercises guest save/inline mock analysis,
 authenticated save/rename/Journal round-trip, empty-search recovery, transcript
 editing, cancelled and confirmed targeted deletion, favorite removal without
 story loss, exhausted-quota refusal without story loss, exact fixture allowance
-(Free `5 / 3`, Plus unlimited), and account Journal isolation after sign-out.
+(Free `3 / 3`, the five-analysis fixture capped at its limit; Plus unlimited), and account Journal isolation after sign-out.
 These are real browser UI journeys with the historical mock profiles, not
 qualification of backend durability, RLS, native storage or real purchases.
 Run selections after the explicit `run` argument, for example:

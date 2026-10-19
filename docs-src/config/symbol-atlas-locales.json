@@ -615,6 +615,198 @@
           "rupture": {"variation":"Uma ponte quebrada ou desabada","anchor":"quebrada"},
           "hesitation": {"variation":"Ter medo de atravessar uma ponte","anchor":"medo"}
       } }
+    },
+    "cat": {
+      "fr": { "caveat": null, "scenes": {
+          "affectueux": {"variation":"Un chat affectueux qui ronronne","anchor":"affectueux"},
+          "griffes": {"variation":"Un chat qui griffe ou qui crache","anchor":"griffes"},
+          "noir": {"variation":"Un chat noir","anchor":"noir"}
+      } },
+      "en": { "caveat": null, "scenes": {
+          "affectueux": {"variation":"An affectionate, purring cat","anchor":"purring"},
+          "griffes": {"variation":"A scratching or hissing cat","anchor":"hissing"},
+          "noir": {"variation":"A black cat","anchor":"black-cat"}
+      } },
+      "es": { "caveat": null, "scenes": {
+          "affectueux": {"variation":"Un gato cariñoso que ronronea","anchor":"carinoso"},
+          "griffes": {"variation":"Un gato que araña o bufa","anchor":"arana"},
+          "noir": {"variation":"Un gato negro","anchor":"negro"}
+      } },
+      "de": { "caveat": null, "scenes": {
+          "affectueux": {"variation":"Eine verschmuste, schnurrende Katze","anchor":"schnurrend"},
+          "griffes": {"variation":"Eine kratzende oder fauchende Katze","anchor":"fauchend"},
+          "noir": {"variation":"Eine schwarze Katze","anchor":"schwarz"}
+      } },
+      "it": { "caveat": null, "scenes": {
+          "affectueux": {"variation":"Un gatto amichevole che fa le fusa","anchor":"fusa"},
+          "griffes": {"variation":"Un gatto aggressivo o che soffia","anchor":"soffia"},
+          "noir": {"variation":"Un gatto nero","anchor":"nero"}
+      } },
+      "pt-br": { "caveat": null, "scenes": {
+          "affectueux": {"variation":"Um gato amigável, ronronando","anchor":"ronronando"},
+          "griffes": {"variation":"Um gato agressivo ou bufando","anchor":"bufando"},
+          "noir": {"variation":"Um gato preto","anchor":"preto"}
+      } }
+    },
+    "mountain": {
+      "fr": { "caveat": null, "scenes": {
+          "ascension": {"variation":"Gravir une montagne","anchor":"ascension"},
+          "sommet": {"variation":"Se tenir au sommet","anchor":"sommet"},
+          "obstacle": {"variation":"Une montagne qui barre le chemin","anchor":"obstacle"}
+      } },
+      "en": { "caveat": null, "scenes": {
+          "ascension": {"variation":"Climbing a mountain","anchor":"climbing"},
+          "sommet": {"variation":"Standing on the summit","anchor":"summit"},
+          "obstacle": {"variation":"A mountain blocking your way","anchor":"blocked"}
+      } },
+      "es": { "caveat": null, "scenes": {
+          "ascension": {"variation":"Subir una montaña","anchor":"subida"},
+          "sommet": {"variation":"Estar en la cima","anchor":"cima"},
+          "obstacle": {"variation":"Una montaña que corta el paso","anchor":"obstaculo"}
+      } },
+      "de": { "caveat": null, "scenes": {
+          "ascension": {"variation":"Einen Berg besteigen","anchor":"aufstieg"},
+          "sommet": {"variation":"Auf dem Gipfel stehen","anchor":"gipfel"},
+          "obstacle": {"variation":"Ein Berg versperrt den Weg","anchor":"hindernis"}
+      } },
+      "it": { "caveat": null, "scenes": {
+          "ascension": {"variation":"Scalare una montagna","anchor":"scalata"},
+          "sommet": {"variation":"Stare in cima alla montagna","anchor":"cima"},
+          "obstacle": {"variation":"Una montagna che sbarra il cammino","anchor":"ostacolo"}
+      } },
+      "pt-br": { "caveat": null, "scenes": {
+          "ascension": {"variation":"Escalar uma montanha","anchor":"escalada"},
+          "sommet": {"variation":"Estar no cume","anchor":"cume"},
+          "obstacle": {"variation":"Montanha bloqueando o seu caminho","anchor":"bloqueio"}
+      } }
+    },
+    "key": {
+      "fr": { "caveat": null, "scenes": {
+          "trouver": {"variation":"Trouver une clé","anchor":"trouver"},
+          "perdre": {"variation":"Perdre ses clés","anchor":"perdre"},
+          "serrure": {"variation":"Une clé qui ne rentre pas","anchor":"serrure"}
+      } },
+      "en": { "caveat": null, "scenes": {
+          "trouver": {"variation":"Finding a key","anchor":"finding"},
+          "perdre": {"variation":"Losing your keys","anchor":"losing"},
+          "serrure": {"variation":"A key that doesn't fit","anchor":"not-fitting"}
+      } },
+      "es": { "caveat": null, "scenes": {
+          "trouver": {"variation":"Encontrar una llave","anchor":"encontrar"},
+          "perdre": {"variation":"Perder las llaves","anchor":"perder"},
+          "serrure": {"variation":"Una llave que no encaja","anchor":"no-encaja"}
+      } },
+      "de": { "caveat": null, "scenes": {
+          "trouver": {"variation":"Einen Schlüssel finden","anchor":"finden"},
+          "perdre": {"variation":"Den Schlüssel verlieren","anchor":"verlieren"},
+          "serrure": {"variation":"Ein Schlüssel, der nicht passt","anchor":"passt-nicht"}
+      } },
+      "it": { "caveat": null, "scenes": {
+          "trouver": {"variation":"Trovare una chiave","anchor":"trovare"},
+          "perdre": {"variation":"Perdere le chiavi","anchor":"perdere"},
+          "serrure": {"variation":"Una chiave che non entra","anchor":"non-entra"}
+      } },
+      "pt-br": { "caveat": null, "scenes": {
+          "trouver": {"variation":"Encontrar uma chave","anchor":"encontrar"},
+          "perdre": {"variation":"Perder uma chave","anchor":"perder"},
+          "serrure": {"variation":"Chave que não serve","anchor":"nao-serve"}
+      } }
+    },
+    "rain": {
+      "fr": { "caveat": null, "scenes": {
+          "douce": {"variation":"Pluie douce et tiède","anchor":"douce"},
+          "averse": {"variation":"Averse ou pluie battante","anchor":"averse"},
+          "fenetre": {"variation":"Regarder la pluie de l'intérieur","anchor":"fenetre"}
+      } },
+      "en": { "caveat": null, "scenes": {
+          "douce": {"variation":"Gentle, warm rain","anchor":"gentle"},
+          "averse": {"variation":"Heavy downpour","anchor":"downpour"},
+          "fenetre": {"variation":"Watching the rain from inside","anchor":"inside"}
+      } },
+      "es": { "caveat": null, "scenes": {
+          "douce": {"variation":"Lluvia suave y templada","anchor":"suave"},
+          "averse": {"variation":"Aguacero o lluvia torrencial","anchor":"aguacero"},
+          "fenetre": {"variation":"Ver llover desde dentro","anchor":"desde-dentro"}
+      } },
+      "de": { "caveat": null, "scenes": {
+          "douce": {"variation":"Sanfter, lauer Regen","anchor":"sanft"},
+          "averse": {"variation":"Wolkenbruch oder Starkregen","anchor":"wolkenbruch"},
+          "fenetre": {"variation":"Den Regen von drinnen beobachten","anchor":"drinnen"}
+      } },
+      "it": { "caveat": null, "scenes": {
+          "douce": {"variation":"Pioggia dolce e calda","anchor":"dolce"},
+          "averse": {"variation":"Acquazzone forte o tempesta","anchor":"acquazzone"},
+          "fenetre": {"variation":"Guardare la pioggia da dentro","anchor":"da-dentro"}
+      } },
+      "pt-br": { "caveat": null, "scenes": {
+          "douce": {"variation":"Chuva suave e morna","anchor":"suave"},
+          "averse": {"variation":"Temporal forte ou tempestade","anchor":"temporal"},
+          "fenetre": {"variation":"Ver a chuva de dentro de casa","anchor":"de-dentro"}
+      } }
+    },
+    "stairs": {
+      "fr": { "caveat": null, "scenes": {
+          "monter": {"variation":"Monter un escalier facilement","anchor":"monter"},
+          "descendre": {"variation":"Descendre un escalier","anchor":"descendre"},
+          "infini": {"variation":"Un escalier sans fin","anchor":"infini"}
+      } },
+      "en": { "caveat": null, "scenes": {
+          "monter": {"variation":"Climbing stairs easily","anchor":"climbing"},
+          "descendre": {"variation":"Going down stairs","anchor":"going-down"},
+          "infini": {"variation":"Endless stairs","anchor":"endless"}
+      } },
+      "es": { "caveat": null, "scenes": {
+          "monter": {"variation":"Subir escaleras con facilidad","anchor":"subir"},
+          "descendre": {"variation":"Bajar escaleras","anchor":"bajar"},
+          "infini": {"variation":"Escaleras interminables","anchor":"interminables"}
+      } },
+      "de": { "caveat": null, "scenes": {
+          "monter": {"variation":"Leicht die Treppe hinaufsteigen","anchor":"hinauf"},
+          "descendre": {"variation":"Die Treppe hinuntergehen","anchor":"hinunter"},
+          "infini": {"variation":"Endlose Treppen","anchor":"endlos"}
+      } },
+      "it": { "caveat": null, "scenes": {
+          "monter": {"variation":"Salire le scale facilmente","anchor":"salire"},
+          "descendre": {"variation":"Scendere le scale","anchor":"scendere"},
+          "infini": {"variation":"Scale infinite o senza fine","anchor":"infinite"}
+      } },
+      "pt-br": { "caveat": null, "scenes": {
+          "monter": {"variation":"Subir a escada com facilidade","anchor":"subir"},
+          "descendre": {"variation":"Descer a escada","anchor":"descer"},
+          "infini": {"variation":"Escada infinita ou que não acaba nunca","anchor":"infinita"}
+      } }
+    },
+    "mirror": {
+      "fr": { "caveat": null, "scenes": {
+          "reflet": {"variation":"Se regarder dans un miroir","anchor":"reflet"},
+          "brise": {"variation":"Miroir brisé","anchor":"brise"},
+          "absent": {"variation":"Ne pas voir son reflet","anchor":"absent"}
+      } },
+      "en": { "caveat": null, "scenes": {
+          "reflet": {"variation":"Looking in a mirror","anchor":"looking"},
+          "brise": {"variation":"Broken mirror","anchor":"broken"},
+          "absent": {"variation":"Not seeing your reflection","anchor":"no-reflection"}
+      } },
+      "es": { "caveat": null, "scenes": {
+          "reflet": {"variation":"Mirarte en un espejo","anchor":"mirarte"},
+          "brise": {"variation":"Espejo roto","anchor":"roto"},
+          "absent": {"variation":"No ver tu reflejo","anchor":"sin-reflejo"}
+      } },
+      "de": { "caveat": null, "scenes": {
+          "reflet": {"variation":"Sich im Spiegel betrachten","anchor":"betrachten"},
+          "brise": {"variation":"Zerbrochener Spiegel","anchor":"zerbrochen"},
+          "absent": {"variation":"Kein Spiegelbild sehen","anchor":"kein-spiegelbild"}
+      } },
+      "it": { "caveat": null, "scenes": {
+          "reflet": {"variation":"Guardarsi allo specchio","anchor":"guardarsi"},
+          "brise": {"variation":"Specchio rotto","anchor":"rotto"},
+          "absent": {"variation":"Non vedere il proprio riflesso","anchor":"senza-riflesso"}
+      } },
+      "pt-br": { "caveat": null, "scenes": {
+          "reflet": {"variation":"Olhar-se no espelho","anchor":"olhar-se"},
+          "brise": {"variation":"Espelho quebrado","anchor":"quebrado"},
+          "absent": {"variation":"Não ver o próprio reflexo","anchor":"sem-reflexo"}
+      } }
     }
   }
 }

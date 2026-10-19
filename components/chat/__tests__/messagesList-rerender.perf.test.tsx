@@ -55,7 +55,7 @@ vi.mock('react-native-reanimated', async () => {
     runOnJS: (fn: any) => fn,
     useAnimatedReaction: (prepare: () => unknown, react: (current: unknown, previous: unknown) => void) => {
       const value = prepare();
-      React.useEffect(() => { react(value, null); }, [value]);
+      React.useEffect(() => { react(value, null); }, [react, value]);
     },
     useAnimatedStyle: (factory: () => any) => factory(),
     useSharedValue: (value: any) => ({ value }),

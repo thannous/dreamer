@@ -35,7 +35,6 @@ type LibraryContextValue = {
 type LibraryCommands = Pick<LibraryContextValue, 'recordProgress' | 'recordPractice' | 'toggleFavorite' | 'retryPersistence'>;
 type LibraryMetadata = Omit<LibraryContextValue, 'progress'>;
 const LibraryMetadataContext = createContext<LibraryMetadata | null>(null);
-const LibraryProgressContext = createContext<LibraryState['progress']>({});
 const LibraryCommandsContext = createContext<LibraryCommands | null>(null);
 
 const LibraryContext = createContext<LibraryContextValue | null>(null);
@@ -189,9 +188,7 @@ export const LibraryProvider: React.FC<React.PropsWithChildren> = ({ children })
     [state.favorites, state.practiceLog, loaded, persistenceError, isFavorite, commands]);
   return <LibraryCommandsContext.Provider value={commands}>
     <LibraryMetadataContext.Provider value={metadata}>
-    <LibraryProgressContext.Provider value={state.progress}>
     <LibraryContext.Provider value={value}>{children}</LibraryContext.Provider>
-    </LibraryProgressContext.Provider>
     </LibraryMetadataContext.Provider>
   </LibraryCommandsContext.Provider>;
 };
@@ -227,5 +224,3 @@ export const useLibraryMetadata = (): LibraryMetadata => {
   if (!metadata) throw new Error('useLibraryMetadata requires LibraryProvider');
   return metadata;
 };
-
-export const useLibraryProgress = (): LibraryState['progress'] => useContext(LibraryProgressContext);

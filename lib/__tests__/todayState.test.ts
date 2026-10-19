@@ -60,7 +60,8 @@ type Equal<A, B> = (<T>() => T extends A ? 1 : 2) extends <T>() => T extends B ?
   : false;
 type Expect<T extends true> = T;
 
-type _ActionIsDiscriminated = Expect<
+// Exported compile-time assertions preserve the closed public type contracts.
+export type TodayActionIsDiscriminated = Expect<
   Equal<
     import('../todayState').TodayAction,
     | { kind: 'resume_recording' }
@@ -69,7 +70,7 @@ type _ActionIsDiscriminated = Expect<
     | { kind: 'open_journal' }
   >
 >;
-type _ReasonIsClosed = Expect<
+export type TodayReasonIsClosed = Expect<
   Equal<
     import('../todayState').TodayReason,
     | 'saved_draft'

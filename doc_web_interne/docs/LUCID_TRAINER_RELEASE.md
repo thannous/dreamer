@@ -35,11 +35,15 @@ Confirm the resolved name, slug, scheme, bundle/package identifiers, universal-l
 
 Run narrow tests first, then broaden. The file list may be extended when the candidate changes.
 
+The [productAnalytics tests](../../lib/__tests__/productAnalytics.test.ts) cover
+Lucid's allowlisted event families, private-payload rejection and consent at the
+active analytics provider boundary.
+
 ```powershell
-npm run test:file -- lib/lucid/__tests__/appVariant.test.ts lib/lucid/__tests__/content.test.ts lib/lucid/__tests__/model.test.ts lib/lucid/__tests__/domain.test.ts lib/lucid/__tests__/progress.test.ts lib/lucid/__tests__/reminders.test.ts lib/lucid/__tests__/audio.test.ts lib/lucid/__tests__/analytics.test.ts lib/lucid/__tests__/deepLinks.test.ts lib/lucid/__tests__/routes.test.ts lib/__tests__/productAnalytics.test.ts lib/__tests__/productAnalyticsGuestSession.test.ts services/__tests__/lucidTrainerSecureStorage.test.ts services/__tests__/lucidTrainerStorage.test.ts services/__tests__/lucidTrainerSync.test.ts services/__tests__/lucidTrainerNotifications.test.ts tests/app-routes/lucidColdRouteNavigation.test.tsx tests/app-routes/lucidAccount.test.tsx context/__tests__/LucidTrainerContext.test.tsx --watchman=false
+npm run test:file -- lib/lucid/__tests__/appVariant.test.ts lib/lucid/__tests__/content.test.ts lib/lucid/__tests__/model.test.ts lib/lucid/__tests__/domain.test.ts lib/lucid/__tests__/progress.test.ts lib/lucid/__tests__/reminders.test.ts lib/lucid/__tests__/audio.test.ts lib/lucid/__tests__/deepLinks.test.ts lib/lucid/__tests__/routes.test.ts lib/__tests__/productAnalytics.test.ts lib/__tests__/productAnalyticsGuestSession.test.ts services/__tests__/lucidTrainerSecureStorage.test.ts services/__tests__/lucidTrainerStorage.test.ts services/__tests__/lucidTrainerSync.test.ts services/__tests__/lucidTrainerNotifications.test.ts tests/app-routes/lucidColdRouteNavigation.test.tsx tests/app-routes/lucidAccount.test.tsx context/__tests__/LucidTrainerContext.test.tsx --watchman=false
 npm run typecheck:app
 npm run typecheck:tests
-npx expo lint app/lucid components/lucid context/LucidTrainerContext.tsx lib/lucid services/lucidTrainerSecureStorage.ts services/lucidTrainerStorage.ts services/lucidTrainerSync.ts services/lucidTrainerNotifications.ts services/lucidTrainerCloudData.ts services/lucidTrainerExport.ts
+npx expo lint routes/lucid components/lucid context/LucidTrainerContext.tsx lib/lucid services/lucidTrainerSecureStorage.ts services/lucidTrainerStorage.ts services/lucidTrainerSync.ts services/lucidTrainerNotifications.ts services/lucidTrainerCloudData.ts services/lucidTrainerExport.ts
 npx expo-doctor
 npm run security:audit:mobile
 npm run android:gates

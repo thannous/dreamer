@@ -5,7 +5,7 @@
   "lang": "pt-br",
   "slug": "termos-de-uso",
   "title": "Termos de Uso | Noctalia",
-  "description": "Termos de Uso da Noctalia: regras de acesso ao app, conta, assinatura Google Play, uso permitido, privacidade, responsabilidades, cancelamento e contato.",
+  "description": "Termos de Uso da Noctalia: regras de acesso ao app, conta, assinatura Noctalia Plus, uso permitido, privacidade, responsabilidades, cancelamento e contato.",
   "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
   "themeColor": "#0a0514",
   "htmlClass": "",
@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Termos de Uso",
   "publishedTime": "",
-  "modifiedTime": "2026-07-09",
+  "modifiedTime": "2026-10-19",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -36,7 +36,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Termos de Uso</h1>
-    <p class="text-lg text-purple-200/80 mb-10">Em vigor desde 9 de julho de 2026</p>
+    <p class="text-lg text-purple-200/80 mb-10">Em vigor desde 19 de outubro de 2026</p>
 
     <div class="space-y-8 text-gray-300 leading-relaxed">
 
@@ -80,7 +80,7 @@
           <li><strong>«&nbsp;Conteúdos do Usuário&nbsp;»</strong>&nbsp;: os conteúdos inseridos ou gerados por meio da Conta,
             em particular seus sonhos, notas, transcrições de voz, análises, imagens geradas, títulos, tags e favoritos.</li>
           <li><strong>«&nbsp;Assinatura Noctalia Plus&nbsp;»</strong>&nbsp;: a oferta paga que dá acesso
-            a funcionalidades adicionais, atualmente contratada pelo Google Play.</li>
+            a funcionalidades adicionais, contratada pela App Store da Apple ou pelo Google Play.</li>
         </ul>
       </section>
 
@@ -88,7 +88,7 @@
       <section>
         <h2 class="text-2xl font-serif text-white mb-4 mt-8">3. Acesso ao Serviço e conta</h2>
         <p>
-          O Noctalia é atualmente distribuído na forma de um aplicativo Android pelo Google Play. As páginas web públicas apresentam o produto e recursos editoriais&nbsp;; elas não constituem o aplicativo para celular. Outra plataforma só será considerada disponível após um anúncio explícito do Noctalia.
+          O Noctalia é distribuído na forma de um aplicativo para iPhone pela App Store da Apple e para Android pelo Google Play. As páginas web públicas apresentam o produto e recursos editoriais&nbsp;; elas não constituem o aplicativo para celular. Outra plataforma só será considerada disponível após um anúncio explícito do Noctalia.
           Os custos de conexão e de equipamento (hardware, software, acesso à internet) ficam a cargo do Usuário.
         </p>
         <p class="mt-3">
@@ -140,16 +140,22 @@
         <h2 class="text-2xl font-serif text-white mb-4 mt-8">6. Assinaturas e pagamento</h2>
         <p>
           Certas funcionalidades são reservadas aos Usuários titulares de uma assinatura Noctalia Plus.
-          A assinatura Noctalia Plus é atualmente gerenciada pelo <strong>Google Play</strong> e está sujeita
-          às condições de venda e às regras de cobrança, cancelamento e reembolso do Google Play.
+          A assinatura Noctalia Plus é gerenciada pela loja em que você assina: a <strong>App Store</strong> da Apple no iPhone,
+          o <strong>Google Play</strong> no Android. Ela está sujeita às condições de venda e às regras de cobrança, cancelamento
+          e reembolso dessa loja.
         </p>
         <p class="mt-3">
           Os preços, a duração da assinatura, as condições de renovação, a eventual existência de um período de teste, bem como as
           condições de exercício do eventual direito de desistência, são detalhados na página da oferta na loja correspondente.
-          O Noctalia não recebe os pagamentos diretamente e não pode modificar as condições contratuais do Google Play.
+          O Noctalia não recebe os pagamentos diretamente e não pode modificar as condições contratuais dessas lojas.
         </p>
         <p class="mt-3">
-          Você pode gerenciar e cancelar sua assinatura a qualquer momento nas configurações das suas assinaturas do Google Play.
+          Você pode gerenciar e cancelar sua assinatura a qualquer momento nos ajustes da sua conta da App Store (iPhone)
+          ou nas configurações das suas assinaturas do Google Play (Android).
+        </p>
+        <p class="mt-3">
+          Se você baixou o Noctalia pela App Store, o <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" class="text-dream-salmon hover:underline">contrato de licença de usuário final padrão da Apple</a>
+          (EULA) também se aplica ao seu uso do aplicativo.
         </p>
       </section>
 

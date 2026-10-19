@@ -304,7 +304,7 @@ Acuéstate y levántate entre 15 y 20 minutos antes cada día durante los tres o
 <li><a href="https://doi.org/10.1177/0748730419854197" rel="nofollow noopener noreferrer" target="_blank">Roenneberg et al. (2019): Why should we abolish daylight saving time? Journal of Biological Rhythms</a></li>
 <li><a href="https://www.europarl.europa.eu/news/en/press-room/20190321IPR32107/parliament-backs-proposal-to-end-switch-between-summer-and-winter-time-in-2021" rel="nofollow noopener noreferrer" target="_blank">Parlamento Europeo (2019): voto a favor de acabar con el cambio de hora estacional (en inglés)</a></li>
 <li><a href="https://www.majorcadailybulletin.com/news/local/2025/10/20/137415/spain-wants-end-putting-clocks-back-and-forward-the-european-union.html" rel="nofollow noopener noreferrer" target="_blank">Majorca Daily Bulletin (octubre de 2025): la propuesta del Gobierno español en la UE (en inglés)</a></li>
-<li><a href="https://time.com/article/2026/10/07/senate-permanent-daylight-saving-time-sunshine-protection-act/" rel="nofollow noopener noreferrer" target="_blank">Time (octubre de 2026): la Sunshine Protection Act y el Senado de EE. UU. (en inglés)</a></li>
+<li><a href="https://www.congress.gov/bill/119th-congress/house-bill/139/all-actions" rel="nofollow noopener noreferrer" target="_blank">Congress.gov: H.R.139 – Sunshine Protection Act of 2025, trámites legislativos (en inglés)</a></li>
 </ul>
 <p class="mt-6 text-xs text-purple-200/60">Última actualización: 9 de octubre de 2026</p>
 </section>

@@ -477,7 +477,10 @@ function rolloutFixture() {
   fs.mkdirSync(path.dirname(generator), { recursive: true });
   fs.writeFileSync(generator, '// engine v1\n');
   const registryFile = path.join(repo, 'docs-src', 'config', 'symbol-rollout.json');
-  const registry = JSON.parse(fs.readFileSync(registryFile, 'utf8'));
+  // The site's lots, without its records: their evidence files are not in the fixture, and each
+  // stage below starts from what the journey records itself.
+  const registry = { ...JSON.parse(fs.readFileSync(registryFile, 'utf8')), records: [] };
+  fs.writeFileSync(registryFile, JSON.stringify(registry));
   const writeRegistry = (change) => fs.writeFileSync(registryFile, JSON.stringify(change(structuredClone(registry))));
   const run = (out) => {
     const result = node('symbol-rollout-report.mjs', ['--repo-root', repo, '--manifest', manifest, '--out', out], dir);
@@ -495,9 +498,10 @@ test('the rollout report reads states from the repository and stages only from r
   assert.deepEqual(first.report.languages, ['en', 'fr', 'es', 'de', 'it', 'pt-br']);
   // Every file the report reads is named by its sha256.
   assert.deepEqual(Object.keys(first.report.inputs), ['siteConfig', 'catalog', 'extended', 'tier3', 'registry', 'pilots', 'locales', 'manifest', 'engines']);
-  assert.deepEqual(first.report.totals, { symbols: 240, done: 0, inProgress: 19, remaining: 221 });
+  assert.deepEqual(first.report.totals, { symbols: 240, done: 0, inProgress: 25, remaining: 215 });
   assert.deepEqual(first.report.lots['lot-02'].symbols, ['fire', 'door', 'bird', 'moon', 'train', 'clock']);
   assert.deepEqual(first.report.lots['lot-03'].symbols, ['water', 'teeth', 'flying', 'dog', 'car', 'bridge']);
+  assert.deepEqual(first.report.lots['lot-04'].symbols, ['cat', 'stairs', 'rain', 'mountain', 'mirror', 'key']);
   assert.equal(bySymbol(first.report, 'tiger').assets.state, 'tiger-engine');
   assert.equal(bySymbol(first.report, 'moon').assets.state, 'complete');
   assert.equal(bySymbol(first.report, 'door').assets.state, 'same-image-scenes');
@@ -505,7 +509,7 @@ test('the rollout report reads states from the repository and stages only from r
     state: 'incomplete',
     missing: ['hero', 'portrait', 'plate', 'scene-reconfort', 'scene-incendie', 'scene-fumee', 'layer', 'accent'],
   });
-  assert.equal(bySymbol(first.report, 'cat').state, 'remaining');
+  assert.equal(bySymbol(first.report, 'deer').state, 'remaining');
   // Each pt-br scene names a card of the pt catalog, like the five other languages.
   assert.deepEqual(bySymbol(first.report, 'moon').languages['pt-br'].scenes, { pleine: 'card', croissant: 'card', double: 'card' });
   assert.deepEqual(bySymbol(first.report, 'moon').languages.fr.stages, {

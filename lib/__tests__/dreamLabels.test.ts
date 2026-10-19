@@ -1,7 +1,7 @@
 import { describe, expect, it } from '@jest/globals';
 
 import { EMOTION_FAMILY_IDS } from '../dreamEmotions';
-import { getDreamTypeLabel, getEmotionFamilyLabel } from '../dreamLabels';
+import { getDreamThemeLabel, getDreamTypeLabel, getEmotionFamilyLabel } from '../dreamLabels';
 import { getTranslator, loadTranslations } from '../i18n';
 
 const languages = ['en', 'fr', 'es', 'de', 'it', 'pt'] as const;
@@ -56,5 +56,25 @@ it('localizes the server Unknown type in all supported catalogues', async () => 
     expect(label).toBeTruthy();
     expect(label).not.toBe('Unknown');
     expect(label).not.toBe('dream.type.unknown');
+  }
+});
+
+// The former statistics screen's catalogue test also covered these shared labels.
+// Keep that coverage on the getters used by today's journal, detail and trends UI.
+it('resolves every displayed dream type and theme in all supported catalogues', async () => {
+  await Promise.all(languages.map((language) => loadTranslations(language)));
+  const types = ['Lucid Dream', 'Recurring Dream', 'Nightmare', 'Symbolic Dream', 'Everyday Dream', 'Fantastical Dream', 'Unknown'] as const;
+  const themes = ['surreal', 'mystical', 'calm', 'noir', 'luminous', 'nostalgic'] as const;
+
+  for (const language of languages) {
+    const t = getTranslator(language);
+    const labels = [
+      ...types.map((type) => getDreamTypeLabel(type, t)),
+      ...themes.map((theme) => getDreamThemeLabel(theme, t)),
+    ];
+    for (const label of labels) {
+      expect(label?.trim()).toBeTruthy();
+      expect(label).not.toMatch(/^dream\.(type|theme)\./);
+    }
   }
 });

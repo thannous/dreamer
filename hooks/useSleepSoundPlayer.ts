@@ -5,6 +5,7 @@ import {
 } from 'expo-audio';
 import { useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { Platform } from 'react-native';
 
 import {
   type SleepSoundConfig,
@@ -56,10 +57,17 @@ export function useSleepSoundPlayer({
   const [playedKey, setPlayedKey] = useState<string | null>(null);
   const downloadKey = `${sound.id}:${downloadAttempt}`;
   const sourceUri = resolved?.id === sound.id ? resolved.uri : null;
-  const player = useAudioPlayer(sourceUri ? { uri: sourceUri } : null, {
-    downloadFirst: true,
+  const streamsOnWeb = Platform.OS === 'web';
+  const player = useAudioPlayer(!streamsOnWeb && sourceUri ? { uri: sourceUri } : null, {
+    downloadFirst: !streamsOnWeb,
     updateInterval: 500,
   });
+  // Web streams directly: Expo's download-first preload rejects without a catch
+  // when the network fails. Keep its player identity stable across source/retry
+  // changes so focus cleanup cannot cancel a pending request to listen.
+  useEffect(() => {
+    if (streamsOnWeb) player.replace(sourceUri ? { uri: sourceUri } : null);
+  }, [player, sourceUri, streamsOnWeb]);
   const status = useAudioPlayerStatus(player);
   const isPlayable = Boolean(sourceUri) && status.isLoaded;
   // A source that loads after the timeout clears the error on its own.

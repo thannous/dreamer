@@ -1,5 +1,5 @@
 {
-  "extends": "expo/tsconfig.base",
+  "extends": "expo/tsconfig.base.json",
   "compilerOptions": {
     "strict": true,
     "paths": {
@@ -30,6 +30,7 @@
     "tests/**",
     "supabase/functions/**",
     "coverage/**",
+    "outputs/**",
     "dist/**",
     "dist-dev-nossg/**",
     "tools/e2e/**",
