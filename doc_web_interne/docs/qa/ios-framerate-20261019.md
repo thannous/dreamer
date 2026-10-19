@@ -92,6 +92,38 @@ E2E_OWNER_NATIVE_PERF_ACK=approved E2E_PERF_PLATFORM=ios \
 ```
 
 Les reçus de build, de fixture, d’installation, la proposition relue et les logs
-restent dans le dossier privé local de cette campagne. Les résultats de validation
-et le candidat compilé seront précisés après leur achèvement. Aucun déploiement,
-build EAS, soumission Store ou changement du compte de développement.
+restent dans le dossier privé local `/private/tmp/noctalia-ios-framerate-20261019`.
+Aucun déploiement, build EAS, soumission Store ou changement du compte de développement.
+
+## Candidat compilé et validation disponible
+
+- Code : `cc51536c21ae31859efed6850b228ce1946f842c`, checkout propre lors du build.
+  Release générique iOS Simulator 1.0 (1), compilée et archivée ; la référence reste
+  installée pour commencer les mesures avant/après. Le candidat n’est pas installé.
+- SHA-256 du candidat archivé :
+  `4731ebbc3b15bc35a9c4705cda4d178b54af02b6ed8c2d11b4cc26d7c5f13ab3`.
+  JavaScript embarqué :
+  `be03125bfa4f95cc1b2d51746c2ffb434cda823b91a298cb4afc96272efb3fca`.
+  Entrées natives et exécutable natif identiques à la référence ; le comparatif
+  porte sur le changement JavaScript, avec la même fixture.
+- Types app et runner réussis. Les 91 tests existants liés au détail passent.
+  Lint : zéro erreur, cinq avertissements ; quatre sont présents à la référence.
+  Le cinquième signale le recalcul de visibilité dans l’effet de mise en page,
+  déjà nécessaire pour rotation/texte agrandi. Ce recalcul reste distinct du
+  traitement continu du scroll, désormais sur le runtime UI.
+- TesterArmy web : **5/5** parcours passent : lecture révélée sans scroll du test,
+  raccourci/conservation du choix, Reduced Motion, lecture illustrée et rotation
+  dans les deux thèmes. Artefact
+  `dreamer-web/1792422949903-9683-b4557087-c69e-4a3f-b466-e7f77f0516ae`.
+  Source exécutée : `0b74eac87` avec le delta applicatif devenu `cc51536c2` ;
+  stabilité du run vérifiée et SHA du détail concordant avec ce commit.
+  Aucun de ces parcours web ne prouve le nouveau gestionnaire de scroll natif.
+- Revue indépendante du candidat puis des dépendances et du nouveau parcours :
+  aucun défaut actionnable. Lecture statique uniquement.
+- `TMPDIR=/private/tmp mise exec -- npm run verify:pr` passe sur `cc51536c2`
+  (6 contrôles exécutés, 4 réutilisés, 6 hors périmètre). La PR porte également le
+  reçu du commit final incluant cette documentation, avant tout push.
+
+La validation du framerate et la non-régression native restent à effectuer après
+installation du composant Apple. Cette PR reste préparatoire tant que ces preuves
+sont absentes ; aucune amélioration chiffrée de FPS n’est annoncée.
