@@ -7,6 +7,7 @@ const {
   staticPagesConfig,
 } = require('./docs-site-config');
 const { readJson } = require('./docs-source-utils');
+const { catalogKey } = require('./symbol-locales');
 
 function getStaticPageLocalePath(page, lang) {
   const slug = page.slugs[lang];
@@ -106,8 +107,8 @@ function buildGuideCollection() {
         guideLanguages.map((lang) => [
           lang,
           {
-            slug: page.slugs[lang],
-            path: `/${lang}/guides/${page.slugs[lang]}`,
+            slug: page.slugs[catalogKey(lang)],
+            path: `/${lang}/guides/${page.slugs[catalogKey(lang)]}`,
           },
         ])
       ),
@@ -136,8 +137,8 @@ function buildSymbolCollection() {
         symbolLanguages.map((lang) => [
           lang,
           {
-            slug: symbol[lang].slug,
-            path: `/${lang}/${siteConfig.symbolsPath[lang]}/${symbol[lang].slug}`,
+            slug: symbol[catalogKey(lang)].slug,
+            path: `/${lang}/${siteConfig.symbolsPath[lang]}/${symbol[catalogKey(lang)].slug}`,
           },
         ])
       ),

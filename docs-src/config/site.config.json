@@ -31,10 +31,10 @@
       "languages": ["en", "fr", "es", "de", "it"]
     },
     "symbols": {
-      "languages": ["en", "fr", "es", "de", "it"]
+      "languages": ["en", "fr", "es", "de", "it", "pt-br"]
     },
     "guides": {
-      "languages": ["en", "fr", "es", "de", "it"]
+      "languages": ["en", "fr", "es", "de", "it", "pt-br"]
     }
   },
   "symbolsPath": {
@@ -42,7 +42,8 @@
     "fr": "symboles",
     "es": "simbolos",
     "de": "traumsymbole",
-    "it": "simboli"
+    "it": "simboli",
+    "pt-br": "simbolos"
   },
   "storeLinks": {
     "androidBase": "https://play.google.com/store/apps/details?id=com.tanuki75.noctalia",

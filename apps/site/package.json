@@ -11,7 +11,13 @@
     "check": "node ../../scripts/docs-check.js",
     "dev": "node ../../scripts/docs-dev.js",
     "build:experience": "node ../../scripts/build-experience.js",
-    "test:testerarmy": "node ../../tools/e2e/run.mjs site web"
+    "test:testerarmy": "node ../../tools/e2e/run.mjs site web",
+    "atlas:pack": "node ../../scripts/atlas-pack.mjs",
+    "atlas:handoff": "node ../../scripts/atlas-handoff.mjs",
+    "atlas:receipt": "node ../../scripts/atlas-qualification-receipt.mjs",
+    "atlas:gallery": "node ../../scripts/atlas-review-gallery.mjs",
+    "atlas:tools:test": "node --test ../../scripts/test-atlas-tools.mjs",
+    "symbols:rollout": "node ../../scripts/symbol-rollout-report.mjs"
   },
   "dependencies": {
     "esbuild": "0.28.1",

@@ -16,6 +16,7 @@ const {
   SYMBOL_CARD_RESPONSIVE_WIDTHS,
   loadSymbolImageRegistry,
 } = require('./lib/symbol-image-assets');
+const { catalogKey } = require('./lib/symbol-locales');
 
 const SITE_ORIGIN = siteConfig.domain.replace(/\/$/, '');
 const CATALOG_PATH = path.join(DATA_DIR, 'dream-symbols.json');
@@ -96,7 +97,7 @@ function validateSymbolImageContract() {
 
   for (const symbol of catalog.symbols || []) {
     for (const lang of getCollectionLanguages('symbols')) {
-      const slug = symbol?.[lang]?.slug;
+      const slug = symbol?.[catalogKey(lang)]?.slug;
       const symbolsPath = siteConfig.symbolsPath?.[lang];
       if (!slug || !symbolsPath) {
         errors.push(`${symbol.id}/${lang}: missing localized route metadata`);

@@ -1,0 +1,560 @@
+{
+  "snake": {
+    "slug": "serpent",
+    "caveat": "Ce sont des associations fréquentes, pas des règles",
+    "scenes": [
+      { "id": "morsure", "variation": "Être mordu par un serpent" },
+      { "id": "calme", "variation": "Un serpent calme" },
+      { "id": "mue", "variation": "Un serpent qui mue" }
+    ],
+    "portraitPosition": "50% 45%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          { "texture": "layer", "place": { "fit": "cover" }, "motion": "pulse", "dur": 2.6, "op": [0.2, 1], "blend": "screen" },
+          { "texture": "accent", "place": { "fit": "cover" }, "motion": "drift", "move": [0.02, 0], "dur": 9, "op": [0.35, 0.65] }
+        ],
+        "portrait": [
+          { "texture": "layer", "place": { "fit": "width", "y": 0.3 }, "motion": "pulse", "dur": 2.6, "op": [0.2, 1], "blend": "screen" },
+          { "texture": "accent", "place": { "fit": "width", "y": 0.83 }, "motion": "drift", "move": [0.02, 0], "dur": 9, "op": [0.35, 0.65] }
+        ]
+      },
+      "plate": [
+        { "texture": "layer", "place": { "fit": "cover" }, "motion": "pulse", "dur": 2.6, "op": [0.2, 1], "blend": "screen" },
+        { "texture": "accent", "place": { "fit": "cover" }, "motion": "drift", "move": [0.02, 0], "dur": 9, "op": [0.35, 0.65] }
+      ],
+      "thumb": [
+        { "texture": "layer", "place": { "fit": "cover", "zoom": 1.4 }, "motion": "pulse", "dur": 2.6, "op": [0.3, 1], "blend": "screen" },
+        { "texture": "accent", "place": { "fit": "cover" }, "motion": "drift", "move": [0.05, 0], "dur": 8, "op": [0.4, 0.8] }
+      ]
+    }
+  },
+  "ocean": {
+    "slug": "mer",
+    "caveat": null,
+    "scenes": [
+      { "id": "calme", "variation": "Mer calme" },
+      { "id": "tempete", "variation": "Mer agitée ou tempête" },
+      { "id": "vague", "variation": "Vague géante ou tsunami" }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.4,
+      "hero": {
+        "landscape": [
+          { "texture": "layer", "place": { "fit": "cover" }, "motion": "drift", "move": [0.012, 0], "dur": 8, "op": [0.35, 0.7] },
+          { "texture": "accent", "place": { "fit": "cover" }, "motion": "pulse", "dur": 4.2, "op": [0.3, 0.75] }
+        ],
+        "portrait": [
+          { "texture": "layer", "place": { "fit": "width", "y": 0.905 }, "motion": "drift", "move": [0.012, 0], "dur": 8, "op": [0.35, 0.7] },
+          { "texture": "accent", "place": { "fit": "width", "y": 0.68 }, "motion": "pulse", "dur": 4.2, "op": [0.3, 0.75] }
+        ]
+      },
+      "plate": [
+        { "texture": "layer", "place": { "fit": "width", "y": 1 }, "motion": "drift", "move": [0.012, 0], "dur": 8, "op": [0.35, 0.7] },
+        { "texture": "accent", "place": { "fit": "width", "y": 1 }, "motion": "pulse", "dur": 4.2, "op": [0.3, 0.75] }
+      ],
+      "thumb": [
+        { "texture": "layer", "place": { "fit": "cover", "zoom": 1.5, "y": 0.7 }, "motion": "drift", "move": [0.03, 0], "dur": 7, "op": [0.4, 0.8] },
+        { "texture": "accent", "place": { "fit": "cover", "zoom": 1.3, "y": 1 }, "motion": "pulse", "dur": 4.2, "op": [0.35, 0.85] }
+      ]
+    }
+  },
+  "forest": {
+    "slug": "foret",
+    "caveat": null,
+    "scenes": [
+      { "id": "sombre", "variation": "Forêt sombre et dense" },
+      { "id": "perdu", "variation": "Se perdre dans une forêt" },
+      { "id": "chemin", "variation": "Trouver un chemin dans la forêt" }
+    ],
+    "portraitPosition": "50% 40%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          { "texture": "layer", "place": { "fit": "cover" }, "motion": "drift", "move": [0.01, 0.014], "dur": 6, "op": [0.75, 1] },
+          { "texture": "accent", "place": { "fit": "cover" }, "motion": "pulse", "dur": 5.6, "op": [0.15, 0.5], "blend": "screen" }
+        ],
+        "portrait": [
+          { "texture": "layer", "place": { "fit": "width", "y": 0 }, "motion": "drift", "move": [0.01, 0.014], "dur": 6, "op": [0.75, 1] },
+          { "texture": "accent", "place": { "fit": "width", "y": 0.18 }, "motion": "pulse", "dur": 5.6, "op": [0.15, 0.5], "blend": "screen" }
+        ]
+      },
+      "plate": [
+        { "texture": "layer", "place": { "fit": "width", "y": 0 }, "motion": "drift", "move": [0.01, 0.014], "dur": 6, "op": [0.75, 1] },
+        { "texture": "accent", "place": { "fit": "cover" }, "motion": "pulse", "dur": 5.6, "op": [0.15, 0.5], "blend": "screen" }
+      ],
+      "thumb": [
+        { "texture": "layer", "place": { "fit": "cover", "zoom": 2, "x": 1, "y": 0 }, "motion": "drift", "move": [0.02, 0.03], "dur": 6, "op": [0.75, 1] },
+        { "texture": "accent", "place": { "fit": "cover" }, "motion": "pulse", "dur": 5.6, "op": [0.25, 0.65], "blend": "screen" }
+      ]
+    }
+  },
+  "house": {
+    "slug": "maison",
+    "caveat": "Ce sont des pistes à confronter à votre vie actuelle",
+    "scenes": [
+      { "id": "inconnue", "variation": "Une maison inconnue ou étrange" },
+      { "id": "enfance", "variation": "La maison d'enfance" },
+      { "id": "pieces", "variation": "Découvrir de nouvelles pièces" }
+    ],
+    "portraitPosition": "50% 40%",
+    "motion": {
+      "parallax": 0.4,
+      "hero": {
+        "landscape": [
+          { "texture": "layer", "place": { "fit": "cover" }, "motion": "flow", "move": [0.004, -0.03], "dur": 14, "op": [0.2, 0.45], "copies": 2 },
+          { "texture": "accent", "place": { "fit": "cover" }, "motion": "pulse", "dur": 3.6, "op": [0.4, 0.9], "blend": "screen" }
+        ],
+        "portrait": [
+          { "texture": "layer", "place": { "fit": "width", "y": 0.45 }, "motion": "flow", "move": [0.004, -0.03], "dur": 14, "op": [0.2, 0.45], "copies": 2 },
+          { "texture": "accent", "place": { "fit": "width", "y": 0.38 }, "motion": "pulse", "dur": 3.6, "op": [0.4, 0.9], "blend": "screen" }
+        ]
+      },
+      "plate": [
+        { "texture": "layer", "place": { "fit": "cover" }, "motion": "flow", "move": [0.004, -0.03], "dur": 14, "op": [0.2, 0.45], "copies": 2 },
+        { "texture": "accent", "place": { "fit": "width", "y": 0.5 }, "motion": "pulse", "dur": 3.6, "op": [0.4, 0.9], "blend": "screen" }
+      ],
+      "thumb": [
+        { "texture": "layer", "place": { "fit": "cover" }, "motion": "flow", "move": [0.006, -0.06], "dur": 10, "op": [0.3, 0.6], "copies": 2 },
+        { "texture": "accent", "place": { "fit": "cover", "zoom": 1.3 }, "motion": "pulse", "dur": 3.6, "op": [0.45, 0.95], "blend": "screen" }
+      ]
+    }
+  },
+  "falling": {
+    "slug": "chute",
+    "caveat": "Un rêve de chute ne prédit ni accident ni échec",
+    "scenes": [
+      { "id": "hauteur", "variation": "Tomber d'une hauteur" },
+      { "id": "sursaut", "variation": "Se réveiller en sursaut" },
+      { "id": "voler", "variation": "Tomber puis voler" }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.5,
+      "hero": {
+        "landscape": [
+          { "texture": "layer", "place": { "fit": "cover" }, "motion": "flow", "move": [0, -0.05], "dur": 11, "op": [0.55, 0.85], "copies": 2, "depth": [0, -0.12] },
+          { "texture": "accent", "place": { "fit": "cover" }, "motion": "pulse", "dur": 5, "op": [0.35, 0.85], "blend": "screen" }
+        ],
+        "portrait": [
+          { "texture": "layer", "place": { "fit": "width", "y": 0 }, "motion": "flow", "move": [0, -0.05], "dur": 11, "op": [0.55, 0.85], "copies": 2, "depth": [0, -0.12] },
+          { "texture": "accent", "place": { "fit": "width", "y": 0.905 }, "motion": "pulse", "dur": 5, "op": [0.35, 0.85], "blend": "screen" }
+        ]
+      },
+      "plate": [
+        { "texture": "layer", "place": { "fit": "width", "y": 0 }, "motion": "flow", "move": [0, -0.05], "dur": 11, "op": [0.55, 0.85], "copies": 2 },
+        { "texture": "accent", "place": { "fit": "width", "y": 1 }, "motion": "pulse", "dur": 5, "op": [0.35, 0.85], "blend": "screen" }
+      ],
+      "thumb": [
+        { "texture": "layer", "place": { "fit": "cover", "zoom": 1.6, "x": 1, "y": 0 }, "motion": "flow", "move": [0, -0.1], "dur": 8, "op": [0.55, 0.9], "copies": 2 },
+        { "texture": "accent", "place": { "fit": "cover", "y": 1 }, "motion": "pulse", "dur": 5, "op": [0.4, 0.9], "blend": "screen" }
+      ]
+    }
+  },
+  "butterfly": {
+    "slug": "papillon",
+    "caveat": null,
+    "scenes": [
+      { "id": "pose", "variation": "Un papillon qui se pose sur vous" },
+      { "id": "chrysalide", "variation": "Un papillon qui sort de sa chrysalide" },
+      { "id": "prisonnier", "variation": "Un papillon prisonnier dans la maison" }
+    ],
+    "portraitPosition": "50% 40%",
+    "motion": {
+      "parallax": 0.4,
+      "hero": {
+        "landscape": [
+          { "texture": "layer", "place": { "fit": "cover" }, "motion": "drift", "move": [0.006, -0.01], "dur": 3.2, "op": [0.8, 1] },
+          { "texture": "accent", "place": { "fit": "cover" }, "motion": "flow", "move": [0.006, -0.04], "dur": 12, "op": [0.45, 0.85], "copies": 2, "blend": "screen" }
+        ],
+        "portrait": [
+          { "texture": "layer", "place": { "fit": "width", "y": 0.045 }, "motion": "drift", "move": [0.006, -0.01], "dur": 3.2, "op": [0.8, 1] },
+          { "texture": "accent", "place": { "fit": "width", "y": 0.45 }, "motion": "flow", "move": [0.006, -0.04], "dur": 12, "op": [0.45, 0.85], "copies": 2, "blend": "screen" }
+        ]
+      },
+      "plate": [
+        { "texture": "layer", "place": { "fit": "width", "y": 0 }, "motion": "drift", "move": [0.006, -0.01], "dur": 3.2, "op": [0.8, 1] },
+        { "texture": "accent", "place": { "fit": "width", "y": 0 }, "motion": "flow", "move": [0.006, -0.04], "dur": 12, "op": [0.45, 0.85], "copies": 2, "blend": "screen" }
+      ],
+      "thumb": [
+        { "texture": "layer", "place": { "fit": "cover", "zoom": 2.2, "x": 1, "y": 0 }, "motion": "drift", "move": [0.015, -0.02], "dur": 3.2, "op": [0.8, 1] },
+        { "texture": "accent", "place": { "fit": "cover", "zoom": 1.6, "x": 1, "y": 0 }, "motion": "flow", "move": [0.01, -0.08], "dur": 9, "op": [0.5, 0.9], "copies": 2, "blend": "screen" }
+      ]
+    }
+  },
+  "moon": {
+    "slug": "lune",
+    "caveat": null,
+    "scenes": [
+      { "id": "pleine", "variation": "Pleine lune" },
+      { "id": "croissant", "variation": "Croissant de lune ou nouvelle lune" },
+      { "id": "double", "variation": "Deux lunes ou plus" }
+    ],
+    "portraitPosition": "50% 40%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          { "texture": "layer", "place": { "fit": "cover" }, "motion": "drift", "move": [0.025, 0], "dur": 12, "op": [0.25, 0.55] },
+          { "texture": "accent", "place": { "fit": "width", "x": 1, "y": 0 }, "motion": "pulse", "dur": 4, "op": [0.2, 0.8], "blend": "screen" }
+        ],
+        "portrait": [
+          { "texture": "layer", "place": { "fit": "width", "y": 0.5 }, "motion": "drift", "move": [0.025, 0], "dur": 12, "op": [0.25, 0.55] },
+          { "texture": "accent", "place": { "fit": "width", "y": 0 }, "motion": "pulse", "dur": 4, "op": [0.2, 0.8], "blend": "screen" }
+        ]
+      },
+      "plate": [
+        { "texture": "layer", "place": { "fit": "width", "y": 1 }, "motion": "drift", "move": [0.025, 0], "dur": 12, "op": [0.25, 0.55] },
+        { "texture": "accent", "place": { "fit": "width", "y": 0 }, "motion": "pulse", "dur": 4, "op": [0.2, 0.8], "blend": "screen" }
+      ],
+      "thumb": [
+        { "texture": "layer", "place": { "fit": "cover", "zoom": 1.6, "y": 1 }, "motion": "drift", "move": [0.04, 0], "dur": 10, "op": [0.3, 0.65] },
+        { "texture": "accent", "place": { "fit": "cover", "zoom": 2, "x": 1, "y": 0 }, "motion": "pulse", "dur": 3.6, "op": [0.25, 0.9], "blend": "screen" }
+      ]
+    }
+  },
+  "door": {
+    "slug": "porte",
+    "caveat": null,
+    "scenes": [
+      { "id": "ouverte", "variation": "Une porte ouverte" },
+      { "id": "verrouillee", "variation": "Une porte fermée ou verrouillée" },
+      { "id": "choix", "variation": "Plusieurs portes à choisir" }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.4,
+      "hero": {
+        "landscape": [
+          { "texture": "layer", "place": { "fit": "cover", "zoom": 1.1, "x": 0.66, "y": 0.615 }, "motion": "flow", "move": [0.004, -0.03], "dur": 16, "op": [0.2, 0.45], "copies": 2 },
+          { "texture": "accent", "place": { "fit": "cover", "zoom": 1.1, "x": 0.8, "y": 0.475 }, "motion": "pulse", "dur": 5.2, "op": [0.3, 0.7], "blend": "screen" }
+        ],
+        "portrait": [
+          { "texture": "layer", "place": { "fit": "width", "zoom": 1.1, "x": 0.625, "y": 0.762 }, "motion": "flow", "move": [0.004, -0.03], "dur": 16, "op": [0.2, 0.45], "copies": 2 },
+          { "texture": "accent", "place": { "fit": "width", "zoom": 1.1, "x": 0.8, "y": 0.46 }, "motion": "pulse", "dur": 5.2, "op": [0.3, 0.7], "blend": "screen" }
+        ]
+      },
+      "plate": [
+        { "texture": "layer", "place": { "fit": "cover", "zoom": 1.1, "x": 0.64, "y": 0.65 }, "motion": "flow", "move": [0.004, -0.03], "dur": 16, "op": [0.2, 0.45], "copies": 2 },
+        { "texture": "accent", "place": { "fit": "cover", "zoom": 1.1, "x": 0.75, "y": 0.525 }, "motion": "pulse", "dur": 5.2, "op": [0.3, 0.7], "blend": "screen" }
+      ],
+      "thumb": [
+        { "texture": "layer", "place": { "fit": "cover", "zoom": 1.2, "x": 0.625, "y": 0.65 }, "motion": "flow", "move": [0.006, -0.05], "dur": 12, "op": [0.25, 0.55], "copies": 2 },
+        { "texture": "accent", "place": { "fit": "cover", "zoom": 1.4, "x": 0.85, "y": 0.325 }, "motion": "pulse", "dur": 5.2, "op": [0.35, 0.75], "blend": "screen" }
+      ]
+    }
+  },
+  "fire": {
+    "slug": "feu",
+    "caveat": null,
+    "scenes": [
+      { "id": "reconfort", "variation": "Un feu maîtrisé qui réchauffe" },
+      { "id": "incendie", "variation": "Un incendie hors de contrôle" },
+      { "id": "fumee", "variation": "De la fumée sans flammes" }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          { "texture": "layer", "place": { "fit": "cover", "zoom": 1.1, "x": 0.705, "y": 0.545 }, "motion": "drift", "move": [0.015, -0.02], "dur": 12, "op": [0.3, 0.6] },
+          { "texture": "accent", "place": { "fit": "cover", "zoom": 1.15, "x": 0.745, "y": 0.51 }, "motion": "flow", "move": [0.004, -0.04], "dur": 14, "op": [0.15, 0.35], "copies": 2 }
+        ],
+        "portrait": [
+          { "texture": "layer", "place": { "fit": "width", "zoom": 1.1, "x": 0.71, "y": 0.587 }, "motion": "drift", "move": [0.015, -0.02], "dur": 12, "op": [0.3, 0.6] },
+          { "texture": "accent", "place": { "fit": "width", "zoom": 1.15, "x": 0.74, "y": 0.541 }, "motion": "flow", "move": [0.004, -0.04], "dur": 14, "op": [0.15, 0.35], "copies": 2 }
+        ]
+      },
+      "plate": [
+        { "texture": "layer", "place": { "fit": "cover", "zoom": 1.1, "x": 0.68, "y": 0.535 }, "motion": "drift", "move": [0.015, -0.02], "dur": 12, "op": [0.3, 0.6] },
+        { "texture": "accent", "place": { "fit": "cover", "zoom": 1.15, "x": 0.705, "y": 0.495 }, "motion": "flow", "move": [0.004, -0.04], "dur": 14, "op": [0.15, 0.35], "copies": 2 }
+      ],
+      "thumb": [
+        { "texture": "layer", "place": { "fit": "cover", "zoom": 1.3, "x": 0.695, "y": 0.53 }, "motion": "drift", "move": [0.03, -0.03], "dur": 10, "op": [0.35, 0.7] },
+        { "texture": "accent", "place": { "fit": "cover", "zoom": 1.2, "x": 0.74, "y": 0.47 }, "motion": "flow", "move": [0.006, -0.06], "dur": 10, "op": [0.15, 0.4], "copies": 2 }
+      ]
+    }
+  },
+  "bird": {
+    "slug": "oiseau",
+    "caveat": null,
+    "scenes": [
+      { "id": "libre", "variation": "Un oiseau qui vole librement" },
+      { "id": "cage", "variation": "Un oiseau en cage" },
+      { "id": "chant", "variation": "Un oiseau qui chante" }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.4,
+      "hero": {
+        "landscape": [
+          { "texture": "layer", "place": { "fit": "cover", "zoom": 1.2, "x": 0.755, "y": 0.87 }, "motion": "flow", "move": [0.006, -0.02], "dur": 12, "op": [0.4, 0.8], "copies": 2, "blend": "screen" },
+          { "texture": "accent", "place": { "fit": "cover", "zoom": 1.1, "x": 0.91, "y": 0.135 }, "motion": "pulse", "dur": 6, "op": [0.15, 0.5], "blend": "screen" }
+        ],
+        "portrait": [
+          { "texture": "layer", "place": { "fit": "width", "zoom": 1.1, "x": 0.74, "y": 1 }, "motion": "flow", "move": [0.006, -0.02], "dur": 12, "op": [0.4, 0.8], "copies": 2, "blend": "screen" },
+          { "texture": "accent", "place": { "fit": "width", "zoom": 1.1, "x": 0.89, "y": 0 }, "motion": "pulse", "dur": 6, "op": [0.15, 0.5], "blend": "screen" }
+        ]
+      },
+      "plate": [
+        { "texture": "layer", "place": { "fit": "cover", "zoom": 1.2, "x": 0.675, "y": 0.845 }, "motion": "flow", "move": [0.006, -0.02], "dur": 12, "op": [0.4, 0.8], "copies": 2, "blend": "screen" },
+        { "texture": "accent", "place": { "fit": "cover", "zoom": 1.1, "x": 0.83, "y": 0.29 }, "motion": "pulse", "dur": 6, "op": [0.15, 0.5], "blend": "screen" }
+      ],
+      "thumb": [
+        { "texture": "layer", "place": { "fit": "cover", "zoom": 1.3, "x": 0.835, "y": 0.89 }, "motion": "flow", "move": [0.01, -0.02], "dur": 9, "op": [0.45, 0.85], "copies": 2, "blend": "screen" },
+        { "texture": "accent", "place": { "fit": "cover", "zoom": 1.6, "x": 0.89, "y": 0.2 }, "motion": "pulse", "dur": 6, "op": [0.25, 0.6], "blend": "screen" }
+      ]
+    }
+  },
+  "train": {
+    "slug": "train",
+    "caveat": null,
+    "scenes": [
+      { "id": "voyage", "variation": "Voyager en train tranquillement" },
+      { "id": "gare", "variation": "Attendre dans une gare" },
+      { "id": "tunnel", "variation": "Un train dans un tunnel" }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          { "texture": "layer", "place": { "fit": "cover", "zoom": 1.15, "x": 0.8, "y": 0.85 }, "motion": "drift", "move": [0.02, -0.004], "dur": 14, "op": [0.2, 0.45] },
+          { "texture": "accent", "place": { "fit": "cover", "zoom": 1.1, "x": 1, "y": 1 }, "motion": "pulse", "dur": 4.4, "op": [0.25, 0.85], "blend": "screen" }
+        ],
+        "portrait": [
+          { "texture": "layer", "place": { "fit": "width", "zoom": 1.15, "x": 0.8, "y": 1 }, "motion": "drift", "move": [0.02, -0.004], "dur": 14, "op": [0.2, 0.45] },
+          { "texture": "accent", "place": { "fit": "width", "zoom": 1.1, "x": 1, "y": 0.6156 }, "motion": "pulse", "dur": 4.4, "op": [0.25, 0.85], "blend": "screen" }
+        ]
+      },
+      "plate": [
+        { "texture": "layer", "place": { "fit": "cover", "zoom": 1.1, "x": 0.8, "y": 0.85 }, "motion": "drift", "move": [0.02, -0.004], "dur": 14, "op": [0.2, 0.45] },
+        { "texture": "accent", "place": { "fit": "cover", "zoom": 1.05, "x": 0.908, "y": 1 }, "motion": "pulse", "dur": 4.4, "op": [0.25, 0.85], "blend": "screen" }
+      ],
+      "thumb": [
+        { "texture": "layer", "place": { "fit": "cover", "zoom": 1.2, "x": 0.8, "y": 0.9 }, "motion": "drift", "move": [0.03, -0.006], "dur": 12, "op": [0.25, 0.55] },
+        { "texture": "accent", "place": { "fit": "cover", "zoom": 1.05, "x": 0, "y": 0 }, "motion": "pulse", "dur": 4.4, "op": [0.3, 0.9], "blend": "screen" }
+      ]
+    }
+  },
+  "clock": {
+    "slug": "horloge",
+    "caveat": null,
+    "scenes": [
+      { "id": "arretee", "variation": "Une horloge arrêtée" },
+      { "id": "aiguilles", "variation": "Des aiguilles folles ou une heure impossible" },
+      { "id": "clocher", "variation": "Une horloge publique ou de clocher" }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.4,
+      "hero": {
+        "landscape": [
+          { "texture": "layer", "place": { "fit": "cover", "zoom": 1.1 }, "motion": "flow", "move": [0.002, -0.02], "dur": 22, "op": [0.15, 0.35], "copies": 2 },
+          { "texture": "accent", "place": { "fit": "cover", "zoom": 1.1, "x": 1, "y": 0.5 }, "motion": "pulse", "dur": 3.6, "op": [0.2, 0.65], "blend": "screen" }
+        ],
+        "portrait": [
+          { "texture": "layer", "place": { "fit": "width", "zoom": 1.1, "x": 0.5, "y": 1 }, "motion": "flow", "move": [0.002, -0.02], "dur": 22, "op": [0.15, 0.35], "copies": 2 },
+          { "texture": "accent", "place": { "fit": "width", "zoom": 1.1, "x": 1, "y": 0.5 }, "motion": "pulse", "dur": 3.6, "op": [0.2, 0.65], "blend": "screen" }
+        ]
+      },
+      "plate": [
+        { "texture": "layer", "place": { "fit": "cover", "zoom": 1.1 }, "motion": "flow", "move": [0.002, -0.02], "dur": 22, "op": [0.15, 0.35], "copies": 2 },
+        { "texture": "accent", "place": { "fit": "cover", "x": 1 }, "motion": "pulse", "dur": 3.6, "op": [0.2, 0.65], "blend": "screen" }
+      ],
+      "thumb": [
+        { "texture": "layer", "place": { "fit": "cover", "zoom": 1.1 }, "motion": "flow", "move": [0.002, -0.02], "dur": 18, "op": [0.25, 0.5], "copies": 2 },
+        { "texture": "accent", "place": { "fit": "cover", "zoom": 1.4, "x": 1, "y": 0.4 }, "motion": "pulse", "dur": 3.6, "op": [0.3, 0.85], "blend": "screen" }
+      ]
+    }
+  },
+  "water": {
+    "slug": "eau",
+    "caveat": null,
+    "scenes": [
+      { "id": "claire", "variation": "Une eau claire et calme" },
+      { "id": "trouble", "variation": "Une eau trouble ou sale" },
+      { "id": "montee", "variation": "Une eau qui monte ou de l'eau dans la maison" }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          { "texture": "layer", "place": { "fit": "cover", "zoom": 1.15, "x": 0.5, "y": 1 }, "motion": "drift", "move": [0.02, 0], "dur": 14, "op": [0.12, 0.3] },
+          { "texture": "accent", "place": { "fit": "cover", "zoom": 1, "x": 0.5, "y": 0.5 }, "motion": "pulse", "dur": 3.8, "op": [0.16, 0.58] }
+        ],
+        "portrait": [
+          { "texture": "layer", "place": { "fit": "width", "zoom": 1.1, "x": 0.5, "y": 0.65 }, "motion": "drift", "move": [0.02, 0], "dur": 14, "op": [0.12, 0.3] },
+          { "texture": "accent", "place": { "fit": "width", "zoom": 1.05, "x": 1, "y": 0.58 }, "motion": "pulse", "dur": 3.8, "op": [0.16, 0.58] }
+        ]
+      },
+      "plate": [
+        { "texture": "layer", "place": { "fit": "width", "zoom": 1.1, "x": 0.5, "y": 1 }, "motion": "drift", "move": [0.02, 0], "dur": 14, "op": [0.12, 0.3] },
+        { "texture": "accent", "place": { "fit": "width", "zoom": 1.05, "x": 1, "y": 0.68 }, "motion": "pulse", "dur": 3.8, "op": [0.16, 0.58] }
+      ],
+      "thumb": [
+        { "texture": "layer", "place": { "fit": "cover", "zoom": 1.12, "x": 0.5, "y": 0 }, "motion": "drift", "move": [0.02, 0], "dur": 10, "op": [0.22, 0.55] },
+        { "texture": "accent", "place": { "fit": "cover", "zoom": 1, "x": 0.5, "y": 0.5 }, "motion": "pulse", "dur": 3.8, "op": [0.25, 0.8], "blend": "screen" }
+      ]
+    }
+  },
+  "dog": {
+    "slug": "chien",
+    "caveat": null,
+    "scenes": [
+      { "id": "poursuite", "variation": "Un chien qui attaque ou vous poursuit" },
+      { "id": "familier", "variation": "Un chien amical : le vôtre, ou un chien que vous avez eu" },
+      { "id": "meute", "variation": "Plusieurs chiens ou une meute" }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          { "texture": "layer", "place": { "fit": "cover", "zoom": 1.05, "x": 0.5, "y": 0.5 }, "motion": "drift", "move": [0.012, 0.004], "dur": 10, "op": [0.12, 0.34] },
+          { "texture": "accent", "place": { "fit": "cover", "zoom": 1.05, "x": 0, "y": 0 }, "motion": "pulse", "dur": 5.5, "op": [0.08, 0.26] }
+        ],
+        "portrait": [
+          { "texture": "layer", "place": { "fit": "width", "zoom": 1.05, "x": 0.5, "y": 0.65 }, "motion": "drift", "move": [0.012, 0.004], "dur": 10, "op": [0.12, 0.34] },
+          { "texture": "accent", "place": { "fit": "width", "zoom": 1.15, "x": 0, "y": 0 }, "motion": "pulse", "dur": 5.5, "op": [0.08, 0.26] }
+        ]
+      },
+      "plate": [
+        { "texture": "layer", "place": { "fit": "width", "zoom": 1.1, "x": 0.7, "y": 1 }, "motion": "drift", "move": [0.012, 0.004], "dur": 10, "op": [0.12, 0.34] },
+        { "texture": "accent", "place": { "fit": "width", "zoom": 1.25, "x": 0, "y": 0.1 }, "motion": "pulse", "dur": 5.5, "op": [0.08, 0.26] }
+      ],
+      "thumb": [
+        { "texture": "layer", "place": { "fit": "cover", "zoom": 1.1, "x": 0.7, "y": 0 }, "motion": "drift", "move": [0.012, 0.004], "dur": 10, "op": [0.22, 0.55] },
+        { "texture": "accent", "place": { "fit": "cover", "zoom": 1.15, "x": 0.3, "y": 0 }, "motion": "pulse", "dur": 3.8, "op": [0.25, 0.8], "blend": "screen" }
+      ]
+    }
+  },
+  "teeth": {
+    "slug": "dents",
+    "caveat": null,
+    "scenes": [
+      { "id": "chute", "variation": "Dents qui tombent" },
+      { "id": "casse", "variation": "Dents qui s'effritent ou se cassent" },
+      { "id": "repousse", "variation": "De nouvelles dents qui poussent" }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          { "texture": "layer", "place": { "fit": "cover", "zoom": 1.05, "x": 1, "y": 0 }, "motion": "drift", "move": [0.008, -0.006], "dur": 12, "op": [0.1, 0.3] },
+          { "texture": "accent", "place": { "fit": "cover", "zoom": 1, "x": 0.5, "y": 0.5 }, "motion": "pulse", "dur": 3.8, "op": [0.16, 0.58] }
+        ],
+        "portrait": [
+          { "texture": "layer", "place": { "fit": "width", "zoom": 1.05, "x": 1, "y": 0.1 }, "motion": "drift", "move": [0.008, -0.006], "dur": 12, "op": [0.1, 0.3] },
+          { "texture": "accent", "place": { "fit": "width", "zoom": 1, "x": 0.5, "y": 0.2 }, "motion": "pulse", "dur": 3.8, "op": [0.16, 0.58] }
+        ]
+      },
+      "plate": [
+        { "texture": "layer", "place": { "fit": "width", "zoom": 1.1, "x": 1, "y": 0 }, "motion": "drift", "move": [0.008, -0.006], "dur": 12, "op": [0.1, 0.3] },
+        { "texture": "accent", "place": { "fit": "width", "zoom": 1, "x": 1, "y": 1 }, "motion": "pulse", "dur": 3.8, "op": [0.16, 0.58] }
+      ],
+      "thumb": [
+        { "texture": "layer", "place": { "fit": "cover", "zoom": 1.05, "x": 1, "y": 0 }, "motion": "drift", "move": [0.008, -0.006], "dur": 10, "op": [0.22, 0.55] },
+        { "texture": "accent", "place": { "fit": "cover", "zoom": 1.5, "x": 1, "y": 1 }, "motion": "pulse", "dur": 3.8, "op": [0.25, 0.8], "blend": "screen" }
+      ]
+    }
+  },
+  "flying": {
+    "slug": "voler",
+    "caveat": null,
+    "scenes": [
+      { "id": "libre", "variation": "Planer librement" },
+      { "id": "difficile", "variation": "Peiner à voler" },
+      { "id": "ras-sol", "variation": "Voler près du sol" }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          { "texture": "layer", "place": { "fit": "cover", "zoom": 1.15, "x": 0.5, "y": 1 }, "motion": "drift", "move": [0.02, 0], "dur": 14, "op": [0.12, 0.3] },
+          { "texture": "accent", "place": { "fit": "cover", "zoom": 1.3, "x": 0, "y": 0 }, "motion": "pulse", "dur": 4.6, "op": [0.14, 0.42] }
+        ],
+        "portrait": [
+          { "texture": "layer", "place": { "fit": "width", "zoom": 1.1, "x": 0.5, "y": 0.48 }, "motion": "drift", "move": [0.02, 0], "dur": 14, "op": [0.12, 0.3] },
+          { "texture": "accent", "place": { "fit": "width", "zoom": 1, "x": 0.5, "y": 0 }, "motion": "pulse", "dur": 4.6, "op": [0.14, 0.42] }
+        ]
+      },
+      "plate": [
+        { "texture": "layer", "place": { "fit": "width", "zoom": 1.15, "x": 0.5, "y": 1 }, "motion": "drift", "move": [0.02, 0], "dur": 14, "op": [0.12, 0.3] },
+        { "texture": "accent", "place": { "fit": "width", "zoom": 1.2, "x": 0, "y": 0.8 }, "motion": "pulse", "dur": 4.6, "op": [0.14, 0.42] }
+      ],
+      "thumb": [
+        { "texture": "layer", "place": { "fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0 }, "motion": "drift", "move": [0.02, 0], "dur": 10, "op": [0.22, 0.55] },
+        { "texture": "accent", "place": { "fit": "cover", "zoom": 1.1, "x": 0, "y": 0 }, "motion": "pulse", "dur": 3.8, "op": [0.25, 0.8], "blend": "screen" }
+      ]
+    }
+  },
+  "car": {
+    "slug": "voiture",
+    "caveat": null,
+    "scenes": [
+      { "id": "conduite", "variation": "Conduire avec aisance" },
+      { "id": "passager", "variation": "Être passager" },
+      { "id": "panne", "variation": "Voiture en panne ou qui ne démarre pas" }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          { "texture": "layer", "place": { "fit": "cover", "zoom": 1.05, "x": 1, "y": 0 }, "motion": "drift", "move": [0.008, -0.006], "dur": 12, "op": [0.1, 0.3] },
+          { "texture": "accent", "place": { "fit": "cover", "zoom": 1, "x": 0.5, "y": 0.5 }, "motion": "pulse", "dur": 3.8, "op": [0.16, 0.58] }
+        ],
+        "portrait": [
+          { "texture": "layer", "place": { "fit": "width", "zoom": 1.1, "x": 1, "y": 0.1 }, "motion": "drift", "move": [0.008, -0.006], "dur": 12, "op": [0.1, 0.3] },
+          { "texture": "accent", "place": { "fit": "width", "zoom": 1.05, "x": 1, "y": 0.52 }, "motion": "pulse", "dur": 3.8, "op": [0.16, 0.58] }
+        ]
+      },
+      "plate": [
+        { "texture": "layer", "place": { "fit": "width", "zoom": 1.1, "x": 1, "y": 0 }, "motion": "drift", "move": [0.008, -0.006], "dur": 12, "op": [0.1, 0.3] },
+        { "texture": "accent", "place": { "fit": "width", "zoom": 1.1, "x": 0.5, "y": 0.65 }, "motion": "pulse", "dur": 3.8, "op": [0.16, 0.58] }
+      ],
+      "thumb": [
+        { "texture": "layer", "place": { "fit": "cover", "zoom": 1.05, "x": 1, "y": 0 }, "motion": "drift", "move": [0.008, -0.006], "dur": 10, "op": [0.22, 0.55] },
+        { "texture": "accent", "place": { "fit": "cover", "zoom": 1, "x": 0.5, "y": 0.5 }, "motion": "pulse", "dur": 3.8, "op": [0.25, 0.8], "blend": "screen" }
+      ]
+    }
+  },
+  "bridge": {
+    "slug": "pont",
+    "caveat": null,
+    "scenes": [
+      { "id": "traversee", "variation": "Traverser un pont" },
+      { "id": "rupture", "variation": "Un pont cassé ou effondré" },
+      { "id": "hesitation", "variation": "Avoir peur de traverser" }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          { "texture": "layer", "place": { "fit": "cover", "zoom": 1.15, "x": 0.5, "y": 1 }, "motion": "drift", "move": [0.02, 0], "dur": 14, "op": [0.12, 0.3] },
+          { "texture": "accent", "place": { "fit": "cover", "zoom": 1.05, "x": 0, "y": 0 }, "motion": "pulse", "dur": 5.5, "op": [0.08, 0.26] }
+        ],
+        "portrait": [
+          { "texture": "layer", "place": { "fit": "width", "zoom": 1.1, "x": 0.5, "y": 0.7 }, "motion": "drift", "move": [0.02, 0], "dur": 14, "op": [0.12, 0.3] },
+          { "texture": "accent", "place": { "fit": "width", "zoom": 1.2, "x": 0, "y": 0.16 }, "motion": "pulse", "dur": 5.5, "op": [0.08, 0.26] }
+        ]
+      },
+      "plate": [
+        { "texture": "layer", "place": { "fit": "width", "zoom": 1.1, "x": 0.5, "y": 1 }, "motion": "drift", "move": [0.02, 0], "dur": 14, "op": [0.12, 0.3] },
+        { "texture": "accent", "place": { "fit": "width", "zoom": 1.2, "x": 0, "y": 0.3 }, "motion": "pulse", "dur": 5.5, "op": [0.08, 0.26] }
+      ],
+      "thumb": [
+        { "texture": "layer", "place": { "fit": "cover", "zoom": 1.12, "x": 0.5, "y": 0 }, "motion": "drift", "move": [0.02, 0], "dur": 10, "op": [0.22, 0.55] },
+        { "texture": "accent", "place": { "fit": "cover", "zoom": 1.2, "x": 0, "y": 0 }, "motion": "pulse", "dur": 3.8, "op": [0.25, 0.8], "blend": "screen" }
+      ]
+    }
+  }
+}

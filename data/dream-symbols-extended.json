@@ -629,6 +629,10 @@
             "meaning": "Pode simbolizar medo do desconhecido, depressão ou o avanço por um território ainda inexplorado da sua vida."
           },
           {
+            "context": "Acordar com um sobressalto",
+            "meaning": "O sobressalto que acorda você bem na hora de pegar no sono costuma ser um espasmo hípnico, comum e geralmente inofensivo. A imagem de uma queda pode acompanhá-lo. Se ele voltar toda noite e atrapalhar o seu sono, procure a opinião de um médico."
+          },
+          {
             "context": "Cair e depois voar",
             "meaning": "Uma transformação positiva — transformar o medo em liberdade, encontrar controle no caos ou superar obstáculos."
           },
@@ -1917,6 +1921,10 @@
             "meaning": "Reflete turbulência emocional, sentimentos avassaladores ou circunstâncias difíceis da vida que parecem estar além do seu controle."
           },
           {
+            "context": "Onda gigante ou tsunami",
+            "meaning": "Um paredão de água se erguendo é uma das cenas de mar mais marcantes. Ela pode acompanhar algo que você vê chegar sem conseguir impedir: um prazo, uma notícia, uma mudança. A onda chegou até você?"
+          },
+          {
             "context": "Afogar-se no mar",
             "meaning": "Indica a sensação de estar sobrecarregado pelas emoções, pelo inconsciente ou pelas circunstâncias da vida. Você pode sentir que a situação está grande demais para você dar conta."
           },
@@ -2919,6 +2927,10 @@
           {
             "context": "Fuoco che brucia",
             "meaning": "Osserva cosa bruciava e se il fuoco si espandeva o diminuiva. Questi dettagli contano più di una lettura fissa."
+          },
+          {
+            "context": "Fumo senza fiamme",
+            "meaning": "Sentivi l’odore, vedevi da dove veniva? Il fumo può accompagnare un’inquietudine diffusa: qualcosa cova, senza che si sappia dove. Nota che cosa, il giorno prima, ti ha lasciato a disagio o è rimasto non detto."
           }
         ],
         "illustration": {
@@ -2951,6 +2963,10 @@
           {
             "context": "Acender ou controlar o fogo",
             "meaning": "Pode indicar que você está assumindo o comando de uma energia transformadora, canalizando a paixão ou iniciando uma mudança necessária na sua vida."
+          },
+          {
+            "context": "Fumaça sem chamas",
+            "meaning": "Você sentia o cheiro, via de onde ela vinha? A fumaça pode acompanhar uma preocupação difusa: alguma coisa arde em silêncio, sem que se saiba onde. Repare no que, na véspera, deixou você desconfortável ou ficou sem ser dito."
           }
         ],
         "illustration": {
@@ -4423,6 +4439,10 @@
             "meaning": "Puede reflejar dudas sobre un cambio, una conexión debilitada o falta de apoyo; no anuncia que la transición vaya a fracasar."
           },
           {
+            "context": "Tener miedo de cruzar",
+            "meaning": "El miedo en un puente puede mezclar el vértigo y el miedo al cambio. ¿Diste media vuelta, esperaste a alguien o cruzaste de todos modos? Pregúntate qué paso estás aplazando en este momento."
+          },
+          {
             "context": "Puente con agua",
             "meaning": "El estado del agua añade contexto emocional o puede retomar un lugar conocido. Observa la corriente y tu reacción."
           },
@@ -4961,6 +4981,10 @@
           {
             "context": "Lua encoberta ou eclipsada",
             "meaning": "Pode sugerir intuição bloqueada, confusão emocional ou algo escondido que precisa vir à tona."
+          },
+          {
+            "context": "Duas luas ou mais",
+            "meaning": "Várias luas no mesmo céu costumam indicar que o sonho se afasta da realidade. A cena pode se ligar a uma hesitação entre duas opções, ou a uma simples curiosidade. Algumas pessoas usam essas esquisitices como pista para perceber que estão sonhando."
           }
         ],
         "illustration": {
@@ -5536,7 +5560,7 @@
         }
       },
       "pt": {
-        "fullInterpretation": "<p>Uma floresta não tem um único significado nos sonhos. Dependendo da luz, do caminho, das suas ações e do que você sentiu, ela pode trazer para a cena incerteza, privacidade, exploração, crescimento ou a sensação de estar sobrecarregado. Comece olhando para a floresta como um lugar dentro da história, em vez de tratá-la como uma mensagem fixa.</p>\n<p>Uma floresta escura ou densa pode combinar com uma situação da vida desperta em que você tem pouca informação ou ainda não consegue ver um caminho claro à frente. Se essa mesma floresta pareceu calma ou intrigante, ela pode, ao contrário, refletir curiosidade, solidão ou a liberdade de explorar algo desconhecido. A sua reação emocional ajuda a distinguir o medo do interesse.</p>\n<p>Uma floresta verde, aberta ou iluminada pelo sol pode sugerir restauração, vitalidade ou espaço para crescer, mas o contexto continua importando. Repare se você estava descansando, se escondendo, procurando algo, seguindo alguém ou tentando sair. Essas ações costumam dizer mais do que o cenário sozinho.</p>\n<p>Estar perdido pode espelhar confusão ou excesso de opções; encontrar um caminho pode acompanhar uma clareza crescente. Compare a floresta com outros cenários no <a href=\"/en/guides/dream-locations\">guia de lugares dos sonhos</a> e depois use a <a href=\"/en/blog/dream-meanings\">central de significados dos sonhos</a> para conectar o lugar, a emoção e o contexto da vida desperta sem forçar uma interpretação única.</p>",
+        "fullInterpretation": "<p>Uma floresta não tem um único significado nos sonhos. Dependendo da luz, do caminho, das suas ações e do que você sentiu, ela pode trazer para a cena incerteza, privacidade, exploração, crescimento ou a sensação de estar sobrecarregado. Comece olhando para a floresta como um lugar dentro da história, em vez de tratá-la como uma mensagem fixa.</p>\n<p>Uma floresta escura ou densa pode combinar com uma situação da vida desperta em que você tem pouca informação ou ainda não consegue ver um caminho claro à frente. Se essa mesma floresta pareceu calma ou intrigante, ela pode, ao contrário, refletir curiosidade, solidão ou a liberdade de explorar algo desconhecido. A sua reação emocional ajuda a distinguir o medo do interesse.</p>\n<p>Uma floresta verde, aberta ou iluminada pelo sol pode sugerir restauração, vitalidade ou espaço para crescer, mas o contexto continua importando. Repare se você estava descansando, se escondendo, procurando algo, seguindo alguém ou tentando sair. Essas ações costumam dizer mais do que o cenário sozinho.</p>\n<p>Estar perdido pode espelhar confusão ou excesso de opções; encontrar um caminho pode acompanhar uma clareza crescente. Compare a floresta com outros cenários no <a href=\"/pt-br/guides/lugares-nos-sonhos\">guia de lugares dos sonhos</a> e depois use a <a href=\"/en/blog/dream-meanings\">central de significados dos sonhos</a> para conectar o lugar, a emoção e o contexto da vida desperta sem forçar uma interpretação única.</p>",
         "variations": [
           {
             "context": "Floresta escura e densa",
@@ -22536,7 +22560,32 @@
       },
       "pt": {
         "fullInterpretation": "<p>A borboleta pode parecer estranhamente específica em um sonho, e é por isso que vale levá-la a sério sem levá-la ao pé da letra. Muitas vezes ela reúne vários fios ao mesmo tempo: instinto, apetite, cautela, proteção, medo e as partes mais indomadas da sua personalidade.</p>\n<p>Repare se o sonho deixou o símbolo familiar ou estranho. Detalhes familiares podem apontar para uma memória vivida; detalhes estranhos podem mostrar que um padrão antigo está sendo visto de um novo ângulo.</p>\n<p>A pista mais forte costuma ser emocional. Alívio, vergonha, medo, curiosidade, irritação ou saudade estreitam o significado mais rápido do que qualquer interpretação universal.</p>\n<p>Se você registrar o sonho no Noctalia, guarde uma frase para o que aconteceu e outra para aquilo de que isso lembrou você. Esse pequeno contraste costuma revelar o tema real.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Uma borboleta que pousa em você",
+            "meaning": "Uma borboleta na sua mão, no seu ombro ou no seu rosto pode acompanhar um momento de calma, uma atenção recebida ou uma mudança que você deixa chegar. Você ficou parado para que ela ficasse, ou a deixou ir embora?"
+          },
+          {
+            "context": "Perseguir ou pegar uma borboleta",
+            "meaning": "Correr atrás de uma borboleta, prendê-la nas mãos ou numa rede pode se ligar à vontade de segurar algo passageiro. Você conseguiu pegá-la? E, se conseguiu, o que aconteceu com ela depois?"
+          },
+          {
+            "context": "Uma borboleta saindo da crisálida",
+            "meaning": "Ver as asas se abrindo põe em evidência uma transformação lenta, às vezes trabalhosa. A cena pode acompanhar uma mudança em andamento, em você ou ao seu redor. Você queria ajudar, ou só esperar?"
+          },
+          {
+            "context": "Uma borboleta de asas danificadas ou morta",
+            "meaning": "Asas rasgadas ou uma borboleta imóvel podem se ligar à preocupação com algo frágil: um projeto, um vínculo, a sua própria energia. Depois de uma perda, a cena também pode ecoar a lembrança de uma pessoa. Não é um presságio."
+          },
+          {
+            "context": "Uma nuvem de borboletas",
+            "meaning": "Dezenas de asas ao seu redor podem parecer uma festa ou um excesso. A cena pode acompanhar alegria, ou uma enxurrada de novidades para absorver. Você ficou encantado, ou teve vontade de recuar?"
+          },
+          {
+            "context": "Uma borboleta presa dentro de casa",
+            "meaning": "Uma borboleta batendo contra o vidro pode ecoar uma parte de você, ou um projeto, que procura uma saída. Você abriu a janela? Repare em que cômodo ela estava, e na casa de quem."
+          }
+        ]
       }
     },
     "bee": {
@@ -26283,7 +26332,7 @@
         ]
       },
       "pt": {
-        "fullInterpretation": "<p>Um cemitério pode tornar vívidas, dentro do sonho, a memória, o luto, a transição e a fronteira entre passado e presente. Comece pelo próprio lugar: você estava caminhando entre os túmulos, procurando um deles, visitando alguém, participando de uma reunião ou tentando encontrar a saída? O horário do dia, o estado de conservação, as outras pessoas e a sua emoção criam contextos diferentes.</p>\n<p>Se a cena girou em torno de um fim, compare com os <a class=\"text-dream-salmon hover:underline\" href=\"/en/symbols/death\">sonhos com morte</a>. Uma pessoa específica pode tornar mais relevante <a class=\"text-dream-salmon hover:underline\" href=\"/en/symbols/deceased-person\">sonhar com uma pessoa falecida</a>, enquanto uma cerimônia se aproxima mais dos <a class=\"text-dream-salmon hover:underline\" href=\"/en/symbols/funeral\">sonhos com funeral</a>. Nenhuma dessas cenas prevê uma morte nem comprova contato espiritual.</p>\n<p>Uma visita recente, uma história de família, uma data marcante, um filme, uma notícia ou uma imagem qualquer podem fornecer o lugar diretamente. Compare o cemitério com outros <a class=\"text-dream-salmon hover:underline\" href=\"/en/symbols/places\">símbolos de lugares nos sonhos</a> e depois use a ação e a emoção para formar uma interpretação pessoal e sem previsões.</p>",
+        "fullInterpretation": "<p>Um cemitério pode tornar vívidas, dentro do sonho, a memória, o luto, a transição e a fronteira entre passado e presente. Comece pelo próprio lugar: você estava caminhando entre os túmulos, procurando um deles, visitando alguém, participando de uma reunião ou tentando encontrar a saída? O horário do dia, o estado de conservação, as outras pessoas e a sua emoção criam contextos diferentes.</p>\n<p>Se a cena girou em torno de um fim, compare com os <a class=\"text-dream-salmon hover:underline\" href=\"/pt-br/simbolos/morte\">sonhos com morte</a>. Uma pessoa específica pode tornar mais relevante <a class=\"text-dream-salmon hover:underline\" href=\"/pt-br/simbolos/pessoa-falecida\">sonhar com uma pessoa falecida</a>, enquanto uma cerimônia se aproxima mais dos <a class=\"text-dream-salmon hover:underline\" href=\"/pt-br/simbolos/funeral\">sonhos com funeral</a>. Nenhuma dessas cenas prevê uma morte nem comprova contato espiritual.</p>\n<p>Uma visita recente, uma história de família, uma data marcante, um filme, uma notícia ou uma imagem qualquer podem fornecer o lugar diretamente. Compare o cemitério com outros <a class=\"text-dream-salmon hover:underline\" href=\"/pt-br/simbolos/lugares\">símbolos de lugares nos sonhos</a> e depois use a ação e a emoção para formar uma interpretação pessoal e sem previsões.</p>",
         "variations": [
           {
             "context": "Caminhar entre túmulos à noite",
