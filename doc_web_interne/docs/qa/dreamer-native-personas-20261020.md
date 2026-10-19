@@ -6,6 +6,8 @@ Campagne du 20 octobre 2026 (heure de Paris) : **4/4 sur iOS et 4/4 sur Android*
 
 Master récupéré à `ce62eb9d405aec4ba3087b1ca58f711c5d5fac08` dans un checkout isolé ; les modifications du checkout principal sont conservées.
 
+Après les campagnes, le suivi documentaire de master `0102a5e9456fdccdb07123a59fcfb78148be644a` a également été intégré. Les empreintes `appInputs` et `nativeInputs` restent identiques aux reçus sur les deux plateformes : les huit parcours ci-dessous sont réutilisés pour cette intégration documentaire.
+
 | Cible | Appareil de QA | Release local embarqué |
 | --- | --- | --- |
 | iOS | `Noctalia_Framerate_QA`, iPhone 17 Simulator, iOS 27.0 | 3.7.0 (14), ARM64, signature désactivée pour Simulator |
