@@ -331,6 +331,9 @@ async function run(browser, baseURL, index) {
     await search.focus();
     await search.pressSequentially('forest', { delay: 120 });
     await page.waitForTimeout(300);
+    // A field that lost its focus mid-word would measure a shorter, different journey.
+    const typed = await search.inputValue();
+    if (typed !== 'forest') throw new Error(`journal search received "${typed}" instead of "forest"`);
     await search.fill('');
   }));
   // The symbol dictionary browsed by letter.
