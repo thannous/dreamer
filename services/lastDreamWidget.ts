@@ -1,6 +1,7 @@
 import { Directory, File, Paths } from 'expo-file-system';
 
 import { resolveWithDiskCache } from '@/lib/dreamMediaDiskCache';
+import { getDreamRouteParams } from '@/lib/dreamRoute';
 import { lastDreamImageKey } from '@/lib/homeWidgets';
 import { createScopedLogger } from '@/lib/logger';
 import type { DreamAnalysis } from '@/lib/types';
@@ -13,13 +14,12 @@ const PAINTING_PREFIX = 'last-dream-';
 const PAINTING_WIDTH = 720;
 
 /**
- * Copies the dream's painting into the folder the widgets read, sized for them, and
- * removes the one it replaces. A painting already there is not fetched again.
+ * Copies the dream's painting into the folder the widgets read, sized for them. A painting
+ * already there is not fetched again. The one it replaces stays until the widget moves on.
  */
 async function copyPainting(dream: DreamAnalysis, userId: string | null, directory: string): Promise<string> {
-  const shared = new Directory(directory);
-  const key = lastDreamImageKey(dream);
-  const target = new File(shared, `${PAINTING_PREFIX}${key}.jpg`);
+  const key = lastDreamImageKey(dream, userId);
+  const target = new File(new Directory(directory), `${PAINTING_PREFIX}${key}.jpg`);
   if (!target.exists) {
     const media = await resolveWithDiskCache(dream, userId, false);
     const source = media.imageStatus === 'ready' && media.imageUrl ? media.imageUrl : media.thumbnailUrl;
@@ -40,14 +40,13 @@ async function copyPainting(dream: DreamAnalysis, userId: string | null, directo
       if (download?.exists) download.delete();
     }
   }
-  removePaintings(shared, target);
   return target.uri;
 }
 
 /** Removes the paintings the widget no longer shows: another dream's, or every one after a sign-out. */
-function removePaintings(shared: Directory, keep?: File): void {
+function removePaintings(shared: Directory, keep?: string): void {
   for (const entry of shared.exists ? shared.list() : []) {
-    if (entry instanceof File && entry.name.startsWith(PAINTING_PREFIX) && entry.uri !== keep?.uri) entry.delete();
+    if (entry instanceof File && entry.name.startsWith(PAINTING_PREFIX) && entry.uri !== keep) entry.delete();
   }
 }
 
@@ -89,14 +88,18 @@ async function publish({ dream, userId, title, date, empty }: LastDreamUpdate, c
     if (shown?.userId !== userId || shown.dreamId > dream.id) clear();
     return false;
   }
+  // The same identity as the journal's own links: an id alone opens nothing when two match.
+  const { id, ...identity } = getDreamRouteParams(dream);
   found.lastDream.updateSnapshot({
     image,
     title,
     ...(date ? { date } : {}),
-    url: appLink(`journal/${dream.id}`),
+    url: appLink(`journal/${id}`, identity),
     empty,
   });
   shown = { userId, dreamId: dream.id };
+  // Only now is the painting it showed no longer needed.
+  removePaintings(new Directory(found.directory), image);
   return true;
 }
 

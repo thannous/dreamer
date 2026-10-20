@@ -2,10 +2,12 @@ import type { DreamAnalysis } from '@/lib/types';
 
 // The widget sits on the home screen, outside the app: it must never keep another
 // dreamer's dream after a sign-out, never put back an older state once a newer one is
-// laid, and never hand the widgets' settings a null, which they cannot store.
+// laid, never show a painting it has deleted or one from another dream, and never hand
+// the widgets' settings a null, which they cannot store.
 
 const mockFiles = new Set<string>();
 let mockOffline = false;
+const mockUnreachable = new Set<string>();
 let mockHoldDownload: Promise<void> | null = null;
 
 jest.mock('expo-file-system', () => {
@@ -29,9 +31,9 @@ jest.mock('expo-file-system', () => {
       mockFiles.add(target.uri);
       this.uri = target.uri;
     }
-    static async downloadFileAsync(_url: string, destination: File) {
+    static async downloadFileAsync(url: string, destination: File) {
       if (mockHoldDownload) await mockHoldDownload;
-      if (mockOffline) throw new Error('offline');
+      if (mockOffline || mockUnreachable.has(url)) throw new Error('offline');
       mockFiles.add(destination.uri);
       return destination;
     }
@@ -59,12 +61,12 @@ jest.mock('expo-image-manipulator', () => ({
   },
 }));
 jest.mock('@/lib/dreamMediaDiskCache', () => ({
-  resolveWithDiskCache: async (dream: { id: number }) => ({ imageStatus: 'ready', imageUrl: `https://paintings/${dream.id}` }),
+  resolveWithDiskCache: async (dream: { imageUrl: string }) => ({ imageStatus: 'ready', imageUrl: dream.imageUrl }),
 }));
 const mockUpdateSnapshot = jest.fn();
 jest.mock('@/services/noctaliaWidgets', () => ({
   getNoctaliaWidgets: () => ({ lastDream: { updateSnapshot: mockUpdateSnapshot }, directory: 'file:///group' }),
-  appLink: (path: string) => `noctalia://${path}`,
+  appLink: (path: string, query?: Record<string, string>) => `noctalia://${path}${query && Object.keys(query).length ? `?${new URLSearchParams(query)}` : ''}`,
 }));
 
 type Service = typeof import('../lastDreamWidget');
@@ -76,15 +78,16 @@ const launch = (): Service => {
   return service!;
 };
 
-const dream = (id: number): DreamAnalysis => ({
+const dream = (id: number, synced: Partial<DreamAnalysis> = {}): DreamAnalysis => ({
   id,
   transcript: 'x',
   title: `Dream ${id}`,
   interpretation: '',
   shareableQuote: '',
-  imageUrl: `https://paintings/${id}`,
+  imageUrl: `https://paintings/${synced.remoteId ?? id}`,
   chatHistory: [],
   dreamType: 'Symbolic Dream',
+  ...synced,
 });
 const update = (painted: DreamAnalysis | null, userId: string | null) => ({
   dream: painted,
@@ -99,6 +102,7 @@ const paintings = () => [...mockFiles].filter((uri) => uri.startsWith('file:///g
 beforeEach(() => {
   mockFiles.clear();
   mockOffline = false;
+  mockUnreachable.clear();
   mockHoldDownload = null;
   mockUpdateSnapshot.mockClear();
 });
@@ -142,4 +146,39 @@ it('lays the latest state last when a painting is still downloading', async () =
   expect(await signedOut).toBe(true);
   expect(laid()).toEqual([{ url: 'noctalia://recording', empty: 'Your next painted dream will appear here.' }]);
   expect(paintings()).toEqual([]);
+});
+
+it('keeps showing its painting while an update it waited on is passed over', async () => {
+  const service = launch();
+  await service.updateLastDreamWidget(update(dream(10), 'alice'));
+  const [shownPainting] = paintings();
+  let release!: () => void;
+  mockHoldDownload = new Promise((resolve) => {
+    release = resolve;
+  });
+  mockUnreachable.add('https://paintings/13');
+
+  const passedOver = service.updateLastDreamWidget(update(dream(12), 'alice'));
+  // Its painting is on its way when the next update comes.
+  await new Promise((resolve) => setImmediate(resolve));
+  const offline = service.updateLastDreamWidget(update(dream(13), 'alice'));
+  release();
+
+  expect(await passedOver).toBe(false);
+  expect(await offline).toBe(false);
+  expect(laid()).toHaveLength(1);
+  expect(paintings()).toContain(shownPainting);
+  expect(laid()[0].image).toBe(shownPainting);
+});
+
+it('tells apart two synced dreams that share a local id, in the painting and the link', async () => {
+  const service = launch();
+  await service.updateLastDreamWidget(update(dream(10, { remoteId: 41 }), 'alice'));
+  await service.updateLastDreamWidget(update(dream(10, { remoteId: 42, clientRequestId: 'req-42' }), 'alice'));
+
+  const [first, second] = laid();
+  expect(second.image).not.toBe(first.image);
+  expect(paintings()).toEqual([second.image]);
+  expect(first.url).toBe('noctalia://journal/10?remoteId=41');
+  expect(second.url).toBe('noctalia://journal/10?remoteId=42&clientRequestId=req-42');
 });

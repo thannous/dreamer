@@ -15,7 +15,10 @@ jest.mock('expo-widgets', () => {
   mockLoaded('expo-widgets');
   return { widgetsDirectory: 'file:///group/widgets' };
 });
-jest.mock('expo-linking', () => ({ createURL: (path: string) => `noctalia://${path}` }));
+const mockCreateURL = jest.fn((path: string, _options?: { queryParams?: Record<string, string> }) => `noctalia://${path}`);
+jest.mock('expo-linking', () => ({
+  createURL: (path: string, options?: { queryParams?: Record<string, string> }) => mockCreateURL(path, options),
+}));
 
 const mockActivity = (id: string) => ({
   getId: () => id,
@@ -93,5 +96,14 @@ describe('noctaliaWidgets', () => {
 
     expect(own.end).toHaveBeenCalledTimes(1);
     expect(leftover.end).toHaveBeenCalledWith('immediate');
+  });
+
+  it('hands the dream identity to the app link, as the journal reads it', () => {
+    mockRequireOptionalNativeModule.mockReturnValue({});
+    const service = load();
+
+    service.appLink('journal/10', { remoteId: '42' });
+
+    expect(mockCreateURL).toHaveBeenCalledWith('journal/10', { queryParams: { remoteId: '42' } });
   });
 });

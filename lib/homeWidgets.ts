@@ -10,7 +10,12 @@ export function pickLastPaintedDream(dreams: readonly DreamAnalysis[]): DreamAna
   return last;
 }
 
-/** What names a widget's painting: a new dream, or the same dream painted again. */
-export function lastDreamImageKey(dream: DreamAnalysis): string {
-  return `${dream.id}-${dream.imageUpdatedAt ?? 0}`;
+/**
+ * What names a widget's painting: whose dream, which dream (two synced dreams may share a
+ * local id) and which painting of it, so another dream's painting is never taken for its own.
+ */
+export function lastDreamImageKey(dream: DreamAnalysis, userId: string | null): string {
+  return [userId ?? 'guest', dream.id, dream.remoteId ?? 'local', dream.clientRequestId ?? 'none', dream.imageUpdatedAt ?? 0]
+    .join('-')
+    .replace(/[^\w-]/g, '_');
 }

@@ -49,10 +49,10 @@ export function getNoctaliaWidgets(): NoctaliaWidgets | null {
 }
 
 /** A link into the app, in this build's scheme (noctalia, or noctalia-qa for QA). */
-export function appLink(path: string): string {
+export function appLink(path: string, queryParams?: Record<string, string>): string {
   // Loaded with the widgets only: expo-linking reads the native config on import.
   // eslint-disable-next-line @typescript-eslint/no-require-imports
-  return (require('expo-linking') as typeof import('expo-linking')).createURL(path);
+  return (require('expo-linking') as typeof import('expo-linking')).createURL(path, { queryParams });
 }
 
 /** Names the capture widget in the app's language. */

@@ -33,7 +33,7 @@ export function useHomeWidgets(): void {
   const empty = t('widgets.last_dream.empty');
   const title = dream?.title?.trim() || t('journal.detail.untitled_dream');
   // Everything the widget draws. The journal hands out new dream objects far more often.
-  const shown = JSON.stringify([dream && lastDreamImageKey(dream), title, userId, currentLang, empty]);
+  const shown = JSON.stringify([dream && lastDreamImageKey(dream, userId), title, currentLang, empty]);
   const sentRef = useRef<string | null>(null);
   const sendingRef = useRef<string | null>(null);
 
