@@ -109,7 +109,7 @@ function WeekNight({ night, locale }: { night: Night; locale: string }) {
           : dream ? <IconSymbol name="sparkles" size={16} color={ink.accent.text} />
             : <View style={{ width: 5, height: 5, borderRadius: 3, backgroundColor: ink.text.tertiary }} />}
       </View>
-      <Text maxFontSizeMultiplier={1.4} className="font-sans text-[11px] text-ivory-muted">{night.date.getDate()}</Text>
+      <Text maxFontSizeMultiplier={1.4} className="font-sans text-[12px] text-ivory-muted">{night.date.getDate()}</Text>
     </>
   );
 

@@ -276,7 +276,7 @@ export function TrendsNights({ trends, lit, reduced, ink, onAccent, t, formatDat
                 </View>
                 {waiting ? (
                   <View className="rounded-full border border-champagne-soft px-2 py-[2px]">
-                    <Text className="text-[11px] leading-[15px] font-sans-medium text-champagne-on">{t('trends.nights.to_analyze')}</Text>
+                    <Text className="text-[12px] leading-[16px] font-sans-medium text-champagne-on">{t('trends.nights.to_analyze')}</Text>
                   </View>
                 ) : null}
                 <IconSymbol name="chevron.right" size={16} color={ink} />
