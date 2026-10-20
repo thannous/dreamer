@@ -15371,6 +15371,2502 @@
           }
         }
       }
+    },
+    "hands": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "hands-that-will-not-obey": {
+            "variation": "Des mains qui n'obéissent plus",
+            "anchor": "hands-that-will-not-obey"
+          },
+          "holding-someone-s-hand": {
+            "variation": "Tenir la main de quelqu'un",
+            "anchor": "holding-someone-s-hand"
+          },
+          "dirty-hands-or-washing-your-hands": {
+            "variation": "Des mains sales ou se laver les mains",
+            "anchor": "dirty-hands-or-washing-your-hands"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "hands-that-will-not-obey": {
+            "variation": "Hands that will not obey",
+            "anchor": "hands-that-will-not-obey"
+          },
+          "holding-someone-s-hand": {
+            "variation": "Holding someone's hand",
+            "anchor": "holding-someone-s-hand"
+          },
+          "dirty-hands-or-washing-your-hands": {
+            "variation": "Dirty hands, or washing your hands",
+            "anchor": "dirty-hands-or-washing-your-hands"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "hands-that-will-not-obey": {
+            "variation": "Manos que no obedecen",
+            "anchor": "hands-that-will-not-obey"
+          },
+          "holding-someone-s-hand": {
+            "variation": "Ir de la mano de alguien",
+            "anchor": "holding-someone-s-hand"
+          },
+          "dirty-hands-or-washing-your-hands": {
+            "variation": "Manos sucias o lavarte las manos",
+            "anchor": "dirty-hands-or-washing-your-hands"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "hands-that-will-not-obey": {
+            "variation": "Hände, die nicht gehorchen",
+            "anchor": "hands-that-will-not-obey"
+          },
+          "holding-someone-s-hand": {
+            "variation": "Jemandes Hand halten",
+            "anchor": "holding-someone-s-hand"
+          },
+          "dirty-hands-or-washing-your-hands": {
+            "variation": "Schmutzige Hände oder Hände waschen",
+            "anchor": "dirty-hands-or-washing-your-hands"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "hands-that-will-not-obey": {
+            "variation": "Mani che non obbediscono",
+            "anchor": "hands-that-will-not-obey"
+          },
+          "holding-someone-s-hand": {
+            "variation": "Tenere la mano a qualcuno",
+            "anchor": "holding-someone-s-hand"
+          },
+          "dirty-hands-or-washing-your-hands": {
+            "variation": "Mani sporche o lavarsi le mani",
+            "anchor": "dirty-hands-or-washing-your-hands"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "hands-that-will-not-obey": {
+            "variation": "Mãos que não obedecem",
+            "anchor": "hands-that-will-not-obey"
+          },
+          "holding-someone-s-hand": {
+            "variation": "Segurar a mão de alguém",
+            "anchor": "holding-someone-s-hand"
+          },
+          "dirty-hands-or-washing-your-hands": {
+            "variation": "Mãos sujas ou lavar as mãos",
+            "anchor": "dirty-hands-or-washing-your-hands"
+          }
+        }
+      }
+    },
+    "feet": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "walking-barefoot": {
+            "variation": "Marcher pieds nus",
+            "anchor": "walking-barefoot"
+          },
+          "unable-to-move-your-feet": {
+            "variation": "Ne pas pouvoir bouger les pieds",
+            "anchor": "unable-to-move-your-feet"
+          },
+          "washing-feet-or-having-them-washed": {
+            "variation": "Se laver les pieds ou se les faire laver",
+            "anchor": "washing-feet-or-having-them-washed"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "walking-barefoot": {
+            "variation": "Walking barefoot",
+            "anchor": "walking-barefoot"
+          },
+          "unable-to-move-your-feet": {
+            "variation": "Unable to move your feet",
+            "anchor": "unable-to-move-your-feet"
+          },
+          "washing-feet-or-having-them-washed": {
+            "variation": "Washing feet or having them washed",
+            "anchor": "washing-feet-or-having-them-washed"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "walking-barefoot": {
+            "variation": "Ir descalzo",
+            "anchor": "walking-barefoot"
+          },
+          "unable-to-move-your-feet": {
+            "variation": "No poder mover los pies",
+            "anchor": "unable-to-move-your-feet"
+          },
+          "washing-feet-or-having-them-washed": {
+            "variation": "Lavarse los pies o que te los laven",
+            "anchor": "washing-feet-or-having-them-washed"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "walking-barefoot": {
+            "variation": "Barfuß gehen",
+            "anchor": "walking-barefoot"
+          },
+          "unable-to-move-your-feet": {
+            "variation": "Die Füße nicht bewegen können",
+            "anchor": "unable-to-move-your-feet"
+          },
+          "washing-feet-or-having-them-washed": {
+            "variation": "Sich die Füße waschen oder waschen lassen",
+            "anchor": "washing-feet-or-having-them-washed"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "walking-barefoot": {
+            "variation": "Camminare scalzi",
+            "anchor": "walking-barefoot"
+          },
+          "unable-to-move-your-feet": {
+            "variation": "Non riuscire a muovere i piedi",
+            "anchor": "unable-to-move-your-feet"
+          },
+          "washing-feet-or-having-them-washed": {
+            "variation": "Lavarsi i piedi o farseli lavare",
+            "anchor": "washing-feet-or-having-them-washed"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "walking-barefoot": {
+            "variation": "Andar descalço",
+            "anchor": "walking-barefoot"
+          },
+          "unable-to-move-your-feet": {
+            "variation": "Não conseguir mover os pés",
+            "anchor": "unable-to-move-your-feet"
+          },
+          "washing-feet-or-having-them-washed": {
+            "variation": "Lavar os pés ou ter os pés lavados",
+            "anchor": "washing-feet-or-having-them-washed"
+          }
+        }
+      }
+    },
+    "heart": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "a-racing-heart": {
+            "variation": "Un cœur qui bat très vite",
+            "anchor": "a-racing-heart"
+          },
+          "a-broken-heart": {
+            "variation": "Un cœur brisé",
+            "anchor": "a-broken-heart"
+          },
+          "giving-or-receiving-a-heart": {
+            "variation": "Offrir ou recevoir un cœur",
+            "anchor": "giving-or-receiving-a-heart"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "a-racing-heart": {
+            "variation": "A racing heart",
+            "anchor": "a-racing-heart"
+          },
+          "a-broken-heart": {
+            "variation": "A broken heart",
+            "anchor": "a-broken-heart"
+          },
+          "giving-or-receiving-a-heart": {
+            "variation": "Giving or receiving a heart",
+            "anchor": "giving-or-receiving-a-heart"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "a-racing-heart": {
+            "variation": "Un corazón que late muy deprisa",
+            "anchor": "a-racing-heart"
+          },
+          "a-broken-heart": {
+            "variation": "Un corazón roto",
+            "anchor": "a-broken-heart"
+          },
+          "giving-or-receiving-a-heart": {
+            "variation": "Regalar o recibir un corazón",
+            "anchor": "giving-or-receiving-a-heart"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "a-racing-heart": {
+            "variation": "Ein Herz, das sehr schnell schlägt",
+            "anchor": "a-racing-heart"
+          },
+          "a-broken-heart": {
+            "variation": "Ein gebrochenes Herz",
+            "anchor": "a-broken-heart"
+          },
+          "giving-or-receiving-a-heart": {
+            "variation": "Ein Herz schenken oder geschenkt bekommen",
+            "anchor": "giving-or-receiving-a-heart"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "a-racing-heart": {
+            "variation": "Un cuore che batte velocissimo",
+            "anchor": "a-racing-heart"
+          },
+          "a-broken-heart": {
+            "variation": "Un cuore spezzato",
+            "anchor": "a-broken-heart"
+          },
+          "giving-or-receiving-a-heart": {
+            "variation": "Regalare o ricevere un cuore",
+            "anchor": "giving-or-receiving-a-heart"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "a-racing-heart": {
+            "variation": "Um coração acelerado",
+            "anchor": "a-racing-heart"
+          },
+          "a-broken-heart": {
+            "variation": "Um coração partido",
+            "anchor": "a-broken-heart"
+          },
+          "giving-or-receiving-a-heart": {
+            "variation": "Oferecer ou receber um coração",
+            "anchor": "giving-or-receiving-a-heart"
+          }
+        }
+      }
+    },
+    "pregnancy-test": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "positive-test": {
+            "variation": "Un test positif",
+            "anchor": "positive-test"
+          },
+          "negative-test": {
+            "variation": "Un test négatif",
+            "anchor": "negative-test"
+          },
+          "a-result-you-cannot-read": {
+            "variation": "Un résultat illisible",
+            "anchor": "a-result-you-cannot-read"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "positive-test": {
+            "variation": "Positive test",
+            "anchor": "positive-test"
+          },
+          "negative-test": {
+            "variation": "Negative test",
+            "anchor": "negative-test"
+          },
+          "a-result-you-cannot-read": {
+            "variation": "A result you cannot read",
+            "anchor": "a-result-you-cannot-read"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "positive-test": {
+            "variation": "Prueba positiva",
+            "anchor": "positive-test"
+          },
+          "negative-test": {
+            "variation": "Prueba negativa",
+            "anchor": "negative-test"
+          },
+          "a-result-you-cannot-read": {
+            "variation": "Un resultado que no se puede leer",
+            "anchor": "a-result-you-cannot-read"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "positive-test": {
+            "variation": "Ein positiver Test",
+            "anchor": "positive-test"
+          },
+          "negative-test": {
+            "variation": "Ein negativer Test",
+            "anchor": "negative-test"
+          },
+          "a-result-you-cannot-read": {
+            "variation": "Ein unlesbares Ergebnis",
+            "anchor": "a-result-you-cannot-read"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "positive-test": {
+            "variation": "Test positivo",
+            "anchor": "positive-test"
+          },
+          "negative-test": {
+            "variation": "Test negativo",
+            "anchor": "negative-test"
+          },
+          "a-result-you-cannot-read": {
+            "variation": "Un risultato illeggibile",
+            "anchor": "a-result-you-cannot-read"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "positive-test": {
+            "variation": "Um teste positivo",
+            "anchor": "positive-test"
+          },
+          "negative-test": {
+            "variation": "Um teste negativo",
+            "anchor": "negative-test"
+          },
+          "a-result-you-cannot-read": {
+            "variation": "Um resultado que você não consegue ler",
+            "anchor": "a-result-you-cannot-read"
+          }
+        }
+      }
+    },
+    "illness": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "being-ill-yourself": {
+            "variation": "Être malade soi-même",
+            "anchor": "being-ill-yourself"
+          },
+          "a-loved-one-who-is-ill": {
+            "variation": "Un proche malade",
+            "anchor": "a-loved-one-who-is-ill"
+          },
+          "a-serious-or-incurable-illness": {
+            "variation": "Une maladie grave ou incurable",
+            "anchor": "a-serious-or-incurable-illness"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "being-ill-yourself": {
+            "variation": "Being ill yourself",
+            "anchor": "being-ill-yourself"
+          },
+          "a-loved-one-who-is-ill": {
+            "variation": "A loved one who is ill",
+            "anchor": "a-loved-one-who-is-ill"
+          },
+          "a-serious-or-incurable-illness": {
+            "variation": "A serious or incurable illness",
+            "anchor": "a-serious-or-incurable-illness"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "being-ill-yourself": {
+            "variation": "Estar enfermo",
+            "anchor": "being-ill-yourself"
+          },
+          "a-loved-one-who-is-ill": {
+            "variation": "Un ser querido enfermo",
+            "anchor": "a-loved-one-who-is-ill"
+          },
+          "a-serious-or-incurable-illness": {
+            "variation": "Una enfermedad grave o incurable",
+            "anchor": "a-serious-or-incurable-illness"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "being-ill-yourself": {
+            "variation": "Selbst krank sein",
+            "anchor": "being-ill-yourself"
+          },
+          "a-loved-one-who-is-ill": {
+            "variation": "Ein kranker Angehöriger",
+            "anchor": "a-loved-one-who-is-ill"
+          },
+          "a-serious-or-incurable-illness": {
+            "variation": "Eine schwere oder unheilbare Krankheit",
+            "anchor": "a-serious-or-incurable-illness"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "being-ill-yourself": {
+            "variation": "Essere malati",
+            "anchor": "being-ill-yourself"
+          },
+          "a-loved-one-who-is-ill": {
+            "variation": "Una persona cara malata",
+            "anchor": "a-loved-one-who-is-ill"
+          },
+          "a-serious-or-incurable-illness": {
+            "variation": "Una malattia grave o incurabile",
+            "anchor": "a-serious-or-incurable-illness"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "being-ill-yourself": {
+            "variation": "Estar doente",
+            "anchor": "being-ill-yourself"
+          },
+          "a-loved-one-who-is-ill": {
+            "variation": "Uma pessoa querida doente",
+            "anchor": "a-loved-one-who-is-ill"
+          },
+          "a-serious-or-incurable-illness": {
+            "variation": "Uma doença grave ou incurável",
+            "anchor": "a-serious-or-incurable-illness"
+          }
+        }
+      }
+    },
+    "basement": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "dark-basement": {
+            "variation": "Un sous-sol sombre",
+            "anchor": "dark-basement"
+          },
+          "flooded-basement": {
+            "variation": "Une cave inondée",
+            "anchor": "flooded-basement"
+          },
+          "locked-in-a-basement": {
+            "variation": "Être enfermé à la cave",
+            "anchor": "locked-in-a-basement"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "dark-basement": {
+            "variation": "Dark basement",
+            "anchor": "dark-basement"
+          },
+          "flooded-basement": {
+            "variation": "Flooded basement",
+            "anchor": "flooded-basement"
+          },
+          "locked-in-a-basement": {
+            "variation": "Locked in a basement",
+            "anchor": "locked-in-a-basement"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "dark-basement": {
+            "variation": "Un sótano oscuro",
+            "anchor": "dark-basement"
+          },
+          "flooded-basement": {
+            "variation": "Un sótano inundado",
+            "anchor": "flooded-basement"
+          },
+          "locked-in-a-basement": {
+            "variation": "Quedarte encerrado en un sótano",
+            "anchor": "locked-in-a-basement"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "dark-basement": {
+            "variation": "Dunkler Keller",
+            "anchor": "dark-basement"
+          },
+          "flooded-basement": {
+            "variation": "Überfluteter Keller",
+            "anchor": "flooded-basement"
+          },
+          "locked-in-a-basement": {
+            "variation": "Im Keller eingesperrt sein",
+            "anchor": "locked-in-a-basement"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "dark-basement": {
+            "variation": "Seminterrato buio",
+            "anchor": "dark-basement"
+          },
+          "flooded-basement": {
+            "variation": "Cantina allagata",
+            "anchor": "flooded-basement"
+          },
+          "locked-in-a-basement": {
+            "variation": "Essere chiuso in cantina",
+            "anchor": "locked-in-a-basement"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "dark-basement": {
+            "variation": "Um porão escuro",
+            "anchor": "dark-basement"
+          },
+          "flooded-basement": {
+            "variation": "Um porão inundado",
+            "anchor": "flooded-basement"
+          },
+          "locked-in-a-basement": {
+            "variation": "Ficar trancado no porão",
+            "anchor": "locked-in-a-basement"
+          }
+        }
+      }
+    },
+    "surgery": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "being-operated-on": {
+            "variation": "Se faire opérer",
+            "anchor": "being-operated-on"
+          },
+          "performing-surgery": {
+            "variation": "Opérer quelqu'un",
+            "anchor": "performing-surgery"
+          },
+          "a-loved-one-having-surgery": {
+            "variation": "Un proche qui se fait opérer",
+            "anchor": "a-loved-one-having-surgery"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "being-operated-on": {
+            "variation": "Being operated on",
+            "anchor": "being-operated-on"
+          },
+          "performing-surgery": {
+            "variation": "Performing surgery",
+            "anchor": "performing-surgery"
+          },
+          "a-loved-one-having-surgery": {
+            "variation": "A loved one having surgery",
+            "anchor": "a-loved-one-having-surgery"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "being-operated-on": {
+            "variation": "Que te operen",
+            "anchor": "being-operated-on"
+          },
+          "performing-surgery": {
+            "variation": "Operar a alguien",
+            "anchor": "performing-surgery"
+          },
+          "a-loved-one-having-surgery": {
+            "variation": "Una persona cercana a la que operan",
+            "anchor": "a-loved-one-having-surgery"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "being-operated-on": {
+            "variation": "Operiert werden",
+            "anchor": "being-operated-on"
+          },
+          "performing-surgery": {
+            "variation": "Selbst operieren",
+            "anchor": "performing-surgery"
+          },
+          "a-loved-one-having-surgery": {
+            "variation": "Ein nahestehender Mensch wird operiert",
+            "anchor": "a-loved-one-having-surgery"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "being-operated-on": {
+            "variation": "Essere operato",
+            "anchor": "being-operated-on"
+          },
+          "performing-surgery": {
+            "variation": "Operare qualcuno",
+            "anchor": "performing-surgery"
+          },
+          "a-loved-one-having-surgery": {
+            "variation": "Una persona cara che viene operata",
+            "anchor": "a-loved-one-having-surgery"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "being-operated-on": {
+            "variation": "Passar por uma cirurgia",
+            "anchor": "being-operated-on"
+          },
+          "performing-surgery": {
+            "variation": "Operar alguém",
+            "anchor": "performing-surgery"
+          },
+          "a-loved-one-having-surgery": {
+            "variation": "Uma pessoa querida passando por cirurgia",
+            "anchor": "a-loved-one-having-surgery"
+          }
+        }
+      }
+    },
+    "bleeding": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "a-nosebleed": {
+            "variation": "Saigner du nez",
+            "anchor": "a-nosebleed"
+          },
+          "bleeding-without-pain-or-visible-wound": {
+            "variation": "Saigner sans douleur ni blessure",
+            "anchor": "bleeding-without-pain-or-visible-wound"
+          },
+          "stopping-the-bleeding": {
+            "variation": "Arrêter le saignement",
+            "anchor": "stopping-the-bleeding"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "a-nosebleed": {
+            "variation": "A nosebleed",
+            "anchor": "a-nosebleed"
+          },
+          "bleeding-without-pain-or-visible-wound": {
+            "variation": "Bleeding without pain or visible wound",
+            "anchor": "bleeding-without-pain-or-visible-wound"
+          },
+          "stopping-the-bleeding": {
+            "variation": "Stopping the bleeding",
+            "anchor": "stopping-the-bleeding"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "a-nosebleed": {
+            "variation": "Sangrar por la nariz",
+            "anchor": "a-nosebleed"
+          },
+          "bleeding-without-pain-or-visible-wound": {
+            "variation": "Sangrar sin dolor ni herida",
+            "anchor": "bleeding-without-pain-or-visible-wound"
+          },
+          "stopping-the-bleeding": {
+            "variation": "Detener el sangrado",
+            "anchor": "stopping-the-bleeding"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "a-nosebleed": {
+            "variation": "Nasenbluten",
+            "anchor": "a-nosebleed"
+          },
+          "bleeding-without-pain-or-visible-wound": {
+            "variation": "Bluten ohne Schmerz oder Wunde",
+            "anchor": "bleeding-without-pain-or-visible-wound"
+          },
+          "stopping-the-bleeding": {
+            "variation": "Die Blutung stillen",
+            "anchor": "stopping-the-bleeding"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "a-nosebleed": {
+            "variation": "Sangue dal naso",
+            "anchor": "a-nosebleed"
+          },
+          "bleeding-without-pain-or-visible-wound": {
+            "variation": "Sanguinare senza dolore né ferita",
+            "anchor": "bleeding-without-pain-or-visible-wound"
+          },
+          "stopping-the-bleeding": {
+            "variation": "Fermare il sanguinamento",
+            "anchor": "stopping-the-bleeding"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "a-nosebleed": {
+            "variation": "Sangrar pelo nariz",
+            "anchor": "a-nosebleed"
+          },
+          "bleeding-without-pain-or-visible-wound": {
+            "variation": "Sangrar sem dor ou ferida visível",
+            "anchor": "bleeding-without-pain-or-visible-wound"
+          },
+          "stopping-the-bleeding": {
+            "variation": "Parar o sangramento",
+            "anchor": "stopping-the-bleeding"
+          }
+        }
+      }
+    },
+    "drowning": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "drowning-in-the-sea-or-deep-water": {
+            "variation": "Se noyer dans la mer ou en eau profonde",
+            "anchor": "drowning-in-the-sea-or-deep-water"
+          },
+          "drowning-in-a-pool-or-bathtub": {
+            "variation": "Se noyer dans une piscine ou une baignoire",
+            "anchor": "drowning-in-a-pool-or-bathtub"
+          },
+          "someone-else-drowning": {
+            "variation": "Quelqu'un d'autre qui se noie",
+            "anchor": "someone-else-drowning"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "drowning-in-the-sea-or-deep-water": {
+            "variation": "Drowning in the sea or deep water",
+            "anchor": "drowning-in-the-sea-or-deep-water"
+          },
+          "drowning-in-a-pool-or-bathtub": {
+            "variation": "Drowning in a pool or bathtub",
+            "anchor": "drowning-in-a-pool-or-bathtub"
+          },
+          "someone-else-drowning": {
+            "variation": "Someone else drowning",
+            "anchor": "someone-else-drowning"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "drowning-in-the-sea-or-deep-water": {
+            "variation": "Ahogarse en el mar o en aguas profundas",
+            "anchor": "drowning-in-the-sea-or-deep-water"
+          },
+          "drowning-in-a-pool-or-bathtub": {
+            "variation": "Ahogarse en una piscina o una bañera",
+            "anchor": "drowning-in-a-pool-or-bathtub"
+          },
+          "someone-else-drowning": {
+            "variation": "Otra persona que se ahoga",
+            "anchor": "someone-else-drowning"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "drowning-in-the-sea-or-deep-water": {
+            "variation": "Im Meer oder in tiefem Wasser ertrinken",
+            "anchor": "drowning-in-the-sea-or-deep-water"
+          },
+          "drowning-in-a-pool-or-bathtub": {
+            "variation": "Im Schwimmbad oder in der Badewanne ertrinken",
+            "anchor": "drowning-in-a-pool-or-bathtub"
+          },
+          "someone-else-drowning": {
+            "variation": "Ein anderer Mensch ertrinkt",
+            "anchor": "someone-else-drowning"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "drowning-in-the-sea-or-deep-water": {
+            "variation": "Annegare in mare o in acque profonde",
+            "anchor": "drowning-in-the-sea-or-deep-water"
+          },
+          "drowning-in-a-pool-or-bathtub": {
+            "variation": "Annegare in piscina o nella vasca",
+            "anchor": "drowning-in-a-pool-or-bathtub"
+          },
+          "someone-else-drowning": {
+            "variation": "Qualcun altro che annega",
+            "anchor": "someone-else-drowning"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "drowning-in-the-sea-or-deep-water": {
+            "variation": "Se afogar no mar ou em águas profundas",
+            "anchor": "drowning-in-the-sea-or-deep-water"
+          },
+          "drowning-in-a-pool-or-bathtub": {
+            "variation": "Se afogar em uma piscina ou banheira",
+            "anchor": "drowning-in-a-pool-or-bathtub"
+          },
+          "someone-else-drowning": {
+            "variation": "Outra pessoa se afogando",
+            "anchor": "someone-else-drowning"
+          }
+        }
+      }
+    },
+    "trapped": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "trapped-in-a-room": {
+            "variation": "Enfermé dans une pièce",
+            "anchor": "trapped-in-a-room"
+          },
+          "trapped-in-an-elevator": {
+            "variation": "Bloqué dans un ascenseur",
+            "anchor": "trapped-in-an-elevator"
+          },
+          "trapped-while-danger-comes-closer": {
+            "variation": "Piégé pendant qu'un danger approche",
+            "anchor": "trapped-while-danger-comes-closer"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "trapped-in-a-room": {
+            "variation": "Trapped in a room",
+            "anchor": "trapped-in-a-room"
+          },
+          "trapped-in-an-elevator": {
+            "variation": "Trapped in an elevator",
+            "anchor": "trapped-in-an-elevator"
+          },
+          "trapped-while-danger-comes-closer": {
+            "variation": "Trapped while danger comes closer",
+            "anchor": "trapped-while-danger-comes-closer"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "trapped-in-a-room": {
+            "variation": "Encerrado en una habitación",
+            "anchor": "trapped-in-a-room"
+          },
+          "trapped-in-an-elevator": {
+            "variation": "Atrapado en un ascensor",
+            "anchor": "trapped-in-an-elevator"
+          },
+          "trapped-while-danger-comes-closer": {
+            "variation": "Atrapado mientras se acerca un peligro",
+            "anchor": "trapped-while-danger-comes-closer"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "trapped-in-a-room": {
+            "variation": "In einem Raum eingesperrt",
+            "anchor": "trapped-in-a-room"
+          },
+          "trapped-in-an-elevator": {
+            "variation": "Im Aufzug stecken bleiben",
+            "anchor": "trapped-in-an-elevator"
+          },
+          "trapped-while-danger-comes-closer": {
+            "variation": "Gefangen, während eine Gefahr näher kommt",
+            "anchor": "trapped-while-danger-comes-closer"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "trapped-in-a-room": {
+            "variation": "Chiuso in una stanza",
+            "anchor": "trapped-in-a-room"
+          },
+          "trapped-in-an-elevator": {
+            "variation": "Bloccato in un ascensore",
+            "anchor": "trapped-in-an-elevator"
+          },
+          "trapped-while-danger-comes-closer": {
+            "variation": "Intrappolato mentre un pericolo si avvicina",
+            "anchor": "trapped-while-danger-comes-closer"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "trapped-in-a-room": {
+            "variation": "Ficar preso em um quarto",
+            "anchor": "trapped-in-a-room"
+          },
+          "trapped-in-an-elevator": {
+            "variation": "Ficar preso no elevador",
+            "anchor": "trapped-in-an-elevator"
+          },
+          "trapped-while-danger-comes-closer": {
+            "variation": "Ficar preso enquanto um perigo se aproxima",
+            "anchor": "trapped-while-danger-comes-closer"
+          }
+        }
+      }
+    },
+    "attic": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "climbing-into-the-attic": {
+            "variation": "Monter au grenier",
+            "anchor": "climbing-into-the-attic"
+          },
+          "finding-old-belongings": {
+            "variation": "Retrouver de vieux objets",
+            "anchor": "finding-old-belongings"
+          },
+          "a-dark-or-frightening-attic": {
+            "variation": "Un grenier sombre ou inquiétant",
+            "anchor": "a-dark-or-frightening-attic"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "climbing-into-the-attic": {
+            "variation": "Climbing into the attic",
+            "anchor": "climbing-into-the-attic"
+          },
+          "finding-old-belongings": {
+            "variation": "Finding old belongings",
+            "anchor": "finding-old-belongings"
+          },
+          "a-dark-or-frightening-attic": {
+            "variation": "A dark or frightening attic",
+            "anchor": "a-dark-or-frightening-attic"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "climbing-into-the-attic": {
+            "variation": "Subir al ático",
+            "anchor": "climbing-into-the-attic"
+          },
+          "finding-old-belongings": {
+            "variation": "Encontrar objetos antiguos",
+            "anchor": "finding-old-belongings"
+          },
+          "a-dark-or-frightening-attic": {
+            "variation": "Un ático oscuro o que da miedo",
+            "anchor": "a-dark-or-frightening-attic"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "climbing-into-the-attic": {
+            "variation": "Auf den Dachboden steigen",
+            "anchor": "climbing-into-the-attic"
+          },
+          "finding-old-belongings": {
+            "variation": "Alte Dinge finden",
+            "anchor": "finding-old-belongings"
+          },
+          "a-dark-or-frightening-attic": {
+            "variation": "Ein dunkler oder unheimlicher Dachboden",
+            "anchor": "a-dark-or-frightening-attic"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "climbing-into-the-attic": {
+            "variation": "Salire in soffitta",
+            "anchor": "climbing-into-the-attic"
+          },
+          "finding-old-belongings": {
+            "variation": "Ritrovare vecchi oggetti",
+            "anchor": "finding-old-belongings"
+          },
+          "a-dark-or-frightening-attic": {
+            "variation": "Una soffitta buia o inquietante",
+            "anchor": "a-dark-or-frightening-attic"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "climbing-into-the-attic": {
+            "variation": "Subir ao sótão",
+            "anchor": "climbing-into-the-attic"
+          },
+          "finding-old-belongings": {
+            "variation": "Encontrar objetos antigos",
+            "anchor": "finding-old-belongings"
+          },
+          "a-dark-or-frightening-attic": {
+            "variation": "Um sótão escuro ou assustador",
+            "anchor": "a-dark-or-frightening-attic"
+          }
+        }
+      }
+    },
+    "late": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "late-for-work": {
+            "variation": "En retard au travail",
+            "anchor": "late-for-work"
+          },
+          "late-for-an-exam": {
+            "variation": "En retard à un examen",
+            "anchor": "late-for-an-exam"
+          },
+          "late-for-a-flight-or-a-train": {
+            "variation": "En retard pour un avion ou un train",
+            "anchor": "late-for-a-flight-or-a-train"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "late-for-work": {
+            "variation": "Late for work",
+            "anchor": "late-for-work"
+          },
+          "late-for-an-exam": {
+            "variation": "Late for an exam",
+            "anchor": "late-for-an-exam"
+          },
+          "late-for-a-flight-or-a-train": {
+            "variation": "Late for a flight or a train",
+            "anchor": "late-for-a-flight-or-a-train"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "late-for-work": {
+            "variation": "Llegar tarde al trabajo",
+            "anchor": "late-for-work"
+          },
+          "late-for-an-exam": {
+            "variation": "Llegar tarde a un examen",
+            "anchor": "late-for-an-exam"
+          },
+          "late-for-a-flight-or-a-train": {
+            "variation": "Llegar tarde a un vuelo o a un tren",
+            "anchor": "late-for-a-flight-or-a-train"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "late-for-work": {
+            "variation": "Zu spät zur Arbeit",
+            "anchor": "late-for-work"
+          },
+          "late-for-an-exam": {
+            "variation": "Zu spät zur Prüfung",
+            "anchor": "late-for-an-exam"
+          },
+          "late-for-a-flight-or-a-train": {
+            "variation": "Zu spät zum Flug oder Zug",
+            "anchor": "late-for-a-flight-or-a-train"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "late-for-work": {
+            "variation": "In ritardo al lavoro",
+            "anchor": "late-for-work"
+          },
+          "late-for-an-exam": {
+            "variation": "In ritardo a un esame",
+            "anchor": "late-for-an-exam"
+          },
+          "late-for-a-flight-or-a-train": {
+            "variation": "In ritardo per un volo o un treno",
+            "anchor": "late-for-a-flight-or-a-train"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "late-for-work": {
+            "variation": "Chegar atrasado ao trabalho",
+            "anchor": "late-for-work"
+          },
+          "late-for-an-exam": {
+            "variation": "Chegar atrasado a uma prova",
+            "anchor": "late-for-an-exam"
+          },
+          "late-for-a-flight-or-a-train": {
+            "variation": "Chegar atrasado para um avião ou trem",
+            "anchor": "late-for-a-flight-or-a-train"
+          }
+        }
+      }
+    },
+    "missing-train": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "watching-the-train-leave": {
+            "variation": "Voir le train partir",
+            "anchor": "watching-the-train-leave"
+          },
+          "waiting-on-the-wrong-platform": {
+            "variation": "Attendre sur le mauvais quai",
+            "anchor": "waiting-on-the-wrong-platform"
+          },
+          "running-for-a-train": {
+            "variation": "Courir pour attraper un train",
+            "anchor": "running-for-a-train"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "watching-the-train-leave": {
+            "variation": "Watching the train leave",
+            "anchor": "watching-the-train-leave"
+          },
+          "waiting-on-the-wrong-platform": {
+            "variation": "Waiting on the wrong platform",
+            "anchor": "waiting-on-the-wrong-platform"
+          },
+          "running-for-a-train": {
+            "variation": "Running for a train",
+            "anchor": "running-for-a-train"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "watching-the-train-leave": {
+            "variation": "Ver cómo se va el tren",
+            "anchor": "watching-the-train-leave"
+          },
+          "waiting-on-the-wrong-platform": {
+            "variation": "Esperar en el andén equivocado",
+            "anchor": "waiting-on-the-wrong-platform"
+          },
+          "running-for-a-train": {
+            "variation": "Correr para alcanzar un tren",
+            "anchor": "running-for-a-train"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "watching-the-train-leave": {
+            "variation": "Den Zug abfahren sehen",
+            "anchor": "watching-the-train-leave"
+          },
+          "waiting-on-the-wrong-platform": {
+            "variation": "Am falschen Gleis warten",
+            "anchor": "waiting-on-the-wrong-platform"
+          },
+          "running-for-a-train": {
+            "variation": "Zum Zug rennen",
+            "anchor": "running-for-a-train"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "watching-the-train-leave": {
+            "variation": "Vedere il treno partire",
+            "anchor": "watching-the-train-leave"
+          },
+          "waiting-on-the-wrong-platform": {
+            "variation": "Aspettare sul binario sbagliato",
+            "anchor": "waiting-on-the-wrong-platform"
+          },
+          "running-for-a-train": {
+            "variation": "Correre per prendere un treno",
+            "anchor": "running-for-a-train"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "watching-the-train-leave": {
+            "variation": "Ver o trem partir",
+            "anchor": "watching-the-train-leave"
+          },
+          "waiting-on-the-wrong-platform": {
+            "variation": "Esperar na plataforma errada",
+            "anchor": "waiting-on-the-wrong-platform"
+          },
+          "running-for-a-train": {
+            "variation": "Correr para pegar um trem",
+            "anchor": "running-for-a-train"
+          }
+        }
+      }
+    },
+    "unable-to-speak": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "a-voice-that-will-not-come-out": {
+            "variation": "Une voix qui ne sort pas",
+            "anchor": "a-voice-that-will-not-come-out"
+          },
+          "speaking-but-no-one-hears-you": {
+            "variation": "Parler sans être entendu",
+            "anchor": "speaking-but-no-one-hears-you"
+          },
+          "unable-to-call-for-help": {
+            "variation": "Ne pas pouvoir appeler à l'aide",
+            "anchor": "unable-to-call-for-help"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "a-voice-that-will-not-come-out": {
+            "variation": "A voice that will not come out",
+            "anchor": "a-voice-that-will-not-come-out"
+          },
+          "speaking-but-no-one-hears-you": {
+            "variation": "Speaking but no one hears you",
+            "anchor": "speaking-but-no-one-hears-you"
+          },
+          "unable-to-call-for-help": {
+            "variation": "Unable to call for help",
+            "anchor": "unable-to-call-for-help"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "a-voice-that-will-not-come-out": {
+            "variation": "Una voz que no sale",
+            "anchor": "a-voice-that-will-not-come-out"
+          },
+          "speaking-but-no-one-hears-you": {
+            "variation": "Hablar sin que nadie te oiga",
+            "anchor": "speaking-but-no-one-hears-you"
+          },
+          "unable-to-call-for-help": {
+            "variation": "No poder pedir ayuda",
+            "anchor": "unable-to-call-for-help"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "a-voice-that-will-not-come-out": {
+            "variation": "Eine Stimme, die nicht herauskommt",
+            "anchor": "a-voice-that-will-not-come-out"
+          },
+          "speaking-but-no-one-hears-you": {
+            "variation": "Sprechen, ohne gehört zu werden",
+            "anchor": "speaking-but-no-one-hears-you"
+          },
+          "unable-to-call-for-help": {
+            "variation": "Nicht um Hilfe rufen können",
+            "anchor": "unable-to-call-for-help"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "a-voice-that-will-not-come-out": {
+            "variation": "Una voce che non esce",
+            "anchor": "a-voice-that-will-not-come-out"
+          },
+          "speaking-but-no-one-hears-you": {
+            "variation": "Parlare senza essere sentito",
+            "anchor": "speaking-but-no-one-hears-you"
+          },
+          "unable-to-call-for-help": {
+            "variation": "Non riuscire a chiedere aiuto",
+            "anchor": "unable-to-call-for-help"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "a-voice-that-will-not-come-out": {
+            "variation": "Uma voz que não sai",
+            "anchor": "a-voice-that-will-not-come-out"
+          },
+          "speaking-but-no-one-hears-you": {
+            "variation": "Falar sem que ninguém ouça",
+            "anchor": "speaking-but-no-one-hears-you"
+          },
+          "unable-to-call-for-help": {
+            "variation": "Não conseguir pedir socorro",
+            "anchor": "unable-to-call-for-help"
+          }
+        }
+      }
+    },
+    "paralysis": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "frozen-in-front-of-a-danger": {
+            "variation": "Figé face à un danger",
+            "anchor": "frozen-in-front-of-a-danger"
+          },
+          "legs-that-will-not-run": {
+            "variation": "Des jambes qui ne courent pas",
+            "anchor": "legs-that-will-not-run"
+          },
+          "waking-up-unable-to-move": {
+            "variation": "Se réveiller sans pouvoir bouger",
+            "anchor": "waking-up-unable-to-move"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "frozen-in-front-of-a-danger": {
+            "variation": "Frozen in front of a danger",
+            "anchor": "frozen-in-front-of-a-danger"
+          },
+          "legs-that-will-not-run": {
+            "variation": "Legs that will not run",
+            "anchor": "legs-that-will-not-run"
+          },
+          "waking-up-unable-to-move": {
+            "variation": "Waking up unable to move",
+            "anchor": "waking-up-unable-to-move"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "frozen-in-front-of-a-danger": {
+            "variation": "Paralizado ante un peligro",
+            "anchor": "frozen-in-front-of-a-danger"
+          },
+          "legs-that-will-not-run": {
+            "variation": "Piernas que no corren",
+            "anchor": "legs-that-will-not-run"
+          },
+          "waking-up-unable-to-move": {
+            "variation": "Despertar sin poder moverte",
+            "anchor": "waking-up-unable-to-move"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "frozen-in-front-of-a-danger": {
+            "variation": "Erstarrt vor einer Gefahr",
+            "anchor": "frozen-in-front-of-a-danger"
+          },
+          "legs-that-will-not-run": {
+            "variation": "Beine, die nicht rennen",
+            "anchor": "legs-that-will-not-run"
+          },
+          "waking-up-unable-to-move": {
+            "variation": "Aufwachen und sich nicht bewegen können",
+            "anchor": "waking-up-unable-to-move"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "frozen-in-front-of-a-danger": {
+            "variation": "Immobile davanti a un pericolo",
+            "anchor": "frozen-in-front-of-a-danger"
+          },
+          "legs-that-will-not-run": {
+            "variation": "Gambe che non corrono",
+            "anchor": "legs-that-will-not-run"
+          },
+          "waking-up-unable-to-move": {
+            "variation": "Svegliarsi senza potersi muovere",
+            "anchor": "waking-up-unable-to-move"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "frozen-in-front-of-a-danger": {
+            "variation": "Ficar imóvel diante de um perigo",
+            "anchor": "frozen-in-front-of-a-danger"
+          },
+          "legs-that-will-not-run": {
+            "variation": "Pernas que não conseguem correr",
+            "anchor": "legs-that-will-not-run"
+          },
+          "waking-up-unable-to-move": {
+            "variation": "Acordar sem conseguir se mexer",
+            "anchor": "waking-up-unable-to-move"
+          }
+        }
+      }
+    },
+    "screaming": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "screaming-in-fear": {
+            "variation": "Crier de peur",
+            "anchor": "screaming-in-fear"
+          },
+          "screaming-in-anger": {
+            "variation": "Crier de colère",
+            "anchor": "screaming-in-anger"
+          },
+          "a-scream-that-will-not-come-out": {
+            "variation": "Un cri qui ne sort pas",
+            "anchor": "a-scream-that-will-not-come-out"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "screaming-in-fear": {
+            "variation": "Screaming in fear",
+            "anchor": "screaming-in-fear"
+          },
+          "screaming-in-anger": {
+            "variation": "Screaming in anger",
+            "anchor": "screaming-in-anger"
+          },
+          "a-scream-that-will-not-come-out": {
+            "variation": "A scream that will not come out",
+            "anchor": "a-scream-that-will-not-come-out"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "screaming-in-fear": {
+            "variation": "Gritar de miedo",
+            "anchor": "screaming-in-fear"
+          },
+          "screaming-in-anger": {
+            "variation": "Gritar de rabia",
+            "anchor": "screaming-in-anger"
+          },
+          "a-scream-that-will-not-come-out": {
+            "variation": "Un grito que no sale",
+            "anchor": "a-scream-that-will-not-come-out"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "screaming-in-fear": {
+            "variation": "Vor Angst schreien",
+            "anchor": "screaming-in-fear"
+          },
+          "screaming-in-anger": {
+            "variation": "Vor Wut schreien",
+            "anchor": "screaming-in-anger"
+          },
+          "a-scream-that-will-not-come-out": {
+            "variation": "Ein Schrei, der nicht herauskommt",
+            "anchor": "a-scream-that-will-not-come-out"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "screaming-in-fear": {
+            "variation": "Urlare di paura",
+            "anchor": "screaming-in-fear"
+          },
+          "screaming-in-anger": {
+            "variation": "Urlare di rabbia",
+            "anchor": "screaming-in-anger"
+          },
+          "a-scream-that-will-not-come-out": {
+            "variation": "Un urlo che non esce",
+            "anchor": "a-scream-that-will-not-come-out"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "screaming-in-fear": {
+            "variation": "Gritar de medo",
+            "anchor": "screaming-in-fear"
+          },
+          "screaming-in-anger": {
+            "variation": "Gritar de raiva",
+            "anchor": "screaming-in-anger"
+          },
+          "a-scream-that-will-not-come-out": {
+            "variation": "Um grito que não sai",
+            "anchor": "a-scream-that-will-not-come-out"
+          }
+        }
+      }
+    },
+    "hiding": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "hiding-from-a-threat": {
+            "variation": "Se cacher d'une menace",
+            "anchor": "hiding-from-a-threat"
+          },
+          "hiding-from-someone-you-know": {
+            "variation": "Se cacher de quelqu'un qu'on connaît",
+            "anchor": "hiding-from-someone-you-know"
+          },
+          "being-found": {
+            "variation": "Être découvert",
+            "anchor": "being-found"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "hiding-from-a-threat": {
+            "variation": "Hiding from a threat",
+            "anchor": "hiding-from-a-threat"
+          },
+          "hiding-from-someone-you-know": {
+            "variation": "Hiding from someone you know",
+            "anchor": "hiding-from-someone-you-know"
+          },
+          "being-found": {
+            "variation": "Being found",
+            "anchor": "being-found"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "hiding-from-a-threat": {
+            "variation": "Esconderte de una amenaza",
+            "anchor": "hiding-from-a-threat"
+          },
+          "hiding-from-someone-you-know": {
+            "variation": "Esconderte de alguien conocido",
+            "anchor": "hiding-from-someone-you-know"
+          },
+          "being-found": {
+            "variation": "Que te encuentren",
+            "anchor": "being-found"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "hiding-from-a-threat": {
+            "variation": "Sich vor einer Bedrohung verstecken",
+            "anchor": "hiding-from-a-threat"
+          },
+          "hiding-from-someone-you-know": {
+            "variation": "Sich vor einer bekannten Person verstecken",
+            "anchor": "hiding-from-someone-you-know"
+          },
+          "being-found": {
+            "variation": "Entdeckt werden",
+            "anchor": "being-found"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "hiding-from-a-threat": {
+            "variation": "Nascondersi da una minaccia",
+            "anchor": "hiding-from-a-threat"
+          },
+          "hiding-from-someone-you-know": {
+            "variation": "Nascondersi da qualcuno che conosci",
+            "anchor": "hiding-from-someone-you-know"
+          },
+          "being-found": {
+            "variation": "Essere scoperti",
+            "anchor": "being-found"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "hiding-from-a-threat": {
+            "variation": "Se esconder de uma ameaça",
+            "anchor": "hiding-from-a-threat"
+          },
+          "hiding-from-someone-you-know": {
+            "variation": "Se esconder de alguém conhecido",
+            "anchor": "hiding-from-someone-you-know"
+          },
+          "being-found": {
+            "variation": "Ser descoberto",
+            "anchor": "being-found"
+          }
+        }
+      }
+    },
+    "shadow": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "being-followed-by-a-shadow": {
+            "variation": "Être suivi par une ombre",
+            "anchor": "being-followed-by-a-shadow"
+          },
+          "your-shadow-breaking-away": {
+            "variation": "Son ombre qui se détache",
+            "anchor": "your-shadow-breaking-away"
+          },
+          "a-faceless-dark-figure": {
+            "variation": "Une silhouette noire sans visage",
+            "anchor": "a-faceless-dark-figure"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "being-followed-by-a-shadow": {
+            "variation": "Being followed by a shadow",
+            "anchor": "being-followed-by-a-shadow"
+          },
+          "your-shadow-breaking-away": {
+            "variation": "Your shadow breaking away",
+            "anchor": "your-shadow-breaking-away"
+          },
+          "a-faceless-dark-figure": {
+            "variation": "A faceless dark figure",
+            "anchor": "a-faceless-dark-figure"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "being-followed-by-a-shadow": {
+            "variation": "Que te siga una sombra",
+            "anchor": "being-followed-by-a-shadow"
+          },
+          "your-shadow-breaking-away": {
+            "variation": "Tu sombra que se separa de ti",
+            "anchor": "your-shadow-breaking-away"
+          },
+          "a-faceless-dark-figure": {
+            "variation": "Una figura oscura sin rostro",
+            "anchor": "a-faceless-dark-figure"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "being-followed-by-a-shadow": {
+            "variation": "Von einem Schatten verfolgt werden",
+            "anchor": "being-followed-by-a-shadow"
+          },
+          "your-shadow-breaking-away": {
+            "variation": "Der eigene Schatten löst sich",
+            "anchor": "your-shadow-breaking-away"
+          },
+          "a-faceless-dark-figure": {
+            "variation": "Eine dunkle Gestalt ohne Gesicht",
+            "anchor": "a-faceless-dark-figure"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "being-followed-by-a-shadow": {
+            "variation": "Essere seguiti da un’ombra",
+            "anchor": "being-followed-by-a-shadow"
+          },
+          "your-shadow-breaking-away": {
+            "variation": "La propria ombra che si stacca",
+            "anchor": "your-shadow-breaking-away"
+          },
+          "a-faceless-dark-figure": {
+            "variation": "Una figura scura senza volto",
+            "anchor": "a-faceless-dark-figure"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "being-followed-by-a-shadow": {
+            "variation": "Ser seguido por uma sombra",
+            "anchor": "being-followed-by-a-shadow"
+          },
+          "your-shadow-breaking-away": {
+            "variation": "Sua sombra se desprendendo",
+            "anchor": "your-shadow-breaking-away"
+          },
+          "a-faceless-dark-figure": {
+            "variation": "Uma figura escura sem rosto",
+            "anchor": "a-faceless-dark-figure"
+          }
+        }
+      }
+    },
+    "ghost": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "seeing-the-ghost-of-a-loved-one-who-die": {
+            "variation": "Voir le fantôme d'un proche décédé",
+            "anchor": "seeing-the-ghost-of-a-loved-one-who-die"
+          },
+          "being-haunted-by-a-ghost": {
+            "variation": "Être hanté par un fantôme",
+            "anchor": "being-haunted-by-a-ghost"
+          },
+          "a-haunted-house": {
+            "variation": "Une maison hantée",
+            "anchor": "a-haunted-house"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "seeing-the-ghost-of-a-loved-one-who-die": {
+            "variation": "Seeing the ghost of a loved one who died",
+            "anchor": "seeing-the-ghost-of-a-loved-one-who-die"
+          },
+          "being-haunted-by-a-ghost": {
+            "variation": "Being haunted by a ghost",
+            "anchor": "being-haunted-by-a-ghost"
+          },
+          "a-haunted-house": {
+            "variation": "A haunted house",
+            "anchor": "a-haunted-house"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "seeing-the-ghost-of-a-loved-one-who-die": {
+            "variation": "Ver el fantasma de un familiar fallecido",
+            "anchor": "seeing-the-ghost-of-a-loved-one-who-die"
+          },
+          "being-haunted-by-a-ghost": {
+            "variation": "Que te persiga un fantasma",
+            "anchor": "being-haunted-by-a-ghost"
+          },
+          "a-haunted-house": {
+            "variation": "Una casa encantada",
+            "anchor": "a-haunted-house"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "seeing-the-ghost-of-a-loved-one-who-die": {
+            "variation": "Den Geist eines verstorbenen Angehörigen sehen",
+            "anchor": "seeing-the-ghost-of-a-loved-one-who-die"
+          },
+          "being-haunted-by-a-ghost": {
+            "variation": "Von einem Geist heimgesucht werden",
+            "anchor": "being-haunted-by-a-ghost"
+          },
+          "a-haunted-house": {
+            "variation": "Ein Spukhaus",
+            "anchor": "a-haunted-house"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "seeing-the-ghost-of-a-loved-one-who-die": {
+            "variation": "Vedere il fantasma di una persona cara defunta",
+            "anchor": "seeing-the-ghost-of-a-loved-one-who-die"
+          },
+          "being-haunted-by-a-ghost": {
+            "variation": "Essere perseguitati da un fantasma",
+            "anchor": "being-haunted-by-a-ghost"
+          },
+          "a-haunted-house": {
+            "variation": "Una casa infestata",
+            "anchor": "a-haunted-house"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "seeing-the-ghost-of-a-loved-one-who-die": {
+            "variation": "Ver o fantasma de uma pessoa querida que morreu",
+            "anchor": "seeing-the-ghost-of-a-loved-one-who-die"
+          },
+          "being-haunted-by-a-ghost": {
+            "variation": "Ser assombrado por um fantasma",
+            "anchor": "being-haunted-by-a-ghost"
+          },
+          "a-haunted-house": {
+            "variation": "Uma casa assombrada",
+            "anchor": "a-haunted-house"
+          }
+        }
+      }
+    },
+    "demon": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "being-chased-by-a-demon": {
+            "variation": "Être poursuivi par un démon",
+            "anchor": "being-chased-by-a-demon"
+          },
+          "fighting-a-demon": {
+            "variation": "Se battre contre un démon",
+            "anchor": "fighting-a-demon"
+          },
+          "talking-or-bargaining-with-a-demon": {
+            "variation": "Parler ou négocier avec un démon",
+            "anchor": "talking-or-bargaining-with-a-demon"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "being-chased-by-a-demon": {
+            "variation": "Being chased by a demon",
+            "anchor": "being-chased-by-a-demon"
+          },
+          "fighting-a-demon": {
+            "variation": "Fighting a demon",
+            "anchor": "fighting-a-demon"
+          },
+          "talking-or-bargaining-with-a-demon": {
+            "variation": "Talking or bargaining with a demon",
+            "anchor": "talking-or-bargaining-with-a-demon"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "being-chased-by-a-demon": {
+            "variation": "Que te persiga un demonio",
+            "anchor": "being-chased-by-a-demon"
+          },
+          "fighting-a-demon": {
+            "variation": "Luchar contra un demonio",
+            "anchor": "fighting-a-demon"
+          },
+          "talking-or-bargaining-with-a-demon": {
+            "variation": "Hablar o negociar con un demonio",
+            "anchor": "talking-or-bargaining-with-a-demon"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "being-chased-by-a-demon": {
+            "variation": "Von einem Dämon verfolgt werden",
+            "anchor": "being-chased-by-a-demon"
+          },
+          "fighting-a-demon": {
+            "variation": "Gegen einen Dämon kämpfen",
+            "anchor": "fighting-a-demon"
+          },
+          "talking-or-bargaining-with-a-demon": {
+            "variation": "Mit einem Dämon sprechen oder verhandeln",
+            "anchor": "talking-or-bargaining-with-a-demon"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "being-chased-by-a-demon": {
+            "variation": "Essere inseguiti da un demone",
+            "anchor": "being-chased-by-a-demon"
+          },
+          "fighting-a-demon": {
+            "variation": "Combattere contro un demone",
+            "anchor": "fighting-a-demon"
+          },
+          "talking-or-bargaining-with-a-demon": {
+            "variation": "Parlare o trattare con un demone",
+            "anchor": "talking-or-bargaining-with-a-demon"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "being-chased-by-a-demon": {
+            "variation": "Ser perseguido por um demônio",
+            "anchor": "being-chased-by-a-demon"
+          },
+          "fighting-a-demon": {
+            "variation": "Lutar contra um demônio",
+            "anchor": "fighting-a-demon"
+          },
+          "talking-or-bargaining-with-a-demon": {
+            "variation": "Conversar ou negociar com um demônio",
+            "anchor": "talking-or-bargaining-with-a-demon"
+          }
+        }
+      }
+    },
+    "monster": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "being-chased-by-a-monster": {
+            "variation": "Être poursuivi par un monstre",
+            "anchor": "being-chased-by-a-monster"
+          },
+          "a-monster-under-the-bed-or-in-the-close": {
+            "variation": "Un monstre sous le lit ou dans le placard",
+            "anchor": "a-monster-under-the-bed-or-in-the-close"
+          },
+          "a-giant-monster": {
+            "variation": "Un monstre géant",
+            "anchor": "a-giant-monster"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "being-chased-by-a-monster": {
+            "variation": "Being chased by a monster",
+            "anchor": "being-chased-by-a-monster"
+          },
+          "a-monster-under-the-bed-or-in-the-close": {
+            "variation": "A monster under the bed or in the closet",
+            "anchor": "a-monster-under-the-bed-or-in-the-close"
+          },
+          "a-giant-monster": {
+            "variation": "A giant monster",
+            "anchor": "a-giant-monster"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "being-chased-by-a-monster": {
+            "variation": "Que te persiga un monstruo",
+            "anchor": "being-chased-by-a-monster"
+          },
+          "a-monster-under-the-bed-or-in-the-close": {
+            "variation": "Un monstruo debajo de la cama o en el armario",
+            "anchor": "a-monster-under-the-bed-or-in-the-close"
+          },
+          "a-giant-monster": {
+            "variation": "Un monstruo gigante",
+            "anchor": "a-giant-monster"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "being-chased-by-a-monster": {
+            "variation": "Von einem Monster verfolgt werden",
+            "anchor": "being-chased-by-a-monster"
+          },
+          "a-monster-under-the-bed-or-in-the-close": {
+            "variation": "Ein Monster unter dem Bett oder im Schrank",
+            "anchor": "a-monster-under-the-bed-or-in-the-close"
+          },
+          "a-giant-monster": {
+            "variation": "Ein riesiges Monster",
+            "anchor": "a-giant-monster"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "being-chased-by-a-monster": {
+            "variation": "Essere inseguiti da un mostro",
+            "anchor": "being-chased-by-a-monster"
+          },
+          "a-monster-under-the-bed-or-in-the-close": {
+            "variation": "Un mostro sotto il letto o nell’armadio",
+            "anchor": "a-monster-under-the-bed-or-in-the-close"
+          },
+          "a-giant-monster": {
+            "variation": "Un mostro gigante",
+            "anchor": "a-giant-monster"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "being-chased-by-a-monster": {
+            "variation": "Ser perseguido por um monstro",
+            "anchor": "being-chased-by-a-monster"
+          },
+          "a-monster-under-the-bed-or-in-the-close": {
+            "variation": "Um monstro debaixo da cama ou no armário",
+            "anchor": "a-monster-under-the-bed-or-in-the-close"
+          },
+          "a-giant-monster": {
+            "variation": "Um monstro gigante",
+            "anchor": "a-giant-monster"
+          }
+        }
+      }
+    },
+    "zombie": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "a-zombie-apocalypse": {
+            "variation": "Une apocalypse zombie",
+            "anchor": "a-zombie-apocalypse"
+          },
+          "a-loved-one-turned-into-a-zombie": {
+            "variation": "Un proche devenu zombie",
+            "anchor": "a-loved-one-turned-into-a-zombie"
+          },
+          "hiding-from-zombies": {
+            "variation": "Se cacher des zombies",
+            "anchor": "hiding-from-zombies"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "a-zombie-apocalypse": {
+            "variation": "A zombie apocalypse",
+            "anchor": "a-zombie-apocalypse"
+          },
+          "a-loved-one-turned-into-a-zombie": {
+            "variation": "A loved one turned into a zombie",
+            "anchor": "a-loved-one-turned-into-a-zombie"
+          },
+          "hiding-from-zombies": {
+            "variation": "Hiding from zombies",
+            "anchor": "hiding-from-zombies"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "a-zombie-apocalypse": {
+            "variation": "Un apocalipsis zombi",
+            "anchor": "a-zombie-apocalypse"
+          },
+          "a-loved-one-turned-into-a-zombie": {
+            "variation": "Un ser querido convertido en zombi",
+            "anchor": "a-loved-one-turned-into-a-zombie"
+          },
+          "hiding-from-zombies": {
+            "variation": "Esconderte de los zombis",
+            "anchor": "hiding-from-zombies"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "a-zombie-apocalypse": {
+            "variation": "Eine Zombie-Apokalypse",
+            "anchor": "a-zombie-apocalypse"
+          },
+          "a-loved-one-turned-into-a-zombie": {
+            "variation": "Ein Angehöriger als Zombie",
+            "anchor": "a-loved-one-turned-into-a-zombie"
+          },
+          "hiding-from-zombies": {
+            "variation": "Sich vor Zombies verstecken",
+            "anchor": "hiding-from-zombies"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "a-zombie-apocalypse": {
+            "variation": "Un’apocalisse zombie",
+            "anchor": "a-zombie-apocalypse"
+          },
+          "a-loved-one-turned-into-a-zombie": {
+            "variation": "Una persona cara diventata zombie",
+            "anchor": "a-loved-one-turned-into-a-zombie"
+          },
+          "hiding-from-zombies": {
+            "variation": "Nascondersi dagli zombie",
+            "anchor": "hiding-from-zombies"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "a-zombie-apocalypse": {
+            "variation": "Um apocalipse zumbi",
+            "anchor": "a-zombie-apocalypse"
+          },
+          "a-loved-one-turned-into-a-zombie": {
+            "variation": "Uma pessoa querida transformada em zumbi",
+            "anchor": "a-loved-one-turned-into-a-zombie"
+          },
+          "hiding-from-zombies": {
+            "variation": "Se esconder de zumbis",
+            "anchor": "hiding-from-zombies"
+          }
+        }
+      }
+    },
+    "prison": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "being-locked-in-a-cell": {
+            "variation": "Être enfermé dans une cellule",
+            "anchor": "being-locked-in-a-cell"
+          },
+          "being-imprisoned-for-something-you-did": {
+            "variation": "Être emprisonné à tort",
+            "anchor": "being-imprisoned-for-something-you-did"
+          },
+          "escaping-from-prison": {
+            "variation": "S'évader de prison",
+            "anchor": "escaping-from-prison"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "being-locked-in-a-cell": {
+            "variation": "Being locked in a cell",
+            "anchor": "being-locked-in-a-cell"
+          },
+          "being-imprisoned-for-something-you-did": {
+            "variation": "Being imprisoned for something you did not do",
+            "anchor": "being-imprisoned-for-something-you-did"
+          },
+          "escaping-from-prison": {
+            "variation": "Escaping from prison",
+            "anchor": "escaping-from-prison"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "being-locked-in-a-cell": {
+            "variation": "Estar encerrado en una celda",
+            "anchor": "being-locked-in-a-cell"
+          },
+          "being-imprisoned-for-something-you-did": {
+            "variation": "Ir a la cárcel por algo que no hiciste",
+            "anchor": "being-imprisoned-for-something-you-did"
+          },
+          "escaping-from-prison": {
+            "variation": "Escaparte de la cárcel",
+            "anchor": "escaping-from-prison"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "being-locked-in-a-cell": {
+            "variation": "In einer Zelle eingesperrt sein",
+            "anchor": "being-locked-in-a-cell"
+          },
+          "being-imprisoned-for-something-you-did": {
+            "variation": "Unschuldig im Gefängnis sitzen",
+            "anchor": "being-imprisoned-for-something-you-did"
+          },
+          "escaping-from-prison": {
+            "variation": "Aus dem Gefängnis ausbrechen",
+            "anchor": "escaping-from-prison"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "being-locked-in-a-cell": {
+            "variation": "Essere chiuso in una cella",
+            "anchor": "being-locked-in-a-cell"
+          },
+          "being-imprisoned-for-something-you-did": {
+            "variation": "Finire in prigione da innocente",
+            "anchor": "being-imprisoned-for-something-you-did"
+          },
+          "escaping-from-prison": {
+            "variation": "Evadere di prigione",
+            "anchor": "escaping-from-prison"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "being-locked-in-a-cell": {
+            "variation": "Ficar trancado em uma cela",
+            "anchor": "being-locked-in-a-cell"
+          },
+          "being-imprisoned-for-something-you-did": {
+            "variation": "Ser preso por algo que você não fez",
+            "anchor": "being-imprisoned-for-something-you-did"
+          },
+          "escaping-from-prison": {
+            "variation": "Escapar da prisão",
+            "anchor": "escaping-from-prison"
+          }
+        }
+      }
+    },
+    "earthquake": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "your-house-collapsing": {
+            "variation": "Sa maison qui s'effondre",
+            "anchor": "your-house-collapsing"
+          },
+          "the-ground-splitting-open": {
+            "variation": "Le sol qui s'ouvre",
+            "anchor": "the-ground-splitting-open"
+          },
+          "protecting-someone-during-an-earthquake": {
+            "variation": "Protéger quelqu'un pendant un séisme",
+            "anchor": "protecting-someone-during-an-earthquake"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "your-house-collapsing": {
+            "variation": "Your house collapsing",
+            "anchor": "your-house-collapsing"
+          },
+          "the-ground-splitting-open": {
+            "variation": "The ground splitting open",
+            "anchor": "the-ground-splitting-open"
+          },
+          "protecting-someone-during-an-earthquake": {
+            "variation": "Protecting someone during an earthquake",
+            "anchor": "protecting-someone-during-an-earthquake"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "your-house-collapsing": {
+            "variation": "Tu casa se derrumba",
+            "anchor": "your-house-collapsing"
+          },
+          "the-ground-splitting-open": {
+            "variation": "El suelo se abre",
+            "anchor": "the-ground-splitting-open"
+          },
+          "protecting-someone-during-an-earthquake": {
+            "variation": "Proteger a alguien durante un terremoto",
+            "anchor": "protecting-someone-during-an-earthquake"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "your-house-collapsing": {
+            "variation": "Das eigene Haus stürzt ein",
+            "anchor": "your-house-collapsing"
+          },
+          "the-ground-splitting-open": {
+            "variation": "Der Boden öffnet sich",
+            "anchor": "the-ground-splitting-open"
+          },
+          "protecting-someone-during-an-earthquake": {
+            "variation": "Jemanden beim Erdbeben schützen",
+            "anchor": "protecting-someone-during-an-earthquake"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "your-house-collapsing": {
+            "variation": "La propria casa che crolla",
+            "anchor": "your-house-collapsing"
+          },
+          "the-ground-splitting-open": {
+            "variation": "Il terreno che si apre",
+            "anchor": "the-ground-splitting-open"
+          },
+          "protecting-someone-during-an-earthquake": {
+            "variation": "Proteggere qualcuno durante un terremoto",
+            "anchor": "protecting-someone-during-an-earthquake"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "your-house-collapsing": {
+            "variation": "Sua casa desabando",
+            "anchor": "your-house-collapsing"
+          },
+          "the-ground-splitting-open": {
+            "variation": "O chão se abrindo",
+            "anchor": "the-ground-splitting-open"
+          },
+          "protecting-someone-during-an-earthquake": {
+            "variation": "Proteger alguém durante um terremoto",
+            "anchor": "protecting-someone-during-an-earthquake"
+          }
+        }
+      }
     }
   }
 }

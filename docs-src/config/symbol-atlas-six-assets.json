@@ -15078,5 +15078,2501 @@
         "960": "/img/symbols/atlas-six-v2/watch/accent-960-51633d166167.webp"
       }
     }
+  },
+  "attic": {
+    "hero": {
+      "width": 1600,
+      "height": 900,
+      "avif": {
+        "400": "/img/symbols/atlas-six-v2/attic/hero-400-d461f8b80863.avif",
+        "800": "/img/symbols/atlas-six-v2/attic/hero-800-5defae2eabc6.avif",
+        "1200": "/img/symbols/atlas-six-v2/attic/hero-1200-4661bb851eec.avif",
+        "1600": "/img/symbols/atlas-six-v2/attic/hero-1600-e94a54b1987f.avif"
+      },
+      "webp": {
+        "400": "/img/symbols/atlas-six-v2/attic/hero-400-a642b68a0506.webp",
+        "800": "/img/symbols/atlas-six-v2/attic/hero-800-706454340a3e.webp",
+        "1200": "/img/symbols/atlas-six-v2/attic/hero-1200-68144865127e.webp",
+        "1600": "/img/symbols/atlas-six-v2/attic/hero-1600-d69e9b8e5e56.webp"
+      }
+    },
+    "portrait": {
+      "width": 941,
+      "height": 1672,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/attic/portrait-480-15db9c18ddd8.avif",
+        "800": "/img/symbols/atlas-six-v2/attic/portrait-800-b8fd668b037f.avif",
+        "941": "/img/symbols/atlas-six-v2/attic/portrait-941-2262d7774ea7.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/attic/portrait-480-6066e431a748.webp",
+        "800": "/img/symbols/atlas-six-v2/attic/portrait-800-004214b81caa.webp",
+        "941": "/img/symbols/atlas-six-v2/attic/portrait-941-366c89db3031.webp"
+      }
+    },
+    "plate": {
+      "width": 1254,
+      "height": 1254,
+      "avif": {
+        "700": "/img/symbols/atlas-six-v2/attic/plate-700-28a5ebd31ae1.avif",
+        "1254": "/img/symbols/atlas-six-v2/attic/plate-1254-78918685fb06.avif"
+      },
+      "webp": {
+        "700": "/img/symbols/atlas-six-v2/attic/plate-700-ec21bf5a451d.webp",
+        "1254": "/img/symbols/atlas-six-v2/attic/plate-1254-5c9fc95f88bc.webp"
+      }
+    },
+    "scene-climbing-into-the-attic": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/attic/scene-climbing-into-the-attic-320-bd4d50a41bf0.avif",
+        "640": "/img/symbols/atlas-six-v2/attic/scene-climbing-into-the-attic-640-2a7723e27d03.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/attic/scene-climbing-into-the-attic-320-7720dad319c5.webp",
+        "640": "/img/symbols/atlas-six-v2/attic/scene-climbing-into-the-attic-640-672918b5117d.webp"
+      }
+    },
+    "scene-finding-old-belongings": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/attic/scene-finding-old-belongings-320-478d6817e05f.avif",
+        "640": "/img/symbols/atlas-six-v2/attic/scene-finding-old-belongings-640-22a34d3f56bd.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/attic/scene-finding-old-belongings-320-cbf33ac7cbae.webp",
+        "640": "/img/symbols/atlas-six-v2/attic/scene-finding-old-belongings-640-5ba2928a18fb.webp"
+      }
+    },
+    "scene-a-dark-or-frightening-attic": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/attic/scene-a-dark-or-frightening-attic-320-2c231fbff249.avif",
+        "640": "/img/symbols/atlas-six-v2/attic/scene-a-dark-or-frightening-attic-640-d472e8efa84c.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/attic/scene-a-dark-or-frightening-attic-320-b4acc7ba3c03.webp",
+        "640": "/img/symbols/atlas-six-v2/attic/scene-a-dark-or-frightening-attic-640-07bc4ccc1f32.webp"
+      }
+    },
+    "layer": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/attic/layer-480-c6f6d0b645d3.avif",
+        "960": "/img/symbols/atlas-six-v2/attic/layer-960-686087a529ff.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/attic/layer-480-44f19be70623.webp",
+        "960": "/img/symbols/atlas-six-v2/attic/layer-960-7c9e86d85be6.webp"
+      }
+    },
+    "accent": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/attic/accent-480-ccb677e7526d.avif",
+        "960": "/img/symbols/atlas-six-v2/attic/accent-960-12d66fdd792a.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/attic/accent-480-900528eaa774.webp",
+        "960": "/img/symbols/atlas-six-v2/attic/accent-960-f7fa1df38393.webp"
+      }
+    }
+  },
+  "basement": {
+    "hero": {
+      "width": 1600,
+      "height": 900,
+      "avif": {
+        "400": "/img/symbols/atlas-six-v2/basement/hero-400-ccc43eceb565.avif",
+        "800": "/img/symbols/atlas-six-v2/basement/hero-800-cda81cd7d54a.avif",
+        "1200": "/img/symbols/atlas-six-v2/basement/hero-1200-13a2af0dde84.avif",
+        "1600": "/img/symbols/atlas-six-v2/basement/hero-1600-19ee05072247.avif"
+      },
+      "webp": {
+        "400": "/img/symbols/atlas-six-v2/basement/hero-400-55887eb73219.webp",
+        "800": "/img/symbols/atlas-six-v2/basement/hero-800-e1f3ff08a4ab.webp",
+        "1200": "/img/symbols/atlas-six-v2/basement/hero-1200-3d80311b462c.webp",
+        "1600": "/img/symbols/atlas-six-v2/basement/hero-1600-c7c3eacad16b.webp"
+      }
+    },
+    "portrait": {
+      "width": 941,
+      "height": 1672,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/basement/portrait-480-f04fc0d9b1d1.avif",
+        "800": "/img/symbols/atlas-six-v2/basement/portrait-800-d68e7b1dae46.avif",
+        "941": "/img/symbols/atlas-six-v2/basement/portrait-941-0e178e423eb2.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/basement/portrait-480-34d707ddd09e.webp",
+        "800": "/img/symbols/atlas-six-v2/basement/portrait-800-1947c9aa7e4b.webp",
+        "941": "/img/symbols/atlas-six-v2/basement/portrait-941-8a00be838d8f.webp"
+      }
+    },
+    "plate": {
+      "width": 1254,
+      "height": 1254,
+      "avif": {
+        "700": "/img/symbols/atlas-six-v2/basement/plate-700-6b5a1c54310c.avif",
+        "1254": "/img/symbols/atlas-six-v2/basement/plate-1254-5c65419bdd5d.avif"
+      },
+      "webp": {
+        "700": "/img/symbols/atlas-six-v2/basement/plate-700-c6cd2ba6c6fb.webp",
+        "1254": "/img/symbols/atlas-six-v2/basement/plate-1254-3bec359aa74e.webp"
+      }
+    },
+    "scene-dark-basement": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/basement/scene-dark-basement-320-d634b2c8c17a.avif",
+        "640": "/img/symbols/atlas-six-v2/basement/scene-dark-basement-640-7ab65e3b1106.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/basement/scene-dark-basement-320-1b44d75a333a.webp",
+        "640": "/img/symbols/atlas-six-v2/basement/scene-dark-basement-640-7e8e8265b65d.webp"
+      }
+    },
+    "scene-flooded-basement": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/basement/scene-flooded-basement-320-0796bad12c80.avif",
+        "640": "/img/symbols/atlas-six-v2/basement/scene-flooded-basement-640-992cddf13980.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/basement/scene-flooded-basement-320-b3f426fc76f9.webp",
+        "640": "/img/symbols/atlas-six-v2/basement/scene-flooded-basement-640-e3a7cf5b4a78.webp"
+      }
+    },
+    "scene-locked-in-a-basement": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/basement/scene-locked-in-a-basement-320-89f1bc93d3e1.avif",
+        "640": "/img/symbols/atlas-six-v2/basement/scene-locked-in-a-basement-640-55e1154c39b3.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/basement/scene-locked-in-a-basement-320-c272096cd4a0.webp",
+        "640": "/img/symbols/atlas-six-v2/basement/scene-locked-in-a-basement-640-e78ba0effd61.webp"
+      }
+    },
+    "layer": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/basement/layer-480-2c8212a86a8d.avif",
+        "960": "/img/symbols/atlas-six-v2/basement/layer-960-ebce1322a12f.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/basement/layer-480-a67bc386fc01.webp",
+        "960": "/img/symbols/atlas-six-v2/basement/layer-960-a8e9ea977a11.webp"
+      }
+    },
+    "accent": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/basement/accent-480-bbbb2d51588a.avif",
+        "960": "/img/symbols/atlas-six-v2/basement/accent-960-1a42d6a82776.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/basement/accent-480-032d11e2a78e.webp",
+        "960": "/img/symbols/atlas-six-v2/basement/accent-960-60e02bf431a5.webp"
+      }
+    }
+  },
+  "bleeding": {
+    "hero": {
+      "width": 1600,
+      "height": 900,
+      "avif": {
+        "400": "/img/symbols/atlas-six-v2/bleeding/hero-400-705fed44b3c3.avif",
+        "800": "/img/symbols/atlas-six-v2/bleeding/hero-800-cbd838e4a021.avif",
+        "1200": "/img/symbols/atlas-six-v2/bleeding/hero-1200-4930ef9f35c9.avif",
+        "1600": "/img/symbols/atlas-six-v2/bleeding/hero-1600-500d16f2f3a4.avif"
+      },
+      "webp": {
+        "400": "/img/symbols/atlas-six-v2/bleeding/hero-400-e9c998633cb6.webp",
+        "800": "/img/symbols/atlas-six-v2/bleeding/hero-800-0fbcb0965dc7.webp",
+        "1200": "/img/symbols/atlas-six-v2/bleeding/hero-1200-7486128c1cb8.webp",
+        "1600": "/img/symbols/atlas-six-v2/bleeding/hero-1600-1abe4cb3fe5a.webp"
+      }
+    },
+    "portrait": {
+      "width": 941,
+      "height": 1672,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/bleeding/portrait-480-205b31cdfe01.avif",
+        "800": "/img/symbols/atlas-six-v2/bleeding/portrait-800-15ee2616826e.avif",
+        "941": "/img/symbols/atlas-six-v2/bleeding/portrait-941-95c437d1f612.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/bleeding/portrait-480-d70e9933f3eb.webp",
+        "800": "/img/symbols/atlas-six-v2/bleeding/portrait-800-a18ca7b0e46a.webp",
+        "941": "/img/symbols/atlas-six-v2/bleeding/portrait-941-b17435beb49d.webp"
+      }
+    },
+    "plate": {
+      "width": 1254,
+      "height": 1254,
+      "avif": {
+        "700": "/img/symbols/atlas-six-v2/bleeding/plate-700-ec3d85178061.avif",
+        "1254": "/img/symbols/atlas-six-v2/bleeding/plate-1254-92c4abe5f22e.avif"
+      },
+      "webp": {
+        "700": "/img/symbols/atlas-six-v2/bleeding/plate-700-4a54e74c3955.webp",
+        "1254": "/img/symbols/atlas-six-v2/bleeding/plate-1254-839751471fc2.webp"
+      }
+    },
+    "scene-a-nosebleed": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/bleeding/scene-a-nosebleed-320-62554627995b.avif",
+        "640": "/img/symbols/atlas-six-v2/bleeding/scene-a-nosebleed-640-913427618460.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/bleeding/scene-a-nosebleed-320-dbe0f571598f.webp",
+        "640": "/img/symbols/atlas-six-v2/bleeding/scene-a-nosebleed-640-338a5f29a344.webp"
+      }
+    },
+    "scene-bleeding-without-pain-or-visible-wound": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/bleeding/scene-bleeding-without-pain-or-visible-wound-320-381db4cfe0c7.avif",
+        "640": "/img/symbols/atlas-six-v2/bleeding/scene-bleeding-without-pain-or-visible-wound-640-e380a63c6b20.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/bleeding/scene-bleeding-without-pain-or-visible-wound-320-0d31290eb4cd.webp",
+        "640": "/img/symbols/atlas-six-v2/bleeding/scene-bleeding-without-pain-or-visible-wound-640-ed7fa78f7483.webp"
+      }
+    },
+    "scene-stopping-the-bleeding": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/bleeding/scene-stopping-the-bleeding-320-f8b9aae87f55.avif",
+        "640": "/img/symbols/atlas-six-v2/bleeding/scene-stopping-the-bleeding-640-c6315e8fa1c9.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/bleeding/scene-stopping-the-bleeding-320-f4af156a10ab.webp",
+        "640": "/img/symbols/atlas-six-v2/bleeding/scene-stopping-the-bleeding-640-cfec15b24734.webp"
+      }
+    },
+    "layer": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/bleeding/layer-480-b4cd8bc7d7e5.avif",
+        "960": "/img/symbols/atlas-six-v2/bleeding/layer-960-a4d44ce7c2cb.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/bleeding/layer-480-c95d332587bf.webp",
+        "960": "/img/symbols/atlas-six-v2/bleeding/layer-960-2b2f45202786.webp"
+      }
+    },
+    "accent": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/bleeding/accent-480-4f5665cd007d.avif",
+        "960": "/img/symbols/atlas-six-v2/bleeding/accent-960-38965af950db.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/bleeding/accent-480-bb61d8a34487.webp",
+        "960": "/img/symbols/atlas-six-v2/bleeding/accent-960-511479489249.webp"
+      }
+    }
+  },
+  "demon": {
+    "hero": {
+      "width": 1600,
+      "height": 900,
+      "avif": {
+        "400": "/img/symbols/atlas-six-v2/demon/hero-400-beb14f7c9105.avif",
+        "800": "/img/symbols/atlas-six-v2/demon/hero-800-a32d06ab5b99.avif",
+        "1200": "/img/symbols/atlas-six-v2/demon/hero-1200-d3edd08e679d.avif",
+        "1600": "/img/symbols/atlas-six-v2/demon/hero-1600-0f0113edb8b1.avif"
+      },
+      "webp": {
+        "400": "/img/symbols/atlas-six-v2/demon/hero-400-2d7de0ff1793.webp",
+        "800": "/img/symbols/atlas-six-v2/demon/hero-800-34394b2833c3.webp",
+        "1200": "/img/symbols/atlas-six-v2/demon/hero-1200-8515f95b3856.webp",
+        "1600": "/img/symbols/atlas-six-v2/demon/hero-1600-346503bd1d03.webp"
+      }
+    },
+    "portrait": {
+      "width": 941,
+      "height": 1672,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/demon/portrait-480-2fa7face4a20.avif",
+        "800": "/img/symbols/atlas-six-v2/demon/portrait-800-6c09904f871b.avif",
+        "941": "/img/symbols/atlas-six-v2/demon/portrait-941-10fb09ff0a85.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/demon/portrait-480-16565947483c.webp",
+        "800": "/img/symbols/atlas-six-v2/demon/portrait-800-08bfff76c214.webp",
+        "941": "/img/symbols/atlas-six-v2/demon/portrait-941-687153356135.webp"
+      }
+    },
+    "plate": {
+      "width": 1254,
+      "height": 1254,
+      "avif": {
+        "700": "/img/symbols/atlas-six-v2/demon/plate-700-5692a9b0b585.avif",
+        "1254": "/img/symbols/atlas-six-v2/demon/plate-1254-75b21e68aea4.avif"
+      },
+      "webp": {
+        "700": "/img/symbols/atlas-six-v2/demon/plate-700-1c16b051ccef.webp",
+        "1254": "/img/symbols/atlas-six-v2/demon/plate-1254-bb181dfc1739.webp"
+      }
+    },
+    "scene-being-chased-by-a-demon": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/demon/scene-being-chased-by-a-demon-320-1094bc04d611.avif",
+        "640": "/img/symbols/atlas-six-v2/demon/scene-being-chased-by-a-demon-640-45fb5a1c09fe.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/demon/scene-being-chased-by-a-demon-320-f3d26b7e7e32.webp",
+        "640": "/img/symbols/atlas-six-v2/demon/scene-being-chased-by-a-demon-640-5a7ef3aa13f5.webp"
+      }
+    },
+    "scene-fighting-a-demon": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/demon/scene-fighting-a-demon-320-2c8fba6bf3a2.avif",
+        "640": "/img/symbols/atlas-six-v2/demon/scene-fighting-a-demon-640-2e2cedcfbc6e.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/demon/scene-fighting-a-demon-320-2ae482f34c9a.webp",
+        "640": "/img/symbols/atlas-six-v2/demon/scene-fighting-a-demon-640-726a12dafe34.webp"
+      }
+    },
+    "scene-talking-or-bargaining-with-a-demon": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/demon/scene-talking-or-bargaining-with-a-demon-320-32e6a52f682f.avif",
+        "640": "/img/symbols/atlas-six-v2/demon/scene-talking-or-bargaining-with-a-demon-640-993a1f24104a.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/demon/scene-talking-or-bargaining-with-a-demon-320-a766c526863f.webp",
+        "640": "/img/symbols/atlas-six-v2/demon/scene-talking-or-bargaining-with-a-demon-640-8b89aa7f54d5.webp"
+      }
+    },
+    "layer": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/demon/layer-480-158977349d00.avif",
+        "960": "/img/symbols/atlas-six-v2/demon/layer-960-e62bffe09b02.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/demon/layer-480-5fd78d5085b1.webp",
+        "960": "/img/symbols/atlas-six-v2/demon/layer-960-3a9b5a0def58.webp"
+      }
+    },
+    "accent": {
+      "width": 1677,
+      "height": 938,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/demon/accent-480-37a9bb3cca23.avif",
+        "960": "/img/symbols/atlas-six-v2/demon/accent-960-f63a0f312f32.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/demon/accent-480-afc0ae1cd33e.webp",
+        "960": "/img/symbols/atlas-six-v2/demon/accent-960-051a818d2ee6.webp"
+      }
+    }
+  },
+  "drowning": {
+    "hero": {
+      "width": 1600,
+      "height": 900,
+      "avif": {
+        "400": "/img/symbols/atlas-six-v2/drowning/hero-400-b2e86b873402.avif",
+        "800": "/img/symbols/atlas-six-v2/drowning/hero-800-4f43cc041180.avif",
+        "1200": "/img/symbols/atlas-six-v2/drowning/hero-1200-bae8feb1c2a9.avif",
+        "1600": "/img/symbols/atlas-six-v2/drowning/hero-1600-34578255f7b7.avif"
+      },
+      "webp": {
+        "400": "/img/symbols/atlas-six-v2/drowning/hero-400-cb7ae1f44791.webp",
+        "800": "/img/symbols/atlas-six-v2/drowning/hero-800-1f0e220ff1d5.webp",
+        "1200": "/img/symbols/atlas-six-v2/drowning/hero-1200-cf7a4d997575.webp",
+        "1600": "/img/symbols/atlas-six-v2/drowning/hero-1600-6601e8a343f2.webp"
+      }
+    },
+    "portrait": {
+      "width": 941,
+      "height": 1672,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/drowning/portrait-480-b185b3e5f966.avif",
+        "800": "/img/symbols/atlas-six-v2/drowning/portrait-800-fc17b2acc9a1.avif",
+        "941": "/img/symbols/atlas-six-v2/drowning/portrait-941-1adb8e21cf96.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/drowning/portrait-480-8da9095f02de.webp",
+        "800": "/img/symbols/atlas-six-v2/drowning/portrait-800-2d848e4091b3.webp",
+        "941": "/img/symbols/atlas-six-v2/drowning/portrait-941-7d30fd2bb039.webp"
+      }
+    },
+    "plate": {
+      "width": 1254,
+      "height": 1254,
+      "avif": {
+        "700": "/img/symbols/atlas-six-v2/drowning/plate-700-996471c83b36.avif",
+        "1254": "/img/symbols/atlas-six-v2/drowning/plate-1254-8fcdd74011c4.avif"
+      },
+      "webp": {
+        "700": "/img/symbols/atlas-six-v2/drowning/plate-700-1672628a783c.webp",
+        "1254": "/img/symbols/atlas-six-v2/drowning/plate-1254-f86c719965dd.webp"
+      }
+    },
+    "scene-drowning-in-the-sea-or-deep-water": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/drowning/scene-drowning-in-the-sea-or-deep-water-320-9a02b7b773f4.avif",
+        "640": "/img/symbols/atlas-six-v2/drowning/scene-drowning-in-the-sea-or-deep-water-640-3d84df1241b9.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/drowning/scene-drowning-in-the-sea-or-deep-water-320-e21ae3b1e7bf.webp",
+        "640": "/img/symbols/atlas-six-v2/drowning/scene-drowning-in-the-sea-or-deep-water-640-476d86f8d449.webp"
+      }
+    },
+    "scene-drowning-in-a-pool-or-bathtub": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/drowning/scene-drowning-in-a-pool-or-bathtub-320-bf0e0d5e723a.avif",
+        "640": "/img/symbols/atlas-six-v2/drowning/scene-drowning-in-a-pool-or-bathtub-640-c932e25e9197.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/drowning/scene-drowning-in-a-pool-or-bathtub-320-22373f79bda5.webp",
+        "640": "/img/symbols/atlas-six-v2/drowning/scene-drowning-in-a-pool-or-bathtub-640-cae274e95ba5.webp"
+      }
+    },
+    "scene-someone-else-drowning": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/drowning/scene-someone-else-drowning-320-b46685b382ca.avif",
+        "640": "/img/symbols/atlas-six-v2/drowning/scene-someone-else-drowning-640-5bed9c36c2d4.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/drowning/scene-someone-else-drowning-320-94d1cdf1d4d1.webp",
+        "640": "/img/symbols/atlas-six-v2/drowning/scene-someone-else-drowning-640-6e3e16b4f063.webp"
+      }
+    },
+    "layer": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/drowning/layer-480-89ac09d6a124.avif",
+        "960": "/img/symbols/atlas-six-v2/drowning/layer-960-e760a3d76759.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/drowning/layer-480-9880f3452260.webp",
+        "960": "/img/symbols/atlas-six-v2/drowning/layer-960-f7921e791904.webp"
+      }
+    },
+    "accent": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/drowning/accent-480-f05696fa97d8.avif",
+        "960": "/img/symbols/atlas-six-v2/drowning/accent-960-4a291dac21e6.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/drowning/accent-480-47d035298118.webp",
+        "960": "/img/symbols/atlas-six-v2/drowning/accent-960-2a2420072f25.webp"
+      }
+    }
+  },
+  "earthquake": {
+    "hero": {
+      "width": 1600,
+      "height": 900,
+      "avif": {
+        "400": "/img/symbols/atlas-six-v2/earthquake/hero-400-8ec62359db18.avif",
+        "800": "/img/symbols/atlas-six-v2/earthquake/hero-800-dc8aef9472fe.avif",
+        "1200": "/img/symbols/atlas-six-v2/earthquake/hero-1200-641bdb423a47.avif",
+        "1600": "/img/symbols/atlas-six-v2/earthquake/hero-1600-09e8799a9d60.avif"
+      },
+      "webp": {
+        "400": "/img/symbols/atlas-six-v2/earthquake/hero-400-5256bfc4b523.webp",
+        "800": "/img/symbols/atlas-six-v2/earthquake/hero-800-6cfcc3b174cd.webp",
+        "1200": "/img/symbols/atlas-six-v2/earthquake/hero-1200-0778e6eab591.webp",
+        "1600": "/img/symbols/atlas-six-v2/earthquake/hero-1600-c61a0a504d3e.webp"
+      }
+    },
+    "portrait": {
+      "width": 967,
+      "height": 1626,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/earthquake/portrait-480-746190bab786.avif",
+        "800": "/img/symbols/atlas-six-v2/earthquake/portrait-800-c4471d7b0c8c.avif",
+        "967": "/img/symbols/atlas-six-v2/earthquake/portrait-967-26a8467cd535.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/earthquake/portrait-480-1da8af34fba3.webp",
+        "800": "/img/symbols/atlas-six-v2/earthquake/portrait-800-261ba70e51e3.webp",
+        "967": "/img/symbols/atlas-six-v2/earthquake/portrait-967-af068d291d9f.webp"
+      }
+    },
+    "plate": {
+      "width": 1254,
+      "height": 1254,
+      "avif": {
+        "700": "/img/symbols/atlas-six-v2/earthquake/plate-700-0e0de344e89d.avif",
+        "1254": "/img/symbols/atlas-six-v2/earthquake/plate-1254-a38c48afac31.avif"
+      },
+      "webp": {
+        "700": "/img/symbols/atlas-six-v2/earthquake/plate-700-ce8594a441e2.webp",
+        "1254": "/img/symbols/atlas-six-v2/earthquake/plate-1254-2000948ae9be.webp"
+      }
+    },
+    "scene-your-house-collapsing": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/earthquake/scene-your-house-collapsing-320-8505f26f24b9.avif",
+        "640": "/img/symbols/atlas-six-v2/earthquake/scene-your-house-collapsing-640-583dfcae48b3.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/earthquake/scene-your-house-collapsing-320-fb8986fc91aa.webp",
+        "640": "/img/symbols/atlas-six-v2/earthquake/scene-your-house-collapsing-640-ea0976ee9e12.webp"
+      }
+    },
+    "scene-the-ground-splitting-open": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/earthquake/scene-the-ground-splitting-open-320-41589526b58e.avif",
+        "640": "/img/symbols/atlas-six-v2/earthquake/scene-the-ground-splitting-open-640-31eac2b9efaa.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/earthquake/scene-the-ground-splitting-open-320-0d0722e46e3b.webp",
+        "640": "/img/symbols/atlas-six-v2/earthquake/scene-the-ground-splitting-open-640-2cd55b6ed5e0.webp"
+      }
+    },
+    "scene-protecting-someone-during-an-earthquake": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/earthquake/scene-protecting-someone-during-an-earthquake-320-293a3286270b.avif",
+        "640": "/img/symbols/atlas-six-v2/earthquake/scene-protecting-someone-during-an-earthquake-640-ee4fe9c93315.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/earthquake/scene-protecting-someone-during-an-earthquake-320-96b41035cb12.webp",
+        "640": "/img/symbols/atlas-six-v2/earthquake/scene-protecting-someone-during-an-earthquake-640-e6f1c816206c.webp"
+      }
+    },
+    "layer": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/earthquake/layer-480-9ebdd6f7af22.avif",
+        "960": "/img/symbols/atlas-six-v2/earthquake/layer-960-f279ef0a6986.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/earthquake/layer-480-d74b45ceb024.webp",
+        "960": "/img/symbols/atlas-six-v2/earthquake/layer-960-c83153d5fe70.webp"
+      }
+    },
+    "accent": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/earthquake/accent-480-d4ea9aab7d68.avif",
+        "960": "/img/symbols/atlas-six-v2/earthquake/accent-960-c77fbfeb56aa.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/earthquake/accent-480-d6bbaba36a4a.webp",
+        "960": "/img/symbols/atlas-six-v2/earthquake/accent-960-5d802974cf7c.webp"
+      }
+    }
+  },
+  "feet": {
+    "hero": {
+      "width": 1600,
+      "height": 900,
+      "avif": {
+        "400": "/img/symbols/atlas-six-v2/feet/hero-400-5644b51b1374.avif",
+        "800": "/img/symbols/atlas-six-v2/feet/hero-800-1c0738c1ac3e.avif",
+        "1200": "/img/symbols/atlas-six-v2/feet/hero-1200-f9e0a3834a8d.avif",
+        "1600": "/img/symbols/atlas-six-v2/feet/hero-1600-86da663b31a2.avif"
+      },
+      "webp": {
+        "400": "/img/symbols/atlas-six-v2/feet/hero-400-d0e4717deae1.webp",
+        "800": "/img/symbols/atlas-six-v2/feet/hero-800-c936e0792b02.webp",
+        "1200": "/img/symbols/atlas-six-v2/feet/hero-1200-1925de3c834c.webp",
+        "1600": "/img/symbols/atlas-six-v2/feet/hero-1600-c0888107aaff.webp"
+      }
+    },
+    "portrait": {
+      "width": 941,
+      "height": 1672,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/feet/portrait-480-2c5fd04c1abd.avif",
+        "800": "/img/symbols/atlas-six-v2/feet/portrait-800-bc0e5222aa8e.avif",
+        "941": "/img/symbols/atlas-six-v2/feet/portrait-941-04edf3cfa217.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/feet/portrait-480-0f5b8f4056c7.webp",
+        "800": "/img/symbols/atlas-six-v2/feet/portrait-800-a06ae559c066.webp",
+        "941": "/img/symbols/atlas-six-v2/feet/portrait-941-84d312c06c17.webp"
+      }
+    },
+    "plate": {
+      "width": 1254,
+      "height": 1254,
+      "avif": {
+        "700": "/img/symbols/atlas-six-v2/feet/plate-700-d02c97e160d3.avif",
+        "1254": "/img/symbols/atlas-six-v2/feet/plate-1254-fd7f3d320f16.avif"
+      },
+      "webp": {
+        "700": "/img/symbols/atlas-six-v2/feet/plate-700-a3a8c3c8dff7.webp",
+        "1254": "/img/symbols/atlas-six-v2/feet/plate-1254-906600f85715.webp"
+      }
+    },
+    "scene-walking-barefoot": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/feet/scene-walking-barefoot-320-c413ba5c95b2.avif",
+        "640": "/img/symbols/atlas-six-v2/feet/scene-walking-barefoot-640-31e8317eb526.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/feet/scene-walking-barefoot-320-2495eac48f1a.webp",
+        "640": "/img/symbols/atlas-six-v2/feet/scene-walking-barefoot-640-606dcf3e1e07.webp"
+      }
+    },
+    "scene-unable-to-move-your-feet": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/feet/scene-unable-to-move-your-feet-320-fd8ab62afa45.avif",
+        "640": "/img/symbols/atlas-six-v2/feet/scene-unable-to-move-your-feet-640-62db591b29ad.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/feet/scene-unable-to-move-your-feet-320-1747234a7ac5.webp",
+        "640": "/img/symbols/atlas-six-v2/feet/scene-unable-to-move-your-feet-640-14a541c8133f.webp"
+      }
+    },
+    "scene-washing-feet-or-having-them-washed": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/feet/scene-washing-feet-or-having-them-washed-320-f894f3e7b920.avif",
+        "640": "/img/symbols/atlas-six-v2/feet/scene-washing-feet-or-having-them-washed-640-d73c9e22051b.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/feet/scene-washing-feet-or-having-them-washed-320-9bc35591e8cb.webp",
+        "640": "/img/symbols/atlas-six-v2/feet/scene-washing-feet-or-having-them-washed-640-2fe642b11562.webp"
+      }
+    },
+    "layer": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/feet/layer-480-7e08edea6bf3.avif",
+        "960": "/img/symbols/atlas-six-v2/feet/layer-960-fb73e8c024e2.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/feet/layer-480-5320f533902d.webp",
+        "960": "/img/symbols/atlas-six-v2/feet/layer-960-64119f6a9e27.webp"
+      }
+    },
+    "accent": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/feet/accent-480-d5e8ebf04a85.avif",
+        "960": "/img/symbols/atlas-six-v2/feet/accent-960-edc13d8a2b1c.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/feet/accent-480-174de11c9df1.webp",
+        "960": "/img/symbols/atlas-six-v2/feet/accent-960-3f1dd7d8892e.webp"
+      }
+    }
+  },
+  "ghost": {
+    "hero": {
+      "width": 1600,
+      "height": 900,
+      "avif": {
+        "400": "/img/symbols/atlas-six-v2/ghost/hero-400-61c5048d53ac.avif",
+        "800": "/img/symbols/atlas-six-v2/ghost/hero-800-ecdfbbad2088.avif",
+        "1200": "/img/symbols/atlas-six-v2/ghost/hero-1200-9b9062ce60f4.avif",
+        "1600": "/img/symbols/atlas-six-v2/ghost/hero-1600-921507939b53.avif"
+      },
+      "webp": {
+        "400": "/img/symbols/atlas-six-v2/ghost/hero-400-f161e08960dc.webp",
+        "800": "/img/symbols/atlas-six-v2/ghost/hero-800-8cf62602f3bc.webp",
+        "1200": "/img/symbols/atlas-six-v2/ghost/hero-1200-171c5c830aaf.webp",
+        "1600": "/img/symbols/atlas-six-v2/ghost/hero-1600-3ff6bc2b170a.webp"
+      }
+    },
+    "portrait": {
+      "width": 941,
+      "height": 1672,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/ghost/portrait-480-b3017e77f0ab.avif",
+        "800": "/img/symbols/atlas-six-v2/ghost/portrait-800-b773945c0d58.avif",
+        "941": "/img/symbols/atlas-six-v2/ghost/portrait-941-cce2ed3724aa.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/ghost/portrait-480-13744063b5ff.webp",
+        "800": "/img/symbols/atlas-six-v2/ghost/portrait-800-bf2065ced6f6.webp",
+        "941": "/img/symbols/atlas-six-v2/ghost/portrait-941-8abf1f20d24b.webp"
+      }
+    },
+    "plate": {
+      "width": 1254,
+      "height": 1254,
+      "avif": {
+        "700": "/img/symbols/atlas-six-v2/ghost/plate-700-601597ce2572.avif",
+        "1254": "/img/symbols/atlas-six-v2/ghost/plate-1254-4be39989b0cd.avif"
+      },
+      "webp": {
+        "700": "/img/symbols/atlas-six-v2/ghost/plate-700-117773e4788f.webp",
+        "1254": "/img/symbols/atlas-six-v2/ghost/plate-1254-f1f2948748b7.webp"
+      }
+    },
+    "scene-seeing-the-ghost-of-a-loved-one-who-die": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/ghost/scene-seeing-the-ghost-of-a-loved-one-who-die-320-3854fb29420d.avif",
+        "640": "/img/symbols/atlas-six-v2/ghost/scene-seeing-the-ghost-of-a-loved-one-who-die-640-50f7fa727dba.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/ghost/scene-seeing-the-ghost-of-a-loved-one-who-die-320-70b46afac99a.webp",
+        "640": "/img/symbols/atlas-six-v2/ghost/scene-seeing-the-ghost-of-a-loved-one-who-die-640-8bb2fa9540a9.webp"
+      }
+    },
+    "scene-being-haunted-by-a-ghost": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/ghost/scene-being-haunted-by-a-ghost-320-8b7f0ef25fc2.avif",
+        "640": "/img/symbols/atlas-six-v2/ghost/scene-being-haunted-by-a-ghost-640-24ced10ac69a.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/ghost/scene-being-haunted-by-a-ghost-320-cb797d63a9ed.webp",
+        "640": "/img/symbols/atlas-six-v2/ghost/scene-being-haunted-by-a-ghost-640-39eab42cdfaa.webp"
+      }
+    },
+    "scene-a-haunted-house": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/ghost/scene-a-haunted-house-320-7775d7b10588.avif",
+        "640": "/img/symbols/atlas-six-v2/ghost/scene-a-haunted-house-640-5ff8b9f85640.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/ghost/scene-a-haunted-house-320-828a2a90aeaa.webp",
+        "640": "/img/symbols/atlas-six-v2/ghost/scene-a-haunted-house-640-fbbb0cd35602.webp"
+      }
+    },
+    "layer": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/ghost/layer-480-958b8b64b553.avif",
+        "960": "/img/symbols/atlas-six-v2/ghost/layer-960-6c56b7d9162e.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/ghost/layer-480-1524f339df5d.webp",
+        "960": "/img/symbols/atlas-six-v2/ghost/layer-960-6ead128eb4f3.webp"
+      }
+    },
+    "accent": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/ghost/accent-480-2d4cf588cd65.avif",
+        "960": "/img/symbols/atlas-six-v2/ghost/accent-960-c77ebd82382f.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/ghost/accent-480-0f2e16ade015.webp",
+        "960": "/img/symbols/atlas-six-v2/ghost/accent-960-e07167ba197f.webp"
+      }
+    }
+  },
+  "hands": {
+    "hero": {
+      "width": 1600,
+      "height": 900,
+      "avif": {
+        "400": "/img/symbols/atlas-six-v2/hands/hero-400-ea226fcc513b.avif",
+        "800": "/img/symbols/atlas-six-v2/hands/hero-800-e3bdf7110501.avif",
+        "1200": "/img/symbols/atlas-six-v2/hands/hero-1200-cccdef05afae.avif",
+        "1600": "/img/symbols/atlas-six-v2/hands/hero-1600-8cd25dd178fa.avif"
+      },
+      "webp": {
+        "400": "/img/symbols/atlas-six-v2/hands/hero-400-648147d6ce71.webp",
+        "800": "/img/symbols/atlas-six-v2/hands/hero-800-b37e32dd8cb6.webp",
+        "1200": "/img/symbols/atlas-six-v2/hands/hero-1200-21ea1eaeca7f.webp",
+        "1600": "/img/symbols/atlas-six-v2/hands/hero-1600-0b74b6d0d695.webp"
+      }
+    },
+    "portrait": {
+      "width": 968,
+      "height": 1625,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/hands/portrait-480-16bc6ff8b444.avif",
+        "800": "/img/symbols/atlas-six-v2/hands/portrait-800-2a7ebc0ad0db.avif",
+        "968": "/img/symbols/atlas-six-v2/hands/portrait-968-6ce82538ab0b.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/hands/portrait-480-34c36b72a1e9.webp",
+        "800": "/img/symbols/atlas-six-v2/hands/portrait-800-13f6ac77f8e7.webp",
+        "968": "/img/symbols/atlas-six-v2/hands/portrait-968-2ce154490805.webp"
+      }
+    },
+    "plate": {
+      "width": 1254,
+      "height": 1254,
+      "avif": {
+        "700": "/img/symbols/atlas-six-v2/hands/plate-700-dcf7b8eba31f.avif",
+        "1254": "/img/symbols/atlas-six-v2/hands/plate-1254-a602212631f3.avif"
+      },
+      "webp": {
+        "700": "/img/symbols/atlas-six-v2/hands/plate-700-aab8c0e11fa0.webp",
+        "1254": "/img/symbols/atlas-six-v2/hands/plate-1254-28a02954d223.webp"
+      }
+    },
+    "scene-hands-that-will-not-obey": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/hands/scene-hands-that-will-not-obey-320-b4a8fefcf733.avif",
+        "640": "/img/symbols/atlas-six-v2/hands/scene-hands-that-will-not-obey-640-2c68705f4466.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/hands/scene-hands-that-will-not-obey-320-42a6d39170fc.webp",
+        "640": "/img/symbols/atlas-six-v2/hands/scene-hands-that-will-not-obey-640-872e8b5f9d07.webp"
+      }
+    },
+    "scene-holding-someone-s-hand": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/hands/scene-holding-someone-s-hand-320-900ed1f396a5.avif",
+        "640": "/img/symbols/atlas-six-v2/hands/scene-holding-someone-s-hand-640-3543ac4c40f1.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/hands/scene-holding-someone-s-hand-320-abfc6617e1af.webp",
+        "640": "/img/symbols/atlas-six-v2/hands/scene-holding-someone-s-hand-640-14e9ea41fbba.webp"
+      }
+    },
+    "scene-dirty-hands-or-washing-your-hands": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/hands/scene-dirty-hands-or-washing-your-hands-320-4271a82546b2.avif",
+        "640": "/img/symbols/atlas-six-v2/hands/scene-dirty-hands-or-washing-your-hands-640-2272101a75a3.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/hands/scene-dirty-hands-or-washing-your-hands-320-aee74dff5ee6.webp",
+        "640": "/img/symbols/atlas-six-v2/hands/scene-dirty-hands-or-washing-your-hands-640-642a962cefa4.webp"
+      }
+    },
+    "layer": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/hands/layer-480-fda9f5e5a19b.avif",
+        "960": "/img/symbols/atlas-six-v2/hands/layer-960-ccbaa8bae8a8.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/hands/layer-480-ee83fb9794aa.webp",
+        "960": "/img/symbols/atlas-six-v2/hands/layer-960-8a5a219d0d37.webp"
+      }
+    },
+    "accent": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/hands/accent-480-6218e6d89d20.avif",
+        "960": "/img/symbols/atlas-six-v2/hands/accent-960-705d8ee23395.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/hands/accent-480-e689742e25ad.webp",
+        "960": "/img/symbols/atlas-six-v2/hands/accent-960-677ab3eab4e7.webp"
+      }
+    }
+  },
+  "heart": {
+    "hero": {
+      "width": 1600,
+      "height": 900,
+      "avif": {
+        "400": "/img/symbols/atlas-six-v2/heart/hero-400-6f8005858f7c.avif",
+        "800": "/img/symbols/atlas-six-v2/heart/hero-800-69c9d6829708.avif",
+        "1200": "/img/symbols/atlas-six-v2/heart/hero-1200-e2d9eed3c347.avif",
+        "1600": "/img/symbols/atlas-six-v2/heart/hero-1600-aaf376a2491c.avif"
+      },
+      "webp": {
+        "400": "/img/symbols/atlas-six-v2/heart/hero-400-416b711f862c.webp",
+        "800": "/img/symbols/atlas-six-v2/heart/hero-800-2d299c4cec9f.webp",
+        "1200": "/img/symbols/atlas-six-v2/heart/hero-1200-b1e3f453a797.webp",
+        "1600": "/img/symbols/atlas-six-v2/heart/hero-1600-7ce6b5dbb03d.webp"
+      }
+    },
+    "portrait": {
+      "width": 941,
+      "height": 1672,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/heart/portrait-480-59497fcbbdee.avif",
+        "800": "/img/symbols/atlas-six-v2/heart/portrait-800-e97d520ecb80.avif",
+        "941": "/img/symbols/atlas-six-v2/heart/portrait-941-ae1e9f45e1aa.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/heart/portrait-480-d130fb785cd2.webp",
+        "800": "/img/symbols/atlas-six-v2/heart/portrait-800-c407797c803a.webp",
+        "941": "/img/symbols/atlas-six-v2/heart/portrait-941-741ef72d7310.webp"
+      }
+    },
+    "plate": {
+      "width": 1254,
+      "height": 1254,
+      "avif": {
+        "700": "/img/symbols/atlas-six-v2/heart/plate-700-52b63a5e795c.avif",
+        "1254": "/img/symbols/atlas-six-v2/heart/plate-1254-d9b61d836c96.avif"
+      },
+      "webp": {
+        "700": "/img/symbols/atlas-six-v2/heart/plate-700-ac5e24f0c4ad.webp",
+        "1254": "/img/symbols/atlas-six-v2/heart/plate-1254-25eed2978614.webp"
+      }
+    },
+    "scene-a-racing-heart": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/heart/scene-a-racing-heart-320-32bb575271bf.avif",
+        "640": "/img/symbols/atlas-six-v2/heart/scene-a-racing-heart-640-ce219929cc4e.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/heart/scene-a-racing-heart-320-083a0f4de553.webp",
+        "640": "/img/symbols/atlas-six-v2/heart/scene-a-racing-heart-640-36db9fce356d.webp"
+      }
+    },
+    "scene-a-broken-heart": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/heart/scene-a-broken-heart-320-dde625ac78b4.avif",
+        "640": "/img/symbols/atlas-six-v2/heart/scene-a-broken-heart-640-0b24d08f07f0.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/heart/scene-a-broken-heart-320-7fc910f8bedb.webp",
+        "640": "/img/symbols/atlas-six-v2/heart/scene-a-broken-heart-640-118008422f5d.webp"
+      }
+    },
+    "scene-giving-or-receiving-a-heart": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/heart/scene-giving-or-receiving-a-heart-320-0c2526a2fdc0.avif",
+        "640": "/img/symbols/atlas-six-v2/heart/scene-giving-or-receiving-a-heart-640-1a8b642045c8.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/heart/scene-giving-or-receiving-a-heart-320-103ca34acc3e.webp",
+        "640": "/img/symbols/atlas-six-v2/heart/scene-giving-or-receiving-a-heart-640-950e02710b91.webp"
+      }
+    },
+    "layer": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/heart/layer-480-832064b1f399.avif",
+        "960": "/img/symbols/atlas-six-v2/heart/layer-960-4ac6eb3f1586.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/heart/layer-480-349174d617b5.webp",
+        "960": "/img/symbols/atlas-six-v2/heart/layer-960-eb64469dfcce.webp"
+      }
+    },
+    "accent": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/heart/accent-480-a2cd4452bf9a.avif",
+        "960": "/img/symbols/atlas-six-v2/heart/accent-960-7621fbdb59f8.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/heart/accent-480-5f7c13e5c3ac.webp",
+        "960": "/img/symbols/atlas-six-v2/heart/accent-960-804997f8e0b9.webp"
+      }
+    }
+  },
+  "hiding": {
+    "hero": {
+      "width": 1600,
+      "height": 900,
+      "avif": {
+        "400": "/img/symbols/atlas-six-v2/hiding/hero-400-2e6b20dcb3e4.avif",
+        "800": "/img/symbols/atlas-six-v2/hiding/hero-800-13df23419919.avif",
+        "1200": "/img/symbols/atlas-six-v2/hiding/hero-1200-ab4718725bd1.avif",
+        "1600": "/img/symbols/atlas-six-v2/hiding/hero-1600-959d160ba20b.avif"
+      },
+      "webp": {
+        "400": "/img/symbols/atlas-six-v2/hiding/hero-400-c7cb77c4b45f.webp",
+        "800": "/img/symbols/atlas-six-v2/hiding/hero-800-f55117cc4cd5.webp",
+        "1200": "/img/symbols/atlas-six-v2/hiding/hero-1200-99fd62c624ad.webp",
+        "1600": "/img/symbols/atlas-six-v2/hiding/hero-1600-b253243ecc81.webp"
+      }
+    },
+    "portrait": {
+      "width": 941,
+      "height": 1672,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/hiding/portrait-480-f71d6d28bb9c.avif",
+        "800": "/img/symbols/atlas-six-v2/hiding/portrait-800-297bff25e9e8.avif",
+        "941": "/img/symbols/atlas-six-v2/hiding/portrait-941-7ef21eedb398.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/hiding/portrait-480-a03d48940ffe.webp",
+        "800": "/img/symbols/atlas-six-v2/hiding/portrait-800-f17fba0c54ae.webp",
+        "941": "/img/symbols/atlas-six-v2/hiding/portrait-941-4fbe98bdc698.webp"
+      }
+    },
+    "plate": {
+      "width": 1254,
+      "height": 1254,
+      "avif": {
+        "700": "/img/symbols/atlas-six-v2/hiding/plate-700-031178972aa9.avif",
+        "1254": "/img/symbols/atlas-six-v2/hiding/plate-1254-47347e358adf.avif"
+      },
+      "webp": {
+        "700": "/img/symbols/atlas-six-v2/hiding/plate-700-cce255b2dce3.webp",
+        "1254": "/img/symbols/atlas-six-v2/hiding/plate-1254-36d8466446fc.webp"
+      }
+    },
+    "scene-hiding-from-a-threat": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/hiding/scene-hiding-from-a-threat-320-d1e3b5ae9864.avif",
+        "640": "/img/symbols/atlas-six-v2/hiding/scene-hiding-from-a-threat-640-6de89146e51c.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/hiding/scene-hiding-from-a-threat-320-d6abd40d0467.webp",
+        "640": "/img/symbols/atlas-six-v2/hiding/scene-hiding-from-a-threat-640-ca9eca807fe0.webp"
+      }
+    },
+    "scene-hiding-from-someone-you-know": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/hiding/scene-hiding-from-someone-you-know-320-b1e3783a3dd4.avif",
+        "640": "/img/symbols/atlas-six-v2/hiding/scene-hiding-from-someone-you-know-640-2341c1f073ce.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/hiding/scene-hiding-from-someone-you-know-320-0c8645319c7d.webp",
+        "640": "/img/symbols/atlas-six-v2/hiding/scene-hiding-from-someone-you-know-640-56c9f4b3cef1.webp"
+      }
+    },
+    "scene-being-found": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/hiding/scene-being-found-320-03530046f724.avif",
+        "640": "/img/symbols/atlas-six-v2/hiding/scene-being-found-640-905280ae0093.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/hiding/scene-being-found-320-7e0257e91645.webp",
+        "640": "/img/symbols/atlas-six-v2/hiding/scene-being-found-640-c4ba17e64fe4.webp"
+      }
+    },
+    "layer": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/hiding/layer-480-099b0ccb4b59.avif",
+        "960": "/img/symbols/atlas-six-v2/hiding/layer-960-15e6299eb2b1.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/hiding/layer-480-943760e9fb57.webp",
+        "960": "/img/symbols/atlas-six-v2/hiding/layer-960-929f60a14246.webp"
+      }
+    },
+    "accent": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/hiding/accent-480-00f13e7fa53d.avif",
+        "960": "/img/symbols/atlas-six-v2/hiding/accent-960-4b512bab57e2.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/hiding/accent-480-fd9bf1f38506.webp",
+        "960": "/img/symbols/atlas-six-v2/hiding/accent-960-3d1552663942.webp"
+      }
+    }
+  },
+  "illness": {
+    "hero": {
+      "width": 1600,
+      "height": 900,
+      "avif": {
+        "400": "/img/symbols/atlas-six-v2/illness/hero-400-88ce448f9a20.avif",
+        "800": "/img/symbols/atlas-six-v2/illness/hero-800-a157e8f2292a.avif",
+        "1200": "/img/symbols/atlas-six-v2/illness/hero-1200-591bd8e20be4.avif",
+        "1600": "/img/symbols/atlas-six-v2/illness/hero-1600-00217473f486.avif"
+      },
+      "webp": {
+        "400": "/img/symbols/atlas-six-v2/illness/hero-400-63e21784726e.webp",
+        "800": "/img/symbols/atlas-six-v2/illness/hero-800-28fe3d636966.webp",
+        "1200": "/img/symbols/atlas-six-v2/illness/hero-1200-d79f460f88a5.webp",
+        "1600": "/img/symbols/atlas-six-v2/illness/hero-1600-153f630a5d4d.webp"
+      }
+    },
+    "portrait": {
+      "width": 968,
+      "height": 1625,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/illness/portrait-480-4aefc3602691.avif",
+        "800": "/img/symbols/atlas-six-v2/illness/portrait-800-56ce62a14345.avif",
+        "968": "/img/symbols/atlas-six-v2/illness/portrait-968-167ca2e0d80b.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/illness/portrait-480-4ffa8485359e.webp",
+        "800": "/img/symbols/atlas-six-v2/illness/portrait-800-25ba3fbf3a1a.webp",
+        "968": "/img/symbols/atlas-six-v2/illness/portrait-968-22a5e26073a9.webp"
+      }
+    },
+    "plate": {
+      "width": 1254,
+      "height": 1254,
+      "avif": {
+        "700": "/img/symbols/atlas-six-v2/illness/plate-700-4a48b71d8d82.avif",
+        "1254": "/img/symbols/atlas-six-v2/illness/plate-1254-50331ab602ce.avif"
+      },
+      "webp": {
+        "700": "/img/symbols/atlas-six-v2/illness/plate-700-7b72e9ec4a0c.webp",
+        "1254": "/img/symbols/atlas-six-v2/illness/plate-1254-36b58098a141.webp"
+      }
+    },
+    "scene-being-ill-yourself": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/illness/scene-being-ill-yourself-320-9440252cad4f.avif",
+        "640": "/img/symbols/atlas-six-v2/illness/scene-being-ill-yourself-640-4c9dee2d671d.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/illness/scene-being-ill-yourself-320-0212ab2d1d30.webp",
+        "640": "/img/symbols/atlas-six-v2/illness/scene-being-ill-yourself-640-1b955570adb3.webp"
+      }
+    },
+    "scene-a-loved-one-who-is-ill": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/illness/scene-a-loved-one-who-is-ill-320-6f9476fc7568.avif",
+        "640": "/img/symbols/atlas-six-v2/illness/scene-a-loved-one-who-is-ill-640-07b3cf518180.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/illness/scene-a-loved-one-who-is-ill-320-2818c1114438.webp",
+        "640": "/img/symbols/atlas-six-v2/illness/scene-a-loved-one-who-is-ill-640-86428e6c711c.webp"
+      }
+    },
+    "scene-a-serious-or-incurable-illness": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/illness/scene-a-serious-or-incurable-illness-320-afad488e5b5d.avif",
+        "640": "/img/symbols/atlas-six-v2/illness/scene-a-serious-or-incurable-illness-640-e17c297e3650.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/illness/scene-a-serious-or-incurable-illness-320-ae524ddfd8b8.webp",
+        "640": "/img/symbols/atlas-six-v2/illness/scene-a-serious-or-incurable-illness-640-e875c968dfdf.webp"
+      }
+    },
+    "layer": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/illness/layer-480-5cef4cd2e74d.avif",
+        "960": "/img/symbols/atlas-six-v2/illness/layer-960-a0a338351fce.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/illness/layer-480-567fd089512c.webp",
+        "960": "/img/symbols/atlas-six-v2/illness/layer-960-31ad6dcb3799.webp"
+      }
+    },
+    "accent": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/illness/accent-480-5e77994c6f8c.avif",
+        "960": "/img/symbols/atlas-six-v2/illness/accent-960-1cb484480bf1.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/illness/accent-480-b06b2ac7d216.webp",
+        "960": "/img/symbols/atlas-six-v2/illness/accent-960-f83cc17228d1.webp"
+      }
+    }
+  },
+  "late": {
+    "hero": {
+      "width": 1600,
+      "height": 900,
+      "avif": {
+        "400": "/img/symbols/atlas-six-v2/late/hero-400-2b987177f9d9.avif",
+        "800": "/img/symbols/atlas-six-v2/late/hero-800-aab1d4314474.avif",
+        "1200": "/img/symbols/atlas-six-v2/late/hero-1200-af4767ba6fda.avif",
+        "1600": "/img/symbols/atlas-six-v2/late/hero-1600-a5f4c0214c07.avif"
+      },
+      "webp": {
+        "400": "/img/symbols/atlas-six-v2/late/hero-400-be349c69c233.webp",
+        "800": "/img/symbols/atlas-six-v2/late/hero-800-c4b5f090476a.webp",
+        "1200": "/img/symbols/atlas-six-v2/late/hero-1200-dbfa9b221504.webp",
+        "1600": "/img/symbols/atlas-six-v2/late/hero-1600-a09a3b9a8b84.webp"
+      }
+    },
+    "portrait": {
+      "width": 968,
+      "height": 1625,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/late/portrait-480-88f03cb1c1ae.avif",
+        "800": "/img/symbols/atlas-six-v2/late/portrait-800-9c8681c80d0f.avif",
+        "968": "/img/symbols/atlas-six-v2/late/portrait-968-eb7894cd99ed.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/late/portrait-480-bad3eeccf781.webp",
+        "800": "/img/symbols/atlas-six-v2/late/portrait-800-fa01ea6a7e6d.webp",
+        "968": "/img/symbols/atlas-six-v2/late/portrait-968-6a3c8aa18c20.webp"
+      }
+    },
+    "plate": {
+      "width": 1254,
+      "height": 1254,
+      "avif": {
+        "700": "/img/symbols/atlas-six-v2/late/plate-700-db425633b640.avif",
+        "1254": "/img/symbols/atlas-six-v2/late/plate-1254-8334e0ab35e1.avif"
+      },
+      "webp": {
+        "700": "/img/symbols/atlas-six-v2/late/plate-700-d321c54ceecc.webp",
+        "1254": "/img/symbols/atlas-six-v2/late/plate-1254-9828eefed035.webp"
+      }
+    },
+    "scene-late-for-work": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/late/scene-late-for-work-320-67f1a7877825.avif",
+        "640": "/img/symbols/atlas-six-v2/late/scene-late-for-work-640-0a158045cf80.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/late/scene-late-for-work-320-fc09b117f677.webp",
+        "640": "/img/symbols/atlas-six-v2/late/scene-late-for-work-640-111c29d6b57e.webp"
+      }
+    },
+    "scene-late-for-an-exam": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/late/scene-late-for-an-exam-320-ea638b03a152.avif",
+        "640": "/img/symbols/atlas-six-v2/late/scene-late-for-an-exam-640-1008eb48847f.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/late/scene-late-for-an-exam-320-795d7c0e1f2c.webp",
+        "640": "/img/symbols/atlas-six-v2/late/scene-late-for-an-exam-640-5298519cb775.webp"
+      }
+    },
+    "scene-late-for-a-flight-or-a-train": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/late/scene-late-for-a-flight-or-a-train-320-16a6fff6717a.avif",
+        "640": "/img/symbols/atlas-six-v2/late/scene-late-for-a-flight-or-a-train-640-15a24dd0b4b0.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/late/scene-late-for-a-flight-or-a-train-320-424823aced43.webp",
+        "640": "/img/symbols/atlas-six-v2/late/scene-late-for-a-flight-or-a-train-640-2288548a846f.webp"
+      }
+    },
+    "layer": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/late/layer-480-4ba0f39848a4.avif",
+        "960": "/img/symbols/atlas-six-v2/late/layer-960-606d59091245.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/late/layer-480-ae5de0b7b059.webp",
+        "960": "/img/symbols/atlas-six-v2/late/layer-960-fb6af1a8ef5f.webp"
+      }
+    },
+    "accent": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/late/accent-480-c1e347eb5db6.avif",
+        "960": "/img/symbols/atlas-six-v2/late/accent-960-05930b09262c.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/late/accent-480-e651f84370c4.webp",
+        "960": "/img/symbols/atlas-six-v2/late/accent-960-38754b273fa5.webp"
+      }
+    }
+  },
+  "missing-train": {
+    "hero": {
+      "width": 1600,
+      "height": 900,
+      "avif": {
+        "400": "/img/symbols/atlas-six-v2/missing-train/hero-400-8e40ba8abc63.avif",
+        "800": "/img/symbols/atlas-six-v2/missing-train/hero-800-88602c1bd3a3.avif",
+        "1200": "/img/symbols/atlas-six-v2/missing-train/hero-1200-c948a113e3cf.avif",
+        "1600": "/img/symbols/atlas-six-v2/missing-train/hero-1600-005a7604e5eb.avif"
+      },
+      "webp": {
+        "400": "/img/symbols/atlas-six-v2/missing-train/hero-400-38d57daf3c30.webp",
+        "800": "/img/symbols/atlas-six-v2/missing-train/hero-800-4c849ca74fca.webp",
+        "1200": "/img/symbols/atlas-six-v2/missing-train/hero-1200-0a16539bdfa0.webp",
+        "1600": "/img/symbols/atlas-six-v2/missing-train/hero-1600-63e8fa88b29a.webp"
+      }
+    },
+    "portrait": {
+      "width": 960,
+      "height": 1639,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/missing-train/portrait-480-21f7fd0336ad.avif",
+        "800": "/img/symbols/atlas-six-v2/missing-train/portrait-800-e30271adb06f.avif",
+        "960": "/img/symbols/atlas-six-v2/missing-train/portrait-960-5ba327de973d.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/missing-train/portrait-480-ec1204db04de.webp",
+        "800": "/img/symbols/atlas-six-v2/missing-train/portrait-800-bc23661f6d09.webp",
+        "960": "/img/symbols/atlas-six-v2/missing-train/portrait-960-667620525297.webp"
+      }
+    },
+    "plate": {
+      "width": 1254,
+      "height": 1254,
+      "avif": {
+        "700": "/img/symbols/atlas-six-v2/missing-train/plate-700-702f0ca628af.avif",
+        "1254": "/img/symbols/atlas-six-v2/missing-train/plate-1254-646b7b0b7424.avif"
+      },
+      "webp": {
+        "700": "/img/symbols/atlas-six-v2/missing-train/plate-700-618e1afbfd9f.webp",
+        "1254": "/img/symbols/atlas-six-v2/missing-train/plate-1254-9b5320bb20b8.webp"
+      }
+    },
+    "scene-watching-the-train-leave": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/missing-train/scene-watching-the-train-leave-320-46e29ad93522.avif",
+        "640": "/img/symbols/atlas-six-v2/missing-train/scene-watching-the-train-leave-640-c3089bcb0930.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/missing-train/scene-watching-the-train-leave-320-39da0a88c0f0.webp",
+        "640": "/img/symbols/atlas-six-v2/missing-train/scene-watching-the-train-leave-640-96b59b93c780.webp"
+      }
+    },
+    "scene-waiting-on-the-wrong-platform": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/missing-train/scene-waiting-on-the-wrong-platform-320-566c553d4cd7.avif",
+        "640": "/img/symbols/atlas-six-v2/missing-train/scene-waiting-on-the-wrong-platform-640-df461f9c3306.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/missing-train/scene-waiting-on-the-wrong-platform-320-d14350969e10.webp",
+        "640": "/img/symbols/atlas-six-v2/missing-train/scene-waiting-on-the-wrong-platform-640-598ce9c0621f.webp"
+      }
+    },
+    "scene-running-for-a-train": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/missing-train/scene-running-for-a-train-320-2a9cf6a3a876.avif",
+        "640": "/img/symbols/atlas-six-v2/missing-train/scene-running-for-a-train-640-e15cf126a2f6.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/missing-train/scene-running-for-a-train-320-de004398f501.webp",
+        "640": "/img/symbols/atlas-six-v2/missing-train/scene-running-for-a-train-640-0d8ed401b58b.webp"
+      }
+    },
+    "layer": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/missing-train/layer-480-96ec92382b74.avif",
+        "960": "/img/symbols/atlas-six-v2/missing-train/layer-960-a37c258ae9fb.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/missing-train/layer-480-1fa2acd1113d.webp",
+        "960": "/img/symbols/atlas-six-v2/missing-train/layer-960-9babd1e27b9a.webp"
+      }
+    },
+    "accent": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/missing-train/accent-480-846ab4723b52.avif",
+        "960": "/img/symbols/atlas-six-v2/missing-train/accent-960-ab7a89a4fe99.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/missing-train/accent-480-6322efe54bcb.webp",
+        "960": "/img/symbols/atlas-six-v2/missing-train/accent-960-e9664798c348.webp"
+      }
+    }
+  },
+  "monster": {
+    "hero": {
+      "width": 1600,
+      "height": 900,
+      "avif": {
+        "400": "/img/symbols/atlas-six-v2/monster/hero-400-ca9c6cbf4447.avif",
+        "800": "/img/symbols/atlas-six-v2/monster/hero-800-60fdb5bfef3a.avif",
+        "1200": "/img/symbols/atlas-six-v2/monster/hero-1200-cf64238651ba.avif",
+        "1600": "/img/symbols/atlas-six-v2/monster/hero-1600-f877964fdbd5.avif"
+      },
+      "webp": {
+        "400": "/img/symbols/atlas-six-v2/monster/hero-400-7db4e5743035.webp",
+        "800": "/img/symbols/atlas-six-v2/monster/hero-800-1b14a168ebd3.webp",
+        "1200": "/img/symbols/atlas-six-v2/monster/hero-1200-cda8d1a07f21.webp",
+        "1600": "/img/symbols/atlas-six-v2/monster/hero-1600-50265255f13b.webp"
+      }
+    },
+    "portrait": {
+      "width": 941,
+      "height": 1672,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/monster/portrait-480-6aa5b9926ebf.avif",
+        "800": "/img/symbols/atlas-six-v2/monster/portrait-800-af08c846ac24.avif",
+        "941": "/img/symbols/atlas-six-v2/monster/portrait-941-703ced924614.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/monster/portrait-480-8dceb37116a5.webp",
+        "800": "/img/symbols/atlas-six-v2/monster/portrait-800-6f8ffc9fce3c.webp",
+        "941": "/img/symbols/atlas-six-v2/monster/portrait-941-ac23b800f0b6.webp"
+      }
+    },
+    "plate": {
+      "width": 1254,
+      "height": 1254,
+      "avif": {
+        "700": "/img/symbols/atlas-six-v2/monster/plate-700-9a38590a6b5a.avif",
+        "1254": "/img/symbols/atlas-six-v2/monster/plate-1254-a2ec63c18bdc.avif"
+      },
+      "webp": {
+        "700": "/img/symbols/atlas-six-v2/monster/plate-700-f4ebd0f9ffc2.webp",
+        "1254": "/img/symbols/atlas-six-v2/monster/plate-1254-ec9ac25aee12.webp"
+      }
+    },
+    "scene-being-chased-by-a-monster": {
+      "width": 1672,
+      "height": 940,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/monster/scene-being-chased-by-a-monster-320-efe8e10b5ab2.avif",
+        "640": "/img/symbols/atlas-six-v2/monster/scene-being-chased-by-a-monster-640-3d92fcaed24c.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/monster/scene-being-chased-by-a-monster-320-856b56ee2f52.webp",
+        "640": "/img/symbols/atlas-six-v2/monster/scene-being-chased-by-a-monster-640-33bfdf2435e6.webp"
+      }
+    },
+    "scene-a-monster-under-the-bed-or-in-the-close": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/monster/scene-a-monster-under-the-bed-or-in-the-close-320-1d5a17a20cd4.avif",
+        "640": "/img/symbols/atlas-six-v2/monster/scene-a-monster-under-the-bed-or-in-the-close-640-8b701ff2448a.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/monster/scene-a-monster-under-the-bed-or-in-the-close-320-c9743a372b39.webp",
+        "640": "/img/symbols/atlas-six-v2/monster/scene-a-monster-under-the-bed-or-in-the-close-640-bd16bf793da1.webp"
+      }
+    },
+    "scene-a-giant-monster": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/monster/scene-a-giant-monster-320-e6e821a262e1.avif",
+        "640": "/img/symbols/atlas-six-v2/monster/scene-a-giant-monster-640-c622904ae12e.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/monster/scene-a-giant-monster-320-cb4e45fc0049.webp",
+        "640": "/img/symbols/atlas-six-v2/monster/scene-a-giant-monster-640-e6011b3f4728.webp"
+      }
+    },
+    "layer": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/monster/layer-480-b76fec154da5.avif",
+        "960": "/img/symbols/atlas-six-v2/monster/layer-960-688040b09527.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/monster/layer-480-2d699172c978.webp",
+        "960": "/img/symbols/atlas-six-v2/monster/layer-960-0067d5c97cfa.webp"
+      }
+    },
+    "accent": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/monster/accent-480-96aa2b309896.avif",
+        "960": "/img/symbols/atlas-six-v2/monster/accent-960-d9297cdadd9b.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/monster/accent-480-3380801cb215.webp",
+        "960": "/img/symbols/atlas-six-v2/monster/accent-960-e00d3415dec2.webp"
+      }
+    }
+  },
+  "paralysis": {
+    "hero": {
+      "width": 1600,
+      "height": 900,
+      "avif": {
+        "400": "/img/symbols/atlas-six-v2/paralysis/hero-400-5d6468cd67e3.avif",
+        "800": "/img/symbols/atlas-six-v2/paralysis/hero-800-fcd54ca29094.avif",
+        "1200": "/img/symbols/atlas-six-v2/paralysis/hero-1200-367f0750af61.avif",
+        "1600": "/img/symbols/atlas-six-v2/paralysis/hero-1600-87077a1c7322.avif"
+      },
+      "webp": {
+        "400": "/img/symbols/atlas-six-v2/paralysis/hero-400-85a2c8f06eb0.webp",
+        "800": "/img/symbols/atlas-six-v2/paralysis/hero-800-777273c1bc73.webp",
+        "1200": "/img/symbols/atlas-six-v2/paralysis/hero-1200-5e591deed6e6.webp",
+        "1600": "/img/symbols/atlas-six-v2/paralysis/hero-1600-b6eddda4119d.webp"
+      }
+    },
+    "portrait": {
+      "width": 968,
+      "height": 1625,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/paralysis/portrait-480-b2f72c4340f0.avif",
+        "800": "/img/symbols/atlas-six-v2/paralysis/portrait-800-02d5c81cb0ee.avif",
+        "968": "/img/symbols/atlas-six-v2/paralysis/portrait-968-74ad525b5fb7.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/paralysis/portrait-480-6d23b0aaeda7.webp",
+        "800": "/img/symbols/atlas-six-v2/paralysis/portrait-800-6104b9d9f27a.webp",
+        "968": "/img/symbols/atlas-six-v2/paralysis/portrait-968-4a9f61bf62a3.webp"
+      }
+    },
+    "plate": {
+      "width": 1254,
+      "height": 1254,
+      "avif": {
+        "700": "/img/symbols/atlas-six-v2/paralysis/plate-700-9d54a81fdabb.avif",
+        "1254": "/img/symbols/atlas-six-v2/paralysis/plate-1254-a7a63a38dd60.avif"
+      },
+      "webp": {
+        "700": "/img/symbols/atlas-six-v2/paralysis/plate-700-6dcaeef32c9e.webp",
+        "1254": "/img/symbols/atlas-six-v2/paralysis/plate-1254-3ad2e9ed6fb8.webp"
+      }
+    },
+    "scene-frozen-in-front-of-a-danger": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/paralysis/scene-frozen-in-front-of-a-danger-320-1101a2fb98b5.avif",
+        "640": "/img/symbols/atlas-six-v2/paralysis/scene-frozen-in-front-of-a-danger-640-4df775c699ce.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/paralysis/scene-frozen-in-front-of-a-danger-320-311a0537912d.webp",
+        "640": "/img/symbols/atlas-six-v2/paralysis/scene-frozen-in-front-of-a-danger-640-cfe2500110c6.webp"
+      }
+    },
+    "scene-legs-that-will-not-run": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/paralysis/scene-legs-that-will-not-run-320-b4b02ee185ff.avif",
+        "640": "/img/symbols/atlas-six-v2/paralysis/scene-legs-that-will-not-run-640-8bd24d58a819.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/paralysis/scene-legs-that-will-not-run-320-82219209875c.webp",
+        "640": "/img/symbols/atlas-six-v2/paralysis/scene-legs-that-will-not-run-640-543ec984d6b6.webp"
+      }
+    },
+    "scene-waking-up-unable-to-move": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/paralysis/scene-waking-up-unable-to-move-320-994e2238ec87.avif",
+        "640": "/img/symbols/atlas-six-v2/paralysis/scene-waking-up-unable-to-move-640-dcbe3097590c.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/paralysis/scene-waking-up-unable-to-move-320-ca37994a3bdc.webp",
+        "640": "/img/symbols/atlas-six-v2/paralysis/scene-waking-up-unable-to-move-640-11d883e357fc.webp"
+      }
+    },
+    "layer": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/paralysis/layer-480-2ed527de6504.avif",
+        "960": "/img/symbols/atlas-six-v2/paralysis/layer-960-81bc63741fda.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/paralysis/layer-480-183b5e25ad25.webp",
+        "960": "/img/symbols/atlas-six-v2/paralysis/layer-960-98fcb8d53197.webp"
+      }
+    },
+    "accent": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/paralysis/accent-480-3ff56b2b9782.avif",
+        "960": "/img/symbols/atlas-six-v2/paralysis/accent-960-9c4f6b474b0a.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/paralysis/accent-480-4dc7cffacbf3.webp",
+        "960": "/img/symbols/atlas-six-v2/paralysis/accent-960-278181a1b6be.webp"
+      }
+    }
+  },
+  "pregnancy-test": {
+    "hero": {
+      "width": 1600,
+      "height": 900,
+      "avif": {
+        "400": "/img/symbols/atlas-six-v2/pregnancy-test/hero-400-fdae5b9c80d1.avif",
+        "800": "/img/symbols/atlas-six-v2/pregnancy-test/hero-800-9ce3ccf501b9.avif",
+        "1200": "/img/symbols/atlas-six-v2/pregnancy-test/hero-1200-a780a33938b7.avif",
+        "1600": "/img/symbols/atlas-six-v2/pregnancy-test/hero-1600-6d3d09abd7bb.avif"
+      },
+      "webp": {
+        "400": "/img/symbols/atlas-six-v2/pregnancy-test/hero-400-4ba297c2c6a7.webp",
+        "800": "/img/symbols/atlas-six-v2/pregnancy-test/hero-800-23f355196853.webp",
+        "1200": "/img/symbols/atlas-six-v2/pregnancy-test/hero-1200-4168403c3093.webp",
+        "1600": "/img/symbols/atlas-six-v2/pregnancy-test/hero-1600-c47ca2f9ec81.webp"
+      }
+    },
+    "portrait": {
+      "width": 968,
+      "height": 1625,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/pregnancy-test/portrait-480-936307206b6a.avif",
+        "800": "/img/symbols/atlas-six-v2/pregnancy-test/portrait-800-d920bb939c4a.avif",
+        "968": "/img/symbols/atlas-six-v2/pregnancy-test/portrait-968-e4fa06906d19.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/pregnancy-test/portrait-480-eb9c14daff9a.webp",
+        "800": "/img/symbols/atlas-six-v2/pregnancy-test/portrait-800-af006ccfc843.webp",
+        "968": "/img/symbols/atlas-six-v2/pregnancy-test/portrait-968-21cec37771ae.webp"
+      }
+    },
+    "plate": {
+      "width": 1254,
+      "height": 1254,
+      "avif": {
+        "700": "/img/symbols/atlas-six-v2/pregnancy-test/plate-700-09be57200df4.avif",
+        "1254": "/img/symbols/atlas-six-v2/pregnancy-test/plate-1254-bf662c93d9a7.avif"
+      },
+      "webp": {
+        "700": "/img/symbols/atlas-six-v2/pregnancy-test/plate-700-a4afb8a4fd51.webp",
+        "1254": "/img/symbols/atlas-six-v2/pregnancy-test/plate-1254-7bba177a36f5.webp"
+      }
+    },
+    "scene-positive-test": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/pregnancy-test/scene-positive-test-320-5dc8370c2209.avif",
+        "640": "/img/symbols/atlas-six-v2/pregnancy-test/scene-positive-test-640-17a98a4b08c2.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/pregnancy-test/scene-positive-test-320-92ecd8397ca5.webp",
+        "640": "/img/symbols/atlas-six-v2/pregnancy-test/scene-positive-test-640-9289933af816.webp"
+      }
+    },
+    "scene-negative-test": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/pregnancy-test/scene-negative-test-320-d9604b079a6a.avif",
+        "640": "/img/symbols/atlas-six-v2/pregnancy-test/scene-negative-test-640-28d43817802a.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/pregnancy-test/scene-negative-test-320-0256fcfbc8e7.webp",
+        "640": "/img/symbols/atlas-six-v2/pregnancy-test/scene-negative-test-640-6f3d67e942d4.webp"
+      }
+    },
+    "scene-a-result-you-cannot-read": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/pregnancy-test/scene-a-result-you-cannot-read-320-cc4567fbf6c1.avif",
+        "640": "/img/symbols/atlas-six-v2/pregnancy-test/scene-a-result-you-cannot-read-640-7d2dae1589f6.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/pregnancy-test/scene-a-result-you-cannot-read-320-dbaf431bb073.webp",
+        "640": "/img/symbols/atlas-six-v2/pregnancy-test/scene-a-result-you-cannot-read-640-701d9e5513b6.webp"
+      }
+    },
+    "layer": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/pregnancy-test/layer-480-e069e51ce206.avif",
+        "960": "/img/symbols/atlas-six-v2/pregnancy-test/layer-960-6288d10b8602.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/pregnancy-test/layer-480-26683efce9c0.webp",
+        "960": "/img/symbols/atlas-six-v2/pregnancy-test/layer-960-87e363537518.webp"
+      }
+    },
+    "accent": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/pregnancy-test/accent-480-2e02635c4e7c.avif",
+        "960": "/img/symbols/atlas-six-v2/pregnancy-test/accent-960-ffb968b46f1a.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/pregnancy-test/accent-480-0263cb38bdb4.webp",
+        "960": "/img/symbols/atlas-six-v2/pregnancy-test/accent-960-956bca55e9e2.webp"
+      }
+    }
+  },
+  "prison": {
+    "hero": {
+      "width": 1600,
+      "height": 900,
+      "avif": {
+        "400": "/img/symbols/atlas-six-v2/prison/hero-400-b316909c9b2b.avif",
+        "800": "/img/symbols/atlas-six-v2/prison/hero-800-2676ca714f2c.avif",
+        "1200": "/img/symbols/atlas-six-v2/prison/hero-1200-5b55931e3fb8.avif",
+        "1600": "/img/symbols/atlas-six-v2/prison/hero-1600-767cb10a0e8f.avif"
+      },
+      "webp": {
+        "400": "/img/symbols/atlas-six-v2/prison/hero-400-a339fb79bbb0.webp",
+        "800": "/img/symbols/atlas-six-v2/prison/hero-800-9fbefd50b1d7.webp",
+        "1200": "/img/symbols/atlas-six-v2/prison/hero-1200-798eedf951af.webp",
+        "1600": "/img/symbols/atlas-six-v2/prison/hero-1600-ff5d51e2a23e.webp"
+      }
+    },
+    "portrait": {
+      "width": 968,
+      "height": 1625,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/prison/portrait-480-1a081b856d4b.avif",
+        "800": "/img/symbols/atlas-six-v2/prison/portrait-800-db2c17a3efcf.avif",
+        "968": "/img/symbols/atlas-six-v2/prison/portrait-968-53a3931c78f8.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/prison/portrait-480-330880cbdf53.webp",
+        "800": "/img/symbols/atlas-six-v2/prison/portrait-800-e98c3c762bd3.webp",
+        "968": "/img/symbols/atlas-six-v2/prison/portrait-968-daa64cb000a4.webp"
+      }
+    },
+    "plate": {
+      "width": 1254,
+      "height": 1254,
+      "avif": {
+        "700": "/img/symbols/atlas-six-v2/prison/plate-700-236e8c9c9fa0.avif",
+        "1254": "/img/symbols/atlas-six-v2/prison/plate-1254-d31707a43c71.avif"
+      },
+      "webp": {
+        "700": "/img/symbols/atlas-six-v2/prison/plate-700-8921f277ce7e.webp",
+        "1254": "/img/symbols/atlas-six-v2/prison/plate-1254-330a19e642c0.webp"
+      }
+    },
+    "scene-being-locked-in-a-cell": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/prison/scene-being-locked-in-a-cell-320-dd02411709e9.avif",
+        "640": "/img/symbols/atlas-six-v2/prison/scene-being-locked-in-a-cell-640-f2449e015a11.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/prison/scene-being-locked-in-a-cell-320-1546a01c8435.webp",
+        "640": "/img/symbols/atlas-six-v2/prison/scene-being-locked-in-a-cell-640-09a1475f26da.webp"
+      }
+    },
+    "scene-being-imprisoned-for-something-you-did": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/prison/scene-being-imprisoned-for-something-you-did-320-9efe4ab27b65.avif",
+        "640": "/img/symbols/atlas-six-v2/prison/scene-being-imprisoned-for-something-you-did-640-cdaa22b22bd7.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/prison/scene-being-imprisoned-for-something-you-did-320-8a81a70554e4.webp",
+        "640": "/img/symbols/atlas-six-v2/prison/scene-being-imprisoned-for-something-you-did-640-5e749d402290.webp"
+      }
+    },
+    "scene-escaping-from-prison": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/prison/scene-escaping-from-prison-320-7bdc5adf8470.avif",
+        "640": "/img/symbols/atlas-six-v2/prison/scene-escaping-from-prison-640-8ca6b011d817.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/prison/scene-escaping-from-prison-320-de4dc8761e36.webp",
+        "640": "/img/symbols/atlas-six-v2/prison/scene-escaping-from-prison-640-0510869de5a9.webp"
+      }
+    },
+    "layer": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/prison/layer-480-7ff36f195e40.avif",
+        "960": "/img/symbols/atlas-six-v2/prison/layer-960-7ac3096dff9c.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/prison/layer-480-13044abb7343.webp",
+        "960": "/img/symbols/atlas-six-v2/prison/layer-960-1479c33ef78d.webp"
+      }
+    },
+    "accent": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/prison/accent-480-9d9b6ecd3742.avif",
+        "960": "/img/symbols/atlas-six-v2/prison/accent-960-7b424e307ef8.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/prison/accent-480-37b63629bf29.webp",
+        "960": "/img/symbols/atlas-six-v2/prison/accent-960-fab77b5e771d.webp"
+      }
+    }
+  },
+  "screaming": {
+    "hero": {
+      "width": 1600,
+      "height": 900,
+      "avif": {
+        "400": "/img/symbols/atlas-six-v2/screaming/hero-400-dd6d3e8f00cb.avif",
+        "800": "/img/symbols/atlas-six-v2/screaming/hero-800-60362a9b26d6.avif",
+        "1200": "/img/symbols/atlas-six-v2/screaming/hero-1200-cb2ac28b41bb.avif",
+        "1600": "/img/symbols/atlas-six-v2/screaming/hero-1600-0a6282f423c6.avif"
+      },
+      "webp": {
+        "400": "/img/symbols/atlas-six-v2/screaming/hero-400-504823d676ed.webp",
+        "800": "/img/symbols/atlas-six-v2/screaming/hero-800-ca60a685bb22.webp",
+        "1200": "/img/symbols/atlas-six-v2/screaming/hero-1200-c8a55690e76a.webp",
+        "1600": "/img/symbols/atlas-six-v2/screaming/hero-1600-c53538d2cd03.webp"
+      }
+    },
+    "portrait": {
+      "width": 968,
+      "height": 1625,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/screaming/portrait-480-1c4da8f490fe.avif",
+        "800": "/img/symbols/atlas-six-v2/screaming/portrait-800-4cb96791b2e5.avif",
+        "968": "/img/symbols/atlas-six-v2/screaming/portrait-968-e47fe0602fd7.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/screaming/portrait-480-2a99a7d5d290.webp",
+        "800": "/img/symbols/atlas-six-v2/screaming/portrait-800-7100182e0d31.webp",
+        "968": "/img/symbols/atlas-six-v2/screaming/portrait-968-258792739dd4.webp"
+      }
+    },
+    "plate": {
+      "width": 1254,
+      "height": 1254,
+      "avif": {
+        "700": "/img/symbols/atlas-six-v2/screaming/plate-700-bd257854cedc.avif",
+        "1254": "/img/symbols/atlas-six-v2/screaming/plate-1254-f4b3c5bc1df2.avif"
+      },
+      "webp": {
+        "700": "/img/symbols/atlas-six-v2/screaming/plate-700-d939a7b35e21.webp",
+        "1254": "/img/symbols/atlas-six-v2/screaming/plate-1254-ee5628b51431.webp"
+      }
+    },
+    "scene-screaming-in-fear": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/screaming/scene-screaming-in-fear-320-11d5cf8e33a9.avif",
+        "640": "/img/symbols/atlas-six-v2/screaming/scene-screaming-in-fear-640-4201b2150564.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/screaming/scene-screaming-in-fear-320-6a939b7059b9.webp",
+        "640": "/img/symbols/atlas-six-v2/screaming/scene-screaming-in-fear-640-92e9e99805f5.webp"
+      }
+    },
+    "scene-screaming-in-anger": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/screaming/scene-screaming-in-anger-320-9569986d56f3.avif",
+        "640": "/img/symbols/atlas-six-v2/screaming/scene-screaming-in-anger-640-ac40f2c7e3e1.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/screaming/scene-screaming-in-anger-320-0d5219589703.webp",
+        "640": "/img/symbols/atlas-six-v2/screaming/scene-screaming-in-anger-640-89de0a2ff45c.webp"
+      }
+    },
+    "scene-a-scream-that-will-not-come-out": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/screaming/scene-a-scream-that-will-not-come-out-320-fd32cdc149a2.avif",
+        "640": "/img/symbols/atlas-six-v2/screaming/scene-a-scream-that-will-not-come-out-640-53d996828777.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/screaming/scene-a-scream-that-will-not-come-out-320-e2964c4e4bd4.webp",
+        "640": "/img/symbols/atlas-six-v2/screaming/scene-a-scream-that-will-not-come-out-640-da5acc270459.webp"
+      }
+    },
+    "layer": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/screaming/layer-480-0d0622a0c1bd.avif",
+        "960": "/img/symbols/atlas-six-v2/screaming/layer-960-3ac8af9d0727.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/screaming/layer-480-bf0c08dbb6d9.webp",
+        "960": "/img/symbols/atlas-six-v2/screaming/layer-960-f72b4df8806d.webp"
+      }
+    },
+    "accent": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/screaming/accent-480-663cb10707b1.avif",
+        "960": "/img/symbols/atlas-six-v2/screaming/accent-960-a7e32681b4e9.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/screaming/accent-480-41c4bd0d7531.webp",
+        "960": "/img/symbols/atlas-six-v2/screaming/accent-960-a17fcfc9e5a3.webp"
+      }
+    }
+  },
+  "shadow": {
+    "hero": {
+      "width": 1600,
+      "height": 900,
+      "avif": {
+        "400": "/img/symbols/atlas-six-v2/shadow/hero-400-14f09461c72d.avif",
+        "800": "/img/symbols/atlas-six-v2/shadow/hero-800-52796407744e.avif",
+        "1200": "/img/symbols/atlas-six-v2/shadow/hero-1200-78893ebd8c8c.avif",
+        "1600": "/img/symbols/atlas-six-v2/shadow/hero-1600-418513d1cc1d.avif"
+      },
+      "webp": {
+        "400": "/img/symbols/atlas-six-v2/shadow/hero-400-4070f2296303.webp",
+        "800": "/img/symbols/atlas-six-v2/shadow/hero-800-5ed452fc39e4.webp",
+        "1200": "/img/symbols/atlas-six-v2/shadow/hero-1200-556d47d0a2c8.webp",
+        "1600": "/img/symbols/atlas-six-v2/shadow/hero-1600-d605a38004a0.webp"
+      }
+    },
+    "portrait": {
+      "width": 941,
+      "height": 1672,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/shadow/portrait-480-b6289140258d.avif",
+        "800": "/img/symbols/atlas-six-v2/shadow/portrait-800-6dc02ce9647b.avif",
+        "941": "/img/symbols/atlas-six-v2/shadow/portrait-941-1b9e0244221c.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/shadow/portrait-480-83fd7afe98fc.webp",
+        "800": "/img/symbols/atlas-six-v2/shadow/portrait-800-7c75291a7c3c.webp",
+        "941": "/img/symbols/atlas-six-v2/shadow/portrait-941-ea9ce3351c0e.webp"
+      }
+    },
+    "plate": {
+      "width": 1254,
+      "height": 1254,
+      "avif": {
+        "700": "/img/symbols/atlas-six-v2/shadow/plate-700-9a9edd0b645d.avif",
+        "1254": "/img/symbols/atlas-six-v2/shadow/plate-1254-4ab5f0f769a9.avif"
+      },
+      "webp": {
+        "700": "/img/symbols/atlas-six-v2/shadow/plate-700-351a30f83e8f.webp",
+        "1254": "/img/symbols/atlas-six-v2/shadow/plate-1254-7d61809f2fe3.webp"
+      }
+    },
+    "scene-being-followed-by-a-shadow": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/shadow/scene-being-followed-by-a-shadow-320-d8b28c24844b.avif",
+        "640": "/img/symbols/atlas-six-v2/shadow/scene-being-followed-by-a-shadow-640-0e36144ad510.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/shadow/scene-being-followed-by-a-shadow-320-6a05598db55d.webp",
+        "640": "/img/symbols/atlas-six-v2/shadow/scene-being-followed-by-a-shadow-640-3dad4ba784e2.webp"
+      }
+    },
+    "scene-your-shadow-breaking-away": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/shadow/scene-your-shadow-breaking-away-320-25a71d2e485d.avif",
+        "640": "/img/symbols/atlas-six-v2/shadow/scene-your-shadow-breaking-away-640-36d877329720.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/shadow/scene-your-shadow-breaking-away-320-56516073778c.webp",
+        "640": "/img/symbols/atlas-six-v2/shadow/scene-your-shadow-breaking-away-640-b179d4744a1c.webp"
+      }
+    },
+    "scene-a-faceless-dark-figure": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/shadow/scene-a-faceless-dark-figure-320-ea7273263845.avif",
+        "640": "/img/symbols/atlas-six-v2/shadow/scene-a-faceless-dark-figure-640-e29c4bb0c931.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/shadow/scene-a-faceless-dark-figure-320-a800e06e85c6.webp",
+        "640": "/img/symbols/atlas-six-v2/shadow/scene-a-faceless-dark-figure-640-079b689dad46.webp"
+      }
+    },
+    "layer": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/shadow/layer-480-10a8a552bc0b.avif",
+        "960": "/img/symbols/atlas-six-v2/shadow/layer-960-09081a2ba1c2.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/shadow/layer-480-986083599986.webp",
+        "960": "/img/symbols/atlas-six-v2/shadow/layer-960-5d88096244ca.webp"
+      }
+    },
+    "accent": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/shadow/accent-480-5dd22f35e6cb.avif",
+        "960": "/img/symbols/atlas-six-v2/shadow/accent-960-75496f887194.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/shadow/accent-480-40e0f15bd60e.webp",
+        "960": "/img/symbols/atlas-six-v2/shadow/accent-960-fffc966c1b13.webp"
+      }
+    }
+  },
+  "surgery": {
+    "hero": {
+      "width": 1600,
+      "height": 900,
+      "avif": {
+        "400": "/img/symbols/atlas-six-v2/surgery/hero-400-a07fb4e3fe3b.avif",
+        "800": "/img/symbols/atlas-six-v2/surgery/hero-800-fb70b09d77d6.avif",
+        "1200": "/img/symbols/atlas-six-v2/surgery/hero-1200-e573af1b863b.avif",
+        "1600": "/img/symbols/atlas-six-v2/surgery/hero-1600-14e42a79babe.avif"
+      },
+      "webp": {
+        "400": "/img/symbols/atlas-six-v2/surgery/hero-400-9c0140242d79.webp",
+        "800": "/img/symbols/atlas-six-v2/surgery/hero-800-094680e501ed.webp",
+        "1200": "/img/symbols/atlas-six-v2/surgery/hero-1200-0ff90ef294f8.webp",
+        "1600": "/img/symbols/atlas-six-v2/surgery/hero-1600-b23a57a0cb74.webp"
+      }
+    },
+    "portrait": {
+      "width": 968,
+      "height": 1625,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/surgery/portrait-480-3b4b0c567b22.avif",
+        "800": "/img/symbols/atlas-six-v2/surgery/portrait-800-95d1b42c17be.avif",
+        "968": "/img/symbols/atlas-six-v2/surgery/portrait-968-e6db16043dc3.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/surgery/portrait-480-9477b13df232.webp",
+        "800": "/img/symbols/atlas-six-v2/surgery/portrait-800-8c7c3a34b954.webp",
+        "968": "/img/symbols/atlas-six-v2/surgery/portrait-968-b78580226d40.webp"
+      }
+    },
+    "plate": {
+      "width": 1254,
+      "height": 1254,
+      "avif": {
+        "700": "/img/symbols/atlas-six-v2/surgery/plate-700-99192507637e.avif",
+        "1254": "/img/symbols/atlas-six-v2/surgery/plate-1254-9308b78e6fde.avif"
+      },
+      "webp": {
+        "700": "/img/symbols/atlas-six-v2/surgery/plate-700-1b970ed71430.webp",
+        "1254": "/img/symbols/atlas-six-v2/surgery/plate-1254-ed1c69faed4d.webp"
+      }
+    },
+    "scene-being-operated-on": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/surgery/scene-being-operated-on-320-0cb364ef09b8.avif",
+        "640": "/img/symbols/atlas-six-v2/surgery/scene-being-operated-on-640-c42b13907caf.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/surgery/scene-being-operated-on-320-fa532b2cba8a.webp",
+        "640": "/img/symbols/atlas-six-v2/surgery/scene-being-operated-on-640-81fbac00e5f5.webp"
+      }
+    },
+    "scene-performing-surgery": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/surgery/scene-performing-surgery-320-a3ffc6ab2624.avif",
+        "640": "/img/symbols/atlas-six-v2/surgery/scene-performing-surgery-640-7d40167663b7.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/surgery/scene-performing-surgery-320-691010628b24.webp",
+        "640": "/img/symbols/atlas-six-v2/surgery/scene-performing-surgery-640-10d8836b2373.webp"
+      }
+    },
+    "scene-a-loved-one-having-surgery": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/surgery/scene-a-loved-one-having-surgery-320-6130f9200baa.avif",
+        "640": "/img/symbols/atlas-six-v2/surgery/scene-a-loved-one-having-surgery-640-190cd8bd93b5.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/surgery/scene-a-loved-one-having-surgery-320-9ca8760f81c7.webp",
+        "640": "/img/symbols/atlas-six-v2/surgery/scene-a-loved-one-having-surgery-640-ef47716cb0b5.webp"
+      }
+    },
+    "layer": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/surgery/layer-480-a7bdcda0c2d1.avif",
+        "960": "/img/symbols/atlas-six-v2/surgery/layer-960-11f159130f4a.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/surgery/layer-480-a05b3193f4a3.webp",
+        "960": "/img/symbols/atlas-six-v2/surgery/layer-960-b8ccea95f763.webp"
+      }
+    },
+    "accent": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/surgery/accent-480-4b6e570b0db9.avif",
+        "960": "/img/symbols/atlas-six-v2/surgery/accent-960-e97af05741a0.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/surgery/accent-480-fa8f2cf45f5d.webp",
+        "960": "/img/symbols/atlas-six-v2/surgery/accent-960-6af04cbc7f5d.webp"
+      }
+    }
+  },
+  "trapped": {
+    "hero": {
+      "width": 1600,
+      "height": 900,
+      "avif": {
+        "400": "/img/symbols/atlas-six-v2/trapped/hero-400-814abc5d0b53.avif",
+        "800": "/img/symbols/atlas-six-v2/trapped/hero-800-811909f5eeff.avif",
+        "1200": "/img/symbols/atlas-six-v2/trapped/hero-1200-5fb11b195602.avif",
+        "1600": "/img/symbols/atlas-six-v2/trapped/hero-1600-e3ba0a5f7640.avif"
+      },
+      "webp": {
+        "400": "/img/symbols/atlas-six-v2/trapped/hero-400-498eb9d79e13.webp",
+        "800": "/img/symbols/atlas-six-v2/trapped/hero-800-d59e3e2ab3a3.webp",
+        "1200": "/img/symbols/atlas-six-v2/trapped/hero-1200-4ec1ad5e5cb0.webp",
+        "1600": "/img/symbols/atlas-six-v2/trapped/hero-1600-339931ce441e.webp"
+      }
+    },
+    "portrait": {
+      "width": 968,
+      "height": 1625,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/trapped/portrait-480-f6631fb02acf.avif",
+        "800": "/img/symbols/atlas-six-v2/trapped/portrait-800-1f51867c20b3.avif",
+        "968": "/img/symbols/atlas-six-v2/trapped/portrait-968-d0604a55c5c1.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/trapped/portrait-480-7dd6fd0fd0e0.webp",
+        "800": "/img/symbols/atlas-six-v2/trapped/portrait-800-b9583b8773e6.webp",
+        "968": "/img/symbols/atlas-six-v2/trapped/portrait-968-24428cd85a12.webp"
+      }
+    },
+    "plate": {
+      "width": 1254,
+      "height": 1254,
+      "avif": {
+        "700": "/img/symbols/atlas-six-v2/trapped/plate-700-f894fc18492c.avif",
+        "1254": "/img/symbols/atlas-six-v2/trapped/plate-1254-2549848c29f7.avif"
+      },
+      "webp": {
+        "700": "/img/symbols/atlas-six-v2/trapped/plate-700-3897d69e1ff8.webp",
+        "1254": "/img/symbols/atlas-six-v2/trapped/plate-1254-1b9e0e7b6e0d.webp"
+      }
+    },
+    "scene-trapped-in-a-room": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/trapped/scene-trapped-in-a-room-320-be287664a9c1.avif",
+        "640": "/img/symbols/atlas-six-v2/trapped/scene-trapped-in-a-room-640-7f9620b6f3ba.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/trapped/scene-trapped-in-a-room-320-0a31b08d50e5.webp",
+        "640": "/img/symbols/atlas-six-v2/trapped/scene-trapped-in-a-room-640-b43f05d87dd4.webp"
+      }
+    },
+    "scene-trapped-in-an-elevator": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/trapped/scene-trapped-in-an-elevator-320-015645988cb4.avif",
+        "640": "/img/symbols/atlas-six-v2/trapped/scene-trapped-in-an-elevator-640-33a33a74d659.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/trapped/scene-trapped-in-an-elevator-320-fb429b29fa70.webp",
+        "640": "/img/symbols/atlas-six-v2/trapped/scene-trapped-in-an-elevator-640-8be5282a3d9c.webp"
+      }
+    },
+    "scene-trapped-while-danger-comes-closer": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/trapped/scene-trapped-while-danger-comes-closer-320-7d0571d6500c.avif",
+        "640": "/img/symbols/atlas-six-v2/trapped/scene-trapped-while-danger-comes-closer-640-1c3089cf4afe.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/trapped/scene-trapped-while-danger-comes-closer-320-4924d883bcbe.webp",
+        "640": "/img/symbols/atlas-six-v2/trapped/scene-trapped-while-danger-comes-closer-640-4a62c26a728a.webp"
+      }
+    },
+    "layer": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/trapped/layer-480-f990d849b277.avif",
+        "960": "/img/symbols/atlas-six-v2/trapped/layer-960-d384c8e2df7b.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/trapped/layer-480-be53c66325fb.webp",
+        "960": "/img/symbols/atlas-six-v2/trapped/layer-960-3a298b99ae5a.webp"
+      }
+    },
+    "accent": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/trapped/accent-480-020dfb92daa2.avif",
+        "960": "/img/symbols/atlas-six-v2/trapped/accent-960-db558e083873.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/trapped/accent-480-1ce0f7a52707.webp",
+        "960": "/img/symbols/atlas-six-v2/trapped/accent-960-24f097e00884.webp"
+      }
+    }
+  },
+  "unable-to-speak": {
+    "hero": {
+      "width": 1600,
+      "height": 900,
+      "avif": {
+        "400": "/img/symbols/atlas-six-v2/unable-to-speak/hero-400-2f0069061ed5.avif",
+        "800": "/img/symbols/atlas-six-v2/unable-to-speak/hero-800-5634dd3631a1.avif",
+        "1200": "/img/symbols/atlas-six-v2/unable-to-speak/hero-1200-6c2c0cc2405b.avif",
+        "1600": "/img/symbols/atlas-six-v2/unable-to-speak/hero-1600-3c95e9382337.avif"
+      },
+      "webp": {
+        "400": "/img/symbols/atlas-six-v2/unable-to-speak/hero-400-176f0e86993d.webp",
+        "800": "/img/symbols/atlas-six-v2/unable-to-speak/hero-800-3ad73d2032a2.webp",
+        "1200": "/img/symbols/atlas-six-v2/unable-to-speak/hero-1200-f45b341041d9.webp",
+        "1600": "/img/symbols/atlas-six-v2/unable-to-speak/hero-1600-dff630741bdd.webp"
+      }
+    },
+    "portrait": {
+      "width": 940,
+      "height": 1672,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/unable-to-speak/portrait-480-7ccb42d146b6.avif",
+        "800": "/img/symbols/atlas-six-v2/unable-to-speak/portrait-800-0dc2b7b49650.avif",
+        "940": "/img/symbols/atlas-six-v2/unable-to-speak/portrait-940-47c326d6b15e.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/unable-to-speak/portrait-480-40aa8e3469c3.webp",
+        "800": "/img/symbols/atlas-six-v2/unable-to-speak/portrait-800-257777d4ba5f.webp",
+        "940": "/img/symbols/atlas-six-v2/unable-to-speak/portrait-940-c0bb2b44e5d6.webp"
+      }
+    },
+    "plate": {
+      "width": 1254,
+      "height": 1254,
+      "avif": {
+        "700": "/img/symbols/atlas-six-v2/unable-to-speak/plate-700-995b72bee842.avif",
+        "1254": "/img/symbols/atlas-six-v2/unable-to-speak/plate-1254-4cf188260867.avif"
+      },
+      "webp": {
+        "700": "/img/symbols/atlas-six-v2/unable-to-speak/plate-700-d2507989ce29.webp",
+        "1254": "/img/symbols/atlas-six-v2/unable-to-speak/plate-1254-7951bc841c80.webp"
+      }
+    },
+    "scene-a-voice-that-will-not-come-out": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/unable-to-speak/scene-a-voice-that-will-not-come-out-320-24bbf4ef0085.avif",
+        "640": "/img/symbols/atlas-six-v2/unable-to-speak/scene-a-voice-that-will-not-come-out-640-77c13b0b0d8a.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/unable-to-speak/scene-a-voice-that-will-not-come-out-320-c71a4edc81bd.webp",
+        "640": "/img/symbols/atlas-six-v2/unable-to-speak/scene-a-voice-that-will-not-come-out-640-69b3e495a8a0.webp"
+      }
+    },
+    "scene-speaking-but-no-one-hears-you": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/unable-to-speak/scene-speaking-but-no-one-hears-you-320-62a9031a23f8.avif",
+        "640": "/img/symbols/atlas-six-v2/unable-to-speak/scene-speaking-but-no-one-hears-you-640-fd652fcd5d91.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/unable-to-speak/scene-speaking-but-no-one-hears-you-320-eff3ec3fdfb4.webp",
+        "640": "/img/symbols/atlas-six-v2/unable-to-speak/scene-speaking-but-no-one-hears-you-640-35340bfa6414.webp"
+      }
+    },
+    "scene-unable-to-call-for-help": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/unable-to-speak/scene-unable-to-call-for-help-320-e9775dd21c09.avif",
+        "640": "/img/symbols/atlas-six-v2/unable-to-speak/scene-unable-to-call-for-help-640-fa1817d04b98.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/unable-to-speak/scene-unable-to-call-for-help-320-6d11ef67029f.webp",
+        "640": "/img/symbols/atlas-six-v2/unable-to-speak/scene-unable-to-call-for-help-640-b7e4e7e9ece1.webp"
+      }
+    },
+    "layer": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/unable-to-speak/layer-480-6f59d90363fa.avif",
+        "960": "/img/symbols/atlas-six-v2/unable-to-speak/layer-960-a23713189e20.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/unable-to-speak/layer-480-96a1994bec59.webp",
+        "960": "/img/symbols/atlas-six-v2/unable-to-speak/layer-960-39d24cd94951.webp"
+      }
+    },
+    "accent": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/unable-to-speak/accent-480-e48cdc376c40.avif",
+        "960": "/img/symbols/atlas-six-v2/unable-to-speak/accent-960-40be273ef819.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/unable-to-speak/accent-480-563972730c7c.webp",
+        "960": "/img/symbols/atlas-six-v2/unable-to-speak/accent-960-27889e2a57d5.webp"
+      }
+    }
+  },
+  "zombie": {
+    "hero": {
+      "width": 1600,
+      "height": 900,
+      "avif": {
+        "400": "/img/symbols/atlas-six-v2/zombie/hero-400-4c9d72990061.avif",
+        "800": "/img/symbols/atlas-six-v2/zombie/hero-800-b10abb053c65.avif",
+        "1200": "/img/symbols/atlas-six-v2/zombie/hero-1200-b0aae456e2c9.avif",
+        "1600": "/img/symbols/atlas-six-v2/zombie/hero-1600-284846d2ac9b.avif"
+      },
+      "webp": {
+        "400": "/img/symbols/atlas-six-v2/zombie/hero-400-2156705bd08d.webp",
+        "800": "/img/symbols/atlas-six-v2/zombie/hero-800-b94a2bb2ae4e.webp",
+        "1200": "/img/symbols/atlas-six-v2/zombie/hero-1200-b961d56e6a25.webp",
+        "1600": "/img/symbols/atlas-six-v2/zombie/hero-1600-7b7dfce36eb8.webp"
+      }
+    },
+    "portrait": {
+      "width": 941,
+      "height": 1672,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/zombie/portrait-480-b6125ca2d7ee.avif",
+        "800": "/img/symbols/atlas-six-v2/zombie/portrait-800-677edbc01234.avif",
+        "941": "/img/symbols/atlas-six-v2/zombie/portrait-941-ebb60b573ce5.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/zombie/portrait-480-6a7fb4e1f1ce.webp",
+        "800": "/img/symbols/atlas-six-v2/zombie/portrait-800-21708b170b8b.webp",
+        "941": "/img/symbols/atlas-six-v2/zombie/portrait-941-ec9390324c7d.webp"
+      }
+    },
+    "plate": {
+      "width": 1254,
+      "height": 1254,
+      "avif": {
+        "700": "/img/symbols/atlas-six-v2/zombie/plate-700-36903c67dc3d.avif",
+        "1254": "/img/symbols/atlas-six-v2/zombie/plate-1254-8e269e53fc66.avif"
+      },
+      "webp": {
+        "700": "/img/symbols/atlas-six-v2/zombie/plate-700-cb9ceb3eecbb.webp",
+        "1254": "/img/symbols/atlas-six-v2/zombie/plate-1254-a45846d6f5cf.webp"
+      }
+    },
+    "scene-a-zombie-apocalypse": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/zombie/scene-a-zombie-apocalypse-320-352756a37955.avif",
+        "640": "/img/symbols/atlas-six-v2/zombie/scene-a-zombie-apocalypse-640-fa7d01108ff0.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/zombie/scene-a-zombie-apocalypse-320-5f4b2c763c0a.webp",
+        "640": "/img/symbols/atlas-six-v2/zombie/scene-a-zombie-apocalypse-640-0b97209f103f.webp"
+      }
+    },
+    "scene-a-loved-one-turned-into-a-zombie": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/zombie/scene-a-loved-one-turned-into-a-zombie-320-34e75fcc7d9c.avif",
+        "640": "/img/symbols/atlas-six-v2/zombie/scene-a-loved-one-turned-into-a-zombie-640-a0870d0310b9.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/zombie/scene-a-loved-one-turned-into-a-zombie-320-60d47be6ab48.webp",
+        "640": "/img/symbols/atlas-six-v2/zombie/scene-a-loved-one-turned-into-a-zombie-640-49f5ac8de7d5.webp"
+      }
+    },
+    "scene-hiding-from-zombies": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/zombie/scene-hiding-from-zombies-320-563595db48ed.avif",
+        "640": "/img/symbols/atlas-six-v2/zombie/scene-hiding-from-zombies-640-7c33e3f8d123.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/zombie/scene-hiding-from-zombies-320-8c281a9a5b13.webp",
+        "640": "/img/symbols/atlas-six-v2/zombie/scene-hiding-from-zombies-640-bbcc50c0f05c.webp"
+      }
+    },
+    "layer": {
+      "width": 1672,
+      "height": 940,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/zombie/layer-480-a9cecdb778f6.avif",
+        "960": "/img/symbols/atlas-six-v2/zombie/layer-960-21f106434723.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/zombie/layer-480-191060a8b731.webp",
+        "960": "/img/symbols/atlas-six-v2/zombie/layer-960-900ddf81bcac.webp"
+      }
+    },
+    "accent": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/zombie/accent-480-78f3c14dbf66.avif",
+        "960": "/img/symbols/atlas-six-v2/zombie/accent-960-ee20ae89b0a0.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/zombie/accent-480-21b5d9c02eb2.webp",
+        "960": "/img/symbols/atlas-six-v2/zombie/accent-960-6af63b1adf92.webp"
+      }
+    }
   }
 }

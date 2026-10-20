@@ -67,7 +67,7 @@
       "lot": null
     },
     "attic": {
-      "lot": null
+      "lot": "lot-11"
     },
     "baby": {
       "lot": "lot-05"
@@ -76,7 +76,7 @@
       "lot": "lot-07"
     },
     "basement": {
-      "lot": null
+      "lot": "lot-11"
     },
     "bat": {
       "lot": null
@@ -106,7 +106,7 @@
       "lot": "lot-10"
     },
     "bleeding": {
-      "lot": null
+      "lot": "lot-11"
     },
     "blood": {
       "lot": "lot-08"
@@ -232,7 +232,7 @@
       "lot": null
     },
     "demon": {
-      "lot": null
+      "lot": "lot-11"
     },
     "desert": {
       "lot": "lot-06"
@@ -259,13 +259,13 @@
       "lot": "lot-07"
     },
     "drowning": {
-      "lot": null
+      "lot": "lot-11"
     },
     "eagle": {
       "lot": null
     },
     "earthquake": {
-      "lot": null
+      "lot": "lot-11"
     },
     "eating": {
       "lot": null
@@ -298,7 +298,7 @@
       "lot": "lot-10"
     },
     "feet": {
-      "lot": null
+      "lot": "lot-11"
     },
     "fighting": {
       "lot": null
@@ -343,7 +343,7 @@
       "lot": null
     },
     "ghost": {
-      "lot": null
+      "lot": "lot-11"
     },
     "gift": {
       "lot": "lot-07"
@@ -370,13 +370,13 @@
       "lot": "lot-07"
     },
     "hands": {
-      "lot": null
+      "lot": "lot-11"
     },
     "heart": {
-      "lot": null
+      "lot": "lot-11"
     },
     "hiding": {
-      "lot": null
+      "lot": "lot-11"
     },
     "horse": {
       "lot": "lot-05"
@@ -394,7 +394,7 @@
       "lot": "lot-07"
     },
     "illness": {
-      "lot": null
+      "lot": "lot-11"
     },
     "island": {
       "lot": null
@@ -424,7 +424,7 @@
       "lot": null
     },
     "late": {
-      "lot": null
+      "lot": "lot-11"
     },
     "letter": {
       "lot": "lot-11"
@@ -466,7 +466,7 @@
       "lot": "lot-04"
     },
     "missing-train": {
-      "lot": null
+      "lot": "lot-11"
     },
     "money": {
       "lot": "lot-08"
@@ -475,7 +475,7 @@
       "lot": null
     },
     "monster": {
-      "lot": null
+      "lot": "lot-11"
     },
     "moon": {
       "lot": "lot-02"
@@ -520,7 +520,7 @@
       "lot": "lot-09"
     },
     "paralysis": {
-      "lot": null
+      "lot": "lot-11"
     },
     "partner": {
       "lot": "lot-10"
@@ -547,10 +547,10 @@
       "lot": "lot-08"
     },
     "pregnancy-test": {
-      "lot": null
+      "lot": "lot-11"
     },
     "prison": {
-      "lot": null
+      "lot": "lot-11"
     },
     "rabbit": {
       "lot": null
@@ -589,7 +589,7 @@
       "lot": null
     },
     "screaming": {
-      "lot": null
+      "lot": "lot-11"
     },
     "searching": {
       "lot": "lot-07"
@@ -598,7 +598,7 @@
       "lot": null
     },
     "shadow": {
-      "lot": null
+      "lot": "lot-11"
     },
     "shark": {
       "lot": null
@@ -646,7 +646,7 @@
       "lot": "lot-08"
     },
     "surgery": {
-      "lot": null
+      "lot": "lot-11"
     },
     "swimming": {
       "lot": "lot-08"
@@ -679,7 +679,7 @@
       "lot": "lot-07"
     },
     "trapped": {
-      "lot": null
+      "lot": "lot-11"
     },
     "tree": {
       "lot": "lot-08"
@@ -697,7 +697,7 @@
       "lot": "lot-07"
     },
     "unable-to-speak": {
-      "lot": null
+      "lot": "lot-11"
     },
     "unicorn": {
       "lot": "lot-07"
@@ -757,7 +757,7 @@
       "lot": null
     },
     "zombie": {
-      "lot": null
+      "lot": "lot-11"
     }
   },
   "records": [

@@ -27783,5 +27783,4613 @@
         }
       ]
     }
+  },
+  "hands": {
+    "slug": "mains",
+    "caveat": null,
+    "scenes": [
+      {
+        "id": "hands-that-will-not-obey",
+        "variation": "Des mains qui n'obéissent plus"
+      },
+      {
+        "id": "holding-someone-s-hand",
+        "variation": "Tenir la main de quelqu'un"
+      },
+      {
+        "id": "dirty-hands-or-washing-your-hands",
+        "variation": "Des mains sales ou se laver les mains"
+      }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.46
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.44
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ],
+        "portrait": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.34
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.36
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ]
+      },
+      "plate": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.46
+            ],
+            "zoom": 0.9
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.44
+            ],
+            "zoom": 0.8
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ],
+      "thumb": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.46
+            ],
+            "zoom": 1.05
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.44
+            ],
+            "zoom": 0.95
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ]
+    }
+  },
+  "feet": {
+    "slug": "pieds",
+    "caveat": null,
+    "scenes": [
+      {
+        "id": "walking-barefoot",
+        "variation": "Marcher pieds nus"
+      },
+      {
+        "id": "unable-to-move-your-feet",
+        "variation": "Ne pas pouvoir bouger les pieds"
+      },
+      {
+        "id": "washing-feet-or-having-them-washed",
+        "variation": "Se laver les pieds ou se les faire laver"
+      }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.65
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.7
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ],
+        "portrait": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.34
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.36
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ]
+      },
+      "plate": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.65
+            ],
+            "zoom": 0.9
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.7
+            ],
+            "zoom": 0.8
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ],
+      "thumb": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.65
+            ],
+            "zoom": 1.05
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.7
+            ],
+            "zoom": 0.95
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ]
+    }
+  },
+  "heart": {
+    "slug": "coeur",
+    "caveat": null,
+    "scenes": [
+      {
+        "id": "a-racing-heart",
+        "variation": "Un cœur qui bat très vite"
+      },
+      {
+        "id": "a-broken-heart",
+        "variation": "Un cœur brisé"
+      },
+      {
+        "id": "giving-or-receiving-a-heart",
+        "variation": "Offrir ou recevoir un cœur"
+      }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.46
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.44
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ],
+        "portrait": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.34
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.36
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ]
+      },
+      "plate": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.46
+            ],
+            "zoom": 0.9
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.44
+            ],
+            "zoom": 0.8
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ],
+      "thumb": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.46
+            ],
+            "zoom": 1.05
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.44
+            ],
+            "zoom": 0.95
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ]
+    }
+  },
+  "pregnancy-test": {
+    "slug": "test-de-grossesse",
+    "caveat": null,
+    "scenes": [
+      {
+        "id": "positive-test",
+        "variation": "Un test positif"
+      },
+      {
+        "id": "negative-test",
+        "variation": "Un test négatif"
+      },
+      {
+        "id": "a-result-you-cannot-read",
+        "variation": "Un résultat illisible"
+      }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.46
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.44
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ],
+        "portrait": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.34
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.36
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ]
+      },
+      "plate": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.46
+            ],
+            "zoom": 0.9
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.44
+            ],
+            "zoom": 0.8
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ],
+      "thumb": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.46
+            ],
+            "zoom": 1.05
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.44
+            ],
+            "zoom": 0.95
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ]
+    }
+  },
+  "illness": {
+    "slug": "maladie",
+    "caveat": null,
+    "scenes": [
+      {
+        "id": "being-ill-yourself",
+        "variation": "Être malade soi-même"
+      },
+      {
+        "id": "a-loved-one-who-is-ill",
+        "variation": "Un proche malade"
+      },
+      {
+        "id": "a-serious-or-incurable-illness",
+        "variation": "Une maladie grave ou incurable"
+      }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.46
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.44
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ],
+        "portrait": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.34
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.36
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ]
+      },
+      "plate": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.46
+            ],
+            "zoom": 0.9
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.44
+            ],
+            "zoom": 0.8
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ],
+      "thumb": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.46
+            ],
+            "zoom": 1.05
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.44
+            ],
+            "zoom": 0.95
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ]
+    }
+  },
+  "basement": {
+    "slug": "sous-sol",
+    "caveat": null,
+    "scenes": [
+      {
+        "id": "dark-basement",
+        "variation": "Un sous-sol sombre"
+      },
+      {
+        "id": "flooded-basement",
+        "variation": "Une cave inondée"
+      },
+      {
+        "id": "locked-in-a-basement",
+        "variation": "Être enfermé à la cave"
+      }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.65
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.7
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ],
+        "portrait": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.34
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.36
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ]
+      },
+      "plate": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.65
+            ],
+            "zoom": 0.9
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.7
+            ],
+            "zoom": 0.8
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ],
+      "thumb": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.65
+            ],
+            "zoom": 1.05
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.7
+            ],
+            "zoom": 0.95
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ]
+    }
+  },
+  "surgery": {
+    "slug": "chirurgie",
+    "caveat": null,
+    "scenes": [
+      {
+        "id": "being-operated-on",
+        "variation": "Se faire opérer"
+      },
+      {
+        "id": "performing-surgery",
+        "variation": "Opérer quelqu'un"
+      },
+      {
+        "id": "a-loved-one-having-surgery",
+        "variation": "Un proche qui se fait opérer"
+      }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.46
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.44
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ],
+        "portrait": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.34
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.36
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ]
+      },
+      "plate": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.46
+            ],
+            "zoom": 0.9
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.44
+            ],
+            "zoom": 0.8
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ],
+      "thumb": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.46
+            ],
+            "zoom": 1.05
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.44
+            ],
+            "zoom": 0.95
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ]
+    }
+  },
+  "bleeding": {
+    "slug": "saignement",
+    "caveat": null,
+    "scenes": [
+      {
+        "id": "a-nosebleed",
+        "variation": "Saigner du nez"
+      },
+      {
+        "id": "bleeding-without-pain-or-visible-wound",
+        "variation": "Saigner sans douleur ni blessure"
+      },
+      {
+        "id": "stopping-the-bleeding",
+        "variation": "Arrêter le saignement"
+      }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.46
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.44
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ],
+        "portrait": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.34
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.36
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ]
+      },
+      "plate": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.46
+            ],
+            "zoom": 0.9
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.44
+            ],
+            "zoom": 0.8
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ],
+      "thumb": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.46
+            ],
+            "zoom": 1.05
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.44
+            ],
+            "zoom": 0.95
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ]
+    }
+  },
+  "drowning": {
+    "slug": "noyade",
+    "caveat": null,
+    "scenes": [
+      {
+        "id": "drowning-in-the-sea-or-deep-water",
+        "variation": "Se noyer dans la mer ou en eau profonde"
+      },
+      {
+        "id": "drowning-in-a-pool-or-bathtub",
+        "variation": "Se noyer dans une piscine ou une baignoire"
+      },
+      {
+        "id": "someone-else-drowning",
+        "variation": "Quelqu'un d'autre qui se noie"
+      }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.65
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.7
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ],
+        "portrait": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.34
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.36
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ]
+      },
+      "plate": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.65
+            ],
+            "zoom": 0.9
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.7
+            ],
+            "zoom": 0.8
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ],
+      "thumb": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.65
+            ],
+            "zoom": 1.05
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.7
+            ],
+            "zoom": 0.95
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ]
+    }
+  },
+  "trapped": {
+    "slug": "piege",
+    "caveat": null,
+    "scenes": [
+      {
+        "id": "trapped-in-a-room",
+        "variation": "Enfermé dans une pièce"
+      },
+      {
+        "id": "trapped-in-an-elevator",
+        "variation": "Bloqué dans un ascenseur"
+      },
+      {
+        "id": "trapped-while-danger-comes-closer",
+        "variation": "Piégé pendant qu'un danger approche"
+      }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.65
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.7
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ],
+        "portrait": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.34
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.36
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ]
+      },
+      "plate": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.65
+            ],
+            "zoom": 0.9
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.7
+            ],
+            "zoom": 0.8
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ],
+      "thumb": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.65
+            ],
+            "zoom": 1.05
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.7
+            ],
+            "zoom": 0.95
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ]
+    }
+  },
+  "attic": {
+    "slug": "grenier",
+    "caveat": null,
+    "scenes": [
+      {
+        "id": "climbing-into-the-attic",
+        "variation": "Monter au grenier"
+      },
+      {
+        "id": "finding-old-belongings",
+        "variation": "Retrouver de vieux objets"
+      },
+      {
+        "id": "a-dark-or-frightening-attic",
+        "variation": "Un grenier sombre ou inquiétant"
+      }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.46
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.44
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ],
+        "portrait": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.34
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.36
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ]
+      },
+      "plate": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.46
+            ],
+            "zoom": 0.9
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.44
+            ],
+            "zoom": 0.8
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ],
+      "thumb": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.46
+            ],
+            "zoom": 1.05
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.44
+            ],
+            "zoom": 0.95
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ]
+    }
+  },
+  "late": {
+    "slug": "etre-en-retard",
+    "caveat": null,
+    "scenes": [
+      {
+        "id": "late-for-work",
+        "variation": "En retard au travail"
+      },
+      {
+        "id": "late-for-an-exam",
+        "variation": "En retard à un examen"
+      },
+      {
+        "id": "late-for-a-flight-or-a-train",
+        "variation": "En retard pour un avion ou un train"
+      }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.65
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.7
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ],
+        "portrait": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.34
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.36
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ]
+      },
+      "plate": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.65
+            ],
+            "zoom": 0.9
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.7
+            ],
+            "zoom": 0.8
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ],
+      "thumb": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.65
+            ],
+            "zoom": 1.05
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.7
+            ],
+            "zoom": 0.95
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ]
+    }
+  },
+  "missing-train": {
+    "slug": "rater-un-train",
+    "caveat": null,
+    "scenes": [
+      {
+        "id": "watching-the-train-leave",
+        "variation": "Voir le train partir"
+      },
+      {
+        "id": "waiting-on-the-wrong-platform",
+        "variation": "Attendre sur le mauvais quai"
+      },
+      {
+        "id": "running-for-a-train",
+        "variation": "Courir pour attraper un train"
+      }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.65
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.7
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ],
+        "portrait": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.34
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.36
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ]
+      },
+      "plate": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.65
+            ],
+            "zoom": 0.9
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.7
+            ],
+            "zoom": 0.8
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ],
+      "thumb": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.65
+            ],
+            "zoom": 1.05
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.7
+            ],
+            "zoom": 0.95
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ]
+    }
+  },
+  "unable-to-speak": {
+    "slug": "incapable-de-parler",
+    "caveat": null,
+    "scenes": [
+      {
+        "id": "a-voice-that-will-not-come-out",
+        "variation": "Une voix qui ne sort pas"
+      },
+      {
+        "id": "speaking-but-no-one-hears-you",
+        "variation": "Parler sans être entendu"
+      },
+      {
+        "id": "unable-to-call-for-help",
+        "variation": "Ne pas pouvoir appeler à l'aide"
+      }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.46
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.44
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ],
+        "portrait": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.34
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.36
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ]
+      },
+      "plate": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.46
+            ],
+            "zoom": 0.9
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.44
+            ],
+            "zoom": 0.8
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ],
+      "thumb": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.46
+            ],
+            "zoom": 1.05
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.44
+            ],
+            "zoom": 0.95
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ]
+    }
+  },
+  "paralysis": {
+    "slug": "paralysie",
+    "caveat": null,
+    "scenes": [
+      {
+        "id": "frozen-in-front-of-a-danger",
+        "variation": "Figé face à un danger"
+      },
+      {
+        "id": "legs-that-will-not-run",
+        "variation": "Des jambes qui ne courent pas"
+      },
+      {
+        "id": "waking-up-unable-to-move",
+        "variation": "Se réveiller sans pouvoir bouger"
+      }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.46
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.44
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ],
+        "portrait": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.34
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.36
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ]
+      },
+      "plate": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.46
+            ],
+            "zoom": 0.9
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.44
+            ],
+            "zoom": 0.8
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ],
+      "thumb": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.46
+            ],
+            "zoom": 1.05
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.44
+            ],
+            "zoom": 0.95
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ]
+    }
+  },
+  "screaming": {
+    "slug": "cri",
+    "caveat": null,
+    "scenes": [
+      {
+        "id": "screaming-in-fear",
+        "variation": "Crier de peur"
+      },
+      {
+        "id": "screaming-in-anger",
+        "variation": "Crier de colère"
+      },
+      {
+        "id": "a-scream-that-will-not-come-out",
+        "variation": "Un cri qui ne sort pas"
+      }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.46
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.44
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ],
+        "portrait": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.34
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.36
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ]
+      },
+      "plate": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.46
+            ],
+            "zoom": 0.9
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.44
+            ],
+            "zoom": 0.8
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ],
+      "thumb": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.46
+            ],
+            "zoom": 1.05
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.44
+            ],
+            "zoom": 0.95
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ]
+    }
+  },
+  "hiding": {
+    "slug": "se-cacher",
+    "caveat": null,
+    "scenes": [
+      {
+        "id": "hiding-from-a-threat",
+        "variation": "Se cacher d'une menace"
+      },
+      {
+        "id": "hiding-from-someone-you-know",
+        "variation": "Se cacher de quelqu'un qu'on connaît"
+      },
+      {
+        "id": "being-found",
+        "variation": "Être découvert"
+      }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.65
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.7
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ],
+        "portrait": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.34
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.36
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ]
+      },
+      "plate": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.65
+            ],
+            "zoom": 0.9
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.7
+            ],
+            "zoom": 0.8
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ],
+      "thumb": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.65
+            ],
+            "zoom": 1.05
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.7
+            ],
+            "zoom": 0.95
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ]
+    }
+  },
+  "shadow": {
+    "slug": "ombre",
+    "caveat": null,
+    "scenes": [
+      {
+        "id": "being-followed-by-a-shadow",
+        "variation": "Être suivi par une ombre"
+      },
+      {
+        "id": "your-shadow-breaking-away",
+        "variation": "Son ombre qui se détache"
+      },
+      {
+        "id": "a-faceless-dark-figure",
+        "variation": "Une silhouette noire sans visage"
+      }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.46
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.44
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ],
+        "portrait": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.34
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.36
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ]
+      },
+      "plate": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.46
+            ],
+            "zoom": 0.9
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.44
+            ],
+            "zoom": 0.8
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ],
+      "thumb": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.46
+            ],
+            "zoom": 1.05
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.44
+            ],
+            "zoom": 0.95
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ]
+    }
+  },
+  "ghost": {
+    "slug": "fantome",
+    "caveat": null,
+    "scenes": [
+      {
+        "id": "seeing-the-ghost-of-a-loved-one-who-die",
+        "variation": "Voir le fantôme d'un proche décédé"
+      },
+      {
+        "id": "being-haunted-by-a-ghost",
+        "variation": "Être hanté par un fantôme"
+      },
+      {
+        "id": "a-haunted-house",
+        "variation": "Une maison hantée"
+      }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.46
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.44
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ],
+        "portrait": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.34
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.36
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ]
+      },
+      "plate": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.46
+            ],
+            "zoom": 0.9
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.44
+            ],
+            "zoom": 0.8
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ],
+      "thumb": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.46
+            ],
+            "zoom": 1.05
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.44
+            ],
+            "zoom": 0.95
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ]
+    }
+  },
+  "demon": {
+    "slug": "demon",
+    "caveat": null,
+    "scenes": [
+      {
+        "id": "being-chased-by-a-demon",
+        "variation": "Être poursuivi par un démon"
+      },
+      {
+        "id": "fighting-a-demon",
+        "variation": "Se battre contre un démon"
+      },
+      {
+        "id": "talking-or-bargaining-with-a-demon",
+        "variation": "Parler ou négocier avec un démon"
+      }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.46
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.44
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ],
+        "portrait": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.34
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.36
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ]
+      },
+      "plate": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.46
+            ],
+            "zoom": 0.9
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.44
+            ],
+            "zoom": 0.8
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ],
+      "thumb": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.46
+            ],
+            "zoom": 1.05
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.44
+            ],
+            "zoom": 0.95
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ]
+    }
+  },
+  "monster": {
+    "slug": "monstre",
+    "caveat": null,
+    "scenes": [
+      {
+        "id": "being-chased-by-a-monster",
+        "variation": "Être poursuivi par un monstre"
+      },
+      {
+        "id": "a-monster-under-the-bed-or-in-the-close",
+        "variation": "Un monstre sous le lit ou dans le placard"
+      },
+      {
+        "id": "a-giant-monster",
+        "variation": "Un monstre géant"
+      }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.46
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.44
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ],
+        "portrait": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.34
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.36
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ]
+      },
+      "plate": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.46
+            ],
+            "zoom": 0.9
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.44
+            ],
+            "zoom": 0.8
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ],
+      "thumb": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.46
+            ],
+            "zoom": 1.05
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.44
+            ],
+            "zoom": 0.95
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ]
+    }
+  },
+  "zombie": {
+    "slug": "zombie",
+    "caveat": null,
+    "scenes": [
+      {
+        "id": "a-zombie-apocalypse",
+        "variation": "Une apocalypse zombie"
+      },
+      {
+        "id": "a-loved-one-turned-into-a-zombie",
+        "variation": "Un proche devenu zombie"
+      },
+      {
+        "id": "hiding-from-zombies",
+        "variation": "Se cacher des zombies"
+      }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.46
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.44
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ],
+        "portrait": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.34
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.36
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ]
+      },
+      "plate": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.46
+            ],
+            "zoom": 0.9
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.44
+            ],
+            "zoom": 0.8
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ],
+      "thumb": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.46
+            ],
+            "zoom": 1.05
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.44
+            ],
+            "zoom": 0.95
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ]
+    }
+  },
+  "prison": {
+    "slug": "prison",
+    "caveat": null,
+    "scenes": [
+      {
+        "id": "being-locked-in-a-cell",
+        "variation": "Être enfermé dans une cellule"
+      },
+      {
+        "id": "being-imprisoned-for-something-you-did",
+        "variation": "Être emprisonné à tort"
+      },
+      {
+        "id": "escaping-from-prison",
+        "variation": "S'évader de prison"
+      }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.65
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.7
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ],
+        "portrait": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.34
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.36
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ]
+      },
+      "plate": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.65
+            ],
+            "zoom": 0.9
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.7
+            ],
+            "zoom": 0.8
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ],
+      "thumb": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.65
+            ],
+            "zoom": 1.05
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.7
+            ],
+            "zoom": 0.95
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ]
+    }
+  },
+  "earthquake": {
+    "slug": "tremblement-de-terre",
+    "caveat": null,
+    "scenes": [
+      {
+        "id": "your-house-collapsing",
+        "variation": "Sa maison qui s'effondre"
+      },
+      {
+        "id": "the-ground-splitting-open",
+        "variation": "Le sol qui s'ouvre"
+      },
+      {
+        "id": "protecting-someone-during-an-earthquake",
+        "variation": "Protéger quelqu'un pendant un séisme"
+      }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.65
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.7
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ],
+        "portrait": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.34
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.36
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ]
+      },
+      "plate": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.65
+            ],
+            "zoom": 0.9
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.7
+            ],
+            "zoom": 0.8
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ],
+      "thumb": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.65
+            ],
+            "zoom": 1.05
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.7
+            ],
+            "zoom": 0.95
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ]
+    }
   }
 }
