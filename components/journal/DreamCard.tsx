@@ -21,7 +21,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Dimensions, Pressable, Text, View, useWindowDimensions } from 'react-native';
 import Animated from 'react-native-reanimated';
-import { JournalCardSeal } from '@/components/journal/JournalCardSeal';
+import { JournalCardSeal, SEAL_FADE_HEIGHT } from '@/components/journal/JournalCardSeal';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useFrameParallax } from '@/components/ui/scrollDepth';
 
@@ -50,6 +50,7 @@ interface DreamCardProps {
 const CARD_IMAGE_STYLE = { position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' } as const;
 const COVER_FRAME_STYLE = { position: 'absolute', top: 0, right: 0, bottom: 0, left: 0 } as const;
 const SCRIM_FADE_STYLE = { height: 140, width: '100%' } as const;
+const SEAL_FADE_STYLE = { height: SEAL_FADE_HEIGHT, width: '100%' } as const;
 // A sine-like ease into the reading backing below: no step where a bright painting ends.
 const SCRIM_FADE_LOCATIONS = [0, 0.14, 0.3, 0.5, 0.7, 0.88, 1] as const;
 const SCRIM_FADE_STRENGTH = [0, 0.13, 0.3, 0.52, 0.75, 0.92, 1] as const;
@@ -181,9 +182,11 @@ export const DreamCard = memo(function DreamCard({
   // alone places the arrow beside it. Sizes, not positions, because the web reports a layout
   // only when a size changes, while a recycled card or a resized list can move the text.
   const [metadataHeight, setMetadataHeight] = useState<number | null>(null);
+  // Without a painting, what the folded text leaves above it is the seal's room.
+  const [foldedReadingHeight, setFoldedReadingHeight] = useState<number | null>(null);
   const hasImage = (Boolean(imageUri) || (media.loading && Boolean(dream.imageUrl || dream.thumbnailUrl)))
     && failedImageAttempt !== imageAttemptKey;
-  // Only an illustration drifts: a text card's frame is never mounted. Destructured: read
+  // Only an illustration drifts: the seal's night has no drifting frame. Destructured: read
   // through the returned object, the frame ref keeps React Compiler off this card.
   const { frame: coverFrame, style: coverParallaxStyle } = useFrameParallax(hasImage ? coverTravel : 0);
 
@@ -280,9 +283,9 @@ export const DreamCard = memo(function DreamCard({
     (variant: keyof typeof BADGE_TEXT_CLASS) => {
       if (variant === 'danger') return noctalia.status.danger.text;
       if (variant === 'warning') return noctalia.status.warning.text;
-      return hasImage ? noctalia.illustration.text : noctalia.text.secondary;
+      return noctalia.illustration.text;
     },
-    [hasImage, noctalia]
+    [noctalia]
   );
 
   const badgeList = badges.map((badge, i) => {
@@ -298,7 +301,7 @@ export const DreamCard = memo(function DreamCard({
           <IconSymbol name={badge.icon} size={13} color={getBadgeIconColor(badge.variant)} />
         )}
         {badge.label && (
-          <Text allowFontScaling={false} style={captionStyle} className={`min-w-0 shrink font-sans text-[12px] leading-[18px] ${hasImage && badge.variant === 'secondary' ? 'text-illustration-text' : BADGE_TEXT_CLASS[badge.variant]}`}>
+          <Text allowFontScaling={false} style={captionStyle} className={`min-w-0 shrink font-sans text-[12px] leading-[18px] ${badge.variant === 'secondary' ? 'text-illustration-text' : BADGE_TEXT_CLASS[badge.variant]}`}>
             {badge.label}
           </Text>
         )}
@@ -324,7 +327,7 @@ export const DreamCard = memo(function DreamCard({
         key={`title-${fontScale}`}
         allowFontScaling={false}
         style={[{ fontSize: (variant === 'featured' ? 26 : 24) * titleTextScale, lineHeight: (variant === 'featured' ? 32 : 30) * titleTextScale }]}
-        className={`font-display ${hasImage ? 'text-illustration-text' : 'text-ivory'} ${variant === 'featured' ? 'text-[26px] leading-[32px]' : 'text-[24px] leading-[30px]'}`}
+        className={`font-display text-illustration-text ${variant === 'featured' ? 'text-[26px] leading-[32px]' : 'text-[24px] leading-[30px]'}`}
         numberOfLines={2}
       >
         {dream.title}
@@ -352,7 +355,7 @@ export const DreamCard = memo(function DreamCard({
         testID={testID && `journal.preview.${testID}`}
         allowFontScaling={false}
         style={[{ fontSize: 15 * compactTextScale, lineHeight: 22 * compactTextScale }]}
-        className={`font-sans text-[15px] leading-[22px] ${hasImage ? 'text-illustration-text' : 'text-ivory-muted'}`}
+        className="font-sans text-[15px] leading-[22px] text-illustration-text"
         // At least three lines of the dream, with or without an illustration; all of it once unfolded.
         numberOfLines={expanded ? undefined : 3}
       >
@@ -363,12 +366,12 @@ export const DreamCard = memo(function DreamCard({
       </View>
     </>
   );
-  const labelClass = `min-w-0 shrink font-sans text-[12px] leading-[18px] ${hasImage ? 'text-illustration-text' : 'text-ivory-muted'}`;
-  const labelIconColor = hasImage ? noctalia.illustration.text : noctalia.text.secondary;
+  const labelClass = 'min-w-0 shrink font-sans text-[12px] leading-[18px] text-illustration-text';
+  const labelIconColor = noctalia.illustration.text;
   // When, then what the dream is: the date above the title, its labels and state below the text.
   const dateOverline = (
     <Text key={`date-${fontScale}`} allowFontScaling={false} style={{ fontSize: 12 * compactTextScale, lineHeight: 16 * compactTextScale, letterSpacing: 1.6 }}
-      className={`font-sans-medium text-[12px] uppercase leading-[16px] ${hasImage ? 'text-illustration-text' : 'text-ivory-muted'}`}>
+      className="font-sans-medium text-[12px] uppercase leading-[16px] text-illustration-text">
       {dateLine}
     </Text>
   );
@@ -379,7 +382,7 @@ export const DreamCard = memo(function DreamCard({
         const { height } = event.nativeEvent.layout;
         if (height > 0) setMetadataHeight((previous) => previous === height ? previous : height);
       }}>
-      <Text allowFontScaling={false} style={captionStyle} className={`min-w-0 shrink font-sans-medium text-[12px] leading-[18px] ${hasImage ? 'text-illustration-text' : 'text-ivory'}`}>{typeLabel}</Text>
+      <Text allowFontScaling={false} style={captionStyle} className="min-w-0 shrink font-sans-medium text-[12px] leading-[18px] text-illustration-text">{typeLabel}</Text>
       {themeLabel ? <Text allowFontScaling={false} style={captionStyle} className={labelClass}>{themeLabel}</Text> : null}
       {recurringLabel ? (
         <View className="flex-row items-center gap-1">
@@ -396,10 +399,10 @@ export const DreamCard = memo(function DreamCard({
       {badgeList}
     </View>
   );
-  // Over the painting, each icon sits on a disc of the reading veil.
-  const actionStyle = hasImage ? [CARD_ACTION_STYLE, { backgroundColor: noctalia.illustration.scrim }] : CARD_ACTION_STYLE;
+  // Over the painting or the seal's night, each icon sits on a disc of the reading veil.
+  const actionStyle = [CARD_ACTION_STYLE, { backgroundColor: noctalia.illustration.scrim }];
   const actions = (
-    <View className={`absolute flex-row gap-2 ${hasImage ? 'right-3 top-3' : 'right-2 top-2'}`}>
+    <View className="absolute right-3 top-3 flex-row gap-2">
       {onToggleFavorite ? (
         <Pressable accessibilityRole="button" accessibilityState={{ selected: isFavorite }}
           accessibilityLabel={t('journal.badge.favorite')} hitSlop={4} onPress={(event) => { event.stopPropagation(); onToggleFavorite(dream); }}
@@ -425,24 +428,23 @@ export const DreamCard = memo(function DreamCard({
       testID={testID && `journal.expand.${testID}`} className="absolute items-end justify-center"
       style={{ right: READING_INSET, bottom: READING_INSET + metadataHeight + READING_GAP, width: EXPAND_ARROW_WIDTH, height: 22 * compactTextScale }}
     >
-      <IconSymbol name={expanded ? 'chevron.up' : 'chevron.down'} size={20} color={hasImage ? noctalia.illustration.text : noctalia.text.secondary} />
+      <IconSymbol name={expanded ? 'chevron.up' : 'chevron.down'} size={20} color={noctalia.illustration.text} />
     </Pressable>
   ) : null;
   return (
     <PressableScale onPress={handlePress} accessible={false} testID={testID}>
       <Pressable accessibilityRole="button" accessibilityLabel={accessibilityLabel}
         onPress={(event) => { event.stopPropagation(); handlePress(); }}>
-      {/* Keyed: a card whose illustration fails remounts its text, so the web observes the new row's layout. */}
-      {hasImage ? (
-        <View
-          key="illustrated"
-          className="w-full justify-end overflow-hidden rounded-[24px] bg-ink-raised"
-          style={{ minHeight: coverMinHeight }}
-          onLayout={(event) => {
-            if (event.nativeEvent.layout.width > 0) setCoverWidth(event.nativeEvent.layout.width);
-          }}
-          testID={testID && `journal.cover.${testID}`}
-        >
+      {/* Every card has the painting's frame: without a painting, the dream's seal stands in it. */}
+      <View
+        className="w-full justify-end overflow-hidden rounded-[24px] bg-ink-raised"
+        style={{ minHeight: coverMinHeight }}
+        onLayout={(event) => {
+          if (event.nativeEvent.layout.width > 0) setCoverWidth(event.nativeEvent.layout.width);
+        }}
+        testID={testID && `journal.cover.${testID}`}
+      >
+        {hasImage ? (
           <Animated.View ref={coverFrame} style={COVER_FRAME_STYLE} pointerEvents="none">
           <Animated.View style={[{ position: 'absolute', left: 0, right: 0, top: -coverTravel, bottom: -coverTravel }, coverParallaxStyle]}>
           <Image
@@ -474,31 +476,28 @@ export const DreamCard = memo(function DreamCard({
           />
           </Animated.View>
           </Animated.View>
-          <LinearGradient
-            // Eased, not linear: the painting stays clear until the veil nears the text.
-            colors={scrimFade}
-            locations={SCRIM_FADE_LOCATIONS}
-            style={SCRIM_FADE_STYLE}
-            pointerEvents="none"
-          />
-          {/* In-flow backing grows with the dream's text; the card grows past 9:16 only when unfolded. */}
-          <View className="gap-1.5 bg-illustration-scrim px-5 pb-5" testID={testID && `journal.text.${testID}`}>
-            {dateOverline}
-            {readingText}
-            {metadata}
-          </View>
-        </View>
-      ) : (
-        <View key="text-only" className="gap-1.5 rounded-[24px] bg-ink-raised px-5 pb-5 pt-4" testID={testID && `journal.text.${testID}`}>
-          {/* Where a painting would be, level with the icons at the top right. */}
-          <View className="mb-2">
-            <JournalCardSeal theme={dream.theme} testID={testID && `journal.seal.${testID}`} />
-          </View>
+        ) : (
+          <JournalCardSeal theme={dream.theme} frameHeight={coverMinHeight} readingHeight={foldedReadingHeight}
+            testID={testID && `journal.seal.${testID}`} />
+        )}
+        <LinearGradient
+          // Eased, not linear: the painting stays clear until the veil nears the text.
+          colors={scrimFade}
+          locations={SCRIM_FADE_LOCATIONS}
+          style={hasImage ? SCRIM_FADE_STYLE : SEAL_FADE_STYLE}
+          pointerEvents="none"
+        />
+        {/* In-flow backing grows with the dream's text; the card grows past 9:16 only when unfolded. */}
+        <View className="gap-1.5 bg-illustration-scrim px-5 pb-5" testID={testID && `journal.text.${testID}`}
+          onLayout={(event) => {
+            const { height } = event.nativeEvent.layout;
+            if (height > 0 && !expanded) setFoldedReadingHeight((previous) => previous === height ? previous : height);
+          }}>
           {dateOverline}
           {readingText}
           {metadata}
         </View>
-      )}
+      </View>
       </Pressable>
       {actions}
       {expandControl}
