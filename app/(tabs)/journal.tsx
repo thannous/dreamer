@@ -438,14 +438,14 @@ function JournalListScreen() {
   }, [mediaUserId]);
 
   const prefetchDreamMedia = useCallback(async (entries: DreamAnalysis[]) => {
-    if (!mediaFocused.current) return;
+    if (!mediaFocused.current || isScrollingRef.current) return;
     const generation = mediaGeneration.current;
     const resolved = await Promise.all(entries.slice(0, PREFETCH_MAX_PER_FLUSH).map(async (dream) => ({
       ...dream,
       ...await resolveWithDiskCache(dream, mediaUserId, false, { variant: 'thumbnail' }),
     })));
     for (const dream of resolved) {
-      if (!mediaFocused.current || generation !== mediaGeneration.current) return;
+      if (!mediaFocused.current || isScrollingRef.current || generation !== mediaGeneration.current) return;
       const uri = getDreamThumbnailUri(dream);
       if (uri && isLikelyOptimizedThumbnailUri(uri) && rememberPrefetchedUri(getDreamThumbnailCacheKey(dream) ?? uri)) {
         await preloadImage(uri, getDreamThumbnailCacheKey(dream));

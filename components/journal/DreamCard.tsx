@@ -21,10 +21,8 @@ import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Dimensions, Pressable, Text, View, useWindowDimensions } from 'react-native';
-import Animated from 'react-native-reanimated';
 import { JournalCardSeal, SEAL_FADE_HEIGHT } from '@/components/journal/JournalCardSeal';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { useFrameParallax } from '@/components/ui/scrollDepth';
 
 export type DreamCardVariant = 'standard' | 'featured';
 
@@ -49,7 +47,6 @@ interface DreamCardProps {
 
 /** Expo media components keep their geometry as native props. */
 const CARD_IMAGE_STYLE = { position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' } as const;
-const COVER_FRAME_STYLE = { position: 'absolute', top: 0, right: 0, bottom: 0, left: 0 } as const;
 const SCRIM_FADE_STYLE = { height: 140, width: '100%' } as const;
 const SEAL_FADE_STYLE = { height: SEAL_FADE_HEIGHT, width: '100%' } as const;
 // A sine-like ease into the reading backing below: no step where a bright painting ends.
@@ -176,8 +173,6 @@ export const DreamCard = memo(function DreamCard({
   // Never taller than most of the screen, so a short screen still sees the dream's text. The
   // screen, not the window: a mobile browser's window follows its toolbars and keyboard.
   const coverMinHeight = Math.min(coverWidth * 16 / 9, Math.round(Dimensions.get('screen').height * 0.8));
-  // The illustration drifts through its frame as the card crosses the screen.
-  const coverTravel = Math.round(coverMinHeight * 0.05);
   // The scrim's own colour at rising strength, so the painting eases into the backing.
   const scrimFade = useMemo(() => {
     const base = Number(/([\d.]+)\)$/.exec(noctalia.illustration.scrim)?.[1] ?? 1);
@@ -208,9 +203,6 @@ export const DreamCard = memo(function DreamCard({
   const [foldedReadingHeight, setFoldedReadingHeight] = useState<number | null>(null);
   const hasImage = (Boolean(imageUri) || (media.loading && Boolean(dream.imageUrl || dream.thumbnailUrl)))
     && failedImageAttempt !== imageAttemptKey;
-  // Only an illustration drifts: the seal's night has no drifting frame. Destructured: read
-  // through the returned object, the frame ref keeps React Compiler off this card.
-  const { frame: coverFrame, style: coverParallaxStyle, onLayout: onCoverFrameLayout } = useFrameParallax(hasImage ? coverTravel : 0);
   useEffect(() => {
     if (!hasImage) setFoldedReadingHeight(foldedReading.current);
   }, [hasImage]);
@@ -358,6 +350,7 @@ export const DreamCard = memo(function DreamCard({
         style={{ position: 'absolute', top: 0, left: 0, right: 0, opacity: 0,
           fontSize: 15 * compactTextScale, lineHeight: 22 * compactTextScale }}
         className="font-sans" testID={testID && `journal.measure.${testID}`}
+        numberOfLines={4}
         onLayout={(event) => {
           // A page hidden behind another route (on the web) lays its cards out at zero
           // size: keep the last real measure instead of rendering the card twice.
@@ -479,8 +472,9 @@ export const DreamCard = memo(function DreamCard({
         testID={testID && `journal.cover.${testID}`}
       >
         {hasImage ? (
-          <Animated.View ref={coverFrame} style={COVER_FRAME_STYLE} pointerEvents="none" onLayout={onCoverFrameLayout}>
-          <Animated.View style={[{ position: 'absolute', left: 0, right: 0, top: -coverTravel, bottom: -coverTravel }, coverParallaxStyle]}>
+          // The list already moves the paintings with the finger. Keep each one
+          // still in its frame: no per-card native measure or animated commit
+          // on every scroll event, including cards in the recycling pool.
           <Image
             source={imageSource}
             style={CARD_IMAGE_STYLE}
@@ -512,8 +506,6 @@ export const DreamCard = memo(function DreamCard({
             accessible={false}
             importantForAccessibility="no"
           />
-          </Animated.View>
-          </Animated.View>
         ) : (
           <JournalCardSeal theme={dream.theme} frameHeight={coverMinHeight} readingHeight={foldedReadingHeight}
             testID={testID && `journal.seal.${testID}`} />
