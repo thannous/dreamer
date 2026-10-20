@@ -284,7 +284,18 @@ test.describe('French quick filters', () => {
     const scroll = page.getByTestId('journal-filter-scroll');
     const overflowHint = page.getByTestId('journal-filter-overflow');
     const filters = ['btn.filterAll', 'btn.filterFavorites', 'btn.filterToDeepen'];
-    const bounds = await Promise.all(filters.map(id => page.getByTestId(id).boundingBox()));
+    const chipBounds = () => Promise.all(filters.map(id => page.getByTestId(id).boundingBox()));
+    // The journal lays out again after a resize. Wait for the row to rest in one line below
+    // the floating header: taps still reach chips the header covers, so clicks prove nothing.
+    const header = page.getByTestId('journal-search-chrome').filter({ visible: true });
+    await expect.poll(async () => {
+      const [row, chrome] = await Promise.all([chipBounds(), header.boundingBox()]);
+      if (!chrome || row.some(bound => !bound)) return 'measuring';
+      const rowCenters = row.map(bound => bound!.y + bound!.height / 2);
+      if (Math.max(...rowCenters) - Math.min(...rowCenters) > 2) return 'row moving';
+      return Math.min(...row.map(bound => bound!.y)) >= chrome.y + chrome.height ? 'below header' : 'under header';
+    }).toBe('below header');
+    const bounds = await chipBounds();
     expect(bounds.every(bound => bound && bound.height >= 44)).toBe(true);
     const centers = bounds.map(bound => bound!.y + bound!.height / 2);
     expect(Math.max(...centers) - Math.min(...centers)).toBeLessThanOrEqual(2);
