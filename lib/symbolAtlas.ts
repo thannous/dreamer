@@ -64,15 +64,70 @@ const SITE_ORIGIN = 'https://noctalia.app';
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   !!value && typeof value === 'object' && !Array.isArray(value);
 
-const isPicture = (value: unknown): value is AtlasPicture =>
-  isRecord(value) && typeof value.width === 'number' && typeof value.height === 'number' && isRecord(value.files);
+const isNumber = (value: unknown): value is number => typeof value === 'number' && Number.isFinite(value);
 
-/** A light check of the published file: a format it cannot read leaves every symbol classic. */
+const isNumbers = (value: unknown, length: number) =>
+  Array.isArray(value) && value.length === length && value.every(isNumber);
+
+// Names the app joins to the site's address: one plain segment each, never a path.
+const isName = (value: unknown): value is string =>
+  typeof value === 'string' && /^[\w.-]+$/.test(value) && !value.includes('..');
+
+// The folder of the paintings on the site, an absolute path of plain segments.
+const isBase = (value: unknown): value is string =>
+  typeof value === 'string' && /^(\/[\w-]+)+$/.test(value);
+
+const MOTIONS: readonly unknown[] = ['drift', 'flow', 'pulse'];
+const BLENDS: readonly unknown[] = [undefined, 'screen', 'multiply'];
+
+const isLayer = (value: unknown): value is AtlasLayer =>
+  isRecord(value) &&
+  isName(value.file) &&
+  isNumbers(value.box, 4) &&
+  MOTIONS.includes(value.motion) &&
+  (value.move === undefined || isNumbers(value.move, 2)) &&
+  isNumber(value.dur) &&
+  value.dur > 0 &&
+  isNumbers(value.op, 2) &&
+  (value.copies === undefined || (Number.isInteger(value.copies) && (value.copies as number) >= 1)) &&
+  BLENDS.includes(value.blend);
+
+const isPicture = (value: unknown): value is AtlasPicture =>
+  isRecord(value) &&
+  isNumber(value.width) &&
+  value.width > 0 &&
+  isNumber(value.height) &&
+  value.height > 0 &&
+  isRecord(value.files) &&
+  Object.keys(value.files).length > 0 &&
+  Object.entries(value.files).every(([width, file]) => Number(width) > 0 && isName(file));
+
+const isScene = (value: unknown): value is AtlasScene =>
+  isRecord(value) &&
+  isName(value.id) &&
+  isPicture(value.image) &&
+  Array.isArray(value.layers) &&
+  value.layers.every(isLayer) &&
+  isRecord(value.variation) &&
+  Object.values(value.variation).every((context) => typeof context === 'string');
+
+const isEntry = (value: unknown): value is SymbolAtlasEntry =>
+  isRecord(value) &&
+  isPicture(value.portrait) &&
+  typeof (value.portrait as { position?: unknown }).position === 'string' &&
+  Array.isArray(value.layers) &&
+  value.layers.every(isLayer) &&
+  Array.isArray(value.scenes) &&
+  value.scenes.every(isScene);
+
+/**
+ * The published file, checked down to each texture before any screen draws from it: it
+ * comes from the site, so a damaged one is refused whole (the app keeps the copy it had,
+ * or none, and every symbol stays classic) instead of breaking the sheet on every phone.
+ */
 export function isSymbolAtlas(value: unknown): value is SymbolAtlas {
-  if (!isRecord(value) || value.version !== 1 || typeof value.base !== 'string' || !isRecord(value.symbols)) return false;
-  return Object.values(value.symbols).every(
-    (entry) => isRecord(entry) && isPicture(entry.portrait) && Array.isArray(entry.layers) && Array.isArray(entry.scenes),
-  );
+  if (!isRecord(value) || value.version !== 1 || !isBase(value.base) || !isRecord(value.symbols)) return false;
+  return Object.entries(value.symbols).every(([id, entry]) => isName(id) && isEntry(entry));
 }
 
 export function atlasFileUri(atlas: SymbolAtlas, id: string, file: string): string {
