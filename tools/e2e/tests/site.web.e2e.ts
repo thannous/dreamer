@@ -1497,10 +1497,13 @@ for (const page of NEW_SYMBOL_PACKS) {
     await app.open('/fr/symboles/' + page.slug + '.html#scenes');
     await expect(screen.getByRole('heading', { name: 'Scènes courantes', exact: true })).toBeVisible();
     await expect.poll(() => browser.evaluate(() => {
-      const title = document.querySelector('#scenes h2')!.getBoundingClientRect();
-      const nav = document.querySelector('.atlas-nav')?.getBoundingClientRect();
-      return title.top >= (nav?.bottom ?? 0) - 1;
-    })).toBe(true);
+      const covers = ['#navbar', '.symbol-jump-nav'].map(selector => document.querySelector(selector)!.getBoundingClientRect())
+        .filter(rect => rect.height > 0 && rect.bottom > 0).map(rect => rect.bottom);
+      const title = document.querySelector('#atlas-scenes-title')!.getBoundingClientRect();
+      const hit = document.elementFromPoint(title.left + 8, title.top + title.height / 2);
+      return title.top >= Math.max(0, ...covers) && title.bottom <= innerHeight && Boolean(hit?.closest('#atlas-scenes-title'));
+    }), { timeout: 15_000 }).toBe(true);
+    for (const scene of page.scenes) await moving('scene-' + scene);
     await app.screenshot('pack-' + page.id + '-390-scenes');
 
     const catalog = JSON.parse(readFileSync(new URL('../../../data/dream-symbols.json', import.meta.url), 'utf8')).symbols.find((s: {id: string}) => s.id === page.id);
