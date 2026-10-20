@@ -215,7 +215,7 @@ Deux graisses de Fraunces, deux rôles, et rien d'autre :
 |---|---|
 | `Fraunces_600SemiBold` 34/40 | **le titre d'écran**, un seul par écran (`LucidScreen.title`) |
 | `Fraunces_500Medium` 17–18 | **la phrase de principe** qu'on lit une fois : rappel neutre du matin, principe du test de réalité, invite de réflexion d'une séance, et l'argumentaire d'ouverture de l'écran d'abonnement (`subscription.tsx`, `styles.heroBody`) |
-| `SpaceGrotesk_*` | tout ce qui se scanne : titres de carte, valeurs, libellés, boutons, listes |
+| `Outfit_*` (Space Grotesk jusqu'au 20/10/2026, remplacée sur décision de Thanh) | tout ce qui se scanne : titres de carte, valeurs, libellés, boutons, listes |
 
 Du serif sur chaque titre de carte donnait un ton éditorial à un écran qu'on consulte, pas qu'on lit.
 
