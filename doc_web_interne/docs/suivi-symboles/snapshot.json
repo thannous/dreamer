@@ -1,15 +1,15 @@
 {
   "schema": "noctalia.symbol-tracking-snapshot/1",
   "date": "2026-10-20",
-  "sourceRevision": "1038406132baf06556f6abda8f1620ac4774984b",
+  "sourceRevision": "736a14dc4b55127e1e52b51eb50009e66323a387",
   "sourceRevisionScope": "Clean browser-qualified implementation; subsequent tracking-only edits reuse this evidence.",
   "integratedMaster": "f71600c97",
   "sourceBranch": "codex/symbol-images-lot-08-30",
   "integrationOwner": "Codex",
   "totalSymbols": 240,
-  "integratedSymbols": 111,
-  "remainingToIntegrate": 129,
-  "atlasLocalePages": 666,
+  "integratedSymbols": 117,
+  "remainingToIntegrate": 123,
+  "atlasLocalePages": 702,
   "languages": [
     "en",
     "fr",
@@ -23,16 +23,16 @@
   "currentStageProofs": {
     "publication": 240,
     "approval": 0,
-    "qa": 111
+    "qa": 117
   },
   "files": {
     "workbook": {
       "path": "suivi-240-symboles-6-langues.xlsx",
-      "sha256": "9242a3c5d6362409348742965b8e2a47e3d60cafcf58963fe094d72fe3d9a4df"
+      "sha256": "a2eeebcc70a47cf1ebc0c0f0ab72b41fd6fc77f9b58ada2e9c8be799625a8f82"
     },
     "csv": {
       "path": "symbol-rollout.csv",
-      "sha256": "84d51e0cafa29ef4297fa058fbe662c93440999aac5cc8a2fd530a5f4de5c0c1"
+      "sha256": "a34571d6a57e193e84475c1896f50812ac712c1ae93b2c09215f2e11677df7f4"
     }
   },
   "reportSha256": "e9cf4eb1696b8cda63d09618e655265d75fd387261363b4f3f98f40512675dc9",
@@ -67,11 +67,11 @@
     "visuallyInspectedPacks": 30,
     "visuallyInspectedBrowserScreenshots": 150
   },
-  "qaReceipt": "../qa/symbol-batch09-delivery-20261020.json",
-  "qaReceiptSha256": "652b098bb0f8439198c74247fcb384eddd2d4bf0a9dcd446614acf3e64568a16",
+  "qaReceipt": "../qa/symbol-lot10-delivery-20261020.json",
+  "qaReceiptSha256": "05c85a1039678cf4268d83d7b66b3c7b4a8c4da034886e579a7fe1d212af9bec",
   "commonLayoutSymbols": 240,
   "commonLayoutLocalePages": 1440,
-  "commonAnimatedPacks": 111,
+  "commonAnimatedPacks": 117,
   "tigerMotionPending": false,
   "tigerEvidence": "Common-engine implementation inherited from master PR485; no fresh Tiger browser qualification in this selected run.",
   "driveSources": "https://drive.google.com/drive/folders/1XzmtnMeVfBGWkT6XdLs5hGGI_kBjes0p",
@@ -106,23 +106,27 @@
   },
   "publication": {
     "origin": "https://noctalia.app",
-    "deploymentUrl": "https://ce671c33.noctalia.pages.dev",
+    "deploymentUrl": "https://fea97f88.noctalia.pages.dev",
     "command": "npm run docs:deploy:prod",
     "releaseCommand": "npm run verify:release:site -- --keep",
-    "releasePassed": true
+    "releasePassed": true,
+    "externalLinks": {
+      "broken": 0,
+      "transientNetworkSkipped": 4
+    }
   },
-  "sourcePullRequest": 494,
+  "sourcePullRequest": 509,
   "latestBatch": {
-    "id": "lot-09",
+    "id": "lot-10",
     "symbols": [
-      "owl",
-      "boat",
-      "cave",
-      "rose",
-      "lightning",
-      "whale"
+      "bee",
+      "volcano",
+      "ring",
+      "waterfall",
+      "turtle",
+      "mask"
     ],
-    "newSelectedNativePaintings": 40,
-    "byteExactTextureCopies": 8
+    "newSelectedNativePaintings": 36,
+    "byteExactTextureCopies": 12
   }
 }
