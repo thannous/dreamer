@@ -27,6 +27,9 @@
     },
     "lot-08": {
       "label": "Lot 08, 30 packs complétés avec couvertures conservées"
+    },
+    "lot-09": {
+      "label": "Lot 09, Hibou, Bateau, Grotte, Rose, Éclair, Baleine"
     }
   },
   "symbols": {
@@ -103,7 +106,7 @@
       "lot": "lot-08"
     },
     "boat": {
-      "lot": null
+      "lot": "lot-09"
     },
     "book": {
       "lot": "lot-06"
@@ -142,7 +145,7 @@
       "lot": "lot-04"
     },
     "cave": {
-      "lot": null
+      "lot": "lot-09"
     },
     "celebrity": {
       "lot": null
@@ -433,7 +436,7 @@
       "lot": "lot-07"
     },
     "lightning": {
-      "lot": null
+      "lot": "lot-09"
     },
     "lion": {
       "lot": "lot-08"
@@ -508,7 +511,7 @@
       "lot": "lot-07"
     },
     "owl": {
-      "lot": null
+      "lot": "lot-09"
     },
     "paralysis": {
       "lot": null
@@ -565,7 +568,7 @@
       "lot": null
     },
     "rose": {
-      "lot": null
+      "lot": "lot-09"
     },
     "royalty": {
       "lot": "lot-07"
@@ -727,7 +730,7 @@
       "lot": "lot-08"
     },
     "whale": {
-      "lot": null
+      "lot": "lot-09"
     },
     "wind": {
       "lot": "lot-07"
