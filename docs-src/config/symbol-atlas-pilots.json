@@ -20667,5 +20667,1438 @@
         ]
       }
     }
+  },
+  "bee": {
+    "slug": "abeille",
+    "caveat": null,
+    "scenes": [
+      {
+        "id": "butinage",
+        "variation": "Une abeille qui butine"
+      },
+      {
+        "id": "piqure",
+        "variation": "Se faire piquer par une abeille"
+      },
+      {
+        "id": "essaim",
+        "variation": "Un essaim d'abeilles"
+      }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "zoom": 0.42,
+              "at": [
+                0.72,
+                0.47
+              ]
+            },
+            "motion": "drift",
+            "move": [
+              0.03,
+              -0.02
+            ],
+            "dur": 14,
+            "op": [
+              0.25,
+              0.55
+            ]
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "zoom": 0.26,
+              "at": [
+                0.71,
+                0.5
+              ]
+            },
+            "motion": "pulse",
+            "dur": 3.6,
+            "op": [
+              0.15,
+              0.55
+            ],
+            "blend": "screen"
+          }
+        ],
+        "portrait": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "zoom": 0.7,
+              "at": [
+                0.48,
+                0.33
+              ]
+            },
+            "motion": "drift",
+            "move": [
+              0.03,
+              -0.02
+            ],
+            "dur": 14,
+            "op": [
+              0.25,
+              0.55
+            ]
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "zoom": 0.45,
+              "at": [
+                0.48,
+                0.36
+              ]
+            },
+            "motion": "pulse",
+            "dur": 3.6,
+            "op": [
+              0.15,
+              0.55
+            ],
+            "blend": "screen"
+          }
+        ]
+      },
+      "plate": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "zoom": 0.45,
+            "at": [
+              0.74,
+              0.43
+            ]
+          },
+          "motion": "drift",
+          "move": [
+            0.03,
+            -0.02
+          ],
+          "dur": 14,
+          "op": [
+            0.25,
+            0.55
+          ]
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "zoom": 0.3,
+            "at": [
+              0.73,
+              0.46
+            ]
+          },
+          "motion": "pulse",
+          "dur": 3.6,
+          "op": [
+            0.15,
+            0.55
+          ],
+          "blend": "screen"
+        }
+      ],
+      "thumb": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "zoom": 0.7,
+            "at": [
+              0.5,
+              0.5
+            ]
+          },
+          "motion": "drift",
+          "move": [
+            0.03,
+            -0.02
+          ],
+          "dur": 14,
+          "op": [
+            0.25,
+            0.55
+          ]
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "zoom": 0.5,
+            "at": [
+              0.5,
+              0.45
+            ]
+          },
+          "motion": "pulse",
+          "dur": 3.6,
+          "op": [
+            0.15,
+            0.55
+          ],
+          "blend": "screen"
+        }
+      ],
+      "scenes": {
+        "butinage": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "zoom": 0.45,
+              "at": [
+                0.39,
+                0.49
+              ]
+            },
+            "motion": "drift",
+            "move": [
+              0.03,
+              -0.02
+            ],
+            "dur": 14,
+            "op": [
+              0.25,
+              0.55
+            ]
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "zoom": 0.3,
+              "at": [
+                0.39,
+                0.52
+              ]
+            },
+            "motion": "pulse",
+            "dur": 3.6,
+            "op": [
+              0.15,
+              0.55
+            ],
+            "blend": "screen"
+          }
+        ],
+        "piqure": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "zoom": 0.4,
+              "at": [
+                0.46,
+                0.5
+              ]
+            },
+            "motion": "drift",
+            "move": [
+              0.03,
+              -0.02
+            ],
+            "dur": 14,
+            "op": [
+              0.25,
+              0.55
+            ]
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "zoom": 0.28,
+              "at": [
+                0.46,
+                0.52
+              ]
+            },
+            "motion": "pulse",
+            "dur": 3.6,
+            "op": [
+              0.15,
+              0.55
+            ],
+            "blend": "screen"
+          }
+        ],
+        "essaim": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "zoom": 0.45,
+              "at": [
+                0.78,
+                0.45
+              ]
+            },
+            "motion": "drift",
+            "move": [
+              0.03,
+              -0.02
+            ],
+            "dur": 14,
+            "op": [
+              0.25,
+              0.55
+            ]
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "zoom": 0.3,
+              "at": [
+                0.77,
+                0.48
+              ]
+            },
+            "motion": "pulse",
+            "dur": 3.6,
+            "op": [
+              0.15,
+              0.55
+            ],
+            "blend": "screen"
+          }
+        ]
+      }
+    }
+  },
+  "volcano": {
+    "slug": "volcan",
+    "caveat": null,
+    "scenes": [
+      {
+        "id": "endormi",
+        "variation": "Un volcan endormi ou qui fume"
+      },
+      {
+        "id": "eruption",
+        "variation": "Regarder une éruption de loin"
+      },
+      {
+        "id": "lave",
+        "variation": "Fuir la lave"
+      }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "zoom": 0.4,
+              "at": [
+                0.8,
+                0.15
+              ]
+            },
+            "motion": "drift",
+            "move": [
+              0.02,
+              -0.01
+            ],
+            "dur": 18,
+            "op": [
+              0.2,
+              0.45
+            ]
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "zoom": 0.22,
+              "at": [
+                0.8,
+                0.17
+              ]
+            },
+            "motion": "flow",
+            "move": [
+              0.015,
+              -0.06
+            ],
+            "dur": 9,
+            "op": [
+              0.2,
+              0.55
+            ],
+            "copies": 2,
+            "blend": "screen"
+          }
+        ],
+        "portrait": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "zoom": 0.6,
+              "at": [
+                0.76,
+                0.17
+              ]
+            },
+            "motion": "drift",
+            "move": [
+              0.02,
+              -0.01
+            ],
+            "dur": 18,
+            "op": [
+              0.2,
+              0.45
+            ]
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "zoom": 0.35,
+              "at": [
+                0.76,
+                0.19
+              ]
+            },
+            "motion": "flow",
+            "move": [
+              0.015,
+              -0.06
+            ],
+            "dur": 9,
+            "op": [
+              0.2,
+              0.55
+            ],
+            "copies": 2,
+            "blend": "screen"
+          }
+        ]
+      },
+      "plate": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "zoom": 0.42,
+            "at": [
+              0.74,
+              0.23
+            ]
+          },
+          "motion": "drift",
+          "move": [
+            0.02,
+            -0.01
+          ],
+          "dur": 18,
+          "op": [
+            0.2,
+            0.45
+          ]
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "zoom": 0.24,
+            "at": [
+              0.74,
+              0.26
+            ]
+          },
+          "motion": "flow",
+          "move": [
+            0.015,
+            -0.06
+          ],
+          "dur": 9,
+          "op": [
+            0.2,
+            0.55
+          ],
+          "copies": 2,
+          "blend": "screen"
+        }
+      ],
+      "thumb": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "zoom": 0.7,
+            "at": [
+              0.5,
+              0.5
+            ]
+          },
+          "motion": "drift",
+          "move": [
+            0.02,
+            -0.01
+          ],
+          "dur": 18,
+          "op": [
+            0.2,
+            0.45
+          ]
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "zoom": 0.5,
+            "at": [
+              0.5,
+              0.45
+            ]
+          },
+          "motion": "flow",
+          "move": [
+            0.015,
+            -0.06
+          ],
+          "dur": 9,
+          "op": [
+            0.2,
+            0.55
+          ],
+          "copies": 2,
+          "blend": "screen"
+        }
+      ],
+      "scenes": {
+        "endormi": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "zoom": 0.4,
+              "at": [
+                0.4,
+                0.17
+              ]
+            },
+            "motion": "drift",
+            "move": [
+              0.02,
+              -0.01
+            ],
+            "dur": 18,
+            "op": [
+              0.2,
+              0.45
+            ]
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "zoom": 0.18,
+              "at": [
+                0.4,
+                0.2
+              ]
+            },
+            "motion": "flow",
+            "move": [
+              0.015,
+              -0.06
+            ],
+            "dur": 9,
+            "op": [
+              0.08,
+              0.3
+            ],
+            "copies": 2,
+            "blend": "screen"
+          }
+        ],
+        "eruption": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "zoom": 0.45,
+              "at": [
+                0.68,
+                0.23
+              ]
+            },
+            "motion": "drift",
+            "move": [
+              0.02,
+              -0.01
+            ],
+            "dur": 18,
+            "op": [
+              0.2,
+              0.45
+            ]
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "zoom": 0.28,
+              "at": [
+                0.68,
+                0.26
+              ]
+            },
+            "motion": "flow",
+            "move": [
+              0.015,
+              -0.06
+            ],
+            "dur": 9,
+            "op": [
+              0.2,
+              0.55
+            ],
+            "copies": 2,
+            "blend": "screen"
+          }
+        ],
+        "lave": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "zoom": 0.4,
+              "at": [
+                0.3,
+                0.66
+              ]
+            },
+            "motion": "drift",
+            "move": [
+              0.02,
+              -0.01
+            ],
+            "dur": 18,
+            "op": [
+              0.2,
+              0.45
+            ]
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "zoom": 0.26,
+              "at": [
+                0.29,
+                0.72
+              ]
+            },
+            "motion": "flow",
+            "move": [
+              0.015,
+              -0.06
+            ],
+            "dur": 9,
+            "op": [
+              0.2,
+              0.55
+            ],
+            "copies": 2,
+            "blend": "screen"
+          }
+        ]
+      }
+    }
+  },
+  "ring": {
+    "slug": "bague",
+    "caveat": null,
+    "scenes": [
+      {
+        "id": "perdue",
+        "variation": "Perdre sa bague"
+      },
+      {
+        "id": "fiancailles",
+        "variation": "Recevoir une bague de fiançailles"
+      },
+      {
+        "id": "serree",
+        "variation": "Une bague trop serrée"
+      }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "zoom": 0.36,
+              "at": [
+                0.8,
+                0.7
+              ]
+            },
+            "motion": "drift",
+            "move": [
+              0.02,
+              0.01
+            ],
+            "dur": 16,
+            "op": [
+              0.15,
+              0.4
+            ]
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "zoom": 0.18,
+              "at": [
+                0.8,
+                0.73
+              ]
+            },
+            "motion": "pulse",
+            "dur": 3.2,
+            "op": [
+              0.1,
+              0.6
+            ],
+            "blend": "screen"
+          }
+        ],
+        "portrait": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "zoom": 0.6,
+              "at": [
+                0.51,
+                0.65
+              ]
+            },
+            "motion": "drift",
+            "move": [
+              0.02,
+              0.01
+            ],
+            "dur": 16,
+            "op": [
+              0.15,
+              0.4
+            ]
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "zoom": 0.28,
+              "at": [
+                0.51,
+                0.67
+              ]
+            },
+            "motion": "pulse",
+            "dur": 3.2,
+            "op": [
+              0.1,
+              0.6
+            ],
+            "blend": "screen"
+          }
+        ]
+      },
+      "plate": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "zoom": 0.4,
+            "at": [
+              0.52,
+              0.52
+            ]
+          },
+          "motion": "drift",
+          "move": [
+            0.02,
+            0.01
+          ],
+          "dur": 16,
+          "op": [
+            0.15,
+            0.4
+          ]
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "zoom": 0.2,
+            "at": [
+              0.52,
+              0.54
+            ]
+          },
+          "motion": "pulse",
+          "dur": 3.2,
+          "op": [
+            0.1,
+            0.6
+          ],
+          "blend": "screen"
+        }
+      ],
+      "thumb": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "zoom": 0.7,
+            "at": [
+              0.5,
+              0.5
+            ]
+          },
+          "motion": "drift",
+          "move": [
+            0.02,
+            0.01
+          ],
+          "dur": 16,
+          "op": [
+            0.15,
+            0.4
+          ]
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "zoom": 0.5,
+            "at": [
+              0.5,
+              0.45
+            ]
+          },
+          "motion": "pulse",
+          "dur": 3.2,
+          "op": [
+            0.1,
+            0.6
+          ],
+          "blend": "screen"
+        }
+      ]
+    }
+  },
+  "waterfall": {
+    "slug": "cascade",
+    "caveat": null,
+    "scenes": [
+      {
+        "id": "contemplation",
+        "variation": "Admirer une cascade de loin"
+      },
+      {
+        "id": "sous-eau",
+        "variation": "Se tenir sous une cascade"
+      },
+      {
+        "id": "chute",
+        "variation": "Tomber d'une cascade"
+      }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "zoom": 0.6,
+              "at": [
+                0.64,
+                0.5
+              ]
+            },
+            "motion": "drift",
+            "move": [
+              0.02,
+              -0.01
+            ],
+            "dur": 12,
+            "op": [
+              0.2,
+              0.5
+            ]
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "zoom": 0.4,
+              "at": [
+                0.66,
+                0.42
+              ]
+            },
+            "motion": "flow",
+            "move": [
+              0,
+              0.06
+            ],
+            "dur": 5,
+            "op": [
+              0.15,
+              0.45
+            ],
+            "copies": 2,
+            "blend": "screen"
+          }
+        ],
+        "portrait": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "zoom": 0.9,
+              "at": [
+                0.5,
+                0.4
+              ]
+            },
+            "motion": "drift",
+            "move": [
+              0.02,
+              -0.01
+            ],
+            "dur": 12,
+            "op": [
+              0.2,
+              0.5
+            ]
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "zoom": 0.6,
+              "at": [
+                0.5,
+                0.32
+              ]
+            },
+            "motion": "flow",
+            "move": [
+              0,
+              0.06
+            ],
+            "dur": 5,
+            "op": [
+              0.15,
+              0.45
+            ],
+            "copies": 2,
+            "blend": "screen"
+          }
+        ]
+      },
+      "plate": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "zoom": 0.75,
+            "at": [
+              0.5,
+              0.52
+            ]
+          },
+          "motion": "drift",
+          "move": [
+            0.02,
+            -0.01
+          ],
+          "dur": 12,
+          "op": [
+            0.2,
+            0.5
+          ]
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "zoom": 0.5,
+            "at": [
+              0.5,
+              0.45
+            ]
+          },
+          "motion": "flow",
+          "move": [
+            0,
+            0.06
+          ],
+          "dur": 5,
+          "op": [
+            0.15,
+            0.45
+          ],
+          "copies": 2,
+          "blend": "screen"
+        }
+      ],
+      "thumb": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "zoom": 0.7,
+            "at": [
+              0.5,
+              0.5
+            ]
+          },
+          "motion": "drift",
+          "move": [
+            0.02,
+            -0.01
+          ],
+          "dur": 12,
+          "op": [
+            0.2,
+            0.5
+          ]
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "zoom": 0.5,
+            "at": [
+              0.5,
+              0.45
+            ]
+          },
+          "motion": "flow",
+          "move": [
+            0,
+            0.06
+          ],
+          "dur": 5,
+          "op": [
+            0.15,
+            0.45
+          ],
+          "copies": 2,
+          "blend": "screen"
+        }
+      ]
+    }
+  },
+  "turtle": {
+    "slug": "tortue",
+    "caveat": null,
+    "scenes": [
+      {
+        "id": "nage",
+        "variation": "Une tortue dans l'eau"
+      },
+      {
+        "id": "carapace",
+        "variation": "Une tortue cachée dans sa carapace"
+      },
+      {
+        "id": "lenteur",
+        "variation": "Une tortue lente ou coincée"
+      }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "zoom": 0.6,
+              "at": [
+                0.64,
+                0.5
+              ]
+            },
+            "motion": "drift",
+            "move": [
+              0.015,
+              -0.015
+            ],
+            "dur": 16,
+            "op": [
+              0.15,
+              0.4
+            ]
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "zoom": 0.4,
+              "at": [
+                0.66,
+                0.42
+              ]
+            },
+            "motion": "pulse",
+            "dur": 4.5,
+            "op": [
+              0.15,
+              0.5
+            ],
+            "blend": "screen"
+          }
+        ],
+        "portrait": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "zoom": 0.9,
+              "at": [
+                0.5,
+                0.4
+              ]
+            },
+            "motion": "drift",
+            "move": [
+              0.015,
+              -0.015
+            ],
+            "dur": 16,
+            "op": [
+              0.15,
+              0.4
+            ]
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "zoom": 0.6,
+              "at": [
+                0.5,
+                0.32
+              ]
+            },
+            "motion": "pulse",
+            "dur": 4.5,
+            "op": [
+              0.15,
+              0.5
+            ],
+            "blend": "screen"
+          }
+        ]
+      },
+      "plate": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "zoom": 0.75,
+            "at": [
+              0.5,
+              0.52
+            ]
+          },
+          "motion": "drift",
+          "move": [
+            0.015,
+            -0.015
+          ],
+          "dur": 16,
+          "op": [
+            0.15,
+            0.4
+          ]
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "zoom": 0.5,
+            "at": [
+              0.5,
+              0.45
+            ]
+          },
+          "motion": "pulse",
+          "dur": 4.5,
+          "op": [
+            0.15,
+            0.5
+          ],
+          "blend": "screen"
+        }
+      ],
+      "thumb": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "zoom": 0.7,
+            "at": [
+              0.5,
+              0.5
+            ]
+          },
+          "motion": "drift",
+          "move": [
+            0.015,
+            -0.015
+          ],
+          "dur": 16,
+          "op": [
+            0.15,
+            0.4
+          ]
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "zoom": 0.5,
+            "at": [
+              0.5,
+              0.45
+            ]
+          },
+          "motion": "pulse",
+          "dur": 4.5,
+          "op": [
+            0.15,
+            0.5
+          ],
+          "blend": "screen"
+        }
+      ]
+    }
+  },
+  "mask": {
+    "slug": "masque",
+    "caveat": null,
+    "scenes": [
+      {
+        "id": "porter",
+        "variation": "Porter un masque"
+      },
+      {
+        "id": "colle",
+        "variation": "Ne pas pouvoir enlever son masque"
+      },
+      {
+        "id": "carnaval",
+        "variation": "Un carnaval ou un bal masqué"
+      }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "zoom": 0.6,
+              "at": [
+                0.64,
+                0.5
+              ]
+            },
+            "motion": "drift",
+            "move": [
+              0.02,
+              0.01
+            ],
+            "dur": 18,
+            "op": [
+              0.15,
+              0.4
+            ]
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "zoom": 0.4,
+              "at": [
+                0.66,
+                0.42
+              ]
+            },
+            "motion": "pulse",
+            "dur": 2.8,
+            "op": [
+              0.2,
+              0.65
+            ],
+            "blend": "screen"
+          }
+        ],
+        "portrait": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "zoom": 0.9,
+              "at": [
+                0.5,
+                0.4
+              ]
+            },
+            "motion": "drift",
+            "move": [
+              0.02,
+              0.01
+            ],
+            "dur": 18,
+            "op": [
+              0.15,
+              0.4
+            ]
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "zoom": 0.6,
+              "at": [
+                0.5,
+                0.32
+              ]
+            },
+            "motion": "pulse",
+            "dur": 2.8,
+            "op": [
+              0.2,
+              0.65
+            ],
+            "blend": "screen"
+          }
+        ]
+      },
+      "plate": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "zoom": 0.75,
+            "at": [
+              0.5,
+              0.52
+            ]
+          },
+          "motion": "drift",
+          "move": [
+            0.02,
+            0.01
+          ],
+          "dur": 18,
+          "op": [
+            0.15,
+            0.4
+          ]
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "zoom": 0.5,
+            "at": [
+              0.5,
+              0.45
+            ]
+          },
+          "motion": "pulse",
+          "dur": 2.8,
+          "op": [
+            0.2,
+            0.65
+          ],
+          "blend": "screen"
+        }
+      ],
+      "thumb": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "zoom": 0.7,
+            "at": [
+              0.5,
+              0.5
+            ]
+          },
+          "motion": "drift",
+          "move": [
+            0.02,
+            0.01
+          ],
+          "dur": 18,
+          "op": [
+            0.15,
+            0.4
+          ]
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "zoom": 0.5,
+            "at": [
+              0.5,
+              0.45
+            ]
+          },
+          "motion": "pulse",
+          "dur": 2.8,
+          "op": [
+            0.2,
+            0.65
+          ],
+          "blend": "screen"
+        }
+      ]
+    }
   }
 }
