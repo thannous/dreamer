@@ -11,6 +11,7 @@ import {
   type SleepSoundConfig,
   type SleepTimerMinutes,
 } from '@/lib/sleepSounds';
+import { endSleepTimer, showSleepTimer } from '@/services/noctaliaWidgets';
 import { ensureSleepSoundFile } from '@/services/sleepSoundFiles';
 
 const SLEEP_SOUND_VOLUME = 0.65;
@@ -41,6 +42,11 @@ type UseSleepSoundPlayerOptions = {
   durationMinutes: SleepTimerMinutes;
   title: string;
   albumTitle: string;
+  /**
+   * The words beside the countdown on the lock screen and in the Dynamic Island, while the
+   * sound plays and while it is paused. Without them (Lucid), no countdown leaves the app.
+   */
+  lockScreenTimer?: { caption: string; paused: string };
 };
 
 export function useSleepSoundPlayer({
@@ -48,6 +54,7 @@ export function useSleepSoundPlayer({
   durationMinutes,
   title,
   albumTitle,
+  lockScreenTimer,
 }: UseSleepSoundPlayerOptions) {
   const [resolved, setResolved] = useState<{ id: string; uri: string } | null>(null);
   const [downloadAttempt, setDownloadAttempt] = useState(0);
@@ -315,9 +322,33 @@ export function useSleepSoundPlayer({
     }
   }, [commitElapsedTime, hasStarted, status.playing, timerRunning]);
 
+  // The countdown on the lock screen and in the Dynamic Island follows the session: there
+  // while it plays or pauses, gone once it stops, runs out, or the screen is left (the
+  // sound stops with it). The system counts down; it hears only of a pause or a resume.
+  const focusedRef = useRef(false);
+  const timerCaption = lockScreenTimer?.caption;
+  const timerPaused = lockScreenTimer?.paused;
+  useEffect(() => {
+    if (timerCaption === undefined || timerPaused === undefined) return;
+    if (!focusedRef.current || !hasStarted || remainingMsRef.current <= 0) {
+      endSleepTimer();
+      return;
+    }
+    showSleepTimer({
+      sound: title,
+      caption: timerRunning ? timerCaption : timerPaused,
+      remainingMs: getRemainingMs(),
+      paused: !timerRunning,
+    });
+  }, [getRemainingMs, hasStarted, timerCaption, timerPaused, timerRunning, title]);
+
   useFocusEffect(
     useCallback(() => {
+      focusedRef.current = true;
       return () => {
+        // A paused session changes no state here, so the effect above would not hear of it.
+        focusedRef.current = false;
+        endSleepTimer();
         // Leaving the screen also cancels a retry that was waiting to start the sound.
         playAfterDownloadRef.current = null;
         commitElapsedTime();

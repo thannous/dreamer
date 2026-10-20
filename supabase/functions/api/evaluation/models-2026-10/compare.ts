@@ -9,7 +9,7 @@
  * by gemini-3.1-flash-lite-image (current) and gemini-nano-banana-2.1, both
  * with minimal thinking.
  */
-import Anthropic from 'https://esm.sh/@anthropic-ai/sdk@0.132.1?target=deno';
+import Anthropic from 'npm:@anthropic-ai/sdk@0.132.1';
 import { aiLanguageName } from '../../lib/aiLanguage.ts';
 import { ANALYZE_DREAM_SCHEMA, withoutArrayBounds } from '../../lib/schemas.ts';
 import {

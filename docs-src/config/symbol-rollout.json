@@ -29,33 +29,36 @@
       "label": "Lot 08, 30 packs complétés avec couvertures conservées"
     },
     "lot-09": {
-      "label": "Lot 09, 30 packs avec couvertures conservées et variantes portugaises complétées"
+      "label": "Lot 09, Hibou, Bateau, Grotte, Rose, Éclair, Baleine"
+    },
+    "lot-10": {
+      "label": "Lot 10, 29 packs; Bateau conservé depuis master"
     }
   },
   "symbols": {
     "abandonment": {
-      "lot": "lot-09"
+      "lot": "lot-10"
     },
     "accident": {
-      "lot": "lot-09"
+      "lot": "lot-10"
     },
     "airport": {
-      "lot": null
+      "lot": "lot-10"
     },
     "alien": {
       "lot": null
     },
     "angel": {
-      "lot": "lot-09"
+      "lot": "lot-10"
     },
     "ant": {
       "lot": null
     },
     "apocalypse": {
-      "lot": "lot-09"
+      "lot": "lot-10"
     },
     "arguing": {
-      "lot": "lot-09"
+      "lot": "lot-10"
     },
     "attack": {
       "lot": null
@@ -76,7 +79,7 @@
       "lot": null
     },
     "bathroom": {
-      "lot": null
+      "lot": "lot-10"
     },
     "beach": {
       "lot": null
@@ -85,19 +88,19 @@
       "lot": null
     },
     "bedroom": {
-      "lot": null
+      "lot": "lot-10"
     },
     "bee": {
       "lot": null
     },
     "bicycle": {
-      "lot": null
+      "lot": "lot-10"
     },
     "bird": {
       "lot": "lot-02"
     },
     "birth": {
-      "lot": null
+      "lot": "lot-10"
     },
     "bleeding": {
       "lot": null
@@ -106,7 +109,7 @@
       "lot": "lot-08"
     },
     "boat": {
-      "lot": null
+      "lot": "lot-09"
     },
     "book": {
       "lot": "lot-06"
@@ -127,7 +130,7 @@
       "lot": "lot-07"
     },
     "bus": {
-      "lot": null
+      "lot": "lot-10"
     },
     "butterfly": {
       "lot": "lot-01"
@@ -145,7 +148,7 @@
       "lot": "lot-04"
     },
     "cave": {
-      "lot": null
+      "lot": "lot-09"
     },
     "celebrity": {
       "lot": null
@@ -169,7 +172,7 @@
       "lot": "lot-07"
     },
     "classroom": {
-      "lot": null
+      "lot": "lot-10"
     },
     "cliff": {
       "lot": "lot-08"
@@ -199,7 +202,7 @@
       "lot": null
     },
     "coworker": {
-      "lot": "lot-09"
+      "lot": "lot-10"
     },
     "crocodile": {
       "lot": null
@@ -232,7 +235,7 @@
       "lot": "lot-06"
     },
     "doctor": {
-      "lot": "lot-09"
+      "lot": "lot-10"
     },
     "dog": {
       "lot": "lot-03"
@@ -289,7 +292,7 @@
       "lot": "lot-01"
     },
     "father": {
-      "lot": "lot-09"
+      "lot": "lot-10"
     },
     "feet": {
       "lot": null
@@ -325,13 +328,13 @@
       "lot": "lot-07"
     },
     "friend": {
-      "lot": "lot-09"
+      "lot": "lot-10"
     },
     "frog": {
       "lot": null
     },
     "funeral": {
-      "lot": null
+      "lot": "lot-10"
     },
     "garden": {
       "lot": null
@@ -349,10 +352,10 @@
       "lot": null
     },
     "grandfather": {
-      "lot": null
+      "lot": "lot-10"
     },
     "grandmother": {
-      "lot": "lot-09"
+      "lot": "lot-10"
     },
     "gun": {
       "lot": null
@@ -409,7 +412,7 @@
       "lot": null
     },
     "kitchen": {
-      "lot": null
+      "lot": "lot-10"
     },
     "knife": {
       "lot": null
@@ -436,7 +439,7 @@
       "lot": "lot-07"
     },
     "lightning": {
-      "lot": null
+      "lot": "lot-09"
     },
     "lion": {
       "lot": "lot-08"
@@ -475,7 +478,7 @@
       "lot": "lot-02"
     },
     "mother": {
-      "lot": "lot-09"
+      "lot": "lot-10"
     },
     "mountain": {
       "lot": "lot-04"
@@ -511,13 +514,13 @@
       "lot": "lot-07"
     },
     "owl": {
-      "lot": null
+      "lot": "lot-09"
     },
     "paralysis": {
       "lot": null
     },
     "partner": {
-      "lot": "lot-09"
+      "lot": "lot-10"
     },
     "passport": {
       "lot": null
@@ -535,7 +538,7 @@
       "lot": "lot-08"
     },
     "police": {
-      "lot": "lot-09"
+      "lot": "lot-10"
     },
     "pregnancy": {
       "lot": "lot-08"
@@ -565,10 +568,10 @@
       "lot": null
     },
     "road": {
-      "lot": null
+      "lot": "lot-10"
     },
     "rose": {
-      "lot": null
+      "lot": "lot-09"
     },
     "royalty": {
       "lot": "lot-07"
@@ -601,7 +604,7 @@
       "lot": null
     },
     "sibling": {
-      "lot": "lot-09"
+      "lot": "lot-10"
     },
     "sky": {
       "lot": null
@@ -628,13 +631,13 @@
       "lot": "lot-05"
     },
     "stranger": {
-      "lot": "lot-09"
+      "lot": "lot-10"
     },
     "street": {
       "lot": "lot-07"
     },
     "suitcase": {
-      "lot": null
+      "lot": "lot-10"
     },
     "sun": {
       "lot": "lot-08"
@@ -649,7 +652,7 @@
       "lot": null
     },
     "teacher": {
-      "lot": "lot-09"
+      "lot": "lot-10"
     },
     "teeth": {
       "lot": "lot-03"
@@ -730,7 +733,7 @@
       "lot": "lot-08"
     },
     "whale": {
-      "lot": null
+      "lot": "lot-09"
     },
     "wind": {
       "lot": "lot-07"
@@ -745,7 +748,7 @@
       "lot": "lot-06"
     },
     "workplace": {
-      "lot": null
+      "lot": "lot-10"
     },
     "worms": {
       "lot": null

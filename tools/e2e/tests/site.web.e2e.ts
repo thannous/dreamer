@@ -1367,6 +1367,19 @@ test('the pt-br dictionary links every pt-br symbol, searches and filters in Por
 // These journeys catch a decoded-but-wrong portrait, a transparent rectangle, an effect placed
 // entirely outside a crop, a scene with the wrong editorial reading, and a moving base painting.
 const NEW_SYMBOL_PACKS = [
+  {"id": "suitcase", "slug": "valise", "name": "Valise", "scenes": ["packing-a-suitcase", "a-heavy-suitcase", "lost-luggage"]},
+  {"id": "airport", "slug": "aeroport", "name": "Aéroport", "scenes": ["missing-a-flight", "not-finding-your-gate", "losing-your-passport-or-ticket"]},
+  {"id": "bicycle", "slug": "velo", "name": "Vélo", "scenes": ["riding-a-bicycle-with-ease", "falling-off-a-bike", "pedaling-uphill"]},
+  {"id": "bus", "slug": "bus", "name": "Bus", "scenes": ["missing-the-bus", "taking-the-wrong-bus", "not-knowing-where-to-get-off"]},
+  {"id": "road", "slug": "route", "name": "Route", "scenes": ["a-long-or-endless-road", "a-fork-in-the-road", "a-blocked-or-broken-road"]},
+  {"id": "workplace", "slug": "lieu-de-travail", "name": "Lieu de travail", "scenes": ["your-real-workplace", "an-old-job", "being-late-or-unprepared-at-work"]},
+  {"id": "kitchen", "slug": "cuisine", "name": "Cuisine", "scenes": ["cooking-a-meal", "a-messy-or-dirty-kitchen", "your-childhood-kitchen"]},
+  {"id": "bedroom", "slug": "chambre", "name": "Chambre", "scenes": ["your-childhood-bedroom", "an-unfamiliar-bedroom", "someone-comes-into-your-bedroom"]},
+  {"id": "bathroom", "slug": "salle-de-bain", "name": "Salle de bain", "scenes": ["can-t-find-a-toilet", "a-toilet-with-no-door-or-walls", "someone-walks-in"]},
+  {"id": "classroom", "slug": "salle-de-classe", "name": "Salle de classe", "scenes": ["called-to-the-board", "being-the-teacher", "your-old-classroom"]},
+  {"id": "grandfather", "slug": "grand-pere", "name": "Grand-père", "scenes": ["talking-with-your-grandfather", "a-deceased-grandfather", "a-sick-or-ageing-grandfather"]},
+  {"id": "funeral", "slug": "enterrement", "name": "Enterrement", "scenes": ["your-own-funeral", "the-funeral-of-someone-who-is-alive", "the-funeral-of-someone-who-has-died"]},
+  {"id": "birth", "slug": "naissance", "name": "Naissance", "scenes": ["giving-birth", "watching-someone-else-give-birth", "a-difficult-or-painful-birth"]},
   {"id": "grandmother", "slug": "grand-mere", "name": "Grand-mère", "scenes": ["talking-with-your-grandmother", "a-grandmother-who-has-died", "your-grandmother-s-house"]},
   {"id": "coworker", "slug": "collegue", "name": "Collègue", "scenes": ["working-with-a-coworker", "arguing-with-a-coworker", "a-coworker-taking-credit-for-your-work"]},
   {"id": "doctor", "slug": "medecin", "name": "Médecin", "scenes": ["being-examined-by-a-doctor", "getting-bad-news-from-a-doctor", "a-doctor-who-does-not-listen"]},
@@ -1543,6 +1556,95 @@ for (const page of NEW_SYMBOL_PACKS) {
         expect(localized.overflow).toBe(false);
         expectSixScene(localized, page.scenes[0]);
       }
+    }
+  });
+}
+
+// Lot 08 (owner request 2026-10-20): six packs on the common engine, listed here independently of the
+// configuration. In each of the six languages every painting (hero, side illustration, three scenes)
+// moves its two effects, the title is the symbol's name alone and each scene shows its published card;
+// on a phone the hero takes 75svh from the top with the dedicated portrait painting.
+const SYMBOL_PATHS: Record<string, string> = { fr: 'symboles', en: 'symbols', es: 'simbolos', de: 'traumsymbole', it: 'simboli', 'pt-br': 'simbolos' };
+const LOT_08_PACKS: { id: string; scenes: string[]; pages: Record<string, [string, string]> }[] = [
+  { id: 'owl', scenes: ['regard', 'cri', 'blanc'], pages: { fr: ['hibou', 'Hibou'], en: ['owl', 'Owl'], es: ['buho', 'Búho'], de: ['eule', 'Eule'], it: ['gufo', 'Gufo'], 'pt-br': ['coruja', 'Coruja'] } },
+  { id: 'boat', scenes: ['calme', 'tempete', 'naufrage'], pages: { fr: ['bateau', 'Bateau'], en: ['boat', 'Boat'], es: ['barco', 'Barco'], de: ['boot', 'Boot'], it: ['barca', 'Barca'], 'pt-br': ['barco', 'Barco'] } },
+  { id: 'cave', scenes: ['abri', 'bloquee', 'exploration'], pages: { fr: ['grotte', 'Grotte'], en: ['cave', 'Cave'], es: ['cueva', 'Cueva'], de: ['hohle', 'Höhle'], it: ['grotta', 'Grotta'], 'pt-br': ['caverna', 'Caverna'] } },
+  { id: 'rose', scenes: ['rouge', 'fanee', 'epine'], pages: { fr: ['rose', 'Rose'], en: ['rose', 'Rose'], es: ['rosa', 'Rosa'], de: ['rose', 'Rose'], it: ['rosa', 'Rosa'], 'pt-br': ['rosa', 'Rosa'] } },
+  { id: 'lightning', scenes: ['lointain', 'arbre', 'abri'], pages: { fr: ['eclair', 'Éclair'], en: ['lightning', 'Lightning'], es: ['rayo', 'Rayo'], de: ['blitz', 'Blitz'], it: ['fulmine', 'Fulmine'], 'pt-br': ['raio', 'Raio'] } },
+  { id: 'whale', scenes: ['proche', 'echouee', 'saut'], pages: { fr: ['baleine', 'Baleine'], en: ['whale', 'Whale'], es: ['ballena', 'Ballena'], de: ['wal', 'Wal'], it: ['balena', 'Balena'], 'pt-br': ['baleia', 'Baleia'] } },
+];
+
+for (const pack of LOT_08_PACKS) {
+  test('lot 09: ' + pack.id + ' moves two effects on its hero, side illustration and three scenes in the six languages, and takes 75svh on a phone', { timeout: 300_000 }, async ({ app, browser, screen }) => {
+    const pathOf = (lang: string) => `/${lang}/${SYMBOL_PATHS[lang]}/${pack.pages[lang][0]}.html`;
+    // A painting on screen runs both effects: two channels, two different decoded textures with
+    // visible pixels, each actually changing.
+    const expectLiving = async (path: string, name: string) => {
+      await expect.poll(() => browser.evaluate(readSurfaces).then(all => [surfaceNamed(all, name).living, surfaceNamed(all, name).state]), { timeout: 15_000 }).toEqual(['ready', 'running']);
+      const first = surfaceNamed(await browser.evaluate(readSurfaces), name);
+      expect(first.channels, `${path} ${name}`).toEqual(['a', 'b']);
+      expect(first.textures[0]).not.toBe(first.textures[1]);
+      expect(first.opaque.every(count => count > 0), `${path} ${name}: both textures have visible pixels`).toBe(true);
+      expect(first.stretch.every(gap => gap < 0.01), `${path} ${name}: both textures keep their ratio`).toBe(true);
+      await expect.poll(() => browser.evaluate(readSurfaces).then(all => surfaceNamed(all, name).frames.map((frame, index) => frame !== first.frames[index]))).toEqual([true, true]);
+    };
+
+    await browser.setViewport({ width: 1920, height: 1080 });
+    for (const lang of Object.keys(pack.pages)) {
+      const path = pathOf(lang);
+      await app.open(path);
+      // The previous page ends in reduced motion: the live preference returns to none once this page is open.
+      await browser.emulateMedia({ reducedMotion: 'no-preference' });
+      // The symbol's name alone, without a "Meaning" label, in every language.
+      await expect(screen.getByRole('heading', { level: 1 })).toHaveText(pack.pages[lang][1]);
+      const config = await browser.evaluate(readAtlasSix).then(read => read.config);
+      expect(config?.surfaces.map(surface => surface.name), path).toEqual(['hero', 'plate', ...pack.scenes.map(scene => 'scene-' + scene)]);
+      // On every painting, channel a is this pack's own layer and channel b its own accent.
+      for (const surface of config!.surfaces) {
+        for (const [scene, { layers }] of Object.entries(surface.scenes)) {
+          expect(layers.map(layer => [layer.channel, layer.src.replace(/-\d+-[0-9a-f]{12}\.\w+$/, '')]), `${path} ${surface.name} ${scene}`)
+            .toEqual([['a', `/img/symbols/atlas-six-v2/${pack.id}/layer`], ['b', `/img/symbols/atlas-six-v2/${pack.id}/accent`]]);
+        }
+      }
+
+      await expectLiving(path, 'hero');
+      const wide = await browser.evaluate(readAtlasSix);
+      expect([wide.scene, wide.src.includes('/' + pack.id + '/hero-'), wide.overflow, wide.paintingAnimations]).toEqual(['landscape', true, false, 0]);
+      await browser.evaluate(() => { document.querySelector('[data-living-surface="plate"]')!.scrollIntoView({ block: 'center', behavior: 'instant' }); return window.scrollY; });
+      await expectLiving(path, 'plate');
+      await browser.evaluate(() => { document.querySelector('.atlas-scene-list')!.scrollIntoView({ block: 'center', behavior: 'instant' }); return window.scrollY; });
+      for (const scene of pack.scenes) await expectLiving(path, 'scene-' + scene);
+      expect((await browser.evaluate(readAtlasSix)).thumbsClear).toEqual([true, true, true]);
+      // Each scene, chosen from its label, shows its published variation card whole.
+      for (const scene of pack.scenes) {
+        const label = await browser.evaluate((id: string) => document.querySelector('label[for="atlas-scene-' + id + '"] .atlas-scene-label')!.textContent!.trim(), scene);
+        await screen.getByText(label, { exact: true }).first().tap();
+        expectSixScene(await browser.evaluate(readAtlasSix), scene);
+      }
+      await app.screenshot('lot08-' + pack.id + '-' + lang + '-1920-scenes');
+      // No pause control on any painting; reduced motion stops them all.
+      expect(await browser.evaluate(() => document.querySelectorAll('.symbol-hero button, [data-living-surface] button, .atlas-scenes button, .slp-toggle').length)).toBe(0);
+      await browser.emulateMedia({ reducedMotion: 'reduce' });
+      await expect.poll(() => browser.evaluate(readSurfaces).then(all => [...new Set(all.map(surface => surface.state))])).toEqual(['reduced']);
+    }
+
+    await browser.setViewport({ width: 390, height: 844 });
+    for (const lang of Object.keys(pack.pages)) {
+      const path = pathOf(lang);
+      await app.open(path);
+      await browser.emulateMedia({ reducedMotion: 'no-preference' });
+      await expectLiving(path, 'hero');
+      const phone = await browser.evaluate(readAtlasSix);
+      expect([phone.hero.top, phone.overflow, phone.objectFit, phone.scene], path).toEqual([0, false, 'cover', 'portrait']);
+      expect(phone.hero.height).toBeCloseTo(844 * 0.75, 0);
+      expect(phone.src).toMatch(new RegExp('/atlas-six-v2/' + pack.id + '/portrait-[0-9]+-[0-9a-f]{12}\\.(?:avif|webp)$'));
+      expect(phone.painted).toBeLessThanOrEqual(phone.viewport.width * 1.01);
+      // At DPR2 the 390px portrait needs 780 source pixels: its sources offer them. The side
+      // illustration is neither shown nor fetched on a phone.
+      expect(await browser.evaluate(() => Math.max(...Array.from(document.querySelectorAll('.symbol-hero-media source[media]'))
+        .flatMap(source => (source.getAttribute('srcset') ?? '').split(',').map(candidate => Number(candidate.trim().split(' ')[1]?.replace('w', '') ?? 0)))))).toBeGreaterThanOrEqual(780);
+      expect(await browser.evaluate(() => performance.getEntriesByType('resource').some(entry => /\/plate-[0-9]+-/.test(entry.name)))).toBe(false);
+      if (lang === 'fr') await app.screenshot('lot08-' + pack.id + '-fr-390-hero');
     }
   });
 }
