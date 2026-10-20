@@ -104,7 +104,9 @@ export function RecordingConversation(props: Props) {
       keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false} testID="capture-chat-thread"
       onScroll={({ nativeEvent }) => { nearBottom.current = nativeEvent.contentSize.height - nativeEvent.contentOffset.y - nativeEvent.layoutMeasurement.height < 48; }}
       scrollEventThrottle={32}
-      onContentSizeChange={() => { if (nearBottom.current) thread.current?.scrollToEnd({ animated: false }); }}>
+      onContentSizeChange={() => { if (nearBottom.current) thread.current?.scrollToEnd({ animated: false }); }}
+      // The listening halo takes room from the thread: keep the question being answered in view.
+      onLayout={() => { if (nearBottom.current) thread.current?.scrollToEnd({ animated: false }); }}>
       {sections.map((section, index) => section.text.trim() ? <React.Fragment key={index}>
         {section.question ? <MarkdownText style={[styles.question, { color: tokens.text.primary }]}>{section.question}</MarkdownText> : null}
         <Pressable onPress={props.onReview} disabled={locked || !!props.review} accessibilityRole="button" accessibilityLabel={t('recording.tell.edit')}

@@ -19,7 +19,7 @@ import { subscribeVoiceLevel } from '@/lib/voiceLevel';
 
 /** The halo's box where it shows: above the reply in Tell, in the text area's foot in Write. */
 const SIZES = {
-  regular: { width: 240, height: 88 },
+  regular: { width: 240, height: 72 },
   inline: { width: 176, height: 48 },
 } as const;
 
@@ -51,9 +51,10 @@ export function ListeningHalo({ label, size = 'regular', testID, style }: Props)
     level.set(withSpring(toLevel(value), { duration: 220, dampingRatio: 0.85 }));
   }), [level]);
 
+  // With reduced motion the voice only brightens the halo; it never grows.
   const haloStyle = useAnimatedStyle(() => ({
     opacity: 0.5 + level.get() * 0.5,
-    transform: [{ scaleX: 0.78 + level.get() * 0.36 }, { scaleY: 0.64 + level.get() * 0.56 }],
+    transform: reduced ? [] : [{ scaleX: 0.78 + level.get() * 0.36 }, { scaleY: 0.64 + level.get() * 0.56 }],
   }));
   const breathe = useMemo<CSSStyle<ViewStyle>>(() => (reduced ? {} : {
     animationName: { from: { transform: [{ scale: 0.94 }] }, to: { transform: [{ scale: 1.04 }] } },
@@ -88,11 +89,12 @@ export function ListeningHalo({ label, size = 'regular', testID, style }: Props)
           </Svg>
         </Animated.View>
       </Animated.View>
-      <View style={styles.labelRow}>
+      <View style={[styles.labelRow, size === 'inline' && styles.labelRowInline]}>
         <Text
           accessibilityLiveRegion="polite"
           numberOfLines={1}
-          style={[styles.label, { color: tokens.text.primary }]}
+          maxFontSizeMultiplier={1.3}
+          style={[styles.label, size === 'inline' && styles.labelInline, { color: tokens.text.primary }]}
           testID={testID}
         >
           {label}
@@ -105,5 +107,8 @@ export function ListeningHalo({ label, size = 'regular', testID, style }: Props)
 const styles = StyleSheet.create({
   field: { alignItems: 'center', justifyContent: 'center' },
   labelRow: { paddingHorizontal: 12 },
+  // In the text area's foot the label hugs the left edge, clear of the buttons on the right.
+  labelRowInline: { alignSelf: 'stretch', paddingLeft: 16 },
   label: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 14, lineHeight: 20, textAlign: 'center' },
+  labelInline: { textAlign: 'left' },
 });

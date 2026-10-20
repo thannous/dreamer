@@ -236,6 +236,24 @@ describe('NoctaliaBottomNav', () => {
     expect(barBox(TID.Tab.AddDream)).toMatchObject({ start: margin, end: margin, height: 86 });
   });
 
+  // Android cannot shrink a label to fit with a floor, so where a full name may overflow
+  // at 12 points it shows the short one instead of cutting the full one with an ellipsis.
+  it.each([
+    { os: 'android' as const, width: 375, fontScale: 1, compact: true },
+    { os: 'android' as const, width: 412, fontScale: 1.15, compact: true },
+    { os: 'android' as const, width: 412, fontScale: 1, compact: false },
+    { os: 'web' as const, width: 375, fontScale: 1.15, compact: false },
+  ])('uses $os short tab names at $width dp and text scale $fontScale: $compact', ({ os, width, fontScale, compact }) => {
+    mockPlatformOS = os;
+    mockWindowWidth = width;
+    mockFontScale = fontScale;
+    render(<NoctaliaBottomNav activeKey="addDream" />);
+
+    const labels = barLabels().map((label) => label.textContent);
+    expect(labels).toContain(compact ? 'nav.home_compact' : 'nav.home');
+    expect(labels).toContain(compact ? 'nav.stats_compact' : 'nav.stats');
+  });
+
   it('keeps the capture label stable when another tab is active', () => {
     render(<NoctaliaBottomNav activeKey="home" />);
 

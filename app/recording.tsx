@@ -1716,15 +1716,38 @@ function RecordingScreen() {
   }, [completeRecordingVoiceHint, isHydrated, toggleRecording]);
 
   // On Capture, the bar's own Capture button acts on the open capture: in writing mode it
-  // puts the cursor at the end of the text, in speaking mode it turns the microphone on or off.
+  // puts the cursor at the end of the text, in speaking mode it turns the microphone on or off
+  // by the conversation's own rules: muting never sends the reply, and the microphone waits
+  // while a question is on its way.
   const handleCaptureNavPress = useCallback(() => {
-    if (interactionDisabled) return;
+    if (interactionDisabled || editableCapture) return;
     if (inputMode === 'voice') {
-      if (isVoiceSupported) void handleVoiceCapturePress();
+      if (!isVoiceSupported) return;
+      if (isVoiceListening) {
+        captureMicrophoneMutedRef.current = true;
+        void stopRecording({ silent: true, reason: 'stop' });
+        return;
+      }
+      if (conversation.loading || isPreparingRecording) return;
+      void handleVoiceCapturePress();
       return;
     }
+    if (captureReview) return;
     focusTranscriptEnd(baseTranscriptRef.current || transcript);
-  }, [focusTranscriptEnd, handleVoiceCapturePress, inputMode, interactionDisabled, isVoiceSupported, transcript]);
+  }, [
+    captureReview,
+    conversation.loading,
+    editableCapture,
+    focusTranscriptEnd,
+    handleVoiceCapturePress,
+    inputMode,
+    interactionDisabled,
+    isPreparingRecording,
+    isVoiceListening,
+    isVoiceSupported,
+    stopRecording,
+    transcript,
+  ]);
 
   const handleMicRationaleClose = useCallback(() => {
     hasSeenMicRationaleRef.current = true;

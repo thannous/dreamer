@@ -385,7 +385,7 @@ export default function TabLayout() {
             accessibilityLabel: t('nav.home'),
           }),
           tabBarIcon: ({ focused }) => (
-            <TabBarItem index={0} icon="house" activeIcon="house.fill" label={t((navigationLayout.largeText || navigationLayout.narrow) ? 'nav.home_compact' : 'nav.home')} focused={focused} palette={palette} geometry={geometry} />
+            <TabBarItem index={0} icon="house" activeIcon="house.fill" label={t(navigationLayout.compactLabels ? 'nav.home_compact' : 'nav.home')} focused={focused} palette={palette} geometry={geometry} />
           ),
           tabBarItemStyle: getBottomNavigationItemStyle(0, navigationLayout),
         }}
@@ -426,7 +426,7 @@ export default function TabLayout() {
             />
           ),
           tabBarIcon: ({ focused }) => (
-            <AddDreamTabItem focused={focused} label={t((navigationLayout.largeText || navigationLayout.narrow) ? 'nav.capture_dream_compact' : 'nav.capture_dream')} palette={palette} geometry={geometry} />
+            <AddDreamTabItem focused={focused} label={t(navigationLayout.compactLabels ? 'nav.capture_dream_compact' : 'nav.capture_dream')} palette={palette} geometry={geometry} />
           ),
           tabBarItemStyle: getBottomNavigationItemStyle(2, navigationLayout),
         }}
@@ -443,7 +443,7 @@ export default function TabLayout() {
             accessibilityLabel: t('nav.stats'),
           }),
           tabBarIcon: ({ focused }) => (
-            <TabBarItem index={3} icon="chart.line.uptrend.xyaxis" label={t((navigationLayout.largeText || navigationLayout.narrow) ? 'nav.stats_compact' : 'nav.stats')} focused={focused} palette={palette} geometry={geometry} />
+            <TabBarItem index={3} icon="chart.line.uptrend.xyaxis" label={t(navigationLayout.compactLabels ? 'nav.stats_compact' : 'nav.stats')} focused={focused} palette={palette} geometry={geometry} />
           ),
           tabBarItemStyle: getBottomNavigationItemStyle(3, navigationLayout),
         }}
@@ -460,7 +460,7 @@ export default function TabLayout() {
             accessibilityLabel: t('nav.explore'),
           }),
           tabBarIcon: ({ focused }) => (
-            <TabBarItem index={4} icon="sparkles" label={t((navigationLayout.largeText || navigationLayout.narrow) ? 'nav.explore_compact' : 'nav.explore')} focused={focused} palette={palette} geometry={geometry} />
+            <TabBarItem index={4} icon="sparkles" label={t(navigationLayout.compactLabels ? 'nav.explore_compact' : 'nav.explore')} focused={focused} palette={palette} geometry={geometry} />
           ),
           tabBarItemStyle: getBottomNavigationItemStyle(4, navigationLayout),
         }}

@@ -11,12 +11,13 @@ export type BlurTarget = RefObject<ComponentRef<typeof View> | null>;
 /**
  * The floating bar's frosted glass, drawn behind its tabs and clipped to its corners.
  * iOS and web blur whatever lies behind. Android blurs only a declared BlurTargetView,
- * so it needs `blurTarget`; without one it keeps a denser tint and no blur.
+ * and only from Android 12 (API 31); without a target, or on older Android, it keeps a
+ * denser tint and no blur so labels stay legible over the content scrolling beneath.
  */
 export function TabBarGlass({ borderRadius, blurTarget }: { borderRadius: number; blurTarget?: BlurTarget }) {
   const { colors, mode } = useTheme();
   const { nav } = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
-  const blurs = Platform.OS !== 'android' || Boolean(blurTarget);
+  const blurs = Platform.OS !== 'android' || (Boolean(blurTarget) && Number(Platform.Version) >= 31);
   return (
     <View pointerEvents="none" style={[StyleSheet.absoluteFill, { borderRadius, overflow: 'hidden' }]}>
       {blurs ? (
@@ -24,7 +25,7 @@ export function TabBarGlass({ borderRadius, blurTarget }: { borderRadius: number
           intensity={70}
           tint={mode === 'dark' ? 'systemUltraThinMaterialDark' : 'systemUltraThinMaterialLight'}
           blurMethod="dimezisBlurViewSdk31Plus"
-          blurTarget={blurTarget}
+          blurTarget={blurs ? blurTarget : undefined}
           style={StyleSheet.absoluteFill}
         />
       ) : null}
