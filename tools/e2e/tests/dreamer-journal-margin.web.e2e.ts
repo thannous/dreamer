@@ -154,24 +154,29 @@ for (const theme of ['light', 'dark'] as const) {
 
     const noImage = await findDream(page, 'Garden in the Clouds');
     const noImageId = await noImage.getAttribute('data-testid');
-    await expect(noImage.getByTestId(`journal.cover.${noImageId}`)).toHaveCount(0);
     await expect(noImage.getByTestId(`journal.metadata.${noImageId}`)).toContainText('Lucid Dream');
     await expect(noImage.getByTestId(`journal.metadata.${noImageId}`)).toContainText('Recurring');
     await expect(noImage.getByTestId(`journal.metadata.${noImageId}`)).toContainText('Memory');
     await expect(noImage).toContainText('I was walking through a beautiful garden');
-    // No frame sets a dream without a painting apart: its seal stands where the painting
-    // would, at the top left, level with the icons and above the date.
+    // Revised 2026-10-20 (was a compact card with a 60 pt seal at its top left): the owner asked
+    // for one card size, so a dream without a painting keeps the painting's frame and its seal
+    // stands in it, centred between the icons and the dream's text.
+    const noImageCover = noImage.getByTestId(`journal.cover.${noImageId}`);
     await expect(noImage.getByTestId(`journal.seal.${noImageId}`)).toBeVisible();
+    await expect.poll(async () => {
+      const bounds = await noImageCover.boundingBox();
+      return bounds ? Math.abs(bounds.height - Math.min(bounds.width * 16 / 9, Math.round(screenHeight * 0.8))) : Infinity;
+    }).toBeLessThanOrEqual(1);
     const sealPlace = await noImage.evaluate((node, cardId) => {
       const box = (testId: string) => node.querySelector(`[data-testid="${testId}.${cardId}"]`)!.getBoundingClientRect();
-      const [card, seal, share, preview] = [node.getBoundingClientRect(), box('journal.seal'), box('journal.share'), box('journal.preview')];
+      const [cover, seal, share, text] = [box('journal.cover'), box('journal.seal'), box('journal.share'), box('journal.text')];
       return {
-        frame: parseFloat(getComputedStyle(node.querySelector(`[data-testid="journal.text.${cardId}"]`)!).borderTopWidth),
-        top: seal.top - card.top, left: seal.left - card.left, width: seal.width,
-        clearOfIcons: seal.right < share.left, aboveText: seal.bottom < preview.top,
+        centred: Math.abs(seal.left + seal.width / 2 - cover.left - cover.width / 2) <= 1,
+        clearOfIcons: seal.top > share.bottom, aboveText: seal.bottom < text.top,
+        textAtFoot: Math.abs(text.bottom - cover.bottom) <= 1,
       };
     }, noImageId);
-    expect(sealPlace).toEqual({ frame: 0, top: 16, left: 20, width: 60, clearOfIcons: true, aboveText: true });
+    expect(sealPlace).toEqual({ centred: true, clearOfIcons: true, aboveText: true, textAtFoot: true });
     await page.screenshot({ path: testInfo.outputPath(`${theme}-text-only.png`) });
     for (const viewport of [{ width: 768, height: 1024 }, { width: 1440, height: 1000 }, { width: 320, height: 640 }]) {
       await page.setViewportSize(viewport);
@@ -182,6 +187,12 @@ for (const theme of ['light', 'dark'] as const) {
         const columns = innerWidth >= 1440 ? 4 : innerWidth >= 768 ? 2 : 1;
         return node.isConnected && rect.width > 0 && rect.x >= 0
           && rect.right <= innerWidth && rect.width <= innerWidth / columns;
+      }).catch(() => false)).toBe(true);
+      // However narrow the card, its seal stays below the icons and above the dream's text.
+      await expect.poll(async () => noImage.evaluate((node) => {
+        const box = (prefix: string) => node.querySelector(`[data-testid^="${prefix}"]`)!.getBoundingClientRect();
+        const [seal, share, text] = [box('journal.seal.'), box('journal.share.'), box('journal.text.')];
+        return seal.top >= share.bottom && seal.bottom <= text.top;
       }).catch(() => false)).toBe(true);
       await page.screenshot({ path: testInfo.outputPath(`${theme}-${viewport.width}-text-only.png`) });
     }
@@ -241,21 +252,23 @@ test('failed thumbnail falls back to the full illustration', async ({ page, cont
   await page.screenshot({ path: testInfo.outputPath('thumbnail-full-fallback.png') });
 });
 
-test('failed illustration leaves a compact readable entry that still opens', async ({ page, context }, testInfo) => {
+test('failed illustration leaves the seal in the painting frame and still opens', async ({ page, context }, testInfo) => {
   // Both the thumbnail and the full illustration of the bundled cat art fail.
   await context.route(/cat(\.[^/]*)?\.webp/, route => route.abort());
   await populatedJournal(page);
   const card = await findDream(page, 'The Infinite Library');
   const id = await card.getAttribute('data-testid');
-  await expect(card.getByTestId(`journal.cover.${id}`)).toHaveCount(0);
   await expect(card).toContainText('I found myself in an enormous library');
-  // Revised 2026-10-20 (was < 260): the owner asked for the dream's seal in place of the text
-  // card's frame, so its 60 pt seal now heads the entry. A painting's frame would still be
-  // well over twice as tall. The cover's frame shows while its sources are tried, then the
-  // entry settles compact.
-  await expect.poll(async () => (await card.boundingBox())?.height ?? Infinity).toBeLessThan(300);
-  await expect(card.getByTestId(`journal.cover.${id}`)).toHaveCount(0);
+  // Revised 2026-10-20 (was a compact entry under 300 px with no frame): the owner asked for one
+  // card size, so once every source has failed the dream's seal takes the painting's place and
+  // the card keeps the painting's frame.
   await expect(card.getByTestId(`journal.seal.${id}`)).toBeVisible();
+  const cover = card.getByTestId(`journal.cover.${id}`);
+  const screenHeight = await page.evaluate(() => screen.height);
+  await expect.poll(async () => {
+    const bounds = await cover.boundingBox();
+    return bounds ? Math.abs(bounds.height - Math.min(bounds.width * 16 / 9, Math.round(screenHeight * 0.8))) : Infinity;
+  }).toBeLessThanOrEqual(1);
   await page.screenshot({ path: testInfo.outputPath('failed-illustration-text-fallback.png') });
   await card.click();
   await expect(page.getByTestId('component.transcriptCard')).toContainText('Books were floating around me');

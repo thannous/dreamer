@@ -89,6 +89,7 @@ jest.mock('expo-image', () => ({
 
 jest.mock('@/context/ThemeContext', () => ({
   useTheme: () => ({
+    mode: 'dark',
     colors: {
       backgroundCard: '#111',
       backgroundSecondary: '#222',
