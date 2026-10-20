@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import React, { useMemo, useState } from 'react';
-import { Platform, Text, View, useWindowDimensions } from 'react-native';
+import { Platform, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { DreamAnalysisContent } from '@/components/journal/DreamAnalysisContent';
@@ -16,8 +16,10 @@ import { DecorativeCopy } from '@/components/journal/DecorativeCopy';
 import { SavedDreamMoment } from '@/components/journal/SavedDreamMoment';
 import { SEAL_EMBLEMS, SEAL_NAME_LINES } from '@/components/journal/story/sealMarks';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { PaintingAtRest } from '@/components/ui/PaintingTilt';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
+import { useDreamCoverPlaceholder } from '@/hooks/useDreamCoverPlaceholder';
 import { useDreamMedia } from '@/hooks/useDreamMedia';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -43,6 +45,7 @@ export function JournalPagePreview({ dream, folio, height }: { dream: DreamAnaly
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { formatDreamDate, formatDreamTime, formatDreamStamp } = useLocaleFormatting();
   const media = useDreamMedia(dream);
+  const coverPlaceholder = useDreamCoverPlaceholder(dream);
   const [introHeight, setIntroHeight] = useState<number | null>(null);
 
   // The dream page's own measures.
@@ -58,8 +61,8 @@ export function JournalPagePreview({ dream, folio, height }: { dream: DreamAnaly
 
   // An illustrated dream opens on its plate, as its page does, unless its picture cannot be
   // had; the picture, from the same source and cache as the dream page, shows once resolved,
-  // over the same placeholder. At the top of the page, where a turned-to page opens, it rests
-  // undrifted.
+  // over the painting its card holds. At the top of the page, where a turned-to page opens, it
+  // rests undrifted, enlarged as the page's own painting is for its tilt.
   const plated = Boolean(dream.imageUrl?.trim()) && !(media.error && !media.imageUrl);
   const imageVersion = dream.imageUrl ? getDreamImageVersion(dream) : undefined;
   const cover = plated && media.imageUrl
@@ -122,8 +125,16 @@ export function JournalPagePreview({ dream, folio, height }: { dream: DreamAnaly
         {/* The plate fills the page at least: what follows it on the dream page lies below. */}
         {plated ? (
           <JournalCoverPlate height={height} titleHeight={introHeight} head={head}
-            picture={<Image source={cover} contentFit="cover" placeholder={{ blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' }}
-              style={{ position: 'absolute', left: 0, right: 0, top: -coverTravel, bottom: -coverTravel }} />}>
+            picture={(
+              <View style={{ position: 'absolute', left: 0, right: 0, top: -coverTravel, bottom: -coverTravel }}>
+                <PaintingAtRest>
+                  {coverPlaceholder ? (
+                    <Image source={coverPlaceholder} style={StyleSheet.absoluteFill} contentFit="cover" cachePolicy="memory-disk" />
+                  ) : null}
+                  {cover ? <Image source={cover} style={StyleSheet.absoluteFill} contentFit="cover" /> : null}
+                </PaintingAtRest>
+              </View>
+            )}>
             {heading}
           </JournalCoverPlate>
         ) : (

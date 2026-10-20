@@ -38,9 +38,13 @@ afterEach(() => {
 });
 
 describe('BookProse', () => {
-  it.each(['ios', 'android', 'web'])('keeps every letter of a plain story in its selectable text on %s', (os: string) => {
+  it.each([
+    ['ios', '« I was running through dark corridors.\n\nThen a door opened.'],
+    ['android', '« I was running through dark corridors.\n\nThen a door opened.'],
+    ['web', '« I was running through dark corridors.\n\nThen a door opened.'],
+    ['ios', 'J’étais dans la maison de ma grand-mère.'],
+  ])('keeps every letter of a plain story in its selectable text on %s', (os: string, story: string) => {
     Platform.OS = os as typeof Platform.OS;
-    const story = '« I was running through dark corridors.\n\nThen a door opened.';
     const { container } = render(<BookProse text={story} />);
 
     expect(screen.queryByTestId('markdown')).toBeNull();

@@ -36,6 +36,9 @@
     },
     "lot-11": {
       "label": "lot-11, 30 packs"
+    },
+    "lot-12": {
+      "label": "Lot 12, 30 packs en préparation"
     }
   },
   "symbols": {
@@ -94,7 +97,7 @@
       "lot": "lot-10"
     },
     "bee": {
-      "lot": null
+      "lot": "lot-12"
     },
     "bicycle": {
       "lot": "lot-10"
@@ -457,7 +460,7 @@
       "lot": null
     },
     "mask": {
-      "lot": null
+      "lot": "lot-12"
     },
     "maze": {
       "lot": "lot-07"
@@ -691,7 +694,7 @@
       "lot": "lot-07"
     },
     "turtle": {
-      "lot": null
+      "lot": "lot-12"
     },
     "twins": {
       "lot": "lot-07"
@@ -703,7 +706,7 @@
       "lot": "lot-07"
     },
     "volcano": {
-      "lot": null
+      "lot": "lot-12"
     },
     "vomiting": {
       "lot": null
@@ -727,7 +730,7 @@
       "lot": "lot-03"
     },
     "waterfall": {
-      "lot": null
+      "lot": "lot-12"
     },
     "waves": {
       "lot": "lot-07"

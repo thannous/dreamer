@@ -179,15 +179,16 @@ export function BookProse({ text }: { text: string }) {
   }
 
   // A native line takes one height for all its text, so the initial is drawn beside the
-  // story, on its first line's baseline. The story keeps its own first letter, unseen and
-  // spaced out to the drawn initial's width, so it is selected, copied and read aloud whole.
+  // story, on its first line's baseline. The story keeps its own first letter, unseen, then
+  // an inline spacer up to the drawn initial's width, so it is selected, copied and read
+  // aloud whole. Letter spacing on that letter did not open the gap on the iPhone: the
+  // drawn J of « J’étais » covered its apostrophe and touched the next letter.
   const initialLine = INITIAL.lineHeight * initialScale;
   const initialBaseline = initialLine / 2 + initialSize * FRAUNCES_SHIFT;
   const measure = (key: 'initial' | 'letter') => ({ nativeEvent: { layout } }: { nativeEvent: { layout: { width: number } } }) => {
     setWidths((previous) => Math.abs(previous[key] - layout.width) < 0.5 ? previous : { ...previous, [key]: layout.width });
   };
-  // The platform scales letter spacing with the text, so it is given before that scale.
-  const spacing = Math.max(0, widths.initial + INITIAL_GAP - widths.letter) / Array.from(initial).length / textScale;
+  const spacer = Math.max(0, widths.initial + INITIAL_GAP - widths.letter);
   const hidden = { accessible: false, importantForAccessibility: 'no-hide-descendants', accessibilityElementsHidden: true, selectable: false } as const;
   return (
     <View style={{ paddingTop: rise }}>
@@ -199,7 +200,8 @@ export function BookProse({ text }: { text: string }) {
         {initial}
       </Text>
       <Text selectable style={prose}>
-        <Text style={{ color: 'transparent', letterSpacing: spacing }}>{initial}</Text>
+        <Text style={{ color: 'transparent' }}>{initial}</Text>
+        <View style={{ width: spacer, height: 1 }} />
         {rest}
       </Text>
     </View>
