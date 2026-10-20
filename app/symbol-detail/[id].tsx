@@ -1,3 +1,6 @@
+import { EASE } from '@/components/motion/motion';
+import { LIVING_ARRIVAL_MS, LivingPainting } from '@/components/symbols/LivingPainting';
+import { SymbolArtwork } from '@/components/symbols/SymbolArtwork';
 import { MarkdownText } from '@/components/ui/MarkdownText';
 import { DreamerArtworkWindow } from '@/components/ui/DreamerBackground';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -11,9 +14,11 @@ import { useOnboarding } from '@/context/OnboardingContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useExtendedSymbolContent } from '@/hooks/useExtendedSymbolContent';
 import { useScrollIdle } from '@/hooks/useScrollIdle';
+import { useSymbolAtlasEntry } from '@/hooks/useSymbolAtlas';
 import { useTranslation } from '@/hooks/useTranslation';
 import { buildFirstValueProperties } from '@/lib/activationAnalytics';
 import { trackProductEvent } from '@/lib/analytics';
+import { atlasPictureSources } from '@/lib/symbolAtlas';
 import { TID } from '@/lib/testIDs';
 import type { DreamSymbol, SymbolLanguage, SymbolVariation } from '@/lib/symbolTypes';
 import {
@@ -46,6 +51,19 @@ const HERO_TOKENS = getNoctaliaDesignTokens(DarkTheme, 'dark');
 const SKY_FALLBACK = DREAMER_ARTWORK.symbols;
 const TOP_BAR_HEIGHT = 52;
 
+// Over a living painting the name rises just after the sheet opens, so the painting is
+// seen first. One object, so a render never starts it again.
+const COPY_RISE = {
+  animationName: {
+    from: { opacity: 0, transform: [{ translateY: 14 }] },
+    to: { opacity: 1, transform: [{ translateY: 0 }] },
+  },
+  animationDuration: 700,
+  animationDelay: Math.round(LIVING_ARRIVAL_MS / 8),
+  animationTimingFunction: EASE.out,
+  animationFillMode: 'both',
+} as const;
+
 /** The same colour at zero alpha, so a fade never darkens a light page. */
 const transparentOf = (color: string) =>
   /^#[0-9a-f]{6}$/i.test(color) ? `${color}00` : 'transparent';
@@ -61,7 +79,7 @@ export default function SymbolDetailScreen() {
   const lang: SymbolLanguage = currentLang;
   const scrollPerf = useScrollIdle();
   const insets = useSafeAreaInsets();
-  const { height: windowHeight } = useWindowDimensions();
+  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
   const reducedMotion = useReducedMotion();
   const trackedSymbolRef = useRef<string | null>(null);
   const scrollY = useSharedValue(0);
@@ -69,6 +87,8 @@ export default function SymbolDetailScreen() {
   const symbol = useMemo(() => getSymbolById(id!), [id]);
   const { content: extended, status: extendedStatus } = useExtendedSymbolContent(id, lang);
   const relatedSymbols = useMemo(() => (symbol ? getRelatedSymbols(symbol) : []), [symbol]);
+  // The symbols the site paints alive open on that painting, held upright for a phone.
+  const living = useSymbolAtlasEntry(symbol?.id);
 
   useEffect(() => {
     if (!symbol || trackedSymbolRef.current === symbol.id) return;
@@ -93,7 +113,16 @@ export default function SymbolDetailScreen() {
 
   // On the paper theme the night scene needs room to dawn into the page below its copy.
   const heroDusk = mode === 'light' ? 72 : 0;
-  const heroHeight = Math.round(Math.min(560, Math.max(380, windowHeight * 0.58))) + heroDusk;
+  // A living painting takes most of the screen: the page opens inside it.
+  const heroHeight = Math.round(living
+    ? Math.max(460, windowHeight * 0.75)
+    : Math.min(560, Math.max(380, windowHeight * 0.58))) + heroDusk;
+  const heroFrame = useMemo(() => ({ width: windowWidth, height: heroHeight }), [heroHeight, windowWidth]);
+  const backdropSource = useMemo(
+    // The smallest width is plenty under a 40 point blur.
+    () => (living && symbol ? atlasPictureSources(living.atlas, symbol.id, living.entry.portrait)[0] : undefined),
+    [living, symbol],
+  );
   const collapseAt = heroHeight - insets.top - TOP_BAR_HEIGHT;
 
   const onScroll = useAnimatedScrollHandler((event) => {
@@ -149,7 +178,7 @@ export default function SymbolDetailScreen() {
           // falling onto flat black once the hero has scrolled away.
           <View pointerEvents="none" style={StyleSheet.absoluteFill} accessible={false} importantForAccessibility="no-hide-descendants">
             <Image
-              source={illustration ?? SKY_FALLBACK}
+              source={backdropSource ?? illustration ?? SKY_FALLBACK}
               contentFit="cover"
               blurRadius={40}
               style={[StyleSheet.absoluteFill, styles.backdropArt]}
@@ -180,16 +209,30 @@ export default function SymbolDetailScreen() {
               importantForAccessibility="no-hide-descendants"
             >
               <Animated.View style={[StyleSheet.absoluteFill, heroArrival]}>
-              <Image
-                source={illustration ?? SKY_FALLBACK}
-                // Offline before the first visit, the sheet keeps its night sky.
-                placeholder={illustration ? SKY_FALLBACK : undefined}
-                placeholderContentFit="cover"
-                contentFit="cover"
-                contentPosition={illustration ? 'center' : 'top'}
-                transition={illustration ? 200 : 0}
-                style={StyleSheet.absoluteFill}
-              />
+                {living ? (
+                  <LivingPainting
+                    atlas={living.atlas}
+                    symbolId={symbol.id}
+                    picture={living.entry.portrait}
+                    position={living.entry.portrait.position}
+                    layers={living.entry.layers}
+                    frame={heroFrame}
+                    arrive
+                    placeholder={SKY_FALLBACK}
+                    transition={200}
+                  />
+                ) : (
+                  <Image
+                    source={illustration ?? SKY_FALLBACK}
+                    // Offline before the first visit, the sheet keeps its night sky.
+                    placeholder={illustration ? SKY_FALLBACK : undefined}
+                    placeholderContentFit="cover"
+                    contentFit="cover"
+                    contentPosition={illustration ? 'center' : 'top'}
+                    transition={illustration ? 200 : 0}
+                    style={StyleSheet.absoluteFill}
+                  />
+                )}
               </Animated.View>
             </Animated.View>
             <LinearGradient
@@ -207,7 +250,7 @@ export default function SymbolDetailScreen() {
               locations={mode === 'dark' ? undefined : [0, 0.3, 0.58, 0.82, 1]}
               style={[styles.heroFade, heroDusk ? { height: heroDusk + 36 } : null]}
             />
-            <View style={[styles.heroCopy, heroDusk ? { paddingBottom: 30 + heroDusk } : null]}>
+            <Animated.View style={[styles.heroCopy, heroDusk ? { paddingBottom: 30 + heroDusk } : null, living && !reducedMotion ? COPY_RISE : null]}>
               <View style={[styles.chip, { borderColor: 'rgba(234,212,180,0.45)' }]}>
                 <Text style={[styles.chipText, { color: HERO_TOKENS.accent.text }]}>{categoryName}</Text>
               </View>
@@ -224,7 +267,7 @@ export default function SymbolDetailScreen() {
               >
                 {content.shortDescription}
               </MarkdownText>
-            </View>
+            </Animated.View>
           </View>
 
           <View style={styles.body}>
@@ -374,7 +417,6 @@ function VariationRow({ variation, index, noctalia }: {
 
 function RelatedPoster({ symbol, lang, noctalia }: { symbol: DreamSymbol; lang: SymbolLanguage; noctalia: Tokens }) {
   const content = symbol[lang] ?? symbol.en;
-  const illustration = getSymbolIllustration(symbol.id, 'poster');
   // Large text widens the poster so a long single word never breaks mid-word.
   const { fontScale } = useWindowDimensions();
   const posterWidth = Math.round(140 * Math.min(Math.max(fontScale, 1), 1.5));
@@ -390,7 +432,7 @@ function RelatedPoster({ symbol, lang, noctalia }: { symbol: DreamSymbol; lang: 
         pressed && styles.posterPressed,
       ]}
     >
-      {illustration ? <Image source={illustration} contentFit="cover" style={StyleSheet.absoluteFill} /> : null}
+      <SymbolArtwork symbolId={symbol.id} size="poster" />
       <LinearGradient
         pointerEvents="none"
         colors={['rgba(9,4,19,0)', 'rgba(9,4,19,0.88)']}

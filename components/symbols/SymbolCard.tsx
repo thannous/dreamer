@@ -1,12 +1,10 @@
 import React, { memo, useCallback, useMemo } from 'react';
 import { Pressable, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 
-import { Image } from 'expo-image';
-
+import { SymbolArtwork } from '@/components/symbols/SymbolArtwork';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
-import { getSymbolIllustration } from '@/constants/symbolIllustrations';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import type { DreamSymbol, SymbolLanguage } from '@/lib/symbolTypes';
@@ -25,7 +23,6 @@ export const SymbolCard = memo(function SymbolCard({ symbol, language, onPress, 
   const isRow = variant === 'row';
   const noctalia = getNoctaliaDesignTokens(colors, mode);
   const content = symbol[language] ?? symbol.en;
-  const illustration = isRow ? getSymbolIllustration(symbol.id, 'thumb') : undefined;
   const handlePress = useCallback(() => {
     onPress(symbol.id);
   }, [onPress, symbol.id]);
@@ -79,7 +76,7 @@ export const SymbolCard = memo(function SymbolCard({ symbol, language, onPress, 
       style={pressableStyle}>
       {isRow ? (
         <View style={[styles.thumb, { backgroundColor: noctalia.surface.soft }]}>
-          {illustration ? <Image source={illustration} contentFit="cover" style={StyleSheet.absoluteFill} /> : null}
+          <SymbolArtwork symbolId={symbol.id} size="thumb" />
         </View>
       ) : null}
       <View style={contentStyle}>

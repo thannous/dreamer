@@ -1,4 +1,3 @@
-import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { Stack, router, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useDeferredValue, useEffect, useMemo, useState } from "react";
@@ -8,12 +7,12 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { DreamerArtworkWindow } from "@/components/ui/DreamerBackground";
 import { CategoryHeader } from "@/components/symbols/CategoryHeader";
 import { LetterHeader } from "@/components/symbols/LetterHeader";
+import { SymbolArtwork } from "@/components/symbols/SymbolArtwork";
 import { SymbolCard } from "@/components/symbols/SymbolCard";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { SearchBar } from "@/components/ui/SearchBar";
 import { DarkTheme, ThemeLayout } from "@/constants/journalTheme";
 import { getNoctaliaDesignTokens } from "@/constants/noctaliaDesign";
-import { getSymbolIllustration } from "@/constants/symbolIllustrations";
 import { Fonts } from "@/constants/theme";
 import { useTheme } from "@/context/ThemeContext";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -377,7 +376,6 @@ function SymbolDictionaryScreen() {
         >
           {popularSymbols.map((symbol) => {
             const content = symbol[lang] ?? symbol.en;
-            const illustration = getSymbolIllustration(symbol.id, 'poster');
             return (
               <Pressable
                 key={symbol.id}
@@ -387,9 +385,7 @@ function SymbolDictionaryScreen() {
                 testID={`symbol.popular.${symbol.id}`}
                 style={({ pressed }) => [styles.poster, { backgroundColor: noctalia.surface.soft, borderColor: noctalia.surface.border }, pressed && styles.posterPressed]}
               >
-                {illustration ? (
-                  <Image source={illustration} contentFit="cover" style={StyleSheet.absoluteFill} />
-                ) : null}
+                <SymbolArtwork symbolId={symbol.id} size="poster" />
                 <LinearGradient
                   pointerEvents="none"
                   colors={["rgba(9,4,19,0)", "rgba(9,4,19,0.86)"]}
