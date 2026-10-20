@@ -147,7 +147,9 @@ function createLucidExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
       name !== './plugins/withDisableNotificationsBootActions' &&
       name !== './plugins/withAndroidR8Optimization' &&
       name !== 'expo-app-intents' &&
-      name !== './plugins/withAppIntentsLocalizations'
+      name !== './plugins/withAppIntentsLocalizations' &&
+      // The widgets open Dreamer's capture, journal and sleep sounds.
+      name !== 'expo-widgets'
     );
   });
   const lucidGooglePlugins = resolveLucidGooglePlugin();

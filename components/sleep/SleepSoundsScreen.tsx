@@ -99,6 +99,7 @@ function SleepSoundsContent() {
     durationMinutes,
     title: soundCopy.title,
     albumTitle: copy.screenTitle,
+    lockScreenTimer: { caption: copy.timerCaption, paused: copy.timerPaused },
   });
 
   useEffect(() => {

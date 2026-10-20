@@ -8,6 +8,7 @@ import {
 
 import type { SleepSoundConfig } from '@/lib/sleepSounds';
 import { useSleepSoundPlayer } from '@/hooks/useSleepSoundPlayer';
+import { endSleepTimer, showSleepTimer } from '@/services/noctaliaWidgets';
 import { ensureSleepSoundFile } from '@/services/sleepSoundFiles';
 
 let focusCleanup: (() => void) | undefined;
@@ -39,6 +40,11 @@ jest.mock('expo-audio', () => ({
 
 jest.mock('@/services/sleepSoundFiles', () => ({
   ensureSleepSoundFile: jest.fn(),
+}));
+
+jest.mock('@/services/noctaliaWidgets', () => ({
+  endSleepTimer: jest.fn(),
+  showSleepTimer: jest.fn(),
 }));
 
 jest.mock('expo-router', () => ({
@@ -127,6 +133,85 @@ describe('useSleepSoundPlayer', () => {
       },
     );
     expect(mockPlayer.play).toHaveBeenCalledTimes(1);
+    // Without lock-screen words (Lucid), no countdown leaves the app.
+    expect(showSleepTimer).not.toHaveBeenCalled();
+  });
+
+  it('counts down on the lock screen while the session plays or pauses, until it runs out', async () => {
+    const lockScreenTimer = { caption: 'Fades out in', paused: 'Paused' };
+    const { result } = renderHook(() =>
+      useSleepSoundPlayer({
+        sound,
+        durationMinutes: 15,
+        title: 'Gentle rain',
+        albumTitle: 'Evening ambience',
+        lockScreenTimer,
+      }),
+    );
+    await flushDownload();
+    expect(showSleepTimer).not.toHaveBeenCalled();
+
+    await act(async () => {
+      await result.current.play();
+    });
+    expect(showSleepTimer).toHaveBeenLastCalledWith({
+      sound: 'Gentle rain', caption: 'Fades out in', remainingMs: 15 * 60_000, paused: false,
+    });
+
+    act(() => {
+      jest.advanceTimersByTime(5000);
+    });
+    act(() => {
+      result.current.pause();
+    });
+    expect(showSleepTimer).toHaveBeenLastCalledWith({
+      sound: 'Gentle rain', caption: 'Paused', remainingMs: 15 * 60_000 - 5000, paused: true,
+    });
+    // The system counts down by itself: the ticks in between never reached it.
+    expect(showSleepTimer).toHaveBeenCalledTimes(2);
+
+    await act(async () => {
+      await result.current.play();
+    });
+    jest.mocked(endSleepTimer).mockClear();
+    jest.mocked(showSleepTimer).mockClear();
+    act(() => {
+      jest.setSystemTime(new Date('2026-08-04T20:15:10Z'));
+      jest.advanceTimersByTime(500);
+    });
+
+    expect(result.current.remainingSeconds).toBe(0);
+    expect(endSleepTimer).toHaveBeenCalled();
+    expect(showSleepTimer).not.toHaveBeenCalled();
+  });
+
+  it('takes a paused countdown off the lock screen when the screen is left', async () => {
+    const lockScreenTimer = { caption: 'Fades out in', paused: 'Paused' };
+    const { result } = renderHook(() =>
+      useSleepSoundPlayer({
+        sound,
+        durationMinutes: 15,
+        title: 'Gentle rain',
+        albumTitle: 'Evening ambience',
+        lockScreenTimer,
+      }),
+    );
+    await flushDownload();
+    await act(async () => {
+      await result.current.play();
+    });
+    act(() => {
+      result.current.pause();
+    });
+    jest.mocked(endSleepTimer).mockClear();
+    jest.mocked(showSleepTimer).mockClear();
+
+    act(() => {
+      focusCleanup?.();
+    });
+
+    expect(endSleepTimer).toHaveBeenCalled();
+    expect(showSleepTimer).not.toHaveBeenCalled();
   });
 
   it('resumes a paused session without seeking back to the start', async () => {
