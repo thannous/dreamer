@@ -28,6 +28,8 @@ const { renderNavigation } = require('../../scripts/lib/docs-components/navigati
 const { renderSharedComponentStyles } = require('../../scripts/lib/docs-components/styles');
 const { inlineLucideIcons } = require('../../scripts/lib/lucide-inline');
 const { canonicalOrganization } = require('../../scripts/lib/canonical-organization');
+// Texture boxes and sizes, shared with the app's copy of the atlas.
+const { ATLAS_SIX_IMAGES, atlasSixBox, atlasSixLayerSrc } = require('../../scripts/lib/atlas-motion');
 const { renderAhrefsAnalyticsScript } = require('../../scripts/lib/ahrefs-analytics');
 const { renderResponsivePicture } = require('../../scripts/lib/image-seo-assets');
 const { getPageIllustration } = require('../../scripts/lib/page-illustrations');
@@ -1468,7 +1470,6 @@ const TIGER_ATLAS_CSS = atlasCss(TIGER_ATLAS.scenes.choices.map((choice) => choi
 // channel b (accent); boxes are fractions of the painting shown (see js/symbol-living).
 const SYMBOL_LIVING_DIR = '/js/symbol-living/c97b1746cf68';
 const ATLAS_SIX_ASSETS_PATH = path.join(DOCS_SRC_DIR, 'config', 'symbol-atlas-six-assets.json');
-const ATLAS_SIX_IMAGES = '/img/symbols/atlas-six-v2';
 const ATLAS_SIX_PORTRAIT_MEDIA = TIGER_LIVING.media;
 // The six pages, an explicit allowlist read from docs-src/config/symbol-atlas-pilots.json: per
 // symbol, its French slug, its caveat sentence (or null), its three scenes (each naming a published
@@ -1746,32 +1747,6 @@ function renderAtlasSixScenePicture(role, asset) {
                                         <source type="image/avif" srcset="${atlasSixSrcset(asset.avif)}" sizes="${TIGER_ATLAS.sceneSizes}">` : ''}
                                         <img src="${asset.webp[smallest]}" srcset="${atlasSixSrcset(asset.webp)}" sizes="${TIGER_ATLAS.sceneSizes}" alt="" width="${asset.width}" height="${asset.height}" loading="lazy" decoding="async">
                                     </picture>`;
-}
-
-// The texture closest to `max` pixels wide without exceeding it (the smallest otherwise).
-function atlasSixLayerSrc(layer, max) {
-  const widths = Object.keys(layer.webp).map(Number).sort((a, b) => a - b);
-  const width = widths.filter((w) => w <= max).pop() || widths[0];
-  return layer.webp[width];
-}
-
-// A 16:9 texture keeps its ratio over a painting of another ratio: it fits the painting's
-// width ('width') or covers it ('cover'), optionally zoomed on the part that carries the
-// effect (below 1 for a local glow), anchored by x and y (0 = left or top edge, 1 = right or bottom edge). The stage
-// clips what overflows; the side illustration also masks it with its own alpha.
-// Optional at places the texture centre on a painting coordinate, including near an edge.
-function atlasSixBox({ fit, zoom = 1, x = 0.5, y = 0.5, at }, painting, texture) {
-  const ratio = (painting.width / painting.height) / (texture.width / texture.height);
-  let w = 1;
-  let h = ratio;
-  if (fit === 'cover' && h < 1) {
-    w = 1 / h;
-    h = 1;
-  }
-  w *= zoom;
-  h *= zoom;
-  const round = (value) => Number(value.toFixed(4));
-  return [round(at ? at[0] - w / 2 : x * (1 - w)), round(at ? at[1] - h / 2 : y * (1 - h)), round(w), round(h)];
 }
 
 // Motion config read by js/symbol-living: one surface per painting (hero, plate, each

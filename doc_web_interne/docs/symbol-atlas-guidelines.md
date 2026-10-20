@@ -48,6 +48,7 @@ Utiliser ces sources de vérité :
 | Assemblage des pages, validation et placement des textures | [generate-symbol-pages.js](../../docs-src/static/scripts/generate-symbol-pages.js). |
 | Chargement, visibilité et mouvement | Moteur partagé sous `docs-src/static/js/symbol-living/`, dont le chemin actif est déclaré dans le générateur. Le Tigre garde son moteur historique ; ne pas en créer un autre pour chaque symbole. |
 | Comportement attendu | [site.web.e2e.ts](../../tools/e2e/tests/site.web.e2e.ts), liste attendue indépendante de la configuration. |
+| Copie lue par l'app mobile (portrait, textures, scènes) | `data/app/symbol-atlas.json`, régénéré depuis les trois configurations ci-dessus par `npm run symbols:dictionary:sync` ; ne pas l'éditer à la main. Le build du site publie le même contenu sous `/content/symbols/atlas-v1.json`, que l'app installée télécharge : un lot publié sur le site atteint donc l'app sans nouvelle version. Le test `scripts/sync-app-symbol-dictionary.test.js` échoue tant que la copie n'est pas régénérée. |
 
 Chaque entrée activée doit fournir huit rôles : `hero`, `portrait`, `plate`, trois `scene-<id>`, `layer` et `accent`. Le build refuse une entrée incomplète, un fichier invalide ou un profil qui perd l’un de ses deux phénomènes. Les profils paysage, portrait, plaque et vignette ont chacun leurs placements. Une mise à jour d’image remplace seulement les références de son rôle ; une correction du cycle de vie se fait dans le moteur commun.
 

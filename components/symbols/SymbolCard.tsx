@@ -1,12 +1,12 @@
-import React, { memo, useCallback, useMemo } from 'react';
-import { Pressable, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { Link } from 'expo-router';
+import React, { memo, useMemo } from 'react';
+import { StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 
-import { Image } from 'expo-image';
-
+import { SymbolArtwork } from '@/components/symbols/SymbolArtwork';
+import { SymbolLink, type SymbolDetailSource } from '@/components/symbols/SymbolLink';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
-import { getSymbolIllustration } from '@/constants/symbolIllustrations';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import type { DreamSymbol, SymbolLanguage } from '@/lib/symbolTypes';
@@ -15,20 +15,16 @@ import { TID } from '@/lib/testIDs';
 interface SymbolCardProps {
   symbol: DreamSymbol;
   language: SymbolLanguage;
-  onPress: (id: string) => void;
+  source: SymbolDetailSource;
   variant?: 'card' | 'row';
 }
 
-export const SymbolCard = memo(function SymbolCard({ symbol, language, onPress, variant = 'card' }: SymbolCardProps) {
+export const SymbolCard = memo(function SymbolCard({ symbol, language, source, variant = 'card' }: SymbolCardProps) {
   const { colors, mode } = useTheme();
   const { fontScale } = useWindowDimensions();
   const isRow = variant === 'row';
   const noctalia = getNoctaliaDesignTokens(colors, mode);
   const content = symbol[language] ?? symbol.en;
-  const illustration = isRow ? getSymbolIllustration(symbol.id, 'thumb') : undefined;
-  const handlePress = useCallback(() => {
-    onPress(symbol.id);
-  }, [onPress, symbol.id]);
 
   const glassBackground = noctalia.surface.raised;
   const cardStyle = useMemo(
@@ -62,25 +58,26 @@ export const SymbolCard = memo(function SymbolCard({ symbol, language, onPress, 
     ],
     [isRow, noctalia.text.secondary],
   );
-  const pressableStyle = useCallback(
-    ({ pressed }: { pressed: boolean }) => [
-      ...cardStyle,
-      pressed && (isRow ? styles.rowPressed : styles.cardPressed),
-    ],
-    [cardStyle, isRow],
+  // A zoom source takes one child with a plain style object.
+  const thumbStyle = useMemo(
+    () => StyleSheet.flatten([styles.thumb, { backgroundColor: noctalia.surface.soft }]),
+    [noctalia.surface.soft],
   );
 
   return (
-    <Pressable
-      onPress={handlePress}
-      accessibilityRole="button"
+    <SymbolLink
+      symbolId={symbol.id}
+      source={source}
       accessibilityLabel={content.name}
       testID={TID.List.SymbolItem(symbol.id)}
-      style={pressableStyle}>
+      surfaceStyle={cardStyle}
+      pressedStyle={isRow ? styles.rowPressed : styles.cardPressed}>
       {isRow ? (
-        <View style={[styles.thumb, { backgroundColor: noctalia.surface.soft }]}>
-          {illustration ? <Image source={illustration} contentFit="cover" style={StyleSheet.absoluteFill} /> : null}
-        </View>
+        <Link.AppleZoom>
+          <View style={thumbStyle}>
+            <SymbolArtwork symbolId={symbol.id} size="thumb" />
+          </View>
+        </Link.AppleZoom>
       ) : null}
       <View style={contentStyle}>
         <Text
@@ -95,7 +92,7 @@ export const SymbolCard = memo(function SymbolCard({ symbol, language, onPress, 
         </Text>
       </View>
       <IconSymbol name="chevron.right" size={16} color={noctalia.text.tertiary} />
-    </Pressable>
+    </SymbolLink>
   );
 });
 

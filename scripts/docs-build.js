@@ -16,7 +16,7 @@ const {
 const { renderManagedPage } = require('./lib/docs-renderer');
 const { writeLandingStylesheet } = require('./lib/landing-stylesheet');
 const { minifyStaticStylesheets } = require('./lib/minify-static-stylesheets');
-const { buildSymbolContentByLanguage } = require('./sync-app-symbol-dictionary');
+const { buildSymbolAtlas, buildSymbolContentByLanguage } = require('./sync-app-symbol-dictionary');
 const { staticPageLanguages } = require('./lib/site-manifest');
 const {
   copyDir,
@@ -234,6 +234,9 @@ function copyStaticFiles() {
   for (const [language, json] of Object.entries(buildSymbolContentByLanguage())) {
     fs.writeFileSync(path.join(symbolContentDir, `${language}.json`), json);
   }
+  // The living paintings and painted scenes the native app reads. The name carries the
+  // format's version, so a later format can sit beside it for the builds already installed.
+  fs.writeFileSync(path.join(symbolContentDir, 'atlas-v1.json'), `${JSON.stringify(buildSymbolAtlas())}\n`);
 }
 
 function main() {
