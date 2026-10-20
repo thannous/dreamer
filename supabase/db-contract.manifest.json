@@ -162,6 +162,15 @@
         "event_count",
         "refreshed_at"
       ]
+    },
+    {
+      "schema": "apple_auth_private",
+      "name": "refresh_tokens",
+      "requiredColumns": [
+        "user_id",
+        "refresh_token",
+        "updated_at"
+      ]
     }
   ],
   "requiredFunctions": [
@@ -248,6 +257,18 @@
       "name": "refresh_product_analytics_daily_aggregates",
       "identityArguments": "",
       "result": "void"
+    },
+    {
+      "schema": "public",
+      "name": "store_apple_refresh_token",
+      "identityArguments": "p_user_id uuid, p_refresh_token text",
+      "result": "void"
+    },
+    {
+      "schema": "public",
+      "name": "read_apple_refresh_token",
+      "identityArguments": "p_user_id uuid",
+      "result": "text"
     }
   ],
   "requiredTriggers": [
@@ -304,6 +325,17 @@
       "definitionIncludes": [
         "BEFORE INSERT OR UPDATE",
         "EXECUTE FUNCTION public.project_dream_precise_theme()"
+      ]
+    },
+    {
+      "schema": "auth",
+      "table": "users",
+      "name": "protect_apple_refresh_token_metadata",
+      "functionSchema": "apple_auth_private",
+      "functionName": "capture_legacy_refresh_token",
+      "definitionIncludes": [
+        "BEFORE INSERT OR UPDATE OF raw_app_meta_data",
+        "EXECUTE FUNCTION apple_auth_private.capture_legacy_refresh_token()"
       ]
     }
   ],
