@@ -188,8 +188,23 @@ describe('DreamCard image fallback', () => {
 
     render(<DreamCard dream={dream} onPress={jest.fn()} />);
 
+    const version = getDreamImageVersion(dream);
+    expect(screen.getByTestId('dream-image').getAttribute('data-src')).toBe(withCacheBuster(dream.imageUrl, version));
+    // An original that cannot load leaves the square rather than no painting at all.
+    fireEvent.error(screen.getByTestId('dream-image'));
+    expect(screen.getByTestId('dream-image').getAttribute('data-src')).toBe(withCacheBuster(dream.thumbnailUrl!, version));
+  });
+
+  it('keeps a square thumbnail when the original is not available', () => {
+    const { DreamCard } = require('../DreamCard');
+    // Offline, only the thumbnail may be cached.
+    const dream = { id: 1459, transcript: 'dream transcript', title: 'Dream title', chatHistory: [], imageUrl: '',
+      thumbnailUrl: 'supabase-storage://dream-images/user-1/dream-43-thumb.webp' } as unknown as DreamAnalysis;
+
+    render(<DreamCard dream={dream} onPress={jest.fn()} />);
+
     expect(screen.getByTestId('dream-image').getAttribute('data-src'))
-      .toBe(withCacheBuster(dream.imageUrl, getDreamImageVersion(dream)));
+      .toBe(withCacheBuster(dream.thumbnailUrl!, getDreamImageVersion(dream)));
   });
 
   it('hides sync badges in mock mode because mock dreams are local only', () => {

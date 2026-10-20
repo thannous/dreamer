@@ -142,7 +142,12 @@ export const DreamCard = memo(function DreamCard({
     }
   }, [trimmedThumbnailUri, fullImageUri, useFullImage, accessScope, failureKey, loadOriginal]);
 
-  const preferFullImage = useFullImage || squareThumbnail || (trimmedThumbnailUri && thumbnailFailures.has(accessScope, failureKey));
+  // The original first for a square thumbnail, while it resolves and loads: offline or after
+  // a failed load, the square still shows the painting.
+  const [failedOriginal, setFailedOriginal] = useState<string | null>(null);
+  const originalAttemptKey = JSON.stringify([accessScope, getDreamIdentityKey(dream), imageVersion, fullImageUri]);
+  const preferOriginal = squareThumbnail && Boolean(fullImageUri) && failedOriginal !== originalAttemptKey;
+  const preferFullImage = useFullImage || preferOriginal || (trimmedThumbnailUri && thumbnailFailures.has(accessScope, failureKey));
   const imageUri = preferFullImage
     ? fullImageUri
     : (trimmedThumbnailUri || fullImageUri);
@@ -456,6 +461,8 @@ export const DreamCard = memo(function DreamCard({
               if (!preferFullImage && (fullImageUri || dream.imageUrl?.trim()) && imageUri !== fullImageUri) {
                 loadOriginal();
                 setUseFullImage(true);
+              } else if (preferOriginal && trimmedThumbnailUri && trimmedThumbnailUri !== fullImageUri) {
+                setFailedOriginal(originalAttemptKey);
               } else {
                 // Both sources failed (or the only source failed). Do not keep
                 // presenting the blurhash as if an illustration were available.
