@@ -17,6 +17,7 @@ import { Fonts } from '@/constants/theme';
 import { QUOTAS } from '@/constants/limits';
 import { createScopedLogger } from '@/lib/logger';
 import { getMonthlyQuotaPeriod } from '@/lib/quotaReset';
+import { TypeScale } from '@/constants/typeScale';
 
 const log = createScopedLogger('[QuotaStatusCard]');
 
@@ -363,12 +364,12 @@ const styles = StyleSheet.create({
     minWidth: 0,
   },
   title: {
-    fontSize: 18,
+    fontSize: TypeScale.h3.fontSize,
     fontFamily: Fonts.spaceGrotesk.bold,
   },
   subtitle: {
     marginTop: 4,
-    fontSize: 14,
+    fontSize: TypeScale.bodySm.fontSize,
     fontFamily: Fonts.spaceGrotesk.regular,
   },
   errorBanner: {
@@ -388,12 +389,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   rowLabel: {
-    fontSize: 13,
+    fontSize: TypeScale.bodySm.fontSize,
     textTransform: 'uppercase',
     fontFamily: Fonts.spaceGrotesk.medium,
   },
   rowValue: {
-    fontSize: 16,
+    fontSize: TypeScale.body.fontSize,
     fontFamily: Fonts.spaceGrotesk.bold,
   },
   progressTrack: {
@@ -411,7 +412,7 @@ const styles = StyleSheet.create({
   },
   noticeText: {
     fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 14,
+    fontSize: TypeScale.bodySm.fontSize,
   },
   manageButton: {
     marginTop: 12,
@@ -424,7 +425,7 @@ const styles = StyleSheet.create({
   },
   manageText: {
     fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 14,
+    fontSize: TypeScale.bodySm.fontSize,
   },
   ctaButton: {
     borderWidth: 1,

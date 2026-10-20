@@ -38,6 +38,7 @@ import {
   saveRitualPreference,
   saveRitualStepProgress,
 } from '@/services/storageService';
+import { TypeScale } from '@/constants/typeScale';
 
 type IconName = Parameters<typeof IconSymbol>[0]['name'];
 
@@ -541,13 +542,13 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: Fonts.fraunces.bold,
-    fontSize: 28,
+    fontSize: TypeScale.h1.fontSize,
     textAlign: 'center',
   },
   description: {
     fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 15,
-    lineHeight: 22,
+    fontSize: TypeScale.body.fontSize,
+    lineHeight: TypeScale.body.lineHeight,
     textAlign: 'center',
     paddingHorizontal: 20,
   },
@@ -567,7 +568,7 @@ const styles = StyleSheet.create({
   },
   progressText: {
     fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 13,
+    fontSize: TypeScale.bodySm.fontSize,
   },
   sleepSoundCard: {
     borderRadius: 24,
@@ -597,18 +598,18 @@ const styles = StyleSheet.create({
   },
   lucidTrainerTitle: {
     fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 16,
+    fontSize: TypeScale.body.fontSize,
     lineHeight: 21,
   },
   lucidTrainerBody: {
     fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 13,
-    lineHeight: 18,
+    fontSize: TypeScale.bodySm.fontSize,
+    lineHeight: TypeScale.bodySm.lineHeight,
   },
   lucidTrainerAction: {
     fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 13,
-    lineHeight: 18,
+    fontSize: TypeScale.bodySm.fontSize,
+    lineHeight: TypeScale.bodySm.lineHeight,
   },
   sleepSoundButton: {
     minHeight: 94,
@@ -630,13 +631,13 @@ const styles = StyleSheet.create({
   },
   sleepSoundTitle: {
     fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 16,
+    fontSize: TypeScale.body.fontSize,
     lineHeight: 21,
   },
   sleepSoundBody: {
     fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 13,
-    lineHeight: 18,
+    fontSize: TypeScale.bodySm.fontSize,
+    lineHeight: TypeScale.bodySm.lineHeight,
   },
   stepsCard: {
     borderRadius: 24,
@@ -670,11 +671,11 @@ const styles = StyleSheet.create({
   },
   stepTitle: {
     fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 16,
+    fontSize: TypeScale.body.fontSize,
   },
   stepBody: {
     fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 14,
+    fontSize: TypeScale.bodySm.fontSize,
     lineHeight: 20,
   },
 });

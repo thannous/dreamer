@@ -27,6 +27,7 @@ import { PASSWORD_MIN_LENGTH } from '@/lib/authValidation';
 import { TID } from '@/lib/testIDs';
 import { HeaderScrollView, useHeaderScroll } from '@/components/ui/headerStretch';
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
+import { TypeScale } from '@/constants/typeScale';
 
 type Phase = 'checking' | 'ready' | 'success' | 'expired';
 
@@ -391,7 +392,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 14,
+    fontSize: TypeScale.bodySm.fontSize,
     lineHeight: 20,
     marginBottom: ThemeLayout.spacing.md,
   },
@@ -401,7 +402,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: ThemeLayout.spacing.md,
     paddingVertical: 12,
     marginBottom: 10,
-    fontSize: 16,
+    fontSize: TypeScale.body.fontSize,
     fontFamily: Fonts.spaceGrotesk.regular,
     width: '100%',
   },
@@ -422,12 +423,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   errorText: {
-    fontSize: 12,
+    fontSize: TypeScale.caption.fontSize,
     fontFamily: Fonts.spaceGrotesk.medium,
     marginBottom: ThemeLayout.spacing.xs,
   },
   submitError: {
-    fontSize: 13,
+    fontSize: TypeScale.bodySm.fontSize,
     marginTop: ThemeLayout.spacing.xs,
   },
   primaryButton: {
@@ -442,7 +443,7 @@ const styles = StyleSheet.create({
   },
   primaryButtonText: {
     fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 16,
+    fontSize: TypeScale.body.fontSize,
   },
   secondaryButton: {
     alignItems: 'center',
@@ -456,7 +457,7 @@ const styles = StyleSheet.create({
   },
   secondaryButtonText: {
     fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 16,
+    fontSize: TypeScale.body.fontSize,
   },
   buttonPressed: {
     opacity: 0.8,

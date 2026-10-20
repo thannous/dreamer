@@ -26,6 +26,7 @@ import { buildPaywallHref } from '@/lib/paywallRoute';
 import { TID } from '@/lib/testIDs';
 import { HeaderScrollView, useHeaderScroll } from '@/components/ui/headerStretch';
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
+import { TypeScale } from '@/constants/typeScale';
 
 const CATEGORY_ICONS = { symbols: 'sparkles', emotions: 'heart.fill', growth: 'leaf.fill' } as const;
 
@@ -152,23 +153,23 @@ const styles = StyleSheet.create({
   empty: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   content: { paddingHorizontal: 32, width: '100%', maxWidth: 640, alignSelf: 'center' },
   back: { flexDirection: 'row', alignItems: 'center', gap: 6, minHeight: 44, alignSelf: 'flex-start', marginLeft: -5 },
-  backText: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 16 },
-  title: { fontFamily: Fonts.fraunces.semiBold, fontSize: 34, lineHeight: 42, marginTop: 4 },
+  backText: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: TypeScale.body.fontSize },
+  title: { fontFamily: Fonts.fraunces.semiBold, fontSize: TypeScale.display.fontSize, lineHeight: 42, marginTop: 4 },
   dreamContext: { flexDirection: 'row', alignItems: 'center', gap: 14, marginTop: 10 },
   largeTypeContext: { flexDirection: 'column', alignItems: 'flex-start' },
   thumbnail: { width: 90, height: 96, borderRadius: 12, flexShrink: 0 },
   dreamCopy: { flex: 1, minWidth: 0, alignSelf: 'stretch', justifyContent: 'center' },
-  dreamTitle: { fontFamily: Fonts.fraunces.semiBold, fontSize: 20, lineHeight: 26 },
+  dreamTitle: { fontFamily: Fonts.fraunces.semiBold, fontSize: TypeScale.h2.fontSize, lineHeight: TypeScale.h2.lineHeight },
   readAnalysis: { flexDirection: 'row', alignItems: 'center', gap: 8, minHeight: 44, marginTop: 2, alignSelf: 'flex-start' },
-  linkText: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 14, lineHeight: 20, flexShrink: 1 },
+  linkText: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: TypeScale.bodySm.fontSize, lineHeight: 20, flexShrink: 1 },
   exchangeSaved: { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 8 },
-  question: { fontFamily: Fonts.fraunces.semiBold, fontSize: 20, lineHeight: 28, marginTop: 18, marginBottom: 2 },
+  question: { fontFamily: Fonts.fraunces.semiBold, fontSize: TypeScale.h2.fontSize, lineHeight: TypeScale.h2.lineHeight, marginTop: 18, marginBottom: 2 },
   row: { flexDirection: 'row', alignItems: 'center', gap: 14, paddingVertical: 10, minHeight: 64 },
   rowCopy: { flex: 1, minWidth: 0, gap: 2 },
   rowHeading: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8 },
-  rowTitle: { fontFamily: Fonts.fraunces.semiBold, fontSize: 17, lineHeight: 22, flexShrink: 1 },
-  resume: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 12, lineHeight: 18 },
-  description: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 14, lineHeight: 20, flexShrink: 1 },
+  rowTitle: { fontFamily: Fonts.fraunces.semiBold, fontSize: TypeScale.h3.fontSize, lineHeight: TypeScale.h3.lineHeight, flexShrink: 1 },
+  resume: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: TypeScale.caption.fontSize, lineHeight: 18 },
+  description: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: TypeScale.bodySm.fontSize, lineHeight: 20, flexShrink: 1 },
   separator: { height: StyleSheet.hairlineWidth },
   recap: { marginTop: 8 },
   openChat: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, minHeight: 44, marginTop: 12 },

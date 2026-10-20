@@ -114,7 +114,7 @@ export const HomeDiscoverTiles = memo(function HomeDiscoverTiles({ now, selected
       accessibilityLabel={t('home.today.resources')} className="gap-3">
       <View className="flex-row items-start gap-3">
         <View className="mt-[9px] h-px w-[22px] bg-champagne" />
-        <Text className="min-w-0 shrink font-sans-medium text-[12px] leading-[18px] uppercase tracking-[1.6px] text-champagne-on">
+        <Text className="min-w-0 shrink font-sans-medium text-caption leading-[18px] uppercase tracking-[1.6px] text-champagne-on">
           {t('home.today.resources')}
         </Text>
       </View>
@@ -131,11 +131,11 @@ export const HomeDiscoverTiles = memo(function HomeDiscoverTiles({ now, selected
             <LinearGradient colors={VEIL} locations={[0.2, 0.45, 0.65, 1]} style={IMAGE_FILL} />
             <View className="flex-1 justify-end p-3.5">
               {tile.eyebrow ? <Text maxFontSizeMultiplier={1.3} style={{ color: NIGHT.accent.text }}
-                className="font-sans-medium text-[11px] uppercase tracking-[1px]">
+                className="font-sans-medium text-overline uppercase">
                 {tile.eyebrow}
               </Text> : null}
               <Text numberOfLines={3} maxFontSizeMultiplier={1.3} style={{ color: NIGHT.text.primary }}
-                className="mt-0.5 font-display-semibold text-[17px] leading-[21px]">
+                className="mt-0.5 font-display-semibold text-h3 leading-[21px]">
                 {tile.title}
               </Text>
             </View>

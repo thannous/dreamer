@@ -10,6 +10,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { DreamGlobe } from './DreamGlobe';
 import { StoryScene, STORY_DEMO_STEP } from './FeatureStory';
 import { WordReveal, loopsUntil } from './story/StoryText';
+import { TypeScale } from '@/constants/typeScale';
 
 // The 800 px painting stays sharp when the camera reaches the door.
 const ARTWORK = require('../../docs-src/static/img/dreams/staircase-800w.webp');
@@ -187,10 +188,10 @@ const styles = StyleSheet.create({
   doorGlow: { position: 'absolute', width: 60, height: 60 },
   doorGlowLight: { width: 60, height: 60, borderRadius: 30 },
   detail: { position: 'absolute', borderWidth: 1, borderRadius: 16, paddingHorizontal: 12, paddingVertical: 6 },
-  detailText: { fontFamily: Fonts.fraunces.medium, fontSize: 15, lineHeight: 20 },
+  detailText: { fontFamily: Fonts.fraunces.medium, fontSize: TypeScale.body.fontSize, lineHeight: TypeScale.body.lineHeight },
   telling: { position: 'absolute', left: 16, right: 16, alignItems: 'center', gap: 14 },
   voice: { flexDirection: 'row', height: 40, gap: 5, alignItems: 'center' },
   voiceBar: { width: 4, borderRadius: 2 },
   // A soft shadow keeps the words legible over the brightening dream.
-  fragment: { fontFamily: Fonts.fraunces.medium, fontSize: 22, lineHeight: 30, textAlign: 'center', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 10 },
+  fragment: { fontFamily: Fonts.fraunces.medium, fontSize: TypeScale.h2.fontSize, lineHeight: 30, textAlign: 'center', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 10 },
 });

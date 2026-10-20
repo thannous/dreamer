@@ -8,6 +8,7 @@ import { PressableScale } from '@/components/motion/PressableScale';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import type { NoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
+import { TypeScale } from '@/constants/typeScale';
 
 const RADIUS = 22;
 /** One pass of light across the button when it arrives. */
@@ -73,6 +74,6 @@ const styles = StyleSheet.create({
     paddingLeft: 22, paddingRight: 12, paddingVertical: 12,
   },
   shimmer: { position: 'absolute', top: 0, bottom: 0, left: 0, width: '24%' },
-  label: { flex: 1, minWidth: 0, fontFamily: Fonts.fraunces.medium, fontSize: 19, lineHeight: 25 },
+  label: { flex: 1, minWidth: 0, fontFamily: Fonts.fraunces.medium, fontSize: TypeScale.h3.fontSize, lineHeight: TypeScale.h3.lineHeight },
   arrow: { width: 38, height: 38, borderRadius: 19, alignItems: 'center', justifyContent: 'center' },
 });

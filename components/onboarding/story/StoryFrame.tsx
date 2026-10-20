@@ -4,6 +4,7 @@ import { StyleSheet, View } from 'react-native';
 import type { NoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { WordReveal } from './StoryText';
+import { TypeScale } from '@/constants/typeScale';
 
 /** Room kept under the scene for its subtitle. */
 export const SUBTITLE_SPACE = 68;
@@ -31,7 +32,7 @@ const styles = StyleSheet.create({
   scene: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   subtitle: { position: 'absolute', left: 12, right: 12, bottom: 14 },
   subtitleText: {
-    fontFamily: Fonts.spaceGrotesk.medium, fontSize: 17, lineHeight: 24, textAlign: 'center',
+    fontFamily: Fonts.spaceGrotesk.medium, fontSize: TypeScale.body.fontSize, lineHeight: TypeScale.body.lineHeight, textAlign: 'center',
     textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 12,
   },
 });

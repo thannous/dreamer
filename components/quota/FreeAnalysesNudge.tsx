@@ -73,8 +73,8 @@ export function FreeAnalysesNudge({ nudge, className }: Props) {
         <IconSymbol name="sparkles" size={22} color={noctalia.accent.text} />
       </View>
       <View className="min-w-0 flex-1 gap-0.5">
-        <Text className="font-sans text-[15px] leading-[22px] text-ivory">{message}</Text>
-        <Text className="font-sans-medium text-[13px] leading-[18px] text-champagne-on">{cta}</Text>
+        <Text className="font-sans text-body leading-[22px] text-ivory">{message}</Text>
+        <Text className="font-sans-medium text-body-sm leading-[18px] text-champagne-on">{cta}</Text>
       </View>
       <IconSymbol name="chevron.right" size={18} color={noctalia.text.tertiary} />
     </Pressable>

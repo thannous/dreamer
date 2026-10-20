@@ -5,6 +5,7 @@ import { PressableScale } from '@/components/motion';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
+import { TypeScale } from '@/constants/typeScale';
 
 interface SearchBarProps {
   autoFocus?: boolean;
@@ -99,13 +100,13 @@ export const SearchBar = memo(forwardRef<TextInputInstance, SearchBarProps>(func
         onChangeText={handleChangeText}
         placeholder={placeholder}
         placeholderTextColor={noctalia.text.tertiary}
-        className="min-w-0 flex-1 py-0 font-sans text-[15px] leading-5 text-ivory"
+        className="min-w-0 flex-1 py-0 font-sans text-body text-ivory"
         style={[
           webInputFocusResetStyle,
           {
             minHeight: inputMinHeight,
-            fontSize: 15 * Math.min(1.3, Math.max(1, fontScale)),
-            lineHeight: 20 * Math.min(1.3, Math.max(1, fontScale)),
+            fontSize: TypeScale.body.fontSize * Math.min(1.3, Math.max(1, fontScale)),
+            lineHeight: TypeScale.body.lineHeight * Math.min(1.3, Math.max(1, fontScale)),
             paddingVertical: 0,
             includeFontPadding: false,
           },

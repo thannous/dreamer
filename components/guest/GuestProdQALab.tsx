@@ -23,6 +23,7 @@ import {
   revokeGuestQaDevice,
   type GuestQaStatus,
 } from '@/services/guestQaService';
+import { TypeScale } from '@/constants/typeScale';
 
 const getErrorCode = (error: unknown): string | null => {
   if (typeof error !== 'object' || !error) {
@@ -249,29 +250,29 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 15,
+    fontSize: TypeScale.body.fontSize,
   },
   subtitle: {
     fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 12,
+    fontSize: TypeScale.caption.fontSize,
     marginTop: 2,
   },
   status: {
     fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 13,
+    fontSize: TypeScale.bodySm.fontSize,
   },
   metrics: {
     fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 12,
+    fontSize: TypeScale.caption.fontSize,
   },
   note: {
     fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 12,
+    fontSize: TypeScale.caption.fontSize,
     lineHeight: 17,
   },
   error: {
     fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 12,
+    fontSize: TypeScale.caption.fontSize,
     lineHeight: 17,
   },
   actions: {
@@ -289,7 +290,7 @@ const styles = StyleSheet.create({
   },
   primaryLabel: {
     fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 13,
+    fontSize: TypeScale.bodySm.fontSize,
   },
   secondaryButton: {
     alignItems: 'center',
@@ -301,7 +302,7 @@ const styles = StyleSheet.create({
   },
   secondaryLabel: {
     fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 13,
+    fontSize: TypeScale.bodySm.fontSize,
   },
   pressed: {
     opacity: 0.68,

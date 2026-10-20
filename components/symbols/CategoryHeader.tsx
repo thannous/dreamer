@@ -8,6 +8,7 @@ import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import type { SymbolCategory, SymbolLanguage } from '@/lib/symbolTypes';
 import { getCategoryIcon, getCategoryName } from '@/services/symbolDictionaryService';
+import { TypeScale } from '@/constants/typeScale';
 
 interface CategoryHeaderProps {
   category: SymbolCategory;
@@ -41,7 +42,7 @@ export function CategoryHeader({ category, count, language }: CategoryHeaderProp
           style={{
             flex: 1,
             fontFamily: Fonts.fraunces.medium,
-            fontSize: 18,
+            fontSize: TypeScale.h3.fontSize,
             lineHeight: 25,
             color: noctalia.text.primary,
           }}>
@@ -50,7 +51,7 @@ export function CategoryHeader({ category, count, language }: CategoryHeaderProp
         <Text
           style={{
             fontFamily: Fonts.spaceGrotesk.regular,
-            fontSize: 13,
+            fontSize: TypeScale.bodySm.fontSize,
             color: noctalia.text.tertiary,
             fontVariant: ['tabular-nums'],
           }}>

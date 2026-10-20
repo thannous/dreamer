@@ -32,6 +32,7 @@ import {
   getLastSeenReleaseNotesVersion,
   saveLastSeenReleaseNotesVersion,
 } from '@/services/storageService';
+import { TypeScale } from '@/constants/typeScale';
 
 export const RELEASE_NOTES_VERSION = '3.5.0';
 
@@ -394,21 +395,21 @@ const styles = StyleSheet.create({
   },
   badgeText: {
     fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 12,
+    fontSize: TypeScale.caption.fontSize,
     lineHeight: 16,
     letterSpacing: 1.3,
     textTransform: 'uppercase',
   },
   title: {
     fontFamily: Fonts.fraunces.bold,
-    fontSize: 30,
-    lineHeight: 36,
+    fontSize: TypeScale.h1.fontSize,
+    lineHeight: TypeScale.h1.lineHeight,
     textAlign: 'center',
   },
   subtitle: {
     fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 15,
-    lineHeight: 21,
+    fontSize: TypeScale.body.fontSize,
+    lineHeight: TypeScale.body.lineHeight,
     textAlign: 'center',
     marginTop: 6,
   },
@@ -436,13 +437,13 @@ const styles = StyleSheet.create({
   },
   featureTitle: {
     fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 16,
+    fontSize: TypeScale.body.fontSize,
     lineHeight: 21,
   },
   featureBody: {
     fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 13,
-    lineHeight: 18,
+    fontSize: TypeScale.bodySm.fontSize,
+    lineHeight: TypeScale.bodySm.lineHeight,
   },
   primaryButton: {
     minHeight: 54,
@@ -457,7 +458,7 @@ const styles = StyleSheet.create({
   },
   primaryButtonText: {
     fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 16,
+    fontSize: TypeScale.body.fontSize,
     lineHeight: 21,
     textAlign: 'center',
   },
@@ -471,7 +472,7 @@ const styles = StyleSheet.create({
   },
   laterText: {
     fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 14,
+    fontSize: TypeScale.bodySm.fontSize,
     lineHeight: 19,
   },
   pressed: {

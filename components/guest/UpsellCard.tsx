@@ -7,6 +7,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { router } from 'expo-router';
 import React, { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { TypeScale } from '@/constants/typeScale';
 
 type Props = {
   testID?: string;
@@ -50,7 +51,7 @@ export const UpsellCard: React.FC<Props> = ({ testID }) => {
         accessibilityLabel={t('guest.upsell.dismiss')}
         style={styles.dismiss}
       >
-        <Text style={{ color: noctalia.text.secondary, fontSize: 20 }}>×</Text>
+        <Text style={{ color: noctalia.text.secondary, fontSize: TypeScale.h2.fontSize }}>×</Text>
       </Pressable>
     </View>
   );
@@ -76,7 +77,7 @@ const styles = StyleSheet.create({
   },
   dismiss: { minWidth: 44, minHeight: 44, alignItems: 'center', justifyContent: 'center' },
   ctaText: {
-    fontSize: 14,
+    fontSize: TypeScale.bodySm.fontSize,
     fontFamily: Fonts.spaceGrotesk.bold,
   },
 });

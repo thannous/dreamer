@@ -57,7 +57,7 @@ export function TrendsReturns({ trends, symbols, lit, ink, t, formatNumber, onOp
               count: formatNumber(unanalyzed),
             })}
             className="min-h-[30px] flex-row items-center gap-1 rounded-full border border-champagne-soft px-3">
-            <Text className="text-[12px] leading-[16px] font-sans-medium text-champagne-on">
+            <Text className="text-caption font-sans-medium text-champagne-on">
               {t('trends.returns.to_analyze', { count: formatNumber(unanalyzed) })}
             </Text>
             <IconSymbol name="chevron.right" size={12} color={ink} />
@@ -74,7 +74,7 @@ export function TrendsReturns({ trends, symbols, lit, ink, t, formatNumber, onOp
               </Svg>
             ))}
           </View>
-          <Text className="min-w-0 flex-1 text-[14px] leading-[20px] font-sans text-ivory">
+          <Text className="min-w-0 flex-1 text-body-sm font-sans text-ivory">
             {t('trends.returns.threshold')}{' '}
             {t(missing === 1 ? 'trends.returns.missing_one' : 'trends.returns.missing', { count: formatNumber(missing) })}
           </Text>
@@ -83,7 +83,7 @@ export function TrendsReturns({ trends, symbols, lit, ink, t, formatNumber, onOp
         <View className="gap-6">
           {symbols.length > 0 ? (
             <View className="gap-3" testID="trends.returns.symbols">
-              <Text className="text-[11px] leading-[14px] font-sans-medium uppercase tracking-[1.4px] text-champagne-on" accessibilityRole="header">{t('trends.returns.symbols')}</Text>
+              <Text className="text-overline font-sans-medium uppercase text-champagne-on" accessibilityRole="header">{t('trends.returns.symbols')}</Text>
               {symbols.map(({ symbol, count }) => {
                 const share = t('trends.returns.share', { count: formatNumber(count), total: formatNumber(analyzed) });
                 const kind = symbol.kind === 'personal' ? t('journal.symbols.kind.personal') : null;
@@ -95,10 +95,10 @@ export function TrendsReturns({ trends, symbols, lit, ink, t, formatNumber, onOp
                     className="min-h-[56px] flex-row items-center gap-3">
                     <SymbolMedallion symbol={symbol} size={48} />
                     <View className="min-w-0 flex-1">
-                      <Text className="text-[16px] leading-[22px] font-sans-medium text-ivory" numberOfLines={1}>{symbol.name}</Text>
-                      {kind ? <Text className="text-[12px] leading-[16px] font-sans text-champagne-on">{kind}</Text> : null}
+                      <Text className="text-body leading-[22px] font-sans-medium text-ivory" numberOfLines={1}>{symbol.name}</Text>
+                      {kind ? <Text className="text-caption font-sans text-champagne-on">{kind}</Text> : null}
                     </View>
-                    <Text className="text-[13px] leading-[18px] font-sans text-ivory-muted">{share}</Text>
+                    <Text className="text-body-sm font-sans text-ivory-muted">{share}</Text>
                     <IconSymbol name="chevron.right" size={12} color={ink} />
                   </PressableScale>
                 );
@@ -107,12 +107,12 @@ export function TrendsReturns({ trends, symbols, lit, ink, t, formatNumber, onOp
           ) : null}
 
           {emotions.length === 0 ? (
-            <Text className="text-[15px] leading-[22px] font-sans text-ivory-muted" testID="trends.returns.none">
+            <Text className="text-body font-sans text-ivory-muted" testID="trends.returns.none">
               {t('trends.returns.none')}
             </Text>
           ) : (
             <View className="gap-4" testID="trends.returns.emotions">
-              <Text className="text-[11px] leading-[14px] font-sans-medium uppercase tracking-[1.4px] text-champagne-on" accessibilityRole="header">{t('trends.returns.emotions')}</Text>
+              <Text className="text-overline font-sans-medium uppercase text-champagne-on" accessibilityRole="header">{t('trends.returns.emotions')}</Text>
               {emotions.map((emotion) => {
                 const label = getEmotionFamilyLabel(emotion.family, t) ?? emotion.family;
                 const share = t('trends.returns.share', { count: formatNumber(emotion.count), total: formatNumber(analyzed) });
@@ -121,16 +121,16 @@ export function TrendsReturns({ trends, symbols, lit, ink, t, formatNumber, onOp
                   <View key={emotion.family} className="gap-2" testID={`trends.returns.emotion.${emotion.family}`}
                     accessible accessibilityLabel={[label, share, trend].filter(Boolean).join(', ')}>
                     <View className="flex-row items-baseline gap-3">
-                      <Text className="min-w-0 flex-1 text-[16px] leading-[22px] font-sans-medium text-ivory">{label}</Text>
+                      <Text className="min-w-0 flex-1 text-body leading-[22px] font-sans-medium text-ivory">{label}</Text>
                       {emotion.trend ? (
                         <View className="flex-row items-center gap-1" testID={`trends.returns.emotion.${emotion.family}.trend`}>
                           {emotion.trend !== 'same' ? (
                             <IconSymbol name={TREND_ICONS[emotion.trend]} size={12} color={ink} />
                           ) : null}
-                          <Text className="text-[12px] leading-[16px] font-sans text-ivory-muted">{trend}</Text>
+                          <Text className="text-caption font-sans text-ivory-muted">{trend}</Text>
                         </View>
                       ) : null}
-                      <Text className="text-[13px] leading-[18px] font-sans text-ivory-muted">{share}</Text>
+                      <Text className="text-body-sm font-sans text-ivory-muted">{share}</Text>
                     </View>
                     <View className="h-1.5 overflow-hidden rounded-[3px] bg-line">
                       <ProgressFill percent={lit ? emotion.share * 100 : 0} growOnMount={false}
@@ -144,7 +144,7 @@ export function TrendsReturns({ trends, symbols, lit, ink, t, formatNumber, onOp
 
           {types.length > 0 ? (
             <View className="gap-3" testID="trends.returns.types">
-              <Text className="text-[11px] leading-[14px] font-sans-medium uppercase tracking-[1.4px] text-champagne-on" accessibilityRole="header">{t('trends.returns.types')}</Text>
+              <Text className="text-overline font-sans-medium uppercase text-champagne-on" accessibilityRole="header">{t('trends.returns.types')}</Text>
               <View className="flex-row flex-wrap gap-2">
                 {types.map((facet) => {
                   const label = getDreamTypeLabel(facet.value, t) ?? facet.value;
@@ -153,8 +153,8 @@ export function TrendsReturns({ trends, symbols, lit, ink, t, formatNumber, onOp
                       onPress={() => onOpenType(facet.value)} haptic="light" accessibilityRole="button"
                       accessibilityLabel={t('trends.returns.type_label', { type: `${label}, ${formatNumber(facet.count)}` })}
                       className="min-h-[44px] flex-row items-center gap-2 rounded-full border border-line px-4">
-                      <Text className="text-[14px] leading-[20px] font-sans-medium text-ivory">{label}</Text>
-                      <Text className="text-[13px] leading-[18px] font-sans text-champagne-on">{formatNumber(facet.count)}</Text>
+                      <Text className="text-body-sm font-sans-medium text-ivory">{label}</Text>
+                      <Text className="text-body-sm font-sans text-champagne-on">{formatNumber(facet.count)}</Text>
                     </PressableScale>
                   );
                 })}

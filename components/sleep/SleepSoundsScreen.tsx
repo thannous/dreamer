@@ -41,6 +41,7 @@ import {
 import { SleepAmbienceScene } from './SleepAmbienceScene';
 import { SLEEP_AMBIENCE_SCENES } from './sleepAmbienceScenes';
 import { SleepTimerRing } from './SleepTimerRing';
+import { TypeScale } from '@/constants/typeScale';
 
 /**
  * Selected state on this screen is carried by colour and a ring, so colour crosses over
@@ -480,9 +481,9 @@ const styles = StyleSheet.create({
   kickerRule: { width: 22, height: 1 },
   kickerText: {
     fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 11,
-    lineHeight: 14,
-    letterSpacing: 2,
+    fontSize: TypeScale.overline.fontSize,
+    lineHeight: TypeScale.overline.lineHeight,
+    letterSpacing: TypeScale.overline.letterSpacing,
     textTransform: 'uppercase',
     flexShrink: 1,
   },
@@ -496,9 +497,9 @@ const styles = StyleSheet.create({
   story: { gap: 10 },
   eyebrow: {
     fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 11,
-    lineHeight: 14,
-    letterSpacing: 1.8,
+    fontSize: TypeScale.overline.fontSize,
+    lineHeight: TypeScale.overline.lineHeight,
+    letterSpacing: TypeScale.overline.letterSpacing,
     textTransform: 'uppercase',
   },
   title: {
@@ -509,8 +510,8 @@ const styles = StyleSheet.create({
   },
   storyText: {
     fontFamily: Fonts.lora.regularItalic,
-    fontSize: 17,
-    lineHeight: 26,
+    fontSize: TypeScale.h3.fontSize,
+    lineHeight: TypeScale.h3.lineHeight,
     maxWidth: 440,
   },
   choices: { gap: 22 },
@@ -529,7 +530,7 @@ const styles = StyleSheet.create({
   sceneImage: { flex: 1, borderRadius: 26 },
   sceneLabel: {
     fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 12,
+    fontSize: TypeScale.caption.fontSize,
     lineHeight: 16,
     textAlign: 'center',
     paddingHorizontal: 4,
@@ -537,9 +538,9 @@ const styles = StyleSheet.create({
   durations: { gap: 10 },
   groupLabel: {
     fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 11,
-    lineHeight: 14,
-    letterSpacing: 1.8,
+    fontSize: TypeScale.overline.fontSize,
+    lineHeight: TypeScale.overline.lineHeight,
+    letterSpacing: TypeScale.overline.letterSpacing,
     textTransform: 'uppercase',
   },
   durationRow: { flexDirection: 'row', gap: 10 },
@@ -553,7 +554,7 @@ const styles = StyleSheet.create({
   },
   durationText: {
     fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 14,
+    fontSize: TypeScale.bodySm.fontSize,
     lineHeight: 20,
     fontVariant: ['tabular-nums'],
   },
@@ -567,7 +568,7 @@ const styles = StyleSheet.create({
   },
   restingText: {
     fontFamily: Fonts.lora.regularItalic,
-    fontSize: 16,
+    fontSize: TypeScale.body.fontSize,
     lineHeight: 24,
   },
   player: { flexDirection: 'row', alignItems: 'center', gap: 20 },
@@ -595,24 +596,24 @@ const styles = StyleSheet.create({
   playerCopy: { flex: 1, gap: 2 },
   remainingTime: {
     fontFamily: Fonts.fraunces.regular,
-    fontSize: 40,
+    fontSize: TypeScale.hero.fontSize,
     lineHeight: 46,
     fontVariant: ['tabular-nums'],
   },
   playerLabel: {
     fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 14,
+    fontSize: TypeScale.bodySm.fontSize,
     lineHeight: 19,
   },
   errorText: {
     fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 13,
-    lineHeight: 18,
+    fontSize: TypeScale.bodySm.fontSize,
+    lineHeight: TypeScale.bodySm.lineHeight,
   },
   hintText: {
     fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 13,
-    lineHeight: 19,
+    fontSize: TypeScale.bodySm.fontSize,
+    lineHeight: TypeScale.bodySm.lineHeight,
   },
   pressed: { opacity: 0.76 },
 });

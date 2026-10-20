@@ -22,6 +22,7 @@ import { requestStoreReviewIfDue } from '@/lib/storeReview';
 import { buildWeeklyRecap } from '@/lib/weeklyRecap';
 import { HeaderScrollView, useHeaderScroll } from '@/components/ui/headerStretch';
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
+import { TypeScale } from '@/constants/typeScale';
 
 /**
  * "Your week in dreams": the Sunday-morning recap opened from the weekly push
@@ -303,19 +304,19 @@ const styles = StyleSheet.create({
   },
   eyebrow: {
     fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 12,
+    fontSize: TypeScale.caption.fontSize,
     letterSpacing: 1.4,
     textTransform: 'uppercase',
   },
   title: {
     fontFamily: Fonts.fraunces.bold,
-    fontSize: 30,
-    lineHeight: 36,
+    fontSize: TypeScale.h1.fontSize,
+    lineHeight: TypeScale.h1.lineHeight,
   },
   subtitle: {
     fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 15,
-    lineHeight: 22,
+    fontSize: TypeScale.body.fontSize,
+    lineHeight: TypeScale.body.lineHeight,
   },
   tiles: {
     flexDirection: 'row',
@@ -330,17 +331,17 @@ const styles = StyleSheet.create({
   },
   tileValue: {
     fontFamily: Fonts.fraunces.semiBold,
-    fontSize: 26,
-    lineHeight: 30,
+    fontSize: TypeScale.h1.fontSize,
+    lineHeight: TypeScale.h1.lineHeight,
   },
   tileLabel: {
     fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 12,
+    fontSize: TypeScale.caption.fontSize,
     textAlign: 'center',
   },
   tileHint: {
     fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 12,
+    fontSize: TypeScale.caption.fontSize,
     textAlign: 'center',
   },
   card: {
@@ -356,18 +357,18 @@ const styles = StyleSheet.create({
   },
   cardEyebrow: {
     fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 12,
+    fontSize: TypeScale.caption.fontSize,
     letterSpacing: 1.2,
     textTransform: 'uppercase',
   },
   cardTitle: {
     fontFamily: Fonts.fraunces.semiBold,
-    fontSize: 20,
-    lineHeight: 26,
+    fontSize: TypeScale.h2.fontSize,
+    lineHeight: TypeScale.h2.lineHeight,
   },
   cardBody: {
     fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 14,
+    fontSize: TypeScale.bodySm.fontSize,
     lineHeight: 20,
   },
   signalRow: {
@@ -384,13 +385,13 @@ const styles = StyleSheet.create({
   },
   signalLabel: {
     fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 13,
+    fontSize: TypeScale.bodySm.fontSize,
   },
   signalValue: {
     flexShrink: 1,
     textAlign: 'right',
     fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 15,
+    fontSize: TypeScale.body.fontSize,
   },
   lockedPill: {
     flexDirection: 'row',
@@ -403,7 +404,7 @@ const styles = StyleSheet.create({
   },
   lockedLabel: {
     fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 12,
+    fontSize: TypeScale.caption.fontSize,
   },
   primary: {
     marginTop: 6,
@@ -416,7 +417,7 @@ const styles = StyleSheet.create({
   },
   primaryLabel: {
     fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 15,
+    fontSize: TypeScale.body.fontSize,
   },
   pressed: {
     opacity: 0.85,

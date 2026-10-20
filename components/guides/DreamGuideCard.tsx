@@ -8,6 +8,7 @@ import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import type { DreamGuide, DreamGuideLanguage } from '@/lib/dreamGuideTypes';
 import { getDreamGuideContent, getDreamGuideIcon } from '@/services/dreamGuideService';
+import { TypeScale } from '@/constants/typeScale';
 
 interface DreamGuideCardProps {
   guide: DreamGuide;
@@ -92,7 +93,7 @@ const styles = StyleSheet.create({
     flex: 1,
     minWidth: 0,
     fontFamily: Fonts.fraunces.semiBold,
-    fontSize: 18,
+    fontSize: TypeScale.h3.fontSize,
     lineHeight: 24,
   },
   chevron: {
@@ -101,12 +102,12 @@ const styles = StyleSheet.create({
   },
   description: {
     fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 14,
+    fontSize: TypeScale.bodySm.fontSize,
     lineHeight: 20,
   },
   metadata: {
     fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 12,
+    fontSize: TypeScale.caption.fontSize,
     lineHeight: 17,
   },
 });

@@ -9,6 +9,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { reportStabilityError } from '@/lib/observe';
 import { ErrorBoundary } from './ErrorBoundary';
+import { TypeScale } from '@/constants/typeScale';
 
 interface ScreenErrorFallbackProps {
   error: Error;
@@ -169,20 +170,20 @@ const styles = StyleSheet.create({
     marginBottom: ThemeLayout.spacing.md,
   },
   title: {
-    fontSize: 22,
+    fontSize: TypeScale.h2.fontSize,
     fontFamily: Fonts.spaceGrotesk.bold,
     textAlign: 'center',
     marginBottom: ThemeLayout.spacing.sm,
   },
   message: {
-    fontSize: 16,
+    fontSize: TypeScale.body.fontSize,
     fontFamily: Fonts.spaceGrotesk.regular,
     textAlign: 'center',
     lineHeight: 24,
     marginBottom: ThemeLayout.spacing.md,
   },
   devError: {
-    fontSize: 12,
+    fontSize: TypeScale.caption.fontSize,
     fontFamily: Fonts.spaceGrotesk.regular,
     textAlign: 'center',
     marginBottom: ThemeLayout.spacing.lg,
@@ -207,7 +208,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   buttonText: {
-    fontSize: 16,
+    fontSize: TypeScale.body.fontSize,
     fontFamily: Fonts.spaceGrotesk.bold,
   },
 });

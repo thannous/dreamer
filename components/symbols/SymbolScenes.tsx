@@ -11,6 +11,7 @@ import { Fonts } from '@/constants/theme';
 import { useTranslation } from '@/hooks/useTranslation';
 import { atlasPictureSources, type AtlasScene, type SymbolAtlas } from '@/lib/symbolAtlas';
 import type { SymbolLanguage, SymbolVariation } from '@/lib/symbolTypes';
+import { TypeScale } from '@/constants/typeScale';
 
 type Tokens = ReturnType<typeof getNoctaliaDesignTokens>;
 
@@ -193,16 +194,16 @@ export function SymbolScenes({ atlas, symbolId, readings, width, noctalia }: Sym
 
 const styles = StyleSheet.create({
   root: { gap: 18 },
-  hint: { marginTop: -8, fontFamily: Fonts.spaceGrotesk.regular, fontSize: 15, lineHeight: 22 },
+  hint: { marginTop: -8, fontFamily: Fonts.spaceGrotesk.regular, fontSize: TypeScale.body.fontSize, lineHeight: TypeScale.body.lineHeight },
   tiles: { flexDirection: 'row', alignItems: 'flex-start', gap: TILE_GAP },
   tileArt: { borderRadius: 10, borderCurve: 'continuous', overflow: 'hidden' },
   tileEdge: { position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, borderRadius: 10, borderCurve: 'continuous' },
-  tileLabel: { marginTop: 8, fontFamily: Fonts.spaceGrotesk.medium, fontSize: 13, lineHeight: 18 },
+  tileLabel: { marginTop: 8, fontFamily: Fonts.spaceGrotesk.medium, fontSize: TypeScale.bodySm.fontSize, lineHeight: TypeScale.bodySm.lineHeight },
   pressed: { opacity: 0.78 },
   stage: { borderRadius: 16, borderCurve: 'continuous', overflow: 'hidden' },
   reading: { gap: 10 },
-  kicker: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 11, lineHeight: 14, letterSpacing: 2, textTransform: 'uppercase' },
-  readingTitle: { fontFamily: Fonts.fraunces.semiBold, fontSize: 21, lineHeight: 27 },
-  question: { fontFamily: Fonts.fraunces.regular, fontSize: 18, lineHeight: 27 },
-  excerpt: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 15, lineHeight: 25 },
+  kicker: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: TypeScale.overline.fontSize, lineHeight: TypeScale.overline.lineHeight, letterSpacing: TypeScale.overline.letterSpacing, textTransform: 'uppercase' },
+  readingTitle: { fontFamily: Fonts.fraunces.semiBold, fontSize: TypeScale.h2.fontSize, lineHeight: TypeScale.h2.lineHeight },
+  question: { fontFamily: Fonts.fraunces.regular, fontSize: TypeScale.h3.fontSize, lineHeight: 27 },
+  excerpt: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: TypeScale.body.fontSize, lineHeight: TypeScale.body.lineHeight },
 });

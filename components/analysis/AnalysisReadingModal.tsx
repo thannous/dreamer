@@ -15,6 +15,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { isPoeticDreamQuote } from '@/lib/dreamQuote';
 import type { DreamAnalysis } from '@/lib/types';
+import { TypeScale } from '@/constants/typeScale';
 
 export type AnalysisReadingModalProps = {
   dream: Pick<DreamAnalysis, 'title' | 'shareableQuote' | 'interpretation'> & Partial<Pick<DreamAnalysis,
@@ -137,21 +138,21 @@ const styles = StyleSheet.create({
   toolbar: { alignItems: 'flex-end', paddingBottom: 12 },
   close: { width: 48, height: 48, borderRadius: 24, alignItems: 'center', justifyContent: 'center' },
   content: { paddingTop: 10, width: '100%', maxWidth: 620, alignSelf: 'center' },
-  title: { fontFamily: Fonts.lora.regular, fontSize: 26, lineHeight: 35, marginBottom: 20 },
+  title: { fontFamily: Fonts.lora.regular, fontSize: TypeScale.h1.fontSize, lineHeight: TypeScale.h1.lineHeight, marginBottom: 20 },
   illustration: { width: '100%', borderRadius: 20, overflow: 'hidden', marginTop: 28, marginBottom: 28 },
   imageFrame: { minHeight: 190, aspectRatio: 4 / 3 },
   pendingFrame: { minHeight: 310 },
   emptyFrame: { minHeight: 140 },
   imageStatus: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 12, padding: 20 },
-  imageLabel: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 15, lineHeight: 22, textAlign: 'center' },
+  imageLabel: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: TypeScale.body.fontSize, lineHeight: TypeScale.body.lineHeight, textAlign: 'center' },
   retry: { minHeight: 48, justifyContent: 'center', paddingHorizontal: 12 },
-  body: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 17, lineHeight: 28 },
+  body: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: TypeScale.body.fontSize, lineHeight: TypeScale.body.lineHeight },
   section: { marginTop: 30 },
-  sectionTitle: { fontFamily: Fonts.lora.regular, fontSize: 23, lineHeight: 31, marginBottom: 16 },
+  sectionTitle: { fontFamily: Fonts.lora.regular, fontSize: TypeScale.h2.fontSize, lineHeight: TypeScale.h2.lineHeight, marginBottom: 16 },
   insight: { marginBottom: 16 },
-  insightTitle: { fontFamily: Fonts.spaceGrotesk.bold, fontSize: 17, lineHeight: 25, marginBottom: 6 },
-  question: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 17, lineHeight: 28, marginBottom: 14 },
+  insightTitle: { fontFamily: Fonts.spaceGrotesk.bold, fontSize: TypeScale.body.fontSize, lineHeight: TypeScale.body.lineHeight, marginBottom: 6 },
+  question: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: TypeScale.body.fontSize, lineHeight: TypeScale.body.lineHeight, marginBottom: 14 },
   quoteBlock: { marginTop: 32, paddingTop: 24, borderTopWidth: StyleSheet.hairlineWidth, gap: 12 },
-  quote: { fontFamily: Fonts.lora.regularItalic, fontSize: 19, lineHeight: 29 },
-  attribution: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 12, lineHeight: 18 },
+  quote: { fontFamily: Fonts.lora.regularItalic, fontSize: TypeScale.h3.fontSize, lineHeight: TypeScale.h3.lineHeight },
+  attribution: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: TypeScale.caption.fontSize, lineHeight: 18 },
 });

@@ -5,6 +5,7 @@ import { ThemeLayout } from "@/constants/journalTheme";
 import { getNoctaliaDesignTokens } from "@/constants/noctaliaDesign";
 import { Fonts } from "@/constants/theme";
 import { useTheme } from "@/context/ThemeContext";
+import { TypeScale } from '@/constants/typeScale';
 
 interface LetterHeaderProps {
   letter: string;
@@ -37,7 +38,7 @@ export function LetterHeader({ letter, count, countLabel }: LetterHeaderProps) {
           accessibilityRole="header"
           style={{
             fontFamily: Fonts.fraunces.bold,
-            fontSize: 22,
+            fontSize: TypeScale.h2.fontSize,
             lineHeight: 28,
             color: noctalia.text.primary,
           }}
@@ -56,7 +57,7 @@ export function LetterHeader({ letter, count, countLabel }: LetterHeaderProps) {
           selectable
           style={{
             fontFamily: Fonts.spaceGrotesk.regular,
-            fontSize: 13,
+            fontSize: TypeScale.bodySm.fontSize,
             color: noctalia.text.tertiary,
             fontVariant: ["tabular-nums"],
           }}

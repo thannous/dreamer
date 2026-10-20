@@ -8,7 +8,8 @@ const ts = require('typescript');
 const { checkBrandTokens, normalizeColor } = require('./check-brand-tokens');
 const ROOT = path.resolve(__dirname, '..');
 const files = ['global.css', 'constants/journalTheme.ts', 'constants/noctaliaDesign.ts', 'constants/noctaliaPalette.ts',
-  'apps/meditation/global.css', 'apps/meditation/constants/theme.ts'];
+  'apps/meditation/global.css', 'apps/meditation/constants/theme.ts',
+  'constants/typeScale.ts', 'apps/meditation/constants/typography.ts'];
 
 const temporaryRoots = [];
 afterEach(() => {
@@ -150,4 +151,13 @@ test('native theme aliases cannot drift from the generated mode', () => {
   const f = fixture();
   f.change('constants/journalTheme.ts', "createNoctaliaTheme('light', 'light')", "createNoctaliaTheme('dark', 'light')");
   assert.match(f.check().errors.join('\n'), /Journal\/Lucid light --color-ink/);
+});
+
+test('the shared type scale fails on drift in either app, in CSS or TypeScript', () => {
+  const f = fixture();
+  f.change('global.css', '--text-body: 16px;', '--text-body: 15px;');
+  f.change('apps/meditation/constants/typography.ts', 'caption: { fontSize: 12, lineHeight: 16 }', 'caption: { fontSize: 13, lineHeight: 16 }');
+  const errors = f.check().errors.join('\n');
+  assert.match(errors, /Journal\/Lucid type body: CSS 15px\/24px != 16px\/24px/);
+  assert.match(errors, /Meditation type caption: TypeScript 13\/16 != 12\/16/);
 });

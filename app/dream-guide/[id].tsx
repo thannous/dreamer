@@ -25,6 +25,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
 import { HeaderScrollView, useHeaderScroll } from '@/components/ui/headerStretch';
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
+import { TypeScale } from '@/constants/typeScale';
 
 function DreamGuideDetailScreen() {
   // This screen's own scroll, published to its header painting and title.
@@ -238,14 +239,14 @@ const styles = StyleSheet.create({
   guideLabel: {
     flex: 1,
     fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 12,
+    fontSize: TypeScale.caption.fontSize,
     lineHeight: 16,
     textTransform: 'uppercase',
   },
   title: {
     fontFamily: Fonts.fraunces.bold,
-    fontSize: 31,
-    lineHeight: 38,
+    fontSize: TypeScale.h1.fontSize,
+    lineHeight: TypeScale.h1.lineHeight,
   },
   rule: {
     width: 64,
@@ -257,8 +258,8 @@ const styles = StyleSheet.create({
   },
   introText: {
     fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 15,
-    lineHeight: 23,
+    fontSize: TypeScale.body.fontSize,
+    lineHeight: TypeScale.body.lineHeight,
   },
   sectionHeadingRow: {
     flexDirection: 'row',
@@ -268,12 +269,12 @@ const styles = StyleSheet.create({
   sectionHeading: {
     flex: 1,
     fontFamily: Fonts.fraunces.semiBold,
-    fontSize: 20,
-    lineHeight: 26,
+    fontSize: TypeScale.h2.fontSize,
+    lineHeight: TypeScale.h2.lineHeight,
   },
   symbolCount: {
     fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 12,
+    fontSize: TypeScale.caption.fontSize,
     lineHeight: 16,
   },
   symbolList: {
@@ -302,12 +303,12 @@ const styles = StyleSheet.create({
   },
   pointIndexText: {
     fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 12,
+    fontSize: TypeScale.caption.fontSize,
   },
   practicalPointText: {
     flex: 1,
     fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 14,
+    fontSize: TypeScale.bodySm.fontSize,
     lineHeight: 21,
   },
   conclusionSection: {
@@ -320,7 +321,7 @@ const styles = StyleSheet.create({
   },
   conclusionText: {
     fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 14,
+    fontSize: TypeScale.bodySm.fontSize,
     lineHeight: 22,
   },
   emptyState: {
@@ -342,7 +343,7 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 16,
+    fontSize: TypeScale.body.fontSize,
   },
 });
 

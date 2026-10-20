@@ -18,6 +18,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { TypeScale } from '@/constants/typeScale';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -99,6 +100,6 @@ const styles = StyleSheet.create({
   },
   text: {
     fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 13,
+    fontSize: TypeScale.bodySm.fontSize,
   },
 });

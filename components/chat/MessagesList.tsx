@@ -47,6 +47,7 @@ import { FadeInStaggered } from './FadeInStaggered';
 import { MarkdownText } from './MarkdownText';
 import { ScrollToBottomButton } from './ScrollToBottomButton';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { TypeScale } from '@/constants/typeScale';
 
 type LegendListComponent = React.ComponentType<any> | React.ReactElement | null;
 
@@ -478,7 +479,7 @@ const styles = StyleSheet.create({
   messageBubbleAI: {},
   messageBubbleUser: {},
   messageText: {
-    fontSize: 14,
+    fontSize: TypeScale.bodySm.fontSize,
     fontFamily: Fonts.spaceGrotesk.regular,
     lineHeight: 20,
   },

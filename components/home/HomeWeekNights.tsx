@@ -50,13 +50,13 @@ export function HomeWeekNights({ dreams, now }: { dreams: DreamAnalysis[]; now: 
     <View testID={TID.Component.HomeWeek} className="gap-2 border-t border-line pb-5 pt-2">
       <View className="flex-row items-center justify-between gap-3">
         <Text maxFontSizeMultiplier={1.4}
-          className="min-w-0 shrink font-sans-medium text-[11px] uppercase tracking-[1.6px] text-ivory-muted">
+          className="min-w-0 shrink font-sans-medium text-overline uppercase text-ivory-muted">
           {t('home.week.title')}
         </Text>
         <Pressable onPress={() => router.push(WEEKLY_RECAP_ROUTE)} accessibilityRole="button"
           testID={TID.Button.HomeWeekRecap}
           className="min-h-11 flex-row items-center gap-1 active:opacity-70">
-          <Text maxFontSizeMultiplier={1.4} className="font-sans-medium text-[13px] text-champagne-on">
+          <Text maxFontSizeMultiplier={1.4} className="font-sans-medium text-body-sm text-champagne-on">
             {t('inspiration.reading.recap_cta')}
           </Text>
           <IconSymbol name="chevron.right" size={14} color={ink.accent.text} />
@@ -91,7 +91,7 @@ function WeekNight({ night, locale }: { night: Night; locale: string }) {
   const face = (
     <>
       <Text maxFontSizeMultiplier={1.4}
-        className={`font-sans-medium text-[12px] uppercase ${night.today ? 'text-champagne-on' : 'text-ivory-muted'}`}>
+        className={`font-sans-medium text-caption uppercase ${night.today ? 'text-champagne-on' : 'text-ivory-muted'}`}>
         {night.date.toLocaleDateString(locale, { weekday: 'narrow' })}
       </Text>
       {/* expo-image and the ring's colours take native props. */}
@@ -109,7 +109,7 @@ function WeekNight({ night, locale }: { night: Night; locale: string }) {
           : dream ? <IconSymbol name="sparkles" size={16} color={ink.accent.text} />
             : <View style={{ width: 5, height: 5, borderRadius: 3, backgroundColor: ink.text.tertiary }} />}
       </View>
-      <Text maxFontSizeMultiplier={1.4} className="font-sans text-[12px] text-ivory-muted">{night.date.getDate()}</Text>
+      <Text maxFontSizeMultiplier={1.4} className="font-sans text-caption text-ivory-muted">{night.date.getDate()}</Text>
     </>
   );
 

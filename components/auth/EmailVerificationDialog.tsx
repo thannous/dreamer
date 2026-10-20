@@ -13,6 +13,7 @@ import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
+import { TypeScale } from '@/constants/typeScale';
 
 export type EmailVerificationPendingDialogProps = {
   visible: boolean;
@@ -182,12 +183,12 @@ const styles = StyleSheet.create({
     marginBottom: ThemeLayout.spacing.sm,
   },
   title: {
-    fontSize: 22,
+    fontSize: TypeScale.h2.fontSize,
     fontFamily: Fonts.spaceGrotesk.bold,
     textAlign: 'center',
   },
   subtitle: {
-    fontSize: 14,
+    fontSize: TypeScale.bodySm.fontSize,
     fontFamily: Fonts.spaceGrotesk.regular,
     lineHeight: 20,
     textAlign: 'center',
@@ -205,18 +206,18 @@ const styles = StyleSheet.create({
     marginTop: ThemeLayout.spacing.sm,
   },
   badgeText: {
-    fontSize: 13,
+    fontSize: TypeScale.bodySm.fontSize,
     fontFamily: Fonts.spaceGrotesk.regular,
   },
   status: {
     marginTop: ThemeLayout.spacing.sm,
-    fontSize: 13,
+    fontSize: TypeScale.bodySm.fontSize,
     fontFamily: Fonts.spaceGrotesk.regular,
     textAlign: 'center',
   },
   cooldown: {
     marginTop: 4,
-    fontSize: 12,
+    fontSize: TypeScale.caption.fontSize,
     fontFamily: Fonts.spaceGrotesk.regular,
     textAlign: 'center',
   },

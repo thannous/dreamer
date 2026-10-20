@@ -13,6 +13,7 @@ import { ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
+import { TypeScale } from '@/constants/typeScale';
 
 /** Selected state lives in the border and the fill, so both cross over rather than repaint. */
 const SELECTION_TRANSITION = ['borderColor', 'backgroundColor'] as const;
@@ -199,15 +200,15 @@ const styles = StyleSheet.create({
     minWidth: 0,
   },
   title: {
-    fontSize: 16,
+    fontSize: TypeScale.body.fontSize,
     fontFamily: Fonts.spaceGrotesk.bold,
   },
   compactTitle: {
-    fontSize: 15,
+    fontSize: TypeScale.body.fontSize,
   },
   subtitle: {
     marginTop: 2,
-    fontSize: 13,
+    fontSize: TypeScale.bodySm.fontSize,
     fontFamily: Fonts.spaceGrotesk.regular,
   },
   badge: {
@@ -216,7 +217,7 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
   },
   badgeText: {
-    fontSize: 12,
+    fontSize: TypeScale.caption.fontSize,
     fontFamily: Fonts.spaceGrotesk.medium,
   },
   compactBadge: {
@@ -237,18 +238,18 @@ const styles = StyleSheet.create({
     rowGap: 1,
   },
   price: {
-    fontSize: 20,
+    fontSize: TypeScale.h2.fontSize,
     fontFamily: Fonts.spaceGrotesk.bold,
   },
   compactPrice: {
-    fontSize: 18,
+    fontSize: TypeScale.h3.fontSize,
   },
   interval: {
-    fontSize: 13,
+    fontSize: TypeScale.bodySm.fontSize,
     fontFamily: Fonts.spaceGrotesk.regular,
   },
   billingDetail: {
-    fontSize: 12,
+    fontSize: TypeScale.caption.fontSize,
     lineHeight: 16,
     fontFamily: Fonts.spaceGrotesk.regular,
   },

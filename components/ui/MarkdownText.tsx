@@ -6,6 +6,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { createMarkdownStyles } from '@/constants/markdownStyles';
 import { sanitizeMarkdown, isAllowedMarkdownUrl, shouldRenderMarkdown } from '@/lib/markdownSecurity';
+import { TypeScale } from '@/constants/typeScale';
 
 interface MarkdownTextProps extends Pick<ViewProps, 'testID' | 'accessibilityLiveRegion'> {
   children: string;
@@ -129,7 +130,7 @@ export const MarkdownText = React.memo(function MarkdownText({
     void Linking.canOpenURL(url).then((allowed) => allowed ? Linking.openURL(url) : undefined)
       .catch(() => { /* A link failure must not interrupt reading or expose its URL in logs. */ });
   }, []);
-  const fallback = <Text selectable={selectable} style={[{ color: palette.textPrimary, fontSize: 16, lineHeight: 24 }, style]}>{children}</Text>;
+  const fallback = <Text selectable={selectable} style={[{ color: palette.textPrimary, fontSize: TypeScale.body.fontSize, lineHeight: 24 }, style]}>{children}</Text>;
   return (
     <View {...rest} style={[{ alignSelf: 'stretch' }, containerStyle]}>
       {markdown === null ? fallback : (

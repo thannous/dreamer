@@ -70,7 +70,7 @@ export function PageHeaderContent({
         animate={{ opacity: 1, translateY: 0 }}
         transition={{ type: 'timing', duration: 700 }}
       >
-        <GradientText colors={headerGradientColors} className="font-display-semibold text-[20px]">
+        <GradientText colors={headerGradientColors} className="font-display-semibold text-h2">
           {t(titleKey)}
         </GradientText>
       </MotiView>

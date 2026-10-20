@@ -56,14 +56,14 @@ function EnabledIllustrationQualityPreference() {
     <Pressable accessibilityRole="button" onPress={() => setVisible(true)}
       className="min-h-[60px] w-full flex-row items-center gap-4" testID="settings-illustration-quality">
       <View className="flex-1 gap-1">
-        <Text className="font-sans text-[15px] text-ivory">{t('settings.illustration.title')}</Text>
+        <Text className="font-sans text-body text-ivory">{t('settings.illustration.title')}</Text>
         <Text className="font-sans text-caption text-ivory-muted">{t('settings.illustration.summary')}</Text>
       </View>
-      <Text className="font-sans text-[15px] text-ivory-muted">{t(`settings.illustration.${current}`)}</Text>
+      <Text className="font-sans text-body text-ivory-muted">{t(`settings.illustration.${current}`)}</Text>
     </Pressable>
     <BottomSheet visible={visible} onClose={() => setVisible(false)} testID="settings-illustration-sheet">
       <View className="gap-4 px-gutter py-6">
-        <Text className="font-display-semibold text-[23px] text-ivory">{t('settings.illustration.title')}</Text>
+        <Text className="font-display-semibold text-h2 text-ivory">{t('settings.illustration.title')}</Text>
         <Text className="font-sans text-body-sm text-ivory-muted">{t('settings.illustration.description')}</Text>
         {plus && quota ? <Text accessibilityLiveRegion="polite" className="font-sans text-body-sm text-ivory-muted">
           {t('settings.illustration.remaining', { count: quota.remaining })}{' '}
@@ -77,7 +77,7 @@ function EnabledIllustrationQualityPreference() {
               accessibilityState={{ checked: current === resolution, disabled }} disabled={disabled}
               onPress={() => { void select(resolution); }} testID={`settings-illustration-${resolution}`}
               className={`min-h-[60px] justify-center rounded-lg border px-4 py-3 my-1 ${current === resolution ? 'border-champagne bg-ink-active' : 'border-line bg-ink-card'} ${disabled ? 'opacity-50' : ''}`}>
-              <Text className="font-sans text-[16px] text-ivory">{t(`settings.illustration.${resolution}`)}</Text>
+              <Text className="font-sans text-body text-ivory">{t(`settings.illustration.${resolution}`)}</Text>
             </Pressable>;
           })}
         </View>
