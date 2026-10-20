@@ -116,6 +116,38 @@ test('free user searches, sees no match, and recovers the journal', async ({ pag
   await expect(page.getByTestId(/^dream\.item\./)).toHaveCount(1);
 });
 
+test('a search typed in a scrolled journal keeps its field until the user scrolls', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await selectProfile(page, 'existing');
+  await journal(page);
+  const list = page.getByTestId('list.dreams').filter({ visible: true });
+  await page.mouse.move(195, 640);
+  await page.mouse.wheel(0, 400);
+  await expect.poll(() => list.evaluate((node) => node.scrollTop)).toBeGreaterThan(0);
+  // Each letter brings the results back to the top; that return must not take the field away.
+  const field = page.getByRole('textbox', { name: 'Search dreams…' });
+  await field.pressSequentially('The Infinite Library', { delay: 40 });
+  await expect(field).toHaveValue('The Infinite Library');
+  await expect(field).toBeFocused();
+  await expect(page.getByTestId(/^dream\.item\./)).toHaveCount(1);
+  await expect(page.getByTestId(/^dream\.item\./)).toContainText('The Infinite Library');
+  // A gesture that does not move the list (a sideways wheel) leaves the field: wait past
+  // the list's dismissal window and the web scroller's end of scroll, then check.
+  const resting = await list.evaluate((node) => node.scrollTop);
+  await page.mouse.move(195, 640);
+  await page.mouse.wheel(120, 0);
+  await page.evaluate(() => new Promise((resolve) => setTimeout(resolve, 400)));
+  expect(await list.evaluate((node) => node.scrollTop)).toBe(resting);
+  await expect(field).toBeFocused();
+  // The user scrolling the whole journal puts the keyboard away, as a drag does natively.
+  await field.fill('');
+  await expect.poll(() => list.evaluate((node) => node.scrollTop)).toBe(0);
+  await page.mouse.move(195, 640);
+  await page.mouse.wheel(0, 400);
+  await expect.poll(() => list.evaluate((node) => node.scrollTop)).toBeGreaterThan(0);
+  await expect(field).not.toBeFocused();
+});
+
 test('free user edits a story, cancels deletion, then deletes only that dream', async ({ page }) => {
   await selectProfile(page, 'existing');
   await journal(page);

@@ -6,12 +6,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import React, { useCallback, useDeferredValue, useMemo, useRef, useState } from 'react';
 import {
   Platform,
-  ScrollView,
   Text,
   View,
   useWindowDimensions,
-  type NativeScrollEvent,
-  type NativeSyntheticEvent,
   type ViewInstance,
 } from 'react-native';
 import { useReducedMotion } from 'react-native-reanimated';
@@ -51,7 +48,7 @@ import { getSymbolIndex } from '@/lib/symbolLinks';
 import { getPeriodSymbols } from '@/lib/trendsSymbols';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
-import { useHeaderScroll } from '@/components/ui/headerStretch';
+import { HeaderScrollView, useHeaderScroll } from '@/components/ui/headerStretch';
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 
 const COMPACT_BREAKPOINT = 360;
@@ -181,10 +178,8 @@ function StatisticsScreen() {
     probe(returnsRef, 'returns', setReturnsLit);
   }, [height]);
 
-  const handleScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    onHeaderScroll(event);
-    reveal();
-  }, [onHeaderScroll, reveal]);
+  // Until both sections have lit, each scroll event also looks for them on the screen.
+  const handleScroll = useHeaderScroll(nightsLit && returnsLit ? undefined : reveal);
 
   const chooseTheme = useCallback((theme: DreamTheme) => {
     setSelectedTheme((current) => (current === theme ? null : theme));
@@ -226,7 +221,7 @@ function StatisticsScreen() {
     return (
       <View className="flex-1 bg-ink" accessible accessibilityRole="progressbar" accessibilityLabel={t('trends.loading')}>
         {scrollHeader ? (
-          <ScrollView
+          <HeaderScrollView
             className="flex-1"
             onScroll={onHeaderScroll}
             scrollEventThrottle={16}
@@ -236,7 +231,7 @@ function StatisticsScreen() {
           >
             {header}
             {loadingMessage}
-          </ScrollView>
+          </HeaderScrollView>
         ) : (
           <>
             {header}
@@ -352,7 +347,7 @@ function StatisticsScreen() {
 
   return (
     <View className="flex-1 bg-ink" testID="screen.trends">
-      <ScrollView
+      <HeaderScrollView
         className="flex-1"
         onScroll={handleScroll}
         scrollEventThrottle={16}
@@ -394,7 +389,7 @@ function StatisticsScreen() {
             </View>
           )}
         </ScreenContainer>
-      </ScrollView>
+      </HeaderScrollView>
       {symbolIndex ? (
         <DreamSymbolSheet index={symbolIndex} dream={null} linkKey={openSymbol} onSelect={setOpenSymbol}
           onClose={() => setOpenSymbol(null)} />

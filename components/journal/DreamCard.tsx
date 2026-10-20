@@ -53,6 +53,9 @@ const SCRIM_FADE_LOCATIONS = [0, 0.12, 0.3, 0.5, 0.7, 0.86, 1] as const;
 const SCRIM_FADE_STRENGTH = [1, 0.92, 0.75, 0.52, 0.3, 0.13, 0] as const;
 // Margin icons, one per line, each with a 44 pt touch target around its glyph.
 const MARGIN_ACTION_STYLE = { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' } as const;
+// The arrow beside the dream's last line: 28 pt wide, grown to a 44 pt touch target.
+const EXPAND_ARROW_WIDTH = 28;
+const EXPAND_HIT_SLOP = { top: 11, bottom: 11, left: 8, right: 8 } as const;
 const CARD_IMAGE_PLACEHOLDER = { blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' };
 
 const BADGE_TEXT_CLASS = {
@@ -159,10 +162,14 @@ export const DreamCard = memo(function DreamCard({
   if (reading.key !== readingKey) setReading({ key: readingKey, expanded: false, canExpand: false });
   const expanded = reading.key === readingKey && reading.expanded;
   const canExpand = reading.key === readingKey && reading.canExpand;
+  // Where the dream's last line ends, so the arrow can sit beside it. Not keyed by dream:
+  // a recycled card whose row keeps its size gets no new layout, and the place still holds.
+  const [lastLine, setLastLine] = useState<{ left: number; top: number } | null>(null);
   const hasImage = (Boolean(imageUri) || (media.loading && Boolean(dream.imageUrl || dream.thumbnailUrl)))
     && failedImageAttempt !== imageAttemptKey;
-  // Only an illustration drifts: a text card's frame is never mounted.
-  const coverParallax = useFrameParallax(hasImage ? coverTravel : 0);
+  // Only an illustration drifts: a text card's frame is never mounted. Destructured: read
+  // through the returned object, the frame ref keeps React Compiler off this card.
+  const { frame: coverFrame, style: coverParallaxStyle } = useFrameParallax(hasImage ? coverTravel : 0);
 
   useEffect(() => {
     if ((!useFullImage && failedImageAttempt !== imageAttemptKey)
@@ -308,13 +315,24 @@ export const DreamCard = memo(function DreamCard({
       >
         {dream.title}
       </Text>
-      <View className="relative">
+      {/* The arrow's column is kept even when the dream fits, so the text never rewraps once measured.
+          This row sits at the top left of the card's button, so its layout places the arrow over it. */}
+      <View className="flex-row items-end gap-1" onLayout={(event) => {
+        const { x, y, width, height } = event.nativeEvent.layout;
+        const left = x + width - EXPAND_ARROW_WIDTH;
+        const top = y + height - 22 * compactTextScale;
+        setLastLine((previous) => previous?.left === left && previous.top === top ? previous : { left, top });
+      }}>
+      <View className="relative min-w-0 flex-1">
       <Text accessible={false} accessibilityElementsHidden importantForAccessibility="no-hide-descendants"
         allowFontScaling={false} pointerEvents="none"
         style={{ position: 'absolute', top: 0, left: 0, right: 0, opacity: 0,
           fontSize: 15 * compactTextScale, lineHeight: 22 * compactTextScale }}
         className="font-sans" testID={testID && `journal.measure.${testID}`}
         onLayout={(event) => {
+          // A page hidden behind another route (on the web) lays its cards out at zero
+          // size: keep the last real measure instead of rendering the card twice.
+          if (event.nativeEvent.layout.height <= 0) return;
           const overflows = event.nativeEvent.layout.height > 3 * 22 * compactTextScale + 1;
           setReading((previous) => previous.key !== readingKey || previous.canExpand === overflows
             ? previous : { ...previous, canExpand: overflows });
@@ -333,18 +351,21 @@ export const DreamCard = memo(function DreamCard({
         {expanded ? dream.transcript : transcriptPreview}
       </Text>
       </View>
+      <View style={{ width: EXPAND_ARROW_WIDTH }} />
+      </View>
     </>
   );
-  const expandControl = canExpand ? (
-        <Pressable accessibilityRole="button" accessibilityState={{ expanded }}
-          accessibilityLabel={t(expanded ? 'journal.card.collapse' : 'journal.card.expand')}
-          hitSlop={10} onPress={(event) => { event.stopPropagation(); setReading((previous) => ({ ...previous, expanded: !previous.expanded })); }}
-          testID={testID && `journal.expand.${testID}`} className="h-8 w-10 items-start justify-center"
-        >
-          <IconSymbol name={expanded ? 'chevron.up' : 'chevron.down'} size={22} color={noctalia.text.secondary} />
-        </Pressable>
-      ) : null;
-
+  // Over the card rather than inside its button: a button never holds another one.
+  const expandControl = canExpand && lastLine ? (
+    <Pressable accessibilityRole="button" accessibilityState={{ expanded }}
+      accessibilityLabel={t(expanded ? 'journal.card.collapse' : 'journal.card.expand')}
+      hitSlop={EXPAND_HIT_SLOP} onPress={(event) => { event.stopPropagation(); setReading((previous) => ({ ...previous, expanded: !previous.expanded })); }}
+      testID={testID && `journal.expand.${testID}`} className="absolute items-end justify-center"
+      style={{ left: lastLine.left, top: lastLine.top, width: EXPAND_ARROW_WIDTH, height: 22 * compactTextScale }}
+    >
+      <IconSymbol name={expanded ? 'chevron.up' : 'chevron.down'} size={20} color={hasImage ? noctalia.illustration.text : noctalia.text.secondary} />
+    </Pressable>
+  ) : null;
   return (
     <PressableScale
       className="flex-row items-start gap-3 border-t border-line pt-4"
@@ -394,18 +415,23 @@ export const DreamCard = memo(function DreamCard({
         </View>
       </View>
       <View className="min-w-0 flex-1 gap-3">
+        <View className="relative">
         <Pressable accessibilityRole="button" accessibilityLabel={accessibilityLabel}
           onPress={(event) => { event.stopPropagation(); handlePress(); }}>
+        {/* Keyed: a card whose illustration fails remounts its text, so the web observes the new row's layout. */}
         {hasImage ? (
           <View
+            key="illustrated"
             className="relative w-full overflow-hidden rounded-xl bg-ink-raised"
             // 9:16, the format the illustrations are generated in: the whole image shows. Capped on wide screens.
             style={{ minHeight: coverMinHeight }}
-            onLayout={(event) => setCoverWidth(event.nativeEvent.layout.width)}
+            onLayout={(event) => {
+              if (event.nativeEvent.layout.width > 0) setCoverWidth(event.nativeEvent.layout.width);
+            }}
             testID={testID && `journal.cover.${testID}`}
           >
-            <Animated.View ref={coverParallax.frame} style={COVER_FRAME_STYLE} pointerEvents="none">
-            <Animated.View style={[{ position: 'absolute', left: 0, right: 0, top: -coverTravel, bottom: -coverTravel }, coverParallax.style]}>
+            <Animated.View ref={coverFrame} style={COVER_FRAME_STYLE} pointerEvents="none">
+            <Animated.View style={[{ position: 'absolute', left: 0, right: 0, top: -coverTravel, bottom: -coverTravel }, coverParallaxStyle]}>
             <Image
               source={imageUri ? { uri: imageUri, cacheKey: preferFullImage ? media.imageCacheKey : thumbnailCacheKey } : null}
               style={CARD_IMAGE_STYLE}
@@ -451,10 +477,11 @@ export const DreamCard = memo(function DreamCard({
             </View>
           </View>
         ) : (
-          <View className="gap-2 pr-1" testID={testID && `journal.text.${testID}`}>{readingText}</View>
+          <View key="text-only" className="gap-2 pr-1" testID={testID && `journal.text.${testID}`}>{readingText}</View>
         )}
         </Pressable>
         {expandControl}
+        </View>
         {badgeList.length ? (
           <View className="flex-row flex-wrap items-center gap-x-4 gap-y-1" testID={testID && `journal.status.${testID}`}>{badgeList}</View>
         ) : null}

@@ -2,7 +2,7 @@ import { SubscriptionExpiryNotice } from '@/components/subscription/Subscription
 import { router, useFocusEffect, useLocalSearchParams, type Href } from 'expo-router';
 import { usePreventRemove } from 'expo-router/react-navigation';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, BackHandler, Linking, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, BackHandler, Linking, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { DreamerArtworkWindow } from '@/components/ui/DreamerBackground';
@@ -35,7 +35,7 @@ import {
 import { getPaywallVariant, PLUS_PAYWALL_FEATURE_KEYS } from '@/lib/paywallVariants';
 import { classifyPurchaseFailure } from '@/lib/subscriptionErrors';
 import { TID } from '@/lib/testIDs';
-import { useHeaderScroll } from '@/components/ui/headerStretch';
+import { HeaderScrollView, useHeaderScroll } from '@/components/ui/headerStretch';
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 
 const PAYWALL_MAX_WIDTH = 720;
@@ -520,7 +520,7 @@ function PaywallScreen() {
           </View>
         </ScreenContainer>
 
-        <ScrollView onScroll={onHeaderScroll} scrollEventThrottle={16}
+        <HeaderScrollView onScroll={onHeaderScroll} scrollEventThrottle={16}
           style={styles.scroll}
           contentContainerStyle={styles.scrollContent}
           contentInsetAdjustmentBehavior="automatic"
@@ -564,7 +564,7 @@ function PaywallScreen() {
               </Pressable>
             </View>
           </ScreenContainer>
-        </ScrollView>
+        </HeaderScrollView>
       </View>
     );
   }
@@ -588,7 +588,7 @@ function PaywallScreen() {
           </Pressable>
         </ScreenContainer>
       </View>
-      <ScrollView onScroll={onHeaderScroll} scrollEventThrottle={16}
+      <HeaderScrollView onScroll={onHeaderScroll} scrollEventThrottle={16}
         style={styles.scroll}
         contentContainerStyle={[
           styles.scrollContent,
@@ -933,7 +933,7 @@ function PaywallScreen() {
           </View>
           </Reveal>
         </ScreenContainer>
-      </ScrollView>
+      </HeaderScrollView>
 
       {toast ? (
         <Toast

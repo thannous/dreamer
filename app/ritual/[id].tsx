@@ -1,7 +1,7 @@
 import * as Haptics from 'expo-haptics';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Linking, Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useReducedMotion,
@@ -28,7 +28,7 @@ import {
 } from '@/lib/inspirationRituals';
 import { getSleepSoundCopy } from '@/lib/sleepSoundCopy';
 import { isSleepSoundsAvailable } from '@/lib/sleepSoundsFeature';
-import { useHeaderScroll } from '@/components/ui/headerStretch';
+import { HeaderScrollView, useHeaderScroll } from '@/components/ui/headerStretch';
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 import {
   getLocalDateKey,
@@ -291,7 +291,7 @@ function RitualDetailScreen() {
   const iconName = RITUAL_ICONS[ritual.id] ?? 'moon.stars.fill';
 
   return (
-    <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
+    <ScrollPerfProvider activity={scrollPerf.activity}>
       <View style={[styles.container, { backgroundColor: noctalia.screen.background }]}>
 
         {/* Floating Back Button */}
@@ -308,7 +308,7 @@ function RitualDetailScreen() {
         >
           <IconSymbol name="chevron.left" size={22} color={noctalia.accent.text} />
         </Pressable>
-        <ScrollView onScroll={onHeaderScroll} scrollEventThrottle={16}
+        <HeaderScrollView onScroll={onHeaderScroll} scrollEventThrottle={16}
           style={styles.scrollView}
           contentInsetAdjustmentBehavior="never"
           contentContainerStyle={{ paddingTop: insets.top, paddingBottom: insets.bottom + 40 }}
@@ -499,7 +499,7 @@ function RitualDetailScreen() {
             </View>
           </GlassCard>
           </View>
-        </ScrollView>
+        </HeaderScrollView>
       </View>
     </ScrollPerfProvider>
   );

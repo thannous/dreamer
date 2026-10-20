@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { DreamGuideCard } from '@/components/guides/DreamGuideCard';
 import { DreamerArtworkWindow } from '@/components/ui/DreamerBackground';
@@ -17,7 +17,7 @@ import { getGeneralDreamGuides, getImportantDreamGuides } from '@/services/dream
 import { getAllSymbols } from '@/services/symbolDictionaryService';
 import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useHeaderScroll } from '@/components/ui/headerStretch';
+import { HeaderScrollView, useHeaderScroll } from '@/components/ui/headerStretch';
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 
 function DreamGuidesScreen() {
@@ -38,12 +38,12 @@ function DreamGuidesScreen() {
   }, []);
 
   return (
-    <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
+    <ScrollPerfProvider activity={scrollPerf.activity}>
       <View
         style={[styles.container, { backgroundColor: noctalia.screen.background }]}
         testID="screen.dreamGuides"
       >
-        <ScrollView
+        <HeaderScrollView
           style={styles.scrollView}
           onScroll={onHeaderScroll}
           scrollEventThrottle={16}
@@ -147,7 +147,7 @@ function DreamGuidesScreen() {
               />
             ))}
           </View>
-        </ScrollView>
+        </HeaderScrollView>
       </View>
     </ScrollPerfProvider>
   );

@@ -6,6 +6,8 @@ import { TID } from '@/lib/testIDs';
 
 // Decorative artwork; expo-image needs a native view the test runtime does not provide.
 jest.mock('@/components/ui/NightSkyBand', () => ({ NightSkyBand: () => null }));
+// The seal's legend asks whether its face has loaded; expo-font needs native assets the test runtime lacks.
+jest.mock('expo-font', () => ({ isLoaded: () => true }));
 
 let mockHydrated = false;
 let mockRestore: (value: string) => void;

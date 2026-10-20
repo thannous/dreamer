@@ -48,9 +48,13 @@ jest.mock('react-native', () => {
       }, [onLayout, testID]);
       return <span data-testid={testID} data-visible-lines={numberOfLines}>{children}</span>;
     },
-    View: ({ children, testID }: { children?: React.ReactNode; testID?: string }) => (
-      <div data-testid={testID}>{children}</div>
-    ),
+    View: ({ children, testID, onLayout }: { children?: React.ReactNode; testID?: string; onLayout?: (event: unknown) => void }) => {
+      // The arrow beside the dream's last line waits for its row's layout.
+      React.useLayoutEffect(() => {
+        onLayout?.({ nativeEvent: { layout: { x: 16, y: 60, width: 240, height: 66 } } });
+      }, [onLayout]);
+      return <div data-testid={testID}>{children}</div>;
+    },
   };
 });
 

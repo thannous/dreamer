@@ -39,6 +39,9 @@ async function populatedJournal(page: Page) {
 
 async function findDream(page: Page, title: string) {
   await page.getByRole('textbox', { name: 'Search dreams…' }).fill(title);
+  // The entry is already listed before the search applies, and the web list then mounts
+  // its rows again: wait for the search's single result rather than the earlier row.
+  await expect(page.getByTestId(/^dream\.item\.\d+$/).filter({ visible: true })).toHaveCount(1);
   const card = page.getByTestId(/^dream\.item\.\d+$/).filter({ hasText: title, visible: true });
   await expect(card).toHaveCount(1);
   return card;
@@ -197,7 +200,9 @@ test('failed illustration leaves a compact readable entry that still opens', asy
   await expect(card).toContainText('I found myself in an enormous library');
   // Revised 2026-10-11 (was < 260): the date margin now stacks the favourite and share
   // buttons (owner request), so it sets the entry's height. Still far below a 9:16 cover.
-  expect((await card.boundingBox())!.height).toBeLessThan(340);
+  // The cover's frame shows while its sources are tried, then the entry settles compact.
+  await expect.poll(async () => (await card.boundingBox())?.height ?? Infinity).toBeLessThan(340);
+  await expect(card.getByTestId(`journal.cover.${id}`)).toHaveCount(0);
   await page.screenshot({ path: testInfo.outputPath('failed-illustration-text-fallback.png') });
   await card.click();
   await expect(page.getByTestId('component.transcriptCard')).toContainText('Books were floating around me');

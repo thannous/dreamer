@@ -129,6 +129,7 @@ export function isSubscriptionQaLabEnabled(): boolean {
   return __DEV__ || (getExpoPublicEnvValue('EXPO_PUBLIC_SUBSCRIPTION_QA_LAB') ?? '').toLowerCase() === 'true';
 }
 
+// On by default since 2026-10-20 (owner decision); `false` turns the sheets off.
 export function isOnboardingFeatureSheetsEnabled(): boolean {
-  return getExpoPublicEnvValue('EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED') === 'true';
+  return getExpoPublicEnvValue('EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED') !== 'false';
 }

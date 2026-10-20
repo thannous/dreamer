@@ -187,7 +187,7 @@ export default function SymbolDetailScreen() {
   const background = noctalia.screen.background;
 
   return (
-    <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
+    <ScrollPerfProvider activity={scrollPerf.activity}>
       <View style={[styles.screen, { backgroundColor: background }]} testID={TID.Screen.SymbolDetail}>
         {mode === 'dark' ? (
           // The reading column keeps the symbol's night around it instead of

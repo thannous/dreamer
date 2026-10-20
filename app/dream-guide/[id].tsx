@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { DreamerArtworkWindow } from '@/components/ui/DreamerBackground';
 import { FlatGlassCard } from '@/components/inspiration/GlassCard';
@@ -23,7 +23,7 @@ import {
 } from '@/services/dreamGuideService';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useHeaderScroll } from '@/components/ui/headerStretch';
+import { HeaderScrollView, useHeaderScroll } from '@/components/ui/headerStretch';
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 
 function DreamGuideDetailScreen() {
@@ -70,13 +70,13 @@ function DreamGuideDetailScreen() {
     guide.kind === 'practical' ? getPracticalDreamGuideContent(guide, language) : undefined;
 
   return (
-    <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
+    <ScrollPerfProvider activity={scrollPerf.activity}>
       <LinearGradient
         colors={noctalia.screen.gradient}
         style={styles.container}
         testID="screen.dreamGuideDetail"
       >
-        <ScrollView onScroll={onHeaderScroll} scrollEventThrottle={16}
+        <HeaderScrollView onScroll={onHeaderScroll} scrollEventThrottle={16}
           style={styles.scrollView}
           contentInsetAdjustmentBehavior="automatic"
           contentContainerStyle={styles.scrollContent}
@@ -196,7 +196,7 @@ function DreamGuideDetailScreen() {
               </Text>
             </FlatGlassCard>
           </View>
-        </ScrollView>
+        </HeaderScrollView>
       </LinearGradient>
     </ScrollPerfProvider>
   );
