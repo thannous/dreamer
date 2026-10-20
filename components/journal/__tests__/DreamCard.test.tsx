@@ -171,6 +171,27 @@ describe('DreamCard image fallback', () => {
     expect(screen.getByTestId('dream-image').getAttribute('data-src')).toBe(expectedFull);
   });
 
+  it('shows the original painting when the stored thumbnail is an uploaded square', () => {
+    const { DreamCard } = require('../DreamCard');
+    // The 320 px square would be cropped and enlarged in the card's 9:16 frame.
+    const dream: DreamAnalysis = {
+      id: 1457,
+      transcript: 'dream transcript',
+      title: 'Dream title',
+      interpretation: 'Dream interpretation',
+      shareableQuote: 'Dream quote',
+      imageUrl: 'supabase-storage://dream-images/user-1/dream-42.webp',
+      thumbnailUrl: 'supabase-storage://dream-images/user-1/dream-42-thumb.webp',
+      chatHistory: [],
+      dreamType: 'Symbolic Dream',
+    };
+
+    render(<DreamCard dream={dream} onPress={jest.fn()} />);
+
+    expect(screen.getByTestId('dream-image').getAttribute('data-src'))
+      .toBe(withCacheBuster(dream.imageUrl, getDreamImageVersion(dream)));
+  });
+
   it('hides sync badges in mock mode because mock dreams are local only', () => {
     mockIsMockModeEnabled.mockReturnValue(true);
     const { DreamCard } = require('../DreamCard');

@@ -14,6 +14,7 @@ import { isRememberedDream, isRecurringDream } from '@/lib/dreamFilters';
 import { getDreamAnalysisState, isDreamAnalyzed, isDreamExplored } from '@/lib/dreamUsage';
 import { isMockModeEnabled } from '@/lib/env';
 import { getDreamImageVersion, getDreamThumbnailCacheKey, getDreamThumbnailUri, getImageConfig, withCacheBuster } from '@/lib/imageUtils';
+import { isSquareDreamThumbnail } from '@/lib/journalImageReference';
 import { DreamAnalysis } from '@/lib/types';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -85,7 +86,10 @@ export const DreamCard = memo(function DreamCard({
   const captionStyle = { fontSize: 12 * compactTextScale, lineHeight: 18 * compactTextScale };
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t, currentLang } = useTranslation();
-  const media = useDreamMedia(dream, { variant: 'thumbnail' });
+  // The card shows the whole painting at 9:16: an uploaded image's square thumbnail would be
+  // cropped and enlarged there, so such a dream loads its original instead.
+  const squareThumbnail = isSquareDreamThumbnail(dream.thumbnailUrl);
+  const media = useDreamMedia(dream, squareThumbnail ? undefined : { variant: 'thumbnail' });
   const { loadOriginal } = media;
   const handlePress = useCallback(() => {
     onPress(dream);
@@ -138,7 +142,7 @@ export const DreamCard = memo(function DreamCard({
     }
   }, [trimmedThumbnailUri, fullImageUri, useFullImage, accessScope, failureKey, loadOriginal]);
 
-  const preferFullImage = useFullImage || (trimmedThumbnailUri && thumbnailFailures.has(accessScope, failureKey));
+  const preferFullImage = useFullImage || squareThumbnail || (trimmedThumbnailUri && thumbnailFailures.has(accessScope, failureKey));
   const imageUri = preferFullImage
     ? fullImageUri
     : (trimmedThumbnailUri || fullImageUri);
