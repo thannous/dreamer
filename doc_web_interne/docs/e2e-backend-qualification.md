@@ -6,47 +6,46 @@ Postgres and PostgREST. No production writes, AI calls or payments.
 ## Run
 
 Use Node from `mise.toml`, locked dependencies and Chromium (`npx playwright install
-chromium`). The default uses a working Docker-compatible runtime:
+chromium`). The runner owns a disposable stack on the pinned Supabase CLI 2.121.0
+native runtime. There is no Docker or Podman runtime (founder decision, 2026-10-19):
 
 ```sh
 mise exec -- npm run test:e2e:backend
+mise exec -- npm run test:e2e:backend -- --qualify-ti528
 ```
 
-The opt-in managed stack uses the pinned Supabase CLI 2.121.0 and its experimental
-native runtime without Docker:
-
-```sh
-mise exec -- npm run test:e2e:backend -- --runtime native --qualify-ti528
-```
-
-This combined command runs all seven browser journeys, the database contracts,
-then the four TI528 suites (six integration cases) sequentially on the same owned
-stack. Omit `--qualify-ti528` for browser qualification alone. The option requires
-an explicit managed `--runtime` and refuses `--status-file` and `--prepare-only`.
+`--runtime native` is still accepted; any other `--runtime` is refused before a
+process starts. The second command runs all seven browser journeys, the database
+contracts, then the four TI528 suites (six integration cases) sequentially on the
+same owned stack.
 The runner passes its own private status to TI528 and preserves stack cleanup on
 success or failure; the rerun metadata includes the option.
 
-Native requires macOS 14+ on Apple silicon, or Linux amd64/arm64 with glibc 2.35+.
-`--runtime docker` and `--runtime podman` select the managed container runtimes.
-The default Docker runner and externally supplied local VM mode remain available.
-The new CLI assigns separate ports in 20000–32767 to each disposable directory;
+The native runtime needs Linux amd64/arm64 with glibc 2.35+ (Ubuntu 22.04 or later)
+or macOS 14+ on Apple silicon. Supabase does not support it on Windows or on Intel
+Macs; on Windows, WSL2 with a glibc 2.35+ distribution is the Linux case.
+`node scripts/check-native-supabase-runtime.cjs` answers whether this machine
+qualifies; `verify:release` uses it as the `e2e-backend` probe, so an unsupported
+machine leaves the check unavailable (proof incomplete), never passed. Postgres
+`initdb` refuses root: a root run needs `SUPABASE_NATIVE_POSTGRES_USER`.
+The CLI assigns separate ports in 20000 to 32767 to each disposable directory
+(`supabase/config.toml` sets `[experimental] stack = true` and no fixed port);
 the runner validates its stack ID, runtime, loopback API and database before any
 privileged client is created. Each invocation destroys only its own stack, including
-after failure. CLI artifacts are cached under ignored `test-results/backend-e2e-cli-home`;
-`E2E_SUPABASE_HOME` can select another owned local cache, without a second download.
-Multiple native stacks share host resources; Docker remains the recommended
-runtime for concurrent worktrees. See the official [runtime guide](https://supabase.com/docs/guides/local-development/docker-and-native-runtimes).
+after failure, and removes its temporary directory. CLI artifacts are cached under
+ignored `test-results/backend-e2e-cli-home`; `E2E_SUPABASE_HOME` can select another
+owned local cache, without a second download. Several native stacks on one machine
+share host resources, so run one at a time per machine. See the official
+[runtime guide](https://supabase.com/docs/guides/local-development/docker-and-native-runtimes).
 
 The runner creates a randomly named disposable project, replays local fixture
 copies of every tracked migration and starts Expo web on 8085. Historical HTTP
 URLs in those copies are replaced with an unavailable loopback endpoint, and
 scheduled jobs are disabled in the same migration that creates them. Tracked
-migrations are untouched. The managed mode also asserts zero active cron jobs
+migrations are untouched. The runner also asserts zero active cron jobs
 before the suite. These fixture changes prevent unattended production calls; the
 seven browser journeys do not qualify scheduled reconciliation or AI workers.
-The default Docker mode binds its network to loopback and uses ports 56321/56322.
-It never resets an existing project. Cleanup removes only that
-run's containers and database volumes. Unique accounts are created per test and
+It never resets an existing project. Unique accounts are created per test and
 deleted on completion, including failure. The Plus account is provisioned through
 the existing service-role subscription RPC, without a purchase or billing bypass
 in the app. Client-editable metadata cannot grant Plus.
@@ -56,25 +55,17 @@ the local URL and public anon key. Startup output containing privileged keys is
 captured, and browser requests allow only the app, local Auth and local Data API.
 AI functions, analytics, OAuth providers and billing are blocked.
 
-For a CLI running in a separate local Linux VM, prepare its config with
-`npm run test:e2e:backend -- --prepare-only`, copy the prepared Supabase directory
-into that VM, and start the CLI there. Capture `supabase status --output json` to
-a private file, then run:
+Every run owns its stack. The former supplied-VM mode (`--prepare-only` and
+`--status-file`, API pinned on 56321) ran the CLI's default container stack inside
+a VM; it was removed with Docker, and both options are refused before any process
+starts. On a machine the native runtime does not support, use another machine
+where `node scripts/check-native-supabase-runtime.cjs` passes.
 
-```sh
-mise exec -- npm run test:e2e:backend -- --status-file /absolute/private/status.json
-```
-
-This mode accepts only `http://127.0.0.1:56321`, never starts or stops the supplied
-stack, and is intended for a locally owned stack with loopback port forwarding.
-`E2E_SUPABASE_CLI` can select a local CLI executable. The default uses the locked
-npm CLI on Linux and its co-located Go engine on macOS. An earlier macOS launcher
-failed OS signature validation, so the default Docker path retains the Go engine.
-The native pilot used the pinned 2.120.0 npm launcher (2.121.0 since 2026-10-16) successfully without changing OS security settings.
-With `--runtime`, the runner passes no `SUPABASE_*` variable to the CLI except
+`E2E_SUPABASE_CLI` can select a local CLI executable; the default is the locked npm
+CLI (the native pilot used its launcher on macOS without changing OS security settings).
+The runner passes no `SUPABASE_*` variable to the CLI except
 `SUPABASE_NATIVE_POSTGRES_USER`, which Supabase requires for root runs of the native
 runtime. The report's rerun command repeats `E2E_SUPABASE_CLI` and that user when they are set.
-`E2E_DOCKER_CLI` and `DOCKER_HOST` can select a local Docker-compatible runtime.
 No hosted test branch is required.
 
 TI528 accepts the identified managed receipt only after the shared local-target

@@ -15928,7 +15928,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>O livro não precisa ser decifrado como uma mensagem secreta. Em um sonho, ele costuma funcionar mais como um marcador: algo na cena pede que você repare em ferramentas, escolhas, apegos, o tempo das coisas e nos pequenos detalhes que organizam a vida cotidiana.</p>\n<p>Comece pelos fatos simples. A imagem estava perto ou longe, foi bem-vinda ou perturbadora, comum ou estranhamente intensa? Esses detalhes mantêm a interpretação ancorada no seu sonho, em vez de impor a ele um significado genérico.</p>\n<p>Se o símbolo trouxe uma sensação de apoio, ele pode mostrar um recurso, um desejo ou uma memória em que você pode se apoiar. Se trouxe tensão, pode apontar para uma pressão que você vem administrando em silêncio demais.</p>\n<p>A Noctalia trata esse tipo de símbolo como um convite à reflexão. Anote a cena, a emoção e o que mudou depois que o símbolo apareceu; em geral é aí que começa o significado útil.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Não conseguir ler",
+            "meaning": "As linhas embaralhavam, ou a língua era desconhecida para você? É um detalhe comum nos sonhos, sem mensagem escondida. A frustração que você sentiu pode se ligar a uma resposta que você espera e que não chega."
+          },
+          {
+            "context": "Um livro com páginas em branco",
+            "meaning": "Você o abriu com curiosidade ou com inquietação? Páginas vazias podem acompanhar um começo, uma história ainda por escrever, ou o medo de não saber o que colocar nelas. A sua emoção é que inclina a leitura."
+          },
+          {
+            "context": "Procurar um livro em uma biblioteca",
+            "meaning": "Você sabia que título estava procurando? A cena pode acompanhar a busca por uma resposta, um conselho ou uma referência. Repare em quem ajudava você a encontrá-lo, ou em quem atrapalhava."
+          }
+        ]
       }
     },
     "letter": {
@@ -20609,7 +20622,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>Quando essa imagem aparece em um sonho, a primeira pergunta não é “o que ela sempre significa?”, e sim “por que a minha mente escolheu essa imagem esta noite?”. A resposta costuma estar perto do clima emocional, da mudança, de forças maiores do que você e do ritmo de renovação ou de ruptura.</p>\n<p>O símbolo pode ser terno, irritante, assustador, engraçado ou completamente comum. Esse tom importa. Uma versão calma pode sugerir integração, enquanto uma versão ameaçadora pode mostrar conflito ou fuga.</p>\n<p>Observe o papel que ele desempenhou. Ele bloqueou você, guiou você, observou você, seguiu você ou desapareceu? Nos sonhos, a função costuma revelar mais do que o próprio objeto.</p>\n<p>Use a imagem como uma porta de entrada para a história, não como um veredito. Algumas anotações honestas sobre o cenário e sobre a reação do seu corpo costumam dizer mais do que uma lista fixa de símbolos.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Ver a neve cair",
+            "meaning": "Você estava do lado de fora ou atrás de uma janela? Ver a neve cair costuma acompanhar um momento de calma ou de nostalgia. Se a neve ficava mais forte, repare no que ela começava a cobrir."
+          },
+          {
+            "context": "Ficar preso pela neve",
+            "meaning": "Estrada fechada, carro atolado, porta que não abre? A cena pode se ligar à sensação de uma situação parada ou de um projeto em espera. Não é um presságio: o que está esperando o seu degelo neste momento?"
+          },
+          {
+            "context": "Caminhar na neve funda",
+            "meaning": "Cada passo exige esforço e você avança devagar. A cena pode ecoar uma fase em que tudo custa mais energia do que o previsto. Você caminhava para um lugar específico, ou só para seguir em frente?"
+          }
+        ]
       }
     },
     "mall": {
@@ -23805,7 +23831,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>Quando essa imagem aparece em um sonho, a primeira pergunta não é “o que ela sempre significa?”, mas “por que a minha mente escolheu essa imagem esta noite?”. A resposta costuma estar perto do cenário de uma situação de vida: onde você se sente seguro, exposto, travado ou pronto para se mover.</p>\n<p>O símbolo pode ser terno, irritante, assustador, engraçado ou completamente banal. Esse tom importa. Uma versão calma pode sugerir integração, enquanto uma versão ameaçadora pode mostrar conflito ou fuga.</p>\n<p>Observe o papel que ele desempenhou. Ele bloqueou você, guiou você, observou você, seguiu você ou desapareceu? Nos sonhos, a função costuma revelar mais do que o próprio objeto.</p>\n<p>Use a imagem como uma porta de entrada para a história, não como um veredicto. Algumas anotações sinceras sobre o cenário e sobre a reação do seu corpo costumam dizer mais do que uma lista fixa de símbolos.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Caminhar sozinho no deserto",
+            "meaning": "Você ia para algum lugar, ou só caminhava? Uma travessia solitária pode acompanhar isolamento ou resistência, ou um momento de calma bem-vindo. O seu humor na areia diz qual dessas pistas importa."
+          },
+          {
+            "context": "Uma tempestade de areia",
+            "meaning": "Você se abrigou, continuou ou parou? Uma tempestade de areia pode ecoar confusão, ou uma situação em que só se enxerga um passo à frente. Observe a que você se agarrava."
+          },
+          {
+            "context": "Encontrar um oásis",
+            "meaning": "Ele era real, ou uma miragem? Um oásis pode acompanhar um alívio ou um recurso encontrado depois de uma fase difícil. Uma miragem pode ecoar uma esperança que se desfez. Quem ou o que esperava você ali?"
+          }
+        ]
       }
     },
     "island": {

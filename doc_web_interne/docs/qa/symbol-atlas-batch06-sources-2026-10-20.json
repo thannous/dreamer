@@ -1,0 +1,239 @@
+{
+  "schema": "noctalia.atlas-source-library/1",
+  "lot": "lot-06",
+  "symbols": [
+    "wolf",
+    "elevator",
+    "candle",
+    "book",
+    "snow",
+    "desert"
+  ],
+  "webLanguages": [
+    "en",
+    "fr",
+    "es",
+    "de",
+    "it",
+    "pt-br"
+  ],
+  "sourceArchive": {
+    "file": "source-library-batch06-v2.zip",
+    "sha256": "7d1e178bba09a9219dc7b04bfaebc13e7c0d54343595d48b47a7ec4cab8f1c26",
+    "location": "output/noctalia-symbols-batch06-2026-10-20/source-library-batch06-v2.zip",
+    "availability": "local portable archive; not shipped as a public site asset"
+  },
+  "roles": 48,
+  "newBuiltInImageGenSources": 39,
+  "byteExactReusedTextures": 9,
+  "selection": "Agent-selected by Codex; delegated selection is distinct from individual visual approval. Publication explicitly requested by Thanh.",
+  "artDirection": "Approved Noctalia ink, indigo/violet paintings with local ivory/champagne light; stable bases and two independent ambient raster channels per surface",
+  "sourceHandling": "Native PNGs, prompts, hashes and generation/reuse records retained in each pack. Alpha verified by canonical atlas:pack. Canonical AVIF/WebP derivatives only, no upscaling or destructive crop.",
+  "sourceSizes": {
+    "wolf": {
+      "hero": [
+        1672,
+        941
+      ],
+      "portrait": [
+        941,
+        1672
+      ],
+      "plate": [
+        1254,
+        1254
+      ],
+      "scene-solitaire": [
+        1672,
+        941
+      ],
+      "scene-meute": [
+        1672,
+        941
+      ],
+      "scene-poursuite": [
+        1672,
+        941
+      ],
+      "layer": [
+        1672,
+        941
+      ],
+      "accent": [
+        1672,
+        941
+      ]
+    },
+    "elevator": {
+      "hero": [
+        1672,
+        941
+      ],
+      "portrait": [
+        941,
+        1672
+      ],
+      "plate": [
+        1254,
+        1254
+      ],
+      "scene-montee": [
+        1672,
+        941
+      ],
+      "scene-descente": [
+        1672,
+        941
+      ],
+      "scene-bloque": [
+        1672,
+        941
+      ],
+      "layer": [
+        1672,
+        941
+      ],
+      "accent": [
+        1672,
+        941
+      ]
+    },
+    "candle": {
+      "hero": [
+        1672,
+        941
+      ],
+      "portrait": [
+        941,
+        1672
+      ],
+      "plate": [
+        1254,
+        1254
+      ],
+      "scene-seule": [
+        1672,
+        941
+      ],
+      "scene-anniversaire": [
+        1672,
+        941
+      ],
+      "scene-ceremonie": [
+        1672,
+        941
+      ],
+      "layer": [
+        1672,
+        941
+      ],
+      "accent": [
+        1672,
+        941
+      ]
+    },
+    "book": {
+      "hero": [
+        1672,
+        941
+      ],
+      "portrait": [
+        941,
+        1672
+      ],
+      "plate": [
+        1254,
+        1254
+      ],
+      "scene-illisible": [
+        1672,
+        941
+      ],
+      "scene-blanches": [
+        1672,
+        941
+      ],
+      "scene-bibliotheque": [
+        1672,
+        941
+      ],
+      "layer": [
+        1672,
+        941
+      ],
+      "accent": [
+        1672,
+        941
+      ]
+    },
+    "snow": {
+      "hero": [
+        1672,
+        941
+      ],
+      "portrait": [
+        941,
+        1672
+      ],
+      "plate": [
+        1254,
+        1254
+      ],
+      "scene-chute": [
+        1672,
+        941
+      ],
+      "scene-bloque": [
+        1672,
+        941
+      ],
+      "scene-marche": [
+        1672,
+        941
+      ],
+      "layer": [
+        1672,
+        941
+      ],
+      "accent": [
+        1672,
+        941
+      ]
+    },
+    "desert": {
+      "hero": [
+        1672,
+        941
+      ],
+      "portrait": [
+        941,
+        1672
+      ],
+      "plate": [
+        1254,
+        1254
+      ],
+      "scene-seul": [
+        1672,
+        941
+      ],
+      "scene-tempete": [
+        1672,
+        941
+      ],
+      "scene-oasis": [
+        1672,
+        941
+      ],
+      "layer": [
+        1672,
+        941
+      ],
+      "accent": [
+        1672,
+        941
+      ]
+    }
+  },
+  "rejectedGenerationAttempts": 4
+}

@@ -10,8 +10,9 @@ mise exec -- npm run test:e2e:backend -- --runtime native --qualify-ti528
 
 Elle exécute sept parcours navigateur, le contrat de base, puis les quatre suites
 TI528 et leurs six cas, séquentiellement sur la même stack possédée. L'option
-`--qualify-ti528` exige un `--runtime` géré explicite ; elle refuse `--status-file`
-et `--prepare-only` avant tout démarrage. Le lanceur fournit uniquement son propre
+`--qualify-ti528` s'exécute toujours sur une stack native possédée ; les anciennes
+options `--status-file` et `--prepare-only` (mode VM fourni) ont été supprimées avec
+Docker et sont refusées avant tout démarrage. Le lanceur fournit uniquement son propre
 statut privé, conserve l'option dans la commande de reproduction et détruit sa
 stack exacte dans `finally`, y compris après un échec.
 

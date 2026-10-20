@@ -159,7 +159,8 @@ It exercises the panel at 390 and 1280 pixels.
 ## Feature personas (opt-in pilot)
 
 Dreamer's personas describe different needs, not only languages. Their English
-goals run against the French real web UI and existing synthetic mock accounts:
+goals run against the French real UI on web, iOS Simulator and Android emulator,
+using the existing synthetic mock accounts:
 
 | Persona | Account fixture | Goal and exact outcome |
 | --- | --- | --- |
@@ -169,7 +170,8 @@ goals run against the French real web UI and existing synthetic mock accounts:
 | Lucas, exhausted free quota | Existing free | Keep a dream, inspect the Plus offer, decline it and retain the story; verify free allowance and zero mock purchase/restore calls. |
 
 Definitions live in [dreamer-personas.ts](dreamer-personas.ts); journeys in
-[dreamer-personas.web.e2e.ts](tests/dreamer-personas.web.e2e.ts). Deterministic
+[web journeys](tests/dreamer-personas.web.e2e.ts) and
+[native journeys](tests/dreamer-personas.mobile.e2e.ts). Deterministic
 setup chooses the account through the mock UI. Each `agent.act()` discovers one
 functional outcome through visible controls, immediately followed by exact
 assertions. Model-reported success alone never passes a test. Exact text entry,
@@ -195,28 +197,68 @@ E2E_PERSONAS=1 E2E_WORKERS=1 E2E_WEB_LOCALE=fr-FR mise exec -- npm run test:test
 ```
 
 The default model is `gpt-6.1-sol`; `E2E_PERSONA_MODEL` selects another model id
-served by the same login. Each goal allows at most 16 actions, 12 model calls
+served by the same login. The owner selected Sol for this campaign. Each goal allows at most 16 actions, 12 model calls
 and 32,000 input tokens per request. Each test has a 240-second timeout; retries
 and replay stay off. Use one worker. The full suite has seven agent goals.
 It is not a human usability study or a performance/framerate measurement.
 
 Without `E2E_PERSONAS=1`, no persona test is registered and ordinary regressions
-retain their zero-model-call contract. The pilot refuses other products, native
-targets, other locales and multiple workers. It uses one isolated browser context
-per test, mocks authentication/AI/billing and blocks browser traffic outside the
-local origin. Never point it at a personal account or real dream journal.
+retain their zero-model-call contract. Personas refuse other products and multiple
+workers. Web requires `fr-FR`, isolates each browser context and blocks traffic
+outside the local origin. Native setup selects French through visible settings;
+`run.mjs` requires an identified `mock-persistent` Release on an owned virtual
+device before setup may clear its synthetic data. Never point the campaign at a
+personal account or real dream journal.
 
 The canonical runner retains each test's trace, screenshot, exact source and
 input identity, model usage, persona name and rerun environment in its unique
-`.e2e/dreamer-web/` directory. Qualification accepts model calls only for this
+`.e2e/dreamer-{web,ios,android}/` directory. Qualification accepts model calls only for this
 explicit campaign, checks the declared persona and actual model calls, and retains
 all existing assertion, artifact and cleanup checks. A missing login or an
 unexecuted journey is not a pass. Qualify a persona campaign with its `run`;
 `collect` is reserved for the historical four-locale regression campaign and
-does not aggregate persona runs. Native personas, RTL and real service behaviour
-are outside this first pilot. See the [SDK's subscription guide](https://e2e.tester.army/docs/subscriptions)
+does not aggregate persona runs. RTL, real service behaviour, physical-device
+performance and Store behaviour remain outside this campaign. See the [SDK's subscription guide](https://e2e.tester.army/docs/subscriptions)
 for access options; Claude uses an Anthropic API key rather than the Claude Code
 session.
+
+### Native personas with Sol
+
+The [2026-10-20 native campaign](../../doc_web_interne/docs/qa/dreamer-native-personas-20261020.md)
+records four passing personas on each platform, the exact builds and rerun commands.
+
+First prepare an isolated native project and create its `mock-persistent`
+`release.json` with the [native Release runner](#native-release-provenance-and-diagnostic-handoff).
+Compile with mock persistence/audio enabled, the standard QA fixtures
+(`EXPO_PUBLIC_MOCK_SHOWCASE` unset), and OTA disabled. Reuse an unchanged native
+Release after test-only changes: the runner checks both app and native input
+hashes, and records build-source and test-source revisions separately.
+
+Collection below makes no model call and needs no device or receipt. For a run,
+set an exact available Simulator UDID or dedicated emulator serial plus its AVD
+name, and resolve the receipt to that platform's immutable build output:
+
+```sh
+E2E_PERSONAS=1 mise exec -- npm run test:testerarmy:mobile -- dreamer ios list --tag personas
+E2E_PERSONAS=1 mise exec -- npm run test:testerarmy:mobile -- dreamer android list --tag personas
+
+E2E_PERSONAS=1 E2E_PERSONA_MODEL=gpt-6.1-sol \
+  E2E_DEVICE=SIMULATOR_UDID E2E_RELEASE_RECEIPT=IOS_BUILD_RUN/release.json \
+  mise exec -- npm run test:testerarmy:mobile -- dreamer ios run --install-release --tag persona-morning
+E2E_PERSONAS=1 E2E_PERSONA_MODEL=gpt-6.1-sol \
+  E2E_DEVICE=emulator-5554 E2E_AVD_NAME=Noctalia_Personas_QA \
+  E2E_RELEASE_RECEIPT=ANDROID_BUILD_RUN/release.json \
+  mise exec -- npm run test:testerarmy:mobile -- dreamer android run --install-release --tag persona-morning
+```
+
+Once the pilot passes, replace `persona-morning` with `personas` to run all four
+on each platform. Do not set `E2E_WORKERS` for native: each invocation owns one
+explicit device and its lock. The first recorded action is `app.open()`, followed
+by a fresh synthetic app state. Native assertions use accessibility locators,
+keyboard dismissal, scroll-to-visible and the native AI consent dialog. Samira
+checks the completed reply and edits an unsent draft after reopening; Lucas checks
+zero purchase and restore calls. The runner retains installed binary identity
+before/after the campaign and SDK cleanup diagnostics.
 
 ## Historical Dreamer UI parity
 
@@ -463,6 +505,14 @@ resource cleanup is failed/missing. `resourceCleanup` records that limitation an
 the final verdict remains nonqualifying; no unknown session/recorder is killed.
 `qualification.json` records SDK validation; only final `end.json` exit0 completes
 that invocation. Preserve both when reporting its verdict.
+
+While the SDK runs, the wrapper keeps a 1 s heartbeat. A gap of 30 s or more means
+the whole host stopped running processes (a VM snapshot or pause, heavy memory
+reclaim), so attempt deadlines expired with nothing running. `end.json` lists each
+gap in `hostStalls`, the console prints it, and a failed run also gets the secondary
+error `HOST_STALL`. It never turns a failure into a pass and never fails a pass: rerun
+the campaign on a quiet host and judge that run. A failure that shows no host stall is
+the app's or the test's.
 
 For a browser campaign set one unique `E2E_CAMPAIGN_ID` on every invocation,
 then run `node tools/e2e/run.mjs <product> web collect` locally.

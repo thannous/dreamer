@@ -16,8 +16,8 @@ const native = platform !== 'web';
 const personas = process.env.E2E_PERSONAS === '1';
 if (process.env.E2E_PERSONAS !== undefined && !['0', '1'].includes(process.env.E2E_PERSONAS))
   throw new Error('E2E_PERSONAS takes 0 or 1.');
-if (personas && (product !== 'dreamer' || native || webLocale !== 'fr-FR'))
-  throw new Error('The feature-persona pilot requires Dreamer web and E2E_WEB_LOCALE=fr-FR.');
+if (personas && (product !== 'dreamer' || (!native && webLocale !== 'fr-FR')))
+  throw new Error('Personas require Dreamer; web personas also require E2E_WEB_LOCALE=fr-FR.');
 const output = process.env.E2E_OUTPUT ?? `.e2e/${product}-${platform}`;
 const appLog = `${fileURLToPath(new URL('.', import.meta.url))}${output}/app.log`;
 const ports = { dreamer: 8096, lucid: 8097, meditation: 8098, site: 8099 };
@@ -51,7 +51,7 @@ const managedCommand = !native && product !== 'site'
 
 export default {
   projectId: `noctalia-${product}`,
-  tests: personas ? 'tests/dreamer-personas.web.e2e.ts'
+  tests: personas ? `tests/dreamer-personas.${native ? 'mobile' : 'web'}.e2e.ts`
     : product === 'dreamer' && !native ? 'tests/dreamer*.web.e2e.ts' : `tests/${product}.${native ? 'mobile' : 'web'}.e2e.ts`,
   ...(personas ? { agents: createDreamerPersonaAgents(process.env.E2E_PERSONA_MODEL?.trim() || undefined) } : {}),
   targets: [{

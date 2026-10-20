@@ -121,14 +121,19 @@ function verifyProvenance(document, options, requirePass = true) {
   const run = document?.run;
   const now = Date.now();
   // The opt-in feature campaign uses real agent calls. Ordinary regressions
-  // retain their zero-model-call contract; native targets never opt in here.
+  // retain their zero-model-call contract on every platform.
   const personas = options.personaModel !== undefined;
   const usage = run?.usage;
+  // A setup failure can precede the first model goal. Its completed SDK cleanup
+  // is still provable, while the application verdict continues to require calls.
+  const failedBeforeModel = !requirePass && run?.status === 'failed'
+    && Number.isSafeInteger(run.exitCode) && run.exitCode > 0
+    && usage?.modelTokens === 0 && usage?.maxModelCallsInStep === 0;
   const validUsage = personas
-    ? options.platform === 'web' && options.target === 'dreamer-web'
+    ? ['web', 'ios', 'android'].includes(options.platform) && options.target === `dreamer-${options.platform}`
       && typeof options.personaModel === 'string' && !!options.personaModel.trim()
-      && Number.isSafeInteger(usage?.modelTokens) && usage.modelTokens > 0
-      && Number.isSafeInteger(usage?.maxModelCallsInStep) && usage.maxModelCallsInStep >= 1 && usage.maxModelCallsInStep <= 12
+      && (failedBeforeModel || (Number.isSafeInteger(usage?.modelTokens) && usage.modelTokens > 0
+        && Number.isSafeInteger(usage?.maxModelCallsInStep) && usage.maxModelCallsInStep >= 1 && usage.maxModelCallsInStep <= 12))
       && Number.isSafeInteger(usage?.maxActionStepsInStep) && usage.maxActionStepsInStep >= 0 && usage.maxActionStepsInStep <= 16
     : usage?.modelTokens === 0 && usage?.maxModelCallsInStep === 0;
   if (document?.schemaVersion !== 'report-1' || !run || typeof run.id !== 'string' || !run.id || run.runner?.version !== SDK_PINS.e2e
@@ -176,7 +181,7 @@ export function verifyReport(document, options) {
       || result.platform !== options.platform || !Number.isSafeInteger(result.repeat) || result.repeat < 0
       || typeof result.selected !== 'boolean' || !Array.isArray(result.attempts)
       || typeof result.agent !== 'string' || (options.personaModel !== undefined
-        ? result.file !== 'tests/dreamer-personas.web.e2e.ts' || !['morning', 'archivist', 'explorer', 'free'].includes(result.agent)
+        ? result.file !== `tests/dreamer-personas.${options.platform === 'web' ? 'web' : 'mobile'}.e2e.ts` || !['morning', 'archivist', 'explorer', 'free'].includes(result.agent)
           || !result.tags?.includes(`persona-${result.agent}`)
         : result.agent !== (options.agent ?? 'default'))) fail('RESULT_IDENTITY');
     const row = { targetId: result.targetId, testId: result.testId, repeat: result.repeat, agent: result.agent };
@@ -262,6 +267,31 @@ export function campaignFailureRecord(output, error) {
 
 // Only the canonical caller enables this for its own CircleCI web SDK child.
 // No SDK/app output is forwarded, and a live process is not claimed to make progress.
+// A whole-host stall (VM snapshot or pause, memory reclaim) stops every process at
+// once; on resume the attempt deadline has expired, so the next step fails in ms
+// on a page that is fine (2026-10-19: app.open "took" 4m39s, then a tap failed
+// after 47 ms, at the box's "virtual machine fork" resume). The wrapper is idle
+// on async I/O while the SDK runs, so its 1 s heartbeat only falls 30 s behind
+// when the host itself did not run. Diagnostic only: it never changes a result.
+export const HOST_STALL_MS = 30_000;
+export function startHostStallMonitor({ intervalMs = 1_000, stallMs = HOST_STALL_MS, now = Date.now,
+  monotonic = () => performance.now(), setTimer = setInterval, clearTimer = clearInterval } = {}) {
+  const stalls = [];
+  let lastWall = now(), lastMonotonic = monotonic(), stopped = false;
+  const timer = setTimer(() => {
+    const wall = now(), mono = monotonic();
+    const wallGapMs = Math.round(wall - lastWall), monotonicGapMs = Math.round(mono - lastMonotonic);
+    if (Math.max(wallGapMs, monotonicGapMs) - intervalMs >= stallMs) {
+      stalls.push({ resumedAt: new Date(wall).toISOString(), wallGapMs, monotonicGapMs });
+    }
+    lastWall = wall; lastMonotonic = mono;
+  }, intervalMs);
+  timer?.unref?.();
+  return () => {
+    if (!stopped) { stopped = true; clearTimer(timer); }
+    return stalls.map(stall => ({ ...stall }));
+  };
+}
 export function startSdkProgress(child, { enabled, write, onError = () => {}, now = Date.now, setTimer = setInterval, clearTimer = clearInterval }) {
   if (!enabled) return () => {};
   const start = now(); let stopped = false;

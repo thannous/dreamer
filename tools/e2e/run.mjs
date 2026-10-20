@@ -5,7 +5,7 @@ import { createRequire } from 'node:module';
 import { availableParallelism, homedir, tmpdir } from 'node:os';
 import { delimiter, join, resolve, basename, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { SDK_PINS, digest, trackedDiffSha256, sourceSnapshot, compareSnapshots, verifyReport, aggregateReports, writeOnce, preserveStatus, directoryFiles, hashFiles, createAttemptOutput, verifyEvidenceFiles, verifyNativeCleanup, campaignFailureRecord, startSdkProgress } from './qualification.mjs';
+import { SDK_PINS, digest, trackedDiffSha256, sourceSnapshot, compareSnapshots, verifyReport, aggregateReports, writeOnce, preserveStatus, directoryFiles, hashFiles, createAttemptOutput, verifyEvidenceFiles, verifyNativeCleanup, campaignFailureRecord, startSdkProgress, startHostStallMonitor, HOST_STALL_MS } from './qualification.mjs';
 import { normalizeAvdName, appInputs, nativeInputs, binaryInputs, releaseMetadata, validateReleaseReceipt, verifyInstalledRelease, runWithInstallDiagnostics, validateBuildCommand, archiveReleaseBinary } from './native-release.mjs';
 
 const cwd = fileURLToPath(new URL('.', import.meta.url));
@@ -107,6 +107,7 @@ function webInputIdentity() {
   return Object.fromEntries(sourceFiles.map(path => [path, createHash('sha256').update(readFileSync(join(cwd, path))).digest('hex')]));
 }
 let lock;
+let hostStalls = [];
 let fd;
 let identity;
 let primary = 0;
@@ -128,7 +129,7 @@ const expectedOrigin = platform === 'web' ? `http://127.0.0.1:${env.E2E_WEB_PORT
 const pins = Object.fromEntries(['e2e', '@e2e-dev/web', '@e2e-dev/mobile', 'agent-device'].map(name => [name, JSON.parse(readFileSync(join(cwd, 'node_modules', name, 'package.json'), 'utf8')).version]));
 if (Object.entries(SDK_PINS).some(([name, version]) => pins[name] !== version)) throw new Error('INSTALLED_SDK_PINS');
 const campaignId = env.E2E_CAMPAIGN_ID ?? env.CIRCLE_WORKFLOW_JOB_ID ?? null;
-const context = () => ({ locale: env.E2E_WEB_LOCALE ?? (product === 'lucid' ? 'fr-FR' : 'en-US'), featureSheets: env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true',
+const context = () => ({ locale: platform !== 'web' && env.E2E_PERSONAS === '1' ? 'fr-FR' : env.E2E_WEB_LOCALE ?? (product === 'lucid' ? 'fr-FR' : 'en-US'), featureSheets: env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true',
   ...(env.E2E_PERSONAS === '1' ? { personas: true, personaModel: env.E2E_PERSONA_MODEL?.trim() || 'gpt-6.1-sol' } : {}) });
 async function execute(executable, argv, logName, childEnv = env, workdir = cwd) {
   const logFd = logName ? openSync(join(output, logName), 'wx') : undefined;
@@ -277,7 +278,9 @@ async function runSdk() {
   writeOnce(join(output, 'collection.json'), collection);
   if (!collection.pairs?.length) throw new Error('No selected pairs.');
   sdkLaunched = true;
-  primary = await execute(process.execPath, [...webNodeArgs, cli, 'run', ...args], 'sdk.log', cliEnvironment());
+  const stopStallMonitor = startHostStallMonitor();
+  try { primary = await execute(process.execPath, [...webNodeArgs, cli, 'run', ...args], 'sdk.log', cliEnvironment()); }
+  finally { hostStalls = stopStallMonitor(); }
   if (primary === 0) {
     const report = JSON.parse(readFileSync(join(output, 'report.json'), 'utf8'));
     const proof = verifyReport(report, { target: `${product}-${platform}`, platform, revision: sourceBefore.revision,
@@ -315,6 +318,8 @@ try {
     const artifact = binaryInputs(release.binary.path, platform);
     validateReleaseReceipt(release, { product, platform, bundle, inputDigest: appInputs(root, product).inputDigest,
       nativeInputDigest: nativeInputs(root, product, platform).digest, binaryDigest: artifact.sha256 });
+    if (env.E2E_PERSONAS === '1' && (product !== 'dreamer' || release.profile.name !== 'mock-persistent'))
+      throw new Error('Native personas require the owned Dreamer mock-persistent Release.');
     binary = release.binary;
     writeOnce(join(output, 'release-used.json'), release);
     if (Object.hasOwn(env, 'EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED')
@@ -322,6 +327,7 @@ try {
       throw new Error('Test onboarding flag differs from compiled Release profile.');
     env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED = String(release.profile.featureSheets);
     env.E2E_NATIVE_MOCK_MODE = String(release.profile.mock);
+    env.E2E_NATIVE_MOCK_PERSISTENCE = String(release.profile.persistence);
     env.E2E_NATIVE_MOCK_CATEGORIZATION_MS = String(release.profile.categorizationDelayMs);
     if (command !== 'run') {
       writeOnce(join(output, 'installed-start.json'), verifyInstalledRelease({ receipt: release, device: identity, output, read }));
@@ -339,7 +345,8 @@ try {
     trackedDiffSha256: diffSha256,
     command: ['node', 'tools/e2e/run.mjs', product, platform, command, ...args, ...(releaseFile ? ['--release-receipt', resolve(releaseFile)] : []), ...(installRelease ? ['--install-release'] : [])],
     rerunEnvironment: platform === 'web' ? { E2E_WEB_LOCALE: context().locale, EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED: String(context().featureSheets), E2E_WEB_PORT: new URL(expectedOrigin).port, E2E_WORKERS: env.E2E_WORKERS, E2E_KEEP_METRO_CACHE: env.E2E_KEEP_METRO_CACHE === '1' ? '1' : null,
-      ...(env.E2E_PERSONAS === '1' ? { E2E_PERSONAS: '1', E2E_PERSONA_MODEL: context().personaModel } : {}) } : { E2E_DEVICE: env.E2E_DEVICE ?? null, E2E_AVD_NAME: env.E2E_AVD_NAME ?? 'Pixel_9_API_37' },
+      ...(env.E2E_PERSONAS === '1' ? { E2E_PERSONAS: '1', E2E_PERSONA_MODEL: context().personaModel } : {}) } : { E2E_DEVICE: env.E2E_DEVICE ?? null, E2E_AVD_NAME: env.E2E_AVD_NAME ?? 'Pixel_9_API_37',
+      ...(env.E2E_PERSONAS === '1' ? { E2E_PERSONAS: '1', E2E_PERSONA_MODEL: context().personaModel } : {}) },
     ...(platform === 'web' ? {
       webInputsSha256: webInputIdentity(),
       webLocale: env.E2E_WEB_LOCALE ?? (product === 'lucid' ? 'fr-FR' : 'en-US'),
@@ -420,6 +427,7 @@ try {
   if (platform !== 'web' && sdkLaunched) {
     resourceCleanup = attempt('NATIVE_CLEANUP_UNPROVEN', () => verifyNativeCleanup(JSON.parse(readFileSync(join(output, 'report.json'), 'utf8')), {
       target: `${product}-${platform}`, platform, revision: sourceBefore.revision, startedAt,
+      ...(env.E2E_PERSONAS === '1' ? { personaModel: context().personaModel } : {}),
     })) ? 'complete' : 'unproven';
   } else if (inspectionStarted) {
     resourceCleanup = inspectionClosed ? 'complete' : 'unproven';
@@ -437,13 +445,19 @@ try {
       unlinkSync(lock);
     });
   }
+  if (hostStalls.length) {
+    // A failed run during a host stall stays failed; the code says why, so it is rerun on a
+    // quiet host instead of being read as an app regression. A passed run is left as it is.
+    if ((requestedSignal ?? primary) !== 0) secondary.push('HOST_STALL');
+    console.error(`Host stall: this machine stopped running processes for ${hostStalls.map(stall => `${Math.round(Math.max(stall.wallGapMs, stall.monotonicGapMs) / 1000)} s (resumed ${stall.resumedAt})`).join(', ')}; heartbeat gap over ${HOST_STALL_MS / 1000} s. Attempt deadlines spent in it are not the app's.`);
+  }
   attempt('MANIFEST_PERSISTENCE', () => writeOnce(join(output, 'files.json'), hashFiles(output, directoryFiles(output, '.'))));
   attempt('END_PERSISTENCE', () => writeOnce(join(output, 'end.json'), {
     finishedAt: new Date().toISOString(), primaryExitCode: requestedSignal ?? primary,
     exitCode: preserveStatus(requestedSignal ?? primary, secondary), sdkLaunched, installedReady, installationDiagnostics, installationErrorDetails, stability,
     applicationQualified: command === 'run' && preserveStatus(requestedSignal ?? primary, secondary) === 0,
     ownerDecision: '2026-10-06-install-hash-diagnostic-and-release-own-wrapper-lock',
-    secondaryErrors: secondary, resourceCleanup, lockReleased: lock ? !existsSync(lock) : true,
+    secondaryErrors: secondary, resourceCleanup, lockReleased: lock ? !existsSync(lock) : true, hostStalls,
   }));
   process.exitCode = preserveStatus(requestedSignal ?? primary, secondary);
   console.log('E2E evidence: ' + output);

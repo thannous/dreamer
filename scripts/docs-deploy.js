@@ -134,7 +134,7 @@ function parseTarget(argv = process.argv.slice(2)) {
 // The production guard (scripts/check-site-publish-proof.mjs): HEAD is the
 // fetched origin/master, the checkout is clean, and a passed `release` proof
 // exists for HEAD, from `npm run verify:release:site` or `npm run
-// verify:release`: it asks for no target, so the app checks (Docker, TesterArmy
+// verify:release`: it asks for no target, so the app checks (native backend journey, TesterArmy
 // app campaigns) are not needed. It throws the refusal. There is no override.
 // Preview uploads are not guarded.
 async function guardProductionPublish() {

@@ -1,6 +1,6 @@
 import * as Haptics from 'expo-haptics';
 import React, { useMemo, useState } from 'react';
-import { StyleSheet, View, type StyleProp, type TextStyle, type ViewProps, type ViewStyle } from 'react-native';
+import { StyleSheet, Text, View, type StyleProp, type TextStyle, type ViewProps, type ViewStyle } from 'react-native';
 import Animated, { useReducedMotion, type CSSStyle } from 'react-native-reanimated';
 
 import { DURATION, EASE } from '@/components/motion/motion';
@@ -13,24 +13,23 @@ const SEGMENTS = STORY_DEMO_STEP + 1;
 /**
  * The reader turns the pages. Nothing advances on a timer: readers found the
  * timed scenes too fast, and a story read at one's own pace is the point.
+ * The chapter and its page change together, and a chapter opens on its first page.
  */
-export function useFeatureStory() {
-  const reduced = useReducedMotion();
-  const [step, setStep] = useState(0);
+export function useFeatureStory<Chapter extends string>(first: Chapter) {
+  const [page, setPage] = useState({ chapter: first, step: 0 });
   const seek = (next: number) => {
     const target = Math.max(0, Math.min(STORY_DEMO_STEP, next));
-    if (target === step) return;
+    if (target === page.step) return;
     // One soft tick per page turn, in the same frame as the new slide.
     if (process.env.EXPO_OS !== 'web') void Haptics.selectionAsync();
-    setStep(target);
+    setPage({ chapter: page.chapter, step: target });
   };
   return {
-    step, reduced,
-    next: () => seek(step + 1),
+    chapter: page.chapter, step: page.step,
+    next: () => seek(page.step + 1),
+    open: (chapter: Chapter) => setPage({ chapter, step: 0 }),
   };
 }
-
-export type FeatureStoryPlayback = ReturnType<typeof useFeatureStory>;
 
 /**
  * A scene's entrance: a short rise and fade, staggered by `delay` so the title
@@ -56,12 +55,13 @@ export const HEADLINE_SETTLE = 260;
 
 /**
  * The slide's one word, rising out of a mask as on a keynote slide. Reduced
- * motion keeps only the fade; assistive technology reads it once, whole.
+ * motion keeps only the fade; assistive technology reads it once, whole. The
+ * view around the word moves, not the text, which would be re-measured each frame.
  */
 export function Headline({ text, style, lineHeight }: { text: string; style: StyleProp<TextStyle>; lineHeight: number }) {
   const reduced = useReducedMotion();
   return <View accessible accessibilityRole="header" accessibilityLabel={text} accessibilityLiveRegion="polite" style={styles.mask}>
-    <Animated.Text accessible={false} maxFontSizeMultiplier={1.4} style={[style, {
+    <Animated.View accessible={false} style={{
       animationName: {
         from: { opacity: 0, ...(!reduced ? { transform: [{ translateY: lineHeight * 0.7 }] } : {}) },
         to: { opacity: 1, ...(!reduced ? { transform: [{ translateY: 0 }] } : {}) },
@@ -69,9 +69,9 @@ export function Headline({ text, style, lineHeight }: { text: string; style: Sty
       animationDuration: DURATION.slow,
       animationTimingFunction: EASE.out,
       animationFillMode: 'both',
-    }]}>
-      {text}
-    </Animated.Text>
+    }}>
+      <Text accessible={false} maxFontSizeMultiplier={1.4} style={style}>{text}</Text>
+    </Animated.View>
   </View>;
 }
 
