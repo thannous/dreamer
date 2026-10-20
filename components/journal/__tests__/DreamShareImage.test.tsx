@@ -21,7 +21,7 @@ jest.mock('react-native', () => {
   const React = require('react');
 
   return {
-    Image: () => <img alt="Noctalia" />,
+    Image: ({ onLoad, onError }: any) => <img alt="Noctalia" onLoad={onLoad} onError={onError} />,
     Platform: {
       OS: 'web',
       select: (options: Record<string, unknown>) => options.web ?? options.default,
@@ -50,19 +50,61 @@ it('uses resolved media and signals readiness only after the image is displayed'
   fireEvent.load(screen.getByAltText('Dream'));
   expect(ready).not.toHaveBeenCalled();
   fireEvent.click(screen.getByTestId('dream-image-displayed'));
+  // The card's mark still loading, the card is not drawn yet.
+  expect(ready).not.toHaveBeenCalled();
+  fireEvent.load(screen.getByAltText('Noctalia'));
   expect(ready).toHaveBeenCalledWith('https://signed/image', true);
 });
 
 
-it('reports a bounded display timeout for retry even when loading completed', () => {
+it('leaves out a picture not displayed in time, even when loading completed', () => {
   jest.useFakeTimers();
   try {
-    const ready = jest.fn();
+    // Reported only once the card is drawn without it.
+    const ready = jest.fn(() => expect(screen.queryByAltText('Dream')).toBeNull());
     const { unmount } = render(<DreamShareImage dream={{ id: 1 } as DreamAnalysis} t={key => key}
       resolvedMedia={{ imageUrl: 'https://signed/stalled' }} onMediaReady={ready} />);
     fireEvent.load(screen.getByAltText('Dream'));
     act(() => { jest.advanceTimersByTime(10000); });
     expect(ready).toHaveBeenCalledWith('https://signed/stalled', false);
+    expect(screen.queryByAltText('Dream')).toBeNull();
+    unmount();
+  } finally { jest.useRealTimers(); }
+});
+
+
+it('is ready without its picture once a failed picture has been left out', () => {
+  const ready = jest.fn(() => expect(screen.queryByAltText('Dream')).toBeNull());
+  render(<DreamShareImage dream={{ id: 1, title: 'Winged elephant' } as DreamAnalysis} t={key => key}
+    resolvedMedia={{ imageUrl: 'https://signed/broken' }} onMediaReady={ready} />);
+  fireEvent.load(screen.getByAltText('Noctalia'));
+  fireEvent.error(screen.getByAltText('Dream'));
+  expect(screen.getByText('Winged elephant')).toBeTruthy();
+  expect(ready).toHaveBeenCalledWith('https://signed/broken', false);
+});
+
+
+it('is ready as soon as its mark is drawn when there is no picture to wait for', () => {
+  const ready = jest.fn();
+  render(<DreamShareImage dream={{ id: 1, title: 'Winged elephant' } as DreamAnalysis} t={key => key}
+    resolvedMedia={{ imageUrl: '' }} onMediaReady={ready} />);
+  expect(screen.queryByAltText('Dream')).toBeNull();
+  expect(ready).not.toHaveBeenCalled();
+  fireEvent.load(screen.getByAltText('Noctalia'));
+  expect(ready).toHaveBeenCalledWith('', false);
+});
+
+
+it('does not wait long for a mark that never reports', () => {
+  jest.useFakeTimers();
+  try {
+    const ready = jest.fn();
+    const { unmount } = render(<DreamShareImage dream={{ id: 1 } as DreamAnalysis} t={key => key}
+      resolvedMedia={{ imageUrl: '' }} onMediaReady={ready} />);
+    act(() => { jest.advanceTimersByTime(999); });
+    expect(ready).not.toHaveBeenCalled();
+    act(() => { jest.advanceTimersByTime(1); });
+    expect(ready).toHaveBeenCalledWith('', false);
     unmount();
   } finally { jest.useRealTimers(); }
 });
