@@ -41,6 +41,8 @@ jest.mock('react-native', () => {
       </button>
     ),
     StyleSheet: { create: (styles: Record<string, unknown>) => styles },
+    // The seal of a dream without a painting is drawn, not read.
+    Image: () => null,
     Dimensions: { get: () => ({ width: 390, height: 844, scale: 1, fontScale: 1 }) },
     useWindowDimensions: () => ({ width: 390, height: 844, scale: 1, fontScale: 1 }),
     Text: ({ children, testID, onLayout, numberOfLines }: { children?: React.ReactNode; testID?: string; onLayout?: (event: unknown) => void; numberOfLines?: number }) => {
