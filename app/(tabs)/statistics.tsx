@@ -23,6 +23,7 @@ import { TrendsFigures } from '@/components/trends/TrendsFigures';
 import { TrendsNights } from '@/components/trends/TrendsNights';
 import { TrendsPeriodSwitch } from '@/components/trends/TrendsPeriodSwitch';
 import { TrendsReturns } from '@/components/trends/TrendsReturns';
+import { TrendsSky } from '@/components/trends/TrendsSky';
 import { useEndOfLocalDay } from '@/components/trends/useEndOfLocalDay';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { DESKTOP_BREAKPOINT, getBottomNavigationLayout } from '@/constants/layout';
@@ -35,6 +36,7 @@ import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getDreamThemeLabel } from '@/lib/dreamLabels';
 import { getDreamRouteParams } from '@/lib/dreamRoute';
+import { buildDreamSky } from '@/lib/dreamSky';
 import {
   buildDreamTrends,
   DEFAULT_DREAM_TRENDS_PERIOD,
@@ -131,11 +133,13 @@ function StatisticsScreen() {
   }
   const [nightsLit, setNightsLit] = useState(false);
   const [returnsLit, setReturnsLit] = useState(false);
+  const [skyLit, setSkyLit] = useState(false);
   const [openSymbol, setOpenSymbol] = useState<string | null>(null);
   const nightsRef = useRef<ViewInstance | null>(null);
   const returnsRef = useRef<ViewInstance | null>(null);
+  const skyRef = useRef<ViewInstance | null>(null);
   // What has lit, read by the scroll handler so it stays the same function and stops measuring.
-  const litRef = useRef({ nights: false, returns: false });
+  const litRef = useRef({ nights: false, returns: false, sky: false });
 
   const compact = width < COMPACT_BREAKPOINT;
   const largeText = Number.isFinite(fontScale) && fontScale >= 1.3;
@@ -164,9 +168,10 @@ function StatisticsScreen() {
     () => (symbolIndex ? getPeriodSymbols(symbolIndex, analyzedIds) : []),
     [analyzedIds, symbolIndex],
   );
+  const sky = useMemo(() => buildDreamSky(dreams, trends.range, periodSymbols), [dreams, periodSymbols, trends.range]);
 
   const reveal = useCallback(() => {
-    const probe = (ref: React.RefObject<ViewInstance | null>, section: 'nights' | 'returns', light: (value: boolean) => void) => {
+    const probe = (ref: React.RefObject<ViewInstance | null>, section: 'nights' | 'returns' | 'sky', light: (value: boolean) => void) => {
       if (litRef.current[section] || !ref.current) return;
       ref.current.measureInWindow((_x, y) => {
         if (litRef.current[section] || !Number.isFinite(y) || y >= height - REVEAL_MARGIN) return;
@@ -176,10 +181,11 @@ function StatisticsScreen() {
     };
     probe(nightsRef, 'nights', setNightsLit);
     probe(returnsRef, 'returns', setReturnsLit);
+    probe(skyRef, 'sky', setSkyLit);
   }, [height]);
 
-  // Until both sections have lit, each scroll event also looks for them on the screen.
-  const handleScroll = useHeaderScroll(nightsLit && returnsLit ? undefined : reveal);
+  // Until every section has lit, each scroll event also looks for them on the screen.
+  const handleScroll = useHeaderScroll(nightsLit && returnsLit && (skyLit || trends.count === 0) ? undefined : reveal);
 
   const chooseTheme = useCallback((theme: DreamTheme) => {
     setSelectedTheme((current) => (current === theme ? null : theme));
@@ -345,6 +351,14 @@ function StatisticsScreen() {
     </View>
   );
 
+  const skySection = trends.count > 0 ? (
+    <View ref={skyRef} onLayout={reveal} className="border-t border-line pt-7">
+      <TrendsSky sky={sky} lit={skyLit} reduced={reduced} ink={ink} glow={noctalia.atmosphere.glow}
+        glowOpacity={noctalia.atmosphere.glowOpacity} dust={noctalia.atmosphere.particle} t={t} formatNumber={formatNumber}
+        formatDate={formatDate} onOpenDream={openDream} />
+    </View>
+  ) : null;
+
   return (
     <View className="flex-1 bg-ink" testID="screen.trends">
       <HeaderScrollView
@@ -384,6 +398,7 @@ function StatisticsScreen() {
                 {sealSection}
                 {nightsSection}
                 {returnsSection}
+                {skySection}
               </View>
               {compact ? <View testID="trends.layout.compact" /> : null}
             </View>
