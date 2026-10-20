@@ -86,7 +86,10 @@ function touch(sound: SignatureSound) {
     void soft();
   } else {
     void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
-    setTimeout(soft, ECHO_ANSWER_MS);
+    // The answer comes later: the phone may be locked or the app left by then.
+    setTimeout(() => {
+      if (AppState.currentState === 'active') void soft();
+    }, ECHO_ANSWER_MS);
   }
 }
 
@@ -94,7 +97,8 @@ async function play(sound: SignatureSound) {
   if (!(await getSignatureSoundsEnabled())) return;
   if (AppState.currentState !== 'active') return;
   // A live dictation or recording owns the audio session; changing it would cut them off.
-  if (isMicrophoneHeld() || !(await isSpeechRecognitionIdle())) return;
+  // Asked again after the wait: a recording may have started meanwhile.
+  if (isMicrophoneHeld() || !(await isSpeechRecognitionIdle()) || isMicrophoneHeld()) return;
   // Ambient and mixed: silent with the ringer switch (iOS) or a silent or vibrating ringer
   // (Android, where expo-audio then declines to play), and never pausing the dreamer's music.
   // Recording and sleep sounds set their own mode before they start.
@@ -112,6 +116,7 @@ async function play(sound: SignatureSound) {
   }
   player.volume = VOLUME;
   await player.seekTo(0);
+  if (isMicrophoneHeld()) return;
   player.play();
 }
 

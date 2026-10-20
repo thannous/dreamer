@@ -26,8 +26,9 @@ jest.mock('@/services/lucidKeyValueStorage', () => ({
     },
   }),
 }));
+let mockIdleAnswer: Promise<boolean> | null = null;
 jest.mock('@/services/nativeSpeechRecognition', () => ({
-  isSpeechRecognitionIdle: async () => mockIdle,
+  isSpeechRecognitionIdle: async () => (mockIdleAnswer ? mockIdleAnswer : mockIdle),
 }));
 
 type Sounds = typeof import('../signatureSounds');
@@ -42,6 +43,7 @@ const settle = () => new Promise((resolve) => setTimeout(resolve, 0));
 beforeEach(() => {
   mockStore.clear();
   mockIdle = true;
+  mockIdleAnswer = null;
   mockWriteFails = false;
   jest.clearAllMocks();
   (AppState as { currentState: string }).currentState = 'active';
@@ -70,11 +72,11 @@ it('stays quiet once turned off, at the next launch too', async () => {
 
 it('never touches the audio session under a live dictation or in the background', async () => {
   mockIdle = false;
-  launch().playSignature('echo');
+  launch().playSignature('painting');
   await settle();
   mockIdle = true;
   (AppState as { currentState: string }).currentState = 'background';
-  launch().playSignature('echo');
+  launch().playSignature('painting');
   await settle();
   expect(mockSetAudioMode).not.toHaveBeenCalled();
   expect(mockPlayer.play).not.toHaveBeenCalled();
@@ -119,4 +121,39 @@ it('keeps a choice made while the setting was still being read', async () => {
   sounds.playSignature('seal');
   await settle();
   expect(mockPlayer.play).not.toHaveBeenCalled();
+});
+
+it('lets a recording that starts while a cue waits keep the audio session', async () => {
+  let answer!: (idle: boolean) => void;
+  mockIdleAnswer = new Promise((resolve) => {
+    answer = resolve;
+  });
+  let sounds: Sounds | undefined;
+  let microphone: typeof import('../microphoneHold') | undefined;
+  jest.isolateModules(() => {
+    sounds = require('../signatureSounds');
+    microphone = require('../microphoneHold');
+  });
+  sounds!.playSignature('painting');
+  // The cue now waits on the dictation's state, and the recording starts.
+  await settle();
+  const release = microphone!.holdMicrophone();
+  answer(true);
+  await settle();
+  release();
+
+  expect(mockSetAudioMode).not.toHaveBeenCalled();
+  expect(mockPlayer.play).not.toHaveBeenCalled();
+});
+
+it('leaves the echo’s answer unfelt once the app is left', () => {
+  jest.useFakeTimers();
+  try {
+    launch().playSignature('echo');
+    (AppState as { currentState: string }).currentState = 'background';
+    jest.advanceTimersByTime(1000);
+    expect(mockHaptic).toHaveBeenCalledTimes(1);
+  } finally {
+    jest.useRealTimers();
+  }
 });
