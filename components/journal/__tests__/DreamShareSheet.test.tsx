@@ -19,8 +19,8 @@ jest.mock('react-native', () => {
 });
 
 jest.mock('@/components/ui/StandardBottomSheet', () => ({
-  StandardBottomSheet: ({ visible, title, children, actions }: any) => visible ? (
-    <section>
+  StandardBottomSheet: ({ visible, title, children, actions, dismissBehavior }: any) => visible ? (
+    <section data-testid="share-sheet" data-dismiss={dismissBehavior}>
       <h1>{title}</h1>
       {children}
       <button data-testid={actions.primaryTestID} data-loading={String(Boolean(actions.primaryLoading))} onClick={actions.onPrimary}>
@@ -70,6 +70,7 @@ function renderSheet(overrides: Partial<React.ComponentProps<typeof DreamShareSh
     painting: 'https://signed/image',
     paintingPending: false,
     sharing: false,
+    capturing: false,
     ...overrides,
   };
   const view = render(<DreamShareSheet {...props} />);
@@ -119,6 +120,13 @@ describe('DreamShareSheet', () => {
     expect(screen.getByTestId(TID.Button.DreamShareCard).getAttribute('data-loading')).toBe('true');
     fireEvent.click(choice('journal.detail.share_sheet.painting'));
     expect(screen.getByTestId(TID.Button.DreamShareCard).getAttribute('data-loading')).toBe('false');
+  });
+
+  it('can be left while the card waits, not while it is captured and shared', () => {
+    const { rerender, props } = renderSheet({ sharing: true });
+    expect(screen.getByTestId('share-sheet').getAttribute('data-dismiss')).toBe('pan');
+    rerender(<DreamShareSheet {...props} capturing />);
+    expect(screen.getByTestId('share-sheet').getAttribute('data-dismiss')).toBe('none');
   });
 
   it('starts again from the first offer each time it opens', () => {

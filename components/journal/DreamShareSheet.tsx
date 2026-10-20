@@ -83,6 +83,7 @@ export function DreamShareSheet({
   painting,
   paintingPending,
   sharing,
+  capturing,
 }: {
   visible: boolean;
   onClose: () => void;
@@ -94,6 +95,8 @@ export function DreamShareSheet({
   /** The illustration is still being resolved. */
   paintingPending: boolean;
   sharing: boolean;
+  /** The card is captured or in the system's share sheet: the composer stays until that ends. */
+  capturing: boolean;
 }) {
   const { t } = useTranslation();
   const [options, setOptions] = useState<ShareCardOptions>(() => getDefaultShareCardOptions(dream));
@@ -124,8 +127,9 @@ export function DreamShareSheet({
       title={t('journal.detail.share_modal.title')}
       subtitle={t('journal.detail.share_sheet.subtitle')}
       testID={TID.Sheet.DreamShare}
-      // An illustration slow to sign keeps the button waiting, never the dreamer from leaving.
-      dismissBehavior={sharing ? 'none' : 'pan'}
+      // An illustration slow to sign or to show keeps the button waiting, never the dreamer
+      // from leaving.
+      dismissBehavior={capturing ? 'none' : 'pan'}
       actions={{
         primaryLabel: t('journal.detail.share_sheet.share'),
         primaryIcon: 'square.and.arrow.up',

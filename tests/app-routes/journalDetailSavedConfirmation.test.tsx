@@ -298,8 +298,9 @@ jest.mock('@/components/journal/DreamShareImage', () => ({
 
 // The composer as the screen drives it: what it offers and what the dreamer picks.
 jest.mock('@/components/journal/DreamShareSheet', () => ({
-  DreamShareSheet: ({ visible, onShare, onClose, painting, paintingPending }: any) => visible ? (
-    <div data-testid="sheet.dreamShare" data-painting={painting} data-painting-pending={String(paintingPending)}>
+  DreamShareSheet: ({ visible, onShare, onClose, painting, paintingPending, capturing }: any) => visible ? (
+    <div data-testid="sheet.dreamShare" data-painting={painting} data-painting-pending={String(paintingPending)}
+      data-capturing={String(capturing)}>
       <button data-testid="btn.dream.shareCard" onClick={() => onShare({ painting: true, title: true, date: true, text: 'quote' })}>Share the card</button>
       <button onClick={() => onShare({ painting: false, title: true, date: false, text: 'story' })}>Share my story without the illustration</button>
       <button onClick={onClose}>Close the composer</button>
@@ -1458,6 +1459,24 @@ describe('native share card', () => {
     expect(mockShareComposite).toHaveBeenCalledTimes(1);
     expect(require('react-native').Alert.alert).not.toHaveBeenCalled();
     expect(screen.queryByTestId(TID.Sheet.DreamShare)).toBeNull();
+  });
+  it('cancels the share when the dreamer leaves while the card is still being drawn', async () => {
+    require('react-native').Platform.OS = 'android';
+    mockDreams = [buildDream({ imageUrl: 'https://cdn/image', isAnalyzed: true, analysisStatus: 'done' })];
+    mockMedia = { imageUrl: 'https://cdn/image', loading: false, error: false, retry: mockRetryMedia };
+    mockCompositeLoads = null;
+    render(<JournalDetailScreen />);
+    fireEvent.click(screen.getByTestId(TID.Button.DreamShare));
+    fireEvent.click(shareCardButton());
+    expect(screen.getByTestId('share-composite')).toBeTruthy();
+    expect(screen.getByTestId(TID.Sheet.DreamShare).getAttribute('data-capturing')).toBe('false');
+    await act(async () => { fireEvent.click(screen.getByText('Close the composer')); });
+    expect(screen.queryByTestId(TID.Sheet.DreamShare)).toBeNull();
+    expect(screen.queryByTestId('share-composite')).toBeNull();
+    await act(async () => { mockCompositeEvents[0].report('https://cdn/image', true); });
+    expect(mockShareComposite).not.toHaveBeenCalled();
+    expect(require('react-native').Alert.alert).not.toHaveBeenCalled();
+    expect((screen.getByTestId(TID.Button.DreamShare) as HTMLButtonElement).disabled).toBe(false);
   });
   it('closes the composer without sharing anything', () => {
     require('react-native').Platform.OS = 'android';

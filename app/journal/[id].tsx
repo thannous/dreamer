@@ -1167,12 +1167,21 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   const shareSource = shareImage?.source ?? '';
   const [shareRequest, setShareRequest] = useState<ShareCompositeRequest | null>(null);
   const [isShareSheetVisible, setShareSheetVisible] = useState(false);
+  // The chosen card is being drawn, before its capture: leaving then cancels the share.
+  const [isPreparingShare, setPreparingShare] = useState(false);
   const shareDate = useMemo(() => (dream ? formatDreamDate(dream.id) : ''), [dream, formatDreamDate]);
   const shareRequestIdRef = useRef(0);
   const pendingShareRef = useRef<PendingShareComposite | null>(null);
   const shareInFlightRef = useRef(false);
   const closeShareSheet = useCallback(() => {
-    if (!shareInFlightRef.current) setShareSheetVisible(false);
+    const pending = pendingShareRef.current;
+    if (pending) {
+      pendingShareRef.current = null;
+      pending.resolve('stale');
+    } else if (shareInFlightRef.current) {
+      return;
+    }
+    setShareSheetVisible(false);
   }, []);
   const shareScreenMountedRef = useRef(true);
   const shareDreamIdentity = dream ? getDreamIdentityKey(dream) : undefined;
@@ -1384,7 +1393,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
 
   // The card as chosen, captured once drawn: after its illustration is displayed or, when
   // that is left out, cannot be had or shown, without it. The choice stays open over the
-  // system's share sheet and closes once the card is shared.
+  // system's share sheet and closes once that sheet is done, shared or not.
   const shareCard = useCallback(async (options: ShareCardOptions) => {
     if (!dream || isAnalysisLocked || shareInFlightRef.current || !shareDreamIdentity) return;
     if (options.painting && shareMediaPending) return;
@@ -1393,6 +1402,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     try {
       const requestId = ++shareRequestIdRef.current;
       const source = options.painting ? shareSource : '';
+      setPreparingShare(true);
       const preparation = await new Promise<SharePreparationStatus>(resolve => {
         pendingShareRef.current = { id: requestId, source, dreamIdentity: shareDreamIdentity, resolve };
         setShareRequest({
@@ -1404,6 +1414,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
           onMediaReady: (readySource, ready) => onShareMediaReady(requestId, readySource, ready),
         });
       });
+      if (shareScreenMountedRef.current) setPreparingShare(false);
       if (preparation === 'stale'
         || (source && latestShareMediaRef.current.source !== source)
         || latestShareMediaRef.current.dreamIdentity !== shareDreamIdentity) return;
@@ -1420,6 +1431,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       shareInFlightRef.current = false;
       if (shareScreenMountedRef.current) {
         setShareRequest(null);
+        setPreparingShare(false);
         setIsSharing(false);
       }
     }
@@ -3504,6 +3516,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
           painting={shareSource}
           paintingPending={shareMediaPending}
           sharing={isSharing}
+          capturing={isSharing && !isPreparingShare}
         />
         <Modal
           visible={isShareModalVisible}

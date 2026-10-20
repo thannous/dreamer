@@ -69,7 +69,11 @@ it('leaves out a picture not displayed in time, even when loading completed', ()
     const { unmount } = render(<DreamShareImage dream={{ id: 1 } as DreamAnalysis} t={key => key}
       resolvedMedia={{ imageUrl: 'https://signed/stalled' }} onMediaReady={ready} />);
     fireEvent.load(screen.getByAltText('Dream'));
+    drawMarks();
     act(() => { jest.advanceTimersByTime(10000); });
+    // The night it now rests on is drawn before the card is.
+    expect(ready).not.toHaveBeenCalled();
+    drawMarks();
     expect(ready).toHaveBeenCalledWith('https://signed/stalled', false);
     expect(screen.queryByAltText('Dream')).toBeNull();
     unmount();
@@ -83,6 +87,7 @@ it('is ready without its picture once a failed picture has been left out', () =>
     resolvedMedia={{ imageUrl: 'https://signed/broken' }} onMediaReady={ready} />);
   drawMarks();
   fireEvent.error(screen.getByAltText('Dream'));
+  drawMarks();
   expect(screen.getByText('Winged elephant')).toBeTruthy();
   expect(ready).toHaveBeenCalledWith('https://signed/broken', false);
 });
@@ -135,6 +140,25 @@ it('waits for the seal it rests on when the card has no picture', () => {
 });
 
 
+it('waits anew for the seal a failed picture leaves the card on, even after a slow logo', () => {
+  jest.useFakeTimers();
+  try {
+    const ready = jest.fn();
+    const { unmount } = render(<DreamShareImage dream={{ id: 1, theme: 'surreal' } as DreamAnalysis} t={key => key}
+      resolvedMedia={{ imageUrl: 'https://signed/broken' }} onMediaReady={ready} />);
+    // The logo took longer than the card waits for its marks.
+    act(() => { jest.advanceTimersByTime(1000); });
+    fireEvent.error(screen.getByAltText('Dream'));
+    expect(ready).not.toHaveBeenCalled();
+    drawMarks();
+    expect(ready).not.toHaveBeenCalled();
+    fireEvent.load(screen.getByAltText('Seal'));
+    expect(ready).toHaveBeenCalledWith('https://signed/broken', false);
+    unmount();
+  } finally { jest.useRealTimers(); }
+});
+
+
 const chosenDream = {
   id: 1,
   title: 'Winged elephant',
@@ -142,7 +166,7 @@ const chosenDream = {
   shareableQuote: 'The sea held its breath for us.',
 } as DreamAnalysis;
 
-it('shows only what the dreamer chose, and always says Noctalia Dream made it', () => {
+it('shows only what the dreamer chose, with the Noctalia Dream footer', () => {
   const ready = jest.fn();
   render(<DreamShareImage dream={{ ...chosenDream, imageUrl: 'https://cdn/image' }} t={key => key} date="Sunday 18 October 2026"
     resolvedMedia={{ imageUrl: 'https://signed/image' }} onMediaReady={ready}
@@ -158,7 +182,7 @@ it('shows only what the dreamer chose, and always says Noctalia Dream made it', 
   expect(ready).toHaveBeenCalledWith('', false);
 });
 
-it('keeps Noctalia Dream on a card the dreamer emptied', () => {
+it('keeps the Noctalia Dream footer on a card the dreamer emptied', () => {
   render(<DreamShareImage dream={chosenDream} t={key => key} date="Sunday 18 October 2026" resolvedMedia={{ imageUrl: '' }}
     options={{ painting: false, title: false, date: false, text: 'none' }} />);
   expect(screen.queryByText('Winged elephant')).toBeNull();

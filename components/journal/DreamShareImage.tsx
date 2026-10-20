@@ -57,16 +57,19 @@ export const DreamShareImage = forwardRef<ViewInstance, DreamShareImageProps>(fu
 
   // Without its painting the card rests on the night, under the emblem of the dream's seal.
   const emblem = !hasImage && dream.theme && dream.theme in SEAL_EMBLEMS ? SEAL_EMBLEMS[dream.theme] : null;
-  // The card's logo and emblem are images too, loading on their own; they are waited for,
-  // never for long.
-  const [marks, setMarks] = useState<{ logo?: true; emblem?: true; waited?: true }>({});
-  const marksDrawn = Boolean(marks.waited || (marks.logo && (!emblem || marks.emblem)));
+  // The card's logo and the mark it rests on without a painting are images too, loading on
+  // their own; they are waited for, never for long. A ground that comes in late, under a
+  // picture that failed, is waited for anew.
+  const [marks, setMarks] = useState<{ logo?: true; ground?: true; waited?: true; onGround: boolean }>(
+    { onGround: !hasImage });
+  if (marks.onGround !== !hasImage) setMarks({ ...marks, onGround: !hasImage, waited: undefined });
+  const marksDrawn = Boolean(marks.waited || (marks.logo && (hasImage || marks.ground)));
   useEffect(() => {
     if (!onMediaReady || marksDrawn) return;
     const timer = setTimeout(() => setMarks((current) => ({ ...current, waited: true })), MARKS_WAIT_MS);
     return () => clearTimeout(timer);
   }, [onMediaReady, marksDrawn]);
-  const markDrawn = (mark: 'logo' | 'emblem') => setMarks((current) => (current[mark] ? current : { ...current, [mark]: true }));
+  const markDrawn = (mark: 'logo' | 'ground') => setMarks((current) => (current[mark] ? current : { ...current, [mark]: true }));
   // The card is ready once drawn as it will be captured: with its picture, or without one it
   // has none of or could not show.
   useEffect(() => {
@@ -102,8 +105,8 @@ export const DreamShareImage = forwardRef<ViewInstance, DreamShareImageProps>(fu
               <RNImage
                 source={emblem ?? require('@/assets/images/icon-transparent.png')}
                 style={emblem ? [styles.emblem, { tintColor: SEAL_GOLD }] : styles.groundLogo}
-                onLoad={() => markDrawn('emblem')}
-                onError={() => markDrawn('emblem')}
+                onLoad={() => markDrawn('ground')}
+                onError={() => markDrawn('ground')}
               />
             </View>
           </View>
