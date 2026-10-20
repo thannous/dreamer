@@ -961,7 +961,7 @@ describe('Recording screen', () => {
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
   });
 
-  it('confirms clearing, stops dictation, clears the durable draft and returns to text mode', async () => {
+  it('confirms clearing, stops dictation, clears the durable draft and stays on Tell', async () => {
     mockPlatformOS = 'android';
     mockRecordingPermissionState = 'granted';
     mockGetInputModePreference.mockResolvedValue('voice');
@@ -993,14 +993,14 @@ describe('Recording screen', () => {
     expect((screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value).toBe('');
     act(() => mockOnPartialTranscript?.('Résultat reçu après effacement.'));
     expect((screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value).toBe('');
-    expect(screen.queryByTestId('conversation-answer')).toBeNull();
-    expect(screen.queryByTestId('conversation-question')).toBeNull();
-    expect(screen.getByTestId('recording-mode').getAttribute('data-value')).toBe('text');
-    expect(mockSaveInputModePreference).toHaveBeenLastCalledWith('text', expect.anything());
+    // Starting over keeps the dreamer in Tell, with an empty conversation.
+    expect(screen.getByTestId('recording-mode').getAttribute('data-value')).toBe('voice');
+    expect((screen.getByTestId('conversation-answer') as HTMLTextAreaElement).value).toBe('');
+    expect(screen.getByTestId('conversation-question').textContent).toBe('');
+    expect(mockSaveInputModePreference).not.toHaveBeenCalledWith('text', expect.anything());
     act(() => mockAppStateHandler?.('background'));
     await waitFor(() => expect(mockSaveTranscript).toHaveBeenLastCalledWith(''));
     expect(mockStartRecording).toHaveBeenCalledTimes(1);
-    fireEvent.click(screen.getByTestId('recording-mode-voice'));
     fireEvent.change(screen.getByTestId('conversation-answer'), { target: { value: 'Nouveau rêve.' } });
     await act(async () => { fireEvent.click(screen.getByTestId('conversation-submit')); });
     expect(mockRequestCaptureQuestion).toHaveBeenLastCalledWith('Nouveau rêve.', expect.any(String), [], expect.anything());
@@ -2085,7 +2085,7 @@ describe('Recording screen', () => {
     expect(screen.queryByText('recording.draft_restore.loading')).toBeNull();
     expect(screen.queryByText('recording.draft_restore.error')).toBeNull();
     expect(screen.queryByRole('button', { name: 'recording.draft_restore.retry' })).toBeNull();
-    expect(screen.getByTestId(TID.Component.RecordingDraftProgress)).toBeTruthy();
+    expect(input.disabled).toBe(false);
     await waitFor(() => expect(screen.getByTestId('conversation-question').textContent).toBe('What else do you remember?'));
     expect(mockSaveTranscript).not.toHaveBeenCalled();
     fireEvent.change(input, { target: { value: 'continued' } });
@@ -2134,7 +2134,7 @@ describe('Recording screen', () => {
     expect((screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value).toBe(answerPair(answerPair('Un jardin.', 'Une porte.'), 'Du soleil.', 'dream_recall.question.what_else'));
   });
 
-  it('shows the saved-locally copy only after the draft is persisted, including across Write/Tell', async () => {
+  it('keeps the draft without announcing it: Write shows its progress, Tell shows none', async () => {
     render(<RecordingScreen />);
     await awaitEditorReady();
 
@@ -2143,28 +2143,22 @@ describe('Recording screen', () => {
     });
 
     const progress = screen.getByTestId(TID.Component.RecordingDraftProgress);
-    expect(progress.textContent).not.toContain('recording.draft_progress.saved_locally');
-
-    await waitFor(() => {
-      expect(mockSaveTranscript).toHaveBeenCalledWith('A blue room under the rain');
-      expect(progress.textContent).toContain('recording.draft_progress.saved_locally');
-    });
+    const hint = 'recording.draft_progress.ready';
+    expect(progress.textContent).toContain(hint);
+    await waitFor(() => expect(mockSaveTranscript).toHaveBeenCalledWith('A blue room under the rain'));
+    // The kept draft no longer replaces the progress hint with a status line.
+    expect(progress.textContent).toContain(hint);
 
     fireEvent.click(screen.getByTestId('recording-mode-voice'));
     await waitFor(() => {
       expect(screen.getByTestId('recording-composer').getAttribute('data-layout')).toBe('voiceFirst');
       expect(screen.getByTestId('conversation-question').textContent).toBe('What else do you remember?');
     });
-    expect(screen.getByTestId(TID.Component.RecordingDraftProgress).textContent).toContain(
-      'recording.draft_progress.saved_locally'
-    );
+    expect(screen.queryByTestId(TID.Component.RecordingDraftProgress)).toBeNull();
 
     fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
       target: { value: 'and a red bicycle' },
     });
-    expect(screen.getByTestId(TID.Component.RecordingDraftProgress).textContent).not.toContain(
-      'recording.draft_progress.saved_locally'
-    );
 
     fireEvent.click(screen.getByTestId('recording-mode-text'));
     await waitFor(() => {
@@ -2173,9 +2167,7 @@ describe('Recording screen', () => {
     expect(
       (screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value
     ).toBe(answerPair('A blue room under the rain', 'and a red bicycle'));
-    expect(screen.getByTestId(TID.Component.RecordingDraftProgress).textContent).not.toContain(
-      'recording.draft_progress.saved_locally'
-    );
+    expect(screen.getByTestId(TID.Component.RecordingDraftProgress)).toBeTruthy();
   });
 
   it('inserts cumulative voice partials after the kept draft without duplicating them', async () => {
