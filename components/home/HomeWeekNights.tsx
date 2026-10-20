@@ -9,7 +9,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { useDreamMedia } from '@/hooks/useDreamMedia';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getDreamRouteParams } from '@/lib/dreamRoute';
-import { getDreamThumbnailUri } from '@/lib/imageUtils';
+import { getDreamThumbnailCacheKey, getDreamThumbnailUri } from '@/lib/imageUtils';
 import { getFormattingLocale } from '@/lib/locale';
 import { getLocalDateKey } from '@/lib/ritualProgressUtils';
 import { TID } from '@/lib/testIDs';
@@ -84,10 +84,9 @@ function WeekNight({ night, locale }: { night: Night; locale: string }) {
     analyzedAt: dream.analyzedAt,
     id: dream.id,
   })?.trim() : undefined;
-  const source = useMemo(
-    () => thumbnail ? { uri: thumbnail, cacheKey: media.thumbnailUrl ? media.thumbnailCacheKey : undefined } : undefined,
-    [media.thumbnailCacheKey, media.thumbnailUrl, thumbnail],
-  );
+  // The journal cards' cache entry: a dream's image downloads once for both screens.
+  const cacheKey = getDreamThumbnailCacheKey(media);
+  const source = useMemo(() => thumbnail ? { uri: thumbnail, cacheKey } : undefined, [cacheKey, thumbnail]);
   const dayLabel = night.date.toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long' });
   const face = (
     <>
@@ -103,8 +102,9 @@ function WeekNight({ night, locale }: { night: Night; locale: string }) {
         borderColor: night.today ? ink.accent.text : ink.surface.border,
         backgroundColor: dream ? ink.surface.raised : 'transparent',
       }}>
+        {/* After the hero's image: these faces are small and can wait. */}
         {source && thumbnail !== failedUri ? <Image source={source} contentFit="cover" cachePolicy="memory-disk"
-          recyclingKey={`${dream?.id}:${thumbnail}`} transition={0} onError={() => setFailedUri(thumbnail ?? null)}
+          priority="low" recyclingKey={`${dream?.id}:${thumbnail}`} transition={0} onError={() => setFailedUri(thumbnail ?? null)}
           style={{ width: '100%', height: '100%' }} />
           : dream ? <IconSymbol name="sparkles" size={16} color={ink.accent.text} />
             : <View style={{ width: 5, height: 5, borderRadius: 3, backgroundColor: ink.text.tertiary }} />}
