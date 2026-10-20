@@ -6,7 +6,7 @@ import Animated, {
   Easing, Extrapolation, interpolate, useAnimatedReaction, useAnimatedStyle, useReducedMotion, useSharedValue, withSequence,
   withSpring, withTiming, type SharedValue,
 } from 'react-native-reanimated';
-import { scheduleOnRN } from 'react-native-worklets';
+import { scheduleOnRN, scheduleOnUI } from 'react-native-worklets';
 
 import { JournalPagePreview } from '@/components/journal/JournalPagePreview';
 import { PageTurnsContext } from '@/components/journal/journalPageTurns';
@@ -59,6 +59,7 @@ const LIKENESSES_AFTER = HINT_HOLD + HINT_FALL + HINT_REBOUND_RISE + HINT_REBOUN
 
 /** Let go, the page falls shut as under its own weight, landing with a slight rebound. */
 function fallingShut(direction: SharedValue<number>) {
+  'worklet';
   return [
     withTiming(0, { duration: HINT_FALL, easing: Easing.in(Easing.quad) }),
     withTiming(HINT_REBOUND, { duration: HINT_REBOUND_RISE, easing: EASING.out }),
@@ -206,11 +207,13 @@ export function JournalPageTurner({ dream, newer, older, folio, tonight = false,
   // Opening so, the page arriving is held lifted (see the hint below) until it has taken its
   // place, then falls shut: its fall is not drawn while the page is laid out beneath.
   const hintWaits = useSharedValue(false);
-  const releaseHint = useCallback(() => {
+  // Read where it was written: from here, a hint held a moment ago may not read as held yet.
+  const releaseHint = useCallback(() => scheduleOnUI(() => {
+    'worklet';
     if (!hintWaits.get()) return;
     hintWaits.set(false);
     progress.set(withSequence(...fallingShut(direction)));
-  }, [direction, hintWaits, progress]);
+  }), [direction, hintWaits, progress]);
   const opened = useCallback(() => setOpening(false), []);
   const openPage = useCallback(() => {
     if (!openingNow.get()) return;
