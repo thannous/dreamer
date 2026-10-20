@@ -143,12 +143,15 @@ function JournalListScreen() {
   // mounted outside the column-keyed list but float over it: a header spacer and a
   // scroll translation carry them away with the first dreams, so the list gets the
   // whole screen once it scrolls.
-  const headerMeasureKey = `${width}:${fontScale}:${insets.top}`;
-  const [measuredHeader, setMeasuredHeader] = useState({ key: '', height: 0 });
+  // The spacer takes the chrome's last measured height, whatever width it was read at:
+  // on the web a resize can report it before the screen renders at the new width, and a
+  // chrome that keeps its height reports nothing more, so the spacer would otherwise
+  // stay on the estimate below and hide the filters under the header.
+  const [measuredHeaderHeight, setMeasuredHeaderHeight] = useState(0);
   const mobileSearchHeaderHeight = isDesktopLayout
     ? 0
-    : measuredHeader.key === headerMeasureKey
-      ? measuredHeader.height
+    : measuredHeaderHeight > 0
+      ? measuredHeaderHeight
       : insets.top + ThemeLayout.spacing.sm + searchBarLayout(fontScale).minHeight + ThemeLayout.spacing.sm;
   const overlayNavClearance = isDesktopLayout || isKeyboardVisible ? 0 : navigationClearance;
   const searchConsumesLayout = isDesktopLayout;
@@ -1098,8 +1101,7 @@ function JournalListScreen() {
             // Hidden behind another route (on the web), the chrome measures zero: keep its
             // real height so the list is not laid out again, twice, around the visit.
             if (nextHeight <= 0) return;
-            setMeasuredHeader((current) => current.key === headerMeasureKey && current.height === nextHeight
-              ? current : { key: headerMeasureKey, height: nextHeight });
+            setMeasuredHeaderHeight(nextHeight);
           }}
           // Overlay chrome is taller than the uncovered list box on short
           // landscape. box-none lets FlashList receive drags that miss the
