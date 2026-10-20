@@ -19,8 +19,9 @@ export function getNoctaliaPalette(mode: ThemeMode) {
     line: dark ? '#514637' : 'rgba(126, 83, 49, 0.25)',
     // The floating navigation's frosted glass: the tint laid over the blur, a denser tint
     // where nothing is blurred (Android), the light its top edge catches, and its rim.
+    // The tint keeps the tab labels at 4.5:1 over a painting or card scrolling beneath.
     navGlass: {
-      tint: dark ? 'rgba(20, 19, 26, 0.12)' : 'rgba(245, 234, 219, 0.2)',
+      tint: dark ? 'rgba(20, 19, 26, 0.7)' : 'rgba(245, 234, 219, 0.6)',
       solid: dark ? 'rgba(20, 19, 26, 0.9)' : 'rgba(245, 234, 219, 0.94)',
       highlight: dark ? ['rgba(255, 249, 239, 0.09)', 'rgba(255, 249, 239, 0)'] as const : ['rgba(255, 255, 255, 0.55)', 'rgba(255, 255, 255, 0)'] as const,
       rim: dark ? 'rgba(234, 212, 180, 0.18)' : 'rgba(124, 76, 43, 0.16)',
