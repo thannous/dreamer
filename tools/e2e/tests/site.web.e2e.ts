@@ -114,7 +114,8 @@ test('symbol artwork fills the page from behind the navbar up to 2560px', { time
     await expect(screen.getByRole('heading', { level: 1 })).toBeVisible();
     const image = await browser.evaluate(measureHero);
     expect(image.naturalWidth).toBeGreaterThan(0);
-    expect(image.src).toMatch(new RegExp('/' + id + '-v1-[0-9]+w\\.(?:webp|avif)$'));
+    // Its own landscape painting, not a portrait one.
+    expect(new URL(image.src).pathname).toMatch(new RegExp('^/img/seo/symbols-v2/' + id + '-v[0-9]+-[0-9]+w\\.(?:webp|avif)$'));
     expect([image.objectFit, image.objectPosition]).toEqual(['cover', position]);
     expect([image.heroTop, image.top, image.left]).toEqual([0, 0, 0]);
     expect(image.width).toBeCloseTo(image.available, 0);
