@@ -33,6 +33,7 @@ and `app.config.ts`. Meditation has its own package, lockfile and
 
 | Work | Start here | Command or prerequisite |
 | --- | --- | --- |
+| Suivi des 240 symboles dans les six langues et passation images/animations | [Tableau Excel, CSV et handoff](suivi-symboles/README.md) | Exports du registre Atlas ; distinguer intégration, QA actuelle, historique et publication. |
 | Repository sources, local configuration and QA artifacts | [Repository layout and hygiene](repository-layout.md) | `node scripts/check-repository-hygiene.cjs` checks tracked paths and exact historical exceptions; it is not a secret scanner. |
 | Runtime, native preparation and guarded production publication | [Repository operations](repository-operations.md) | Detailed procedures and specialist links; AGENTS retains authority and approval boundaries. |
 | Write or rewrite site articles, symbols and guides | [Editorial charter](charte-editoriale.md) | Voice, sourcing, typography and SEO guardrails; then `docs:build` and `docs:check`. |

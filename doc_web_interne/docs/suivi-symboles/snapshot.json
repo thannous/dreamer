@@ -1,0 +1,58 @@
+{
+  "schema": "noctalia.symbol-tracking-snapshot/1",
+  "date": "2026-10-20",
+  "sourceRevision": "8e38590c85ebca2cbbef732b179eb47a8b2800d8",
+  "sourcePullRequest": 474,
+  "totalSymbols": 240,
+  "integratedSymbols": 75,
+  "remainingToIntegrate": 165,
+  "atlasLocalePages": 450,
+  "languages": [
+    "fr",
+    "en",
+    "es",
+    "de",
+    "it",
+    "pt-br"
+  ],
+  "historicalQaSymbols": 40,
+  "historicallyPublishedSymbols": 37,
+  "currentStageProofs": {
+    "publication": 0,
+    "approval": 0,
+    "qa": 0
+  },
+  "files": {
+    "workbook": {
+      "sha256": "03e959e051ef8be77f318336494ca2698970515640f7aaa78616ade8dd886b2b",
+      "path": "suivi-240-symboles-6-langues.xlsx"
+    },
+    "csv": {
+      "sha256": "1de9fe95c2cdc7b1b9ae743ad14bec120cf9f895104ec2bf5f721f340eda7d1b",
+      "path": "symbol-rollout.csv"
+    }
+  },
+  "checks": {
+    "rows": 240,
+    "recalculation": true,
+    "formulaErrors": 0,
+    "formulas": 489,
+    "nativeExcelApplication": false,
+    "filterRange": "A10:AC250",
+    "frozenAt": "C11",
+    "reopen": true,
+    "export": true
+  },
+  "assetAudit": {
+    "twoChannelsConfiguredPerComposition": true,
+    "newPacks": 38,
+    "realAlphaChecked": true,
+    "rolesPerPack": 8,
+    "derivedFilesPresent": 1444,
+    "currentBrowserTemporalQa": false,
+    "nativeArchiveLocallyVerified": false,
+    "visuallySampledPacks": 6
+  },
+  "qaReceipt": "../qa/symbol-packs-40-20261020.json",
+  "qaReceiptSha256": "c2639ad1fb2c614260bb057940fe9b69af6bf22c21a6039cf142d6b24ba7bf59"
+}
