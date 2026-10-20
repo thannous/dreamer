@@ -376,9 +376,13 @@ function ArrivalLater({ play, ready, children }: { play: boolean; ready: boolean
 }
 
 function JournalDetailScreen() {
-  const route = useLocalSearchParams<{ id: string; remoteId?: string; clientRequestId?: string; saved?: string | string[] }>();
+  const route = useLocalSearchParams<{ id: string; remoteId?: string; clientRequestId?: string; saved?: string | string[];
+    recall?: string | string[]; autoAnalyze?: string; analyzeAfterPurchase?: string; share?: string }>();
   // Arriving from the capture seal, the page has its own ceremony: it does not also fall shut.
   const [arrivedFromSeal] = useState(() => isJournalSavedConfirmationParam(route.saved));
+  // Opened to be read, it shows its likeness at once; asked to act or scroll on arrival, it does not.
+  const [opensOnLikeness] = useState(() => !arrivedFromSeal && !route.recall && !route.autoAnalyze
+    && !route.analyzeAfterPurchase && !route.share);
   const { user } = useAuth();
   const { dreams } = useDreamsData();
   const dream = resolveDreamRoute(dreams, route);
@@ -412,8 +416,8 @@ function JournalDetailScreen() {
   const content = <JournalDetailContent key={JSON.stringify([user?.id, route.id, route.remoteId, route.clientRequestId])}
     dream={dream} folio={neighbours.folio} />;
   return dream
-    ? <JournalPageTurner newer={neighbours.newer} older={neighbours.older} folio={neighbours.folio} tonight hint={!arrivedFromSeal}
-      onTurn={turnTo}>{content}</JournalPageTurner>
+    ? <JournalPageTurner dream={dream} newer={neighbours.newer} older={neighbours.older} folio={neighbours.folio} tonight
+      hint={!arrivedFromSeal} opensOnLikeness={opensOnLikeness} onTurn={turnTo}>{content}</JournalPageTurner>
     : content;
 }
 
