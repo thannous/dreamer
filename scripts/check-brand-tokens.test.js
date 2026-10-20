@@ -161,3 +161,12 @@ test('the shared type scale fails on drift in either app, in CSS or TypeScript',
   assert.match(errors, /Journal\/Lucid type body: CSS 15px\/24px != 16px\/24px/);
   assert.match(errors, /Meditation type caption: TypeScript 13\/16 != 12\/16/);
 });
+
+test('the shared type scale also fails on a line height or overline tracking drift', () => {
+  const f = fixture();
+  f.change('constants/typeScale.ts', 'h1: { fontSize: 28, lineHeight: 34 }', 'h1: { fontSize: 28, lineHeight: 32 }');
+  f.change('global.css', '--text-overline--letter-spacing: 1.3px;', '--text-overline--letter-spacing: 1.2px;');
+  const errors = f.check().errors.join('\n');
+  assert.match(errors, /Journal\/Lucid type h1: TypeScript 28\/32 != 28\/34/);
+  assert.match(errors, /Journal\/Lucid type overline tracking/);
+});
