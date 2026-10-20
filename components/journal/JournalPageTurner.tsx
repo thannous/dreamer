@@ -117,6 +117,8 @@ export function JournalPageTurner({ newer, older, folio, tonight = false, hint =
 }) {
   const { width, height } = useWindowDimensions();
   const [pageHeight, setPageHeight] = useState(height);
+  // The page's own width, narrower than the window beside the desktop sidebar.
+  const [pageWidth, setPageWidth] = useState(width);
   const reduced = useReducedMotion();
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
@@ -274,7 +276,7 @@ export function JournalPageTurner({ newer, older, folio, tonight = false, hint =
   const hasLaterDream = shown.newer != null;
   const hasNewer = hasLaterDream || tonight;
   const hasOlder = shown.older != null;
-  const covering = coveringTurn(width);
+  const covering = coveringTurn(pageWidth);
   const turnsValue = useMemo(() => ({
     atTonight, hasOlder, hasNewer, locked,
     turn: (forward: boolean) => navigatePage(forward ? FORWARD : BACKWARD),
@@ -415,7 +417,10 @@ export function JournalPageTurner({ newer, older, folio, tonight = false, hint =
       <PageTurnsContext.Provider value={turnsValue}>
       <View className="flex-1 bg-ink">
       <GestureDetector gesture={pan} touchAction="pan-y">
-        <View className="flex-1 bg-ink" onLayout={({ nativeEvent: { layout } }) => setPageHeight(layout.height)}>
+        <View className="flex-1 bg-ink" onLayout={({ nativeEvent: { layout } }) => {
+          setPageHeight(layout.height);
+          setPageWidth(layout.width);
+        }}>
           {shown.newer ? (likenesses ? (
             <Animated.View pointerEvents="none" style={[pageFrame, laterPage]} onLayout={likenessLaidOut}>
               <JournalPagePreview height={pageHeight} dream={shown.newer} folio={shown.folio ? shown.folio + 1 : undefined} />
