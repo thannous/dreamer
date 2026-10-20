@@ -2,30 +2,25 @@
 
 [Tableau Excel](suivi-240-symboles-6-langues.xlsx) · [CSV lisible dans GitHub](symbol-rollout.csv) · [Passation](HANDOFF.md)
 
-Le lot 10 complète **29 packs**, conserve leurs couvertures peintes et ajoute **203 PNG natifs**. Le candidat contient **140 packs équipés**, soit **840 pages** dans les six langues ; **100 packs restent à compléter**. Le cadre commun comprend 240 symboles et 1 440 pages.
+Le lot 11 complète **30 packs**, conserve leurs couvertures et ajoute **210 PNG natifs**. Le candidat contient **170 packs équipés**, soit **1020 pages** ; **70 packs restent à compléter** dans le cadre commun de 240 symboles et 1 440 pages.
 
-**59 QA actuelles** : 29 du lot 10 sur le candidat propre `fc0d47528b092ffae3e49cc020fbc27e902dc01b`, et 30 du lot 08 réutilisées sur leurs entrées inchangées. Le nouveau lot a été contrôlé dans les six langues à 2560×1440 et 390×844, avec inspection de 145 captures. Lire [le rapport du lot 10](../qa/symbol-packs-lot-10-30-20261020.md) et [son reçu](../qa/symbol-packs-lot-10-30-20261020.json). Ses sources, prompts et provenance sont conservés dans [29 archives privées Drive](https://drive.google.com/drive/folders/1fUiZ6cBJMwNNV54MYLLPhvwFd47YfT6Q). L’Excel conserve ses formules, filtres et volets.
+**170 QA actuelles** : 30 parcours frais sur le candidat propre `622dd61d9ef0f43f5a9090416fe6cf21e4224e20` et 140 preuves réutilisées sur leurs entrées inchangées. Le lot est contrôlé dans les six langues à 2560×1440 et 390×844 ; ses 150 captures sont inspectées. Lire [le rapport](../qa/symbol-packs-lot-11-30-20261020.md) et [le reçu](../qa/symbol-packs-lot-11-30-20261020.json). Les sources, prompts et provenance sont dans **[30 archives privées Drive](https://drive.google.com/drive/folders/1I3ezCQgUTgPD758S_NZRMbQ5x7C7hz__)**. L’Excel conserve ses 489 formules, son filtre `A10:AC250`, ses volets à `C11` et ses trois règles de couleur.
 
-Le lot 08 a été fusionné dans master par la PR490. Six autres packs ont rejoint master dans le lot 09 ; Bateau en fait partie et ses images servies sont conservées. Leurs sources sont archivées localement d’après le reçu concurrent ; aucune sauvegarde Drive n’est revendiquée pour ces six packs. Notre lot devient le lot 10. La fusion ou la publication du lot 10, ainsi qu’un accord visuel personnel, ne sont pas consignés.
+Les mises à jour concurrentes de master sont conservées, notamment les variantes PT existantes et [la livraison antérieure du lot 09](../qa/symbol-batch09-delivery-20261020.json). Cette dernière consigne 91 parcours et une publication, avec `sourceClean=false` dû aux bundles générés ; elle est réutilisée comme preuve héritée, sans nouveau parcours revendiqué. Les QA, accords et publications du candidat sont des états distincts : **170 / 0 / 177**. Aucune nouvelle publication ou approbation personnelle n’est attribuée à ce lot.
 
 ## Lire les états
 
-- **Atlas / pack d'images** : huit rôles et correspondances dans six langues. La présence des fichiers ne vaut pas qualification ou publication.
-- **Commun** : cadre partagé et illustration existante ; le pack reste à compléter.
-- **QA / accord / publication** : preuves distinctes, liées aux entrées du candidat. La correction du générateur du lot 08 a périmé les preuves antérieures ; les 30 QA du lot 08 restent actuelles sur leurs entrées inchangées.
-- **Historique** : la PR485 a publié le Tigre commun et les 1 440 pages sur `76d7e577dfb7eb5251b0898e994e3a5210bfd56c` ; les 75 QA et 240 publications restent décrites dans [son reçu](../qa/symbol-tiger-common-motion-20261020.json) et `snapshot.json`. La [livraison PR478](../qa/symbol-pages-uniform-20261020.json) reste également conservée. Les 40 contrôles PR474 et 37 publications antérieures restent historiques. Le compteur « Publiées » du classeur concerne les preuves actuelles du candidat, pas la disponibilité du site historique.
-- **Archives** : les 29 archives du lot 10 et les 30 du lot 08 ont leurs empreintes locales et leurs métadonnées Drive vérifiées. Pour les anciens packs PR474, la disponibilité locale de leur archive demeure non affirmée.
+- **Atlas / pack** : huit rôles et correspondances dans les six langues. Les fichiers présents ne valent pas qualification ou publication.
+- **À compléter** : 70 packs manquants ou incomplets. Le CSV distingue aussi les affectations de lot en préparation : ses totaux de registre ne constituent pas le nombre de packs terminés.
+- **QA / accord / publication** : seuls les enregistrements dont les sources et les preuves correspondent encore sont actuels. Une source modifiée périme la preuve, qui reste conservée comme historique.
+- **Historique** : les reçus PR474, PR478, PR485, les lots précédents et la livraison master du lot 09 restent référencés dans `snapshot.json`. Les compteurs « Publiées » concernent le candidat, pas une nouvelle mesure de disponibilité publique. Une page au cadre commun peut déjà être publiée alors que son pack complet reste à produire.
+- **Archives** : empreintes locales, envois réussis et métadonnées Drive vérifiés. Aucun hachage distant ou second téléchargement n’est revendiqué. Les anciens packs sans archive vérifiée restent signalés comme tels.
 
 ## Mettre à jour après chaque lot de 30 au maximum
 
-1. Conserver les peintures satisfaisantes ; produire les rôles manquants du pack de huit fichiers. Suivre [le guide](../symbol-atlas-guidelines.md), avec un portrait composé pour mobile, une plaque et deux effets réellement transparents, et trois scènes correspondant au contenu.
-2. Intégrer avec le convertisseur et le moteur commun, puis contrôler les pages réelles et les deux effets. Consigner les preuves dans [le registre](../../../docs-src/config/symbol-rollout.json), puis régénérer le rapport :
+1. Conserver les peintures satisfaisantes et produire les rôles manquants selon [le guide](../symbol-atlas-guidelines.md).
+2. Convertir avec le packer existant, contrôler les pages réelles et enregistrer la QA dans [le registre](../../../docs-src/config/symbol-rollout.json). Régénérer `symbol-rollout.json` et le CSV avec `npm run symbols:rollout --prefix apps/site -- --out <dossier>`.
+3. Actualiser ce classeur depuis le même rapport ; conserver les 240 IDs, les formules, les filtres et les volets. Recalculer, exporter, rouvrir et inspecter le rendu.
+4. Actualiser les empreintes dans `snapshot.json`, vérifier le commit avant chaque push et conserver les limites des preuves. Fusion et publication suivent les autorisations de la conversation et `AGENTS.md`.
 
-   ```sh
-   npm run symbols:rollout --prefix apps/site -- --out /tmp/noctalia-symbol-rollout
-   ```
-
-3. Actualiser le classeur existant et son CSV depuis le même rapport : 240 IDs uniques, huit rôles, six langues et preuves actuelles/historiques. Conserver les formules, filtres et volets ; recalculer, exporter, rouvrir et inspecter le classeur. Le registre fait autorité.
-4. Actualiser `snapshot.json` avec les empreintes des exports. Vérifier le commit avant chaque push. Le merge et la publication suivent les autorisations de la conversation et `AGENTS.md` ; ne compter une livraison qu'après son contrôle réel.
-
-Sources : [profils et scènes](../../../docs-src/config/symbol-atlas-pilots.json), [images](../../../docs-src/config/symbol-atlas-six-assets.json), [langues](../../../docs-src/config/symbol-atlas-locales.json), [cadrages sans pack](../../../docs-src/config/symbol-hero-portrait.json). Le classeur conserve ses 489 formules, son filtre `A10:AC250` et ses volets à `C11`. Il a été recalculé et rouvert, sans pilotage de l'application Excel native.
+Sources : [profils et scènes](../../../docs-src/config/symbol-atlas-pilots.json), [images](../../../docs-src/config/symbol-atlas-six-assets.json), [langues](../../../docs-src/config/symbol-atlas-locales.json) et [cadrages sans pack](../../../docs-src/config/symbol-hero-portrait.json). Le classeur est recalculé avec Artifact Tool ; l’application Excel native n’est pas pilotée.
