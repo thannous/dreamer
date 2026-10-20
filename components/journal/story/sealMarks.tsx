@@ -1,6 +1,6 @@
 import { isLoaded } from 'expo-font';
 import React, { useId, useMemo, useState } from 'react';
-import { Image, Text, View, type ImageSourcePropType, type StyleProp, type ViewStyle } from 'react-native';
+import { Image, Platform, Text, View, type ImageSourcePropType, type StyleProp, type ViewStyle } from 'react-native';
 import Animated, { type CSSStyle } from 'react-native-reanimated';
 import Svg, { Circle, Defs, Path, RadialGradient, Stop } from 'react-native-svg';
 
@@ -320,6 +320,11 @@ const glyphWidths = new Map<string, number>();
 const LEGEND_FACE = 'SpaceGrotesk_500Medium';
 /** Letters measured once their face had loaded: their widths no longer change. */
 const settledGlyphs = new Set<string>();
+/** Whether the legend's face has arrived: on the web, expo-font counts a face as loaded once declared. */
+function legendFaceLoaded(): boolean {
+  if (Platform.OS === 'web') return globalThis.document?.fonts?.check(`10px "${LEGEND_FACE}"`) ?? false;
+  return isLoaded(LEGEND_FACE);
+}
 
 /**
  * The legend engraved around the window, letter after letter from its start, centred on
@@ -395,7 +400,7 @@ export function SealLegend({ text, reduced, from = DREAM_STORY.sealContact, stil
             <Text key={glyph} allowFontScaling={false} className={`absolute ${letterClass}`} style={{ lineHeight: LEGEND_LINE }}
               onLayout={({ nativeEvent: { layout } }) => {
                 glyphWidths.set(glyph, layout.width);
-                if (isLoaded(LEGEND_FACE)) settledGlyphs.add(glyph);
+                if (legendFaceLoaded()) settledGlyphs.add(glyph);
                 setWidths((current) => (current[glyph] === layout.width ? current : { ...current, [glyph]: layout.width }));
                 setRemeasured((current) => ({ ...current, [glyph]: true }));
               }}>
