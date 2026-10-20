@@ -18,6 +18,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { TypeScale } from '@/constants/typeScale';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -98,7 +99,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   text: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 13,
+    fontFamily: Fonts.outfit.medium,
+    fontSize: TypeScale.bodySm.fontSize,
   },
 });

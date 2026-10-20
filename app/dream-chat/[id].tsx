@@ -62,6 +62,7 @@ import {
 } from 'react-native';
 import { Pressable as GesturePressable } from 'react-native-gesture-handler';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
+import { TypeScale } from '@/constants/typeScale';
 
 type CategoryType = DreamChatCategory;
 type SendMessageOptions = {
@@ -1462,8 +1463,8 @@ const styles = StyleSheet.create({
   },
   errorText: {
     // color: set dynamically
-    fontSize: 16,
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: TypeScale.body.fontSize,
+    fontFamily: Fonts.outfit.medium,
     textAlign: 'center',
   },
   quotaCheckContainer: {
@@ -1479,8 +1480,8 @@ const styles = StyleSheet.create({
     borderRadius: 999,
   },
   retryButtonText: {
-    fontSize: 15,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: TypeScale.body.fontSize,
+    fontFamily: Fonts.outfit.bold,
   },
   imageContainer: {
     width: '100%',
@@ -1502,16 +1503,16 @@ const styles = StyleSheet.create({
     paddingBottom: 0,
   },
   dreamTitle: {
-    fontSize: 22,
+    fontSize: TypeScale.h2.fontSize,
     fontFamily: Fonts.fraunces.semiBold,
     // color: set dynamically
     lineHeight: 30,
   },
   dreamQuotePreview: {
-    fontSize: 13,
+    fontSize: TypeScale.bodySm.fontSize,
     fontFamily: Fonts.lora.regularItalic,
     marginTop: 4,
-    lineHeight: 18,
+    lineHeight: TypeScale.bodySm.lineHeight,
   },
   imagePlaceholder: {
     borderBottomLeftRadius: 0,
@@ -1542,12 +1543,12 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   retryTargetTitle: {
-    fontSize: 13,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: TypeScale.bodySm.fontSize,
+    fontFamily: Fonts.outfit.bold,
     textTransform: 'uppercase',
   },
   retryTargetBody: {
-    fontSize: 14,
+    fontSize: TypeScale.bodySm.fontSize,
     fontFamily: Fonts.lora.regularItalic,
     lineHeight: 20,
   },
@@ -1562,11 +1563,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   retryTargetButtonText: {
-    fontSize: 14,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: TypeScale.bodySm.fontSize,
+    fontFamily: Fonts.outfit.bold,
   },
   quickCategoriesLabel: {
-    fontSize: 12,
+    fontSize: TypeScale.caption.fontSize,
     fontFamily: Fonts.lora.regularItalic,
     // color: set dynamically
     marginBottom: 10,
@@ -1595,8 +1596,8 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   quickCategoryText: {
-    fontSize: 13,
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: TypeScale.bodySm.fontSize,
+    fontFamily: Fonts.outfit.medium,
     // color: set dynamically
   },
   decoRuleContainer: {
@@ -1610,8 +1611,8 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   missingDreamBackButtonText: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 16,
+    fontFamily: Fonts.outfit.bold,
+    fontSize: TypeScale.body.fontSize,
   },
   // Exploration blocked screen
   blockedContainer: {
@@ -1623,13 +1624,13 @@ const styles = StyleSheet.create({
   },
   blockedTitle: {
     fontFamily: Fonts.fraunces.semiBold,
-    fontSize: 24,
+    fontSize: TypeScale.h2.fontSize,
     textAlign: 'center',
     marginTop: 16,
   },
   blockedMessage: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 16,
+    fontFamily: Fonts.outfit.regular,
+    fontSize: TypeScale.body.fontSize,
     lineHeight: 24,
     textAlign: 'center',
     maxWidth: 320,
@@ -1644,8 +1645,8 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   upgradeButtonText: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 16,
+    fontFamily: Fonts.outfit.bold,
+    fontSize: TypeScale.body.fontSize,
   },
   // Message counter
   messageCounterContainer: {
@@ -1659,8 +1660,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   messageCounter: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 12,
+    fontFamily: Fonts.outfit.medium,
+    fontSize: TypeScale.caption.fontSize,
   },
   limitWarningBanner: {
     width: '100%',
@@ -1678,10 +1679,10 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   limitWarningText: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 13,
+    fontFamily: Fonts.outfit.medium,
+    fontSize: TypeScale.bodySm.fontSize,
     flex: 1,
-    lineHeight: 18,
+    lineHeight: TypeScale.bodySm.lineHeight,
   },
   limitCtaButton: {
     paddingHorizontal: 12,
@@ -1690,8 +1691,8 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
   },
   limitCtaText: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 12,
+    fontFamily: Fonts.outfit.medium,
+    fontSize: TypeScale.caption.fontSize,
     fontWeight: '600',
   },
   footerWrapper: {

@@ -335,7 +335,7 @@ function InspirationScreen() {
                 testID="btn.home.reminder"
                 className="min-h-[60px] flex-row items-center gap-3 border-t border-line py-4 active:opacity-70">
                 <View className="w-10 items-center"><IconSymbol name="bell" size={23} color={noctalia.accent.text} /></View>
-                <Text className="min-w-0 flex-1 font-sans text-[15px] leading-[22px] text-ivory-muted">
+                <Text className="min-w-0 flex-1 font-sans text-body leading-[22px] text-ivory-muted">
                   {nextReminderText ?? t('home.today.add_reminder')}
                 </Text>
                 <IconSymbol name="chevron.right" size={18} color={noctalia.text.tertiary} />

@@ -184,7 +184,7 @@ test('PR237 Lucid compact tabs, program safeguards and account validation remain
         return rect.height >= Number.parseFloat(getComputedStyle(label).lineHeight) && label.scrollWidth <= rect.width + 1;
       });
       const shortcuts = Array.from(document.querySelectorAll('[data-testid="lucid-today-shortcuts"] *'))
-        .filter(node => node.children.length === 0 && node.textContent?.trim() && getComputedStyle(node).fontFamily.includes('SpaceGrotesk'));
+        .filter(node => node.children.length === 0 && node.textContent?.trim() && getComputedStyle(node).fontFamily.includes('Outfit'));
       return { tabs, shortcuts: shortcuts.map(node => {
         const rect = node.getBoundingClientRect();
         return node.scrollHeight <= rect.height + 1 && node.scrollWidth <= rect.width + 1;

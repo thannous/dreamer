@@ -315,7 +315,7 @@ const styles = StyleSheet.create({
   listScreen: { flex: 1 },
   list: { flex: 1 },
   listContent: { gap: LucidSpace.md },
-  body: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
+  body: { fontFamily: 'Outfit_400Regular', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
   group: { gap: LucidSpace.md },
-  editor: { minHeight: 140, borderWidth: 1, borderRadius: LucidRadius.md, padding: LucidSpace.md, textAlignVertical: 'top', fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.body[0], lineHeight: LucidType.body[1] },
+  editor: { minHeight: 140, borderWidth: 1, borderRadius: LucidRadius.md, padding: LucidSpace.md, textAlignVertical: 'top', fontFamily: 'Outfit_400Regular', fontSize: LucidType.body[0], lineHeight: LucidType.body[1] },
 });

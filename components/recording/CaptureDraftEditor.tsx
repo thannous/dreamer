@@ -47,11 +47,11 @@ export function CaptureDraftEditor({ draft, disabled, onChange, onClose }: {
 
 const styles = StyleSheet.create({
   header: { flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 12 },
-  title: { flex: 1, fontFamily: Fonts.spaceGrotesk.medium, fontSize: 23, lineHeight: 30 },
+  title: { flex: 1, fontFamily: Fonts.outfit.medium, fontSize: 23, lineHeight: 30 },
   close: { minHeight: 48, minWidth: 48, alignItems: 'center', justifyContent: 'center' },
-  hint: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 15, lineHeight: 22, marginBottom: 12 },
+  hint: { fontFamily: Fonts.outfit.regular, fontSize: 15, lineHeight: 22, marginBottom: 12 },
   section: { paddingVertical: 22, gap: 6 },
-  question: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 15, lineHeight: 23 },
+  question: { fontFamily: Fonts.outfit.regular, fontSize: 15, lineHeight: 23 },
   editor: { position: 'relative' },
   input: { fontFamily: Fonts.lora.regular, fontSize: 21, lineHeight: 32, paddingHorizontal: 0, paddingVertical: 6, minHeight: 48, borderWidth: 0, includeFontPadding: false },
   measurement: { opacity: 0 },

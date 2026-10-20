@@ -117,7 +117,7 @@ export function NoctaliaBottomNav({
     ? 'text-[11px] px-px'
     : navigationLayout.compact
       ? 'text-[11px]'
-      : 'text-[12px]';
+      : 'text-caption';
 
   const items: BottomNavItem[] = [
     {

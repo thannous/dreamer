@@ -12,6 +12,7 @@ import { clearStayOnSettingsIntent, requestStayOnSettingsIntent } from '@/lib/na
 import { createScopedLogger } from '@/lib/logger';
 import { TID } from '@/lib/testIDs';
 import { IoniconGlyph } from '@/components/ui/IoniconGlyph';
+import { TypeScale } from '@/constants/typeScale';
 
 const log = createScopedLogger('[GoogleSignInButton]');
 
@@ -130,7 +131,7 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   buttonText: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 16,
+    fontFamily: Fonts.outfit.bold,
+    fontSize: TypeScale.body.fontSize,
   },
 });

@@ -332,7 +332,7 @@ test.describe('French quick filters', () => {
       // Browser-only enlargement; native Dynamic Type remains independently qualified.
       await scroll.evaluate(node => {
         for (const text of Array.from(node.querySelectorAll<HTMLElement>('[dir="auto"]'))) {
-          if (!/SpaceGrotesk/.test(getComputedStyle(text).fontFamily)) continue;
+          if (!/Outfit/.test(getComputedStyle(text).fontFamily)) continue;
           text.dataset.previousFontSize = text.style.fontSize;
           text.style.fontSize = `${parseFloat(getComputedStyle(text).fontSize) * 2}px`;
         }

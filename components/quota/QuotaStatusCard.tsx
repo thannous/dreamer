@@ -17,6 +17,7 @@ import { Fonts } from '@/constants/theme';
 import { QUOTAS } from '@/constants/limits';
 import { createScopedLogger } from '@/lib/logger';
 import { getMonthlyQuotaPeriod } from '@/lib/quotaReset';
+import { TypeScale } from '@/constants/typeScale';
 
 const log = createScopedLogger('[QuotaStatusCard]');
 
@@ -363,13 +364,13 @@ const styles = StyleSheet.create({
     minWidth: 0,
   },
   title: {
-    fontSize: 18,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: TypeScale.h3.fontSize,
+    fontFamily: Fonts.outfit.bold,
   },
   subtitle: {
     marginTop: 4,
-    fontSize: 14,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: TypeScale.bodySm.fontSize,
+    fontFamily: Fonts.outfit.regular,
   },
   errorBanner: {
     padding: 12,
@@ -377,7 +378,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   errorText: {
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
   },
   row: {
     gap: 8,
@@ -388,13 +389,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   rowLabel: {
-    fontSize: 13,
+    fontSize: TypeScale.bodySm.fontSize,
     textTransform: 'uppercase',
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
   },
   rowValue: {
-    fontSize: 16,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: TypeScale.body.fontSize,
+    fontFamily: Fonts.outfit.bold,
   },
   progressTrack: {
     height: 8,
@@ -410,8 +411,8 @@ const styles = StyleSheet.create({
     padding: 12,
   },
   noticeText: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 14,
+    fontFamily: Fonts.outfit.medium,
+    fontSize: TypeScale.bodySm.fontSize,
   },
   manageButton: {
     marginTop: 12,
@@ -423,8 +424,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   manageText: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 14,
+    fontFamily: Fonts.outfit.bold,
+    fontSize: TypeScale.bodySm.fontSize,
   },
   ctaButton: {
     borderWidth: 1,
@@ -434,6 +435,6 @@ const styles = StyleSheet.create({
     borderRadius: 999,
   },
   ctaText: {
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
   },
 });

@@ -120,10 +120,10 @@ jest.mock('@/constants/theme', () => ({
     lora: {
       regular: 'Lora-Regular',
     },
-    spaceGrotesk: {
-      bold: 'SpaceGrotesk-Bold',
-      medium: 'SpaceGrotesk-Medium',
-      regular: 'SpaceGrotesk-Regular',
+    outfit: {
+      bold: 'Outfit-Bold',
+      medium: 'Outfit-Medium',
+      regular: 'Outfit-Regular',
     },
   },
 }));

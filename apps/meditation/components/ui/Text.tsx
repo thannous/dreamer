@@ -28,7 +28,7 @@ export type TextVariant =
 export type TextTone = 'default' | 'muted' | 'faint' | 'accent' | 'onAccent' | 'inherit';
 
 /**
- * Fraunces carries the voice (titles, numbers, breath phases), Space Grotesk
+ * Fraunces carries the voice (titles, numbers, breath phases), Outfit
  * the interface, Lora the quiet editorial moments.
  *
  * Variants set family and size ONLY. Colour is a separate `tone` prop, because

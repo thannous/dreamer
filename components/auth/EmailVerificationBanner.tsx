@@ -11,6 +11,7 @@ import { getAuthDesignTokens } from '@/constants/authTheme';
 import { Fonts } from '@/constants/theme';
 import { resendVerificationEmail } from '@/lib/auth';
 import { TID } from '@/lib/testIDs';
+import { TypeScale } from '@/constants/typeScale';
 
 type Props = {
   isCompact?: boolean;
@@ -118,12 +119,12 @@ const styles = StyleSheet.create({
     padding: ThemeLayout.spacing.sm,
   },
   title: {
-    fontSize: 16,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: TypeScale.body.fontSize,
+    fontFamily: Fonts.outfit.bold,
     marginBottom: ThemeLayout.spacing.xs,
   },
   message: {
-    fontSize: 14,
+    fontSize: TypeScale.bodySm.fontSize,
     marginBottom: ThemeLayout.spacing.sm,
   },
   action: {
@@ -140,12 +141,12 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   actionText: {
-    fontSize: 13,
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: TypeScale.bodySm.fontSize,
+    fontFamily: Fonts.outfit.medium,
   },
   statusMessage: {
     marginTop: ThemeLayout.spacing.xs,
-    fontSize: 12,
+    fontSize: TypeScale.caption.fontSize,
   },
 });
 

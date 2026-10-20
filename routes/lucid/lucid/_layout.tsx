@@ -108,7 +108,7 @@ export default function LucidLayout() {
 
 const styles = StyleSheet.create({
   loading: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: LucidSpace.lg, padding: LucidSpace.xl },
-  loadingText: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1] },
-  error: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1], textAlign: 'center' },
+  loadingText: { fontFamily: 'Outfit_700Bold', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1] },
+  error: { fontFamily: 'Outfit_400Regular', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1], textAlign: 'center' },
   retry: { minWidth: 180, marginTop: LucidSpace.sm },
 });

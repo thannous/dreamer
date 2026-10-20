@@ -4,6 +4,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { reportStabilityError } from '@/lib/observe';
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { TypeScale } from '@/constants/typeScale';
 
 interface ErrorBoundaryProps {
   children: React.ReactNode;
@@ -82,13 +83,13 @@ const styles = StyleSheet.create({
     padding: 24,
   },
   title: {
-    fontSize: 24,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: TypeScale.h2.fontSize,
+    fontFamily: Fonts.outfit.bold,
     marginBottom: 16,
   },
   message: {
-    fontSize: 16,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: TypeScale.body.fontSize,
+    fontFamily: Fonts.outfit.regular,
     textAlign: 'center',
     marginBottom: 32,
   },
@@ -99,7 +100,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   buttonText: {
-    fontSize: 16,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: TypeScale.body.fontSize,
+    fontFamily: Fonts.outfit.bold,
   },
 });

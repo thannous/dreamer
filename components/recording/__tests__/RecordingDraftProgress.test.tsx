@@ -45,7 +45,7 @@ jest.mock('@/constants/noctaliaDesign', () => ({
 
 jest.mock('@/constants/theme', () => ({
   Fonts: {
-    spaceGrotesk: { medium: 'SpaceGrotesk-Medium' },
+    outfit: { medium: 'Outfit-Medium' },
   },
 }));
 

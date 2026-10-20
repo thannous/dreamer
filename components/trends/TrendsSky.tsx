@@ -306,8 +306,8 @@ export function TrendsSky({ sky, lit, reduced, ink, glow, glowOpacity, dust, t, 
                 accessibilityLabel={t('trends.sky.constellation_label', { symbol: symbol.name, count: formatNumber(joined.length) })}
                 className={`min-h-[44px] max-w-full flex-row items-center gap-2 rounded-full border py-1 pl-1 pr-4 ${on ? 'border-champagne bg-champagne-dim' : 'border-line'}`}>
                 <SymbolMedallion symbol={symbol} size={34} />
-                <Text numberOfLines={1} className="min-w-0 shrink text-[14px] leading-[19px] font-sans-medium text-ivory">{symbol.name}</Text>
-                <Text className="text-[12px] leading-[16px] font-sans text-ivory-muted">{formatNumber(joined.length)}</Text>
+                <Text numberOfLines={1} className="min-w-0 shrink text-body-sm leading-[19px] font-sans-medium text-ivory">{symbol.name}</Text>
+                <Text className="text-caption font-sans text-ivory-muted">{formatNumber(joined.length)}</Text>
               </PressableScale>
             );
           })}
@@ -315,7 +315,7 @@ export function TrendsSky({ sky, lit, reduced, ink, glow, glowOpacity, dust, t, 
       ) : null}
 
       {/* The touch hint is for the eye: a screen reader is told how to open a dream on the sky. */}
-      <Text className="text-[14px] leading-[21px] font-sans text-ivory-muted" accessibilityLiveRegion="polite" testID="trends.sky.caption"
+      <Text className="text-body-sm leading-[21px] font-sans text-ivory-muted" accessibilityLiveRegion="polite" testID="trends.sky.caption"
         accessibilityLabel={caption ?? undefined} accessibilityElementsHidden={!caption}
         importantForAccessibility={caption ? 'auto' : 'no-hide-descendants'}>
         {[caption, t('trends.sky.hint')].filter(Boolean).join(' ')}

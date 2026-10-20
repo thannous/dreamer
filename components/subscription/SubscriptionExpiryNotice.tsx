@@ -18,7 +18,7 @@ export function SubscriptionExpiryNotice({ status, loading = false }: {
   });
   return (
     <View className="my-3 rounded-md border border-line bg-ink-soft px-4 py-3" testID="subscription-expired-notice">
-      <Text accessibilityRole="alert" className="font-sans text-[14px] leading-6 text-ivory-muted">
+      <Text accessibilityRole="alert" className="font-sans text-body-sm leading-6 text-ivory-muted">
         {t('subscription.expired.notice', { date })}
       </Text>
     </View>

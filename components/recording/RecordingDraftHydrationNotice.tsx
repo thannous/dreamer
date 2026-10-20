@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   message: {
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     fontSize: 14,
     lineHeight: 20,
   },
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   retryLabel: {
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
     fontSize: 14,
     lineHeight: 20,
     textAlign: 'center',

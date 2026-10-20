@@ -131,7 +131,7 @@ test('short viewports and doubled browser text keep filters and long results rea
   await screen.evaluate(root => {
     const texts = Array.from(root.querySelectorAll<HTMLElement>('[dir="auto"]'))
       .map(element => ({ element, style: getComputedStyle(element) }))
-      .filter(({ style }) => /Fraunces|SpaceGrotesk/.test(style.fontFamily));
+      .filter(({ style }) => /Fraunces|Outfit/.test(style.fontFamily));
     for (const { element, style } of texts) {
       element.style.fontSize = `${parseFloat(style.fontSize) * 2}px`;
       element.style.lineHeight = `${parseFloat(style.lineHeight) * 2}px`;

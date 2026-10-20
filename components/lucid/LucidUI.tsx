@@ -437,7 +437,7 @@ export function LucidDisclosure({ title, children, testID }: { title: string; ch
 const disclosureStyles = StyleSheet.create({
   container: { gap: LucidSpace.md },
   action: { flexDirection: 'row', alignItems: 'center', minHeight: 44, gap: LucidSpace.sm, borderTopWidth: StyleSheet.hairlineWidth, paddingTop: LucidSpace.sm },
-  title: { flex: 1, fontFamily: 'SpaceGrotesk_500Medium', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1] },
+  title: { flex: 1, fontFamily: 'Outfit_500Medium', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1] },
   body: { gap: LucidSpace.sm },
 });
 
@@ -660,7 +660,7 @@ const styles = StyleSheet.create({
   statusGlass: { padding: LucidSpace.xs },
   footer: { paddingHorizontal: LucidSpace.gutter, paddingTop: LucidSpace.md, gap: LucidSpace.sm },
   headerCopy: { flex: 1, minWidth: 0, gap: LucidSpace.sm },
-  eyebrow: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.overline[0], lineHeight: LucidType.overline[1], letterSpacing: 1.5, textTransform: 'uppercase' },
+  eyebrow: { fontFamily: 'Outfit_700Bold', fontSize: LucidType.overline[0], lineHeight: LucidType.overline[1], letterSpacing: 1.5, textTransform: 'uppercase' },
   // Fraunces est la voix du produit, pas sa police d'interface. Deux graisses,
   // deux rôles, et rien d'autre :
   //   _600SemiBold — le titre d'écran. Un seul par écran, celui-ci.
@@ -668,10 +668,10 @@ const styles = StyleSheet.create({
   //                  du matin, le principe du test de réalité, l'invite de
   //                  réflexion d'une séance.
   // Tout ce qui se scanne — titres de carte, valeurs, libellés, boutons —
-  // descend sur Space Grotesk. Du serif sur chaque titre de carte donnait un ton
+  // descend sur Outfit. Du serif sur chaque titre de carte donnait un ton
   // éditorial à un écran qu'on consulte, pas qu'on lit.
   title: { fontFamily: 'Fraunces_600SemiBold', fontSize: LucidType.display[0], lineHeight: LucidType.display[1], letterSpacing: -0.8 },
-  subtitle: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1] },
+  subtitle: { fontFamily: 'Outfit_400Regular', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1] },
   card: { borderRadius: LucidRadius.xl, borderWidth: 1, padding: LucidSpace.lg, gap: LucidSpace.md },
   pressed: { opacity: LucidPress.opacity, transform: [{ scale: LucidPress.scale }] },
   pressedWithoutMotion: { opacity: LucidPress.opacity },
@@ -690,28 +690,28 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  buttonLabel: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.body[0], lineHeight: LucidType.body[1], textAlign: 'center', flexShrink: 1 },
+  buttonLabel: { fontFamily: 'Outfit_700Bold', fontSize: LucidType.body[0], lineHeight: LucidType.body[1], textAlign: 'center', flexShrink: 1 },
   buttonBlock: { gap: LucidSpace.sm },
-  buttonReason: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1], textAlign: 'center' },
+  buttonReason: { fontFamily: 'Outfit_500Medium', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1], textAlign: 'center' },
   sectionHeader: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', gap: LucidSpace.md, marginTop: LucidSpace.lg },
   sectionCopy: { flex: 1, gap: LucidSpace.xs },
-  sectionTitle: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1], letterSpacing: 0.2 },
-  sectionCaption: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
+  sectionTitle: { fontFamily: 'Outfit_500Medium', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1], letterSpacing: 0.2 },
+  sectionCaption: { fontFamily: 'Outfit_400Regular', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
   pill: { minHeight: 28, borderRadius: LucidRadius.full, paddingHorizontal: LucidSpace.md, paddingVertical: LucidSpace.xs, alignSelf: 'flex-start', flexDirection: 'row', alignItems: 'center', gap: LucidSpace.xs },
-  pillLabel: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.overline[0], lineHeight: LucidType.overline[1], letterSpacing: 0.25 },
+  pillLabel: { fontFamily: 'Outfit_700Bold', fontSize: LucidType.overline[0], lineHeight: LucidType.overline[1], letterSpacing: 0.25 },
   progressTrack: { height: 7, borderRadius: LucidRadius.full, overflow: 'hidden' },
   progressFill: { height: '100%', borderRadius: LucidRadius.full },
   metric: { flex: 1, minWidth: 92, borderRadius: LucidRadius.lg, padding: LucidSpace.md, gap: LucidSpace.xs },
-  metricValue: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.h2[0], lineHeight: LucidType.h2[1], fontVariant: ['tabular-nums'] },
-  metricLabel: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
+  metricValue: { fontFamily: 'Outfit_700Bold', fontSize: LucidType.h2[0], lineHeight: LucidType.h2[1], fontVariant: ['tabular-nums'] },
+  metricLabel: { fontFamily: 'Outfit_500Medium', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
   choice: { minHeight: 78, borderRadius: LucidRadius.lg, borderWidth: 1, padding: LucidSpace.md, flexDirection: 'row', alignItems: 'center', gap: LucidSpace.md },
   choiceCopy: { flex: 1, gap: LucidSpace.xs },
-  choiceTitle: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1] },
-  choiceDescription: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
+  choiceTitle: { fontFamily: 'Outfit_700Bold', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1] },
+  choiceDescription: { fontFamily: 'Outfit_400Regular', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
   toggleRow: { minHeight: 70, borderBottomWidth: StyleSheet.hairlineWidth, flexDirection: 'row', alignItems: 'center', gap: LucidSpace.md, paddingVertical: LucidSpace.md },
   toggleCopy: { flex: 1, gap: LucidSpace.xs },
-  toggleTitle: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1] },
-  toggleDescription: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
+  toggleTitle: { fontFamily: 'Outfit_700Bold', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1] },
+  toggleDescription: { fontFamily: 'Outfit_400Regular', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
   iconAction: { width: 44, height: 44, borderRadius: LucidRadius.lg, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
   // Une seule silhouette pour la tuile d'icône, en trois tailles. Elle existait
   // en dix géométries et trois recettes de fond, dont deux alphas calculés dont

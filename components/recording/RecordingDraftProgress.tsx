@@ -67,12 +67,12 @@ const styles = StyleSheet.create({
   },
   hint: {
     flex: 1,
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     fontSize: 13,
     lineHeight: 16,
   },
   count: {
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     fontSize: 12,
     fontVariant: ['tabular-nums'],
   },

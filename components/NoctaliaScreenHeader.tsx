@@ -22,6 +22,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated from 'react-native-reanimated';
 import { useHeaderFadeStyle } from '@/components/ui/headerStretch';
+import { TypeScale } from '@/constants/typeScale';
 
 type IconName = Parameters<typeof IconSymbol>[0]['name'];
 
@@ -393,7 +394,7 @@ const styles = StyleSheet.create({
   tabBrandText: {
     flexShrink: 1,
     fontFamily: Fonts.fraunces.medium,
-    fontSize: 18,
+    fontSize: TypeScale.h3.fontSize,
     lineHeight: 24,
   },
   tabIconButton: {
@@ -406,12 +407,12 @@ const styles = StyleSheet.create({
   },
   tabTitle: {
     fontFamily: Fonts.fraunces.semiBold,
-    fontSize: 38,
-    lineHeight: 46,
+    fontSize: TypeScale.hero.fontSize,
+    lineHeight: TypeScale.hero.lineHeight,
   },
   editorialContainer: { borderBottomWidth: 0 },
-  editorialBrand: { fontSize: 18, lineHeight: 24, marginBottom: 8 },
-  editorialTitle: { fontFamily: Fonts.fraunces.semiBold, fontSize: 28, lineHeight: 36, opacity: 1 },
+  editorialBrand: { fontSize: TypeScale.h3.fontSize, lineHeight: 24, marginBottom: 8 },
+  editorialTitle: { fontFamily: Fonts.fraunces.semiBold, fontSize: TypeScale.h1.fontSize, lineHeight: 36, opacity: 1 },
   editorialActions: { alignSelf: 'flex-start' },
   container: {
     gap: ThemeLayout.spacing.md,
@@ -419,10 +420,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
   prominentContainer: { borderBottomWidth: 0 },
-  quietBrand: { fontSize: 18, lineHeight: 24 },
+  quietBrand: { fontSize: TypeScale.h3.fontSize, lineHeight: 24 },
   prominentTitle: {
     fontFamily: Fonts.fraunces.semiBold,
-    fontSize: 28,
+    fontSize: TypeScale.h1.fontSize,
     lineHeight: 36,
     opacity: 1,
   },
@@ -451,13 +452,13 @@ const styles = StyleSheet.create({
   },
   brand: {
     fontFamily: Fonts.fraunces.semiBold,
-    fontSize: 24,
-    lineHeight: 30,
+    fontSize: TypeScale.h2.fontSize,
+    lineHeight: TypeScale.h2.lineHeight,
   },
   subtitle: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 15,
-    lineHeight: 21,
+    fontFamily: Fonts.outfit.bold,
+    fontSize: TypeScale.body.fontSize,
+    lineHeight: TypeScale.body.lineHeight,
   },
   headerActions: {
     flexDirection: 'row',
@@ -517,8 +518,8 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   chipText: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 14,
+    fontFamily: Fonts.outfit.medium,
+    fontSize: TypeScale.bodySm.fontSize,
     lineHeight: 20,
     flexGrow: 0,
     flexShrink: 0,

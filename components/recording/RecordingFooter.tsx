@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexShrink: 1,
     fontSize: 16,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
   },
   helpButton: {
     minHeight: 48,
@@ -142,13 +142,13 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   helpLabel: {
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     fontSize: 15,
     lineHeight: 21,
     textAlign: 'center',
   },
   helpHint: {
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     fontSize: 12,
     lineHeight: 17,
     textAlign: 'center',

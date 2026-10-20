@@ -86,14 +86,14 @@ export function BottomSheetPrimaryAction({
           ) : null}
           <View className={cx('flex-1 gap-[3px]', !usesRichLayout && 'items-center')}>
             <Text
-              className={cx('font-sans-bold text-[16px]', isDanger ? 'text-danger-on' : 'text-on-champagne')}
+              className={cx('font-sans-bold text-body', isDanger ? 'text-danger-on' : 'text-on-champagne')}
             >
               {label}
             </Text>
             {detail ? (
               <Text
                 className={cx(
-                  'font-sans-medium text-[13px] leading-[18px] opacity-[0.72]',
+                  'font-sans-medium text-body-sm leading-[18px] opacity-[0.72]',
                   isDanger ? 'text-danger-on' : 'text-on-champagne'
                 )}
               >
@@ -155,11 +155,11 @@ export function BottomSheetSecondaryAction({
           </View>
         ) : null}
         <View className={cx('flex-1 gap-[3px]', !usesRichLayout && 'items-center')}>
-          <Text className="font-sans-medium text-[16px] text-ivory">
+          <Text className="font-sans-medium text-body text-ivory">
             {label}
           </Text>
           {detail ? (
-            <Text className="font-sans text-[13px] leading-[18px] text-ivory-muted">
+            <Text className="font-sans text-body-sm leading-[18px] text-ivory-muted">
               {detail}
             </Text>
           ) : null}
@@ -186,7 +186,7 @@ export function BottomSheetLinkAction({ label, onPress, testID }: BottomSheetLin
       onPress={onPress}
       testID={testID}
     >
-      <Text className="font-sans-medium text-[14px] text-ivory-muted">
+      <Text className="font-sans-medium text-body-sm text-ivory-muted">
         {label}
       </Text>
     </PressableScale>

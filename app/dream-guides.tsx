@@ -19,6 +19,7 @@ import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { HeaderScrollView, useHeaderScroll } from '@/components/ui/headerStretch';
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
+import { TypeScale } from '@/constants/typeScale';
 
 function DreamGuidesScreen() {
   // This screen's own scroll, published to its header painting and title.
@@ -182,17 +183,17 @@ const styles = StyleSheet.create({
     flex: 1,
     minWidth: 0,
     fontFamily: Fonts.fraunces.bold,
-    fontSize: 27,
-    lineHeight: 34,
+    fontSize: TypeScale.h1.fontSize,
+    lineHeight: TypeScale.h1.lineHeight,
   },
   subtitle: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 15,
-    lineHeight: 22,
+    fontFamily: Fonts.outfit.regular,
+    fontSize: TypeScale.body.fontSize,
+    lineHeight: TypeScale.body.lineHeight,
   },
   sectionLabel: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 14,
+    fontFamily: Fonts.outfit.bold,
+    fontSize: TypeScale.bodySm.fontSize,
     lineHeight: 20,
     marginBottom: 4,
   },
@@ -218,13 +219,13 @@ const styles = StyleSheet.create({
     flex: 1,
     minWidth: 0,
     fontFamily: Fonts.fraunces.semiBold,
-    fontSize: 19,
-    lineHeight: 25,
+    fontSize: TypeScale.h3.fontSize,
+    lineHeight: TypeScale.h3.lineHeight,
   },
   dictionaryBody: {
     marginLeft: 40,
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 14,
+    fontFamily: Fonts.outfit.regular,
+    fontSize: TypeScale.bodySm.fontSize,
     lineHeight: 21,
   },
   dictionaryButton: {
@@ -241,9 +242,9 @@ const styles = StyleSheet.create({
   dictionaryButtonText: {
     flexShrink: 1,
     minWidth: 0,
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 13,
-    lineHeight: 20,
+    fontFamily: Fonts.outfit.bold,
+    fontSize: TypeScale.bodySm.fontSize,
+    lineHeight: TypeScale.bodySm.lineHeight,
   },
   pressed: {
     opacity: 0.82,

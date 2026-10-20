@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
     paddingTop: 40,
   },
   date: {
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     fontSize: 26,
     lineHeight: 34,
     letterSpacing: 4,
@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
     lineHeight: 52,
   },
   quoteAttribution: {
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     fontSize: 24,
     lineHeight: 32,
     marginBottom: 24,
@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   footer: {
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     fontSize: 34,
   },
   footerLogo: {

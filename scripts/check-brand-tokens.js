@@ -40,6 +40,14 @@ const MEDITATION = {
   hairline: 'divider', navbar: 'navbarBg', 'navbar-border': 'navbarBorder',
 };
 
+// One type scale for every app: Journal/Lucid and Meditation share these steps
+// ([font size, line height] in px), in CSS and in their TypeScript mirrors.
+const TYPE_SCALE = {
+  hero: [40, 46], display: [34, 40], h1: [28, 34], h2: [22, 28], h3: [18, 24],
+  body: [16, 24], 'body-sm': [14, 20], caption: [12, 16], overline: [11, 14],
+};
+const OVERLINE_TRACKING = 1.3;
+
 function normalizeColor(value) {
   const text = String(value).trim().toLowerCase();
   if (/^#[0-9a-f]{6}$/.test(text)) return text;
@@ -192,6 +200,7 @@ function typescriptReader(source, filename, ts, importedFactory) {
       throw new Error(`Missing TypeScript token ${filename}: ${keys.join('.')}`);
     }
     if (ts.isStringLiteral(node) && !keys.length) return node.text;
+    if (ts.isNumericLiteral(node) && !keys.length) return Number(node.text);
     throw new Error(`Unsupported TypeScript expression in ${filename}: ${node.getText(file)}`);
   }
   return {
@@ -226,9 +235,29 @@ function checkBrandTokens({ root = ROOT, product = 'journal', ts } = {}) {
       } catch (error) { errors.push(`${label} ${name} ↔ ${property}: ${error.message}`); }
     }
   }
+  function compareType(label, block, scale) {
+    for (const [css, [size, lineHeight]] of Object.entries(TYPE_SCALE)) {
+      const key = css.replace(/-(\w)/g, (_, letter) => letter.toUpperCase());
+      try {
+        const actual = [block?.[`--text-${css}`], block?.[`--text-${css}--line-height`]];
+        if (actual.join('/') !== `${size}px/${lineHeight}px`) throw new Error(`CSS ${actual.join('/')} != ${size}px/${lineHeight}px`);
+        const typed = [scale.token('TypeScale', `${key}.fontSize`), scale.token('TypeScale', `${key}.lineHeight`)];
+        if (typed.join('/') !== `${size}/${lineHeight}`) throw new Error(`TypeScript ${typed.join('/')} != ${size}/${lineHeight}`);
+        checked++;
+      } catch (error) { errors.push(`${label} type ${css}: ${error.message}`); }
+    }
+    try {
+      const css = block?.['--text-overline--letter-spacing'];
+      const typed = scale.token('TypeScale', 'overline.letterSpacing');
+      if (css !== `${OVERLINE_TRACKING}px` || typed !== OVERLINE_TRACKING) throw new Error(`CSS ${css}, TypeScript ${typed} != ${OVERLINE_TRACKING}px`);
+      checked++;
+    } catch (error) { errors.push(`${label} type overline tracking: ${error.message}`); }
+  }
   if (product === 'all' || product === 'journal') {
     const blocks = cssBlocks(read('global.css'));
     rejectUnmapped(blocks, { ...JOURNAL, ...DESIGN }, 'Journal/Lucid', true);
+    compareType('Journal/Lucid', blocks.default,
+      typescriptReader(read('constants/typeScale.ts'), 'constants/typeScale.ts', ts));
     const palette = typescriptReader(read('constants/noctaliaPalette.ts'), 'constants/noctaliaPalette.ts', ts);
     const theme = typescriptReader(read('constants/journalTheme.ts'), 'constants/journalTheme.ts', ts, palette.factory);
     for (const [ambience, name] of Object.entries({ dark: 'DarkTheme', light: 'LightTheme', morning: 'MorningTheme', afterglow: 'AfterglowTheme' })) {
@@ -242,6 +271,8 @@ function checkBrandTokens({ root = ROOT, product = 'journal', ts } = {}) {
   if (product === 'all' || product === 'meditation') {
     const blocks = cssBlocks(read('apps/meditation/global.css'));
     rejectUnmapped(blocks, MEDITATION, 'Meditation');
+    compareType('Meditation', blocks.default,
+      typescriptReader(read('apps/meditation/constants/typography.ts'), 'apps/meditation/constants/typography.ts', ts));
     const theme = typescriptReader(read('apps/meditation/constants/theme.ts'), 'apps/meditation/constants/theme.ts', ts);
     for (const [mode, name] of Object.entries({ dark: 'NightTheme', light: 'PaperTheme', default: 'PaperTheme' })) {
       compare(`Meditation ${mode}`, blocks[mode], MEDITATION, key => theme.token(name, key));

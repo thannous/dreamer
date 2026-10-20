@@ -65,11 +65,11 @@ export function HomeRecurringCard({ dreams, reading, now }: {
         )}
         <View className="min-w-0 flex-1 gap-0.5">
           <Text maxFontSizeMultiplier={1.4}
-            className="font-sans-medium text-[11px] uppercase tracking-[1.6px] text-ivory-muted">{label}</Text>
+            className="font-sans-medium text-overline uppercase text-ivory-muted">{label}</Text>
           {title ? <Text numberOfLines={2} maxFontSizeMultiplier={1.3}
-            className="font-display-semibold text-[21px] leading-[26px] text-ivory">{title}</Text> : null}
+            className="font-display-semibold text-h2 leading-[26px] text-ivory">{title}</Text> : null}
           <Text testID={TID.Text.HomeRecurringDetail} maxFontSizeMultiplier={1.4}
-            className={title ? 'font-sans text-[13px] leading-[18px] text-ivory-muted' : 'font-sans text-[15px] leading-[22px] text-ivory'}>
+            className={title ? 'font-sans text-body-sm leading-[18px] text-ivory-muted' : 'font-sans text-body leading-[22px] text-ivory'}>
             {detail}
           </Text>
         </View>

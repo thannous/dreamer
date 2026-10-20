@@ -219,7 +219,7 @@ function StatisticsScreen() {
   if (!loaded) {
     const loadingMessage = (
       <View className={`${scrollHeader ? 'shrink-0' : 'flex-1'} items-center justify-center px-6`} accessibilityLiveRegion="polite">
-        <Text className="text-[16px] font-sans text-ivory-muted text-center">
+        <Text className="text-body font-sans text-ivory-muted text-center">
           {t('trends.loading')}
         </Text>
       </View>
@@ -277,7 +277,7 @@ function StatisticsScreen() {
       <TrendsPeriodSwitch period={period} onChange={setPeriod} reduced={reduced} t={t} />
       <View className="flex-row items-start gap-3">
         <View className="mt-[9px] h-px w-[22px] bg-champagne" />
-        <Text testID="trends.range" className="min-w-0 shrink text-[12px] leading-[18px] font-sans-medium uppercase tracking-[1.6px] text-champagne-on">
+        <Text testID="trends.range" className="min-w-0 shrink text-caption leading-[18px] font-sans-medium uppercase tracking-[1.6px] text-champagne-on">
           {[rangeLabel, compareLabel].filter(Boolean).join(' · ')}
         </Text>
       </View>
@@ -314,21 +314,21 @@ function StatisticsScreen() {
         size={sealSize}
       />
       <Text testID="trends.seal.sentence" accessibilityLiveRegion="polite"
-        className="max-w-[420px] text-center text-[17px] leading-[25px] font-display text-ivory">
+        className="max-w-[420px] text-center text-h3 leading-[26px] font-display text-ivory">
         {sealSentence(trends, selectedTheme, t, formatNumber)}
       </Text>
       {shownTheme && shownCount > 0 ? (
         <PressableScale testID="trends.seal.open" haptic="light" accessibilityRole="button"
           onPress={() => openJournal(trends, { theme: shownTheme })}
           className="min-h-[48px] flex-row items-center gap-2 rounded-full border border-champagne-soft px-5">
-          <Text className="text-[15px] font-sans-bold text-champagne-on">
+          <Text className="text-body font-sans-bold text-champagne-on">
             {t(shownCount === 1 ? 'trends.seal.open_one' : 'trends.seal.open', { count: formatNumber(shownCount) })}
           </Text>
           <IconSymbol name="arrow.right" size={14} color={ink} />
         </PressableScale>
       ) : null}
       {!selectedTheme && trends.themes.dominant ? (
-        <Text className="text-center text-[12px] leading-[16px] font-sans text-ivory-muted">{t('trends.seal.hint')}</Text>
+        <Text className="text-center text-caption font-sans text-ivory-muted">{t('trends.seal.hint')}</Text>
       ) : null}
     </View>
   );
@@ -382,13 +382,13 @@ function StatisticsScreen() {
                   <Path d={sparklePath(22, 22, 20)} fill={ink} />
                 </Svg>
               </View>
-              <Text className="max-w-[320px] text-center text-[19px] leading-[27px] font-display-semibold text-ivory">
+              <Text className="max-w-[320px] text-center text-h3 leading-[26px] font-display-semibold text-ivory">
                 {t('trends.empty.body')}
               </Text>
               <PressableScale testID="trends.cta.primary" onPress={capture} haptic="light" accessibilityRole="button"
                 accessibilityLabel={t('trends.empty.cta')}
                 className="min-h-[50px] items-center justify-center rounded-[18px] border border-champagne-soft bg-champagne px-[22px]">
-                <Text className="text-[15px] font-sans-bold text-on-champagne">{t('trends.empty.cta')}</Text>
+                <Text className="text-body font-sans-bold text-on-champagne">{t('trends.empty.cta')}</Text>
               </PressableScale>
             </View>
           ) : (

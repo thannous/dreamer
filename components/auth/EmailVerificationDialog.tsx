@@ -13,6 +13,7 @@ import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
+import { TypeScale } from '@/constants/typeScale';
 
 export type EmailVerificationPendingDialogProps = {
   visible: boolean;
@@ -182,18 +183,18 @@ const styles = StyleSheet.create({
     marginBottom: ThemeLayout.spacing.sm,
   },
   title: {
-    fontSize: 22,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: TypeScale.h2.fontSize,
+    fontFamily: Fonts.outfit.bold,
     textAlign: 'center',
   },
   subtitle: {
-    fontSize: 14,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: TypeScale.bodySm.fontSize,
+    fontFamily: Fonts.outfit.regular,
     lineHeight: 20,
     textAlign: 'center',
   },
   emailHighlight: {
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
   },
   badge: {
     flexDirection: 'row',
@@ -205,19 +206,19 @@ const styles = StyleSheet.create({
     marginTop: ThemeLayout.spacing.sm,
   },
   badgeText: {
-    fontSize: 13,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: TypeScale.bodySm.fontSize,
+    fontFamily: Fonts.outfit.regular,
   },
   status: {
     marginTop: ThemeLayout.spacing.sm,
-    fontSize: 13,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: TypeScale.bodySm.fontSize,
+    fontFamily: Fonts.outfit.regular,
     textAlign: 'center',
   },
   cooldown: {
     marginTop: 4,
-    fontSize: 12,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: TypeScale.caption.fontSize,
+    fontFamily: Fonts.outfit.regular,
     textAlign: 'center',
   },
 });

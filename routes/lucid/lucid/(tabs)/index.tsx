@@ -838,7 +838,7 @@ const styles = StyleSheet.create({
   },
   practiceCopy: { gap: LucidSpace.sm },
   overline: {
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: 'Outfit_700Bold',
     fontSize: LucidType.overline[0],
     lineHeight: LucidType.overline[1],
     letterSpacing: 1.5,
@@ -876,7 +876,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   dayThreadName: {
-    fontFamily: 'SpaceGrotesk_500Medium',
+    fontFamily: 'Outfit_500Medium',
     fontSize: LucidType.overline[0],
     lineHeight: LucidType.overline[1],
     letterSpacing: 1,
@@ -901,19 +901,19 @@ const styles = StyleSheet.create({
   primaryLabel: {
     flex: 1,
     paddingRight: 48 + LucidSpace.md,
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: 'Outfit_700Bold',
     fontSize: LucidType.body[0],
     lineHeight: LucidType.body[1],
     textAlign: 'center',
   },
   planSummary: { gap: LucidSpace.xs, paddingTop: LucidSpace.sm },
   planSummaryTitle: {
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: 'Outfit_700Bold',
     fontSize: LucidType.bodySm[0],
     lineHeight: LucidType.bodySm[1],
   },
   planSummaryHint: {
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: 'Outfit_400Regular',
     fontSize: LucidType.caption[0],
     lineHeight: LucidType.caption[1],
   },
@@ -928,12 +928,12 @@ const styles = StyleSheet.create({
     paddingVertical: LucidSpace.xs,
   },
   whyLabel: {
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: 'Outfit_700Bold',
     fontSize: LucidType.caption[0],
     lineHeight: LucidType.caption[1],
   },
   whyReason: {
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: 'Outfit_400Regular',
     fontSize: LucidType.caption[0],
     lineHeight: LucidType.caption[1],
   },
@@ -946,7 +946,7 @@ const styles = StyleSheet.create({
     gap: LucidSpace.md,
   },
   progressLabel: {
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: 'Outfit_700Bold',
     fontSize: LucidType.overline[0],
     lineHeight: LucidType.overline[1],
     letterSpacing: 1.1,
@@ -975,7 +975,7 @@ const styles = StyleSheet.create({
     gap: LucidSpace.xs,
   },
   progressActionLabel: {
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: 'Outfit_700Bold',
     fontSize: LucidType.caption[0],
     lineHeight: LucidType.caption[1],
   },
@@ -988,7 +988,7 @@ const styles = StyleSheet.create({
   },
   rhythmLabel: {
     flex: 1,
-    fontFamily: 'SpaceGrotesk_500Medium',
+    fontFamily: 'Outfit_500Medium',
     fontSize: LucidType.caption[0],
     lineHeight: LucidType.caption[1],
   },
@@ -1022,7 +1022,7 @@ const styles = StyleSheet.create({
     paddingVertical: LucidSpace.sm,
   },
   contextLabel: {
-    fontFamily: 'SpaceGrotesk_500Medium',
+    fontFamily: 'Outfit_500Medium',
     fontSize: LucidType.caption[0],
     lineHeight: LucidType.caption[1],
     textAlign: 'center',

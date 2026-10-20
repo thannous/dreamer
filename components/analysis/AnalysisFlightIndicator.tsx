@@ -10,6 +10,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { MotiView } from '@/lib/moti';
+import { TypeScale } from '@/constants/typeScale';
 
 // How long the completion pill stays on screen after the analysis settles.
 const OUTCOME_VISIBLE_MS = 6000;
@@ -120,8 +121,8 @@ const styles = StyleSheet.create({
     opacity: 0.82,
   },
   label: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 13,
+    fontFamily: Fonts.outfit.medium,
+    fontSize: TypeScale.bodySm.fontSize,
     flexShrink: 1,
   },
 });

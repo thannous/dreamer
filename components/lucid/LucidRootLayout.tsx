@@ -10,9 +10,9 @@ import { Lora_400Regular } from '@expo-google-fonts/lora/400Regular';
 import { Lora_400Regular_Italic } from '@expo-google-fonts/lora/400Regular_Italic';
 import { Lora_700Bold } from '@expo-google-fonts/lora/700Bold';
 import { Lora_700Bold_Italic } from '@expo-google-fonts/lora/700Bold_Italic';
-import { SpaceGrotesk_400Regular } from '@expo-google-fonts/space-grotesk/400Regular';
-import { SpaceGrotesk_500Medium } from '@expo-google-fonts/space-grotesk/500Medium';
-import { SpaceGrotesk_700Bold } from '@expo-google-fonts/space-grotesk/700Bold';
+import { Outfit_400Regular } from '@expo-google-fonts/outfit/400Regular';
+import { Outfit_500Medium } from '@expo-google-fonts/outfit/500Medium';
+import { Outfit_700Bold } from '@expo-google-fonts/outfit/700Bold';
 import { DarkTheme, DefaultTheme, ThemeProvider as NavigationThemeProvider } from 'expo-router/react-navigation';
 import { useFonts } from 'expo-font';
 import * as Notifications from 'expo-notifications';
@@ -149,9 +149,9 @@ export default function LucidRootLayout() {
 
 function LucidRootContent() {
   const [fontsLoaded, fontError] = useFonts({
-    SpaceGrotesk_400Regular,
-    SpaceGrotesk_500Medium,
-    SpaceGrotesk_700Bold,
+    Outfit_400Regular,
+    Outfit_500Medium,
+    Outfit_700Bold,
     Lora_400Regular,
     Lora_400Regular_Italic,
     Lora_700Bold,

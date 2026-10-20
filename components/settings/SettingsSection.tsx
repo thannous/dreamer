@@ -12,7 +12,7 @@ type Props = {
 export function SettingsSection({ children, title, testID, contentClassName = 'px-4' }: Props) {
   return (
     <View className="w-full gap-2" testID={testID}>
-      <Text accessibilityRole="header" className="px-1 font-display-semibold text-[18px] leading-[24px] text-ivory">
+      <Text accessibilityRole="header" className="px-1 font-display-semibold text-h3 leading-[24px] text-ivory">
         {title}
       </Text>
       <View className={`w-full overflow-hidden rounded-[18px] border border-line-strong bg-ink-raised ${contentClassName}`}>

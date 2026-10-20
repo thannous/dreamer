@@ -150,19 +150,19 @@ export function TodayHero({ state, dream, now, onPressCta, onOpenSettings }: Pro
           titleSlot={<View onLayout={(event) => setHeadlineHeight(event.nativeEvent.layout.height)}>
             {/* The tab bar already says Today: the date and the night frame the headline. */}
             <Text style={halo} maxFontSizeMultiplier={1.4}
-              className="font-sans-medium text-[12px] uppercase tracking-[1.8px] text-champagne-on">
+              className="font-sans-medium text-caption uppercase tracking-[1.8px] text-champagne-on">
               {dream ? `${dateLabel} · ${t('home.today.dream_eyebrow')}` : dateLabel}
             </Text>
             <Text testID={TID.Text.HomeTodayTitle} accessibilityRole="header" style={halo}
               numberOfLines={3} maxFontSizeMultiplier={1.3}
-              className="mt-1.5 font-display-semibold text-[30px] leading-[36px] text-ivory">
+              className="mt-1.5 font-display-semibold text-h1 leading-[36px] text-ivory">
               {headline}
             </Text>
             {excerpt ? <Text style={halo} numberOfLines={2} maxFontSizeMultiplier={1.4}
-              className="mt-2 font-serif-italic text-[16px] leading-6 text-ivory-muted">
+              className="mt-2 font-serif-italic text-body leading-6 text-ivory-muted">
               {t('home.today.dream_excerpt', { text: excerpt })}
             </Text> : !dream ? <Text testID={TID.Text.HomeTodayBody} style={halo} maxFontSizeMultiplier={1.4}
-              className="mt-2 font-sans text-[15px] leading-[22px] text-ivory-muted">
+              className="mt-2 font-sans text-body leading-[22px] text-ivory-muted">
               {t(`home.today.${copyKey}.body`)}
             </Text> : null}
           </View>}

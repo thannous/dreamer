@@ -30,7 +30,7 @@ export function TodayCard({ state, onPressCta }: Props) {
         accessibilityLabel={cta} testID={TID.Button.HomeTodayCta}
         // Same primary button as the Journal first page.
         className="min-h-14 flex-row items-center justify-between gap-3 rounded-[18px] bg-champagne px-5 py-4 active:opacity-80">
-        <Text className="min-w-0 flex-1 font-sans-medium text-[16px] leading-[22px] text-on-champagne">{cta}</Text>
+        <Text className="min-w-0 flex-1 font-sans-medium text-body leading-[22px] text-on-champagne">{cta}</Text>
         <IconSymbol name="arrow.right" size={22} color={tokens.action.primaryText} />
       </Pressable> : null}
     </View>

@@ -43,6 +43,7 @@ import Animated, {
   useSharedValue,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { TypeScale } from '@/constants/typeScale';
 
 type Tokens = ReturnType<typeof getNoctaliaDesignTokens>;
 
@@ -496,7 +497,7 @@ const styles = StyleSheet.create({
     gap: ThemeLayout.spacing.md,
     overflow: 'hidden',
   },
-  emptyText: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 16 },
+  emptyText: { fontFamily: Fonts.outfit.medium, fontSize: TypeScale.body.fontSize },
   hero: { overflow: 'hidden', justifyContent: 'flex-end', backgroundColor: '#090413' },
   heroFade: { position: 'absolute', left: 0, right: 0, bottom: 0, height: 36 },
   heroCopy: { paddingHorizontal: 24, paddingBottom: 30, gap: 14 },
@@ -509,10 +510,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(9,4,19,0.35)',
   },
   chipText: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 11,
-    lineHeight: 14,
-    letterSpacing: 2,
+    fontFamily: Fonts.outfit.medium,
+    fontSize: TypeScale.overline.fontSize,
+    lineHeight: TypeScale.overline.lineHeight,
+    letterSpacing: TypeScale.overline.letterSpacing,
     textTransform: 'uppercase',
   },
   title: {
@@ -524,28 +525,28 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 0, height: 2 },
     textShadowRadius: 18,
   },
-  lede: { fontFamily: Fonts.fraunces.regular, fontSize: 18, lineHeight: 27 },
+  lede: { fontFamily: Fonts.fraunces.regular, fontSize: TypeScale.h3.fontSize, lineHeight: 27 },
   body: { paddingHorizontal: BODY_GUTTER, paddingTop: 8 },
   backdropArt: { opacity: 0.75, transform: [{ scale: 1.2 }] },
   section: { borderTopWidth: StyleSheet.hairlineWidth, paddingTop: 30, marginTop: 34 },
   sectionMark: { width: 28, height: 2, borderRadius: 1, marginBottom: 14 },
-  sectionTitle: { fontFamily: Fonts.fraunces.semiBold, fontSize: 25, lineHeight: 30, letterSpacing: -0.2, marginBottom: 18 },
-  proseLead: { fontFamily: Fonts.fraunces.regular, fontSize: 19, lineHeight: 30 },
+  sectionTitle: { fontFamily: Fonts.fraunces.semiBold, fontSize: TypeScale.h1.fontSize, lineHeight: TypeScale.h1.lineHeight, letterSpacing: -0.2, marginBottom: 18 },
+  proseLead: { fontFamily: Fonts.fraunces.regular, fontSize: TypeScale.h3.fontSize, lineHeight: TypeScale.h3.lineHeight },
   proseRest: { marginTop: 18 },
-  prose: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 16, lineHeight: 28 },
+  prose: { fontFamily: Fonts.outfit.regular, fontSize: TypeScale.body.fontSize, lineHeight: 28 },
   variationRow: { flexDirection: 'row', gap: 16, borderTopWidth: StyleSheet.hairlineWidth, paddingVertical: 18 },
-  variationNumber: { width: 26, paddingTop: 4, fontFamily: Fonts.spaceGrotesk.medium, fontSize: 12, lineHeight: 16, letterSpacing: 1.6, opacity: 0.8 },
+  variationNumber: { width: 26, paddingTop: 4, fontFamily: Fonts.outfit.medium, fontSize: TypeScale.caption.fontSize, lineHeight: 16, letterSpacing: 1.6, opacity: 0.8 },
   variationCopy: { flex: 1, gap: 6 },
-  variationContext: { fontFamily: Fonts.fraunces.semiBold, fontSize: 18, lineHeight: 24 },
-  variationMeaning: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 15, lineHeight: 25 },
+  variationContext: { fontFamily: Fonts.fraunces.semiBold, fontSize: TypeScale.h3.fontSize, lineHeight: 24 },
+  variationMeaning: { fontFamily: Fonts.outfit.regular, fontSize: TypeScale.body.fontSize, lineHeight: TypeScale.body.lineHeight },
   askRow: { borderTopWidth: StyleSheet.hairlineWidth, paddingVertical: 16 },
-  askText: { fontFamily: Fonts.fraunces.regular, fontSize: 18, lineHeight: 27 },
+  askText: { fontFamily: Fonts.fraunces.regular, fontSize: TypeScale.h3.fontSize, lineHeight: 27 },
   relatedScroller: { marginHorizontal: -24 },
   relatedPosters: { gap: 12, paddingHorizontal: 24 },
   poster: { width: 140, height: 184, borderRadius: 16, borderCurve: 'continuous', borderWidth: StyleSheet.hairlineWidth, overflow: 'hidden', justifyContent: 'flex-end', padding: 12, gap: 4 },
   posterPressed: { opacity: 0.85, transform: [{ scale: 0.97 }] },
-  posterCategory: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 11, lineHeight: 14, letterSpacing: 1.6, textTransform: 'uppercase' },
-  posterName: { fontFamily: Fonts.fraunces.medium, fontSize: 18, lineHeight: 22 },
+  posterCategory: { fontFamily: Fonts.outfit.medium, fontSize: TypeScale.overline.fontSize, lineHeight: TypeScale.overline.lineHeight, letterSpacing: TypeScale.overline.letterSpacing, textTransform: 'uppercase' },
+  posterName: { fontFamily: Fonts.fraunces.medium, fontSize: TypeScale.h3.fontSize, lineHeight: 22 },
   topBar: {
     position: 'absolute',
     top: 0,
@@ -567,6 +568,6 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: 'rgba(255,247,237,0.28)',
   },
-  barTitle: { flex: 1, fontFamily: Fonts.fraunces.semiBold, fontSize: 19, lineHeight: 24, paddingRight: 12 },
+  barTitle: { flex: 1, fontFamily: Fonts.fraunces.semiBold, fontSize: TypeScale.h3.fontSize, lineHeight: TypeScale.h3.lineHeight, paddingRight: 12 },
   pressed: { opacity: 0.72 },
 });

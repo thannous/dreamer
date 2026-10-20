@@ -1,4 +1,5 @@
 import type { ThemeColors } from '@/constants/journalTheme';
+import { TypeScale, type TypeScaleStep } from '@/constants/typeScale';
 
 export type LucidPalette = ReturnType<typeof getLucidPalette>;
 
@@ -9,22 +10,24 @@ export type LucidPalette = ReturnType<typeof getLucidPalette>;
 //
 // TOUTE VALEUR HORS ÉCHELLE EST UN BUG, PAS UNE INTENTION.
 //
-// Les paliers de texte reprennent ceux de global.css (l. 71-87), les rayons et
-// les tailles d'icône ceux de constants/journalTheme.ts : Lucid emprunte à
-// Noctalia ses barèmes déjà validés, pas sa teinte.
+// Les paliers de texte sont ceux de constants/typeScale.ts (le miroir de global.css),
+// les rayons et les tailles d'icône ceux de constants/journalTheme.ts : Lucid emprunte
+// à Noctalia ses barèmes déjà validés, pas sa teinte.
+
+const step = (name: TypeScaleStep) => [TypeScale[name].fontSize, TypeScale[name].lineHeight] as const;
 
 /** Paliers typographiques : [fontSize, lineHeight]. */
 export const LucidType = {
   /** One title per screen, at the scale of the landing; Fraunces regular, as in Dreams. */
   saga: [44, 48],
-  display: [34, 40],
-  h1: [28, 34],
-  h2: [22, 28],
-  h3: [18, 24],
-  body: [16, 24],
-  bodySm: [14, 20],
-  caption: [12, 16],
-  overline: [11, 14],
+  display: step('display'),
+  h1: step('h1'),
+  h2: step('h2'),
+  h3: step('h3'),
+  body: step('body'),
+  bodySm: step('bodySm'),
+  caption: step('caption'),
+  overline: step('overline'),
 } as const;
 
 /** Rayons. `full` sert les pilules et les pastilles, jamais une carte. */

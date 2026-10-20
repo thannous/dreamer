@@ -118,9 +118,9 @@ jest.mock('@/hooks/useTranslation', () => ({
 
 jest.mock('@/constants/theme', () => ({
   Fonts: {
-    spaceGrotesk: {
-      regular: 'SpaceGrotesk-Regular',
-      medium: 'SpaceGrotesk-Medium',
+    outfit: {
+      regular: 'Outfit-Regular',
+      medium: 'Outfit-Medium',
     },
     lora: {
       bold: 'Lora-Bold',
