@@ -1933,12 +1933,17 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
                         <p>${escapeHtml(sanitizeEmDashes(v.meaning))}</p>
                     </div>`).join('\n');
 
+  // On a phone held upright a page without a pack crops its painting to the 75svh hero: it is drawn
+  // 75vh times its ratio wide, wider than the screen, and its sources are picked for that width.
+  const staticHeroSizes = !livingPage && responsiveIllustration
+    ? `${TIGER_LIVING.media} ${Math.ceil(75 * responsiveIllustration.width / responsiveIllustration.height)}vh, ${heroImageSizes}`
+    : heroImageSizes;
   const heroPictureHtml = illustration && responsiveIllustration ? `
                     <picture class="symbol-hero-media">${livingPainting ? tigerLivingSourcesHtml() : atlasSix ? atlasSixSourcesHtml(atlasSixAssets, heroImageSizes) : ''}${responsiveIllustration.avifSrcset ? `
-                        <source type="image/avif" srcset="${escapeHtml(responsiveIllustration.avifSrcset)}" sizes="${heroImageSizes}">` : ''}
+                        <source type="image/avif" srcset="${escapeHtml(responsiveIllustration.avifSrcset)}" sizes="${staticHeroSizes}">` : ''}
                         <img src="${escapeHtml(responsiveIllustration.src)}"
                              ${responsiveIllustration.srcset ? `srcset="${escapeHtml(responsiveIllustration.srcset)}"` : ''}
-                             sizes="${heroImageSizes}"
+                             sizes="${staticHeroSizes}"
                              alt="${escapeHtml(preferredImageAlt)}"
                              fetchpriority="high"
                              decoding="async"
