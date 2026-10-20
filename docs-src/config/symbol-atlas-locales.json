@@ -5007,6 +5007,526 @@
           }
         }
       }
+    },
+    "crying": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "crying-from-sadness-or-grief": {
+            "variation": "Pleurer de tristesse ou de chagrin",
+            "anchor": "crying-from-sadness-or-grief"
+          },
+          "tears-of-joy-or-relief": {
+            "variation": "Pleurer de joie ou de soulagement",
+            "anchor": "tears-of-joy-or-relief"
+          },
+          "crying-in-front-of-others": {
+            "variation": "Pleurer devant les autres",
+            "anchor": "crying-in-front-of-others"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "crying-from-sadness-or-grief": {
+            "variation": "Crying from sadness or grief",
+            "anchor": "crying-from-sadness-or-grief"
+          },
+          "tears-of-joy-or-relief": {
+            "variation": "Tears of joy or relief",
+            "anchor": "tears-of-joy-or-relief"
+          },
+          "crying-in-front-of-others": {
+            "variation": "Crying in front of others",
+            "anchor": "crying-in-front-of-others"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "crying-from-sadness-or-grief": {
+            "variation": "Llorar de tristeza o de pena",
+            "anchor": "crying-from-sadness-or-grief"
+          },
+          "tears-of-joy-or-relief": {
+            "variation": "Llorar de alegría o de alivio",
+            "anchor": "tears-of-joy-or-relief"
+          },
+          "crying-in-front-of-others": {
+            "variation": "Llorar delante de otros",
+            "anchor": "crying-in-front-of-others"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "crying-from-sadness-or-grief": {
+            "variation": "Aus Traurigkeit oder Trauer weinen",
+            "anchor": "crying-from-sadness-or-grief"
+          },
+          "tears-of-joy-or-relief": {
+            "variation": "Freudentränen oder Tränen der Erleichterung",
+            "anchor": "tears-of-joy-or-relief"
+          },
+          "crying-in-front-of-others": {
+            "variation": "Vor anderen weinen",
+            "anchor": "crying-in-front-of-others"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "crying-from-sadness-or-grief": {
+            "variation": "Piangere di tristezza o di dolore",
+            "anchor": "crying-from-sadness-or-grief"
+          },
+          "tears-of-joy-or-relief": {
+            "variation": "Piangere di gioia o di sollievo",
+            "anchor": "tears-of-joy-or-relief"
+          },
+          "crying-in-front-of-others": {
+            "variation": "Piangere davanti agli altri",
+            "anchor": "crying-in-front-of-others"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "crying-from-sadness-or-grief": {
+            "variation": "Chorar de tristeza ou de luto",
+            "anchor": "crying-from-sadness-or-grief"
+          },
+          "tears-of-joy-or-relief": {
+            "variation": "Chorar lágrimas de alegria",
+            "anchor": "tears-of-joy-or-relief"
+          },
+          "crying-in-front-of-others": {
+            "variation": "Chorar na frente dos outros",
+            "anchor": "crying-in-front-of-others"
+          }
+        }
+      }
+    },
+    "cliff": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "standing-at-the-edge": {
+            "variation": "Se tenir au bord de la falaise",
+            "anchor": "standing-at-the-edge"
+          },
+          "falling-off-a-cliff": {
+            "variation": "Tomber d'une falaise",
+            "anchor": "falling-off-a-cliff"
+          },
+          "jumping-on-purpose": {
+            "variation": "Sauter volontairement",
+            "anchor": "jumping-on-purpose"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "standing-at-the-edge": {
+            "variation": "Standing at the edge",
+            "anchor": "standing-at-the-edge"
+          },
+          "falling-off-a-cliff": {
+            "variation": "Falling off a cliff",
+            "anchor": "falling-off-a-cliff"
+          },
+          "jumping-on-purpose": {
+            "variation": "Jumping on purpose",
+            "anchor": "jumping-on-purpose"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "standing-at-the-edge": {
+            "variation": "Estar al borde del acantilado",
+            "anchor": "standing-at-the-edge"
+          },
+          "falling-off-a-cliff": {
+            "variation": "Caer por un acantilado",
+            "anchor": "falling-off-a-cliff"
+          },
+          "jumping-on-purpose": {
+            "variation": "Saltar por voluntad propia",
+            "anchor": "jumping-on-purpose"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "standing-at-the-edge": {
+            "variation": "Am Rand einer Klippe stehen",
+            "anchor": "standing-at-the-edge"
+          },
+          "falling-off-a-cliff": {
+            "variation": "Von einer Klippe fallen",
+            "anchor": "falling-off-a-cliff"
+          },
+          "jumping-on-purpose": {
+            "variation": "Absichtlich springen",
+            "anchor": "jumping-on-purpose"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "standing-at-the-edge": {
+            "variation": "Stare sul bordo della scogliera",
+            "anchor": "standing-at-the-edge"
+          },
+          "falling-off-a-cliff": {
+            "variation": "Cadere dalla scogliera",
+            "anchor": "falling-off-a-cliff"
+          },
+          "jumping-on-purpose": {
+            "variation": "Saltare per scelta",
+            "anchor": "jumping-on-purpose"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "standing-at-the-edge": {
+            "variation": "Em pé na beira do penhasco",
+            "anchor": "standing-at-the-edge"
+          },
+          "falling-off-a-cliff": {
+            "variation": "Cair do penhasco",
+            "anchor": "falling-off-a-cliff"
+          },
+          "jumping-on-purpose": {
+            "variation": "Pular de propósito",
+            "anchor": "jumping-on-purpose"
+          }
+        }
+      }
+    },
+    "lost": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "lost-in-a-city": {
+            "variation": "Perdu dans une ville",
+            "anchor": "lost-in-a-city"
+          },
+          "can-t-find-your-way-home": {
+            "variation": "Ne pas retrouver le chemin de la maison",
+            "anchor": "can-t-find-your-way-home"
+          },
+          "lost-in-a-building-or-a-maze": {
+            "variation": "Perdu dans un labyrinthe ou un bâtiment",
+            "anchor": "lost-in-a-building-or-a-maze"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "lost-in-a-city": {
+            "variation": "Lost in a city",
+            "anchor": "lost-in-a-city"
+          },
+          "can-t-find-your-way-home": {
+            "variation": "Can't find your way home",
+            "anchor": "can-t-find-your-way-home"
+          },
+          "lost-in-a-building-or-a-maze": {
+            "variation": "Lost in a building or a maze",
+            "anchor": "lost-in-a-building-or-a-maze"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "lost-in-a-city": {
+            "variation": "Perdido en una ciudad",
+            "anchor": "lost-in-a-city"
+          },
+          "can-t-find-your-way-home": {
+            "variation": "No encontrar el camino a casa",
+            "anchor": "can-t-find-your-way-home"
+          },
+          "lost-in-a-building-or-a-maze": {
+            "variation": "Perdido en un edificio o en un laberinto",
+            "anchor": "lost-in-a-building-or-a-maze"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "lost-in-a-city": {
+            "variation": "In einer Stadt verirrt",
+            "anchor": "lost-in-a-city"
+          },
+          "can-t-find-your-way-home": {
+            "variation": "Den Weg nach Hause nicht finden",
+            "anchor": "can-t-find-your-way-home"
+          },
+          "lost-in-a-building-or-a-maze": {
+            "variation": "In einem Gebäude oder Labyrinth verirrt",
+            "anchor": "lost-in-a-building-or-a-maze"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "lost-in-a-city": {
+            "variation": "Perdersi in città",
+            "anchor": "lost-in-a-city"
+          },
+          "can-t-find-your-way-home": {
+            "variation": "Non riuscire a trovare casa",
+            "anchor": "can-t-find-your-way-home"
+          },
+          "lost-in-a-building-or-a-maze": {
+            "variation": "Perdersi in un edificio o in un labirinto",
+            "anchor": "lost-in-a-building-or-a-maze"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "lost-in-a-city": {
+            "variation": "Perdido numa cidade",
+            "anchor": "lost-in-a-city"
+          },
+          "can-t-find-your-way-home": {
+            "variation": "Não conseguir encontrar o caminho de casa",
+            "anchor": "can-t-find-your-way-home"
+          },
+          "lost-in-a-building-or-a-maze": {
+            "variation": "Perdido num labirinto ou num prédio",
+            "anchor": "lost-in-a-building-or-a-maze"
+          }
+        }
+      }
+    },
+    "ex-partner": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "getting-back-together-with-your-ex": {
+            "variation": "Se remettre avec son ex",
+            "anchor": "getting-back-together-with-your-ex"
+          },
+          "your-ex-with-someone-new": {
+            "variation": "Voir son ex avec quelqu'un d'autre",
+            "anchor": "your-ex-with-someone-new"
+          },
+          "arguing-with-your-ex": {
+            "variation": "Se disputer avec son ex",
+            "anchor": "arguing-with-your-ex"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "getting-back-together-with-your-ex": {
+            "variation": "Getting back together with your ex",
+            "anchor": "getting-back-together-with-your-ex"
+          },
+          "your-ex-with-someone-new": {
+            "variation": "Your ex with someone new",
+            "anchor": "your-ex-with-someone-new"
+          },
+          "arguing-with-your-ex": {
+            "variation": "Arguing with your ex",
+            "anchor": "arguing-with-your-ex"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "getting-back-together-with-your-ex": {
+            "variation": "Volver con tu ex",
+            "anchor": "getting-back-together-with-your-ex"
+          },
+          "your-ex-with-someone-new": {
+            "variation": "Ver a tu ex con otra persona",
+            "anchor": "your-ex-with-someone-new"
+          },
+          "arguing-with-your-ex": {
+            "variation": "Discutir con tu ex",
+            "anchor": "arguing-with-your-ex"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "getting-back-together-with-your-ex": {
+            "variation": "Wieder mit dem Ex zusammenkommen",
+            "anchor": "getting-back-together-with-your-ex"
+          },
+          "your-ex-with-someone-new": {
+            "variation": "Den Ex mit jemand Neuem sehen",
+            "anchor": "your-ex-with-someone-new"
+          },
+          "arguing-with-your-ex": {
+            "variation": "Mit dem Ex streiten",
+            "anchor": "arguing-with-your-ex"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "getting-back-together-with-your-ex": {
+            "variation": "Tornare con l’ex",
+            "anchor": "getting-back-together-with-your-ex"
+          },
+          "your-ex-with-someone-new": {
+            "variation": "Vedere l’ex con un’altra persona",
+            "anchor": "your-ex-with-someone-new"
+          },
+          "arguing-with-your-ex": {
+            "variation": "Litigare con l’ex",
+            "anchor": "arguing-with-your-ex"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "getting-back-together-with-your-ex": {
+            "variation": "Reatar com o ex",
+            "anchor": "getting-back-together-with-your-ex"
+          },
+          "your-ex-with-someone-new": {
+            "variation": "O ex com alguém novo",
+            "anchor": "your-ex-with-someone-new"
+          },
+          "arguing-with-your-ex": {
+            "variation": "Brigar ou discutir com o ex",
+            "anchor": "arguing-with-your-ex"
+          }
+        }
+      }
+    },
+    "rainbow": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "rainbow-after-a-storm": {
+            "variation": "Arc-en-ciel après l'orage",
+            "anchor": "rainbow-after-a-storm"
+          },
+          "double-rainbow": {
+            "variation": "Double arc-en-ciel",
+            "anchor": "double-rainbow"
+          },
+          "a-rainbow-that-fades": {
+            "variation": "Arc-en-ciel qui s'efface",
+            "anchor": "a-rainbow-that-fades"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "rainbow-after-a-storm": {
+            "variation": "Rainbow after a storm",
+            "anchor": "rainbow-after-a-storm"
+          },
+          "double-rainbow": {
+            "variation": "Double rainbow",
+            "anchor": "double-rainbow"
+          },
+          "a-rainbow-that-fades": {
+            "variation": "A rainbow that fades",
+            "anchor": "a-rainbow-that-fades"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "rainbow-after-a-storm": {
+            "variation": "Arcoíris después de la tormenta",
+            "anchor": "rainbow-after-a-storm"
+          },
+          "double-rainbow": {
+            "variation": "Arcoíris doble",
+            "anchor": "double-rainbow"
+          },
+          "a-rainbow-that-fades": {
+            "variation": "Arcoíris que se desvanece",
+            "anchor": "a-rainbow-that-fades"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "rainbow-after-a-storm": {
+            "variation": "Regenbogen nach einem Gewitter",
+            "anchor": "rainbow-after-a-storm"
+          },
+          "double-rainbow": {
+            "variation": "Doppelter Regenbogen",
+            "anchor": "double-rainbow"
+          },
+          "a-rainbow-that-fades": {
+            "variation": "Verblassender Regenbogen",
+            "anchor": "a-rainbow-that-fades"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "rainbow-after-a-storm": {
+            "variation": "Arcobaleno dopo la tempesta",
+            "anchor": "rainbow-after-a-storm"
+          },
+          "double-rainbow": {
+            "variation": "Doppio arcobaleno",
+            "anchor": "double-rainbow"
+          },
+          "a-rainbow-that-fades": {
+            "variation": "Arcobaleno che svanisce",
+            "anchor": "a-rainbow-that-fades"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "rainbow-after-a-storm": {
+            "variation": "Arco-íris depois da tempestade",
+            "anchor": "rainbow-after-a-storm"
+          },
+          "double-rainbow": {
+            "variation": "Arco-íris duplo",
+            "anchor": "double-rainbow"
+          },
+          "a-rainbow-that-fades": {
+            "variation": "Arco-íris se desfazendo",
+            "anchor": "a-rainbow-that-fades"
+          }
+        }
+      }
     }
   }
 }

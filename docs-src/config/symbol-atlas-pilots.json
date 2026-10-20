@@ -7513,5 +7513,997 @@
         }
       ]
     }
+  },
+  "crying": {
+    "slug": "pleurer",
+    "caveat": null,
+    "scenes": [
+      {
+        "id": "crying-from-sadness-or-grief",
+        "variation": "Pleurer de tristesse ou de chagrin"
+      },
+      {
+        "id": "tears-of-joy-or-relief",
+        "variation": "Pleurer de joie ou de soulagement"
+      },
+      {
+        "id": "crying-in-front-of-others",
+        "variation": "Pleurer devant les autres"
+      }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.42,
+                0.47
+              ],
+              "zoom": 0.43
+            },
+            "motion": "flow",
+            "move": [
+              0.016,
+              0.018
+            ],
+            "dur": 21,
+            "op": [
+              0.22,
+              0.42
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.44,
+                0.62
+              ],
+              "zoom": 0.55
+            },
+            "motion": "pulse",
+            "dur": 11,
+            "op": [
+              0.16,
+              0.34
+            ],
+            "blend": "screen"
+          }
+        ],
+        "portrait": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.38
+              ],
+              "zoom": 0.64
+            },
+            "motion": "flow",
+            "move": [
+              0.016,
+              0.018
+            ],
+            "dur": 21,
+            "op": [
+              0.22,
+              0.42
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.47
+              ],
+              "zoom": 0.74
+            },
+            "motion": "pulse",
+            "dur": 11,
+            "op": [
+              0.16,
+              0.34
+            ],
+            "blend": "screen"
+          }
+        ]
+      },
+      "plate": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.46
+            ],
+            "zoom": 0.52
+          },
+          "motion": "flow",
+          "move": [
+            0.016,
+            0.018
+          ],
+          "dur": 21,
+          "op": [
+            0.22,
+            0.42
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.6
+            ],
+            "zoom": 0.6
+          },
+          "motion": "pulse",
+          "dur": 11,
+          "op": [
+            0.16,
+            0.34
+          ],
+          "blend": "screen"
+        }
+      ],
+      "thumb": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.46
+            ],
+            "zoom": 0.5
+          },
+          "motion": "flow",
+          "move": [
+            0.016,
+            0.018
+          ],
+          "dur": 21,
+          "op": [
+            0.22,
+            0.42
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.6
+            ],
+            "zoom": 0.6
+          },
+          "motion": "pulse",
+          "dur": 11,
+          "op": [
+            0.16,
+            0.34
+          ],
+          "blend": "screen"
+        }
+      ]
+    }
+  },
+  "cliff": {
+    "slug": "falaise",
+    "caveat": null,
+    "scenes": [
+      {
+        "id": "standing-at-the-edge",
+        "variation": "Se tenir au bord de la falaise"
+      },
+      {
+        "id": "falling-off-a-cliff",
+        "variation": "Tomber d'une falaise"
+      },
+      {
+        "id": "jumping-on-purpose",
+        "variation": "Sauter volontairement"
+      }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.8
+              ],
+              "zoom": 0.95
+            },
+            "motion": "flow",
+            "move": [
+              0.018,
+              0.002
+            ],
+            "dur": 17,
+            "op": [
+              0.22,
+              0.42
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.79
+              ],
+              "zoom": 1.1
+            },
+            "motion": "drift",
+            "move": [
+              0.017,
+              -0.008
+            ],
+            "dur": 23,
+            "op": [
+              0.16,
+              0.34
+            ],
+            "blend": "screen"
+          }
+        ],
+        "portrait": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.62
+              ],
+              "zoom": 1.15
+            },
+            "motion": "flow",
+            "move": [
+              0.018,
+              0.002
+            ],
+            "dur": 17,
+            "op": [
+              0.22,
+              0.42
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.61
+              ],
+              "zoom": 1.3
+            },
+            "motion": "drift",
+            "move": [
+              0.017,
+              -0.008
+            ],
+            "dur": 23,
+            "op": [
+              0.16,
+              0.34
+            ],
+            "blend": "screen"
+          }
+        ]
+      },
+      "plate": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.73
+            ],
+            "zoom": 0.95
+          },
+          "motion": "flow",
+          "move": [
+            0.018,
+            0.002
+          ],
+          "dur": 17,
+          "op": [
+            0.22,
+            0.42
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.75
+            ],
+            "zoom": 1.05
+          },
+          "motion": "drift",
+          "move": [
+            0.017,
+            -0.008
+          ],
+          "dur": 23,
+          "op": [
+            0.16,
+            0.34
+          ],
+          "blend": "screen"
+        }
+      ],
+      "thumb": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.77
+            ],
+            "zoom": 0.95
+          },
+          "motion": "flow",
+          "move": [
+            0.018,
+            0.002
+          ],
+          "dur": 17,
+          "op": [
+            0.22,
+            0.42
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.78
+            ],
+            "zoom": 1
+          },
+          "motion": "drift",
+          "move": [
+            0.017,
+            -0.008
+          ],
+          "dur": 23,
+          "op": [
+            0.16,
+            0.34
+          ],
+          "blend": "screen"
+        }
+      ]
+    }
+  },
+  "lost": {
+    "slug": "perdu",
+    "caveat": null,
+    "scenes": [
+      {
+        "id": "lost-in-a-city",
+        "variation": "Perdu dans une ville"
+      },
+      {
+        "id": "can-t-find-your-way-home",
+        "variation": "Ne pas retrouver le chemin de la maison"
+      },
+      {
+        "id": "lost-in-a-building-or-a-maze",
+        "variation": "Perdu dans un labyrinthe ou un bâtiment"
+      }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.55
+              ],
+              "zoom": 1.04
+            },
+            "motion": "flow",
+            "move": [
+              0.016,
+              0.018
+            ],
+            "dur": 21,
+            "op": [
+              0.22,
+              0.42
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.75
+              ],
+              "zoom": 1.05
+            },
+            "motion": "pulse",
+            "dur": 11,
+            "op": [
+              0.16,
+              0.34
+            ],
+            "blend": "screen"
+          }
+        ],
+        "portrait": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.42
+              ],
+              "zoom": 1.2
+            },
+            "motion": "flow",
+            "move": [
+              0.016,
+              0.018
+            ],
+            "dur": 21,
+            "op": [
+              0.22,
+              0.42
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.57
+              ],
+              "zoom": 1.2
+            },
+            "motion": "pulse",
+            "dur": 11,
+            "op": [
+              0.16,
+              0.34
+            ],
+            "blend": "screen"
+          }
+        ]
+      },
+      "plate": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.53
+            ],
+            "zoom": 1
+          },
+          "motion": "flow",
+          "move": [
+            0.016,
+            0.018
+          ],
+          "dur": 21,
+          "op": [
+            0.22,
+            0.42
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.73
+            ],
+            "zoom": 1
+          },
+          "motion": "pulse",
+          "dur": 11,
+          "op": [
+            0.16,
+            0.34
+          ],
+          "blend": "screen"
+        }
+      ],
+      "thumb": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.53
+            ],
+            "zoom": 1
+          },
+          "motion": "flow",
+          "move": [
+            0.016,
+            0.018
+          ],
+          "dur": 21,
+          "op": [
+            0.22,
+            0.42
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.73
+            ],
+            "zoom": 1
+          },
+          "motion": "pulse",
+          "dur": 11,
+          "op": [
+            0.16,
+            0.34
+          ],
+          "blend": "screen"
+        }
+      ]
+    }
+  },
+  "ex-partner": {
+    "slug": "ex-partenaire",
+    "caveat": null,
+    "scenes": [
+      {
+        "id": "getting-back-together-with-your-ex",
+        "variation": "Se remettre avec son ex"
+      },
+      {
+        "id": "your-ex-with-someone-new",
+        "variation": "Voir son ex avec quelqu'un d'autre"
+      },
+      {
+        "id": "arguing-with-your-ex",
+        "variation": "Se disputer avec son ex"
+      }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.57,
+                0.43
+              ],
+              "zoom": 1.15
+            },
+            "motion": "flow",
+            "move": [
+              0.016,
+              0.018
+            ],
+            "dur": 21,
+            "op": [
+              0.22,
+              0.42
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.46
+              ],
+              "zoom": 1.12
+            },
+            "motion": "pulse",
+            "dur": 11,
+            "op": [
+              0.16,
+              0.34
+            ],
+            "blend": "screen"
+          }
+        ],
+        "portrait": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.35
+              ],
+              "zoom": 1.25
+            },
+            "motion": "flow",
+            "move": [
+              0.016,
+              0.018
+            ],
+            "dur": 21,
+            "op": [
+              0.22,
+              0.42
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.54,
+                0.35
+              ],
+              "zoom": 1.35
+            },
+            "motion": "pulse",
+            "dur": 11,
+            "op": [
+              0.16,
+              0.34
+            ],
+            "blend": "screen"
+          }
+        ]
+      },
+      "plate": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.53
+            ],
+            "zoom": 1.07
+          },
+          "motion": "flow",
+          "move": [
+            0.016,
+            0.018
+          ],
+          "dur": 21,
+          "op": [
+            0.22,
+            0.42
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.59
+            ],
+            "zoom": 1.05
+          },
+          "motion": "pulse",
+          "dur": 11,
+          "op": [
+            0.16,
+            0.34
+          ],
+          "blend": "screen"
+        }
+      ],
+      "thumb": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.42
+            ],
+            "zoom": 1.08
+          },
+          "motion": "flow",
+          "move": [
+            0.016,
+            0.018
+          ],
+          "dur": 21,
+          "op": [
+            0.22,
+            0.42
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.56
+            ],
+            "zoom": 1.02
+          },
+          "motion": "pulse",
+          "dur": 11,
+          "op": [
+            0.16,
+            0.34
+          ],
+          "blend": "screen"
+        }
+      ]
+    }
+  },
+  "rainbow": {
+    "slug": "arc-en-ciel",
+    "caveat": null,
+    "scenes": [
+      {
+        "id": "rainbow-after-a-storm",
+        "variation": "Arc-en-ciel après l'orage"
+      },
+      {
+        "id": "double-rainbow",
+        "variation": "Double arc-en-ciel"
+      },
+      {
+        "id": "a-rainbow-that-fades",
+        "variation": "Arc-en-ciel qui s'efface"
+      }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.54
+              ],
+              "zoom": 1.1
+            },
+            "motion": "flow",
+            "move": [
+              0.018,
+              0.002
+            ],
+            "dur": 17,
+            "op": [
+              0.22,
+              0.42
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.34
+              ],
+              "zoom": 0.94
+            },
+            "motion": "drift",
+            "move": [
+              0.017,
+              -0.008
+            ],
+            "dur": 23,
+            "op": [
+              0.16,
+              0.34
+            ],
+            "blend": "screen"
+          }
+        ],
+        "portrait": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.39
+              ],
+              "zoom": 1.25
+            },
+            "motion": "flow",
+            "move": [
+              0.018,
+              0.002
+            ],
+            "dur": 17,
+            "op": [
+              0.22,
+              0.42
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.31
+              ],
+              "zoom": 1.12
+            },
+            "motion": "drift",
+            "move": [
+              0.017,
+              -0.008
+            ],
+            "dur": 23,
+            "op": [
+              0.16,
+              0.34
+            ],
+            "blend": "screen"
+          }
+        ]
+      },
+      "plate": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.52
+            ],
+            "zoom": 1
+          },
+          "motion": "flow",
+          "move": [
+            0.018,
+            0.002
+          ],
+          "dur": 17,
+          "op": [
+            0.22,
+            0.42
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.35
+            ],
+            "zoom": 0.94
+          },
+          "motion": "drift",
+          "move": [
+            0.017,
+            -0.008
+          ],
+          "dur": 23,
+          "op": [
+            0.16,
+            0.34
+          ],
+          "blend": "screen"
+        }
+      ],
+      "thumb": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.53
+            ],
+            "zoom": 1.02
+          },
+          "motion": "flow",
+          "move": [
+            0.018,
+            0.002
+          ],
+          "dur": 17,
+          "op": [
+            0.22,
+            0.42
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.35
+            ],
+            "zoom": 0.96
+          },
+          "motion": "drift",
+          "move": [
+            0.017,
+            -0.008
+          ],
+          "dur": 23,
+          "op": [
+            0.16,
+            0.34
+          ],
+          "blend": "screen"
+        }
+      ]
+    }
   }
 }

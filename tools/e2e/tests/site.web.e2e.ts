@@ -1393,6 +1393,11 @@ test('the pt-br dictionary links every pt-br symbol, searches and filters in Por
 // These journeys catch a decoded-but-wrong portrait, a transparent rectangle, an effect placed
 // entirely outside a crop, a scene with the wrong editorial reading, and a moving base painting.
 const NEW_SYMBOL_PACKS = [
+  {"id": "crying", "slug": "pleurer", "name": "Pleurer", "scenes": ["crying-from-sadness-or-grief", "tears-of-joy-or-relief", "crying-in-front-of-others"]},
+  {"id": "cliff", "slug": "falaise", "name": "Falaise", "scenes": ["standing-at-the-edge", "falling-off-a-cliff", "jumping-on-purpose"]},
+  {"id": "lost", "slug": "perdu", "name": "Être Perdu", "scenes": ["lost-in-a-city", "can-t-find-your-way-home", "lost-in-a-building-or-a-maze"]},
+  {"id": "ex-partner", "slug": "ex-partenaire", "name": "Ex-Partenaire", "scenes": ["getting-back-together-with-your-ex", "your-ex-with-someone-new", "arguing-with-your-ex"]},
+  {"id": "rainbow", "slug": "arc-en-ciel", "name": "Arc-en-ciel", "scenes": ["rainbow-after-a-storm", "double-rainbow", "a-rainbow-that-fades"]},
   {"id": "phone", "slug": "telephone", "name": "Téléphone", "scenes": ["a-phone-ringing", "not-being-able-to-make-a-call", "missing-a-call"]},
   {"id": "school", "slug": "ecole", "name": "École", "scenes": ["can-t-find-your-classroom", "forgetting-a-class-all-term", "back-at-school-as-an-adult"]},
   {"id": "pregnancy", "slug": "grossesse", "name": "Grossesse", "scenes": ["finding-out-you-are-pregnant", "being-heavily-pregnant", "someone-else-is-pregnant"]},
