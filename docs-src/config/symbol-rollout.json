@@ -30,6 +30,9 @@
     },
     "lot-09": {
       "label": "Lot 09, Hibou, Bateau, Grotte, Rose, Éclair, Baleine"
+    },
+    "lot-10": {
+      "label": "Lot 10, Abeille, Volcan, Bague, Cascade, Tortue, Masque"
     }
   },
   "symbols": {
@@ -88,7 +91,7 @@
       "lot": null
     },
     "bee": {
-      "lot": null
+      "lot": "lot-10"
     },
     "bicycle": {
       "lot": null
@@ -451,7 +454,7 @@
       "lot": null
     },
     "mask": {
-      "lot": null
+      "lot": "lot-10"
     },
     "maze": {
       "lot": "lot-07"
@@ -559,7 +562,7 @@
       "lot": null
     },
     "ring": {
-      "lot": null
+      "lot": "lot-10"
     },
     "river": {
       "lot": null
@@ -685,7 +688,7 @@
       "lot": "lot-07"
     },
     "turtle": {
-      "lot": null
+      "lot": "lot-10"
     },
     "twins": {
       "lot": "lot-07"
@@ -697,7 +700,7 @@
       "lot": "lot-07"
     },
     "volcano": {
-      "lot": null
+      "lot": "lot-10"
     },
     "vomiting": {
       "lot": null
@@ -721,7 +724,7 @@
       "lot": "lot-03"
     },
     "waterfall": {
-      "lot": null
+      "lot": "lot-10"
     },
     "waves": {
       "lot": "lot-07"

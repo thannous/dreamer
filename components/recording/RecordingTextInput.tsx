@@ -423,8 +423,6 @@ const styles = StyleSheet.create({
     maxHeight: '100%',
     borderRadius: 16,
     paddingLeft: 20,
-    fontFamily: Fonts.spaceGrotesk.regular,
-    lineHeight: 25,
   },
   inlineActionFooterExpanded: { borderBottomLeftRadius: 15, borderBottomRightRadius: 15 },
   recordingSection: {
@@ -475,9 +473,10 @@ const styles = StyleSheet.create({
     paddingRight: 20,
     paddingBottom: 20,
     paddingLeft: 48,
-    fontSize: 16,
-    lineHeight: 23,
-    fontFamily: Fonts.lora.regularItalic,
+    // The dream reads in the same roman Lora as its page in the journal.
+    fontSize: 17,
+    lineHeight: 26,
+    fontFamily: Fonts.lora.regular,
     textAlignVertical: 'top',
   },
   textMeasurement: { opacity: 0 },

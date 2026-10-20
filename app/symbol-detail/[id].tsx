@@ -544,7 +544,7 @@ const styles = StyleSheet.create({
   relatedPosters: { gap: 12, paddingHorizontal: 24 },
   poster: { width: 140, height: 184, borderRadius: 16, borderCurve: 'continuous', borderWidth: StyleSheet.hairlineWidth, overflow: 'hidden', justifyContent: 'flex-end', padding: 12, gap: 4 },
   posterPressed: { opacity: 0.85, transform: [{ scale: 0.97 }] },
-  posterCategory: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 10, lineHeight: 13, letterSpacing: 1.6, textTransform: 'uppercase' },
+  posterCategory: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 11, lineHeight: 14, letterSpacing: 1.6, textTransform: 'uppercase' },
   posterName: { fontFamily: Fonts.fraunces.medium, fontSize: 18, lineHeight: 22 },
   topBar: {
     position: 'absolute',

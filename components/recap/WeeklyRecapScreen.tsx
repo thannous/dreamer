@@ -340,7 +340,7 @@ const styles = StyleSheet.create({
   },
   tileHint: {
     fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 11,
+    fontSize: 12,
     textAlign: 'center',
   },
   card: {

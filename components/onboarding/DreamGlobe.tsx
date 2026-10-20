@@ -226,7 +226,7 @@ const styles = StyleSheet.create({
   control: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
   controlStart: { position: 'absolute', left: 0, top: '50%', marginTop: -22, zIndex: 30 },
   controlEnd: { position: 'absolute', right: 0, top: '50%', marginTop: -22, zIndex: 30 },
-  hint: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 11, lineHeight: 16, textAlign: 'center' },
+  hint: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 12, lineHeight: 17, textAlign: 'center' },
   gallery: { flexDirection: 'row', gap: 10, alignItems: 'center' },
   galleryImage: { flex: 1, borderRadius: 12, overflow: 'hidden' },
   entry: { alignItems: 'center', gap: 7 },

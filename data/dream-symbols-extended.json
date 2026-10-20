@@ -15639,7 +15639,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>Quando essa imagem aparece em um sonho, a primeira pergunta não é “o que ela sempre significa?”, e sim “por que minha mente escolheu essa imagem esta noite?”. A resposta costuma estar perto de ferramentas, escolhas, apegos, o tempo das coisas e os pequenos detalhes que organizam a vida cotidiana.</p>\n<p>O símbolo pode ser terno, irritante, assustador, engraçado ou completamente banal. Esse tom importa. Uma versão calma pode sugerir integração, enquanto uma versão ameaçadora pode mostrar conflito ou fuga.</p>\n<p>Observe o papel que ele desempenhou. Ele bloqueou você, guiou você, observou você, seguiu você ou desapareceu? Nos sonhos, a função costuma revelar mais do que o próprio objeto.</p>\n<p>Use a imagem como uma porta de entrada para a história, não como um veredito. Algumas anotações sinceras sobre o cenário e sobre a reação do seu corpo costumam dizer mais do que uma lista fixa de símbolos.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Perder o anel",
+            "meaning": "Você o perdeu sem perceber, ou o viu cair? A cena pode acompanhar o medo de deixar escapar um vínculo ou de faltar a uma promessa. Não é um presságio de separação: repare antes no momento em que você notou."
+          },
+          {
+            "context": "Receber um anel de noivado",
+            "meaning": "Quem o estendia a você, e você tinha vontade de dizer sim? A cena pode acompanhar um desejo de compromisso ou uma pergunta sobre o seu relacionamento. A sua hesitação ou a sua alegria no sonho é a principal pista."
+          },
+          {
+            "context": "Um anel apertado demais",
+            "meaning": "Você já não conseguia tirá-lo, ou ele machucava? Ele pode ecoar um compromisso que ficou estreito, uma obrigação que pesa. Pergunte-se onde você se sente apertado neste momento."
+          }
+        ]
       }
     },
     "watch": {
@@ -22813,7 +22826,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>A abelha não precisa ser decifrada como uma mensagem secreta. Em um sonho, ela costuma funcionar mais como um marcador: algo na cena pede que você repare no instinto, no apetite, na cautela, na proteção, no medo e nas partes mais indomadas da sua personalidade.</p>\n<p>Comece pelos fatos simples. A imagem estava perto ou longe, era bem-vinda ou perturbadora, comum ou estranhamente intensa? Esses detalhes mantêm a interpretação ancorada no seu sonho, em vez de impor a ele um significado genérico.</p>\n<p>Se o símbolo pareceu acolhedor, ele pode mostrar um recurso, um desejo ou uma lembrança em que você pode se apoiar. Se pareceu tenso, pode apontar para uma pressão que você vem administrando em silêncio demais.</p>\n<p>Noctalia trata esse tipo de símbolo como um convite à reflexão. Anote a cena, a emoção e o que mudou depois que o símbolo apareceu; normalmente é aí que começa o significado útil.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Uma abelha colhendo pólen",
+            "meaning": "A abelha trabalhava tranquila diante dos seus olhos? A cena pode acompanhar um esforço de que você gosta, ou uma atividade que alimenta você. Repare se você tinha vontade de participar ou só de olhar."
+          },
+          {
+            "context": "Ser picado por uma abelha",
+            "meaning": "Onde você foi picado, e você a viu chegar? A picada pode ecoar um comentário que feriu, um conflito ou um limite ultrapassado. Não é um alerta de saúde: a sua reação, raiva ou surpresa, é a principal pista."
+          },
+          {
+            "context": "Um enxame de abelhas",
+            "meaning": "O enxame perseguia você, ou só estava de passagem? Estar cercado pode ecoar pedidos demais ao mesmo tempo. Um enxame calmo e organizado, ao contrário, pode acompanhar a sensação de pertencer a um grupo que funciona."
+          }
+        ]
       }
     },
     "ant": {
@@ -24677,7 +24703,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>A cachoeira não precisa ser decifrada como se fosse uma mensagem secreta. Em um sonho, ela costuma funcionar mais como um marcador: algo na cena pede que você repare no clima emocional, na mudança, em forças maiores do que você e no ritmo da renovação ou da ruptura.</p>\n<p>Comece pelos fatos simples. A imagem estava perto ou longe, era bem-vinda ou perturbadora, comum ou estranhamente intensa? Esses detalhes mantêm a interpretação ancorada no seu sonho, em vez de impor a ele um significado genérico.</p>\n<p>Se o símbolo pareceu acolhedor, ele pode mostrar um recurso, um desejo ou uma memória em que você pode se apoiar. Se pareceu tenso, pode apontar para uma pressão que você vem administrando em silêncio demais.</p>\n<p>O Noctalia trata esse tipo de símbolo como um convite à reflexão. Anote a cena, a emoção e o que mudou depois que o símbolo apareceu; costuma ser aí que o significado útil começa.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Admirar uma cachoeira de longe",
+            "meaning": "Você estava numa trilha, num mirante, sozinho na floresta? Contemplar uma cachoeira a distância pode acompanhar a admiração, a calma, ou uma distância prudente diante de uma força. Você tinha vontade de se aproximar?"
+          },
+          {
+            "context": "Ficar debaixo de uma cachoeira",
+            "meaning": "A água caindo sobre os ombros pode acompanhar a vontade de se lavar de algo, de recomeçar ou de deixar passar uma emoção. Se o peso machucava ou prendia você no lugar, a cena pende para a sobrecarga. Como você se sentiu depois?"
+          },
+          {
+            "context": "Cair de uma cachoeira",
+            "meaning": "Você foi levado por cima da borda, sozinho ou num barco? A cena pode acompanhar uma situação que passou do ponto em que você conseguia conduzi-la. Não é o anúncio de um acidente. O que havia lá embaixo?"
+          }
+        ]
       }
     },
     "volcano": {
@@ -24828,7 +24867,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>Quando essa imagem aparece em um sonho, a primeira pergunta não é “o que ela sempre significa?”, e sim “por que minha mente escolheu essa imagem hoje à noite?”. A resposta costuma estar perto do clima emocional, da mudança, de forças maiores que você e do ritmo da renovação ou da ruptura.</p>\n<p>O símbolo pode ser terno, irritante, assustador, engraçado ou completamente banal. Esse tom importa. Uma versão calma pode sugerir integração, enquanto uma versão ameaçadora pode mostrar conflito ou fuga.</p>\n<p>Observe o papel que ele desempenhou. Ele bloqueou você, guiou você, observou você, seguiu você ou desapareceu? Nos sonhos, a função costuma revelar mais do que o próprio objeto.</p>\n<p>Use a imagem como uma porta de entrada para a história, não como um veredito. Algumas anotações honestas sobre o cenário e sobre a reação do seu corpo costumam dizer mais do que qualquer lista fixa de símbolos.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Um vulcão adormecido ou soltando fumaça",
+            "meaning": "Um fio de fumaça, um leve ronco, uma montanha que parece calma: a cena costuma acompanhar uma tensão que se percebe sem que ela tenha explodido. O que você estava vigiando?"
+          },
+          {
+            "context": "Ver uma erupção de longe",
+            "meaning": "Ver a lava e as cinzas de um lugar seguro pode acompanhar o fato de assistir a um conflito ou a uma reviravolta que diz respeito mais aos outros do que a você. Era assustador, fascinante, ou as duas coisas? Quem estava ao seu lado?"
+          },
+          {
+            "context": "Fugir da lava",
+            "meaning": "Um fluxo de lava que avança atrás de você pode acompanhar a vontade de escapar das consequências de um conflito, ou de uma pressão que se espalha. Não é uma previsão. Você conseguiu se distanciar, encontrou um abrigo no alto, ou acordou antes?"
+          }
+        ]
       }
     },
     "mask": {
@@ -24979,7 +25031,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>A máscara pode parecer estranhamente específica em um sonho, e é justamente por isso que vale levá-la a sério sem levá-la ao pé da letra. Ela costuma reunir vários fios ao mesmo tempo: ferramentas, escolhas, apegos, o tempo certo das coisas e os pequenos detalhes que organizam a vida cotidiana.</p>\n<p>Repare se o sonho deixou o símbolo familiar ou estranho. Detalhes familiares podem apontar para uma memória vivida; detalhes estranhos podem mostrar que um padrão antigo está sendo visto de um ângulo novo.</p>\n<p>A pista mais forte costuma ser emocional. Alívio, vergonha, medo, curiosidade, irritação ou saudade estreitam o significado mais rápido do que qualquer interpretação universal.</p>\n<p>Se você registrar o sonho no Noctalia, guarde uma frase para o que aconteceu e uma frase para o que aquilo te lembrou. Esse pequeno contraste costuma revelar o tema real.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Usar uma máscara",
+            "meaning": "Foi você quem a colocou, ou você se viu usando-a? Usar uma máscara pode acompanhar a necessidade de se proteger, de desempenhar um papel ou de guardar algo para si. Ela parecia mais um escudo ou um disfarce?"
+          },
+          {
+            "context": "Não conseguir tirar a máscara",
+            "meaning": "Quando a máscara gruda na pele, a cena pode acompanhar um papel em que você se sente preso, no trabalho, em casa ou entre amigos. Não é um diagnóstico. O que você temia que acontecesse se o seu verdadeiro rosto aparecesse?"
+          },
+          {
+            "context": "Um carnaval ou um baile de máscaras",
+            "meaning": "Plumas, cores, música: um baile de máscaras pode acompanhar o jogo, a liberdade ou a vontade de experimentar ser outra pessoa por um momento. Todos estavam mascarados, ou só alguns? Você gostava de não ser reconhecido?"
+          }
+        ]
       }
     },
     "excrement": {
