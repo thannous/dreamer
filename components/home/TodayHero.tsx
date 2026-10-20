@@ -16,7 +16,7 @@ import { getFormattingLocale } from '@/lib/locale';
 import { TID } from '@/lib/testIDs';
 import type { TodayState } from '@/lib/todayState';
 import type { DreamAnalysis } from '@/lib/types';
-import { useHeaderStretchStyle, usePaintingBreath, usePaintingDepthStyle } from '@/components/ui/headerStretch';
+import { useHeaderStretchStyle, usePaintingArrival, usePaintingDepthStyle } from '@/components/ui/headerStretch';
 import Animated from 'react-native-reanimated';
 
 type Props = {
@@ -79,9 +79,9 @@ export function TodayHero({ state, dream, now, onPressCta, onOpenSettings }: Pro
   const sceneMode = mode === 'light' ? 'light' : 'dark';
   // Pulling the page down stretches the dream's image over the gap, like every header painting.
   const artworkStretch = useHeaderStretchStyle((stageHeight ?? 260) + 1);
-  // Like the paintings: the dream's image breathes and lags behind the page as it scrolls.
+  // Like the paintings: the dream's image settles as Today opens and lags behind the page as it scrolls.
   const artworkDepth = usePaintingDepthStyle(stageHeight ?? 260);
-  const artworkBreath = usePaintingBreath();
+  const artworkArrival = usePaintingArrival();
   const locale = getFormattingLocale(currentLang ?? 'en');
   const formattedDate = new Date(now).toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long' });
   const dateLabel = formattedDate.charAt(0).toLocaleUpperCase(locale) + formattedDate.slice(1);
@@ -116,7 +116,7 @@ export function TodayHero({ state, dream, now, onPressCta, onOpenSettings }: Pro
         style={[{ height: stage, transformOrigin: 'top center' }, artworkStretch]}>
         {/* From the top edge, behind the header, like the paintings of the other tabs. */}
         <Animated.View style={[{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }, artworkDepth]}>
-          <Animated.View style={[IMAGE_FILL, artworkBreath]}>
+          <Animated.View style={[IMAGE_FILL, artworkArrival]}>
             {immersiveArtwork ? image : <Image testID="image.background.reverie" source={getDreamerArtwork('reverie', sceneMode)}
               contentFit="cover" contentPosition="top" cachePolicy="memory" recyclingKey={`reverie:${sceneMode}`}
               style={IMAGE_FILL} />}

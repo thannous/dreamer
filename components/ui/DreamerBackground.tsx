@@ -8,7 +8,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { getDreamerArtwork, type DreamerScene } from '@/constants/dreamerArtwork';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
-import { usePaintingBreath, usePaintingDepthStyle, useHeaderStretchStyle } from './headerStretch';
+import { usePaintingArrival, usePaintingDepthStyle, useHeaderStretchStyle } from './headerStretch';
 
 type Props = {
   scene: DreamerScene;
@@ -29,7 +29,7 @@ type Props = {
 };
 
 /**
- * The painting itself, alive: it breathes slowly and lags behind the page as it scrolls,
+ * The painting itself settles as its screen opens and lags behind the page as it scrolls,
  * so the scene seems to lie deeper than the copy over it.
  */
 function PaintingLayer({ height, frame, children }: {
@@ -38,9 +38,9 @@ function PaintingLayer({ height, frame, children }: {
   children: React.ReactNode;
 }) {
   const depth = usePaintingDepthStyle(height, frame);
-  const breath = usePaintingBreath();
+  const arrival = usePaintingArrival();
   return <Animated.View style={[StyleSheet.absoluteFill, depth]}>
-    <Animated.View style={[StyleSheet.absoluteFill, breath]}>{children}</Animated.View>
+    <Animated.View style={[StyleSheet.absoluteFill, arrival]}>{children}</Animated.View>
   </Animated.View>;
 }
 
