@@ -354,7 +354,8 @@ function StatisticsScreen() {
   const skySection = trends.count > 0 ? (
     <View ref={skyRef} onLayout={reveal} className="border-t border-line pt-7">
       <TrendsSky sky={sky} lit={skyLit} reduced={reduced} ink={ink} glow={noctalia.atmosphere.glow}
-        glowOpacity={noctalia.atmosphere.glowOpacity} dust={noctalia.atmosphere.particle} t={t} formatNumber={formatNumber} onOpenDream={openDream} />
+        glowOpacity={noctalia.atmosphere.glowOpacity} dust={noctalia.atmosphere.particle} t={t} formatNumber={formatNumber}
+        formatDate={formatDate} onOpenDream={openDream} />
     </View>
   ) : null;
 

@@ -1715,6 +1715,7 @@ const translations: Record<string, string> = {
     'trends.sky.links': '{symbol} relie {count} rêves.',
     'trends.sky.waiting': 'Quand un symbole reviendra, il reliera ses rêves en constellation.',
     'trends.sky.hint': 'Touche une étoile pour rouvrir son rêve.',
+    'trends.sky.reader_hint': 'Touche deux fois pour rouvrir ce rêve.',
     'trends.sky.constellation_label': '{symbol}, constellation de {count} rêves',
     'trends.empty.body': 'Ton premier rêve allumera la première étoile de tes tendances.',
     'trends.empty.cta': 'Noter un rêve',

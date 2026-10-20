@@ -1933,6 +1933,7 @@ const translations: Record<string, string> = {
     'trends.sky.links': '{symbol} verbindet {count} Träume.',
     'trends.sky.waiting': 'Kehrt ein Symbol wieder, verbindet es seine Träume zu einem Sternbild.',
     'trends.sky.hint': 'Tippe auf einen Stern, um seinen Traum wieder zu öffnen.',
+    'trends.sky.reader_hint': 'Tippe doppelt, um diesen Traum wieder zu öffnen.',
     'trends.sky.constellation_label': '{symbol}, Sternbild aus {count} Träumen',
     'trends.empty.body': 'Dein erster Traum entzündet den ersten Stern deiner Trends.',
     'trends.empty.cta': 'Traum notieren',

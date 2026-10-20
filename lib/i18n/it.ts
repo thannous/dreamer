@@ -1714,6 +1714,7 @@ const translations: Record<string, string> = {
     'trends.sky.links': '{symbol} unisce {count} sogni.',
     'trends.sky.waiting': 'Quando un simbolo tornerà, unirà i suoi sogni in una costellazione.',
     'trends.sky.hint': 'Tocca una stella per riaprire il suo sogno.',
+    'trends.sky.reader_hint': 'Tocca due volte per riaprire questo sogno.',
     'trends.sky.constellation_label': '{symbol}, costellazione di {count} sogni',
     'trends.empty.body': 'Il tuo primo sogno accenderà la prima stella delle tue tendenze.',
     'trends.empty.cta': 'Annota un sogno',

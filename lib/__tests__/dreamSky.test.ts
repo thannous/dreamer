@@ -81,4 +81,19 @@ describe('buildDreamSky', () => {
     expect(sky.stars[0].x).toBeLessThan(0.01);
     expect(sky.stars[MAX_SKY_STARS - 1].x).toBeGreaterThan(0.99);
   });
+
+  // Meaningful where the clocks change: the owners' machines run on Europe/Paris, and
+  // `TZ=Europe/Paris npx jest lib/__tests__/dreamSky.test.ts` checks it from anywhere.
+  it('keeps a dream noted late on the last night short of the edge, the night the clocks go back too', () => {
+    // Europe and North America turn their clocks back on these nights of 2026.
+    for (const last of [new Date(2026, 9, 25), new Date(2026, 10, 1)]) {
+      const late = { ...night(1, []), id: new Date(2026, last.getMonth(), last.getDate(), 23, 30).getTime() };
+      const range = { start: new Date(2026, last.getMonth(), last.getDate() - 6).getTime(), end: last.getTime() };
+
+      const sky = buildDreamSky([late], range, []);
+
+      expect(sky.stars[0].x).toBeGreaterThan(0.99);
+      expect(sky.stars[0].x).toBeLessThan(1);
+    }
+  });
 });

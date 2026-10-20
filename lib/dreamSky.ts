@@ -6,8 +6,6 @@ import type { DreamAnalysis } from '@/lib/types';
 /** Beyond a year of nightly dreams, the oldest stars give way to the newest. */
 export const MAX_SKY_STARS = 365;
 
-const DAY = 24 * 60 * 60 * 1000;
-
 /** A dream's star: across the sky by the hour it was noted, at a height of its own. */
 export type SkyStar = {
   dream: DreamAnalysis;
@@ -48,6 +46,13 @@ const startOfLocalDay = (timestamp: number) => {
   return day.getTime();
 };
 
+/** The midnight that ends a local day: 23 or 25 hours on, the nights the clocks change. */
+const endOfLocalDay = (timestamp: number) => {
+  const day = new Date(startOfLocalDay(timestamp));
+  day.setDate(day.getDate() + 1);
+  return day.getTime();
+};
+
 /**
  * The period's dreams as a sky: each dream a star, set across by when it was noted, and
  * each symbol that came back drawn as a constellation through the dreams it came back in.
@@ -69,7 +74,7 @@ export function buildDreamSky(
   // Once the oldest dreams give way, the sky opens on the first night it still draws:
   // measured from the period's start, the newest stars would crowd into its last part.
   const start = shown.length < inPeriod.length ? startOfLocalDay(shown[0].id) : range.start;
-  const span = Math.max(DAY, range.end + DAY - start);
+  const span = Math.max(1, endOfLocalDay(range.end) - start);
   const stars = shown.map((dream) => ({
     dream,
     x: Math.min(1, Math.max(0, (dream.id - start) / span)),

@@ -1,5 +1,16 @@
 import React, { memo, useCallback, useMemo, useState } from 'react';
-import { Platform, Pressable, StyleSheet, Text, View, type GestureResponderEvent, type StyleProp, type ViewStyle } from 'react-native';
+import {
+  AccessibilityInfo,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  type AccessibilityActionEvent,
+  type GestureResponderEvent,
+  type StyleProp,
+  type ViewStyle,
+} from 'react-native';
 import Animated, { type CSSStyle } from 'react-native-reanimated';
 import Svg, { Circle, Defs, Path, Polyline, RadialGradient, Rect, Stop } from 'react-native-svg';
 
@@ -13,6 +24,7 @@ import type { DreamAnalysis } from '@/lib/types';
 import { TrendsSectionHead } from './TrendsSectionHead';
 
 type Translate = (key: string, params?: Record<string, string | number>) => string;
+type FormatDate = (value: Date | number, options?: Intl.DateTimeFormatOptions) => string;
 
 const SKY_HEIGHT = 280;
 /** Stars keep clear of the sky's rounded edges. */
@@ -23,6 +35,8 @@ const REACH = 30;
 const DUST = 72;
 /** The other constellations stay faintly drawn behind the chosen one. */
 const DIMMED = 0.16;
+/** TalkBack steps and opens through these; VoiceOver through the adjustable trait and its tap. */
+const READER_ACTIONS = [{ name: 'increment' }, { name: 'decrement' }, { name: 'activate' }];
 
 type Placed = { dream: DreamAnalysis; x: number; y: number; analyzed: boolean; joined: boolean };
 
@@ -123,10 +137,10 @@ const ConstellationLayer = memo(function ConstellationLayer({ constellation, pla
  * One constellation is drawn bright at a time; its chip below chooses it. A tap on a star
  * reopens its dream. The sky lights once, as it comes on screen, then stays still.
  *
- * For assistive technology the sky is one picture with its count; the chips name each
- * constellation, and the journal and the nights above open the same dreams.
+ * A screen reader meets the sky as one element with its count, which steps through its
+ * dreams one at a time from the newest, naming each, and opens the one it is on.
  */
-export function TrendsSky({ sky, lit, reduced, ink, glow, glowOpacity, dust, t, formatNumber, onOpenDream }: {
+export function TrendsSky({ sky, lit, reduced, ink, glow, glowOpacity, dust, t, formatNumber, formatDate, onOpenDream }: {
   sky: DreamSky;
   /** The section is on screen: the sky lights then, not out of sight. */
   lit: boolean;
@@ -137,6 +151,7 @@ export function TrendsSky({ sky, lit, reduced, ink, glow, glowOpacity, dust, t, 
   dust: string;
   t: Translate;
   formatNumber: (value: number) => string;
+  formatDate: FormatDate;
   onOpenDream: (dream: DreamAnalysis) => void;
 }) {
   const [width, setWidth] = useState(0);
@@ -176,6 +191,29 @@ export function TrendsSky({ sky, lit, reduced, ink, glow, glowOpacity, dust, t, 
     if (nearest) onOpenDream(nearest.dream);
   }, [onOpenDream, placed]);
 
+  // The star a screen reader is on: the newest until it steps to another.
+  const [heardId, setHeardId] = useState<number | null>(null);
+  const found = stars.findIndex(({ dream }) => dream.id === heardId);
+  const heardAt = found >= 0 ? found : stars.length - 1;
+  const heard = stars[heardAt];
+  const describe = useCallback((dream: DreamAnalysis) => `${dream.title?.trim() || t('trends.nights.untitled')}, ${
+    formatDate(dream.id, { day: 'numeric', month: 'long', year: 'numeric' })}`, [formatDate, t]);
+  const openHeard = useCallback(() => {
+    if (heard) onOpenDream(heard.dream);
+  }, [heard, onOpenDream]);
+  const onReaderAction = useCallback(({ nativeEvent }: AccessibilityActionEvent) => {
+    if (nativeEvent.actionName === 'activate') {
+      openHeard();
+      return;
+    }
+    const by = nativeEvent.actionName === 'increment' ? 1 : nativeEvent.actionName === 'decrement' ? -1 : 0;
+    const next = stars[Math.min(stars.length - 1, Math.max(0, heardAt + by))];
+    if (by === 0 || !next || next === heard) return;
+    setHeardId(next.dream.id);
+    // VoiceOver reads the new value by itself; TalkBack is told it.
+    if (Platform.OS === 'android') AccessibilityInfo.announceForAccessibility(describe(next.dream));
+  }, [describe, heard, heardAt, openHeard, stars]);
+
   const choose = useCallback((linkKey: string) => {
     setChosen(linkKey === selected ? null : linkKey);
   }, [selected]);
@@ -205,11 +243,17 @@ export function TrendsSky({ sky, lit, reduced, ink, glow, glowOpacity, dust, t, 
         style={{ height: SKY_HEIGHT }}
         onLayout={({ nativeEvent }) => setWidth((previous) => (previous === nativeEvent.layout.width ? previous : nativeEvent.layout.width))}
         accessible
-        accessibilityRole="image"
         accessibilityLabel={t(count === 1 ? 'trends.sky.label_one' : 'trends.sky.label', { count: formatNumber(count) })}
-        // VoiceOver activates a picture by tapping its centre, which would open whichever
-        // dream sits there. The picture itself opens nothing.
-        onAccessibilityTap={() => {}}
+        // The web keeps a picture: a browser's screen reader reaches the dreams through the nights above.
+        {...(Platform.OS === 'web' ? { accessibilityRole: 'image' as const } : {
+          accessibilityRole: 'adjustable' as const,
+          accessibilityValue: heard ? { text: describe(heard.dream) } : undefined,
+          accessibilityHint: heard ? t('trends.sky.reader_hint') : undefined,
+          accessibilityActions: Platform.OS === 'android' ? READER_ACTIONS : undefined,
+          onAccessibilityAction: onReaderAction,
+          // Without it, VoiceOver would tap the sky's centre and open whichever dream sits there.
+          onAccessibilityTap: openHeard,
+        })}
       >
         {width > 0 ? (
           <>
@@ -221,7 +265,7 @@ export function TrendsSky({ sky, lit, reduced, ink, glow, glowOpacity, dust, t, 
                 width={width} ink={ink} glow={glow} order={order} lit={lit} reduced={reduced}
                 opacity={selected === null ? 0.7 : constellation.symbol.linkKey === selected ? 1 : DIMMED} />
             ))}
-            {/* Touch only: the picture is one element for assistive technology. */}
+            {/* Touch only: a screen reader steps through the dreams on the sky itself. */}
             <Pressable testID="trends.sky.stars" onPress={pick} style={StyleSheet.absoluteFill}
               accessible={false} focusable={false} {...(Platform.OS === 'web' ? { tabIndex: -1 } : {})} />
           </>
@@ -247,7 +291,10 @@ export function TrendsSky({ sky, lit, reduced, ink, glow, glowOpacity, dust, t, 
         </View>
       ) : null}
 
-      <Text className="text-[14px] leading-[21px] font-sans text-ivory-muted" accessibilityLiveRegion="polite" testID="trends.sky.caption">
+      {/* The touch hint is for the eye: a screen reader is told how to open a dream on the sky. */}
+      <Text className="text-[14px] leading-[21px] font-sans text-ivory-muted" accessibilityLiveRegion="polite" testID="trends.sky.caption"
+        accessibilityLabel={caption ?? undefined} accessibilityElementsHidden={!caption}
+        importantForAccessibility={caption ? 'auto' : 'no-hide-descendants'}>
         {[caption, t('trends.sky.hint')].filter(Boolean).join(' ')}
       </Text>
     </View>

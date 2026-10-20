@@ -1714,6 +1714,7 @@ const translations: Record<string, string> = {
     'trends.sky.links': '{symbol} links {count} dreams.',
     'trends.sky.waiting': 'When a symbol returns, it will link its dreams into a constellation.',
     'trends.sky.hint': 'Tap a star to reopen its dream.',
+    'trends.sky.reader_hint': 'Double-tap to reopen this dream.',
     'trends.sky.constellation_label': '{symbol}, a constellation of {count} dreams',
     'trends.empty.body': 'Your first dream will light the first star of your trends.',
     'trends.empty.cta': 'Capture a dream',
