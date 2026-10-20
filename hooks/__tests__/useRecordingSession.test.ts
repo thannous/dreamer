@@ -11,6 +11,7 @@ import {
   getSpeechLocaleAvailability,
   startNativeSpeechSession,
 } from '../../services/nativeSpeechRecognition';
+import { isMicrophoneHeld } from '../../services/microphoneHold';
 import { transcribeAudio } from '../../services/speechToText';
 import { useRecordingSession, type RecordingSessionResult } from '../useRecordingSession';
 
@@ -287,6 +288,20 @@ describe('useRecordingSession', () => {
         permissionAlreadyGranted: true,
       })
     );
+  });
+
+  it('holds the microphone from start to stop, so the app’s cues leave the recording alone', async () => {
+    const { result } = renderHook(() => useRecordingSession(defaultOptions));
+
+    await act(async () => {
+      await result.current.startRecording('');
+    });
+    expect(isMicrophoneHeld()).toBe(true);
+
+    await act(async () => {
+      await result.current.stopRecording();
+    });
+    expect(isMicrophoneHeld()).toBe(false);
   });
 
   it('stopRecording should return transcript result', async () => {

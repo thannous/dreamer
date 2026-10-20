@@ -3,6 +3,7 @@ import * as Haptics from 'expo-haptics';
 import { AppState, Platform } from 'react-native';
 
 import { getLucidKeyValueStorage } from '@/services/lucidKeyValueStorage';
+import { isMicrophoneHeld } from '@/services/microphoneHold';
 import { isSpeechRecognitionIdle } from '@/services/nativeSpeechRecognition';
 
 /**
@@ -92,8 +93,8 @@ function touch(sound: SignatureSound) {
 async function play(sound: SignatureSound) {
   if (!(await getSignatureSoundsEnabled())) return;
   if (AppState.currentState !== 'active') return;
-  // A live dictation owns the audio session; changing its category would cut it off.
-  if (!(await isSpeechRecognitionIdle())) return;
+  // A live dictation or recording owns the audio session; changing it would cut them off.
+  if (isMicrophoneHeld() || !(await isSpeechRecognitionIdle())) return;
   // Ambient and mixed: silent with the ringer switch (iOS) or a silent or vibrating ringer
   // (Android, where expo-audio then declines to play), and never pausing the dreamer's music.
   // Recording and sleep sounds set their own mode before they start.

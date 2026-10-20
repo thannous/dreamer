@@ -73,6 +73,24 @@ it('never touches the audio session under a live dictation or in the background'
   expect(mockPlayer.play).not.toHaveBeenCalled();
 });
 
+it('waits for a recording made without a dictation session, as Android falls back to', async () => {
+  let sounds: Sounds | undefined;
+  let microphone: typeof import('../microphoneHold') | undefined;
+  jest.isolateModules(() => {
+    sounds = require('../signatureSounds');
+    microphone = require('../microphoneHold');
+  });
+  const release = microphone!.holdMicrophone();
+  sounds!.playSignature('painting');
+  await settle();
+  expect(mockSetAudioMode).not.toHaveBeenCalled();
+  release();
+  release();
+  sounds!.playSignature('painting');
+  await settle();
+  expect(mockPlayer.play).toHaveBeenCalledTimes(1);
+});
+
 it('keeps the sounds on when turning them off could not be stored', async () => {
   const sounds = launch();
   expect(await sounds.getSignatureSoundsEnabled()).toBe(true);

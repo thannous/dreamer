@@ -10,6 +10,7 @@ import { Alert, AppState, Linking, Platform } from 'react-native';
 import { createScopedLogger } from '@/lib/logger';
 import { handleRecorderReleaseError, RECORDING_OPTIONS } from '@/lib/recording';
 import { waitForPermissionActivityToSettle } from '@/lib/recordingPermissions';
+import { holdMicrophone } from '@/services/microphoneHold';
 import {
   getSpeechLocaleAvailability,
   isWebSpeechRecognitionAvailable,
@@ -81,6 +82,8 @@ export function useRecordingSession({
   onNativeEnd,
 }: UseRecordingSessionOptions) {
   const [isRecording, setIsRecording] = useState(false);
+  // Recording, with or without a dictation session: the app's cues leave the audio session alone.
+  useEffect(() => (isRecording ? holdMicrophone() : undefined), [isRecording]);
   const [isSpeechListening, setIsSpeechListening] = useState(false);
   const [recordingPermissionState, setRecordingPermissionState] =
     useState<RecordingPermissionState>('unknown');
