@@ -4,7 +4,6 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, jest } from '@jest/globals';
 
 import { DreamShareSheet } from '@/components/journal/DreamShareSheet';
-import type { ShareCardOptions } from '@/lib/journal/shareCard';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis } from '@/lib/types';
 
@@ -61,7 +60,7 @@ const dream = {
 } as DreamAnalysis;
 
 function renderSheet(overrides: Partial<React.ComponentProps<typeof DreamShareSheet>> = {}) {
-  const onShare = jest.fn<(options: ShareCardOptions) => void>();
+  const onShare = jest.fn();
   const props = {
     visible: true,
     onClose: jest.fn(),
