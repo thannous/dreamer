@@ -12,6 +12,15 @@ export const DREAMER_QA_ANDROID_PACKAGE = 'com.tanuki75.noctalia.qa';
 export const DREAMER_QA_IOS_BUNDLE_IDENTIFIER = 'com.tanuki75.noctalia.qa';
 export const DREAMER_QA_APP_NAME = 'Noctalia QA';
 export const DREAMER_QA_SCHEME = 'noctalia-qa';
+/**
+ * expo-observe refuses to start without an EAS project id, and expo-image starts it on
+ * import, so a QA package without one stopped at launch. It gets an id of its own, not the
+ * store app's, and its reports go to a closed port on the device.
+ */
+export const DREAMER_QA_OBSERVE = Object.freeze({
+  projectId: 'noctalia-qa-local',
+  endpointUrl: 'https://127.0.0.1:9/',
+});
 
 function isLucidNativeMarker(value: string | undefined): boolean {
   if (value === undefined || value === '' || value === 'noctalia') return false;
@@ -73,7 +82,10 @@ export function createDreamerQaExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
     },
     extra: {
       ...baseExpo.extra,
-      eas: undefined,
+      eas: {
+        projectId: DREAMER_QA_OBSERVE.projectId,
+        observe: { endpointUrl: DREAMER_QA_OBSERVE.endpointUrl },
+      },
     },
     updates: undefined,
   };
