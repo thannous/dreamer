@@ -1393,6 +1393,16 @@ test('the pt-br dictionary links every pt-br symbol, searches and filters in Por
 // These journeys catch a decoded-but-wrong portrait, a transparent rectangle, an effect placed
 // entirely outside a crop, a scene with the wrong editorial reading, and a moving base painting.
 const NEW_SYMBOL_PACKS = [
+  {"id": "chase", "slug": "poursuite", "name": "Poursuite / Être poursuivi", "scenes": ["being-chased-by-a-stranger", "being-chased-by-an-animal", "being-chased-by-someone-you-know"]},
+  {"id": "spider", "slug": "araignee", "name": "Araignée", "scenes": ["a-spider-spinning-its-web", "being-caught-in-a-web", "being-bitten-by-a-spider"]},
+  {"id": "flood", "slug": "inondation", "name": "Inondation", "scenes": ["floodwater-coming-into-your-home", "being-swept-away-by-floodwater", "escaping-a-flood"]},
+  {"id": "exam", "slug": "examen", "name": "Examen / Test", "scenes": ["being-unprepared-for-an-exam", "arriving-late-to-an-exam", "an-exam-in-a-subject-you-never-studied"]},
+  {"id": "nudity", "slug": "nudite", "name": "Nudité", "scenes": ["naked-and-embarrassed", "naked-but-no-one-notices", "partly-dressed-or-wearing-the-wrong-clo"]},
+  {"id": "deceased-person", "slug": "defunt", "name": "Défunt / Personne décédée", "scenes": ["a-peaceful-visit", "a-deceased-person-who-seems-alive", "receiving-a-message"]},
+  {"id": "sun", "slug": "soleil", "name": "Soleil", "scenes": ["bright-warm-sun", "sunrise", "sunset"]},
+  {"id": "tree", "slug": "arbre", "name": "Arbre", "scenes": ["large-healthy-tree", "dead-or-dying-tree", "climbing-a-tree"]},
+  {"id": "lion", "slug": "lion", "name": "Lion", "scenes": ["a-calm-majestic-lion", "a-lion-attacking-or-chasing-you", "taming-or-befriending-a-lion"]},
+  {"id": "money", "slug": "argent", "name": "Argent", "scenes": ["finding-money", "losing-money-or-a-wallet", "counting-money"]},
   {"id": "death", "slug": "mort", "name": "Mort", "scenes": ["your-own-death", "a-loved-one-dying", "a-stranger-dying"]},
   {"id": "light", "slug": "lumiere", "name": "Lumière", "scenes": ["a-light-switch-that-does-nothing", "a-light-going-out", "a-blinding-light"]},
   {"id": "lighthouse", "slug": "phare", "name": "Phare", "scenes": ["a-lighthouse-beam-sweeping-the-night", "a-lighthouse-that-goes-dark", "seeing-a-lighthouse-from-a-boat-in-a-s"]},

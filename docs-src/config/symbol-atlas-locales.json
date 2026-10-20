@@ -2511,6 +2511,1046 @@
           }
         }
       }
+    },
+    "chase": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "being-chased-by-a-stranger": {
+            "variation": "Être poursuivi par un inconnu",
+            "anchor": "being-chased-by-a-stranger"
+          },
+          "being-chased-by-an-animal": {
+            "variation": "Être poursuivi par un animal",
+            "anchor": "being-chased-by-an-animal"
+          },
+          "being-chased-by-someone-you-know": {
+            "variation": "Être poursuivi par quelqu'un que vous connaissez",
+            "anchor": "being-chased-by-someone-you-know"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "being-chased-by-a-stranger": {
+            "variation": "Being chased by a stranger",
+            "anchor": "being-chased-by-a-stranger"
+          },
+          "being-chased-by-an-animal": {
+            "variation": "Being chased by an animal",
+            "anchor": "being-chased-by-an-animal"
+          },
+          "being-chased-by-someone-you-know": {
+            "variation": "Being chased by someone you know",
+            "anchor": "being-chased-by-someone-you-know"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "being-chased-by-a-stranger": {
+            "variation": "Que te persiga un desconocido",
+            "anchor": "being-chased-by-a-stranger"
+          },
+          "being-chased-by-an-animal": {
+            "variation": "Que te persiga un animal",
+            "anchor": "being-chased-by-an-animal"
+          },
+          "being-chased-by-someone-you-know": {
+            "variation": "Que te persiga alguien que conoces",
+            "anchor": "being-chased-by-someone-you-know"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "being-chased-by-a-stranger": {
+            "variation": "Von einem Fremden verfolgt werden",
+            "anchor": "being-chased-by-a-stranger"
+          },
+          "being-chased-by-an-animal": {
+            "variation": "Von einem Tier verfolgt werden",
+            "anchor": "being-chased-by-an-animal"
+          },
+          "being-chased-by-someone-you-know": {
+            "variation": "Von einer bekannten Person verfolgt werden",
+            "anchor": "being-chased-by-someone-you-know"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "being-chased-by-a-stranger": {
+            "variation": "Essere inseguiti da uno sconosciuto",
+            "anchor": "being-chased-by-a-stranger"
+          },
+          "being-chased-by-an-animal": {
+            "variation": "Essere inseguiti da un animale",
+            "anchor": "being-chased-by-an-animal"
+          },
+          "being-chased-by-someone-you-know": {
+            "variation": "Essere inseguiti da qualcuno che conosci",
+            "anchor": "being-chased-by-someone-you-know"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "being-chased-by-a-stranger": {
+            "variation": "Ser perseguido por uma figura desconhecida",
+            "anchor": "being-chased-by-a-stranger"
+          },
+          "being-chased-by-an-animal": {
+            "variation": "Ser perseguido por um animal",
+            "anchor": "being-chased-by-an-animal"
+          },
+          "being-chased-by-someone-you-know": {
+            "variation": "Ser perseguido por alguém conhecido",
+            "anchor": "being-chased-by-someone-you-know"
+          }
+        }
+      }
+    },
+    "spider": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "a-spider-spinning-its-web": {
+            "variation": "Une araignée qui tisse sa toile",
+            "anchor": "a-spider-spinning-its-web"
+          },
+          "being-caught-in-a-web": {
+            "variation": "Être pris dans une toile",
+            "anchor": "being-caught-in-a-web"
+          },
+          "being-bitten-by-a-spider": {
+            "variation": "Être mordu par une araignée",
+            "anchor": "being-bitten-by-a-spider"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "a-spider-spinning-its-web": {
+            "variation": "A spider spinning its web",
+            "anchor": "a-spider-spinning-its-web"
+          },
+          "being-caught-in-a-web": {
+            "variation": "Being caught in a web",
+            "anchor": "being-caught-in-a-web"
+          },
+          "being-bitten-by-a-spider": {
+            "variation": "Being bitten by a spider",
+            "anchor": "being-bitten-by-a-spider"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "a-spider-spinning-its-web": {
+            "variation": "Una araña tejiendo su tela",
+            "anchor": "a-spider-spinning-its-web"
+          },
+          "being-caught-in-a-web": {
+            "variation": "Quedarte atrapado en una telaraña",
+            "anchor": "being-caught-in-a-web"
+          },
+          "being-bitten-by-a-spider": {
+            "variation": "Que te pique una araña",
+            "anchor": "being-bitten-by-a-spider"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "a-spider-spinning-its-web": {
+            "variation": "Eine Spinne, die ihr Netz webt",
+            "anchor": "a-spider-spinning-its-web"
+          },
+          "being-caught-in-a-web": {
+            "variation": "Im Spinnennetz gefangen sein",
+            "anchor": "being-caught-in-a-web"
+          },
+          "being-bitten-by-a-spider": {
+            "variation": "Von einer Spinne gebissen werden",
+            "anchor": "being-bitten-by-a-spider"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "a-spider-spinning-its-web": {
+            "variation": "Un ragno che tesse una tela",
+            "anchor": "a-spider-spinning-its-web"
+          },
+          "being-caught-in-a-web": {
+            "variation": "Essere intrappolati in una ragnatela",
+            "anchor": "being-caught-in-a-web"
+          },
+          "being-bitten-by-a-spider": {
+            "variation": "Essere morsi da un ragno",
+            "anchor": "being-bitten-by-a-spider"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "a-spider-spinning-its-web": {
+            "variation": "Aranha tecendo a teia",
+            "anchor": "a-spider-spinning-its-web"
+          },
+          "being-caught-in-a-web": {
+            "variation": "Ficar preso em uma teia de aranha",
+            "anchor": "being-caught-in-a-web"
+          },
+          "being-bitten-by-a-spider": {
+            "variation": "Ser picado por uma aranha",
+            "anchor": "being-bitten-by-a-spider"
+          }
+        }
+      }
+    },
+    "flood": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "floodwater-coming-into-your-home": {
+            "variation": "Une inondation dans la maison",
+            "anchor": "floodwater-coming-into-your-home"
+          },
+          "being-swept-away-by-floodwater": {
+            "variation": "Être emporté par l'eau",
+            "anchor": "being-swept-away-by-floodwater"
+          },
+          "escaping-a-flood": {
+            "variation": "Échapper à une inondation",
+            "anchor": "escaping-a-flood"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "floodwater-coming-into-your-home": {
+            "variation": "Floodwater coming into your home",
+            "anchor": "floodwater-coming-into-your-home"
+          },
+          "being-swept-away-by-floodwater": {
+            "variation": "Being swept away by floodwater",
+            "anchor": "being-swept-away-by-floodwater"
+          },
+          "escaping-a-flood": {
+            "variation": "Escaping a flood",
+            "anchor": "escaping-a-flood"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "floodwater-coming-into-your-home": {
+            "variation": "Inundación en casa",
+            "anchor": "floodwater-coming-into-your-home"
+          },
+          "being-swept-away-by-floodwater": {
+            "variation": "Que te arrastre el agua",
+            "anchor": "being-swept-away-by-floodwater"
+          },
+          "escaping-a-flood": {
+            "variation": "Escapar de una inundación",
+            "anchor": "escaping-a-flood"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "floodwater-coming-into-your-home": {
+            "variation": "Wasser dringt ins Haus ein",
+            "anchor": "floodwater-coming-into-your-home"
+          },
+          "being-swept-away-by-floodwater": {
+            "variation": "Von den Fluten mitgerissen werden",
+            "anchor": "being-swept-away-by-floodwater"
+          },
+          "escaping-a-flood": {
+            "variation": "Einer Überschwemmung entkommen",
+            "anchor": "escaping-a-flood"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "floodwater-coming-into-your-home": {
+            "variation": "Acqua in casa o casa allagata",
+            "anchor": "floodwater-coming-into-your-home"
+          },
+          "being-swept-away-by-floodwater": {
+            "variation": "Essere trascinati dalle acque",
+            "anchor": "being-swept-away-by-floodwater"
+          },
+          "escaping-a-flood": {
+            "variation": "Sfuggire a un’alluvione",
+            "anchor": "escaping-a-flood"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "floodwater-coming-into-your-home": {
+            "variation": "Uma enchente entrando na sua casa",
+            "anchor": "floodwater-coming-into-your-home"
+          },
+          "being-swept-away-by-floodwater": {
+            "variation": "Ser arrastado pela água da enchente",
+            "anchor": "being-swept-away-by-floodwater"
+          },
+          "escaping-a-flood": {
+            "variation": "Escapar de uma enchente",
+            "anchor": "escaping-a-flood"
+          }
+        }
+      }
+    },
+    "exam": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "being-unprepared-for-an-exam": {
+            "variation": "Ne pas avoir révisé",
+            "anchor": "being-unprepared-for-an-exam"
+          },
+          "arriving-late-to-an-exam": {
+            "variation": "Arriver en retard à un examen",
+            "anchor": "arriving-late-to-an-exam"
+          },
+          "an-exam-in-a-subject-you-never-studied": {
+            "variation": "Un examen dans une matière inconnue",
+            "anchor": "an-exam-in-a-subject-you-never-studied"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "being-unprepared-for-an-exam": {
+            "variation": "Being unprepared for an exam",
+            "anchor": "being-unprepared-for-an-exam"
+          },
+          "arriving-late-to-an-exam": {
+            "variation": "Arriving late to an exam",
+            "anchor": "arriving-late-to-an-exam"
+          },
+          "an-exam-in-a-subject-you-never-studied": {
+            "variation": "An exam in a subject you never studied",
+            "anchor": "an-exam-in-a-subject-you-never-studied"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "being-unprepared-for-an-exam": {
+            "variation": "No haber estudiado para un examen",
+            "anchor": "being-unprepared-for-an-exam"
+          },
+          "arriving-late-to-an-exam": {
+            "variation": "Llegar tarde a un examen",
+            "anchor": "arriving-late-to-an-exam"
+          },
+          "an-exam-in-a-subject-you-never-studied": {
+            "variation": "Un examen de una asignatura desconocida",
+            "anchor": "an-exam-in-a-subject-you-never-studied"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "being-unprepared-for-an-exam": {
+            "variation": "Unvorbereitet in der Prüfung",
+            "anchor": "being-unprepared-for-an-exam"
+          },
+          "arriving-late-to-an-exam": {
+            "variation": "Zu spät zur Prüfung kommen",
+            "anchor": "arriving-late-to-an-exam"
+          },
+          "an-exam-in-a-subject-you-never-studied": {
+            "variation": "Prüfung in einem unbekannten Fach",
+            "anchor": "an-exam-in-a-subject-you-never-studied"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "being-unprepared-for-an-exam": {
+            "variation": "Non aver studiato per un esame",
+            "anchor": "being-unprepared-for-an-exam"
+          },
+          "arriving-late-to-an-exam": {
+            "variation": "Arrivare in ritardo a un esame",
+            "anchor": "arriving-late-to-an-exam"
+          },
+          "an-exam-in-a-subject-you-never-studied": {
+            "variation": "Esame in una materia sconosciuta",
+            "anchor": "an-exam-in-a-subject-you-never-studied"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "being-unprepared-for-an-exam": {
+            "variation": "Estar despreparado para uma prova",
+            "anchor": "being-unprepared-for-an-exam"
+          },
+          "arriving-late-to-an-exam": {
+            "variation": "Chegar atrasado a uma prova",
+            "anchor": "arriving-late-to-an-exam"
+          },
+          "an-exam-in-a-subject-you-never-studied": {
+            "variation": "Prova de uma matéria desconhecida",
+            "anchor": "an-exam-in-a-subject-you-never-studied"
+          }
+        }
+      }
+    },
+    "nudity": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "naked-and-embarrassed": {
+            "variation": "Nu et gêné",
+            "anchor": "naked-and-embarrassed"
+          },
+          "naked-but-no-one-notices": {
+            "variation": "Nu, mais personne ne le remarque",
+            "anchor": "naked-but-no-one-notices"
+          },
+          "partly-dressed-or-wearing-the-wrong-clo": {
+            "variation": "À moitié habillé ou mal habillé",
+            "anchor": "partly-dressed-or-wearing-the-wrong-clo"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "naked-and-embarrassed": {
+            "variation": "Naked and embarrassed",
+            "anchor": "naked-and-embarrassed"
+          },
+          "naked-but-no-one-notices": {
+            "variation": "Naked but no one notices",
+            "anchor": "naked-but-no-one-notices"
+          },
+          "partly-dressed-or-wearing-the-wrong-clo": {
+            "variation": "Partly dressed or wearing the wrong clothes",
+            "anchor": "partly-dressed-or-wearing-the-wrong-clo"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "naked-and-embarrassed": {
+            "variation": "Desnudo y avergonzado",
+            "anchor": "naked-and-embarrassed"
+          },
+          "naked-but-no-one-notices": {
+            "variation": "Desnudo, pero nadie lo nota",
+            "anchor": "naked-but-no-one-notices"
+          },
+          "partly-dressed-or-wearing-the-wrong-clo": {
+            "variation": "A medio vestir o con la ropa equivocada",
+            "anchor": "partly-dressed-or-wearing-the-wrong-clo"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "naked-and-embarrassed": {
+            "variation": "Nackt und peinlich berührt",
+            "anchor": "naked-and-embarrassed"
+          },
+          "naked-but-no-one-notices": {
+            "variation": "Nackt, aber niemand bemerkt es",
+            "anchor": "naked-but-no-one-notices"
+          },
+          "partly-dressed-or-wearing-the-wrong-clo": {
+            "variation": "Halb angezogen oder unpassend gekleidet",
+            "anchor": "partly-dressed-or-wearing-the-wrong-clo"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "naked-and-embarrassed": {
+            "variation": "Nudi e imbarazzati",
+            "anchor": "naked-and-embarrassed"
+          },
+          "naked-but-no-one-notices": {
+            "variation": "Nudi ma nessuno lo nota",
+            "anchor": "naked-but-no-one-notices"
+          },
+          "partly-dressed-or-wearing-the-wrong-clo": {
+            "variation": "Mezzi vestiti o vestiti in modo sbagliato",
+            "anchor": "partly-dressed-or-wearing-the-wrong-clo"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "naked-and-embarrassed": {
+            "variation": "Nu e envergonhado",
+            "anchor": "naked-and-embarrassed"
+          },
+          "naked-but-no-one-notices": {
+            "variation": "Nu, mas ninguém repara",
+            "anchor": "naked-but-no-one-notices"
+          },
+          "partly-dressed-or-wearing-the-wrong-clo": {
+            "variation": "Parcialmente vestido ou mal vestido para a ocasião",
+            "anchor": "partly-dressed-or-wearing-the-wrong-clo"
+          }
+        }
+      }
+    },
+    "deceased-person": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "a-peaceful-visit": {
+            "variation": "Une visite paisible",
+            "anchor": "a-peaceful-visit"
+          },
+          "a-deceased-person-who-seems-alive": {
+            "variation": "Un défunt qui semble vivant",
+            "anchor": "a-deceased-person-who-seems-alive"
+          },
+          "receiving-a-message": {
+            "variation": "Recevoir un message",
+            "anchor": "receiving-a-message"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "a-peaceful-visit": {
+            "variation": "A peaceful visit",
+            "anchor": "a-peaceful-visit"
+          },
+          "a-deceased-person-who-seems-alive": {
+            "variation": "A deceased person who seems alive",
+            "anchor": "a-deceased-person-who-seems-alive"
+          },
+          "receiving-a-message": {
+            "variation": "Receiving a message",
+            "anchor": "receiving-a-message"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "a-peaceful-visit": {
+            "variation": "Una visita tranquila",
+            "anchor": "a-peaceful-visit"
+          },
+          "a-deceased-person-who-seems-alive": {
+            "variation": "Un difunto que parece vivo",
+            "anchor": "a-deceased-person-who-seems-alive"
+          },
+          "receiving-a-message": {
+            "variation": "Recibir un mensaje",
+            "anchor": "receiving-a-message"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "a-peaceful-visit": {
+            "variation": "Ein friedlicher Besuch",
+            "anchor": "a-peaceful-visit"
+          },
+          "a-deceased-person-who-seems-alive": {
+            "variation": "Ein Verstorbener, der lebendig wirkt",
+            "anchor": "a-deceased-person-who-seems-alive"
+          },
+          "receiving-a-message": {
+            "variation": "Eine Botschaft empfangen",
+            "anchor": "receiving-a-message"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "a-peaceful-visit": {
+            "variation": "Una visita serena",
+            "anchor": "a-peaceful-visit"
+          },
+          "a-deceased-person-who-seems-alive": {
+            "variation": "Un defunto che sembra vivo",
+            "anchor": "a-deceased-person-who-seems-alive"
+          },
+          "receiving-a-message": {
+            "variation": "Ricevere un messaggio",
+            "anchor": "receiving-a-message"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "a-peaceful-visit": {
+            "variation": "Visita tranquila de quem partiu",
+            "anchor": "a-peaceful-visit"
+          },
+          "a-deceased-person-who-seems-alive": {
+            "variation": "A pessoa falecida está viva no sonho",
+            "anchor": "a-deceased-person-who-seems-alive"
+          },
+          "receiving-a-message": {
+            "variation": "Receber uma mensagem de quem partiu",
+            "anchor": "receiving-a-message"
+          }
+        }
+      }
+    },
+    "sun": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "bright-warm-sun": {
+            "variation": "Soleil brillant et chaud",
+            "anchor": "bright-warm-sun"
+          },
+          "sunrise": {
+            "variation": "Lever de soleil",
+            "anchor": "sunrise"
+          },
+          "sunset": {
+            "variation": "Coucher de soleil",
+            "anchor": "sunset"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "bright-warm-sun": {
+            "variation": "Bright, warm sun",
+            "anchor": "bright-warm-sun"
+          },
+          "sunrise": {
+            "variation": "Sunrise",
+            "anchor": "sunrise"
+          },
+          "sunset": {
+            "variation": "Sunset",
+            "anchor": "sunset"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "bright-warm-sun": {
+            "variation": "Sol brillante y cálido",
+            "anchor": "bright-warm-sun"
+          },
+          "sunrise": {
+            "variation": "Amanecer",
+            "anchor": "sunrise"
+          },
+          "sunset": {
+            "variation": "Puesta de sol",
+            "anchor": "sunset"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "bright-warm-sun": {
+            "variation": "Helle, warme Sonne",
+            "anchor": "bright-warm-sun"
+          },
+          "sunrise": {
+            "variation": "Sonnenaufgang",
+            "anchor": "sunrise"
+          },
+          "sunset": {
+            "variation": "Sonnenuntergang",
+            "anchor": "sunset"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "bright-warm-sun": {
+            "variation": "Sole luminoso e caldo",
+            "anchor": "bright-warm-sun"
+          },
+          "sunrise": {
+            "variation": "Alba",
+            "anchor": "sunrise"
+          },
+          "sunset": {
+            "variation": "Tramonto",
+            "anchor": "sunset"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "bright-warm-sun": {
+            "variation": "Sol claro e quente",
+            "anchor": "bright-warm-sun"
+          },
+          "sunrise": {
+            "variation": "Nascer do sol",
+            "anchor": "sunrise"
+          },
+          "sunset": {
+            "variation": "Pôr do sol",
+            "anchor": "sunset"
+          }
+        }
+      }
+    },
+    "tree": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "large-healthy-tree": {
+            "variation": "Grand arbre en bonne santé",
+            "anchor": "large-healthy-tree"
+          },
+          "dead-or-dying-tree": {
+            "variation": "Arbre mort ou mourant",
+            "anchor": "dead-or-dying-tree"
+          },
+          "climbing-a-tree": {
+            "variation": "Grimper à un arbre",
+            "anchor": "climbing-a-tree"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "large-healthy-tree": {
+            "variation": "Large, healthy tree",
+            "anchor": "large-healthy-tree"
+          },
+          "dead-or-dying-tree": {
+            "variation": "Dead or dying tree",
+            "anchor": "dead-or-dying-tree"
+          },
+          "climbing-a-tree": {
+            "variation": "Climbing a tree",
+            "anchor": "climbing-a-tree"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "large-healthy-tree": {
+            "variation": "Árbol grande y saludable",
+            "anchor": "large-healthy-tree"
+          },
+          "dead-or-dying-tree": {
+            "variation": "Árbol muerto o muriendo",
+            "anchor": "dead-or-dying-tree"
+          },
+          "climbing-a-tree": {
+            "variation": "Trepar un árbol",
+            "anchor": "climbing-a-tree"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "large-healthy-tree": {
+            "variation": "Großer, gesunder Baum",
+            "anchor": "large-healthy-tree"
+          },
+          "dead-or-dying-tree": {
+            "variation": "Toter oder sterbender Baum",
+            "anchor": "dead-or-dying-tree"
+          },
+          "climbing-a-tree": {
+            "variation": "Auf einen Baum klettern",
+            "anchor": "climbing-a-tree"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "large-healthy-tree": {
+            "variation": "Albero grande e sano",
+            "anchor": "large-healthy-tree"
+          },
+          "dead-or-dying-tree": {
+            "variation": "Albero morto o morente",
+            "anchor": "dead-or-dying-tree"
+          },
+          "climbing-a-tree": {
+            "variation": "Arrampicarsi su un albero",
+            "anchor": "climbing-a-tree"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "large-healthy-tree": {
+            "variation": "Árvore grande e saudável",
+            "anchor": "large-healthy-tree"
+          },
+          "dead-or-dying-tree": {
+            "variation": "Árvore morta ou morrendo",
+            "anchor": "dead-or-dying-tree"
+          },
+          "climbing-a-tree": {
+            "variation": "Subir em uma árvore",
+            "anchor": "climbing-a-tree"
+          }
+        }
+      }
+    },
+    "lion": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "a-calm-majestic-lion": {
+            "variation": "Un lion calme et majestueux",
+            "anchor": "a-calm-majestic-lion"
+          },
+          "a-lion-attacking-or-chasing-you": {
+            "variation": "Un lion qui attaque ou vous poursuit",
+            "anchor": "a-lion-attacking-or-chasing-you"
+          },
+          "taming-or-befriending-a-lion": {
+            "variation": "Apprivoiser un lion",
+            "anchor": "taming-or-befriending-a-lion"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "a-calm-majestic-lion": {
+            "variation": "A calm, majestic lion",
+            "anchor": "a-calm-majestic-lion"
+          },
+          "a-lion-attacking-or-chasing-you": {
+            "variation": "A lion attacking or chasing you",
+            "anchor": "a-lion-attacking-or-chasing-you"
+          },
+          "taming-or-befriending-a-lion": {
+            "variation": "Taming or befriending a lion",
+            "anchor": "taming-or-befriending-a-lion"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "a-calm-majestic-lion": {
+            "variation": "Un león tranquilo y majestuoso",
+            "anchor": "a-calm-majestic-lion"
+          },
+          "a-lion-attacking-or-chasing-you": {
+            "variation": "Un león que te ataca o te persigue",
+            "anchor": "a-lion-attacking-or-chasing-you"
+          },
+          "taming-or-befriending-a-lion": {
+            "variation": "Domar un león",
+            "anchor": "taming-or-befriending-a-lion"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "a-calm-majestic-lion": {
+            "variation": "Ein ruhiger, majestätischer Löwe",
+            "anchor": "a-calm-majestic-lion"
+          },
+          "a-lion-attacking-or-chasing-you": {
+            "variation": "Ein Löwe greift an oder verfolgt Sie",
+            "anchor": "a-lion-attacking-or-chasing-you"
+          },
+          "taming-or-befriending-a-lion": {
+            "variation": "Einen Löwen zähmen",
+            "anchor": "taming-or-befriending-a-lion"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "a-calm-majestic-lion": {
+            "variation": "Un leone calmo e maestoso",
+            "anchor": "a-calm-majestic-lion"
+          },
+          "a-lion-attacking-or-chasing-you": {
+            "variation": "Un leone che ti attacca o ti insegue",
+            "anchor": "a-lion-attacking-or-chasing-you"
+          },
+          "taming-or-befriending-a-lion": {
+            "variation": "Domare un leone",
+            "anchor": "taming-or-befriending-a-lion"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "a-calm-majestic-lion": {
+            "variation": "Um leão calmo e majestoso",
+            "anchor": "a-calm-majestic-lion"
+          },
+          "a-lion-attacking-or-chasing-you": {
+            "variation": "Um leão atacando ou perseguindo você",
+            "anchor": "a-lion-attacking-or-chasing-you"
+          },
+          "taming-or-befriending-a-lion": {
+            "variation": "Domar um leão ou fazer amizade com ele",
+            "anchor": "taming-or-befriending-a-lion"
+          }
+        }
+      }
+    },
+    "money": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "finding-money": {
+            "variation": "Trouver de l'argent",
+            "anchor": "finding-money"
+          },
+          "losing-money-or-a-wallet": {
+            "variation": "Perdre de l'argent ou son portefeuille",
+            "anchor": "losing-money-or-a-wallet"
+          },
+          "counting-money": {
+            "variation": "Compter de l'argent",
+            "anchor": "counting-money"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "finding-money": {
+            "variation": "Finding money",
+            "anchor": "finding-money"
+          },
+          "losing-money-or-a-wallet": {
+            "variation": "Losing money or a wallet",
+            "anchor": "losing-money-or-a-wallet"
+          },
+          "counting-money": {
+            "variation": "Counting money",
+            "anchor": "counting-money"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "finding-money": {
+            "variation": "Encontrar dinero",
+            "anchor": "finding-money"
+          },
+          "losing-money-or-a-wallet": {
+            "variation": "Perder dinero o la cartera",
+            "anchor": "losing-money-or-a-wallet"
+          },
+          "counting-money": {
+            "variation": "Contar dinero",
+            "anchor": "counting-money"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "finding-money": {
+            "variation": "Geld finden",
+            "anchor": "finding-money"
+          },
+          "losing-money-or-a-wallet": {
+            "variation": "Geld oder das Portemonnaie verlieren",
+            "anchor": "losing-money-or-a-wallet"
+          },
+          "counting-money": {
+            "variation": "Geld zählen",
+            "anchor": "counting-money"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "finding-money": {
+            "variation": "Trovare soldi",
+            "anchor": "finding-money"
+          },
+          "losing-money-or-a-wallet": {
+            "variation": "Perdere soldi o il portafoglio",
+            "anchor": "losing-money-or-a-wallet"
+          },
+          "counting-money": {
+            "variation": "Contare denaro",
+            "anchor": "counting-money"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "finding-money": {
+            "variation": "Encontrar dinheiro",
+            "anchor": "finding-money"
+          },
+          "losing-money-or-a-wallet": {
+            "variation": "Perder dinheiro",
+            "anchor": "losing-money-or-a-wallet"
+          },
+          "counting-money": {
+            "variation": "Contar dinheiro",
+            "anchor": "counting-money"
+          }
+        }
+      }
     }
   }
 }
