@@ -1367,6 +1367,11 @@ test('the pt-br dictionary links every pt-br symbol, searches and filters in Por
 // These journeys catch a decoded-but-wrong portrait, a transparent rectangle, an effect placed
 // entirely outside a crop, a scene with the wrong editorial reading, and a moving base painting.
 const NEW_SYMBOL_PACKS = [
+  {"id": "bee", "slug": "abeille", "name": "Abeille", "scenes": ["butinage", "piqure", "essaim"]},
+  {"id": "volcano", "slug": "volcan", "name": "Volcan", "scenes": ["endormi", "eruption", "lave"]},
+  {"id": "waterfall", "slug": "cascade", "name": "Cascade", "scenes": ["contemplation", "sous-eau", "chute"]},
+  {"id": "turtle", "slug": "tortue", "name": "Tortue", "scenes": ["nage", "carapace", "lenteur"]},
+  {"id": "mask", "slug": "masque", "name": "Masque", "scenes": ["porter", "colle", "carnaval"]},
   {"id": "earthquake", "slug": "tremblement-de-terre", "name": "Tremblement de terre", "scenes": ["your-house-collapsing", "the-ground-splitting-open", "protecting-someone-during-an-earthquake"]},
   {"id": "prison", "slug": "prison", "name": "Prison", "scenes": ["being-locked-in-a-cell", "being-imprisoned-for-something-you-did", "escaping-from-prison"]},
   {"id": "zombie", "slug": "zombie", "name": "Zombie", "scenes": ["a-zombie-apocalypse", "a-loved-one-turned-into-a-zombie", "hiding-from-zombies"]},
