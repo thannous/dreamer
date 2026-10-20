@@ -13,6 +13,7 @@ import { JournalTonightPage } from '@/components/journal/JournalTonightPage';
 import { EASING } from '@/components/motion/motion';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
+import { scheduleIdleTask } from '@/lib/scheduleIdleTask';
 import type { DreamAnalysis } from '@/lib/types';
 
 /** Turning to a later page lifts this one over the binding; an earlier page comes back over it. */
@@ -41,6 +42,13 @@ const HINT_LIFT = 0.18;
 const HINT_HOLD = 220;
 const HINT_FALL = 560;
 const HINT_REBOUND = 0.02;
+/**
+ * Lifted as little as on its arrival, the page still covers the one beneath it whole (it
+ * comes towards the reader), so the pages either side need not be drawn with it: they are
+ * drawn once it has come in and fallen shut, or at the first touch, before a turn has
+ * lifted it far enough to uncover them.
+ */
+const LIKENESSES_AFTER = HINT_HOLD + HINT_FALL + 150 + 220;
 
 const PageTurnLockContext = createContext<(locked: boolean) => void>(() => {});
 const PageArrivalContext = createContext<{ laidOut: () => void; arriving: () => boolean }>({
@@ -109,6 +117,20 @@ export function JournalPageTurner({ newer, older, folio, tonight = false, hint =
   // The likenesses stay those of the turn in progress until the turned-to page has settled.
   const [frozen, setFrozen] = useState<{ newer: DreamAnalysis | null; older: DreamAnalysis | null; folio?: number } | null>(null);
   const shown = frozen ?? { newer, older, folio };
+  // Arriving from the capture seal, the page keeps its likenesses from the start: its own
+  // arrival is choreographed and is not held up by them. Under reduce motion a page turns
+  // at once and its likenesses never show.
+  const [likenesses, setLikenesses] = useState(!hint);
+  const drawLikenesses = useCallback(() => setLikenesses(true), []);
+  useEffect(() => {
+    if (likenesses || reduced) return;
+    let task: { cancel: () => void } | undefined;
+    const timer = setTimeout(() => { task = scheduleIdleTask(drawLikenesses); }, LIKENESSES_AFTER);
+    return () => {
+      clearTimeout(timer);
+      task?.cancel();
+    };
+  }, [drawLikenesses, likenesses, reduced]);
 
   const direction = useSharedValue(0);
   const progress = useSharedValue(0);
@@ -249,6 +271,9 @@ export function JournalPageTurner({ newer, older, folio, tonight = false, hint =
     .activeOffsetX([-18, 18])
     .failOffsetY([-12, 12])
     .hitSlop({ left: -BINDING })
+    .onBegin(() => {
+      if (!reduced) scheduleOnRN(drawLikenesses);
+    })
     .onStart(() => {
       if (phase.get() !== IDLE) return;
       if (!turnedOver.get()) direction.set(0);
@@ -315,8 +340,8 @@ export function JournalPageTurner({ newer, older, folio, tonight = false, hint =
           if (done) direction.set(0);
         }));
       }
-    }), [direction, finishTurn, hasLaterDream, hasNewer, hasOlder, leaveTonight, locked, phase, progress, reduced,
-    turnAtOnce, turnedOver, width]);
+    }), [direction, drawLikenesses, finishTurn, hasLaterDream, hasNewer, hasOlder, leaveTonight, locked, phase, progress,
+    reduced, turnAtOnce, turnedOver, width]);
 
   // The page turning over: it lifts from the binding, darkening as it stands on edge. Once
   // turned forward it is set back flat, unseen, and the page turned to fades in there.
@@ -372,12 +397,12 @@ export function JournalPageTurner({ newer, older, folio, tonight = false, hint =
       <View className="flex-1 bg-ink">
       <GestureDetector gesture={pan} touchAction="pan-y">
         <View className="flex-1 bg-ink" onLayout={({ nativeEvent: { layout } }) => setPageHeight(layout.height)}>
-          {shown.newer ? (
+          {shown.newer ? (likenesses ? (
             <Animated.View pointerEvents="none" style={[pageFrame, laterPage]}>
               <JournalPagePreview height={pageHeight} dream={shown.newer} folio={shown.folio ? shown.folio + 1 : undefined} />
               <Animated.View className="absolute inset-0" style={[{ backgroundColor: shadow }, laterShade]} />
             </Animated.View>
-          ) : tonight ? (
+          ) : null) : tonight ? (
             <Animated.View pointerEvents={atTonight ? 'box-none' : 'none'} style={[pageFrame, laterPage]}>
               <JournalTonightPage folio={shown.folio ? shown.folio + 1 : undefined} interactive={atTonight} />
               <Animated.View pointerEvents="none" className="absolute inset-0" style={[{ backgroundColor: shadow }, laterShade]} />
@@ -390,7 +415,7 @@ export function JournalPageTurner({ newer, older, folio, tonight = false, hint =
             <Animated.View pointerEvents="none" className="absolute inset-0" style={[{ backgroundColor: shadow }, currentShade]} />
             <Animated.View pointerEvents="none" className="absolute inset-0" style={[{ backgroundColor: shadow }, currentUnderShade]} />
           </Animated.View>
-          {shown.older ? (
+          {shown.older && likenesses ? (
             <Animated.View pointerEvents="none" style={[pageFrame, earlierPage]}>
               <JournalPagePreview height={pageHeight} dream={shown.older} folio={shown.folio ? shown.folio - 1 : undefined} />
               <Animated.View className="absolute inset-0" style={[{ backgroundColor: shadow }, earlierShade]} />

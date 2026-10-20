@@ -12,6 +12,8 @@ import { TID } from '@/lib/testIDs';
 
 // Decorative artwork; expo-image needs a native view the test runtime does not provide.
 jest.mock('@/components/ui/NightSkyBand', () => ({ NightSkyBand: () => null }));
+// The seal's legend asks whether its face has loaded; expo-font needs native assets the test runtime lacks.
+jest.mock('expo-font', () => ({ isLoaded: () => true }));
 // The seal's length is a motion choice; these journeys only need it to end before the next page.
 jest.mock('@/components/journal/story/dreamStoryMotion', () => {
   const actual = jest.requireActual('@/components/journal/story/dreamStoryMotion');

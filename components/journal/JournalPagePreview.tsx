@@ -56,15 +56,17 @@ export function JournalPagePreview({ dream, folio, height }: { dream: DreamAnaly
   const themeLabel = getDreamThemeLabel(dream.theme, t) ?? dream.theme;
   const typeShown = Boolean(dream.dreamType && (analysisState.isAnalyzed || dream.dreamType !== 'Symbolic Dream'));
 
-  // Its cover, from the same source and cache as the dream page, as the plate it opens on;
-  // at the top of the page, where a turned-to page opens, it rests undrifted.
+  // An illustrated dream opens on its plate, as its page does, unless its picture cannot be
+  // had; the picture, from the same source and cache as the dream page, shows once resolved.
+  // At the top of the page, where a turned-to page opens, it rests undrifted.
+  const plated = Boolean(dream.imageUrl?.trim()) && !(media.error && !media.imageUrl);
   const imageVersion = dream.imageUrl ? getDreamImageVersion(dream) : undefined;
-  const cover = dream.imageUrl?.trim() && media.imageUrl
+  const cover = plated && media.imageUrl
     ? { uri: withCacheBuster(media.imageUrl, imageVersion), cacheKey: imageVersion ? `${dream.imageUrl}|${imageVersion}` : undefined }
     : null;
   const coverTravel = Math.round(height * 0.06);
 
-  const head = <JournalRunningHead label={cover ? undefined : t('nav.sidebar_tagline')} />;
+  const head = <JournalRunningHead label={plated ? undefined : t('nav.sidebar_tagline')} />;
   // A read dream's seal heads its reading, between its name and its story, and carries its details.
   const sealMark = showReading && dream.theme && dream.theme in SEAL_EMBLEMS ? {
     theme: dream.theme,
@@ -75,7 +77,7 @@ export function JournalPagePreview({ dream, folio, height }: { dream: DreamAnaly
     <View className="w-full self-center" style={{ maxWidth: BOOK_MEASURE - 32 }}
       onLayout={({ nativeEvent: { layout } }) => setIntroHeight(layout.height)}>
       <View className={`mx-2 ${showReading ? 'mb-1' : 'mb-7'}`}>
-        <View style={showReading && !cover ? { minHeight: SEAL_NAME_LINES * 32 * titleTextScale + 8 } : undefined}>
+        <View style={showReading && !plated ? { minHeight: SEAL_NAME_LINES * 32 * titleTextScale + 8 } : undefined}>
           <Text allowFontScaling={false} style={{ fontSize: 26 * titleTextScale, lineHeight: 32 * titleTextScale }}
             className="mb-2 font-display-semibold text-[26px] leading-8 text-ivory">
             {dream.title || t('journal.detail.untitled_dream')}
@@ -116,58 +118,60 @@ export function JournalPagePreview({ dream, folio, height }: { dream: DreamAnaly
       <View className="flex-1 overflow-hidden bg-ink" accessible={false} importantForAccessibility="no-hide-descendants"
         accessibilityElementsHidden {...(Platform.OS === 'web' ? { 'aria-hidden': true, inert: true } : {})}>
         <JournalPaper />
-        {cover ? (
+        {/* The plate fills the page at least: what follows it on the dream page lies below. */}
+        {plated ? (
           <JournalCoverPlate height={height} titleHeight={introHeight} head={head}
-            picture={<Image source={cover} contentFit="cover"
-              style={{ position: 'absolute', left: 0, right: 0, top: -coverTravel, bottom: -coverTravel }} />}>
+            picture={cover ? <Image source={cover} contentFit="cover"
+              style={{ position: 'absolute', left: 0, right: 0, top: -coverTravel, bottom: -coverTravel }} /> : null}>
             {heading}
           </JournalCoverPlate>
-        ) : null}
-        <View style={{ paddingTop: cover ? 0 : navigationHeight - 64 }}>
-          {cover ? null : <View style={{ marginBottom: RUNNING_HEAD_GAP }}>{head}</View>}
-          <View className="w-full self-center px-4 pb-6" style={{ maxWidth: BOOK_MEASURE }}>
-            {cover ? null : heading}
-            {showReading ? (
-              <>
-                <SavedDreamMoment phase="read" still wordsLine={false} sealing={sealMark ? { mark: sealMark, settled: true } : null}
-                  date={formatDreamStamp(dream.id)} />
-                <JournalSealShare />
-                <DreamAnalysisContent dream={dream} pending={false} />
-              </>
-            ) : null}
+        ) : (
+          <View style={{ paddingTop: navigationHeight - 64 }}>
+            <View style={{ marginBottom: RUNNING_HEAD_GAP }}>{head}</View>
+            <View className="w-full self-center px-4 pb-6" style={{ maxWidth: BOOK_MEASURE }}>
+              {heading}
+              {showReading ? (
+                <>
+                  <SavedDreamMoment phase="read" still wordsLine={false} sealing={sealMark ? { mark: sealMark, settled: true } : null}
+                    date={formatDreamStamp(dream.id)} />
+                  <JournalSealShare />
+                  <DreamAnalysisContent dream={dream} pending={false} />
+                </>
+              ) : null}
 
-            <View className="mt-2 mb-5">
-              <View className="px-2 pb-4">
-                <BookSectionMark label={t('journal.original_transcript')} scale={compactTextScale} className="mb-5" />
-                <BookProse text={dream.transcript} />
+              <View className="mt-2 mb-5">
+                <View className="px-2 pb-4">
+                  <BookSectionMark label={t('journal.original_transcript')} scale={compactTextScale} className="mb-5" />
+                  <BookProse text={dream.transcript} />
+                </View>
               </View>
-            </View>
 
-            <BookOrnament className="mt-3 mb-4" />
-            <View className="mb-1 flex-row flex-wrap items-center justify-center">
-              <View className="min-h-[44px] flex-row items-center justify-center gap-2 px-4">
-                <IconSymbol name={dream.isFavorite ? 'heart.fill' : 'heart'} size={18} color={noctalia.accent.text} />
-                <Text className="font-serif-italic text-[16px] text-ivory">
-                  {dream.isFavorite ? t('journal.detail.favorite.on') : t('journal.detail.favorite.off')}
-                </Text>
+              <BookOrnament className="mt-3 mb-4" />
+              <View className="mb-1 flex-row flex-wrap items-center justify-center">
+                <View className="min-h-[44px] flex-row items-center justify-center gap-2 px-4">
+                  <IconSymbol name={dream.isFavorite ? 'heart.fill' : 'heart'} size={18} color={noctalia.accent.text} />
+                  <Text className="font-serif-italic text-[16px] text-ivory">
+                    {dream.isFavorite ? t('journal.detail.favorite.on') : t('journal.detail.favorite.off')}
+                  </Text>
+                </View>
+                <View className="h-5 w-px bg-line" />
+                <View className="min-h-[44px] flex-row items-center justify-center gap-2 px-4">
+                  <IconSymbol name="square.and.arrow.up" size={18} color={noctalia.accent.text} />
+                  <Text className="font-serif-italic text-[16px] text-ivory">{t('journal.detail.share.button_default')}</Text>
+                </View>
               </View>
-              <View className="h-5 w-px bg-line" />
-              <View className="min-h-[44px] flex-row items-center justify-center gap-2 px-4">
-                <IconSymbol name="square.and.arrow.up" size={18} color={noctalia.accent.text} />
-                <Text className="font-serif-italic text-[16px] text-ivory">{t('journal.detail.share.button_default')}</Text>
+              <View className="flex-row items-center justify-center self-center">
+                <JournalEditLink />
+                <View className="h-5 w-px bg-line" />
+                <View className="min-h-[44px] flex-row items-center justify-center gap-1.5 px-3">
+                  <IconSymbol name="trash" size={16} color={noctalia.status.danger.icon} />
+                  <Text className="font-serif-italic text-[15px] text-danger-on">{t('journal.menu.delete')}</Text>
+                </View>
               </View>
+              <JournalFolio folio={folio} className="mt-8" />
             </View>
-            <View className="flex-row items-center justify-center self-center">
-              <JournalEditLink />
-              <View className="h-5 w-px bg-line" />
-              <View className="min-h-[44px] flex-row items-center justify-center gap-1.5 px-3">
-                <IconSymbol name="trash" size={16} color={noctalia.status.danger.icon} />
-                <Text className="font-serif-italic text-[15px] text-danger-on">{t('journal.menu.delete')}</Text>
-              </View>
-            </View>
-            <JournalFolio folio={folio} className="mt-8" />
           </View>
-        </View>
+        )}
         <JournalPageEdges />
       </View>
     </DecorativeCopy>
