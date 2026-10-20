@@ -102,3 +102,28 @@ describe('TrendsSky with a screen reader', () => {
     expect(onOpenDream).toHaveBeenCalledWith(older);
   });
 });
+
+describe('TrendsSky under a finger', () => {
+  it('opens the star a tap lands on, not the one a slide ends on', () => {
+    const onOpenDream = jest.fn();
+    const view = render(
+      <TrendsSky sky={sky} lit reduced={false} ink="#fff" glow="#fff" glowOpacity={0.3} dust="#fff" t={t}
+        formatNumber={String} formatDate={formatDate} onOpenDream={onOpenDream} />,
+    );
+    fireEvent(view.getByTestId('trends.sky.canvas'), 'layout', { nativeEvent: { layout: { width: 300, height: 280 } } });
+    const stars = view.getByTestId('trends.sky.stars');
+    // The page point is where the finger is on screen; the location is inside the sky.
+    const touch = (x: number, y: number) => ({ nativeEvent: { pageX: x + 16, pageY: y + 400, locationX: x, locationY: y } });
+
+    // Slid from an empty corner of the sky to the newer star, then lifted there.
+    fireEvent(stars, 'pressIn', touch(40, 40));
+    fireEvent.press(stars, touch(226, 162));
+    expect(onOpenDream).not.toHaveBeenCalled();
+
+    // Tapped on the older star, with the small wobble of a real finger.
+    fireEvent(stars, 'pressIn', touch(97, 116));
+    fireEvent.press(stars, touch(100, 118));
+    expect(onOpenDream).toHaveBeenCalledTimes(1);
+    expect(onOpenDream).toHaveBeenCalledWith(older);
+  });
+});

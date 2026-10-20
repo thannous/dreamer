@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo, useState } from 'react';
+import React, { memo, useCallback, useMemo, useRef, useState } from 'react';
 import {
   AccessibilityInfo,
   Platform,
@@ -32,6 +32,8 @@ const INSET_X = 22;
 const INSET_Y = 26;
 /** A tap this close to a star opens its dream: a finger, not a pixel. */
 const REACH = 30;
+/** A finger that travels farther than this before lifting was sliding over the sky, not tapping a star. */
+const TAP_SLOP = 10;
 const DUST = 72;
 /** The other constellations stay faintly drawn behind the chosen one. */
 const DIMMED = 0.16;
@@ -177,7 +179,15 @@ export function TrendsSky({ sky, lit, reduced, ink, glow, glowOpacity, dust, t, 
     }));
   }, [constellations, stars, width]);
 
+  const pressedAt = useRef<{ x: number; y: number } | null>(null);
+  const pressIn = useCallback(({ nativeEvent }: GestureResponderEvent) => {
+    pressedAt.current = { x: nativeEvent.pageX, y: nativeEvent.pageY };
+  }, []);
   const pick = useCallback((event: GestureResponderEvent) => {
+    const start = pressedAt.current;
+    pressedAt.current = null;
+    // The sky stays pressed while a finger slides inside it: only a tap opens a dream.
+    if (start && Math.hypot(event.nativeEvent.pageX - start.x, event.nativeEvent.pageY - start.y) > TAP_SLOP) return;
     // A mouse click on the web carries its point as an offset in the element instead.
     const native = event.nativeEvent as GestureResponderEvent['nativeEvent'] & { offsetX?: number; offsetY?: number };
     const touchX = Number.isFinite(native.locationX) ? native.locationX : native.offsetX ?? Number.NaN;
@@ -289,7 +299,7 @@ export function TrendsSky({ sky, lit, reduced, ink, glow, glowOpacity, dust, t, 
                 style={[styles.ring, { left: ring.x - RING / 2, top: ring.y - RING / 2, borderColor: ink }]} />
             ) : null}
             {/* Touch only: a screen reader and the keyboard step through the dreams on the sky itself. */}
-            <Pressable testID="trends.sky.stars" onPress={pick} style={StyleSheet.absoluteFill}
+            <Pressable testID="trends.sky.stars" onPressIn={pressIn} onPress={pick} style={StyleSheet.absoluteFill}
               accessible={false} focusable={false} {...(Platform.OS === 'web' ? { tabIndex: -1 } : {})} />
           </>
         ) : null}
