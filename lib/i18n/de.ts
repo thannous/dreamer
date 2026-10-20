@@ -1149,6 +1149,8 @@ const translations: Record<string, string> = {
     'settings.rituals.weekend_reminder_time': 'Wochenendzeit',
     'settings.rituals.weekly_recap': 'Wochenrückblick',
     'settings.rituals.weekly_recap_hint': 'Deine Woche, am Sonntagmorgen.',
+    'settings.sounds.title': 'Klänge von Noctalia',
+    'settings.sounds.hint': 'Ein sanfter Klang, wenn ein Traum versiegelt oder gemalt wird oder ein Symbol wiederkehrt. Still, wenn dein Handy stumm ist.',
     'settings.rituals.streak_risk': 'Serien-Hinweis',
     'settings.rituals.streak_risk_hint': 'Am Abend, an dem deine Serie enden würde.',
     'settings.rituals.inactivity_nudge': 'Sanfte Rückkehr',

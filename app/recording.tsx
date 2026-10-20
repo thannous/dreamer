@@ -97,6 +97,7 @@ import type {
   RememberedDreamKind,
 } from '@/lib/types';
 import { categorizeDream } from '@/services/geminiService';
+import { playSignature } from '@/services/signatureSounds';
 import {
   registerOfflineModelPromptHandler,
   resolveDeviceSpeechCapability,
@@ -109,7 +110,6 @@ import {
   saveRecordingVoiceHintCompleted,
   saveRecordingInputModePreference,
 } from '@/services/storageService';
-import * as Haptics from 'expo-haptics';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -1252,8 +1252,9 @@ function RecordingScreen() {
         markPerformance('journal.saved_navigation_started', { trace: saveTrace });
         navigateToSavedDream(savedDream, { saved: true, recall: completeWithHelp, autoAnalyze: read });
       };
-      // One success haptic at the causal moment; the seal then marks its star's birth and arrival.
-      void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
+      // One success haptic and the seal's sound at the causal moment; the seal then marks its
+      // star's birth and arrival.
+      playSignature('seal');
       const readAtOnce = isNewDream && !completeWithHelp && firstGuestReading;
       if (reducedMotion) {
         // The local name is already usable. Reduced motion must not restart a

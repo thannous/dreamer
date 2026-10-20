@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Platform, Pressable, Text, View, useWindowDimensions, type StyleProp, type ViewStyle } from 'react-native';
 import Animated, { useReducedMotion, type CSSStyle } from 'react-native-reanimated';
 
@@ -6,6 +6,7 @@ import { PressableScale } from '@/components/motion';
 import { EASE } from '@/components/motion/motion';
 import type { LinkedSymbol } from '@/lib/symbolLinks';
 import { TID } from '@/lib/testIDs';
+import { playSignature } from '@/services/signatureSounds';
 import { useLiveTestID } from '../DecorativeCopy';
 import { SymbolMedallion } from '../symbols/SymbolMedallion';
 
@@ -62,7 +63,7 @@ const layoutStars = (count: number, width: number, rows: Rows): Point[] => {
  * does. Each star ignites in turn and the thread to the next one draws itself; on a
  * return visit the constellation is simply lit.
  * As in the onboarding, a symbol that returns carries the number of its dreams and,
- * as it lights, breathes twice, so the eye finds what repeats.
+ * as it lights, breathes twice, so the eye finds what repeats; the first one is heard too.
  *
  * A star opens its symbol's page, as the reading below does. For assistive technology the
  * picture stays decorative: the reading names every symbol with its meaning and opens it,
@@ -82,6 +83,17 @@ export function DreamSymbolConstellation({ stars: all, play, onOpen }: {
   const rows = useMemo(() => rowsFor(fontScale), [fontScale]);
   const points = useMemo(() => (width ? layoutStars(stars.length, width, rows) : []), [rows, stars.length, width]);
   const labelWidth = width ? Math.max(56, width / stars.length - 8) : 0;
+  // The first symbol already met in other dreams answers as it lights, once, on the live page.
+  const echoAt = onOpen ? stars.findIndex((star) => star.count > 1) : -1;
+  const echoed = useRef(false);
+  useEffect(() => {
+    if (!play || echoAt < 0 || echoed.current) return;
+    const timer = setTimeout(() => {
+      echoed.current = true;
+      playSignature('echo');
+    }, reduced ? 0 : igniteDelay(echoAt) + DREAM_STORY.starIgnite / 2);
+    return () => clearTimeout(timer);
+  }, [echoAt, play, reduced]);
 
   return (
     <View

@@ -17,6 +17,7 @@ import { TID } from '@/lib/testIDs';
 import type { TodayState } from '@/lib/todayState';
 import type { DreamAnalysis } from '@/lib/types';
 import { useHeaderStretchStyle, usePaintingArrival, usePaintingDepthStyle } from '@/components/ui/headerStretch';
+import { PaintingTilt } from '@/components/ui/PaintingTilt';
 import Animated from 'react-native-reanimated';
 
 type Props = {
@@ -117,9 +118,12 @@ export function TodayHero({ state, dream, now, onPressCta, onOpenSettings }: Pro
         {/* From the top edge, behind the header, like the paintings of the other tabs. */}
         <Animated.View style={[{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }, artworkDepth]}>
           <Animated.View style={[IMAGE_FILL, artworkArrival]}>
-            {immersiveArtwork ? image : <Image testID="image.background.reverie" source={getDreamerArtwork('reverie', sceneMode)}
-              contentFit="cover" contentPosition="top" cachePolicy="memory" recyclingKey={`reverie:${sceneMode}`}
-              style={IMAGE_FILL} />}
+            {/* While it fills the top of the screen, the painting follows the phone's tilt. */}
+            <PaintingTilt active dominantUntil={stage * 0.35}>
+              {immersiveArtwork ? image : <Image testID="image.background.reverie" source={getDreamerArtwork('reverie', sceneMode)}
+                contentFit="cover" contentPosition="top" cachePolicy="memory" recyclingKey={`reverie:${sceneMode}`}
+                style={IMAGE_FILL} />}
+            </PaintingTilt>
           </Animated.View>
         </Animated.View>
         <LinearGradient colors={veilColors} locations={[0, veilLead, (veilLead + 1) / 2, 1]}
