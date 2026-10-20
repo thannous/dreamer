@@ -46,6 +46,8 @@ type NoctaliaBottomNavProps = {
   addDreamIcon?: IconName;
   /** Pressing Capture while already on Capture; without it the press does nothing. */
   onCapturePress?: () => void;
+  /** What that press does now, for screen readers (focus the text, start or stop dictation). */
+  capturePressHint?: string;
   onBarLayout?: (event: LayoutChangeEvent) => void;
 };
 
@@ -66,6 +68,7 @@ export function NoctaliaBottomNav({
   activeKey,
   addDreamIcon = 'pencil',
   onCapturePress,
+  capturePressHint,
   onBarLayout,
 }: NoctaliaBottomNavProps) {
   const { colors, mode } = useTheme();
@@ -199,6 +202,7 @@ export function NoctaliaBottomNav({
                   busy: isCenter ? Boolean(activeAnalysis) : undefined,
                 }}
                 accessibilityLabel={item.accessibilityLabel}
+                accessibilityHint={isActive && isCenter && onCapturePress ? capturePressHint : undefined}
                 testID={item.testID}
                 style={[
                   { width: navigationLayout.itemWidth },

@@ -88,6 +88,7 @@ const translations: Record<string, string> = {
     'nav.capture_dream_compact': 'Rêve',
     'nav.stats_compact': 'Suivi',
     'nav.explore_compact': 'Explorer',
+    'nav.capture_focus_hint': 'Place le curseur dans ton rêve',
     'nav.capture_dream_accessibility': 'Capturer un rêve',
     'nav.stats': 'Tendances',
     'nav.explore': 'Explorer',

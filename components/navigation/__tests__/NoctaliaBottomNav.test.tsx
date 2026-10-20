@@ -29,6 +29,7 @@ jest.mock('react-native', () => {
       },
     },
     Pressable: ({
+      accessibilityHint,
       accessibilityLabel,
       accessibilityRole,
       accessibilityState,
@@ -39,6 +40,7 @@ jest.mock('react-native', () => {
       testID,
       ...rest
     }: {
+      accessibilityHint?: string;
       accessibilityLabel?: string;
       accessibilityRole?: string;
       accessibilityState?: { selected?: boolean; busy?: boolean };
@@ -49,6 +51,7 @@ jest.mock('react-native', () => {
       testID?: string;
     }) => (
       <button
+        aria-description={accessibilityHint}
         aria-label={accessibilityLabel}
         aria-selected={accessibilityState?.selected ? 'true' : 'false'}
         aria-busy={accessibilityState?.busy ? 'true' : undefined}
@@ -252,6 +255,17 @@ describe('NoctaliaBottomNav', () => {
     const labels = barLabels().map((label) => label.textContent);
     expect(labels).toContain(compact ? 'nav.home_compact' : 'nav.home');
     expect(labels).toContain(compact ? 'nav.stats_compact' : 'nav.stats');
+  });
+
+  it('tells screen readers what the selected Capture tab does, and only there', () => {
+    const onCapturePress = jest.fn();
+    const view = render(<NoctaliaBottomNav activeKey="addDream" onCapturePress={onCapturePress} capturePressHint="Couper le micro" />);
+    const capture = screen.getByTestId(TID.Tab.AddDream);
+    expect(capture.getAttribute('aria-description')).toBe('Couper le micro');
+    fireEvent.click(capture);
+    expect(onCapturePress).toHaveBeenCalledTimes(1);
+    view.rerender(<NoctaliaBottomNav activeKey="home" onCapturePress={onCapturePress} capturePressHint="Couper le micro" />);
+    expect(screen.getByTestId(TID.Tab.AddDream).getAttribute('aria-description')).toBeNull();
   });
 
   it('keeps the capture label stable when another tab is active', () => {

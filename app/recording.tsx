@@ -2094,6 +2094,9 @@ function RecordingScreen() {
             activeKey="addDream"
             addDreamIcon={inputMode === 'voice' ? 'mic' : 'pencil'}
             onCapturePress={handleCaptureNavPress}
+            capturePressHint={inputMode !== 'voice'
+              ? t('nav.capture_focus_hint')
+              : t(isVoiceListening ? 'recording.conversation.mute' : 'recording.mode.switch_to_voice')}
             onBarLayout={handleBottomNavMeasure}
           />
         ) : null}
