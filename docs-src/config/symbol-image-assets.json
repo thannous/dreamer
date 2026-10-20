@@ -1,5 +1,5 @@
 {
-  "version": "2026-10-18",
+  "version": "2026-10-20",
   "promptVersion": "noctalia-symbol-editorial-j27",
   "generatedWith": "OpenAI image_gen built-in tool",
   "responsiveBase": "/img/seo/symbols-v2",
@@ -1273,282 +1273,282 @@
       "promptVersion": "noctalia-symbol-editorial-2026-10-17"
     },
     "light": {
-      "src": "/img/symbols/placeholders-2026-10-18/light.webp",
-      "width": 1600,
-      "height": 900,
+      "src": "/img/symbols/atlas-six-v2/light/hero-1672-92e7c41dd446.webp",
+      "width": 1672,
+      "height": 941,
       "category": "celestial",
       "subject": "Light"
     },
     "lighthouse": {
-      "src": "/img/symbols/placeholders-2026-10-18/lighthouse.webp",
-      "width": 1600,
-      "height": 900,
+      "src": "/img/symbols/atlas-six-v2/lighthouse/hero-1672-06920cc9e4e1.webp",
+      "width": 1672,
+      "height": 941,
       "category": "places",
       "subject": "Lighthouse"
     },
     "window": {
-      "src": "/img/symbols/placeholders-2026-10-18/window.webp",
-      "width": 1600,
-      "height": 900,
+      "src": "/img/symbols/atlas-six-v2/window/hero-1672-4464b707bab0.webp",
+      "width": 1672,
+      "height": 941,
       "category": "objects",
       "subject": "Window"
     },
     "clock": {
-      "src": "/img/symbols/placeholders-2026-10-18/clock.webp",
-      "width": 1600,
-      "height": 900,
+      "src": "/img/symbols/atlas-six-v2/clock/hero-1672-e5e852281916.webp",
+      "width": 1672,
+      "height": 941,
       "category": "objects",
       "subject": "Clock"
     },
     "train-station": {
-      "src": "/img/symbols/placeholders-2026-10-18/train-station.webp",
-      "width": 1600,
-      "height": 900,
+      "src": "/img/symbols/atlas-six-v2/train-station/hero-1672-6a5d5b0e5c77.webp",
+      "width": 1672,
+      "height": 941,
       "category": "places",
       "subject": "Train station"
     },
     "wall": {
-      "src": "/img/symbols/placeholders-2026-10-18/wall.webp",
-      "width": 1600,
-      "height": 900,
+      "src": "/img/symbols/atlas-six-v2/wall/hero-1672-8aed23ba76da.webp",
+      "width": 1672,
+      "height": 941,
       "category": "places",
       "subject": "Wall"
     },
     "library": {
-      "src": "/img/symbols/placeholders-2026-10-18/library.webp",
-      "width": 1600,
-      "height": 900,
+      "src": "/img/symbols/atlas-six-v2/library/hero-1672-c7dfe0ae27fa.webp",
+      "width": 1672,
+      "height": 941,
       "category": "places",
       "subject": "Library"
     },
     "neighbor": {
-      "src": "/img/symbols/placeholders-2026-10-18/neighbor.webp",
-      "width": 1600,
-      "height": 900,
+      "src": "/img/symbols/atlas-six-v2/neighbor/hero-1672-e7d064bf4c9f.webp",
+      "width": 1672,
+      "height": 941,
       "category": "people",
       "subject": "Neighbor"
     },
     "hallway": {
-      "src": "/img/symbols/placeholders-2026-10-18/hallway.webp",
-      "width": 1600,
-      "height": 900,
+      "src": "/img/symbols/atlas-six-v2/hallway/hero-1672-17866f5a3b82.webp",
+      "width": 1672,
+      "height": 941,
       "category": "places",
       "subject": "Hallway"
     },
     "city": {
-      "src": "/img/symbols/placeholders-2026-10-18/city.webp",
-      "width": 1600,
-      "height": 900,
+      "src": "/img/symbols/atlas-six-v2/city/hero-1672-f59efeb2ef8a.webp",
+      "width": 1672,
+      "height": 941,
       "category": "places",
       "subject": "City"
     },
     "street": {
-      "src": "/img/symbols/placeholders-2026-10-18/street.webp",
-      "width": 1600,
-      "height": 900,
+      "src": "/img/symbols/atlas-six-v2/street/hero-1672-991e2bb3420a.webp",
+      "width": 1672,
+      "height": 941,
       "category": "places",
       "subject": "Street"
     },
     "tunnel": {
-      "src": "/img/symbols/placeholders-2026-10-18/tunnel.webp",
-      "width": 1600,
-      "height": 900,
+      "src": "/img/symbols/atlas-six-v2/tunnel/hero-1672-f46edaa7c953.webp",
+      "width": 1672,
+      "height": 941,
       "category": "places",
       "subject": "Tunnel"
     },
     "maze": {
-      "src": "/img/symbols/placeholders-2026-10-18/maze.webp",
-      "width": 1600,
-      "height": 900,
+      "src": "/img/symbols/atlas-six-v2/maze/hero-1672-a19c54318b34.webp",
+      "width": 1672,
+      "height": 941,
       "category": "places",
       "subject": "Maze"
     },
     "tower": {
-      "src": "/img/symbols/placeholders-2026-10-18/tower.webp",
-      "width": 1600,
-      "height": 900,
+      "src": "/img/symbols/atlas-six-v2/tower/hero-1672-b86a76614ba7.webp",
+      "width": 1672,
+      "height": 941,
       "category": "places",
       "subject": "Tower"
     },
     "wind": {
-      "src": "/img/symbols/placeholders-2026-10-18/wind.webp",
-      "width": 1600,
-      "height": 900,
+      "src": "/img/symbols/atlas-six-v2/wind/hero-1672-1f688e9e30de.webp",
+      "width": 1672,
+      "height": 941,
       "category": "nature",
       "subject": "Wind"
     },
     "fog": {
-      "src": "/img/symbols/placeholders-2026-10-18/fog.webp",
-      "width": 1600,
-      "height": 900,
+      "src": "/img/symbols/atlas-six-v2/fog/hero-1672-b14ec73e7ef7.webp",
+      "width": 1672,
+      "height": 941,
       "category": "nature",
       "subject": "Fog"
     },
     "ice": {
-      "src": "/img/symbols/placeholders-2026-10-18/ice.webp",
-      "width": 1600,
-      "height": 900,
+      "src": "/img/symbols/atlas-six-v2/ice/hero-1672-cb9fd05aff19.webp",
+      "width": 1672,
+      "height": 941,
       "category": "nature",
       "subject": "Ice"
     },
     "clouds": {
-      "src": "/img/symbols/placeholders-2026-10-18/clouds.webp",
-      "width": 1600,
-      "height": 900,
+      "src": "/img/symbols/atlas-six-v2/clouds/hero-1672-1b367dd6a1d3.webp",
+      "width": 1672,
+      "height": 941,
       "category": "celestial",
       "subject": "Clouds"
     },
     "waves": {
-      "src": "/img/symbols/placeholders-2026-10-18/waves.webp",
-      "width": 1600,
-      "height": 900,
+      "src": "/img/symbols/atlas-six-v2/waves/hero-1672-aabf4eaa2bf7.webp",
+      "width": 1672,
+      "height": 941,
       "category": "nature",
       "subject": "Waves"
     },
     "outer-space": {
-      "src": "/img/symbols/placeholders-2026-10-18/outer-space.webp",
-      "width": 1600,
-      "height": 900,
+      "src": "/img/symbols/atlas-six-v2/outer-space/hero-1672-2d74d04e2044.webp",
+      "width": 1672,
+      "height": 941,
       "category": "celestial",
       "subject": "Outer space / Planets"
     },
     "burglar": {
-      "src": "/img/symbols/placeholders-2026-10-18/burglar.webp",
-      "width": 1600,
-      "height": 900,
+      "src": "/img/symbols/atlas-six-v2/burglar/hero-1672-f6e652f6a995.webp",
+      "width": 1672,
+      "height": 941,
       "category": "people",
       "subject": "Burglar / Thief"
     },
     "royalty": {
-      "src": "/img/symbols/placeholders-2026-10-18/royalty.webp",
-      "width": 1600,
-      "height": 900,
+      "src": "/img/symbols/atlas-six-v2/royalty/hero-1672-679e06f6a9d5.webp",
+      "width": 1672,
+      "height": 941,
       "category": "people",
       "subject": "King / Queen"
     },
     "crowd": {
-      "src": "/img/symbols/placeholders-2026-10-18/crowd.webp",
-      "width": 1600,
-      "height": 900,
+      "src": "/img/symbols/atlas-six-v2/crowd/hero-1672-c52e9f2a4ffe.webp",
+      "width": 1672,
+      "height": 941,
       "category": "people",
       "subject": "Crowd"
     },
     "twins": {
-      "src": "/img/symbols/placeholders-2026-10-18/twins.webp",
-      "width": 1600,
-      "height": 900,
+      "src": "/img/symbols/atlas-six-v2/twins/hero-1672-b2be5a5bf06e.webp",
+      "width": 1672,
+      "height": 941,
       "category": "people",
       "subject": "Twins"
     },
     "dragon": {
-      "src": "/img/symbols/placeholders-2026-10-18/dragon.webp",
-      "width": 1600,
-      "height": 900,
+      "src": "/img/symbols/atlas-six-v2/dragon/hero-1672-005c5a41f824.webp",
+      "width": 1672,
+      "height": 941,
       "category": "animals",
       "subject": "Dragon"
     },
     "unicorn": {
-      "src": "/img/symbols/placeholders-2026-10-18/unicorn.webp",
-      "width": 1600,
-      "height": 900,
+      "src": "/img/symbols/atlas-six-v2/unicorn/hero-1672-b32d60f605f4.webp",
+      "width": 1672,
+      "height": 941,
       "category": "animals",
       "subject": "Unicorn"
     },
     "fox": {
-      "src": "/img/symbols/placeholders-2026-10-18/fox.webp",
-      "width": 1600,
-      "height": 900,
+      "src": "/img/symbols/atlas-six-v2/fox/hero-1672-4b0ccf04743e.webp",
+      "width": 1672,
+      "height": 941,
       "category": "animals",
       "subject": "Fox"
     },
     "fly": {
-      "src": "/img/symbols/placeholders-2026-10-18/fly.webp",
-      "width": 1600,
-      "height": 900,
+      "src": "/img/symbols/atlas-six-v2/fly/hero-1672-49cdaab9621b.webp",
+      "width": 1672,
+      "height": 941,
       "category": "animals",
       "subject": "Flies"
     },
     "jellyfish": {
-      "src": "/img/symbols/placeholders-2026-10-18/jellyfish.webp",
-      "width": 1600,
-      "height": 900,
+      "src": "/img/symbols/atlas-six-v2/jellyfish/hero-1672-6428b501e63c.webp",
+      "width": 1672,
+      "height": 941,
       "category": "animals",
       "subject": "Jellyfish"
     },
     "octopus": {
-      "src": "/img/symbols/placeholders-2026-10-18/octopus.webp",
-      "width": 1600,
-      "height": 900,
+      "src": "/img/symbols/atlas-six-v2/octopus/hero-1672-2c59dd215003.webp",
+      "width": 1672,
+      "height": 941,
       "category": "animals",
       "subject": "Octopus"
     },
     "candle": {
-      "src": "/img/symbols/placeholders-2026-10-18/candle.webp",
-      "width": 1600,
-      "height": 900,
+      "src": "/img/symbols/atlas-six-v2/candle/hero-1672-ba911bd799d2.webp",
+      "width": 1672,
+      "height": 941,
       "category": "objects",
       "subject": "Candle"
     },
     "broken-glass": {
-      "src": "/img/symbols/placeholders-2026-10-18/broken-glass.webp",
-      "width": 1600,
-      "height": 900,
+      "src": "/img/symbols/atlas-six-v2/broken-glass/hero-1672-7eecbf6463d3.webp",
+      "width": 1672,
+      "height": 941,
       "category": "objects",
       "subject": "Broken glass"
     },
     "gift": {
-      "src": "/img/symbols/placeholders-2026-10-18/gift.webp",
-      "width": 1600,
-      "height": 900,
+      "src": "/img/symbols/atlas-six-v2/gift/hero-1672-141a3599a4ee.webp",
+      "width": 1672,
+      "height": 941,
       "category": "objects",
       "subject": "Gift"
     },
     "bag": {
-      "src": "/img/symbols/placeholders-2026-10-18/bag.webp",
-      "width": 1600,
-      "height": 900,
+      "src": "/img/symbols/atlas-six-v2/bag/hero-1672-0841d64cb141.webp",
+      "width": 1672,
+      "height": 941,
       "category": "objects",
       "subject": "Bag / Handbag"
     },
     "explosion": {
-      "src": "/img/symbols/placeholders-2026-10-18/explosion.webp",
-      "width": 1600,
-      "height": 900,
+      "src": "/img/symbols/atlas-six-v2/explosion/hero-1672-53d1c1a26e55.webp",
+      "width": 1672,
+      "height": 941,
       "category": "actions",
       "subject": "Explosion / Bomb"
     },
     "searching": {
-      "src": "/img/symbols/placeholders-2026-10-18/searching.webp",
-      "width": 1600,
-      "height": 900,
+      "src": "/img/symbols/atlas-six-v2/searching/hero-1672-31cf2916df2d.webp",
+      "width": 1672,
+      "height": 941,
       "category": "actions",
       "subject": "Searching for something"
     },
     "driving": {
-      "src": "/img/symbols/placeholders-2026-10-18/driving.webp",
-      "width": 1600,
-      "height": 900,
+      "src": "/img/symbols/atlas-six-v2/driving/hero-1672-e93da3d755c3.webp",
+      "width": 1672,
+      "height": 941,
       "category": "actions",
       "subject": "Driving / Losing control"
     },
     "climbing": {
-      "src": "/img/symbols/placeholders-2026-10-18/climbing.webp",
-      "width": 1600,
-      "height": 900,
+      "src": "/img/symbols/atlas-six-v2/climbing/hero-1672-2deb400dcbca.webp",
+      "width": 1672,
+      "height": 941,
       "category": "actions",
       "subject": "Climbing"
     },
     "breakup": {
-      "src": "/img/symbols/placeholders-2026-10-18/breakup.webp",
-      "width": 1600,
-      "height": 900,
+      "src": "/img/symbols/atlas-six-v2/breakup/hero-1672-19562d66fe04.webp",
+      "width": 1672,
+      "height": 941,
       "category": "actions",
       "subject": "Breakup"
     },
     "stage": {
-      "src": "/img/symbols/placeholders-2026-10-18/stage.webp",
-      "width": 1600,
-      "height": 900,
+      "src": "/img/symbols/atlas-six-v2/stage/hero-1672-f90188961d5b.webp",
+      "width": 1672,
+      "height": 941,
       "category": "actions",
       "subject": "Being on stage"
     }

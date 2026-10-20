@@ -65,12 +65,11 @@ export default {
       // Static Expo routes compile during the first request; probe Metro without
       // repeatedly starting SSR bundles. app.open() and the journey verify the UI.
       ...(product !== 'site' ? { readyUrl: `http://127.0.0.1:${port}/status` } : {}),
-      // The SDK probe never reads the response body. Against python's http.server a
-      // large unread index.html races the socket close and crashes Node's HTTP parser
-      // (undici `Parser.finish` assertion) before any journey runs; probe a tiny file.
+      // Keep readiness cheap; the repository's Node preview server serves the real
+      // images concurrently without Python HTTP/1.0 connection resets on macOS.
       ...(product === 'site' ? { readyUrl: `http://127.0.0.1:${port}/robots.txt` } : {}),
       command: product === 'site' ? {
-        executable: 'python3', args: ['-m', 'http.server', String(port), '--bind', '127.0.0.1', '--directory', 'docs'], cwd: root,
+        executable: process.execPath, args: ['--run', 'serve:docs', '--', '--port=' + port, '--host=127.0.0.1'], cwd: root,
         startupTimeout: 180_000, log: appLog,
       } : {
         executable: managedCommand!.executable,
