@@ -56,7 +56,8 @@ for (const theme of ['light', 'dark'] as const) {
     for (const [id, name] of [['deceased-person', 'Défunt / Personne décédée'], ['teeth', 'Dents (perdre ses dents)']]) {
       const row = page.getByTestId(`symbol.item.${id}`);
       await completeTitle(row.getByText(name, { exact: true }), row);
-      await expect(row).toHaveRole('button');
+      // A row opens the sheet through its href, so the web reads it as a link (Enter opens it).
+      await expect(row).toHaveRole('link');
     }
     await page.screenshot({ path: info.outputPath(`dictionary-${theme}-390-D.png`) });
     await page.getByTestId('symbol.item.deceased-person').click();

@@ -25,7 +25,7 @@ const DAWN = {
   animationFillMode: 'both',
 } as const;
 
-interface SceneReading {
+export interface SceneReading {
   scene: AtlasScene;
   /** The variation card the scene paints: its context names the scene. */
   label: string;
@@ -38,7 +38,7 @@ interface SceneReading {
  * opening question apart when it opens with one, every sentence kept. A scene whose card
  * this language does not have is left out.
  */
-function readScenes(scenes: AtlasScene[], variations: SymbolVariation[], lang: SymbolLanguage): SceneReading[] {
+export function readScenes(scenes: AtlasScene[], variations: SymbolVariation[], lang: SymbolLanguage): SceneReading[] {
   return scenes.flatMap((scene) => {
     const index = scene.variation[lang];
     const card = index === undefined ? undefined : variations[index];
@@ -61,9 +61,8 @@ interface Shown {
 interface SymbolScenesProps {
   atlas: SymbolAtlas;
   symbolId: string;
-  scenes: AtlasScene[];
-  variations: SymbolVariation[];
-  lang: SymbolLanguage;
+  /** From `readScenes`; the section shows only when there is at least one. */
+  readings: SceneReading[];
   /** The reading column's width. */
   width: number;
   noctalia: Tokens;
@@ -74,16 +73,19 @@ interface SymbolScenesProps {
  * one is shown large across the column, its textures arriving once, with the reading of
  * its variation card under it. The first scene is chosen from the start and waits at rest.
  */
-export function SymbolScenes({ atlas, symbolId, scenes, variations, lang, width, noctalia }: SymbolScenesProps) {
+export function SymbolScenes({ atlas, symbolId, readings, width, noctalia }: SymbolScenesProps) {
   const { t } = useTranslation();
   const reducedMotion = useReducedMotion();
-  const readings = useMemo(() => readScenes(scenes, variations, lang), [lang, scenes, variations]);
   const tileSources = useMemo(
     () => readings.map(({ scene }) => atlasPictureSources(atlas, symbolId, scene.image)),
     [atlas, readings, symbolId],
   );
   const [shown, setShown] = useState<Shown[]>([{ key: 0, index: 0, chosen: false }]);
   const current = shown[shown.length - 1];
+  // Content refreshed under the section can hold fewer scenes: start again from the first.
+  if (current.index >= readings.length && readings.length > 0) {
+    setShown([{ key: current.key + 1, index: 0, chosen: false }]);
+  }
   const reading = readings[current.index];
 
   const choose = useCallback((index: number) => {

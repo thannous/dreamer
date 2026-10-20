@@ -30,8 +30,10 @@ function layerArrival(layer: AtlasLayer, width: number, height: number): CSSStyl
   const [low, high] = layer.op;
   const rest = (low + high) / 2;
   const [dx, dy] = layer.move ?? [0, 0];
-  // A flow crosses its whole range once per cycle, a drift half of it.
-  const share = Math.min(1, LIVING_ARRIVAL_MS / 1000 / layer.dur) * (layer.motion === 'flow' ? 2 : 1);
+  // On the site a drift (there, then back the next cycle) and a flow both cross their range,
+  // from -move to +move, in one cycle. A texture travels at that speed and stops at its
+  // resting place, the middle of that range, so it never starts outside it.
+  const share = Math.min(1, (2 * LIVING_ARRIVAL_MS) / 1000 / layer.dur);
   const animationName: CSSAnimationKeyframes<Pick<ViewStyle, 'opacity' | 'transform'>> = layer.motion === 'pulse'
     ? { from: { opacity: 0 }, '55%': { opacity: high }, to: { opacity: rest } }
     : {

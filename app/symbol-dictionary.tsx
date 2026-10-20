@@ -376,7 +376,6 @@ function SymbolDictionaryScreen() {
                 key={symbol.id}
                 symbolId={symbol.id}
                 source={detailSource}
-                accessibilityRole="button"
                 accessibilityLabel={content.name}
                 testID={`symbol.popular.${symbol.id}`}
                 surfaceStyle={[styles.poster, { backgroundColor: noctalia.surface.soft, borderColor: noctalia.surface.border }]}

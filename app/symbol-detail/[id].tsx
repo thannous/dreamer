@@ -1,7 +1,7 @@
 import { EASE } from '@/components/motion/motion';
 import { LIVING_ARRIVAL_MS, LivingPainting } from '@/components/symbols/LivingPainting';
 import { SymbolArtwork } from '@/components/symbols/SymbolArtwork';
-import { SymbolScenes } from '@/components/symbols/SymbolScenes';
+import { readScenes, SymbolScenes } from '@/components/symbols/SymbolScenes';
 import { MarkdownText } from '@/components/ui/MarkdownText';
 import { DreamerArtworkWindow } from '@/components/ui/DreamerBackground';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -95,7 +95,16 @@ export default function SymbolDetailScreen() {
   const { content: extended, status: extendedStatus } = useExtendedSymbolContent(id, lang);
   const relatedSymbols = useMemo(() => (symbol ? getRelatedSymbols(symbol) : []), [symbol]);
   // The symbols the site paints alive open on that painting, held upright for a phone.
-  const living = useSymbolAtlasEntry(symbol?.id);
+  // The sheet keeps the look it opened with: an atlas that arrives while it is open (a
+  // first launch) shows from the next visit instead of reshaping the page under the reader.
+  const latestLiving = useSymbolAtlasEntry(symbol?.id);
+  const [openedWith] = useState(() => ({ id: symbol?.id, living: latestLiving }));
+  const living = openedWith.id === symbol?.id ? openedWith.living : latestLiving;
+  const variations = extended?.variations;
+  const sceneReadings = useMemo(
+    () => (living && variations ? readScenes(living.entry.scenes, variations, lang) : []),
+    [lang, living, variations],
+  );
 
   useEffect(() => {
     if (!symbol || trackedSymbolRef.current === symbol.id) return;
@@ -303,14 +312,12 @@ export default function SymbolDetailScreen() {
               </Section>
             ) : null}
 
-            {living && living.entry.scenes.length > 0 && extended?.variations ? (
+            {living && sceneReadings.length > 0 ? (
               <Section label={t('symbols.scenes')} noctalia={noctalia}>
                 <SymbolScenes
                   atlas={living.atlas}
                   symbolId={symbol.id}
-                  scenes={living.entry.scenes}
-                  variations={extended.variations}
-                  lang={lang}
+                  readings={sceneReadings}
                   width={Math.min(SCENES_MAX_WIDTH, bodyWidth - BODY_GUTTER * 2)}
                   noctalia={noctalia}
                 />

@@ -68,7 +68,6 @@ export const SymbolCard = memo(function SymbolCard({ symbol, language, source, v
     <SymbolLink
       symbolId={symbol.id}
       source={source}
-      accessibilityRole="button"
       accessibilityLabel={content.name}
       testID={TID.List.SymbolItem(symbol.id)}
       surfaceStyle={cardStyle}

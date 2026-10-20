@@ -10,6 +10,9 @@ export const SYMBOL_ATLAS_URL = 'https://noctalia.app/content/symbols/atlas-v1.j
 
 const DIRECTORY_SEGMENT = 'symbol-content';
 const DOWNLOAD_TIMEOUT_MS = 20_000;
+// Every thumbnail asks for the atlas as it mounts, so after a failed download (offline, or
+// a site that does not have the file yet) the next try waits instead of following the scroll.
+const RETRY_AFTER_MS = 5 * 60_000;
 
 // A development build reads the repository's copy until the site publishes its own, so a
 // change can be tried on a phone before that publish. Release builds never bundle it.
@@ -18,6 +21,7 @@ const DEVELOPMENT_COPY: unknown = __DEV__ ? require('@/data/app/symbol-atlas.jso
 let atlas: SymbolAtlas | undefined;
 let readDisk = false;
 let refreshedThisSession = false;
+let retryAt = 0;
 const listeners = new Set<() => void>();
 
 function cacheFile(): File {
@@ -58,11 +62,11 @@ export function subscribeSymbolAtlas(listener: () => void): () => void {
 /**
  * Fetches the site's atlas once per launch and keeps it for offline visits. A failed
  * download leaves the copy already known (or none: every symbol stays classic) and is
- * tried again by the next screen that asks.
+ * tried again by a screen that asks a few minutes later.
  */
 export async function loadSymbolAtlas(): Promise<SymbolAtlas | undefined> {
   peekSymbolAtlas();
-  if (refreshedThisSession) return atlas;
+  if (refreshedThisSession || Date.now() < retryAt) return atlas;
   refreshedThisSession = true;
   try {
     const data = await fetchJSON<unknown>(SYMBOL_ATLAS_URL, { timeoutMs: DOWNLOAD_TIMEOUT_MS });
@@ -77,6 +81,7 @@ export async function loadSymbolAtlas(): Promise<SymbolAtlas | undefined> {
     }
   } catch {
     refreshedThisSession = false;
+    retryAt = Date.now() + RETRY_AFTER_MS;
   }
   return atlas;
 }

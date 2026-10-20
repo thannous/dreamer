@@ -1,11 +1,11 @@
 import { Link, type Href } from 'expo-router';
 import React, { useMemo, type ReactNode } from 'react';
-import { Pressable, type PressableProps, type StyleProp, type ViewStyle } from 'react-native';
+import { Platform, Pressable, type PressableProps, type StyleProp, type ViewStyle } from 'react-native';
 
 /** Where a symbol's sheet was opened from, for its view event. */
 export type SymbolDetailSource = 'dictionary' | 'search' | 'onboarding' | 'guide';
 
-interface SymbolLinkProps extends Omit<PressableProps, 'style' | 'onPress' | 'children'> {
+interface SymbolLinkProps extends Omit<PressableProps, 'style' | 'onPress' | 'children' | 'role' | 'accessibilityRole'> {
   symbolId: string;
   source: SymbolDetailSource;
   surfaceStyle: StyleProp<ViewStyle>;
@@ -30,9 +30,13 @@ export function SymbolLink({ symbolId, source, children, ...surface }: SymbolLin
   );
 }
 
+// On the web the href makes this an anchor, opened by Enter as links are; a button role
+// there would swallow Space without opening it. The apps keep announcing a button.
+const SURFACE_ROLE = Platform.OS === 'web' ? 'link' : 'button';
+
 // The Link hands its press and href to this child. Its prop merge spreads `style` as an
 // object, which would drop a Pressable style function, so the pressed look lives here
-// under another name. It stays a button for assistive technologies, as before the zoom.
+// under another name.
 function LinkSurface({ surfaceStyle, pressedStyle, ...props }: Omit<SymbolLinkProps, 'symbolId' | 'source'>) {
-  return <Pressable {...props} role="button" style={({ pressed }) => [surfaceStyle, pressed && pressedStyle]} />;
+  return <Pressable {...props} role={SURFACE_ROLE} style={({ pressed }) => [surfaceStyle, pressed && pressedStyle]} />;
 }
