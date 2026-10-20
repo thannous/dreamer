@@ -288,13 +288,14 @@ test.describe('French quick filters', () => {
     // The journal lays out again after a resize. Wait for the row to rest in one line below
     // the floating header: taps still reach chips the header covers, so clicks prove nothing.
     const header = page.getByTestId('journal-search-chrome').filter({ visible: true });
-    await expect.poll(async () => {
+    const rowPlacement = async () => {
       const [row, chrome] = await Promise.all([chipBounds(), header.boundingBox()]);
       if (!chrome || row.some(bound => !bound)) return 'measuring';
       const rowCenters = row.map(bound => bound!.y + bound!.height / 2);
       if (Math.max(...rowCenters) - Math.min(...rowCenters) > 2) return 'row moving';
       return Math.min(...row.map(bound => bound!.y)) >= chrome.y + chrome.height ? 'below header' : 'under header';
-    }).toBe('below header');
+    };
+    await expect.poll(rowPlacement).toBe('below header');
     const bounds = await chipBounds();
     expect(bounds.every(bound => bound && bound.height >= 44)).toBe(true);
     const centers = bounds.map(bound => bound!.y + bound!.height / 2);
@@ -338,6 +339,9 @@ test.describe('French quick filters', () => {
     await expect(page.getByTestId('modal.advancedFilters')).toBeVisible();
     await page.keyboard.press('Escape');
     await expect(page.getByTestId('modal.advancedFilters')).not.toBeVisible();
+    // The first read can come before the screen renders at the new width; after these
+    // taps it has, so the row must still rest below the header.
+    expect(await rowPlacement()).toBe('below header');
     await page.screenshot({ path: testInfo.outputPath(`filters-${width}.png`) });
   }
 });
