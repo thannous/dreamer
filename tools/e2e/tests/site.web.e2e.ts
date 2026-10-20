@@ -1546,7 +1546,7 @@ const LOT_08_PACKS: { id: string; scenes: string[]; pages: Record<string, [strin
 ];
 
 for (const pack of LOT_08_PACKS) {
-  test('lot 08: ' + pack.id + ' moves two effects on its hero, side illustration and three scenes in the six languages, and takes 75svh on a phone', { timeout: 300_000 }, async ({ app, browser, screen }) => {
+  test('lot 09: ' + pack.id + ' moves two effects on its hero, side illustration and three scenes in the six languages, and takes 75svh on a phone', { timeout: 300_000 }, async ({ app, browser, screen }) => {
     const pathOf = (lang: string) => `/${lang}/${SYMBOL_PATHS[lang]}/${pack.pages[lang][0]}.html`;
     // A painting on screen runs both effects: two channels, two different decoded textures with
     // visible pixels, each actually changing.

@@ -1,6 +1,6 @@
 {
   "schema": "noctalia.atlas-source-library/1",
-  "lot": "lot-08",
+  "lot": "lot-09",
   "symbols": [
     "owl",
     "boat",
@@ -236,5 +236,6 @@
   },
   "prompts": "assets/<symbol>/<role>.generation.json and pack.json",
   "reused": "Each reused role has an explicit .reuse.json with original path and SHA256.",
-  "originalEdits": "drafts.json retains the two originals whose tiny generated signatures were removed with built-in ImageGen."
+  "originalEdits": "drafts.json retains the two originals whose tiny generated signatures were removed with built-in ImageGen.",
+  "initialDraftLabel": "lot-08; reassigned to lot-09 after disjoint 30-pack PR490 landed"
 }
