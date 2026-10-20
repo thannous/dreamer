@@ -2,9 +2,9 @@
 
 ## Point de départ du 20 octobre 2026
 
-Le cadre commun des 240 symboles est publié dans les six langues : **1 440 pages**, dont **75 packs d'images** et **165 à préparer**. La plaque latérale et les trois scènes restent présentes sur les pages équipées. Deux effets sont présents sur les 74 packs communs ; le Tigre conserve son moteur historique limité au hero. Les pages sans pack gardent leur illustration statique : ne pas confondre uniformisation et création des 165 packs manquants.
+Le cadre commun des 240 symboles est publié dans les six langues : **1 440 pages**, dont **75 packs d'images** et **165 à préparer**. La plaque latérale et les trois scènes restent présentes sur les pages équipées. Les 75 packs, y compris le Tigre, utilisent deux effets par surface sur le moteur commun. Les pages sans pack gardent leur illustration statique : ne pas confondre uniformisation et création des 165 packs manquants.
 
-Version publique : `1a63ecf787bc8d20e322314e1ba17987c83b1198`, PR478. Lire [la preuve actuelle](../qa/symbol-pages-uniform-20261020.json), [le suivi](README.md) et [le guide](../symbol-atlas-guidelines.md). Les 74 packs communs ont une QA actuelle sur six langues et deux tailles ; le Tigre reste à corriger pour la plaque et les vignettes. Les 240 symboles ont une publication actuelle. Les 40 contrôles PR474 et 37 anciennes publications restent historiques. Aucun accord personnel de Thanh n'a été inventé.
+Version publique : `76d7e577dfb7eb5251b0898e994e3a5210bfd56c`, PR485. Lire [la preuve actuelle](../qa/symbol-tiger-common-motion-20261020.json), [le suivi](README.md) et [le guide](../symbol-atlas-guidelines.md). Les 75 packs ont une QA actuelle sur six langues et deux tailles. Les 240 symboles ont une publication actuelle. Les 40 contrôles PR474 et 37 anciennes publications restent historiques. Aucun accord personnel de Thanh n'a été inventé.
 
 Ne pas réappliquer les patches déjà intégrés des lots précédents. Récupérer le master courant avant tout travail. Les 38 nouveaux packs de la PR474 ont chacun huit rôles ; reprendre leurs réglages existants plutôt que reconstruire un moteur. Leur archive PNG est référencée, mais sa disponibilité locale n'est pas affirmée.
 
@@ -35,9 +35,10 @@ Desktop : utiliser la largeur disponible jusqu'à 2560 px, garder la composition
 | Correspondances FR/EN/ES/DE/IT/PT-BR | `docs-src/config/symbol-atlas-locales.json` |
 | Lots et preuves QA / accord / publication | `docs-src/config/symbol-rollout.json` |
 | Cadrage des pages sans pack | `docs-src/config/symbol-hero-portrait.json` ; supprimer l’entrée quand un pack dédié est ajouté |
+| Profil du Tigre | `TIGER_ATLAS.motion` et `TIGER_ATLAS_ASSETS` dans le générateur ; adaptateur de ses fichiers historiques vers le moteur commun |
 | Assemblage des surfaces | `docs-src/static/scripts/generate-symbol-pages.js` |
 | Géométrie commune site/app | `scripts/lib/atlas-motion.js` |
-| Cycle de vie | Moteur commun `docs-src/static/js/symbol-living/`, chemin actif déclaré par le générateur ; Tigre historique séparé |
+| Cycle de vie | Moteur commun `docs-src/static/js/symbol-living/`, chemin actif déclaré par le générateur, y compris le Tigre |
 | Copie destinée à l'application | `npm run symbols:dictionary:sync` régénère `data/app/symbol-atlas.json` ; ne pas modifier ce fichier à la main |
 
 Ne pas créer de moteur par symbole. Utiliser les commandes `atlas:pack`, `atlas:handoff`, `atlas:gallery`, `atlas:receipt` du package `apps/site` ; voir [le catalogue](../../../scripts/README.md#atlas-pages-asset-packs-handoffs-and-qualification-receipts). Conserver les chemins à empreinte pour les assets/scripts immuables. Modifier `docs-src/`, jamais le résultat généré `docs/`.
