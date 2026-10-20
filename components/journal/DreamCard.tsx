@@ -478,6 +478,7 @@ export const DreamCard = memo(function DreamCard({
           <Image
             source={imageSource}
             style={CARD_IMAGE_STYLE}
+            pointerEvents="none"
             contentFit={imageConfig.contentFit}
             transition={imageTransition}
             cachePolicy={imageConfig.cachePolicy}

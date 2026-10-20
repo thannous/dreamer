@@ -30,6 +30,8 @@ test('native journal preserves reading and list position across repeated returns
     await expect(reference).toBeVisible();
     const after = await reference.boundingBox();
     console.log(JSON.stringify({ cycle, journalPositionBefore: before, journalPositionAfter: after }));
+    expect(before).not.toBeNull();
+    expect(after).toEqual(before);
   }
   await app.screenshot('synthetic-journal-return');
 });
