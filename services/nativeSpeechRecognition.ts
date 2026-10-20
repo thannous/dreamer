@@ -334,6 +334,19 @@ export function __setCachedSpeechModuleForTests(
   cachedSpeechModule = module;
 }
 
+/**
+ * Whether no dictation holds the microphone. A module never loaded has run no session;
+ * a state that cannot be read counts as busy, so nothing reconfigures audio under it.
+ */
+export async function isSpeechRecognitionIdle(): Promise<boolean> {
+  if (!cachedSpeechModule) return true;
+  try {
+    return (await cachedSpeechModule.getStateAsync()) === 'inactive';
+  } catch {
+    return false;
+  }
+}
+
 export async function getSpeechLocaleAvailability(languageCode: string): Promise<SpeechLocaleAvailability | null> {
   const speechModule = await loadSpeechRecognitionModule();
   if (!speechModule) return null;

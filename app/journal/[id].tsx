@@ -102,6 +102,7 @@ import { sortWithSelectionFirst } from '@/lib/sorting';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
 import { categorizeDream } from '@/services/geminiService';
+import { playSignature } from '@/services/signatureSounds';
 import { getStaleAnalysisBannerDismissed, saveStaleAnalysisBannerDismissed } from '@/services/storageService';
 import * as Haptics from 'expo-haptics';
 import { Image } from 'expo-image';
@@ -129,7 +130,9 @@ import Animated, {
 } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
-import { useFrameParallax, useHeaderScrollY } from '@/components/ui/scrollDepth';
+import { PaintingTilt } from '@/components/ui/PaintingTilt';
+import { useOnScreen } from '@/components/ui/headerStretch';
+import { isRestingScroll, useFrameParallax, useHeaderScrollY } from '@/components/ui/scrollDepth';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
@@ -519,6 +522,12 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   // The illustration lies a little deeper than the page and drifts as it scrolls.
   const coverTravel = Math.round(coverHeight * 0.06);
   const headerScrollY = useHeaderScrollY();
+  // A page turned to opens at its top: the screen's scroll, which its painting follows, starts over.
+  useEffect(() => {
+    if (!isRestingScroll(headerScrollY)) headerScrollY.set(0);
+  }, [headerScrollY]);
+  // Behind another screen, the painting stays in its seal until the page is in front again.
+  const onScreen = useOnScreen();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { language } = useLanguage();
   useClearWebFocus();
@@ -2020,10 +2029,12 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     && !plateRevealed && !readingInFlight;
   const releaseArtwork = useCallback(() => {
     const seal = sealWindowRef.current;
-    if (!seal || coverFlight || isEditing || isIllustrationFullscreen) return;
+    if (!seal || !onScreen || coverFlight || isEditing || isIllustrationFullscreen) return;
     seal.measureInWindow((x, y, sealWidth) => {
       const centre = { x: x + sealWidth / 2, y: y + SEAL_MEASURES.orbit / 2 };
       if (centre.y < insets.top + 24 || centre.y > viewportHeight - 96) return;
+      // The painting leaves the seal: heard and felt once, as it goes.
+      playSignature('painting');
       if (reducedMotion) {
         revealPlate();
         return;
@@ -2036,8 +2047,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       const drift = reducedMotion ? 0 : -coverTravel * Math.max(-1, Math.min(1, place));
       setCoverFlight({ from: { ...centre, size: SEAL_MEASURES.medallion }, to: { top, drift }, landed: false });
     });
-  }, [coverFlight, coverHeight, coverTravel, insets.top, isEditing, isIllustrationFullscreen, readingContentTop, readingScrollOffset, reducedMotion,
-    revealPlate, viewportHeight, windowSize.height]);
+  }, [coverFlight, coverHeight, coverTravel, insets.top, isEditing, isIllustrationFullscreen, onScreen, readingContentTop, readingScrollOffset,
+    reducedMotion, revealPlate, viewportHeight, windowSize.height]);
   useEffect(() => {
     if (!sealHoldsArtwork) return;
     const frame = requestAnimationFrame(releaseArtwork);
@@ -2836,6 +2847,9 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     >
       <Animated.View ref={coverParallax.frame} onLayout={coverParallax.onLayout} style={StyleSheet.absoluteFill} pointerEvents="none">
       <Animated.View style={[{ position: 'absolute', left: 0, right: 0, top: -coverTravel, bottom: -coverTravel }, coverParallax.style]}>
+      {/* While the plate fills the screen, it follows the phone's tilt. */}
+      <PaintingTilt active={!isEditing && !isIllustrationFullscreen && !(coverFlight && !coverFlight.landed)}
+        dominantUntil={coverHeight * 0.35}>
       <Image
         key={displayImageUrl ?? dream.imageUrl}
         source={displayImageUrl ? { uri: displayImageUrl, cacheKey: imageCacheKey } : null}
@@ -2849,6 +2863,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
         priority={imageConfig.priority}
         placeholder={{ blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' }}
       />
+      </PaintingTilt>
       </Animated.View>
       </Animated.View>
     </PressableScale>

@@ -10,6 +10,7 @@ import { Alert, AppState, Linking, Platform } from 'react-native';
 import { createScopedLogger } from '@/lib/logger';
 import { handleRecorderReleaseError, RECORDING_OPTIONS } from '@/lib/recording';
 import { waitForPermissionActivityToSettle } from '@/lib/recordingPermissions';
+import { holdMicrophone } from '@/services/microphoneHold';
 import {
   getSpeechLocaleAvailability,
   isWebSpeechRecognitionAvailable,
@@ -81,6 +82,9 @@ export function useRecordingSession({
   onNativeEnd,
 }: UseRecordingSessionOptions) {
   const [isRecording, setIsRecording] = useState(false);
+  // Held from a start's first audio mode change to its stop's last, with or without a
+  // dictation session: the app's cues leave the audio session alone meanwhile.
+  const microphoneRef = useRef<(() => void) | null>(null);
   const [isSpeechListening, setIsSpeechListening] = useState(false);
   const [recordingPermissionState, setRecordingPermissionState] =
     useState<RecordingPermissionState>('unknown');
@@ -89,6 +93,17 @@ export function useRecordingSession({
   const recorderReleasedRef = useRef(false);
   const nativeSessionRef = useRef<NativeSpeechSession | null>(null);
   const isRecordingRef = useRef(false);
+  // At unmount, a live recording hands the microphone back through the screen's forced
+  // stop, once its teardown is over. A hold that nothing takes over goes back a turn later.
+  useEffect(() => () => {
+    const left = microphoneRef.current;
+    if (!left) return;
+    setTimeout(() => {
+      if (microphoneRef.current !== left) return;
+      microphoneRef.current = null;
+      left();
+    }, 0);
+  }, []);
   const recordingTransitionRef = useRef(false);
   const stopPromiseRef = useRef<Promise<RecordingSessionResult> | null>(null);
   const hasAutoStoppedRecordingRef = useRef(false);
@@ -151,6 +166,8 @@ export function useRecordingSession({
       setIsRecording(false);
       setIsSpeechListening(false);
       isRecordingRef.current = false;
+      const microphone = microphoneRef.current;
+      microphoneRef.current = null;
 
       const nativeSession = nativeSessionRef.current;
       nativeSessionRef.current = null;
@@ -180,6 +197,7 @@ export function useRecordingSession({
       } catch (error) {
         log.warn('failed to reset audio mode during', reason, error);
       } finally {
+        microphone?.();
         await deleteRecordedAudio(cleanupUri);
         skipRecorderRef.current = false;
         hasAutoStoppedRecordingRef.current = false;
@@ -207,6 +225,8 @@ export function useRecordingSession({
       let isLanguagePackMissing = false;
       let isRateLimited = false;
       let cleanupUri: string | undefined;
+      const microphone = microphoneRef.current;
+      microphoneRef.current = null;
 
       try {
         setIsRecording(false);
@@ -340,6 +360,7 @@ export function useRecordingSession({
         } catch (err) {
           log.warn('Failed to reset audio mode after recording', err);
         }
+        microphone?.();
         await deleteRecordedAudio(cleanupUri);
         hasAutoStoppedRecordingRef.current = false;
         skipRecorderRef.current = false;
@@ -365,6 +386,8 @@ export function useRecordingSession({
         if (controller.signal.aborted) throw new Error('cancelled');
       };
       let audioModeEnabled = false;
+      let started = false;
+      let microphone: (() => void) | null = null;
       setIsSpeechListening(false);
 
       try {
@@ -401,6 +424,7 @@ export function useRecordingSession({
         }
 
         checkCancelled();
+        microphone = holdMicrophone();
         await setAudioModeAsync({
           allowsRecording: true,
           playsInSilentMode: true,
@@ -467,6 +491,9 @@ export function useRecordingSession({
 
         setIsRecording(true);
         isRecordingRef.current = true;
+        microphoneRef.current?.();
+        microphoneRef.current = microphone;
+        started = true;
         return { success: true };
       } catch (err) {
         setIsSpeechListening(false);
@@ -503,6 +530,7 @@ export function useRecordingSession({
         log.error('Failed to start recording', err);
         return { success: false, error: err instanceof Error ? err.message : 'start_failed' };
       } finally {
+        if (!started) microphone?.();
         pendingStartRef.current = null;
       }
     },
