@@ -1,18 +1,18 @@
 {
   "schema": "noctalia.symbol-tracking-snapshot/1",
   "date": "2026-10-20",
-  "sourceRevision": "9184f780a23f21687350020fa3448d58e4e0aadd",
+  "sourceRevision": "1038406132baf06556f6abda8f1620ac4774984b",
   "sourceRevisionScope": "Clean browser-qualified implementation; subsequent tracking-only edits reuse this evidence.",
   "integratedMaster": "f71600c97",
   "sourceBranch": "codex/symbol-images-lot-08-30",
   "integrationOwner": "Codex",
   "totalSymbols": 240,
-  "integratedSymbols": 105,
-  "remainingToIntegrate": 135,
-  "atlasLocalePages": 630,
+  "integratedSymbols": 111,
+  "remainingToIntegrate": 129,
+  "atlasLocalePages": 666,
   "languages": [
-    "fr",
     "en",
+    "fr",
     "es",
     "de",
     "it",
@@ -21,18 +21,18 @@
   "historicalQaSymbols": 40,
   "historicallyPublishedSymbols": 37,
   "currentStageProofs": {
-    "publication": 0,
+    "publication": 240,
     "approval": 0,
-    "qa": 30
+    "qa": 111
   },
   "files": {
     "workbook": {
       "path": "suivi-240-symboles-6-langues.xlsx",
-      "sha256": "bf7ca345e0d50e7ae4a1386bb82f6faf5551772f7729803bab2c15fbc01faec0"
+      "sha256": "9242a3c5d6362409348742965b8e2a47e3d60cafcf58963fe094d72fe3d9a4df"
     },
     "csv": {
       "path": "symbol-rollout.csv",
-      "sha256": "4835e06f3d442a1ebd8efb1c93f5d6242b9a9dd860ccc283421f685004145375"
+      "sha256": "84d51e0cafa29ef4297fa058fbe662c93440999aac5cc8a2fd530a5f4de5c0c1"
     }
   },
   "reportSha256": "e9cf4eb1696b8cda63d09618e655265d75fd387261363b4f3f98f40512675dc9",
@@ -67,11 +67,11 @@
     "visuallyInspectedPacks": 30,
     "visuallyInspectedBrowserScreenshots": 150
   },
-  "qaReceipt": "../qa/symbol-packs-lot-08-30-20261020.json",
-  "qaReceiptSha256": "2d79fa1b7d2313aa2c5072960842fc735d6ac0c171961fe78bc191355123cfac",
+  "qaReceipt": "../qa/symbol-batch09-delivery-20261020.json",
+  "qaReceiptSha256": "652b098bb0f8439198c74247fcb384eddd2d4bf0a9dcd446614acf3e64568a16",
   "commonLayoutSymbols": 240,
   "commonLayoutLocalePages": 1440,
-  "commonAnimatedPacks": 105,
+  "commonAnimatedPacks": 111,
   "tigerMotionPending": false,
   "tigerEvidence": "Common-engine implementation inherited from master PR485; no fresh Tiger browser qualification in this selected run.",
   "driveSources": "https://drive.google.com/drive/folders/1XzmtnMeVfBGWkT6XdLs5hGGI_kBjes0p",
@@ -105,7 +105,24 @@
     "status": "Retained historical evidence; generator identity changed, so these stages are stale for this candidate."
   },
   "publication": {
-    "performedForThisBatch": false,
-    "approvalRecordedForThisCandidate": false
+    "origin": "https://noctalia.app",
+    "deploymentUrl": "https://ce671c33.noctalia.pages.dev",
+    "command": "npm run docs:deploy:prod",
+    "releaseCommand": "npm run verify:release:site -- --keep",
+    "releasePassed": true
+  },
+  "sourcePullRequest": 494,
+  "latestBatch": {
+    "id": "lot-09",
+    "symbols": [
+      "owl",
+      "boat",
+      "cave",
+      "rose",
+      "lightning",
+      "whale"
+    ],
+    "newSelectedNativePaintings": 40,
+    "byteExactTextureCopies": 8
   }
 }
