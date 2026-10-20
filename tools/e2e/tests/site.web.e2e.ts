@@ -152,109 +152,22 @@ test('symbol artwork fills the page from behind the navbar up to 2560px', { time
   }
 });
 
-// Living-painting pilot of the French tiger page (mist, lantern glow, scroll
-// depth). Decoded layers, running CSS animations, media queries, the source the
-// browser picked and scroll geometry are only checkable in a real browser. The
-// painting never animates itself; it only moves with its layers on scroll.
-const TIGER_PAUSE = 'Pause de l’animation du décor';
-// Painted landmarks, in source pixels: lantern centre for the glow, face bottom for the title.
+// Painted landmarks of the tiger's paintings, in source pixels: lantern centre for the glow, face
+// bottom for the title.
 const LANDSCAPE = { w: 1600, h: 900, lantern: [292, 163] };
 const PORTRAIT = { w: 984, h: 1599, lantern: [244, 378], faceBottom: 925 };
-// Half the scroll: the content rises up to the middle of the painting as the hero leaves.
-const PARALLAX = 0.5;
-// The runtime rounds the shift to the physical pixel, so half a pixel either way is exact.
-const shiftedBy = (read: { figureShift: number }, scroll: number) => Math.abs(read.figureShift - scroll * PARALLAX) <= 0.5;
 
-function tigerPilotScript() {
-  const html = readFileSync(new URL('../../../docs/fr/symboles/tigre.html', import.meta.url), 'utf8');
-  const src = html.match(/<script src="(\/js\/tiger-living\/[0-9a-f]{12}\/tiger-living-painting\.js)" defer><\/script>/)?.[1];
-  expect(src, 'The French tiger page loads one versioned pilot script').toBeDefined();
-  return src!;
-}
-
-function readTigerPilot() {
-  const rect = (node: Element | null) => {
-    if (!node) return null;
-    const r = node.getBoundingClientRect();
-    return { left: r.left, top: r.top, width: r.width, height: r.height };
-  };
-  const translate = (transform: string) => {
-    const m = transform.match(/^matrix\(([^)]+)\)$/);
-    return m ? m[1].split(',').slice(4).map(Number) : [0, 0];
-  };
-  const hero = document.querySelector<HTMLElement>('.symbol-hero')!;
-  const figure = hero.querySelector<HTMLElement>('.symbol-hero-figure')!;
-  const img = hero.querySelector<HTMLImageElement>('.symbol-hero-media img')!;
-  const box = img.getBoundingClientRect();
-  const cs = getComputedStyle(img);
-  // The painted frame of the displayed source: object-fit contain or cover, object-position in %.
-  // While the browser swaps sources the new image has no size yet: fall back to the box.
-  const ratio = img.naturalWidth && img.naturalHeight ? img.naturalWidth / img.naturalHeight : box.width / box.height;
-  const wide = box.width / box.height > ratio;
-  const fitWidth = cs.objectFit === 'cover' ? wide : !wide;
-  const width = fitWidth ? box.width : box.height * ratio;
-  const height = fitWidth ? box.width / ratio : box.height;
-  const [px, py] = cs.objectPosition.split(' ').map(parseFloat);
-  const glow = hero.querySelector('.tlp-glow');
-  return {
-    living: hero.getAttribute('data-tiger-living'),
-    scene: hero.getAttribute('data-tiger-scene'),
-    state: hero.getAttribute('data-tiger-motion-state'),
-    reasons: hero.getAttribute('data-tiger-motion-reasons'),
-    painting: { src: img.currentSrc, left: box.left, top: box.top, width: box.width, height: box.height },
-    paintingAnimations: img.getAnimations().length,
-    frame: { left: box.left + (box.width - width) * px / 100, top: box.top + (box.height - height) * py / 100, width, height },
-    hero: rect(hero)!,
-    figure: rect(figure)!,
-    figureShift: translate(getComputedStyle(figure).transform)[1],
-    viewport: innerHeight,
-    scrollY: window.scrollY,
-    stage: rect(hero.querySelector('.tlp-stage')),
-    glow: rect(glow),
-    glowOpacity: glow ? Number(getComputedStyle(glow).opacity) : null,
-    mist: Array.from(hero.querySelectorAll('.tlp-mist')).map(plane => ({
-      src: plane.querySelector<HTMLImageElement>('.tlp-mist-tex')!.currentSrc,
-      opacity: Number(getComputedStyle(plane).opacity),
-      left: plane.querySelector('.tlp-mist-tex')!.getBoundingClientRect().left,
-      scrollShift: translate(getComputedStyle(plane.querySelector('.tlp-mist-s')!).transform)[0],
-    })),
-    // Layer keyframes only: the stage's fade-in is a transition, not motion.
-    playStates: document.getAnimations()
-      .filter(animation => animation instanceof CSSAnimation && (animation.effect as KeyframeEffect | null)?.target?.closest('.tlp-stage'))
-      .map(animation => animation.playState),
-    toggles: hero.querySelectorAll('.tlp-toggle').length,
-    paintings: performance.getEntriesByType('resource').map(entry => new URL(entry.name).pathname)
-      .filter(path => path.startsWith('/img/seo/symbols-v2/') || /\/tiger-mobile-v4-[0-9]+w\./.test(path)),
-  };
-}
-
-// Seeks each mist texture to both ends of its drift and returns, per plane, the
-// smallest margin between the window edges and the texture's opaque part (it
-// fades out over 5 % at each end). Negative means a visible texture edge.
-function mistCoverage() {
-  return Array.from(document.querySelectorAll('.tlp-mist')).map(plane => {
-    const tex = plane.querySelector('.tlp-mist-tex')!;
-    const animations = tex.getAnimations().filter(animation => animation instanceof CSSAnimation);
-    const frame = plane.getBoundingClientRect();
-    let margin = Infinity;
-    for (const end of [0.5, 1.5]) { // start at mid-course: half a period reaches one end, 1.5 the other
-      for (const animation of animations) animation.currentTime = end * Number(animation.effect!.getComputedTiming().duration);
-      const r = tex.getBoundingClientRect();
-      margin = Math.min(margin, frame.left - (r.left + 0.05 * r.width), r.right - 0.05 * r.width - frame.right);
-    }
-    return Math.round(margin * 10) / 10;
-  });
-}
-
-function readPilotLoads() {
+// What a page loads of the motion engines (the packs' one, the tiger's former one) and of the tiger's
+// files, and how its hero draws its painting.
+function readMotionLoads() {
   const hero = document.querySelector('.symbol-hero')!;
   const img = hero.querySelector<HTMLImageElement>('.symbol-hero-media img')!;
   const box = img.getBoundingClientRect();
   return {
-    scripts: document.querySelectorAll('script[src*="tiger-living"]').length,
-    requests: performance.getEntriesByType('resource').filter(entry => /\/tiger-living\/|tiger-mobile-v4/.test(entry.name)).length,
-    stages: document.querySelectorAll('.tlp-stage, .tlp-toggle').length,
-    marked: hero.hasAttribute('data-tiger-living') || hero.classList.contains('symbol-hero--living'),
+    scripts: document.querySelectorAll('script[src*="symbol-living"], script[src*="tiger-living"], #symbol-living-config').length,
+    requests: performance.getEntriesByType('resource').filter(entry => /\/(?:symbol|tiger)-living\/|tiger-mobile-v4/.test(entry.name)).length,
+    stages: document.querySelectorAll('.slp-stage, .tlp-stage').length,
+    marked: hero.hasAttribute('data-living') || hero.classList.contains('symbol-hero--living'),
     ratio: Math.round(box.width / box.height * 100) / 100,
     objectFit: getComputedStyle(img).objectFit,
     loaded: document.readyState === 'complete' && img.complete,
@@ -266,185 +179,14 @@ function scrollToY(y: number) {
   return window.scrollY;
 }
 
-type TigerPilot = Awaited<ReturnType<typeof readTigerPilot>>;
-
-const sceneOf = (read: TigerPilot) => (read.scene === 'portrait' ? PORTRAIT : LANDSCAPE);
-
-// Layers sit on the painted frame and the glow on the lantern, whatever the scroll.
-const expectAligned = (read: TigerPilot) => {
-  const scene = sceneOf(read);
-  for (const key of ['left', 'top', 'width', 'height'] as const) expect(read.stage![key]).toBeCloseTo(read.frame[key], 0);
-  expect(read.glow!.left + read.glow!.width / 2).toBeCloseTo(read.frame.left + scene.lantern[0] / scene.w * read.frame.width, 0);
-  expect(read.glow!.top + read.glow!.height / 2).toBeCloseTo(read.frame.top + scene.lantern[1] / scene.h * read.frame.height, 0);
-};
-
-// No empty band: the painted frame covers the visible part of the hero.
-const expectCovered = (read: TigerPilot) => {
-  const top = Math.max(read.hero.top, 0), bottom = Math.min(read.hero.top + read.hero.height, read.viewport);
-  expect(read.frame.top).toBeLessThanOrEqual(top + 0.5);
-  expect(read.frame.top + read.frame.height).toBeGreaterThanOrEqual(bottom - 0.5);
-  expect(read.frame.left).toBeLessThanOrEqual(read.hero.left + 0.5);
-  expect(read.frame.left + read.frame.width).toBeGreaterThanOrEqual(read.hero.left + read.hero.width - 0.5);
-};
-
-const expectAtRest = (read: TigerPilot, before: TigerPilot['painting']) => {
-  expect(read.figureShift).toBe(0);
-  expect(read.mist.map(plane => plane.scrollShift)).toEqual(read.mist.map(() => 0));
-  expect(read.painting).toEqual(before);
-  expect(read.paintingAnimations).toBe(0);
-};
-
-test('the French tiger painting moves visibly, gains depth on scroll and stops by itself off screen or with reduced motion, without a pause control', { timeout: 180_000, video: 'on' }, async ({ app, browser, screen }) => {
-  for (const [width, height, scene, mistLayer, painting, minDrift] of [
-    [2560, 1440, 'landscape', 'mist.webp', /\/tiger-v1-1600w\.(?:webp|avif)$/, 30],
-    [390, 844, 'portrait', 'mist-mobile.webp', /\/tiger-mobile-v4-[0-9]+w\.(?:webp|avif)$/, 15],
-  ] as const) {
-    // The harness allows only route and viewport steps before the first app.open;
-    // each pass ends with reduced motion turned back off.
-    await browser.setViewport({ width, height });
-    await app.open('/fr/symboles/tigre.html');
-    await expect(screen.getByRole('heading', { level: 1 })).toBeVisible();
-    await expect.poll(() => browser.evaluate(readTigerPilot).then(read => read.living), { timeout: 15_000 }).toBe('ready');
-    const first = await browser.evaluate(readTigerPilot);
-    expect([first.scene, first.state]).toEqual([scene, 'running']);
-    expect(first.painting.src).toMatch(painting);
-    expect(first.paintings).toEqual([new URL(first.painting.src).pathname]); // one painting fetched, never both
-    expect(first.mist.map(plane => plane.src.split('/').pop())).toEqual([mistLayer, mistLayer]);
-    expectAligned(first);
-    expect(first.playStates.length).toBeGreaterThan(0);
-    expect(first.playStates.every(state => state === 'running')).toBe(true);
-    // The front mist plane is no longer diluted (V3 kept it near .25).
-    expect(first.mist[0].opacity).toBeGreaterThanOrEqual(0.45);
-
-    // Visible within three seconds of arrival: the front mist drifts at least minDrift
-    // screen pixels and the lantern glow changes by .15, while the painting stays put.
-    const started = Date.now();
-    await expect.poll(() => browser.evaluate(readTigerPilot).then(read => Math.abs(read.mist[0].left - first.mist[0].left)), { timeout: 3_000 }).toBeGreaterThanOrEqual(minDrift);
-    await expect.poll(() => browser.evaluate(readTigerPilot).then(read => Math.abs(read.glowOpacity! - first.glowOpacity!)), { timeout: 3_000 - (Date.now() - started) }).toBeGreaterThanOrEqual(0.15);
-    expect(Date.now() - started).toBeLessThanOrEqual(3_000);
-    const moving = await browser.evaluate(readTigerPilot);
-    expect(moving.painting).toEqual(first.painting);
-    expect(moving.paintingAnimations).toBe(0);
-
-    // Scroll down: painting and layers sink together by half the scroll, the mist
-    // planes slide apart, the text keeps scrolling at full speed and no band opens.
-    const down = Math.round(first.hero.height * 0.4);
-    expect(await browser.evaluate(scrollToY, down)).toBe(down);
-    await expect.poll(() => browser.evaluate(readTigerPilot).then(read => shiftedBy(read, down))).toBe(true);
-    const scrolled = await browser.evaluate(readTigerPilot);
-    expect(scrolled.hero.top).toBe(-down);
-    expect(Math.sign(scrolled.mist[0].scrollShift)).toBe(-1);
-    expect(Math.sign(scrolled.mist[1].scrollShift)).toBe(1);
-    expectAligned(scrolled);
-    expectCovered(scrolled);
-    // Even at the deepest scroll, both mist textures cover their windows at either drift end.
-    const deepest = Math.round(first.hero.height) - 2;
-    expect(await browser.evaluate(scrollToY, deepest)).toBe(deepest);
-    await expect.poll(() => browser.evaluate(readTigerPilot).then(read => shiftedBy(read, deepest))).toBe(true);
-    expectCovered(await browser.evaluate(readTigerPilot));
-    for (const margin of await browser.evaluate(mistCoverage)) expect(margin).toBeGreaterThanOrEqual(0);
-    // And back up: everything returns to its starting place.
-    expect(await browser.evaluate(scrollToY, 0)).toBe(0);
-    await expect.poll(() => browser.evaluate(readTigerPilot).then(read => read.figureShift)).toBe(0);
-    expectAtRest(await browser.evaluate(readTigerPilot), first.painting);
-
-    // No pause control (owner decision): the motion stops only by itself, below.
-    expect(await browser.evaluate(() => document.querySelectorAll('.symbol-hero button, .tlp-toggle').length)).toBe(0);
-    expect(await screen.getByRole('button', TIGER_PAUSE).count()).toBe(0);
-
-    // Scrolled past the hero, the layers stop; back in view, they run again.
-    await browser.evaluate(() => { window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }); return window.scrollY; });
-    await expect.poll(() => browser.evaluate(readTigerPilot).then(read => [read.state, read.reasons])).toEqual(['paused', 'offscreen']);
-    expect(await browser.evaluate(scrollToY, 0)).toBe(0);
-    await expect.poll(() => browser.evaluate(readTigerPilot).then(read => [read.state, read.figureShift])).toEqual(['running', 0]);
-
-    // A live reduced-motion preference stops every layer animation and the depth; back to none, they run again.
-    await browser.emulateMedia({ reducedMotion: 'reduce' });
-    await expect.poll(() => browser.evaluate(readTigerPilot).then(read => read.state)).toBe('reduced');
-    expect(await browser.evaluate(scrollToY, down)).toBe(down);
-    await expect.poll(() => browser.evaluate(readTigerPilot).then(read => read.figureShift), { timeout: 1_500 }).not.toBeGreaterThan(0);
-    const reduced = await browser.evaluate(readTigerPilot);
-    expect(reduced.playStates).toEqual([]);
-    expectAtRest(reduced, { ...first.painting, top: first.painting.top - down });
-    expectAligned(reduced);
-    await app.screenshot('tiger-living-reduced-' + width);
-    expect(await browser.evaluate(scrollToY, 0)).toBe(0);
-    await browser.emulateMedia({ reducedMotion: 'no-preference' });
-    await expect.poll(() => browser.evaluate(readTigerPilot).then(read => read.state)).toBe('running');
-    await app.screenshot('tiger-living-' + width);
-  }
-});
-
-test('the tiger layers follow the painting the browser shows when the phone turns', async ({ app, browser, screen }) => {
-  await browser.setViewport({ width: 390, height: 844 });
-  await app.open('/fr/symboles/tigre.html');
-  await expect(screen.getByRole('heading', { level: 1 })).toBeVisible();
-  await expect.poll(() => browser.evaluate(readTigerPilot).then(read => [read.living, read.scene]), { timeout: 15_000 }).toEqual(['ready', 'portrait']);
-  expectAligned(await browser.evaluate(readTigerPilot));
-  for (const [width, height, scene, painting] of [
-    [700, 390, 'landscape', /\/tiger-v1-[0-9]+w\.(?:webp|avif)$/], // narrow but held sideways
-    [1280, 720, 'landscape', /\/tiger-v1-[0-9]+w\.(?:webp|avif)$/],
-    [390, 844, 'portrait', /\/tiger-mobile-v4-[0-9]+w\.(?:webp|avif)$/],
-  ] as const) {
-    await browser.setViewport({ width, height });
-    await expect.poll(() => browser.evaluate(readTigerPilot).then(read => [read.scene, painting.test(read.painting.src)]), { timeout: 15_000 }).toEqual([scene, true]);
-    const read = await browser.evaluate(readTigerPilot);
-    // Landscape keeps the 16:9 contain hero; portrait takes 75svh with cover.
-    if (scene === 'landscape') expect(read.hero.width / read.hero.height).toBeCloseTo(16 / 9, 2);
-    else expect(read.hero.height).toBeCloseTo(height * 0.75, 0);
-    await expect.poll(() => browser.evaluate(readTigerPilot).then(next => Math.abs(next.stage!.width - next.frame.width) < 0.5)).toBe(true);
-    expectAligned(await browser.evaluate(readTigerPilot));
-    expect(read.state).toBe('running');
-  }
-});
-
-test('a broken layer or reduced motion from the first load keeps the tiger painting still', async ({ app, browser, screen }) => {
-  // The pilot reads its layers from the V4 folder, beside its own.
-  const glow = '**/js/tiger-living/*/assets/lantern-glow.webp';
-  await browser.setViewport({ width: 1920, height: 1080 });
-  await browser.route(glow, route => route.fulfill({ status: 404, body: '' }));
-  await app.open('/fr/symboles/tigre.html');
-  await expect.poll(() => browser.evaluate(readTigerPilot).then(read => read.living), { timeout: 15_000 }).toBe('off');
-  const broken = await browser.evaluate(readTigerPilot);
-  expect([broken.stage, broken.toggles, broken.state, broken.scene, broken.playStates]).toEqual([null, 0, null, null, []]);
-  expect(broken.painting.src).toMatch(/\/tiger-v1-[0-9]+w\.(?:webp|avif)$/);
-  expect(broken.paintingAnimations).toBe(0);
-  expect(await browser.evaluate(scrollToY, 300)).toBe(300);
-  await expect.poll(() => browser.evaluate(readTigerPilot).then(read => read.figureShift), { timeout: 1_500 }).not.toBeGreaterThan(0);
-  expect(await browser.evaluate(scrollToY, 0)).toBe(0);
-
-  await browser.unroute(glow);
-  await browser.emulateMedia({ reducedMotion: 'reduce' });
-  await app.open('/fr/symboles/tigre.html');
-  await expect.poll(() => browser.evaluate(readTigerPilot).then(read => read.living), { timeout: 15_000 }).toBe('ready');
-  const reduced = await browser.evaluate(readTigerPilot);
-  expect(reduced.state).toBe('reduced');
-  expect(reduced.playStates).toEqual([]);
-  expectAtRest(reduced, broken.painting);
-  expect(await screen.getByRole('button', TIGER_PAUSE).count()).toBe(0);
-  expect(await browser.evaluate(scrollToY, 300)).toBe(300);
-  await expect.poll(() => browser.evaluate(readTigerPilot).then(read => read.figureShift), { timeout: 1_500 }).not.toBeGreaterThan(0);
-});
-
-test('only the tiger pages, in the six languages, load the living-painting pilot, from one folder named after its hash', async ({ app, browser, screen }) => {
-  const src = tigerPilotScript();
-  const served = readFileSync(new URL('../../../docs' + src, import.meta.url));
-  expect(src.split('/')[3]).toBe(createHash('sha256').update(served).digest('hex').slice(0, 12));
-  // Owner decision 2026-10-18: the tiger's painting serves its six languages (it was French only),
-  // with the same script.
-  for (const path of ['/en/symbols/tiger.html', '/es/simbolos/tigre.html', '/de/traumsymbole/tiger.html', '/it/simboli/tigre.html', '/pt-br/simbolos/tigre.html']) {
-    expect(readFileSync(new URL('../../../docs' + path, import.meta.url), 'utf8')).toContain(`<script src="${src}" defer></script>`);
-    await app.open(path);
-    await expect.poll(() => browser.evaluate(readTigerPilot).then(read => [read.living, read.scene]), { timeout: 15_000 }).toEqual(['ready', 'portrait']);
-    expect((await browser.evaluate(readPilotLoads)).scripts).toBe(1);
-  }
+test('at a phone viewport a page without a pack takes the 75svh hero by cropping its own painting, without a motion script or file', async ({ app, browser, screen }) => {
   // At the default 390x844 phone viewport, a page without a pack takes the same 75svh hero by
-  // cropping its own 16:9 painting (cover), without the pilot's script or files.
+  // cropping its own 16:9 painting (cover), without any motion script or the tiger's files.
   for (const path of ['/fr/symboles/cerf.html', '/en/symbols/deer.html', '/pt-br/simbolos/cervo.html']) {
     await app.open(path);
     await expect(screen.getByRole('heading', { level: 1 })).toBeVisible();
-    await expect.poll(() => browser.evaluate(readPilotLoads).then(read => read.loaded)).toBe(true);
-    expect(await browser.evaluate(readPilotLoads)).toEqual({ scripts: 0, requests: 0, stages: 0, marked: false, ratio: Math.round(390 / (844 * 0.75) * 100) / 100, objectFit: 'cover', loaded: true });
+    await expect.poll(() => browser.evaluate(readMotionLoads).then(read => read.loaded)).toBe(true);
+    expect(await browser.evaluate(readMotionLoads)).toEqual({ scripts: 0, requests: 0, stages: 0, marked: false, ratio: Math.round(390 / (844 * 0.75) * 100) / 100, objectFit: 'cover', loaded: true });
   }
 });
 
@@ -1057,6 +799,184 @@ test('the French atlas paintings each move two distinct raster effects, only on 
   expect(plain.questions.left).toBeGreaterThanOrEqual(plain.reading.right);
   expect(plain.questions.top).toBeLessThan(plain.reading.bottom);
   await app.screenshot('symbol-deer-1920');
+});
+
+// The tiger's paintings move on the packs' engine, with its own files (owner request 2026-10-20): on its
+// hero, side illustration and three thumbnails the lantern glow (channel a) breathes and the mist
+// (channel b) drifts, in each of its six languages.
+const TIGER_PAGES = ['/fr/symboles/tigre.html', '/en/symbols/tiger.html', '/es/simbolos/tigre.html', '/de/traumsymbole/tiger.html', '/it/simboli/tigre.html', '/pt-br/simbolos/tigre.html'];
+const TIGER_SCENES = ['poursuite', 'calme', 'cage'];
+
+// The engine's one script, served from a folder named after its hash, as the tiger pages name it.
+function symbolLivingScript() {
+  const html = readFileSync(new URL('../../../docs/fr/symboles/tigre.html', import.meta.url), 'utf8');
+  const src = html.match(/<script src="(\/js\/symbol-living\/[0-9a-f]{12}\/symbol-living\.js)" defer><\/script>/)?.[1];
+  expect(src, 'The French tiger page loads the versioned common engine').toBeDefined();
+  const served = readFileSync(new URL('../../../docs' + src, import.meta.url));
+  expect(src!.split('/')[3]).toBe(createHash('sha256').update(served).digest('hex').slice(0, 12));
+  return src!;
+}
+
+// The hero's painted frame (object-fit contain or cover, object-position in %), the stage of its
+// effects and the centre of its glow.
+function readTigerHero() {
+  const hero = document.querySelector<HTMLElement>('.symbol-hero')!;
+  const img = hero.querySelector<HTMLImageElement>('.symbol-hero-media img')!;
+  const box = img.getBoundingClientRect();
+  const cs = getComputedStyle(img);
+  // While the browser swaps sources the new image has no size yet: fall back to the box.
+  const ratio = img.naturalWidth && img.naturalHeight ? img.naturalWidth / img.naturalHeight : box.width / box.height;
+  const wide = box.width / box.height > ratio;
+  const fitWidth = cs.objectFit === 'cover' ? wide : !wide;
+  const width = fitWidth ? box.width : box.height * ratio;
+  const height = fitWidth ? box.width / ratio : box.height;
+  const [px, py] = cs.objectPosition.split(' ').map(parseFloat);
+  const scene = Array.from(hero.querySelectorAll('.slp-scene')).find(node => getComputedStyle(node).display !== 'none');
+  const glow = scene?.querySelector('.slp-l[data-living-channel="a"]')?.getBoundingClientRect();
+  const stage = hero.querySelector('.slp-stage')?.getBoundingClientRect();
+  const heroBox = hero.getBoundingClientRect();
+  return {
+    scene: hero.dataset.livingScene ?? null,
+    src: img.currentSrc,
+    hero: { width: heroBox.width, height: heroBox.height },
+    frame: { left: box.left + (box.width - width) * px / 100, top: box.top + (box.height - height) * py / 100, width, height },
+    stage: stage ? { left: stage.left, top: stage.top, width: stage.width, height: stage.height } : null,
+    glow: glow ? [glow.left + glow.width / 2, glow.top + glow.height / 2] : null,
+  };
+}
+
+// The effects sit on the painted frame and the glow on the lantern, within a pixel.
+const expectOnLantern = (read: Awaited<ReturnType<typeof readTigerHero>>) => {
+  const painting = read.scene === 'portrait' ? PORTRAIT : LANDSCAPE;
+  for (const key of ['left', 'top', 'width', 'height'] as const) expect(Math.abs(read.stage![key] - read.frame[key]), key).toBeLessThan(1);
+  expect(Math.abs(read.glow![0] - (read.frame.left + painting.lantern[0] / painting.w * read.frame.width)), 'glow x').toBeLessThan(1);
+  expect(Math.abs(read.glow![1] - (read.frame.top + painting.lantern[1] / painting.h * read.frame.height)), 'glow y').toBeLessThan(1);
+};
+
+test('the tiger paintings each move two effects of the packs\' engine in the six languages, only on screen, and stop by themselves off screen or with reduced motion, without a pause control', { timeout: 300_000 }, async ({ app, browser, screen }) => {
+  const engine = symbolLivingScript();
+  await browser.setViewport({ width: 1920, height: 1080 });
+  for (const path of TIGER_PAGES) {
+    await app.open(path);
+    await expect(screen.getByRole('heading', { level: 1 })).toBeVisible();
+    // The previous page ends in reduced motion: the live preference returns to none once this page is open.
+    await browser.emulateMedia({ reducedMotion: 'no-preference' });
+    // One engine, the packs' own; the tiger's former script is no longer loaded.
+    expect(await browser.evaluate(() => Array.from(document.querySelectorAll<HTMLScriptElement>('script[src*="-living"]')).map(node => new URL(node.src).pathname)), path).toEqual([engine]);
+    const config = await browser.evaluate(readAtlasSix).then(read => read.config);
+    expect(config?.surfaces.map(surface => surface.name), path).toEqual(['hero', 'plate', ...TIGER_SCENES.map(scene => 'scene-' + scene)]);
+    // On every painting, channel a is the tiger's lantern glow and channel b its mist, from its own folder.
+    for (const surface of config!.surfaces) {
+      for (const [scene, { layers }] of Object.entries(surface.scenes)) {
+        expect(layers.map(layer => [layer.channel, layer.src.replace(/^\/js\/tiger-living\/[0-9a-f]{12}\/assets\//, '')]), `${path} ${surface.name} ${scene}`)
+          .toEqual([['a', 'lantern-glow.webp'], ['b', 'mist-mobile.webp']]);
+      }
+    }
+
+    // A painting on screen runs both effects: two channels, two different decoded textures with
+    // visible pixels, each actually changing.
+    const expectLiving = async (name: string) => {
+      await expect.poll(() => browser.evaluate(readSurfaces).then(all => [surfaceNamed(all, name).living, surfaceNamed(all, name).state]), { timeout: 15_000 }).toEqual(['ready', 'running']);
+      const first = surfaceNamed(await browser.evaluate(readSurfaces), name);
+      expect(first.channels, `${path} ${name}`).toEqual(['a', 'b']);
+      expect(first.textures[0]).not.toBe(first.textures[1]);
+      expect(first.opaque.every(count => count > 0), `${path} ${name}: both textures have visible pixels`).toBe(true);
+      expect(first.stretch.every(gap => gap < 0.01), `${path} ${name}: both textures keep their ratio`).toBe(true);
+      await expect.poll(() => browser.evaluate(readSurfaces).then(all => surfaceNamed(all, name).frames.map((frame, index) => frame !== first.frames[index]))).toEqual([true, true]);
+    };
+
+    await expectLiving('hero');
+    const hero = await browser.evaluate(readAtlasSix);
+    expect([hero.scene, hero.src.includes(config!.surfaces[0].scenes.landscape.match)]).toEqual(['landscape', true]);
+    expect(hero.properties.every(property => property === 'opacity' || property === 'transform')).toBe(true);
+    expect([hero.paintingAnimations, hero.figureShift]).toEqual([0, 0]);
+    expectOnLantern(await browser.evaluate(readTigerHero));
+    // Depth: the painting and its effects follow half the scroll together, never zoomed.
+    const down = 300;
+    expect(await browser.evaluate(scrollToY, down)).toBe(down);
+    await expect.poll(() => browser.evaluate(readAtlasSix).then(read => Math.abs(read.figureShift - down * config!.surfaces[0].depth!) <= 0.5)).toBe(true);
+    expect(config!.surfaces[0].depth).toBe(0.5);
+    expectOnLantern(await browser.evaluate(readTigerHero));
+
+    // The side illustration beside the meaning, then the thumbnails: each runs on its own while the
+    // hero, scrolled away, rests.
+    await browser.evaluate(() => { document.querySelector('[data-living-surface="plate"]')!.scrollIntoView({ block: 'center', behavior: 'instant' }); return window.scrollY; });
+    await expectLiving('plate');
+    await browser.evaluate(() => { document.querySelector('.atlas-scene-list')!.scrollIntoView({ block: 'center', behavior: 'instant' }); return window.scrollY; });
+    for (const scene of TIGER_SCENES) await expectLiving('scene-' + scene);
+    await expect.poll(() => browser.evaluate(readSurfaces).then(all => [surfaceNamed(all, 'hero').state, surfaceNamed(all, 'hero').reasons])).toEqual(['paused', ['offscreen']]);
+    expect((await browser.evaluate(readAtlasSix)).thumbsClear).toEqual([true, true, true]);
+    await app.screenshot('tiger-scenes-1920-' + path.split('/')[1]);
+
+    // No pause control (owner decision) on any painting or group of paintings.
+    expect(await browser.evaluate(() => document.querySelectorAll('.symbol-hero button, [data-living-surface] button, .atlas-scenes button, .slp-toggle').length)).toBe(0);
+    expect(await screen.getByRole('button', { name: ATLAS_SIX_PAUSE }).count()).toBe(0);
+    // Back at the top the hero runs again, and the thumbnails, now off screen, stop.
+    expect(await browser.evaluate(scrollToY, 0)).toBe(0);
+    await expect.poll(() => browser.evaluate(readSurfaces).then(all => [surfaceNamed(all, 'hero').state, ...TIGER_SCENES.map(scene => surfaceNamed(all, 'scene-' + scene).reasons.join(' '))]))
+      .toEqual(['running', 'offscreen', 'offscreen', 'offscreen']);
+
+    // A live reduced-motion preference stops every painting; back to none, the hero on screen runs again.
+    await browser.emulateMedia({ reducedMotion: 'reduce' });
+    await expect.poll(() => browser.evaluate(readSurfaces).then(all => [...new Set(all.map(surface => surface.state))])).toEqual(['reduced']);
+    expect((await browser.evaluate(readAtlasSix)).playStates).toEqual([]);
+    await browser.emulateMedia({ reducedMotion: 'no-preference' });
+    await expect.poll(() => browser.evaluate(readSurfaces).then(all => surfaceNamed(all, 'hero').state)).toBe('running');
+  }
+});
+
+test('on a phone the tiger hero takes 75svh with its portrait painting in the six languages, its effects on the lantern of the painting shown as the phone turns', { timeout: 180_000 }, async ({ app, browser, screen }) => {
+  await browser.setViewport({ width: 390, height: 844 });
+  for (const path of TIGER_PAGES) {
+    await app.open(path);
+    await expect(screen.getByRole('heading', { level: 1 })).toBeVisible();
+    await expect.poll(() => browser.evaluate(readSurfaces).then(all => [surfaceNamed(all, 'hero').living, surfaceNamed(all, 'hero').state]), { timeout: 15_000 }).toEqual(['ready', 'running']);
+    const read = await browser.evaluate(readTigerHero);
+    expect([read.scene, /\/tiger-mobile-v4-[0-9]+w\.(?:webp|avif)$/.test(read.src)], path).toEqual(['portrait', true]);
+    expect(read.hero.height).toBeCloseTo(844 * 0.75, 0);
+    expectOnLantern(read);
+    const first = surfaceNamed(await browser.evaluate(readSurfaces), 'hero');
+    expect(first.channels, path).toEqual(['a', 'b']);
+    await expect.poll(() => browser.evaluate(readSurfaces).then(all => surfaceNamed(all, 'hero').frames.map((frame, index) => frame !== first.frames[index]))).toEqual([true, true]);
+  }
+  // Turning the phone, then back: the effects follow the painting the browser shows.
+  for (const [width, height, scene, painting] of [
+    [700, 390, 'landscape', /\/tiger-v1-[0-9]+w\.(?:webp|avif)$/], // narrow but held sideways
+    [1280, 720, 'landscape', /\/tiger-v1-[0-9]+w\.(?:webp|avif)$/],
+    [390, 844, 'portrait', /\/tiger-mobile-v4-[0-9]+w\.(?:webp|avif)$/],
+  ] as const) {
+    await browser.setViewport({ width, height });
+    await expect.poll(() => browser.evaluate(readTigerHero).then(read => [read.scene, painting.test(read.src)]), { timeout: 15_000 }).toEqual([scene, true]);
+    await expect.poll(() => browser.evaluate(readTigerHero).then(read => Math.abs(read.stage!.width - read.frame.width) < 0.5)).toBe(true);
+    const read = await browser.evaluate(readTigerHero);
+    // Landscape keeps the 16:9 contain hero; portrait takes 75svh with cover.
+    if (scene === 'landscape') expect(read.hero.width / read.hero.height).toBeCloseTo(16 / 9, 2);
+    else expect(read.hero.height).toBeCloseTo(height * 0.75, 0);
+    expectOnLantern(read);
+  }
+});
+
+test('a broken texture or reduced motion from the first load keeps the tiger paintings still', async ({ app, browser }) => {
+  // The tiger's textures come from its V4 folder.
+  const glow = '**/js/tiger-living/*/assets/lantern-glow.webp';
+  await browser.setViewport({ width: 1920, height: 1080 });
+  await browser.route(glow, route => route.fulfill({ status: 404, body: '' }));
+  await app.open('/fr/symboles/tigre.html');
+  await expect.poll(() => browser.evaluate(readSurfaces).then(all => surfaceNamed(all, 'hero').living), { timeout: 15_000 }).toBe('off');
+  const broken = await browser.evaluate(readAtlasSix);
+  expect(broken.src).toMatch(/\/tiger-v1-[0-9]+w\.(?:webp|avif)$/);
+  expect([broken.paintingAnimations, broken.playStates, await browser.evaluate(() => document.querySelectorAll('.symbol-hero .slp-stage').length)]).toEqual([0, [], 0]);
+  expect(await browser.evaluate(scrollToY, 300)).toBe(300);
+  await expect.poll(() => browser.evaluate(readAtlasSix).then(read => read.figureShift), { timeout: 1_500 }).not.toBeGreaterThan(0);
+  expect(await browser.evaluate(scrollToY, 0)).toBe(0);
+
+  await browser.unroute(glow);
+  await browser.emulateMedia({ reducedMotion: 'reduce' });
+  await app.open('/fr/symboles/tigre.html');
+  await expect.poll(() => browser.evaluate(readSurfaces).then(all => [surfaceNamed(all, 'hero').living, surfaceNamed(all, 'hero').state]), { timeout: 15_000 }).toEqual(['ready', 'reduced']);
+  expect((await browser.evaluate(readAtlasSix)).playStates).toEqual([]);
+  expect(await browser.evaluate(scrollToY, 300)).toBe(300);
+  await expect.poll(() => browser.evaluate(readAtlasSix).then(read => read.figureShift), { timeout: 1_500 }).not.toBeGreaterThan(0);
 });
 
 test('a scene thumbnail that failed before its effects start keeps its choice, and the other paintings keep running', { timeout: 120_000 }, async ({ app, browser, screen }) => {
