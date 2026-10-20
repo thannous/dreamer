@@ -17,6 +17,12 @@ function expectClientSafe(value: unknown, marker: string) {
   expect(encoded.includes('apple_refresh_token')).toBe(false);
 }
 function jwtClaims(token: string) { return JSON.parse(Buffer.from(token.split('.')[1], 'base64url').toString()); }
+async function expectCurrentUserSafe(owner: ReturnType<typeof client>, marker: string) {
+  const current = await owner.auth.getUser();
+  expect(current.error).toBeNull();
+  expect(current.data.user).not.toBeNull();
+  expectClientSafe(current.data, marker);
+}
 
 // The canonical runner owns and guards this real Auth/Postgres/PostgREST stack.
 // Apple's exchange/revocation alone is synthetic: no provider account or payment.
@@ -87,7 +93,7 @@ test('Apple provider credentials stay private through Auth, refresh, API storage
     }
     const legacy = await admin.auth.admin.updateUserById(ownerId, { app_metadata: { apple_refresh_token: marker } });
     expect(legacy.error).toBeNull();
-    expectClientSafe((await owner.auth.getUser()).data, marker);
+    await expectCurrentUserSafe(owner, marker);
     const refreshed = await owner.auth.refreshSession();
     expect(refreshed.error).toBeNull();
     expectClientSafe(refreshed.data, marker);
@@ -99,8 +105,10 @@ test('Apple provider credentials stay private through Auth, refresh, API storage
     expect(saved.status()).toBe(200);
     expect(await saved.json()).toEqual({ ok: true });
     expect((await admin.rpc('read_apple_refresh_token', { p_user_id: ownerId })).data === marker).toBe(true);
-    expect((await admin.rpc('read_apple_refresh_token', { p_user_id: other.data.user!.id })).data).toBeNull();
-    expectClientSafe((await owner.auth.getUser()).data, marker);
+    const otherToken = await admin.rpc('read_apple_refresh_token', { p_user_id: other.data.user!.id });
+    expect(otherToken.error).toBeNull();
+    expect(otherToken.data).toBeNull();
+    await expectCurrentUserSafe(owner, marker);
     const afterStore = await owner.auth.refreshSession();
     expect(afterStore.error).toBeNull();
     expectClientSafe(afterStore.data, marker);
@@ -112,7 +120,7 @@ test('Apple provider credentials stay private through Auth, refresh, API storage
     expect(stderr.join('').includes(marker)).toBe(false);
 
     const advisors = execFileSync(path.resolve('node_modules/.bin/supabase'), [
-      'db', 'advisors', '--db-url', status.DB_URL, '--type', 'security', '--output-format', 'json',
+      'db', 'advisors', '--db-url', status.DB_URL, '--type', 'security', '--fail-on', 'none', '--output-format', 'json',
     ], { encoding: 'utf8', env: {
       ...Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.startsWith('SUPABASE_'))),
       SUPABASE_HOME: process.env.E2E_SUPABASE_HOME || path.resolve('test-results/backend-e2e-cli-home'),
@@ -137,7 +145,9 @@ test('Apple provider credentials stay private through Auth, refresh, API storage
     const deleted = await request.delete(`${apiUrl}/account`, { headers });
     expect(deleted.status()).toBe(200);
     expect(await deleted.json()).toEqual({ deleted: true });
-    expect((await admin.rpc('read_apple_refresh_token', { p_user_id: ownerId })).data).toBeNull();
+    const erased = await admin.rpc('read_apple_refresh_token', { p_user_id: ownerId });
+    expect(erased.error).toBeNull();
+    expect(erased.data).toBeNull();
     created.splice(created.indexOf(ownerId), 1);
   } finally {
     await db.end();
