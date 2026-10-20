@@ -19,6 +19,13 @@ export const getDreamImageVersion = (dream: DreamImageVersionSource): string | n
   return dream.imageUpdatedAt ?? dream.analysisRequestId ?? dream.analyzedAt ?? dream.id ?? undefined;
 };
 
+/** The cache a dream's page keeps its painting in: one entry per version of the painting. */
+export const getDreamImageCacheKey = (dream: DreamImageVersionSource & { imageUrl?: string | null }): string | undefined => {
+  if (!dream.imageUrl) return undefined;
+  const version = getDreamImageVersion(dream);
+  return version ? `${dream.imageUrl}|${version}` : undefined;
+};
+
 export const withCacheBuster = (url: string, version?: string | number): string => {
   if (!version) return url;
   if (url.startsWith('data:') || url.startsWith('file:')) return url;

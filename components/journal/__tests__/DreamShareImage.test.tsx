@@ -9,9 +9,10 @@ import type { DreamAnalysis } from '@/lib/types';
 jest.mock('@/hooks/useDreamMedia', () => ({ useDreamMedia: (dream: any) => ({ imageUrl: dream?.imageUrl, thumbnailUrl: dream?.thumbnailUrl, loading: false, error: false }) }));
 
 jest.mock('expo-image', () => ({
-  Image: ({ source, onLoad, onDisplay, onError }: any) => (
+  Image: ({ source, placeholder, onLoad, onDisplay, onError }: any) => (
     <>
-      <img alt="Dream" src={source.uri} onLoad={onLoad} onError={onError} />
+      <img alt="Dream" src={source.uri} data-cache-key={source.cacheKey} data-placeholder={placeholder?.uri}
+        onLoad={onLoad} onError={onError} />
       <button type="button" data-testid="dream-image-displayed" onClick={onDisplay}>Display image</button>
     </>
   ),
@@ -60,6 +61,24 @@ it('uses resolved media and signals readiness only after the image is displayed'
   expect(ready).toHaveBeenCalledWith('https://signed/image', true);
 });
 
+
+// The preview took seconds to show a painting the dream's page already held.
+it('shows the painting from the page\'s cache, holds the card\'s picture until then, and files no thumbnail there', () => {
+  const held = { uri: 'https://signed/card-picture', cacheKey: 'card-picture' };
+  const dream = { id: 1, imageUrl: 'private' } as DreamAnalysis;
+  const { rerender } = render(<DreamShareImage dream={dream} t={key => key} placeholder={held}
+    resolvedMedia={{ imageUrl: '', imageCacheKey: 'private|7' }} />);
+  expect(screen.getByAltText('Dream').getAttribute('src')).toBe(held.uri);
+  rerender(<DreamShareImage dream={dream} t={key => key} placeholder={held}
+    resolvedMedia={{ imageUrl: 'https://signed/image', imageCacheKey: 'private|7' }} />);
+  expect(screen.getByAltText('Dream').getAttribute('src')).toBe('https://signed/image');
+  expect(screen.getByAltText('Dream').getAttribute('data-cache-key')).toBe('private|7');
+  expect(screen.getByAltText('Dream').getAttribute('data-placeholder')).toBe(held.uri);
+  rerender(<DreamShareImage dream={dream} t={key => key}
+    resolvedMedia={{ imageUrl: '', thumbnailUrl: 'https://signed/thumbnail', imageCacheKey: 'private|7' }} />);
+  expect(screen.getByAltText('Dream').getAttribute('src')).toBe('https://signed/thumbnail');
+  expect(screen.getByAltText('Dream').hasAttribute('data-cache-key')).toBe(false);
+});
 
 it('leaves out a picture not displayed in time, even when loading completed', () => {
   jest.useFakeTimers();

@@ -33,8 +33,7 @@ import { markDreamStoryEpilogue } from '@/lib/dreamStoryEpilogue';
 import { markDreamNamed } from '@/lib/dreamNaming';
 import { DREAM_THEMES } from '@/lib/dreamThemes';
 import { getDreamStoryHandoffName, hasDreamStoryHandoff, markDreamStoryPageReady } from '@/lib/dreamStoryPrologue';
-import { DreamShareImage } from '@/components/journal/DreamShareImage';
-import { DreamShareSheet } from '@/components/journal/DreamShareSheet';
+import { DreamShareComposer } from '@/components/journal/DreamShareComposer';
 import { getImageJobFailure } from '@/lib/imageJobErrors';
 import { ImageRetry } from '@/components/journal/ImageRetry';
 import {
@@ -57,7 +56,6 @@ import { useDreamsData, useDreamsActions } from '@/context/DreamsContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
-import { useDreamShareComposite } from '@/hooks/useDreamShareComposite';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useQuota } from '@/hooks/useQuota';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -84,7 +82,7 @@ import {
 import { getDreamAnalysisFreshness } from '@/lib/dreamAnalysisFreshness';
 import { isHdIllustrationsEnabled, isMockModeEnabled } from '@/lib/env';
 import { classifyError, ErrorType, QuotaError, QuotaErrorCode } from '@/lib/errors';
-import { getDreamImageVersion, getImageConfig, withCacheBuster } from '@/lib/imageUtils';
+import { getDreamImageCacheKey, getDreamImageVersion, getImageConfig, withCacheBuster } from '@/lib/imageUtils';
 import {
   resolveJournalIllustrationAccess,
   resolveJournalIllustrationCta,
@@ -92,8 +90,6 @@ import {
   shouldReplaceExistingImage,
   shouldShowCompletedJournalReading,
 } from '@/lib/journalIllustrationPolicy';
-import type { ShareCardOptions } from '@/lib/journal/shareCard';
-import { getFileExtensionFromUrl, getMimeTypeFromExtension } from '@/lib/journal/shareImageUtils';
 import { resolveJournalDreamRecallOfferEligible } from '@/lib/journalDreamRecallOffer';
 import {
   isJournalSavedConfirmationParam,
@@ -146,30 +142,6 @@ type ShareNavigator = Navigator & {
     writeText?: (text: string) => Promise<void>;
   };
 };
-
-interface ShareImageData {
-  source: string;
-  extension: string;
-  mimeType: string;
-}
-
-type SharePreparationStatus = 'ready' | 'failed' | 'stale';
-
-interface ShareCompositeRequest {
-  id: number;
-  source: string;
-  dream: DreamAnalysis;
-  options: ShareCardOptions;
-  date: string;
-  onMediaReady: (source: string, ready: boolean) => void;
-}
-
-interface PendingShareComposite {
-  id: number;
-  source: string;
-  dreamIdentity: string;
-  resolve: (status: SharePreparationStatus) => void;
-}
 
 const getShareNavigator = (): ShareNavigator | undefined => {
   if (typeof navigator === 'undefined') {
@@ -827,8 +799,6 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   }, [revealRecallInput]);
 
 
-  const { shareImageRef, shareComposite } = useDreamShareComposite();
-
   const analysisState = useMemo(() => getDreamAnalysisState(dream), [dream]);
   // Analyses, AI illustrations and conversations can be reported to us.
   const hasGeneratedContent = Boolean(dream && (analysisState.isAnalyzed
@@ -1162,64 +1132,22 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     () => (dream?.title ? dream.title : t('journal.title')),
     [dream, t],
   );
-  const shareImage = useMemo<ShareImageData | undefined>(() => {
-    if (!dream) return undefined;
-    const source = media.imageUrl || media.thumbnailUrl;
-    if (!source) return undefined;
-    const extension = getFileExtensionFromUrl(source);
-    return {
-      source,
-      extension,
-      mimeType: getMimeTypeFromExtension(extension),
-    };
-  }, [dream, media.imageUrl, media.thumbnailUrl]);
-  // The share card's picture, as resolved for the page. Without one, the card goes without it.
-  const shareSource = shareImage?.source ?? '';
-  const [shareRequest, setShareRequest] = useState<ShareCompositeRequest | null>(null);
+  // On a phone, the dreamer chooses what the shared card shows, over the page, from the
+  // painting the page already shows.
   const [isShareSheetVisible, setShareSheetVisible] = useState(false);
-  // The chosen card is being drawn, before its capture: leaving then cancels the share.
-  const [isPreparingShare, setPreparingShare] = useState(false);
-  const shareDate = useMemo(() => (dream ? formatDreamDate(dream.id) : ''), [dream, formatDreamDate]);
-  const shareRequestIdRef = useRef(0);
-  const pendingShareRef = useRef<PendingShareComposite | null>(null);
+  const shareMedia = useMemo(() => ({
+    imageUrl: media.imageUrl,
+    thumbnailUrl: media.thumbnailUrl,
+    loading: media.loading,
+    placeholder: coverPlaceholder,
+  }), [coverPlaceholder, media.imageUrl, media.loading, media.thumbnailUrl]);
+  const closeShareSheet = useCallback(() => setShareSheetVisible(false), []);
   const shareInFlightRef = useRef(false);
-  const closeShareSheet = useCallback(() => {
-    const pending = pendingShareRef.current;
-    if (pending) {
-      pendingShareRef.current = null;
-      pending.resolve('stale');
-    } else if (shareInFlightRef.current) {
-      return;
-    }
-    setShareSheetVisible(false);
-  }, []);
   const shareScreenMountedRef = useRef(true);
-  const shareDreamIdentity = dream ? getDreamIdentityKey(dream) : undefined;
-  const latestShareMediaRef = useRef({ source: shareSource, dreamIdentity: shareDreamIdentity });
-  const onShareMediaReady = useCallback((requestId: number, source: string, ready: boolean) => {
-    const pending = pendingShareRef.current;
-    if (!pending || pending.id !== requestId || pending.source !== source) return;
-    pendingShareRef.current = null;
-    pending.resolve(ready && Boolean(shareImageRef.current) ? 'ready' : 'failed');
-  }, [shareImageRef]);
-  useLayoutEffect(() => {
-    latestShareMediaRef.current = { source: shareSource, dreamIdentity: shareDreamIdentity };
-    const pending = pendingShareRef.current;
-    if (pending && ((pending.source && pending.source !== shareSource) || pending.dreamIdentity !== shareDreamIdentity)) {
-      pendingShareRef.current = null;
-      pending.resolve('stale');
-    }
-  }, [shareSource, shareDreamIdentity]);
   useEffect(() => {
     shareScreenMountedRef.current = true;
-    return () => {
-      shareScreenMountedRef.current = false;
-      const pending = pendingShareRef.current;
-      pendingShareRef.current = null;
-      pending?.resolve('stale');
-    };
+    return () => { shareScreenMountedRef.current = false; };
   }, []);
-  const shareMediaPending = Platform.OS !== 'web' && Boolean(dream?.imageUrl || dream?.thumbnailUrl) && media.loading;
   const clipboardSupported = Platform.OS === 'web' && Boolean(getShareNavigator()?.clipboard?.writeText);
 
   // The page has one way to edit it: its name, details and story together.
@@ -1348,9 +1276,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     if (!dream?.imageUrl) return undefined;
     return getDreamImageVersion(dream);
   }, [dream]);
-  const imageCacheKey = dream?.imageUrl && imageVersion
-    ? `${dream.imageUrl}|${imageVersion}`
-    : undefined;
+  const imageCacheKey = dream ? getDreamImageCacheKey(dream) : undefined;
   const displayImageUrl = useMemo(() => {
     if (!dream?.imageUrl) return undefined;
     return media.imageUrl ? withCacheBuster(media.imageUrl, imageVersion) : undefined;
@@ -1400,52 +1326,6 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       if (shareScreenMountedRef.current) setIsSharing(false);
     }
   }, [dream, isAnalysisLocked, openShareModal, shareMessage, shareTitle]);
-
-  // The card as chosen, captured once drawn: after its illustration is displayed or, when
-  // that is left out, cannot be had or shown, without it. The choice stays open over the
-  // system's share sheet and closes once that sheet is done, shared or not.
-  const shareCard = useCallback(async (options: ShareCardOptions) => {
-    if (!dream || isAnalysisLocked || shareInFlightRef.current || !shareDreamIdentity) return;
-    if (options.painting && shareMediaPending) return;
-    shareInFlightRef.current = true;
-    setIsSharing(true);
-    try {
-      const requestId = ++shareRequestIdRef.current;
-      const source = options.painting ? shareSource : '';
-      setPreparingShare(true);
-      const preparation = await new Promise<SharePreparationStatus>(resolve => {
-        pendingShareRef.current = { id: requestId, source, dreamIdentity: shareDreamIdentity, resolve };
-        setShareRequest({
-          id: requestId,
-          source,
-          dream,
-          options,
-          date: shareDate,
-          onMediaReady: (readySource, ready) => onShareMediaReady(requestId, readySource, ready),
-        });
-      });
-      if (shareScreenMountedRef.current) setPreparingShare(false);
-      if (preparation === 'stale'
-        || (source && latestShareMediaRef.current.source !== source)
-        || latestShareMediaRef.current.dreamIdentity !== shareDreamIdentity) return;
-      if (!shareImageRef.current) throw new Error('Dream share card is not mounted');
-
-      await shareComposite(dream);
-      if (shareScreenMountedRef.current) setShareSheetVisible(false);
-    } catch (error) {
-      if (!shareScreenMountedRef.current) return;
-      console.error('Share failed:', error);
-      Alert.alert(t('common.error_title'), t('journal.detail.share.error_message'));
-    } finally {
-      pendingShareRef.current = null;
-      shareInFlightRef.current = false;
-      if (shareScreenMountedRef.current) {
-        setShareRequest(null);
-        setPreparingShare(false);
-        setIsSharing(false);
-      }
-    }
-  }, [dream, isAnalysisLocked, shareComposite, shareSource, shareDate, t, shareMediaPending, shareDreamIdentity, shareImageRef, onShareMediaReady]);
 
   // Opened from a journal card's share icon: share once the dream is here, then drop the request.
   const autoShareDoneRef = useRef(false);
@@ -3512,16 +3392,12 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
             router.push('/settings?section=account');
           } : undefined}
         />
-        <DreamShareSheet
+        <DreamShareComposer
+          dream={dream}
           visible={isShareSheetVisible}
           onClose={closeShareSheet}
-          onShare={shareCard}
-          dream={dream}
-          date={shareDate}
-          painting={shareSource}
-          paintingPending={shareMediaPending}
-          sharing={isSharing}
-          capturing={isSharing && !isPreparingShare}
+          media={shareMedia}
+          locked={isAnalysisLocked}
         />
         <Modal
           visible={isShareModalVisible}
@@ -3606,21 +3482,6 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
           />
         ) : null}
 
-        {/* Mount the share composite only for an active native share request. */}
-        {shareRequest && (
-          <View className="absolute top-0 left-[-10000px] h-[1350px] w-[1080px]">
-            <DreamShareImage
-              key={shareRequest.id}
-              ref={shareImageRef}
-              dream={shareRequest.dream}
-              t={t}
-              options={shareRequest.options}
-              date={shareRequest.date}
-              resolvedMedia={{ imageUrl: shareRequest.source }}
-              onMediaReady={shareRequest.onMediaReady}
-            />
-          </View>
-        )}
         {/* The journal page's own edges, over everything that rests on it. */}
         {!isEditing ? <JournalPageEdges /> : null}
         </View>

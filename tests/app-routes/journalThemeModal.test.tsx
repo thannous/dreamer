@@ -396,6 +396,8 @@ jest.doMock('@/components/ui/icon-symbol', () => ({
 }));
 
 jest.doMock('@/components/journal/JournalFirstPage', () => ({ JournalFirstPage: () => <div data-testid="journal-first-page" /> }));
+// Sharing a card is covered with the screens that open it, not here.
+jest.doMock('@/components/journal/DreamShareComposer', () => ({ DreamShareComposer: () => null }));
 
 const { default: JournalListScreen } = require('@/app/(tabs)/journal');
 

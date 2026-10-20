@@ -1468,7 +1468,6 @@ describe('native share card', () => {
     fireEvent.click(shareCardButton());
     expect(screen.getByTestId('share-composite').getAttribute('data-text')).toBe('quote');
     expect(mockShareImageRef.current).not.toBeNull();
-    expect((screen.getByTestId(TID.Button.DreamShare) as HTMLButtonElement).disabled).toBe(true);
     await act(async () => { mockCompositeEvents[0].load(); });
     expect(mockShareComposite).not.toHaveBeenCalled();
     await act(async () => { mockCompositeEvents[0].display(); });

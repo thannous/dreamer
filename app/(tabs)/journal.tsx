@@ -10,6 +10,7 @@ import { AdvancedFilterSheet, type JournalSortOrder } from '@/components/journal
 import { RemoteJournalList } from '@/components/journal/RemoteJournalList';
 import type { DreamListItem } from '@/lib/journalReadContracts';
 import { DreamCard } from '@/components/journal/DreamCard';
+import { DreamShareComposer } from '@/components/journal/DreamShareComposer';
 import { takeDreamStoryEpilogue } from '@/lib/dreamStoryEpilogue';
 import { EmptyState } from '@/components/journal/EmptyState';
 import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
@@ -529,13 +530,24 @@ function JournalListScreen() {
     router.push({ pathname: '/journal/[id]', params: getDreamRouteParams(dream) });
   }, []);
 
-  // Sharing from a card opens the dream with its share open: on a phone, the dreamer chooses
-  // what the shared card shows; the web, with no reliable share sheet, falls back to copying.
+  // On a phone, sharing from a card lets the dreamer choose what the shared card shows, over
+  // the journal they stay in. The web, with no reliable share sheet, opens the dream, whose
+  // share falls back to copying.
+  const [shareTarget, setShareTarget] = useState<{ key: string; dream: DreamAnalysis; open: boolean } | null>(null);
   const handleDreamShare = useCallback((dream: DreamAnalysis) => {
+    if (Platform.OS !== 'web') {
+      setShareTarget({ key: getDreamIdentityKey(dream), dream, open: true });
+      return;
+    }
     if (isNavigatingRef.current) return;
     isNavigatingRef.current = true;
     router.push({ pathname: '/journal/[id]', params: { ...getDreamRouteParams(dream), share: '1' } });
   }, []);
+  const closeDreamShare = useCallback(() => setShareTarget((current) => current && { ...current, open: false }), []);
+  // The dream as the journal holds it now; the one asked for while it closes or is gone.
+  const sharedDream = shareTarget
+    ? dreams.find((dream) => getDreamIdentityKey(dream) === shareTarget.key) ?? shareTarget.dream
+    : null;
 
   const handleDreamFavorite = useCallback((dream: DreamAnalysis) => {
     setFavoriteError(null);
@@ -1246,6 +1258,9 @@ function JournalListScreen() {
       sortOrder={sortOrder}
       onSortOrderChange={setSortOrder}
     />
+    {sharedDream ? (
+      <DreamShareComposer dream={sharedDream} visible={shareTarget?.open ?? false} onClose={closeDreamShare} />
+    ) : null}
     </KeyboardAvoidingView>
   );
 }

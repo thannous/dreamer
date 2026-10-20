@@ -234,6 +234,13 @@ jest.mock('@/components/journal/DreamCard', () => ({
     </>
   ),
 }));
+jest.mock('@/components/journal/DreamShareComposer', () => ({
+  DreamShareComposer: ({ dream, visible, onClose }: any) => (
+    <div data-testid="share-composer" data-dream={dream.title} data-visible={String(visible)}>
+      <button onClick={onClose}>Close the share composer</button>
+    </div>
+  ),
+}));
 jest.mock('@/components/journal/JournalFirstPage', () => ({ JournalFirstPage: ({ onStartDream, onSettings }: any) => <div data-testid="journal-first-page"><button onClick={onStartDream}>Start first dream</button><button onClick={onSettings}>Settings</button></div> }));
 jest.mock('@/components/journal/EmptyState', () => ({ EmptyState: () => <div data-testid="journal-empty" /> }));
 jest.mock('@/components/motion', () => ({ PressableScale: ({ children, onPress, testID }: any) => <button data-testid={testID} onClick={onPress}>{children}</button> }));
@@ -928,11 +935,27 @@ it('opens the selected card with its stable remote identity when timestamps coll
 });
 
 
-it.each(['ios', 'android', 'web'])('opens the dream with its share composer from a card share on %s', (platform: string) => {
+// Closing the composer used to leave the dreamer on the dream's page, opened behind it.
+it.each(['ios', 'android'])('shares a card over the journal, which the dreamer stays in, on %s', (platform: string) => {
   mockPlatform = platform;
+  mockDreams.push({ ...guestDream, remoteId: 17, title: 'Other dream' }, { ...guestDream, remoteId: 2501, clientRequestId: 'last-request', title: 'Selected dream' });
+  render(<JournalScreen />);
+  expect(screen.queryByTestId('share-composer')).toBeNull();
+  fireEvent.click(screen.getByText('Share Selected dream'));
+  const composer = screen.getByTestId('share-composer');
+  expect(composer.getAttribute('data-dream')).toBe('Selected dream');
+  expect(composer.getAttribute('data-visible')).toBe('true');
+  fireEvent.click(screen.getByText('Close the share composer'));
+  expect(screen.getByTestId('share-composer').getAttribute('data-visible')).toBe('false');
+  expect(mockPush).not.toHaveBeenCalled();
+});
+
+it('opens the dream with its share asked for from a card share on the web', () => {
+  mockPlatform = 'web';
   mockDreams.push({ ...guestDream, remoteId: 2501, clientRequestId: 'last-request', title: 'Selected dream' });
   render(<JournalScreen />);
   fireEvent.click(screen.getByText('Share Selected dream'));
+  expect(screen.queryByTestId('share-composer')).toBeNull();
   expect(mockPush).toHaveBeenCalledWith({ pathname: '/journal/[id]', params: {
     id: String(guestDream.id), remoteId: '2501', clientRequestId: 'last-request', share: '1',
   } });
