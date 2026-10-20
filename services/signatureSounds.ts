@@ -41,18 +41,22 @@ const ECHO_ANSWER_MS = 420;
 const STORAGE_KEY = 'noctalia_signature_sounds_v1';
 
 let enabled: boolean | null = null;
+// Counts the dreamer's choices: a read begun before one must not undo it.
+let choices = 0;
 const players = new Map<SignatureSound, AudioPlayer>();
 
 /** Sounds are on unless the dreamer turned them off. */
 export async function getSignatureSoundsEnabled(): Promise<boolean> {
-  if (enabled === null) {
-    try {
-      enabled = (await getLucidKeyValueStorage().getItem(STORAGE_KEY)) !== 'off';
-    } catch {
-      enabled = true;
-    }
+  if (enabled !== null) return enabled;
+  const asked = choices;
+  let stored: boolean;
+  try {
+    stored = (await getLucidKeyValueStorage().getItem(STORAGE_KEY)) !== 'off';
+  } catch {
+    stored = true;
   }
-  return enabled;
+  if (choices === asked) enabled = stored;
+  return enabled ?? stored;
 }
 
 /** The choice already read this launch, or null before the first read. */
@@ -63,6 +67,7 @@ export function peekSignatureSoundsEnabled(): boolean | null {
 /** Takes effect at once; a choice that could not be stored is let go. */
 export async function setSignatureSoundsEnabled(next: boolean): Promise<void> {
   const before = enabled;
+  choices += 1;
   enabled = next;
   try {
     await getLucidKeyValueStorage().setItem(STORAGE_KEY, next ? 'on' : 'off');

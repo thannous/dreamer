@@ -83,3 +83,13 @@ it('keeps the sounds on when turning them off could not be stored', async () => 
   await settle();
   expect(mockPlayer.play).toHaveBeenCalledTimes(1);
 });
+
+it('keeps a choice made while the setting was still being read', async () => {
+  const sounds = launch();
+  const reading = sounds.getSignatureSoundsEnabled();
+  await sounds.setSignatureSoundsEnabled(false);
+  expect(await reading).toBe(false);
+  sounds.playSignature('seal');
+  await settle();
+  expect(mockPlayer.play).not.toHaveBeenCalled();
+});
