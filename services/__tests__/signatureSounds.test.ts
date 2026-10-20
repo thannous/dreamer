@@ -4,6 +4,7 @@ const mockPlayer = { volume: 1, seekTo: jest.fn(async () => {}), play: jest.fn()
 const mockSetAudioMode = jest.fn(async (_mode: unknown) => {});
 const mockStore = new Map<string, string>();
 let mockIdle = true;
+let mockWriteFails = false;
 
 jest.mock('expo-audio', () => ({
   setAudioModeAsync: (mode: unknown) => mockSetAudioMode(mode),
@@ -12,7 +13,10 @@ jest.mock('expo-audio', () => ({
 jest.mock('@/services/lucidKeyValueStorage', () => ({
   getLucidKeyValueStorage: () => ({
     getItem: async (key: string) => mockStore.get(key) ?? null,
-    setItem: async (key: string, value: string) => { mockStore.set(key, value); },
+    setItem: async (key: string, value: string) => {
+      if (mockWriteFails) throw new Error('storage full');
+      mockStore.set(key, value);
+    },
   }),
 }));
 jest.mock('@/services/nativeSpeechRecognition', () => ({
@@ -31,6 +35,7 @@ const settle = () => new Promise((resolve) => setTimeout(resolve, 0));
 beforeEach(() => {
   mockStore.clear();
   mockIdle = true;
+  mockWriteFails = false;
   jest.clearAllMocks();
   (AppState as { currentState: string }).currentState = 'active';
 });
@@ -66,4 +71,15 @@ it('never touches the audio session under a live dictation or in the background'
   await settle();
   expect(mockSetAudioMode).not.toHaveBeenCalled();
   expect(mockPlayer.play).not.toHaveBeenCalled();
+});
+
+it('keeps the sounds on when turning them off could not be stored', async () => {
+  const sounds = launch();
+  expect(await sounds.getSignatureSoundsEnabled()).toBe(true);
+  mockWriteFails = true;
+  await expect(sounds.setSignatureSoundsEnabled(false)).rejects.toThrow('storage full');
+  expect(sounds.peekSignatureSoundsEnabled()).toBe(true);
+  sounds.playSignature('seal');
+  await settle();
+  expect(mockPlayer.play).toHaveBeenCalledTimes(1);
 });

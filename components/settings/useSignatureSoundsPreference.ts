@@ -1,15 +1,22 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { getSignatureSoundsEnabled, setSignatureSoundsEnabled } from '@/services/signatureSounds';
+import {
+  getSignatureSoundsEnabled,
+  peekSignatureSoundsEnabled,
+  setSignatureSoundsEnabled,
+} from '@/services/signatureSounds';
 
 /** Noctalia's signature sounds, on until the dreamer turns them off. */
 export function useSignatureSoundsPreference() {
-  const [enabled, setEnabled] = useState(true);
+  // Read once a launch: a second visit to the settings shows the choice from the start.
+  const [enabled, setEnabled] = useState(() => peekSignatureSoundsEnabled() ?? true);
+  // A switch flipped before the stored choice is read keeps the dreamer's word.
+  const touched = useRef(false);
 
   useEffect(() => {
     let active = true;
     void getSignatureSoundsEnabled().then((value) => {
-      if (active) setEnabled(value);
+      if (active && !touched.current) setEnabled(value);
     });
     return () => {
       active = false;
@@ -17,6 +24,7 @@ export function useSignatureSoundsPreference() {
   }, []);
 
   const toggle = useCallback((next: boolean) => {
+    touched.current = true;
     setEnabled(next);
     void setSignatureSoundsEnabled(next).catch(() => setEnabled(!next));
   }, []);

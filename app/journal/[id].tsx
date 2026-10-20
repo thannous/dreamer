@@ -131,7 +131,8 @@ import Animated, {
 import { scheduleOnRN } from 'react-native-worklets';
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 import { PaintingTilt } from '@/components/ui/PaintingTilt';
-import { useFrameParallax, useHeaderScrollY } from '@/components/ui/scrollDepth';
+import { useOnScreen } from '@/components/ui/headerStretch';
+import { isRestingScroll, useFrameParallax, useHeaderScrollY } from '@/components/ui/scrollDepth';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
@@ -521,6 +522,12 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   // The illustration lies a little deeper than the page and drifts as it scrolls.
   const coverTravel = Math.round(coverHeight * 0.06);
   const headerScrollY = useHeaderScrollY();
+  // A page turned to opens at its top: the screen's scroll, which its painting follows, starts over.
+  useEffect(() => {
+    if (!isRestingScroll(headerScrollY)) headerScrollY.set(0);
+  }, [headerScrollY]);
+  // Behind another screen, the painting stays in its seal until the page is in front again.
+  const onScreen = useOnScreen();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { language } = useLanguage();
   useClearWebFocus();
@@ -2022,7 +2029,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     && !plateRevealed && !readingInFlight;
   const releaseArtwork = useCallback(() => {
     const seal = sealWindowRef.current;
-    if (!seal || coverFlight || isEditing || isIllustrationFullscreen) return;
+    if (!seal || !onScreen || coverFlight || isEditing || isIllustrationFullscreen) return;
     seal.measureInWindow((x, y, sealWidth) => {
       const centre = { x: x + sealWidth / 2, y: y + SEAL_MEASURES.orbit / 2 };
       if (centre.y < insets.top + 24 || centre.y > viewportHeight - 96) return;
@@ -2040,8 +2047,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       const drift = reducedMotion ? 0 : -coverTravel * Math.max(-1, Math.min(1, place));
       setCoverFlight({ from: { ...centre, size: SEAL_MEASURES.medallion }, to: { top, drift }, landed: false });
     });
-  }, [coverFlight, coverHeight, coverTravel, insets.top, isEditing, isIllustrationFullscreen, readingContentTop, readingScrollOffset, reducedMotion,
-    revealPlate, viewportHeight, windowSize.height]);
+  }, [coverFlight, coverHeight, coverTravel, insets.top, isEditing, isIllustrationFullscreen, onScreen, readingContentTop, readingScrollOffset,
+    reducedMotion, revealPlate, viewportHeight, windowSize.height]);
   useEffect(() => {
     if (!sealHoldsArtwork) return;
     const frame = requestAnimationFrame(releaseArtwork);

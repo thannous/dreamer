@@ -55,9 +55,21 @@ export async function getSignatureSoundsEnabled(): Promise<boolean> {
   return enabled;
 }
 
+/** The choice already read this launch, or null before the first read. */
+export function peekSignatureSoundsEnabled(): boolean | null {
+  return enabled;
+}
+
+/** Takes effect at once; a choice that could not be stored is let go. */
 export async function setSignatureSoundsEnabled(next: boolean): Promise<void> {
+  const before = enabled;
   enabled = next;
-  await getLucidKeyValueStorage().setItem(STORAGE_KEY, next ? 'on' : 'off');
+  try {
+    await getLucidKeyValueStorage().setItem(STORAGE_KEY, next ? 'on' : 'off');
+  } catch (error) {
+    enabled = before;
+    throw error;
+  }
 }
 
 function touch(sound: SignatureSound) {

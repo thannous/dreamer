@@ -96,6 +96,9 @@ function TiltSensor({ x, y }: { x: SharedValue<number>; y: SharedValue<number> }
       rested.set(true);
       restX.set(gx);
       restY.set(gy);
+      // Taken back on its way to the centre, the painting goes on from where it is.
+      smoothX.set(x.get());
+      smoothY.set(y.get());
       return;
     }
     const rx = restX.get() + (gx - restX.get()) * RECENTER;
@@ -121,7 +124,7 @@ function TiltSensor({ x, y }: { x: SharedValue<number>; y: SharedValue<number> }
  * frame, as if it lay behind the glass. One painting at a time: the latest to ask while its
  * screen is in front, the app in use and the page scrolled no further than `dominantUntil`.
  * Only then does the sensor run, and a phone held still draws nothing. The painting is
- * enlarged just enough that its edges never show. Never with reduced motion.
+ * enlarged just enough, for its own frame, that its edges never show. Never with reduced motion.
  */
 function LivePaintingTilt({ active, dominantUntil, children }: Props) {
   const reduced = useReducedMotion();
@@ -129,8 +132,13 @@ function LivePaintingTilt({ active, dominantUntil, children }: Props) {
   const foreground = useForeground();
   const dominant = useDominant(dominantUntil);
   const tilts = useTiltTurn(active && !reduced && onScreen && foreground && dominant);
-  const { width } = useWindowDimensions();
-  const zoom = width > 0 ? 1 + (2 * SHIFT_X + 2) / width : 1;
+  const screen = useWindowDimensions();
+  const [frame, setFrame] = useState<{ width: number; height: number } | null>(null);
+  // Enlarged by the slide each way plus a point, along whichever side of the frame needs it.
+  const { width, height } = frame ?? screen;
+  const zoom = width > 0 && height > 0
+    ? 1 + Math.max((2 * SHIFT_X + 2) / width, (2 * SHIFT_Y + 2) / height)
+    : 1;
   const x = useSharedValue(0);
   const y = useSharedValue(0);
   useEffect(() => {
@@ -143,7 +151,14 @@ function LivePaintingTilt({ active, dominantUntil, children }: Props) {
   }), [zoom]);
 
   return (
-    <Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill, reduced ? null : style]}>
+    <Animated.View
+      pointerEvents="none"
+      style={[StyleSheet.absoluteFill, reduced ? null : style]}
+      onLayout={({ nativeEvent: { layout } }) => setFrame((previous) => (
+        previous?.width === layout.width && previous.height === layout.height
+          ? previous
+          : { width: layout.width, height: layout.height }))}
+    >
       {tilts ? <TiltSensor x={x} y={y} /> : null}
       {children}
     </Animated.View>
