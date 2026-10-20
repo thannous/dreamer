@@ -14,7 +14,16 @@ function jsonResponse(body: unknown, status: number): Response {
   });
 }
 
-export async function handleStoreAppleAuthToken(ctx: ApiContext): Promise<Response> {
+type Dependencies = {
+  createAdminClient?: (url: string, key: string) => any;
+  exchangeAuthorizationCode?: typeof exchangeAppleAuthorizationCode;
+  readConfig?: typeof readAppleAuthConfig;
+};
+
+export async function handleStoreAppleAuthToken(
+  ctx: ApiContext,
+  dependencies: Dependencies = {}
+): Promise<Response> {
   const { user, req, supabaseUrl, supabaseServiceRoleKey } = ctx;
   if (!user) {
     return jsonResponse({ error: 'Unauthorized' }, 401);
@@ -29,34 +38,29 @@ export async function handleStoreAppleAuthToken(ctx: ApiContext): Promise<Respon
     return jsonResponse({ error: 'Missing authorization code' }, 400);
   }
 
-  const config = readAppleAuthConfig();
+  const config = (dependencies.readConfig ?? readAppleAuthConfig)();
   if (!config) {
     return jsonResponse({ error: 'Apple token revocation is not configured' }, 503);
   }
 
   try {
-    const refreshToken = await exchangeAppleAuthorizationCode(authorizationCode, config);
-    const adminClient = createClient(supabaseUrl, supabaseServiceRoleKey, {
-      auth: { autoRefreshToken: false, persistSession: false },
+    const refreshToken = await (dependencies.exchangeAuthorizationCode ?? exchangeAppleAuthorizationCode)(authorizationCode, config);
+    const adminClient = dependencies.createAdminClient
+      ? dependencies.createAdminClient(supabaseUrl, supabaseServiceRoleKey)
+      : createClient(supabaseUrl, supabaseServiceRoleKey, {
+        auth: { autoRefreshToken: false, persistSession: false },
+      });
+    const { error } = await adminClient.rpc('store_apple_refresh_token', {
+      p_user_id: user.id,
+      p_refresh_token: refreshToken,
     });
-    const { data: existing, error: getUserError } = await adminClient.auth.admin.getUserById(user.id);
-    if (getUserError || !existing?.user) {
-      return jsonResponse({ error: 'Failed to store Apple token' }, 500);
-    }
-    const { error: updateError } = await adminClient.auth.admin.updateUserById(user.id, {
-      app_metadata: {
-        ...(existing.user.app_metadata ?? {}),
-        apple_refresh_token: refreshToken,
-      },
-    });
-    if (updateError) {
+    if (error) {
       return jsonResponse({ error: 'Failed to store Apple token' }, 500);
     }
     return jsonResponse({ ok: true }, 200);
-  } catch (error) {
-    console.warn('[api] /auth/apple-token failed', {
-      message: error instanceof Error ? error.message : 'unknown',
-    });
+  } catch {
+    // Provider/database error messages may contain credential material.
+    console.warn('[api] /auth/apple-token failed');
     return jsonResponse({ error: 'Failed to store Apple token' }, 503);
   }
 }
