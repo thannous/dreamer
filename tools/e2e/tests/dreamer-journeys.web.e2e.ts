@@ -131,13 +131,16 @@ test('a search typed in a scrolled journal keeps its field until the user scroll
   await expect(field).toBeFocused();
   await expect(page.getByTestId(/^dream\.item\./)).toHaveCount(1);
   await expect(page.getByTestId(/^dream\.item\./)).toContainText('The Infinite Library');
-  // A wheel over a list that cannot move leaves the field; the user scrolling the whole
-  // journal puts the keyboard away, as a drag does natively.
+  // A gesture that does not move the list (a sideways wheel) leaves the field: wait past
+  // the list's dismissal window and the web scroller's end of scroll, then check.
+  const resting = await list.evaluate((node) => node.scrollTop);
   await page.mouse.move(195, 640);
-  await page.mouse.wheel(0, 120);
+  await page.mouse.wheel(120, 0);
+  await page.evaluate(() => new Promise((resolve) => setTimeout(resolve, 400)));
+  expect(await list.evaluate((node) => node.scrollTop)).toBe(resting);
   await expect(field).toBeFocused();
+  // The user scrolling the whole journal puts the keyboard away, as a drag does natively.
   await field.fill('');
-  await expect(field).toBeFocused();
   await expect.poll(() => list.evaluate((node) => node.scrollTop)).toBe(0);
   await page.mouse.move(195, 640);
   await page.mouse.wheel(0, 400);

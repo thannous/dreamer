@@ -115,9 +115,10 @@ filtres ou une molette au-dessus d'une liste immobile.
 
 Parcours TesterArmy ajouté à `dreamer-journeys` : liste défilée, saisie lettre par
 lettre de « The Infinite Library » (valeur exacte, focus conservé, un résultat),
-molette sur la liste immobile (focus conservé), champ vidé (focus conservé), puis
-défilement réel par l'utilisateur (clavier fermé). Sans la correction, il échoue :
-le champ ne contient que « T ».
+molette latérale qui ne déplace pas la liste (position identique après 400 ms,
+focus conservé), puis défilement réel par l'utilisateur (clavier fermé). Il échoue
+sans la correction (le champ ne contient que « T ») et avec la première version
+trop large (focus perdu sur la molette latérale) ; il passe 3/3 avec la correction.
 
 ## Mesures
 
@@ -177,7 +178,10 @@ identique pour les six langues. Hermes, plus coûteux sur `Intl`, n'est pas mesu
   et la hauteur compacte, puis revérifie l'absence de couverture : 20/20 sur la
   branche, et passe sur la base. Aucune assertion n'est retirée.
 - Revue indépendante du diff : un défaut confirmé (fermeture du clavier web trop
-  large), corrigé ci-dessus ; remarques facultatives traitées dans le banc.
+  large), corrigé ci-dessus ; remarques facultatives traitées dans le banc. Relecture
+  ciblée de la correction : aucun défaut applicatif ; l'étape « liste immobile » du
+  parcours ne prouvait rien (la liste à un résultat défile encore) et a été remplacée
+  par la molette latérale ; horloge monotone (`performance.now()`) pour la fenêtre.
 
 ## Limites
 

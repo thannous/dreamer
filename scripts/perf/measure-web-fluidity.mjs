@@ -61,7 +61,7 @@ function serve(root) {
     const pathname = decodeURIComponent(new URL(request.url, 'http://localhost').pathname);
     let file = path.join(root, pathname);
     const inside = path.relative(root, file);
-    if (inside.startsWith('..') || path.isAbsolute(inside)) {
+    if (inside === '..' || inside.startsWith(`..${path.sep}`) || path.isAbsolute(inside)) {
       response.writeHead(403).end();
       return;
     }

@@ -625,16 +625,16 @@ function JournalListScreen() {
   // journal lost its field after the first letter. On the web the list dismisses it only
   // when it moves under a wheel or touch of the user's, as a drag does natively; a swipe
   // of the filter chips or a wheel over a list that cannot move leaves the field alone.
-  const lastUserScrollInputRef = useRef(0);
+  const lastUserScrollInputRef = useRef(Number.NEGATIVE_INFINITY);
   const markUserScrollInput = useCallback(() => {
-    lastUserScrollInputRef.current = Date.now();
+    lastUserScrollInputRef.current = performance.now();
   }, []);
   const webUserScrollInput = isWeb
     ? { onWheel: markUserScrollInput, onTouchMove: markUserScrollInput }
     : null;
   // Typing is not scrolling: the list's return to the top that a letter starts stays its own.
   const handleSearchQueryChange = useCallback((text: string) => {
-    lastUserScrollInputRef.current = 0;
+    lastUserScrollInputRef.current = Number.NEGATIVE_INFINITY;
     setSearchQuery(text);
   }, []);
 
@@ -644,7 +644,7 @@ function JournalListScreen() {
     staticScrollY.current = event.nativeEvent.contentOffset.y;
     headerScrollY.set(staticScrollY.current);
     listScrollY.set(staticScrollY.current);
-    if (isWeb && Date.now() - lastUserScrollInputRef.current < USER_SCROLL_INPUT_MS
+    if (isWeb && performance.now() - lastUserScrollInputRef.current < USER_SCROLL_INPUT_MS
       && typeof Keyboard.dismiss === 'function') {
       Keyboard.dismiss();
     }
