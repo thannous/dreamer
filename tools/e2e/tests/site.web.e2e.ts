@@ -1367,6 +1367,18 @@ test('the pt-br dictionary links every pt-br symbol, searches and filters in Por
 // These journeys catch a decoded-but-wrong portrait, a transparent rectangle, an effect placed
 // entirely outside a crop, a scene with the wrong editorial reading, and a moving base painting.
 const NEW_SYMBOL_PACKS = [
+  {"id": "grandmother", "slug": "grand-mere", "name": "Grand-mère", "scenes": ["talking-with-your-grandmother", "a-grandmother-who-has-died", "your-grandmother-s-house"]},
+  {"id": "coworker", "slug": "collegue", "name": "Collègue", "scenes": ["working-with-a-coworker", "arguing-with-a-coworker", "a-coworker-taking-credit-for-your-work"]},
+  {"id": "doctor", "slug": "medecin", "name": "Médecin", "scenes": ["being-examined-by-a-doctor", "getting-bad-news-from-a-doctor", "a-doctor-who-does-not-listen"]},
+  {"id": "police", "slug": "police", "name": "Police", "scenes": ["calling-the-police-for-help", "being-chased-by-the-police", "being-stopped-or-questioned"]},
+  {"id": "teacher", "slug": "professeur", "name": "Professeur", "scenes": ["a-former-teacher", "being-scolded-by-a-teacher", "being-asked-a-question-you-cannot-answe"]},
+  {"id": "stranger", "slug": "inconnu", "name": "Inconnu", "scenes": ["being-followed-by-a-stranger", "a-stranger-in-your-house", "a-kind-or-helpful-stranger"]},
+  {"id": "friend", "slug": "ami", "name": "Ami", "scenes": ["spending-time-with-a-close-friend", "an-old-friend-you-no-longer-see", "fighting-with-a-friend"]},
+  {"id": "partner", "slug": "partenaire", "name": "Partenaire", "scenes": ["an-ordinary-moment-with-your-partner", "your-partner-cheating-on-you", "your-partner-leaving-you"]},
+  {"id": "sibling", "slug": "frere-ou-soeur", "name": "Frère ou sœur", "scenes": ["playing-or-laughing-with-your-sibling", "fighting-with-your-brother-or-sister", "your-sibling-as-a-child"]},
+  {"id": "father", "slug": "pere", "name": "Père", "scenes": ["your-father-as-he-is-today", "a-younger-father-or-a-childhood-scene", "an-angry-or-disappointed-father"]},
+  {"id": "mother", "slug": "mere", "name": "Mère", "scenes": ["your-mother-as-she-is-today", "your-mother-younger-or-in-your-childhoo", "arguing-with-your-mother"]},
+  {"id": "apocalypse", "slug": "apocalypse", "name": "Apocalypse", "scenes": ["a-natural-disaster-ending-the-world", "nuclear-war-or-a-huge-explosion", "a-zombie-apocalypse"]},
   {"id": "arguing", "slug": "dispute", "name": "Dispute", "scenes": ["arguing-with-your-partner", "arguing-with-a-parent-or-with-your-chil", "arguing-with-a-friend"]},
   {"id": "angel", "slug": "ange", "name": "Ange", "scenes": ["an-angel-speaking-to-you", "a-guardian-angel-protecting-you", "becoming-an-angel"]},
   {"id": "accident", "slug": "accident", "name": "Accident", "scenes": ["car-accident-while-driving", "witnessing-an-accident", "a-plane-crash"]},

@@ -52,7 +52,7 @@
       "lot": null
     },
     "apocalypse": {
-      "lot": null
+      "lot": "lot-09"
     },
     "arguing": {
       "lot": "lot-09"
@@ -199,7 +199,7 @@
       "lot": null
     },
     "coworker": {
-      "lot": null
+      "lot": "lot-09"
     },
     "crocodile": {
       "lot": null
@@ -232,7 +232,7 @@
       "lot": "lot-06"
     },
     "doctor": {
-      "lot": null
+      "lot": "lot-09"
     },
     "dog": {
       "lot": "lot-03"
@@ -289,7 +289,7 @@
       "lot": "lot-01"
     },
     "father": {
-      "lot": null
+      "lot": "lot-09"
     },
     "feet": {
       "lot": null
@@ -325,7 +325,7 @@
       "lot": "lot-07"
     },
     "friend": {
-      "lot": null
+      "lot": "lot-09"
     },
     "frog": {
       "lot": null
@@ -352,7 +352,7 @@
       "lot": null
     },
     "grandmother": {
-      "lot": null
+      "lot": "lot-09"
     },
     "gun": {
       "lot": null
@@ -475,7 +475,7 @@
       "lot": "lot-02"
     },
     "mother": {
-      "lot": null
+      "lot": "lot-09"
     },
     "mountain": {
       "lot": "lot-04"
@@ -517,7 +517,7 @@
       "lot": null
     },
     "partner": {
-      "lot": null
+      "lot": "lot-09"
     },
     "passport": {
       "lot": null
@@ -535,7 +535,7 @@
       "lot": "lot-08"
     },
     "police": {
-      "lot": null
+      "lot": "lot-09"
     },
     "pregnancy": {
       "lot": "lot-08"
@@ -601,7 +601,7 @@
       "lot": null
     },
     "sibling": {
-      "lot": null
+      "lot": "lot-09"
     },
     "sky": {
       "lot": null
@@ -628,7 +628,7 @@
       "lot": "lot-05"
     },
     "stranger": {
-      "lot": null
+      "lot": "lot-09"
     },
     "street": {
       "lot": "lot-07"
@@ -649,7 +649,7 @@
       "lot": null
     },
     "teacher": {
-      "lot": null
+      "lot": "lot-09"
     },
     "teeth": {
       "lot": "lot-03"

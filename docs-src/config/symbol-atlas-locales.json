@@ -5943,6 +5943,1254 @@
           }
         }
       }
+    },
+    "apocalypse": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "a-natural-disaster-ending-the-world": {
+            "variation": "Une catastrophe naturelle qui met fin au monde",
+            "anchor": "a-natural-disaster-ending-the-world"
+          },
+          "nuclear-war-or-a-huge-explosion": {
+            "variation": "Une guerre nucléaire ou une explosion géante",
+            "anchor": "nuclear-war-or-a-huge-explosion"
+          },
+          "a-zombie-apocalypse": {
+            "variation": "Une apocalypse zombie",
+            "anchor": "a-zombie-apocalypse"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "a-natural-disaster-ending-the-world": {
+            "variation": "A natural disaster ending the world",
+            "anchor": "a-natural-disaster-ending-the-world"
+          },
+          "nuclear-war-or-a-huge-explosion": {
+            "variation": "Nuclear war or a huge explosion",
+            "anchor": "nuclear-war-or-a-huge-explosion"
+          },
+          "a-zombie-apocalypse": {
+            "variation": "A zombie apocalypse",
+            "anchor": "a-zombie-apocalypse"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "a-natural-disaster-ending-the-world": {
+            "variation": "Una catástrofe natural que acaba con el mundo",
+            "anchor": "a-natural-disaster-ending-the-world"
+          },
+          "nuclear-war-or-a-huge-explosion": {
+            "variation": "Una guerra nuclear o una gran explosión",
+            "anchor": "nuclear-war-or-a-huge-explosion"
+          },
+          "a-zombie-apocalypse": {
+            "variation": "Un apocalipsis zombi",
+            "anchor": "a-zombie-apocalypse"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "a-natural-disaster-ending-the-world": {
+            "variation": "Eine Naturkatastrophe beendet die Welt",
+            "anchor": "a-natural-disaster-ending-the-world"
+          },
+          "nuclear-war-or-a-huge-explosion": {
+            "variation": "Atomkrieg oder eine riesige Explosion",
+            "anchor": "nuclear-war-or-a-huge-explosion"
+          },
+          "a-zombie-apocalypse": {
+            "variation": "Eine Zombie-Apokalypse",
+            "anchor": "a-zombie-apocalypse"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "a-natural-disaster-ending-the-world": {
+            "variation": "Una catastrofe naturale che mette fine al mondo",
+            "anchor": "a-natural-disaster-ending-the-world"
+          },
+          "nuclear-war-or-a-huge-explosion": {
+            "variation": "Una guerra nucleare o un’enorme esplosione",
+            "anchor": "nuclear-war-or-a-huge-explosion"
+          },
+          "a-zombie-apocalypse": {
+            "variation": "Un’apocalisse zombie",
+            "anchor": "a-zombie-apocalypse"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "a-natural-disaster-ending-the-world": {
+            "variation": "Apocalipse por desastre natural",
+            "anchor": "a-natural-disaster-ending-the-world"
+          },
+          "nuclear-war-or-a-huge-explosion": {
+            "variation": "Apocalipse nuclear",
+            "anchor": "nuclear-war-or-a-huge-explosion"
+          },
+          "a-zombie-apocalypse": {
+            "variation": "Apocalipse zumbi",
+            "anchor": "a-zombie-apocalypse"
+          }
+        }
+      }
+    },
+    "mother": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "your-mother-as-she-is-today": {
+            "variation": "Votre mère telle qu'elle est aujourd'hui",
+            "anchor": "your-mother-as-she-is-today"
+          },
+          "your-mother-younger-or-in-your-childhoo": {
+            "variation": "Votre mère plus jeune, ou dans la maison de votre enfance",
+            "anchor": "your-mother-younger-or-in-your-childhoo"
+          },
+          "arguing-with-your-mother": {
+            "variation": "Se disputer avec sa mère",
+            "anchor": "arguing-with-your-mother"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "your-mother-as-she-is-today": {
+            "variation": "Your mother as she is today",
+            "anchor": "your-mother-as-she-is-today"
+          },
+          "your-mother-younger-or-in-your-childhoo": {
+            "variation": "Your mother younger, or in your childhood home",
+            "anchor": "your-mother-younger-or-in-your-childhoo"
+          },
+          "arguing-with-your-mother": {
+            "variation": "Arguing with your mother",
+            "anchor": "arguing-with-your-mother"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "your-mother-as-she-is-today": {
+            "variation": "Tu madre tal como es hoy",
+            "anchor": "your-mother-as-she-is-today"
+          },
+          "your-mother-younger-or-in-your-childhoo": {
+            "variation": "Tu madre más joven, o en la casa de tu infancia",
+            "anchor": "your-mother-younger-or-in-your-childhoo"
+          },
+          "arguing-with-your-mother": {
+            "variation": "Discutir con tu madre",
+            "anchor": "arguing-with-your-mother"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "your-mother-as-she-is-today": {
+            "variation": "Die Mutter, wie sie heute ist",
+            "anchor": "your-mother-as-she-is-today"
+          },
+          "your-mother-younger-or-in-your-childhoo": {
+            "variation": "Die Mutter jünger oder im Haus der Kindheit",
+            "anchor": "your-mother-younger-or-in-your-childhoo"
+          },
+          "arguing-with-your-mother": {
+            "variation": "Streit mit der Mutter",
+            "anchor": "arguing-with-your-mother"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "your-mother-as-she-is-today": {
+            "variation": "Tua madre com’è oggi",
+            "anchor": "your-mother-as-she-is-today"
+          },
+          "your-mother-younger-or-in-your-childhoo": {
+            "variation": "Tua madre più giovane, o nella casa dell’infanzia",
+            "anchor": "your-mother-younger-or-in-your-childhoo"
+          },
+          "arguing-with-your-mother": {
+            "variation": "Litigare con la mamma",
+            "anchor": "arguing-with-your-mother"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "your-mother-as-she-is-today": {
+            "variation": "Sua mãe como ela é hoje",
+            "anchor": "your-mother-as-she-is-today"
+          },
+          "your-mother-younger-or-in-your-childhoo": {
+            "variation": "Sua mãe mais jovem ou na casa da sua infância",
+            "anchor": "your-mother-younger-or-in-your-childhoo"
+          },
+          "arguing-with-your-mother": {
+            "variation": "Discutir com sua mãe",
+            "anchor": "arguing-with-your-mother"
+          }
+        }
+      }
+    },
+    "father": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "your-father-as-he-is-today": {
+            "variation": "Votre père tel qu'il est aujourd'hui",
+            "anchor": "your-father-as-he-is-today"
+          },
+          "a-younger-father-or-a-childhood-scene": {
+            "variation": "Votre père plus jeune, ou une scène d'enfance",
+            "anchor": "a-younger-father-or-a-childhood-scene"
+          },
+          "an-angry-or-disappointed-father": {
+            "variation": "Un père en colère ou déçu",
+            "anchor": "an-angry-or-disappointed-father"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "your-father-as-he-is-today": {
+            "variation": "Your father as he is today",
+            "anchor": "your-father-as-he-is-today"
+          },
+          "a-younger-father-or-a-childhood-scene": {
+            "variation": "A younger father, or a childhood scene",
+            "anchor": "a-younger-father-or-a-childhood-scene"
+          },
+          "an-angry-or-disappointed-father": {
+            "variation": "An angry or disappointed father",
+            "anchor": "an-angry-or-disappointed-father"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "your-father-as-he-is-today": {
+            "variation": "Tu padre tal como es hoy",
+            "anchor": "your-father-as-he-is-today"
+          },
+          "a-younger-father-or-a-childhood-scene": {
+            "variation": "Tu padre más joven o una escena de la infancia",
+            "anchor": "a-younger-father-or-a-childhood-scene"
+          },
+          "an-angry-or-disappointed-father": {
+            "variation": "Un padre enfadado o decepcionado",
+            "anchor": "an-angry-or-disappointed-father"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "your-father-as-he-is-today": {
+            "variation": "Der Vater, wie er heute ist",
+            "anchor": "your-father-as-he-is-today"
+          },
+          "a-younger-father-or-a-childhood-scene": {
+            "variation": "Der Vater jünger oder eine Szene aus der Kindheit",
+            "anchor": "a-younger-father-or-a-childhood-scene"
+          },
+          "an-angry-or-disappointed-father": {
+            "variation": "Ein wütender oder enttäuschter Vater",
+            "anchor": "an-angry-or-disappointed-father"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "your-father-as-he-is-today": {
+            "variation": "Tuo padre com’è oggi",
+            "anchor": "your-father-as-he-is-today"
+          },
+          "a-younger-father-or-a-childhood-scene": {
+            "variation": "Tuo padre più giovane, o una scena d’infanzia",
+            "anchor": "a-younger-father-or-a-childhood-scene"
+          },
+          "an-angry-or-disappointed-father": {
+            "variation": "Il papà arrabbiato o deluso",
+            "anchor": "an-angry-or-disappointed-father"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "your-father-as-he-is-today": {
+            "variation": "Seu pai como ele é hoje",
+            "anchor": "your-father-as-he-is-today"
+          },
+          "a-younger-father-or-a-childhood-scene": {
+            "variation": "Um pai mais jovem ou uma cena da infância",
+            "anchor": "a-younger-father-or-a-childhood-scene"
+          },
+          "an-angry-or-disappointed-father": {
+            "variation": "Um pai zangado ou decepcionado",
+            "anchor": "an-angry-or-disappointed-father"
+          }
+        }
+      }
+    },
+    "sibling": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "playing-or-laughing-with-your-sibling": {
+            "variation": "Jouer ou rire avec son frère ou sa sœur",
+            "anchor": "playing-or-laughing-with-your-sibling"
+          },
+          "fighting-with-your-brother-or-sister": {
+            "variation": "Se disputer avec son frère ou sa sœur",
+            "anchor": "fighting-with-your-brother-or-sister"
+          },
+          "your-sibling-as-a-child": {
+            "variation": "Votre frère ou votre sœur enfant",
+            "anchor": "your-sibling-as-a-child"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "playing-or-laughing-with-your-sibling": {
+            "variation": "Playing or laughing with your sibling",
+            "anchor": "playing-or-laughing-with-your-sibling"
+          },
+          "fighting-with-your-brother-or-sister": {
+            "variation": "Fighting with your brother or sister",
+            "anchor": "fighting-with-your-brother-or-sister"
+          },
+          "your-sibling-as-a-child": {
+            "variation": "Your sibling as a child",
+            "anchor": "your-sibling-as-a-child"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "playing-or-laughing-with-your-sibling": {
+            "variation": "Jugar o reír con tu hermano o tu hermana",
+            "anchor": "playing-or-laughing-with-your-sibling"
+          },
+          "fighting-with-your-brother-or-sister": {
+            "variation": "Discutir con tu hermano o tu hermana",
+            "anchor": "fighting-with-your-brother-or-sister"
+          },
+          "your-sibling-as-a-child": {
+            "variation": "Tu hermano o tu hermana de niño",
+            "anchor": "your-sibling-as-a-child"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "playing-or-laughing-with-your-sibling": {
+            "variation": "Mit Bruder oder Schwester spielen oder lachen",
+            "anchor": "playing-or-laughing-with-your-sibling"
+          },
+          "fighting-with-your-brother-or-sister": {
+            "variation": "Streit mit Bruder oder Schwester",
+            "anchor": "fighting-with-your-brother-or-sister"
+          },
+          "your-sibling-as-a-child": {
+            "variation": "Bruder oder Schwester als Kind",
+            "anchor": "your-sibling-as-a-child"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "playing-or-laughing-with-your-sibling": {
+            "variation": "Giocare o ridere con il fratello o la sorella",
+            "anchor": "playing-or-laughing-with-your-sibling"
+          },
+          "fighting-with-your-brother-or-sister": {
+            "variation": "Litigare con il fratello o la sorella",
+            "anchor": "fighting-with-your-brother-or-sister"
+          },
+          "your-sibling-as-a-child": {
+            "variation": "Il fratello o la sorella da bambini",
+            "anchor": "your-sibling-as-a-child"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "playing-or-laughing-with-your-sibling": {
+            "variation": "Brincar ou rir com seu irmão ou sua irmã",
+            "anchor": "playing-or-laughing-with-your-sibling"
+          },
+          "fighting-with-your-brother-or-sister": {
+            "variation": "Brigar com seu irmão ou sua irmã",
+            "anchor": "fighting-with-your-brother-or-sister"
+          },
+          "your-sibling-as-a-child": {
+            "variation": "Seu irmão ou sua irmã na infância",
+            "anchor": "your-sibling-as-a-child"
+          }
+        }
+      }
+    },
+    "partner": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "an-ordinary-moment-with-your-partner": {
+            "variation": "Un moment ordinaire avec son partenaire",
+            "anchor": "an-ordinary-moment-with-your-partner"
+          },
+          "your-partner-cheating-on-you": {
+            "variation": "Son partenaire qui vous trompe",
+            "anchor": "your-partner-cheating-on-you"
+          },
+          "your-partner-leaving-you": {
+            "variation": "Son partenaire qui vous quitte",
+            "anchor": "your-partner-leaving-you"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "an-ordinary-moment-with-your-partner": {
+            "variation": "An ordinary moment with your partner",
+            "anchor": "an-ordinary-moment-with-your-partner"
+          },
+          "your-partner-cheating-on-you": {
+            "variation": "Your partner cheating on you",
+            "anchor": "your-partner-cheating-on-you"
+          },
+          "your-partner-leaving-you": {
+            "variation": "Your partner leaving you",
+            "anchor": "your-partner-leaving-you"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "an-ordinary-moment-with-your-partner": {
+            "variation": "Un momento cotidiano con tu pareja",
+            "anchor": "an-ordinary-moment-with-your-partner"
+          },
+          "your-partner-cheating-on-you": {
+            "variation": "Tu pareja te es infiel",
+            "anchor": "your-partner-cheating-on-you"
+          },
+          "your-partner-leaving-you": {
+            "variation": "Tu pareja te deja",
+            "anchor": "your-partner-leaving-you"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "an-ordinary-moment-with-your-partner": {
+            "variation": "Ein gewöhnlicher Moment mit dem Partner",
+            "anchor": "an-ordinary-moment-with-your-partner"
+          },
+          "your-partner-cheating-on-you": {
+            "variation": "Der Partner geht fremd",
+            "anchor": "your-partner-cheating-on-you"
+          },
+          "your-partner-leaving-you": {
+            "variation": "Der Partner verlässt Sie",
+            "anchor": "your-partner-leaving-you"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "an-ordinary-moment-with-your-partner": {
+            "variation": "Un momento qualunque con il partner",
+            "anchor": "an-ordinary-moment-with-your-partner"
+          },
+          "your-partner-cheating-on-you": {
+            "variation": "Il partner che ti tradisce",
+            "anchor": "your-partner-cheating-on-you"
+          },
+          "your-partner-leaving-you": {
+            "variation": "Il partner che ti lascia",
+            "anchor": "your-partner-leaving-you"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "an-ordinary-moment-with-your-partner": {
+            "variation": "Um momento comum com seu parceiro ou sua parceira",
+            "anchor": "an-ordinary-moment-with-your-partner"
+          },
+          "your-partner-cheating-on-you": {
+            "variation": "Seu parceiro ou sua parceira traindo você",
+            "anchor": "your-partner-cheating-on-you"
+          },
+          "your-partner-leaving-you": {
+            "variation": "Seu parceiro ou sua parceira deixando você",
+            "anchor": "your-partner-leaving-you"
+          }
+        }
+      }
+    },
+    "friend": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "spending-time-with-a-close-friend": {
+            "variation": "Passer du temps avec un ami proche",
+            "anchor": "spending-time-with-a-close-friend"
+          },
+          "an-old-friend-you-no-longer-see": {
+            "variation": "Un ancien ami que vous ne voyez plus",
+            "anchor": "an-old-friend-you-no-longer-see"
+          },
+          "fighting-with-a-friend": {
+            "variation": "Se disputer avec un ami",
+            "anchor": "fighting-with-a-friend"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "spending-time-with-a-close-friend": {
+            "variation": "Spending time with a close friend",
+            "anchor": "spending-time-with-a-close-friend"
+          },
+          "an-old-friend-you-no-longer-see": {
+            "variation": "An old friend you no longer see",
+            "anchor": "an-old-friend-you-no-longer-see"
+          },
+          "fighting-with-a-friend": {
+            "variation": "Fighting with a friend",
+            "anchor": "fighting-with-a-friend"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "spending-time-with-a-close-friend": {
+            "variation": "Pasar tiempo con un buen amigo",
+            "anchor": "spending-time-with-a-close-friend"
+          },
+          "an-old-friend-you-no-longer-see": {
+            "variation": "Un viejo amigo al que ya no ves",
+            "anchor": "an-old-friend-you-no-longer-see"
+          },
+          "fighting-with-a-friend": {
+            "variation": "Discutir con un amigo",
+            "anchor": "fighting-with-a-friend"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "spending-time-with-a-close-friend": {
+            "variation": "Zeit mit einem engen Freund verbringen",
+            "anchor": "spending-time-with-a-close-friend"
+          },
+          "an-old-friend-you-no-longer-see": {
+            "variation": "Ein alter Freund, den Sie nicht mehr sehen",
+            "anchor": "an-old-friend-you-no-longer-see"
+          },
+          "fighting-with-a-friend": {
+            "variation": "Streit mit einem Freund",
+            "anchor": "fighting-with-a-friend"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "spending-time-with-a-close-friend": {
+            "variation": "Passare del tempo con un amico stretto",
+            "anchor": "spending-time-with-a-close-friend"
+          },
+          "an-old-friend-you-no-longer-see": {
+            "variation": "Un vecchio amico che non vedi più",
+            "anchor": "an-old-friend-you-no-longer-see"
+          },
+          "fighting-with-a-friend": {
+            "variation": "Litigare con un amico",
+            "anchor": "fighting-with-a-friend"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "spending-time-with-a-close-friend": {
+            "variation": "Passar um tempo com um amigo próximo",
+            "anchor": "spending-time-with-a-close-friend"
+          },
+          "an-old-friend-you-no-longer-see": {
+            "variation": "Um amigo antigo que você não vê mais",
+            "anchor": "an-old-friend-you-no-longer-see"
+          },
+          "fighting-with-a-friend": {
+            "variation": "Brigar com um amigo",
+            "anchor": "fighting-with-a-friend"
+          }
+        }
+      }
+    },
+    "stranger": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "being-followed-by-a-stranger": {
+            "variation": "Être suivi par un inconnu",
+            "anchor": "being-followed-by-a-stranger"
+          },
+          "a-stranger-in-your-house": {
+            "variation": "Un inconnu dans la maison",
+            "anchor": "a-stranger-in-your-house"
+          },
+          "a-kind-or-helpful-stranger": {
+            "variation": "Un inconnu bienveillant",
+            "anchor": "a-kind-or-helpful-stranger"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "being-followed-by-a-stranger": {
+            "variation": "Being followed by a stranger",
+            "anchor": "being-followed-by-a-stranger"
+          },
+          "a-stranger-in-your-house": {
+            "variation": "A stranger in your house",
+            "anchor": "a-stranger-in-your-house"
+          },
+          "a-kind-or-helpful-stranger": {
+            "variation": "A kind or helpful stranger",
+            "anchor": "a-kind-or-helpful-stranger"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "being-followed-by-a-stranger": {
+            "variation": "Que te siga un desconocido",
+            "anchor": "being-followed-by-a-stranger"
+          },
+          "a-stranger-in-your-house": {
+            "variation": "Un desconocido en casa",
+            "anchor": "a-stranger-in-your-house"
+          },
+          "a-kind-or-helpful-stranger": {
+            "variation": "Un desconocido amable",
+            "anchor": "a-kind-or-helpful-stranger"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "being-followed-by-a-stranger": {
+            "variation": "Von einem Fremden verfolgt werden",
+            "anchor": "being-followed-by-a-stranger"
+          },
+          "a-stranger-in-your-house": {
+            "variation": "Ein Fremder im Haus",
+            "anchor": "a-stranger-in-your-house"
+          },
+          "a-kind-or-helpful-stranger": {
+            "variation": "Ein freundlicher Fremder",
+            "anchor": "a-kind-or-helpful-stranger"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "being-followed-by-a-stranger": {
+            "variation": "Essere seguiti da uno sconosciuto",
+            "anchor": "being-followed-by-a-stranger"
+          },
+          "a-stranger-in-your-house": {
+            "variation": "Uno sconosciuto in casa",
+            "anchor": "a-stranger-in-your-house"
+          },
+          "a-kind-or-helpful-stranger": {
+            "variation": "Uno sconosciuto gentile",
+            "anchor": "a-kind-or-helpful-stranger"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "being-followed-by-a-stranger": {
+            "variation": "Ser seguido por um desconhecido",
+            "anchor": "being-followed-by-a-stranger"
+          },
+          "a-stranger-in-your-house": {
+            "variation": "Um desconhecido na sua casa",
+            "anchor": "a-stranger-in-your-house"
+          },
+          "a-kind-or-helpful-stranger": {
+            "variation": "Um desconhecido gentil ou prestativo",
+            "anchor": "a-kind-or-helpful-stranger"
+          }
+        }
+      }
+    },
+    "teacher": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "a-former-teacher": {
+            "variation": "Un ancien professeur",
+            "anchor": "a-former-teacher"
+          },
+          "being-scolded-by-a-teacher": {
+            "variation": "Se faire gronder par un professeur",
+            "anchor": "being-scolded-by-a-teacher"
+          },
+          "being-asked-a-question-you-cannot-answe": {
+            "variation": "Être interrogé sans connaître la réponse",
+            "anchor": "being-asked-a-question-you-cannot-answe"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "a-former-teacher": {
+            "variation": "A former teacher",
+            "anchor": "a-former-teacher"
+          },
+          "being-scolded-by-a-teacher": {
+            "variation": "Being scolded by a teacher",
+            "anchor": "being-scolded-by-a-teacher"
+          },
+          "being-asked-a-question-you-cannot-answe": {
+            "variation": "Being asked a question you cannot answer",
+            "anchor": "being-asked-a-question-you-cannot-answe"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "a-former-teacher": {
+            "variation": "Un antiguo profesor",
+            "anchor": "a-former-teacher"
+          },
+          "being-scolded-by-a-teacher": {
+            "variation": "Que un profesor te regañe",
+            "anchor": "being-scolded-by-a-teacher"
+          },
+          "being-asked-a-question-you-cannot-answe": {
+            "variation": "Que te pregunten y no sepas la respuesta",
+            "anchor": "being-asked-a-question-you-cannot-answe"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "a-former-teacher": {
+            "variation": "Ein ehemaliger Lehrer",
+            "anchor": "a-former-teacher"
+          },
+          "being-scolded-by-a-teacher": {
+            "variation": "Vom Lehrer getadelt werden",
+            "anchor": "being-scolded-by-a-teacher"
+          },
+          "being-asked-a-question-you-cannot-answe": {
+            "variation": "Aufgerufen werden und die Antwort nicht wissen",
+            "anchor": "being-asked-a-question-you-cannot-answe"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "a-former-teacher": {
+            "variation": "Una vecchia insegnante",
+            "anchor": "a-former-teacher"
+          },
+          "being-scolded-by-a-teacher": {
+            "variation": "Essere rimproverati da un insegnante",
+            "anchor": "being-scolded-by-a-teacher"
+          },
+          "being-asked-a-question-you-cannot-answe": {
+            "variation": "Essere interrogati senza sapere la risposta",
+            "anchor": "being-asked-a-question-you-cannot-answe"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "a-former-teacher": {
+            "variation": "Um antigo professor",
+            "anchor": "a-former-teacher"
+          },
+          "being-scolded-by-a-teacher": {
+            "variation": "Levar uma bronca de um professor",
+            "anchor": "being-scolded-by-a-teacher"
+          },
+          "being-asked-a-question-you-cannot-answe": {
+            "variation": "Receber uma pergunta que você não sabe responder",
+            "anchor": "being-asked-a-question-you-cannot-answe"
+          }
+        }
+      }
+    },
+    "police": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "calling-the-police-for-help": {
+            "variation": "Appeler la police à l'aide",
+            "anchor": "calling-the-police-for-help"
+          },
+          "being-chased-by-the-police": {
+            "variation": "Être poursuivi par la police",
+            "anchor": "being-chased-by-the-police"
+          },
+          "being-stopped-or-questioned": {
+            "variation": "Subir un contrôle de police",
+            "anchor": "being-stopped-or-questioned"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "calling-the-police-for-help": {
+            "variation": "Calling the police for help",
+            "anchor": "calling-the-police-for-help"
+          },
+          "being-chased-by-the-police": {
+            "variation": "Being chased by the police",
+            "anchor": "being-chased-by-the-police"
+          },
+          "being-stopped-or-questioned": {
+            "variation": "Being stopped or questioned",
+            "anchor": "being-stopped-or-questioned"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "calling-the-police-for-help": {
+            "variation": "Llamar a la policía para pedir ayuda",
+            "anchor": "calling-the-police-for-help"
+          },
+          "being-chased-by-the-police": {
+            "variation": "Que te persiga la policía",
+            "anchor": "being-chased-by-the-police"
+          },
+          "being-stopped-or-questioned": {
+            "variation": "Que te paren en un control",
+            "anchor": "being-stopped-or-questioned"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "calling-the-police-for-help": {
+            "variation": "Die Polizei um Hilfe rufen",
+            "anchor": "calling-the-police-for-help"
+          },
+          "being-chased-by-the-police": {
+            "variation": "Von der Polizei verfolgt werden",
+            "anchor": "being-chased-by-the-police"
+          },
+          "being-stopped-or-questioned": {
+            "variation": "Von der Polizei kontrolliert werden",
+            "anchor": "being-stopped-or-questioned"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "calling-the-police-for-help": {
+            "variation": "Chiamare la polizia o i carabinieri per aiuto",
+            "anchor": "calling-the-police-for-help"
+          },
+          "being-chased-by-the-police": {
+            "variation": "Essere inseguito dalla polizia",
+            "anchor": "being-chased-by-the-police"
+          },
+          "being-stopped-or-questioned": {
+            "variation": "Essere fermato per un controllo",
+            "anchor": "being-stopped-or-questioned"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "calling-the-police-for-help": {
+            "variation": "Chamar a polícia para pedir ajuda",
+            "anchor": "calling-the-police-for-help"
+          },
+          "being-chased-by-the-police": {
+            "variation": "Ser perseguido pela polícia",
+            "anchor": "being-chased-by-the-police"
+          },
+          "being-stopped-or-questioned": {
+            "variation": "Ser parado ou interrogado",
+            "anchor": "being-stopped-or-questioned"
+          }
+        }
+      }
+    },
+    "doctor": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "being-examined-by-a-doctor": {
+            "variation": "Être examiné par un médecin",
+            "anchor": "being-examined-by-a-doctor"
+          },
+          "getting-bad-news-from-a-doctor": {
+            "variation": "Recevoir une mauvaise nouvelle d'un médecin",
+            "anchor": "getting-bad-news-from-a-doctor"
+          },
+          "a-doctor-who-does-not-listen": {
+            "variation": "Un médecin qui n'écoute pas",
+            "anchor": "a-doctor-who-does-not-listen"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "being-examined-by-a-doctor": {
+            "variation": "Being examined by a doctor",
+            "anchor": "being-examined-by-a-doctor"
+          },
+          "getting-bad-news-from-a-doctor": {
+            "variation": "Getting bad news from a doctor",
+            "anchor": "getting-bad-news-from-a-doctor"
+          },
+          "a-doctor-who-does-not-listen": {
+            "variation": "A doctor who does not listen",
+            "anchor": "a-doctor-who-does-not-listen"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "being-examined-by-a-doctor": {
+            "variation": "Que te examine un médico",
+            "anchor": "being-examined-by-a-doctor"
+          },
+          "getting-bad-news-from-a-doctor": {
+            "variation": "Que un médico te dé una mala noticia",
+            "anchor": "getting-bad-news-from-a-doctor"
+          },
+          "a-doctor-who-does-not-listen": {
+            "variation": "Un médico que no escucha",
+            "anchor": "a-doctor-who-does-not-listen"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "being-examined-by-a-doctor": {
+            "variation": "Vom Arzt untersucht werden",
+            "anchor": "being-examined-by-a-doctor"
+          },
+          "getting-bad-news-from-a-doctor": {
+            "variation": "Eine schlechte Nachricht vom Arzt erhalten",
+            "anchor": "getting-bad-news-from-a-doctor"
+          },
+          "a-doctor-who-does-not-listen": {
+            "variation": "Ein Arzt, der nicht zuhört",
+            "anchor": "a-doctor-who-does-not-listen"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "being-examined-by-a-doctor": {
+            "variation": "Essere visitati da un medico",
+            "anchor": "being-examined-by-a-doctor"
+          },
+          "getting-bad-news-from-a-doctor": {
+            "variation": "Ricevere una brutta notizia da un medico",
+            "anchor": "getting-bad-news-from-a-doctor"
+          },
+          "a-doctor-who-does-not-listen": {
+            "variation": "Un medico che non ascolta",
+            "anchor": "a-doctor-who-does-not-listen"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "being-examined-by-a-doctor": {
+            "variation": "Ser examinado por um médico",
+            "anchor": "being-examined-by-a-doctor"
+          },
+          "getting-bad-news-from-a-doctor": {
+            "variation": "Receber uma notícia ruim de um médico",
+            "anchor": "getting-bad-news-from-a-doctor"
+          },
+          "a-doctor-who-does-not-listen": {
+            "variation": "Um médico que não escuta",
+            "anchor": "a-doctor-who-does-not-listen"
+          }
+        }
+      }
+    },
+    "coworker": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "working-with-a-coworker": {
+            "variation": "Travailler avec un collègue",
+            "anchor": "working-with-a-coworker"
+          },
+          "arguing-with-a-coworker": {
+            "variation": "Se disputer avec un collègue",
+            "anchor": "arguing-with-a-coworker"
+          },
+          "a-coworker-taking-credit-for-your-work": {
+            "variation": "Un collègue qui s'attribue votre travail",
+            "anchor": "a-coworker-taking-credit-for-your-work"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "working-with-a-coworker": {
+            "variation": "Working with a coworker",
+            "anchor": "working-with-a-coworker"
+          },
+          "arguing-with-a-coworker": {
+            "variation": "Arguing with a coworker",
+            "anchor": "arguing-with-a-coworker"
+          },
+          "a-coworker-taking-credit-for-your-work": {
+            "variation": "A coworker taking credit for your work",
+            "anchor": "a-coworker-taking-credit-for-your-work"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "working-with-a-coworker": {
+            "variation": "Trabajar con un compañero",
+            "anchor": "working-with-a-coworker"
+          },
+          "arguing-with-a-coworker": {
+            "variation": "Discutir con un compañero de trabajo",
+            "anchor": "arguing-with-a-coworker"
+          },
+          "a-coworker-taking-credit-for-your-work": {
+            "variation": "Un compañero que se atribuye tu trabajo",
+            "anchor": "a-coworker-taking-credit-for-your-work"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "working-with-a-coworker": {
+            "variation": "Mit einem Kollegen zusammenarbeiten",
+            "anchor": "working-with-a-coworker"
+          },
+          "arguing-with-a-coworker": {
+            "variation": "Streit mit einem Kollegen",
+            "anchor": "arguing-with-a-coworker"
+          },
+          "a-coworker-taking-credit-for-your-work": {
+            "variation": "Ein Kollege, der sich Ihre Arbeit zuschreibt",
+            "anchor": "a-coworker-taking-credit-for-your-work"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "working-with-a-coworker": {
+            "variation": "Lavorare con un collega",
+            "anchor": "working-with-a-coworker"
+          },
+          "arguing-with-a-coworker": {
+            "variation": "Litigare con un collega",
+            "anchor": "arguing-with-a-coworker"
+          },
+          "a-coworker-taking-credit-for-your-work": {
+            "variation": "Un collega che si prende il merito del tuo lavoro",
+            "anchor": "a-coworker-taking-credit-for-your-work"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "working-with-a-coworker": {
+            "variation": "Trabalhar com um colega",
+            "anchor": "working-with-a-coworker"
+          },
+          "arguing-with-a-coworker": {
+            "variation": "Discutir com um colega de trabalho",
+            "anchor": "arguing-with-a-coworker"
+          },
+          "a-coworker-taking-credit-for-your-work": {
+            "variation": "Um colega levando o crédito pelo seu trabalho",
+            "anchor": "a-coworker-taking-credit-for-your-work"
+          }
+        }
+      }
+    },
+    "grandmother": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "talking-with-your-grandmother": {
+            "variation": "Parler avec sa grand-mère",
+            "anchor": "talking-with-your-grandmother"
+          },
+          "a-grandmother-who-has-died": {
+            "variation": "Une grand-mère décédée",
+            "anchor": "a-grandmother-who-has-died"
+          },
+          "your-grandmother-s-house": {
+            "variation": "La maison de sa grand-mère",
+            "anchor": "your-grandmother-s-house"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "talking-with-your-grandmother": {
+            "variation": "Talking with your grandmother",
+            "anchor": "talking-with-your-grandmother"
+          },
+          "a-grandmother-who-has-died": {
+            "variation": "A grandmother who has died",
+            "anchor": "a-grandmother-who-has-died"
+          },
+          "your-grandmother-s-house": {
+            "variation": "Your grandmother's house",
+            "anchor": "your-grandmother-s-house"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "talking-with-your-grandmother": {
+            "variation": "Hablar con tu abuela",
+            "anchor": "talking-with-your-grandmother"
+          },
+          "a-grandmother-who-has-died": {
+            "variation": "Una abuela fallecida",
+            "anchor": "a-grandmother-who-has-died"
+          },
+          "your-grandmother-s-house": {
+            "variation": "La casa de tu abuela",
+            "anchor": "your-grandmother-s-house"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "talking-with-your-grandmother": {
+            "variation": "Mit der Großmutter sprechen",
+            "anchor": "talking-with-your-grandmother"
+          },
+          "a-grandmother-who-has-died": {
+            "variation": "Eine verstorbene Großmutter",
+            "anchor": "a-grandmother-who-has-died"
+          },
+          "your-grandmother-s-house": {
+            "variation": "Das Haus der Großmutter",
+            "anchor": "your-grandmother-s-house"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "talking-with-your-grandmother": {
+            "variation": "Parlare con la nonna",
+            "anchor": "talking-with-your-grandmother"
+          },
+          "a-grandmother-who-has-died": {
+            "variation": "La nonna morta",
+            "anchor": "a-grandmother-who-has-died"
+          },
+          "your-grandmother-s-house": {
+            "variation": "La casa della nonna",
+            "anchor": "your-grandmother-s-house"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "talking-with-your-grandmother": {
+            "variation": "Conversar com sua avó",
+            "anchor": "talking-with-your-grandmother"
+          },
+          "a-grandmother-who-has-died": {
+            "variation": "Uma avó que já morreu",
+            "anchor": "a-grandmother-who-has-died"
+          },
+          "your-grandmother-s-house": {
+            "variation": "A casa da sua avó",
+            "anchor": "your-grandmother-s-house"
+          }
+        }
+      }
     }
   }
 }
