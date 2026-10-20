@@ -18,10 +18,18 @@ let mockGuideId = 'most-common-dream-symbols';
 
 jest.mock('expo-image', () => ({ Image: () => null }));
 
-jest.mock('expo-router', () => ({
-  router: { push: mockPush, back: mockBack },
-  useLocalSearchParams: () => ({ id: mockGuideId }),
-}));
+jest.mock('expo-router', () => {
+  const { Children, cloneElement } = jest.requireActual('react') as typeof import('react');
+  // Like the real Link with `asChild`, it hands the press to its one child.
+  const Link = ({ href, children }: { href: unknown; children: React.ReactElement<{ onPress?: () => void }> }) =>
+    cloneElement(Children.only(children), { onPress: () => mockPush(href) });
+  Link.AppleZoom = ({ children }: { children: React.ReactNode }) => children;
+  return {
+    Link,
+    router: { push: mockPush, back: mockBack },
+    useLocalSearchParams: () => ({ id: mockGuideId }),
+  };
+});
 
 jest.mock('react-native', () => jest.requireActual('../react-native-stub'));
 

@@ -1,5 +1,5 @@
 import { LinearGradient } from "expo-linear-gradient";
-import { Stack, router, useLocalSearchParams } from "expo-router";
+import { Link, Stack, router, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useDeferredValue, useEffect, useMemo, useState } from "react";
 import { FlatList, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -9,6 +9,7 @@ import { CategoryHeader } from "@/components/symbols/CategoryHeader";
 import { LetterHeader } from "@/components/symbols/LetterHeader";
 import { SymbolArtwork } from "@/components/symbols/SymbolArtwork";
 import { SymbolCard } from "@/components/symbols/SymbolCard";
+import { SymbolLink } from "@/components/symbols/SymbolLink";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { SearchBar } from "@/components/ui/SearchBar";
 import { DarkTheme, ThemeLayout } from "@/constants/journalTheme";
@@ -247,17 +248,11 @@ function SymbolDictionaryScreen() {
     return rows;
   }, [sections]);
 
-  const handleSymbolPress = useCallback((id: string) => {
-    const detailSource = source === "onboarding"
-      ? "onboarding"
-      : deferredSearchQuery
-        ? "search"
-        : "dictionary";
-    router.push({
-      pathname: "/symbol-detail/[id]",
-      params: { id, source: detailSource },
-    });
-  }, [deferredSearchQuery, source]);
+  const detailSource = source === "onboarding"
+    ? "onboarding"
+    : deferredSearchQuery
+      ? "search"
+      : "dictionary";
 
   const renderListRow = useCallback(
     (item: Row) => {
@@ -277,12 +272,12 @@ function SymbolDictionaryScreen() {
         <SymbolCard
           symbol={item.symbol}
           language={lang}
-          onPress={handleSymbolPress}
+          source={detailSource}
           variant="row"
         />
       );
     },
-    [lang, guideCopy, handleSymbolPress],
+    [lang, guideCopy, detailSource],
   );
 
   const renderEmptyComponent = useCallback(
@@ -377,15 +372,22 @@ function SymbolDictionaryScreen() {
           {popularSymbols.map((symbol) => {
             const content = symbol[lang] ?? symbol.en;
             return (
-              <Pressable
+              <SymbolLink
                 key={symbol.id}
-                onPress={() => handleSymbolPress(symbol.id)}
+                symbolId={symbol.id}
+                source={detailSource}
                 accessibilityRole="button"
                 accessibilityLabel={content.name}
                 testID={`symbol.popular.${symbol.id}`}
-                style={({ pressed }) => [styles.poster, { backgroundColor: noctalia.surface.soft, borderColor: noctalia.surface.border }, pressed && styles.posterPressed]}
+                surfaceStyle={[styles.poster, { backgroundColor: noctalia.surface.soft, borderColor: noctalia.surface.border }]}
+                pressedStyle={styles.posterPressed}
               >
-                <SymbolArtwork symbolId={symbol.id} size="poster" />
+                {/* The painting alone grows into the sheet; the name stays on the poster. */}
+                <Link.AppleZoom>
+                  <View style={StyleSheet.absoluteFill}>
+                    <SymbolArtwork symbolId={symbol.id} size="poster" />
+                  </View>
+                </Link.AppleZoom>
                 <LinearGradient
                   pointerEvents="none"
                   colors={["rgba(9,4,19,0)", "rgba(9,4,19,0.86)"]}
@@ -393,7 +395,7 @@ function SymbolDictionaryScreen() {
                   style={StyleSheet.absoluteFill}
                 />
                 <Text numberOfLines={2} style={styles.posterName}>{content.name}</Text>
-              </Pressable>
+              </SymbolLink>
             );
           })}
         </ScrollView>

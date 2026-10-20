@@ -29,7 +29,7 @@ import {
 } from '@/services/symbolDictionaryService';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import { router, useLocalSearchParams } from 'expo-router';
+import { Link, router, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useMemo, useRef } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { usePaintingArrival } from '@/components/ui/headerStretch';
@@ -203,38 +203,42 @@ export default function SymbolDetailScreen() {
           onMomentumScrollEnd={scrollPerf.onMomentumScrollEnd}
         >
           <View style={[styles.hero, { height: heroHeight }]}>
-            <Animated.View
-              style={[StyleSheet.absoluteFill, heroArtStyle]}
-              accessible={false}
-              importantForAccessibility="no-hide-descendants"
-            >
-              <Animated.View style={[StyleSheet.absoluteFill, heroArrival]}>
-                {living ? (
-                  <LivingPainting
-                    atlas={living.atlas}
-                    symbolId={symbol.id}
-                    picture={living.entry.portrait}
-                    position={living.entry.portrait.position}
-                    layers={living.entry.layers}
-                    frame={heroFrame}
-                    arrive
-                    placeholder={SKY_FALLBACK}
-                    transition={200}
-                  />
-                ) : (
-                  <Image
-                    source={illustration ?? SKY_FALLBACK}
-                    // Offline before the first visit, the sheet keeps its night sky.
-                    placeholder={illustration ? SKY_FALLBACK : undefined}
-                    placeholderContentFit="cover"
-                    contentFit="cover"
-                    contentPosition={illustration ? 'center' : 'top'}
-                    transition={illustration ? 200 : 0}
-                    style={StyleSheet.absoluteFill}
-                  />
-                )}
+            {/* Opened from a thumbnail on iOS 18 and later, the sheet grows out of it into
+                this painting, and shrinks back into it on the way back. */}
+            <Link.AppleZoomTarget>
+              <Animated.View
+                style={[StyleSheet.absoluteFill, heroArtStyle]}
+                accessible={false}
+                importantForAccessibility="no-hide-descendants"
+              >
+                <Animated.View style={[StyleSheet.absoluteFill, heroArrival]}>
+                  {living ? (
+                    <LivingPainting
+                      atlas={living.atlas}
+                      symbolId={symbol.id}
+                      picture={living.entry.portrait}
+                      position={living.entry.portrait.position}
+                      layers={living.entry.layers}
+                      frame={heroFrame}
+                      arrive
+                      placeholder={SKY_FALLBACK}
+                      transition={200}
+                    />
+                  ) : (
+                    <Image
+                      source={illustration ?? SKY_FALLBACK}
+                      // Offline before the first visit, the sheet keeps its night sky.
+                      placeholder={illustration ? SKY_FALLBACK : undefined}
+                      placeholderContentFit="cover"
+                      contentFit="cover"
+                      contentPosition={illustration ? 'center' : 'top'}
+                      transition={illustration ? 200 : 0}
+                      style={StyleSheet.absoluteFill}
+                    />
+                  )}
+                </Animated.View>
               </Animated.View>
-            </Animated.View>
+            </Link.AppleZoomTarget>
             <LinearGradient
               pointerEvents="none"
               colors={['rgba(8,3,15,0.55)', 'rgba(8,3,15,0.04)', 'rgba(8,3,15,0.45)', 'rgba(9,4,19,0.92)']}

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { DreamerArtworkWindow } from '@/components/ui/DreamerBackground';
@@ -42,13 +42,6 @@ function DreamGuideDetailScreen() {
     () => (guide?.kind === 'symbols' ? getDreamGuideSymbols(guide) : []),
     [guide],
   );
-
-  const handleSymbolPress = useCallback((symbolId: string) => {
-    router.push({
-      pathname: '/symbol-detail/[id]',
-      params: { id: symbolId, source: 'guide' },
-    });
-  }, []);
 
   if (!guide) {
     return (
@@ -183,7 +176,7 @@ function DreamGuideDetailScreen() {
                     key={symbol.id}
                     symbol={symbol}
                     language={language}
-                    onPress={handleSymbolPress}
+                    source="guide"
                   />
                 ))}
               </View>
