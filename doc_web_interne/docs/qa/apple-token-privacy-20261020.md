@@ -72,6 +72,29 @@ and saves their local output in `test-results/apple-token-security-advisors.json
 pre-existing findings must be distinguished from the new Apple objects. The final PR records the committed revision and local verification
 receipt. No passwords, session tokens or real provider credentials are tracked.
 
+## Recorded local result
+
+- Real API journey: **PASS, 1/1, zero retries/skips**, clean source
+  `c1dc47987b4e7cd92cb36a6d188d4b5d2c52f457`, Supabase native runtime,
+  CLI 2.121.0. The subsequent change only records this result; its code evidence
+  is reused explicitly. The journey creates two synthetic accounts, rather than
+  the browser suite's generic free/second/Plus fixture listed in global metadata.
+- Complete migration executed successfully in PGlite, including backfill, denied
+  client access, legacy writes, protected service reads/writes and cascade.
+- Focused Deno routes: **14 passed**, including missing credentials, storage error
+  and provider failure; final `verify:pr` also runs the required Edge checks.
+- Security advisors: **executed, exit 0**. One pre-existing `extension_in_public`
+  warning concerns `public.pg_net`; no finding names the new Apple objects. See
+  [the advisor's remediation guide](https://supabase.com/docs/guides/database/database-linter?lint=0014_extension_in_public).
+  The guarded loopback native database requires `sslmode=disable`; the initial
+  advisor attempts failed TLS negotiation and are not counted as successful.
+- Independent security review: no blocking findings on the production-source
+  change, then its test-only corrections through the clean source above. Its
+  suggestion to require successful reads before absence assertions was applied.
+
+The final `verify:pr` receipt and delivered head are recorded in the PR. No remote
+schema, Edge deployment, real Apple provider or physical-device result is implied.
+
 ## Production rollout dependency
 
 After owner authorization, check applied migration history and actual schema;
