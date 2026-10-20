@@ -11,7 +11,7 @@ Le lot 08 complète **30 packs**, en conservant leurs couvertures peintes et en 
 - **Atlas / pack d'images** : huit rôles et correspondances dans six langues. La présence des fichiers ne vaut pas qualification ou publication.
 - **Commun** : cadre partagé et illustration existante ; le pack reste à compléter.
 - **QA / accord / publication** : preuves distinctes, liées aux entrées du candidat. La correction du générateur périme les anciennes preuves pour ce candidat ; elles restent conservées.
-- **Historique** : la PR478 a publié les 1 440 pages sur `1a63ecf787bc8d20e322314e1ba17987c83b1198` ; ses 74 QA et 240 publications restent décrites dans [leur reçu](../qa/symbol-pages-uniform-20261020.json) et `snapshot.json`. Les 40 contrôles PR474 et 37 publications antérieures restent historiques. Le compteur « Publiées » du classeur concerne les preuves actuelles du candidat, pas la disponibilité du site historique.
+- **Historique** : la PR485 a publié le Tigre commun et les 1 440 pages sur `76d7e577dfb7eb5251b0898e994e3a5210bfd56c` ; les 75 QA et 240 publications restent décrites dans [son reçu](../qa/symbol-tiger-common-motion-20261020.json) et `snapshot.json`. La [livraison PR478](../qa/symbol-pages-uniform-20261020.json) reste également conservée. Les 40 contrôles PR474 et 37 publications antérieures restent historiques. Le compteur « Publiées » du classeur concerne les preuves actuelles du candidat, pas la disponibilité du site historique.
 - **Archives** : les 30 archives du lot 08 ont leurs empreintes locales et leurs métadonnées Drive vérifiées. Pour les anciens packs PR474, la disponibilité locale de leur archive demeure non affirmée.
 
 ## Mettre à jour après chaque lot de 30 au maximum

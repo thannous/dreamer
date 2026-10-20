@@ -2,11 +2,11 @@
 
 ## Lot 08 prêt à livrer
 
-Responsable d'intégration : **Codex**. Branche : `codex/symbol-images-lot-08-30`, master intégré : `76d7e577d`. Candidat navigateur propre : `9184f780a23f21687350020fa3448d58e4e0aadd` ; les mises à jour de suivi ultérieures réutilisent cette preuve sans revendiquer un nouveau parcours.
+Responsable d'intégration : **Codex**. Branche : `codex/symbol-images-lot-08-30`, master intégré : `f71600c97` (preuves PR487 ; code qualifié identique à master `76d7e577d`). Candidat navigateur propre : `9184f780a23f21687350020fa3448d58e4e0aadd` ; les mises à jour de suivi ultérieures réutilisent cette preuve sans revendiquer un nouveau parcours.
 
 **30 couvertures conservées, 210 nouveaux PNG, 30 packs complets et 1 140 dérivés**. Les 30 parcours passent dans les six langues à 2560×1440 et 390×844. Les 150 captures et les 30 familles de sources ont été inspectées. Lire [le rapport](../qa/symbol-packs-lot-08-30-20261020.md), [le reçu](../qa/symbol-packs-lot-08-30-20261020.json), [l'Excel et le CSV](README.md). Les originaux, prompts et provenance sont dans [30 ZIP privés Drive](https://drive.google.com/drive/folders/1XzmtnMeVfBGWkT6XdLs5hGGI_kBjes0p) et dans le dossier local `output/symbol-packs-lot-08-30-20261020` du checkout principal. `RECUPERATION.json` décrit la reprise ; `production-queue.json` contient les prochains lots. Les versions rejetées restent conservées localement.
 
-Le candidat contient **105 packs et 135 restants**, soit 630 pages équipées parmi les 1 440 pages du cadre commun. La migration du Tigre au moteur commun provient de master PR485 ; ce lot ne revendique pas un nouveau parcours Tigre. Les 30 QA sont actuelles pour le candidat ; les anciennes preuves restent historiques car le générateur a changé. Aucun accord personnel de Thanh ou nouvelle publication n'est consigné. La publication PR478 demeure une livraison historique vérifiée, pas une preuve de ce nouveau lot.
+Le candidat contient **105 packs et 135 restants**, soit 630 pages équipées parmi les 1 440 pages du cadre commun. La migration du Tigre au moteur commun provient de master PR485 ; ce lot ne revendique pas un nouveau parcours Tigre. Les 30 QA sont actuelles pour le candidat ; les anciennes preuves restent historiques car le générateur a changé. Aucun accord personnel de Thanh ou nouvelle publication n'est consigné. Les publications PR478 et PR485 demeurent des livraisons historiques vérifiées, pas des preuves de ce nouveau lot.
 
 ## Reprendre sans perdre le travail
 

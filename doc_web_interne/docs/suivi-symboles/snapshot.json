@@ -3,6 +3,7 @@
   "date": "2026-10-20",
   "sourceRevision": "9184f780a23f21687350020fa3448d58e4e0aadd",
   "sourceRevisionScope": "Clean browser-qualified implementation; subsequent tracking-only edits reuse this evidence.",
+  "integratedMaster": "f71600c97",
   "sourceBranch": "codex/symbol-images-lot-08-30",
   "integrationOwner": "Codex",
   "totalSymbols": 240,
@@ -27,14 +28,14 @@
   "files": {
     "workbook": {
       "path": "suivi-240-symboles-6-langues.xlsx",
-      "sha256": "fb984f920b50e97b7e38f43812e57e86546993bcd72303575d7dc3c0fc391b74"
+      "sha256": "bf7ca345e0d50e7ae4a1386bb82f6faf5551772f7729803bab2c15fbc01faec0"
     },
     "csv": {
       "path": "symbol-rollout.csv",
-      "sha256": "dc0cbce6eb0b1af91f62f70c4822894a038e7a855e925e21eab6cfb7a003490c"
+      "sha256": "4835e06f3d442a1ebd8efb1c93f5d6242b9a9dd860ccc283421f685004145375"
     }
   },
-  "reportSha256": "88d6ad45b67193bdbd031502113a288659a925d7ee9325387933a9bd31c37c2e",
+  "reportSha256": "e9cf4eb1696b8cda63d09618e655265d75fd387261363b4f3f98f40512675dc9",
   "checks": {
     "rows": 240,
     "recalculation": true,
@@ -75,18 +76,18 @@
   "tigerEvidence": "Common-engine implementation inherited from master PR485; no fresh Tiger browser qualification in this selected run.",
   "driveSources": "https://drive.google.com/drive/folders/1XzmtnMeVfBGWkT6XdLs5hGGI_kBjes0p",
   "historicalProofs": {
-    "sourceRevision": "1a63ecf787bc8d20e322314e1ba17987c83b1198",
-    "sourcePullRequest": 478,
+    "sourceRevision": "76d7e577dfb7eb5251b0898e994e3a5210bfd56c",
+    "sourcePullRequest": 485,
     "stageProofs": {
       "publication": 240,
       "approval": 0,
-      "qa": 74
+      "qa": 75
     },
-    "qaReceipt": "../qa/symbol-pages-uniform-20261020.json",
-    "qaReceiptSha256": "fe31ccd3607e8f968b734c44af88982100e05b70ee32145e80ebb11246dfda19",
+    "qaReceipt": "../qa/symbol-tiger-common-motion-20261020.json",
+    "qaReceiptSha256": "ab7a78a27a415f91aefac4c47c49e33f20f000216954241a840ca864a197b88b",
     "publication": {
       "origin": "https://noctalia.app",
-      "deploymentUrl": "https://9146e242.noctalia.pages.dev",
+      "deploymentUrl": "https://59e528d0.noctalia.pages.dev",
       "command": "npm run docs:deploy:prod",
       "releaseCommand": "npm run verify:release:site -- --keep",
       "releasePassed": true
