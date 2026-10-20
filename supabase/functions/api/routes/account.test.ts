@@ -32,7 +32,8 @@ type FakeAdminResults = {
   quotaError?: { code: string } | null;
   deleteUserError?: { message: string } | null;
   identities?: { provider: string }[];
-  appMetadata?: Record<string, unknown>;
+  privateAppleToken?: string | null;
+  privateAppleTokenError?: { message: string } | null;
 };
 
 function fakeAdminClient(results: FakeAdminResults = {}) {
@@ -65,6 +66,10 @@ function fakeAdminClient(results: FakeAdminResults = {}) {
           },
         }),
       }),
+      rpc: (name: string, args: { p_user_id: string }) => {
+        calls.push(`rpc:${name}:${args.p_user_id}`);
+        return Promise.resolve({ data: results.privateAppleToken ?? null, error: results.privateAppleTokenError ?? null });
+      },
       auth: {
         admin: {
           getUserById: (id: string) => {
@@ -74,7 +79,7 @@ function fakeAdminClient(results: FakeAdminResults = {}) {
                 user: {
                   id,
                   identities: results.identities ?? [],
-                  app_metadata: results.appMetadata ?? {},
+                  app_metadata: {},
                 },
               },
               error: null,
@@ -136,18 +141,20 @@ Deno.test('/account deletion reports a failure when the auth deletion fails', as
 Deno.test('/account deletion revokes Apple tokens before deleting an Apple user', async () => {
   const { factory, calls } = fakeAdminClient({
     identities: [{ provider: 'apple' }],
-    appMetadata: { apple_refresh_token: 'apple-refresh' },
+    privateAppleToken: 'apple-refresh',
   });
   const revokeCalls: { refreshToken?: string | null }[] = [];
   const res = await handleDeleteAccount(context() as never, factory, async (input) => {
     revokeCalls.push(input);
+    calls.push('apple.revoke');
   });
   assertEquals(res.status, 200);
   assertEquals(await res.json(), { deleted: true });
   assertEquals(revokeCalls, [{ refreshToken: 'apple-refresh' }]);
   assertEquals(calls.includes(`auth.getUserById:${USER_ID}`), true);
   assertEquals(calls.includes(`auth.deleteUser:${USER_ID}`), true);
-  assertEquals(calls.indexOf(`auth.getUserById:${USER_ID}`) < calls.indexOf(`auth.deleteUser:${USER_ID}`), true);
+  assertEquals(calls.indexOf(`rpc:read_apple_refresh_token:${USER_ID}`) < calls.indexOf('apple.revoke'), true);
+  assertEquals(calls.indexOf('apple.revoke') < calls.indexOf(`auth.deleteUser:${USER_ID}`), true);
 });
 
 Deno.test('/account deletion skips Apple revoke for non-Apple users', async () => {
@@ -164,7 +171,7 @@ Deno.test('/account deletion skips Apple revoke for non-Apple users', async () =
 Deno.test('/account deletion fails honestly when Apple revoke fails', async () => {
   const { factory, calls } = fakeAdminClient({
     identities: [{ provider: 'apple' }],
-    appMetadata: { apple_refresh_token: 'apple-refresh' },
+    privateAppleToken: 'apple-refresh',
   });
   const res = await handleDeleteAccount(context() as never, factory, async () => {
     throw new Error('Apple token revocation is not configured');
@@ -173,3 +180,20 @@ Deno.test('/account deletion fails honestly when Apple revoke fails', async () =
   assertEquals(await res.json(), { error: 'Apple token revocation failed' });
   assertEquals(calls.includes(`auth.deleteUser:${USER_ID}`), false);
 });
+
+// Isolation gap: real Apple provider failures cannot be safely forced by a local
+// Auth journey. These cases protect fail-closed deletion without provider calls.
+for (const results of [
+  { privateAppleToken: null },
+  { privateAppleTokenError: { message: 'private storage unavailable' } },
+]) {
+  Deno.test(`/account preserves the Apple user when private credentials are unavailable (${JSON.stringify(results)})`, async () => {
+    const { factory, calls } = fakeAdminClient({ identities: [{ provider: 'apple' }], ...results });
+    let revoked = false;
+    const res = await handleDeleteAccount(context() as never, factory, async () => { revoked = true; });
+    assertEquals(res.status, 503);
+    assertEquals(await res.json(), { error: 'Apple token revocation failed' });
+    assertEquals(revoked, false);
+    assertEquals(calls.includes(`auth.deleteUser:${USER_ID}`), false);
+  });
+}

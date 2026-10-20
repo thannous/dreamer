@@ -82,12 +82,14 @@ jest.mock('react-native', () => {
     ScrollView: ({
       children,
       contentContainerStyle,
+      horizontal,
       style,
     }: {
       children?: React.ReactNode;
       contentContainerStyle?: { paddingBottom?: number };
+      horizontal?: boolean;
       style?: { marginBottom?: number };
-    }) => (
+    }) => horizontal ? <div>{children}</div> : (
       <div data-testid="home-scroll" data-padding-bottom={contentContainerStyle?.paddingBottom} data-margin-bottom={style?.marginBottom}>
         {children}
       </div>
@@ -198,9 +200,14 @@ jest.mock('@/components/NoctaliaScreenHeader', () => ({
     </header>
   ),
 }));
-jest.mock('@/components/inspiration/PersonalReadingCard', () => ({
-  PersonalReadingCard: () => null,
+jest.mock('@/components/home/HomeWeekNights', () => ({
+  HomeWeekNights: () => null,
 }));
+jest.mock('@/components/home/HomeRecurringCard', () => ({
+  HomeRecurringCard: () => null,
+}));
+jest.mock('expo-image', () => ({ Image: () => null }));
+jest.mock('expo-linear-gradient', () => ({ LinearGradient: () => null }));
 jest.mock('@/components/ui/icon-symbol', () => ({
   IconSymbol: ({ name }: { name: string }) => <span data-icon={name} />,
 }));
