@@ -144,8 +144,9 @@ if (process.env.E2E_PERF_FIXTURE_MEDIA === 'local') {
       await expect(entry).toBeVisible();
       const id = 1792303200000 - (index - 1) * 86400000;
       const cover = screen.getByTestId(`journal.cover.dream.item.${id}`);
-      if (index === 3) await expect(cover).toBeHidden();
-      else await screen.scrollUntilVisible(cover);
+      // Revised 2026-10-20 (case 3 had no frame): every card keeps the painting's frame, and
+      // where both images fail the dream's seal stands in it.
+      await screen.scrollUntilVisible(cover);
       await app.screenshot(`native-local-media-case-${index}`);
       await entry.tap();
       await expect(screen.getByTestId('screen.dreamDetail')).toBeVisible();
