@@ -159,6 +159,19 @@ for (const theme of ['light', 'dark'] as const) {
     await expect(noImage.getByTestId(`journal.metadata.${noImageId}`)).toContainText('Recurring');
     await expect(noImage.getByTestId(`journal.metadata.${noImageId}`)).toContainText('Memory');
     await expect(noImage).toContainText('I was walking through a beautiful garden');
+    // No frame sets a dream without a painting apart: its seal stands where the painting
+    // would, at the top left, level with the icons and above the date.
+    await expect(noImage.getByTestId(`journal.seal.${noImageId}`)).toBeVisible();
+    const sealPlace = await noImage.evaluate((node, cardId) => {
+      const box = (testId: string) => node.querySelector(`[data-testid="${testId}.${cardId}"]`)!.getBoundingClientRect();
+      const [card, seal, share, preview] = [node.getBoundingClientRect(), box('journal.seal'), box('journal.share'), box('journal.preview')];
+      return {
+        frame: parseFloat(getComputedStyle(node.querySelector(`[data-testid="journal.text.${cardId}"]`)!).borderTopWidth),
+        top: seal.top - card.top, left: seal.left - card.left, width: seal.width,
+        clearOfIcons: seal.right < share.left, aboveText: seal.bottom < preview.top,
+      };
+    }, noImageId);
+    expect(sealPlace).toEqual({ frame: 0, top: 16, left: 20, width: 60, clearOfIcons: true, aboveText: true });
     await page.screenshot({ path: testInfo.outputPath(`${theme}-text-only.png`) });
     for (const viewport of [{ width: 768, height: 1024 }, { width: 1440, height: 1000 }, { width: 320, height: 640 }]) {
       await page.setViewportSize(viewport);
@@ -236,11 +249,13 @@ test('failed illustration leaves a compact readable entry that still opens', asy
   const id = await card.getAttribute('data-testid');
   await expect(card.getByTestId(`journal.cover.${id}`)).toHaveCount(0);
   await expect(card).toContainText('I found myself in an enormous library');
-  // Revised 2026-10-20 (was < 340): the date margin is gone (owner chose the full-page
-  // painting); the date and icons share the text card's first line, so the entry is short again.
-  // The cover's frame shows while its sources are tried, then the entry settles compact.
-  await expect.poll(async () => (await card.boundingBox())?.height ?? Infinity).toBeLessThan(260);
+  // Revised 2026-10-20 (was < 260): the owner asked for the dream's seal in place of the text
+  // card's frame, so its 60 pt seal now heads the entry. A painting's frame would still be
+  // well over twice as tall. The cover's frame shows while its sources are tried, then the
+  // entry settles compact.
+  await expect.poll(async () => (await card.boundingBox())?.height ?? Infinity).toBeLessThan(300);
   await expect(card.getByTestId(`journal.cover.${id}`)).toHaveCount(0);
+  await expect(card.getByTestId(`journal.seal.${id}`)).toBeVisible();
   await page.screenshot({ path: testInfo.outputPath('failed-illustration-text-fallback.png') });
   await card.click();
   await expect(page.getByTestId('component.transcriptCard')).toContainText('Books were floating around me');

@@ -21,6 +21,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Dimensions, Pressable, Text, View, useWindowDimensions } from 'react-native';
 import Animated from 'react-native-reanimated';
+import { JournalCardSeal } from '@/components/journal/JournalCardSeal';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useFrameParallax } from '@/components/ui/scrollDepth';
 
@@ -417,14 +418,12 @@ export const DreamCard = memo(function DreamCard({
     </View>
   );
   // Over the card rather than inside its button: a button never holds another one.
-  // The text card's 1 pt border adds to the reading block's inset.
-  const textInset = READING_INSET + (hasImage ? 0 : 1);
   const expandControl = canExpand && metadataHeight !== null ? (
     <Pressable accessibilityRole="button" accessibilityState={{ expanded }}
       accessibilityLabel={t(expanded ? 'journal.card.collapse' : 'journal.card.expand')}
       hitSlop={EXPAND_HIT_SLOP} onPress={(event) => { event.stopPropagation(); setReading((previous) => ({ ...previous, expanded: !previous.expanded })); }}
       testID={testID && `journal.expand.${testID}`} className="absolute items-end justify-center"
-      style={{ right: textInset, bottom: textInset + metadataHeight + READING_GAP, width: EXPAND_ARROW_WIDTH, height: 22 * compactTextScale }}
+      style={{ right: READING_INSET, bottom: READING_INSET + metadataHeight + READING_GAP, width: EXPAND_ARROW_WIDTH, height: 22 * compactTextScale }}
     >
       <IconSymbol name={expanded ? 'chevron.up' : 'chevron.down'} size={20} color={hasImage ? noctalia.illustration.text : noctalia.text.secondary} />
     </Pressable>
@@ -490,9 +489,12 @@ export const DreamCard = memo(function DreamCard({
           </View>
         </View>
       ) : (
-        <View key="text-only" className="gap-1.5 rounded-[24px] border border-line bg-ink-raised px-5 pb-5 pt-2" testID={testID && `journal.text.${testID}`}>
-          {/* Level with the icons at the top right, and clear of them. */}
-          <View className="min-h-[44px] justify-center pr-24">{dateOverline}</View>
+        <View key="text-only" className="gap-1.5 rounded-[24px] bg-ink-raised px-5 pb-5 pt-4" testID={testID && `journal.text.${testID}`}>
+          {/* Where a painting would be, level with the icons at the top right. */}
+          <View className="mb-2">
+            <JournalCardSeal theme={dream.theme} testID={testID && `journal.seal.${testID}`} />
+          </View>
+          {dateOverline}
           {readingText}
           {metadata}
         </View>
