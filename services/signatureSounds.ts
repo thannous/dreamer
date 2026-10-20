@@ -44,7 +44,21 @@ const STORAGE_KEY = 'noctalia_signature_sounds_v1';
 let enabled: boolean | null = null;
 // Counts the dreamer's choices: a read begun before one must not undo it.
 let choices = 0;
+const listeners = new Set<() => void>();
 const players = new Map<SignatureSound, AudioPlayer>();
+
+function publish(next: boolean) {
+  enabled = next;
+  listeners.forEach((listener) => listener());
+}
+
+/** Called whenever the choice in force changes, so every switch shows the one the cues follow. */
+export function subscribeSignatureSounds(listener: () => void): () => void {
+  listeners.add(listener);
+  return () => {
+    listeners.delete(listener);
+  };
+}
 
 /** Sounds are on unless the dreamer turned them off. */
 export async function getSignatureSoundsEnabled(): Promise<boolean> {
@@ -56,7 +70,7 @@ export async function getSignatureSoundsEnabled(): Promise<boolean> {
   } catch {
     stored = true;
   }
-  if (choices === asked) enabled = stored;
+  if (choices === asked) publish(stored);
   return enabled ?? stored;
 }
 
@@ -71,11 +85,14 @@ export function peekSignatureSoundsEnabled(): boolean | null {
  */
 export async function setSignatureSoundsEnabled(next: boolean): Promise<void> {
   const choice = ++choices;
-  enabled = next;
+  publish(next);
   try {
     await getLucidKeyValueStorage().setItem(STORAGE_KEY, next ? 'on' : 'off');
   } catch (error) {
-    if (choice === choices) enabled = null;
+    if (choice === choices) {
+      enabled = null;
+      void getSignatureSoundsEnabled();
+    }
     throw error;
   }
 }
@@ -118,7 +135,8 @@ async function play(sound: SignatureSound) {
   }
   player.volume = VOLUME;
   await player.seekTo(0);
-  if (isMicrophoneHeld()) return;
+  // Asked again after the waits: the phone may have been locked, or a recording started.
+  if (isMicrophoneHeld() || AppState.currentState !== 'active') return;
   player.play();
 }
 

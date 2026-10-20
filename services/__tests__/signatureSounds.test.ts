@@ -147,6 +147,21 @@ it('lets a recording that starts while a cue waits keep the audio session', asyn
   expect(mockPlayer.play).not.toHaveBeenCalled();
 });
 
+it('stays unheard when the app is left while a cue gets ready', async () => {
+  let seeked!: () => void;
+  mockPlayer.seekTo.mockImplementationOnce(() => new Promise<void>((resolve) => {
+    seeked = resolve;
+  }));
+  launch().playSignature('painting');
+  // The cue now waits on its player, and the phone is locked.
+  await settle();
+  (AppState as { currentState: string }).currentState = 'background';
+  seeked();
+  await settle();
+
+  expect(mockPlayer.play).not.toHaveBeenCalled();
+});
+
 it('leaves the echo’s answer unfelt once the app is left', () => {
   jest.useFakeTimers();
   try {

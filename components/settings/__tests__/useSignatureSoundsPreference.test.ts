@@ -11,10 +11,19 @@ import { useSignatureSoundsPreference } from '../useSignatureSoundsPreference';
 
 const mockStore = new Map<string, string>();
 let mockWriteFails = false;
+// When set, the next write waits for the test to let it fail.
+let mockHeldWrite: { fail: () => void } | null = null;
+let mockHoldWrite = false;
 jest.mock('@/services/lucidKeyValueStorage', () => ({
   getLucidKeyValueStorage: () => ({
     getItem: async (key: string) => mockStore.get(key) ?? null,
     setItem: async (key: string, value: string) => {
+      if (mockHoldWrite) {
+        mockHoldWrite = false;
+        await new Promise<void>((_, reject) => {
+          mockHeldWrite = { fail: () => reject(new Error('storage full')) };
+        });
+      }
       if (mockWriteFails) throw new Error('storage full');
       mockStore.set(key, value);
     },
@@ -29,6 +38,8 @@ const settle = () => act(async () => {
 
 beforeEach(() => {
   mockWriteFails = false;
+  mockHoldWrite = false;
+  mockHeldWrite = null;
 });
 
 it('shows what storage still holds when two flips in a row cannot be stored', async () => {
@@ -60,5 +71,24 @@ it('keeps the flip that was stored when a later one fails', async () => {
   await settle();
 
   expect(result.current.enabled).toBe(false);
+  expect(await getSignatureSoundsEnabled()).toBe(false);
+});
+
+it('shows what storage holds on a settings screen reopened before a flip fails', async () => {
+  const first = renderHook(() => useSignatureSoundsPreference());
+  await settle();
+  expect(first.result.current.enabled).toBe(false);
+
+  mockHoldWrite = true;
+  act(() => first.result.current.toggle(true));
+  first.unmount();
+  const reopened = renderHook(() => useSignatureSoundsPreference());
+  await settle();
+  expect(reopened.result.current.enabled).toBe(true);
+
+  await act(async () => mockHeldWrite?.fail());
+  await settle();
+
+  expect(reopened.result.current.enabled).toBe(false);
   expect(await getSignatureSoundsEnabled()).toBe(false);
 });
