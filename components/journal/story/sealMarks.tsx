@@ -1,15 +1,15 @@
 import { isLoaded } from 'expo-font';
 import React, { useId, useMemo, useState } from 'react';
-import { Image, Platform, Text, View, type ImageSourcePropType, type StyleProp, type ViewStyle } from 'react-native';
+import { Image, Platform, Text, View, type StyleProp, type ViewStyle } from 'react-native';
 import Animated, { type CSSStyle } from 'react-native-reanimated';
 import Svg, { Circle, Defs, Path, RadialGradient, Stop } from 'react-native-svg';
 
 import { EASE } from '@/components/motion/motion';
-import { getNoctaliaPalette } from '@/constants/noctaliaPalette';
 import { DREAM_THEMES } from '@/lib/dreamThemes';
 import type { DreamTheme } from '@/lib/types';
 
 import { DREAM_EASE, DREAM_STORY } from './dreamStoryMotion';
+import { SEAL_EMBLEMS, SEAL_GOLD } from './sealEmblems';
 import { sparklePath } from './sparkle';
 
 /*
@@ -18,17 +18,8 @@ import { sparklePath } from './sparkle';
  * capture seal, which strikes it in the journal, and the saved moment, which shows it.
  */
 
-/** Each theme's emblem, an ink mask the seal tints. */
-export const SEAL_EMBLEMS: Record<DreamTheme, ImageSourcePropType> = {
-  mystical: require('@/assets/images/dream-seal-emblem-mystical.webp'),
-  calm: require('@/assets/images/dream-seal-emblem-calm.webp'),
-  surreal: require('@/assets/images/dream-seal-emblem-surreal.webp'),
-  noir: require('@/assets/images/dream-seal-emblem-noir.webp'),
-  luminous: require('@/assets/images/dream-seal-emblem-luminous.webp'),
-  nostalgic: require('@/assets/images/dream-seal-emblem-nostalgic.webp'),
-};
-/** The emblem is pressed in the warm light of the journal's lamp, in both themes. */
-export const SEAL_GOLD = getNoctaliaPalette('dark').accent;
+export { SEAL_EMBLEMS, SEAL_GOLD };
+
 const EMBLEM = 92;
 /** The legend runs between the window's rim and the astrolabe's inner orbit. */
 const LEGEND_RADIUS = 84;

@@ -4,6 +4,7 @@ import type { ExpoSpeechRecognitionModuleType } from 'expo-speech-recognition/bu
 
 import { APP_TRANSCRIPTION_LOCALES } from '@/lib/locale';
 import { waitForPermissionActivityToSettle } from '@/lib/recordingPermissions';
+import { publishVoiceLevel, VOICE_LEVEL_SILENT } from '@/lib/voiceLevel';
 import {
   LOCALE_INTROSPECTION_MIN_API,
   resolveSpeechCapability,
@@ -742,6 +743,12 @@ export async function startNativeSpeechSession(
       options?.onListeningChange?.(false);
     });
 
+    // Loudness for the listening orb only; it carries no audio or text.
+    const volumeSub = speechModule.addListener('volumechange', (event: { value: number }) => {
+      if (sessionId !== globalSessionCounter || ended || stopRequested) return;
+      publishVoiceLevel(event.value);
+    });
+
     const errorSub = speechModule.addListener('error', (event) => {
       // Ignore events from old sessions
       if (sessionId !== globalSessionCounter) {
@@ -779,6 +786,8 @@ export async function startNativeSpeechSession(
       try { endSub.remove(); } catch {}
       try { audioEndSub.remove(); } catch {}
       try { errorSub.remove(); } catch {}
+      try { volumeSub?.remove(); } catch {}
+      publishVoiceLevel(VOICE_LEVEL_SILENT);
 
       if (__DEV__) {
         console.log('[nativeSpeech] cleanup complete', { sessionId });
@@ -796,6 +805,7 @@ export async function startNativeSpeechSession(
         continuous: Platform.OS === 'web' || Platform.OS === 'ios',
         requiresOnDeviceRecognition,
         androidRecognitionServicePackage,
+        volumeChangeEventOptions: { enabled: true, intervalMillis: 80 },
         recordingOptions: supportsRecording
           ? {
               persist: true,

@@ -30,7 +30,9 @@ export function RemoteJournalList({ userId, searchQuery, onOpenDream, header, bo
   const matches = items.filter(item => !query || `${item.title ?? ''} ${item.transcript}`.toLocaleLowerCase().includes(query));
   return <FlatList
     testID="journal-remote-preview"
-    style={{ flex: 1, marginBottom: bottomInset }}
+    style={{ flex: 1 }}
+    // The tab bar is glass: previews scroll behind it, and the padding clears the last one.
+    contentContainerStyle={{ paddingBottom: bottomInset }}
     data={matches}
     keyExtractor={item => String(item.remoteId)}
     ListHeaderComponent={header}

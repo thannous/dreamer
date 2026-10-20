@@ -14,6 +14,7 @@ import { CaptureConversationCard } from './CaptureConversationCard';
 import { parseCaptureEditableDraft } from '@/lib/captureEditableDraft';
 import { Fonts } from '@/constants/theme';
 import { CaptureWeaving } from './CaptureWeaving';
+import { ListeningHalo } from './ListeningHalo';
 
 type Props = {
   compact?: boolean;
@@ -96,15 +97,17 @@ export function RecordingConversation(props: Props) {
     : props.weaving ? t('recording.chat.weaving')
     : props.done ? t('recording.conversation.ready')
     : props.needsDecision ? t('recording.conversation.edited')
-    : props.question ?? t(hasStory ? 'dream_recall.question.what_else' : 'recording.conversation.welcome');
+    : props.question ?? (hasStory ? t('dream_recall.question.what_else') : null);
   return <View style={[styles.container, props.compact && styles.compact]} testID="recording-conversation">
     <ScrollView ref={thread} style={[styles.thread, props.compact && styles.threadCompact]}
       contentContainerStyle={styles.messages} scrollEnabled={!props.compact} nestedScrollEnabled
       keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false} testID="capture-chat-thread"
       onScroll={({ nativeEvent }) => { nearBottom.current = nativeEvent.contentSize.height - nativeEvent.contentOffset.y - nativeEvent.layoutMeasurement.height < 48; }}
       scrollEventThrottle={32}
-      onContentSizeChange={() => { if (nearBottom.current) thread.current?.scrollToEnd({ animated: false }); }}>
-      {hasStory ? <MarkdownText style={[styles.question, { color: tokens.text.primary }]}>{t('recording.conversation.welcome')}</MarkdownText> : null}
+      onContentSizeChange={() => { if (nearBottom.current) thread.current?.scrollToEnd({ animated: false }); }}
+      // When the thread gets shorter (the listening halo, the keyboard), keep the question being
+      // answered in view. Not once the woven page shows: it is read from its top.
+      onLayout={() => { if (!reviewShown && nearBottom.current) thread.current?.scrollToEnd({ animated: false }); }}>
       {sections.map((section, index) => section.text.trim() ? <React.Fragment key={index}>
         {section.question ? <MarkdownText style={[styles.question, { color: tokens.text.primary }]}>{section.question}</MarkdownText> : null}
         <Pressable onPress={props.onReview} disabled={locked || !!props.review} accessibilityRole="button" accessibilityLabel={t('recording.tell.edit')}
@@ -112,7 +115,8 @@ export function RecordingConversation(props: Props) {
           <Text selectable style={[styles.message, { color: tokens.text.primary }]} testID={index === 0 ? 'recording-voice-preview' : undefined}>{section.text.trim()}</Text>
         </Pressable>
       </React.Fragment> : null)}
-      <MarkdownText accessibilityLiveRegion="polite" style={[styles.question, { color: tokens.text.primary }]} testID="recording-conversation-question">{currentQuestion}</MarkdownText>
+      {/* No opening prompt: the empty thread and the reply field already invite the dream. */}
+      {currentQuestion ? <MarkdownText accessibilityLiveRegion="polite" style={[styles.question, { color: tokens.text.primary }]} testID="recording-conversation-question">{currentQuestion}</MarkdownText> : null}
       {props.weaving && !props.review ? <CaptureWeaving /> : null}
       {props.loading ? <ActivityIndicator color={tokens.text.primary} accessibilityLabel={t('recording.conversation.thinking')} /> : null}
       {props.unavailable && !props.review ? <Text style={[styles.hint, { color: tokens.text.secondary }]}>{t('recording.conversation.offline')}</Text> : null}
@@ -136,7 +140,8 @@ export function RecordingConversation(props: Props) {
       {props.onFinish ? <Pressable onPress={props.onFinish} disabled={locked || props.loading || props.finishDisabled} accessibilityRole="button"
         style={styles.secondary} testID="recording-conversation-finish"><Text style={[styles.hint, { color: tokens.text.primary }]}>{t('recording.conversation.done')}</Text></Pressable> : null}
     </View> : null}
-    {listening ? <Text accessibilityLiveRegion="polite" style={[styles.hint, { color: tokens.text.secondary }]} testID="recording-listening-status">{t('recording.conversation.listening')}</Text> : null}
+    {/* Noctalia listening: a halo that follows the voice, above the reply. */}
+    {listening ? <ListeningHalo label={t('recording.conversation.listening')} style={styles.listening} testID="recording-listening-status" /> : null}
     <RecordingTextInput chat compact autoFocus={false} value={props.answer} onChange={props.onAnswerChange}
       disabled={locked || props.loading || listening} instructionText="" lengthWarning="" voiceSupported={props.voiceSupported}
       voiceStatus={props.voiceStatus} switchToVoiceLabel={t('recording.conversation.reply_voice')} onSwitchToVoice={() => { void onVoice(); }}
@@ -169,4 +174,5 @@ const styles = StyleSheet.create({
   tool: { minHeight: 44, minWidth: 44, alignItems: 'center', justifyContent: 'center' },
   secondary: { minHeight: 44, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 12 },
   control: { width: 44, height: 44, borderRadius: 22, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
+  listening: { alignSelf: 'center' },
 });

@@ -48,7 +48,7 @@ async function findDream(page: Page, title: string) {
 }
 
 for (const theme of ['light', 'dark'] as const) {
-  test(`journal keeps compact covers readable with a date margin in ${theme}`, async ({ page, context }, testInfo) => {
+  test(`journal shows each painting whole with its dream on a veil in ${theme}`, async ({ page, context }, testInfo) => {
     await page.clock.setFixedTime(new Date(theme === 'light' ? '2026-10-03T12:00:00+02:00' : '2026-10-03T23:00:00+02:00'));
     // Optional private 9:16 artwork for local visual QA; CI uses the bright image
     // supplied by the offline-services fixture. No external image fetch occurs.
@@ -58,40 +58,67 @@ for (const theme of ['light', 'dark'] as const) {
     await populatedJournal(page);
     const card = await findDream(page, 'The Infinite Library');
     const id = await card.getAttribute('data-testid');
-    const margin = card.getByTestId(`journal.margin.${id}`);
     const cover = card.getByTestId(`journal.cover.${id}`);
     const text = card.getByTestId(`journal.text.${id}`);
     const metadata = card.getByTestId(`journal.metadata.${id}`);
     await expect(metadata).toContainText('Symbolic dream');
     await expect(metadata).toContainText('Mystical');
-    await expect(card).toContainText('Analyzed');
+    await expect(metadata).toContainText('Analyzed');
     await expect(text).toContainText('I found myself in an enormous library');
     // React Native's layout event follows the phone/grid resize. Observe the
     // settled portrait frame rather than its initial width from the previous layout.
+    const screenHeight = await page.evaluate(() => screen.height);
     await expect.poll(async () => {
       const bounds = await cover.boundingBox();
       // A responsive list remount can briefly remove the cover between reads.
       // Keep polling the same geometry contract instead of throwing on null.
-      return bounds ? Math.abs(bounds.height - Math.min(bounds.width * 16 / 9, 620)) : Infinity;
+      return bounds ? Math.abs(bounds.height - Math.min(bounds.width * 16 / 9, Math.round(screenHeight * 0.8))) : Infinity;
     }).toBeLessThanOrEqual(1);
-    const coverBounds = (await cover.boundingBox())!;
-    const textBounds = (await text.boundingBox())!;
-    const marginBounds = (await margin.boundingBox())!;
-    expect(marginBounds.width).toBeGreaterThanOrEqual(88);
-    expect(marginBounds.x + marginBounds.width).toBeLessThanOrEqual(coverBounds.x);
-    expect(textBounds.y).toBeGreaterThanOrEqual(coverBounds.y);
-    expect(textBounds.y + textBounds.height).toBeLessThanOrEqual(coverBounds.y + coverBounds.height);
-    const backing = card.getByTestId(`journal.backing.${id}`);
-    const backingBounds = (await backing.boundingBox())!;
-    const lines = await backing.evaluate(node => Array.from(node.children).map(child => {
-      const style = getComputedStyle(child);
-      return Math.round(child.getBoundingClientRect().height / parseFloat(style.lineHeight));
+    // One snapshot of the card, relative to its painting: the list can still shift it
+    // on the page while the search settles.
+    const layout = await card.evaluate((node, cardId) => {
+      const rect = (testId: string) => node.querySelector(`[data-testid="${testId}"]`)!.getBoundingClientRect();
+      const coverRect = rect(`journal.cover.${cardId}`);
+      const relative = (testId: string) => {
+        const box = rect(testId);
+        return { top: box.top - coverRect.top, bottom: box.bottom - coverRect.top, left: box.left - coverRect.left, width: box.width };
+      };
+      return { width: coverRect.width, height: coverRect.height, text: relative(`journal.text.${cardId}`),
+        actions: [relative(`journal.favorite.${cardId}`), relative(`journal.share.${cardId}`)] };
+    }, id);
+    // The painting spans the list, and the dream's text sits at its foot, inside it.
+    expect(layout.width).toBeGreaterThanOrEqual(390 - 32 - 1);
+    expect(layout.text.top).toBeGreaterThanOrEqual(layout.height / 2);
+    expect(Math.abs(layout.text.bottom - layout.height)).toBeLessThanOrEqual(1);
+    expect(await text.evaluate(node => getComputedStyle(node).backgroundColor)).not.toBe('rgba(0, 0, 0, 0)');
+    const lines = await text.evaluate(node => [node.children[0], node.children[1],
+      node.querySelector('[data-testid^="journal.preview."]')!].map(child => {
+      return Math.round(child.getBoundingClientRect().height / parseFloat(getComputedStyle(child).lineHeight));
     }));
-    expect(lines[0]).toBeLessThanOrEqual(2);
-    expect(lines[1]).toBeLessThanOrEqual(3);
-    expect(lines.reduce((total, count) => total + count, 0)).toBeLessThanOrEqual(5);
-    expect(backingBounds.y + backingBounds.height).toBeLessThanOrEqual(textBounds.y + textBounds.height);
-    expect(await backing.evaluate(node => getComputedStyle(node).backgroundColor)).not.toBe('rgba(0, 0, 0, 0)');
+    // The date, then at most two lines of title and three of the dream.
+    expect(lines[0]).toBe(1);
+    expect(lines[1]).toBeLessThanOrEqual(2);
+    expect(lines[2]).toBeLessThanOrEqual(3);
+    // The heart and share icons sit over the painting's top right.
+    for (const action of layout.actions) {
+      expect(action.width).toBeGreaterThanOrEqual(44);
+      expect(action.top).toBeLessThan(60);
+      expect(action.left).toBeGreaterThan(layout.width / 2);
+    }
+    // The arrow follows the dream's last line, at the foot of the painting, folded or not.
+    const expand = card.getByTestId(`journal.expand.${id}`);
+    const preview = card.getByTestId(`journal.preview.${id}`);
+    const arrowGap = async () => {
+      const [arrow, last] = [await expand.boundingBox(), await preview.boundingBox()];
+      return arrow && last ? Math.abs(arrow.y + arrow.height - last.y - last.height) : Infinity;
+    };
+    await expect.poll(arrowGap).toBeLessThanOrEqual(2);
+    await expand.click();
+    await expect(expand).toHaveAccessibleName('Show less');
+    await expect.poll(async () => (await preview.boundingBox())!.height).toBeGreaterThan(3 * 22 + 1);
+    await expect.poll(arrowGap).toBeLessThanOrEqual(2);
+    await expand.click();
+    await expect(expand).toHaveAccessibleName('Read the whole dream');
     const badge = card.getByTestId(`journal.badge.${id}.0`);
     const badgeChildren = await badge.evaluate(node => Array.from(node.children).map(child => {
       const rect = child.getBoundingClientRect();
@@ -109,8 +136,8 @@ for (const theme of ['light', 'dark'] as const) {
     });
     await page.screenshot({ path: testInfo.outputPath(`${theme}-compact.png`) });
     // Browser-only 200% text stress check: this does not qualify native Dynamic Type.
-    await backing.evaluate(node => {
-      for (const child of Array.from(node.children)) {
+    await text.evaluate(node => {
+      for (const child of Array.from(node.querySelectorAll<HTMLElement>('[dir="auto"]'))) {
         const style = getComputedStyle(child);
         const fontSize = parseFloat(style.fontSize) * 2;
         const lineHeight = parseFloat(style.lineHeight) * 2;
@@ -118,11 +145,8 @@ for (const theme of ['light', 'dark'] as const) {
         (child as HTMLElement).style.setProperty('line-height', `${lineHeight}px`, 'important');
       }
     });
-    await expect.poll(async () => {
-      const coverRect = await cover.boundingBox();
-      const textRect = await text.boundingBox();
-      return Boolean(coverRect && textRect && textRect.y + textRect.height <= coverRect.y + coverRect.height + 1);
-    }).toBe(true);
+    // The card grows with its text, and the arrow follows the last line to its new place.
+    await expect.poll(arrowGap).toBeLessThanOrEqual(2);
     await page.screenshot({ path: testInfo.outputPath(`${theme}-browser-text-200.png`) });
     await card.click();
     await expect(page.getByTestId('component.transcriptCard')).toContainText('Books were floating around me');
@@ -135,6 +159,19 @@ for (const theme of ['light', 'dark'] as const) {
     await expect(noImage.getByTestId(`journal.metadata.${noImageId}`)).toContainText('Recurring');
     await expect(noImage.getByTestId(`journal.metadata.${noImageId}`)).toContainText('Memory');
     await expect(noImage).toContainText('I was walking through a beautiful garden');
+    // No frame sets a dream without a painting apart: its seal stands where the painting
+    // would, at the top left, level with the icons and above the date.
+    await expect(noImage.getByTestId(`journal.seal.${noImageId}`)).toBeVisible();
+    const sealPlace = await noImage.evaluate((node, cardId) => {
+      const box = (testId: string) => node.querySelector(`[data-testid="${testId}.${cardId}"]`)!.getBoundingClientRect();
+      const [card, seal, share, preview] = [node.getBoundingClientRect(), box('journal.seal'), box('journal.share'), box('journal.preview')];
+      return {
+        frame: parseFloat(getComputedStyle(node.querySelector(`[data-testid="journal.text.${cardId}"]`)!).borderTopWidth),
+        top: seal.top - card.top, left: seal.left - card.left, width: seal.width,
+        clearOfIcons: seal.right < share.left, aboveText: seal.bottom < preview.top,
+      };
+    }, noImageId);
+    expect(sealPlace).toEqual({ frame: 0, top: 16, left: 20, width: 60, clearOfIcons: true, aboveText: true });
     await page.screenshot({ path: testInfo.outputPath(`${theme}-text-only.png`) });
     for (const viewport of [{ width: 768, height: 1024 }, { width: 1440, height: 1000 }, { width: 320, height: 640 }]) {
       await page.setViewportSize(viewport);
@@ -147,6 +184,20 @@ for (const theme of ['light', 'dark'] as const) {
           && rect.right <= innerWidth && rect.width <= innerWidth / columns;
       }).catch(() => false)).toBe(true);
       await page.screenshot({ path: testInfo.outputPath(`${theme}-${viewport.width}-text-only.png`) });
+    }
+    // The tablet and desktop grids narrow the painted card after its first frame:
+    // the arrow still sits beside the dream's last line.
+    const painted = await findDream(page, 'The Infinite Library');
+    const paintedId = await painted.getAttribute('data-testid');
+    const paintedArrowGap = async () => {
+      const [arrow, last] = [await painted.getByTestId(`journal.expand.${paintedId}`).boundingBox().catch(() => null),
+        await painted.getByTestId(`journal.preview.${paintedId}`).boundingBox().catch(() => null)];
+      return arrow && last ? Math.abs(arrow.y + arrow.height - last.y - last.height) : Infinity;
+    };
+    for (const viewport of [{ width: 1440, height: 1000 }, { width: 768, height: 1024 }]) {
+      await page.setViewportSize(viewport);
+      await expect.poll(paintedArrowGap).toBeLessThanOrEqual(2);
+      await page.screenshot({ path: testInfo.outputPath(`${theme}-${viewport.width}-painted.png`) });
     }
   });
 }
@@ -198,11 +249,13 @@ test('failed illustration leaves a compact readable entry that still opens', asy
   const id = await card.getAttribute('data-testid');
   await expect(card.getByTestId(`journal.cover.${id}`)).toHaveCount(0);
   await expect(card).toContainText('I found myself in an enormous library');
-  // Revised 2026-10-11 (was < 260): the date margin now stacks the favourite and share
-  // buttons (owner request), so it sets the entry's height. Still far below a 9:16 cover.
-  // The cover's frame shows while its sources are tried, then the entry settles compact.
-  await expect.poll(async () => (await card.boundingBox())?.height ?? Infinity).toBeLessThan(340);
+  // Revised 2026-10-20 (was < 260): the owner asked for the dream's seal in place of the text
+  // card's frame, so its 60 pt seal now heads the entry. A painting's frame would still be
+  // well over twice as tall. The cover's frame shows while its sources are tried, then the
+  // entry settles compact.
+  await expect.poll(async () => (await card.boundingBox())?.height ?? Infinity).toBeLessThan(300);
   await expect(card.getByTestId(`journal.cover.${id}`)).toHaveCount(0);
+  await expect(card.getByTestId(`journal.seal.${id}`)).toBeVisible();
   await page.screenshot({ path: testInfo.outputPath('failed-illustration-text-fallback.png') });
   await card.click();
   await expect(page.getByTestId('component.transcriptCard')).toContainText('Books were floating around me');

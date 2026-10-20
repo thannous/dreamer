@@ -1,8 +1,8 @@
 {
   "schema": "noctalia.symbol-tracking-snapshot/1",
   "date": "2026-10-20",
-  "sourceRevision": "8e38590c85ebca2cbbef732b179eb47a8b2800d8",
-  "sourcePullRequest": 474,
+  "sourceRevision": "1a63ecf787bc8d20e322314e1ba17987c83b1198",
+  "sourcePullRequest": 478,
   "totalSymbols": 240,
   "integratedSymbols": 75,
   "remainingToIntegrate": 165,
@@ -18,17 +18,17 @@
   "historicalQaSymbols": 40,
   "historicallyPublishedSymbols": 37,
   "currentStageProofs": {
-    "publication": 0,
+    "publication": 240,
     "approval": 0,
-    "qa": 0
+    "qa": 74
   },
   "files": {
     "workbook": {
-      "sha256": "03e959e051ef8be77f318336494ca2698970515640f7aaa78616ade8dd886b2b",
+      "sha256": "cb16d6d1a0870615ec9dbeb33497fc4c3f81e7edb77ca1753625c88e2816203e",
       "path": "suivi-240-symboles-6-langues.xlsx"
     },
     "csv": {
-      "sha256": "1de9fe95c2cdc7b1b9ae743ad14bec120cf9f895104ec2bf5f721f340eda7d1b",
+      "sha256": "0a3a5994377bdb09f1981ed54e9cf477c5c1a955982098d41083dad8dd845403",
       "path": "symbol-rollout.csv"
     }
   },
@@ -49,10 +49,21 @@
     "realAlphaChecked": true,
     "rolesPerPack": 8,
     "derivedFilesPresent": 1444,
-    "currentBrowserTemporalQa": false,
+    "currentBrowserTemporalQa": true,
     "nativeArchiveLocallyVerified": false,
     "visuallySampledPacks": 6
   },
-  "qaReceipt": "../qa/symbol-packs-40-20261020.json",
-  "qaReceiptSha256": "c2639ad1fb2c614260bb057940fe9b69af6bf22c21a6039cf142d6b24ba7bf59"
+  "qaReceipt": "../qa/symbol-pages-uniform-20261020.json",
+  "qaReceiptSha256": "fe31ccd3607e8f968b734c44af88982100e05b70ee32145e80ebb11246dfda19",
+  "commonLayoutSymbols": 240,
+  "commonLayoutLocalePages": 1440,
+  "commonAnimatedPacks": 74,
+  "tigerMotionPending": true,
+  "publication": {
+    "origin": "https://noctalia.app",
+    "deploymentUrl": "https://9146e242.noctalia.pages.dev",
+    "command": "npm run docs:deploy:prod",
+    "releaseCommand": "npm run verify:release:site -- --keep",
+    "releasePassed": true
+  }
 }

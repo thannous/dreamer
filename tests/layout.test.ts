@@ -14,7 +14,7 @@ import {
 describe('getBottomNavigationLayout', () => {
   it.each([320, 361, 375, 390, 399, 400, 430, 768])('sizes portrait labels at %i dp without changing narrow classification', (width: number) => {
     const layout = getBottomNavigationLayout(width, 1024);
-    expect(layout.labelFontSize).toBe(width < 600 ? 11 : 12);
+    expect(layout.labelFontSize).toBe(width <= 360 ? 11 : 12);
     expect(layout.narrow).toBe(width <= 360);
     expect(layout.labelLines).toBe(1);
     expect(layout.barHeight).toBe(TAB_BAR_HEIGHT);
@@ -38,7 +38,7 @@ describe('getBottomNavigationLayout', () => {
       narrow: false,
       stackedLabels: false,
       fontScale: 1,
-      labelFontSize: 11,
+      labelFontSize: 12,
       labelLineHeight: 16,
       labelLines: 1,
       labelHeight: 20,

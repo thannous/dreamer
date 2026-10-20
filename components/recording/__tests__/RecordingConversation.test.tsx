@@ -156,16 +156,19 @@ it('keeps the inline finish action available during dictation without making the
   expect(callbacks.onVoice).not.toHaveBeenCalled();
 });
 
-it('keeps the opening prompt stable while the first dictated answer grows', () => {
+it('asks nothing before the first dream, even while its first dictated answer grows', () => {
   const callbacks = { ...props(), question: null, storyTranscript: '', transcript: '', answer: '' };
   const view = render(<RecordingConversation {...callbacks} voiceStatus="recording" />);
-  expect(within(view.getByTestId('recording-conversation-question')).getByText('recording.conversation.welcome')).toBeTruthy();
+  expect(view.queryByTestId('recording-conversation-question')).toBeNull();
   view.rerender(<RecordingConversation {...callbacks} transcript="Un jardin." answer="Un jardin." voiceStatus="recording" />);
-  expect(within(view.getByTestId('recording-conversation-question')).getByText('recording.conversation.welcome')).toBeTruthy();
+  expect(view.queryByTestId('recording-conversation-question')).toBeNull();
   expect(view.getByTestId('recording-listening-status')).toBeTruthy();
   view.rerender(<RecordingConversation {...callbacks} transcript="Un jardin." answer="Un jardin." voiceStatus="idle" />);
   expect(view.queryByTestId('recording-listening-status')).toBeNull();
-  expect(within(view.getByTestId('recording-conversation-question')).getByText('recording.conversation.welcome')).toBeTruthy();
+  expect(view.queryByTestId('recording-conversation-question')).toBeNull();
+  // Once the dream has a first part, the follow-up question appears.
+  view.rerender(<RecordingConversation {...callbacks} storyTranscript="Un jardin." transcript="Un jardin." voiceStatus="idle" />);
+  expect(within(view.getByTestId('recording-conversation-question')).getByText('dream_recall.question.what_else')).toBeTruthy();
 });
 
 it('offers restarting for existing content and hides it for an empty story', () => {

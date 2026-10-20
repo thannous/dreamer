@@ -41,6 +41,9 @@ jest.mock('react-native', () => {
       </button>
     ),
     StyleSheet: { create: (styles: Record<string, unknown>) => styles },
+    // The seal of a dream without a painting is drawn, not read.
+    Image: () => null,
+    Dimensions: { get: () => ({ width: 390, height: 844, scale: 1, fontScale: 1 }) },
     useWindowDimensions: () => ({ width: 390, height: 844, scale: 1, fontScale: 1 }),
     Text: ({ children, testID, onLayout, numberOfLines }: { children?: React.ReactNode; testID?: string; onLayout?: (event: unknown) => void; numberOfLines?: number }) => {
       React.useLayoutEffect(() => {
@@ -49,7 +52,7 @@ jest.mock('react-native', () => {
       return <span data-testid={testID} data-visible-lines={numberOfLines}>{children}</span>;
     },
     View: ({ children, testID, onLayout }: { children?: React.ReactNode; testID?: string; onLayout?: (event: unknown) => void }) => {
-      // The arrow beside the dream's last line waits for its row's layout.
+      // The arrow beside the dream's last line waits for the height of the labels below it.
       React.useLayoutEffect(() => {
         onLayout?.({ nativeEvent: { layout: { x: 16, y: 60, width: 240, height: 66 } } });
       }, [onLayout]);
@@ -168,6 +171,42 @@ describe('DreamCard image fallback', () => {
     render(<DreamCard dream={dream} onPress={jest.fn()} />);
 
     expect(screen.getByTestId('dream-image').getAttribute('data-src')).toBe(expectedFull);
+  });
+
+  it('shows the original painting when the stored thumbnail is an uploaded square', () => {
+    const { DreamCard } = require('../DreamCard');
+    // The 320 px square would be cropped and enlarged in the card's 9:16 frame.
+    const dream: DreamAnalysis = {
+      id: 1457,
+      transcript: 'dream transcript',
+      title: 'Dream title',
+      interpretation: 'Dream interpretation',
+      shareableQuote: 'Dream quote',
+      imageUrl: 'supabase-storage://dream-images/user-1/dream-42.webp',
+      thumbnailUrl: 'supabase-storage://dream-images/user-1/dream-42-thumb.webp',
+      chatHistory: [],
+      dreamType: 'Symbolic Dream',
+    };
+
+    render(<DreamCard dream={dream} onPress={jest.fn()} />);
+
+    const version = getDreamImageVersion(dream);
+    expect(screen.getByTestId('dream-image').getAttribute('data-src')).toBe(withCacheBuster(dream.imageUrl, version));
+    // An original that cannot load leaves the square rather than no painting at all.
+    fireEvent.error(screen.getByTestId('dream-image'));
+    expect(screen.getByTestId('dream-image').getAttribute('data-src')).toBe(withCacheBuster(dream.thumbnailUrl!, version));
+  });
+
+  it('keeps a square thumbnail when the original is not available', () => {
+    const { DreamCard } = require('../DreamCard');
+    // Offline, only the thumbnail may be cached.
+    const dream = { id: 1459, transcript: 'dream transcript', title: 'Dream title', chatHistory: [], imageUrl: '',
+      thumbnailUrl: 'supabase-storage://dream-images/user-1/dream-43-thumb.webp' } as unknown as DreamAnalysis;
+
+    render(<DreamCard dream={dream} onPress={jest.fn()} />);
+
+    expect(screen.getByTestId('dream-image').getAttribute('data-src'))
+      .toBe(withCacheBuster(dream.thumbnailUrl!, getDreamImageVersion(dream)));
   });
 
   it('hides sync badges in mock mode because mock dreams are local only', () => {

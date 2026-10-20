@@ -2,9 +2,11 @@
 
 ## Point de départ du 20 octobre 2026
 
-Lire d'abord [le guide validé des illustrations](../symbol-atlas-guidelines.md) et [le suivi](README.md). Base de cet instantané : `8e38590c85ebca2cbbef732b179eb47a8b2800d8`. La PR474 est déjà fusionnée ; ne pas réappliquer les anciens patches des lots 04/06. Récupérer le master courant avant tout travail et comparer ses changements.
+Le cadre commun des 240 symboles est publié dans les six langues : **1 440 pages**, dont **75 packs d'images** et **165 à préparer**. La plaque latérale et les trois scènes restent présentes sur les pages équipées. Deux effets sont présents sur les 74 packs communs ; le Tigre conserve son moteur historique limité au hero. Les pages sans pack gardent leur illustration statique : ne pas confondre uniformisation et création des 165 packs manquants.
 
-75 symboles sont intégrés, 165 restent à intégrer. Les 38 nouveaux packs de la PR474 ont chacun huit rôles : paysage, portrait, plaque latérale avec alpha, trois scènes distinctes, texture A `layer` et texture B `accent`. Leurs animations sont déjà configurées : il faut reprendre et qualifier le rendu existant, pas reconstruire un moteur. Le [reçu des 40 parcours](../qa/symbol-packs-40-20261020.json) porte sur `22c1871989966d0b303739c55b7338d0a58618de`, avant un changement du générateur. Garder cette preuve historique ; ne pas la présenter comme une validation du master courant.
+Version publique : `1a63ecf787bc8d20e322314e1ba17987c83b1198`, PR478. Lire [la preuve actuelle](../qa/symbol-pages-uniform-20261020.json), [le suivi](README.md) et [le guide](../symbol-atlas-guidelines.md). Les 74 packs communs ont une QA actuelle sur six langues et deux tailles ; le Tigre reste à corriger pour la plaque et les vignettes. Les 240 symboles ont une publication actuelle. Les 40 contrôles PR474 et 37 anciennes publications restent historiques. Aucun accord personnel de Thanh n'a été inventé.
+
+Ne pas réappliquer les patches déjà intégrés des lots précédents. Récupérer le master courant avant tout travail. Les 38 nouveaux packs de la PR474 ont chacun huit rôles ; reprendre leurs réglages existants plutôt que reconstruire un moteur. Leur archive PNG est référencée, mais sa disponibilité locale n'est pas affirmée.
 
 ## Répartition et remise d'un lot
 
@@ -32,6 +34,7 @@ Desktop : utiliser la largeur disponible jusqu'à 2560 px, garder la composition
 | Huit rôles, tailles et chemins des dérivés | `docs-src/config/symbol-atlas-six-assets.json` |
 | Correspondances FR/EN/ES/DE/IT/PT-BR | `docs-src/config/symbol-atlas-locales.json` |
 | Lots et preuves QA / accord / publication | `docs-src/config/symbol-rollout.json` |
+| Cadrage des pages sans pack | `docs-src/config/symbol-hero-portrait.json` ; supprimer l’entrée quand un pack dédié est ajouté |
 | Assemblage des surfaces | `docs-src/static/scripts/generate-symbol-pages.js` |
 | Géométrie commune site/app | `scripts/lib/atlas-motion.js` |
 | Cycle de vie | Moteur commun `docs-src/static/js/symbol-living/`, chemin actif déclaré par le générateur ; Tigre historique séparé |
@@ -43,8 +46,8 @@ Les placements actuels acceptent `place.at: [x, y]` pour fixer le centre de la t
 
 ## Contrôle proportionné et prochaine action
 
-Reprendre un symbole représentatif sur le master actuel avant d'étendre les réglages : paysage à 2560×1440, mobile à 390×844, plaque et trois scènes. Observer les deux effets au cours du temps dans le cadre réellement visible, le scroll et les changements de scène. Vérifier les six langues et les liens, l'absence de couture, la lisibilité du titre, la réduction des mouvements et les arrêts/reprises hors écran/onglet. Le portrait est téléchargé sur mobile ; la plaque desktop masquée ne l'est pas.
+Reprendre un symbole représentatif sur le master actuel avant d'étendre les réglages : paysage à 2560×1440, mobile à 390×844, plaque et trois scènes. Observer les deux effets au cours du temps dans le cadre réellement visible, le scroll et les changements de scène. Vérifier les six langues et les liens, l'absence de couture, la lisibilité du titre, la réduction des mouvements et les arrêts/reprises hors écran/onglet. À DPR2, contrôler aussi la source réellement téléchargée : le cover à 75svh peut dépasser la largeur du viewport et doit sélectionner une variante native suffisante. Le portrait est téléchargé sur mobile ; la plaque desktop masquée ne l'est pas.
 
 Si ce pilote passe, contrôler le périmètre affecté avec le runner existant ; réutiliser les preuves inchangées. Ne pas lancer de régénération générale ou une optimisation au pixel sans défaut visible. Pour chaque correction, remettre une seule branche avec base/head, chemins détenus et preuve du candidat ; `npm run verify:pr` avant chaque push. Le merge et la publication suivent `AGENTS.md`, sans contournement des gardes.
 
-Limite de l'audit de cette passation : les 1 444 dérivés des 38 nouveaux packs sont présents, plaques et textures avec vrai alpha, deux canaux configurés sur les six compositions. Six packs variés ont été examinés en planche. Aucune nouvelle preuve temporelle navigateur ni qualification native n'est attribuée à cet audit. L'archive native est référencée dans le reçu, pas disponible ni vérifiée sur cette machine.
+Limites : la campagne actuelle qualifie le navigateur, pas un appareil physique ni l'application native. Le build Linux a régénéré uniquement les fichiers autorisés de son bundle experience ; le reçu conserve cet état et prouve la stabilité des entrées et sorties. L'archive native PR474 demeure référencée, pas localement vérifiée. Les différences visuelles mineures ne bloquent pas un lot ; corriger les défauts visibles de contenu, cadrage, netteté ou mouvement.

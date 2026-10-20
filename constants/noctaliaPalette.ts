@@ -17,6 +17,22 @@ export function getNoctaliaPalette(mode: ThemeMode) {
     // `raised` with a light veil: the screen's painting shows through cards laid on it.
     raisedTranslucent: dark ? 'rgba(20, 19, 26, 0.84)' : 'rgba(245, 234, 219, 0.88)',
     line: dark ? '#514637' : 'rgba(126, 83, 49, 0.25)',
+    // The floating navigation's frosted glass: the tint laid over the blur, a denser tint
+    // where nothing is blurred (Android), the light its top edge catches, and its rim.
+    navGlass: {
+      tint: dark ? 'rgba(20, 19, 26, 0.12)' : 'rgba(245, 234, 219, 0.2)',
+      solid: dark ? 'rgba(20, 19, 26, 0.9)' : 'rgba(245, 234, 219, 0.94)',
+      highlight: dark ? ['rgba(255, 249, 239, 0.09)', 'rgba(255, 249, 239, 0)'] as const : ['rgba(255, 255, 255, 0.55)', 'rgba(255, 255, 255, 0)'] as const,
+      rim: dark ? 'rgba(234, 212, 180, 0.18)' : 'rgba(124, 76, 43, 0.16)',
+    },
+    // Noctalia listening: the halo that swells behind "I'm listening…" with the dreamer's voice.
+    listeningHalo: dark ? '#F2D3B8' : '#E7A873',
+    // The active tab's lens inside that glass: a champagne tint, a sheen across its top, a rim.
+    navActive: {
+      fill: dark ? 'rgba(234, 212, 180, 0.12)' : 'rgba(124, 76, 43, 0.08)',
+      sheen: dark ? ['rgba(255, 249, 239, 0.12)', 'rgba(255, 249, 239, 0)'] as const : ['rgba(255, 255, 255, 0.6)', 'rgba(255, 255, 255, 0)'] as const,
+      rim: dark ? 'rgba(234, 212, 180, 0.26)' : 'rgba(124, 76, 43, 0.2)',
+    },
     overlay: dark ? 'rgba(0, 0, 0, 0.64)' : 'rgba(38, 27, 28, 0.44)',
     onAccent: dark ? '#382D35' : '#FFF9EF',
     // The journal's block of leaves and its binding as its art draws them, in night paper
@@ -105,7 +121,8 @@ export function getNoctaliaDesignTokens(colors: ThemeColors, mode: ThemeMode) {
     surface: { base: p.raised, raised: p.raised, translucent: p.raisedTranslucent, active: p.actionTint, soft: p.surface, border: p.line, borderStrong: p.line, overlay: p.overlay },
     action: { primary: p.accent, primaryBorder: p.line, primaryText: p.onAccent, disabled: p.actionTint, disabledBorder: p.line, disabledText: p.muted },
     status: p.status,
-    nav: { background: colors.navbarBg, border: colors.navbarBorder, active: colors.navbarTextActive, inactive: colors.navbarTextInactive },
+    nav: { background: colors.navbarBg, border: colors.navbarBorder, active: colors.navbarTextActive, inactive: colors.navbarTextInactive, glass: p.navGlass, activePill: p.navActive },
+    listeningHalo: p.listeningHalo,
     atmosphere: {
       glow: p.accent,
       glowOpacity: dark ? 0.16 : 0.08,

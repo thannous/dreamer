@@ -1,6 +1,7 @@
 import React, { forwardRef, useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View, useWindowDimensions, type TextInputProps, type TextInputInstance } from 'react-native';
 
+import { ListeningHalo } from '@/components/recording/ListeningHalo';
 import { MicButton, type MicButtonStatus } from '@/components/recording/MicButton';
 import { getRecordingComposerLayout, LARGE_TEXT_FONT_SCALE } from '@/constants/layout';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
@@ -182,6 +183,12 @@ export const RecordingTextInput = forwardRef<TextInputInstance, RecordingTextInp
               { backgroundColor: noctalia.surface.translucent },
             ]}
           >
+            {/* Dictating into the text: the same listening halo as Tell, in the area's foot. */}
+            {!chat && voiceStatus === 'recording' ? (
+              <View pointerEvents="none" style={[styles.inlineListening, compact && styles.inlineListeningCompact]}>
+                <ListeningHalo size="inline" label={t('recording.conversation.listening')} testID="recording-write-listening-status" />
+              </View>
+            ) : null}
             <View style={styles.inlineActions}>
               {footerActions ?? (!isVoiceFirst && voiceSupported ? (
                 <MicButton
@@ -510,6 +517,17 @@ const styles = StyleSheet.create({
   },
   inlineActionFooterCompact: {
     minHeight: 48,
+    paddingBottom: 2,
+  },
+  inlineListening: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 2,
+    justifyContent: 'center',
+    paddingBottom: 6,
+  },
+  inlineListeningCompact: {
     paddingBottom: 2,
   },
   inlineActions: {

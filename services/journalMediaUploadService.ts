@@ -1,6 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { DreamAnalysis } from '@/lib/types';
-import { DREAM_IMAGE_BUCKET, isStoredDreamImageValue, buildStorageRef, extractStoragePathFromUrl } from '@/lib/journalImageReference';
+import { DREAM_IMAGE_BUCKET, SQUARE_THUMBNAIL_SUFFIX, isStoredDreamImageValue, buildStorageRef, extractStoragePathFromUrl } from '@/lib/journalImageReference';
 export type WebpOptions = {
   compress?: number;
   /**
@@ -92,8 +92,8 @@ export function createJournalMediaUploadService({
     const lastDot = path.lastIndexOf('.');
     const base = lastDot === -1 ? path : path.slice(0, lastDot);
     const ext = lastDot === -1 ? '' : path.slice(lastDot);
-    if (base.endsWith('-thumb')) return `${base}${ext}`;
-    return `${base}-thumb${ext}`;
+    if (base.endsWith(SQUARE_THUMBNAIL_SUFFIX)) return `${base}${ext}`;
+    return `${base}${SQUARE_THUMBNAIL_SUFFIX}${ext}`;
   };
 
   const deleteFromBucketIfPossible = async (url?: string | null, ownerId?: string) => {

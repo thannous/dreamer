@@ -498,7 +498,7 @@ test('the rollout report reads states from the repository and stages only from r
   assert.deepEqual(first.report.languages, ['en', 'fr', 'es', 'de', 'it', 'pt-br']);
   // Every file the report reads is named by its sha256.
   assert.deepEqual(Object.keys(first.report.inputs), ['siteConfig', 'catalog', 'extended', 'tier3', 'registry', 'pilots', 'locales', 'manifest', 'engines']);
-  assert.deepEqual(first.report.totals, { symbols: 240, done: 0, inProgress: 37, remaining: 203 });
+  assert.deepEqual(first.report.totals, { symbols: 240, done: 0, inProgress: 75, remaining: 165 });
   assert.deepEqual(first.report.lots['lot-02'].symbols, ['fire', 'door', 'bird', 'moon', 'train', 'clock']);
   assert.deepEqual(first.report.lots['lot-03'].symbols, ['water', 'teeth', 'flying', 'dog', 'car', 'bridge']);
   assert.deepEqual(first.report.lots['lot-04'].symbols, ['cat', 'stairs', 'rain', 'mountain', 'mirror', 'key']);
@@ -562,7 +562,47 @@ test('the rollout report reads states from the repository and stages only from r
   assert.deepEqual(bySymbol(run('out-4c').report, 'moon').languages.fr.stale, [{ stage: 'qa', surface: 'desktop', date: '2026-10-18', changed: ['assets', 'engine'] }]);
   const requalified = { ...record, date: '2026-10-19', source: bySymbol(run('out-4d').report, 'moon').languages.fr.source };
   writeRegistry((value) => ({ ...value, records: [record, requalified] }));
-  assert.equal(bySymbol(run('out-4e').report, 'moon').languages.fr.stages.qa.desktop, 'accepted');
+  const requalifiedReport = run('out-4e').report;
+  assert.equal(bySymbol(requalifiedReport, 'moon').languages.fr.stages.qa.desktop, 'accepted');
+  // A page without a pack takes its phone framing from the generator's framing file, centred when the
+  // file leaves it out. Naming that centre leaves its record accepted; a new point makes it stale and
+  // changes that page's engine only, not another page's nor a pack's.
+  const framingFile = path.join(repo, 'docs-src', 'config', 'symbol-hero-portrait.json');
+  const deerEvidence = path.join(repo, 'evidence', 'deer-fr-mobile.png');
+  fs.writeFileSync(deerEvidence, 'deer capture');
+  const deerRecord = { id: 'deer', lang: 'fr', stage: 'qa', surface: 'mobile', verdict: 'accepted', date: '2026-10-19', source: bySymbol(requalifiedReport, 'deer').languages.fr.source, evidence: { path: 'evidence/deer-fr-mobile.png', sha256: sha256('deer capture') } };
+  writeRegistry((value) => ({ ...value, records: [record, requalified, deerRecord] }));
+  fs.writeFileSync(framingFile, JSON.stringify({ deer: '50% 50%' }));
+  assert.equal(bySymbol(run('out-4f').report, 'deer').languages.fr.stages.qa.mobile, 'accepted');
+  fs.writeFileSync(framingFile, JSON.stringify({ deer: '30% 50%' }));
+  const reframed = run('out-4f2').report;
+  const engineOf = (report, id) => bySymbol(report, id).languages.fr.source.engine;
+  assert.deepEqual(bySymbol(reframed, 'deer').languages.fr.stale, [{ stage: 'qa', surface: 'mobile', date: '2026-10-19', changed: ['engine'] }]);
+  assert.equal(engineOf(reframed, 'spider'), engineOf(requalifiedReport, 'spider'));
+  assert.equal(bySymbol(reframed, 'moon').languages.fr.stages.qa.desktop, 'accepted');
+  // It also prints the language's shared atlas copy: changing those words makes its record stale,
+  // though it has no atlas of its own and the totals stay the same.
+  fs.rmSync(framingFile);
+  assert.equal(bySymbol(run('out-4g').report, 'deer').languages.fr.stages.qa.mobile, 'accepted');
+  const localesFile = path.join(repo, 'docs-src', 'config', 'symbol-atlas-locales.json');
+  const localesText = fs.readFileSync(localesFile, 'utf8');
+  // The scene words it does not print (here the quotation marks) leave it accepted; a pack goes stale.
+  const requoted = JSON.parse(localesText);
+  requoted.copy.fr.quotes = ['“', '”'];
+  fs.writeFileSync(localesFile, JSON.stringify(requoted));
+  const requotedReport = run('out-4g2').report;
+  assert.equal(bySymbol(requotedReport, 'deer').languages.fr.stages.qa.mobile, 'accepted');
+  assert.equal(bySymbol(requotedReport, 'moon').languages.fr.stages.qa.desktop, 'stale');
+  const recopied = JSON.parse(localesText);
+  recopied.copy.fr.continuationTitle = 'Lecture complète';
+  fs.writeFileSync(localesFile, JSON.stringify(recopied));
+  const recopiedReport = run('out-4h').report;
+  const deer = bySymbol(recopiedReport, 'deer');
+  assert.deepEqual(deer.languages.fr.stale, [{ stage: 'qa', surface: 'mobile', date: '2026-10-19', changed: ['atlas'] }]);
+  assert.equal(deer.languages.fr.atlas, false);
+  assert.deepEqual(recopiedReport.totals, first.report.totals);
+  fs.writeFileSync(localesFile, localesText);
+  writeRegistry((value) => ({ ...value, records: [record, requalified] }));
 
   fs.writeFileSync(evidence, 'another capture');
   assert.equal(bySymbol(run('out-5').report, 'moon').languages.fr.stages.qa.desktop, 'evidence-mismatch');
@@ -586,4 +626,24 @@ test('the rollout report reads states from the repository and stages only from r
   const withoutSource = run('out-10');
   assert.equal(withoutSource.status, 1);
   assert.match(withoutSource.stderr, /source needs the content, atlas, assets, engine identities/);
+
+  // The tiger moves on the packs' engine with its own textures: a change of that engine or of those
+  // textures makes its record stale; the script of its former pilot serves no page and changes nothing.
+  fs.writeFileSync(path.join(repo, 'evidence', 'tiger-fr-desktop.png'), 'tiger capture');
+  const tigerRecord = (source) => ({ id: 'tiger', lang: 'fr', stage: 'qa', surface: 'desktop', verdict: 'accepted', date: '2026-10-20', source, evidence: { path: 'evidence/tiger-fr-desktop.png', sha256: sha256('tiger capture') } });
+  const tigerFr = (out) => bySymbol(run(out).report, 'tiger').languages.fr;
+  const staticFile = (...parts) => {
+    const file = path.join(repo, 'docs-src', 'static', 'js', ...parts);
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    return file;
+  };
+  writeRegistry((value) => value);
+  writeRegistry((value) => ({ ...value, records: [tigerRecord(tigerFr('out-11').source)] }));
+  fs.writeFileSync(staticFile('tiger-living', 'c0677c4083d5', 'tiger-living-painting.js'), '// former pilot v2\n');
+  assert.equal(tigerFr('out-12').stages.qa.desktop, 'accepted');
+  fs.writeFileSync(staticFile('symbol-living', 'c97b1746cf68', 'symbol-living.js'), '// common engine v2\n');
+  assert.deepEqual(tigerFr('out-13').stale, [{ stage: 'qa', surface: 'desktop', date: '2026-10-20', changed: ['engine'] }]);
+  writeRegistry((value) => ({ ...value, records: [tigerRecord(tigerFr('out-14').source)] }));
+  fs.writeFileSync(staticFile('tiger-living', '22c79c696a2f', 'assets', 'mist.webp'), 'retouched mist');
+  assert.deepEqual(tigerFr('out-15').stale, [{ stage: 'qa', surface: 'desktop', date: '2026-10-20', changed: ['engine'] }]);
 });

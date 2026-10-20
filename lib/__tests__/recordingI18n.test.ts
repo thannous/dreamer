@@ -61,7 +61,6 @@ const analysisLimitSheetKeys = [
 ] as const;
 
 const recordingStatusKeys = [
-  'recording.write.instruction',
   'recording.tell.title',
   'recording.tell.empty',
   'recording.tell.edit',
