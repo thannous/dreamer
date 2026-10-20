@@ -4,6 +4,7 @@ import resolveExpoConfig, {
   DREAMER_QA_APP_NAME,
   DREAMER_QA_BUILD_ENV,
   DREAMER_QA_IOS_BUNDLE_IDENTIFIER,
+  DREAMER_QA_OBSERVE,
   DREAMER_QA_SCHEME,
   createDreamerQaExpoConfig,
   parseDreamerQaBuildMarker,
@@ -109,7 +110,13 @@ describe('Dreamer QA Expo identity', () => {
       plugins: config.plugins,
     });
     expect(qaConfig.updates).toBeUndefined();
-    expect(qaConfig.extra?.eas).toBeUndefined();
+    // Not the store app's EAS project: Observe starts, and reports nothing off the device.
+    expect(qaConfig.extra?.eas).toEqual({
+      projectId: DREAMER_QA_OBSERVE.projectId,
+      observe: { endpointUrl: DREAMER_QA_OBSERVE.endpointUrl },
+    });
+    expect(qaConfig.extra?.eas?.projectId).not.toBe(config.extra?.eas?.projectId);
+    expect(new URL(DREAMER_QA_OBSERVE.endpointUrl).hostname).toBe('127.0.0.1');
     expect(qaConfig.extra?.apiUrl).toBe(config.extra?.apiUrl);
     expect(qaConfig.extra?.supabaseUrl).toBe(config.extra?.supabaseUrl);
     expect(qaConfig.extra?.revenuecatAndroidKey).toBe(
@@ -125,7 +132,7 @@ describe('Dreamer QA Expo identity', () => {
       expect(resolved.ios?.associatedDomains).toEqual([]);
       expect(resolved.android?.intentFilters).toEqual([]);
       expect(resolved.updates).toBeUndefined();
-      expect(resolved.extra?.eas).toBeUndefined();
+      expect(resolved.extra?.eas?.projectId).toBe(DREAMER_QA_OBSERVE.projectId);
       expect(resolved.extra?.apiUrl).toBe(config.extra?.apiUrl);
       expect(resolved.name).toBe(DREAMER_QA_APP_NAME);
       expect(resolved.scheme).toBe(DREAMER_QA_SCHEME);
