@@ -51,6 +51,7 @@ async function measureHero() {
     headingTop: heading.top, headingBottom: heading.bottom,
     breadcrumbTop: getComputedStyle(breadcrumb).display === 'none' ? null : breadcrumb.getBoundingClientRect().top,
     objectFit: getComputedStyle(img).objectFit,
+    objectPosition: getComputedStyle(img).objectPosition,
     paintings: performance.getEntriesByType('resource').map(entry => new URL(entry.name).pathname)
       .filter(path => path.startsWith('/img/seo/symbols-v2/') || /\/tiger-mobile-v4-[0-9]+w\./.test(path)),
   };
@@ -93,7 +94,6 @@ test('symbol artwork fills the page from behind the navbar up to 2560px', { time
   }
   for (const [width, height, id] of [
     [1920, 1200, 'angel'], [2560, 1600, 'tiger'], [2568, 1600, 'angel'],
-    [390, 844, 'angel'], [320, 740, 'moving-house'],
   ] as const) {
     await browser.setViewport({ width, height });
     const symbol = catalog.symbols.find(item => item.id === id)!;
@@ -102,8 +102,33 @@ test('symbol artwork fills the page from behind the navbar up to 2560px', { time
     checkLayout(await browser.evaluate(measureHero));
     await app.screenshot('symbol-' + id + '-' + width);
   }
-  // Only the French tiger page, on a phone held upright, takes 75svh with its
-  // dedicated portrait painting (cover), fetched alone; the title stays under the face.
+  // On a phone held upright every symbol page takes 75svh from the top, behind the navbar. A page
+  // without a pack crops its own 16:9 painting (cover), centred or on the point its framing names
+  // for a subject painted off-centre.
+  for (const [width, height, id, position] of [
+    [390, 844, 'angel', '50% 50%'], [320, 740, 'moving-house', '50% 50%'], [390, 844, 'alien', '19% 50%'],
+  ] as const) {
+    await browser.setViewport({ width, height });
+    const symbol = catalog.symbols.find(item => item.id === id)!;
+    await app.open('/fr/symboles/' + symbol.fr.slug + '.html');
+    await expect(screen.getByRole('heading', { level: 1 })).toBeVisible();
+    const image = await browser.evaluate(measureHero);
+    expect(image.naturalWidth).toBeGreaterThan(0);
+    // Its own landscape painting, not a portrait one.
+    expect(new URL(image.src).pathname).toMatch(new RegExp('^/img/seo/symbols-v2/' + id + '-v[0-9]+-[0-9]+w\\.(?:webp|avif)$'));
+    expect([image.objectFit, image.objectPosition]).toEqual(['cover', position]);
+    expect([image.heroTop, image.top, image.left]).toEqual([0, 0, 0]);
+    expect(image.width).toBeCloseTo(image.available, 0);
+    expect(image.height).toBeCloseTo(height * 0.75, 0);
+    expect(image.heroBottom).toBeCloseTo(height * 0.75, 0);
+    expect(image.navBackground).toBe('rgba(0, 0, 0, 0)');
+    expect(image.headingTop).toBeGreaterThanOrEqual(image.navBottom + 8);
+    expect(image.headingBottom).toBeLessThanOrEqual(image.heroBottom);
+    expect(image.overflow).toBe(false);
+    await app.screenshot('symbol-' + id + '-' + width);
+  }
+  // The French tiger page uses its dedicated portrait painting (cover), fetched alone; the title
+  // stays under the face.
   for (const [width, height] of [[390, 844], [360, 780]] as const) {
     await browser.setViewport({ width, height });
     await app.open('/fr/symboles/tigre.html');
@@ -413,12 +438,13 @@ test('only the tiger pages, in the six languages, load the living-painting pilot
     await expect.poll(() => browser.evaluate(readTigerPilot).then(read => [read.living, read.scene]), { timeout: 15_000 }).toEqual(['ready', 'portrait']);
     expect((await browser.evaluate(readPilotLoads)).scripts).toBe(1);
   }
-  // At the default 390x844 phone viewport, every other page keeps the 16:9 contain hero.
+  // At the default 390x844 phone viewport, a page without a pack takes the same 75svh hero by
+  // cropping its own 16:9 painting (cover), without the pilot's script or files.
   for (const path of ['/fr/symboles/cerf.html', '/en/symbols/deer.html', '/pt-br/simbolos/cervo.html']) {
     await app.open(path);
     await expect(screen.getByRole('heading', { level: 1 })).toBeVisible();
     await expect.poll(() => browser.evaluate(readPilotLoads).then(read => read.loaded)).toBe(true);
-    expect(await browser.evaluate(readPilotLoads)).toEqual({ scripts: 0, requests: 0, stages: 0, marked: false, ratio: 1.78, objectFit: 'contain', loaded: true });
+    expect(await browser.evaluate(readPilotLoads)).toEqual({ scripts: 0, requests: 0, stages: 0, marked: false, ratio: Math.round(390 / (844 * 0.75) * 100) / 100, objectFit: 'cover', loaded: true });
   }
 });
 
@@ -639,10 +665,21 @@ test('the French tiger atlas reads like a dictionary entry and shows each publis
   expect(target.top).toBeLessThan(phone.viewportHeight / 2);
   await app.screenshot('tiger-atlas-390-variant');
 
-  // A symbol without an atlas keeps the shared single-column article.
+  // A symbol without a pack reads in the same article: its own sections in the same order, the app
+  // after its meaning and questions, and no scene, side illustration or motion script.
   await app.open('/fr/symboles/cerf.html');
   await expect(screen.getByRole('heading', { level: 1 })).toBeVisible();
-  expect(await browser.evaluate(() => [document.querySelectorAll('article.atlas, .atlas-scene-input').length, document.querySelectorAll('article.max-w-3xl').length])).toEqual([0, 1]);
+  expect(await browser.evaluate(() => ({
+    articles: document.querySelectorAll('article.atlas').length,
+    packParts: document.querySelectorAll('.atlas-scene-input, .atlas-decor, article.max-w-3xl, script[src*="symbol-living"], #symbol-living-config').length,
+    ids: Array.from(document.querySelectorAll('article.atlas :is(section, aside)[id]')).map(node => node.id),
+    jumps: Array.from(document.querySelectorAll('.symbol-jump-link')).map(link => link.textContent!.trim()),
+  }))).toEqual({
+    articles: 1, packParts: 0,
+    ids: ['meaning', 'questions', 'continuer-noctalia', 'lecture', 'variations', 'faq', 'plus-loin', 'garder-noctalia'],
+    jumps: ['Sens', 'Questions', 'Variantes'],
+  });
+  await app.screenshot('symbol-cerf-390');
 });
 
 // The French atlas pages after the tiger, read as the same atlas, with the tiger's grounds, type
@@ -999,10 +1036,27 @@ test('the French atlas paintings each move two distinct raster effects, only on 
     await expect.poll(() => browser.evaluate(readSurfaces).then(all => surfaceNamed(all, 'hero').state)).toBe('running');
   }
   await browser.emulateMedia({ reducedMotion: 'no-preference' });
-  // A symbol without an atlas keeps the shared single-column page, without the motion script.
+  // A symbol without a pack reads in the same article, as wide, without scenes, side illustration or
+  // motion script (nor its request): its questions sit where a pack shows its illustration.
   await app.open('/en/symbols/deer.html');
   await expect(screen.getByRole('heading', { level: 1 })).toBeVisible();
-  expect(await browser.evaluate(() => [document.querySelectorAll('article.atlas, script[src*="symbol-living"], #symbol-living-config').length, document.querySelectorAll('article.max-w-3xl').length])).toEqual([0, 1]);
+  const plain = await browser.evaluate(() => {
+    const box = (selector: string) => {
+      const rect = document.querySelector(selector)!.getBoundingClientRect();
+      return { left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom, width: rect.width };
+    };
+    return {
+      packParts: document.querySelectorAll('.atlas-scene-input, .atlas-decor, article.max-w-3xl, script[src*="symbol-living"], #symbol-living-config').length,
+      motionRequests: performance.getEntriesByType('resource').filter(entry => /symbol-living|tiger-living/.test(entry.name)).length,
+      article: box('article.atlas'), reading: box('.atlas-reading'), questions: box('.atlas-plate > #questions'),
+      viewport: document.documentElement.clientWidth,
+    };
+  });
+  expect([plain.packParts, plain.motionRequests]).toEqual([0, 0]);
+  expect(plain.article.width).toBeGreaterThanOrEqual(plain.viewport * 0.88);
+  expect(plain.questions.left).toBeGreaterThanOrEqual(plain.reading.right);
+  expect(plain.questions.top).toBeLessThan(plain.reading.bottom);
+  await app.screenshot('symbol-deer-1920');
 });
 
 test('a scene thumbnail that failed before its effects start keeps its choice, and the other paintings keep running', { timeout: 120_000 }, async ({ app, browser, screen }) => {
@@ -1279,7 +1333,7 @@ test('the language menu leads from the French moon atlas to the pt-br and the En
 
 test('a page without an atlas, a missing FAQ or a thumbnail that fails stays in the page\'s language', { timeout: 120_000 }, async ({ app, browser, screen }) => {
   await browser.setViewport({ width: 390, height: 844 });
-  // A symbol without an atlas: the shared article, in Portuguese, linking only to pt-br pages.
+  // A symbol without a pack: the same article, in Portuguese, linking only to pt-br pages.
   await app.open('/pt-br/simbolos/cervo.html');
   await expect(screen.getByRole('heading', { level: 1 })).toBeVisible();
   expect(await browser.evaluate(() => ({
@@ -1289,7 +1343,7 @@ test('a page without an atlas, a missing FAQ or a thumbnail that fails stays in 
     jumps: Array.from(document.querySelectorAll('.symbol-jump-link')).map(link => link.textContent!.trim()),
     // Internal links of the content, outside the language menus.
     foreign: Array.from(document.querySelectorAll<HTMLAnchorElement>('main a[href^="/"]')).map(link => link.getAttribute('href')!).filter(href => !href.startsWith('/pt-br/')),
-  }))).toEqual({ lang: 'pt-BR', atlas: 0, bar: 'Seções do símbolo', jumps: ['Sentido', 'Variações', 'Perguntas'], foreign: [] });
+  }))).toEqual({ lang: 'pt-BR', atlas: 1, bar: 'Seções do símbolo', jumps: ['Sentido', 'Perguntas', 'Variações'], foreign: [] });
 
   // Interpretations link to pt-br pages; the forest keeps its English blog article on purpose (no pt-br blog).
   for (const [path, foreign] of [['/pt-br/simbolos/cemiterio.html', []], ['/pt-br/simbolos/floresta.html', ['/en/blog/dream-meanings']]] as const) {

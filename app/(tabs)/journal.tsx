@@ -140,9 +140,8 @@ function JournalListScreen() {
   const scrollHeader = !isDesktopLayout;
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(getInitialKeyboardVisibility);
   const navigationClearance = navigationLayout.barHeight + Math.max(insets.bottom, navigationLayout.minimumBottomInset);
-  // The tab bar in app/(tabs)/_layout.tsx is position:absolute, so FlashList must
-  // reserve the full overlay from the viewport. Capping marginBottom would leave
-  // the remaining list box covered by the bar. On phones the header and search stay
+  // The tab bar in app/(tabs)/_layout.tsx is position:absolute glass, so dreams scroll
+  // behind it and the list's bottom padding clears it for the last one. On phones the header and search stay
   // mounted outside the column-keyed list but float over it: a header spacer and a
   // scroll translation carry them away with the first dreams, so the list gets the
   // whole screen once it scrolls.
@@ -284,8 +283,8 @@ function JournalListScreen() {
     ? ThemeLayout.spacing.xl
     : ThemeLayout.spacing.lg;
   const listContentStyle = useMemo(
-    () => [LIST_CONTENT_STYLE, { paddingBottom: listBottomPadding }],
-    [listBottomPadding]
+    () => [LIST_CONTENT_STYLE, { paddingBottom: listBottomPadding + overlayNavClearance }],
+    [listBottomPadding, overlayNavClearance]
   );
   const listContentDesktopStyle = useMemo(
     () => [LIST_CONTENT_STYLE, DESKTOP_MAX_WIDTH_STYLE, { paddingBottom: listBottomPadding }],
@@ -1201,7 +1200,7 @@ function JournalListScreen() {
         onMomentumScrollEnd={scheduleIdle}
       />
     ) : (
-      <View style={{ flex: 1, marginBottom: overlayNavClearance }}>
+      <View style={{ flex: 1 }}>
       <AnimatedDreamList
         onLoad={onListLoaded}
         testID={TID.List.Dreams}

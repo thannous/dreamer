@@ -205,6 +205,8 @@ jest.doMock('@/constants/noctaliaDesign', () => ({
       background: '#fff',
       border: '#ddd',
       inactive: '#777',
+      glass: { tint: 'rgba(245, 234, 219, 0.2)', solid: 'rgba(245, 234, 219, 0.94)', highlight: ['#fff', 'transparent'], rim: '#ddd' },
+      activePill: { fill: 'rgba(124, 76, 43, 0.08)', sheen: ['#fff', 'transparent'], rim: '#ccc' },
     },
     screen: { background: '#faf8f3' },
     surface: { active: 'rgba(124, 76, 43, 0.08)' },
@@ -377,8 +379,9 @@ describe('TabLayout returning guest navigation', () => {
     expect(labels).toHaveLength(5);
     expect(screen.queryByText('nav.settings')).toBeNull();
     expect(box.width).toBeCloseTo(58.8, 1);
-    // Capture sits in the bar row like the other tabs; it no longer has a lifted fixed height.
-    expect(box.height).toBeUndefined();
+    // Capture sits in the bar row like the other tabs: every cell fills the bar's height so
+    // the active tab's background can, rather than Capture having a lifted fixed height.
+    expect(box.height).toBe('100%');
     labels.forEach((label) => {
       expect(label.getAttribute('data-number-of-lines')).toBe('1');
       expect(label.getAttribute('data-accessible')).toBe('false');
@@ -519,8 +522,9 @@ describe('TabLayout returning guest navigation', () => {
     }));
     const box = centerBox('nav.capture_dream');
     expect(box.width).toBeCloseTo(71.2, 1);
-    // Capture sits in the bar row like the other tabs; it no longer has a lifted fixed height.
-    expect(box.height).toBeUndefined();
+    // Capture sits in the bar row like the other tabs: every cell fills the bar's height so
+    // the active tab's background can, rather than Capture having a lifted fixed height.
+    expect(box.height).toBe('100%');
     expect(centerLabel.getAttribute('data-number-of-lines')).toBe('1');
     expect(centerLabel.getAttribute('data-accessible')).toBe('false');
   });

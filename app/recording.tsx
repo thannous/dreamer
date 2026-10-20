@@ -1715,6 +1715,40 @@ function RecordingScreen() {
     await toggleRecording();
   }, [completeRecordingVoiceHint, isHydrated, toggleRecording]);
 
+  // On Capture, the bar's own Capture button acts on the open capture: in writing mode it
+  // puts the cursor at the end of the text, in speaking mode it turns the microphone on or off
+  // by the conversation's own rules: muting never sends the reply, and the microphone waits
+  // while a question is on its way.
+  const handleCaptureNavPress = useCallback(() => {
+    if (interactionDisabled || editableCapture) return;
+    if (inputMode === 'voice') {
+      if (!isVoiceSupported) return;
+      if (isVoiceListening) {
+        captureMicrophoneMutedRef.current = true;
+        void stopRecording({ silent: true, reason: 'stop' });
+        return;
+      }
+      if (conversation.loading || isPreparingRecording) return;
+      void handleVoiceCapturePress();
+      return;
+    }
+    if (captureReview) return;
+    focusTranscriptEnd(baseTranscriptRef.current || transcript);
+  }, [
+    captureReview,
+    conversation.loading,
+    editableCapture,
+    focusTranscriptEnd,
+    handleVoiceCapturePress,
+    inputMode,
+    interactionDisabled,
+    isPreparingRecording,
+    isVoiceListening,
+    isVoiceSupported,
+    stopRecording,
+    transcript,
+  ]);
+
   const handleMicRationaleClose = useCallback(() => {
     hasSeenMicRationaleRef.current = true;
     setShowMicRationaleSheet(false);
@@ -2010,11 +2044,9 @@ function RecordingScreen() {
                   }}
                   disabled={interactionDisabled}
                   lengthWarning={lengthWarning}
-                  instructionText={keyboardVisible ? '' :
-                    captureIntent === 'remembered'
-                      ? t('recording.remembered.active_instruction')
-                      : t('recording.write.instruction')
-                  }
+                  instructionText={!keyboardVisible && captureIntent === 'remembered'
+                    ? t('recording.remembered.active_instruction')
+                    : ''}
                   switchToVoiceLabel={voiceControlLabel}
                   voiceSupported={isVoiceSupported}
                   voiceStatus={voiceControlStatus}
@@ -2061,6 +2093,10 @@ function RecordingScreen() {
           <NoctaliaBottomNav
             activeKey="addDream"
             addDreamIcon={inputMode === 'voice' ? 'mic' : 'pencil'}
+            onCapturePress={handleCaptureNavPress}
+            capturePressHint={inputMode !== 'voice'
+              ? t('nav.capture_focus_hint')
+              : t(isVoiceListening ? 'recording.conversation.mute' : 'recording.mode.switch_to_voice')}
             onBarLayout={handleBottomNavMeasure}
           />
         ) : null}
