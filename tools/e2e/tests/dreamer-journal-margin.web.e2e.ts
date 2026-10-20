@@ -63,7 +63,9 @@ for (const theme of ['light', 'dark'] as const) {
     const metadata = card.getByTestId(`journal.metadata.${id}`);
     await expect(metadata).toContainText('Symbolic dream');
     await expect(metadata).toContainText('Mystical');
-    await expect(metadata).toContainText('Analyzed');
+    // Revised 2026-10-20 (was 'Analyzed'): the owner removed that label from the cards; an
+    // analysed dream is the usual case and names no state.
+    await expect(metadata).not.toContainText('Analyzed');
     await expect(text).toContainText('I found myself in an enormous library');
     // React Native's layout event follows the phone/grid resize. Observe the
     // settled portrait frame rather than its initial width from the previous layout.
@@ -119,15 +121,6 @@ for (const theme of ['light', 'dark'] as const) {
     await expect.poll(arrowGap).toBeLessThanOrEqual(2);
     await expand.click();
     await expect(expand).toHaveAccessibleName('Read the whole dream');
-    const badge = card.getByTestId(`journal.badge.${id}.0`);
-    const badgeChildren = await badge.evaluate(node => Array.from(node.children).map(child => {
-      const rect = child.getBoundingClientRect();
-      return { x: rect.x, y: rect.y, height: rect.height };
-    }));
-    expect(badgeChildren).toHaveLength(2);
-    expect(badgeChildren[0].x).toBeLessThan(badgeChildren[1].x);
-    expect(Math.abs(badgeChildren[0].y + badgeChildren[0].height / 2
-      - badgeChildren[1].y - badgeChildren[1].height / 2)).toBeLessThan(2);
     await cover.evaluate(async (node) => {
       await document.fonts.ready;
       await Promise.all(Array.from(node.querySelectorAll('img')).map((image) => image.decode()));
@@ -151,6 +144,21 @@ for (const theme of ['light', 'dark'] as const) {
     await card.click();
     await expect(page.getByTestId('component.transcriptCard')).toContainText('Books were floating around me');
     await openJournal(page);
+
+    // Revised 2026-10-20 (was the library dream's 'Analyzed' label): a state label keeps its
+    // icon on its own line, here a deepened dream's.
+    const explored = await findDream(page, 'Ocean of Stars');
+    const exploredId = await explored.getAttribute('data-testid');
+    await expect(explored.getByTestId(`journal.metadata.${exploredId}`)).toContainText('Deepened');
+    const badge = explored.getByTestId(`journal.badge.${exploredId}.0`);
+    const badgeChildren = await badge.evaluate(node => Array.from(node.children).map(child => {
+      const rect = child.getBoundingClientRect();
+      return { x: rect.x, y: rect.y, height: rect.height };
+    }));
+    expect(badgeChildren).toHaveLength(2);
+    expect(badgeChildren[0].x).toBeLessThan(badgeChildren[1].x);
+    expect(Math.abs(badgeChildren[0].y + badgeChildren[0].height / 2
+      - badgeChildren[1].y - badgeChildren[1].height / 2)).toBeLessThan(2);
 
     const noImage = await findDream(page, 'Garden in the Clouds');
     const noImageId = await noImage.getAttribute('data-testid');

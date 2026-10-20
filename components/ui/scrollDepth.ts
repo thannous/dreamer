@@ -1,8 +1,8 @@
 import { createContext, useCallback, useContext, useRef } from 'react';
 import { useWindowDimensions, type View } from 'react-native';
 import {
-  Extrapolation, interpolate, makeMutable, measure, useAnimatedRef, useAnimatedStyle, useReducedMotion,
-  useSharedValue, type SharedValue,
+  Extrapolation, interpolate, makeMutable, measure, useAnimatedRef, useAnimatedStyle, useDerivedValue,
+  useReducedMotion, useSharedValue, type SharedValue,
 } from 'react-native-reanimated';
 
 function plainHolder(): SharedValue<number> {
@@ -43,6 +43,15 @@ const useFrameRef: () => ReturnType<typeof useAnimatedRef<View>> = typeof useAni
   ? () => useAnimatedRef<View>()
   : () => useRef(null) as unknown as ReturnType<typeof useAnimatedRef<View>>;
 
+// Test doubles of Reanimated may omit useDerivedValue; the drift then rests.
+const useDrift: (drift: () => number) => SharedValue<number> = typeof useDerivedValue === 'function'
+  ? (drift) => useDerivedValue(drift)
+  : () => {
+      const holder = useRef<SharedValue<number> | null>(null);
+      if (!holder.current) holder.current = plainHolder();
+      return holder.current;
+    };
+
 /**
  * A picture in a card drifts through its frame as the card crosses the screen: it shows
  * its lower part as the card enters at the bottom and its upper part as it leaves at the
@@ -57,22 +66,29 @@ export function useFrameParallax(travel: number) {
   // than on its first scroll.
   const laidOut = useScreenScrollValue();
   const reduced = useReducedMotion();
-  const { height: screen } = useWindowDimensions();
+  const { height: screen, scale } = useWindowDimensions();
   // A still frame follows no scroll: its style is not run on each scroll frame, and never
   // measures a frame that is not mounted (Reanimated warns on each such measure).
   const drifts = travel > 0 && !reduced;
   const scrollY = drifts ? screenScroll : RESTING_SCROLL;
-  const style = useAnimatedStyle(() => {
+  const pixel = 1 / (scale > 0 ? scale : 1);
+  // The drift in whole device pixels, apart from its style: Reanimated commits a style each
+  // time it runs with a new transform, while a number that has not changed runs nothing. So a
+  // slow scroll moves the picture only on the frames where it gains a pixel, and a card above
+  // or below the screen, its picture held at the end of its travel, commits nothing at all.
+  const drift = useDrift(() => {
+    'worklet';
     // Read to run again on every scroll frame of its screen, and once its frame is laid out.
     scrollY.get();
     laidOut.get();
     // Positions are only known on the UI thread; the first pass on the JS thread rests.
-    if (!drifts || !globalThis._WORKLET) return { transform: [{ translateY: 0 }] };
+    if (!drifts || !globalThis._WORKLET) return 0;
     const box = measure(frame);
-    if (!box || box.height <= 0) return { transform: [{ translateY: 0 }] };
+    if (!box || box.height <= 0) return 0;
     const progress = (box.pageY + box.height / 2 - screen / 2) / (screen / 2 + box.height / 2);
-    return { transform: [{ translateY: interpolate(progress, [-1, 1], [travel, -travel], Extrapolation.CLAMP) }] };
+    return Math.round(interpolate(progress, [-1, 1], [travel, -travel], Extrapolation.CLAMP) / pixel) * pixel;
   });
+  const style = useAnimatedStyle(() => ({ transform: [{ translateY: drift.get() }] }));
   const onLayout = useCallback(() => { laidOut.set(laidOut.get() + 1); }, [laidOut]);
   return { frame, style, onLayout };
 }

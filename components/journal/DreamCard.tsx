@@ -62,6 +62,9 @@ const EXPAND_ARROW_WIDTH = 28;
 const READING_INSET = 20;
 const READING_GAP = 6;
 const EXPAND_HIT_SLOP = { top: 11, bottom: 11, left: 8, right: 8 } as const;
+// Narrower than any letter of the reading face, in ems: four lines of it overflow any three.
+const NARROWEST_LETTER_EM = 0.18;
+const MIN_FOLD_LENGTH = 240;
 const CARD_IMAGE_PLACEHOLDER = { blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' };
 
 const BADGE_TEXT_CLASS = {
@@ -96,12 +99,6 @@ export const DreamCard = memo(function DreamCard({
   const handlePress = useCallback(() => {
     onPress(dream);
   }, [onPress, dream]);
-
-  // Native Text still shapes long inputs behind numberOfLines. Keep enough text
-  // for every card width; navigation and storage retain the complete dream.
-  const transcriptPreview = useMemo(() => dream.transcript.length > 1000
-    ? `${dream.transcript.slice(0, 1000).replace(/[\uD800-\uDBFF]$/u, '')}…`
-    : dream.transcript, [dream.transcript]);
 
   // Use thumbnail URL for list view, fallback to generating one from full URL
   const imageVersion = useMemo(
@@ -159,6 +156,15 @@ export const DreamCard = memo(function DreamCard({
   const [failedImageAttempt, setFailedImageAttempt] = useState<string | null>(null);
   // A phone list's card spans the screen less its 16 pt sides: right from the first frame.
   const [coverWidth, setCoverWidth] = useState(() => windowWidth - 32);
+  // Native Text still shapes long inputs behind numberOfLines. Four lines of the narrowest
+  // letters always reach past the three shown, so more text changes neither what the card
+  // shows nor whether its arrow appears: the card's width sets how much to keep. Navigation
+  // and storage retain the complete dream.
+  const foldLength = Math.max(MIN_FOLD_LENGTH, Math.ceil(4 * Math.max(0, coverWidth - 2 * READING_INSET)
+    / (NARROWEST_LETTER_EM * 15 * compactTextScale)));
+  const transcriptPreview = useMemo(() => dream.transcript.length > foldLength
+    ? `${dream.transcript.slice(0, foldLength).replace(/[\uD800-\uDBFF]$/u, '')}…`
+    : dream.transcript, [dream.transcript, foldLength]);
   // 9:16, the format the paintings are generated in: on a phone the whole painting shows.
   // Never taller than most of the screen, so a short screen still sees the dream's text. The
   // screen, not the window: a mobile browser's window follows its toolbars and keyboard.
@@ -172,23 +178,30 @@ export const DreamCard = memo(function DreamCard({
     return SCRIM_FADE_STRENGTH.map((strength) => at(base * strength)) as unknown as readonly [string, string, ...string[]];
   }, [noctalia]);
   // The whole dream can be read in place; the arrow shows only when three lines cut it.
-  const readingKey = `${getDreamIdentityKey(dream)}:${compactTextScale}:${transcriptPreview}`;
+  // FlashList can reuse this component for another dream without unmounting it: an unfolded
+  // dream folds again, while whether three lines cut the text stays the last measure's verdict.
+  // A measure reports a layout only when its height changes, and the same height gives the
+  // same verdict, so a recycled card renders once, not again for its arrow.
+  const readingKey = `${getDreamIdentityKey(dream)}:${compactTextScale}:${dream.transcript}`;
   const [reading, setReading] = useState({ key: readingKey, expanded: false, canExpand: false });
-  // FlashList can reuse this component for another dream without unmounting it.
-  if (reading.key !== readingKey) setReading({ key: readingKey, expanded: false, canExpand: false });
   const expanded = reading.key === readingKey && reading.expanded;
-  const canExpand = reading.key === readingKey && reading.canExpand;
+  const { canExpand } = reading;
   // The dream's last line ends just above its labels, at the foot of the card: their height
   // alone places the arrow beside it. Sizes, not positions, because the web reports a layout
   // only when a size changes, while a recycled card or a resized list can move the text.
   const [metadataHeight, setMetadataHeight] = useState<number | null>(null);
-  // Without a painting, what the folded text leaves above it is the seal's room.
+  // Without a painting, what the folded text leaves above it is the seal's room. Only a seal's
+  // card renders again for it; a painted card keeps it for the seal it may fall back to.
+  const foldedReading = useRef<number | null>(null);
   const [foldedReadingHeight, setFoldedReadingHeight] = useState<number | null>(null);
   const hasImage = (Boolean(imageUri) || (media.loading && Boolean(dream.imageUrl || dream.thumbnailUrl)))
     && failedImageAttempt !== imageAttemptKey;
   // Only an illustration drifts: the seal's night has no drifting frame. Destructured: read
   // through the returned object, the frame ref keeps React Compiler off this card.
   const { frame: coverFrame, style: coverParallaxStyle } = useFrameParallax(hasImage ? coverTravel : 0);
+  useEffect(() => {
+    if (!hasImage) setFoldedReadingHeight(foldedReading.current);
+  }, [hasImage]);
 
   useEffect(() => {
     if ((!useFullImage && failedImageAttempt !== imageAttemptKey)
@@ -239,13 +252,7 @@ export const DreamCard = memo(function DreamCard({
         variant: 'secondary',
       });
     }
-    if (!isExplored && isAnalyzed) {
-      list.push({
-        label: t('journal.badge.analyzed'),
-        icon: 'sparkles',
-        variant: 'secondary',
-      });
-    }
+    // An analysed dream is the usual case: its card names no state (owner decision 2026-10-20).
     if (!isAnalyzed && !isExplored) {
       list.push({
         label: analysisState.status === 'pending'
@@ -345,8 +352,7 @@ export const DreamCard = memo(function DreamCard({
           // size: keep the last real measure instead of rendering the card twice.
           if (event.nativeEvent.layout.height <= 0) return;
           const overflows = event.nativeEvent.layout.height > 3 * 22 * compactTextScale + 1;
-          setReading((previous) => previous.key !== readingKey || previous.canExpand === overflows
-            ? previous : { ...previous, canExpand: overflows });
+          setReading((previous) => previous.canExpand === overflows ? previous : { ...previous, canExpand: overflows });
         }}>
         {transcriptPreview}
       </Text>
@@ -424,7 +430,7 @@ export const DreamCard = memo(function DreamCard({
   const expandControl = canExpand && metadataHeight !== null ? (
     <Pressable accessibilityRole="button" accessibilityState={{ expanded }}
       accessibilityLabel={t(expanded ? 'journal.card.collapse' : 'journal.card.expand')}
-      hitSlop={EXPAND_HIT_SLOP} onPress={(event) => { event.stopPropagation(); setReading((previous) => ({ ...previous, expanded: !previous.expanded })); }}
+      hitSlop={EXPAND_HIT_SLOP} onPress={(event) => { event.stopPropagation(); setReading((previous) => ({ ...previous, key: readingKey, expanded: !(previous.key === readingKey && previous.expanded) })); }}
       testID={testID && `journal.expand.${testID}`} className="absolute items-end justify-center"
       style={{ right: READING_INSET, bottom: READING_INSET + metadataHeight + READING_GAP, width: EXPAND_ARROW_WIDTH, height: 22 * compactTextScale }}
     >
@@ -491,7 +497,9 @@ export const DreamCard = memo(function DreamCard({
         <View className="gap-1.5 bg-illustration-scrim px-5 pb-5" testID={testID && `journal.text.${testID}`}
           onLayout={(event) => {
             const { height } = event.nativeEvent.layout;
-            if (height > 0 && !expanded) setFoldedReadingHeight((previous) => previous === height ? previous : height);
+            if (height <= 0 || expanded) return;
+            foldedReading.current = height;
+            if (!hasImage) setFoldedReadingHeight((previous) => previous === height ? previous : height);
           }}>
           {dateOverline}
           {readingText}

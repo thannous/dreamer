@@ -516,7 +516,6 @@ const translations: Record<string, string> = {
     'journal.badge.favorite': 'Favorit',
     'journal.badge.recurring': 'Wiederkehrend',
     'journal.badge.unanalyzed': 'Nicht analysiert',
-    'journal.badge.analyzed': 'Analysiert',
     'journal.badge.explored': 'Vertieft',
     'journal.badge.sync_pending': 'Synchronisierung läuft',
     'journal.badge.sync_failed': 'Nicht synchronisiert',
