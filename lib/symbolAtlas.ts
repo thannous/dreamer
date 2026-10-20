@@ -22,6 +22,8 @@ export interface AtlasLayer {
   dur: number;
   /** Opacity range on the site. */
   op: [number, number];
+  /** A flow's passes on show at once, each a share of a cycle behind the previous one. */
+  copies?: number;
   blend?: 'screen' | 'multiply';
 }
 

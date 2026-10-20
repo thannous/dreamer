@@ -97,9 +97,9 @@ const plainContext = (html) =>
  * scenes, each with its two textures and the context of the variation card it paints in
  * every language. Files are named relative to `<base>/<id>/`; a texture's box is already
  * placed on its painting by the site's own geometry (lib/atlas-motion.js), so the app
- * never recomputes it. The site's motion runs in a loop; the app plays it once
- * (components/symbols/LivingPainting.tsx), so the flow copies are left out. A symbol
- * still waiting for its paintings, or a scene for its own, is skipped.
+ * never recomputes it. The site's motion runs in a loop; the app plays it for a few
+ * seconds, flow copies included, then rests (components/symbols/LivingPainting.tsx). A
+ * symbol still waiting for its paintings, or a scene for its own, is skipped.
  */
 function buildSymbolAtlas(extended = buildExtendedMap()) {
   const pilots = readJson('docs-src/config/symbol-atlas-pilots.json');
@@ -121,7 +121,7 @@ function buildSymbolAtlas(extended = buildExtendedMap()) {
       files: Object.fromEntries(Object.entries(asset.webp).map(([width, url]) => [width, fileName(url)])),
     });
     const layers = (effects, painting) =>
-      effects.map(({ texture, place, motion, move, dur, op, blend }) => ({
+      effects.map(({ texture, place, motion, move, dur, op, blend, copies }) => ({
         file: fileName(atlasSixLayerSrc(files[texture], 960)),
         box: atlasSixBox(place, painting, files[texture]),
         motion,
@@ -129,6 +129,7 @@ function buildSymbolAtlas(extended = buildExtendedMap()) {
         dur,
         op,
         ...(blend ? { blend } : {}),
+        ...(motion === 'flow' && copies > 1 ? { copies } : {}),
       }));
 
     const scenes = pilot.scenes

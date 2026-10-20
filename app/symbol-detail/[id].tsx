@@ -1,5 +1,5 @@
 import { EASE } from '@/components/motion/motion';
-import { LIVING_ARRIVAL_MS, LivingPainting } from '@/components/symbols/LivingPainting';
+import { LivingPainting } from '@/components/symbols/LivingPainting';
 import { SymbolArtwork } from '@/components/symbols/SymbolArtwork';
 import { readScenes, SymbolScenes } from '@/components/symbols/SymbolScenes';
 import { MarkdownText } from '@/components/ui/MarkdownText';
@@ -63,7 +63,7 @@ const COPY_RISE = {
     to: { opacity: 1, transform: [{ translateY: 0 }] },
   },
   animationDuration: 700,
-  animationDelay: Math.round(LIVING_ARRIVAL_MS / 8),
+  animationDelay: 320,
   animationTimingFunction: EASE.out,
   animationFillMode: 'both',
 } as const;
