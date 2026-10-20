@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { execFileSync, spawn } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { once } from 'node:events';
 import path from 'node:path';
@@ -26,7 +26,7 @@ async function expectCurrentUserSafe(owner: ReturnType<typeof client>, marker: s
 
 // The canonical runner owns and guards this real Auth/Postgres/PostgREST stack.
 // Apple's exchange/revocation alone is synthetic: no provider account or payment.
-test('Apple provider credentials stay private through Auth, refresh, API storage and account deletion', async ({ request }) => {
+test('Apple provider credentials stay private through Auth, refresh, API storage and account deletion', async ({ request }, testInfo) => {
   const marker = `synthetic-apple-${randomUUID()}`;
   const server = spawn('deno', ['run', '--frozen', '--allow-env',
     `--allow-read=${process.env.E2E_BACKEND_STATUS_FILE}`, '--allow-net=127.0.0.1',
@@ -119,14 +119,6 @@ test('Apple provider credentials stay private through Auth, refresh, API storage
     expectClientSafe(await failed.json(), marker);
     expect(stderr.join('').includes(marker)).toBe(false);
 
-    const advisors = execFileSync(path.resolve('node_modules/.bin/supabase'), [
-      'db', 'advisors', '--db-url', status.DB_URL, '--type', 'security', '--fail-on', 'none', '--output-format', 'json',
-    ], { encoding: 'utf8', env: {
-      ...Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.startsWith('SUPABASE_'))),
-      SUPABASE_HOME: process.env.E2E_SUPABASE_HOME || path.resolve('test-results/backend-e2e-cli-home'),
-      SUPABASE_EXPERIMENTAL_STACK: '1', DO_NOT_TRACK: '1',
-    } });
-    writeFileSync('test-results/apple-token-security-advisors.json', advisors, { mode: 0o600 });
     await db.connect();
     // Synthetic Apple identity exercises the real deletion consumer and FK cascade.
     const appleSubject = randomUUID();
@@ -149,6 +141,21 @@ test('Apple provider credentials stay private through Auth, refresh, API storage
     expect(erased.error).toBeNull();
     expect(erased.data).toBeNull();
     created.splice(created.indexOf(ownerId), 1);
+    const advisors = spawnSync(path.resolve('node_modules/.bin/supabase'), [
+      'db', 'advisors', '--db-url', status.DB_URL, '--type', 'security', '--fail-on', 'none', '--output-format', 'json',
+    ], { encoding: 'utf8', env: {
+      ...Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.startsWith('SUPABASE_'))),
+      NODE_ENV: process.env.NODE_ENV,
+      SUPABASE_HOME: process.env.E2E_SUPABASE_HOME || path.resolve('test-results/backend-e2e-cli-home'),
+      SUPABASE_EXPERIMENTAL_STACK: '1', DO_NOT_TRACK: '1',
+    } });
+    writeFileSync('test-results/apple-token-security-advisors.json', JSON.stringify({
+      exitCode: advisors.status, stdout: advisors.stdout, stderr: advisors.stderr,
+      error: advisors.error?.message,
+    }), { mode: 0o600 });
+    testInfo.annotations.push({ type: 'security-advisors', description: advisors.status === 0
+      ? 'Executed; inspect local advisor output for findings.'
+      : 'Unavailable: inspect local advisor diagnostic; no advisor pass claimed.' });
   } finally {
     await db.end();
     for (const id of created) await admin.auth.admin.deleteUser(id);
