@@ -1,4 +1,4 @@
-import Anthropic from 'https://esm.sh/@anthropic-ai/sdk@0.132.1?target=deno';
+import Anthropic from 'npm:@anthropic-ai/sdk@0.132.1';
 import { toClaudeSchema } from '../lib/schemas.ts';
 
 export type ClaudeEffort = 'low' | 'medium' | 'high';
