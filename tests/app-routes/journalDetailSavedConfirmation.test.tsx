@@ -281,7 +281,8 @@ jest.mock('@/components/journal/DreamShareImage', () => ({
     ref: React.ForwardedRef<HTMLDivElement>
   ) {
     require('react').useEffect(() => {
-      if (!resolvedMedia?.imageUrl) return;
+      // A card without a picture is ready as soon as it is drawn.
+      if (!resolvedMedia?.imageUrl) { onMediaReady('', false); return; }
       const source = resolvedMedia.imageUrl;
       mockCompositeEvents.push({
         source,
@@ -1431,7 +1432,9 @@ describe('native share media readiness', () => {
     expect(screen.queryByTestId('share-composite')).toBeNull();
     expect(require('react-native').Share.share).not.toHaveBeenCalled();
   });
-  it('retries the same resolved URL after composite image failure and ignores old callbacks', async () => {
+  // An illustration that cannot be shown no longer blocks sharing: the card goes without it
+  // (a dream whose painting failed to load could never be shared before).
+  it('shares the card without the illustration it could not show, and ignores old callbacks', async () => {
     require('react-native').Platform.OS = 'android';
     mockDreams = [buildDream({ imageUrl: 'https://cdn/image', isAnalyzed: true, analysisStatus: 'done' })];
     mockMedia = { imageUrl: 'https://cdn/image', loading: false, error: false, retry: mockRetryMedia };
@@ -1440,17 +1443,17 @@ describe('native share media readiness', () => {
     expect(screen.queryByTestId('share-composite')).toBeNull();
     expect((screen.getByTestId(TID.Button.DreamShare) as HTMLButtonElement).disabled).toBe(false);
     await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.DreamShare)); });
-    expect(mockRetryMedia).toHaveBeenCalledTimes(1);
-    expect(mockShareComposite).not.toHaveBeenCalled();
+    expect(mockShareComposite).toHaveBeenCalledTimes(1);
+    expect(require('react-native').Alert.alert).not.toHaveBeenCalled();
     expect(screen.queryByTestId('share-composite')).toBeNull();
     expect((screen.getByTestId(TID.Button.DreamShare) as HTMLButtonElement).disabled).toBe(false);
     mockCompositeLoads = null;
     fireEvent.click(screen.getByTestId(TID.Button.DreamShare));
     expect(mockCompositeEvents).toHaveLength(2);
     await act(async () => { mockCompositeEvents[0].report('https://cdn/image', true); });
-    expect(mockShareComposite).not.toHaveBeenCalled();
-    await act(async () => { mockCompositeEvents[1].report('https://cdn/image', true); });
     expect(mockShareComposite).toHaveBeenCalledTimes(1);
+    await act(async () => { mockCompositeEvents[1].report('https://cdn/image', true); });
+    expect(mockShareComposite).toHaveBeenCalledTimes(2);
     expect(require('react-native').Share.share).not.toHaveBeenCalled();
   });
   it('ignores an image callback after the resolved source changes', async () => {
@@ -1474,13 +1477,14 @@ describe('native share media readiness', () => {
     await act(async () => { mockCompositeEvents[1].report('https://signed/new', true); });
     expect(mockShareComposite).toHaveBeenCalledTimes(1);
   });
-  it('offers retry on media failure without silently sharing text', () => {
+  it('shares the card without an illustration that cannot be had, never silently as text', async () => {
     require('react-native').Platform.OS = 'android';
     mockDreams = [buildDream({ imageUrl: 'supabase-storage://dream-images/A/image', isAnalyzed: true, analysisStatus: 'done' })];
     mockMedia = { imageUrl: '', loading: false, error: true, retry: mockRetryMedia };
     render(<JournalDetailScreen />);
-    fireEvent.click(screen.getByTestId(TID.Button.DreamShare));
-    expect(mockRetryMedia).toHaveBeenCalled();
+    await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.DreamShare)); });
+    expect(mockShareComposite).toHaveBeenCalledTimes(1);
+    expect(require('react-native').Alert.alert).not.toHaveBeenCalled();
     expect(require('react-native').Share.share).not.toHaveBeenCalled();
   });
   it('does not mount the native composite for web sharing', () => {
