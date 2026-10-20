@@ -1,6 +1,6 @@
 import * as Haptics from 'expo-haptics';
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { Platform, View, useWindowDimensions } from 'react-native';
+import { AccessibilityInfo, Platform, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   Easing, Extrapolation, interpolate, useAnimatedStyle, useReducedMotion, useSharedValue, withSequence, withSpring, withTiming,
@@ -101,7 +101,9 @@ export function useJournalPageTurnLock(locked: boolean) {
  * side it only lifts a little. Vertical scrolling and the system back swipe at the binding
  * stay as they are; under reduce motion the page changes at once.
  */
-export function JournalPageTurner({ newer, older, folio, tonight = false, hint = true, onTurn, children }: {
+export function JournalPageTurner({ dream, newer, older, folio, tonight = false, hint = true, opensOnLikeness = false, onTurn, children }: {
+  /** This page's dream. */
+  dream: DreamAnalysis;
   /** The dream after this one, turned to towards the left. */
   newer: DreamAnalysis | null;
   /** The dream before this one, turned back to towards the right. */
@@ -112,6 +114,11 @@ export function JournalPageTurner({ newer, older, folio, tonight = false, hint =
   tonight?: boolean;
   /** The page may show on arrival that it can be turned (not under the capture seal's own arrival). */
   hint?: boolean;
+  /**
+   * Opened as it lies in the journal, the page shows its likeness at once and is laid out
+   * beneath it a moment later, then takes its place as a page turned to does.
+   */
+  opensOnLikeness?: boolean;
   onTurn: (dream: DreamAnalysis) => void;
   children: React.ReactNode;
 }) {
@@ -171,6 +178,50 @@ export function JournalPageTurner({ newer, older, folio, tonight = false, hint =
 
   const settled = useCallback(() => setFrozen(null), []);
 
+  // Opening on its likeness, the page is laid out two frames on, once the likeness is on screen.
+  const [opening, setOpening] = useState(opensOnLikeness);
+  const [pageDrawn, setPageDrawn] = useState(!opensOnLikeness);
+  const openingNow = useSharedValue(opensOnLikeness);
+  const likenessShown = useSharedValue(1);
+  const opened = useCallback(() => setOpening(false), []);
+  const openPage = useCallback(() => {
+    if (!openingNow.get()) return;
+    openingNow.set(false);
+    likenessShown.set(withTiming(0, { duration: reduced ? 0 : SETTLE_MS, easing: EASING.out }, (done) => {
+      if (done) scheduleOnRN(opened);
+    }));
+  }, [likenessShown, opened, openingNow, reduced]);
+  // A page turned meanwhile leaves its likeness at once.
+  const endOpening = useCallback(() => {
+    if (!openingNow.get()) return;
+    openingNow.set(false);
+    likenessShown.set(0);
+    setPageDrawn(true);
+    setOpening(false);
+  }, [likenessShown, openingNow]);
+  useEffect(() => {
+    if (!opensOnLikeness) return;
+    let live = true;
+    // A screen reader is given the page itself at once, not a picture of it.
+    AccessibilityInfo.isScreenReaderEnabled().then((on) => {
+      if (live && on) endOpening();
+    }).catch(() => {});
+    return () => { live = false; };
+  }, [endOpening, opensOnLikeness]);
+  useEffect(() => {
+    if (pageDrawn) return;
+    let frame = requestAnimationFrame(() => {
+      frame = requestAnimationFrame(() => setPageDrawn(true));
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [pageDrawn]);
+  useEffect(() => {
+    if (!pageDrawn) return;
+    // Its picture slow to come, the page takes over all the same: it holds its card's painting.
+    const timer = setTimeout(openPage, SETTLE_AT_LATEST);
+    return () => clearTimeout(timer);
+  }, [openPage, pageDrawn]);
+
   // The page turned to fades in over its likeness (forward), or its likeness fades off it (back).
   const settleIn = useCallback((turnedTo: number) => {
     awaiting.set(0);
@@ -187,17 +238,19 @@ export function JournalPageTurner({ newer, older, folio, tonight = false, hint =
     }));
   }, [awaitTimer, awaiting, direction, phase, progress, settle, settled]);
 
+  // Two frames on, the page laid out is painted too before it is let in.
   const pageLaidOut = useCallback(() => {
+    if (openingNow.get()) requestAnimationFrame(() => requestAnimationFrame(openPage));
     const turnedTo = awaiting.get();
     if (turnedTo === 0) return;
     awaiting.set(0);
-    // Two frames on, the page laid out is painted too before it is let in.
     requestAnimationFrame(() => requestAnimationFrame(() => settleIn(turnedTo)));
-  }, [awaiting, settleIn]);
-  const arriving = useCallback(() => awaiting.get() !== 0, [awaiting]);
+  }, [awaiting, openPage, openingNow, settleIn]);
+  const arriving = useCallback(() => openingNow.get() || awaiting.get() !== 0, [awaiting, openingNow]);
   const arrival = useMemo(() => ({ laidOut: pageLaidOut, arriving }), [arriving, pageLaidOut]);
 
   const finishTurn = useCallback((turnedTo: number) => {
+    endOpening();
     if (turnedTo === FORWARD && !shown.newer) {
       reachTonight();
       return;
@@ -221,9 +274,10 @@ export function JournalPageTurner({ newer, older, folio, tonight = false, hint =
       if (awaiting.get() !== 0) settleIn(awaiting.get());
     }, SETTLE_AT_LATEST));
     onTurn(target);
-  }, [awaitTimer, awaiting, onTurn, phase, progress, reachTonight, settle, settleIn, shown.folio, shown.newer, shown.older]);
+  }, [awaitTimer, awaiting, endOpening, onTurn, phase, progress, reachTonight, settle, settleIn, shown.folio, shown.newer, shown.older]);
 
   const turnAtOnce = useCallback((turnedTo: number) => {
+    endOpening();
     if (turnedTo === FORWARD && !shown.newer && tonight) {
       direction.set(FORWARD);
       progress.set(1);
@@ -235,7 +289,7 @@ export function JournalPageTurner({ newer, older, folio, tonight = false, hint =
     if (!target) return;
     void Haptics.selectionAsync().catch(() => {});
     onTurn(target);
-  }, [direction, onTurn, progress, reachTonight, shown.newer, shown.older, tonight, turnedOver]);
+  }, [direction, endOpening, onTurn, progress, reachTonight, shown.newer, shown.older, tonight, turnedOver]);
 
   // The controls at a page's foot share the same targets as swipes. A discrete action
   // changes page at once.
@@ -409,6 +463,9 @@ export function JournalPageTurner({ newer, older, folio, tonight = false, hint =
       ? interpolate(progress.get(), [0, 1], [0, 0.4], Extrapolation.CLAMP) : 0,
   }));
 
+  // Opening, the page's likeness lies over it, and fades off it once it has laid itself out.
+  const openingLikeness = useAnimatedStyle(() => ({ opacity: likenessShown.get() }));
+
   const pageFrame = { position: 'absolute' as const, top: 0, left: 0, right: 0, bottom: 0, transformOrigin: 'left center' };
 
   return (
@@ -434,8 +491,15 @@ export function JournalPageTurner({ newer, older, folio, tonight = false, hint =
           ) : null}
           <Animated.View pointerEvents={atTonight ? 'none' : 'auto'} accessibilityElementsHidden={atTonight}
             importantForAccessibility={atTonight ? 'no-hide-descendants' : 'auto'}
-            {...(Platform.OS === 'web' ? { 'aria-hidden': atTonight, inert: atTonight } : {})} style={[pageFrame, currentPage]}>
-            {children}
+            {...(Platform.OS === 'web' ? { 'aria-hidden': atTonight, inert: atTonight } : {})} style={[pageFrame, currentPage]}
+            // Touched once laid out beneath its likeness, the page shows itself at once.
+            onTouchStart={opening && pageDrawn ? openPage : undefined}>
+            {pageDrawn ? children : null}
+            {opening ? (
+              <Animated.View pointerEvents="none" testID="journal.page.opening" style={[StyleSheet.absoluteFill, openingLikeness]}>
+                <JournalPagePreview height={pageHeight} dream={dream} folio={shown.folio} />
+              </Animated.View>
+            ) : null}
             <Animated.View pointerEvents="none" className="absolute inset-0" style={[{ backgroundColor: shadow }, currentShade]} />
             <Animated.View pointerEvents="none" className="absolute inset-0" style={[{ backgroundColor: shadow }, currentUnderShade]} />
           </Animated.View>

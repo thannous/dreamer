@@ -348,12 +348,26 @@ function ArrivalLater({ play, ready, children }: { play: boolean; ready: boolean
 }
 
 function JournalDetailScreen() {
-  const route = useLocalSearchParams<{ id: string; remoteId?: string; clientRequestId?: string; saved?: string | string[] }>();
+  const route = useLocalSearchParams<{ id: string; remoteId?: string; clientRequestId?: string; saved?: string | string[];
+    recall?: string | string[]; autoAnalyze?: string; analyzeAfterPurchase?: string; share?: string }>();
   // Arriving from the capture seal, the page has its own ceremony: it does not also fall shut.
   const [arrivedFromSeal] = useState(() => isJournalSavedConfirmationParam(route.saved));
   const { user } = useAuth();
   const { dreams } = useDreamsData();
   const dream = resolveDreamRoute(dreams, route);
+  const { state: onboardingState } = useOnboarding();
+  // On a phone, opened to be read, it shows its likeness at once. Not when it is asked to act or
+  // scroll on arrival, opens on its saved moment, or shows a reading under way, none of which its
+  // likeness draws; nor on the web, where a wheel would scroll the page hidden beneath it.
+  const [opensOnLikeness] = useState(() => Platform.OS !== 'web' && !arrivedFromSeal && !route.recall
+    && !route.autoAnalyze && !route.analyzeAfterPurchase && !route.share && dream?.analysisStatus !== 'pending'
+    && !shouldOfferSavedDreamAnalysis({
+      savedParam: route.saved,
+      recallRequested: false,
+      pendingPhase: onboardingState.pendingRecordingIntent?.phase,
+      pendingSavedDreamId: onboardingState.pendingRecordingIntent?.savedDreamId,
+      dreamId: route.id,
+    }));
   // The journal's pages in the order they were written: a later dream lies one page on.
   const neighbours = useMemo(() => {
     if (!dream) return { newer: null, older: null, folio: undefined };
@@ -384,8 +398,8 @@ function JournalDetailScreen() {
   const content = <JournalDetailContent key={JSON.stringify([user?.id, route.id, route.remoteId, route.clientRequestId])}
     dream={dream} folio={neighbours.folio} />;
   return dream
-    ? <JournalPageTurner newer={neighbours.newer} older={neighbours.older} folio={neighbours.folio} tonight hint={!arrivedFromSeal}
-      onTurn={turnTo}>{content}</JournalPageTurner>
+    ? <JournalPageTurner dream={dream} newer={neighbours.newer} older={neighbours.older} folio={neighbours.folio} tonight
+      hint={!arrivedFromSeal} opensOnLikeness={opensOnLikeness} onTurn={turnTo}>{content}</JournalPageTurner>
     : content;
 }
 
