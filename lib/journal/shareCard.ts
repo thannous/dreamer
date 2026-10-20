@@ -44,7 +44,8 @@ export function getDefaultShareCardOptions(dream: ShareCardDream): ShareCardOpti
 export function getShareCardStory(transcript: string, max = SHARE_CARD_STORY_MAX): string {
   const story = transcript.trim().replace(/\s+/g, ' ');
   if (story.length <= max) return story;
-  const opening = story.slice(0, max);
+  // A cut inside an emoji would leave half of it, drawn as a broken character.
+  const opening = story.slice(0, max).replace(/[\uD800-\uDBFF]$/u, '');
   const lastSpace = opening.lastIndexOf(' ');
   const words = lastSpace > max * 0.6 ? opening.slice(0, lastSpace) : opening;
   return `${words.replace(/[\s,;:.!?…-]+$/u, '')}…`;

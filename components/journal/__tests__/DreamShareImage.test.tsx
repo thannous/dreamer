@@ -222,3 +222,12 @@ it('carries the opening of a long story, ended on a whole word', () => {
   expect(transcript.startsWith(story!.slice(0, -1))).toBe(true);
   expect(transcript.charAt(story!.length - 1)).toBe(' ');
 });
+
+it('never cuts an emoji in half when a long story has no word to end on', () => {
+  const transcript = `a${'🌙'.repeat(200)}`;
+  const { container } = render(<DreamShareImage dream={{ ...chosenDream, transcript }} t={key => key} resolvedMedia={{ imageUrl: '' }}
+    options={{ painting: false, title: false, date: false, text: 'story' }} />);
+  const story = Array.from(container.querySelectorAll('span')).map(node => node.textContent ?? '')
+    .find(text => text.startsWith('a🌙'));
+  expect(story).toBe(`a${'🌙'.repeat(159)}…`);
+});
