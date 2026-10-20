@@ -1,9 +1,10 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import type { ImageSource } from 'expo-image';
 
 import { useDreamMedia } from '@/hooks/useDreamMedia';
 import { getDreamImageVersion, getDreamThumbnailCacheKey, getDreamThumbnailUri, withCacheBuster } from '@/lib/imageUtils';
 import { isSquareDreamThumbnail } from '@/lib/journalImageReference';
+import { thumbnailFailures } from '@/lib/thumbnailFailureCache';
 import type { DreamAnalysis } from '@/lib/types';
 
 /**
@@ -15,26 +16,35 @@ export function useDreamCoverPlaceholder(dream?: DreamAnalysis | null): ImageSou
   // An uploaded image's square thumbnail is squeezed: its card holds the original instead.
   const square = isSquareDreamThumbnail(dream?.thumbnailUrl);
   const media = useDreamMedia(dream, square ? undefined : { variant: 'thumbnail' });
+  const { loadOriginal } = media;
   const id = dream?.id;
   const imageUpdatedAt = dream?.imageUpdatedAt;
   const analysisRequestId = dream?.analysisRequestId;
   const analyzedAt = dream?.analyzedAt;
-  const cacheKey = square ? media.imageCacheKey : getDreamThumbnailCacheKey(media);
+  const thumbnailCacheKey = getDreamThumbnailCacheKey(media);
+  const thumbnailUri = useMemo(() => (id === undefined ? undefined : getDreamThumbnailUri({
+    thumbnailUrl: media.thumbnailUrl,
+    imageUrl: media.imageUrl,
+    imageUpdatedAt,
+    analysisRequestId,
+    analyzedAt,
+    id,
+  })), [analysisRequestId, analyzedAt, id, imageUpdatedAt, media.imageUrl, media.thumbnailUrl]);
+  // So does a card whose thumbnail just failed to load.
+  const failedThumbnail = !square && Boolean(thumbnailUri)
+    && thumbnailFailures.has(media.accessScope ?? null, thumbnailCacheKey ?? thumbnailUri?.trim() ?? '');
+  useEffect(() => {
+    if (failedThumbnail) loadOriginal();
+  }, [failedThumbnail, loadOriginal]);
+  const holdsOriginal = square || failedThumbnail;
+  const cacheKey = holdsOriginal ? media.imageCacheKey : thumbnailCacheKey;
   return useMemo(() => {
     if (id === undefined) return null;
-    if (square) {
+    if (holdsOriginal) {
       const original = media.imageUrl?.trim();
       const version = getDreamImageVersion({ imageUpdatedAt, analysisRequestId, analyzedAt, id });
       return original ? { uri: withCacheBuster(original, version), cacheKey } : null;
     }
-    const uri = getDreamThumbnailUri({
-      thumbnailUrl: media.thumbnailUrl,
-      imageUrl: media.imageUrl,
-      imageUpdatedAt,
-      analysisRequestId,
-      analyzedAt,
-      id,
-    });
-    return uri ? { uri, cacheKey } : null;
-  }, [analysisRequestId, analyzedAt, cacheKey, id, imageUpdatedAt, media.imageUrl, media.thumbnailUrl, square]);
+    return thumbnailUri ? { uri: thumbnailUri, cacheKey } : null;
+  }, [analysisRequestId, analyzedAt, cacheKey, holdsOriginal, id, imageUpdatedAt, media.imageUrl, thumbnailUri]);
 }
