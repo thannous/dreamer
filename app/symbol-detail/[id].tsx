@@ -1,6 +1,7 @@
 import { EASE } from '@/components/motion/motion';
 import { LIVING_ARRIVAL_MS, LivingPainting } from '@/components/symbols/LivingPainting';
 import { SymbolArtwork } from '@/components/symbols/SymbolArtwork';
+import { SymbolScenes } from '@/components/symbols/SymbolScenes';
 import { MarkdownText } from '@/components/ui/MarkdownText';
 import { DreamerArtworkWindow } from '@/components/ui/DreamerBackground';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -30,8 +31,8 @@ import {
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Link, router, useLocalSearchParams } from 'expo-router';
-import React, { useEffect, useMemo, useRef } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions, type LayoutChangeEvent } from 'react-native';
 import { usePaintingArrival } from '@/components/ui/headerStretch';
 import Animated, {
   Extrapolation,
@@ -50,6 +51,9 @@ type Tokens = ReturnType<typeof getNoctaliaDesignTokens>;
 const HERO_TOKENS = getNoctaliaDesignTokens(DarkTheme, 'dark');
 const SKY_FALLBACK = DREAMER_ARTWORK.symbols;
 const TOP_BAR_HEIGHT = 52;
+const BODY_GUTTER = 24;
+// The painted scenes keep a reading size on a wide window.
+const SCENES_MAX_WIDTH = 640;
 
 // Over a living painting the name rises just after the sheet opens, so the painting is
 // seen first. One object, so a render never starts it again.
@@ -80,6 +84,9 @@ export default function SymbolDetailScreen() {
   const scrollPerf = useScrollIdle();
   const insets = useSafeAreaInsets();
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
+  // Measured, since a wide web window may give the screen less than the window.
+  const [heroWidth, setHeroWidth] = useState(windowWidth);
+  const [bodyWidth, setBodyWidth] = useState(windowWidth);
   const reducedMotion = useReducedMotion();
   const trackedSymbolRef = useRef<string | null>(null);
   const scrollY = useSharedValue(0);
@@ -117,7 +124,7 @@ export default function SymbolDetailScreen() {
   const heroHeight = Math.round(living
     ? Math.max(460, windowHeight * 0.75)
     : Math.min(560, Math.max(380, windowHeight * 0.58))) + heroDusk;
-  const heroFrame = useMemo(() => ({ width: windowWidth, height: heroHeight }), [heroHeight, windowWidth]);
+  const heroFrame = useMemo(() => ({ width: heroWidth, height: heroHeight }), [heroHeight, heroWidth]);
   const backdropSource = useMemo(
     // The smallest width is plenty under a 40 point blur.
     () => (living && symbol ? atlasPictureSources(living.atlas, symbol.id, living.entry.portrait)[0] : undefined),
@@ -202,7 +209,7 @@ export default function SymbolDetailScreen() {
           onMomentumScrollBegin={scrollPerf.onMomentumScrollBegin}
           onMomentumScrollEnd={scrollPerf.onMomentumScrollEnd}
         >
-          <View style={[styles.hero, { height: heroHeight }]}>
+          <View style={[styles.hero, { height: heroHeight }]} onLayout={(event: LayoutChangeEvent) => setHeroWidth(event.nativeEvent.layout.width)}>
             {/* Opened from a thumbnail on iOS 18 and later, the sheet grows out of it into
                 this painting, and shrinks back into it on the way back. */}
             <Link.AppleZoomTarget>
@@ -274,7 +281,7 @@ export default function SymbolDetailScreen() {
             </Animated.View>
           </View>
 
-          <View style={styles.body}>
+          <View style={styles.body} onLayout={(event: LayoutChangeEvent) => setBodyWidth(event.nativeEvent.layout.width)}>
             {paragraphs.length > 0 ? (
               <Section label={t('symbols.interpretation')} noctalia={noctalia}>
                 {/* The opening paragraph reads as a lead, like the site's summary;
@@ -293,6 +300,20 @@ export default function SymbolDetailScreen() {
                 <Text style={[styles.prose, { color: noctalia.text.secondary }]}>
                   {t('symbols.interpretation_offline')}
                 </Text>
+              </Section>
+            ) : null}
+
+            {living && living.entry.scenes.length > 0 && extended?.variations ? (
+              <Section label={t('symbols.scenes')} noctalia={noctalia}>
+                <SymbolScenes
+                  atlas={living.atlas}
+                  symbolId={symbol.id}
+                  scenes={living.entry.scenes}
+                  variations={extended.variations}
+                  lang={lang}
+                  width={Math.min(SCENES_MAX_WIDTH, bodyWidth - BODY_GUTTER * 2)}
+                  noctalia={noctalia}
+                />
               </Section>
             ) : null}
 
@@ -497,7 +518,7 @@ const styles = StyleSheet.create({
     textShadowRadius: 18,
   },
   lede: { fontFamily: Fonts.fraunces.regular, fontSize: 18, lineHeight: 27 },
-  body: { paddingHorizontal: 24, paddingTop: 8 },
+  body: { paddingHorizontal: BODY_GUTTER, paddingTop: 8 },
   backdropArt: { opacity: 0.75, transform: [{ scale: 1.2 }] },
   section: { borderTopWidth: StyleSheet.hairlineWidth, paddingTop: 30, marginTop: 34 },
   sectionMark: { width: 28, height: 2, borderRadius: 1, marginBottom: 14 },
