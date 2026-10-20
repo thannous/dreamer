@@ -7,9 +7,13 @@ toutes les fonctionnalités et en dégradant le moins possible le visuel, avec u
 rapport avant/après. Branche `claude/practical-meitner-yly1ex`, partie de
 `baa393b6` puis fusionnée avec `origin/master` `ce62eb94` (aucun fichier commun).
 Comparaison finale : **avant = `ce62eb94`** (`origin/master`), **après = `8067f00a`**,
-seul le diff de cette branche les sépare. `origin/master` `b6e5dd19` a ensuite été
-fusionné (onboarding, site, outillage backend et E2E ; seul l'index de la
-documentation est commun) : ces mesures restent celles de `8067f00a`. Aucune animation, durée, image, parallaxe
+seul le diff de cette branche les sépare. `origin/master` `b6e5dd19` (onboarding,
+site, outillage backend et E2E) puis `59cf23c0` ont ensuite été fusionnés sans
+conflit. Le second recoupe quatre fichiers de cette branche : refonte de l'Accueil
+(#467) et peintures qui se posent une fois au lieu de respirer sans fin (#464).
+L'Accueil fusionné garde les lectures hors composant, le store de défilement et
+`HeaderScrollView`, et reste compilé par React Compiler. Ces mesures restent celles
+de `8067f00a` ; elles ne qualifient pas la nouvelle page d'Accueil. Aucune animation, durée, image, parallaxe
 ou cible tactile n'est retirée. Aucun build EAS, déploiement, publication Store ni
 mesure sur appareil dans cette tranche.
 
@@ -169,7 +173,9 @@ identique pour les six langues. Hermes, plus coûteux sur `Intl`, n'est pas mesu
   avec un worker, ces parcours et ceux qui avaient échoué ainsi plus tôt (chat par
   catégorie, symboles personnels, analyse invitée, constellation, illustration)
   passent tous, avec le nouveau parcours de recherche : **6/6**. Ce dernier échoue
-  sans sa correction. Le cinquième échec est traité au point suivant.
+  sans sa correction. Le cinquième échec est traité au point suivant. Après fusion de
+  `59cf23c0` (tête `58fa719a`) : 82 passent, les quatre seuls échecs sont cette même
+  erreur moteur et passent **4/4** en relance avec un worker.
 - `dreamer-journal-margin` (« failed illustration leaves a compact readable entry »)
   échouait une fois sur deux sur cette branche : `boundingBox()` nul. Le test
   vérifiait la ligne déjà listée **avant** que la recherche s'applique, puis mesurait
