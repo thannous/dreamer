@@ -20,6 +20,10 @@ const mockUseOnboarding = jest.fn();
 let mockAuthReturn: { destination: string; createdAt: number } | null = null;
 const previousExpoOS = process.env.EXPO_OS;
 process.env.EXPO_OS = 'android';
+// The feature sheets are on by default; these cases cover the path without the
+// lazily loaded stories, which the web E2E passes qualify with the sheets on.
+const previousFeatureSheets = process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED;
+process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED = 'false';
 
 // `sync` mirrors a settled app: interaction tasks drain as they are scheduled.
 // `manual` reproduces a task that is scheduled before the screen starts leaving
@@ -296,6 +300,11 @@ describe('Onboarding screen', () => {
       delete process.env.EXPO_OS;
     } else {
       process.env.EXPO_OS = previousExpoOS;
+    }
+    if (previousFeatureSheets === undefined) {
+      delete process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED;
+    } else {
+      process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED = previousFeatureSheets;
     }
   });
 

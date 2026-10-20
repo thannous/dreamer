@@ -79,7 +79,7 @@ test.beforeEach(openOnboarding);
 defaultFeatureTest.beforeEach(openOnboarding);
 // This OFF-only case is excluded during collection before an ON bundle opens.
 defaultFeatureTest.skip(process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true', 'The feature flag is enabled for this bundle.');
-defaultFeatureTest('feature sheets stay disabled by default while onboarding and privacy remain usable', async ({ page }, testInfo) => {
+defaultFeatureTest('feature sheets stay disabled when switched off while onboarding and privacy remain usable', async ({ page }, testInfo) => {
   for (const feature of ['capture', 'connect', 'explore']) {
     const signal = page.getByTestId(`btn.onboarding.feature.${feature}`);
     await expect(signal).toBeVisible();
@@ -128,7 +128,7 @@ test('the welcome and path remain inside the viewport without off-canvas horizon
 });
 
 test.describe('feature sheet previews', () => {
-  test.skip(process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED !== 'true', 'Feature sheets require explicit opt-in.');
+  test.skip(process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED !== 'true', 'Feature sheets are switched off for this bundle.');
 
   for (const theme of ['light', 'dark'] as const) {
     // Product change (owner, 2026-10-10): the cross means leaving the introduction. It asks

@@ -36,7 +36,12 @@ export default defineConfig({
   webServer: {
     command: `npm run start:mock -- --web --port ${port}`,
     // Keep onboarding/preferences across mock account switches. Dreams stay in memory.
-    env: { EXPO_PUBLIC_MOCK_PERSISTENCE: 'true' },
+    // The onboarding feature sheets are on unless `false`; pin the value the specs read.
+    env: {
+      EXPO_PUBLIC_MOCK_PERSISTENCE: 'true',
+      EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED:
+        process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true' ? 'true' : 'false',
+    },
     // Wait for Metro's cold bundle compilation before starting timed UI journeys.
     url: `${baseURL}/node_modules/expo-router/entry.bundle?platform=web&dev=true&hot=false&lazy=true&transform.engine=hermes&transform.routerRoot=app&transform.reactCompiler=true&unstable_transformProfile=hermes-stable`,
     reuseExistingServer: process.env.E2E_REUSE_SERVER === '1' && !process.env.CI,

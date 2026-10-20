@@ -427,7 +427,7 @@ test('Quick Settings changes language and theme without losing the Capture draft
 
 test('the onboarding story bridges capture to understanding and exploration', {
   skip: process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED !== 'true'
-    ? 'Feature presentations require an explicit opt-in bundle.' : false,
+    ? 'Feature presentations are switched off for this bundle.' : false,
 }, async ({ app, screen, browser }) => {
   await isolateWeb(browser, app);
   await app.open();
