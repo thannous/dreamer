@@ -8,6 +8,7 @@ import { getDreamRouteParams, resolveDreamRoute } from '@/lib/dreamRoute';
 import { getDreamIdentityKey, matchesDreamTarget } from '@/lib/dreamIdentity';
 import { markPerformance, markPerformanceAfterFrames, performanceTraceId } from '@/lib/performanceTrace';
 import { getInitialDreamCategorizationKey, isInitialDreamCategorizationPending, subscribeInitialDreamCategorization } from '@/lib/initialDreamCategorization';
+import { useDreamCoverPlaceholder } from '@/hooks/useDreamCoverPlaceholder';
 import { useDreamMedia } from '@/hooks/useDreamMedia';
 import { Toast } from '@/components/Toast';
 import { DreamRecallAssistantCard } from '@/components/journal/DreamRecallAssistantCard';
@@ -647,6 +648,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     [dream]
   );
   const media = useDreamMedia(dream);
+  const coverPlaceholder = useDreamCoverPlaceholder(dream);
   const hasExistingImage = useMemo(() => Boolean(dream?.imageUrl?.trim()), [dream?.imageUrl]);
   const dreamTypeLabel = useMemo(
     () => (dream ? getDreamTypeLabel(dream.dreamType, t) ?? dream.dreamType : undefined),
@@ -2850,6 +2852,12 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       {/* While the plate fills the screen, it follows the phone's tilt. */}
       <PaintingTilt active={!isEditing && !isIllustrationFullscreen && !(coverFlight && !coverFlight.landed)}
         dominantUntil={coverHeight * 0.35}>
+      {/* Beneath, the painting the journal's card already holds: the page opens on it, and the
+          original sharpens it once loaded. */}
+      {coverPlaceholder ? (
+        <Image source={coverPlaceholder} style={StyleSheet.absoluteFill} contentFit="cover" cachePolicy="memory-disk"
+          transition={0} accessible={false} />
+      ) : null}
       <Image
         key={displayImageUrl ?? dream.imageUrl}
         source={displayImageUrl ? { uri: displayImageUrl, cacheKey: imageCacheKey } : null}
@@ -2861,7 +2869,6 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
         transition={turnedTo || plateRevealed ? 0 : imageConfig.transition}
         cachePolicy={imageConfig.cachePolicy}
         priority={imageConfig.priority}
-        placeholder={{ blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' }}
       />
       </PaintingTilt>
       </Animated.View>

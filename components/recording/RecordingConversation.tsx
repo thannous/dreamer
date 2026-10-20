@@ -138,7 +138,10 @@ export function RecordingConversation(props: Props) {
       <Pressable onPress={props.onRestart} disabled={locked} accessibilityRole="button" accessibilityLabel={t('recording.conversation.restart')}
         style={styles.tool} testID="recording-conversation-restart"><IconSymbol name="trash" size={18} color={tokens.text.secondary} /></Pressable>
       {props.onFinish ? <Pressable onPress={props.onFinish} disabled={locked || props.loading || props.finishDisabled} accessibilityRole="button"
-        style={styles.secondary} testID="recording-conversation-finish"><Text style={[styles.hint, { color: tokens.text.primary }]}>{t('recording.conversation.done')}</Text></Pressable> : null}
+        accessibilityLabel={t('recording.conversation.done')} accessibilityState={{ disabled: locked || props.loading || props.finishDisabled }}
+        style={[styles.tool, { opacity: locked || props.loading || props.finishDisabled ? 0.4 : 1 }]} testID="recording-conversation-finish">
+        <IconSymbol name="checkmark" size={20} color={tokens.text.primary} />
+      </Pressable> : null}
     </View> : null}
     {/* Noctalia listening: a halo that follows the voice, above the reply. */}
     {listening ? <ListeningHalo label={t('recording.conversation.listening')} style={styles.listening} testID="recording-listening-status" /> : null}
@@ -170,7 +173,7 @@ const styles = StyleSheet.create({
   bubble: { maxWidth: '86%', alignSelf: 'flex-end', borderWidth: StyleSheet.hairlineWidth, borderRadius: 16, padding: 14 },
   message: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 16, lineHeight: 24 },
   hint: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 13, lineHeight: 20 },
-  tools: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  tools: { alignSelf: 'flex-end', alignItems: 'center' },
   tool: { minHeight: 44, minWidth: 44, alignItems: 'center', justifyContent: 'center' },
   secondary: { minHeight: 44, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 12 },
   control: { width: 44, height: 44, borderRadius: 22, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },

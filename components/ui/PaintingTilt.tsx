@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useSyncExternalStore, type ReactNode } from 'react';
-import { AppState, Platform, StyleSheet, View, useWindowDimensions } from 'react-native';
+import { AppState, Platform, StyleSheet, View, useWindowDimensions, type LayoutChangeEvent } from 'react-native';
 import Animated, {
   SensorType, useAnimatedReaction, useAnimatedSensor, useAnimatedStyle, useReducedMotion, useSharedValue, withTiming,
   type SharedValue,
@@ -45,6 +45,24 @@ const subscribe = (listener: () => void) => {
     listeners.delete(listener);
   };
 };
+
+/** Enlarged by the slide each way plus a point, along whichever side of the frame needs it. */
+function tiltZoom({ width, height }: { width: number; height: number }): number {
+  return width > 0 && height > 0
+    ? 1 + Math.max((2 * SHIFT_X + 2) / width, (2 * SHIFT_Y + 2) / height)
+    : 1;
+}
+
+/** The frame a painting fills, the screen until it is laid out. */
+function useFrame() {
+  const screen = useWindowDimensions();
+  const [frame, setFrame] = useState<{ width: number; height: number } | null>(null);
+  const onLayout = ({ nativeEvent: { layout } }: LayoutChangeEvent) => setFrame((previous) => (
+    previous?.width === layout.width && previous.height === layout.height
+      ? previous
+      : { width: layout.width, height: layout.height }));
+  return { frame: frame ?? screen, onLayout };
+}
 
 function useTiltTurn(wanted: boolean): boolean {
   const [id] = useState(() => ({}));
@@ -132,13 +150,8 @@ function LivePaintingTilt({ active, dominantUntil, children }: Props) {
   const foreground = useForeground();
   const dominant = useDominant(dominantUntil);
   const tilts = useTiltTurn(active && !reduced && onScreen && foreground && dominant);
-  const screen = useWindowDimensions();
-  const [frame, setFrame] = useState<{ width: number; height: number } | null>(null);
-  // Enlarged by the slide each way plus a point, along whichever side of the frame needs it.
-  const { width, height } = frame ?? screen;
-  const zoom = width > 0 && height > 0
-    ? 1 + Math.max((2 * SHIFT_X + 2) / width, (2 * SHIFT_Y + 2) / height)
-    : 1;
+  const { frame, onLayout } = useFrame();
+  const zoom = tiltZoom(frame);
   const x = useSharedValue(0);
   const y = useSharedValue(0);
   useEffect(() => {
@@ -154,10 +167,7 @@ function LivePaintingTilt({ active, dominantUntil, children }: Props) {
     <Animated.View
       pointerEvents="none"
       style={[StyleSheet.absoluteFill, reduced ? null : style]}
-      onLayout={({ nativeEvent: { layout } }) => setFrame((previous) => (
-        previous?.width === layout.width && previous.height === layout.height
-          ? previous
-          : { width: layout.width, height: layout.height }))}
+      onLayout={onLayout}
     >
       {tilts ? <TiltSensor x={x} y={y} /> : null}
       {children}
@@ -165,11 +175,26 @@ function LivePaintingTilt({ active, dominantUntil, children }: Props) {
   );
 }
 
-function StillPainting({ children }: Props) {
+function StillPainting({ children }: { children: ReactNode }) {
   return <View pointerEvents="none" style={StyleSheet.absoluteFill}>{children}</View>;
 }
 
+/**
+ * A likeness of a painting that tilts, as it rests: enlarged alike and unmoved, so that the
+ * painting taking its place, as a page turned to takes over, does not grow.
+ */
+function RestingTiltedPainting({ children }: { children: ReactNode }) {
+  const reduced = useReducedMotion();
+  const { frame, onLayout } = useFrame();
+  return (
+    <View pointerEvents="none" onLayout={onLayout}
+      style={[StyleSheet.absoluteFill, reduced ? null : { transform: [{ scale: tiltZoom(frame) }] }]}>
+      {children}
+    </View>
+  );
+}
+
 // The web has no tilt to follow; test doubles of Reanimated may omit the sensor.
-export const PaintingTilt = Platform.OS !== 'web' && typeof useAnimatedSensor === 'function'
-  ? LivePaintingTilt
-  : StillPainting;
+const tilting = Platform.OS !== 'web' && typeof useAnimatedSensor === 'function';
+export const PaintingTilt: (props: Props) => React.JSX.Element = tilting ? LivePaintingTilt : StillPainting;
+export const PaintingAtRest = tilting ? RestingTiltedPainting : StillPainting;

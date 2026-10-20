@@ -2,28 +2,25 @@
 
 [Tableau Excel](suivi-240-symboles-6-langues.xlsx) · [CSV lisible dans GitHub](symbol-rollout.csv) · [Passation](HANDOFF.md)
 
-Le lot 08 complète **30 packs**, en conservant leurs couvertures peintes et en ajoutant **210 PNG natifs**. Le candidat contient maintenant **105 packs équipés**, soit **630 pages** dans les six langues ; **135 packs restent à compléter**. Le cadre commun comprend déjà 240 symboles, soit 1 440 pages. Les 105 packs utilisent le moteur commun, dont le Tigre migré dans master par la PR485.
+**111 packs complets sont publiés**, soit **666 pages équipées** dans les six langues ; **129 packs restent à préparer**. Les 240 symboles partagent le cadre commun, soit 1 440 pages. Le lot 09 ajoute Hibou, Bateau, Grotte, Rose, Éclair et Baleine : huit rôles par symbole, trois scènes et deux phénomènes par image. Le lot 08 de 30 packs intégré en parallèle par la PR490 est conservé et inclus dans cette publication.
 
-**30 QA actuelles**, sur le candidat `9184f780a23f21687350020fa3448d58e4e0aadd` : six langues, 2560×1440 et 390×844, puis inspection de 150 captures. Lire [le rapport du lot](../qa/symbol-packs-lot-08-30-20261020.md) et [son reçu](../qa/symbol-packs-lot-08-30-20261020.json). Le lot reste en branche ; aucun accord visuel personnel, merge ou nouvelle publication n'est déclaré. Les sources, prompts et provenance sont conservés dans [30 archives privées Drive](https://drive.google.com/drive/folders/1XzmtnMeVfBGWkT6XdLs5hGGI_kBjes0p).
+Version publique : `1038406132baf06556f6abda8f1620ac4774984b`, [PR494](https://github.com/thannous/dreamer/pull/494), avec les placements de [PR496](https://github.com/thannous/dreamer/pull/496). Déploiement : [Cloudflare Pages](https://ce671c33.noctalia.pages.dev). Lire [la preuve de livraison](../qa/symbol-batch09-delivery-20261020.json).
+
+La qualification Release du site passe ; sa campagne navigateur compte 91 tests, aucun échec, exclusion ou test instable. Les 1 440 pages publiques correspondent au build du master publié. Les six nouveaux packs ont leurs cinq surfaces vérifiées au cours du temps dans les six langues sur desktop et leurs héros sur mobile ; le contrôle public complète cette preuve à 2560×1440 et 390×844, avec contrôle de la source téléchargée à DPR2. Cette preuve navigateur ne qualifie ni un appareil physique, ni une nouvelle version native, ni les FPS. La [PR497](https://github.com/thannous/dreamer/pull/497) a réparé le chargement de la même version du SDK Anthropic pour débloquer les contrôles ; aucun backend n'a été déployé par ce lot.
 
 ## Lire les états
 
-- **Atlas / pack d'images** : huit rôles et correspondances dans six langues. La présence des fichiers ne vaut pas qualification ou publication.
-- **Commun** : cadre partagé et illustration existante ; le pack reste à compléter.
-- **QA / accord / publication** : preuves distinctes, liées aux entrées du candidat. La correction du générateur périme les anciennes preuves pour ce candidat ; elles restent conservées.
-- **Historique** : la PR485 a publié le Tigre commun et les 1 440 pages sur `76d7e577dfb7eb5251b0898e994e3a5210bfd56c` ; les 75 QA et 240 publications restent décrites dans [son reçu](../qa/symbol-tiger-common-motion-20261020.json) et `snapshot.json`. La [livraison PR478](../qa/symbol-pages-uniform-20261020.json) reste également conservée. Les 40 contrôles PR474 et 37 publications antérieures restent historiques. Le compteur « Publiées » du classeur concerne les preuves actuelles du candidat, pas la disponibilité du site historique.
-- **Archives** : les 30 archives du lot 08 ont leurs empreintes locales et leurs métadonnées Drive vérifiées. Pour les anciens packs PR474, la disponibilité locale de leur archive demeure non affirmée.
+- **Atlas / pack d'images** : huit rôles et correspondances dans six langues. **Commun** : cadre partagé et illustration existante, pack encore à préparer.
+- **QA / accord / publication** : preuves distinctes liées aux sources. Les 111 QA et les 240 publications sont actuelles. Aucun nouvel accord personnel de Thanh n'est inventé ; son autorisation de publier les lots demandés reste acquise.
+- **Historique** : les preuves PR474, PR478, PR485 et la qualification des 30 packs PR490 restent conservées. Une ancienne publication ne valide pas une nouvelle version.
+- **Sources** : le lot 09 conserve localement 48 PNG sélectionnés, leurs prompts et SHA dans une archive portable, dont 40 nouvelles images ImageGen et huit réemplois de textures identifiés. [Reçu source](../qa/symbol-batch08-sources-20261020.json). Le nom du dossier et de l'archive garde le numéro de préparation initial, avant l'arrivée du lot 08 concurrent. Les 30 archives privées du lot 08 restent référencées dans [son reçu](../qa/symbol-packs-lot-08-30-20261020.json) et [Drive](https://drive.google.com/drive/folders/1XzmtnMeVfBGWkT6XdLs5hGGI_kBjes0p) ; les archives natives PR474 restent non vérifiées localement.
 
-## Mettre à jour après chaque lot de 30 au maximum
+## Mettre à jour après chaque lot
 
-1. Conserver les peintures satisfaisantes ; produire les rôles manquants du pack de huit fichiers. Suivre [le guide](../symbol-atlas-guidelines.md), avec un portrait composé pour mobile, une plaque et deux effets réellement transparents, et trois scènes correspondant au contenu.
-2. Intégrer avec le convertisseur et le moteur commun, puis contrôler les pages réelles et les deux effets. Consigner les preuves dans [le registre](../../../docs-src/config/symbol-rollout.json), puis régénérer le rapport :
+1. Relire le registre courant avant de choisir les symboles et réserver un numéro de lot distinct. Suivre [le guide](../symbol-atlas-guidelines.md) et la taille de lot demandée par Thanh. Ne pas reprendre aveuglément une ancienne file de production.
+2. Codex remet les vrais packs ImageGen ; Claude adapte les trois scènes, six langues et deux phénomènes aux peintures reçues, dans le moteur commun. Les profils préparés avant les médias sont des propositions : les contrôler sur les vraies images avant de les livrer.
+3. Utiliser les commandes canoniques `atlas:pack`, `atlas:handoff`, `atlas:receipt` et `symbols:rollout` du package site. Le registre est la source des états ; conserver les sources et leurs archives sans qualifier un fichier par son seul nom.
+4. Mettre à jour le classeur existant et le CSV depuis le même rapport : 240 IDs, huit rôles, six langues et preuves actuelles/historiques. Préserver formules, filtre et volets ; recalculer, exporter, rouvrir et inspecter le résultat. Actualiser les empreintes du snapshot.
+5. Vérifier le commit avant push, puis le master exact avant publication. Contrôler le résultat public avant de consigner sa publication. Ne pas faire dépendre l'autorisation déjà acquise d'une nouvelle validation subjective.
 
-   ```sh
-   npm run symbols:rollout --prefix apps/site -- --out /tmp/noctalia-symbol-rollout
-   ```
-
-3. Actualiser le classeur existant et son CSV depuis le même rapport : 240 IDs uniques, huit rôles, six langues et preuves actuelles/historiques. Conserver les formules, filtres et volets ; recalculer, exporter, rouvrir et inspecter le classeur. Le registre fait autorité.
-4. Actualiser `snapshot.json` avec les empreintes des exports. Vérifier le commit avant chaque push. Le merge et la publication suivent les autorisations de la conversation et `AGENTS.md` ; ne compter une livraison qu'après son contrôle réel.
-
-Sources : [profils et scènes](../../../docs-src/config/symbol-atlas-pilots.json), [images](../../../docs-src/config/symbol-atlas-six-assets.json), [langues](../../../docs-src/config/symbol-atlas-locales.json), [cadrages sans pack](../../../docs-src/config/symbol-hero-portrait.json). Le classeur conserve ses 489 formules, son filtre `A10:AC250` et ses volets à `C11`. Il a été recalculé et rouvert, sans pilotage de l'application Excel native.
+Sources : [profils et scènes](../../../docs-src/config/symbol-atlas-pilots.json), [images](../../../docs-src/config/symbol-atlas-six-assets.json), [langues](../../../docs-src/config/symbol-atlas-locales.json), [registre](../../../docs-src/config/symbol-rollout.json). Le classeur conserve les 489 formules, le filtre `A10:AC250` et les volets `C11` ; recalcul et réouverture vérifiés avec Artifact Tool, sans contrôle de l'application Excel native.

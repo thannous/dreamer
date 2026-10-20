@@ -1,19 +1,19 @@
-# Passation — packs de symboles par lots de 30
+# Passation — images Codex, code Claude, publication Codex
 
-## Lot 08 prêt à livrer
+## Livraison actuelle du lot 09
 
-Responsable d'intégration : **Codex**. Branche : `codex/symbol-images-lot-08-30`, master intégré : `f71600c97` (preuves PR487 ; code qualifié identique à master `76d7e577d`). Candidat navigateur propre : `9184f780a23f21687350020fa3448d58e4e0aadd` ; les mises à jour de suivi ultérieures réutilisent cette preuve sans revendiquer un nouveau parcours.
+Les six packs Hibou, Bateau, Grotte, Rose, Éclair et Baleine sont publiés dans les six langues sur `1038406132baf06556f6abda8f1620ac4774984b` ([PR494](https://github.com/thannous/dreamer/pull/494), placements [PR496](https://github.com/thannous/dreamer/pull/496)). Le total courant est **111 packs, 129 restants**, 666 pages équipées parmi 1 440 pages communes. [Preuve complète](../qa/symbol-batch09-delivery-20261020.json) ; [suivi](README.md).
 
-**30 couvertures conservées, 210 nouveaux PNG, 30 packs complets et 1 140 dérivés**. Les 30 parcours passent dans les six langues à 2560×1440 et 390×844. Les 150 captures et les 30 familles de sources ont été inspectées. Lire [le rapport](../qa/symbol-packs-lot-08-30-20261020.md), [le reçu](../qa/symbol-packs-lot-08-30-20261020.json), [l'Excel et le CSV](README.md). Les originaux, prompts et provenance sont dans [30 ZIP privés Drive](https://drive.google.com/drive/folders/1XzmtnMeVfBGWkT6XdLs5hGGI_kBjes0p) et dans le dossier local `output/symbol-packs-lot-08-30-20261020` du checkout principal. `RECUPERATION.json` décrit la reprise ; `production-queue.json` contient les prochains lots. Les versions rejetées restent conservées localement.
+Codex conserve les 48 sources sélectionnées, prompts, SHA et huit rôles dans `output/noctalia-symbols-batch08-2026-10-20/source-library-batch08-v1.zip` du checkout principal ; [reçu](../qa/symbol-batch08-sources-20261020.json). Le nom initial du dossier est conservé, mais le registre attribue ces six symboles au lot 09. Le lot 08 de 30 packs arrivé en parallèle est préservé : ses archives privées et sa preuve ciblée sont décrites dans [son reçu](../qa/symbol-packs-lot-08-30-20261020.json). Ne pas régénérer les images déjà sélectionnées.
 
-Le candidat contient **105 packs et 135 restants**, soit 630 pages équipées parmi les 1 440 pages du cadre commun. La migration du Tigre au moteur commun provient de master PR485 ; ce lot ne revendique pas un nouveau parcours Tigre. Les 30 QA sont actuelles pour le candidat ; les anciennes preuves restent historiques car le générateur a changé. Aucun accord personnel de Thanh ou nouvelle publication n'est consigné. Les publications PR478 et PR485 demeurent des livraisons historiques vérifiées, pas des preuves de ce nouveau lot.
+Claude a intégré les vraies peintures et corrigé les textures localisées qui masquaient des sujets. Les profils A/B doivent être revus sur les vrais médias, aux dimensions réelles, avant de compter le pack terminé. La publication et les preuves actuelles sont consignées ; aucun accord personnel de Thanh n'a été inventé. Les preuves antérieures restent historiques, sans être effacées.
 
 ## Reprendre sans perdre le travail
 
 - Ne pas régénérer les 210 PNG sélectionnés. Les variantes remplacées sont conservées, mais seuls les fichiers sélectionnés dans les manifests et ZIP courants servent le site.
 - Ne pas relancer `manage.mjs configure` du dossier local du lot 08 : sa base précède les mises à jour de master et écraserait des preuves plus récentes. Les 30 profils, langues et scènes sont déjà configurés. Modifier les JSON canoniques directement si nécessaire.
 - Terminer la vérification locale sur le commit livré avant tout push. Remettre une branche et une PR avec le commit vérifié et le résultat de `verify:pr`. Une preuve ciblée de 30 parcours n'est pas une campagne Release complète.
-- Poursuivre ensuite avec la file persistée : lot 09 de 30, puis 30, 30, 30 et 15. Réexaminer le catalogue courant avant de produire pour éviter les doublons d'un autre travail.
+- Réexaminer le registre courant avant le prochain lot : 129 symboles restent sans pack. Le lot 09 est déjà occupé par les six symboles ci-dessus ; les anciennes files de production doivent être rapprochées des IDs actuels avant une nouvelle génération. Respecter la taille de lot demandée par Thanh.
 - Enregistrer chaque image, prompt et provenance dès sa réception ; archiver chaque pack terminé et mettre à jour le suivi par lot. Ne pas remettre le suivi ou les rapports internes sur Drive sans autorisation appropriée à ces documents.
 
 ## Direction artistique et mouvement

@@ -894,7 +894,6 @@ const translations: Record<string, string> = {
     "recording.draft_progress.ready": "Bereit für dein Journal.",
     'recording.draft_progress.count_one': '{count} Zeichen',
     'recording.draft_progress.count': '{count} Zeichen',
-    "recording.draft_progress.saved_locally": "Entwurf auf diesem Gerät gesichert",
     'recording.activation_insight.eyebrow': 'Erste Hinweise',
     'recording.activation_insight.summary.memory': 'Diese Erinnerung wird als bereits erlebter Traum gespeichert.',
     'recording.activation_insight.summary.memory_draft': 'Diese Erinnerung kann bereits ein Anker für dein Profil werden.',
