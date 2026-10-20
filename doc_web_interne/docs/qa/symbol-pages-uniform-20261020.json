@@ -1,0 +1,385 @@
+{
+  "schema": "noctalia.symbol-uniformization-delivery/1",
+  "date": "2026-10-20",
+  "revision": "1a63ecf787bc8d20e322314e1ba17987c83b1198",
+  "sourcePullRequest": 478,
+  "publication": {
+    "origin": "https://noctalia.app",
+    "deploymentUrl": "https://9146e242.noctalia.pages.dev",
+    "command": "npm run docs:deploy:prod",
+    "releaseCommand": "npm run verify:release:site -- --keep",
+    "releasePassed": true
+  },
+  "scope": {
+    "symbols": 240,
+    "languages": [
+      "en",
+      "fr",
+      "es",
+      "de",
+      "it",
+      "pt-br"
+    ],
+    "localePages": 1440,
+    "commonLayoutSymbols": 240,
+    "imagePacks": 75,
+    "commonAnimatedPacks": 74,
+    "packsRemaining": 165,
+    "historicalTigerMotionPending": true,
+    "inventedScenes": 0
+  },
+  "browserQa": {
+    "revision": "1a63ecf787bc8d20e322314e1ba17987c83b1198",
+    "sourceClean": false,
+    "generatedBundleStatus": "M docs-src/static/js/experience/experience.js\n D docs-src/static/js/experience/lenis-WVYVID6X.js\n D docs-src/static/js/experience/mini-YRBJM6WA.js\n?? docs-src/static/js/experience/lenis-JAZNBBQY.js\n?? docs-src/static/js/experience/mini-CBR72TNY.js",
+    "command": [
+      "node",
+      "tools/e2e/run.mjs",
+      "site",
+      "web",
+      "run"
+    ],
+    "startedAt": "2026-10-20T11:09:08.292Z",
+    "finishedAt": "2026-10-20T11:18:01.393Z",
+    "runner": "0.21.2",
+    "engine": "0.15.2",
+    "summary": {
+      "discovered": 55,
+      "selected": 55,
+      "executed": 55,
+      "passed": 55,
+      "failed": 0,
+      "interrupted": 0,
+      "flaky": 0,
+      "skipped": 0
+    },
+    "passed": [
+      "the generated English homepage opens a real internal destination",
+      "symbol artwork fills the page from behind the navbar up to 2560px",
+      "the French tiger painting moves visibly, gains depth on scroll and stops by itself off screen or with reduced motion, without a pause control",
+      "the tiger layers follow the painting the browser shows when the phone turns",
+      "a broken layer or reduced motion from the first load keeps the tiger painting still",
+      "only the tiger pages, in the six languages, load the living-painting pilot, from one folder named after its hash",
+      "the French tiger atlas reads like a dictionary entry and shows each published scene from mouse or keyboard",
+      "the French atlas pages keep every published block and show each chosen variation whole",
+      "the French atlas paintings each move two distinct raster effects, only on screen, and stop by themselves off screen or with reduced motion, without a pause control",
+      "a scene thumbnail that failed before its effects start keeps its choice, and the other paintings keep running",
+      "on a phone the French atlas heroes take 75svh from the top, behind a navbar that gains a ground past them",
+      "the thirty-seven atlas pages read in each of the six languages, with the French layout at 2560 and on a phone",
+      "the language menu leads from the French moon atlas to the pt-br and the English one, where a scene and the phone anchors work in pt-br",
+      "a page without an atlas, a missing FAQ or a thumbnail that fails stays in the page's language",
+      "the pt-br dictionary links every pt-br symbol, searches and filters in Portuguese, and its translations link to each other",
+      "new symbol packs: light renders every surface and its two effects",
+      "new symbol packs: lighthouse renders every surface and its two effects",
+      "new symbol packs: window renders every surface and its two effects",
+      "new symbol packs: train-station renders every surface and its two effects",
+      "new symbol packs: wall renders every surface and its two effects",
+      "new symbol packs: library renders every surface and its two effects",
+      "new symbol packs: neighbor renders every surface and its two effects",
+      "new symbol packs: hallway renders every surface and its two effects",
+      "new symbol packs: city renders every surface and its two effects",
+      "new symbol packs: street renders every surface and its two effects",
+      "new symbol packs: tunnel renders every surface and its two effects",
+      "new symbol packs: maze renders every surface and its two effects",
+      "new symbol packs: tower renders every surface and its two effects",
+      "new symbol packs: wind renders every surface and its two effects",
+      "new symbol packs: fog renders every surface and its two effects",
+      "new symbol packs: ice renders every surface and its two effects",
+      "new symbol packs: clouds renders every surface and its two effects",
+      "new symbol packs: waves renders every surface and its two effects",
+      "new symbol packs: outer-space renders every surface and its two effects",
+      "new symbol packs: burglar renders every surface and its two effects",
+      "new symbol packs: royalty renders every surface and its two effects",
+      "new symbol packs: crowd renders every surface and its two effects",
+      "new symbol packs: twins renders every surface and its two effects",
+      "new symbol packs: dragon renders every surface and its two effects",
+      "new symbol packs: unicorn renders every surface and its two effects",
+      "new symbol packs: fox renders every surface and its two effects",
+      "new symbol packs: fly renders every surface and its two effects",
+      "new symbol packs: jellyfish renders every surface and its two effects",
+      "new symbol packs: octopus renders every surface and its two effects",
+      "new symbol packs: broken-glass renders every surface and its two effects",
+      "new symbol packs: gift renders every surface and its two effects",
+      "new symbol packs: bag renders every surface and its two effects",
+      "new symbol packs: explosion renders every surface and its two effects",
+      "new symbol packs: searching renders every surface and its two effects",
+      "new symbol packs: driving renders every surface and its two effects",
+      "new symbol packs: climbing renders every surface and its two effects",
+      "new symbol packs: breakup renders every surface and its two effects",
+      "new symbol packs: stage renders every surface and its two effects",
+      "new symbol packs: clock renders every surface and its two effects",
+      "new symbol packs: candle renders every surface and its two effects"
+    ],
+    "skipped": [],
+    "excluded": [],
+    "receiptSha256": "b6ba9e93c81a0447ac264363362ce9c846ea897aba61cfec94754260aa9b5348",
+    "viewportSizes": [
+      [
+        2560,
+        1440
+      ],
+      [
+        390,
+        844
+      ]
+    ],
+    "qualifiedPackSymbols": [
+      "water",
+      "teeth",
+      "falling",
+      "flying",
+      "snake",
+      "house",
+      "ocean",
+      "baby",
+      "dog",
+      "cat",
+      "fire",
+      "car",
+      "door",
+      "bird",
+      "bridge",
+      "stairs",
+      "moon",
+      "rain",
+      "forest",
+      "mountain",
+      "mirror",
+      "train",
+      "key",
+      "elevator",
+      "wolf",
+      "horse",
+      "storm",
+      "book",
+      "snow",
+      "butterfly",
+      "desert",
+      "flowers",
+      "castle",
+      "stars",
+      "light",
+      "lighthouse",
+      "window",
+      "clock",
+      "train-station",
+      "wall",
+      "library",
+      "neighbor",
+      "hallway",
+      "city",
+      "street",
+      "tunnel",
+      "maze",
+      "tower",
+      "wind",
+      "fog",
+      "ice",
+      "clouds",
+      "waves",
+      "outer-space",
+      "burglar",
+      "royalty",
+      "crowd",
+      "twins",
+      "dragon",
+      "unicorn",
+      "fox",
+      "fly",
+      "jellyfish",
+      "octopus",
+      "candle",
+      "broken-glass",
+      "gift",
+      "bag",
+      "explosion",
+      "searching",
+      "driving",
+      "climbing",
+      "breakup",
+      "stage"
+    ],
+    "tigerMotionGap": "The historical hero animates in six languages, but the plate and three thumbnails remain static. The existing passing campaign did not assert two motion channels on these Tiger surfaces."
+  },
+  "publicCheck": {
+    "total": 1440,
+    "passed": 1440,
+    "failed": 0,
+    "startedAt": "2026-10-20T11:12:15.838Z",
+    "finishedAt": "2026-10-20T11:12:30.561Z",
+    "reportSha256": "b40e006e8e2db01184383e1a4d1f536471376c7612353d210f2a33799cd1f141",
+    "checks": [
+      "HTTP 200",
+      "main matches generated page",
+      "shared layout",
+      "canonical matches",
+      "hreflang matches"
+    ]
+  },
+  "publicBrowser": {
+    "schema": "noctalia.symbol-public-browser/1",
+    "revision": "1a63ecf787bc8d20e322314e1ba17987c83b1198",
+    "checkedAt": "2026-10-20T11:19:18.503Z",
+    "passed": true,
+    "classicWide": {
+      "article": 2304,
+      "meaning": 608,
+      "overflow": false,
+      "questions": 1352,
+      "scenes": false,
+      "viewport": [
+        2560,
+        1440
+      ]
+    },
+    "classicMobileDpr2": {
+      "dpr": 2,
+      "hero": {
+        "height": 633,
+        "top": 0
+      },
+      "image": {
+        "fit": "cover",
+        "loaded": true,
+        "sizes": "(max-width: 767px) and (orientation: portrait) 134vh, (min-width: 2560px) 2560px, 100vw",
+        "src": "https://noctalia.app/img/seo/symbols-v2/alien-v1-1600w.avif"
+      },
+      "overflow": false,
+      "title": {
+        "left": 16,
+        "right": 363.515625,
+        "text": "Extraterrestre"
+      },
+      "viewport": [
+        390,
+        844
+      ]
+    },
+    "tigerScenes": {
+      "article": 2304,
+      "effects": [],
+      "overflow": false,
+      "plate": true,
+      "scenes": [
+        {
+          "loaded": true,
+          "src": "https://noctalia.app/img/symbols/atlas-tiger-v1/tiger-pursuit-320-f1ce09fe543d.avif"
+        },
+        {
+          "loaded": true,
+          "src": "https://noctalia.app/img/symbols/atlas-tiger-v1/tiger-calm-320-4bb28e7a6b72.avif"
+        },
+        {
+          "loaded": true,
+          "src": "https://noctalia.app/img/symbols/atlas-tiger-v1/tiger-cage-320-c7c194529c9e.avif"
+        }
+      ],
+      "viewport": [
+        2560,
+        1440
+      ]
+    },
+    "moonMobile": {
+      "effects": [
+        {
+          "class": "slp-t",
+          "opacity": "0.541041",
+          "play": "running",
+          "transform": "matrix(1, 0, 0, 1, 3.0846, 0)"
+        },
+        {
+          "class": "slp-t",
+          "opacity": "0.596722",
+          "play": "running",
+          "transform": "none"
+        },
+        {
+          "class": "slp-t",
+          "opacity": "0.357284",
+          "play": "running",
+          "transform": "matrix(1, 0, 0, 1, -5.92658, 0)"
+        },
+        {
+          "class": "slp-t",
+          "opacity": "0.870598",
+          "play": "running",
+          "transform": "none"
+        },
+        {
+          "class": "slp-t",
+          "opacity": "0.301667",
+          "play": "running",
+          "transform": "matrix(1, 0, 0, 1, -7.95598, 0)"
+        },
+        {
+          "class": "slp-t",
+          "opacity": "0.859682",
+          "play": "running",
+          "transform": "none"
+        }
+      ],
+      "images": [
+        {
+          "loaded": true,
+          "src": "https://noctalia.app/img/symbols/atlas-six-v2/moon/scene-pleine-320-49274b2692e6.avif"
+        },
+        {
+          "loaded": true,
+          "src": "https://noctalia.app/img/symbols/atlas-six-v2/moon/layer-960-5cc4221eb82c.webp"
+        },
+        {
+          "loaded": true,
+          "src": "https://noctalia.app/img/symbols/atlas-six-v2/moon/accent-960-eed3193cb82c.webp"
+        },
+        {
+          "loaded": true,
+          "src": "https://noctalia.app/img/symbols/atlas-six-v2/moon/scene-croissant-320-f97b67bba905.avif"
+        },
+        {
+          "loaded": true,
+          "src": "https://noctalia.app/img/symbols/atlas-six-v2/moon/layer-960-5cc4221eb82c.webp"
+        },
+        {
+          "loaded": true,
+          "src": "https://noctalia.app/img/symbols/atlas-six-v2/moon/accent-960-eed3193cb82c.webp"
+        },
+        {
+          "loaded": true,
+          "src": "https://noctalia.app/img/symbols/atlas-six-v2/moon/scene-double-320-5b3449d02a57.avif"
+        },
+        {
+          "loaded": true,
+          "src": "https://noctalia.app/img/symbols/atlas-six-v2/moon/layer-960-5cc4221eb82c.webp"
+        },
+        {
+          "loaded": true,
+          "src": "https://noctalia.app/img/symbols/atlas-six-v2/moon/accent-960-eed3193cb82c.webp"
+        }
+      ],
+      "overflow": false,
+      "scenesY": 141.75,
+      "viewport": [
+        390,
+        844
+      ],
+      "motionObservedBetweenSamples": true,
+      "sceneSelectionChanged": true
+    },
+    "limitations": [
+      "Tiger historical hero animates in six languages; side painting and scene thumbnails remain static. This is recorded as changes requested, not a complete motion qualification.",
+      "Browser checks do not qualify a physical mobile device."
+    ],
+    "screenshots": [
+      "public-alien-wide.png",
+      "public-alien-mobile.png",
+      "public-tiger-scenes-2560.png",
+      "public-moon-scenes-mobile.png"
+    ]
+  },
+  "boundaries": [
+    "The 165 pages without packs use their existing static illustration; side paintings, three illustrated scenes and two motion channels remain to prepare.",
+    "Browser evidence is not physical-device or native-app qualification.",
+    "Publication authorization does not add a new subjective approval record.",
+    "The follow-up changes the precision of tracking identities, not the published generator or images."
+  ]
+}
