@@ -33,6 +33,9 @@
     },
     "lot-10": {
       "label": "Lot 10, 29 packs; Bateau conservé depuis master"
+    },
+    "lot-11": {
+      "label": "lot-11, 30 packs"
     }
   },
   "symbols": {
@@ -286,7 +289,7 @@
       "lot": "lot-07"
     },
     "eyes": {
-      "lot": null
+      "lot": "lot-11"
     },
     "falling": {
       "lot": "lot-01"
@@ -361,7 +364,7 @@
       "lot": null
     },
     "hair": {
-      "lot": null
+      "lot": "lot-11"
     },
     "hallway": {
       "lot": "lot-07"
@@ -424,7 +427,7 @@
       "lot": null
     },
     "letter": {
-      "lot": null
+      "lot": "lot-11"
     },
     "library": {
       "lot": "lot-07"
@@ -523,7 +526,7 @@
       "lot": "lot-10"
     },
     "passport": {
-      "lot": null
+      "lot": "lot-11"
     },
     "path": {
       "lot": "lot-08"
@@ -562,7 +565,7 @@
       "lot": null
     },
     "ring": {
-      "lot": null
+      "lot": "lot-11"
     },
     "river": {
       "lot": null
@@ -718,7 +721,7 @@
       "lot": null
     },
     "watch": {
-      "lot": null
+      "lot": "lot-11"
     },
     "water": {
       "lot": "lot-03"

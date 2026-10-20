@@ -14747,6 +14747,630 @@
           }
         }
       }
+    },
+    "passport": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "losing-your-passport": {
+            "variation": "Perdre son passeport",
+            "anchor": "losing-your-passport"
+          },
+          "an-expired-passport": {
+            "variation": "Un passeport périmé",
+            "anchor": "an-expired-passport"
+          },
+          "being-turned-away-at-the-border": {
+            "variation": "Être refoulé à la frontière",
+            "anchor": "being-turned-away-at-the-border"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "losing-your-passport": {
+            "variation": "Losing your passport",
+            "anchor": "losing-your-passport"
+          },
+          "an-expired-passport": {
+            "variation": "An expired passport",
+            "anchor": "an-expired-passport"
+          },
+          "being-turned-away-at-the-border": {
+            "variation": "Being turned away at the border",
+            "anchor": "being-turned-away-at-the-border"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "losing-your-passport": {
+            "variation": "Perder el pasaporte",
+            "anchor": "losing-your-passport"
+          },
+          "an-expired-passport": {
+            "variation": "Un pasaporte caducado",
+            "anchor": "an-expired-passport"
+          },
+          "being-turned-away-at-the-border": {
+            "variation": "Que no te dejen cruzar la frontera",
+            "anchor": "being-turned-away-at-the-border"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "losing-your-passport": {
+            "variation": "Den Reisepass verlieren",
+            "anchor": "losing-your-passport"
+          },
+          "an-expired-passport": {
+            "variation": "Ein abgelaufener Reisepass",
+            "anchor": "an-expired-passport"
+          },
+          "being-turned-away-at-the-border": {
+            "variation": "An der Grenze abgewiesen werden",
+            "anchor": "being-turned-away-at-the-border"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "losing-your-passport": {
+            "variation": "Perdere il passaporto",
+            "anchor": "losing-your-passport"
+          },
+          "an-expired-passport": {
+            "variation": "Un passaporto scaduto",
+            "anchor": "an-expired-passport"
+          },
+          "being-turned-away-at-the-border": {
+            "variation": "Essere respinti alla frontiera",
+            "anchor": "being-turned-away-at-the-border"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "losing-your-passport": {
+            "variation": "Perder seu passaporte",
+            "anchor": "losing-your-passport"
+          },
+          "an-expired-passport": {
+            "variation": "Um passaporte vencido",
+            "anchor": "an-expired-passport"
+          },
+          "being-turned-away-at-the-border": {
+            "variation": "Ser impedido de atravessar a fronteira",
+            "anchor": "being-turned-away-at-the-border"
+          }
+        }
+      }
+    },
+    "ring": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "losing-your-ring": {
+            "variation": "Perdre sa bague",
+            "anchor": "losing-your-ring"
+          },
+          "receiving-an-engagement-ring": {
+            "variation": "Recevoir une bague de fiançailles",
+            "anchor": "receiving-an-engagement-ring"
+          },
+          "a-ring-that-is-too-tight": {
+            "variation": "Une bague trop serrée",
+            "anchor": "a-ring-that-is-too-tight"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "losing-your-ring": {
+            "variation": "Losing your ring",
+            "anchor": "losing-your-ring"
+          },
+          "receiving-an-engagement-ring": {
+            "variation": "Receiving an engagement ring",
+            "anchor": "receiving-an-engagement-ring"
+          },
+          "a-ring-that-is-too-tight": {
+            "variation": "A ring that is too tight",
+            "anchor": "a-ring-that-is-too-tight"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "losing-your-ring": {
+            "variation": "Perder el anillo",
+            "anchor": "losing-your-ring"
+          },
+          "receiving-an-engagement-ring": {
+            "variation": "Recibir un anillo de compromiso",
+            "anchor": "receiving-an-engagement-ring"
+          },
+          "a-ring-that-is-too-tight": {
+            "variation": "Un anillo que aprieta",
+            "anchor": "a-ring-that-is-too-tight"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "losing-your-ring": {
+            "variation": "Den Ring verlieren",
+            "anchor": "losing-your-ring"
+          },
+          "receiving-an-engagement-ring": {
+            "variation": "Einen Verlobungsring bekommen",
+            "anchor": "receiving-an-engagement-ring"
+          },
+          "a-ring-that-is-too-tight": {
+            "variation": "Ein Ring, der zu eng ist",
+            "anchor": "a-ring-that-is-too-tight"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "losing-your-ring": {
+            "variation": "Perdere l’anello",
+            "anchor": "losing-your-ring"
+          },
+          "receiving-an-engagement-ring": {
+            "variation": "Ricevere un anello di fidanzamento",
+            "anchor": "receiving-an-engagement-ring"
+          },
+          "a-ring-that-is-too-tight": {
+            "variation": "Un anello troppo stretto",
+            "anchor": "a-ring-that-is-too-tight"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "losing-your-ring": {
+            "variation": "Perder sua aliança ou seu anel",
+            "anchor": "losing-your-ring"
+          },
+          "receiving-an-engagement-ring": {
+            "variation": "Receber um anel de noivado",
+            "anchor": "receiving-an-engagement-ring"
+          },
+          "a-ring-that-is-too-tight": {
+            "variation": "Um anel apertado demais",
+            "anchor": "a-ring-that-is-too-tight"
+          }
+        }
+      }
+    },
+    "watch": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "a-stopped-watch": {
+            "variation": "Une montre arrêtée",
+            "anchor": "a-stopped-watch"
+          },
+          "not-being-able-to-read-the-time": {
+            "variation": "Ne pas arriver à lire l'heure",
+            "anchor": "not-being-able-to-read-the-time"
+          },
+          "checking-your-watch-again-and-again": {
+            "variation": "Regarder sa montre sans cesse",
+            "anchor": "checking-your-watch-again-and-again"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "a-stopped-watch": {
+            "variation": "A stopped watch",
+            "anchor": "a-stopped-watch"
+          },
+          "not-being-able-to-read-the-time": {
+            "variation": "Not being able to read the time",
+            "anchor": "not-being-able-to-read-the-time"
+          },
+          "checking-your-watch-again-and-again": {
+            "variation": "Checking your watch again and again",
+            "anchor": "checking-your-watch-again-and-again"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "a-stopped-watch": {
+            "variation": "Un reloj parado",
+            "anchor": "a-stopped-watch"
+          },
+          "not-being-able-to-read-the-time": {
+            "variation": "No poder leer la hora",
+            "anchor": "not-being-able-to-read-the-time"
+          },
+          "checking-your-watch-again-and-again": {
+            "variation": "Mirar el reloj sin parar",
+            "anchor": "checking-your-watch-again-and-again"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "a-stopped-watch": {
+            "variation": "Eine stehengebliebene Uhr",
+            "anchor": "a-stopped-watch"
+          },
+          "not-being-able-to-read-the-time": {
+            "variation": "Die Uhrzeit nicht lesen können",
+            "anchor": "not-being-able-to-read-the-time"
+          },
+          "checking-your-watch-again-and-again": {
+            "variation": "Ständig auf die Uhr schauen",
+            "anchor": "checking-your-watch-again-and-again"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "a-stopped-watch": {
+            "variation": "Un orologio fermo",
+            "anchor": "a-stopped-watch"
+          },
+          "not-being-able-to-read-the-time": {
+            "variation": "Non riuscire a leggere l’ora",
+            "anchor": "not-being-able-to-read-the-time"
+          },
+          "checking-your-watch-again-and-again": {
+            "variation": "Guardare l’orologio di continuo",
+            "anchor": "checking-your-watch-again-and-again"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "a-stopped-watch": {
+            "variation": "Um relógio parado",
+            "anchor": "a-stopped-watch"
+          },
+          "not-being-able-to-read-the-time": {
+            "variation": "Não conseguir ler as horas",
+            "anchor": "not-being-able-to-read-the-time"
+          },
+          "checking-your-watch-again-and-again": {
+            "variation": "Consultar o relógio sem parar",
+            "anchor": "checking-your-watch-again-and-again"
+          }
+        }
+      }
+    },
+    "letter": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "receiving-a-letter": {
+            "variation": "Recevoir une lettre",
+            "anchor": "receiving-a-letter"
+          },
+          "a-sealed-letter-you-dare-not-open": {
+            "variation": "Une lettre fermée qu'on n'ose pas ouvrir",
+            "anchor": "a-sealed-letter-you-dare-not-open"
+          },
+          "an-unreadable-letter": {
+            "variation": "Une lettre illisible",
+            "anchor": "an-unreadable-letter"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "receiving-a-letter": {
+            "variation": "Receiving a letter",
+            "anchor": "receiving-a-letter"
+          },
+          "a-sealed-letter-you-dare-not-open": {
+            "variation": "A sealed letter you dare not open",
+            "anchor": "a-sealed-letter-you-dare-not-open"
+          },
+          "an-unreadable-letter": {
+            "variation": "An unreadable letter",
+            "anchor": "an-unreadable-letter"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "receiving-a-letter": {
+            "variation": "Recibir una carta",
+            "anchor": "receiving-a-letter"
+          },
+          "a-sealed-letter-you-dare-not-open": {
+            "variation": "Una carta cerrada que no te atreves a abrir",
+            "anchor": "a-sealed-letter-you-dare-not-open"
+          },
+          "an-unreadable-letter": {
+            "variation": "Una carta ilegible",
+            "anchor": "an-unreadable-letter"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "receiving-a-letter": {
+            "variation": "Einen Brief bekommen",
+            "anchor": "receiving-a-letter"
+          },
+          "a-sealed-letter-you-dare-not-open": {
+            "variation": "Ein verschlossener Brief, den Sie nicht öffnen",
+            "anchor": "a-sealed-letter-you-dare-not-open"
+          },
+          "an-unreadable-letter": {
+            "variation": "Ein unleserlicher Brief",
+            "anchor": "an-unreadable-letter"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "receiving-a-letter": {
+            "variation": "Ricevere una lettera",
+            "anchor": "receiving-a-letter"
+          },
+          "a-sealed-letter-you-dare-not-open": {
+            "variation": "Una lettera chiusa che non osi aprire",
+            "anchor": "a-sealed-letter-you-dare-not-open"
+          },
+          "an-unreadable-letter": {
+            "variation": "Una lettera illeggibile",
+            "anchor": "an-unreadable-letter"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "receiving-a-letter": {
+            "variation": "Receber uma carta",
+            "anchor": "receiving-a-letter"
+          },
+          "a-sealed-letter-you-dare-not-open": {
+            "variation": "Uma carta fechada que você não ousa abrir",
+            "anchor": "a-sealed-letter-you-dare-not-open"
+          },
+          "an-unreadable-letter": {
+            "variation": "Uma carta ilegível",
+            "anchor": "an-unreadable-letter"
+          }
+        }
+      }
+    },
+    "hair": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "hair-falling-out": {
+            "variation": "Perdre ses cheveux",
+            "anchor": "hair-falling-out"
+          },
+          "cutting-your-own-hair": {
+            "variation": "Se couper les cheveux",
+            "anchor": "cutting-your-own-hair"
+          },
+          "someone-cutting-your-hair": {
+            "variation": "Quelqu'un vous coupe les cheveux",
+            "anchor": "someone-cutting-your-hair"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "hair-falling-out": {
+            "variation": "Hair falling out",
+            "anchor": "hair-falling-out"
+          },
+          "cutting-your-own-hair": {
+            "variation": "Cutting your own hair",
+            "anchor": "cutting-your-own-hair"
+          },
+          "someone-cutting-your-hair": {
+            "variation": "Someone cutting your hair",
+            "anchor": "someone-cutting-your-hair"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "hair-falling-out": {
+            "variation": "Que se te caiga el pelo",
+            "anchor": "hair-falling-out"
+          },
+          "cutting-your-own-hair": {
+            "variation": "Cortarte el pelo",
+            "anchor": "cutting-your-own-hair"
+          },
+          "someone-cutting-your-hair": {
+            "variation": "Que alguien te corte el pelo",
+            "anchor": "someone-cutting-your-hair"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "hair-falling-out": {
+            "variation": "Haare fallen aus",
+            "anchor": "hair-falling-out"
+          },
+          "cutting-your-own-hair": {
+            "variation": "Sich selbst die Haare schneiden",
+            "anchor": "cutting-your-own-hair"
+          },
+          "someone-cutting-your-hair": {
+            "variation": "Jemand schneidet Ihnen die Haare",
+            "anchor": "someone-cutting-your-hair"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "hair-falling-out": {
+            "variation": "Perdere i capelli",
+            "anchor": "hair-falling-out"
+          },
+          "cutting-your-own-hair": {
+            "variation": "Tagliarsi i capelli",
+            "anchor": "cutting-your-own-hair"
+          },
+          "someone-cutting-your-hair": {
+            "variation": "Qualcuno ti taglia i capelli",
+            "anchor": "someone-cutting-your-hair"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "hair-falling-out": {
+            "variation": "O cabelo caindo",
+            "anchor": "hair-falling-out"
+          },
+          "cutting-your-own-hair": {
+            "variation": "Cortar o próprio cabelo",
+            "anchor": "cutting-your-own-hair"
+          },
+          "someone-cutting-your-hair": {
+            "variation": "Alguém cortando seu cabelo",
+            "anchor": "someone-cutting-your-hair"
+          }
+        }
+      }
+    },
+    "eyes": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "being-watched": {
+            "variation": "Être observé",
+            "anchor": "being-watched"
+          },
+          "not-being-able-to-open-your-eyes": {
+            "variation": "Ne pas pouvoir ouvrir les yeux",
+            "anchor": "not-being-able-to-open-your-eyes"
+          },
+          "going-blind": {
+            "variation": "Perdre la vue",
+            "anchor": "going-blind"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "being-watched": {
+            "variation": "Being watched",
+            "anchor": "being-watched"
+          },
+          "not-being-able-to-open-your-eyes": {
+            "variation": "Not being able to open your eyes",
+            "anchor": "not-being-able-to-open-your-eyes"
+          },
+          "going-blind": {
+            "variation": "Going blind",
+            "anchor": "going-blind"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "being-watched": {
+            "variation": "Sentirte observado",
+            "anchor": "being-watched"
+          },
+          "not-being-able-to-open-your-eyes": {
+            "variation": "No poder abrir los ojos",
+            "anchor": "not-being-able-to-open-your-eyes"
+          },
+          "going-blind": {
+            "variation": "Quedarse ciego",
+            "anchor": "going-blind"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "being-watched": {
+            "variation": "Beobachtet werden",
+            "anchor": "being-watched"
+          },
+          "not-being-able-to-open-your-eyes": {
+            "variation": "Die Augen nicht öffnen können",
+            "anchor": "not-being-able-to-open-your-eyes"
+          },
+          "going-blind": {
+            "variation": "Erblinden",
+            "anchor": "going-blind"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "being-watched": {
+            "variation": "Essere osservati",
+            "anchor": "being-watched"
+          },
+          "not-being-able-to-open-your-eyes": {
+            "variation": "Non riuscire ad aprire gli occhi",
+            "anchor": "not-being-able-to-open-your-eyes"
+          },
+          "going-blind": {
+            "variation": "Diventare ciechi",
+            "anchor": "going-blind"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "being-watched": {
+            "variation": "Ser observado",
+            "anchor": "being-watched"
+          },
+          "not-being-able-to-open-your-eyes": {
+            "variation": "Não conseguir abrir os olhos",
+            "anchor": "not-being-able-to-open-your-eyes"
+          },
+          "going-blind": {
+            "variation": "Perder a visão",
+            "anchor": "going-blind"
+          }
+        }
+      }
     }
   }
 }

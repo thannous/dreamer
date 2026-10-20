@@ -1367,6 +1367,12 @@ test('the pt-br dictionary links every pt-br symbol, searches and filters in Por
 // These journeys catch a decoded-but-wrong portrait, a transparent rectangle, an effect placed
 // entirely outside a crop, a scene with the wrong editorial reading, and a moving base painting.
 const NEW_SYMBOL_PACKS = [
+  {"id": "eyes", "slug": "yeux", "name": "Yeux", "scenes": ["being-watched", "not-being-able-to-open-your-eyes", "going-blind"]},
+  {"id": "hair", "slug": "cheveux", "name": "Cheveux", "scenes": ["hair-falling-out", "cutting-your-own-hair", "someone-cutting-your-hair"]},
+  {"id": "letter", "slug": "lettre", "name": "Lettre", "scenes": ["receiving-a-letter", "a-sealed-letter-you-dare-not-open", "an-unreadable-letter"]},
+  {"id": "watch", "slug": "montre", "name": "Montre", "scenes": ["a-stopped-watch", "not-being-able-to-read-the-time", "checking-your-watch-again-and-again"]},
+  {"id": "ring", "slug": "bague", "name": "Bague", "scenes": ["losing-your-ring", "receiving-an-engagement-ring", "a-ring-that-is-too-tight"]},
+  {"id": "passport", "slug": "passeport", "name": "Passeport", "scenes": ["losing-your-passport", "an-expired-passport", "being-turned-away-at-the-border"]},
   {"id": "suitcase", "slug": "valise", "name": "Valise", "scenes": ["packing-a-suitcase", "a-heavy-suitcase", "lost-luggage"]},
   {"id": "airport", "slug": "aeroport", "name": "Aéroport", "scenes": ["missing-a-flight", "not-finding-your-gate", "losing-your-passport-or-ticket"]},
   {"id": "bicycle", "slug": "velo", "name": "Vélo", "scenes": ["riding-a-bicycle-with-ease", "falling-off-a-bike", "pedaling-uphill"]},

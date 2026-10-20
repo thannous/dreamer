@@ -26631,5 +26631,1157 @@
         }
       ]
     }
+  },
+  "passport": {
+    "slug": "passeport",
+    "caveat": null,
+    "scenes": [
+      {
+        "id": "losing-your-passport",
+        "variation": "Perdre son passeport"
+      },
+      {
+        "id": "an-expired-passport",
+        "variation": "Un passeport périmé"
+      },
+      {
+        "id": "being-turned-away-at-the-border",
+        "variation": "Être refoulé à la frontière"
+      }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.46
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.44
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ],
+        "portrait": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.34
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.36
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ]
+      },
+      "plate": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.46
+            ],
+            "zoom": 0.9
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.44
+            ],
+            "zoom": 0.8
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ],
+      "thumb": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.46
+            ],
+            "zoom": 1.05
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.44
+            ],
+            "zoom": 0.95
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ]
+    }
+  },
+  "ring": {
+    "slug": "bague",
+    "caveat": null,
+    "scenes": [
+      {
+        "id": "losing-your-ring",
+        "variation": "Perdre sa bague"
+      },
+      {
+        "id": "receiving-an-engagement-ring",
+        "variation": "Recevoir une bague de fiançailles"
+      },
+      {
+        "id": "a-ring-that-is-too-tight",
+        "variation": "Une bague trop serrée"
+      }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.46
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.44
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ],
+        "portrait": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.34
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.36
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ]
+      },
+      "plate": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.46
+            ],
+            "zoom": 0.9
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.44
+            ],
+            "zoom": 0.8
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ],
+      "thumb": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.46
+            ],
+            "zoom": 1.05
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.44
+            ],
+            "zoom": 0.95
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ]
+    }
+  },
+  "watch": {
+    "slug": "montre",
+    "caveat": null,
+    "scenes": [
+      {
+        "id": "a-stopped-watch",
+        "variation": "Une montre arrêtée"
+      },
+      {
+        "id": "not-being-able-to-read-the-time",
+        "variation": "Ne pas arriver à lire l'heure"
+      },
+      {
+        "id": "checking-your-watch-again-and-again",
+        "variation": "Regarder sa montre sans cesse"
+      }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.46
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.44
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ],
+        "portrait": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.34
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.36
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ]
+      },
+      "plate": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.46
+            ],
+            "zoom": 0.9
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.44
+            ],
+            "zoom": 0.8
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ],
+      "thumb": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.46
+            ],
+            "zoom": 1.05
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.44
+            ],
+            "zoom": 0.95
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ]
+    }
+  },
+  "letter": {
+    "slug": "lettre",
+    "caveat": null,
+    "scenes": [
+      {
+        "id": "receiving-a-letter",
+        "variation": "Recevoir une lettre"
+      },
+      {
+        "id": "a-sealed-letter-you-dare-not-open",
+        "variation": "Une lettre fermée qu'on n'ose pas ouvrir"
+      },
+      {
+        "id": "an-unreadable-letter",
+        "variation": "Une lettre illisible"
+      }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.46
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.44
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ],
+        "portrait": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.34
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.36
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ]
+      },
+      "plate": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.46
+            ],
+            "zoom": 0.9
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.44
+            ],
+            "zoom": 0.8
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ],
+      "thumb": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.46
+            ],
+            "zoom": 1.05
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.44
+            ],
+            "zoom": 0.95
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ]
+    }
+  },
+  "hair": {
+    "slug": "cheveux",
+    "caveat": null,
+    "scenes": [
+      {
+        "id": "hair-falling-out",
+        "variation": "Perdre ses cheveux"
+      },
+      {
+        "id": "cutting-your-own-hair",
+        "variation": "Se couper les cheveux"
+      },
+      {
+        "id": "someone-cutting-your-hair",
+        "variation": "Quelqu'un vous coupe les cheveux"
+      }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.46
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.44
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ],
+        "portrait": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.34
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.36
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ]
+      },
+      "plate": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.46
+            ],
+            "zoom": 0.9
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.44
+            ],
+            "zoom": 0.8
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ],
+      "thumb": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.46
+            ],
+            "zoom": 1.05
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.44
+            ],
+            "zoom": 0.95
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ]
+    }
+  },
+  "eyes": {
+    "slug": "yeux",
+    "caveat": null,
+    "scenes": [
+      {
+        "id": "being-watched",
+        "variation": "Être observé"
+      },
+      {
+        "id": "not-being-able-to-open-your-eyes",
+        "variation": "Ne pas pouvoir ouvrir les yeux"
+      },
+      {
+        "id": "going-blind",
+        "variation": "Perdre la vue"
+      }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.46
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.44
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ],
+        "portrait": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.34
+              ],
+              "zoom": 1.05
+            },
+            "motion": "flow",
+            "move": [
+              0.014,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.32,
+              0.6
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.36
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 16,
+            "op": [
+              0.09,
+              0.22
+            ],
+            "blend": "screen"
+          }
+        ]
+      },
+      "plate": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.46
+            ],
+            "zoom": 0.9
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.44
+            ],
+            "zoom": 0.8
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ],
+      "thumb": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.46
+            ],
+            "zoom": 1.05
+          },
+          "motion": "flow",
+          "move": [
+            0.014,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.32,
+            0.6
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.55,
+              0.44
+            ],
+            "zoom": 0.95
+          },
+          "motion": "pulse",
+          "dur": 16,
+          "op": [
+            0.09,
+            0.22
+          ],
+          "blend": "screen"
+        }
+      ]
+    }
   }
 }
