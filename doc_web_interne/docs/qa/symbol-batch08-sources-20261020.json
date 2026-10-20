@@ -1,0 +1,240 @@
+{
+  "schema": "noctalia.atlas-source-library/1",
+  "lot": "lot-08",
+  "symbols": [
+    "owl",
+    "boat",
+    "cave",
+    "rose",
+    "lightning",
+    "whale"
+  ],
+  "webLanguages": [
+    "fr",
+    "en",
+    "es",
+    "de",
+    "it",
+    "pt-br"
+  ],
+  "sourceArchive": {
+    "file": "source-library-batch08-v1.zip",
+    "sha256": "267df196f6bcfef86728eed549d75c4efe838a06a4d66d8275867023cc976ced",
+    "location": "output/noctalia-symbols-batch08-2026-10-20/source-library-batch08-v1.zip",
+    "availability": "local portable archive; PNGs/prompts/roles byte-verified, not served publicly"
+  },
+  "roles": 48,
+  "newBuiltInImageGenSources": 40,
+  "byteExactReusedTextures": 8,
+  "selection": "Selected by Codex within delegated user scope. No individual personal visual approval invented.",
+  "artDirection": "Noctalia detailed nocturnal ink, indigo/violet paintings, ivory/champagne local light, stable bases with two environmental raster channels.",
+  "nativeSizes": {
+    "owl": {
+      "hero": [
+        1672,
+        941
+      ],
+      "portrait": [
+        941,
+        1672
+      ],
+      "plate": [
+        1254,
+        1254
+      ],
+      "scene-regard": [
+        1672,
+        941
+      ],
+      "scene-cri": [
+        1672,
+        941
+      ],
+      "scene-blanc": [
+        1672,
+        941
+      ],
+      "layer": [
+        1672,
+        941
+      ],
+      "accent": [
+        1672,
+        941
+      ]
+    },
+    "boat": {
+      "hero": [
+        1672,
+        941
+      ],
+      "portrait": [
+        940,
+        1672
+      ],
+      "plate": [
+        1254,
+        1254
+      ],
+      "scene-calme": [
+        1672,
+        941
+      ],
+      "scene-tempete": [
+        1672,
+        941
+      ],
+      "scene-naufrage": [
+        1672,
+        941
+      ],
+      "layer": [
+        1672,
+        941
+      ],
+      "accent": [
+        1672,
+        941
+      ]
+    },
+    "cave": {
+      "hero": [
+        1672,
+        941
+      ],
+      "portrait": [
+        941,
+        1672
+      ],
+      "plate": [
+        1254,
+        1254
+      ],
+      "scene-abri": [
+        1672,
+        941
+      ],
+      "scene-bloquee": [
+        1672,
+        941
+      ],
+      "scene-exploration": [
+        1672,
+        941
+      ],
+      "layer": [
+        1672,
+        941
+      ],
+      "accent": [
+        1672,
+        941
+      ]
+    },
+    "rose": {
+      "hero": [
+        1672,
+        941
+      ],
+      "portrait": [
+        941,
+        1672
+      ],
+      "plate": [
+        1254,
+        1254
+      ],
+      "scene-rouge": [
+        1672,
+        941
+      ],
+      "scene-fanee": [
+        1672,
+        941
+      ],
+      "scene-epine": [
+        1672,
+        941
+      ],
+      "layer": [
+        1672,
+        941
+      ],
+      "accent": [
+        1672,
+        941
+      ]
+    },
+    "lightning": {
+      "hero": [
+        1672,
+        941
+      ],
+      "portrait": [
+        941,
+        1672
+      ],
+      "plate": [
+        1254,
+        1254
+      ],
+      "scene-lointain": [
+        1672,
+        941
+      ],
+      "scene-arbre": [
+        1672,
+        941
+      ],
+      "scene-abri": [
+        1672,
+        941
+      ],
+      "layer": [
+        1672,
+        941
+      ],
+      "accent": [
+        1672,
+        941
+      ]
+    },
+    "whale": {
+      "hero": [
+        1672,
+        941
+      ],
+      "portrait": [
+        941,
+        1672
+      ],
+      "plate": [
+        1254,
+        1254
+      ],
+      "scene-proche": [
+        1672,
+        941
+      ],
+      "scene-echouee": [
+        1672,
+        941
+      ],
+      "scene-saut": [
+        1672,
+        940
+      ],
+      "layer": [
+        1672,
+        941
+      ],
+      "accent": [
+        1672,
+        941
+      ]
+    }
+  },
+  "prompts": "assets/<symbol>/<role>.generation.json and pack.json",
+  "reused": "Each reused role has an explicit .reuse.json with original path and SHA256.",
+  "originalEdits": "drafts.json retains the two originals whose tiny generated signatures were removed with built-in ImageGen."
+}
