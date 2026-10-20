@@ -966,7 +966,12 @@ it('follows the shared dream through a sync that names it, and lets it go once c
     expect(screen.queryByTestId('share-composer')).toBeNull();
     fireEvent.click(screen.getByText(/^Share Selected dream/));
     expect(screen.getByTestId('share-composer').getAttribute('data-visible')).toBe('true');
+    const shared = mockDreams[0];
     mockDreams.length = 0;
+    rerender(<JournalScreen />);
+    expect(screen.queryByTestId('share-composer')).toBeNull();
+    // Back with its account, the dream does not reopen the composer on its own.
+    mockDreams.push(shared);
     rerender(<JournalScreen />);
     expect(screen.queryByTestId('share-composer')).toBeNull();
   } finally { jest.useRealTimers(); }

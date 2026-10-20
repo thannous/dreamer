@@ -550,9 +550,10 @@ function JournalListScreen() {
     const timer = setTimeout(() => setShareTarget((current) => (current && !current.open ? null : current)), 600);
     return () => clearTimeout(timer);
   }, [shareTarget]);
-  // The dream as the journal holds it now, through a sync that names it anew; a dream deleted
-  // meanwhile, or another account's, closes the composer.
+  // The dream as the journal holds it now, through a sync that names it anew. A dream deleted
+  // meanwhile, or gone with its account, ends the share: it never reopens by itself.
   const sharedDream = shareTarget ? dreams.find((dream) => matchesDreamTarget(dream, shareTarget.dream)) ?? null : null;
+  if (shareTarget && !sharedDream) setShareTarget(null);
 
   const handleDreamFavorite = useCallback((dream: DreamAnalysis) => {
     setFavoriteError(null);
