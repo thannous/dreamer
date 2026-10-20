@@ -498,12 +498,13 @@ test('the rollout report reads states from the repository and stages only from r
   assert.deepEqual(first.report.languages, ['en', 'fr', 'es', 'de', 'it', 'pt-br']);
   // Every file the report reads is named by its sha256.
   assert.deepEqual(Object.keys(first.report.inputs), ['siteConfig', 'catalog', 'extended', 'tier3', 'registry', 'pilots', 'locales', 'manifest', 'engines']);
-  assert.deepEqual(first.report.totals, { symbols: 240, done: 0, inProgress: 75, remaining: 165 });
+  assert.deepEqual(first.report.totals, { symbols: 240, done: 0, inProgress: 111, remaining: 129 });
   assert.deepEqual(first.report.lots['lot-02'].symbols, ['fire', 'door', 'bird', 'moon', 'train', 'clock']);
   assert.deepEqual(first.report.lots['lot-03'].symbols, ['water', 'teeth', 'flying', 'dog', 'car', 'bridge']);
   assert.deepEqual(first.report.lots['lot-04'].symbols, ['cat', 'stairs', 'rain', 'mountain', 'mirror', 'key']);
   assert.deepEqual(first.report.lots['lot-05'].symbols, ['baby', 'horse', 'storm', 'flowers', 'castle', 'stars']);
   assert.deepEqual(first.report.lots['lot-06'].symbols, ['elevator', 'wolf', 'book', 'snow', 'desert', 'candle']);
+  assert.deepEqual(first.report.lots['lot-09'].symbols, ['boat', 'lightning', 'whale', 'owl', 'rose', 'cave']);
   assert.equal(bySymbol(first.report, 'tiger').assets.state, 'tiger-engine');
   assert.equal(bySymbol(first.report, 'moon').assets.state, 'complete');
   assert.equal(bySymbol(first.report, 'door').assets.state, 'same-image-scenes');

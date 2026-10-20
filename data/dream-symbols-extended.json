@@ -14980,7 +14980,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>O barco não precisa ser decifrado como uma mensagem secreta. Em um sonho, ele costuma funcionar mais como um marcador: algo na cena pede que você repare em ferramentas, escolhas, apegos, no momento certo e nos pequenos detalhes que organizam a vida cotidiana.</p>\n<p>Comece pelos fatos simples. A imagem estava perto ou longe, foi bem-vinda ou perturbadora, comum ou estranhamente intensa? Esses detalhes mantêm a interpretação ancorada no seu sonho, em vez de impor a ele um significado genérico.</p>\n<p>Se o símbolo pareceu acolhedor, ele pode mostrar um recurso, um desejo ou uma lembrança em que você pode se apoiar. Se pareceu tenso, pode apontar para uma pressão que você vem administrando em silêncio demais.</p>\n<p>O Noctalia trata esse tipo de símbolo como um convite à reflexão. Anote a cena, a emoção e o que mudou depois que o símbolo apareceu; costuma ser aí que começa o significado útil.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Um barco em águas calmas",
+            "meaning": "Água lisa, ritmo tranquilo, horizonte aberto? A cena pode acompanhar um período em que você avança sem lutar, ou uma necessidade de descanso. Essa calma era repousante, ou um pouco vazia?"
+          },
+          {
+            "context": "Um barco na tempestade",
+            "meaning": "Vento, ondas, um convés que balança: a cena costuma estar ligada ao estresse ou a um período difícil de prever. Não é uma previsão. O barco aguentou, e o que você fazia a bordo?"
+          },
+          {
+            "context": "Um barco afundando ou fazendo água",
+            "meaning": "A água que sobe pode acompanhar a impressão de que algo com que você contava já não se sustenta. Você tirou a água, nadou até a margem ou ficou paralisado? A sua reação costuma dizer mais do que o vazamento."
+          }
+        ]
       }
     },
     "airport": {
@@ -20471,7 +20484,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>O raio não precisa ser decifrado como uma mensagem secreta. Em um sonho, ele costuma funcionar mais como um marcador: algo na cena pede que você repare no clima emocional, na mudança, em forças maiores do que você e no ritmo da renovação ou da ruptura.</p>\n<p>Comece pelos fatos simples. A imagem estava perto ou longe, era bem-vinda ou perturbadora, comum ou estranhamente intensa? Esses detalhes mantêm a interpretação ancorada no seu sonho, em vez de impor a ele um significado genérico.</p>\n<p>Se o símbolo pareceu acolhedor, ele pode mostrar um recurso, um desejo ou uma memória em que você pode se apoiar. Se pareceu tenso, ele pode apontar para uma pressão que você vem administrando em silêncio demais.</p>\n<p>O Noctalia trata esse tipo de símbolo como um convite à reflexão. Anote a cena, a emoção e o que mudou depois que o símbolo apareceu; é aí que costuma começar o significado mais útil.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Ver um raio ao longe",
+            "meaning": "A tempestade estava longe, atrás de uma janela ou no horizonte? Um raio distante pode acompanhar uma tensão que você observa sem estar na linha de frente. Repare no que você fazia enquanto isso."
+          },
+          {
+            "context": "Um raio caindo sobre uma casa ou uma árvore",
+            "meaning": "O que foi atingido: a sua casa, uma árvore conhecida, um prédio desconhecido? O lugar atingido costuma indicar a área da vida envolvida. Um ponto de referência familiar partido de uma vez pode ecoar uma mudança brusca."
+          },
+          {
+            "context": "Abrigar-se da tempestade",
+            "meaning": "Correr para se proteger, contar os segundos entre o clarão e o trovão: a cena põe em primeiro plano a busca por segurança. Ela pode acompanhar um período em que você espera a tensão diminuir. Onde você se abrigou?"
+          }
+        ]
       }
     },
     "snow": {
@@ -22145,7 +22171,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>A baleia pode parecer estranhamente específica dentro de um sonho, e é por isso que vale levá-la a sério sem levá-la ao pé da letra. Ela costuma reunir vários fios ao mesmo tempo: instinto, apetite, cautela, proteção, medo e as partes mais indomadas da sua personalidade.</p>\n<p>Repare se o sonho deixou o símbolo familiar ou estranho. Detalhes familiares podem apontar para uma memória vivida; detalhes estranhos podem mostrar que um padrão antigo está sendo visto de um novo ângulo.</p>\n<p>A pista mais forte costuma ser emocional. Alívio, vergonha, medo, curiosidade, irritação ou saudade estreitam o significado mais rápido do que qualquer interpretação universal.</p>\n<p>Se você registrar o sonho no Noctalia, reserve uma frase para o que aconteceu e uma frase para aquilo de que ele lembrou você. Esse pequeno contraste costuma revelar o tema real.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Uma baleia nadando ao seu lado",
+            "meaning": "Calma, próxima, sem pressa: a cena pode acompanhar a sensação de ser carregado, ou uma emoção profunda que você enfim consegue olhar. Você estava à vontade, ou prendia a respiração?"
+          },
+          {
+            "context": "Uma baleia encalhada",
+            "meaning": "Uma baleia imóvel na areia pode acompanhar a impressão de que algo importante está fora do seu elemento: um projeto, um talento, uma emoção. Não é um presságio. Você tentou ajudá-la, ou só ficou olhando?"
+          },
+          {
+            "context": "Uma baleia saltando fora da água",
+            "meaning": "O salto é repentino e espetacular. Ele pode acompanhar algo profundo que vem à tona de uma vez: uma emoção, uma ideia, uma notícia. Ele maravilhou você ou fez você levar um susto?"
+          }
+        ]
       }
     },
     "dolphin": {
@@ -23076,7 +23115,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>A coruja pode parecer estranhamente específica em um sonho, e é por isso que vale levá-la a sério sem levá-la ao pé da letra. Muitas vezes ela reúne vários fios ao mesmo tempo: instinto, apetite, cautela, proteção, medo e as partes mais indomadas da sua personalidade.</p>\n<p>Repare se o sonho deixou o símbolo familiar ou estranho. Detalhes familiares podem apontar para uma memória vivida; detalhes estranhos podem mostrar que um padrão antigo está sendo visto de um novo ângulo.</p>\n<p>A pista mais forte costuma ser emocional. Alívio, vergonha, medo, curiosidade, irritação ou saudade estreitam o significado mais rápido do que qualquer interpretação universal.</p>\n<p>Se você registrar o sonho no Noctalia, guarde uma frase para o que aconteceu e outra para aquilo de que isso lembrou você. Esse pequeno contraste costuma revelar o tema real.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Uma coruja encarando você",
+            "meaning": "Você sustentou o olhar dela ou desviou os olhos? Uma coruja encarando você pode acompanhar a sensação de estar sendo julgado, ou um momento de clareza sobre algo que você vinha evitando. Repare em quem veio à sua mente ao acordar."
+          },
+          {
+            "context": "Ouvir uma coruja piar",
+            "meaning": "O pio estava perto, longe, se repetia? Um pio no escuro pode encenar uma preocupação que volta à noite, ou um sinal que você gostaria de ouvir com mais clareza. O som assustava você ou lhe fazia companhia?"
+          },
+          {
+            "context": "Uma coruja branca",
+            "meaning": "Uma ave noturna branca ou muito clara costuma se destacar no sonho como algo raro ou marcante. Ela pode acompanhar um momento de clareza tranquila, ou uma impressão difícil de pôr em palavras. O que a cor dela fez você sentir?"
+          }
+        ]
       }
     },
     "eagle": {
@@ -23529,7 +23581,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>A rosa pode parecer estranhamente específica em um sonho, e por isso vale levá-la a sério sem levá-la ao pé da letra. Ela costuma reunir vários fios ao mesmo tempo: o clima emocional, a mudança, forças maiores do que você e o ritmo da renovação ou da ruptura.</p>\n<p>Repare se o sonho deixou o símbolo familiar ou estranho. Detalhes familiares podem apontar para uma memória vivida; detalhes estranhos podem mostrar que um padrão antigo está sendo visto de um novo ângulo.</p>\n<p>A pista mais forte costuma ser emocional. Alívio, vergonha, medo, curiosidade, irritação ou saudade estreitam o significado mais rápido do que qualquer interpretação universal.</p>\n<p>Se você registrar o sonho no Noctalia, guarde uma frase para o que aconteceu e outra para aquilo de que isso lembrou você. Esse pequeno contraste costuma revelar o tema de verdade.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Uma rosa vermelha",
+            "meaning": "Um único talo ou um buquê inteiro? A rosa vermelha costuma estar ligada à paixão e ao amor. No sonho, ela pode acompanhar um desejo, ou uma relação em que você pensa mais do que diz."
+          },
+          {
+            "context": "Uma rosa murcha ou seca",
+            "meaning": "Ela murchou devagar, ou tinha sido esquecida em algum lugar? Uma rosa murcha pode acompanhar algo que perdeu as cores: um vínculo, um projeto, uma fase. Ela não anuncia nenhum fim. O que você deixou de cuidar?"
+          },
+          {
+            "context": "Espetar-se em um espinho",
+            "meaning": "Você sangrou, ou só levou um susto? O espinho pode encenar o risco que vem com a proximidade. Repare a quem pertencia a rosa: a picada costuma apontar para uma relação específica."
+          }
+        ]
       }
     },
     "garden": {
@@ -24146,7 +24211,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>A caverna não precisa ser decifrada como uma mensagem secreta. Em um sonho, ela costuma funcionar mais como um marcador: algo na cena pede que você repare no cenário de uma situação de vida: onde você se sente seguro, exposto, travado ou pronto para se mover.</p>\n<p>Comece pelos fatos simples. A imagem estava perto ou longe, era acolhedora ou perturbadora, comum ou estranhamente intensa? Esses detalhes mantêm a interpretação ancorada no seu sonho, em vez de impor a ele um significado genérico.</p>\n<p>Se o símbolo pareceu acolhedor, ele pode mostrar um recurso, um desejo ou uma memória em que você pode se apoiar. Se pareceu tenso, pode apontar para uma pressão que você vem administrando em silêncio demais.</p>\n<p>O Noctalia trata esse tipo de símbolo como um convite à reflexão. Anote a cena, a emoção e o que mudou depois que o símbolo apareceu; costuma ser aí que o significado útil começa.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Esconder-se em uma caverna",
+            "meaning": "Você se abrigava de uma tempestade, de um animal ou de uma pessoa? A cena pode acompanhar uma necessidade de se proteger ou de tomar distância. Pergunte-se se se esconder trazia alívio, ou se você esperava que algo passasse."
+          },
+          {
+            "context": "Ficar preso em uma caverna",
+            "meaning": "Uma entrada bloqueada ou uma passagem estreita demais pode ecoar a sensação de estar apertado, sem saída à vista. Não é um presságio. O que bloqueava você, e alguma luz ou ajuda aparecia?"
+          },
+          {
+            "context": "Explorar uma caverna escura",
+            "meaning": "Avançar sem enxergar bem pode refletir a curiosidade por algo novo, ou a inquietação diante do que vem. Você ia depressa, devagar, ou se continha? O que fez você parar?"
+          }
+        ]
       }
     },
     "river": {
