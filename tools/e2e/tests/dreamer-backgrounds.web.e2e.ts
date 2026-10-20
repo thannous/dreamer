@@ -1,6 +1,6 @@
 import { createRequire } from 'node:module';
 import type { Page } from 'playwright/test';
-import { createParityTest, expect, type ParityInfo } from '../web-parity-fixtures';
+import { createParityTest, expect, withDialog, type ParityInfo } from '../web-parity-fixtures';
 
 const sharp: typeof import('sharp') = createRequire(import.meta.url)('sharp');
 const test = createParityTest({ viewport: { width: 390, height: 844 }, locale: 'fr-FR', reducedMotion: 'reduce' });
@@ -187,6 +187,10 @@ async function readable(page: Page, info: ParityInfo, label: string) {
 async function start(page: Page) {
   await page.goto('/');
   await page.getByTestId('btn.onboarding.intro.next').click();
+  // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
+  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
+    await withDialog(page, 'accept', () => page.getByTestId('btn.onboarding.feature.close').click());
+  }
   await page.getByTestId('btn.onboarding.skip').click();
   await expect(page.getByTestId('screen.recording')).toBeVisible();
 }
