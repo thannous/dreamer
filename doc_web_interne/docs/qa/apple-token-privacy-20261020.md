@@ -67,7 +67,9 @@ mise exec -- npm run verify:pr
 The canonical API report is ignored `test-results/e2e-backend-results.json` with
 source revision, dirty marker, environment, rerun and individual test result;
 `test-results/apple-token-privacy-initial-failure.json` retains the initial
-safe diagnostic. The final PR records the committed revision and local verification
+safe diagnostic. The journey runs the security advisors on its owned database
+and saves their local output in `test-results/apple-token-security-advisors.json`;
+pre-existing findings must be distinguished from the new Apple objects. The final PR records the committed revision and local verification
 receipt. No passwords, session tokens or real provider credentials are tracked.
 
 ## Production rollout dependency

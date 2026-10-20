@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
-import { spawn } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+import { execFileSync, spawn } from 'node:child_process';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { once } from 'node:events';
 import path from 'node:path';
 import { createInterface } from 'node:readline';
@@ -111,6 +111,14 @@ test('Apple provider credentials stay private through Auth, refresh, API storage
     expectClientSafe(await failed.json(), marker);
     expect(stderr.join('').includes(marker)).toBe(false);
 
+    const advisors = execFileSync(path.resolve('node_modules/.bin/supabase'), [
+      'db', 'advisors', '--db-url', status.DB_URL, '--type', 'security', '--output-format', 'json',
+    ], { encoding: 'utf8', env: {
+      ...Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.startsWith('SUPABASE_'))),
+      SUPABASE_HOME: process.env.E2E_SUPABASE_HOME || path.resolve('test-results/backend-e2e-cli-home'),
+      SUPABASE_EXPERIMENTAL_STACK: '1', DO_NOT_TRACK: '1',
+    } });
+    writeFileSync('test-results/apple-token-security-advisors.json', advisors, { mode: 0o600 });
     await db.connect();
     // Synthetic Apple identity exercises the real deletion consumer and FK cascade.
     const appleSubject = randomUUID();
