@@ -216,7 +216,13 @@ jest.mock('@/hooks/useLocaleFormatting', () => {
 jest.mock('@/hooks/useClearWebFocus', () => ({ useClearWebFocus: () => {} }));
 jest.mock('@/lib/accessibility', () => ({ blurActiveElement: () => {} }));
 jest.mock('@/lib/analytics', () => ({ trackProductEvent: () => Promise.resolve() }));
-jest.mock('@/lib/imageUtils', () => ({ getDreamThumbnailUri: () => null, preloadImage: () => Promise.resolve() }));
+let mockThumbnailUri: string | null = null;
+const mockPreloadImage = jest.fn(async (_uri: string, _cacheKey?: string) => undefined);
+jest.mock('@/lib/imageUtils', () => ({
+  getDreamThumbnailUri: () => mockThumbnailUri,
+  getDreamThumbnailCacheKey: () => undefined,
+  preloadImage: (uri: string, cacheKey?: string) => mockPreloadImage(uri, cacheKey),
+}));
 jest.mock('@/components/inspiration/AtmosphericBackground', () => ({ AtmosphericBackground: () => null }));
 // The header gets new inline actions on each render of the screen: its renders count the screen's.
 let mockHeaderRenders = 0;
@@ -460,6 +466,8 @@ function collapseSearchByOverlayGesture(offset: number) {
 }
 
 afterEach(() => {
+  mockThumbnailUri = null;
+  mockPreloadImage.mockClear();
   mockCompleteness = undefined;
   mockRemotePreviewAllowed = false;
   mockReloadDreams.mockClear();
@@ -1016,4 +1024,25 @@ describe('Journal first page', () => {
     render(<JournalScreen />);
     expect(screen.queryByTestId('journal-first-page')).toBeNull();
   });
+});
+
+
+// A native disk/signing promise can finish after the finger starts scrolling.
+// UI journeys cannot deterministically hold that native promise at this boundary.
+it('defers thumbnail decoding when a pending resolver finishes during a drag and resumes when idle', async () => {
+  mockDreams.push(guestDream);
+  mockThumbnailUri = 'https://example.test/dream-thumb.webp';
+  mockResolveWithDiskCache.mockClear();
+  let finishResolve!: (value: { imageUrl: string; thumbnailUrl: string }) => void;
+  mockResolveWithDiskCache.mockImplementationOnce(() => new Promise((resolve) => { finishResolve = resolve; }));
+  render(<JournalScreen />);
+  await waitFor(() => expect(mockResolveWithDiskCache).toHaveBeenCalledTimes(1));
+  act(() => {
+    mockListProps.onViewableItemsChanged({ viewableItems: [{ index: 0, item: guestDream }], changed: [] });
+    mockListProps.onScrollBeginDrag();
+  });
+  await act(async () => { finishResolve({ imageUrl: '', thumbnailUrl: mockThumbnailUri! }); });
+  expect(mockPreloadImage).not.toHaveBeenCalled();
+  act(() => { mockListProps.onMomentumScrollEnd(); });
+  await waitFor(() => expect(mockPreloadImage).toHaveBeenCalledWith(mockThumbnailUri, undefined));
 });

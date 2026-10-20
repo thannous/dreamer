@@ -14,7 +14,7 @@ test('native journal preserves reading and list position across repeated returns
     const before = await reference.boundingBox();
     await reference.tap();
     await expect(screen.getByTestId('screen.dreamDetail')).toBeVisible();
-    await expect(screen.getByText('Noctalia performance 013', { exact: true })).toBeVisible();
+    await expect(screen.getByRole('heading', 'Noctalia performance 013', { exact: true })).toBeVisible();
     const end = screen.getByText('Fin de la lecture de référence 013.', { exact: true });
     await screen.scrollUntilVisible(end);
     await expect(end).toBeVisible();
@@ -30,6 +30,8 @@ test('native journal preserves reading and list position across repeated returns
     await expect(reference).toBeVisible();
     const after = await reference.boundingBox();
     console.log(JSON.stringify({ cycle, journalPositionBefore: before, journalPositionAfter: after }));
+    expect(before).not.toBeNull();
+    expect(after).toEqual(before);
   }
   await app.screenshot('synthetic-journal-return');
 });
@@ -38,7 +40,7 @@ test('native direct dream link can return to the journal', async ({ app, screen,
   await app.open();
   await device.openLink('noctalia://journal/1791266400000');
   await expect(screen.getByTestId('screen.dreamDetail')).toBeVisible();
-  await expect(screen.getByText('Noctalia performance 013', { exact: true })).toBeVisible();
+  await expect(screen.getByRole('heading', 'Noctalia performance 013', { exact: true })).toBeVisible();
   await screen.getByTestId('btn.navigateJournal').tap();
   await expect(screen.getByTestId('screen.dreamDetail')).toBeHidden();
   await expect(screen.getByTestId('screen.journal')).toBeVisible();
@@ -52,7 +54,7 @@ if (process.env.E2E_PERF_FIXTURE_UI === 'framerate') {
     await app.open();
     await device.openLink('noctalia://journal/1792216800000');
     await expect(screen.getByTestId('screen.dreamDetail')).toBeVisible();
-    await expect(screen.getByText('Noctalia performance 002', { exact: true })).toBeVisible();
+    await expect(screen.getByRole('heading', 'Noctalia performance 002', { exact: true })).toBeVisible();
     await expect(screen.getByTestId('component.journal.illustration')).toBeVisible();
     const dock = screen.getByTestId('component.dreamDetail.actionDock');
     await expect(dock).toBeHidden();
@@ -87,12 +89,20 @@ if (process.env.E2E_PERF_FIXTURE_COUNT === '5000') {
     await expect(last).toBeVisible();
     await expect(screen.getByRole('button', /^Noctalia performance 002,/)).toBeHidden();
     await last.tap();
-    await expect(screen.getByText('Noctalia charge 05000', { exact: true })).toBeVisible();
+    await expect(screen.getByRole('heading', 'Noctalia charge 05000', { exact: true })).toBeVisible();
     const end = screen.getByText(/Grand journal phrase repère 05000\./);
     await screen.scrollUntilVisible(end);
+    // Android can expose the whole paragraph while only its top edge is on screen.
+    // Bring its last line above the action dock and assert its actual geometry.
+    await screen.swipe({ direction: 'down', momentum: 'none' });
     await expect(end).toBeVisible();
+    const storyBounds = await end.boundingBox();
+    const dockBounds = await screen.getByTestId('component.dreamDetail.actionDock').boundingBox();
+    if (!storyBounds || !dockBounds) throw new Error('Missing story or action dock bounds');
+    expect(storyBounds.y).toBeGreaterThanOrEqual(0);
+    expect(storyBounds.y + storyBounds.height).toBeLessThanOrEqual(dockBounds.y);
     await app.screenshot('large-journal-last-entry');
-    // This unanalysed entry is shorter. Bring the running head fully back below
+    // This entry is shorter. Bring the running head fully back below
     // system chrome before tapping it, even if its first visible part is clipped.
     const back = screen.getByTestId('btn.navigateJournal');
     await screen.scrollUntilVisible(back, { direction: 'up' });
