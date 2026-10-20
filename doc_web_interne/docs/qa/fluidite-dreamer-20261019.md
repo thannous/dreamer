@@ -7,7 +7,9 @@ toutes les fonctionnalités et en dégradant le moins possible le visuel, avec u
 rapport avant/après. Branche `claude/practical-meitner-yly1ex`, partie de
 `baa393b6` puis fusionnée avec `origin/master` `ce62eb94` (aucun fichier commun).
 Comparaison finale : **avant = `ce62eb94`** (`origin/master`), **après = `8067f00a`**,
-seul le diff de cette branche les sépare. Aucune animation, durée, image, parallaxe
+seul le diff de cette branche les sépare. `origin/master` `b6e5dd19` a ensuite été
+fusionné (onboarding, site, outillage backend et E2E ; seul l'index de la
+documentation est commun) : ces mesures restent celles de `8067f00a`. Aucune animation, durée, image, parallaxe
 ou cible tactile n'est retirée. Aucun build EAS, déploiement, publication Store ni
 mesure sur appareil dans cette tranche.
 
