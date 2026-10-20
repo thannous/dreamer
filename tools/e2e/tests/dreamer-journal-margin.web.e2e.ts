@@ -35,8 +35,9 @@ async function populatedJournal(page: Page) {
   await expect(page.getByTestId('screen.recording')).toBeVisible();
   await page.setViewportSize({ width: 390, height: 867 });
   // The desktop-to-phone resize can still be closing the drawer over the cards.
-  // Card geometry alone cannot detect that overlay in a visual qualification.
-  await expect(page.getByTestId('quick-settings.drawer')).not.toBeInViewport();
+  // Observe its nonzero profile row: the scroll container itself can have no
+  // intersection while its closing content still covers the cards.
+  await expect(page.getByTestId('quick-settings.profile')).not.toBeInViewport();
   await openJournal(page);
 }
 
@@ -137,6 +138,7 @@ for (const theme of ['light', 'dark'] as const) {
       await new Promise(requestAnimationFrame);
       await Promise.all(node.getAnimations({ subtree: true }).map((animation) => animation.finished));
     });
+    await expect(page.getByTestId('quick-settings.profile')).not.toBeInViewport();
     await page.screenshot({ path: testInfo.outputPath(`${theme}-compact.png`) });
     // Browser-only 200% text stress check: this does not qualify native Dynamic Type.
     await text.evaluate(node => {
@@ -150,6 +152,7 @@ for (const theme of ['light', 'dark'] as const) {
     });
     // The card grows with its text, and the arrow follows the last line to its new place.
     await expect.poll(arrowGap).toBeLessThanOrEqual(2);
+    await expect(page.getByTestId('quick-settings.profile')).not.toBeInViewport();
     await page.screenshot({ path: testInfo.outputPath(`${theme}-browser-text-200.png`) });
     await card.click();
     await expect(page.getByTestId('component.transcriptCard')).toContainText('Books were floating around me');
