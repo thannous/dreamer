@@ -211,7 +211,8 @@ async function visible(page, testId) {
 async function preparePlusProfile(page, baseURL) {
   // A development server may compile its first bundle on this request.
   await page.goto(baseURL, { waitUntil: 'domcontentloaded', timeout: 180_000 });
-  await (await visible(page, 'btn.onboarding.intro.next')).click();
+  // Skip from the first step: "Commencer" opens the onboarding story, which covers Skip.
+  await visible(page, 'btn.onboarding.intro.next');
   await (await visible(page, 'btn.onboarding.skip')).click();
   await visible(page, 'screen.recording');
   await leaveCapture(page);
