@@ -726,6 +726,24 @@ describe('journal detail saved confirmation route', () => {
   });
 
   
+  it('keeps a title typed in the editor while its name is being found', async () => {
+    const transcript = 'A blue door above the sea.';
+    mockDreams = [buildDream({ transcript, title: transcript, theme: undefined })];
+    const metadata = { title: 'Generated title', theme: 'calm', dreamType: 'Symbolic Dream', hasPerson: false, hasAnimal: false };
+    let finish!: (value: unknown) => void;
+    mockCategorizeDream.mockReturnValueOnce(new Promise(resolve => { finish = resolve; }));
+    mockApplyDreamCategorization.mockImplementationOnce(async (named: any) => ({ ...named, ...metadata }));
+    render(<JournalDetailScreen />);
+    fireEvent.click(screen.getByTestId(TID.Button.EditDream));
+    await act(async () => { fireEvent.click(screen.getByTestId('dream-metadata-retry')); });
+    fireEvent.change(screen.getByTestId(TID.Input.DreamTitle), { target: { value: 'My own name' } });
+
+    await act(async () => { finish(metadata); });
+
+    expect(mockApplyDreamCategorization).toHaveBeenCalled();
+    expect((screen.getByTestId(TID.Input.DreamTitle) as HTMLInputElement).value).toBe('My own name');
+  });
+
   it('does not recover metadata when the user declines AI consent', async () => {
     mockRequestAiConsent.mockResolvedValue(false);
     const transcript = 'A blue door above the sea.';

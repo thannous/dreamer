@@ -624,17 +624,21 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     // Metadata recovery sends the dream text to the AI provider.
     if (!(await requestAiConsent(t))) return;
     metadataRecoveryInFlightRef.current = true;
+    // Fields changed while the name is being found keep what was entered.
+    const asked = { title: editableTitle, theme: editableTheme, dreamType: editableDreamType };
     setIsRecoveringMetadata(true);
     setMetadataRecoveryFailed(false);
     try {
       const result = await categorizeDream(dream.transcript, language);
       if (latestMetadataDreamRef.current !== dream) return;
       const named = await applyDreamCategorization(dream, result);
-      // Asked while editing: the fields being edited take what was found.
+      // Asked while editing: the fields being edited take what was found, where it is new.
       if (named) {
-        setEditableTitle(named.title || '');
-        setEditableTheme(named.theme || '');
-        setEditableDreamType(named.dreamType || '');
+        const found = (field: 'title' | 'theme' | 'dreamType', current: string) => (
+          current === asked[field] && named[field] && named[field] !== dream[field] ? named[field] : current);
+        setEditableTitle((current) => found('title', current));
+        setEditableTheme((current) => found('theme', current));
+        setEditableDreamType((current) => found('dreamType', current));
       }
     } catch {
       if (latestMetadataDreamRef.current === dream) setMetadataRecoveryFailed(true);
@@ -642,7 +646,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       metadataRecoveryInFlightRef.current = false;
       setIsRecoveringMetadata(false);
     }
-  }, [applyDreamCategorization, dream, language, needsMetadataRecovery, t]);
+  }, [applyDreamCategorization, dream, editableDreamType, editableTheme, editableTitle, language, needsMetadataRecovery, t]);
   const handleImageUpgrade = useCallback(() => {
     router.push(buildPaywallHref('image_generation'));
   }, []);
@@ -2854,10 +2858,10 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       <PaintingTilt active={!isEditing && !isIllustrationFullscreen && !(coverFlight && !coverFlight.landed)}
         dominantUntil={coverHeight * 0.35}>
       {/* Beneath, the painting the journal's card already holds: the page opens on it, and the
-          original sharpens it once loaded. A page turned to takes over once either is shown. */}
+          original sharpens it once loaded. */}
       {coverPlaceholder ? (
         <Image source={coverPlaceholder} style={StyleSheet.absoluteFill} contentFit="cover" cachePolicy="memory-disk"
-          transition={0} accessible={false} onDisplay={() => setCoverShown(true)} />
+          transition={0} accessible={false} />
       ) : null}
       <Image
         key={displayImageUrl ?? dream.imageUrl}
