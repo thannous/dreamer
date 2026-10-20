@@ -134,6 +134,11 @@ const FRAUNCES_SHIFT = (0.978 - 0.255) / 2;
 /** Fraunces' capital height, per em: how far the initial stands above the line it opens. */
 const FRAUNCES_CAP = 0.7;
 const INITIAL_GAP = 3;
+/**
+ * Each initial's last measured width, and its letter's in the story, by size: a story set
+ * again (a dream page taking over from its likeness) opens on its measured gap at once.
+ */
+const initialWidths = new Map<string, number>();
 
 /**
  * The dreamer's story set as a book's first page: it opens on a raised initial in the
@@ -152,7 +157,11 @@ export function BookProse({ text }: { text: string }) {
   const textScale = Platform.OS === 'web' ? 1 : fontScale;
   const initialScale = Math.min(1.6, Math.max(1, textScale));
   const initialSize = INITIAL.fontSize * initialScale;
-  const [widths, setWidths] = useState({ initial: initialSize * 0.7, letter: PROSE.fontSize * textScale * 0.6 });
+  const measured = { initial: `initial|${initial}|${initialSize}`, letter: `letter|${initial}|${PROSE.fontSize * textScale}` };
+  const [widths, setWidths] = useState(() => ({
+    initial: initialWidths.get(measured.initial) ?? initialSize * 0.7,
+    letter: initialWidths.get(measured.letter) ?? PROSE.fontSize * textScale * 0.6,
+  }));
 
   if (!initial) {
     return <MarkdownText variant="reading" style={{ ...body, lineHeight: PROSE.lineHeight }}>{text}</MarkdownText>;
@@ -186,6 +195,7 @@ export function BookProse({ text }: { text: string }) {
   const initialLine = INITIAL.lineHeight * initialScale;
   const initialBaseline = initialLine / 2 + initialSize * FRAUNCES_SHIFT;
   const measure = (key: 'initial' | 'letter') => ({ nativeEvent: { layout } }: { nativeEvent: { layout: { width: number } } }) => {
+    initialWidths.set(measured[key], layout.width);
     setWidths((previous) => Math.abs(previous[key] - layout.width) < 0.5 ? previous : { ...previous, [key]: layout.width });
   };
   const spacer = Math.max(0, widths.initial + INITIAL_GAP - widths.letter);
@@ -200,7 +210,8 @@ export function BookProse({ text }: { text: string }) {
         {initial}
       </Text>
       <Text selectable style={prose}>
-        <Text style={{ color: 'transparent' }}>{initial}</Text>
+        {/* Android reads a colour of 0, transparent, as none and inks the letter as the story: a clear white is not 0. */}
+        <Text style={{ color: 'rgba(255, 255, 255, 0)' }}>{initial}</Text>
         <View style={{ width: spacer, height: 1 }} />
         {rest}
       </Text>

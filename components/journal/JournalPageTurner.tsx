@@ -3,9 +3,10 @@ import React, { createContext, useCallback, useContext, useEffect, useMemo, useR
 import { AccessibilityInfo, Platform, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
-  Easing, Extrapolation, interpolate, useAnimatedStyle, useReducedMotion, useSharedValue, withSequence, withSpring, withTiming,
+  Easing, Extrapolation, interpolate, useAnimatedReaction, useAnimatedStyle, useReducedMotion, useSharedValue, withSequence,
+  withSpring, withTiming, type SharedValue,
 } from 'react-native-reanimated';
-import { scheduleOnRN } from 'react-native-worklets';
+import { scheduleOnRN, scheduleOnUI } from 'react-native-worklets';
 
 import { JournalPagePreview } from '@/components/journal/JournalPagePreview';
 import { PageTurnsContext } from '@/components/journal/journalPageTurns';
@@ -51,9 +52,22 @@ const HINT_REBOUND_FALL = 220;
  * Lifted as little as on its arrival, the page still covers the one beneath it whole (it
  * comes towards the reader), so the pages either side need not be drawn with it: they are
  * drawn once it has come in and fallen shut, or at the first touch. Until they are, a turn
- * lifts the page no further than it still covers them.
+ * lifts the page no further than it still covers them, and a page let go to turn waits
+ * there, lifted, for the page it turns to (at most a while), then turns.
  */
 const LIKENESSES_AFTER = HINT_HOLD + HINT_FALL + HINT_REBOUND_RISE + HINT_REBOUND_FALL;
+
+/** Let go, the page falls shut as under its own weight, landing with a slight rebound. */
+function fallingShut(direction: SharedValue<number>) {
+  'worklet';
+  return [
+    withTiming(0, { duration: HINT_FALL, easing: Easing.in(Easing.quad) }),
+    withTiming(HINT_REBOUND, { duration: HINT_REBOUND_RISE, easing: EASING.out }),
+    withTiming(0, { duration: HINT_REBOUND_FALL, easing: EASING.inOut }, (done) => {
+      if (done) direction.set(0);
+    }),
+  ] as const;
+}
 
 /** How far a page this wide turns (as a turn's progress) before what lies beneath shows past its edge. */
 function coveringTurn(width: number) {
@@ -157,6 +171,13 @@ export function JournalPageTurner({ dream, newer, older, folio, tonight = false,
   const progress = useSharedValue(0);
   const settle = useSharedValue(1);
   const phase = useSharedValue(IDLE);
+  // The turn let go before the page that way was drawn, waiting for it (0: none).
+  const held = useSharedValue(0);
+  const heldTimer = useSharedValue<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => {
+    const timer = heldTimer.get();
+    if (timer) clearTimeout(timer);
+  }, [heldTimer]);
   // The turn waiting for its page to lay itself out before that page takes over (0: none).
   const awaiting = useSharedValue(0);
   const awaitTimer = useSharedValue<ReturnType<typeof setTimeout> | null>(null);
@@ -183,6 +204,16 @@ export function JournalPageTurner({ dream, newer, older, folio, tonight = false,
   const [pageDrawn, setPageDrawn] = useState(!opensOnLikeness);
   const openingNow = useSharedValue(opensOnLikeness);
   const likenessShown = useSharedValue(1);
+  // Opening so, the page arriving is held lifted (see the hint below) until it has taken its
+  // place, then falls shut: its fall is not drawn while the page is laid out beneath.
+  const hintWaits = useSharedValue(false);
+  // Read where it was written: from here, a hint held a moment ago may not read as held yet.
+  const releaseHint = useCallback(() => scheduleOnUI(() => {
+    'worklet';
+    if (!hintWaits.get()) return;
+    hintWaits.set(false);
+    progress.set(withSequence(...fallingShut(direction)));
+  }), [direction, hintWaits, progress]);
   const opened = useCallback(() => setOpening(false), []);
   const openPage = useCallback(() => {
     if (!openingNow.get()) return;
@@ -190,7 +221,8 @@ export function JournalPageTurner({ dream, newer, older, folio, tonight = false,
     likenessShown.set(withTiming(0, { duration: reduced ? 0 : SETTLE_MS, easing: EASING.out }, (done) => {
       if (done) scheduleOnRN(opened);
     }));
-  }, [likenessShown, opened, openingNow, reduced]);
+    releaseHint();
+  }, [likenessShown, opened, openingNow, reduced, releaseHint]);
   // A page turned meanwhile leaves its likeness at once.
   const endOpening = useCallback(() => {
     if (!openingNow.get()) return;
@@ -198,7 +230,8 @@ export function JournalPageTurner({ dream, newer, older, folio, tonight = false,
     likenessShown.set(0);
     setPageDrawn(true);
     setOpening(false);
-  }, [likenessShown, openingNow]);
+    releaseHint();
+  }, [likenessShown, openingNow, releaseHint]);
   useEffect(() => {
     if (!opensOnLikeness) return;
     let live = true;
@@ -291,10 +324,33 @@ export function JournalPageTurner({ dream, newer, older, folio, tonight = false,
     onTurn(target);
   }, [direction, endOpening, onTurn, progress, reachTonight, shown.newer, shown.older, tonight, turnedOver]);
 
+  // A page let go to turn before the page that way was drawn turns once it is, from where it waits.
+  useAnimatedReaction(() => (likenessesDrawn.get() ? held.get() : 0), (turnedTo) => {
+    if (turnedTo === 0) return;
+    held.set(0);
+    progress.set(withTiming(1, { duration: 260 * (1 - progress.get()) + 90, easing: EASING.inOut }, (done) => {
+      if (done) scheduleOnRN(finishTurn, turnedTo);
+    }));
+  }, [finishTurn]);
+  // Should that page not come, the waiting page falls back.
+  const holdAtMost = useCallback(() => {
+    const timer = heldTimer.get();
+    if (timer) clearTimeout(timer);
+    heldTimer.set(setTimeout(() => {
+      heldTimer.set(null);
+      if (held.get() === 0) return;
+      held.set(0);
+      progress.set(withSpring(0, { duration: 320, dampingRatio: 0.85 }, (done) => {
+        if (done) direction.set(0);
+      }));
+    }, SETTLE_AT_LATEST));
+  }, [direction, held, heldTimer, progress]);
+
   // The controls at a page's foot share the same targets as swipes. A discrete action
   // changes page at once.
   const navigatePage = useCallback((turnedTo: number) => {
-    if (lockedNow.current || phase.get() !== IDLE) return;
+    if (lockedNow.current || phase.get() !== IDLE || held.get() !== 0) return;
+    hintWaits.set(false);
     if (atTonight) {
       if (turnedTo !== BACKWARD) return;
       turnedOver.set(false);
@@ -306,7 +362,7 @@ export function JournalPageTurner({ dream, newer, older, folio, tonight = false,
     direction.set(0);
     progress.set(0);
     turnAtOnce(turnedTo);
-  }, [atTonight, direction, leaveTonight, phase, progress, turnAtOnce, turnedOver]);
+  }, [atTonight, direction, held, hintWaits, leaveTonight, phase, progress, turnAtOnce, turnedOver]);
 
   // The hint: arriving, the page falls shut over the next one, once per opening.
   const hinted = useRef(false);
@@ -315,17 +371,18 @@ export function JournalPageTurner({ dream, newer, older, folio, tonight = false,
     if (lockedNow.current || direction.get() !== 0 || turnedOver.get()) return;
     hinted.current = true;
     direction.set(FORWARD);
+    if (openingNow.get()) {
+      progress.set(HINT_LIFT);
+      hintWaits.set(true);
+      return;
+    }
     progress.set(withSequence(
       withTiming(HINT_LIFT, { duration: 0 }),
-      // Held while the screen comes in, then let go: it falls as under its own weight.
+      // Held while the screen comes in, then let go.
       withTiming(HINT_LIFT, { duration: HINT_HOLD }),
-      withTiming(0, { duration: HINT_FALL, easing: Easing.in(Easing.quad) }),
-      withTiming(HINT_REBOUND, { duration: HINT_REBOUND_RISE, easing: EASING.out }),
-      withTiming(0, { duration: HINT_REBOUND_FALL, easing: EASING.inOut }, (done) => {
-        if (done) direction.set(0);
-      })
+      ...fallingShut(direction),
     ));
-  }, [direction, hint, newer, progress, reduced, tonight, turnedOver]);
+  }, [direction, hint, hintWaits, newer, openingNow, progress, reduced, tonight, turnedOver]);
 
   const hasLaterDream = shown.newer != null;
   const hasNewer = hasLaterDream || tonight;
@@ -344,11 +401,13 @@ export function JournalPageTurner({ dream, newer, older, folio, tonight = false,
       if (!reduced) scheduleOnRN(drawLikenesses);
     })
     .onStart(() => {
-      if (phase.get() !== IDLE) return;
+      if (phase.get() !== IDLE || held.get() !== 0) return;
+      // The hand takes the page from its arrival.
+      hintWaits.set(false);
       if (!turnedOver.get()) direction.set(0);
     })
     .onUpdate((event) => {
-      if (phase.get() !== IDLE) return;
+      if (phase.get() !== IDLE || held.get() !== 0) return;
       // On tonight's page only a turn back moves anything: the last dream's page comes down again.
       if (turnedOver.get()) {
         if (!reduced) progress.set(Math.max(0, 1 - Math.max(0, event.translationX) / (width * 0.8)));
@@ -371,7 +430,7 @@ export function JournalPageTurner({ dream, newer, older, folio, tonight = false,
       progress.set(available ? Math.min(reach, amount) : Math.min(0.06, amount * 0.15));
     })
     .onEnd((event) => {
-      if (phase.get() !== IDLE) return;
+      if (phase.get() !== IDLE || held.get() !== 0) return;
       if (turnedOver.get()) {
         const back = event.velocityX > 700 || (reduced ? event.translationX > width * COMMIT : 1 - progress.get() > COMMIT);
         if (!back) {
@@ -397,13 +456,21 @@ export function JournalPageTurner({ dream, newer, older, folio, tonight = false,
       const turnedTo = direction.get();
       const available = turnedTo === FORWARD ? hasNewer : hasOlder;
       const flick = turnedTo === FORWARD ? event.velocityX < -700 : event.velocityX > 700;
-      // A page whose neighbour is not drawn yet falls back rather than turn onto nothing.
       const drawn = likenessesDrawn.get() || (turnedTo === FORWARD && !hasLaterDream);
       if (reduced) {
         if (available && (flick || Math.abs(event.translationX) > width * COMMIT)) scheduleOnRN(turnAtOnce, turnedTo);
         return;
       }
-      if (available && drawn && (progress.get() > COMMIT || flick)) {
+      // How far the hand took the page, which may have lifted less while its neighbour was not drawn.
+      const amount = Math.max(0, (turnedTo === FORWARD ? -event.translationX : event.translationX) / (width * 0.8));
+      const turns = available && (amount > COMMIT || flick);
+      // A page whose neighbour is not drawn yet waits for it rather than turn onto nothing.
+      if (turns && !drawn) {
+        held.set(turnedTo);
+        scheduleOnRN(holdAtMost);
+        return;
+      }
+      if (turns) {
         const ontoTonight = turnedTo === FORWARD && !hasLaterDream;
         progress.set(withTiming(1, { duration: 260 * (1 - progress.get()) + 90, easing: EASING.inOut }, (done) => {
           if (!done) return;
@@ -415,8 +482,8 @@ export function JournalPageTurner({ dream, newer, older, folio, tonight = false,
           if (done) direction.set(0);
         }));
       }
-    }), [covering, direction, drawLikenesses, finishTurn, hasLaterDream, hasNewer, hasOlder, leaveTonight, likenessesDrawn,
-    locked, phase, progress, reduced, turnAtOnce, turnedOver, width]);
+    }), [covering, direction, drawLikenesses, finishTurn, hasLaterDream, hasNewer, hasOlder, held, hintWaits, holdAtMost,
+    leaveTonight, likenessesDrawn, locked, phase, progress, reduced, turnAtOnce, turnedOver, width]);
 
   // The page turning over: it lifts from the binding, darkening as it stands on edge. Once
   // turned forward it is set back flat, unseen, and the page turned to fades in there.
@@ -467,6 +534,9 @@ export function JournalPageTurner({ dream, newer, older, folio, tonight = false,
   const openingLikeness = useAnimatedStyle(() => ({ opacity: likenessShown.get() }));
 
   const pageFrame = { position: 'absolute' as const, top: 0, left: 0, right: 0, bottom: 0, transformOrigin: 'left center' };
+  // Android draws each layer of a fading view with its opacity, so a page's veils darken
+  // what lies beneath it as it fades: composed apart, a page fading fades whole.
+  const fadesWhole = { needsOffscreenAlphaCompositing: true } as const;
 
   return (
     <PageTurnLockContext.Provider value={setLocked}>
@@ -491,12 +561,14 @@ export function JournalPageTurner({ dream, newer, older, folio, tonight = false,
           ) : null}
           <Animated.View pointerEvents={atTonight ? 'none' : 'auto'} accessibilityElementsHidden={atTonight}
             importantForAccessibility={atTonight ? 'no-hide-descendants' : 'auto'}
-            {...(Platform.OS === 'web' ? { 'aria-hidden': atTonight, inert: atTonight } : {})} style={[pageFrame, currentPage]}
+            {...(Platform.OS === 'web' ? { 'aria-hidden': atTonight, inert: atTonight } : {})} {...fadesWhole}
+            style={[pageFrame, currentPage]}
             // Touched once laid out beneath its likeness, the page shows itself at once.
             onTouchStart={opening && pageDrawn ? openPage : undefined}>
             {pageDrawn ? children : null}
             {opening ? (
-              <Animated.View pointerEvents="none" testID="journal.page.opening" style={[StyleSheet.absoluteFill, openingLikeness]}>
+              <Animated.View pointerEvents="none" testID="journal.page.opening" {...fadesWhole} renderToHardwareTextureAndroid
+                style={[StyleSheet.absoluteFill, openingLikeness]}>
                 <JournalPagePreview height={pageHeight} dream={dream} folio={shown.folio} />
               </Animated.View>
             ) : null}
@@ -504,7 +576,7 @@ export function JournalPageTurner({ dream, newer, older, folio, tonight = false,
             <Animated.View pointerEvents="none" className="absolute inset-0" style={[{ backgroundColor: shadow }, currentUnderShade]} />
           </Animated.View>
           {shown.older && likenesses ? (
-            <Animated.View pointerEvents="none" style={[pageFrame, earlierPage]} onLayout={likenessLaidOut}>
+            <Animated.View pointerEvents="none" {...fadesWhole} style={[pageFrame, earlierPage]} onLayout={likenessLaidOut}>
               <JournalPagePreview height={pageHeight} dream={shown.older} folio={shown.folio ? shown.folio - 1 : undefined} />
               <Animated.View className="absolute inset-0" style={[{ backgroundColor: shadow }, earlierShade]} />
             </Animated.View>
