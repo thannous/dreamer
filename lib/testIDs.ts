@@ -193,6 +193,7 @@ export const TID = {
     DreamFavorite: 'btn.dream.favorite',
     DreamShare: 'btn.dream.share',
     DreamShareSeal: 'btn.dream.shareSeal',
+    DreamShareCard: 'btn.dream.shareCard',
     DreamDelete: 'btn.dream.delete',
     DreamReport: 'btn.dream.report',
     SavedDreamArtworkOpen: 'btn.dreamDetail.savedMoment.open',
@@ -370,6 +371,7 @@ export const TID = {
     AnalysisOffer: 'sheet.recording.analysisOffer',
     RememberedDreamDetails: 'sheet.recording.remembered.details',
     DreamSymbol: 'sheet.dreamSymbol',
+    DreamShare: 'sheet.dreamShare',
   },
   BottomSheet: {
     PaywallError: 'bottomSheet.paywall.error',
