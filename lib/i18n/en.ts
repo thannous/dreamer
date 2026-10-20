@@ -895,7 +895,6 @@ const translations: Record<string, string> = {
     "recording.draft_progress.ready": "Ready to add to your journal.",
     'recording.draft_progress.count_one': '{count} character',
     'recording.draft_progress.count': '{count} characters',
-    "recording.draft_progress.saved_locally": "Draft kept on this device",
     'recording.activation_insight.eyebrow': 'First cues',
     'recording.activation_insight.summary.memory': 'This memory is saved as a remembered dream.',
     'recording.activation_insight.summary.memory_draft': 'This memory can already become a marker for your profile.',
