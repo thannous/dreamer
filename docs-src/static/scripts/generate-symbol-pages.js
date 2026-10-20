@@ -1523,10 +1523,15 @@ function loadAtlasPilots() {
     unique(pilot.scenes.map((scene) => scene.variation), `${id}.scenes variations`);
     if (typeof pilot.portraitPosition !== 'string' || !/^\d+(\.\d+)?% \d+(\.\d+)?%$/.test(pilot.portraitPosition)) fail(`${id}.portraitPosition`, 'expected "<x>% <y>%"');
 
-    const motion = object(pilot.motion, `${id}.motion`, ['parallax', 'hero', 'plate', 'thumb']);
+    const motion = object(pilot.motion, `${id}.motion`, ['parallax', 'hero', 'plate', 'thumb', 'scenes'], ['parallax', 'hero', 'plate', 'thumb']);
     number(motion.parallax, `${id}.motion.parallax`, 0, 1);
     object(motion.hero, `${id}.motion.hero`, ['landscape', 'portrait']);
-    for (const [name, effects] of [['hero.landscape', motion.hero.landscape], ['hero.portrait', motion.hero.portrait], ['plate', motion.plate], ['thumb', motion.thumb]]) {
+    const sceneMotion = Object.hasOwn(motion, 'scenes')
+      ? object(motion.scenes, `${id}.motion.scenes`, pilot.scenes.map((scene) => scene.id), [])
+      : {};
+    const surfaces = [['hero.landscape', motion.hero.landscape], ['hero.portrait', motion.hero.portrait], ['plate', motion.plate], ['thumb', motion.thumb],
+      ...Object.entries(sceneMotion).map(([scene, effects]) => [`scenes.${scene}`, effects])];
+    for (const [name, effects] of surfaces) {
       const at = `${id}.motion.${name}`;
       if (!Array.isArray(effects) || effects.length !== 2 || effects.map((effect) => effect?.texture).sort().join() !== 'accent,layer') {
         fail(at, 'expected exactly two effects, one on each texture (layer, accent)');
@@ -1534,10 +1539,14 @@ function loadAtlasPilots() {
       effects.forEach((effect, index) => {
         const where = `${at}[${index}]`;
         object(effect, where, ['texture', 'place', 'motion', 'move', 'dur', 'op', 'copies', 'depth', 'blend'], ['texture', 'place', 'motion', 'dur', 'op']);
-        const place = object(effect.place, `${where}.place`, ['fit', 'zoom', 'x', 'y'], ['fit']);
+        const place = object(effect.place, `${where}.place`, ['fit', 'zoom', 'x', 'y', 'at'], ['fit']);
         if (!['width', 'cover'].includes(place.fit)) fail(`${where}.place.fit`, 'expected width or cover');
-        if (Object.hasOwn(place, 'zoom')) number(place.zoom, `${where}.place.zoom`, 1, 4);
+        if (Object.hasOwn(place, 'zoom')) number(place.zoom, `${where}.place.zoom`, 0.1, 4);
         for (const axis of ['x', 'y']) if (Object.hasOwn(place, axis)) number(place[axis], `${where}.place.${axis}`, 0, 1);
+        if (Object.hasOwn(place, 'at')) {
+          pair(place.at, `${where}.place.at`, 0, 1);
+          if (Object.hasOwn(place, 'x') || Object.hasOwn(place, 'y')) fail(`${where}.place`, 'at cannot be combined with x or y');
+        }
         if (!['drift', 'flow', 'pulse'].includes(effect.motion)) fail(`${where}.motion`, 'expected drift, flow or pulse');
         if (effect.motion === 'pulse') {
           if (Object.hasOwn(effect, 'move')) fail(`${where}.move`, 'a pulse does not move');
@@ -1748,9 +1757,10 @@ function atlasSixLayerSrc(layer, max) {
 
 // A 16:9 texture keeps its ratio over a painting of another ratio: it fits the painting's
 // width ('width') or covers it ('cover'), optionally zoomed on the part that carries the
-// effect, anchored by x and y (0 = left or top edge, 1 = right or bottom edge). The stage
+// effect (below 1 for a local glow), anchored by x and y (0 = left or top edge, 1 = right or bottom edge). The stage
 // clips what overflows; the side illustration also masks it with its own alpha.
-function atlasSixBox({ fit, zoom = 1, x = 0.5, y = 0.5 }, painting, texture) {
+// Optional at places the texture centre on a painting coordinate, including near an edge.
+function atlasSixBox({ fit, zoom = 1, x = 0.5, y = 0.5, at }, painting, texture) {
   const ratio = (painting.width / painting.height) / (texture.width / texture.height);
   let w = 1;
   let h = ratio;
@@ -1761,7 +1771,7 @@ function atlasSixBox({ fit, zoom = 1, x = 0.5, y = 0.5 }, painting, texture) {
   w *= zoom;
   h *= zoom;
   const round = (value) => Number(value.toFixed(4));
-  return [round(x * (1 - w)), round(y * (1 - h)), round(w), round(h)];
+  return [round(at ? at[0] - w / 2 : x * (1 - w)), round(at ? at[1] - h / 2 : y * (1 - h)), round(w), round(h)];
 }
 
 // Motion config read by js/symbol-living: one surface per painting (hero, plate, each
@@ -1790,8 +1800,8 @@ function atlasSixLivingConfig(id, assets) {
   pilot.scenes.forEach((scene, index) => {
     const role = `scene-${scene.id}`;
     if (!assets[role]) return;
-    // The three thumbnails share their effects, each from another point of the cycle.
-    surfaces.push({ name: role, selector: `[data-living-surface="${role}"]`, img: 'img', clip: true, phase: index / pilot.scenes.length, scenes: { [role]: { match: `${ATLAS_SIX_IMAGES}/${id}/${role}-`, layers: layers(motion.thumb, assets[role]) } } });
+    // Thumbnails share the default effects and phase; a local light can follow its subject in each scene.
+    surfaces.push({ name: role, selector: `[data-living-surface="${role}"]`, img: 'img', clip: true, phase: index / pilot.scenes.length, scenes: { [role]: { match: `${ATLAS_SIX_IMAGES}/${id}/${role}-`, layers: layers(motion.scenes?.[scene.id] ?? motion.thumb, assets[role]) } } });
   });
   const live = surfaces.filter((surface) => Object.values(surface.scenes).some((scene) => scene.layers.length > 0));
   if (live.length === 0) return null;

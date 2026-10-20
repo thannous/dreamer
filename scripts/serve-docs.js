@@ -99,6 +99,7 @@ function send(res, statusCode, headers, body) {
 
 function main() {
   const port = parsePort();
+  const host = process.argv.find((arg) => arg.startsWith('--host='))?.slice(7) || '127.0.0.1';
   const notFoundPath = safeJoin(DOCS_DIR, '/404.html');
   const has404 = Boolean(notFoundPath && existsFile(notFoundPath));
 
@@ -156,9 +157,9 @@ function main() {
     }
   });
 
-  server.listen(port, () => {
+  server.listen(port, host, () => {
 
-    console.log(`✅ Serving docs at http://localhost:${port} (pretty URLs enabled)`);
+    console.log(`✅ Serving docs at http://${host}:${port} (pretty URLs enabled)`);
   });
 }
 
