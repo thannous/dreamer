@@ -10,12 +10,9 @@ import { getRecordingDraftProgress } from '@/lib/recordingDraftProgress';
 
 type RecordingDraftProgressProps = {
   value: string;
-  persisted?: boolean;
-  compact?: boolean;
-  inlineStatus?: boolean;
 };
 
-export function RecordingDraftProgress({ value, persisted = false, compact = false, inlineStatus = false }: RecordingDraftProgressProps) {
+export function RecordingDraftProgress({ value }: RecordingDraftProgressProps) {
   const { colors, mode } = useTheme();
   const { fontScale } = useWindowDimensions();
   const controlFontScale = Math.min(1.3, Math.max(1, fontScale));
@@ -27,17 +24,14 @@ export function RecordingDraftProgress({ value, persisted = false, compact = fal
   const countLabel = t(progress.charCount === 1 ? 'recording.draft_progress.count_one' : 'recording.draft_progress.count', { count: progress.charCount });
   const hint = t(`recording.draft_progress.${progress.state}`);
   const shouldShowHint = progress.state !== 'empty';
-  const savedLabel = persisted ? String(t('recording.draft_progress.saved_locally')) : null;
 
   return (
     <View
       style={styles.container}
       testID={TID.Component.RecordingDraftProgress}
     >
-      {!compact ? <View style={styles.headerRow}>
-        {inlineStatus && savedLabel ? (
-          <Text key={`status-${fontScale}`} allowFontScaling={false} accessibilityLiveRegion="polite" accessibilityHint={hint} style={[styles.hint, hintTypography, { color: noctalia.text.secondary }]}>{savedLabel}</Text>
-        ) : shouldShowHint ? (
+      <View style={styles.headerRow}>
+        {shouldShowHint ? (
           <Text key={`hint-${fontScale}`} allowFontScaling={false} style={[styles.hint, hintTypography, { color: noctalia.text.secondary }]}>
             {hint}
           </Text>
@@ -53,17 +47,7 @@ export function RecordingDraftProgress({ value, persisted = false, compact = fal
             {countLabel}
           </Text>
         ) : null}
-      </View> : null}
-      {savedLabel && !inlineStatus ? (
-        <Text
-          key={`saved-${fontScale}`}
-          allowFontScaling={false}
-          accessibilityLiveRegion="polite"
-          style={[styles.saved, captionTypography, { color: noctalia.text.secondary }]}
-        >
-          {savedLabel}
-        </Text>
-      ) : null}
+      </View>
     </View>
   );
 }
@@ -85,11 +69,6 @@ const styles = StyleSheet.create({
     flex: 1,
     fontFamily: Fonts.spaceGrotesk.medium,
     fontSize: 13,
-    lineHeight: 16,
-  },
-  saved: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 12,
     lineHeight: 16,
   },
   count: {

@@ -1,5 +1,5 @@
 import type { Page } from 'playwright/test';
-import { test, expect } from './fixtures';
+import { expectCaptureDraftSaved, test, expect } from './fixtures';
 
 const story = 'Je marchais au bord d’un lac. Une maison éclairée apparaissait entre les arbres.\n\nJe reconnaissais cet endroit, sans savoir pourquoi. Tout semblait calme, comme si le temps s’était arrêté.\n\nJe me souviens surtout de la lumière et de cette sensation de douceur.';
 
@@ -39,7 +39,7 @@ test('capture gives the story room, respects explicit and automatic themes, and 
   await expect(editor).toHaveAttribute('placeholder', 'Parle-moi de ton rêve…');
   await expect(page.getByTestId('recording-guest-remaining')).toHaveCount(0);
   await editor.fill(story);
-  await expect(page.getByText('Brouillon conservé sur cet appareil', { exact: true })).toBeVisible();
+  await expectCaptureDraftSaved(page, story);
   await expect(count).toHaveText(`${story.length} caractères`);
   await expect(save).toBeEnabled();
 
