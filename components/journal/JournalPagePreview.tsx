@@ -57,8 +57,9 @@ export function JournalPagePreview({ dream, folio, height }: { dream: DreamAnaly
   const typeShown = Boolean(dream.dreamType && (analysisState.isAnalyzed || dream.dreamType !== 'Symbolic Dream'));
 
   // An illustrated dream opens on its plate, as its page does, unless its picture cannot be
-  // had; the picture, from the same source and cache as the dream page, shows once resolved.
-  // At the top of the page, where a turned-to page opens, it rests undrifted.
+  // had; the picture, from the same source and cache as the dream page, shows once resolved,
+  // over the same placeholder. At the top of the page, where a turned-to page opens, it rests
+  // undrifted.
   const plated = Boolean(dream.imageUrl?.trim()) && !(media.error && !media.imageUrl);
   const imageVersion = dream.imageUrl ? getDreamImageVersion(dream) : undefined;
   const cover = plated && media.imageUrl
@@ -121,8 +122,8 @@ export function JournalPagePreview({ dream, folio, height }: { dream: DreamAnaly
         {/* The plate fills the page at least: what follows it on the dream page lies below. */}
         {plated ? (
           <JournalCoverPlate height={height} titleHeight={introHeight} head={head}
-            picture={cover ? <Image source={cover} contentFit="cover"
-              style={{ position: 'absolute', left: 0, right: 0, top: -coverTravel, bottom: -coverTravel }} /> : null}>
+            picture={<Image source={cover} contentFit="cover" placeholder={{ blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' }}
+              style={{ position: 'absolute', left: 0, right: 0, top: -coverTravel, bottom: -coverTravel }} />}>
             {heading}
           </JournalCoverPlate>
         ) : (
