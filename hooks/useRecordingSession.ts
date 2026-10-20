@@ -82,8 +82,13 @@ export function useRecordingSession({
   onNativeEnd,
 }: UseRecordingSessionOptions) {
   const [isRecording, setIsRecording] = useState(false);
-  // Recording, with or without a dictation session: the app's cues leave the audio session alone.
-  useEffect(() => (isRecording ? holdMicrophone() : undefined), [isRecording]);
+  // Held from a start's first audio mode change to its stop's last, with or without a
+  // dictation session: the app's cues leave the audio session alone meanwhile.
+  const microphoneRef = useRef<(() => void) | null>(null);
+  useEffect(() => () => {
+    microphoneRef.current?.();
+    microphoneRef.current = null;
+  }, []);
   const [isSpeechListening, setIsSpeechListening] = useState(false);
   const [recordingPermissionState, setRecordingPermissionState] =
     useState<RecordingPermissionState>('unknown');
@@ -154,6 +159,8 @@ export function useRecordingSession({
       setIsRecording(false);
       setIsSpeechListening(false);
       isRecordingRef.current = false;
+      const microphone = microphoneRef.current;
+      microphoneRef.current = null;
 
       const nativeSession = nativeSessionRef.current;
       nativeSessionRef.current = null;
@@ -183,6 +190,7 @@ export function useRecordingSession({
       } catch (error) {
         log.warn('failed to reset audio mode during', reason, error);
       } finally {
+        microphone?.();
         await deleteRecordedAudio(cleanupUri);
         skipRecorderRef.current = false;
         hasAutoStoppedRecordingRef.current = false;
@@ -210,6 +218,8 @@ export function useRecordingSession({
       let isLanguagePackMissing = false;
       let isRateLimited = false;
       let cleanupUri: string | undefined;
+      const microphone = microphoneRef.current;
+      microphoneRef.current = null;
 
       try {
         setIsRecording(false);
@@ -343,6 +353,7 @@ export function useRecordingSession({
         } catch (err) {
           log.warn('Failed to reset audio mode after recording', err);
         }
+        microphone?.();
         await deleteRecordedAudio(cleanupUri);
         hasAutoStoppedRecordingRef.current = false;
         skipRecorderRef.current = false;
@@ -368,6 +379,8 @@ export function useRecordingSession({
         if (controller.signal.aborted) throw new Error('cancelled');
       };
       let audioModeEnabled = false;
+      let started = false;
+      let microphone: (() => void) | null = null;
       setIsSpeechListening(false);
 
       try {
@@ -404,6 +417,7 @@ export function useRecordingSession({
         }
 
         checkCancelled();
+        microphone = holdMicrophone();
         await setAudioModeAsync({
           allowsRecording: true,
           playsInSilentMode: true,
@@ -470,6 +484,9 @@ export function useRecordingSession({
 
         setIsRecording(true);
         isRecordingRef.current = true;
+        microphoneRef.current?.();
+        microphoneRef.current = microphone;
+        started = true;
         return { success: true };
       } catch (err) {
         setIsSpeechListening(false);
@@ -506,6 +523,7 @@ export function useRecordingSession({
         log.error('Failed to start recording', err);
         return { success: false, error: err instanceof Error ? err.message : 'start_failed' };
       } finally {
+        if (!started) microphone?.();
         pendingStartRef.current = null;
       }
     },

@@ -290,7 +290,11 @@ describe('useRecordingSession', () => {
     );
   });
 
-  it('holds the microphone from start to stop, so the app’s cues leave the recording alone', async () => {
+  it('holds the microphone from the start’s audio mode to the stop’s, so the app’s cues leave the recording alone', async () => {
+    const heldOnModeChange: boolean[] = [];
+    jest.mocked(setAudioModeAsync).mockImplementation(async () => {
+      heldOnModeChange.push(isMicrophoneHeld());
+    });
     const { result } = renderHook(() => useRecordingSession(defaultOptions));
 
     await act(async () => {
@@ -302,6 +306,7 @@ describe('useRecordingSession', () => {
       await result.current.stopRecording();
     });
     expect(isMicrophoneHeld()).toBe(false);
+    expect(heldOnModeChange).toEqual([true, true]);
   });
 
   it('stopRecording should return transcript result', async () => {
@@ -481,6 +486,8 @@ describe('useRecordingSession', () => {
       });
 
       expect(response).toEqual({ success: false, error: 'stt_unavailable' });
+      // A start that gives up hands the microphone back.
+      expect(isMicrophoneHeld()).toBe(false);
       expect(recorder.prepareToRecordAsync).not.toHaveBeenCalled();
       expect(recorder.record).not.toHaveBeenCalled();
       expect(transcribeAudio).not.toHaveBeenCalled();
