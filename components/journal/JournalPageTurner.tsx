@@ -1,6 +1,6 @@
 import * as Haptics from 'expo-haptics';
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { Platform, StyleSheet, View, useWindowDimensions } from 'react-native';
+import { AccessibilityInfo, Platform, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   Easing, Extrapolation, interpolate, useAnimatedStyle, useReducedMotion, useSharedValue, withSequence, withSpring, withTiming,
@@ -199,6 +199,15 @@ export function JournalPageTurner({ dream, newer, older, folio, tonight = false,
     setPageDrawn(true);
     setOpening(false);
   }, [likenessShown, openingNow]);
+  useEffect(() => {
+    if (!opensOnLikeness) return;
+    let live = true;
+    // A screen reader is given the page itself at once, not a picture of it.
+    AccessibilityInfo.isScreenReaderEnabled().then((on) => {
+      if (live && on) endOpening();
+    }).catch(() => {});
+    return () => { live = false; };
+  }, [endOpening, opensOnLikeness]);
   useEffect(() => {
     if (pageDrawn) return;
     let frame = requestAnimationFrame(() => {
