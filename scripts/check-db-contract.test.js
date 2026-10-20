@@ -173,7 +173,7 @@ describe('local database URL resolution', () => {
     };
     expect(readLocalStackDbUrl({}, spawn)).toBe('postgresql://postgres:postgres@127.0.0.1:32102/postgres');
     expect(calls[0].argv).toEqual(['status', '--env', '--output-format', 'json']);
-    expect(calls[0].binary).toMatch(/node_modules\/\.bin\/supabase$/);
+    expect(calls[0].binary.replace(/\\/g, '/')).toMatch(/node_modules\/\.bin\/supabase$/);
     expect(calls[0].env.SUPABASE_EXPERIMENTAL_STACK).toBe('1');
     expect(resolveDbUrl({ local: true }, {}, () => 'from-status')).toBe('from-status');
   });

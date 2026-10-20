@@ -39,6 +39,8 @@ Desktop : utiliser la largeur disponible jusqu'à 2560 px, garder la composition
 
 Ne pas créer de moteur par symbole. Utiliser les commandes `atlas:pack`, `atlas:handoff`, `atlas:gallery`, `atlas:receipt` du package `apps/site` ; voir [le catalogue](../../../scripts/README.md#atlas-pages-asset-packs-handoffs-and-qualification-receipts). Conserver les chemins à empreinte pour les assets/scripts immuables. Modifier `docs-src/`, jamais le résultat généré `docs/`.
 
+Les placements actuels acceptent `place.at: [x, y]` pour fixer le centre de la texture dans la peinture (coordonnées de 0 à 1), et `place.zoom` de 0,1 à 4 : un zoom inférieur à 1 permet une petite lueur locale. `motion.scenes[sceneId]` remplace les deux effets de `motion.thumb` pour une scène donnée ; sans remplacement, le profil commun des vignettes est utilisé. La licorne fournit un exemple existant. Recalculer sur les dimensions réelles avec `atlasSixBox` ; les anciennes limites de positionnement des patches Bougie ne décrivent plus ces possibilités.
+
 ## Contrôle proportionné et prochaine action
 
 Reprendre un symbole représentatif sur le master actuel avant d'étendre les réglages : paysage à 2560×1440, mobile à 390×844, plaque et trois scènes. Observer les deux effets au cours du temps dans le cadre réellement visible, le scroll et les changements de scène. Vérifier les six langues et les liens, l'absence de couture, la lisibilité du titre, la réduction des mouvements et les arrêts/reprises hors écran/onglet. Le portrait est téléchargé sur mobile ; la plaque desktop masquée ne l'est pas.
