@@ -37,6 +37,8 @@ const DUST = 72;
 const DIMMED = 0.16;
 /** TalkBack steps and opens through these; VoiceOver through the adjustable trait and its tap. */
 const READER_ACTIONS = [{ name: 'increment' }, { name: 'decrement' }, { name: 'activate' }];
+/** The ring around the star a screen reader or the keyboard is on. */
+const RING = 30;
 
 type Placed = { dream: DreamAnalysis; x: number; y: number; analyzed: boolean; joined: boolean };
 
@@ -138,7 +140,8 @@ const ConstellationLayer = memo(function ConstellationLayer({ constellation, pla
  * reopens its dream. The sky lights once, as it comes on screen, then stays still.
  *
  * A screen reader meets the sky as one element with its count, which steps through its
- * dreams one at a time from the newest, naming each, and opens the one it is on.
+ * dreams one at a time from the newest, naming each, and opens the one it is on. On the
+ * web the keyboard does the same with the arrows and Enter. A ring shows the star then.
  */
 export function TrendsSky({ sky, lit, reduced, ink, glow, glowOpacity, dust, t, formatNumber, formatDate, onOpenDream }: {
   sky: DreamSky;
@@ -191,8 +194,10 @@ export function TrendsSky({ sky, lit, reduced, ink, glow, glowOpacity, dust, t, 
     if (nearest) onOpenDream(nearest.dream);
   }, [onOpenDream, placed]);
 
-  // The star a screen reader is on: the newest until it steps to another.
+  // The star a screen reader or the keyboard is on: the newest until it steps to another.
   const [heardId, setHeardId] = useState<number | null>(null);
+  // Ringed once someone steps through the sky, so an eye following along sees which star.
+  const [stepping, setStepping] = useState(false);
   const found = stars.findIndex(({ dream }) => dream.id === heardId);
   const heardAt = found >= 0 ? found : stars.length - 1;
   const heard = stars[heardAt];
@@ -201,18 +206,28 @@ export function TrendsSky({ sky, lit, reduced, ink, glow, glowOpacity, dust, t, 
   const openHeard = useCallback(() => {
     if (heard) onOpenDream(heard.dream);
   }, [heard, onOpenDream]);
-  const onReaderAction = useCallback(({ nativeEvent }: AccessibilityActionEvent) => {
-    if (nativeEvent.actionName === 'activate') {
-      openHeard();
-      return;
-    }
-    const by = nativeEvent.actionName === 'increment' ? 1 : nativeEvent.actionName === 'decrement' ? -1 : 0;
+  const step = useCallback((by: number) => {
+    setStepping(true);
     const next = stars[Math.min(stars.length - 1, Math.max(0, heardAt + by))];
-    if (by === 0 || !next || next === heard) return;
+    if (!next || next === heard) return;
     setHeardId(next.dream.id);
-    // VoiceOver reads the new value by itself; TalkBack is told it.
+    // VoiceOver and the browser read the new value by themselves; TalkBack is told it.
     if (Platform.OS === 'android') AccessibilityInfo.announceForAccessibility(describe(next.dream));
-  }, [describe, heard, heardAt, openHeard, stars]);
+  }, [describe, heard, heardAt, setStepping, stars]);
+  const onReaderAction = useCallback(({ nativeEvent }: AccessibilityActionEvent) => {
+    if (nativeEvent.actionName === 'activate') openHeard();
+    else if (nativeEvent.actionName === 'increment') step(1);
+    else if (nativeEvent.actionName === 'decrement') step(-1);
+  }, [openHeard, step]);
+  // On the web the sky takes the keyboard, as a slider does: arrows step, Enter or Space opens.
+  const onKeyDown = useCallback((event: { key: string; preventDefault: () => void }) => {
+    if (event.key === 'ArrowRight' || event.key === 'ArrowUp') step(1);
+    else if (event.key === 'ArrowLeft' || event.key === 'ArrowDown') step(-1);
+    else if (event.key === 'Enter' || event.key === ' ') openHeard();
+    else return;
+    event.preventDefault();
+  }, [openHeard, step]);
+  const ring = stepping && width > 0 ? placed[heardAt] : undefined;
 
   const choose = useCallback((linkKey: string) => {
     setChosen(linkKey === selected ? null : linkKey);
@@ -243,11 +258,15 @@ export function TrendsSky({ sky, lit, reduced, ink, glow, glowOpacity, dust, t, 
         style={{ height: SKY_HEIGHT }}
         onLayout={({ nativeEvent }) => setWidth((previous) => (previous === nativeEvent.layout.width ? previous : nativeEvent.layout.width))}
         accessible
+        accessibilityRole="adjustable"
         accessibilityLabel={t(count === 1 ? 'trends.sky.label_one' : 'trends.sky.label', { count: formatNumber(count) })}
-        // The web keeps a picture: a browser's screen reader reaches the dreams through the nights above.
-        {...(Platform.OS === 'web' ? { accessibilityRole: 'image' as const } : {
-          accessibilityRole: 'adjustable' as const,
-          accessibilityValue: heard ? { text: describe(heard.dream) } : undefined,
+        aria-valuetext={heard ? describe(heard.dream) : undefined}
+        {...(Platform.OS === 'web' ? ({
+          // React Native's types know no keyboard; react-native-web passes these to the element.
+          focusable: true,
+          onKeyDown,
+          onBlur: () => setStepping(false),
+        } as Record<string, unknown>) : {
           accessibilityHint: heard ? t('trends.sky.reader_hint') : undefined,
           accessibilityActions: Platform.OS === 'android' ? READER_ACTIONS : undefined,
           onAccessibilityAction: onReaderAction,
@@ -265,7 +284,11 @@ export function TrendsSky({ sky, lit, reduced, ink, glow, glowOpacity, dust, t, 
                 width={width} ink={ink} glow={glow} order={order} lit={lit} reduced={reduced}
                 opacity={selected === null ? 0.7 : constellation.symbol.linkKey === selected ? 1 : DIMMED} />
             ))}
-            {/* Touch only: a screen reader steps through the dreams on the sky itself. */}
+            {ring ? (
+              <View pointerEvents="none" testID="trends.sky.ring"
+                style={[styles.ring, { left: ring.x - RING / 2, top: ring.y - RING / 2, borderColor: ink }]} />
+            ) : null}
+            {/* Touch only: a screen reader and the keyboard step through the dreams on the sky itself. */}
             <Pressable testID="trends.sky.stars" onPress={pick} style={StyleSheet.absoluteFill}
               accessible={false} focusable={false} {...(Platform.OS === 'web' ? { tabIndex: -1 } : {})} />
           </>
@@ -300,3 +323,7 @@ export function TrendsSky({ sky, lit, reduced, ink, glow, glowOpacity, dust, t, 
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  ring: { position: 'absolute', width: RING, height: RING, borderRadius: RING / 2, borderWidth: 1.5 },
+});
