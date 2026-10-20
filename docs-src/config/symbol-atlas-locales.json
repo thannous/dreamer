@@ -14856,102 +14856,102 @@
       "fr": {
         "caveat": null,
         "scenes": {
-          "losing-your-ring": {
+          "perdue": {
             "variation": "Perdre sa bague",
-            "anchor": "losing-your-ring"
+            "anchor": "perdue"
           },
-          "receiving-an-engagement-ring": {
+          "fiancailles": {
             "variation": "Recevoir une bague de fiançailles",
-            "anchor": "receiving-an-engagement-ring"
+            "anchor": "fiancailles"
           },
-          "a-ring-that-is-too-tight": {
+          "serree": {
             "variation": "Une bague trop serrée",
-            "anchor": "a-ring-that-is-too-tight"
+            "anchor": "serree"
           }
         }
       },
       "en": {
         "caveat": null,
         "scenes": {
-          "losing-your-ring": {
+          "perdue": {
             "variation": "Losing your ring",
-            "anchor": "losing-your-ring"
+            "anchor": "lost-ring"
           },
-          "receiving-an-engagement-ring": {
+          "fiancailles": {
             "variation": "Receiving an engagement ring",
-            "anchor": "receiving-an-engagement-ring"
+            "anchor": "engagement"
           },
-          "a-ring-that-is-too-tight": {
+          "serree": {
             "variation": "A ring that is too tight",
-            "anchor": "a-ring-that-is-too-tight"
+            "anchor": "too-tight"
           }
         }
       },
       "es": {
         "caveat": null,
         "scenes": {
-          "losing-your-ring": {
+          "perdue": {
             "variation": "Perder el anillo",
-            "anchor": "losing-your-ring"
+            "anchor": "perdido"
           },
-          "receiving-an-engagement-ring": {
+          "fiancailles": {
             "variation": "Recibir un anillo de compromiso",
-            "anchor": "receiving-an-engagement-ring"
+            "anchor": "compromiso"
           },
-          "a-ring-that-is-too-tight": {
+          "serree": {
             "variation": "Un anillo que aprieta",
-            "anchor": "a-ring-that-is-too-tight"
+            "anchor": "aprieta"
           }
         }
       },
       "de": {
         "caveat": null,
         "scenes": {
-          "losing-your-ring": {
+          "perdue": {
             "variation": "Den Ring verlieren",
-            "anchor": "losing-your-ring"
+            "anchor": "verloren"
           },
-          "receiving-an-engagement-ring": {
+          "fiancailles": {
             "variation": "Einen Verlobungsring bekommen",
-            "anchor": "receiving-an-engagement-ring"
+            "anchor": "verlobung"
           },
-          "a-ring-that-is-too-tight": {
+          "serree": {
             "variation": "Ein Ring, der zu eng ist",
-            "anchor": "a-ring-that-is-too-tight"
+            "anchor": "zu-eng"
           }
         }
       },
       "it": {
         "caveat": null,
         "scenes": {
-          "losing-your-ring": {
+          "perdue": {
             "variation": "Perdere l’anello",
-            "anchor": "losing-your-ring"
+            "anchor": "perso"
           },
-          "receiving-an-engagement-ring": {
+          "fiancailles": {
             "variation": "Ricevere un anello di fidanzamento",
-            "anchor": "receiving-an-engagement-ring"
+            "anchor": "fidanzamento"
           },
-          "a-ring-that-is-too-tight": {
+          "serree": {
             "variation": "Un anello troppo stretto",
-            "anchor": "a-ring-that-is-too-tight"
+            "anchor": "stretto"
           }
         }
       },
       "pt-br": {
         "caveat": null,
         "scenes": {
-          "losing-your-ring": {
+          "perdue": {
             "variation": "Perder o anel",
-            "anchor": "losing-your-ring"
+            "anchor": "perdido"
           },
-          "receiving-an-engagement-ring": {
+          "fiancailles": {
             "variation": "Receber um anel de noivado",
-            "anchor": "receiving-an-engagement-ring"
+            "anchor": "noivado"
           },
-          "a-ring-that-is-too-tight": {
+          "serree": {
             "variation": "Um anel apertado demais",
-            "anchor": "a-ring-that-is-too-tight"
+            "anchor": "apertado"
           }
         }
       }
@@ -17864,6 +17864,526 @@
           "protecting-someone-during-an-earthquake": {
             "variation": "Proteger alguém durante um terremoto",
             "anchor": "protecting-someone-during-an-earthquake"
+          }
+        }
+      }
+    },
+    "bee": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "butinage": {
+            "variation": "Une abeille qui butine",
+            "anchor": "butinage"
+          },
+          "piqure": {
+            "variation": "Se faire piquer par une abeille",
+            "anchor": "piqure"
+          },
+          "essaim": {
+            "variation": "Un essaim d'abeilles",
+            "anchor": "essaim"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "butinage": {
+            "variation": "A bee gathering pollen",
+            "anchor": "gathering-pollen"
+          },
+          "piqure": {
+            "variation": "Being stung by a bee",
+            "anchor": "sting"
+          },
+          "essaim": {
+            "variation": "A swarm of bees",
+            "anchor": "swarm"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "butinage": {
+            "variation": "Una abeja yendo de flor en flor",
+            "anchor": "flores"
+          },
+          "piqure": {
+            "variation": "Que te pique una abeja",
+            "anchor": "picadura"
+          },
+          "essaim": {
+            "variation": "Un enjambre de abejas",
+            "anchor": "enjambre"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "butinage": {
+            "variation": "Eine Biene, die Blüten anfliegt",
+            "anchor": "blueten"
+          },
+          "piqure": {
+            "variation": "Von einer Biene gestochen werden",
+            "anchor": "stich"
+          },
+          "essaim": {
+            "variation": "Ein Bienenschwarm",
+            "anchor": "schwarm"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "butinage": {
+            "variation": "Un’ape che si posa sui fiori",
+            "anchor": "sui-fiori"
+          },
+          "piqure": {
+            "variation": "Essere punti da un’ape",
+            "anchor": "puntura"
+          },
+          "essaim": {
+            "variation": "Uno sciame di api",
+            "anchor": "sciame"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "butinage": {
+            "variation": "Uma abelha colhendo pólen",
+            "anchor": "polen"
+          },
+          "piqure": {
+            "variation": "Ser picado por uma abelha",
+            "anchor": "picada"
+          },
+          "essaim": {
+            "variation": "Um enxame de abelhas",
+            "anchor": "enxame"
+          }
+        }
+      }
+    },
+    "volcano": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "endormi": {
+            "variation": "Un volcan endormi ou qui fume",
+            "anchor": "endormi"
+          },
+          "eruption": {
+            "variation": "Regarder une éruption de loin",
+            "anchor": "eruption"
+          },
+          "lave": {
+            "variation": "Fuir la lave",
+            "anchor": "lave"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "endormi": {
+            "variation": "A dormant or smoking volcano",
+            "anchor": "dormant"
+          },
+          "eruption": {
+            "variation": "Watching an eruption from a distance",
+            "anchor": "eruption"
+          },
+          "lave": {
+            "variation": "Running from lava",
+            "anchor": "lava"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "endormi": {
+            "variation": "Un volcán dormido o que echa humo",
+            "anchor": "dormido"
+          },
+          "eruption": {
+            "variation": "Ver una erupción desde lejos",
+            "anchor": "erupcion"
+          },
+          "lave": {
+            "variation": "Huir de la lava",
+            "anchor": "lava"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "endormi": {
+            "variation": "Ein ruhender oder rauchender Vulkan",
+            "anchor": "ruhend"
+          },
+          "eruption": {
+            "variation": "Einen Ausbruch aus der Ferne beobachten",
+            "anchor": "ausbruch"
+          },
+          "lave": {
+            "variation": "Vor Lava fliehen",
+            "anchor": "lava"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "endormi": {
+            "variation": "Un vulcano spento o che fuma",
+            "anchor": "spento"
+          },
+          "eruption": {
+            "variation": "Guardare un’eruzione da lontano",
+            "anchor": "eruzione"
+          },
+          "lave": {
+            "variation": "Scappare dalla lava",
+            "anchor": "lava"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "endormi": {
+            "variation": "Um vulcão adormecido ou soltando fumaça",
+            "anchor": "adormecido"
+          },
+          "eruption": {
+            "variation": "Ver uma erupção de longe",
+            "anchor": "erupcao"
+          },
+          "lave": {
+            "variation": "Fugir da lava",
+            "anchor": "lava"
+          }
+        }
+      }
+    },
+    "waterfall": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "contemplation": {
+            "variation": "Admirer une cascade de loin",
+            "anchor": "contemplation"
+          },
+          "sous-eau": {
+            "variation": "Se tenir sous une cascade",
+            "anchor": "sous-eau"
+          },
+          "chute": {
+            "variation": "Tomber d'une cascade",
+            "anchor": "chute"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "contemplation": {
+            "variation": "Admiring a waterfall from a distance",
+            "anchor": "from-afar"
+          },
+          "sous-eau": {
+            "variation": "Standing under a waterfall",
+            "anchor": "under-the-falls"
+          },
+          "chute": {
+            "variation": "Going over a waterfall",
+            "anchor": "going-over"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "contemplation": {
+            "variation": "Contemplar una cascada de lejos",
+            "anchor": "contemplar"
+          },
+          "sous-eau": {
+            "variation": "Estar debajo de una cascada",
+            "anchor": "debajo"
+          },
+          "chute": {
+            "variation": "Caer por una cascada",
+            "anchor": "caida"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "contemplation": {
+            "variation": "Einen Wasserfall aus der Ferne betrachten",
+            "anchor": "aus-der-ferne"
+          },
+          "sous-eau": {
+            "variation": "Unter einem Wasserfall stehen",
+            "anchor": "darunter"
+          },
+          "chute": {
+            "variation": "Einen Wasserfall hinunterstürzen",
+            "anchor": "sturz"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "contemplation": {
+            "variation": "Ammirare una cascata da lontano",
+            "anchor": "da-lontano"
+          },
+          "sous-eau": {
+            "variation": "Stare sotto una cascata",
+            "anchor": "sotto"
+          },
+          "chute": {
+            "variation": "Cadere da una cascata",
+            "anchor": "caduta"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "contemplation": {
+            "variation": "Admirar uma cachoeira de longe",
+            "anchor": "de-longe"
+          },
+          "sous-eau": {
+            "variation": "Ficar debaixo de uma cachoeira",
+            "anchor": "debaixo"
+          },
+          "chute": {
+            "variation": "Cair de uma cachoeira",
+            "anchor": "queda"
+          }
+        }
+      }
+    },
+    "turtle": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "nage": {
+            "variation": "Une tortue dans l'eau",
+            "anchor": "nage"
+          },
+          "carapace": {
+            "variation": "Une tortue cachée dans sa carapace",
+            "anchor": "carapace"
+          },
+          "lenteur": {
+            "variation": "Une tortue lente ou coincée",
+            "anchor": "lenteur"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "nage": {
+            "variation": "A turtle in water",
+            "anchor": "in-water"
+          },
+          "carapace": {
+            "variation": "A turtle hiding in its shell",
+            "anchor": "in-its-shell"
+          },
+          "lenteur": {
+            "variation": "A slow or stuck turtle",
+            "anchor": "slow"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "nage": {
+            "variation": "Una tortuga en el agua",
+            "anchor": "en-el-agua"
+          },
+          "carapace": {
+            "variation": "Una tortuga escondida en su caparazón",
+            "anchor": "caparazon"
+          },
+          "lenteur": {
+            "variation": "Una tortuga lenta o atascada",
+            "anchor": "lenta"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "nage": {
+            "variation": "Eine Schildkröte im Wasser",
+            "anchor": "im-wasser"
+          },
+          "carapace": {
+            "variation": "Eine Schildkröte, die sich im Panzer versteckt",
+            "anchor": "panzer"
+          },
+          "lenteur": {
+            "variation": "Eine langsame oder feststeckende Schildkröte",
+            "anchor": "langsam"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "nage": {
+            "variation": "Una tartaruga nell’acqua",
+            "anchor": "in-acqua"
+          },
+          "carapace": {
+            "variation": "Una tartaruga nascosta nel guscio",
+            "anchor": "guscio"
+          },
+          "lenteur": {
+            "variation": "Una tartaruga lenta o bloccata",
+            "anchor": "lenta"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "nage": {
+            "variation": "Uma tartaruga na água",
+            "anchor": "na-agua"
+          },
+          "carapace": {
+            "variation": "Uma tartaruga escondida no casco",
+            "anchor": "casco"
+          },
+          "lenteur": {
+            "variation": "Uma tartaruga lenta ou presa",
+            "anchor": "lenta"
+          }
+        }
+      }
+    },
+    "mask": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "porter": {
+            "variation": "Porter un masque",
+            "anchor": "porter"
+          },
+          "colle": {
+            "variation": "Ne pas pouvoir enlever son masque",
+            "anchor": "colle"
+          },
+          "carnaval": {
+            "variation": "Un carnaval ou un bal masqué",
+            "anchor": "carnaval"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "porter": {
+            "variation": "Wearing a mask",
+            "anchor": "wearing"
+          },
+          "colle": {
+            "variation": "A mask you cannot take off",
+            "anchor": "stuck"
+          },
+          "carnaval": {
+            "variation": "A carnival or masked ball",
+            "anchor": "masquerade"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "porter": {
+            "variation": "Llevar una máscara",
+            "anchor": "llevar"
+          },
+          "colle": {
+            "variation": "No poder quitarte la máscara",
+            "anchor": "no-quitar"
+          },
+          "carnaval": {
+            "variation": "Un carnaval o un baile de máscaras",
+            "anchor": "carnaval"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "porter": {
+            "variation": "Selbst eine Maske tragen",
+            "anchor": "tragen"
+          },
+          "colle": {
+            "variation": "Die Maske nicht abnehmen können",
+            "anchor": "nicht-abnehmen"
+          },
+          "carnaval": {
+            "variation": "Karneval oder Maskenball",
+            "anchor": "maskenball"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "porter": {
+            "variation": "Indossare una maschera",
+            "anchor": "indossare"
+          },
+          "colle": {
+            "variation": "Non riuscire a togliersi la maschera",
+            "anchor": "non-togliere"
+          },
+          "carnaval": {
+            "variation": "Un carnevale o un ballo in maschera",
+            "anchor": "carnevale"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "porter": {
+            "variation": "Usar uma máscara",
+            "anchor": "usar"
+          },
+          "colle": {
+            "variation": "Não conseguir tirar a máscara",
+            "anchor": "nao-tirar"
+          },
+          "carnaval": {
+            "variation": "Um carnaval ou um baile de máscaras",
+            "anchor": "carnaval"
           }
         }
       }

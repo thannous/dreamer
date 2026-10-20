@@ -1,5 +1,5 @@
 import { useIsFocused } from 'expo-router';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { FlatList, Platform, ScrollView, type NativeScrollEvent, type NativeSyntheticEvent } from 'react-native';
 import Animated, {
   Extrapolation, interpolate, useAnimatedScrollHandler, useAnimatedStyle, useReducedMotion, type SharedValue,
@@ -57,6 +57,11 @@ export function useHeaderScroll(onScroll?: () => void) {
   return onNativeScroll ?? onWebScroll;
 }
 
+// Reanimated commits a style each time one of its values is a new object, so a transform
+// built on every scroll frame is committed on every frame, even once the header has stopped
+// moving. A resting header hands back the same transform instead: it costs no frame.
+const STRETCH_REST = [{ translateY: 0 }, { scale: 1 }];
+
 /**
  * Pulling the page down past the top stretches the painting instead of opening a gap
  * of bare ground above it: pinned to the top of the screen, it grows by the pull.
@@ -71,7 +76,7 @@ export function useHeaderStretchStyle(height: number, pinned = false, fadeOnScro
     const opacity = fadeOnScroll && height > 0
       ? interpolate(y, [0, height * 0.6], [1, 0], Extrapolation.CLAMP)
       : 1;
-    if (reduced || y >= 0 || height <= 0) return { opacity, transform: [{ translateY: 0 }, { scale: 1 }] };
+    if (reduced || y >= 0 || height <= 0) return { opacity, transform: STRETCH_REST };
     // In the content it rides down with the pull, so it is pulled back up to the top;
     // pinned over the content (a fixed header) it only grows down to follow it.
     return { opacity, transform: [{ translateY: pinned ? 0 : y }, { scale: 1 + -y / height }] };
@@ -97,11 +102,15 @@ export function useHeaderFadeStyle(height: number) {
 export function usePaintingDepthStyle(height: number, frame: 'scrolls' | 'fixed' = 'scrolls') {
   const scrollY = useHeaderScrollY();
   const reduced = useReducedMotion();
+  const ends = useMemo(() => ({
+    top: [{ translateY: 0 }],
+    bottom: [{ translateY: frame === 'scrolls' ? height * 0.45 : -height * 0.3 }],
+  }), [frame, height]);
   return useAnimatedStyle(() => {
     const y = scrollY.get();
-    if (reduced || y <= 0 || height <= 0) return { transform: [{ translateY: 0 }] };
-    const travel = Math.min(y, height);
-    return { transform: [{ translateY: frame === 'scrolls' ? travel * 0.45 : -travel * 0.3 }] };
+    if (reduced || y <= 0 || height <= 0) return { transform: ends.top };
+    if (y >= height) return { transform: ends.bottom };
+    return { transform: [{ translateY: frame === 'scrolls' ? y * 0.45 : -y * 0.3 }] };
   });
 }
 

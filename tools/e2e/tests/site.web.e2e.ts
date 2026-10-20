@@ -1395,7 +1395,7 @@ const NEW_SYMBOL_PACKS = [
   {"id": "hair", "slug": "cheveux", "name": "Cheveux", "scenes": ["hair-falling-out", "cutting-your-own-hair", "someone-cutting-your-hair"]},
   {"id": "letter", "slug": "lettre", "name": "Lettre", "scenes": ["receiving-a-letter", "a-sealed-letter-you-dare-not-open", "an-unreadable-letter"]},
   {"id": "watch", "slug": "montre", "name": "Montre", "scenes": ["a-stopped-watch", "not-being-able-to-read-the-time", "checking-your-watch-again-and-again"]},
-  {"id": "ring", "slug": "bague", "name": "Bague", "scenes": ["losing-your-ring", "receiving-an-engagement-ring", "a-ring-that-is-too-tight"]},
+  {"id": "ring", "slug": "bague", "name": "Bague", "scenes": ["perdue", "fiancailles", "serree"]},
   {"id": "passport", "slug": "passeport", "name": "Passeport", "scenes": ["losing-your-passport", "an-expired-passport", "being-turned-away-at-the-border"]},
   {"id": "suitcase", "slug": "valise", "name": "Valise", "scenes": ["packing-a-suitcase", "a-heavy-suitcase", "lost-luggage"]},
   {"id": "airport", "slug": "aeroport", "name": "Aéroport", "scenes": ["missing-a-flight", "not-finding-your-gate", "losing-your-passport-or-ticket"]},
@@ -1603,9 +1603,18 @@ const LOT_08_PACKS: { id: string; scenes: string[]; pages: Record<string, [strin
   { id: 'lightning', scenes: ['lointain', 'arbre', 'abri'], pages: { fr: ['eclair', 'Éclair'], en: ['lightning', 'Lightning'], es: ['rayo', 'Rayo'], de: ['blitz', 'Blitz'], it: ['fulmine', 'Fulmine'], 'pt-br': ['raio', 'Raio'] } },
   { id: 'whale', scenes: ['proche', 'echouee', 'saut'], pages: { fr: ['baleine', 'Baleine'], en: ['whale', 'Whale'], es: ['ballena', 'Ballena'], de: ['wal', 'Wal'], it: ['balena', 'Balena'], 'pt-br': ['baleia', 'Baleia'] } },
 ];
+// Lot 10 (owner request 2026-10-20): the same contract for its six packs, under its own titles and screenshots.
+const LOT_10_PACKS: typeof LOT_08_PACKS = [
+  { id: 'bee', scenes: ['butinage', 'piqure', 'essaim'], pages: { fr: ['abeille', 'Abeille'], en: ['bee', 'Bee'], es: ['abeja', 'Abeja'], de: ['biene', 'Biene'], it: ['ape', 'Ape'], 'pt-br': ['abelha', 'Abelha'] } },
+  { id: 'volcano', scenes: ['endormi', 'eruption', 'lave'], pages: { fr: ['volcan', 'Volcan'], en: ['volcano', 'Volcano'], es: ['volcan', 'Volcán'], de: ['vulkan', 'Vulkan'], it: ['vulcano', 'Vulcano'], 'pt-br': ['vulcao', 'Vulcão'] } },
+  { id: 'ring', scenes: ['perdue', 'fiancailles', 'serree'], pages: { fr: ['bague', 'Bague'], en: ['ring', 'Ring'], es: ['anillo', 'Anillo'], de: ['ring', 'Ring'], it: ['anello', 'Anello'], 'pt-br': ['anel', 'Anel'] } },
+  { id: 'waterfall', scenes: ['contemplation', 'sous-eau', 'chute'], pages: { fr: ['cascade', 'Cascade'], en: ['waterfall', 'Waterfall'], es: ['cascada', 'Cascada'], de: ['wasserfall', 'Wasserfall'], it: ['cascata', 'Cascata'], 'pt-br': ['cachoeira', 'Cachoeira'] } },
+  { id: 'turtle', scenes: ['nage', 'carapace', 'lenteur'], pages: { fr: ['tortue', 'Tortue'], en: ['turtles', 'Turtles'], es: ['tortugas', 'Tortugas'], de: ['schildkroete', 'Schildkröte'], it: ['tartarughe', 'Tartarughe'], 'pt-br': ['tartarugas', 'Tartarugas'] } },
+  { id: 'mask', scenes: ['porter', 'colle', 'carnaval'], pages: { fr: ['masque', 'Masque'], en: ['mask', 'Mask'], es: ['mascara', 'Máscara'], de: ['maske', 'Maske'], it: ['maschera', 'Maschera'], 'pt-br': ['mascara', 'Máscara'] } },
+];
 
-for (const pack of LOT_08_PACKS) {
-  test('lot 09: ' + pack.id + ' moves two effects on its hero, side illustration and three scenes in the six languages, and takes 75svh on a phone', { timeout: 300_000 }, async ({ app, browser, screen }) => {
+for (const [lot, shots, pack] of [...LOT_08_PACKS.map(pack => ['lot 09', 'lot08-', pack] as const), ...LOT_10_PACKS.map(pack => ['lot 10', 'lot10-', pack] as const)]) {
+  test(lot + ': ' + pack.id + ' moves two effects on its hero, side illustration and three scenes in the six languages, and takes 75svh on a phone', { timeout: 300_000 }, async ({ app, browser, screen }) => {
     const pathOf = (lang: string) => `/${lang}/${SYMBOL_PATHS[lang]}/${pack.pages[lang][0]}.html`;
     // A painting on screen runs both effects: two channels, two different decoded textures with
     // visible pixels, each actually changing.
@@ -1651,7 +1660,7 @@ for (const pack of LOT_08_PACKS) {
         await screen.getByText(label, { exact: true }).first().tap();
         expectSixScene(await browser.evaluate(readAtlasSix), scene);
       }
-      await app.screenshot('lot08-' + pack.id + '-' + lang + '-1920-scenes');
+      await app.screenshot(shots + pack.id + '-' + lang + '-1920-scenes');
       // No pause control on any painting; reduced motion stops them all.
       expect(await browser.evaluate(() => document.querySelectorAll('.symbol-hero button, [data-living-surface] button, .atlas-scenes button, .slp-toggle').length)).toBe(0);
       await browser.emulateMedia({ reducedMotion: 'reduce' });
@@ -1674,7 +1683,7 @@ for (const pack of LOT_08_PACKS) {
       expect(await browser.evaluate(() => Math.max(...Array.from(document.querySelectorAll('.symbol-hero-media source[media]'))
         .flatMap(source => (source.getAttribute('srcset') ?? '').split(',').map(candidate => Number(candidate.trim().split(' ')[1]?.replace('w', '') ?? 0)))))).toBeGreaterThanOrEqual(780);
       expect(await browser.evaluate(() => performance.getEntriesByType('resource').some(entry => /\/plate-[0-9]+-/.test(entry.name)))).toBe(false);
-      if (lang === 'fr') await app.screenshot('lot08-' + pack.id + '-fr-390-hero');
+      if (lang === 'fr') await app.screenshot(shots + pack.id + '-fr-390-hero');
     }
   });
 }

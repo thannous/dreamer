@@ -50,11 +50,9 @@ import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import React, { useCallback, useContext, useDeferredValue, useEffect, useEffectEvent, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import {
-  Alert,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
-  Share,
   Text,
   type GestureResponderEvent,
   type NativeScrollEvent,
@@ -145,12 +143,15 @@ function JournalListScreen() {
   // mounted outside the column-keyed list but float over it: a header spacer and a
   // scroll translation carry them away with the first dreams, so the list gets the
   // whole screen once it scrolls.
-  const headerMeasureKey = `${width}:${fontScale}:${insets.top}`;
-  const [measuredHeader, setMeasuredHeader] = useState({ key: '', height: 0 });
+  // The spacer takes the chrome's last measured height, whatever width it was read at:
+  // on the web a resize can report it before the screen renders at the new width, and a
+  // chrome that keeps its height reports nothing more, so the spacer would otherwise
+  // stay on the estimate below and hide the filters under the header.
+  const [measuredHeaderHeight, setMeasuredHeaderHeight] = useState(0);
   const mobileSearchHeaderHeight = isDesktopLayout
     ? 0
-    : measuredHeader.key === headerMeasureKey
-      ? measuredHeader.height
+    : measuredHeaderHeight > 0
+      ? measuredHeaderHeight
       : insets.top + ThemeLayout.spacing.sm + searchBarLayout(fontScale).minHeight + ThemeLayout.spacing.sm;
   const overlayNavClearance = isDesktopLayout || isKeyboardVisible ? 0 : navigationClearance;
   const searchConsumesLayout = isDesktopLayout;
@@ -161,10 +162,18 @@ function JournalListScreen() {
   const headerScrollY = useHeaderScrollY();
   const staticScrollY = useRef(0);
   const scrollLayout = useRef({ mobileListKey, isDesktopLayout, searchConsumesLayout });
-  const searchCollapseStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: searchConsumesLayout ? 0 :
-      -Math.max(0, Math.min(listScrollY.get(), mobileSearchHeaderHeight)) }],
-  }));
+  // Open at the top and gone once scrolled past: those two hand back the same transform on
+  // each scroll frame, since Reanimated commits a style each time it gets a new one.
+  const searchEnds = useMemo(() => ({
+    open: [{ translateY: 0 }],
+    collapsed: [{ translateY: -mobileSearchHeaderHeight }],
+  }), [mobileSearchHeaderHeight]);
+  const searchCollapseStyle = useAnimatedStyle(() => {
+    const y = listScrollY.get();
+    if (searchConsumesLayout || y <= 0) return { transform: searchEnds.open };
+    if (y >= mobileSearchHeaderHeight) return { transform: searchEnds.collapsed };
+    return { transform: [{ translateY: -y }] };
+  });
 
   useEffect(() => {
     const show = Keyboard.addListener(
@@ -531,26 +540,13 @@ function JournalListScreen() {
     router.push({ pathname: '/journal/[id]', params: getDreamRouteParams(dream) });
   }, []);
 
-  // On a phone the system share sheet opens right away with the dream's words; the web has no
-  // reliable share sheet, so it opens the dream, whose detail falls back to copying.
+  // Sharing from a card opens the dream with its share open: on a phone, the dreamer chooses
+  // what the shared card shows; the web, with no reliable share sheet, falls back to copying.
   const handleDreamShare = useCallback((dream: DreamAnalysis) => {
-    if (Platform.OS === 'web') {
-      if (isNavigatingRef.current) return;
-      isNavigatingRef.current = true;
-      router.push({ pathname: '/journal/[id]', params: { ...getDreamRouteParams(dream), share: '1' } });
-      return;
-    }
-    const quote = dream.shareableQuote?.trim();
-    const excerpt = dream.transcript?.trim().slice(0, 220);
-    const message = [
-      dream.title ? `🌙 ${dream.title}` : null,
-      quote ? `“${quote}”` : excerpt ? `${excerpt}${(dream.transcript?.trim().length ?? 0) > 220 ? '…' : ''}` : null,
-      t('journal.detail.share.footer'),
-    ].filter(Boolean).join('\n\n');
-    void Share.share({ message, title: dream.title }).catch(() => {
-      Alert.alert(t('common.error_title'), t('journal.detail.share.error_message'));
-    });
-  }, [t]);
+    if (isNavigatingRef.current) return;
+    isNavigatingRef.current = true;
+    router.push({ pathname: '/journal/[id]', params: { ...getDreamRouteParams(dream), share: '1' } });
+  }, []);
 
   const handleDreamFavorite = useCallback((dream: DreamAnalysis) => {
     setFavoriteError(null);
@@ -1113,8 +1109,7 @@ function JournalListScreen() {
             // Hidden behind another route (on the web), the chrome measures zero: keep its
             // real height so the list is not laid out again, twice, around the visit.
             if (nextHeight <= 0) return;
-            setMeasuredHeader((current) => current.key === headerMeasureKey && current.height === nextHeight
-              ? current : { key: headerMeasureKey, height: nextHeight });
+            setMeasuredHeaderHeight(nextHeight);
           }}
           // Overlay chrome is taller than the uncovered list box on short
           // landscape. box-none lets FlashList receive drags that miss the
