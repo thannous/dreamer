@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
   title: { fontFamily: Fonts.fraunces.semiBold, fontSize: 44, lineHeight: 52, textAlign: 'center' },
   // Shaded like the subtitles, so it stays legible over the moon.
   body: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 17, lineHeight: 24, textAlign: 'center', maxWidth: 300, textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 12 },
-  note: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 11, lineHeight: 16, textAlign: 'center', paddingTop: 12, paddingBottom: 8 },
+  note: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 12, lineHeight: 17, textAlign: 'center', paddingTop: 12, paddingBottom: 8 },
   secondary: { minHeight: 44, alignItems: 'center', justifyContent: 'center', marginTop: 4 },
   secondaryText: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 14, lineHeight: 20 },
 });

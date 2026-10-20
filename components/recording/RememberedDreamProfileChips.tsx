@@ -255,8 +255,8 @@ const styles = StyleSheet.create({
   },
   optionalBadgeText: {
     fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 10,
-    lineHeight: 14,
+    fontSize: 12,
+    lineHeight: 16,
   },
   toggleDescription: {
     fontFamily: Fonts.spaceGrotesk.regular,

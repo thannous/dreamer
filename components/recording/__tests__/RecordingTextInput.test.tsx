@@ -181,7 +181,7 @@ jest.mock('@/context/ThemeContext', () => ({
 
 jest.mock('@/constants/theme', () => ({
   Fonts: {
-    lora: { regularItalic: 'Lora-Italic' },
+    lora: { regular: 'Lora-Regular', regularItalic: 'Lora-Italic' },
     spaceGrotesk: {
       bold: 'SpaceGrotesk-Bold',
       medium: 'SpaceGrotesk-Medium',
