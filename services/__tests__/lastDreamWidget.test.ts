@@ -182,3 +182,28 @@ it('tells apart two synced dreams that share a local id, in the painting and the
   expect(first.url).toBe('noctalia://journal/10?remoteId=41');
   expect(second.url).toBe('noctalia://journal/10?remoteId=42&clientRequestId=req-42');
 });
+
+it('lays a painting replaced by sync, which comes without a new imageUpdatedAt', async () => {
+  const service = launch();
+  await service.updateLastDreamWidget(update(dream(10, { remoteId: 41 }), 'alice'));
+  await service.updateLastDreamWidget(update(dream(10, { remoteId: 41, imageUrl: 'https://paintings/41-again' }), 'alice'));
+
+  const [first, second] = laid();
+  expect(second.image).not.toBe(first.image);
+  expect(paintings()).toEqual([second.image]);
+});
+
+it('lets go of a deleted dream even when the one left shares its local id', async () => {
+  const service = launch();
+  await service.updateLastDreamWidget(update(dream(10, { remoteId: 41 }), 'alice'));
+  mockOffline = true;
+
+  // The same dream, repainted while offline, stays as it is.
+  await service.updateLastDreamWidget(update(dream(10, { remoteId: 41, imageUrl: 'https://paintings/41-again' }), 'alice'));
+  expect(laid()).toHaveLength(1);
+
+  // Another dream of that night, once the shown one is deleted, clears it.
+  await service.updateLastDreamWidget(update(dream(10, { remoteId: 42 }), 'alice'));
+  expect(laid()[1]).toEqual({ url: 'noctalia://recording', empty: 'Your next painted dream will appear here.' });
+  expect(paintings()).toEqual([]);
+});

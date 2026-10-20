@@ -1,5 +1,6 @@
 import { Directory, File, Paths } from 'expo-file-system';
 
+import { matchesDreamTarget } from '@/lib/dreamIdentity';
 import { resolveWithDiskCache } from '@/lib/dreamMediaDiskCache';
 import { getDreamRouteParams } from '@/lib/dreamRoute';
 import { lastDreamImageKey } from '@/lib/homeWidgets';
@@ -60,7 +61,7 @@ type LastDreamUpdate = {
 };
 
 /** Whose dream the widget shows, as far as this launch knows. */
-let shown: { userId: string | null; dreamId: number } | null = null;
+let shown: { userId: string | null; dream: Pick<DreamAnalysis, 'id' | 'remoteId' | 'clientRequestId'> } | null = null;
 let latest = 0;
 let queue: Promise<unknown> = Promise.resolve();
 
@@ -83,9 +84,11 @@ async function publish({ dream, userId, title, date, empty }: LastDreamUpdate, c
   // A newer update is on its way: this one would only put an older state back.
   if (!current()) return false;
   if (!image) {
-    // Offline, the widget may stay on an older dream of the same dreamer for a while, never
-    // on another dreamer's dream (a sign-out) nor on a dream newer than this one (a deletion).
-    if (shown?.userId !== userId || shown.dreamId > dream.id) clear();
+    // Offline, the widget may stay on an older dream of the same dreamer, or on this very
+    // dream, for a while. Never on another dreamer's dream (a sign-out), nor on a dream as
+    // new as this one or newer (a deletion: a synced dream may share this one's local id).
+    const kept = shown?.userId === userId && (shown.dream.id < dream.id || matchesDreamTarget(shown.dream, dream));
+    if (!kept) clear();
     return false;
   }
   // The same identity as the journal's own links: an id alone opens nothing when two match.
@@ -97,7 +100,7 @@ async function publish({ dream, userId, title, date, empty }: LastDreamUpdate, c
     url: appLink(`journal/${id}`, identity),
     empty,
   });
-  shown = { userId, dreamId: dream.id };
+  shown = { userId, dream: { id: dream.id, remoteId: dream.remoteId, clientRequestId: dream.clientRequestId } };
   // Only now is the painting it showed no longer needed.
   removePaintings(new Directory(found.directory), image);
   return true;
