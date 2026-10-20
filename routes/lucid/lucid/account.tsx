@@ -123,6 +123,6 @@ export default function LucidAccountScreen() {
 }
 
 const styles = StyleSheet.create({
-  importTitle: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.body[0], lineHeight: LucidType.body[1] },
-  importBody: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
+  importTitle: { fontFamily: 'Outfit_700Bold', fontSize: LucidType.body[0], lineHeight: LucidType.body[1] },
+  importBody: { fontFamily: 'Outfit_400Regular', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
 });

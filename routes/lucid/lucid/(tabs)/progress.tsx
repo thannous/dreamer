@@ -876,7 +876,7 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
   starTitle: {
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: 'Outfit_700Bold',
     fontSize: LucidType.caption[0],
     lineHeight: LucidType.caption[1],
     textAlign: 'center',
@@ -884,7 +884,7 @@ const styles = StyleSheet.create({
     textShadowRadius: 5,
   },
   starMeta: {
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: 'Outfit_400Regular',
     fontSize: LucidType.overline[0],
     lineHeight: LucidType.overline[1],
     textAlign: 'center',
@@ -898,7 +898,7 @@ const styles = StyleSheet.create({
   },
   heroCopy: { gap: LucidSpace.sm },
   overline: {
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: 'Outfit_700Bold',
     fontSize: LucidType.overline[0],
     lineHeight: LucidType.overline[1],
     letterSpacing: 1.5,
@@ -930,7 +930,7 @@ const styles = StyleSheet.create({
     gap: LucidSpace.md,
   },
   sectionTitle: {
-    fontFamily: 'SpaceGrotesk_500Medium',
+    fontFamily: 'Outfit_500Medium',
     fontSize: LucidType.bodySm[0],
     lineHeight: LucidType.bodySm[1],
     letterSpacing: 0.2,
@@ -942,7 +942,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   trendLabel: {
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: 'Outfit_700Bold',
     fontSize: LucidType.overline[0],
     lineHeight: LucidType.overline[1],
   },
@@ -956,7 +956,7 @@ const styles = StyleSheet.create({
     fontVariant: ['tabular-nums'],
   },
   metricLabel: {
-    fontFamily: 'SpaceGrotesk_500Medium',
+    fontFamily: 'Outfit_500Medium',
     fontSize: LucidType.caption[0],
     lineHeight: LucidType.caption[1],
   },
@@ -967,12 +967,12 @@ const styles = StyleSheet.create({
     gap: LucidSpace.sm,
   },
   coachText: {
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: 'Outfit_700Bold',
     fontSize: LucidType.bodySm[0],
     lineHeight: LucidType.bodySm[1],
   },
   small: {
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: 'Outfit_400Regular',
     fontSize: LucidType.caption[0],
     lineHeight: LucidType.caption[1],
   },
@@ -1013,12 +1013,12 @@ const styles = StyleSheet.create({
   method: { gap: LucidSpace.sm },
   methodTop: { flexDirection: 'row', justifyContent: 'space-between', gap: LucidSpace.md },
   methodName: {
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: 'Outfit_700Bold',
     fontSize: LucidType.bodySm[0],
     lineHeight: LucidType.bodySm[1],
   },
   methodMeta: {
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: 'Outfit_400Regular',
     fontSize: LucidType.overline[0],
     lineHeight: LucidType.overline[1],
   },
@@ -1031,7 +1031,7 @@ const styles = StyleSheet.create({
     gap: LucidSpace.md,
   },
   empty: {
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: 'Outfit_400Regular',
     fontSize: LucidType.bodySm[0],
     lineHeight: LucidType.bodySm[1],
     textAlign: 'center',
@@ -1051,7 +1051,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: LucidSpace.md,
     paddingVertical: LucidSpace.xs,
     overflow: 'hidden',
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: 'Outfit_700Bold',
     fontSize: LucidType.overline[0],
     lineHeight: LucidType.overline[1],
   },

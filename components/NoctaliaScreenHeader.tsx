@@ -456,7 +456,7 @@ const styles = StyleSheet.create({
     lineHeight: TypeScale.h2.lineHeight,
   },
   subtitle: {
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
     fontSize: TypeScale.body.fontSize,
     lineHeight: TypeScale.body.lineHeight,
   },
@@ -518,7 +518,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   chipText: {
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     fontSize: TypeScale.bodySm.fontSize,
     lineHeight: 20,
     flexGrow: 0,

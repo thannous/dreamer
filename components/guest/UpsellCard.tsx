@@ -78,6 +78,6 @@ const styles = StyleSheet.create({
   dismiss: { minWidth: 44, minHeight: 44, alignItems: 'center', justifyContent: 'center' },
   ctaText: {
     fontSize: TypeScale.bodySm.fontSize,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
   },
 });

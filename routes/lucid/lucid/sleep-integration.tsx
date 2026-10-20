@@ -683,12 +683,12 @@ export default function LucidSleepIntegrationScreen() {
 
 const styles = StyleSheet.create({
   notice: {
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: 'Outfit_400Regular',
     fontSize: LucidType.bodySm[0],
     lineHeight: LucidType.bodySm[1],
   },
   live: {
-    fontFamily: 'SpaceGrotesk_500Medium',
+    fontFamily: 'Outfit_500Medium',
     fontSize: LucidType.caption[0],
     lineHeight: LucidType.caption[1],
   },
@@ -699,13 +699,13 @@ const styles = StyleSheet.create({
     gap: LucidSpace.sm,
   },
   section: {
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: 'Outfit_700Bold',
     fontSize: LucidType.bodySm[0],
     lineHeight: LucidType.bodySm[1],
     marginTop: LucidSpace.sm,
   },
   body: {
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: 'Outfit_400Regular',
     fontSize: LucidType.caption[0],
     lineHeight: LucidType.caption[1],
   },

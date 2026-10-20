@@ -79,7 +79,7 @@ export async function runLucidVisualJourney({ browser, base, output, revision, o
       }));
       check(`${width}px: four complete tab labels`, labels.length === 4 && labels.every(l => !l.missing && l.height >= l.lineHeight && l.scrollWidth <= l.width + 1), labels);
       const fonts = await tab.playwright.evaluate(() => Array.from(document.querySelectorAll('[data-testid=lucid-today-shortcuts] *')).filter(el => el.children.length === 0 && el.textContent?.trim()).map(el => ({ text: el.textContent, font: getComputedStyle(el).fontFamily, height: el.getBoundingClientRect().height, scroll: el.scrollHeight, width: el.getBoundingClientRect().width, scrollWidth: el.scrollWidth })));
-      check(`${width}px: shortcuts have no clipped copy or missing font`, fonts.filter(f => f.font.includes('SpaceGrotesk')).every(f => f.scroll <= f.height + 1 && f.scrollWidth <= f.width + 1), fonts);
+      check(`${width}px: shortcuts have no clipped copy or missing font`, fonts.filter(f => f.font.includes('Outfit')).every(f => f.scroll <= f.height + 1 && f.scrollWidth <= f.width + 1), fonts);
       await shot(`05-today-${width}`);
     }
     await viewport.set({ width: 390, height: 844 });

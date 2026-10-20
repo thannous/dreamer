@@ -141,13 +141,13 @@ const styles = StyleSheet.create({
   nodeButton: { alignItems: 'center', gap: 5 },
   nodeImageBorder: { width: 54, height: 54, borderRadius: 27, padding: 3 },
   nodeImage: { width: '100%', height: '100%', borderRadius: 24 },
-  nodeLabel: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: TypeScale.caption.fontSize, lineHeight: 16, textAlign: 'center' },
+  nodeLabel: { fontFamily: Fonts.outfit.medium, fontSize: TypeScale.caption.fontSize, lineHeight: 16, textAlign: 'center' },
   count: { position: 'absolute', right: -6, top: -6, width: 22, height: 22, borderRadius: 11, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
-  countText: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: TypeScale.caption.fontSize, lineHeight: 16 },
+  countText: { fontFamily: Fonts.outfit.medium, fontSize: TypeScale.caption.fontSize, lineHeight: 16 },
   selection: { borderWidth: 1, borderRadius: 14, padding: 12, gap: 5 },
   // Over a story scene the detail floats on it instead of pushing the frame open.
   selectionOverlay: { position: 'absolute', left: 12, right: 12, bottom: 12 },
   halo: { position: 'absolute', top: 0, width: 54, height: 54, borderRadius: 27 },
-  selectionTitle: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: TypeScale.caption.fontSize, lineHeight: 18 },
-  related: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: TypeScale.caption.fontSize, lineHeight: 18 },
+  selectionTitle: { fontFamily: Fonts.outfit.medium, fontSize: TypeScale.caption.fontSize, lineHeight: 18 },
+  related: { fontFamily: Fonts.outfit.regular, fontSize: TypeScale.caption.fontSize, lineHeight: 18 },
 });

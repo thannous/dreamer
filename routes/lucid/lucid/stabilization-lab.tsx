@@ -661,17 +661,17 @@ const styles = StyleSheet.create({
   actions: { gap: LucidSpace.sm },
   footer: { gap: LucidSpace.sm },
   body: {
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: 'Outfit_400Regular',
     fontSize: LucidType.body[0],
     lineHeight: LucidType.body[1],
   },
   meta: {
-    fontFamily: 'SpaceGrotesk_500Medium',
+    fontFamily: 'Outfit_500Medium',
     fontSize: LucidType.caption[0],
     lineHeight: LucidType.caption[1],
   },
   stepTitle: {
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: 'Outfit_700Bold',
     fontSize: LucidType.body[0],
     lineHeight: LucidType.body[1],
   },

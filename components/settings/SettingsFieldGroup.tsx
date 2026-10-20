@@ -65,7 +65,7 @@ const TABULAR_NUMS_STYLE: TextStyle = { fontVariant: ['tabular-nums'] };
 const WEB_TIME_PICKER_STYLE = {
   backgroundColor: 'transparent',
   borderWidth: 0,
-  fontFamily: 'SpaceGrotesk_700Bold',
+  fontFamily: 'Outfit_700Bold',
   fontSize: TypeScale.h1.fontSize,
   minHeight: 48,
   textAlign: 'center',

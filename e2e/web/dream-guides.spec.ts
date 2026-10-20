@@ -113,7 +113,7 @@ for (const theme of ['light', 'dark'] as const) {
     const enlarged = await screen.evaluate((root) => {
       const text = Array.from(root.querySelectorAll<HTMLElement>('[dir="auto"]'))
         .map((element) => ({ element, style: getComputedStyle(element) }))
-        .filter(({ style }) => /Fraunces|SpaceGrotesk/.test(style.fontFamily))
+        .filter(({ style }) => /Fraunces|Outfit/.test(style.fontFamily))
         .map(({ element, style }) => ({ element, size: parseFloat(style.fontSize), lineHeight: parseFloat(style.lineHeight) }));
       text.forEach(({ element, size, lineHeight }) => {
         element.style.fontSize = `${size * 2}px`;

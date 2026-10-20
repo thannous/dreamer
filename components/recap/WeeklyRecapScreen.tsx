@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   eyebrow: {
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
     fontSize: TypeScale.caption.fontSize,
     letterSpacing: 1.4,
     textTransform: 'uppercase',
@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
     lineHeight: TypeScale.h1.lineHeight,
   },
   subtitle: {
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     fontSize: TypeScale.body.fontSize,
     lineHeight: TypeScale.body.lineHeight,
   },
@@ -335,12 +335,12 @@ const styles = StyleSheet.create({
     lineHeight: TypeScale.h1.lineHeight,
   },
   tileLabel: {
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     fontSize: TypeScale.caption.fontSize,
     textAlign: 'center',
   },
   tileHint: {
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     fontSize: TypeScale.caption.fontSize,
     textAlign: 'center',
   },
@@ -356,7 +356,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   cardEyebrow: {
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
     fontSize: TypeScale.caption.fontSize,
     letterSpacing: 1.2,
     textTransform: 'uppercase',
@@ -367,7 +367,7 @@ const styles = StyleSheet.create({
     lineHeight: TypeScale.h2.lineHeight,
   },
   cardBody: {
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     fontSize: TypeScale.bodySm.fontSize,
     lineHeight: 20,
   },
@@ -384,13 +384,13 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0,
   },
   signalLabel: {
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     fontSize: TypeScale.bodySm.fontSize,
   },
   signalValue: {
     flexShrink: 1,
     textAlign: 'right',
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
     fontSize: TypeScale.body.fontSize,
   },
   lockedPill: {
@@ -403,7 +403,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   lockedLabel: {
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
     fontSize: TypeScale.caption.fontSize,
   },
   primary: {
@@ -416,7 +416,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   primaryLabel: {
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
     fontSize: TypeScale.body.fontSize,
   },
   pressed: {

@@ -91,10 +91,10 @@ jest.mock('@/constants/journalTheme', () => ({
 
 jest.mock('@/constants/theme', () => ({
   Fonts: {
-    spaceGrotesk: {
-      regular: 'SpaceGrotesk-Regular',
-      medium: 'SpaceGrotesk-Medium',
-      bold: 'SpaceGrotesk-Bold',
+    outfit: {
+      regular: 'Outfit-Regular',
+      medium: 'Outfit-Medium',
+      bold: 'Outfit-Bold',
     },
   },
 }));

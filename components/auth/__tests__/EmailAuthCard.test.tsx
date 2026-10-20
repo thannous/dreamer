@@ -273,9 +273,9 @@ jest.mock('@/constants/journalTheme', () => ({
 
 jest.mock('@/constants/theme', () => ({
   Fonts: {
-    spaceGrotesk: {
-      regular: 'SpaceGrotesk-Regular',
-      medium: 'SpaceGrotesk-Medium',
+    outfit: {
+      regular: 'Outfit-Regular',
+      medium: 'Outfit-Medium',
     },
   },
   GlassCardTokens: {

@@ -187,12 +187,12 @@ const styles = StyleSheet.create({
     lineHeight: TypeScale.h1.lineHeight,
   },
   subtitle: {
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     fontSize: TypeScale.body.fontSize,
     lineHeight: TypeScale.body.lineHeight,
   },
   sectionLabel: {
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
     fontSize: TypeScale.bodySm.fontSize,
     lineHeight: 20,
     marginBottom: 4,
@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
   },
   dictionaryBody: {
     marginLeft: 40,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     fontSize: TypeScale.bodySm.fontSize,
     lineHeight: 21,
   },
@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
   dictionaryButtonText: {
     flexShrink: 1,
     minWidth: 0,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
     fontSize: TypeScale.bodySm.fontSize,
     lineHeight: TypeScale.bodySm.lineHeight,
   },

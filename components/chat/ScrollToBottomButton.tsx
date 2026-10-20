@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   text: {
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     fontSize: TypeScale.bodySm.fontSize,
   },
 });

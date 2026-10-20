@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
   },
   guideLabel: {
     flex: 1,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
     fontSize: TypeScale.caption.fontSize,
     lineHeight: 16,
     textTransform: 'uppercase',
@@ -257,7 +257,7 @@ const styles = StyleSheet.create({
     padding: ThemeLayout.spacing.md,
   },
   introText: {
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     fontSize: TypeScale.body.fontSize,
     lineHeight: TypeScale.body.lineHeight,
   },
@@ -273,7 +273,7 @@ const styles = StyleSheet.create({
     lineHeight: TypeScale.h2.lineHeight,
   },
   symbolCount: {
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     fontSize: TypeScale.caption.fontSize,
     lineHeight: 16,
   },
@@ -302,12 +302,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   pointIndexText: {
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
     fontSize: TypeScale.caption.fontSize,
   },
   practicalPointText: {
     flex: 1,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     fontSize: TypeScale.bodySm.fontSize,
     lineHeight: 21,
   },
@@ -320,7 +320,7 @@ const styles = StyleSheet.create({
     padding: ThemeLayout.spacing.md,
   },
   conclusionText: {
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     fontSize: TypeScale.bodySm.fontSize,
     lineHeight: 22,
   },
@@ -342,7 +342,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   emptyText: {
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     fontSize: TypeScale.body.fontSize,
   },
 });

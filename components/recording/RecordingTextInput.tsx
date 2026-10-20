@@ -410,12 +410,12 @@ export const RecordingTextInput = forwardRef<TextInputInstance, RecordingTextInp
 
 const styles = StyleSheet.create({
   chatEditor: { borderRadius: 16 },
-  chatInput: { fontFamily: Fonts.spaceGrotesk.regular, fontStyle: 'normal', fontSize: 16, lineHeight: 24, paddingLeft: 14, paddingRight: 116, paddingTop: 20, paddingBottom: 20, maxHeight: 180, borderRadius: 16 },
+  chatInput: { fontFamily: Fonts.outfit.regular, fontStyle: 'normal', fontSize: 16, lineHeight: 24, paddingLeft: 14, paddingRight: 116, paddingTop: 20, paddingBottom: 20, maxHeight: 180, borderRadius: 16 },
   chatActions: { bottom: 8, right: 8, left: 'auto', width: 96, minHeight: 44, paddingRight: 0, paddingBottom: 0 },
   composer: { gap: 16 },
   composerExpanded: { flex: 1, gap: 12, width: '100%', maxWidth: 512, alignSelf: 'center' },
   recordingSectionExpanded: { marginTop: 0, alignItems: 'flex-start' },
-  instructionTextExpanded: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 14, lineHeight: 20, textAlign: 'left' },
+  instructionTextExpanded: { fontFamily: Fonts.outfit.regular, fontSize: 14, lineHeight: 20, textAlign: 'left' },
   textInputSectionExpanded: { flex: 1 },
   editorExpanded: { flex: 1, borderRadius: 16 },
   textInputExpanded: {
@@ -553,7 +553,7 @@ const styles = StyleSheet.create({
     top: 15,
   },
   lengthWarning: {
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     fontSize: 12,
     textAlign: 'right',
   },
@@ -569,7 +569,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   voicePreviewTitle: {
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     fontSize: 16,
     lineHeight: 22,
   },
@@ -586,7 +586,7 @@ const styles = StyleSheet.create({
   },
   voiceReviewText: {
     flexShrink: 1,
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     fontSize: 14,
     lineHeight: 20,
   },
@@ -626,7 +626,7 @@ const styles = StyleSheet.create({
   },
   voiceHintText: {
     flex: 1,
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     fontSize: 14,
     lineHeight: 19,
   },
@@ -639,7 +639,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   voiceHintDismissText: {
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
     fontSize: 13,
     lineHeight: 17,
   },
@@ -651,12 +651,12 @@ const styles = StyleSheet.create({
   voiceCaptureStatus: {
     fontSize: 13,
     lineHeight: 18,
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     textAlign: 'center',
   },
   voiceCaptureDuration: {
     fontSize: 13,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
     fontVariant: ['tabular-nums'],
   },
 });

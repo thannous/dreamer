@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     fontSize: TypeScale.hero.fontSize,
     color: COLORS.text,
     textAlign: 'center',

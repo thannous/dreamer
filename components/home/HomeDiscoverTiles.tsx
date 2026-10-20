@@ -130,8 +130,9 @@ export const HomeDiscoverTiles = memo(function HomeDiscoverTiles({ now, selected
             {/* Dense from mid-height: three-line titles start there, even on the light paintings. */}
             <LinearGradient colors={VEIL} locations={[0.2, 0.45, 0.65, 1]} style={IMAGE_FILL} />
             <View className="flex-1 justify-end p-3.5">
+              {/* Tighter than the overline's tracking: « Symbol des Tages » holds one line in a tile. */}
               {tile.eyebrow ? <Text maxFontSizeMultiplier={1.3} style={{ color: NIGHT.accent.text }}
-                className="font-sans-medium text-overline uppercase">
+                className="font-sans-medium text-overline uppercase tracking-[0.8px]">
                 {tile.eyebrow}
               </Text> : null}
               <Text numberOfLines={3} maxFontSizeMultiplier={1.3} style={{ color: NIGHT.text.primary }}

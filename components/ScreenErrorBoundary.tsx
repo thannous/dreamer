@@ -171,20 +171,20 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: TypeScale.h2.fontSize,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
     textAlign: 'center',
     marginBottom: ThemeLayout.spacing.sm,
   },
   message: {
     fontSize: TypeScale.body.fontSize,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     textAlign: 'center',
     lineHeight: 24,
     marginBottom: ThemeLayout.spacing.md,
   },
   devError: {
     fontSize: TypeScale.caption.fontSize,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     textAlign: 'center',
     marginBottom: ThemeLayout.spacing.lg,
     padding: ThemeLayout.spacing.sm,
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: TypeScale.body.fontSize,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
   },
 });
 

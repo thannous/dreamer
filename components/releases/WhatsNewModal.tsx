@@ -394,7 +394,7 @@ const styles = StyleSheet.create({
     marginBottom: ThemeLayout.spacing.md,
   },
   badgeText: {
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
     fontSize: TypeScale.caption.fontSize,
     lineHeight: 16,
     letterSpacing: 1.3,
@@ -407,7 +407,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   subtitle: {
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     fontSize: TypeScale.body.fontSize,
     lineHeight: TypeScale.body.lineHeight,
     textAlign: 'center',
@@ -436,12 +436,12 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   featureTitle: {
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
     fontSize: TypeScale.body.fontSize,
     lineHeight: 21,
   },
   featureBody: {
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     fontSize: TypeScale.bodySm.fontSize,
     lineHeight: TypeScale.bodySm.lineHeight,
   },
@@ -457,7 +457,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   primaryButtonText: {
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
     fontSize: TypeScale.body.fontSize,
     lineHeight: 21,
     textAlign: 'center',
@@ -471,7 +471,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   laterText: {
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
     fontSize: TypeScale.bodySm.fontSize,
     lineHeight: 19,
   },

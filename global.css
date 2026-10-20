@@ -51,9 +51,9 @@
   /* ============================================================== typography ==
      React Native resolves weight through the family name, not `font-weight`, so
      each weight is its own token. */
-  --font-sans: 'SpaceGrotesk_400Regular';
-  --font-sans-medium: 'SpaceGrotesk_500Medium';
-  --font-sans-bold: 'SpaceGrotesk_700Bold';
+  --font-sans: 'Outfit_400Regular';
+  --font-sans-medium: 'Outfit_500Medium';
+  --font-sans-bold: 'Outfit_700Bold';
   --font-serif: 'Lora_400Regular';
   --font-serif-italic: 'Lora_400Regular_Italic';
   --font-serif-bold: 'Lora_700Bold';

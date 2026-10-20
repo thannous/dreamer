@@ -56,7 +56,7 @@ export function LetterHeader({ letter, count, countLabel }: LetterHeaderProps) {
         <Text
           selectable
           style={{
-            fontFamily: Fonts.spaceGrotesk.regular,
+            fontFamily: Fonts.outfit.regular,
             fontSize: TypeScale.bodySm.fontSize,
             color: noctalia.text.tertiary,
             fontVariant: ["tabular-nums"],

@@ -285,13 +285,13 @@ const styles = StyleSheet.create({
   searchInput: {
     minHeight: 50,
     flex: 1,
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: 'Outfit_400Regular',
     fontSize: LucidType.body[0],
     lineHeight: LucidType.body[1],
   },
   empty: {
     paddingVertical: LucidSpace.xl,
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: 'Outfit_400Regular',
     fontSize: LucidType.body[0],
     lineHeight: LucidType.body[1],
     textAlign: 'center',
@@ -304,23 +304,23 @@ const styles = StyleSheet.create({
   },
   dreamTitle: { flex: 1, minWidth: 0 },
   cardTitle: {
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: 'Outfit_700Bold',
     fontSize: LucidType.body[0],
     lineHeight: LucidType.body[1],
   },
   cardBody: {
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: 'Outfit_400Regular',
     fontSize: LucidType.caption[0],
     lineHeight: LucidType.caption[1],
   },
   date: {
     flexShrink: 0,
-    fontFamily: 'SpaceGrotesk_500Medium',
+    fontFamily: 'Outfit_500Medium',
     fontSize: LucidType.caption[0],
     lineHeight: LucidType.caption[1],
   },
   more: {
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: 'Outfit_400Regular',
     fontSize: LucidType.caption[0],
     lineHeight: LucidType.caption[1],
     textAlign: 'center',

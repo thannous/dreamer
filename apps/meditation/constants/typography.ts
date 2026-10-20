@@ -25,9 +25,9 @@ export const FontFamily = {
   display: 'Fraunces_600SemiBold',
   displayBold: 'Fraunces_700Bold',
   displayLight: 'Fraunces_400Regular',
-  sans: 'SpaceGrotesk_400Regular',
-  medium: 'SpaceGrotesk_500Medium',
-  bold: 'SpaceGrotesk_700Bold',
+  sans: 'Outfit_400Regular',
+  medium: 'Outfit_500Medium',
+  bold: 'Outfit_700Bold',
   serif: 'Lora_400Regular',
   serifItalic: 'Lora_400Regular_Italic',
 } as const;

@@ -50,7 +50,7 @@ export function CategoryHeader({ category, count, language }: CategoryHeaderProp
         </Text>
         <Text
           style={{
-            fontFamily: Fonts.spaceGrotesk.regular,
+            fontFamily: Fonts.outfit.regular,
             fontSize: TypeScale.bodySm.fontSize,
             color: noctalia.text.tertiary,
             fontVariant: ['tabular-nums'],

@@ -1464,7 +1464,7 @@ const styles = StyleSheet.create({
   errorText: {
     // color: set dynamically
     fontSize: TypeScale.body.fontSize,
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     textAlign: 'center',
   },
   quotaCheckContainer: {
@@ -1481,7 +1481,7 @@ const styles = StyleSheet.create({
   },
   retryButtonText: {
     fontSize: TypeScale.body.fontSize,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
   },
   imageContainer: {
     width: '100%',
@@ -1544,7 +1544,7 @@ const styles = StyleSheet.create({
   },
   retryTargetTitle: {
     fontSize: TypeScale.bodySm.fontSize,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
     textTransform: 'uppercase',
   },
   retryTargetBody: {
@@ -1564,7 +1564,7 @@ const styles = StyleSheet.create({
   },
   retryTargetButtonText: {
     fontSize: TypeScale.bodySm.fontSize,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
   },
   quickCategoriesLabel: {
     fontSize: TypeScale.caption.fontSize,
@@ -1597,7 +1597,7 @@ const styles = StyleSheet.create({
   },
   quickCategoryText: {
     fontSize: TypeScale.bodySm.fontSize,
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     // color: set dynamically
   },
   decoRuleContainer: {
@@ -1611,7 +1611,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   missingDreamBackButtonText: {
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
     fontSize: TypeScale.body.fontSize,
   },
   // Exploration blocked screen
@@ -1629,7 +1629,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   blockedMessage: {
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     fontSize: TypeScale.body.fontSize,
     lineHeight: 24,
     textAlign: 'center',
@@ -1645,7 +1645,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   upgradeButtonText: {
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
     fontSize: TypeScale.body.fontSize,
   },
   // Message counter
@@ -1660,7 +1660,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   messageCounter: {
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     fontSize: TypeScale.caption.fontSize,
   },
   limitWarningBanner: {
@@ -1679,7 +1679,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   limitWarningText: {
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     fontSize: TypeScale.bodySm.fontSize,
     flex: 1,
     lineHeight: TypeScale.bodySm.lineHeight,
@@ -1691,7 +1691,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
   },
   limitCtaText: {
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     fontSize: TypeScale.caption.fontSize,
     fontWeight: '600',
   },

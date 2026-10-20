@@ -385,13 +385,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   title: {
-    fontFamily: isLucidTrainer ? 'Fraunces_600SemiBold' : Fonts.spaceGrotesk.bold,
+    fontFamily: isLucidTrainer ? 'Fraunces_600SemiBold' : Fonts.outfit.bold,
     fontSize: isLucidTrainer ? 34 : 22,
     lineHeight: isLucidTrainer ? 40 : 28,
     marginBottom: ThemeLayout.spacing.xs,
   },
   subtitle: {
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     fontSize: TypeScale.bodySm.fontSize,
     lineHeight: 20,
     marginBottom: ThemeLayout.spacing.md,
@@ -403,7 +403,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     marginBottom: 10,
     fontSize: TypeScale.body.fontSize,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     width: '100%',
   },
   inputWithToggle: {
@@ -424,7 +424,7 @@ const styles = StyleSheet.create({
   },
   errorText: {
     fontSize: TypeScale.caption.fontSize,
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     marginBottom: ThemeLayout.spacing.xs,
   },
   submitError: {
@@ -442,7 +442,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   primaryButtonText: {
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
     fontSize: TypeScale.body.fontSize,
   },
   secondaryButton: {
@@ -456,7 +456,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   secondaryButtonText: {
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
     fontSize: TypeScale.body.fontSize,
   },
   buttonPressed: {

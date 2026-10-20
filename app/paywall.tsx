@@ -992,13 +992,13 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: TypeScale.h1.fontSize,
     lineHeight: 31,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
     textAlign: 'center',
   },
   headerSubtitle: {
     fontSize: TypeScale.body.fontSize,
     lineHeight: TypeScale.body.lineHeight,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     marginTop: 6,
     textAlign: 'center',
   },
@@ -1015,11 +1015,11 @@ const styles = StyleSheet.create({
     lineHeight: TypeScale.overline.lineHeight,
     letterSpacing: TypeScale.overline.letterSpacing,
     textTransform: 'uppercase',
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
   },
   expiryDate: {
     fontSize: TypeScale.bodySm.fontSize,
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     marginBottom: 8,
   },
   closeButton: {
@@ -1039,7 +1039,7 @@ const styles = StyleSheet.create({
   },
   closeLabel: {
     fontSize: TypeScale.bodySm.fontSize,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
   },
   loadingRow: {
     flexDirection: 'row',
@@ -1049,7 +1049,7 @@ const styles = StyleSheet.create({
   },
   loadingLabel: {
     fontSize: TypeScale.bodySm.fontSize,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
   },
   scroll: {
     flex: 1,
@@ -1100,7 +1100,7 @@ const styles = StyleSheet.create({
   },
   comparisonHeaderText: {
     fontSize: TypeScale.caption.fontSize,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
     textAlign: 'center',
   },
   comparisonPlusHeader: {
@@ -1113,7 +1113,7 @@ const styles = StyleSheet.create({
     fontSize: TypeScale.bodySm.fontSize,
     letterSpacing: 0.8,
     textTransform: 'uppercase',
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
   },
   comparisonIcon: {
     width: 27,
@@ -1127,12 +1127,12 @@ const styles = StyleSheet.create({
     minWidth: 0,
     fontSize: TypeScale.caption.fontSize,
     lineHeight: 15,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
   },
   comparisonFreeText: {
     fontSize: TypeScale.caption.fontSize,
     lineHeight: 15,
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     textAlign: 'center',
   },
   comparisonFreeValue: {
@@ -1150,13 +1150,13 @@ const styles = StyleSheet.create({
   comparisonInfinity: {
     fontSize: TypeScale.h2.fontSize,
     lineHeight: TypeScale.h2.lineHeight,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
   },
   comparisonPlusText: {
     flexShrink: 1,
     fontSize: TypeScale.caption.fontSize,
     lineHeight: 15,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
     textAlign: 'center',
   },
   pricingGrid: {
@@ -1195,15 +1195,15 @@ const styles = StyleSheet.create({
     flexShrink: 1,
     fontSize: TypeScale.body.fontSize,
     lineHeight: TypeScale.body.lineHeight,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
   },
   benefitTextUnlimited: {
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
   },
   benefitInfinity: {
     fontSize: TypeScale.h3.fontSize,
     lineHeight: TypeScale.h3.lineHeight,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
   },
   primaryButton: {
     borderRadius: ThemeLayout.borderRadius.full,
@@ -1222,11 +1222,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: TypeScale.bodySm.fontSize,
     lineHeight: TypeScale.bodySm.lineHeight,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
   },
   primaryLabel: {
     fontSize: TypeScale.body.fontSize,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
   },
   secondaryButton: {
     alignItems: 'center',
@@ -1238,13 +1238,13 @@ const styles = StyleSheet.create({
   },
   secondaryLabel: {
     fontSize: TypeScale.bodySm.fontSize,
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
   },
   notice: {
     marginTop: 8,
     fontSize: TypeScale.caption.fontSize,
     lineHeight: 16,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     textAlign: 'center',
   },
   restoreButton: {
@@ -1262,7 +1262,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   legalLink: {
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     fontSize: TypeScale.caption.fontSize,
     textDecorationLine: 'underline',
   },
@@ -1274,13 +1274,13 @@ const styles = StyleSheet.create({
     opacity: 0.75,
   },
   legalSeparator: {
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     fontSize: TypeScale.caption.fontSize,
   },
   emptyText: {
     marginTop: ThemeLayout.spacing.md,
     fontSize: TypeScale.bodySm.fontSize,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     textAlign: 'center',
   },
   upgradedMessageContainer: {
@@ -1291,13 +1291,13 @@ const styles = StyleSheet.create({
   },
   upgradedTitle: {
     fontSize: TypeScale.h2.fontSize,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
     marginBottom: ThemeLayout.spacing.md,
     textAlign: 'center',
   },
   upgradedSubtitle: {
     fontSize: TypeScale.bodySm.fontSize,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     textAlign: 'center',
     marginBottom: ThemeLayout.spacing.lg,
     lineHeight: 20,

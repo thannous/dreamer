@@ -66,7 +66,7 @@ jest.mock('@/constants/noctaliaDesign', () => ({
 }));
 
 jest.mock('@/constants/theme', () => ({
-  Fonts: { spaceGrotesk: { bold: 'SpaceGrotesk-Bold', medium: 'SpaceGrotesk-Medium', regular: 'SpaceGrotesk-Regular' } },
+  Fonts: { outfit: { bold: 'Outfit-Bold', medium: 'Outfit-Medium', regular: 'Outfit-Regular' } },
 }));
 
 jest.mock('@/context/AuthContext', () => ({

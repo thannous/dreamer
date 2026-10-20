@@ -152,10 +152,10 @@ jest.doMock('@/hooks/useTranslation', () => ({
 jest.doMock('@/constants/theme', () => ({
   Fonts: {
     fraunces: { semiBold: 'Fraunces-SemiBold', medium: 'Fraunces-Medium' },
-    spaceGrotesk: {
-      regular: 'SpaceGrotesk-Regular',
-      medium: 'SpaceGrotesk-Medium',
-      bold: 'SpaceGrotesk-Bold',
+    outfit: {
+      regular: 'Outfit-Regular',
+      medium: 'Outfit-Medium',
+      bold: 'Outfit-Bold',
     },
   },
 }));

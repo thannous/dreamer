@@ -858,7 +858,7 @@ const styles = StyleSheet.create({
   },
   heroCopy: { gap: LucidSpace.sm },
   overline: {
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: 'Outfit_700Bold',
     fontSize: LucidType.overline[0],
     lineHeight: LucidType.overline[1],
     letterSpacing: 1.5,
@@ -871,7 +871,7 @@ const styles = StyleSheet.create({
     letterSpacing: -0.8,
   },
   subtitle: {
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: 'Outfit_400Regular',
     fontSize: LucidType.bodySm[0],
     lineHeight: LucidType.bodySm[1],
   },
@@ -909,12 +909,12 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   sleepEndpointLabel: {
-    fontFamily: 'SpaceGrotesk_500Medium',
+    fontFamily: 'Outfit_500Medium',
     fontSize: LucidType.overline[0],
     lineHeight: LucidType.overline[1],
   },
   sleepEndpointTime: {
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: 'Outfit_700Bold',
     fontSize: LucidType.bodySm[0],
     lineHeight: LucidType.bodySm[1],
     fontVariant: ['tabular-nums'],
@@ -960,22 +960,22 @@ const styles = StyleSheet.create({
   },
   ritualCopy: { flex: 1, gap: LucidSpace.xs },
   cardTitle: {
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: 'Outfit_700Bold',
     fontSize: LucidType.h3[0],
     lineHeight: LucidType.h3[1],
   },
   body: {
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: 'Outfit_400Regular',
     fontSize: LucidType.caption[0],
     lineHeight: LucidType.caption[1],
   },
   error: {
-    fontFamily: 'SpaceGrotesk_500Medium',
+    fontFamily: 'Outfit_500Medium',
     fontSize: LucidType.caption[0],
     lineHeight: LucidType.caption[1],
   },
   sectionTitle: {
-    fontFamily: 'SpaceGrotesk_500Medium',
+    fontFamily: 'Outfit_500Medium',
     fontSize: LucidType.bodySm[0],
     lineHeight: LucidType.bodySm[1],
     letterSpacing: 0.2,
@@ -989,7 +989,7 @@ const styles = StyleSheet.create({
   safeguard: { flexDirection: 'row', alignItems: 'flex-start', gap: LucidSpace.sm },
   safeguardText: {
     flex: 1,
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: 'Outfit_400Regular',
     fontSize: LucidType.caption[0],
     lineHeight: LucidType.caption[1],
   },
@@ -1020,7 +1020,7 @@ const styles = StyleSheet.create({
   },
   soundReflow: { width: '100%', flex: 0 },
   soundLabel: {
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: 'Outfit_700Bold',
     fontSize: LucidType.caption[0],
     lineHeight: LucidType.caption[1],
   },
@@ -1035,7 +1035,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   levelText: {
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: 'Outfit_700Bold',
     fontSize: LucidType.overline[0],
     lineHeight: LucidType.overline[1],
   },
@@ -1052,13 +1052,13 @@ const styles = StyleSheet.create({
   },
   timerReflow: { width: '100%', flex: 0 },
   timerValue: {
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: 'Outfit_700Bold',
     fontSize: LucidType.h2[0],
     lineHeight: LucidType.h2[1],
     fontVariant: ['tabular-nums'],
   },
   timerLabel: {
-    fontFamily: 'SpaceGrotesk_500Medium',
+    fontFamily: 'Outfit_500Medium',
     fontSize: LucidType.overline[0],
     lineHeight: LucidType.overline[1],
   },

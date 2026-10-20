@@ -7,9 +7,9 @@ import { Fraunces_700Bold } from '@expo-google-fonts/fraunces/700Bold';
 import { Lora_400Regular } from '@expo-google-fonts/lora/400Regular';
 import { Lora_400Regular_Italic } from '@expo-google-fonts/lora/400Regular_Italic';
 import { Lora_700Bold } from '@expo-google-fonts/lora/700Bold';
-import { SpaceGrotesk_400Regular } from '@expo-google-fonts/space-grotesk/400Regular';
-import { SpaceGrotesk_500Medium } from '@expo-google-fonts/space-grotesk/500Medium';
-import { SpaceGrotesk_700Bold } from '@expo-google-fonts/space-grotesk/700Bold';
+import { Outfit_400Regular } from '@expo-google-fonts/outfit/400Regular';
+import { Outfit_500Medium } from '@expo-google-fonts/outfit/500Medium';
+import { Outfit_700Bold } from '@expo-google-fonts/outfit/700Bold';
 import { useFonts } from 'expo-font';
 import { Stack, useGlobalSearchParams, usePathname, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -96,9 +96,9 @@ function RootNavigator() {
     Fraunces_500Medium,
     Fraunces_600SemiBold,
     Fraunces_700Bold,
-    SpaceGrotesk_400Regular,
-    SpaceGrotesk_500Medium,
-    SpaceGrotesk_700Bold,
+    Outfit_400Regular,
+    Outfit_500Medium,
+    Outfit_700Bold,
     Lora_400Regular,
     Lora_400Regular_Italic,
     Lora_700Bold,

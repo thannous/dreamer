@@ -21,7 +21,7 @@ async function expectReadableNavigation(page: Page) {
     expect(bounds.width).toBeGreaterThanOrEqual(44);
     expect(bounds.height).toBeGreaterThanOrEqual(44);
     const text = await tab.evaluate(root => Array.from(root.querySelectorAll<HTMLElement>('[dir="auto"]'))
-      .filter(el => /SpaceGrotesk/.test(getComputedStyle(el).fontFamily))
+      .filter(el => /Outfit/.test(getComputedStyle(el).fontFamily))
       .map(el => {
         const range = document.createRange();
         range.selectNodeContents(el);

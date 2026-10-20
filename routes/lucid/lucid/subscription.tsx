@@ -1086,7 +1086,7 @@ const styles = StyleSheet.create({
   },
   featureText: {
     flex: 1,
-    fontFamily: 'SpaceGrotesk_500Medium',
+    fontFamily: 'Outfit_500Medium',
     fontSize: LucidType.bodySm[0],
     lineHeight: LucidType.bodySm[1],
   },
@@ -1100,12 +1100,12 @@ const styles = StyleSheet.create({
     gap: LucidSpace.sm,
   },
   cardTitle: {
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: 'Outfit_700Bold',
     fontSize: LucidType.body[0],
     lineHeight: LucidType.body[1],
   },
   cardBody: {
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: 'Outfit_400Regular',
     fontSize: LucidType.caption[0],
     lineHeight: LucidType.caption[1],
   },
@@ -1141,7 +1141,7 @@ const styles = StyleSheet.create({
     gap: LucidSpace.sm,
   },
   planName: {
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: 'Outfit_700Bold',
     fontSize: LucidType.body[0],
     lineHeight: LucidType.body[1],
   },
@@ -1152,18 +1152,18 @@ const styles = StyleSheet.create({
     gap: LucidSpace.sm,
   },
   price: {
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: 'Outfit_700Bold',
     fontSize: LucidType.h2[0],
     lineHeight: LucidType.h2[1],
     fontVariant: ['tabular-nums'],
   },
   period: {
-    fontFamily: 'SpaceGrotesk_500Medium',
+    fontFamily: 'Outfit_500Medium',
     fontSize: LucidType.caption[0],
     lineHeight: LucidType.caption[1],
   },
   billing: {
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: 'Outfit_400Regular',
     fontSize: LucidType.caption[0],
     lineHeight: LucidType.caption[1],
   },
@@ -1181,12 +1181,12 @@ const styles = StyleSheet.create({
     flex: 1,
     // _600SemiBold n'est chargée nulle part (app/_layout.tsx ne charge que 400,
     // 500 et 700) : l'appeler retombait silencieusement sur la police système.
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: 'Outfit_700Bold',
     fontSize: LucidType.caption[0],
     lineHeight: LucidType.caption[1],
   },
   storeNote: {
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: 'Outfit_400Regular',
     fontSize: LucidType.overline[0],
     lineHeight: LucidType.overline[1],
     textAlign: 'center',

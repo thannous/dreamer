@@ -546,7 +546,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   description: {
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     fontSize: TypeScale.body.fontSize,
     lineHeight: TypeScale.body.lineHeight,
     textAlign: 'center',
@@ -567,7 +567,7 @@ const styles = StyleSheet.create({
     borderRadius: 3,
   },
   progressText: {
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     fontSize: TypeScale.bodySm.fontSize,
   },
   sleepSoundCard: {
@@ -597,17 +597,17 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   lucidTrainerTitle: {
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
     fontSize: TypeScale.body.fontSize,
     lineHeight: 21,
   },
   lucidTrainerBody: {
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     fontSize: TypeScale.bodySm.fontSize,
     lineHeight: TypeScale.bodySm.lineHeight,
   },
   lucidTrainerAction: {
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
     fontSize: TypeScale.bodySm.fontSize,
     lineHeight: TypeScale.bodySm.lineHeight,
   },
@@ -630,12 +630,12 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   sleepSoundTitle: {
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
     fontSize: TypeScale.body.fontSize,
     lineHeight: 21,
   },
   sleepSoundBody: {
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     fontSize: TypeScale.bodySm.fontSize,
     lineHeight: TypeScale.bodySm.lineHeight,
   },
@@ -670,11 +670,11 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   stepTitle: {
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     fontSize: TypeScale.body.fontSize,
   },
   stepBody: {
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     fontSize: TypeScale.bodySm.fontSize,
     lineHeight: 20,
   },

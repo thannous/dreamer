@@ -365,12 +365,12 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: TypeScale.h3.fontSize,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
   },
   subtitle: {
     marginTop: 4,
     fontSize: TypeScale.bodySm.fontSize,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
   },
   errorBanner: {
     padding: 12,
@@ -378,7 +378,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   errorText: {
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
   },
   row: {
     gap: 8,
@@ -391,11 +391,11 @@ const styles = StyleSheet.create({
   rowLabel: {
     fontSize: TypeScale.bodySm.fontSize,
     textTransform: 'uppercase',
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
   },
   rowValue: {
     fontSize: TypeScale.body.fontSize,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
   },
   progressTrack: {
     height: 8,
@@ -411,7 +411,7 @@ const styles = StyleSheet.create({
     padding: 12,
   },
   noticeText: {
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     fontSize: TypeScale.bodySm.fontSize,
   },
   manageButton: {
@@ -424,7 +424,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   manageText: {
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
     fontSize: TypeScale.bodySm.fontSize,
   },
   ctaButton: {
@@ -435,6 +435,6 @@ const styles = StyleSheet.create({
     borderRadius: 999,
   },
   ctaText: {
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
   },
 });

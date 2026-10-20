@@ -690,7 +690,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: TypeScale.body.fontSize,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     maxHeight: 100,
     paddingVertical: 8,
   },

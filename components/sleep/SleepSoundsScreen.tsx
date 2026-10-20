@@ -480,7 +480,7 @@ const styles = StyleSheet.create({
   kicker: { flexDirection: 'row', alignItems: 'center', gap: 10, flexShrink: 1 },
   kickerRule: { width: 22, height: 1 },
   kickerText: {
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     fontSize: TypeScale.overline.fontSize,
     lineHeight: TypeScale.overline.lineHeight,
     letterSpacing: TypeScale.overline.letterSpacing,
@@ -496,7 +496,7 @@ const styles = StyleSheet.create({
   },
   story: { gap: 10 },
   eyebrow: {
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     fontSize: TypeScale.overline.fontSize,
     lineHeight: TypeScale.overline.lineHeight,
     letterSpacing: TypeScale.overline.letterSpacing,
@@ -529,7 +529,7 @@ const styles = StyleSheet.create({
   },
   sceneImage: { flex: 1, borderRadius: 26 },
   sceneLabel: {
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     fontSize: TypeScale.caption.fontSize,
     lineHeight: 16,
     textAlign: 'center',
@@ -537,7 +537,7 @@ const styles = StyleSheet.create({
   },
   durations: { gap: 10 },
   groupLabel: {
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     fontSize: TypeScale.overline.fontSize,
     lineHeight: TypeScale.overline.lineHeight,
     letterSpacing: TypeScale.overline.letterSpacing,
@@ -553,7 +553,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   durationText: {
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     fontSize: TypeScale.bodySm.fontSize,
     lineHeight: 20,
     fontVariant: ['tabular-nums'],
@@ -601,17 +601,17 @@ const styles = StyleSheet.create({
     fontVariant: ['tabular-nums'],
   },
   playerLabel: {
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     fontSize: TypeScale.bodySm.fontSize,
     lineHeight: 19,
   },
   errorText: {
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     fontSize: TypeScale.bodySm.fontSize,
     lineHeight: TypeScale.bodySm.lineHeight,
   },
   hintText: {
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     fontSize: TypeScale.bodySm.fontSize,
     lineHeight: TypeScale.bodySm.lineHeight,
   },

@@ -84,12 +84,12 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: TypeScale.h2.fontSize,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
     marginBottom: 16,
   },
   message: {
     fontSize: TypeScale.body.fontSize,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     textAlign: 'center',
     marginBottom: 32,
   },
@@ -101,6 +101,6 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: TypeScale.body.fontSize,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
   },
 });

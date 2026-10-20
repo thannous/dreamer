@@ -184,17 +184,17 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: TypeScale.h2.fontSize,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
     textAlign: 'center',
   },
   subtitle: {
     fontSize: TypeScale.bodySm.fontSize,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     lineHeight: 20,
     textAlign: 'center',
   },
   emailHighlight: {
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
   },
   badge: {
     flexDirection: 'row',
@@ -207,18 +207,18 @@ const styles = StyleSheet.create({
   },
   badgeText: {
     fontSize: TypeScale.bodySm.fontSize,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
   },
   status: {
     marginTop: ThemeLayout.spacing.sm,
     fontSize: TypeScale.bodySm.fontSize,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     textAlign: 'center',
   },
   cooldown: {
     marginTop: 4,
     fontSize: TypeScale.caption.fontSize,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     textAlign: 'center',
   },
 });

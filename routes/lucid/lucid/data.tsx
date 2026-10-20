@@ -475,7 +475,7 @@ export default function LucidDataScreen() {
 }
 
 const styles = StyleSheet.create({
-  body: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
+  body: { fontFamily: 'Outfit_400Regular', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
   buttons: { flexDirection: 'row', gap: LucidSpace.sm },
   flex: { flex: 1 },
   bridgeTop: {

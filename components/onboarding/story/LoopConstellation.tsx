@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
   starCore: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, borderRadius: NODE / 2, opacity: 0.08 },
   copy: { alignItems: 'center', gap: 3, alignSelf: 'stretch' },
   title: { fontFamily: Fonts.fraunces.medium, fontSize: TypeScale.h3.fontSize, lineHeight: TypeScale.h3.lineHeight, textAlign: 'center' },
-  body: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: TypeScale.bodySm.fontSize, lineHeight: TypeScale.bodySm.lineHeight, textAlign: 'center' },
+  body: { fontFamily: Fonts.outfit.regular, fontSize: TypeScale.bodySm.fontSize, lineHeight: TypeScale.bodySm.lineHeight, textAlign: 'center' },
   thread: { position: 'absolute', top: 4 + NODE / 2, height: StyleSheet.hairlineWidth * 2, transformOrigin: 'left' },
   sparkLane: { position: 'absolute', top: 4 + NODE / 2 - 6, height: 12 },
   sparkRunner: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 },

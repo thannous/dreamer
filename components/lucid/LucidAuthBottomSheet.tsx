@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
   sheet: { paddingHorizontal: LucidSpace.gutter, paddingTop: LucidSpace.md, gap: LucidSpace.lg },
   scroll: { flexShrink: 1 },
   heading: { alignItems: 'center', gap: LucidSpace.sm, marginBottom: LucidSpace.lg },
-  title: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.h2[0], lineHeight: LucidType.h2[1], textAlign: 'center' },
-  body: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1] },
+  title: { fontFamily: 'Outfit_700Bold', fontSize: LucidType.h2[0], lineHeight: LucidType.h2[1], textAlign: 'center' },
+  body: { fontFamily: 'Outfit_400Regular', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1] },
   actions: { gap: LucidSpace.sm },
 });

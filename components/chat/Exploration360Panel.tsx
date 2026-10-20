@@ -52,11 +52,11 @@ export function Exploration360Panel({ hasSynthesis, canGenerateSynthesis, onSynt
 
 const styles = StyleSheet.create({
   panel: { gap: 12 },
-  body: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: TypeScale.bodySm.fontSize, lineHeight: 20 },
+  body: { fontFamily: Fonts.outfit.regular, fontSize: TypeScale.bodySm.fontSize, lineHeight: 20 },
   button: { minHeight: 48, paddingHorizontal: 18, paddingVertical: 12, borderRadius: 14,
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12 },
-  buttonText: { fontFamily: Fonts.spaceGrotesk.bold, fontSize: TypeScale.body.fontSize, lineHeight: TypeScale.body.lineHeight, flexShrink: 1 },
-  access: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: TypeScale.caption.fontSize, lineHeight: 17 },
+  buttonText: { fontFamily: Fonts.outfit.bold, fontSize: TypeScale.body.fontSize, lineHeight: TypeScale.body.lineHeight, flexShrink: 1 },
+  access: { fontFamily: Fonts.outfit.regular, fontSize: TypeScale.caption.fontSize, lineHeight: 17 },
   reflectionPanel: { borderTopWidth: StyleSheet.hairlineWidth, paddingTop: 12, gap: 10 },
   reflectionButton: { minHeight: 48, borderRadius: 14, paddingHorizontal: 16, paddingVertical: 10 },
   reflectionButtonText: { flex: 1, textAlign: 'center', fontFamily: Fonts.fraunces.semiBold, fontSize: TypeScale.h2.fontSize, lineHeight: TypeScale.h2.lineHeight },

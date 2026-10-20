@@ -249,29 +249,29 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
     fontSize: TypeScale.body.fontSize,
   },
   subtitle: {
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     fontSize: TypeScale.caption.fontSize,
     marginTop: 2,
   },
   status: {
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     fontSize: TypeScale.bodySm.fontSize,
   },
   metrics: {
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     fontSize: TypeScale.caption.fontSize,
   },
   note: {
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     fontSize: TypeScale.caption.fontSize,
     lineHeight: 17,
   },
   error: {
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     fontSize: TypeScale.caption.fontSize,
     lineHeight: 17,
   },
@@ -289,7 +289,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: ThemeLayout.spacing.md,
   },
   primaryLabel: {
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
     fontSize: TypeScale.bodySm.fontSize,
   },
   secondaryButton: {
@@ -301,7 +301,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: ThemeLayout.spacing.md,
   },
   secondaryLabel: {
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     fontSize: TypeScale.bodySm.fontSize,
   },
   pressed: {

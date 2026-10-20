@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: TypeScale.body.fontSize,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
   },
   compactTitle: {
     fontSize: TypeScale.body.fontSize,
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
   subtitle: {
     marginTop: 2,
     fontSize: TypeScale.bodySm.fontSize,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
   },
   badge: {
     borderRadius: ThemeLayout.borderRadius.full,
@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
   },
   badgeText: {
     fontSize: TypeScale.caption.fontSize,
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
   },
   compactBadge: {
     position: 'absolute',
@@ -239,19 +239,19 @@ const styles = StyleSheet.create({
   },
   price: {
     fontSize: TypeScale.h2.fontSize,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
   },
   compactPrice: {
     fontSize: TypeScale.h3.fontSize,
   },
   interval: {
     fontSize: TypeScale.bodySm.fontSize,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
   },
   billingDetail: {
     fontSize: TypeScale.caption.fontSize,
     lineHeight: 16,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
   },
 });
 

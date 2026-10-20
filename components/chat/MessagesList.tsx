@@ -480,7 +480,7 @@ const styles = StyleSheet.create({
   messageBubbleUser: {},
   messageText: {
     fontSize: TypeScale.bodySm.fontSize,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     lineHeight: 20,
   },
   messageContent: {

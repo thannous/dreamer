@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: TypeScale.body.fontSize,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
     marginBottom: ThemeLayout.spacing.xs,
   },
   message: {
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
   },
   actionText: {
     fontSize: TypeScale.bodySm.fontSize,
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
   },
   statusMessage: {
     marginTop: ThemeLayout.spacing.xs,

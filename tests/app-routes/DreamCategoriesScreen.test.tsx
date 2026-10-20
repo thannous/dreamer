@@ -172,9 +172,9 @@ jest.mock('@/constants/theme', () => ({
       medium: 'Fraunces-Medium',
       semiBold: 'Fraunces-SemiBold',
     },
-    spaceGrotesk: {
-      regular: 'SpaceGrotesk-Regular',
-      medium: 'SpaceGrotesk-Medium',
+    outfit: {
+      regular: 'Outfit-Regular',
+      medium: 'Outfit-Medium',
     },
     lora: {
       bold: 'Lora-Bold',

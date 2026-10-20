@@ -101,12 +101,12 @@ const styles = StyleSheet.create({
     flexShrink: 0,
   },
   description: {
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     fontSize: TypeScale.bodySm.fontSize,
     lineHeight: 20,
   },
   metadata: {
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     fontSize: TypeScale.caption.fontSize,
     lineHeight: 17,
   },

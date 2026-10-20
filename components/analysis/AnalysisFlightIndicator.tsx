@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     opacity: 0.82,
   },
   label: {
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     fontSize: TypeScale.bodySm.fontSize,
     flexShrink: 1,
   },

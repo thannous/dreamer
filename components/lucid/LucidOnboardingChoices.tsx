@@ -725,7 +725,7 @@ const styles = StyleSheet.create({
   },
   goalChoiceReflow: { position: 'relative', width: '46%', top: undefined, left: undefined, right: undefined },
   goalLabel: {
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: 'Outfit_700Bold',
     fontSize: LucidType.caption[0],
     lineHeight: LucidType.caption[1],
     textAlign: 'center',
@@ -823,7 +823,7 @@ const styles = StyleSheet.create({
   experienceTextStage: { textAlign: 'center' },
   startingPoint: {
     minHeight: LucidType.overline[1],
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: 'Outfit_700Bold',
     fontSize: LucidType.overline[0],
     lineHeight: LucidType.overline[1],
     letterSpacing: 1.2,
@@ -836,7 +836,7 @@ const styles = StyleSheet.create({
     lineHeight: LucidType.h2[1],
   },
   experienceHint: {
-    fontFamily: 'SpaceGrotesk_500Medium',
+    fontFamily: 'Outfit_500Medium',
     fontSize: LucidType.bodySm[0],
     lineHeight: LucidType.bodySm[1],
   },
@@ -866,7 +866,7 @@ const styles = StyleSheet.create({
   },
   rhythmSubtitle: {
     marginTop: LucidSpace.xs,
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: 'Outfit_400Regular',
     fontSize: LucidType.bodySm[0],
     lineHeight: LucidType.bodySm[1],
     textAlign: 'center',
@@ -885,14 +885,14 @@ const styles = StyleSheet.create({
   },
   starRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 2 },
   rhythmLabel: {
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: 'Outfit_700Bold',
     fontSize: LucidType.bodySm[0],
     lineHeight: LucidType.bodySm[1],
     textAlign: 'center',
   },
   recommended: {
     minHeight: LucidType.overline[1],
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: 'Outfit_700Bold',
     fontSize: LucidType.overline[0],
     lineHeight: LucidType.overline[1],
     letterSpacing: 0.6,

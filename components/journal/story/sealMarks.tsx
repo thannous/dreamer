@@ -308,7 +308,7 @@ function Glow({ size, color }: { size: number; color: string }) {
 /** Each letter's last measured width: a legend drawn again sits on its arc at once. */
 const glyphWidths = new Map<string, number>();
 /** The face of the legend's letters (`font-sans-medium`). */
-const LEGEND_FACE = 'SpaceGrotesk_500Medium';
+const LEGEND_FACE = 'Outfit_500Medium';
 /** Letters measured once their face had loaded: their widths no longer change. */
 const settledGlyphs = new Set<string>();
 /** Whether the legend's face has arrived: on the web, expo-font counts a face as loaded once declared. */
