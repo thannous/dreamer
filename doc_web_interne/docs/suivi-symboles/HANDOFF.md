@@ -1,19 +1,19 @@
 # Passation — images Codex, code Claude, publication Codex
 
-## Livraison actuelle du lot 09
+## Livraison actuelle du lot 10
 
-Les six packs Hibou, Bateau, Grotte, Rose, Éclair et Baleine sont publiés dans les six langues sur `1038406132baf06556f6abda8f1620ac4774984b` ([PR494](https://github.com/thannous/dreamer/pull/494), placements [PR496](https://github.com/thannous/dreamer/pull/496)). Le total courant est **111 packs, 129 restants**, 666 pages équipées parmi 1 440 pages communes. [Preuve complète](../qa/symbol-batch09-delivery-20261020.json) ; [suivi](README.md).
+Abeille, Volcan, Bague, Cascade, Tortue et Masque sont publiés dans les six langues sur `736a14dc4b55127e1e52b51eb50009e66323a387` ([PR509](https://github.com/thannous/dreamer/pull/509)). Total : **117 packs, 123 restants**, 702 pages équipées parmi 1 440 pages communes. [Preuve complète](../qa/symbol-lot10-delivery-20261020.json) ; [suivi](README.md).
 
-Codex conserve les 48 sources sélectionnées, prompts, SHA et huit rôles dans `output/noctalia-symbols-batch08-2026-10-20/source-library-batch08-v1.zip` du checkout principal ; [reçu](../qa/symbol-batch08-sources-20261020.json). Le nom initial du dossier est conservé, mais le registre attribue ces six symboles au lot 09. Le lot 08 de 30 packs arrivé en parallèle est préservé : ses archives privées et sa preuve ciblée sont décrites dans [son reçu](../qa/symbol-packs-lot-08-30-20261020.json). Ne pas régénérer les images déjà sélectionnées.
+Codex conserve les 48 sources, prompts et SHA dans `output/noctalia-symbols-lot10-2026-10-20/source-library-lot10-v1.zip` du checkout principal : 36 nouvelles peintures sélectionnées, 12 textures environnementales réutilisées et une correction ImageGen de la couverture Cascade dont l’original est conservé. [Reçu source](../qa/symbol-lot10-sources-20261020.json). Ne pas régénérer les images sélectionnées.
 
-Claude a intégré les vraies peintures et corrigé les textures localisées qui masquaient des sujets. Les profils A/B doivent être revus sur les vrais médias, aux dimensions réelles, avant de compter le pack terminé. La publication et les preuves actuelles sont consignées ; aucun accord personnel de Thanh n'a été inventé. Les preuves antérieures restent historiques, sans être effacées.
+Claude a préparé les cartes manquantes en portugais, les six langues, les trois scènes et les profils du moteur commun. Les placements ont été revus sur les vraies peintures et textures, en compensant leur zone alpha visible. Les étapes publiques sont consignées après le vrai déploiement ; aucun accord personnel n’a été inventé. Les anciens lots et leurs preuves restent conservés.
 
 ## Reprendre sans perdre le travail
 
 - Ne pas régénérer les 210 PNG sélectionnés. Les variantes remplacées sont conservées, mais seuls les fichiers sélectionnés dans les manifests et ZIP courants servent le site.
 - Ne pas relancer `manage.mjs configure` du dossier local du lot 08 : sa base précède les mises à jour de master et écraserait des preuves plus récentes. Les 30 profils, langues et scènes sont déjà configurés. Modifier les JSON canoniques directement si nécessaire.
 - Terminer la vérification locale sur le commit livré avant tout push. Remettre une branche et une PR avec le commit vérifié et le résultat de `verify:pr`. Une preuve ciblée de 30 parcours n'est pas une campagne Release complète.
-- Réexaminer le registre courant avant le prochain lot : 129 symboles restent sans pack. Le lot 09 est déjà occupé par les six symboles ci-dessus ; les anciennes files de production doivent être rapprochées des IDs actuels avant une nouvelle génération. Respecter la taille de lot demandée par Thanh.
+- Réexaminer le registre courant avant le prochain lot : 123 symboles restent sans pack. Le lot 10 est déjà occupé par les six symboles ci-dessus ; les anciennes files de production doivent être rapprochées des IDs actuels avant une nouvelle génération. Respecter la taille de lot demandée par Thanh.
 - Enregistrer chaque image, prompt et provenance dès sa réception ; archiver chaque pack terminé et mettre à jour le suivi par lot. Ne pas remettre le suivi ou les rapports internes sur Drive sans autorisation appropriée à ces documents.
 
 ## Direction artistique et mouvement
