@@ -2853,10 +2853,10 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       <PaintingTilt active={!isEditing && !isIllustrationFullscreen && !(coverFlight && !coverFlight.landed)}
         dominantUntil={coverHeight * 0.35}>
       {/* Beneath, the painting the journal's card already holds: the page opens on it, and the
-          original sharpens it once loaded. */}
+          original sharpens it once loaded. A page turned to takes over once either is shown. */}
       {coverPlaceholder ? (
         <Image source={coverPlaceholder} style={StyleSheet.absoluteFill} contentFit="cover" cachePolicy="memory-disk"
-          transition={0} accessible={false} />
+          transition={0} accessible={false} onDisplay={() => setCoverShown(true)} />
       ) : null}
       <Image
         key={displayImageUrl ?? dream.imageUrl}
