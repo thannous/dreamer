@@ -57,6 +57,7 @@ const dream = {
   title: 'Winged elephant',
   transcript: 'An elephant with wings carried my dog over the sea.',
   shareableQuote: 'The sea held its breath for us.',
+  promptVersion: 'analysis-2026-10-15.poetic6',
 } as DreamAnalysis;
 
 function renderSheet(overrides: Partial<React.ComponentProps<typeof DreamShareSheet>> = {}) {
@@ -113,6 +114,14 @@ describe('DreamShareSheet', () => {
     expect(choice('journal.detail.share_sheet.text_none').getAttribute('aria-checked')).toBe('true');
     fireEvent.click(screen.getByTestId(TID.Button.DreamShareCard));
     expect(onShare).toHaveBeenCalledWith({ painting: false, title: false, date: true, text: 'none' });
+  });
+
+  it('never offers an older dream\'s excerpt of its own words as an inspired line', () => {
+    const { onShare } = renderSheet({ dream: { ...dream, promptVersion: 'analysis-2026-09-17.1' } });
+    expect(screen.queryByLabelText('journal.detail.share_sheet.text_quote')).toBeNull();
+    expect(choice('journal.detail.share_sheet.text_none').getAttribute('aria-checked')).toBe('true');
+    fireEvent.click(screen.getByTestId(TID.Button.DreamShareCard));
+    expect(onShare).toHaveBeenCalledWith({ painting: true, title: true, date: true, text: 'none' });
   });
 
   it('waits for an illustration still being signed only while it is on the card', () => {

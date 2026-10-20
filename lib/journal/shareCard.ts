@@ -1,3 +1,4 @@
+import { isPoeticDreamQuote } from '@/lib/dreamQuote';
 import type { DreamAnalysis } from '@/lib/types';
 
 /** The words a share card carries under its name: none, the dream as told, or the line it inspired. */
@@ -11,16 +12,24 @@ export type ShareCardOptions = {
   text: ShareCardText;
 };
 
-type ShareCardDream = Pick<DreamAnalysis, 'title' | 'transcript' | 'shareableQuote'>;
+type ShareCardDream = Pick<DreamAnalysis, 'title' | 'transcript' | 'shareableQuote' | 'promptVersion'>;
 
 /** The longest opening of the story a card carries, in characters. */
 export const SHARE_CARD_STORY_MAX = 320;
+
+/**
+ * Whether the dream has a line Noctalia wrote from it. Older dreams kept an excerpt of the
+ * dreamer's own words in the same place; that is their story, never an inspired line.
+ */
+function hasInspiredLine(dream: ShareCardDream): boolean {
+  return Boolean(dream.shareableQuote?.trim()) && isPoeticDreamQuote(dream);
+}
 
 /** The texts this dream can put on its card, in the order they are offered. */
 export function getShareCardTexts(dream: ShareCardDream): ShareCardText[] {
   const texts: ShareCardText[] = ['none'];
   if (dream.transcript?.trim()) texts.push('story');
-  if (dream.shareableQuote?.trim()) texts.push('quote');
+  if (hasInspiredLine(dream)) texts.push('quote');
   return texts;
 }
 
@@ -33,7 +42,7 @@ export function getDefaultShareCardOptions(dream: ShareCardDream): ShareCardOpti
     painting: true,
     title: Boolean(dream.title?.trim()),
     date: true,
-    text: dream.shareableQuote?.trim() ? 'quote' : 'none',
+    text: hasInspiredLine(dream) ? 'quote' : 'none',
   };
 }
 
