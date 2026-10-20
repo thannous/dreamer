@@ -249,7 +249,7 @@ function RecordingScreen() {
     () => captureReview ? encodeCaptureReview(captureReview) : transcript,
     [captureReview, transcript]
   );
-  const { noteInput, persistBeforeExit, clearAfterSuccessfulSave, lastPersistedValue, isHydrated, hydrationStatus, retryHydration } = useRecordingDraftPersistence({
+  const { noteInput, persistBeforeExit, clearAfterSuccessfulSave, isHydrated, hydrationStatus, retryHydration } = useRecordingDraftPersistence({
     transcript: persistedDraftValue,
     onRestore: handleRestoreDraft,
   });
@@ -927,16 +927,15 @@ function RecordingScreen() {
     try {
       await stopRecording({ silent: true, reason: 'stop' });
       if (noteInput('') !== true) return;
+      // Starting over keeps the dreamer in the mode they were telling it in.
       resetComposer();
-      setInputMode('text');
-      persistInputModePreference('text');
       setCaptureRestartCount(count => count + 1);
       Keyboard.dismiss();
     } finally {
       restartingCaptureRef.current = false;
       setIsRestartingCapture(false);
     }
-  }, [isHydrated, isPersisting, noteInput, persistInputModePreference, resetComposer, stopRecording]);
+  }, [isHydrated, isPersisting, noteInput, resetComposer, stopRecording]);
 
   const handleRestartCapture = useCallback(() => {
     if (!isHydrated || isPersisting || restartingCaptureRef.current) return;
@@ -2070,13 +2069,8 @@ function RecordingScreen() {
                   onClear={handleClearTranscript}
                 />}
 
-                {hydrationStatus === 'ready' && !editableCapture ? (
-                  <RecordingDraftProgress
-                    compact={inputMode === 'voice'}
-                    inlineStatus={inputMode === 'text' && !captureReview}
-                    value={captureReview?.text ?? transcript}
-                    persisted={transcript.length > 0 && lastPersistedValue === persistedDraftValue}
-                  />
+                {hydrationStatus === 'ready' && !editableCapture && inputMode !== 'voice' ? (
+                  <RecordingDraftProgress value={captureReview?.text ?? transcript} />
                 ) : null}
 
               </View>

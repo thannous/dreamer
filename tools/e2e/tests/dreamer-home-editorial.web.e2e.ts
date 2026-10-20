@@ -1,7 +1,7 @@
 // Historical exact UI assertions executed under the guarded TesterArmy engine.
 import path from 'node:path';
 import type { Page } from 'playwright/test';
-import { createParityTest, expect, expectIllustrationOnPlate, withDialog } from '../web-parity-fixtures';
+import { createParityTest, expect, expectCaptureDraftSaved, expectIllustrationOnPlate, withDialog } from '../web-parity-fixtures';
 
 const artwork = path.resolve(process.cwd(), '../../e2e/fixtures/home-dream.png');
 const dreamTitle = 'L’éléphant au sommet de la grande roue';
@@ -73,7 +73,7 @@ test('home prioritizes the saved draft and keeps capture available without artwo
   await page.getByTestId('btn.home.today.cta').click();
   const transcript = page.getByTestId('input.dreamTranscript');
   await transcript.fill('A lighthouse over a turquoise ocean.');
-  await expect(page.getByText('Draft kept on this device', { exact: true })).toBeVisible();
+  await expectCaptureDraftSaved(page, 'A lighthouse over a turquoise ocean.');
   await home(page);
   await expect(page.getByTestId('text.home.today.state')).toHaveText('draft_resume');
   await page.screenshot({ path: info.outputPath('home-draft.png') });

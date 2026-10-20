@@ -1,5 +1,5 @@
 import type { Page } from 'playwright/test';
-import { test, expect } from './fixtures';
+import { expectCaptureDraftSaved, test, expect } from './fixtures';
 
 const story = 'Je marchais au bord d’un lac. Une maison éclairée apparaissait entre les arbres.';
 const detail = 'Des arbres très hauts et une lumière douce.';
@@ -49,7 +49,7 @@ test('chat keeps chronological replies, edits and pending details through reload
   await reply.fill(detail);
   await expect(save).toBeDisabled();
   await expect(page.getByTestId('capture-chat-user')).toBeDisabled();
-  await expect(page.getByText('Brouillon conservé sur cet appareil', { exact: true })).toBeVisible();
+  await expectCaptureDraftSaved(page, detail);
   await page.reload();
   await expect(page.getByTestId('capture-review-card')).toBeVisible();
   await expect(reply).toHaveValue(detail);

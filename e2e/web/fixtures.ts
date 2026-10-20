@@ -49,4 +49,15 @@ export async function expectIllustrationOnPlate(page: Page) {
   await expect(page.getByTestId('btn.journal.illustration.expand')).toBeVisible();
 }
 
+/**
+ * Waits until the capture draft holding `text` is kept where a reload reads it back. The web
+ * journeys run the mock services with persistence, which keep the draft in localStorage under
+ * their own prefix. The screen no longer announces the saved draft.
+ */
+export async function expectCaptureDraftSaved(page: Page, text: string) {
+  await expect.poll(() => page.evaluate(() => (
+    localStorage.getItem('noctalia_mock_dogfood_v1:gemini_dream_journal_recording_transcript')
+  )), { message: 'capture draft kept for a reload' }).toContain(text);
+}
+
 export { expect };

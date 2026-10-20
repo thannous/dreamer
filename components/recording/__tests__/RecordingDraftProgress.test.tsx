@@ -56,7 +56,6 @@ jest.mock('@/hooks/useTranslation', () => ({
         'recording.draft_progress.count': '{count} characters',
         'recording.draft_progress.count_one': '{count} character',
         'recording.draft_progress.ready': 'Ready to save.',
-        'recording.draft_progress.saved_locally': 'Draft saved on this device',
       };
       let value = values[key] ?? key;
       if (params) {
@@ -111,14 +110,5 @@ describe('RecordingDraftProgress', () => {
     expect(progress.textContent).toContain('601 characters');
     expect(progress.textContent).not.toContain('601/600');
     expect(progress.textContent).not.toContain('/600');
-  });
-
-  it('shows the saved-locally copy only after persistence is confirmed', () => {
-    const { rerender } = render(<RecordingDraftProgress value="A blue door" />);
-    const progress = screen.getByTestId(TID.Component.RecordingDraftProgress);
-    expect(progress.textContent).not.toContain('Draft saved on this device');
-
-    rerender(<RecordingDraftProgress value="A blue door" persisted />);
-    expect(progress.textContent).toContain('Draft saved on this device');
   });
 });
