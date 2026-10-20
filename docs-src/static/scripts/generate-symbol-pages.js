@@ -865,15 +865,12 @@ function renderLegacyPseoFooter(lang, t, allSymbols, curationPages = OPTIONAL_CU
     </footer>`;
 }
 
-// Living-painting pilot of the French tiger page (mist, lantern glow, scroll
-// depth), without a pause control: it stops by itself for reduced motion, a
-// hidden tab or a hero off screen. The script's folder is named after its
-// sha256, so the immutable /js/* cache never serves a stale copy; its layers
-// and the portrait painting stay in the V4 folder, which the script reads
-// relative to itself. On a phone held upright the hero takes 75svh and shows a
-// dedicated portrait painting; the landscape image, SEO and cards stay shared.
+// The tiger's own living-painting files, in the V4 folder: its portrait painting and the two
+// textures (mist, lantern glow) its paintings move with the packs' engine (see TIGER_ATLAS_ASSETS).
+// The former pilot scripts stay published for pages still cached, but no page loads them. On a phone
+// held upright the hero takes 75svh and shows the dedicated portrait painting; the landscape image,
+// SEO and cards stay shared.
 const TIGER_LIVING = {
-  dir: '/js/tiger-living/c0677c4083d5',
   assets: '/js/tiger-living/22c79c696a2f/assets',
   media: '(max-width: 767px) and (orientation: portrait)',
   portrait: { name: 'tiger-mobile-v4', width: 984, height: 1599, widths: [480, 984] },
@@ -936,6 +933,65 @@ const TIGER_ATLAS = {
   // phones and narrower screens never fetch it.
   decorMedia: '(min-width: 1440px)',
   decorSizes: 'min(52rem, 50vw)',
+  // Its two effects on every painting, in the packs' motion format (symbol-atlas-pilots.json): the
+  // lantern glow (layer) breathes on the lantern, or on the moon of the pursuit, and the mist (accent)
+  // drifts over the valley, clear of the tiger. Points are fractions of each painting.
+  motion: {
+    parallax: 0.5,
+    hero: {
+      landscape: [
+        { texture: 'layer', place: { fit: 'width', zoom: 0.2, at: [0.1825, 0.1811] }, motion: 'pulse', dur: 2.4, op: [0.5, 1] },
+        { texture: 'accent', place: { fit: 'width', zoom: 0.45, at: [0.8, 0.6] }, motion: 'drift', move: [0.08, 0], dur: 11, op: [0.5, 0.65] },
+      ],
+      portrait: [
+        { texture: 'layer', place: { fit: 'width', zoom: 0.3, at: [0.248, 0.2364] }, motion: 'pulse', dur: 2.4, op: [0.5, 1] },
+        { texture: 'accent', place: { fit: 'width', zoom: 0.6, at: [0.85, 0.48] }, motion: 'drift', move: [0.06, 0], dur: 7, op: [0.55, 0.7] },
+      ],
+    },
+    plate: [
+      { texture: 'layer', place: { fit: 'width', zoom: 0.16, at: [0.826, 0.242] }, motion: 'pulse', dur: 2.4, op: [0.5, 1] },
+      { texture: 'accent', place: { fit: 'width', zoom: 0.45, at: [0.3, 0.6] }, motion: 'drift', move: [0.08, 0], dur: 10, op: [0.5, 0.7] },
+    ],
+    thumb: [
+      { texture: 'layer', place: { fit: 'width', zoom: 0.22, at: [0.19, 0.211] }, motion: 'pulse', dur: 2.6, op: [0.45, 1] },
+      { texture: 'accent', place: { fit: 'width', zoom: 0.5, at: [0.82, 0.58] }, motion: 'drift', move: [0.1, 0], dur: 8, op: [0.45, 0.75] },
+    ],
+    scenes: {
+      poursuite: [
+        { texture: 'layer', place: { fit: 'width', zoom: 0.22, at: [0.803, 0.194] }, motion: 'pulse', dur: 2.6, op: [0.2, 0.55] },
+        { texture: 'accent', place: { fit: 'width', zoom: 0.5, at: [0.85, 0.5] }, motion: 'drift', move: [0.1, 0], dur: 8, op: [0.45, 0.75] },
+      ],
+      cage: [
+        { texture: 'layer', place: { fit: 'width', zoom: 0.2, at: [0.156, 0.241] }, motion: 'pulse', dur: 2.6, op: [0.45, 1] },
+        { texture: 'accent', place: { fit: 'width', zoom: 0.4, at: [0.88, 0.5] }, motion: 'drift', move: [0.1, 0], dur: 8, op: [0.45, 0.75] },
+      ],
+    },
+  },
+};
+
+// The tiger's paintings and textures in the packs' asset format, each from where it already is: the
+// atlas paintings above, the portrait painting and the two textures of the V4 folder (the mist also at
+// 800px wide, the size the engine picks). Its landscape hero is the page's own illustration.
+function tigerAtlasAsset({ width, height, avif, webp }) {
+  const urls = (files) => Object.fromEntries(Object.entries(files).map(([size, file]) => {
+    const relative = path.join('static', TIGER_ATLAS_IMAGES, file);
+    if (!fs.existsSync(path.join(DOCS_SRC_DIR, relative))) throw new Error(`Tiger atlas: missing image docs-src/${relative}`);
+    return [size, `${TIGER_ATLAS_IMAGES}/${file}`];
+  }));
+  return { width, height, avif: urls(avif), webp: urls(webp) };
+}
+const TIGER_ATLAS_ASSETS = {
+  portrait: { width: TIGER_LIVING.portrait.width, height: TIGER_LIVING.portrait.height },
+  plate: tigerAtlasAsset(TIGER_ATLAS.images.decor),
+  ...Object.fromEntries(TIGER_ATLAS.scenes.choices.map((choice) => [`scene-${choice.id}`, tigerAtlasAsset(TIGER_ATLAS.images[choice.image])])),
+  layer: { width: 384, height: 384, webp: { 384: `${TIGER_LIVING.assets}/lantern-glow.webp` } },
+  accent: { width: 1600, height: 533, webp: { 800: `${TIGER_LIVING.assets}/mist-mobile.webp`, 1600: `${TIGER_LIVING.assets}/mist.webp` } },
+};
+// The start of the file names of each painting, which tells the engine which painting the browser shows.
+const TIGER_ATLAS_MATCH = {
+  portrait: `${TIGER_LIVING.assets}/${TIGER_LIVING.portrait.name}-`,
+  plate: `${TIGER_ATLAS_IMAGES}/tiger-atlas-vignette-`,
+  ...Object.fromEntries(TIGER_ATLAS.scenes.choices.map((choice) => [`scene-${choice.id}`, `${TIGER_ATLAS_IMAGES}/tiger-${choice.image}-`])),
 };
 
 function plainText(html) {
@@ -966,31 +1022,6 @@ function sentenceStarting(text, prefix, where) {
   return text.slice(start, end === -1 ? undefined : start + end + 1);
 }
 
-function tigerAtlasSrcset(files) {
-  return Object.entries(files).map(([width, file]) => {
-    const relative = path.join('static', TIGER_ATLAS_IMAGES, file);
-    if (!fs.existsSync(path.join(DOCS_SRC_DIR, relative))) throw new Error(`Tiger atlas: missing image docs-src/${relative}`);
-    return `${TIGER_ATLAS_IMAGES}/${file} ${width}w`;
-  }).join(', ');
-}
-
-function renderTigerAtlasScenePicture(image) {
-  return `<picture class="atlas-scene-thumb">
-                                        <source type="image/avif" srcset="${tigerAtlasSrcset(image.avif)}" sizes="${TIGER_ATLAS.sceneSizes}">
-                                        <img src="${TIGER_ATLAS_IMAGES}/${image.webp[320]}" srcset="${tigerAtlasSrcset(image.webp)}" sizes="${TIGER_ATLAS.sceneSizes}" alt="" width="${image.width}" height="${image.height}" loading="lazy" decoding="async">
-                                    </picture>`;
-}
-
-function renderTigerAtlasDecor() {
-  const image = TIGER_ATLAS.images.decor;
-  const { decorMedia: media, decorSizes: sizes } = TIGER_ATLAS;
-  return `<picture class="atlas-decor" aria-hidden="true">
-                        <source media="${media}" type="image/avif" srcset="${tigerAtlasSrcset(image.avif)}" sizes="${sizes}">
-                        <source media="${media}" type="image/webp" srcset="${tigerAtlasSrcset(image.webp)}" sizes="${sizes}">
-                        <img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" width="${image.width}" height="${image.height}" loading="lazy" decoding="async">
-                    </picture>`;
-}
-
 // The existing final CTA links (same URLs, tracking and copy), laid out for a
 // column. The browser-journal promotion is paused sitewide (styles.min.css hides
 // its link and [data-web-app-cta]); its note follows the same switch, and Google
@@ -1006,15 +1037,15 @@ function renderTigerAtlasActions(lang, content, pagePath, placement) {
                         <p class="symbol-webapp-note atlas-note" data-web-app-cta>${escapeHtml(sharedLocale.webAppNote)}</p>`;
 }
 
-// The tiger reading: its paintings, its scene labels, the opening question and next
-// sentence of each scene's card, the journal example left out.
+// The tiger reading: its paintings, drawn and moved like a pack's, its scene labels, the opening
+// question and next sentence of each scene's card, the journal example left out.
 const TIGER_ATLAS_PAGE = {
   ...TIGER_ATLAS,
   name: 'Tiger',
   omitJournal: true,
   sceneText: 'excerpt',
-  scenePicture: (image) => renderTigerAtlasScenePicture(TIGER_ATLAS.images[image]),
-  decorHtml: () => renderTigerAtlasDecor(),
+  scenePicture: (role) => renderAtlasSixScenePicture(role, TIGER_ATLAS_ASSETS[role]),
+  decorHtml: () => renderAtlasSixPlate(TIGER_ATLAS_ASSETS.plate),
 };
 
 // Every symbol page, in every language, is this one article. What a symbol has decides what it shows:
@@ -1478,7 +1509,12 @@ function atlasCss(sceneIds) {
         }`;
 }
 
-const TIGER_ATLAS_CSS = atlasCss(TIGER_ATLAS.scenes.choices.map((choice) => choice.id));
+// The frames of the moving side illustration and thumbnails, on the tiger as on every pack.
+const ATLAS_LIVING_FRAMES_CSS = `
+        /* A thumbnail's two effects never leave its frame, so never reach its label. */
+        .atlas-scene-thumb { position: relative; overflow: hidden; }
+        .atlas-decor--living picture { display: block; }`;
+const TIGER_ATLAS_CSS = atlasCss(TIGER_ATLAS.scenes.choices.map((choice) => choice.id)) + ATLAS_LIVING_FRAMES_CSS;
 const TEXT_ATLAS_CSS = atlasCss([]);
 
 // First batch after the tiger: six French pages read as the same atlas, with the
@@ -1802,11 +1838,9 @@ function renderAtlasSixScenePicture(role, asset) {
 
 // Motion config read by js/symbol-living: one surface per painting (hero, plate, each
 // thumbnail), each with its two channels; the hero's scene follows the painting the
-// browser shows. Both textures load once, at 960px, and serve every surface. Without
-// a texture the page gets no motion script.
-function atlasSixLivingConfig(id, assets) {
-  const pilot = SYMBOL_ATLAS_SIX[id];
-  const { motion } = pilot;
+// browser shows, told by the start of its file names (`match(role)`). Both textures load once,
+// at 960px, and serve every surface. Without a texture the page gets no motion script.
+function atlasSixLivingConfig({ motion, scenes: pilotScenes }, assets, match) {
   const src = {
     layer: assets.layer && atlasSixLayerSrc(assets.layer, 960),
     accent: assets.accent && atlasSixLayerSrc(assets.accent, 960),
@@ -1816,18 +1850,18 @@ function atlasSixLivingConfig(id, assets) {
     .map(({ texture, place, ...layer }) => ({ channel: texture === 'layer' ? 'a' : 'b', src: src[texture], box: atlasSixBox(place, painting, assets[texture]), ...layer }));
   const surfaces = [];
   if (assets.hero) {
-    const scenes = { landscape: { match: `${ATLAS_SIX_IMAGES}/${id}/hero-`, layers: layers(motion.hero.landscape, assets.hero) } };
-    if (assets.portrait) scenes.portrait = { match: `${ATLAS_SIX_IMAGES}/${id}/portrait-`, layers: layers(motion.hero.portrait, assets.portrait) };
+    const scenes = { landscape: { match: match('hero'), layers: layers(motion.hero.landscape, assets.hero) } };
+    if (assets.portrait) scenes.portrait = { match: match('portrait'), layers: layers(motion.hero.portrait, assets.portrait) };
     surfaces.push({ name: 'hero', selector: '.symbol-hero', img: '.symbol-hero-media img', figure: '.symbol-hero-figure', depth: motion.parallax, eager: true, scenes });
   }
   if (assets.plate) {
-    surfaces.push({ name: 'plate', selector: '[data-living-surface="plate"]', img: 'img', mask: true, scenes: { plate: { match: `${ATLAS_SIX_IMAGES}/${id}/plate-`, layers: layers(motion.plate, assets.plate) } } });
+    surfaces.push({ name: 'plate', selector: '[data-living-surface="plate"]', img: 'img', mask: true, scenes: { plate: { match: match('plate'), layers: layers(motion.plate, assets.plate) } } });
   }
-  pilot.scenes.forEach((scene, index) => {
+  pilotScenes.forEach((scene, index) => {
     const role = `scene-${scene.id}`;
     if (!assets[role]) return;
     // Thumbnails share the default effects and phase; a local light can follow its subject in each scene.
-    surfaces.push({ name: role, selector: `[data-living-surface="${role}"]`, img: 'img', clip: true, phase: index / pilot.scenes.length, scenes: { [role]: { match: `${ATLAS_SIX_IMAGES}/${id}/${role}-`, layers: layers(motion.scenes?.[scene.id] ?? motion.thumb, assets[role]) } } });
+    surfaces.push({ name: role, selector: `[data-living-surface="${role}"]`, img: 'img', clip: true, phase: index / pilotScenes.length, scenes: { [role]: { match: match(role), layers: layers(motion.scenes?.[scene.id] ?? motion.thumb, assets[role]) } } });
   });
   const live = surfaces.filter((surface) => Object.values(surface.scenes).some((scene) => scene.layers.length > 0));
   if (live.length === 0) return null;
@@ -1851,10 +1885,7 @@ function atlasSixCss(id) {
                 rgba(8, 3, 15, 0.10) 55%, rgba(9, 4, 19, 0.82) 88%, #0a0514 98%, #0a0514 100%);
         }
         /* A scene without its thumbnail yet: the published variation title is the label. */
-        .atlas-scene.atlas-scene--text { grid-template-columns: minmax(0, 1fr) auto; padding: 0 1rem 0 1.25rem; min-height: 4rem; }
-        /* A thumbnail's two effects never leave its frame, so never reach its label. */
-        .atlas-scene-thumb { position: relative; overflow: hidden; }
-        .atlas-decor--living picture { display: block; }
+        .atlas-scene.atlas-scene--text { grid-template-columns: minmax(0, 1fr) auto; padding: 0 1rem 0 1.25rem; min-height: 4rem; }${ATLAS_LIVING_FRAMES_CSS}
         @media (max-width: 767px) {
             /* Reached by #scenes, the title line lands where a variation card lands (12rem),
                below the fixed navbar and section bar. */
@@ -1915,10 +1946,19 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
   const atlasSixAssets = atlasSix ? ATLAS_SIX_ASSETS[symbol.id] || {} : null;
   const livingPage = livingPainting || Boolean(atlasSix);
   const heroPortraitPosition = livingPainting ? '50% 35%' : atlasSix ? atlasSix.portraitPosition : SYMBOL_HERO_PORTRAIT[symbol.id] || '50% 50%';
-  let livingPaintingScriptHtml = livingPainting
-    ? `\n    <script src="${TIGER_LIVING.dir}/tiger-living-painting.js" defer></script>`
-    : '';
-  const livingConfig = atlasSix ? atlasSixLivingConfig(symbol.id, atlasSixAssets) : null;
+  let livingPaintingScriptHtml = '';
+  // The tiger moves its own paintings on the same engine; its landscape hero is the page's illustration.
+  const tigerHeroMatch = livingPainting && responsiveIllustration ? responsiveIllustration.src.match(/^(.*-)[0-9]+w\.\w+$/)?.[1] : null;
+  if (livingPainting && responsiveIllustration && !tigerHeroMatch) throw new Error(`Tiger atlas: the hero ${responsiveIllustration.src} is not named <name>-<width>w.<format>`);
+  const livingConfig = atlasSix
+    ? atlasSixLivingConfig(atlasSix, atlasSixAssets, (role) => `${ATLAS_SIX_IMAGES}/${symbol.id}/${role}-`)
+    : tigerHeroMatch
+      ? atlasSixLivingConfig(
+        { motion: TIGER_ATLAS.motion, scenes: TIGER_ATLAS.scenes.choices },
+        { ...TIGER_ATLAS_ASSETS, hero: { width: responsiveIllustration.width, height: responsiveIllustration.height } },
+        (role) => (role === 'hero' ? tigerHeroMatch : TIGER_ATLAS_MATCH[role]),
+      )
+      : null;
   if (livingConfig) {
     checkSymbolLivingScript();
     livingPaintingScriptHtml = `
@@ -2129,7 +2169,7 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
   }, livingPainting ? {
     ...TIGER_ATLAS_PAGE,
     ...atlasLocale,
-    scenes: { ...atlasLocale.scenes, choices: TIGER_ATLAS.scenes.choices.map((choice) => ({ ...choice, ...atlasLocale.sceneLocales[choice.id] })) },
+    scenes: { ...atlasLocale.scenes, choices: TIGER_ATLAS.scenes.choices.map((choice) => ({ ...choice, ...atlasLocale.sceneLocales[choice.id], image: `scene-${choice.id}` })) },
   } : atlasSix ? {
     ...atlasLocale,
     name: `Atlas ${symbol.id}`,
