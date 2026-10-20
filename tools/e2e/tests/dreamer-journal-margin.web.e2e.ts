@@ -34,6 +34,9 @@ async function populatedJournal(page: Page) {
   await page.getByTestId('btn.mockProfile.existing').click();
   await expect(page.getByTestId('screen.recording')).toBeVisible();
   await page.setViewportSize({ width: 390, height: 867 });
+  // The desktop-to-phone resize can still be closing the drawer over the cards.
+  // Card geometry alone cannot detect that overlay in a visual qualification.
+  await expect(page.getByTestId('quick-settings.drawer')).not.toBeInViewport();
   await openJournal(page);
 }
 
