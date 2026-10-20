@@ -1399,7 +1399,7 @@ const NEW_SYMBOL_PACKS = [
   {"id": "ex-partner", "slug": "ex-partenaire", "name": "Ex-Partenaire", "scenes": ["getting-back-together-with-your-ex", "your-ex-with-someone-new", "arguing-with-your-ex"]},
   {"id": "rainbow", "slug": "arc-en-ciel", "name": "Arc-en-ciel", "scenes": ["rainbow-after-a-storm", "double-rainbow", "a-rainbow-that-fades"]},
   {"id": "phone", "slug": "telephone", "name": "Téléphone", "scenes": ["a-phone-ringing", "not-being-able-to-make-a-call", "missing-a-call"]},
-  {"id": "school", "slug": "ecole", "name": "École", "scenes": ["can-t-find-your-classroom", "forgetting-a-class-all-term", "back-at-school-as-an-adult"]},
+  {"id": "school", "slug": "ecole", "name": "École", "scenes": ["can-t-find-your-classroom", "unprepared-for-a-test", "back-at-school-as-an-adult"]},
   {"id": "pregnancy", "slug": "grossesse", "name": "Grossesse", "scenes": ["finding-out-you-are-pregnant", "being-heavily-pregnant", "someone-else-is-pregnant"]},
   {"id": "swimming", "slug": "nager", "name": "Nager", "scenes": ["swimming-effortlessly", "struggling-to-swim", "swimming-underwater"]},
   {"id": "blood", "slug": "sang", "name": "Sang", "scenes": ["blood-on-your-hands", "bloodstained-clothes-or-objects", "someone-else-s-blood"]},

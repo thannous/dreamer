@@ -4531,11 +4531,11 @@
             "anchor": "being-in-a-hospital"
           },
           "a-hospital-with-doctors-or-nurses": {
-            "variation": "Hospital lleno de gente",
+            "variation": "Hospital con doctores o enfermeras",
             "anchor": "a-hospital-with-doctors-or-nurses"
           },
           "a-hospital-full-of-sick-people": {
-            "variation": "Hospital con doctores o enfermeras",
+            "variation": "Hospital lleno de gente",
             "anchor": "a-hospital-full-of-sick-people"
           }
         }
@@ -4704,9 +4704,9 @@
             "variation": "Ne pas trouver sa salle de classe",
             "anchor": "can-t-find-your-classroom"
           },
-          "forgetting-a-class-all-term": {
-            "variation": "Oublier un cours pendant tout le trimestre",
-            "anchor": "forgetting-a-class-all-term"
+          "unprepared-for-a-test": {
+            "variation": "Ne pas être prêt pour une interrogation",
+            "anchor": "unprepared-for-a-test"
           },
           "back-at-school-as-an-adult": {
             "variation": "Retourner à l'école à l'âge adulte",
@@ -4721,9 +4721,9 @@
             "variation": "Can't find your classroom",
             "anchor": "can-t-find-your-classroom"
           },
-          "forgetting-a-class-all-term": {
-            "variation": "Forgetting a class all term",
-            "anchor": "forgetting-a-class-all-term"
+          "unprepared-for-a-test": {
+            "variation": "Unprepared for a test",
+            "anchor": "unprepared-for-a-test"
           },
           "back-at-school-as-an-adult": {
             "variation": "Back at school as an adult",
@@ -4738,9 +4738,9 @@
             "variation": "No encontrar tu clase",
             "anchor": "can-t-find-your-classroom"
           },
-          "forgetting-a-class-all-term": {
-            "variation": "Olvidar una asignatura todo el curso",
-            "anchor": "forgetting-a-class-all-term"
+          "unprepared-for-a-test": {
+            "variation": "No haber estudiado para un examen",
+            "anchor": "unprepared-for-a-test"
           },
           "back-at-school-as-an-adult": {
             "variation": "Volver al colegio de adulto",
@@ -4755,9 +4755,9 @@
             "variation": "Das Klassenzimmer nicht finden",
             "anchor": "can-t-find-your-classroom"
           },
-          "forgetting-a-class-all-term": {
-            "variation": "Ein Fach das ganze Halbjahr vergessen",
-            "anchor": "forgetting-a-class-all-term"
+          "unprepared-for-a-test": {
+            "variation": "Unvorbereitet in die Klassenarbeit",
+            "anchor": "unprepared-for-a-test"
           },
           "back-at-school-as-an-adult": {
             "variation": "Als Erwachsener zurück in der Schule",
@@ -4772,9 +4772,9 @@
             "variation": "Non trovare la propria classe",
             "anchor": "can-t-find-your-classroom"
           },
-          "forgetting-a-class-all-term": {
-            "variation": "Dover rifare la maturità",
-            "anchor": "forgetting-a-class-all-term"
+          "unprepared-for-a-test": {
+            "variation": "Arrivare impreparato al compito in classe",
+            "anchor": "unprepared-for-a-test"
           },
           "back-at-school-as-an-adult": {
             "variation": "Tornare a scuola da adulto",
@@ -4789,9 +4789,9 @@
             "variation": "Não conseguir achar a sala de aula",
             "anchor": "can-t-find-your-classroom"
           },
-          "forgetting-a-class-all-term": {
-            "variation": "Esquecer que estava matriculado em uma disciplina",
-            "anchor": "forgetting-a-class-all-term"
+          "unprepared-for-a-test": {
+            "variation": "Estar despreparado para a escola",
+            "anchor": "unprepared-for-a-test"
           },
           "back-at-school-as-an-adult": {
             "variation": "Voltar à escola já adulto",
