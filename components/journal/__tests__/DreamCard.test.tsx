@@ -246,6 +246,15 @@ it('unfolds short text that wraps past three lines and collapses a recycled drea
   rerender(<DreamCard {...props} dream={{ ...dream, id: 1457, title: 'Second dream' }} />);
   expect(screen.getByRole('button', { name: 'journal.card.expand' }).getAttribute('aria-expanded')).toBe('false');
   expect(screen.getByTestId('journal.preview.reading').getAttribute('data-visible-lines')).toBe('3');
+  // The card keeps its last verdict across recycles: a short dream measured next drops the arrow.
+  mockTranscriptHeight = 44;
+  rerender(<DreamCard {...props} dream={{ ...dream, id: 1458, title: 'Short dream', transcript: 'A door.' }} />);
+  expect(screen.queryByRole('button', { name: 'journal.card.expand' })).toBeNull();
+  // The dream unfolded first comes back to this card folded.
+  mockTranscriptHeight = 88;
+  rerender(<DreamCard {...props} dream={dream} />);
+  expect(screen.getByRole('button', { name: 'journal.card.expand' }).getAttribute('aria-expanded')).toBe('false');
+  expect(screen.getByTestId('journal.preview.reading').getAttribute('data-visible-lines')).toBe('3');
   mockTranscriptHeight = 0;
   cleanup();
 });
