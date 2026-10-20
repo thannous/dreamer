@@ -418,12 +418,12 @@ export const DreamCard = memo(function DreamCard({
         {dateDay}
       </Text>
       <View className="min-w-0 shrink">
-        <Text allowFontScaling={false} numberOfLines={1} style={{ fontSize: 10 * compactTextScale, lineHeight: 14 * compactTextScale, letterSpacing: 1.6 }}
-          className="font-sans-medium text-[10px] uppercase leading-[14px] text-illustration-text">
+        <Text allowFontScaling={false} numberOfLines={1} style={{ fontSize: 11 * compactTextScale, lineHeight: 14 * compactTextScale, letterSpacing: 1.4 }}
+          className="font-sans-medium text-[11px] uppercase leading-[14px] text-illustration-text">
           {dateEyebrow}
         </Text>
-        <Text allowFontScaling={false} numberOfLines={1} style={{ fontSize: 11 * compactTextScale, lineHeight: 14 * compactTextScale }}
-          className="font-sans text-[11px] leading-[14px] text-illustration-text">
+        <Text allowFontScaling={false} numberOfLines={1} style={{ fontSize: 12 * compactTextScale, lineHeight: 15 * compactTextScale }}
+          className="font-sans text-[12px] leading-[15px] text-illustration-text">
           {dateFoot}
         </Text>
       </View>
