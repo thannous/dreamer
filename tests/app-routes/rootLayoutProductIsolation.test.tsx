@@ -90,6 +90,7 @@ jest.mock('@/components/navigation/DesktopShell', () => ({ DesktopShell: (props:
 jest.mock('@/components/analysis/AnalysisFlightIndicator', () => ({ AnalysisFlightIndicator: () => <div data-testid="analysis-host" /> }));
 jest.mock('@/components/reminders/EngagementRemindersHost', () => ({ EngagementRemindersHost: () => <div data-testid="reminders-host" /> }));
 jest.mock('@/components/reminders/NotificationDreamImportHost', () => ({ NotificationDreamImportHost: () => <div data-testid="dream-reply-host" /> }));
+jest.mock('@/components/widgets/HomeWidgetsHost', () => ({ HomeWidgetsHost: () => <div data-testid="widgets-host" /> }));
 jest.mock('@/services/notificationDreamInbox', () => ({ captureDreamFromNotificationResponse: (...args: unknown[]) => mockCaptureDream(...args), clearDreamCaptureResponse: jest.fn() }));
 jest.mock('@/services/notificationDreamTask', () => ({ registerDreamCaptureBackgroundTask: jest.fn().mockResolvedValue(undefined) }));
 jest.mock('@/components/speech/OfflineModelPromptHost', () => ({ OfflineModelPromptHost: () => <div data-testid="speech-host" /> }));
@@ -327,6 +328,7 @@ describe('root product composition (real root and DreamsProvider)', () => {
     expect(screen.queryByTestId('route:(tabs)')).toBeNull();
     expect(screen.queryByTestId('analysis-host')).toBeNull();
     expect(screen.queryByTestId('reminders-host')).toBeNull();
+    expect(screen.queryByTestId('widgets-host')).toBeNull();
     expect(screen.queryByTestId('speech-host')).toBeNull();
     expect(mockJournal).not.toHaveBeenCalled();
     expect(mockGuestSession).not.toHaveBeenCalled();
@@ -397,6 +399,7 @@ describe('root product composition (real root and DreamsProvider)', () => {
     expect(screen.getByTestId('route:journal/[id]')).toBeTruthy();
     expect(screen.getByTestId('analysis-host')).toBeTruthy();
     expect(screen.getByTestId('reminders-host')).toBeTruthy();
+    expect(screen.getByTestId('widgets-host')).toBeTruthy();
     expect(screen.getByTestId('speech-host')).toBeTruthy();
     expect(mockJournal).toHaveBeenCalled();
     expect(mockMark).toHaveBeenCalledWith('startup.route_committed');

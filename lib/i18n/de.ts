@@ -1778,6 +1778,8 @@ const translations: Record<string, string> = {
     'notifications.analysis_ready.title': 'Die Analyse deines Traums ist fertig',
     'notifications.analysis_ready.body': 'Sie wartet in deinem Journal, wann immer du sie lesen möchtest.',
     'notifications.dream_capture.action': 'Traum erzählen',
+    'widgets.capture.label': 'Traum erzählen',
+    'widgets.last_dream.empty': 'Dein nächster gemalter Traum erscheint hier.',
     'notifications.dream_capture.submit': 'Speichern',
     'notifications.dream_capture.placeholder': 'Diktiere deinen Traum…',
     'notifications.dream_capture.saved_title': 'Traum gespeichert',

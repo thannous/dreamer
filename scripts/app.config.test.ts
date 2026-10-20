@@ -178,4 +178,16 @@ describe('product route roots', () => {
       expect(config.experiments?.typedRoutes).toBe(true);
     });
   });
+
+  it('gives the journal its iOS widgets and Lucid none', () => {
+    // Lucid's widgets would open a capture screen and a journal it does not have.
+    const pluginNames = (config: { plugins?: unknown[] }) =>
+      (config.plugins ?? []).map((plugin) => (Array.isArray(plugin) ? plugin[0] : plugin));
+    withEnv({}, () => {
+      expect(pluginNames(resolveExpoConfig({ config: baseExpo() } as any))).toContain('expo-widgets');
+    });
+    withEnv({ NOCTALIA_APP_VARIANT: 'lucid', EXPO_PUBLIC_APP_VARIANT: 'lucid-trainer' }, () => {
+      expect(pluginNames(resolveExpoConfig({ config: baseExpo() } as any))).not.toContain('expo-widgets');
+    });
+  });
 });

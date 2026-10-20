@@ -1880,6 +1880,8 @@ const translations: Record<string, string> = {
     'notifications.analysis_ready.title': 'L’analisi del tuo sogno è pronta',
     'notifications.analysis_ready.body': 'Ti aspetta nel diario, quando vorrai leggerla.',
     'notifications.dream_capture.action': 'Racconta il mio sogno',
+    'widgets.capture.label': 'Racconta il mio sogno',
+    'widgets.last_dream.empty': 'Il tuo prossimo sogno dipinto apparirà qui.',
     'notifications.dream_capture.submit': 'Salva',
     'notifications.dream_capture.placeholder': 'Detta il tuo sogno…',
     'notifications.dream_capture.saved_title': 'Sogno salvato',

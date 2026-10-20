@@ -144,7 +144,41 @@
       "expo-sharing",
       "expo-apple-authentication",
       "expo-app-intents",
-      "./plugins/withAppIntentsLocalizations"
+      "./plugins/withAppIntentsLocalizations",
+      [
+        "expo-widgets",
+        {
+          "widgets": [
+            {
+              "name": "DreamCapture",
+              "displayName": "Tell my dream",
+              "description": "Opens the capture screen in one tap, from the Lock Screen or the Home Screen.",
+              "ios": {
+                "supportedFamilies": [
+                  "accessoryCircular",
+                  "accessoryRectangular",
+                  "accessoryInline",
+                  "systemSmall"
+                ],
+                "initialLayout": "widgets/DreamCaptureWidget.tsx"
+              }
+            },
+            {
+              "name": "LastDream",
+              "displayName": "Last painted dream",
+              "description": "Your latest dream's painting. Tap it to reopen the dream.",
+              "ios": {
+                "supportedFamilies": [
+                  "systemSmall",
+                  "systemMedium"
+                ],
+                "contentMarginsDisabled": true,
+                "initialLayout": "widgets/LastDreamWidget.tsx"
+              }
+            }
+          ]
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
