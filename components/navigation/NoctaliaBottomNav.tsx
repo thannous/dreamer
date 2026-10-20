@@ -1,4 +1,5 @@
-import { ACTIVE_PILL_RADIUS, CAPTURE_GLOW, getCaptureAction, getCaptureOverhang, getIconSlotSize } from '@/components/navigation/tabBarMetrics';
+import { ActiveTabPill, TabBarGlass } from '@/components/navigation/TabBarGlass';
+import { CAPTURE_GLOW, getActivePillFrame, getCaptureAction, getCaptureOverhang, getIconSlotSize, getTabBarFrame } from '@/components/navigation/tabBarMetrics';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import {
   BOTTOM_NAVIGATION_MAX_FONT_SIZE_MULTIPLIER,
@@ -43,6 +44,8 @@ type BottomNavItem = {
 type NoctaliaBottomNavProps = {
   activeKey: BottomNavKey;
   addDreamIcon?: IconName;
+  /** Pressing Capture while already on Capture; without it the press does nothing. */
+  onCapturePress?: () => void;
   onBarLayout?: (event: LayoutChangeEvent) => void;
 };
 
@@ -62,6 +65,7 @@ const BAR_SHADOW: ViewStyle = {
 export function NoctaliaBottomNav({
   activeKey,
   addDreamIcon = 'pencil',
+  onCapturePress,
   onBarLayout,
 }: NoctaliaBottomNavProps) {
   const { colors, mode } = useTheme();
@@ -95,7 +99,7 @@ export function NoctaliaBottomNav({
   const horizontalLayout = getTabBarHorizontalLayout(width);
 
   const barClassName = [
-    'absolute flex-row border-line-nav bg-ink-nav',
+    'absolute flex-row',
     navigationLayout.compact ? 'rounded-[28px] py-1' : 'rounded-[36px] py-[7px]',
     navigationLayout.narrow ? 'px-1' : 'px-2',
   ].join(' ');
@@ -143,8 +147,7 @@ export function NoctaliaBottomNav({
       key: 'stats',
       label: t((navigationLayout.largeText || navigationLayout.narrow) ? 'nav.stats_compact' : 'nav.stats'),
       accessibilityLabel: t('nav.stats'),
-      icon: 'chart.bar',
-      activeIcon: 'chart.bar.fill',
+      icon: 'chart.line.uptrend.xyaxis',
       href: '/(tabs)/statistics',
       testID: TID.Tab.Stats,
     },
@@ -168,6 +171,7 @@ export function NoctaliaBottomNav({
         style={[
           BAR_SHADOW,
           {
+            borderColor: noctalia.nav.glass.rim,
             borderWidth: StyleSheet.hairlineWidth,
             bottom: floatingBottomInset,
             height: navigationLayout.barHeight,
@@ -175,6 +179,7 @@ export function NoctaliaBottomNav({
           },
         ]}
       >
+        <TabBarGlass borderRadius={getTabBarFrame(navigationLayout).borderRadius} />
         <View className="relative flex-1 flex-row">
           {items.map((item, index) => {
             const isCenter = item.key === 'addDream';
@@ -185,7 +190,7 @@ export function NoctaliaBottomNav({
                 key={item.key}
                 // Capture sits above the tab navigator. Return to that instance so
                 // repeated tab switches release Capture instead of stacking both.
-                onPress={isActive ? undefined : () => router.dismissTo(item.href)}
+                onPress={isActive ? (isCenter ? onCapturePress : undefined) : () => router.dismissTo(item.href)}
                 accessibilityRole="tab"
                 aria-selected={isActive}
                 aria-busy={isCenter ? Boolean(activeAnalysis) : undefined}
@@ -207,12 +212,15 @@ export function NoctaliaBottomNav({
                   style={{
                     width: navigationLayout.itemWidth - (Platform.OS === 'web' || navigationLayout.largeText ? 2 : 0),
                     maxWidth: '100%',
-                    borderRadius: ACTIVE_PILL_RADIUS[navigationLayout.compact ? 'compact' : 'default'],
+                    height: '100%',
                   }}
                   className={`min-w-0 items-center justify-center ${
                     navigationLayout.compact ? 'gap-0 py-0.5' : 'gap-[2px] py-1'
-                  } ${isActive && !(isCenter && captureAction.raised) ? 'bg-ink-active' : ''}`}
+                  }`}
                 >
+                  {isActive && !(isCenter && captureAction.raised) ? (
+                    <ActiveTabPill style={getActivePillFrame(navigationLayout, index, items.length)} />
+                  ) : null}
                   {isCenter ? (
                     // The primary action reads as one at rest, not only once selected. The ring
                     // takes the screen colour so the raised part looks cut out of the bar.
@@ -260,7 +268,8 @@ export function NoctaliaBottomNav({
                     numberOfLines={isCenter ? navigationLayout.centerLabelLines : navigationLayout.labelLines}
                     textBreakStrategy="simple"
                     ellipsizeMode="tail"
-                    adjustsFontSizeToFit
+                    // Android ignores minimumFontScale, so fitting there shrinks labels without a floor.
+                    adjustsFontSizeToFit={Platform.OS !== 'android'}
                     maxFontSizeMultiplier={BOTTOM_NAVIGATION_MAX_FONT_SIZE_MULTIPLIER}
                     minimumFontScale={navigationLayout.narrow ? 0.75 : isCenter ? 0.85 : 0.8}
                   >
@@ -274,7 +283,7 @@ export function NoctaliaBottomNav({
       </View>
       {captureAction.raised ? <Pressable accessible={false} accessibilityElementsHidden
         importantForAccessibility="no-hide-descendants" focusable={false}
-        onPress={activeKey === 'addDream' ? undefined : () => router.dismissTo('/recording')}
+        onPress={activeKey === 'addDream' ? onCapturePress : () => router.dismissTo('/recording')}
         testID="tab.addDream.overhang"
         style={{ position: 'absolute', bottom: floatingBottomInset + navigationLayout.barHeight,
           left: (width - captureAction.size) / 2, width: captureAction.size, height: captureOverhang,

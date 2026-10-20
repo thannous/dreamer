@@ -144,6 +144,8 @@ jest.mock('@/constants/noctaliaDesign', () => ({
       background: '#background',
       border: '#border',
       inactive: '#inactive',
+      glass: { tint: '#glass-tint', solid: '#glass-solid', highlight: ['#glass-highlight', '#glass-clear'], rim: '#glass-rim' },
+      activePill: { fill: '#pill-fill', sheen: ['#pill-sheen', '#pill-clear'], rim: '#pill-rim' },
     },
   }),
 }));
@@ -226,7 +228,8 @@ describe('NoctaliaBottomNav', () => {
     expect(labels).toHaveLength(5);
     labels.forEach((label) => {
       const style = JSON.parse(label.getAttribute('data-native-style') ?? '{}');
-      expect(style.fontSize).toBe(11);
+      // Phone bars read 12-point labels; only narrow and short landscape bars drop to 11.
+      expect(style.fontSize).toBe(12);
       expect(label.getAttribute('data-number-of-lines')).toBe('1');
     });
     const margin = 8;
@@ -286,8 +289,9 @@ describe('NoctaliaBottomNav', () => {
     expect(box.height).toBe(86);
     expect(barClass).toContain('px-1');
     expect(center.width).toBeCloseTo(58.8, 1);
-    // Capture sits in the bar row like the other tabs; it no longer has a lifted fixed height.
-    expect(center.height).toBeUndefined();
+    // Capture sits in the bar row like the other tabs: every cell fills the bar's height so
+    // the active tab's background can, rather than Capture having a lifted fixed height.
+    expect(center.height).toBe('100%');
     expect(screen.queryByTestId(TID.Tab.Settings)).toBeNull();
     expect(labels).toHaveLength(5);
     labels.forEach((label) => {
@@ -386,8 +390,9 @@ describe('NoctaliaBottomNav', () => {
     expect(box.end).toBe(8);
     expect(barClass).toContain('px-2');
     expect(center.width).toBeCloseTo(71.2, 1);
-    // Capture sits in the bar row like the other tabs; it no longer has a lifted fixed height.
-    expect(center.height).toBeUndefined();
+    // Capture sits in the bar row like the other tabs: every cell fills the bar's height so
+    // the active tab's background can, rather than Capture having a lifted fixed height.
+    expect(center.height).toBe('100%');
     expect(centerLabel?.getAttribute('data-native-class')).toContain('text-[12px]');
     expect(centerLabel?.getAttribute('data-accessible')).toBe('false');
     expect(box.height).toBe(86);

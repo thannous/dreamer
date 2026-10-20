@@ -14,6 +14,7 @@ import { CaptureConversationCard } from './CaptureConversationCard';
 import { parseCaptureEditableDraft } from '@/lib/captureEditableDraft';
 import { Fonts } from '@/constants/theme';
 import { CaptureWeaving } from './CaptureWeaving';
+import { ListeningHalo } from './ListeningHalo';
 
 type Props = {
   compact?: boolean;
@@ -136,7 +137,8 @@ export function RecordingConversation(props: Props) {
       {props.onFinish ? <Pressable onPress={props.onFinish} disabled={locked || props.loading || props.finishDisabled} accessibilityRole="button"
         style={styles.secondary} testID="recording-conversation-finish"><Text style={[styles.hint, { color: tokens.text.primary }]}>{t('recording.conversation.done')}</Text></Pressable> : null}
     </View> : null}
-    {listening ? <Text accessibilityLiveRegion="polite" style={[styles.hint, { color: tokens.text.secondary }]} testID="recording-listening-status">{t('recording.conversation.listening')}</Text> : null}
+    {/* Noctalia listening: a halo that follows the voice, above the reply. */}
+    {listening ? <ListeningHalo label={t('recording.conversation.listening')} style={styles.listening} testID="recording-listening-status" /> : null}
     <RecordingTextInput chat compact autoFocus={false} value={props.answer} onChange={props.onAnswerChange}
       disabled={locked || props.loading || listening} instructionText="" lengthWarning="" voiceSupported={props.voiceSupported}
       voiceStatus={props.voiceStatus} switchToVoiceLabel={t('recording.conversation.reply_voice')} onSwitchToVoice={() => { void onVoice(); }}
@@ -169,4 +171,5 @@ const styles = StyleSheet.create({
   tool: { minHeight: 44, minWidth: 44, alignItems: 'center', justifyContent: 'center' },
   secondary: { minHeight: 44, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 12 },
   control: { width: 44, height: 44, borderRadius: 22, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
+  listening: { alignSelf: 'center' },
 });

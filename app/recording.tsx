@@ -1715,6 +1715,17 @@ function RecordingScreen() {
     await toggleRecording();
   }, [completeRecordingVoiceHint, isHydrated, toggleRecording]);
 
+  // On Capture, the bar's own Capture button acts on the open capture: in writing mode it
+  // puts the cursor at the end of the text, in speaking mode it turns the microphone on or off.
+  const handleCaptureNavPress = useCallback(() => {
+    if (interactionDisabled) return;
+    if (inputMode === 'voice') {
+      if (isVoiceSupported) void handleVoiceCapturePress();
+      return;
+    }
+    focusTranscriptEnd(baseTranscriptRef.current || transcript);
+  }, [focusTranscriptEnd, handleVoiceCapturePress, inputMode, interactionDisabled, isVoiceSupported, transcript]);
+
   const handleMicRationaleClose = useCallback(() => {
     hasSeenMicRationaleRef.current = true;
     setShowMicRationaleSheet(false);
@@ -2061,6 +2072,7 @@ function RecordingScreen() {
           <NoctaliaBottomNav
             activeKey="addDream"
             addDreamIcon={inputMode === 'voice' ? 'mic' : 'pencil'}
+            onCapturePress={handleCaptureNavPress}
             onBarLayout={handleBottomNavMeasure}
           />
         ) : null}

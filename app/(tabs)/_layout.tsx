@@ -1,10 +1,12 @@
 import { Tabs, router, useSegments } from 'expo-router';
-import React, { useEffect, useMemo, useState } from 'react';
+import { BlurTargetView } from 'expo-blur';
+import React, { createRef, useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Platform, Pressable, StyleSheet, Text, View, ViewStyle, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { HapticTab } from '@/components/haptic-tab';
-import { ACTIVE_PILL_RADIUS, CAPTURE_GLOW, getCaptureAction, getCaptureOverhang, getIconSlotSize } from '@/components/navigation/tabBarMetrics';
+import { ActiveTabPill, TabBarGlass, type BlurTarget } from '@/components/navigation/TabBarGlass';
+import { CAPTURE_GLOW, getActivePillFrame, getCaptureAction, getCaptureOverhang, getIconSlotSize, getTabBarFrame } from '@/components/navigation/tabBarMetrics';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import {
   BOTTOM_NAVIGATION_MAX_FONT_SIZE_MULTIPLIER,
@@ -26,14 +28,12 @@ import { TID } from '@/lib/testIDs';
 type IconName = Parameters<typeof IconSymbol>[0]['name'];
 
 type TabPalette = {
-  barBg: string;
   barBorder: string;
   accent: string;
   accentLight: string;
   textOnAccentSurface: string;
   text: string;
   textActive: string;
-  activeFill: string;
   ground: string;
 };
 
@@ -51,7 +51,15 @@ type TabGeometry = {
   itemWidth: number;
 };
 
-function TabBarItem({ label, icon, activeIcon, focused, palette, geometry }: {
+// Five destinations; the active background reaches into its neighbours by index.
+const TAB_COUNT = 5;
+// Each cell keeps 1 point on both sides and drops the navigator's vertical
+// padding, so the active background can fill the bar's height.
+const TAB_CELL_INSET = 1;
+const TAB_CELL_PADDING = { paddingHorizontal: TAB_CELL_INSET, paddingVertical: 0 } as const;
+
+function TabBarItem({ label, icon, activeIcon, focused, palette, geometry, index }: {
+  index: number;
   label: string;
   icon: IconName;
   activeIcon?: IconName;
@@ -71,13 +79,15 @@ function TabBarItem({ label, icon, activeIcon, focused, palette, geometry }: {
       style={{
         width: labelWidth,
         maxWidth: '100%',
-        borderRadius: ACTIVE_PILL_RADIUS[compact ? 'compact' : 'default'],
-        backgroundColor: focused ? palette.activeFill : 'transparent',
+        height: '100%',
       }}
       className={`min-w-0 items-center justify-center ${
         compact ? 'gap-0 py-0.5' : 'gap-[2px] py-1'
       }`}
     >
+      {focused ? (
+        <ActiveTabPill style={getActivePillFrame(geometry, index, TAB_COUNT, TAB_CELL_INSET)} />
+      ) : null}
       {/* Same slot height as the Capture action so every label shares one baseline. */}
       <View className="items-center justify-center" style={{ height: getIconSlotSize(geometry) }}>
         <IconSymbol
@@ -100,7 +110,8 @@ function TabBarItem({ label, icon, activeIcon, focused, palette, geometry }: {
         numberOfLines={geometry.labelLines}
         textBreakStrategy="simple"
         ellipsizeMode="tail"
-        adjustsFontSizeToFit
+        // Android ignores minimumFontScale, so fitting there shrinks labels without a floor.
+        adjustsFontSizeToFit={Platform.OS !== 'android'}
         maxFontSizeMultiplier={BOTTOM_NAVIGATION_MAX_FONT_SIZE_MULTIPLIER}
         minimumFontScale={narrow ? 0.75 : 0.8}
       >
@@ -129,14 +140,16 @@ function AddDreamTabItem({ label, palette, geometry, focused }: {
       style={{
         width: labelWidth,
         maxWidth: '100%',
-        borderRadius: ACTIVE_PILL_RADIUS[compact ? 'compact' : 'default'],
-        // Raised, the action itself carries the emphasis; a pill behind it would compete.
-        backgroundColor: focused && !action.raised ? palette.activeFill : 'transparent',
+        height: '100%',
       }}
       className={`min-w-0 items-center justify-center ${
         compact ? 'gap-0 py-0.5' : 'gap-[2px] py-1'
       }`}
     >
+      {/* Raised, the action itself carries the emphasis; a pill behind it would compete. */}
+      {focused && !action.raised ? (
+        <ActiveTabPill style={getActivePillFrame(geometry, 2, TAB_COUNT, TAB_CELL_INSET)} />
+      ) : null}
       {/* The primary action reads as one at rest, not only once selected. The ring
           takes the screen colour so the raised part looks cut out of the bar. */}
       <View
@@ -171,7 +184,8 @@ function AddDreamTabItem({ label, palette, geometry, focused }: {
         numberOfLines={geometry.centerLabelLines}
         textBreakStrategy="simple"
         ellipsizeMode="tail"
-        adjustsFontSizeToFit
+        // Android ignores minimumFontScale, so fitting there shrinks labels without a floor.
+        adjustsFontSizeToFit={Platform.OS !== 'android'}
         maxFontSizeMultiplier={BOTTOM_NAVIGATION_MAX_FONT_SIZE_MULTIPLIER}
         minimumFontScale={narrow ? 0.75 : 0.85}
       >
@@ -194,7 +208,7 @@ function createTabButton({
     return (
       <HapticTab
         {...props}
-        style={[props.style, { paddingHorizontal: 1 }]}
+        style={[props.style, TAB_CELL_PADDING]}
         testID={testID}
         accessibilityRole="tab"
         accessibilityLabel={accessibilityLabel}
@@ -217,6 +231,18 @@ export default function TabLayout() {
   const isTabsDestination = segments[0] === '(tabs)';
   const [hasEnteredTabs, setHasEnteredTabs] = useState(false);
   const keyboardVisible = useKeyboardVisible();
+  // Android blurs only a declared target: each tab screen is one, and the bar blurs the focused one.
+  const blurTargets = useRef(new Map<string, BlurTarget>()).current;
+  // Tab route names match the second segment; the index tab has none.
+  const focusedTab = (segments as readonly string[])[1] ?? 'index';
+  const blurTargetFor = (name: string) => {
+    let target = blurTargets.get(name);
+    if (!target) {
+      target = createRef();
+      blurTargets.set(name, target);
+    }
+    return target;
+  };
 
   useEffect(() => {
     if (routeCommitted && isTabsDestination) {
@@ -258,17 +284,16 @@ export default function TabLayout() {
     itemWidth: navigationLayout.itemWidth,
   };
   const floatingBottomInset = Math.max(insets.bottom, navigationLayout.minimumBottomInset);
+  const barFrame = getTabBarFrame(navigationLayout);
   const isDesktopWeb = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;
 
   const palette: TabPalette = {
-    barBg: noctalia.nav.background,
-    barBorder: noctalia.nav.border,
+    barBorder: noctalia.nav.glass.rim,
     accent: noctalia.action.primary,
     accentLight: noctalia.action.primaryBorder,
     textOnAccentSurface: noctalia.action.primaryText,
     text: noctalia.nav.inactive,
     textActive: noctalia.nav.active,
-    activeFill: noctalia.surface.active,
     ground: noctalia.screen.background,
   };
 
@@ -280,12 +305,13 @@ export default function TabLayout() {
     position: 'absolute',
     bottom: floatingBottomInset,
     ...getTabBarHorizontalLayout(width),
-    backgroundColor: palette.barBg,
+    // The glass behind the tabs is drawn by `tabBarBackground`.
+    backgroundColor: 'transparent',
     height: navigationLayout.barHeight,
-    paddingHorizontal: navigationLayout.narrow ? 4 : 8,
-    paddingTop: navigationLayout.compact ? 4 : 7,
-    paddingBottom: navigationLayout.compact ? 4 : 7,
-    borderRadius: navigationLayout.compact ? 28 : 36,
+    paddingHorizontal: barFrame.paddingHorizontal,
+    paddingTop: barFrame.paddingVertical,
+    paddingBottom: barFrame.paddingVertical,
+    borderRadius: barFrame.borderRadius,
     borderWidth: StyleSheet.hairlineWidth,
     borderTopColor: palette.barBorder,
     borderColor: palette.barBorder,
@@ -306,6 +332,11 @@ export default function TabLayout() {
 
   const tabs = (
     <Tabs
+      screenLayout={Platform.OS === 'android' ? ({ children, route }) => (
+        <BlurTargetView ref={blurTargetFor(route.name)} collapsable={false} style={{ flex: 1 }}>
+          {children}
+        </BlurTargetView>
+      ) : undefined}
       screenOptions={{
         // Tabs are peers, not a hierarchy, and the user pays for this transition dozens
         // of times a session. `none` is also the navigator default — pinned explicitly so
@@ -329,6 +360,12 @@ export default function TabLayout() {
         },
         tabBarButton: HapticTab,
         tabBarHideOnKeyboard: true,
+        tabBarBackground: () => (
+          <TabBarGlass
+            borderRadius={barFrame.borderRadius}
+            blurTarget={Platform.OS === 'android' ? blurTargetFor(focusedTab) : undefined}
+          />
+        ),
         tabBarShowLabel: false,
         tabBarItemStyle: {
           flex: 1,
@@ -348,7 +385,7 @@ export default function TabLayout() {
             accessibilityLabel: t('nav.home'),
           }),
           tabBarIcon: ({ focused }) => (
-            <TabBarItem icon="house" activeIcon="house.fill" label={t((navigationLayout.largeText || navigationLayout.narrow) ? 'nav.home_compact' : 'nav.home')} focused={focused} palette={palette} geometry={geometry} />
+            <TabBarItem index={0} icon="house" activeIcon="house.fill" label={t((navigationLayout.largeText || navigationLayout.narrow) ? 'nav.home_compact' : 'nav.home')} focused={focused} palette={palette} geometry={geometry} />
           ),
           tabBarItemStyle: getBottomNavigationItemStyle(0, navigationLayout),
         }}
@@ -365,7 +402,7 @@ export default function TabLayout() {
             accessibilityLabel: t('nav.journal'),
           }),
           tabBarIcon: ({ focused }) => (
-            <TabBarItem icon="book" activeIcon="book.fill" label={t('nav.journal')} focused={focused} palette={palette} geometry={geometry} />
+            <TabBarItem index={1} icon="book" activeIcon="book.fill" label={t('nav.journal')} focused={focused} palette={palette} geometry={geometry} />
           ),
           tabBarItemStyle: getBottomNavigationItemStyle(1, navigationLayout),
         }}
@@ -380,7 +417,7 @@ export default function TabLayout() {
           tabBarButton: (props) => (
             <HapticTab
               {...props}
-              style={[props.style, { paddingHorizontal: 1 }]}
+              style={[props.style, TAB_CELL_PADDING]}
               onPress={handleAddDreamPress}
               testID={TID.Tab.AddDream}
               accessibilityRole="tab"
@@ -406,7 +443,7 @@ export default function TabLayout() {
             accessibilityLabel: t('nav.stats'),
           }),
           tabBarIcon: ({ focused }) => (
-            <TabBarItem icon="chart.bar" activeIcon="chart.bar.fill" label={t((navigationLayout.largeText || navigationLayout.narrow) ? 'nav.stats_compact' : 'nav.stats')} focused={focused} palette={palette} geometry={geometry} />
+            <TabBarItem index={3} icon="chart.line.uptrend.xyaxis" label={t((navigationLayout.largeText || navigationLayout.narrow) ? 'nav.stats_compact' : 'nav.stats')} focused={focused} palette={palette} geometry={geometry} />
           ),
           tabBarItemStyle: getBottomNavigationItemStyle(3, navigationLayout),
         }}
@@ -423,7 +460,7 @@ export default function TabLayout() {
             accessibilityLabel: t('nav.explore'),
           }),
           tabBarIcon: ({ focused }) => (
-            <TabBarItem icon="sparkles" label={t((navigationLayout.largeText || navigationLayout.narrow) ? 'nav.explore_compact' : 'nav.explore')} focused={focused} palette={palette} geometry={geometry} />
+            <TabBarItem index={4} icon="sparkles" label={t((navigationLayout.largeText || navigationLayout.narrow) ? 'nav.explore_compact' : 'nav.explore')} focused={focused} palette={palette} geometry={geometry} />
           ),
           tabBarItemStyle: getBottomNavigationItemStyle(4, navigationLayout),
         }}
