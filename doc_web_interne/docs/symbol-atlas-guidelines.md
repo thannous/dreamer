@@ -46,7 +46,7 @@ Utiliser ces sources de vérité :
 | Symboles activés, ordre des scènes, cadrages et mouvements | [symbol-atlas-pilots.json](../../docs-src/config/symbol-atlas-pilots.json), liste explicite. |
 | Dimensions, formats et chemins des fichiers | [symbol-atlas-six-assets.json](../../docs-src/config/symbol-atlas-six-assets.json). Son nom historique ne justifie pas un deuxième manifeste pour chaque nouveau lot. |
 | Assemblage des pages, validation et placement des textures | [generate-symbol-pages.js](../../docs-src/static/scripts/generate-symbol-pages.js). |
-| Chargement, visibilité et mouvement | Moteur partagé sous `docs-src/static/js/symbol-living/`, dont le chemin actif est déclaré dans le générateur. Le Tigre garde son moteur historique ; ne pas en créer un autre pour chaque symbole. |
+| Chargement, visibilité et mouvement | Moteur partagé sous `docs-src/static/js/symbol-living/`, dont le chemin actif est déclaré dans le générateur. Le Tigre utilise aussi ce moteur commun ; ne pas en créer un autre pour chaque symbole. |
 | Comportement attendu | [site.web.e2e.ts](../../tools/e2e/tests/site.web.e2e.ts), liste attendue indépendante de la configuration. |
 | Copie lue par l'app mobile (portrait, textures, scènes) | `data/app/symbol-atlas.json`, régénéré depuis les trois configurations ci-dessus par `npm run symbols:dictionary:sync` ; ne pas l'éditer à la main. Le build du site publie le même contenu sous `/content/symbols/atlas-v1.json`, que l'app installée télécharge : un lot publié sur le site atteint donc l'app sans nouvelle version. Le test `scripts/sync-app-symbol-dictionary.test.js` échoue tant que la copie n'est pas régénérée. |
 
@@ -60,7 +60,9 @@ Réutiliser les composants de page et les tokens Noctalia. La maintenance d'une 
 
 ### Cadre commun et packs à compléter
 
-Les 240 symboles partagent le même assemblage de page dans les six langues. Au 20 octobre 2026, 75 disposent du pack d'images, dont 74 sont animés sur chaque surface ; le Tigre historique garde son hero animé mais sa plaque et ses vignettes restent à compléter. Les 165 autres gardent leur image statique. Ne pas ajouter de plaque ou scènes factices pour remplir la mise en page. Le prochain lot doit compléter les huit rôles, les trois scènes et leurs deux phénomènes avant de changer l'état du pack.
+Les 240 symboles partagent le même assemblage de page dans les six langues. Les fiches équipées, y compris le Tigre, utilisent le même moteur pour le hero, la plaque et les trois scènes. Le suivi indique les packs réellement terminés et ceux restant à créer. Une fiche sans pack garde son image statique : ne pas ajouter de plaque ou scènes factices. Le prochain lot doit compléter les huit rôles, les trois scènes et leurs deux phénomènes avant de changer son état.
+
+Le Tigre adapte ses fichiers historiques par `TIGER_ATLAS.motion` et `TIGER_ATLAS_ASSETS` dans le générateur. Les prochains packs utilisent les configurations JSON communes ; ne pas créer une nouvelle exception. Si la géométrie partagée `scripts/lib/atlas-motion.js` change, reprendre la QA concernée même si le rapport ne périme pas encore automatiquement cette entrée.
 
 Le cadrage portrait de ces pages sans pack est déclaré dans `docs-src/config/symbol-hero-portrait.json`. Quand un pack dédié est ajouté, supprimer son entrée de ce fichier : son portrait et ses placements viennent alors du pack. À DPR2, vérifier `currentSrc` : un hero en cover à 75svh peut nécessiter une peinture plus large que le viewport. Utiliser la variante native appropriée, sans agrandissement artificiel.
 

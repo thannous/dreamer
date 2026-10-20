@@ -1074,7 +1074,7 @@ function renderAtlasArticle(c, atlas) {
   const scenes = (atlas.scenes?.choices || []).map((choice, index) => {
     const variation = c.variations.find((v) => looseSpaces(plainText(v.context)) === choice.variation);
     if (!variation) throw new Error(`${atlas.name} atlas: variation "${choice.variation}" is missing`);
-    const meaning = plainText(variation.meaning);
+    const meaning = plainText(sanitizeEmDashes(variation.meaning));
     const scene = { ...choice, label: choice.label || choice.variation, checked: index === 0, card: c.variations.indexOf(variation) };
     if (atlas.sceneText === 'excerpt') {
       const question = meaning.slice(0, meaning.indexOf('?') + 1);
