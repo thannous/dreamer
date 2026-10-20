@@ -6,6 +6,13 @@ const mockStore = new Map<string, string>();
 let mockIdle = true;
 let mockWriteFails = false;
 
+const mockHaptic = jest.fn(async () => {});
+jest.mock('expo-haptics', () => ({
+  impactAsync: () => mockHaptic(),
+  notificationAsync: () => mockHaptic(),
+  ImpactFeedbackStyle: { Soft: 'soft', Light: 'light' },
+  NotificationFeedbackType: { Success: 'success' },
+}));
 jest.mock('expo-audio', () => ({
   setAudioModeAsync: (mode: unknown) => mockSetAudioMode(mode),
   createAudioPlayer: () => mockPlayer,
@@ -71,6 +78,8 @@ it('never touches the audio session under a live dictation or in the background'
   await settle();
   expect(mockSetAudioMode).not.toHaveBeenCalled();
   expect(mockPlayer.play).not.toHaveBeenCalled();
+  // Only the dictation case was felt: a late cue in the background does not buzz the pocket.
+  expect(mockHaptic).toHaveBeenCalledTimes(1);
 });
 
 it('waits for a recording made without a dictation session, as Android falls back to', async () => {

@@ -120,6 +120,8 @@ async function play(sound: SignatureSound) {
  * and the phone may ring. The web plays no sound and keeps only the save's vibration.
  */
 export function playSignature(sound: SignatureSound): void {
+  // Neither heard nor felt from the background, where a late cue would only buzz the pocket.
+  if (AppState.currentState !== 'active') return;
   if (Platform.OS === 'web') {
     if (sound === 'seal') touch(sound);
     return;

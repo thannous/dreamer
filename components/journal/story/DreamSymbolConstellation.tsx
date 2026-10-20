@@ -4,6 +4,7 @@ import Animated, { useReducedMotion, type CSSStyle } from 'react-native-reanimat
 
 import { PressableScale } from '@/components/motion';
 import { EASE } from '@/components/motion/motion';
+import { useOnScreen } from '@/components/ui/headerStretch';
 import type { LinkedSymbol } from '@/lib/symbolLinks';
 import { TID } from '@/lib/testIDs';
 import { playSignature } from '@/services/signatureSounds';
@@ -84,16 +85,22 @@ export function DreamSymbolConstellation({ stars: all, play, onOpen }: {
   const points = useMemo(() => (width ? layoutStars(stars.length, width, rows) : []), [rows, stars.length, width]);
   const labelWidth = width ? Math.max(56, width / stars.length - 8) : 0;
   // The first symbol already met in other dreams answers as it lights, once, on the live page.
+  // Left before it lights, the page stays silent: the echo is not heard over another screen,
+  // nor later on the way back.
   const echoAt = onOpen ? stars.findIndex((star) => star.count > 1) : -1;
   const echoed = useRef(false);
+  const onScreen = useOnScreen();
   useEffect(() => {
-    if (!play || echoAt < 0 || echoed.current) return;
+    if (play && !onScreen) echoed.current = true;
+  }, [onScreen, play]);
+  useEffect(() => {
+    if (!play || !onScreen || echoAt < 0 || echoed.current) return;
     const timer = setTimeout(() => {
       echoed.current = true;
       playSignature('echo');
     }, reduced ? 0 : igniteDelay(echoAt) + DREAM_STORY.starIgnite / 2);
     return () => clearTimeout(timer);
-  }, [echoAt, play, reduced]);
+  }, [echoAt, onScreen, play, reduced]);
 
   return (
     <View
