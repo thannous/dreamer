@@ -59,6 +59,7 @@ export const TID = {
     JournalLayoutCompact: 'btn.settings.journalLayout.compact',
     SettingsStreakRiskToggle: 'btn.settings.notifications.streakRisk',
     SettingsInactivityNudgeToggle: 'btn.settings.notifications.inactivityNudge',
+    SettingsSignatureSoundsToggle: 'btn.settings.signatureSounds',
     ClearFilters: 'btn.clearFilters',
     AdvancedFiltersClear: 'btn.advancedFilters.clear',
     EmptyClearFilters: 'btn.empty.clearFilters',

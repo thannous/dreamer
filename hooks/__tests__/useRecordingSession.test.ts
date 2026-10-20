@@ -11,6 +11,7 @@ import {
   getSpeechLocaleAvailability,
   startNativeSpeechSession,
 } from '../../services/nativeSpeechRecognition';
+import { isMicrophoneHeld } from '../../services/microphoneHold';
 import { transcribeAudio } from '../../services/speechToText';
 import { useRecordingSession, type RecordingSessionResult } from '../useRecordingSession';
 
@@ -289,6 +290,60 @@ describe('useRecordingSession', () => {
     );
   });
 
+  it('holds the microphone from the start’s audio mode to the stop’s, so the app’s cues leave the recording alone', async () => {
+    const heldOnModeChange: boolean[] = [];
+    jest.mocked(setAudioModeAsync).mockImplementation(async () => {
+      heldOnModeChange.push(isMicrophoneHeld());
+    });
+    const { result } = renderHook(() => useRecordingSession(defaultOptions));
+
+    await act(async () => {
+      await result.current.startRecording('');
+    });
+    expect(isMicrophoneHeld()).toBe(true);
+
+    await act(async () => {
+      await result.current.stopRecording();
+    });
+    expect(isMicrophoneHeld()).toBe(false);
+    expect(heldOnModeChange).toEqual([true, true]);
+  });
+
+  it('keeps the microphone held through an unmount until the forced stop has torn down', async () => {
+    const heldOnReset: boolean[] = [];
+    jest.mocked(setAudioModeAsync).mockImplementation(async (mode) => {
+      if ((mode as { allowsRecording?: boolean }).allowsRecording === false) heldOnReset.push(isMicrophoneHeld());
+    });
+    const { result, unmount } = renderHook(() => useRecordingSession(defaultOptions));
+    await act(async () => {
+      await result.current.startRecording('');
+    });
+    const { forceStopRecording } = result.current;
+
+    // The screen's own cleanup, which forces the stop, runs after the hook's.
+    unmount();
+    expect(isMicrophoneHeld()).toBe(true);
+    await act(async () => {
+      await forceStopRecording('unmount');
+    });
+
+    expect(heldOnReset).toEqual([true]);
+    expect(isMicrophoneHeld()).toBe(false);
+  });
+
+  it('gives the microphone back after an unmount that no forced stop follows', async () => {
+    const { result, unmount } = renderHook(() => useRecordingSession(defaultOptions));
+    await act(async () => {
+      await result.current.startRecording('');
+    });
+
+    unmount();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    // Otherwise the app's cues would stay silent for the rest of the launch.
+    expect(isMicrophoneHeld()).toBe(false);
+  });
+
   it('stopRecording should return transcript result', async () => {
     const { result } = renderHook(() => useRecordingSession(defaultOptions));
 
@@ -466,6 +521,8 @@ describe('useRecordingSession', () => {
       });
 
       expect(response).toEqual({ success: false, error: 'stt_unavailable' });
+      // A start that gives up hands the microphone back.
+      expect(isMicrophoneHeld()).toBe(false);
       expect(recorder.prepareToRecordAsync).not.toHaveBeenCalled();
       expect(recorder.record).not.toHaveBeenCalled();
       expect(transcribeAudio).not.toHaveBeenCalled();

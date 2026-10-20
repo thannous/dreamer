@@ -26,6 +26,7 @@ import { TID } from '@/lib/testIDs';
 import { IllustrationQualityPreference } from './IllustrationQualityPreference';
 import { SettingsSection } from './SettingsSection';
 import { SettingsToggle } from './SettingsToggle';
+import { useSignatureSoundsPreference } from './useSignatureSoundsPreference';
 import { isHdIllustrationsEnabled } from '@/lib/env';
 
 import {
@@ -335,6 +336,7 @@ export function SettingsFieldGroup({
   const noctalia = getNoctaliaDesignTokens(colors, mode);
   const { theme, language } = useSettingsPreferences();
   const notifications = useNotificationSettingsController();
+  const sounds = useSignatureSoundsPreference();
   const [themeSheetVisible, setThemeSheetVisible] = useState(false);
   const [languageSheetVisible, setLanguageSheetVisible] = useState(false);
   const [activeTimePicker, setActiveTimePicker] = useState<'weekday' | 'weekend' | null>(null);
@@ -420,6 +422,28 @@ export function SettingsFieldGroup({
                 testID="settings-theme-choice"
                 value={theme.currentLabel}
               />
+            ) : null}
+            {/* The web plays no signature sound, so it offers no switch for them. */}
+            {Platform.OS !== 'web' ? (
+              <Pressable
+                accessibilityRole="switch"
+                accessibilityState={{ checked: sounds.enabled }}
+                aria-checked={sounds.enabled}
+                onPress={() => sounds.toggle(!sounds.enabled)}
+                className={`${ROW_CLASS} border-b border-b-line`}
+                testID={TID.Button.SettingsSignatureSoundsToggle}
+              >
+                <IconSymbol name="speaker.wave.2.fill" size={21} color={noctalia.accent.text} />
+                <View className="flex-1 gap-0.5">
+                  <Text className={`${ROW_LABEL_CLASS} flex-[0]`}>
+                    {t('settings.sounds.title')}
+                  </Text>
+                  <Text className="text-caption text-ivory-faint">
+                    {t('settings.sounds.hint')}
+                  </Text>
+                </View>
+                <SettingsToggle onValueChange={sounds.toggle} value={sounds.enabled} />
+              </Pressable>
             ) : null}
             <PreferenceRow
               icon="globe"

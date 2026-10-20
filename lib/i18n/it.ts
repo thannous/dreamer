@@ -1149,6 +1149,8 @@ const translations: Record<string, string> = {
     'settings.rituals.weekend_reminder_time': 'Ora del weekend',
     'settings.rituals.weekly_recap': 'Riepilogo settimanale',
     'settings.rituals.weekly_recap_hint': 'La tua settimana, la domenica mattina.',
+    'settings.sounds.title': 'Suoni di Noctalia',
+    'settings.sounds.hint': 'Un suono delicato quando un sogno viene sigillato, dipinto o torna un simbolo. Muto quando il telefono è in silenzioso.',
     'settings.rituals.streak_risk': 'Avviso di serie',
     'settings.rituals.streak_risk_hint': 'La sera in cui la tua serie finirebbe.',
     'settings.rituals.inactivity_nudge': 'Ritorno gentile',
