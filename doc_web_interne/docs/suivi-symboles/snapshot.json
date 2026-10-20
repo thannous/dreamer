@@ -1,8 +1,8 @@
 {
   "schema": "noctalia.symbol-tracking-snapshot/1",
   "date": "2026-10-20",
-  "sourceRevision": "1a63ecf787bc8d20e322314e1ba17987c83b1198",
-  "sourcePullRequest": 478,
+  "sourceRevision": "76d7e577dfb7eb5251b0898e994e3a5210bfd56c",
+  "sourcePullRequest": 485,
   "totalSymbols": 240,
   "integratedSymbols": 75,
   "remainingToIntegrate": 165,
@@ -20,15 +20,15 @@
   "currentStageProofs": {
     "publication": 240,
     "approval": 0,
-    "qa": 74
+    "qa": 75
   },
   "files": {
     "workbook": {
-      "sha256": "cb16d6d1a0870615ec9dbeb33497fc4c3f81e7edb77ca1753625c88e2816203e",
+      "sha256": "c875e8897fa211a4a400d49783a9da51ff01c6e4d869baa297963286f21ac2f4",
       "path": "suivi-240-symboles-6-langues.xlsx"
     },
     "csv": {
-      "sha256": "0a3a5994377bdb09f1981ed54e9cf477c5c1a955982098d41083dad8dd845403",
+      "sha256": "09229aed1f62bca082418910b9cd6a24cecb69823c178f9f033a770074d64cb3",
       "path": "symbol-rollout.csv"
     }
   },
@@ -53,15 +53,15 @@
     "nativeArchiveLocallyVerified": false,
     "visuallySampledPacks": 6
   },
-  "qaReceipt": "../qa/symbol-pages-uniform-20261020.json",
-  "qaReceiptSha256": "fe31ccd3607e8f968b734c44af88982100e05b70ee32145e80ebb11246dfda19",
+  "qaReceipt": "../qa/symbol-tiger-common-motion-20261020.json",
+  "qaReceiptSha256": "ab7a78a27a415f91aefac4c47c49e33f20f000216954241a840ca864a197b88b",
   "commonLayoutSymbols": 240,
   "commonLayoutLocalePages": 1440,
-  "commonAnimatedPacks": 74,
-  "tigerMotionPending": true,
+  "commonAnimatedPacks": 75,
+  "tigerMotionPending": false,
   "publication": {
     "origin": "https://noctalia.app",
-    "deploymentUrl": "https://9146e242.noctalia.pages.dev",
+    "deploymentUrl": "https://59e528d0.noctalia.pages.dev",
     "command": "npm run docs:deploy:prod",
     "releaseCommand": "npm run verify:release:site -- --keep",
     "releasePassed": true

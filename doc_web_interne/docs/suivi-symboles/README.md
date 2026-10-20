@@ -2,9 +2,9 @@
 
 [Tableau Excel](suivi-240-symboles-6-langues.xlsx) · [CSV lisible dans GitHub](symbol-rollout.csv) · [Passation Codex / Claude](HANDOFF.md)
 
-Le 20 octobre 2026, le cadre commun a été publié pour **240 symboles dans six langues, soit 1 440 pages**. **75 packs d'images** comprennent la plaque latérale et trois scènes illustrées. Les **74 packs du moteur commun** ont deux effets par surface ; le Tigre historique anime seulement son hero et reste à compléter. **165 packs restent à créer** : ces pages utilisent leur illustration statique existante, sans plaque ou scènes inventées. Les langues sont FR, EN, ES, DE, IT et PT-BR.
+Le 20 octobre 2026, le cadre commun a été publié pour **240 symboles dans six langues, soit 1 440 pages**. **75 packs d'images** comprennent la plaque latérale et trois scènes illustrées. Les **75 packs utilisent le moteur commun**, avec deux effets par surface, y compris le Tigre. **165 packs restent à créer** : ces pages utilisent leur illustration statique existante, sans plaque ou scènes inventées. Les langues sont FR, EN, ES, DE, IT et PT-BR.
 
-Version publiée : `1a63ecf787bc8d20e322314e1ba17987c83b1198`, après la PR [478](https://github.com/thannous/dreamer/pull/478). [Preuve de livraison](../qa/symbol-pages-uniform-20261020.json) : validation de publication passée, campagne navigateur complète, contrôles publics des 1 440 pages et échantillon mobile / 2560 px. Les 74 packs communs ont une QA actuelle dans les six langues ; les 240 pages ont une publication actuelle. Cela n'ajoute aucun accord visuel personnel de Thanh.
+Version publiée : `76d7e577dfb7eb5251b0898e994e3a5210bfd56c`, après la PR [485](https://github.com/thannous/dreamer/pull/485). [Preuve de livraison](../qa/symbol-tiger-common-motion-20261020.json) : validation de publication passée, campagne navigateur complète, contrôles publics des 1 440 pages et échantillon mobile / 2560 px. Les 75 packs ont une QA actuelle dans les six langues ; les 240 pages ont une publication actuelle. Cela n'ajoute aucun accord visuel personnel de Thanh.
 
 ## Lire les états
 
