@@ -6,8 +6,6 @@ const languages: ('en' | 'fr' | 'es' | 'de' | 'it' | 'pt')[] = ['en', 'fr', 'es'
 
 const badgeKeys = [
   'journal.badge.favorite',
-  'journal.badge.analyzed',
-  'journal.badge.explored',
 ] as const;
 
 const emptyStateKeys = [

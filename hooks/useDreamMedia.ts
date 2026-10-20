@@ -16,10 +16,10 @@ export function useDreamMedia(dream?: DreamAnalysis | null, options?: { variant:
   const analyzedAt = dream?.analyzedAt;
   const [refreshEpoch, setRefreshEpoch] = useState(0);
   const identity = JSON.stringify([userId, imageUrl, thumbnailUrl, imageUpdatedAt, dream?.analysisRequestId, dream?.analyzedAt]);
-  const [originalRequest, setOriginalRequest] = useState({ identity, requested: false });
   // FlashList recycles cards. An original requested by a previous dream/account
-  // must not cause a new card to resolve anything beyond its thumbnail.
-  if (originalRequest.identity !== identity) setOriginalRequest({ identity, requested: false });
+  // must not cause a new card to resolve anything beyond its thumbnail: the request
+  // counts only for its own identity, so a recycled card renders once, not twice.
+  const [originalRequest, setOriginalRequest] = useState({ identity, requested: false });
   const thumbnailOnly = options?.variant === 'thumbnail'
     && Boolean(thumbnailUrl.trim())
     && !(originalRequest.identity === identity && originalRequest.requested);

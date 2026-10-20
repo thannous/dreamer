@@ -63,7 +63,9 @@ for (const theme of ['light', 'dark'] as const) {
     const metadata = card.getByTestId(`journal.metadata.${id}`);
     await expect(metadata).toContainText('Symbolic dream');
     await expect(metadata).toContainText('Mystical');
-    await expect(metadata).toContainText('Analyzed');
+    // Revised 2026-10-20 (was 'Analyzed'): the owner removed that label from the cards; an
+    // analysed dream is the usual case and names no state.
+    await expect(metadata).not.toContainText('Analyzed');
     await expect(text).toContainText('I found myself in an enormous library');
     // React Native's layout event follows the phone/grid resize. Observe the
     // settled portrait frame rather than its initial width from the previous layout.
@@ -84,6 +86,7 @@ for (const theme of ['light', 'dark'] as const) {
         return { top: box.top - coverRect.top, bottom: box.bottom - coverRect.top, left: box.left - coverRect.left, width: box.width };
       };
       return { width: coverRect.width, height: coverRect.height, text: relative(`journal.text.${cardId}`),
+        date: relative(`journal.date.${cardId}`),
         actions: [relative(`journal.favorite.${cardId}`), relative(`journal.share.${cardId}`)] };
     }, id);
     // The painting spans the list, and the dream's text sits at its foot, inside it.
@@ -91,20 +94,26 @@ for (const theme of ['light', 'dark'] as const) {
     expect(layout.text.top).toBeGreaterThanOrEqual(layout.height / 2);
     expect(Math.abs(layout.text.bottom - layout.height)).toBeLessThanOrEqual(1);
     expect(await text.evaluate(node => getComputedStyle(node).backgroundColor)).not.toBe('rgba(0, 0, 0, 0)');
-    const lines = await text.evaluate(node => [node.children[0], node.children[1],
+    const lines = await text.evaluate(node => [node.children[0],
       node.querySelector('[data-testid^="journal.preview."]')!].map(child => {
       return Math.round(child.getBoundingClientRect().height / parseFloat(getComputedStyle(child).lineHeight));
     }));
-    // The date, then at most two lines of title and three of the dream.
-    expect(lines[0]).toBe(1);
-    expect(lines[1]).toBeLessThanOrEqual(2);
-    expect(lines[2]).toBeLessThanOrEqual(3);
+    // Revised 2026-10-20 (was the date's line above the title): the owner moved the date to the
+    // icons' line, so the veil holds at most two lines of title and three of the dream.
+    expect(lines[0]).toBeLessThanOrEqual(2);
+    expect(lines[1]).toBeLessThanOrEqual(3);
     // The heart and share icons sit over the painting's top right.
     for (const action of layout.actions) {
       expect(action.width).toBeGreaterThanOrEqual(44);
       expect(action.top).toBeLessThan(60);
       expect(action.left).toBeGreaterThan(layout.width / 2);
     }
+    // The date leads that line, as tall as the icons and clear of the heart.
+    expect(Math.abs(layout.date.top - layout.actions[0].top)).toBeLessThanOrEqual(1);
+    expect(Math.abs(layout.date.bottom - layout.actions[0].bottom)).toBeLessThanOrEqual(1);
+    expect(layout.date.left).toBeLessThan(layout.width / 2);
+    expect(layout.date.left + layout.date.width).toBeLessThanOrEqual(layout.actions[0].left);
+    await expect(card.getByTestId(`journal.date.${id}`)).toHaveText(/^\d{1,2}\D/);
     // The arrow follows the dream's last line, at the foot of the painting, folded or not.
     const expand = card.getByTestId(`journal.expand.${id}`);
     const preview = card.getByTestId(`journal.preview.${id}`);
@@ -119,15 +128,6 @@ for (const theme of ['light', 'dark'] as const) {
     await expect.poll(arrowGap).toBeLessThanOrEqual(2);
     await expand.click();
     await expect(expand).toHaveAccessibleName('Read the whole dream');
-    const badge = card.getByTestId(`journal.badge.${id}.0`);
-    const badgeChildren = await badge.evaluate(node => Array.from(node.children).map(child => {
-      const rect = child.getBoundingClientRect();
-      return { x: rect.x, y: rect.y, height: rect.height };
-    }));
-    expect(badgeChildren).toHaveLength(2);
-    expect(badgeChildren[0].x).toBeLessThan(badgeChildren[1].x);
-    expect(Math.abs(badgeChildren[0].y + badgeChildren[0].height / 2
-      - badgeChildren[1].y - badgeChildren[1].height / 2)).toBeLessThan(2);
     await cover.evaluate(async (node) => {
       await document.fonts.ready;
       await Promise.all(Array.from(node.querySelectorAll('img')).map((image) => image.decode()));
@@ -151,6 +151,25 @@ for (const theme of ['light', 'dark'] as const) {
     await card.click();
     await expect(page.getByTestId('component.transcriptCard')).toContainText('Books were floating around me');
     await openJournal(page);
+
+    // Revised 2026-10-20 (was the 'Deepened' label): the owner removed it from the cards too.
+    const explored = await findDream(page, 'Ocean of Stars');
+    const exploredId = await explored.getAttribute('data-testid');
+    await expect(explored.getByTestId(`journal.metadata.${exploredId}`)).toContainText('Symbolic dream');
+    await expect(explored.getByTestId(`journal.metadata.${exploredId}`)).not.toContainText('Deepened');
+    // A state label keeps its icon on its own line, here a dream still being analysed.
+    const pending = await findDream(page, 'The Forgotten Classroom');
+    const pendingId = await pending.getAttribute('data-testid');
+    await expect(pending.getByTestId(`journal.metadata.${pendingId}`)).toContainText('Analyzing');
+    const badge = pending.getByTestId(`journal.badge.${pendingId}.0`);
+    const badgeChildren = await badge.evaluate(node => Array.from(node.children).map(child => {
+      const rect = child.getBoundingClientRect();
+      return { x: rect.x, y: rect.y, height: rect.height };
+    }));
+    expect(badgeChildren).toHaveLength(2);
+    expect(badgeChildren[0].x).toBeLessThan(badgeChildren[1].x);
+    expect(Math.abs(badgeChildren[0].y + badgeChildren[0].height / 2
+      - badgeChildren[1].y - badgeChildren[1].height / 2)).toBeLessThan(2);
 
     const noImage = await findDream(page, 'Garden in the Clouds');
     const noImageId = await noImage.getAttribute('data-testid');
@@ -188,11 +207,13 @@ for (const theme of ['light', 'dark'] as const) {
         return node.isConnected && rect.width > 0 && rect.x >= 0
           && rect.right <= innerWidth && rect.width <= innerWidth / columns;
       }).catch(() => false)).toBe(true);
-      // However narrow the card, its seal stays below the icons and above the dream's text.
+      // However narrow the card, its seal stays below the icons and above the dream's text, and
+      // its date stays clear of the heart.
       await expect.poll(async () => noImage.evaluate((node) => {
         const box = (prefix: string) => node.querySelector(`[data-testid^="${prefix}"]`)!.getBoundingClientRect();
-        const [seal, share, text] = [box('journal.seal.'), box('journal.share.'), box('journal.text.')];
-        return seal.top >= share.bottom && seal.bottom <= text.top;
+        const [seal, share, text, date, favorite] = [box('journal.seal.'), box('journal.share.'), box('journal.text.'),
+          box('journal.date.'), box('journal.favorite.')];
+        return seal.top >= share.bottom && seal.bottom <= text.top && date.right <= favorite.left && date.bottom <= seal.top;
       }).catch(() => false)).toBe(true);
       await page.screenshot({ path: testInfo.outputPath(`${theme}-${viewport.width}-text-only.png`) });
     }

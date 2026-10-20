@@ -162,10 +162,18 @@ function JournalListScreen() {
   const headerScrollY = useHeaderScrollY();
   const staticScrollY = useRef(0);
   const scrollLayout = useRef({ mobileListKey, isDesktopLayout, searchConsumesLayout });
-  const searchCollapseStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: searchConsumesLayout ? 0 :
-      -Math.max(0, Math.min(listScrollY.get(), mobileSearchHeaderHeight)) }],
-  }));
+  // Open at the top and gone once scrolled past: those two hand back the same transform on
+  // each scroll frame, since Reanimated commits a style each time it gets a new one.
+  const searchEnds = useMemo(() => ({
+    open: [{ translateY: 0 }],
+    collapsed: [{ translateY: -mobileSearchHeaderHeight }],
+  }), [mobileSearchHeaderHeight]);
+  const searchCollapseStyle = useAnimatedStyle(() => {
+    const y = listScrollY.get();
+    if (searchConsumesLayout || y <= 0) return { transform: searchEnds.open };
+    if (y >= mobileSearchHeaderHeight) return { transform: searchEnds.collapsed };
+    return { transform: [{ translateY: -y }] };
+  });
 
   useEffect(() => {
     const show = Keyboard.addListener(
