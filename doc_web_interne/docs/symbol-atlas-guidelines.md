@@ -58,6 +58,14 @@ Réutiliser les composants de page et les tokens Noctalia. La maintenance d'une 
 
 **Fin :** ajouter un symbole ne demande pas de copier un moteur ou de disperser des conditions spécifiques dans les composants partagés ; manifeste, données et fichiers se correspondent sans déformation.
 
+### Cadre commun et packs à compléter
+
+Les 240 symboles partagent le même assemblage de page dans les six langues. Au 20 octobre 2026, 75 disposent du pack d'images, dont 74 sont animés sur chaque surface ; le Tigre historique garde son hero animé mais sa plaque et ses vignettes restent à compléter. Les 165 autres gardent leur image statique. Ne pas ajouter de plaque ou scènes factices pour remplir la mise en page. Le prochain lot doit compléter les huit rôles, les trois scènes et leurs deux phénomènes avant de changer l'état du pack.
+
+Le cadrage portrait de ces pages sans pack est déclaré dans `docs-src/config/symbol-hero-portrait.json`. Quand un pack dédié est ajouté, supprimer son entrée de ce fichier : son portrait et ses placements viennent alors du pack. À DPR2, vérifier `currentSrc` : un hero en cover à 75svh peut nécessiter une peinture plus large que le viewport. Utiliser la variante native appropriée, sans agrandissement artificiel.
+
+Le suivi sépare les sources réellement consommées : changer un cadrage ne périme que ce symbole ; changer la copie des scènes ne périme pas une fiche sans scènes. Garder une preuve claire plutôt que multiplier les contrôles au pixel. Sur cette machine, utiliser le runtime Linux existant pour les contrôles de publication et conserver les preuves hors de `/tmp`, vidé à l'arrêt du système Linux.
+
 ### Outils communs pour les lots suivants
 
 Les commandes et effets détaillés sont dans le [catalogue des outils Atlas](../../scripts/README.md#atlas-pages-asset-packs-handoffs-and-qualification-receipts). Depuis la racine, utiliser `npm run <commande> --prefix apps/site -- <options>` ; ne pas recopier un encodeur ou un collecteur par symbole.

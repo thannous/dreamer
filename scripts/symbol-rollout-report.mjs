@@ -36,6 +36,7 @@ const fromCaller = (file) => path.resolve(process.env.INIT_CWD || process.cwd(),
 const sha256 = (bytes) => createHash('sha256').update(bytes).digest('hex');
 const SOURCE_PARTS = ['content', 'atlas', 'assets', 'engine'];
 const identity = (value) => (value == null ? null : sha256(JSON.stringify(value)));
+const pick = (object, keys) => Object.fromEntries(keys.filter((key) => Object.hasOwn(object, key)).map((key) => [key, object[key]]));
 
 class ReportError extends Error {}
 
@@ -92,11 +93,18 @@ export function buildReport(options) {
   }).sort();
   const engineIdentity = (files) => identity(files.map((file) => [file, sha256(fs.readFileSync(at(...file.split('/'))))]));
   const generator = 'docs-src/static/scripts/generate-symbol-pages.js';
+  const framingFile = 'docs-src/config/symbol-hero-portrait.json';
   const engines = {
-    page: engineIdentity(engineFiles(generator, 'docs-src/config/symbol-hero-portrait.json')),
+    page: engineIdentity(engineFiles(generator, framingFile)),
     pilot: engineIdentity(engineFiles(generator, 'docs-src/static/js/symbol-living')),
     tiger: engineIdentity(engineFiles(generator, 'docs-src/static/js/tiger-living')),
   };
+
+  // Each page without a pack carries the generator and its own framing only: re-cropping one symbol
+  // leaves the other pages' qualifications reusable.
+  const framing = fs.existsSync(at(...framingFile.split('/'))) ? readJson(at(...framingFile.split('/')), 'the hero framing').value : {};
+  const generatorEngine = engineIdentity(engineFiles(generator));
+  const textEngine = (id) => identity({ generator: generatorEngine, framing: framing[id] ?? null });
 
   // The registry names every catalog id exactly once, each with a known lot or none.
   const problems = [];
@@ -156,17 +164,20 @@ export function buildReport(options) {
       }));
       // What a QA of this language looks at: its words, its atlas, its paintings and the engine. A
       // record copies this source; a later change to any part makes that record stale.
-      // A page without a pack reads in the same article and prints the language's shared copy (index
-      // label, detailed reading, app kicker, anchors), all but the scene words it has no use for.
+      // A page without a pack reads in the same article and prints these words of the language's shared
+      // copy (renderAtlasArticle without scenes): its index label, detailed reading, app kicker and anchors.
       const languageCopy = locales.value.copy?.[lang] ?? null;
-      const pageCopy = languageCopy && Object.fromEntries(Object.entries(languageCopy).filter(([part]) => part !== 'scenes'));
+      const pageCopy = languageCopy && {
+        ...pick(languageCopy, ['navLabel', 'continuationTitle', 'keepKicker']),
+        anchors: pick(languageCopy.anchors ?? {}, ['keepInline', 'keepFinal', 'reading', 'further', 'related']),
+      };
       const source = {
         content: identity({ catalog: symbol[key] ?? null, extended: content ?? null }),
         atlas: equipped
           ? identity({ copy: languageCopy, locale, pilot: pilots.value[id] ?? null })
           : identity({ copy: pageCopy }),
         assets: equipped === 'pilot' ? identity(manifest?.value[id] ?? null) : null,
-        engine: engines[equipped ?? 'page'],
+        engine: equipped ? engines[equipped] : textEngine(id),
       };
       const stages = Object.fromEntries(Object.entries(STAGES).map(([stage, surfaces]) => [stage, Object.fromEntries(surfaces.map((surface) => [surface, stageState(stage, id, lang, surface, source)]))]));
       return [lang, {

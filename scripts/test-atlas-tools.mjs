@@ -565,10 +565,12 @@ test('the rollout report reads states from the repository and stages only from r
   const requalifiedReport = run('out-4e').report;
   assert.equal(bySymbol(requalifiedReport, 'moon').languages.fr.stages.qa.desktop, 'accepted');
   // A page without a pack takes its phone framing from the generator's framing file: changing it
-  // changes that page's engine, not a pack's.
+  // changes that page's engine only, not another page's nor a pack's.
   fs.writeFileSync(path.join(repo, 'docs-src', 'config', 'symbol-hero-portrait.json'), JSON.stringify({ deer: '30% 50%' }));
   const reframed = run('out-4f').report;
-  assert.notEqual(bySymbol(reframed, 'deer').languages.fr.source.engine, bySymbol(requalifiedReport, 'deer').languages.fr.source.engine);
+  const engineOf = (report, id) => bySymbol(report, id).languages.fr.source.engine;
+  assert.notEqual(engineOf(reframed, 'deer'), engineOf(requalifiedReport, 'deer'));
+  assert.equal(engineOf(reframed, 'spider'), engineOf(requalifiedReport, 'spider'));
   assert.equal(bySymbol(reframed, 'moon').languages.fr.stages.qa.desktop, 'accepted');
   // It also prints the language's shared atlas copy: changing those words makes its record stale,
   // though it has no atlas of its own and the totals stay the same.
@@ -579,6 +581,13 @@ test('the rollout report reads states from the repository and stages only from r
   assert.equal(bySymbol(run('out-4g').report, 'deer').languages.fr.stages.qa.mobile, 'accepted');
   const localesFile = path.join(repo, 'docs-src', 'config', 'symbol-atlas-locales.json');
   const localesText = fs.readFileSync(localesFile, 'utf8');
+  // The scene words it does not print (here the quotation marks) leave it accepted; a pack goes stale.
+  const requoted = JSON.parse(localesText);
+  requoted.copy.fr.quotes = ['“', '”'];
+  fs.writeFileSync(localesFile, JSON.stringify(requoted));
+  const requotedReport = run('out-4g2').report;
+  assert.equal(bySymbol(requotedReport, 'deer').languages.fr.stages.qa.mobile, 'accepted');
+  assert.equal(bySymbol(requotedReport, 'moon').languages.fr.stages.qa.desktop, 'stale');
   const recopied = JSON.parse(localesText);
   recopied.copy.fr.continuationTitle = 'Lecture complète';
   fs.writeFileSync(localesFile, JSON.stringify(recopied));
