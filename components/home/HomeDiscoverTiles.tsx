@@ -131,7 +131,7 @@ export const HomeDiscoverTiles = memo(function HomeDiscoverTiles({ now, selected
             <LinearGradient colors={VEIL} locations={[0.2, 0.45, 0.65, 1]} style={IMAGE_FILL} />
             <View className="flex-1 justify-end p-3.5">
               {tile.eyebrow ? <Text maxFontSizeMultiplier={1.3} style={{ color: NIGHT.accent.text }}
-                className="font-sans-medium text-[10px] uppercase tracking-[1.4px]">
+                className="font-sans-medium text-[11px] uppercase tracking-[1px]">
                 {tile.eyebrow}
               </Text> : null}
               <Text numberOfLines={3} maxFontSizeMultiplier={1.3} style={{ color: NIGHT.text.primary }}

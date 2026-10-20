@@ -1129,8 +1129,8 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.spaceGrotesk.bold,
   },
   comparisonFreeText: {
-    fontSize: 11,
-    lineHeight: 14,
+    fontSize: 12,
+    lineHeight: 15,
     fontFamily: Fonts.spaceGrotesk.medium,
     textAlign: 'center',
   },
