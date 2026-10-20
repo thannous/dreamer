@@ -265,9 +265,9 @@ jest.doMock('expo-linear-gradient', () => ({
 
 
 jest.doMock('@/components/navigation/NoctaliaBottomNav', () => ({
-  NoctaliaBottomNav: ({ onBarLayout }: { onBarLayout?: (event: any) => void }) => {
+  NoctaliaBottomNav: ({ onBarLayout, onCapturePress }: { onBarLayout?: (event: any) => void; onCapturePress?: () => void }) => {
     mockBottomNavLayout = onBarLayout;
-    return <div data-testid="recording-bottom-nav" />;
+    return <div data-testid="recording-bottom-nav" onClick={onCapturePress} />;
   },
 }));
 
@@ -2464,6 +2464,27 @@ describe('Recording screen', () => {
     expect(mockStopRecording).toHaveBeenCalledTimes(1);
     expect(mockRequestCaptureQuestion).toHaveBeenCalledTimes(questionCount);
     await act(async () => { mockOnNativeEnd?.(); });
+    expect(mockStartRecording).toHaveBeenCalledTimes(1);
+    expect(mockRequestCaptureQuestion).toHaveBeenCalledTimes(questionCount);
+    expect((screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value).toContain('Un jardin au soleil.');
+  });
+
+  it('lets the bar\'s Capture button start and mute a Tell reply like the conversation\'s microphone', async () => {
+    mockPlatformOS = 'android';
+    mockRecordingPermissionState = 'granted';
+    mockGetInputModePreference.mockResolvedValue('voice');
+    const view = render(<RecordingScreen />);
+    await awaitEditorReady();
+    await act(async () => { fireEvent.click(screen.getByTestId('recording-bottom-nav')); });
+    await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(1));
+    mockIsRecording = true;
+    view.rerender(<RecordingScreen />);
+    act(() => mockOnPartialTranscript?.('Un jardin au soleil.'));
+    const questionCount = mockRequestCaptureQuestion.mock.calls.length;
+    await act(async () => { fireEvent.click(screen.getByTestId('recording-bottom-nav')); });
+    expect(mockStopRecording).toHaveBeenCalledTimes(1);
+    await act(async () => { mockOnNativeEnd?.(); });
+    // Muting from the bar keeps the reply for the dreamer to send; it asks nothing new.
     expect(mockStartRecording).toHaveBeenCalledTimes(1);
     expect(mockRequestCaptureQuestion).toHaveBeenCalledTimes(questionCount);
     expect((screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value).toContain('Un jardin au soleil.');

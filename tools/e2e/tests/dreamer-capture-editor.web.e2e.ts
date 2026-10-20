@@ -40,7 +40,9 @@ test('capture gives the story room, respects explicit and automatic themes, and 
   const save = page.getByTestId('btn.saveDream');
   const count = page.getByTestId('component.recording.draftProgress.count');
   await expect(save).toBeDisabled();
-  await expect(page.getByText('Décris ton rêve', { exact: true })).toBeVisible();
+  // The writing area is its own invitation: no heading above it, only its placeholder.
+  await expect(page.getByText('Décris ton rêve', { exact: true })).toHaveCount(0);
+  await expect(editor).toHaveAttribute('placeholder', 'Parle-moi de ton rêve…');
   await expect(page.getByTestId('recording-guest-remaining')).toHaveCount(0);
   await editor.fill(story);
   await expect(page.getByText('Brouillon conservé sur cet appareil', { exact: true })).toBeVisible();

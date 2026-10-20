@@ -39,8 +39,13 @@ export function getBottomNavigationLayout(
   const horizontalLayout = getTabBarHorizontalLayout(width);
   const contentWidth = Math.max(0, width - horizontalLayout.start * 2 - (narrow ? 8 : 16) - 2);
   const itemWidth = contentWidth / 5;
-  const labelFontSize = compact || width < TABLET_BREAKPOINT ? 11 : 12;
+  // Phones read 12-point labels; only narrow and short landscape bars drop to 11.
+  const labelFontSize = compact || narrow ? 11 : 12;
   const labelLineHeight = 16;
+  // Android cannot shrink a label to fit without making it tiny, so it uses the short
+  // names wherever the full ones may not fit at 12 points: below 384 dp or with larger text.
+  const compactLabels = largeText || narrow
+    || (Platform.OS === 'android' && (width < 384 || requestedFontScale > 1));
   // Keep navigation compact while the dream itself follows the user's text size.
   // Translated short labels stay on one line; accessible tab names remain complete.
   const labelLines = 1;
@@ -62,6 +67,7 @@ export function getBottomNavigationLayout(
     narrow,
     stackedLabels,
     largeText,
+    compactLabels,
     fontScale: safeFontScale,
     itemWidth,
     contentWidth,

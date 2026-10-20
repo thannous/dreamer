@@ -2,8 +2,34 @@ import type { ViewStyle } from 'react-native';
 
 type TabBarLayout = { compact: boolean; narrow: boolean; largeText: boolean };
 
-/** Rounded enough to echo the bar, square enough to keep the label inside its corners. */
-export const ACTIVE_PILL_RADIUS = { default: 20, compact: 16 } as const;
+/** The bar's own padding and corner radius; both bottom bars draw from these. */
+export function getTabBarFrame(layout: TabBarLayout) {
+  return {
+    paddingHorizontal: layout.narrow ? 4 : 8,
+    paddingVertical: layout.compact ? 4 : 7,
+    borderRadius: layout.compact ? 28 : 36,
+  };
+}
+
+/**
+ * The active tab's background fills the bar's height and reaches a little into
+ * its neighbours, so the label keeps room on every side. Its corners follow the
+ * bar's, inset by the bar padding. `cellInset` is any padding between the item
+ * cell and the view that draws the background.
+ */
+export function getActivePillFrame(layout: TabBarLayout, index: number, count: number, cellInset = 0) {
+  const bar = getTabBarFrame(layout);
+  const inner = layout.narrow ? 3 : 6;
+  const outer = Math.max(0, bar.paddingHorizontal - bar.paddingVertical);
+  return {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: -((index === 0 ? outer : inner) + cellInset),
+    right: -((index === count - 1 ? outer : inner) + cellInset),
+    borderRadius: bar.borderRadius - bar.paddingVertical,
+  } satisfies ViewStyle;
+}
 
 /** Every icon sits in a slot this tall so the five labels share one baseline. */
 export function getIconSlotSize(layout: TabBarLayout) {
