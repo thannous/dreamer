@@ -249,7 +249,7 @@ test('reflection offers an optional recap after one angle and updates it after a
   await page.setViewportSize({ width: 390, height: 867 });
   await selectProfile(page, 'plus');
   await page.getByTestId('tab.home').filter({ visible: true }).click();
-  await page.getByTestId('btn.inspiration.personalReadingRecap').click();
+  await page.getByTestId('btn.home.week.recap').click();
   await expect(page.getByTestId('screen.weeklyRecap')).toBeVisible();
   await page.getByTestId('btn.weeklyRecap.openDream').click();
   await expect(page.getByTestId('component.transcriptCard')).toBeVisible();

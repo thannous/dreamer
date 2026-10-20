@@ -95,7 +95,8 @@ test('home keeps the dream image unchanged when explicit themes override the sys
   await page.getByTestId('quick-settings.language').click();
   await page.getByTestId('quick-settings.language.fr').click();
   await page.getByTestId('quick-settings.close').click();
-  await expect(page.getByRole('heading', { name: 'Aujourd’hui', exact: true })).toBeVisible();
+  // The tab bar says Today; the page's headline is the dream, whose action now reads in French.
+  await expect(page.getByTestId('btn.home.today.cta')).toContainText('Relire mon rêve');
   await expect(page.getByTestId('quick-settings.drawer')).not.toBeInViewport();
   await expect(page.getByText('Rêve analysé · Touchez pour ouvrir', { exact: true })).toBeHidden();
 
@@ -110,8 +111,15 @@ test('home keeps the dream image unchanged when explicit themes override the sys
   await page.getByTestId('btn.home.today.cta').click();
   await expect(page.getByTestId('component.transcriptCard')).toContainText(story);
   await page.goBack();
-  await page.getByTestId('btn.inspiration.personalReadingRecap').click();
+  // The week's last night is today's dream; the symbol of the day opens its dictionary page.
+  await page.locator('[data-testid^="btn.home.week.night."]').last().click();
+  await expect(page.getByTestId('component.transcriptCard')).toContainText(story);
+  await page.goBack();
+  await page.getByTestId('btn.home.week.recap').click();
   await expect(page.getByTestId('screen.weeklyRecap')).toBeVisible();
+  await page.goBack();
+  await page.getByTestId('btn.home.resources.dailySymbol').click();
+  await expect(page.getByTestId('screen.symbolDetail')).toBeVisible();
   await page.goBack();
   // Reminder scheduling stays native-only; web does not advertise an unsupported CTA.
   await expect(page.getByTestId('btn.home.reminder')).toHaveCount(0);
