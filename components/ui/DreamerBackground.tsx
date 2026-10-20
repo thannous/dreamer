@@ -8,7 +8,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { getDreamerArtwork, type DreamerScene } from '@/constants/dreamerArtwork';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
-import { usePaintingDepthStyle, useHeaderStretchStyle } from './headerStretch';
+import { usePaintingArrival, usePaintingDepthStyle, useHeaderStretchStyle } from './headerStretch';
 
 type Props = {
   scene: DreamerScene;
@@ -29,9 +29,8 @@ type Props = {
 };
 
 /**
- * The painting itself lags behind the page as it scrolls, so the scene seems to lie deeper
- * than the copy over it. It does not breathe: on Android each frame of an endless zoom
- * redrew the whole screen, so a page at rest kept the phone busy (owner decision 2026-10-20).
+ * The painting itself settles as its screen opens and lags behind the page as it scrolls,
+ * so the scene seems to lie deeper than the copy over it.
  */
 function PaintingLayer({ height, frame, children }: {
   height: number;
@@ -39,7 +38,10 @@ function PaintingLayer({ height, frame, children }: {
   children: React.ReactNode;
 }) {
   const depth = usePaintingDepthStyle(height, frame);
-  return <Animated.View style={[StyleSheet.absoluteFill, depth]}>{children}</Animated.View>;
+  const arrival = usePaintingArrival();
+  return <Animated.View style={[StyleSheet.absoluteFill, depth]}>
+    <Animated.View style={[StyleSheet.absoluteFill, arrival]}>{children}</Animated.View>
+  </Animated.View>;
 }
 
 /** A real opening onto the scene: copy lives on the theme's reading surface below it.

@@ -27,6 +27,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useMemo, useRef } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { usePaintingArrival } from '@/components/ui/headerStretch';
 import Animated, {
   Extrapolation,
   interpolate,
@@ -102,6 +103,8 @@ export default function SymbolDetailScreen() {
   // Scroll-derived, so it runs on the UI thread. The artwork drifts at a third of
   // the scroll speed and the page reads as a window onto the sky; reduce motion
   // keeps it pinned to the content.
+  // Like every painting, the hero settles as the sheet opens.
+  const heroArrival = usePaintingArrival();
   const heroArtStyle = useAnimatedStyle(() => {
     if (reducedMotion) return {};
     const y = scrollY.get();
@@ -176,6 +179,7 @@ export default function SymbolDetailScreen() {
               accessible={false}
               importantForAccessibility="no-hide-descendants"
             >
+              <Animated.View style={[StyleSheet.absoluteFill, heroArrival]}>
               <Image
                 source={illustration ?? SKY_FALLBACK}
                 // Offline before the first visit, the sheet keeps its night sky.
@@ -186,6 +190,7 @@ export default function SymbolDetailScreen() {
                 transition={illustration ? 200 : 0}
                 style={StyleSheet.absoluteFill}
               />
+              </Animated.View>
             </Animated.View>
             <LinearGradient
               pointerEvents="none"
