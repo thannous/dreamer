@@ -50,11 +50,9 @@ import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import React, { useCallback, useContext, useDeferredValue, useEffect, useEffectEvent, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import {
-  Alert,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
-  Share,
   Text,
   type GestureResponderEvent,
   type NativeScrollEvent,
@@ -534,26 +532,13 @@ function JournalListScreen() {
     router.push({ pathname: '/journal/[id]', params: getDreamRouteParams(dream) });
   }, []);
 
-  // On a phone the system share sheet opens right away with the dream's words; the web has no
-  // reliable share sheet, so it opens the dream, whose detail falls back to copying.
+  // Sharing from a card opens the dream with its share open: on a phone, the dreamer chooses
+  // what the shared card shows; the web, with no reliable share sheet, falls back to copying.
   const handleDreamShare = useCallback((dream: DreamAnalysis) => {
-    if (Platform.OS === 'web') {
-      if (isNavigatingRef.current) return;
-      isNavigatingRef.current = true;
-      router.push({ pathname: '/journal/[id]', params: { ...getDreamRouteParams(dream), share: '1' } });
-      return;
-    }
-    const quote = dream.shareableQuote?.trim();
-    const excerpt = dream.transcript?.trim().slice(0, 220);
-    const message = [
-      dream.title ? `🌙 ${dream.title}` : null,
-      quote ? `“${quote}”` : excerpt ? `${excerpt}${(dream.transcript?.trim().length ?? 0) > 220 ? '…' : ''}` : null,
-      t('journal.detail.share.footer'),
-    ].filter(Boolean).join('\n\n');
-    void Share.share({ message, title: dream.title }).catch(() => {
-      Alert.alert(t('common.error_title'), t('journal.detail.share.error_message'));
-    });
-  }, [t]);
+    if (isNavigatingRef.current) return;
+    isNavigatingRef.current = true;
+    router.push({ pathname: '/journal/[id]', params: { ...getDreamRouteParams(dream), share: '1' } });
+  }, []);
 
   const handleDreamFavorite = useCallback((dream: DreamAnalysis) => {
     setFavoriteError(null);

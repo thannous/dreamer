@@ -1,0 +1,301 @@
+{
+  "schema": "noctalia.atlas-source-library/1",
+  "lot": "lot-10",
+  "symbols": [
+    "bee",
+    "volcano",
+    "ring",
+    "waterfall",
+    "turtle",
+    "mask"
+  ],
+  "webLanguages": [
+    "fr",
+    "en",
+    "es",
+    "de",
+    "it",
+    "pt-br"
+  ],
+  "roles": 48,
+  "newSelectedNativePaintings": 36,
+  "additionalBuiltInEdit": 1,
+  "byteExactReusedTextures": 12,
+  "sourceArchive": {
+    "file": "source-library-lot10-v1.zip",
+    "sha256": "52aeeaa3d81587f5f38e332388d22c9ede340cf0ccd9a42a336ade74a0bced69",
+    "location": "output/noctalia-symbols-lot10-2026-10-20/source-library-lot10-v1.zip",
+    "availability": "local portable archive with native PNGs, exact prompts and role manifests; not served publicly"
+  },
+  "nativeSizes": {
+    "bee": {
+      "hero": [
+        1672,
+        941
+      ],
+      "portrait": [
+        941,
+        1672
+      ],
+      "plate": [
+        1254,
+        1254
+      ],
+      "scene-butinage": [
+        1672,
+        941
+      ],
+      "scene-piqure": [
+        1672,
+        941
+      ],
+      "scene-essaim": [
+        1672,
+        941
+      ],
+      "layer": [
+        1672,
+        941
+      ],
+      "accent": [
+        1672,
+        940
+      ]
+    },
+    "volcano": {
+      "hero": [
+        1672,
+        941
+      ],
+      "portrait": [
+        941,
+        1672
+      ],
+      "plate": [
+        1254,
+        1254
+      ],
+      "scene-endormi": [
+        1672,
+        941
+      ],
+      "scene-eruption": [
+        1672,
+        941
+      ],
+      "scene-lave": [
+        1672,
+        941
+      ],
+      "layer": [
+        1672,
+        941
+      ],
+      "accent": [
+        1672,
+        941
+      ]
+    },
+    "ring": {
+      "hero": [
+        1672,
+        941
+      ],
+      "portrait": [
+        941,
+        1672
+      ],
+      "plate": [
+        1254,
+        1254
+      ],
+      "scene-perdue": [
+        1672,
+        941
+      ],
+      "scene-fiancailles": [
+        1672,
+        941
+      ],
+      "scene-serree": [
+        1672,
+        941
+      ],
+      "layer": [
+        1672,
+        941
+      ],
+      "accent": [
+        1672,
+        940
+      ]
+    },
+    "waterfall": {
+      "hero": [
+        1672,
+        941
+      ],
+      "portrait": [
+        941,
+        1672
+      ],
+      "plate": [
+        1254,
+        1254
+      ],
+      "scene-contemplation": [
+        1672,
+        941
+      ],
+      "scene-sous-eau": [
+        1672,
+        941
+      ],
+      "scene-chute": [
+        1672,
+        941
+      ],
+      "layer": [
+        1672,
+        941
+      ],
+      "accent": [
+        1672,
+        940
+      ]
+    },
+    "turtle": {
+      "hero": [
+        1672,
+        941
+      ],
+      "portrait": [
+        941,
+        1672
+      ],
+      "plate": [
+        1254,
+        1254
+      ],
+      "scene-nage": [
+        1672,
+        941
+      ],
+      "scene-carapace": [
+        1672,
+        941
+      ],
+      "scene-lenteur": [
+        1672,
+        941
+      ],
+      "layer": [
+        1672,
+        941
+      ],
+      "accent": [
+        1672,
+        941
+      ]
+    },
+    "mask": {
+      "hero": [
+        1672,
+        941
+      ],
+      "portrait": [
+        941,
+        1672
+      ],
+      "plate": [
+        1254,
+        1254
+      ],
+      "scene-porter": [
+        1672,
+        941
+      ],
+      "scene-colle": [
+        1672,
+        941
+      ],
+      "scene-carnaval": [
+        1672,
+        941
+      ],
+      "layer": [
+        1672,
+        941
+      ],
+      "accent": [
+        1672,
+        941
+      ]
+    }
+  },
+  "sources": {
+    "bee": {
+      "hero": "6397cec406f8474be43ea87436e36c0668e77b122d17b44d2af6aae1fe6fcb81",
+      "portrait": "4383142b9e0dd5593954ff0091c7987e115c0d15a1768a66128b87c8d676ba64",
+      "plate": "5d74fb2e7aa1c7b10af4be3c0a6e3480dc0cd3db8b73467ab511ae92c68cac4a",
+      "scene-butinage": "049efd00192990a7ebc1565b5129153bba1fc493812b67bb2e945db2ae6e8948",
+      "scene-piqure": "070f6681af7c63306d06aa2c0d23d3c7986e7a28ab92bb1f5a133cab98fc89d6",
+      "scene-essaim": "f21138bc0848008a7d5b2d1407a1a14dd4ecab5167a75cf1a6fecf99816f245c",
+      "layer": "8cfd51913b1b8c09ad4589ae47f768bb80756af927cb0bfc7ba3d7b8672b75bd",
+      "accent": "7e622a07c4c6c52254cbb2fd28b25992aaa8661a61b9aa99cc43354ec809abb3"
+    },
+    "volcano": {
+      "hero": "c150f86bdeada7f64acd15052499201ecf118ed30c0a9661725d308c22f393a6",
+      "portrait": "aa386784ba84caeb688298e44abf7043d1e44b602626d65e99eabad7cf198de8",
+      "plate": "7e9fe1e6c3c167ea32d17bdb4152b5cf62034f65e16e7647e04a29cb41a317c9",
+      "scene-endormi": "f2a5918eca29ec361c39c3e9ac3c27091b0f4e28bb0e9107f32d3fd86384e26d",
+      "scene-eruption": "f6e079f26a06e969f80fca1dc64b91fd7fab118998a8ca2537d7189c2e3efaf6",
+      "scene-lave": "b52fd3dbb9c65959e0a3753394b88684fb7de77f075e0c5e56f37dae572a0370",
+      "layer": "89d7e68611d9d72bef80ab96204f36c8cada141fc4e4f41f70601865fc62f66b",
+      "accent": "ccadfbc9a74168f1ab9de6051df27691968517a7146a3945c4c739c0aa9d7b6a"
+    },
+    "ring": {
+      "hero": "9bad50b0b7a0fd9999b38208cc9fb80c635b9a3d5ee5dbee428be5658bb93cbe",
+      "portrait": "9528eff50fadebcf2880846f6e45a06fe1d887b4fcd3b73ccfdb8f265afc9e97",
+      "plate": "4d23846e7a2fa86c0fdc993f99e8e36ea84a351d8776404144ee42831b45028b",
+      "scene-perdue": "56bce7abad8d2e77a46a592251342357370cd765140848b6bc8d1fec4a8a79b2",
+      "scene-fiancailles": "71e514fcb4064b0aac53991cf606782126f6d6f922addb48f5cc5cb86347e116",
+      "scene-serree": "8e8ad5035f72bab42e1bb8f9f457affd29255b624f05316739a14e840ae7a157",
+      "layer": "8cfd51913b1b8c09ad4589ae47f768bb80756af927cb0bfc7ba3d7b8672b75bd",
+      "accent": "7e622a07c4c6c52254cbb2fd28b25992aaa8661a61b9aa99cc43354ec809abb3"
+    },
+    "waterfall": {
+      "hero": "24fa16627ca406bfd2862acc9c250b1207f6cdeac8a4a92f506c3c7e8421eb4d",
+      "portrait": "ebf910375af12c9b0a0b2e28e6022b7fefac9facbc34b0234126fd3f900f5fc3",
+      "plate": "2befaf23493a41732056bba985929b87a0bb047cc7f6bebee53d7a4946db9707",
+      "scene-contemplation": "5b94869e70063e9b3770d0b698bbccc825d934352d686aaf81182748ab3c9a24",
+      "scene-sous-eau": "8d3cbf9d19b53c802261e5535f864ad1fa2ed96aceec4eedd91fb94ef7d4477c",
+      "scene-chute": "cbaa7b56769a78a7f27dae99a9c7205e62ab25dfd5c1aac570fd0f43b4b5abee",
+      "layer": "ceae8823ae0012a72d18559624fd63e1ce40e817c046462a630845fcdf1ad360",
+      "accent": "034e681976a035553306521f543dfb3ede773eb4ba29d9c0e182a9d7817896fb"
+    },
+    "turtle": {
+      "hero": "0b451f551d53a6e09d2dac3817711ba02396b08838160502dd6c5d664ad81b07",
+      "portrait": "db0269805c1f2b065a906569616ad98149f43a08d2610080d664e324b0945550",
+      "plate": "1c04f231b7dbad73aa74029cc077cb96ad34a7a1fab81791b42e163df08fc7a5",
+      "scene-nage": "319126a45548098904f270d9c47d1e607f75e4af0e634419283ae92d5f1305e5",
+      "scene-carapace": "81a96281da7fc32e9d1a77e939423e8d232001c3f04696347273ab439443d273",
+      "scene-lenteur": "385ce23867857d0dba2184573584aeb5020d071802e1e551d44e87fa87aa6b67",
+      "layer": "8cfd51913b1b8c09ad4589ae47f768bb80756af927cb0bfc7ba3d7b8672b75bd",
+      "accent": "d5c3d1e109452013d49395c80a41d8eca74d25213797c633881241013d020f19"
+    },
+    "mask": {
+      "hero": "4cce5063cc6ac496e7e2b865cba032f5f1ee2b771c1461441f7202c8aeea645d",
+      "portrait": "a6411e3e009e0b07fdc9db3d64e1fe5b6a2b8ffd011f7f62eafc7fc263e8dbe7",
+      "plate": "19dbbadbd2123338099fc2313ffa34ec9e504c563b0647275f9ad5ff63071808",
+      "scene-porter": "5bfed17664c477f3783065648eed0b255ece3165a902e7b707ac7744e4ae1eaa",
+      "scene-colle": "328ff674a6ffd3ff778aa79264f55db7ad72268869a58a61031d5f2bf05fbd84",
+      "scene-carnaval": "367e68b06b2fbd78dc3d8432ce221a0cdeb0396660123b1cdb024963b036ce36",
+      "layer": "8cfd51913b1b8c09ad4589ae47f768bb80756af927cb0bfc7ba3d7b8672b75bd",
+      "accent": "ab542301e52390ba402f7c15609c9856ace47761d757cc4c4dbe8b76c25f7188"
+    }
+  },
+  "selection": "Codex-selected within delegated user scope; no individual personal visual approval invented.",
+  "artDirection": "Noctalia ink, indigo/violet night, ivory moonlight, champagne accents localized. Eighteen distinct scene paintings.",
+  "provenance": "Each generated role has .generation.json; each reused texture has .reuse.json with source path and SHA256. Waterfall original retained alongside edited hero. No artificial upscale."
+}

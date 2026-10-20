@@ -14,6 +14,7 @@ import { isRememberedDream, isRecurringDream } from '@/lib/dreamFilters';
 import { getDreamAnalysisState, isDreamAnalyzed, isDreamExplored } from '@/lib/dreamUsage';
 import { isMockModeEnabled } from '@/lib/env';
 import { getDreamImageVersion, getDreamThumbnailCacheKey, getDreamThumbnailUri, getImageConfig, withCacheBuster } from '@/lib/imageUtils';
+import { getCardPictureKey, rememberCardPicture } from '@/lib/journalCardPictures';
 import { isSquareDreamThumbnail } from '@/lib/journalImageReference';
 import { DreamAnalysis } from '@/lib/types';
 import { Image } from 'expo-image';
@@ -156,6 +157,8 @@ export const DreamCard = memo(function DreamCard({
   // A recycled card or refreshed signed URL gets its own failure state. Keeping
   // the account in this identity prevents a previous user's load from hiding media.
   const imageAttemptKey = JSON.stringify([accessScope, getDreamIdentityKey(dream), imageVersion, imageUri]);
+  const imageCacheKey = preferFullImage ? media.imageCacheKey : thumbnailCacheKey;
+  const imageSource = useMemo(() => (imageUri ? { uri: imageUri, cacheKey: imageCacheKey } : null), [imageCacheKey, imageUri]);
   const [failedImageAttempt, setFailedImageAttempt] = useState<string | null>(null);
   // A phone list's card spans the screen less its 16 pt sides: right from the first frame.
   const [coverWidth, setCoverWidth] = useState(() => windowWidth - 32);
@@ -448,7 +451,7 @@ export const DreamCard = memo(function DreamCard({
           <Animated.View ref={coverFrame} style={COVER_FRAME_STYLE} pointerEvents="none">
           <Animated.View style={[{ position: 'absolute', left: 0, right: 0, top: -coverTravel, bottom: -coverTravel }, coverParallaxStyle]}>
           <Image
-            source={imageUri ? { uri: imageUri, cacheKey: preferFullImage ? media.imageCacheKey : thumbnailCacheKey } : null}
+            source={imageSource}
             style={CARD_IMAGE_STYLE}
             contentFit={imageConfig.contentFit}
             transition={imageTransition}
@@ -469,6 +472,10 @@ export const DreamCard = memo(function DreamCard({
                 // presenting the blurhash as if an illustration were available.
                 setFailedImageAttempt(imageAttemptKey);
               }
+            }}
+            // The dream's page opens on what the card shows, from the same source and cache.
+            onDisplay={() => {
+              if (imageSource) rememberCardPicture(getCardPictureKey(accessScope, dream), imageSource);
             }}
             placeholder={imagePlaceholder}
             accessible={false}
