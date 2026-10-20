@@ -176,6 +176,13 @@ jest.mock('@/components/trends/TrendsReturns', () => ({
     </div>
   ),
 }));
+jest.mock('@/components/trends/TrendsSky', () => ({
+  TrendsSky: ({ sky, onOpenDream }: any) => (
+    <div data-testid="trends.section.sky" data-stars={sky.stars.length}>
+      <button type="button" data-testid="sky.newest" onClick={() => onOpenDream(sky.stars.at(-1).dream)} />
+    </div>
+  ),
+}));
 jest.mock('@/components/journal/symbols/DreamSymbolSheet', () => ({ DreamSymbolSheet: () => null }));
 jest.mock('@/components/NoctaliaScreenHeader', () => ({
   NoctaliaScreenHeader: ({
@@ -391,6 +398,17 @@ describe('Tendances screen', () => {
     });
   });
 
+  it('draws the period’s dreams in its sky, and a star reopens its dream', () => {
+    const newest = analyzed(nightsAgo(2), { theme: 'calm' });
+    renderJournal([analyzed(nightsAgo(20), { theme: 'calm' }), newest]);
+
+    expect(screen.getByTestId('trends.section.sky').getAttribute('data-stars')).toBe('2');
+    fireEvent.click(screen.getByTestId('trends.period.7'));
+    expect(screen.getByTestId('trends.section.sky').getAttribute('data-stars')).toBe('1');
+    fireEvent.click(screen.getByTestId('sky.newest'));
+    expect(mockPush).toHaveBeenLastCalledWith({ pathname: '/journal/[id]', params: expect.objectContaining({ id: String(newest.id) }) });
+  });
+
   it('reads on the new day once midnight passes with the page open', () => {
     renderJournal([analyzed(nightsAgo(0), { theme: 'calm' })]);
     expect(screen.getByTestId('trends.range').textContent).toBe('trends.range:start=2026-07-31|end=2026-08-29');
@@ -427,7 +445,7 @@ describe('Tendances screen', () => {
 
     expect(lastSeal().size).toBe(280);
     expect(mockFiguresProps.mock.calls.at(-1)?.[0]).toMatchObject({ stacked: false });
-    for (const id of ['trends.section.period', 'trends.section.seal', 'trends.section.nights', 'trends.section.returns', 'trends.layout.compact']) {
+    for (const id of ['trends.section.period', 'trends.section.seal', 'trends.section.nights', 'trends.section.returns', 'trends.section.sky', 'trends.layout.compact']) {
       expect(screen.getByTestId(id)).toBeTruthy();
     }
   });
