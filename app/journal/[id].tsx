@@ -615,25 +615,38 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   const hasUncategorizedDraft = Boolean(dream && !dream.isAnalyzed && dream.analysisStatus !== 'pending'
     && !dream.theme && dream.title === deriveDraftTitle(dream.transcript, ''));
   const needsMetadataRecovery = hasUncategorizedDraft && !initialCategorizationPending;
+  const [editableTitle, setEditableTitle] = useState('');
+  const [editableTheme, setEditableTheme] = useState('');
+  const [editableDreamType, setEditableDreamType] = useState('');
   const recoverMetadata = useCallback(async () => {
     if (!dream || !needsMetadataRecovery || isInitialDreamCategorizationPending(getInitialDreamCategorizationKey(dream))
       || metadataRecoveryInFlightRef.current) return;
     // Metadata recovery sends the dream text to the AI provider.
     if (!(await requestAiConsent(t))) return;
     metadataRecoveryInFlightRef.current = true;
+    // Fields changed while the name is being found keep what was entered.
+    const asked = { title: editableTitle, theme: editableTheme, dreamType: editableDreamType };
     setIsRecoveringMetadata(true);
     setMetadataRecoveryFailed(false);
     try {
       const result = await categorizeDream(dream.transcript, language);
       if (latestMetadataDreamRef.current !== dream) return;
-      await applyDreamCategorization(dream, result);
+      const named = await applyDreamCategorization(dream, result);
+      // Asked while editing: the fields being edited take what was found, where it is new.
+      if (named) {
+        const found = (field: 'title' | 'theme' | 'dreamType', current: string) => (
+          current === asked[field] && named[field] && named[field] !== dream[field] ? named[field] : current);
+        setEditableTitle((current) => found('title', current));
+        setEditableTheme((current) => found('theme', current));
+        setEditableDreamType((current) => found('dreamType', current));
+      }
     } catch {
       if (latestMetadataDreamRef.current === dream) setMetadataRecoveryFailed(true);
     } finally {
       metadataRecoveryInFlightRef.current = false;
       setIsRecoveringMetadata(false);
     }
-  }, [applyDreamCategorization, dream, language, needsMetadataRecovery, t]);
+  }, [applyDreamCategorization, dream, editableDreamType, editableTheme, editableTitle, language, needsMetadataRecovery, t]);
   const handleImageUpgrade = useCallback(() => {
     router.push(buildPaywallHref('image_generation'));
   }, []);
@@ -712,9 +725,6 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
 
     return items;
   }, [dreamMemory, t]);
-  const [editableTitle, setEditableTitle] = useState('');
-  const [editableTheme, setEditableTheme] = useState('');
-  const [editableDreamType, setEditableDreamType] = useState('');
   const [editableTranscript, setEditableTranscript] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [isPickingImage, setIsPickingImage] = useState(false);
@@ -2167,8 +2177,10 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   );
 
   // The dream's type and theme, under its name as a book sets a subtitle: in italics, a star between them.
+  // A theme still missing is chosen while editing the page.
   const renderMetadataChips = () => {
     const typeShown = Boolean(dream.dreamType && (analysisState.isAnalyzed || dream.dreamType !== 'Symbolic Dream'));
+    if (!typeShown && !dreamThemeLabel) return null;
     return (
       <View className="flex-row flex-wrap items-center gap-x-2.5 gap-y-2">
         {typeShown ? (
@@ -2177,15 +2189,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
         {typeShown && dreamThemeLabel ? <BookStar size={3} opacity={0.7} /> : null}
         {dreamThemeLabel ? (
           <Text key={`dream-theme-${windowSize.fontScale}`} allowFontScaling={false} style={metadataTextStyle} className="max-w-full shrink font-serif-italic text-[14px] text-ivory-muted">{dreamThemeLabel}</Text>
-        ) : (
-          <Pressable onPress={startEditing} disabled={isAnalysisLocked} accessibilityRole="button"
-            className={`min-h-[44px] max-w-full justify-center ${isAnalysisLocked ? 'opacity-70' : ''}`}>
-            <View className="flex-row items-center gap-1.5 rounded-full border border-line px-3 py-1.5">
-              <IconSymbol name="paintpalette" size={14} color={noctalia.accent.text} />
-              <Text className="shrink font-sans-medium text-[13px] text-champagne-on">{t('journal.detail.theme_placeholder')}</Text>
-            </View>
-          </Pressable>
-        )}
+        ) : null}
       </View>
     );
   };
@@ -2257,7 +2261,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
               {t('journal.detail.metadata.loading')}
             </Text>
           ) : null}
-          {!isEditing && needsMetadataRecovery ? (
+          {/* Asked of the page being edited, with its name and details: the page as read stays as it opens. */}
+          {isEditing && needsMetadataRecovery ? (
             <View className="mb-2 gap-1">
               <Pressable onPress={recoverMetadata} disabled={isRecoveringMetadata}
                 accessibilityRole="button" accessibilityState={{ disabled: isRecoveringMetadata, busy: isRecoveringMetadata }}

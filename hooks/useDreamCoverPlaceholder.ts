@@ -3,6 +3,7 @@ import type { ImageSource } from 'expo-image';
 
 import { useDreamMedia } from '@/hooks/useDreamMedia';
 import { getDreamImageVersion, getDreamThumbnailCacheKey, getDreamThumbnailUri, withCacheBuster } from '@/lib/imageUtils';
+import { getCardPictureKey, recallCardPicture } from '@/lib/journalCardPictures';
 import { isSquareDreamThumbnail } from '@/lib/journalImageReference';
 import { thumbnailFailures } from '@/lib/thumbnailFailureCache';
 import type { DreamAnalysis } from '@/lib/types';
@@ -10,7 +11,8 @@ import type { DreamAnalysis } from '@/lib/types';
 /**
  * What a dream's plate shows while its original resolves and loads: the painting its journal
  * card already holds, from the same source and cache, so the page opens on the painting and
- * only sharpens. Without one, the plate shows the page's own ground.
+ * only sharpens. The picture a card has shown is known from the page's first frame; otherwise
+ * it is resolved as the card would. Without one, the plate shows the page's own ground.
  */
 export function useDreamCoverPlaceholder(dream?: DreamAnalysis | null): ImageSource | null {
   // An uploaded image's square thumbnail is squeezed: its card holds the original instead.
@@ -38,13 +40,15 @@ export function useDreamCoverPlaceholder(dream?: DreamAnalysis | null): ImageSou
   }, [failedThumbnail, loadOriginal]);
   const holdsOriginal = square || failedThumbnail;
   const cacheKey = holdsOriginal ? media.imageCacheKey : thumbnailCacheKey;
+  const shown = dream ? recallCardPicture(getCardPictureKey(media.accessScope ?? null, dream)) : undefined;
   return useMemo(() => {
     if (id === undefined) return null;
+    if (shown) return shown;
     if (holdsOriginal) {
       const original = media.imageUrl?.trim();
       const version = getDreamImageVersion({ imageUpdatedAt, analysisRequestId, analyzedAt, id });
       return original ? { uri: withCacheBuster(original, version), cacheKey } : null;
     }
     return thumbnailUri ? { uri: thumbnailUri, cacheKey } : null;
-  }, [analysisRequestId, analyzedAt, cacheKey, holdsOriginal, id, imageUpdatedAt, media.imageUrl, thumbnailUri]);
+  }, [analysisRequestId, analyzedAt, cacheKey, holdsOriginal, id, imageUpdatedAt, media.imageUrl, shown, thumbnailUri]);
 }
