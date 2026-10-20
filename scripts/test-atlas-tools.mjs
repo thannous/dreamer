@@ -498,7 +498,7 @@ test('the rollout report reads states from the repository and stages only from r
   assert.deepEqual(first.report.languages, ['en', 'fr', 'es', 'de', 'it', 'pt-br']);
   // Every file the report reads is named by its sha256.
   assert.deepEqual(Object.keys(first.report.inputs), ['siteConfig', 'catalog', 'extended', 'tier3', 'registry', 'pilots', 'locales', 'manifest', 'engines']);
-  assert.deepEqual(first.report.totals, { symbols: 240, done: 0, inProgress: 37, remaining: 203 });
+  assert.deepEqual(first.report.totals, { symbols: 240, done: 0, inProgress: 75, remaining: 165 });
   assert.deepEqual(first.report.lots['lot-02'].symbols, ['fire', 'door', 'bird', 'moon', 'train', 'clock']);
   assert.deepEqual(first.report.lots['lot-03'].symbols, ['water', 'teeth', 'flying', 'dog', 'car', 'bridge']);
   assert.deepEqual(first.report.lots['lot-04'].symbols, ['cat', 'stairs', 'rain', 'mountain', 'mirror', 'key']);
@@ -562,7 +562,14 @@ test('the rollout report reads states from the repository and stages only from r
   assert.deepEqual(bySymbol(run('out-4c').report, 'moon').languages.fr.stale, [{ stage: 'qa', surface: 'desktop', date: '2026-10-18', changed: ['assets', 'engine'] }]);
   const requalified = { ...record, date: '2026-10-19', source: bySymbol(run('out-4d').report, 'moon').languages.fr.source };
   writeRegistry((value) => ({ ...value, records: [record, requalified] }));
-  assert.equal(bySymbol(run('out-4e').report, 'moon').languages.fr.stages.qa.desktop, 'accepted');
+  const requalifiedReport = run('out-4e').report;
+  assert.equal(bySymbol(requalifiedReport, 'moon').languages.fr.stages.qa.desktop, 'accepted');
+  // A page without a pack takes its phone framing from the generator's framing file: changing it
+  // changes that page's engine, not a pack's.
+  fs.writeFileSync(path.join(repo, 'docs-src', 'config', 'symbol-hero-portrait.json'), JSON.stringify({ deer: '30% 50%' }));
+  const reframed = run('out-4f').report;
+  assert.notEqual(bySymbol(reframed, 'deer').languages.fr.source.engine, bySymbol(requalifiedReport, 'deer').languages.fr.source.engine);
+  assert.equal(bySymbol(reframed, 'moon').languages.fr.stages.qa.desktop, 'accepted');
 
   fs.writeFileSync(evidence, 'another capture');
   assert.equal(bySymbol(run('out-5').report, 'moon').languages.fr.stages.qa.desktop, 'evidence-mismatch');

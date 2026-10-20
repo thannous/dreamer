@@ -81,7 +81,8 @@ export function buildReport(options) {
   const manifestFile = options.manifest ? fromCaller(options.manifest) : at('docs-src', 'config', 'symbol-atlas-six-assets.json');
   const manifest = fs.existsSync(manifestFile) ? readJson(manifestFile, 'the assets manifest') : null;
   const evidenceRoot = options.evidenceRoot ? fromCaller(options.evidenceRoot) : repoRoot;
-  // The engine: the page generator and the motion scripts it serves (every hashed folder).
+  // The engine: the page generator and the motion scripts it serves (every hashed folder); a page
+  // without a pack also takes the phone framing of its hero from the generator's framing file.
   const engineFiles = (...dirs) => dirs.flatMap((dir) => {
     const root = at(...dir.split('/'));
     if (!fs.existsSync(root)) return [];
@@ -92,7 +93,7 @@ export function buildReport(options) {
   const engineIdentity = (files) => identity(files.map((file) => [file, sha256(fs.readFileSync(at(...file.split('/'))))]));
   const generator = 'docs-src/static/scripts/generate-symbol-pages.js';
   const engines = {
-    page: engineIdentity(engineFiles(generator)),
+    page: engineIdentity(engineFiles(generator, 'docs-src/config/symbol-hero-portrait.json')),
     pilot: engineIdentity(engineFiles(generator, 'docs-src/static/js/symbol-living')),
     tiger: engineIdentity(engineFiles(generator, 'docs-src/static/js/tiger-living')),
   };
