@@ -19467,10 +19467,12 @@
           {
             "texture": "accent",
             "place": {
-              "fit": "cover",
-              "zoom": 1.1,
-              "x": 0.5,
-              "y": 0.35
+              "fit": "width",
+              "zoom": 0.6,
+              "at": [
+                0.36,
+                0.42
+              ]
             },
             "motion": "flow",
             "move": [
@@ -19509,9 +19511,11 @@
             "texture": "accent",
             "place": {
               "fit": "width",
-              "zoom": 1.1,
-              "x": 0.5,
-              "y": 0.3
+              "zoom": 0.75,
+              "at": [
+                0.62,
+                0.42
+              ]
             },
             "motion": "flow",
             "move": [
@@ -19551,9 +19555,11 @@
           "texture": "accent",
           "place": {
             "fit": "width",
-            "zoom": 1,
-            "x": 0.5,
-            "y": 0.35
+            "zoom": 0.6,
+            "at": [
+              0.7,
+              0.62
+            ]
           },
           "motion": "flow",
           "move": [
@@ -19591,10 +19597,12 @@
         {
           "texture": "accent",
           "place": {
-            "fit": "cover",
-            "zoom": 1.15,
-            "x": 0.5,
-            "y": 0.3
+            "fit": "width",
+            "zoom": 0.5,
+            "at": [
+              0.8,
+              0.45
+            ]
           },
           "motion": "flow",
           "move": [
@@ -20000,10 +20008,12 @@
           {
             "texture": "layer",
             "place": {
-              "fit": "cover",
-              "zoom": 1.1,
-              "x": 0.5,
-              "y": 0.35
+              "fit": "width",
+              "zoom": 0.55,
+              "at": [
+                0.6,
+                0.42
+              ]
             },
             "motion": "flow",
             "move": [
@@ -20012,18 +20022,20 @@
             ],
             "dur": 11,
             "op": [
-              0.25,
-              0.6
+              0.2,
+              0.5
             ],
             "copies": 2
           },
           {
             "texture": "accent",
             "place": {
-              "fit": "cover",
-              "zoom": 1.1,
-              "x": 0.5,
-              "y": 0.6
+              "fit": "width",
+              "zoom": 0.5,
+              "at": [
+                0.75,
+                0.3
+              ]
             },
             "motion": "pulse",
             "dur": 3.4,
@@ -20078,9 +20090,11 @@
           "texture": "layer",
           "place": {
             "fit": "width",
-            "zoom": 1.05,
-            "x": 0.5,
-            "y": 0.3
+            "zoom": 0.7,
+            "at": [
+              0.5,
+              0.5
+            ]
           },
           "motion": "flow",
           "move": [
@@ -20089,8 +20103,8 @@
           ],
           "dur": 11,
           "op": [
-            0.25,
-            0.6
+            0.2,
+            0.5
           ],
           "copies": 2
         },
@@ -20196,10 +20210,12 @@
           {
             "texture": "accent",
             "place": {
-              "fit": "cover",
-              "zoom": 1.1,
-              "x": 0.5,
-              "y": 0.15
+              "fit": "width",
+              "zoom": 0.7,
+              "at": [
+                0.6,
+                0.2
+              ]
             },
             "motion": "pulse",
             "dur": 7,
@@ -20274,9 +20290,11 @@
           "texture": "accent",
           "place": {
             "fit": "width",
-            "zoom": 1.1,
-            "x": 0.5,
-            "y": 0.2
+            "zoom": 0.75,
+            "at": [
+              0.68,
+              0.3
+            ]
           },
           "motion": "pulse",
           "dur": 7,
@@ -20311,10 +20329,12 @@
         {
           "texture": "accent",
           "place": {
-            "fit": "cover",
-            "zoom": 1.15,
-            "x": 0.5,
-            "y": 0.15
+            "fit": "width",
+            "zoom": 0.7,
+            "at": [
+              0.6,
+              0.22
+            ]
           },
           "motion": "pulse",
           "dur": 7,
@@ -20396,10 +20416,12 @@
           {
             "texture": "layer",
             "place": {
-              "fit": "cover",
-              "zoom": 1.1,
-              "x": 0.5,
-              "y": 0.55
+              "fit": "width",
+              "zoom": 0.5,
+              "at": [
+                0.58,
+                0.5
+              ]
             },
             "motion": "flow",
             "move": [
@@ -20416,10 +20438,12 @@
           {
             "texture": "accent",
             "place": {
-              "fit": "cover",
-              "zoom": 1.1,
-              "x": 0.5,
-              "y": 0.85
+              "fit": "width",
+              "zoom": 0.6,
+              "at": [
+                0.7,
+                0.62
+              ]
             },
             "motion": "pulse",
             "dur": 4.5,
@@ -20435,9 +20459,11 @@
             "texture": "layer",
             "place": {
               "fit": "width",
-              "zoom": 1.2,
-              "x": 0.5,
-              "y": 0.55
+              "zoom": 0.8,
+              "at": [
+                0.55,
+                0.5
+              ]
             },
             "motion": "flow",
             "move": [
@@ -20455,9 +20481,11 @@
             "texture": "accent",
             "place": {
               "fit": "width",
-              "zoom": 1.1,
-              "x": 0.5,
-              "y": 0.85
+              "zoom": 0.7,
+              "at": [
+                0.72,
+                0.55
+              ]
             },
             "motion": "pulse",
             "dur": 4.5,
@@ -20474,9 +20502,11 @@
           "texture": "layer",
           "place": {
             "fit": "width",
-            "zoom": 1.05,
-            "x": 0.5,
-            "y": 0.5
+            "zoom": 0.8,
+            "at": [
+              0.5,
+              0.75
+            ]
           },
           "motion": "flow",
           "move": [
@@ -20494,9 +20524,11 @@
           "texture": "accent",
           "place": {
             "fit": "width",
-            "zoom": 1.05,
-            "x": 0.5,
-            "y": 0.8
+            "zoom": 0.6,
+            "at": [
+              0.5,
+              0.78
+            ]
           },
           "motion": "pulse",
           "dur": 4.5,
@@ -20511,10 +20543,12 @@
         {
           "texture": "layer",
           "place": {
-            "fit": "cover",
-            "zoom": 1.15,
-            "x": 0.5,
-            "y": 0.5
+            "fit": "width",
+            "zoom": 0.55,
+            "at": [
+              0.58,
+              0.72
+            ]
           },
           "motion": "flow",
           "move": [
@@ -20531,10 +20565,12 @@
         {
           "texture": "accent",
           "place": {
-            "fit": "cover",
-            "zoom": 1.15,
-            "x": 0.5,
-            "y": 0.85
+            "fit": "width",
+            "zoom": 0.6,
+            "at": [
+              0.6,
+              0.75
+            ]
           },
           "motion": "pulse",
           "dur": 4.5,
@@ -20550,10 +20586,12 @@
           {
             "texture": "layer",
             "place": {
-              "fit": "cover",
-              "zoom": 1.15,
-              "x": 0.5,
-              "y": 0.65
+              "fit": "width",
+              "zoom": 0.55,
+              "at": [
+                0.7,
+                0.62
+              ]
             },
             "motion": "drift",
             "move": [
@@ -20569,16 +20607,60 @@
           {
             "texture": "accent",
             "place": {
-              "fit": "cover",
-              "zoom": 1.15,
-              "x": 0.5,
-              "y": 0
+              "fit": "width",
+              "zoom": 0.55,
+              "at": [
+                0.6,
+                0
+              ]
             },
             "motion": "pulse",
             "dur": 5,
             "op": [
               0.12,
               0.4
+            ],
+            "blend": "screen"
+          }
+        ],
+        "echouee": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "zoom": 0.35,
+              "at": [
+                0.85,
+                0.62
+              ]
+            },
+            "motion": "flow",
+            "move": [
+              0.01,
+              -0.03
+            ],
+            "dur": 9,
+            "op": [
+              0.25,
+              0.55
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "zoom": 0.5,
+              "at": [
+                0.72,
+                0.72
+              ]
+            },
+            "motion": "pulse",
+            "dur": 4.5,
+            "op": [
+              0.3,
+              0.7
             ],
             "blend": "screen"
           }
