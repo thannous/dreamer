@@ -177,8 +177,8 @@ test('free user adds and removes a favorite through the filtered journal', async
   await openDream(page, 'Garden in the Clouds');
   await page.getByTestId('btn.dream.favorite').click();
   await journal(page);
-  await page.getByRole('button', { name: 'Show favorites only', exact: true }).click();
-  await search(page, 'Garden in the Clouds');
+  // The journal is retained (02a97ad0): its Favorites filter and search are still on.
+  await expect(page.getByRole('textbox', { name: 'Search dreams…' })).toHaveValue('Garden in the Clouds');
   await expect(page.getByTestId(/^dream\.item\./).filter({ visible: true })).toHaveCount(0);
   await page.getByRole('button', { name: 'Show all dreams', exact: true }).click();
   await openDream(page, 'Garden in the Clouds');
