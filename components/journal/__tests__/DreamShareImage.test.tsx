@@ -54,7 +54,7 @@ it('uses resolved media and signals readiness only after the image is displayed'
 });
 
 
-it('reports a bounded display timeout for retry even when loading completed', () => {
+it('leaves out a picture not displayed in time, even when loading completed', () => {
   jest.useFakeTimers();
   try {
     const ready = jest.fn();
@@ -63,8 +63,29 @@ it('reports a bounded display timeout for retry even when loading completed', ()
     fireEvent.load(screen.getByAltText('Dream'));
     act(() => { jest.advanceTimersByTime(10000); });
     expect(ready).toHaveBeenCalledWith('https://signed/stalled', false);
+    expect(screen.queryByAltText('Dream')).toBeNull();
     unmount();
   } finally { jest.useRealTimers(); }
+});
+
+
+it('is ready without its picture once a failed picture has been left out', () => {
+  const ready = jest.fn();
+  render(<DreamShareImage dream={{ id: 1, title: 'Winged elephant' } as DreamAnalysis} t={key => key}
+    resolvedMedia={{ imageUrl: 'https://signed/broken' }} onMediaReady={ready} />);
+  fireEvent.error(screen.getByAltText('Dream'));
+  expect(screen.queryByAltText('Dream')).toBeNull();
+  expect(screen.getByText('Winged elephant')).toBeTruthy();
+  expect(ready).toHaveBeenCalledWith('https://signed/broken', false);
+});
+
+
+it('is ready at once when there is no picture to wait for', () => {
+  const ready = jest.fn();
+  render(<DreamShareImage dream={{ id: 1, title: 'Winged elephant' } as DreamAnalysis} t={key => key}
+    resolvedMedia={{ imageUrl: '' }} onMediaReady={ready} />);
+  expect(screen.queryByAltText('Dream')).toBeNull();
+  expect(ready).toHaveBeenCalledWith('', false);
 });
 
 

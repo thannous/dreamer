@@ -29,18 +29,28 @@ export const DreamShareImage = forwardRef<ViewInstance, DreamShareImageProps>(fu
 ) {
   const requestedMedia = useDreamMedia(resolvedMedia ? undefined : dream);
   const media = resolvedMedia ?? requestedMedia;
-  const [settledImage, setSettledImage] = useState<string>();
-  const [failedImage, setFailedImage] = useState<string>();
+  // What became of the picture: shown, or left out because it failed or did not show in time.
+  const [settled, setSettled] = useState<{ source: string; shown: boolean }>();
   const noctalia = getNoctaliaDesignTokens(DarkTheme, 'dark');
 
   // Use imageUrl first, fallback to thumbnailUrl
-  const imageSource = media.imageUrl || media.thumbnailUrl;
+  const imageSource = media.imageUrl || media.thumbnailUrl || '';
+  const imageSettled = settled?.source === imageSource ? settled : undefined;
+  const hasImage = !!imageSource && imageSettled?.shown !== false;
+  const settle = (shown: boolean) => setSettled((current) =>
+    current?.source === imageSource && current.shown === shown ? current : { source: imageSource, shown });
   useEffect(() => {
-    if (!imageSource || !onMediaReady || settledImage === imageSource) return;
-    const timer = setTimeout(() => onMediaReady(imageSource, false), 10000);
+    if (!imageSource || !onMediaReady || imageSettled) return;
+    const timer = setTimeout(() => setSettled({ source: imageSource, shown: false }), 10000);
     return () => clearTimeout(timer);
-  }, [imageSource, onMediaReady, settledImage]);
-  const hasImage = !!imageSource && failedImage !== imageSource;
+  }, [imageSource, onMediaReady, imageSettled]);
+  // The card is ready once drawn as it will be captured: with its picture, or without one it
+  // has none of or could not show.
+  useEffect(() => {
+    if (!onMediaReady) return;
+    if (!imageSource) onMediaReady('', false);
+    else if (imageSettled) onMediaReady(imageSource, imageSettled.shown);
+  }, [imageSource, imageSettled, onMediaReady]);
 
   const dreamTypeLabel = getDreamTypeLabel(dream.dreamType, t);
   const themeLabel = getDreamThemeLabel(dream.theme, t);
@@ -59,8 +69,8 @@ export const DreamShareImage = forwardRef<ViewInstance, DreamShareImageProps>(fu
           source={{ uri: imageSource }}
           style={styles.backgroundImage}
           contentFit="cover"
-          onDisplay={() => { setSettledImage(imageSource); onMediaReady?.(imageSource, true); }}
-          onError={() => { setSettledImage(imageSource); setFailedImage(imageSource); onMediaReady?.(imageSource, false); }}
+          onDisplay={() => settle(true)}
+          onError={() => settle(false)}
         />
       ) : (
         <View style={[styles.fallbackBackground, { backgroundColor: noctalia.screen.background }]} />

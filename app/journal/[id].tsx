@@ -1149,13 +1149,15 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       mimeType: getMimeTypeFromExtension(extension),
     };
   }, [dream, media.imageUrl, media.thumbnailUrl]);
+  // The share card's picture, as resolved for the page. Without one, the card goes without it.
+  const shareSource = shareImage?.source ?? '';
   const [shareRequest, setShareRequest] = useState<ShareCompositeRequest | null>(null);
   const shareRequestIdRef = useRef(0);
   const pendingShareRef = useRef<PendingShareComposite | null>(null);
   const shareInFlightRef = useRef(false);
   const shareScreenMountedRef = useRef(true);
   const shareDreamIdentity = dream ? getDreamIdentityKey(dream) : undefined;
-  const latestShareMediaRef = useRef({ source: shareImage?.source, dreamIdentity: shareDreamIdentity });
+  const latestShareMediaRef = useRef({ source: shareSource, dreamIdentity: shareDreamIdentity });
   const onShareMediaReady = useCallback((requestId: number, source: string, ready: boolean) => {
     const pending = pendingShareRef.current;
     if (!pending || pending.id !== requestId || pending.source !== source) return;
@@ -1163,13 +1165,13 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     pending.resolve(ready && Boolean(shareImageRef.current) ? 'ready' : 'failed');
   }, [shareImageRef]);
   useLayoutEffect(() => {
-    latestShareMediaRef.current = { source: shareImage?.source, dreamIdentity: shareDreamIdentity };
+    latestShareMediaRef.current = { source: shareSource, dreamIdentity: shareDreamIdentity };
     const pending = pendingShareRef.current;
-    if (pending && (pending.source !== shareImage?.source || pending.dreamIdentity !== shareDreamIdentity)) {
+    if (pending && (pending.source !== shareSource || pending.dreamIdentity !== shareDreamIdentity)) {
       pendingShareRef.current = null;
       pending.resolve('stale');
     }
-  }, [shareImage?.source, shareDreamIdentity]);
+  }, [shareSource, shareDreamIdentity]);
   useEffect(() => {
     shareScreenMountedRef.current = true;
     return () => {
@@ -1351,14 +1353,10 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       }
 
       if (dream.imageUrl || dream.thumbnailUrl) {
-        if (shareMediaPending) return;
-        if (!shareImage || !shareDreamIdentity) {
-          media.retry();
-          throw new Error('Dream media is not ready for sharing');
-        }
+        if (shareMediaPending || !shareDreamIdentity) return;
 
         const requestId = ++shareRequestIdRef.current;
-        const source = shareImage.source;
+        const source = shareSource;
         const preparation = await new Promise<SharePreparationStatus>(resolve => {
           pendingShareRef.current = { id: requestId, source, dreamIdentity: shareDreamIdentity, resolve };
           setShareRequest({
@@ -1371,12 +1369,10 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
         if (preparation === 'stale'
           || latestShareMediaRef.current.source !== source
           || latestShareMediaRef.current.dreamIdentity !== shareDreamIdentity) return;
-        if (preparation !== 'ready' || !shareImageRef.current) {
-          if (shareScreenMountedRef.current) media.retry();
-          throw new Error('Dream media is not ready for sharing');
-        }
+        if (!shareImageRef.current) throw new Error('Dream share card is not mounted');
 
-        // Mobile (iOS/Android): capture only after the requested image is displayed.
+        // Mobile (iOS/Android): capture once the card is drawn, after its illustration is
+        // displayed or, when that cannot be had or shown, without it.
         await shareComposite(dream);
         return;
       }
@@ -1403,7 +1399,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
         setIsSharing(false);
       }
     }
-  }, [dream, isAnalysisLocked, openShareModal, shareComposite, shareImage, shareMessage, shareTitle, t, media, shareMediaPending, shareDreamIdentity, shareImageRef, onShareMediaReady]);
+  }, [dream, isAnalysisLocked, openShareModal, shareComposite, shareSource, shareMessage, shareTitle, t, shareMediaPending, shareDreamIdentity, shareImageRef, onShareMediaReady]);
 
   // Opened from a journal card's share icon: share once the dream is here, then drop the request.
   const autoShareDoneRef = useRef(false);
