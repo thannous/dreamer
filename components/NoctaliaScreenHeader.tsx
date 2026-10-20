@@ -55,8 +55,6 @@ interface NoctaliaScreenHeaderProps {
    * one row, the page title below, the night sky behind it in the dark theme.
    */
   variant?: 'standard' | 'editorial' | 'tab';
-  /** Secondary line under the title (`tab` variant only). */
-  subtitle?: string;
   /** Paint the night sky behind the `tab` header. Off when the screen draws its own artwork. */
   backdrop?: boolean;
   /** The header floats over its scrolling content instead of scrolling with it. */
@@ -73,7 +71,7 @@ interface NoctaliaScreenHeaderProps {
    * wordmark and actions keep the night's light ink whatever the theme.
    */
   overArtwork?: boolean;
-  /** `tab` only: the screen's own headline in place of the page title and subtitle. */
+  /** `tab` only: the screen's own headline in place of the page title. */
   titleSlot?: ReactNode;
   includeTopInset?: boolean;
   actions?: NoctaliaHeaderAction[];
@@ -93,7 +91,6 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
   chips = [],
   slot,
   inlineSlot,
-  subtitle,
   backdrop = true,
   pinned = false,
   immersive = false,
@@ -220,7 +217,7 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
         {stageHeight ? <View pointerEvents={passThrough} style={styles.stageSpace} /> : null}
         <View pointerEvents={pinned ? 'none' : undefined} style={{ paddingHorizontal: horizontalPadding }}
           onLayout={stageHeight ? (event) => setTitleTop(event.nativeEvent.layout.y) : undefined}>
-          {titleSlot ?? <>
+          {titleSlot ?? (
             <Text
               accessibilityRole="header"
               allowFontScaling={false}
@@ -235,12 +232,7 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
             >
               {t(titleKey)}
             </Text>
-            {subtitle ? (
-              <Text style={[styles.tabSubtitle, paintedTextShadow, { color: noctalia.text.secondary }]} maxFontSizeMultiplier={1.6}>
-                {subtitle}
-              </Text>
-            ) : null}
-          </>}
+          )}
         </View>
         {inlineSlot ? <View pointerEvents={passThrough} style={{ paddingHorizontal: horizontalPadding }}>{inlineSlot}</View> : null}
         {slot ? <View pointerEvents={passThrough} style={styles.slot}>{slot}</View> : null}
@@ -416,12 +408,6 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.fraunces.semiBold,
     fontSize: 38,
     lineHeight: 46,
-  },
-  tabSubtitle: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 15,
-    lineHeight: 22,
-    marginTop: 2,
   },
   editorialContainer: { borderBottomWidth: 0 },
   editorialBrand: { fontSize: 18, lineHeight: 24, marginBottom: 8 },

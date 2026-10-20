@@ -1,3 +1,4 @@
+import { getTranslator, loadTranslations } from '@/lib/i18n';
 import de from '@/lib/i18n/de';
 import en from '@/lib/i18n/en';
 import es from '@/lib/i18n/es';
@@ -54,5 +55,12 @@ describe('home today i18n', () => {
         expect(translations[key].trim()).not.toBe('');
       }
     }
+  });
+
+  it('quotes the dream as written, dollar signs included', async () => {
+    await loadTranslations('en');
+    // String.replace would read "$&" as the matched placeholder and "$$" as one "$".
+    expect(getTranslator('en')('home.today.dream_excerpt', { text: 'I paid $$ for $& a key' }))
+      .toBe('“I paid $$ for $& a key”');
   });
 });

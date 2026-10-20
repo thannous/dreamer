@@ -157,6 +157,18 @@ test('a personal symbol is born when first opened, then the reading and Tendance
     await expect(journalItems).toHaveCount(2);
     await search.fill('');
 
+    // Home names a symbol that came back this month; its medallion opens the same sheet.
+    await screen.getByTestId('tab.home', { visible: true }).tap();
+    const recurring = screen.getByTestId('btn.home.recurring', { visible: true });
+    await recurring.scrollIntoView();
+    await expect(screen.getByTestId('text.home.recurring.detail', { visible: true })).toContainText('2 dreams in 30 days');
+    await settledMotion(browser);
+    await app.screenshot('home-returning-symbol');
+    await recurring.tap();
+    await expect(screen.getByTestId('text.dreamSymbol.status', { visible: true })).toContainText('In 2 of 7 dreams');
+    await screen.getByTestId('btn.dreamSymbol.close', { visible: true }).tap();
+    await expect(screen.getByTestId('sheet.dreamSymbol', { visible: true })).toHaveCount(0);
+
     // Tendances names the symbols that came back this month. Opened from there, no dream is
     // being read: every dream of the thread opens.
     await screen.getByTestId('tab.stats', { visible: true }).tap();

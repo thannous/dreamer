@@ -6,6 +6,7 @@ import { Text, View, useWindowDimensions } from 'react-native';
 import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
 import { TodayCard } from '@/components/home/TodayCard';
 import { getDreamerArtwork } from '@/constants/dreamerArtwork';
+import { ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
 import { useDreamMedia } from '@/hooks/useDreamMedia';
@@ -28,14 +29,21 @@ type Props = {
 
 // expo-image and LinearGradient consume native props rather than Uniwind classes.
 const IMAGE_FILL = { position: 'absolute', inset: 0, width: '100%', height: '100%' } as const;
-// Below the headline: the header's bottom padding, then the wrapper's.
-const HEADLINE_FOOT = 32;
+// Below the headline: the tab header's bottom padding, then the wrapper's pb-4.
+const HEADLINE_FOOT = ThemeLayout.spacing.md + 16;
 // The reading veil gathers over this height before the headline's first line.
 const VEIL_LEAD = 64;
 
-/** The dream's opening sentence, cut on a word when it runs long. */
-function firstSentence(text: string | undefined, max = 140): string {
-  const clean = (text ?? '').replace(/\s+/g, ' ').trim();
+const collapse = (text: string | undefined) => (text ?? '').replace(/\s+/g, ' ').trim();
+
+/**
+ * The dream's opening sentence, cut on a word when it runs long. None when the title already
+ * is that opening, as for a dream not yet read: its title is its first line.
+ */
+function dreamExcerpt(text: string | undefined, title: string, max = 140): string {
+  const clean = collapse(text);
+  const opening = collapse(title).replace(/…$/, '');
+  if (opening && clean.startsWith(opening)) return '';
   const end = clean.search(/[.!?…](\s|$)/);
   const sentence = end > 20 ? clean.slice(0, end + 1) : clean;
   return sentence.length > max ? `${sentence.slice(0, max - 1).replace(/\s+\S*$/, '')}…` : sentence;
@@ -80,7 +88,7 @@ export function TodayHero({ state, dream, now, onPressCta, onOpenSettings }: Pro
   const ground = tokens.screen.background;
   const copyKey = state?.id ?? 'loading';
   const headline = dream?.title?.trim() || t(`home.today.${copyKey}.title`);
-  const excerpt = dream ? firstSentence(dream.transcript) : '';
+  const excerpt = dream ? dreamExcerpt(dream.transcript, dream.title ?? '') : '';
   // The veil starts just above the headline: the dream stays whole above it, and the headline
   // reads on the page's own ground, dark ink in the light theme and light ink in the dark one.
   const stage = (stageHeight ?? 260) + 1;

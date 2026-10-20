@@ -315,7 +315,7 @@ const translations: Record<string, string> = {
     'home.today.continue_today.cta': 'Zu diesem Traum zurückkehren',
     'home.today.optional_deepen.title': 'Vertiefe, wenn du magst',
     'home.today.optional_deepen.body': 'Dein Traum von heute ist schon gespeichert.',
-    'home.today.optional_deepen.cta': 'Meinen Traum nochmal lesen',
+    'home.today.optional_deepen.cta': 'Meinen Traum erneut lesen',
     'home.today.rest.title': 'Heute ist vollständig',
     'home.today.rest.body': 'Dein Traum ist gespeichert und vertieft.',
     'home.today.rest.cta': 'Journal öffnen',

@@ -292,7 +292,7 @@ const translations: Record<string, string> = {
     'analytics.privacy.toggle_label': 'Permitir medição de uso',
     'analytics.privacy.unavailable': 'Coleta inativa nesta versão',
     'analytics.privacy.error': 'Não foi possível salvar esta escolha.',
-    'home.today.dream_eyebrow': 'Esta noite',
+    'home.today.dream_eyebrow': 'Ontem à noite',
     'home.today.dream_excerpt': '“{text}”',
     'home.today.add_reminder': 'Adicionar um lembrete',
     'home.today.resources': 'Para descobrir',
