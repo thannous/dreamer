@@ -5,7 +5,6 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import {
   Platform,
   Pressable,
-  ScrollView,
   Text,
   View,
   useWindowDimensions,
@@ -47,10 +46,61 @@ import {
 } from "@/lib/ritualProgressUtils";
 import { resolveTodayState, type TodayState } from "@/lib/todayState";
 import { getRitualPreference, getRitualStepProgress, getSavedTranscript, saveRitualStepProgress } from "@/services/storageService";
-import { useHeaderScroll } from '@/components/ui/headerStretch';
+import { HeaderScrollView, useHeaderScroll } from '@/components/ui/headerStretch';
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 
 const DATE_CHECK_INTERVAL_MS = 5 * 60 * 1000;
+
+// Storage reads of the Today screen live outside it: React Compiler does not compile a
+// component whose try/catch holds a conditional expression, and Home re-renders on focus.
+async function readDraftSaved(): Promise<boolean | null> {
+  try {
+    const savedTranscript = await getSavedTranscript();
+    return savedTranscript.trim().length > 0;
+  } catch (error) {
+    if (__DEV__) {
+      console.error(
+        "[InspirationScreen] Failed to read saved transcript",
+        error,
+      );
+    }
+    return null;
+  }
+}
+
+async function loadRitualState() {
+  const todayKey = getLocalDateKey(new Date(Date.now()));
+  const [storedProgress, preferredRitualId] = await Promise.all([
+    getRitualStepProgress(),
+    getRitualPreference(),
+  ]);
+
+  let nextProgressDate = todayKey;
+  if (storedProgress && storedProgress.date === todayKey) {
+    nextProgressDate = storedProgress.date;
+  } else {
+    try {
+      await saveRitualStepProgress({ date: todayKey, steps: {} });
+    } catch (error) {
+      if (__DEV__) {
+        console.error(
+          "[InspirationScreen] Failed to reset stale ritual progress",
+          error,
+        );
+      }
+    }
+  }
+
+  const preferredRitual = preferredRitualId
+    ? RITUALS.find((ritual) => ritual.id === preferredRitualId)
+    : undefined;
+  const nextSelectedRitualId: RitualId = preferredRitual?.id ?? "starter";
+
+  return {
+    nextProgressDate,
+    nextSelectedRitualId,
+  };
+}
 
 /**
  * Inspiration / rituals screen.
@@ -198,18 +248,9 @@ function InspirationScreen() {
   }, [progressDate]);
 
   const refreshTodayDraft = useCallback(async (isActive?: () => boolean) => {
-    try {
-      const savedTranscript = await getSavedTranscript();
-      if (isActive && !isActive()) return;
-      setHasDraft(savedTranscript.trim().length > 0);
-    } catch (error) {
-      if (__DEV__) {
-        console.error(
-          "[InspirationScreen] Failed to read saved transcript",
-          error,
-        );
-      }
-    }
+    const draftSaved = await readDraftSaved();
+    if (draftSaved === null || (isActive && !isActive())) return;
+    setHasDraft(draftSaved);
   }, []);
 
   const refreshTodayForOpenScreen = useCallback(() => {
@@ -221,40 +262,6 @@ function InspirationScreen() {
     refreshTodayForOpenScreen();
     void refreshTodayDraft();
   }, [refreshTodayDraft, refreshTodayForOpenScreen]);
-
-  const loadRitualState = useCallback(async () => {
-    const todayKey = getLocalDateKey(new Date(Date.now()));
-    const [storedProgress, preferredRitualId] = await Promise.all([
-      getRitualStepProgress(),
-      getRitualPreference(),
-    ]);
-
-    let nextProgressDate = todayKey;
-    if (storedProgress && storedProgress.date === todayKey) {
-      nextProgressDate = storedProgress.date;
-    } else {
-      try {
-        await saveRitualStepProgress({ date: todayKey, steps: {} });
-      } catch (error) {
-        if (__DEV__) {
-          console.error(
-            "[InspirationScreen] Failed to reset stale ritual progress",
-            error,
-          );
-        }
-      }
-    }
-
-    const preferredRitual = preferredRitualId
-      ? RITUALS.find((ritual) => ritual.id === preferredRitualId)
-      : undefined;
-    const nextSelectedRitualId: RitualId = preferredRitual?.id ?? "starter";
-
-    return {
-      nextProgressDate,
-      nextSelectedRitualId,
-    };
-  }, []);
 
   // Reload progress from storage on focus (picks up changes from ritual detail page)
   useFocusEffect(
@@ -283,7 +290,7 @@ function InspirationScreen() {
       return () => {
         isActive = false;
       };
-    }, [loadRitualState, refreshTodayDraft, refreshTodayForOpenScreen]),
+    }, [refreshTodayDraft, refreshTodayForOpenScreen]),
   );
 
   // Check when returning to foreground
@@ -299,9 +306,9 @@ function InspirationScreen() {
   }, [refreshTodayForOpenScreen]);
 
   return (
-    <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
+    <ScrollPerfProvider activity={scrollPerf.activity}>
       <View testID="screen.home" className="flex-1 bg-ink">
-        <ScrollView
+        <HeaderScrollView
           className="flex-1"
           onScroll={onHeaderScroll}
           scrollEventThrottle={16}
@@ -339,7 +346,7 @@ function InspirationScreen() {
               </View>
             </View>
           </ScreenContainer>
-        </ScrollView>
+        </HeaderScrollView>
 
       </View>
     </ScrollPerfProvider>

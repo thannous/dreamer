@@ -49,13 +49,6 @@
       "count": 1
     },
     {
-      "file": "app/(tabs)/journal.tsx",
-      "rule": "react-hooks/set-state-in-effect",
-      "message": "Error: Calling setState synchronously within an effect can trigger cascading renders\n\nEffects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:\n* Update external systems with the latest state from React.\n* Subscribe for updates from some external system, calling setState in a callback function when external state changes.\n\nCalling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).",
-      "sourceSha256": "d3ed51444fa8aae1fabba4902ee1ff2a02f4be2b205d81a020489825299e8651",
-      "count": 1
-    },
-    {
       "file": "app/dream-chat/[id].tsx",
       "rule": "react-hooks/set-state-in-effect",
       "message": "Error: Calling setState synchronously within an effect can trigger cascading renders\n\nEffects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:\n* Update external systems with the latest state from React.\n* Subscribe for updates from some external system, calling setState in a callback function when external state changes.\n\nCalling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).",

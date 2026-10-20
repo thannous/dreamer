@@ -2,7 +2,7 @@ import { getDreamRouteParams } from '@/lib/dreamRoute';
 import type { DreamAnalysis } from '@/lib/types';
 import { router } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { DreamerArtworkWindow } from '@/components/ui/DreamerBackground';
@@ -20,7 +20,7 @@ import { buildPaywallHref } from '@/lib/paywallRoute';
 import { TID } from '@/lib/testIDs';
 import { requestStoreReviewIfDue } from '@/lib/storeReview';
 import { buildWeeklyRecap } from '@/lib/weeklyRecap';
-import { useHeaderScroll } from '@/components/ui/headerStretch';
+import { HeaderScrollView, useHeaderScroll } from '@/components/ui/headerStretch';
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 
 /**
@@ -119,7 +119,7 @@ function WeeklyRecapContent() {
         <IconSymbol name="chevron.left" size={22} color={noctalia.accent.text} />
       </Pressable>
 
-      <ScrollView onScroll={onHeaderScroll} scrollEventThrottle={16}
+      <HeaderScrollView onScroll={onHeaderScroll} scrollEventThrottle={16}
         style={styles.scrollView}
         contentInsetAdjustmentBehavior="never"
         contentContainerStyle={{
@@ -275,7 +275,7 @@ function WeeklyRecapContent() {
             </>
           )}
         </View>
-      </ScrollView>
+      </HeaderScrollView>
     </View>
   );
 }

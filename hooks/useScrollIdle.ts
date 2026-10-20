@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+import { createScrollActivity, type ScrollActivity } from '@/context/ScrollPerfContext';
+
 type ScrollIdleHandlers = {
   onScrollBeginDrag: () => void;
   onScrollEndDrag: () => void;
@@ -7,33 +9,30 @@ type ScrollIdleHandlers = {
   onMomentumScrollEnd: () => void;
 };
 
-export function useScrollIdle(idleMs = 140): { isScrolling: boolean } & ScrollIdleHandlers {
-  const [isScrolling, setIsScrolling] = useState(false);
-  const isScrollingRef = useRef(false);
+/**
+ * Tracks a scroller's drags and momentum. Pass `activity` to `ScrollPerfProvider`; the
+ * screen calling this hook does not render again when scrolling starts or stops.
+ */
+export function useScrollIdle(idleMs = 140): { activity: ScrollActivity } & ScrollIdleHandlers {
+  const [activity] = useState(createScrollActivity);
   const idleTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const setScrolling = useCallback((next: boolean) => {
-    if (isScrollingRef.current === next) return;
-    isScrollingRef.current = next;
-    setIsScrolling(next);
-  }, []);
-
   const handleScrollBegin = useCallback(() => {
-    setScrolling(true);
+    activity.set(true);
     if (idleTimeoutRef.current) {
       clearTimeout(idleTimeoutRef.current);
       idleTimeoutRef.current = null;
     }
-  }, [setScrolling]);
+  }, [activity]);
 
   const handleScrollEnd = useCallback(() => {
     if (idleTimeoutRef.current) {
       clearTimeout(idleTimeoutRef.current);
     }
     idleTimeoutRef.current = setTimeout(() => {
-      setScrolling(false);
+      activity.set(false);
     }, idleMs);
-  }, [idleMs, setScrolling]);
+  }, [activity, idleMs]);
 
   useEffect(() => {
     return () => {
@@ -44,7 +43,7 @@ export function useScrollIdle(idleMs = 140): { isScrolling: boolean } & ScrollId
   }, []);
 
   return {
-    isScrolling,
+    activity,
     onScrollBeginDrag: handleScrollBegin,
     onScrollEndDrag: handleScrollEnd,
     onMomentumScrollBegin: handleScrollBegin,

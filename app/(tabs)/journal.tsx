@@ -48,7 +48,7 @@ import type { DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
 import { FlashList, type FlashListRef, type ListRenderItemInfo, type ViewToken } from '@shopify/flash-list';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import React, { useCallback, useContext, useDeferredValue, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useContext, useDeferredValue, useEffect, useEffectEvent, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import {
   Alert,
   Keyboard,
@@ -71,6 +71,8 @@ const SCROLL_IDLE_MS = 140;
 const PREFETCH_CACHE_LIMIT = 250;
 const PREFETCH_MAX_PER_FLUSH = 8;
 const OVERLAY_SEARCH_DRAG_SLOP = 8;
+// A list scroll this soon after the user's wheel or touch on the web is theirs.
+const USER_SCROLL_INPUT_MS = 150;
 
 /**
  * FlashList owns these through props that take a style object, and the desktop max
@@ -212,23 +214,32 @@ function JournalListScreen() {
   const filterParams = useLocalSearchParams<JournalFilterRouteParams>();
   const filterLink = parseJournalFilterParams(filterParams);
   // This consumes an external navigation command once, then preserves filters edited by hand.
+  // Applied while rendering, once per link (its parsed dates are new objects on every
+  // render): the list never renders with the previous filters, and no effect needs a
+  // lint suppression, which would keep React Compiler off this screen.
+  const filterLinkKey = filterLink?.key ?? null;
+  const [appliedFilterLinkKey, setAppliedFilterLinkKey] = useState<string | null>(null);
+  if (filterLinkKey !== appliedFilterLinkKey) {
+    setAppliedFilterLinkKey(filterLinkKey);
+    if (filterLink) {
+      setSearchQuery('');
+      setSelectedTheme(filterLink.theme);
+      setSelectedDreamType(filterLink.dreamType);
+      setDateRange({ start: filterLink.start, end: filterLink.end });
+      setQuickFilter('all');
+      setShowRememberedOnly(false);
+      setShowRecurringOnly(false);
+      setAnalysisStatus(filterLink.analysis);
+      setSelectedSymbol(filterLink.symbol);
+      setSortOrder('newest');
+    }
+  }
+  // The params leave the route so they apply only once.
   useEffect(() => {
-    const link = filterLink;
-    if (!link) return;
-    setSearchQuery('');
-    setSelectedTheme(link.theme);
-    setSelectedDreamType(link.dreamType);
-    setDateRange({ start: link.start, end: link.end });
-    setQuickFilter('all');
-    setShowRememberedOnly(false);
-    setShowRecurringOnly(false);
-    setAnalysisStatus(link.analysis);
-    setSelectedSymbol(link.symbol);
-    setSortOrder('newest');
-    router.setParams({ filter: undefined, theme: undefined, type: undefined, from: undefined, to: undefined, analysis: undefined, symbol: undefined });
-    // Applied once per link: the parsed dates are new objects on every render.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filterLink?.key]);
+    if (filterLinkKey) {
+      router.setParams({ filter: undefined, theme: undefined, type: undefined, from: undefined, to: undefined, analysis: undefined, symbol: undefined });
+    }
+  }, [filterLinkKey]);
 
   // Modal states
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
@@ -440,12 +451,14 @@ function JournalListScreen() {
     return () => { mediaFocused.current = false; mediaGeneration.current += 1; };
   }, [filteredDreams, prefetchDreamMedia]));
 
-  // Scroll to top when filters change
-  useEffect(() => {
+  // Scroll to top when filters change, not when the filtered dreams merely update.
+  const scrollFilteredListToTop = useEffectEvent(() => {
     if (filteredDreams.length > 0) {
       flatListRef.current?.scrollToOffset({ offset: 0, animated: true });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  });
+  useEffect(() => {
+    scrollFilteredListToTop();
   }, [
     deferredSearchQuery,
     selectedTheme,
@@ -607,13 +620,35 @@ function JournalListScreen() {
     }
   }, [setScrolling]);
 
+  // react-native-web dismisses the keyboard on every scroll event when asked to on drag,
+  // the list's own animated return to the top included: a search typed in a scrolled
+  // journal lost its field after the first letter. On the web the list dismisses it only
+  // when it moves under a wheel or touch of the user's, as a drag does natively; a swipe
+  // of the filter chips or a wheel over a list that cannot move leaves the field alone.
+  const lastUserScrollInputRef = useRef(Number.NEGATIVE_INFINITY);
+  const markUserScrollInput = useCallback(() => {
+    lastUserScrollInputRef.current = performance.now();
+  }, []);
+  const webUserScrollInput = isWeb
+    ? { onWheel: markUserScrollInput, onTouchMove: markUserScrollInput }
+    : null;
+  // Typing is not scrolling: the list's return to the top that a letter starts stays its own.
+  const handleSearchQueryChange = useCallback((text: string) => {
+    lastUserScrollInputRef.current = Number.NEGATIVE_INFINITY;
+    setSearchQuery(text);
+  }, []);
+
   // A fixed header needs only an offset for a future viewport change. FlashList
   // already delivers JS scroll events; avoid a UI worklet for every such frame.
   const handleStaticListScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
     staticScrollY.current = event.nativeEvent.contentOffset.y;
     headerScrollY.set(staticScrollY.current);
     listScrollY.set(staticScrollY.current);
-  }, [headerScrollY, listScrollY]);
+    if (isWeb && performance.now() - lastUserScrollInputRef.current < USER_SCROLL_INPUT_MS
+      && typeof Keyboard.dismiss === 'function') {
+      Keyboard.dismiss();
+    }
+  }, [headerScrollY, isWeb, listScrollY]);
 
   const handleListScroll = useAnimatedScrollHandler({
     onScroll: (event) => {
@@ -958,7 +993,7 @@ function JournalListScreen() {
       testID={TID.Component.SearchBar}
       inputTestID={TID.Input.SearchDreams}
       value={searchQuery}
-      onChangeText={setSearchQuery}
+      onChangeText={handleSearchQueryChange}
       placeholder={t('journal.search_placeholder')}
     />
   );
@@ -1076,6 +1111,9 @@ function JournalListScreen() {
           className="pb-2"
           onLayout={(event) => {
             const nextHeight = event.nativeEvent.layout.height;
+            // Hidden behind another route (on the web), the chrome measures zero: keep its
+            // real height so the list is not laid out again, twice, around the visit.
+            if (nextHeight <= 0) return;
             setMeasuredHeader((current) => current.key === headerMeasureKey && current.height === nextHeight
               ? current : { key: headerMeasureKey, height: nextHeight });
           }}
@@ -1187,7 +1225,8 @@ function JournalListScreen() {
         onScroll={isWeb || searchConsumesLayout ? handleStaticListScroll : handleListScroll}
         scrollEventThrottle={16}
         keyboardShouldPersistTaps="handled"
-        keyboardDismissMode="on-drag"
+        keyboardDismissMode={isWeb ? 'none' : 'on-drag'}
+        {...webUserScrollInput}
         contentInsetAdjustmentBehavior="never"
         ListEmptyComponent={renderEmptyState}
         showsVerticalScrollIndicator={false}

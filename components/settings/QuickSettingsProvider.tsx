@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { BackHandler, Keyboard, Platform, Pressable as NativePressable, ScrollView, Text, View, useWindowDimensions } from 'react-native';
 import { Drawer } from 'react-native-drawer-layout';
 import { Pressable as GesturePressable } from 'react-native-gesture-handler';
@@ -69,6 +69,16 @@ function PreferenceChoices<T extends string>({ preference, id, showTitle = true 
   );
 }
 
+// Outside the component: React Compiler cannot compile an optional call chain followed
+// by `||`, and the drawer content is mounted for the whole session.
+function getProfileName(user: ReturnType<typeof useAuth>['user']): string | undefined {
+  const metadata = user?.user_metadata;
+  const named = [metadata?.full_name, metadata?.name, metadata?.display_name]
+    .find((value): value is string => typeof value === 'string' && value.trim().length > 0);
+  if (named) return named.trim();
+  return user?.email?.split('@')[0] || undefined;
+}
+
 export function QuickSettingsContent({ onClose, onSettings, onAccount, onPlus }: {
   onClose: () => void;
   onSettings: () => void;
@@ -85,10 +95,7 @@ export function QuickSettingsContent({ onClose, onSettings, onAccount, onPlus }:
   const [showLanguage, setShowLanguage] = useState(false);
   const { user, loading: authLoading } = useAuth();
   const { isActive, loading: subscriptionLoading } = useSubscription();
-  const metadata = user?.user_metadata;
-  const profileName = [metadata?.full_name, metadata?.name, metadata?.display_name]
-    .find((value): value is string => typeof value === 'string' && value.trim().length > 0)?.trim()
-    || user?.email?.split('@')[0]
+  const profileName = getProfileName(user)
     || t(user ? 'settings.quick.profile' : 'settings.account.status.guest');
   const initials = profileName.split(/\s+/).slice(0, 2).map((part) => Array.from(part)[0]).join('').toLocaleUpperCase();
   const plusActive = Boolean(user) && isActive;
@@ -192,11 +199,17 @@ export function QuickSettingsProvider({ children, disabled = false }: React.Prop
   const drawerWidth = Math.min(380, Math.max(280, width - 24));
   const visible = open && origin === pathname && !drawerDisabled;
   const close = useCallback(() => setOpen(false), []);
+  // `show` is the context value: read the route when the drawer opens, so a navigation
+  // does not hand every screen that offers the drawer a new function to render again.
+  const pathnameRef = useRef(pathname);
+  useLayoutEffect(() => {
+    pathnameRef.current = pathname;
+  }, [pathname]);
   const show = useCallback(() => {
     Keyboard.dismiss();
-    setOrigin(pathname);
+    setOrigin(pathnameRef.current);
     setOpen(true);
-  }, [pathname]);
+  }, []);
   const showSettings = useCallback(() => {
     setOpen(false);
     router.push('/settings');

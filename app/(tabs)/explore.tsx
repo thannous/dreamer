@@ -15,9 +15,9 @@ import { TID } from '@/lib/testIDs';
 import { getRitualPreference, saveRitualPreference } from '@/services/storageService';
 import { router, useFocusEffect } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { AccessibilityInfo, AppState, Platform, Pressable, ScrollView, Text, View, useWindowDimensions } from 'react-native';
+import { AccessibilityInfo, AppState, Platform, Pressable, Text, View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useHeaderScroll } from '@/components/ui/headerStretch';
+import { HeaderScrollView, useHeaderScroll } from '@/components/ui/headerStretch';
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 
 // TalkBack rejects input-focus events while its window transition is unstable.
@@ -183,7 +183,7 @@ function ExploreScreen() {
 
   return (
     <View className="flex-1 bg-ink" testID={TID.Screen.Explore}>
-      <ScrollView
+      <HeaderScrollView
         className="flex-1"
         onScroll={onHeaderScroll}
         scrollEventThrottle={16}
@@ -257,7 +257,7 @@ function ExploreScreen() {
             </View>
           </View>
         </ScreenContainer>
-      </ScrollView>
+      </HeaderScrollView>
       {pickerVisible ? <RitualPickerSheet currentId={selectedRitualId}
         onClose={() => setPickerVisible(false)}
         onConfirm={async (id) => {

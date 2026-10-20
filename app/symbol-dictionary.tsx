@@ -2,7 +2,7 @@ import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { Stack, router, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useDeferredValue, useEffect, useMemo, useState } from "react";
-import { FlatList, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { DreamerArtworkWindow } from "@/components/ui/DreamerBackground";
@@ -19,7 +19,7 @@ import { useTheme } from "@/context/ThemeContext";
 import { useTranslation } from "@/hooks/useTranslation";
 import { trackProductEvent } from "@/lib/analytics";
 import { getDreamGuideCopy } from "@/lib/dreamGuideCopy";
-import { useHeaderScroll } from '@/components/ui/headerStretch';
+import { HeaderFlatList, useHeaderScroll } from '@/components/ui/headerStretch';
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 import type {
   DreamSymbol,
@@ -150,20 +150,24 @@ function SymbolDictionaryScreen() {
     setSelectedLetter(null);
   }
 
+  // Sorted once per list and language, not again on each letter: names are normalized
+  // once per symbol and compared by a single collator (same order as localeCompare
+  // with these options, which builds a collator on every comparison).
+  const alphabeticalSymbols = useMemo(() => {
+    if (browseMode !== "alphabetical" || filteredSymbols.length === 0) return [];
+    const collator = new Intl.Collator(lang, { sensitivity: "base" });
+    return filteredSymbols
+      .map((symbol) => ({ symbol, key: normalizeValue(getSymbolName(symbol, lang)) }))
+      .sort((a, b) => collator.compare(a.key, b.key))
+      .map(({ symbol }) => symbol);
+  }, [browseMode, filteredSymbols, lang]);
+
   const sections: Section[] = useMemo(() => {
     if (browseMode === "alphabetical") {
-      if (filteredSymbols.length === 0) return [];
-
-      const sorted = [...filteredSymbols].sort((a, b) =>
-        normalizeValue(getSymbolName(a, lang)).localeCompare(
-          normalizeValue(getSymbolName(b, lang)),
-          lang,
-          { sensitivity: "base" },
-        ),
-      );
+      if (alphabeticalSymbols.length === 0) return [];
 
       const grouped = new Map<string, DreamSymbol[]>();
-      for (const symbol of sorted) {
+      for (const symbol of alphabeticalSymbols) {
         const letter = getSymbolLetter(getSymbolName(symbol, lang));
         if (selectedLetter && letter !== selectedLetter) {
           continue;
@@ -217,7 +221,7 @@ function SymbolDictionaryScreen() {
       category: c,
       data: getSymbolsByCategory(c),
     }));
-  }, [browseMode, deferredSearchQuery, selectedCategory, lang, categories, selectedLetter, filteredSymbols]);
+  }, [alphabeticalSymbols, browseMode, deferredSearchQuery, selectedCategory, lang, categories, selectedLetter, filteredSymbols]);
 
   const listData: Row[] = useMemo(() => {
     const rows: Row[] = [];
@@ -476,7 +480,7 @@ function SymbolDictionaryScreen() {
     <View style={[styles.container, { backgroundColor: noctalia.screen.background }]} testID="screen.symbolDictionary">
       <Stack.Screen options={{ headerShown: false, title: t("symbols.dictionary_title") }} />
 
-      <FlatList<Row>
+      <HeaderFlatList
         testID="symbol-list"
         style={styles.list}
         contentContainerStyle={{ paddingBottom: insets.bottom + ThemeLayout.spacing.xl }}
@@ -487,8 +491,8 @@ function SymbolDictionaryScreen() {
         onScroll={onHeaderScroll}
         scrollEventThrottle={16}
         data={listData}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => renderListRow(item)}
+        keyExtractor={(item: unknown) => (item as Row).id}
+        renderItem={({ item }: { item: unknown }) => renderListRow(item as Row)}
         ListHeaderComponent={listHeader}
         ListEmptyComponent={renderEmptyComponent()}
         initialNumToRender={12}
