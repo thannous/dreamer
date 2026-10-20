@@ -3,8 +3,8 @@
   "date": "2026-10-20",
   "sourceRevision": "736a14dc4b55127e1e52b51eb50009e66323a387",
   "sourceRevisionScope": "Clean browser-qualified implementation; subsequent tracking-only edits reuse this evidence.",
-  "integratedMaster": "f71600c97",
-  "sourceBranch": "codex/symbol-images-lot-08-30",
+  "integratedMaster": "736a14dc4b55127e1e52b51eb50009e66323a387",
+  "sourceBranch": "codex/symbols-lot10-20261020",
   "integrationOwner": "Codex",
   "totalSymbols": 240,
   "integratedSymbols": 117,
@@ -35,7 +35,7 @@
       "sha256": "a34571d6a57e193e84475c1896f50812ac712c1ae93b2c09215f2e11677df7f4"
     }
   },
-  "reportSha256": "e9cf4eb1696b8cda63d09618e655265d75fd387261363b4f3f98f40512675dc9",
+  "reportSha256": "43fcdb5f312dcf6450b8a630822f9ce22d8f3059c6832ec23d40fd895986ffe4",
   "checks": {
     "rows": 240,
     "recalculation": true,
@@ -128,5 +128,10 @@
     ],
     "newSelectedNativePaintings": 36,
     "byteExactTextureCopies": 12
+  },
+  "historicalLot08Metadata": {
+    "integratedMaster": "f71600c97",
+    "sourceBranch": "codex/symbol-images-lot-08-30",
+    "reportSha256": "e9cf4eb1696b8cda63d09618e655265d75fd387261363b4f3f98f40512675dc9"
   }
 }
