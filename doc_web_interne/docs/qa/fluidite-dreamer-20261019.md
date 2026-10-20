@@ -12,7 +12,8 @@ site, outillage backend et E2E) puis `59cf23c0` ont ensuite été fusionnés san
 conflit. Le second recoupe quatre fichiers de cette branche : refonte de l'Accueil
 (#467) et peintures qui se posent une fois au lieu de respirer sans fin (#464).
 L'Accueil fusionné garde les lectures hors composant, le store de défilement et
-`HeaderScrollView`, et reste compilé par React Compiler. Ces mesures restent celles
+`HeaderScrollView`, et reste compilé par React Compiler. Le tout est entré dans
+`master` en `eea9a7b` (#471). Ces mesures restent celles
 de `8067f00a` ; elles ne qualifient pas la nouvelle page d'Accueil. Aucune animation, durée, image, parallaxe
 ou cible tactile n'est retirée. Aucun build EAS, déploiement, publication Store ni
 mesure sur appareil dans cette tranche.
@@ -133,7 +134,14 @@ mock (profil Plus, 390×844, Chromium 141, CPU bridé ×4), ignore toute requêt
 externe et rejoue le même parcours cinq fois par build. Chaque fenêtre relève les
 commits React (hook DevTools), le temps de script et de tâches (CDP), les tâches
 longues et les intervalles `requestAnimationFrame`. Il échoue si la saisie de
-recherche n'atteint pas entièrement le champ.
+recherche n'atteint pas entièrement le champ. Il quitte l'onboarding par « Passer »
+dès la première étape. Depuis que le récit d'onboarding est actif par défaut
+(#458, `3a3375c6`), « Commencer » l'ouvre, et le récit recouvre « Passer » quelques
+centaines de millisecondes plus tard. L'ancien ordre (« Commencer » puis « Passer »)
+ne passait que parce que son clic arrivait avant. Les chiffres de ce rapport ont été
+relevés avec cet ancien ordre, sur des builds sans récit. L'état atteint est le même :
+seul le chemin choisi diffère, et il n'est plus lu après « Passer ». Le nouvel ordre
+passe aussi sur ces builds.
 
 | Fenêtre (médiane de 5) | Script avant → après | Plages avant / après | Tâches longues | Verdict |
 | --- | --- | --- | --- | --- |
