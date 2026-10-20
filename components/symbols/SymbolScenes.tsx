@@ -40,8 +40,8 @@ export interface SceneReading {
  */
 export function readScenes(scenes: AtlasScene[], variations: SymbolVariation[], lang: SymbolLanguage): SceneReading[] {
   return scenes.flatMap((scene) => {
-    const index = scene.variation[lang];
-    const card = index === undefined ? undefined : variations[index];
+    const context = scene.variation[lang];
+    const card = context === undefined ? undefined : variations.find((variation) => variation.context === context);
     if (!card) return [];
     const meaning = card.meaning.trim();
     const first = meaning.search(/[.?!](\s|$)/);

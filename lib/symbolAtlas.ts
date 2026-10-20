@@ -36,8 +36,12 @@ export interface AtlasScene {
   id: string;
   image: AtlasPicture;
   layers: AtlasLayer[];
-  /** Rank of the variation card the scene paints, per language. */
-  variation: Partial<Record<SymbolLanguage, number>>;
+  /**
+   * Context of the variation card the scene paints, per language, as the content files
+   * spell it. A context rather than a rank, so content cached before a site publish that
+   * moved its cards never pairs a painting with a neighbouring card.
+   */
+  variation: Partial<Record<SymbolLanguage, string>>;
 }
 
 export interface SymbolAtlasEntry {

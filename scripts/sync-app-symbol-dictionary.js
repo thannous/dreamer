@@ -94,7 +94,7 @@ const plainContext = (html) =>
 /**
  * The atlas as the app reads it (lib/symbolAtlas.ts): per symbol with its paintings, the
  * portrait painting the detail opens on and its two textures, then its three painted
- * scenes, each with its two textures and the rank of the variation card it paints in
+ * scenes, each with its two textures and the context of the variation card it paints in
  * every language. Files are named relative to `<base>/<id>/`; a texture's box is already
  * placed on its painting by the site's own geometry (lib/atlas-motion.js), so the app
  * never recomputes it. The site's motion runs in a loop; the app plays it once
@@ -140,11 +140,12 @@ function buildSymbolAtlas(extended = buildExtendedMap()) {
           const language = catalogKey(locale);
           const context = entry.scenes?.[scene.id]?.variation;
           if (!LANGUAGES.includes(language) || !context) continue;
-          const index = (extended[id]?.[language]?.variations || []).findIndex(
-            (card) => plainContext(card.context) === context,
+          const card = (extended[id]?.[language]?.variations || []).find(
+            (candidate) => plainContext(candidate.context) === context,
           );
-          if (index === -1) throw new Error(`Atlas ${id}.${scene.id}: no ${language} variation "${context}"`);
-          variation[language] = index;
+          if (!card) throw new Error(`Atlas ${id}.${scene.id}: no ${language} variation "${context}"`);
+          // The card's own spelling, so the app finds it in whatever copy of the content it holds.
+          variation[language] = card.context;
         }
         return { id: scene.id, image: picture(image), layers: layers(pilot.motion.thumb, image), variation };
       });
