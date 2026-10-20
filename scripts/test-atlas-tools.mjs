@@ -570,6 +570,25 @@ test('the rollout report reads states from the repository and stages only from r
   const reframed = run('out-4f').report;
   assert.notEqual(bySymbol(reframed, 'deer').languages.fr.source.engine, bySymbol(requalifiedReport, 'deer').languages.fr.source.engine);
   assert.equal(bySymbol(reframed, 'moon').languages.fr.stages.qa.desktop, 'accepted');
+  // It also prints the language's shared atlas copy: changing those words makes its record stale,
+  // though it has no atlas of its own and the totals stay the same.
+  const deerEvidence = path.join(repo, 'evidence', 'deer-fr-mobile.png');
+  fs.writeFileSync(deerEvidence, 'deer capture');
+  const deerRecord = { id: 'deer', lang: 'fr', stage: 'qa', surface: 'mobile', verdict: 'accepted', date: '2026-10-19', source: bySymbol(reframed, 'deer').languages.fr.source, evidence: { path: 'evidence/deer-fr-mobile.png', sha256: sha256('deer capture') } };
+  writeRegistry((value) => ({ ...value, records: [record, requalified, deerRecord] }));
+  assert.equal(bySymbol(run('out-4g').report, 'deer').languages.fr.stages.qa.mobile, 'accepted');
+  const localesFile = path.join(repo, 'docs-src', 'config', 'symbol-atlas-locales.json');
+  const localesText = fs.readFileSync(localesFile, 'utf8');
+  const recopied = JSON.parse(localesText);
+  recopied.copy.fr.continuationTitle = 'Lecture complète';
+  fs.writeFileSync(localesFile, JSON.stringify(recopied));
+  const recopiedReport = run('out-4h').report;
+  const deer = bySymbol(recopiedReport, 'deer');
+  assert.deepEqual(deer.languages.fr.stale, [{ stage: 'qa', surface: 'mobile', date: '2026-10-19', changed: ['atlas'] }]);
+  assert.equal(deer.languages.fr.atlas, false);
+  assert.deepEqual(recopiedReport.totals, first.report.totals);
+  fs.writeFileSync(localesFile, localesText);
+  writeRegistry((value) => ({ ...value, records: [record, requalified] }));
 
   fs.writeFileSync(evidence, 'another capture');
   assert.equal(bySymbol(run('out-5').report, 'moon').languages.fr.stages.qa.desktop, 'evidence-mismatch');

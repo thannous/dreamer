@@ -156,9 +156,15 @@ export function buildReport(options) {
       }));
       // What a QA of this language looks at: its words, its atlas, its paintings and the engine. A
       // record copies this source; a later change to any part makes that record stale.
+      // A page without a pack reads in the same article and prints the language's shared copy (index
+      // label, detailed reading, app kicker, anchors), all but the scene words it has no use for.
+      const languageCopy = locales.value.copy?.[lang] ?? null;
+      const pageCopy = languageCopy && Object.fromEntries(Object.entries(languageCopy).filter(([part]) => part !== 'scenes'));
       const source = {
         content: identity({ catalog: symbol[key] ?? null, extended: content ?? null }),
-        atlas: equipped ? identity({ copy: locales.value.copy?.[lang] ?? null, locale, pilot: pilots.value[id] ?? null }) : null,
+        atlas: equipped
+          ? identity({ copy: languageCopy, locale, pilot: pilots.value[id] ?? null })
+          : identity({ copy: pageCopy }),
         assets: equipped === 'pilot' ? identity(manifest?.value[id] ?? null) : null,
         engine: engines[equipped ?? 'page'],
       };
