@@ -34,6 +34,7 @@ import { markDreamNamed } from '@/lib/dreamNaming';
 import { DREAM_THEMES } from '@/lib/dreamThemes';
 import { getDreamStoryHandoffName, hasDreamStoryHandoff, markDreamStoryPageReady } from '@/lib/dreamStoryPrologue';
 import { DreamShareImage } from '@/components/journal/DreamShareImage';
+import { DreamShareSheet } from '@/components/journal/DreamShareSheet';
 import { getImageJobFailure } from '@/lib/imageJobErrors';
 import { ImageRetry } from '@/components/journal/ImageRetry';
 import {
@@ -91,6 +92,7 @@ import {
   shouldReplaceExistingImage,
   shouldShowCompletedJournalReading,
 } from '@/lib/journalIllustrationPolicy';
+import type { ShareCardOptions } from '@/lib/journal/shareCard';
 import { getFileExtensionFromUrl, getMimeTypeFromExtension } from '@/lib/journal/shareImageUtils';
 import { resolveJournalDreamRecallOfferEligible } from '@/lib/journalDreamRecallOffer';
 import {
@@ -119,7 +121,6 @@ import {
   Platform,
   Pressable,
   ScrollView,
-  Share,
   StyleSheet,
   Text,
   TextInput,
@@ -158,6 +159,8 @@ interface ShareCompositeRequest {
   id: number;
   source: string;
   dream: DreamAnalysis;
+  options: ShareCardOptions;
+  date: string;
   onMediaReady: (source: string, ready: boolean) => void;
 }
 
@@ -615,25 +618,38 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   const hasUncategorizedDraft = Boolean(dream && !dream.isAnalyzed && dream.analysisStatus !== 'pending'
     && !dream.theme && dream.title === deriveDraftTitle(dream.transcript, ''));
   const needsMetadataRecovery = hasUncategorizedDraft && !initialCategorizationPending;
+  const [editableTitle, setEditableTitle] = useState('');
+  const [editableTheme, setEditableTheme] = useState('');
+  const [editableDreamType, setEditableDreamType] = useState('');
   const recoverMetadata = useCallback(async () => {
     if (!dream || !needsMetadataRecovery || isInitialDreamCategorizationPending(getInitialDreamCategorizationKey(dream))
       || metadataRecoveryInFlightRef.current) return;
     // Metadata recovery sends the dream text to the AI provider.
     if (!(await requestAiConsent(t))) return;
     metadataRecoveryInFlightRef.current = true;
+    // Fields changed while the name is being found keep what was entered.
+    const asked = { title: editableTitle, theme: editableTheme, dreamType: editableDreamType };
     setIsRecoveringMetadata(true);
     setMetadataRecoveryFailed(false);
     try {
       const result = await categorizeDream(dream.transcript, language);
       if (latestMetadataDreamRef.current !== dream) return;
-      await applyDreamCategorization(dream, result);
+      const named = await applyDreamCategorization(dream, result);
+      // Asked while editing: the fields being edited take what was found, where it is new.
+      if (named) {
+        const found = (field: 'title' | 'theme' | 'dreamType', current: string) => (
+          current === asked[field] && named[field] && named[field] !== dream[field] ? named[field] : current);
+        setEditableTitle((current) => found('title', current));
+        setEditableTheme((current) => found('theme', current));
+        setEditableDreamType((current) => found('dreamType', current));
+      }
     } catch {
       if (latestMetadataDreamRef.current === dream) setMetadataRecoveryFailed(true);
     } finally {
       metadataRecoveryInFlightRef.current = false;
       setIsRecoveringMetadata(false);
     }
-  }, [applyDreamCategorization, dream, language, needsMetadataRecovery, t]);
+  }, [applyDreamCategorization, dream, editableDreamType, editableTheme, editableTitle, language, needsMetadataRecovery, t]);
   const handleImageUpgrade = useCallback(() => {
     router.push(buildPaywallHref('image_generation'));
   }, []);
@@ -712,9 +728,6 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
 
     return items;
   }, [dreamMemory, t]);
-  const [editableTitle, setEditableTitle] = useState('');
-  const [editableTheme, setEditableTheme] = useState('');
-  const [editableDreamType, setEditableDreamType] = useState('');
   const [editableTranscript, setEditableTranscript] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [isPickingImage, setIsPickingImage] = useState(false);
@@ -1163,9 +1176,23 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   // The share card's picture, as resolved for the page. Without one, the card goes without it.
   const shareSource = shareImage?.source ?? '';
   const [shareRequest, setShareRequest] = useState<ShareCompositeRequest | null>(null);
+  const [isShareSheetVisible, setShareSheetVisible] = useState(false);
+  // The chosen card is being drawn, before its capture: leaving then cancels the share.
+  const [isPreparingShare, setPreparingShare] = useState(false);
+  const shareDate = useMemo(() => (dream ? formatDreamDate(dream.id) : ''), [dream, formatDreamDate]);
   const shareRequestIdRef = useRef(0);
   const pendingShareRef = useRef<PendingShareComposite | null>(null);
   const shareInFlightRef = useRef(false);
+  const closeShareSheet = useCallback(() => {
+    const pending = pendingShareRef.current;
+    if (pending) {
+      pendingShareRef.current = null;
+      pending.resolve('stale');
+    } else if (shareInFlightRef.current) {
+      return;
+    }
+    setShareSheetVisible(false);
+  }, []);
   const shareScreenMountedRef = useRef(true);
   const shareDreamIdentity = dream ? getDreamIdentityKey(dream) : undefined;
   const latestShareMediaRef = useRef({ source: shareSource, dreamIdentity: shareDreamIdentity });
@@ -1178,7 +1205,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   useLayoutEffect(() => {
     latestShareMediaRef.current = { source: shareSource, dreamIdentity: shareDreamIdentity };
     const pending = pendingShareRef.current;
-    if (pending && (pending.source !== shareSource || pending.dreamIdentity !== shareDreamIdentity)) {
+    if (pending && ((pending.source && pending.source !== shareSource) || pending.dreamIdentity !== shareDreamIdentity)) {
       pendingShareRef.current = null;
       pending.resolve('stale');
     }
@@ -1344,73 +1371,81 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   // Define callbacks before early return (hooks must be called unconditionally)
   const onShare = useCallback(async () => {
     if (!dream || isAnalysisLocked || shareInFlightRef.current) return;
+    // Mobile (iOS/Android): the dreamer first chooses what the card shows.
+    if (Platform.OS !== 'web') {
+      setShareSheetVisible(true);
+      return;
+    }
     shareInFlightRef.current = true;
     setIsSharing(true);
     try {
-      if (Platform.OS === 'web') {
-        const webNavigator = getShareNavigator();
-        if (webNavigator?.share) {
-          try {
-            await webNavigator.share({ text: shareMessage, title: shareTitle });
+      const webNavigator = getShareNavigator();
+      if (webNavigator?.share) {
+        try {
+          await webNavigator.share({ text: shareMessage, title: shareTitle });
+          return;
+        } catch (error) {
+          if (error instanceof DOMException && error.name === 'AbortError') {
             return;
-          } catch (error) {
-            if (error instanceof DOMException && error.name === 'AbortError') {
-              return;
-            }
           }
         }
-        openShareModal();
-        return;
       }
-
-      if (dream.imageUrl || dream.thumbnailUrl) {
-        if (shareMediaPending || !shareDreamIdentity) return;
-
-        const requestId = ++shareRequestIdRef.current;
-        const source = shareSource;
-        const preparation = await new Promise<SharePreparationStatus>(resolve => {
-          pendingShareRef.current = { id: requestId, source, dreamIdentity: shareDreamIdentity, resolve };
-          setShareRequest({
-            id: requestId,
-            source,
-            dream,
-            onMediaReady: (readySource, ready) => onShareMediaReady(requestId, readySource, ready),
-          });
-        });
-        if (preparation === 'stale'
-          || latestShareMediaRef.current.source !== source
-          || latestShareMediaRef.current.dreamIdentity !== shareDreamIdentity) return;
-        if (!shareImageRef.current) throw new Error('Dream share card is not mounted');
-
-        // Mobile (iOS/Android): capture once the card is drawn, after its illustration is
-        // displayed or, when that cannot be had or shown, without it.
-        await shareComposite(dream);
-        return;
-      }
-
-      // Fallback to text-only sharing if no image
-      await Share.share({
-        message: shareMessage,
-        title: shareTitle,
-      });
-      return;
+      openShareModal();
     } catch (error) {
       if (!shareScreenMountedRef.current) return;
       console.error('Share failed:', error);
-      if (Platform.OS === 'web') {
-        openShareModal();
-      } else {
-        Alert.alert(t('common.error_title'), t('journal.detail.share.error_message'));
-      }
+      openShareModal();
+    } finally {
+      shareInFlightRef.current = false;
+      if (shareScreenMountedRef.current) setIsSharing(false);
+    }
+  }, [dream, isAnalysisLocked, openShareModal, shareMessage, shareTitle]);
+
+  // The card as chosen, captured once drawn: after its illustration is displayed or, when
+  // that is left out, cannot be had or shown, without it. The choice stays open over the
+  // system's share sheet and closes once that sheet is done, shared or not.
+  const shareCard = useCallback(async (options: ShareCardOptions) => {
+    if (!dream || isAnalysisLocked || shareInFlightRef.current || !shareDreamIdentity) return;
+    if (options.painting && shareMediaPending) return;
+    shareInFlightRef.current = true;
+    setIsSharing(true);
+    try {
+      const requestId = ++shareRequestIdRef.current;
+      const source = options.painting ? shareSource : '';
+      setPreparingShare(true);
+      const preparation = await new Promise<SharePreparationStatus>(resolve => {
+        pendingShareRef.current = { id: requestId, source, dreamIdentity: shareDreamIdentity, resolve };
+        setShareRequest({
+          id: requestId,
+          source,
+          dream,
+          options,
+          date: shareDate,
+          onMediaReady: (readySource, ready) => onShareMediaReady(requestId, readySource, ready),
+        });
+      });
+      if (shareScreenMountedRef.current) setPreparingShare(false);
+      if (preparation === 'stale'
+        || (source && latestShareMediaRef.current.source !== source)
+        || latestShareMediaRef.current.dreamIdentity !== shareDreamIdentity) return;
+      if (!shareImageRef.current) throw new Error('Dream share card is not mounted');
+
+      await shareComposite(dream);
+      if (shareScreenMountedRef.current) setShareSheetVisible(false);
+    } catch (error) {
+      if (!shareScreenMountedRef.current) return;
+      console.error('Share failed:', error);
+      Alert.alert(t('common.error_title'), t('journal.detail.share.error_message'));
     } finally {
       pendingShareRef.current = null;
       shareInFlightRef.current = false;
       if (shareScreenMountedRef.current) {
         setShareRequest(null);
+        setPreparingShare(false);
         setIsSharing(false);
       }
     }
-  }, [dream, isAnalysisLocked, openShareModal, shareComposite, shareSource, shareMessage, shareTitle, t, shareMediaPending, shareDreamIdentity, shareImageRef, onShareMediaReady]);
+  }, [dream, isAnalysisLocked, shareComposite, shareSource, shareDate, t, shareMediaPending, shareDreamIdentity, shareImageRef, onShareMediaReady]);
 
   // Opened from a journal card's share icon: share once the dream is here, then drop the request.
   const autoShareDoneRef = useRef(false);
@@ -2167,8 +2202,10 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   );
 
   // The dream's type and theme, under its name as a book sets a subtitle: in italics, a star between them.
+  // A theme still missing is chosen while editing the page.
   const renderMetadataChips = () => {
     const typeShown = Boolean(dream.dreamType && (analysisState.isAnalyzed || dream.dreamType !== 'Symbolic Dream'));
+    if (!typeShown && !dreamThemeLabel) return null;
     return (
       <View className="flex-row flex-wrap items-center gap-x-2.5 gap-y-2">
         {typeShown ? (
@@ -2177,15 +2214,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
         {typeShown && dreamThemeLabel ? <BookStar size={3} opacity={0.7} /> : null}
         {dreamThemeLabel ? (
           <Text key={`dream-theme-${windowSize.fontScale}`} allowFontScaling={false} style={metadataTextStyle} className="max-w-full shrink font-serif-italic text-[14px] text-ivory-muted">{dreamThemeLabel}</Text>
-        ) : (
-          <Pressable onPress={startEditing} disabled={isAnalysisLocked} accessibilityRole="button"
-            className={`min-h-[44px] max-w-full justify-center ${isAnalysisLocked ? 'opacity-70' : ''}`}>
-            <View className="flex-row items-center gap-1.5 rounded-full border border-line px-3 py-1.5">
-              <IconSymbol name="paintpalette" size={14} color={noctalia.accent.text} />
-              <Text className="shrink font-sans-medium text-[13px] text-champagne-on">{t('journal.detail.theme_placeholder')}</Text>
-            </View>
-          </Pressable>
-        )}
+        ) : null}
       </View>
     );
   };
@@ -2257,7 +2286,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
               {t('journal.detail.metadata.loading')}
             </Text>
           ) : null}
-          {!isEditing && needsMetadataRecovery ? (
+          {/* Asked of the page being edited, with its name and details: the page as read stays as it opens. */}
+          {isEditing && needsMetadataRecovery ? (
             <View className="mb-2 gap-1">
               <Pressable onPress={recoverMetadata} disabled={isRecoveringMetadata}
                 accessibilityRole="button" accessibilityState={{ disabled: isRecoveringMetadata, busy: isRecoveringMetadata }}
@@ -3135,8 +3165,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
               <OpenUp appear={!opensOnSavedMoment && readingInFlight}>{sealBlock}</OpenUp>
             ) : null}
             {sealVisible && showCompletedReading && !readingInFlight && !isEditing ? (
-              <JournalSealShare onShare={onShare} disabled={isSharing || isAnalysisLocked || shareMediaPending}
-                busy={isSharing || shareMediaPending} />
+              <JournalSealShare onShare={onShare} disabled={isSharing || isAnalysisLocked} busy={isSharing} />
             ) : null}
             {/* The reading, under its seal and before the story it reads. */}
             <View>{renderStaleBanner()}</View>
@@ -3244,22 +3273,22 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
                 <View accessible={false} className="h-5 w-px bg-line" />
                 <PressableScale
                   onPress={onShare}
-                  disabled={isSharing || isAnalysisLocked || shareMediaPending}
+                  disabled={isSharing || isAnalysisLocked}
                   testID={TID.Button.DreamShare}
                   accessibilityRole="button"
                   accessibilityLabel={t('journalDetail.a11y.shareDream')}
                   hitSlop={{ top: 4, bottom: 4, left: 0, right: 0 }}
                   className={`min-h-[44px] flex-row items-center justify-center gap-2 px-4 ${
-                    isSharing || isAnalysisLocked || shareMediaPending ? 'opacity-70' : ''
+                    isSharing || isAnalysisLocked ? 'opacity-70' : ''
                   }`}
                 >
-                  {isSharing || shareMediaPending ? (
+                  {isSharing ? (
                     <ActivityIndicator size="small" color={noctalia.accent.text} />
                   ) : (
                     <IconSymbol name="square.and.arrow.up" size={18} color={noctalia.accent.text} />
                   )}
                   <Text className="font-serif-italic text-[16px] text-ivory">
-                    {isSharing || shareMediaPending
+                    {isSharing
                       ? t('journal.detail.share.button_loading')
                       : t('journal.detail.share.button_default')}
                   </Text>
@@ -3483,6 +3512,17 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
             router.push('/settings?section=account');
           } : undefined}
         />
+        <DreamShareSheet
+          visible={isShareSheetVisible}
+          onClose={closeShareSheet}
+          onShare={shareCard}
+          dream={dream}
+          date={shareDate}
+          painting={shareSource}
+          paintingPending={shareMediaPending}
+          sharing={isSharing}
+          capturing={isSharing && !isPreparingShare}
+        />
         <Modal
           visible={isShareModalVisible}
           transparent
@@ -3574,6 +3614,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
               ref={shareImageRef}
               dream={shareRequest.dream}
               t={t}
+              options={shareRequest.options}
+              date={shareRequest.date}
               resolvedMedia={{ imageUrl: shareRequest.source }}
               onMediaReady={shareRequest.onMediaReady}
             />

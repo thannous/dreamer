@@ -227,8 +227,11 @@ jest.mock('@/components/inspiration/PageHeader', () => ({ PageHeaderContent: () 
 jest.mock('@/components/ui/icon-symbol', () => ({ IconSymbol: () => null }));
 jest.mock('@/components/guest/UpsellCard', () => ({ UpsellCard: () => <div data-testid="journal-upsell" /> }));
 jest.mock('@/components/journal/DreamCard', () => ({
-  DreamCard: ({ testID, scrollState, dream, onPress }: any) => (
-    <button data-testid={testID} data-scroll-state={scrollState} onClick={() => onPress(dream)}>{dream.title}</button>
+  DreamCard: ({ testID, scrollState, dream, onPress, onShare }: any) => (
+    <>
+      <button data-testid={testID} data-scroll-state={scrollState} onClick={() => onPress(dream)}>{dream.title}</button>
+      <button onClick={() => onShare(dream)}>Share {dream.title}</button>
+    </>
   ),
 }));
 jest.mock('@/components/journal/JournalFirstPage', () => ({ JournalFirstPage: ({ onStartDream, onSettings }: any) => <div data-testid="journal-first-page"><button onClick={onStartDream}>Start first dream</button><button onClick={onSettings}>Settings</button></div> }));
@@ -924,6 +927,16 @@ it('opens the selected card with its stable remote identity when timestamps coll
   } });
 });
 
+
+it.each(['ios', 'android', 'web'])('opens the dream with its share composer from a card share on %s', (platform: string) => {
+  mockPlatform = platform;
+  mockDreams.push({ ...guestDream, remoteId: 2501, clientRequestId: 'last-request', title: 'Selected dream' });
+  render(<JournalScreen />);
+  fireEvent.click(screen.getByText('Share Selected dream'));
+  expect(mockPush).toHaveBeenCalledWith({ pathname: '/journal/[id]', params: {
+    id: String(guestDream.id), remoteId: '2501', clientRequestId: 'last-request', share: '1',
+  } });
+});
 
 it('carries stable identity from a cold remote preview into the detail route', async () => {
   const { AuthContext } = require('@/context/AuthContext');

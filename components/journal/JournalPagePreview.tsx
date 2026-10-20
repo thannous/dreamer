@@ -95,7 +95,7 @@ export function JournalPagePreview({ dream, folio, height }: { dream: DreamAnaly
             </Text>
           </View>
         )}
-        {sealMark ? null : <View className="flex-row flex-wrap items-center gap-x-2.5 gap-y-2">
+        {sealMark || (!typeShown && !themeLabel) ? null : <View className="flex-row flex-wrap items-center gap-x-2.5 gap-y-2">
           {typeShown ? (
             <Text allowFontScaling={false} style={metadataTextStyle}
               className="max-w-full shrink font-serif-italic text-[14px] text-ivory-muted">{typeLabel}</Text>
@@ -104,14 +104,7 @@ export function JournalPagePreview({ dream, folio, height }: { dream: DreamAnaly
           {themeLabel ? (
             <Text allowFontScaling={false} style={metadataTextStyle}
               className="max-w-full shrink font-serif-italic text-[14px] text-ivory-muted">{themeLabel}</Text>
-          ) : (
-            <View className="min-h-[44px] max-w-full justify-center">
-              <View className="flex-row items-center gap-1.5 rounded-full border border-line px-3 py-1.5">
-                <IconSymbol name="paintpalette" size={14} color={noctalia.accent.text} />
-                <Text className="shrink font-sans-medium text-[13px] text-champagne-on">{t('journal.detail.theme_placeholder')}</Text>
-              </View>
-            </View>
-          )}
+          ) : null}
         </View>}
       </View>
     </View>
