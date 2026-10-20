@@ -8505,5 +8505,1073 @@
         }
       ]
     }
+  },
+  "abandonment": {
+    "slug": "abandon",
+    "caveat": null,
+    "scenes": [
+      {
+        "id": "a-partner-leaving-you",
+        "variation": "Un conjoint qui vous quitte"
+      },
+      {
+        "id": "being-left-behind-by-a-group",
+        "variation": "Être laissé derrière par un groupe"
+      },
+      {
+        "id": "a-parent-who-does-not-come-back",
+        "variation": "Un parent qui ne revient pas"
+      }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.52,
+                0.77
+              ],
+              "zoom": 0.58
+            },
+            "motion": "flow",
+            "move": [
+              0.018,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.2,
+              0.39
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.8
+              ],
+              "zoom": 1.08
+            },
+            "motion": "drift",
+            "move": [
+              0.016,
+              -0.006
+            ],
+            "dur": 26,
+            "op": [
+              0.1,
+              0.24
+            ],
+            "blend": "screen"
+          }
+        ],
+        "portrait": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.52,
+                0.55
+              ],
+              "zoom": 0.6
+            },
+            "motion": "flow",
+            "move": [
+              0.018,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.2,
+              0.39
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.61
+              ],
+              "zoom": 1.08
+            },
+            "motion": "drift",
+            "move": [
+              0.016,
+              -0.006
+            ],
+            "dur": 26,
+            "op": [
+              0.1,
+              0.24
+            ],
+            "blend": "screen"
+          }
+        ]
+      },
+      "plate": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.52,
+              0.77
+            ],
+            "zoom": 0.58
+          },
+          "motion": "flow",
+          "move": [
+            0.018,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.2,
+            0.39
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.8
+            ],
+            "zoom": 1.08
+          },
+          "motion": "drift",
+          "move": [
+            0.016,
+            -0.006
+          ],
+          "dur": 26,
+          "op": [
+            0.1,
+            0.24
+          ],
+          "blend": "screen"
+        }
+      ],
+      "thumb": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.52,
+              0.77
+            ],
+            "zoom": 0.58
+          },
+          "motion": "flow",
+          "move": [
+            0.018,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.2,
+            0.39
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.8
+            ],
+            "zoom": 1.08
+          },
+          "motion": "drift",
+          "move": [
+            0.016,
+            -0.006
+          ],
+          "dur": 26,
+          "op": [
+            0.1,
+            0.24
+          ],
+          "blend": "screen"
+        }
+      ],
+      "scenes": {
+        "a-partner-leaving-you": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.79
+              ],
+              "zoom": 0.58
+            },
+            "motion": "flow",
+            "move": [
+              0.018,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.2,
+              0.39
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.54,
+                0.82
+              ],
+              "zoom": 1.08
+            },
+            "motion": "drift",
+            "move": [
+              0.016,
+              -0.006
+            ],
+            "dur": 26,
+            "op": [
+              0.1,
+              0.24
+            ],
+            "blend": "screen"
+          }
+        ],
+        "being-left-behind-by-a-group": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.55,
+                0.79
+              ],
+              "zoom": 0.58
+            },
+            "motion": "flow",
+            "move": [
+              0.018,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.2,
+              0.39
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.54,
+                0.82
+              ],
+              "zoom": 1.08
+            },
+            "motion": "drift",
+            "move": [
+              0.016,
+              -0.006
+            ],
+            "dur": 26,
+            "op": [
+              0.1,
+              0.24
+            ],
+            "blend": "screen"
+          }
+        ],
+        "a-parent-who-does-not-come-back": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.46,
+                0.78
+              ],
+              "zoom": 0.58
+            },
+            "motion": "flow",
+            "move": [
+              0.018,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.2,
+              0.39
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.54,
+                0.82
+              ],
+              "zoom": 1.08
+            },
+            "motion": "drift",
+            "move": [
+              0.016,
+              -0.006
+            ],
+            "dur": 26,
+            "op": [
+              0.1,
+              0.24
+            ],
+            "blend": "screen"
+          }
+        ]
+      }
+    }
+  },
+  "accident": {
+    "slug": "accident",
+    "caveat": null,
+    "scenes": [
+      {
+        "id": "car-accident-while-driving",
+        "variation": "Avoir un accident en conduisant"
+      },
+      {
+        "id": "witnessing-an-accident",
+        "variation": "Être témoin d'un accident"
+      },
+      {
+        "id": "a-plane-crash",
+        "variation": "Un accident d'avion"
+      }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.5
+              ],
+              "zoom": 1.03
+            },
+            "motion": "flow",
+            "move": [
+              0.012,
+              0.02
+            ],
+            "dur": 18,
+            "op": [
+              0.13,
+              0.28
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.8
+              ],
+              "zoom": 1.05
+            },
+            "motion": "drift",
+            "move": [
+              0.016,
+              -0.006
+            ],
+            "dur": 26,
+            "op": [
+              0.08,
+              0.2
+            ],
+            "blend": "screen"
+          }
+        ],
+        "portrait": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.42
+              ],
+              "zoom": 1.03
+            },
+            "motion": "flow",
+            "move": [
+              0.012,
+              0.02
+            ],
+            "dur": 18,
+            "op": [
+              0.13,
+              0.28
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.61
+              ],
+              "zoom": 1.05
+            },
+            "motion": "drift",
+            "move": [
+              0.016,
+              -0.006
+            ],
+            "dur": 26,
+            "op": [
+              0.08,
+              0.2
+            ],
+            "blend": "screen"
+          }
+        ]
+      },
+      "plate": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.5
+            ],
+            "zoom": 1.03
+          },
+          "motion": "flow",
+          "move": [
+            0.012,
+            0.02
+          ],
+          "dur": 18,
+          "op": [
+            0.13,
+            0.28
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.8
+            ],
+            "zoom": 1.05
+          },
+          "motion": "drift",
+          "move": [
+            0.016,
+            -0.006
+          ],
+          "dur": 26,
+          "op": [
+            0.08,
+            0.2
+          ],
+          "blend": "screen"
+        }
+      ],
+      "thumb": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.5
+            ],
+            "zoom": 1.03
+          },
+          "motion": "flow",
+          "move": [
+            0.012,
+            0.02
+          ],
+          "dur": 18,
+          "op": [
+            0.13,
+            0.28
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.8
+            ],
+            "zoom": 1.05
+          },
+          "motion": "drift",
+          "move": [
+            0.016,
+            -0.006
+          ],
+          "dur": 26,
+          "op": [
+            0.08,
+            0.2
+          ],
+          "blend": "screen"
+        }
+      ]
+    }
+  },
+  "angel": {
+    "slug": "ange",
+    "caveat": null,
+    "scenes": [
+      {
+        "id": "an-angel-speaking-to-you",
+        "variation": "Un ange qui vous parle"
+      },
+      {
+        "id": "a-guardian-angel-protecting-you",
+        "variation": "Un ange gardien qui vous protège"
+      },
+      {
+        "id": "becoming-an-angel",
+        "variation": "Devenir un ange"
+      }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.5
+              ],
+              "zoom": 0.28
+            },
+            "motion": "flow",
+            "move": [
+              0.018,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.2,
+              0.38
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.51,
+                0.4
+              ],
+              "zoom": 0.7
+            },
+            "motion": "pulse",
+            "dur": 13,
+            "op": [
+              0.1,
+              0.24
+            ],
+            "blend": "screen"
+          }
+        ],
+        "portrait": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.42
+              ],
+              "zoom": 0.32
+            },
+            "motion": "flow",
+            "move": [
+              0.018,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.2,
+              0.38
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.51,
+                0.32
+              ],
+              "zoom": 0.72
+            },
+            "motion": "pulse",
+            "dur": 13,
+            "op": [
+              0.1,
+              0.24
+            ],
+            "blend": "screen"
+          }
+        ]
+      },
+      "plate": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.5
+            ],
+            "zoom": 0.28
+          },
+          "motion": "flow",
+          "move": [
+            0.018,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.2,
+            0.38
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.51,
+              0.4
+            ],
+            "zoom": 0.7
+          },
+          "motion": "pulse",
+          "dur": 13,
+          "op": [
+            0.1,
+            0.24
+          ],
+          "blend": "screen"
+        }
+      ],
+      "thumb": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.5
+            ],
+            "zoom": 0.28
+          },
+          "motion": "flow",
+          "move": [
+            0.018,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.2,
+            0.38
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.51,
+              0.4
+            ],
+            "zoom": 0.7
+          },
+          "motion": "pulse",
+          "dur": 13,
+          "op": [
+            0.1,
+            0.24
+          ],
+          "blend": "screen"
+        }
+      ],
+      "scenes": {
+        "an-angel-speaking-to-you": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.4,
+                0.52
+              ],
+              "zoom": 0.28
+            },
+            "motion": "flow",
+            "move": [
+              0.018,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.2,
+              0.38
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.35,
+                0.36
+              ],
+              "zoom": 0.7
+            },
+            "motion": "pulse",
+            "dur": 13,
+            "op": [
+              0.1,
+              0.24
+            ],
+            "blend": "screen"
+          }
+        ],
+        "a-guardian-angel-protecting-you": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.46,
+                0.52
+              ],
+              "zoom": 0.28
+            },
+            "motion": "flow",
+            "move": [
+              0.018,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.2,
+              0.38
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.45,
+                0.37
+              ],
+              "zoom": 0.7
+            },
+            "motion": "pulse",
+            "dur": 13,
+            "op": [
+              0.1,
+              0.24
+            ],
+            "blend": "screen"
+          }
+        ],
+        "becoming-an-angel": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.46,
+                0.52
+              ],
+              "zoom": 0.28
+            },
+            "motion": "flow",
+            "move": [
+              0.018,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.2,
+              0.38
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.45,
+                0.37
+              ],
+              "zoom": 0.7
+            },
+            "motion": "pulse",
+            "dur": 13,
+            "op": [
+              0.1,
+              0.24
+            ],
+            "blend": "screen"
+          }
+        ]
+      }
+    }
+  },
+  "arguing": {
+    "slug": "dispute",
+    "caveat": null,
+    "scenes": [
+      {
+        "id": "arguing-with-your-partner",
+        "variation": "Se disputer avec son partenaire"
+      },
+      {
+        "id": "arguing-with-a-parent-or-with-your-chil",
+        "variation": "Se disputer avec un parent ou avec son enfant"
+      },
+      {
+        "id": "arguing-with-a-friend",
+        "variation": "Se disputer avec une amie ou un ami"
+      }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.5
+              ],
+              "zoom": 0.72
+            },
+            "motion": "flow",
+            "move": [
+              0.018,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.12,
+              0.27
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.44
+              ],
+              "zoom": 0.85
+            },
+            "motion": "pulse",
+            "dur": 13,
+            "op": [
+              0.1,
+              0.23
+            ],
+            "blend": "screen"
+          }
+        ],
+        "portrait": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.43
+              ],
+              "zoom": 0.72
+            },
+            "motion": "flow",
+            "move": [
+              0.018,
+              0.012
+            ],
+            "dur": 23,
+            "op": [
+              0.12,
+              0.27
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.38
+              ],
+              "zoom": 0.85
+            },
+            "motion": "pulse",
+            "dur": 13,
+            "op": [
+              0.1,
+              0.23
+            ],
+            "blend": "screen"
+          }
+        ]
+      },
+      "plate": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.5
+            ],
+            "zoom": 0.72
+          },
+          "motion": "flow",
+          "move": [
+            0.018,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.12,
+            0.27
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.44
+            ],
+            "zoom": 0.85
+          },
+          "motion": "pulse",
+          "dur": 13,
+          "op": [
+            0.1,
+            0.23
+          ],
+          "blend": "screen"
+        }
+      ],
+      "thumb": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.5
+            ],
+            "zoom": 0.72
+          },
+          "motion": "flow",
+          "move": [
+            0.018,
+            0.012
+          ],
+          "dur": 23,
+          "op": [
+            0.12,
+            0.27
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.44
+            ],
+            "zoom": 0.85
+          },
+          "motion": "pulse",
+          "dur": 13,
+          "op": [
+            0.1,
+            0.23
+          ],
+          "blend": "screen"
+        }
+      ]
+    }
   }
 }

@@ -11654,7 +11654,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>A mãe pode parecer estranhamente específica em um sonho, e é justamente por isso que vale levá-la a sério sem levá-la ao pé da letra. Ela costuma reunir vários fios ao mesmo tempo: os relacionamentos, os papéis, a memória, os limites e a forma como você se vê perto das outras pessoas.</p>\n<p>Repare se o sonho deixou o símbolo familiar ou estranho. Detalhes familiares podem apontar para uma memória vivida; detalhes estranhos podem mostrar que um padrão antigo está sendo visto de um novo ângulo.</p>\n<p>A pista mais forte costuma ser emocional. Alívio, vergonha, medo, curiosidade, irritação ou saudade vão estreitar o significado mais rápido do que qualquer interpretação universal.</p>\n<p>Se você registrar o sonho na Noctalia, guarde uma frase para o que aconteceu e uma frase para aquilo de que isso lembrou você. Esse pequeno contraste costuma revelar o tema de verdade.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Sua mãe como ela é hoje",
+            "meaning": "Vê-la como ela é agora costuma lembrar a relação atual: uma ligação recente, uma preocupação, uma visita que se aproxima. O que ela estava fazendo? Isso correspondia ao jeito dela na vida real?"
+          },
+          {
+            "context": "Sua mãe mais jovem ou na casa da sua infância",
+            "meaning": "Uma mãe mais jovem ou a casa onde você cresceu costuma trazer de volta uma fase anterior e quem você era naquela época. Quantos anos você tinha no sonho? O que acontecia na família naquele período?"
+          },
+          {
+            "context": "Discutir com sua mãe",
+            "meaning": "Uma discussão no sonho pode lembrar uma tensão real ou uma discordância que você guarda para si. Isso não significa que a relação esteja em perigo. O que você finalmente disse? Como ela respondeu?"
+          }
+        ]
       }
     },
     "father": {
@@ -11805,7 +11818,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>O pai não precisa ser decifrado como uma mensagem secreta. Em um sonho, ele costuma funcionar mais como um marcador: algo na cena pede que você repare nos relacionamentos, nos papéis, na memória, nos limites e no jeito como você se enxerga perto das outras pessoas.</p>\n<p>Comece pelos fatos simples. A imagem estava perto ou longe, era bem-vinda ou perturbadora, comum ou estranhamente intensa? Esses detalhes mantêm a interpretação ancorada no seu sonho, em vez de impor a ele um significado genérico.</p>\n<p>Se o símbolo pareceu acolhedor, ele pode mostrar um recurso, um desejo ou uma memória em que você pode se apoiar. Se pareceu tenso, pode apontar para uma pressão que você vem administrando silenciosamente demais.</p>\n<p>O Noctalia trata esse tipo de símbolo como um convite à reflexão. Anote a cena, a emoção e o que mudou depois que o símbolo apareceu; é normalmente aí que começa o significado útil.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Seu pai como ele é hoje",
+            "meaning": "Vê-lo como ele é agora costuma lembrar a relação atual: uma ligação recente, uma preocupação, uma decisão sobre a qual vocês conversaram. O que ele estava fazendo? Era algo típico dele?"
+          },
+          {
+            "context": "Um pai mais jovem ou uma cena da infância",
+            "meaning": "Um pai mais jovem, o carro da família ou a casa onde você cresceu costuma trazer de volta uma fase anterior e quem você era naquela época. Quantos anos você tinha no sonho? O que acontecia na família naquele período?"
+          },
+          {
+            "context": "Um pai zangado ou decepcionado",
+            "meaning": "A raiva, o silêncio ou um olhar de decepção podem encenar o medo de decepcionar alguém ou uma exigência pela qual você ainda se avalia. A aprovação de quem você estava esperando naquela semana?"
+          }
+        ]
       }
     },
     "sibling": {
@@ -11956,7 +11982,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>Quando essa imagem aparece em um sonho, a primeira pergunta não é “o que ela sempre significa?”, e sim “por que a minha mente escolheu essa imagem esta noite?”. A resposta costuma estar perto das relações, dos papéis, da memória, dos limites e da forma como você se enxerga perto das outras pessoas.</p>\n<p>O símbolo pode ser terno, irritante, assustador, engraçado ou completamente banal. Esse tom importa. Uma versão calma pode sugerir integração, enquanto uma versão ameaçadora pode mostrar conflito ou fuga.</p>\n<p>Observe o papel que ele desempenhou. Ele bloqueou você, guiou você, observou você, seguiu você ou desapareceu? Nos sonhos, a função costuma revelar mais do que o próprio objeto.</p>\n<p>Use a imagem como uma porta de entrada para a história, não como um veredito. Algumas anotações honestas sobre o cenário e sobre a reação do seu corpo costumam dizer mais do que uma lista fixa de símbolos.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Brincar ou rir com seu irmão ou sua irmã",
+            "meaning": "Uma cena leve e descontraída pode estar ligada a um vínculo que você valoriza ou à saudade de uma proximidade desgastada pela distância. Quando vocês compartilharam algo simples pela última vez?"
+          },
+          {
+            "context": "Brigar com seu irmão ou sua irmã",
+            "meaning": "Uma briga pode lembrar uma tensão real, uma rivalidade antiga ou uma comparação que você ainda sente. Isso não significa que o vínculo esteja rompido. Qual era o motivo da briga? Quem teve a última palavra?"
+          },
+          {
+            "context": "Seu irmão ou sua irmã na infância",
+            "meaning": "Ver essa pessoa pequena ou ver você mais jovem costuma trazer de volta a família daquela época e o seu lugar nela. Qual era o seu papel? Ele voltou a aparecer recentemente?"
+          }
+        ]
       }
     },
     "partner": {
@@ -12107,7 +12146,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>O parceiro pode parecer estranhamente específico em um sonho, e é justamente por isso que vale levá-lo a sério sem levá-lo ao pé da letra. Muitas vezes ele reúne vários fios ao mesmo tempo: as relações, os papéis, a memória, os limites e o modo como você se enxerga junto de outras pessoas.</p>\n<p>Repare se o sonho deixou o símbolo familiar ou estranho. Detalhes familiares podem apontar para uma memória vivida; detalhes estranhos podem mostrar que um padrão antigo está sendo visto de um novo ângulo.</p>\n<p>A pista mais forte costuma ser emocional. Alívio, vergonha, medo, curiosidade, irritação ou saudade estreitam o significado mais rápido do que qualquer interpretação universal.</p>\n<p>Se você registrar o sonho no Noctalia, guarde uma frase para o que aconteceu e uma frase para aquilo que isso lembrou você. Esse pequeno contraste costuma revelar o tema real.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Um momento comum com seu parceiro ou sua parceira",
+            "meaning": "Uma refeição, uma caminhada, a mesma cama: cenas cotidianas costumam reproduzir a relação como ela é. O clima era tranquilo, distante ou carinhoso? Esse tom é a principal pista."
+          },
+          {
+            "context": "Seu parceiro ou sua parceira traindo você",
+            "meaning": "É uma cena comum e perturbadora, mas não é uma prova. Ela pode estar ligada à insegurança, à sensação de exclusão ou a uma atenção menor ultimamente. O que fez você sentir que ficou de lado? Você conseguiria conversar sobre isso?"
+          },
+          {
+            "context": "Seu parceiro ou sua parceira deixando você",
+            "meaning": "Uma separação no sonho pode lembrar o medo de perder a relação, uma discussão recente ou uma mudança que altera seu equilíbrio. Ela não prevê nada. Quem foi embora primeiro? O que você fez?"
+          }
+        ]
       }
     },
     "friend": {
@@ -12258,7 +12310,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>O amigo não precisa ser decifrado como uma mensagem secreta. Em um sonho, ele costuma funcionar mais como um marcador: algo na cena pede que você repare em relações, papéis, memória, limites e no modo como você se enxerga perto das outras pessoas.</p>\n<p>Comece pelos fatos simples. A imagem estava perto ou longe, foi bem-vinda ou perturbadora, comum ou estranhamente intensa? Esses detalhes mantêm a interpretação ancorada no seu sonho, em vez de impor a ele um significado genérico.</p>\n<p>Se o símbolo trouxe uma sensação de apoio, ele pode mostrar um recurso, um desejo ou uma memória em que você pode se apoiar. Se trouxe tensão, pode apontar para uma pressão que você vem administrando em silêncio demais.</p>\n<p>A Noctalia trata esse tipo de símbolo como um convite à reflexão. Anote a cena, a emoção e o que mudou depois que o símbolo apareceu; em geral é aí que começa o significado útil.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Passar um tempo com um amigo próximo",
+            "meaning": "Uma cena leve e acolhedora costuma lembrar a amizade real ou a necessidade da tranquilidade que você encontra com essa pessoa. Quando vocês se viram pela última vez fora da rotina habitual?"
+          },
+          {
+            "context": "Um amigo antigo que você não vê mais",
+            "meaning": "Um amigo da escola ou de um emprego anterior costuma trazer de volta uma fase da sua vida e quem você era naquela época. O que havia naquele período de que você sente falta? O que ficou inacabado?"
+          },
+          {
+            "context": "Brigar com um amigo",
+            "meaning": "Uma briga pode lembrar uma tensão real, algo não dito ou o medo de decepcionar essa pessoa. Isso não significa que a amizade acabou. Qual era o motivo da discordância?"
+          }
+        ]
       }
     },
     "stranger": {
@@ -12409,7 +12474,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>Quando essa imagem aparece em um sonho, a primeira pergunta não é “o que ela sempre significa?”, e sim “por que minha mente escolheu essa imagem esta noite?”. A resposta costuma estar perto de relacionamentos, papéis, memória, limites e do modo como você se enxerga na presença das outras pessoas.</p>\n<p>O símbolo pode ser terno, irritante, assustador, engraçado ou completamente banal. Esse tom importa. Uma versão calma pode sugerir integração, enquanto uma versão ameaçadora pode mostrar conflito ou fuga.</p>\n<p>Observe o papel que ele desempenhou. Ele bloqueou você, guiou você, observou você, seguiu você ou desapareceu? Nos sonhos, a função costuma revelar mais do que o próprio objeto.</p>\n<p>Use a imagem como uma porta de entrada para a história, não como um veredito. Algumas anotações sinceras sobre o cenário e sobre a reação do seu corpo costumam dizer mais do que uma lista fixa de símbolos.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Ser seguido por um desconhecido",
+            "meaning": "A pessoa mantinha distância ou se aproximava? Ser seguido por alguém desconhecido pode estar ligado a uma pressão difusa, difícil de nomear. Não é um aviso sobre uma pessoa real. Anote onde você estava e se conseguia se virar."
+          },
+          {
+            "context": "Um desconhecido na sua casa",
+            "meaning": "A pessoa entrou à força ou simplesmente estava ali, como se fizesse parte da casa? Um desconhecido em casa pode tocar na privacidade, nos limites ou em uma mudança no lar. Sentir alarme ou uma calma inesperada é a principal pista."
+          },
+          {
+            "context": "Um desconhecido gentil ou prestativo",
+            "meaning": "A pessoa orientava você, oferecia conforto ou entregava alguma coisa? A cena pode estar ligada ao desejo de apoio ou à abertura para um novo caminho. Anote o que ela ofereceu: isso costuma apontar para o que você procura."
+          }
+        ]
       }
     },
     "teacher": {
@@ -12560,7 +12638,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>O professor pode parecer estranhamente específico em um sonho, e por isso vale a pena levá-lo a sério sem levá-lo ao pé da letra. Ele costuma reunir vários fios de uma vez: relações, papéis, memória, limites e o modo como você se enxerga perto das outras pessoas.</p>\n<p>Repare se o sonho tornou o símbolo familiar ou estranho. Detalhes familiares podem apontar para uma memória vivida; detalhes estranhos podem mostrar que um padrão antigo está sendo visto de um novo ângulo.</p>\n<p>A pista mais forte costuma ser emocional. Alívio, vergonha, medo, curiosidade, irritação ou saudade vão estreitar o significado mais rápido do que qualquer interpretação universal.</p>\n<p>Se você registrar o sonho no Noctalia, guarde uma frase para o que aconteceu e outra para aquilo de que ele lembrou você. Esse pequeno contraste costuma revelar o tema real.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Um antigo professor",
+            "meaning": "Qual professor era? Como ele era naquela época? Um professor da escola pode trazer de volta uma fase da sua vida e suas regras. Pergunte-se o que, na sua situação atual, lembra aquele período."
+          },
+          {
+            "context": "Levar uma bronca de um professor",
+            "meaning": "De que você era acusado? Parecia justo? A cena pode estar ligada ao medo de não corresponder às expectativas ou a uma autocrítica severa. Observe quem, na sua vida, assume hoje o papel de juiz."
+          },
+          {
+            "context": "Receber uma pergunta que você não sabe responder",
+            "meaning": "Levantar-se na sala sem ter o que dizer pode corresponder à sensação de ser pego despreparado, no trabalho ou em outra situação. Isso não prevê um fracasso. O que você tinha medo de mostrar?"
+          }
+        ]
       }
     },
     "police": {
@@ -12715,7 +12806,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>A polícia não precisa ser decifrada como se fosse uma mensagem secreta. Em um sonho, ela costuma funcionar mais como um marcador: algo na cena pede que você repare nas relações, nos papéis, na memória, nos limites e no modo como você se enxerga perto das outras pessoas.</p>\n<p>Comece pelos fatos simples. A imagem estava perto ou longe, era bem-vinda ou perturbadora, comum ou estranhamente intensa? Esses detalhes mantêm a interpretação ancorada no seu sonho, em vez de impor a ele um significado genérico.</p>\n<p>Se o símbolo pareceu acolhedor, ele pode mostrar um recurso, um desejo ou uma memória em que você pode se apoiar. Se pareceu tenso, pode apontar para uma pressão que você vem administrando em silêncio demais.</p>\n<p>O Noctalia trata esse tipo de símbolo como um convite à reflexão. Anote a cena, a emoção e o que mudou depois que o símbolo apareceu; costuma ser aí que o significado útil começa.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Chamar a polícia para pedir ajuda",
+            "meaning": "Que problema você tentava resolver? Alguém apareceu? Alívio, espera ou decepção levantam perguntas diferentes sobre o apoio que você procura neste momento."
+          },
+          {
+            "context": "Ser perseguido pela polícia",
+            "meaning": "Você sabia por que estava correndo? Parou ou encontrou um esconderijo? A cena pode estar ligada a uma pressão que você evita. Ela não prova culpa nem uma ameaça real."
+          },
+          {
+            "context": "Ser parado ou interrogado",
+            "meaning": "Pediram documentos, uma explicação ou apenas que você esperasse? Sentir tranquilidade é bem diferente de sentir que você está sob suspeita. Compare essa sensação com uma situação recente em que precisou se justificar."
+          }
+        ]
       }
     },
     "doctor": {
@@ -12866,7 +12970,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>Quando essa imagem aparece em um sonho, a primeira pergunta não é “o que ela sempre significa?”, e sim “por que a minha mente escolheu esta imagem hoje à noite?”. A resposta costuma estar perto dos relacionamentos, dos papéis, da memória, dos limites e da forma como você se vê diante das outras pessoas.</p>\n<p>O símbolo pode ser terno, irritante, assustador, engraçado ou completamente banal. Esse tom importa. Uma versão calma pode sugerir integração, enquanto uma versão ameaçadora pode mostrar conflito ou fuga.</p>\n<p>Observe o papel que ele desempenhou. Ele bloqueou você, guiou você, observou você, seguiu você ou desapareceu? Nos sonhos, a função costuma revelar mais do que o próprio objeto.</p>\n<p>Use a imagem como uma porta de entrada para a história, não como um veredito. Algumas anotações honestas sobre o cenário e sobre a reação do seu corpo geralmente dizem mais do que uma lista fixa de símbolos.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Ser examinado por um médico",
+            "meaning": "Durante o exame, você sentia tranquilidade, vergonha ou preocupação? A cena pode estar ligada à sensação de ser observado de perto, em relação ao corpo ou a outra área da vida. Anote o que o médico parecia procurar."
+          },
+          {
+            "context": "Receber uma notícia ruim de um médico",
+            "meaning": "O que foi dito exatamente? Você estava sem companhia? Uma notícia ruim no sonho pode estar ligada ao medo de um veredito, sobre a saúde ou outra questão. Não é uma previsão. Se houver uma preocupação real, converse com um médico."
+          },
+          {
+            "context": "Um médico que não escuta",
+            "meaning": "Um médico que desvia o olhar ou interrompe você pode corresponder à sensação atual de não ser levado a sério. Pergunte-se onde, na vida desperta, suas palavras parecem não ser ouvidas."
+          }
+        ]
       }
     },
     "coworker": {
@@ -13017,7 +13134,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>Um colega de trabalho pode parecer estranhamente específico em um sonho, e por isso vale levá-lo a sério sem levá-lo ao pé da letra. Muitas vezes ele reúne vários fios ao mesmo tempo: relações, papéis, memória, limites e a forma como você se enxerga perto das outras pessoas.</p>\n<p>Repare se o sonho deixou o símbolo familiar ou estranho. Detalhes familiares podem apontar para uma memória vivida; detalhes estranhos podem mostrar que um padrão antigo está sendo visto de um novo ângulo.</p>\n<p>A pista mais forte costuma ser emocional. Alívio, vergonha, medo, curiosidade, irritação ou saudade vão estreitar o significado mais rápido do que qualquer interpretação universal.</p>\n<p>Se você registrar o sonho na Noctalia, guarde uma frase para o que aconteceu e uma frase para aquilo de que isso lembrou você. Esse pequeno contraste costuma revelar o tema real.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Trabalhar com um colega",
+            "meaning": "Vocês faziam a mesma tarefa ou apenas dividiam o espaço? Uma colaboração tranquila pode estar ligada a um projeto que avança ou ao desejo de mais apoio. Observe quem conduzia e quem acompanhava."
+          },
+          {
+            "context": "Discutir com um colega de trabalho",
+            "meaning": "Uma discussão pode reproduzir um atrito do dia ou algo que você não disse. Ela não prevê um rompimento. Que palavras você gostaria de ter dito? Para quem?"
+          },
+          {
+            "context": "Um colega levando o crédito pelo seu trabalho",
+            "meaning": "Essa cena costuma estar ligada à sensação de que seu esforço passa despercebido. Pergunte-se onde falta reconhecimento e se a sua contribuição está realmente visível."
+          }
+        ]
       }
     },
     "grandmother": {
@@ -13168,7 +13298,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>A avó não precisa ser decifrada como uma mensagem secreta. Em um sonho, ela costuma funcionar mais como um marcador: algo na cena pede que você repare nos relacionamentos, nos papéis, na memória, nos limites e na forma como você se vê perto das outras pessoas.</p>\n<p>Comece pelos fatos simples. A imagem estava perto ou longe, era bem-vinda ou perturbadora, comum ou estranhamente intensa? Esses detalhes mantêm a interpretação ancorada no seu sonho, em vez de impor a ele um significado genérico.</p>\n<p>Se o símbolo pareceu acolhedor, ele pode mostrar um recurso, um desejo ou uma lembrança em que você pode se apoiar. Se pareceu tenso, pode apontar para uma pressão que você vem administrando em silêncio demais.</p>\n<p>A Noctalia trata esse tipo de símbolo como um convite à reflexão. Anote a cena, a emoção e o que mudou depois que o símbolo apareceu; costuma ser aí que o significado útil começa.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Conversar com sua avó",
+            "meaning": "Ela dava conselhos, contava uma história ou escutava? Uma conversa com ela pode estar ligada à necessidade de orientação ou de uma voz familiar em uma fase exigente. Escreva as palavras dela como você se lembra."
+          },
+          {
+            "context": "Uma avó que já morreu",
+            "meaning": "Ver uma avó falecida é comum após uma perda ou perto de uma data marcante. A cena pode confortar tanto quanto entristecer e não prevê nada. O que você sentiu ao vê-la?"
+          },
+          {
+            "context": "A casa da sua avó",
+            "meaning": "A casa dela costuma guardar lembranças da infância, férias e rituais familiares. Voltar ali pode estar ligado à necessidade de acolhimento ou a um olhar para suas origens. Em que cômodo você estava? Ele era como na sua lembrança?"
+          }
+        ]
       }
     },
     "birth": {
@@ -13319,7 +13462,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>Quando essa imagem aparece em um sonho, a primeira pergunta não é “o que ela sempre significa?”, e sim “por que a minha mente escolheu essa imagem esta noite?”. A resposta costuma estar perto da pressão, da reação, da fuga, do alívio e do jeito como você lida com um momento que exige movimento.</p>\n<p>O símbolo pode ser terno, irritante, assustador, engraçado ou completamente banal. Esse tom importa. Uma versão calma pode sugerir integração, enquanto uma versão ameaçadora pode mostrar conflito ou fuga.</p>\n<p>Observe o papel que ele desempenhou. Ele bloqueou você, guiou você, observou você, seguiu você ou desapareceu? Nos sonhos, a função costuma revelar mais do que o próprio objeto.</p>\n<p>Use a imagem como uma porta de entrada para a história, não como um veredito. Algumas anotações sinceras sobre o cenário e sobre a reação do seu corpo costumam dizer mais do que uma lista fixa de símbolos.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Dar à luz",
+            "meaning": "Foi fácil, demorado, doloroso ou rápido? Dar à luz no sonho costuma estar ligado a um começo que exige esforço: um projeto, um papel, uma mudança. Isso não prevê uma gravidez. O que você estava trazendo ao mundo?"
+          },
+          {
+            "context": "Assistir ao parto de outra pessoa",
+            "meaning": "Era sua parceira, uma amiga ou uma desconhecida? A cena pode lembrar uma mudança na vida dela ou algo que você vê crescer de fora. Você ajudava, esperava ou era mantido à distância?"
+          },
+          {
+            "context": "Um parto difícil ou doloroso",
+            "meaning": "Um parto que se prolonga ou dá errado pode corresponder a uma mudança difícil de concluir ou ao medo de não dar conta. Ele não diz nada sobre um parto real. Que esforço na sua vida parece tão exigente neste momento?"
+          }
+        ]
       }
     },
     "funeral": {
@@ -13470,7 +13626,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>O funeral pode parecer estranhamente específico em um sonho, e é justamente por isso que vale levá-lo a sério sem levá-lo ao pé da letra. Ele costuma reunir vários fios ao mesmo tempo: pressão, reação, fuga, alívio e o jeito como você lida com um momento que exige movimento.</p>\n<p>Repare se o sonho deixou o símbolo familiar ou estranho. Detalhes familiares podem apontar para uma memória vivida; detalhes estranhos podem mostrar que um padrão antigo está sendo visto de um novo ângulo.</p>\n<p>A pista mais forte costuma ser emocional. Alívio, vergonha, medo, curiosidade, irritação ou saudade estreitam o significado mais rápido do que qualquer interpretação universal.</p>\n<p>Se você registrar o sonho no Noctalia, guarde uma frase para o que aconteceu e uma frase para aquilo que ele te lembrou. Esse pequeno contraste costuma revelar o tema de verdade.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Seu próprio funeral",
+            "meaning": "Você estava no caixão ou observava de lado? Ver o próprio funeral pode estar ligado ao fim de um papel ou modo de viver, ou ao desejo de saber o que você significa para os outros. Isso não prevê nada. Quem apareceu? O que disseram?"
+          },
+          {
+            "context": "O funeral de alguém que está vivo",
+            "meaning": "Enterrar uma pessoa viva no sonho é perturbador, mas não é um aviso. A cena pode lembrar uma mudança na relação, um distanciamento ou uma preocupação com ela. O que está mudando entre vocês agora?"
+          },
+          {
+            "context": "O funeral de alguém que já morreu",
+            "meaning": "Voltar a um funeral real ou assistir a um que nunca aconteceu costuma estar ligado ao luto e a uma despedida que você ainda está elaborando. Anote o que disse ou gostaria de ter dito."
+          }
+        ]
       }
     },
     "grandfather": {
@@ -13621,7 +13790,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>O avô não precisa ser decifrado como uma mensagem secreta. Em um sonho, ele costuma funcionar mais como um marcador: algo na cena pede que você repare em relações, papéis, memória, limites e na maneira como você se enxerga diante das outras pessoas.</p>\n<p>Comece pelos fatos simples. A imagem estava perto ou longe, era bem-vinda ou perturbadora, comum ou estranhamente intensa? Esses detalhes mantêm a interpretação ancorada no seu sonho, em vez de impor a ele um significado genérico.</p>\n<p>Se o símbolo pareceu acolhedor, ele pode mostrar um recurso, um desejo ou uma memória em que você pode se apoiar. Se pareceu tenso, pode apontar para uma pressão que você vem administrando em silêncio demais.</p>\n<p>Noctalia trata esse tipo de símbolo como um convite à reflexão. Anote a cena, a emoção e o que mudou depois que o símbolo apareceu; costuma ser aí que começa o significado útil.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Conversar com seu avô",
+            "meaning": "Ele dava conselhos, contava uma história ou escutava? Uma conversa com ele pode estar ligada à necessidade de orientação ou de uma voz firme em uma fase exigente. Escreva as palavras dele como você se lembra."
+          },
+          {
+            "context": "Um avô falecido",
+            "meaning": "Ver um avô que morreu é comum após uma perda ou perto de uma data marcante. A cena pode confortar tanto quanto entristecer e não prevê nada. O que você sentiu ao vê-lo?"
+          },
+          {
+            "context": "Um avô doente ou envelhecido",
+            "meaning": "Vê-lo enfraquecido pode lembrar uma preocupação real com a saúde dele ou a passagem do tempo na família. Não é uma previsão. O envelhecimento de alguém próximo tem ocupado seus pensamentos?"
+          }
+        ]
       }
     },
     "classroom": {
@@ -13772,7 +13954,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>Quando essa imagem aparece em um sonho, a primeira pergunta não é “o que ela sempre significa?”, e sim “por que a minha mente escolheu essa imagem esta noite?”. A resposta costuma estar perto do cenário de uma situação de vida: onde você se sente seguro, exposto, travado ou pronto para se mover.</p>\n<p>O símbolo pode ser terno, irritante, assustador, engraçado ou completamente comum. Esse tom importa. Uma versão calma pode sugerir integração, enquanto uma versão ameaçadora pode mostrar conflito ou fuga.</p>\n<p>Observe o papel que ele desempenhou. Ele bloqueou você, guiou você, observou você, seguiu você ou desapareceu? Nos sonhos, a função costuma revelar mais do que o próprio objeto.</p>\n<p>Use a imagem como uma porta de entrada para a história, não como um veredito. Algumas anotações honestas sobre o cenário e sobre a reação do seu corpo costumam dizer mais do que uma lista fixa de símbolos.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Ser chamado ao quadro",
+            "meaning": "Ficar diante do quadro, com o giz na mão, enquanto a turma observa costuma estar ligado ao medo de ser julgado em público ou de não ter a resposta. O que você deveria escrever? Conseguiu?"
+          },
+          {
+            "context": "Ser o professor",
+            "meaning": "Ficar diante da turma pode estar ligado a uma nova responsabilidade, a um papel em que as pessoas contam com você ou ao desejo de transmitir algo. A turma escutava ou você perdeu o controle da sala?"
+          },
+          {
+            "context": "Sua antiga sala de aula",
+            "meaning": "Sua antiga carteira, os mesmos cartazes, às vezes os mesmos colegas. O sonho pode trazer de volta os sentimentos daquela idade, muitas vezes em uma fase de mudança. Que parte daquela época parece presente hoje?"
+          }
+        ]
       }
     },
     "bathroom": {
@@ -13923,7 +14118,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>O banheiro pode parecer estranhamente específico em um sonho, e é justamente por isso que vale levá-lo a sério sem levá-lo ao pé da letra. Ele costuma reunir vários fios ao mesmo tempo: o cenário de uma situação de vida: onde você se sente seguro, exposto, travado ou pronto para se mover.</p>\n<p>Repare se o sonho deixou o símbolo familiar ou estranho. Detalhes familiares podem apontar para uma memória vivida; detalhes estranhos podem mostrar que um padrão antigo está sendo visto de um ângulo novo.</p>\n<p>A pista mais forte costuma ser emocional. Alívio, vergonha, medo, curiosidade, irritação ou saudade estreitam o significado mais rápido do que qualquer interpretação universal.</p>\n<p>Se você registrar o sonho no Noctalia, guarde uma frase para o que aconteceu e uma frase para o que aquilo te lembrou. Esse pequeno contraste costuma revelar o tema real.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Não conseguir encontrar um banheiro",
+            "meaning": "Corredores, portas trancadas, vasos fora de uso: a busca pode estar ligada a uma necessidade que você continua adiando. Ela também pode vir de uma bexiga cheia. Você acordou precisando ir ao banheiro?"
+          },
+          {
+            "context": "Um vaso sanitário sem porta ou paredes",
+            "meaning": "Ficar à vista de todos em um momento tão privado costuma estar ligado à sensação de exposição ou vigilância. Em que área da sua vida parece impossível fechar a porta de verdade?"
+          },
+          {
+            "context": "Alguém entra no banheiro",
+            "meaning": "Quem entrou? A pessoa pediu desculpas ou ficou? A cena pode lembrar um limite que alguém ultrapassa, em casa ou no trabalho. Como você reagiu: com raiva, vergonha ou sem sentir nada?"
+          }
+        ]
       }
     },
     "bedroom": {
@@ -14074,7 +14282,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>O quarto não precisa ser decifrado como uma mensagem secreta. Em um sonho, ele costuma funcionar mais como um marcador: algo na cena pede que você repare no cenário de uma situação da vida — onde você se sente seguro, exposto, travado ou pronto para se mexer.</p>\n<p>Comece pelos fatos simples. A imagem estava perto ou longe, era bem-vinda ou perturbadora, comum ou estranhamente intensa? Esses detalhes mantêm a interpretação ancorada no seu sonho, em vez de impor a ele um significado genérico.</p>\n<p>Se o símbolo pareceu acolhedor, ele pode mostrar um recurso, um desejo ou uma memória em que você pode se apoiar. Se pareceu tenso, ele pode apontar para uma pressão que você vem administrando em silêncio demais.</p>\n<p>O Noctalia trata esse tipo de símbolo como um convite à reflexão. Anote a cena, a emoção e o que mudou depois que o símbolo apareceu; é aí que costuma começar o significado mais útil.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Seu quarto de infância",
+            "meaning": "O antigo papel de parede, uma cama pequena demais, brinquedos esquecidos. A cena pode trazer de volta os sentimentos daquela idade, muitas vezes em uma fase de mudança ou cansaço. Do que você precisava naquela época e talvez precise agora?"
+          },
+          {
+            "context": "Um quarto desconhecido",
+            "meaning": "Um quarto de hotel, o quarto de outra pessoa, uma casa que você nunca viu. Isso pode estar ligado a uma mudança de casa, uma nova relação ou uma fase da vida à qual você ainda não se acostumou. O quarto parecia acolhedor ou você queria sair?"
+          },
+          {
+            "context": "Alguém entra no seu quarto",
+            "meaning": "Quem abriu a porta? Essa pessoa era bem-vinda? A cena pode lembrar um limite respeitado ou ultrapassado, em casa ou em outro lugar. Você conseguia fechar a porta de novo?"
+          }
+        ]
       }
     },
     "kitchen": {
@@ -14225,7 +14446,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>Quando essa imagem aparece em um sonho, a primeira pergunta não é “o que ela sempre significa?”, e sim “por que a minha mente escolheu essa imagem esta noite?”. A resposta costuma estar perto do cenário de uma situação de vida: onde você se sente seguro, exposto, travado ou pronto para se mover.</p>\n<p>O símbolo pode ser terno, irritante, assustador, engraçado ou completamente banal. Esse tom importa. Uma versão calma pode sugerir integração, enquanto uma versão ameaçadora pode mostrar conflito ou fuga.</p>\n<p>Observe o papel que ele desempenhou. Ele bloqueou você, guiou você, observou você, seguiu você ou desapareceu? Nos sonhos, a função costuma revelar mais do que o próprio objeto.</p>\n<p>Use a imagem como uma porta de entrada para a história, não como um veredito. Algumas anotações sinceras sobre o cenário e sobre a reação do seu corpo costumam dizer mais do que qualquer lista fixa de símbolos.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Preparar uma refeição",
+            "meaning": "Você cozinhava com prazer, com pressa ou para alguém em particular? A cena pode estar ligada à preparação, à criatividade ou ao desejo de cuidar dos outros. Observe para quem era a refeição."
+          },
+          {
+            "context": "Uma cozinha bagunçada ou suja",
+            "meaning": "Louça na pia, bancadas pegajosas, ninguém limpando? Isso pode lembrar pequenas tarefas acumuladas ou um cuidado que só vai em uma direção. Não é um sinal de fracasso, apenas um convite a olhar sua carga cotidiana."
+          },
+          {
+            "context": "A cozinha da sua infância",
+            "meaning": "Uma cozinha do passado pode trazer de volta papéis e hábitos familiares. Ela costuma aparecer quando algo atual lembra esses padrões: uma mudança de casa, um pai ou uma mãe que precisa de ajuda. Quem estava ali? Quem faltava?"
+          }
+        ]
       }
     },
     "workplace": {
@@ -14376,7 +14610,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>O local de trabalho pode parecer estranhamente específico em um sonho, e é justamente por isso que vale levá-lo a sério sem levá-lo ao pé da letra. Ele costuma reunir vários fios de uma vez: o cenário de uma situação de vida — onde você se sente seguro, exposto, travado ou pronto para seguir em frente.</p>\n<p>Repare se o sonho tornou o símbolo familiar ou estranho. Detalhes familiares podem apontar para uma memória vivida; detalhes estranhos podem mostrar que um padrão antigo está sendo visto de um novo ângulo.</p>\n<p>A pista mais forte costuma ser emocional. Alívio, vergonha, medo, curiosidade, irritação ou saudade estreitam o significado bem mais rápido do que qualquer interpretação universal.</p>\n<p>Se você registrar o sonho no Noctalia, guarde uma frase para o que aconteceu e uma frase para o que aquilo lembrou você. Esse pequeno contraste muitas vezes revela o tema real.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Seu local de trabalho real",
+            "meaning": "Tudo estava no lugar ou algum detalhe parecia diferente? Um ambiente conhecido costuma trazer tarefas e relações atuais. O detalhe que mudou é o que vale anotar."
+          },
+          {
+            "context": "Um emprego antigo",
+            "meaning": "Voltar a um emprego anterior pode reavivar um papel, uma equipe ou uma forma de trabalhar que você deixou para trás. Isso costuma aparecer quando algo atual lembra aquela época. O que continuava igual? O que havia mudado?"
+          },
+          {
+            "context": "Chegar atrasado ou despreparado ao trabalho",
+            "meaning": "Perder uma reunião, esquecer uma apresentação, chegar tarde: a cena pode corresponder ao medo de não dar conta ou a uma agenda cheia demais. Ela não prevê um erro real. Quem você tinha medo de decepcionar?"
+          }
+        ]
       }
     },
     "road": {
@@ -14527,7 +14774,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>A estrada não precisa ser decifrada como uma mensagem secreta. Em um sonho, ela costuma funcionar mais como um marcador: algo na cena pede que você repare no cenário de uma situação de vida: onde você se sente seguro, exposto, travado ou pronto para se mover.</p>\n<p>Comece pelos fatos simples. A imagem estava perto ou longe, era acolhedora ou perturbadora, comum ou estranhamente intensa? Esses detalhes mantêm a interpretação ancorada no seu sonho, em vez de impor a ele um significado genérico.</p>\n<p>Se o símbolo pareceu acolhedor, ele pode mostrar um recurso, um desejo ou uma lembrança em que você pode se apoiar. Se pareceu tenso, pode apontar para uma pressão que você vem administrando em silêncio demais.</p>\n<p>O Noctalia trata esse tipo de símbolo como um convite à reflexão. Anote a cena, a emoção e o que mudou depois que o símbolo apareceu; em geral é aí que começa o significado útil.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Uma estrada longa ou sem fim",
+            "meaning": "A extensão parecia tranquila ou desanimadora? Uma estrada sem fim à vista pode estar ligada à paciência, a um esforço prolongado ou a uma meta que continua se afastando. Observe aonde você esperava chegar."
+          },
+          {
+            "context": "Uma bifurcação na estrada",
+            "meaning": "Parar onde a estrada se divide costuma estar ligado a uma escolha que você está avaliando. Para que lado você se inclinava? Como era cada caminho? Observe se alguém esperava sua decisão."
+          },
+          {
+            "context": "Uma estrada bloqueada ou danificada",
+            "meaning": "Obras, um deslizamento, uma árvore caída? A cena pode encenar um obstáculo ou um plano suspenso. Ela não prevê fracasso. Havia um desvio? Você procurou um?"
+          }
+        ]
       }
     },
     "bus": {
@@ -14678,7 +14938,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>Quando essa imagem aparece em um sonho, a primeira pergunta não é “o que ela sempre significa?”, e sim “por que minha mente escolheu essa imagem esta noite?”. A resposta costuma estar perto de ferramentas, escolhas, apegos, do tempo certo das coisas e dos pequenos detalhes que organizam a vida cotidiana.</p>\n<p>O símbolo pode ser terno, irritante, assustador, engraçado ou completamente comum. Esse tom importa. Uma versão calma pode sugerir integração, enquanto uma versão ameaçadora pode mostrar conflito ou fuga.</p>\n<p>Repare no papel que ele desempenhou. Ele te bloqueou, te guiou, te observou, te seguiu ou desapareceu? Nos sonhos, a função costuma revelar mais do que o próprio objeto.</p>\n<p>Use a imagem como uma porta de entrada para a história, não como um veredito. Algumas anotações sinceras sobre o cenário e sobre a reação do seu corpo costumam dizer mais do que qualquer lista fixa de símbolos.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Perder o ônibus",
+            "meaning": "Você correu atrás dele ou apenas o viu partir? A cena pode corresponder ao medo de se atrasar, de perder uma oportunidade ou de ficar para trás em um grupo. Pergunte-se de quem é o horário que você tenta seguir."
+          },
+          {
+            "context": "Pegar o ônibus errado",
+            "meaning": "Quando você percebeu que era o errado? O que fez? A cena pode estar ligada à dúvida sobre um caminho já escolhido. Descer, continuar ou pedir ajuda são três respostas diferentes."
+          },
+          {
+            "context": "Não saber onde descer",
+            "meaning": "Passar por vários pontos sem reconhecer nenhum pode lembrar uma situação cujo destino não está claro. Observe se você sentia tranquilidade e curiosidade ou se parecia estar preso."
+          }
+        ]
       }
     },
     "bicycle": {
@@ -14829,7 +15102,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>A bicicleta pode parecer estranhamente específica em um sonho, e é justamente por isso que vale levá-la a sério sem levá-la ao pé da letra. Ela costuma reunir vários fios ao mesmo tempo: ferramentas, escolhas, apegos, o momento certo e os pequenos detalhes que organizam a vida cotidiana.</p>\n<p>Repare se o sonho deixou o símbolo familiar ou estranho. Detalhes familiares podem apontar para uma memória vivida; detalhes estranhos podem mostrar que um padrão antigo está sendo visto de um novo ângulo.</p>\n<p>A pista mais forte costuma ser emocional. Alívio, vergonha, medo, curiosidade, irritação ou saudade estreitam o significado mais rápido do que qualquer interpretação universal.</p>\n<p>Se você registrar o sonho no Noctalia, guarde uma frase para o que aconteceu e uma frase para aquilo que ele te lembrou. Esse pequeno contraste costuma revelar o tema de verdade.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Andar de bicicleta com facilidade",
+            "meaning": "Estrada lisa, equilíbrio firme, vento no rosto? A cena pode estar ligada a uma fase em que sua própria energia basta para avançar. Observe aonde você ia, se havia um destino."
+          },
+          {
+            "context": "Cair da bicicleta",
+            "meaning": "Você bateu em um obstáculo, perdeu o equilíbrio ou foi empurrado? Uma queda pode lembrar algo que você administrava sozinho e que de repente saiu do controle. Não é um aviso de acidente. Você voltou a subir na bicicleta?"
+          },
+          {
+            "context": "Pedalar numa subida",
+            "meaning": "Uma subida que nunca acaba pode corresponder a um projeto que exige muito para avançar devagar. Observe como você se sentia: determinado, exausto, prestes a desistir? Essa sensação importa mais do que a inclinação."
+          }
+        ]
       }
     },
     "boat": {
@@ -14980,7 +15266,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>O barco não precisa ser decifrado como uma mensagem secreta. Em um sonho, ele costuma funcionar mais como um marcador: algo na cena pede que você repare em ferramentas, escolhas, apegos, no momento certo e nos pequenos detalhes que organizam a vida cotidiana.</p>\n<p>Comece pelos fatos simples. A imagem estava perto ou longe, foi bem-vinda ou perturbadora, comum ou estranhamente intensa? Esses detalhes mantêm a interpretação ancorada no seu sonho, em vez de impor a ele um significado genérico.</p>\n<p>Se o símbolo pareceu acolhedor, ele pode mostrar um recurso, um desejo ou uma lembrança em que você pode se apoiar. Se pareceu tenso, pode apontar para uma pressão que você vem administrando em silêncio demais.</p>\n<p>O Noctalia trata esse tipo de símbolo como um convite à reflexão. Anote a cena, a emoção e o que mudou depois que o símbolo apareceu; costuma ser aí que começa o significado útil.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Um barco em águas calmas",
+            "meaning": "Água parada, ritmo suave, horizonte claro? A cena pode estar ligada a uma fase de avanço sem dificuldade ou à necessidade de descanso. A calma parecia repousante ou um pouco vazia?"
+          },
+          {
+            "context": "Um barco numa tempestade",
+            "meaning": "Vento, ondas, um convés que balança: a cena costuma estar ligada ao estresse ou a uma fase difícil de prever. Não é uma previsão do tempo. O barco resistiu? O que você fazia a bordo?"
+          },
+          {
+            "context": "Um barco afundando ou com vazamento",
+            "meaning": "A água entrando pode estar ligada à sensação de que algo em que você confiava já não se sustenta. Você tirou a água, nadou até a margem ou ficou paralisado? Sua reação costuma dizer mais do que o vazamento."
+          }
+        ]
       }
     },
     "airport": {
@@ -15131,7 +15430,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>Quando essa imagem aparece em um sonho, a primeira pergunta não é “o que ela sempre significa?”, e sim “por que minha mente escolheu essa imagem esta noite?”. A resposta costuma estar perto do cenário de uma situação de vida: onde você se sente seguro, exposto, travado ou pronto para se mover.</p>\n<p>O símbolo pode ser terno, irritante, assustador, engraçado ou completamente comum. Esse tom importa. Uma versão calma pode sugerir integração, enquanto uma versão ameaçadora pode mostrar conflito ou fuga.</p>\n<p>Repare no papel que ele desempenhou. Ele te bloqueou, te guiou, te observou, te seguiu ou desapareceu? Nos sonhos, a função costuma revelar mais do que o próprio objeto.</p>\n<p>Use a imagem como uma porta de entrada para a história, não como um veredito. Algumas anotações sinceras sobre o cenário e sobre a reação do seu corpo costumam dizer mais do que qualquer lista fixa de símbolos.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Perder um voo",
+            "meaning": "Você chegou tarde demais, foi impedido de passar ou simplesmente não conseguiu avançar? Perder um voo pode estar ligado à pressão do tempo ou ao medo de perder uma oportunidade. Isso não prevê nada. O que atrasou você no sonho?"
+          },
+          {
+            "context": "Não encontrar seu portão de embarque",
+            "meaning": "Corredores intermináveis e telas que mudam sem parar podem lembrar uma situação com regras pouco claras ou opções demais ao mesmo tempo. A quem você poderia ter perguntado? Você perguntou?"
+          },
+          {
+            "context": "Perder seu passaporte ou sua passagem",
+            "meaning": "Procurar nos bolsos diante do balcão pode encenar a sensação de não ter o necessário para seguir adiante. O que você achava que faltava? Quem esperava por você?"
+          }
+        ]
       }
     },
     "suitcase": {
@@ -15282,7 +15594,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>A mala pode parecer estranhamente específica em um sonho, e por isso vale levá-la a sério sem levá-la ao pé da letra. Muitas vezes ela reúne vários fios ao mesmo tempo: ferramentas, escolhas, apegos, o momento certo e os pequenos detalhes que organizam a vida cotidiana.</p>\n<p>Repare se o sonho deixou o símbolo familiar ou estranho. Detalhes familiares podem apontar para uma memória vivida; detalhes estranhos podem mostrar que um padrão antigo está sendo visto de um novo ângulo.</p>\n<p>A pista mais forte costuma ser emocional. Alívio, vergonha, medo, curiosidade, irritação ou saudade vão estreitar o significado mais rápido do que qualquer interpretação universal.</p>\n<p>Se você registrar o sonho na Noctalia, guarde uma frase para o que aconteceu e uma frase para aquilo de que isso lembrou você. Esse pequeno contraste costuma revelar o tema real.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Fazer as malas",
+            "meaning": "Você escolhia com cuidado, jogava tudo dentro ou não conseguia decidir? Fazer as malas pode estar ligado à preparação para uma mudança, escolhida ou imposta. O que você fez questão de levar? O que deixou de fora?"
+          },
+          {
+            "context": "Uma mala pesada",
+            "meaning": "Uma mala que você mal consegue levantar ou precisa arrastar pode encenar uma carga que carrega: tarefas, preocupações, expectativas. Alguém ofereceu ajuda? Você aceitou?"
+          },
+          {
+            "context": "Bagagem perdida",
+            "meaning": "Esperar diante de uma esteira vazia pode estar ligado ao medo de chegar a um lugar novo sem aquilo de que precisa. Não é um sinal de uma perda futura. O que você mais queria recuperar?"
+          }
+        ]
       }
     },
     "passport": {

@@ -11486,7 +11486,7 @@
         "slug": "mae",
         "name": "Mãe",
         "shortDescription": "Uma figura materna no sonho pode trazer à tona memórias pessoais, cuidado, expectativas, proximidade ou distância. O comportamento dela e o que você sente perto dela dão à cena o seu contexto individual.",
-        "modifiedAt": "2026-07-24",
+        "modifiedAt": "2026-10-20",
         "askYourself": [
           "O que a mãe mudou na cena?",
           "Que sensação ficou comigo ao acordar?"
@@ -11664,7 +11664,7 @@
         "slug": "pai",
         "name": "Pai",
         "shortDescription": "A figura do pai pode trazer à tona memórias pessoais, além de apoio, autoridade ou expectativas. O papel que ele assumiu na cena e o que você sentiu em relação a ele oferecem o contexto mais útil.",
-        "modifiedAt": "2026-07-24",
+        "modifiedAt": "2026-10-20",
         "askYourself": [
           "O que o pai mudou na cena?",
           "Qual sensação ficou comigo ao acordar?"
@@ -11842,7 +11842,7 @@
         "slug": "irmao-ou-irma",
         "name": "Irmão ou irmã",
         "shortDescription": "Um irmão ou irmã em um sonho pode reavivar uma história compartilhada, proximidade, rivalidade ou papéis antigos da família. O que vocês fizeram juntos e o clima entre vocês indicam qual fio combina melhor com a cena.",
-        "modifiedAt": "2026-07-24",
+        "modifiedAt": "2026-10-20",
         "askYourself": [
           "O que o irmão ou irmã mudou na cena?",
           "Qual sensação ficou comigo ao acordar?"
@@ -12022,7 +12022,7 @@
         "slug": "parceiro",
         "name": "Parceiro",
         "shortDescription": "O parceiro em um sonho pode refletir a relação real, um desejo, um conflito ou um limite que você está negociando. Repare em quem era essa pessoa, no que aconteceu entre vocês e em como foi a sensação desse encontro.",
-        "modifiedAt": "2026-07-24",
+        "modifiedAt": "2026-10-20",
         "askYourself": [
           "O que o parceiro mudou na cena?",
           "Qual sensação ficou comigo ao acordar?"
@@ -12200,7 +12200,7 @@
         "slug": "amigo",
         "name": "Amigo",
         "shortDescription": "Um amigo no sonho pode chamar atenção para a relação real, para uma memória compartilhada ou para uma qualidade que você associa àquela pessoa. O que ele fez e o clima entre vocês tornam a cena pessoal.",
-        "modifiedAt": "2026-07-24",
+        "modifiedAt": "2026-10-20",
         "askYourself": [
           "O que o amigo mudou na cena?",
           "Qual sensação ficou comigo ao acordar?"
@@ -12380,7 +12380,7 @@
         "slug": "desconhecido",
         "name": "Desconhecido",
         "shortDescription": "Encontrar um desconhecido em um sonho pode acompanhar uma situação pouco familiar, um novo encontro ou uma incerteza diante das outras pessoas. A aparência dele, seu comportamento e a sua reação dão à cena o contexto pessoal.",
-        "modifiedAt": "2026-07-24",
+        "modifiedAt": "2026-10-20",
         "askYourself": [
           "O que o desconhecido mudou na cena?",
           "Que sensação ficou comigo ao acordar?"
@@ -12560,7 +12560,7 @@
         "slug": "professor",
         "name": "Professor",
         "shortDescription": "Um professor em um sonho pode reavivar experiências de aprendizado, avaliação, orientação ou autoridade. A tarefa que você enfrentou e o fato de o professor ter incentivado ou pressionado você ajudam a situar a cena.",
-        "modifiedAt": "2026-07-24",
+        "modifiedAt": "2026-10-20",
         "askYourself": [
           "O que o professor mudou na cena?",
           "Qual sensação ficou comigo ao acordar?"
@@ -12740,7 +12740,7 @@
         "slug": "policia",
         "name": "Polícia",
         "shortDescription": "A polícia em um sonho pode colocar em foco regras, proteção, controle ou um conflito em torno de limites. Pedir ajuda, ser perseguido ou ter que assumir responsabilidade dão à cena direções diferentes.",
-        "modifiedAt": "2026-07-24",
+        "modifiedAt": "2026-10-20",
         "askYourself": [
           "O que a polícia mudou na cena?",
           "Qual sensação ficou comigo ao acordar?"
@@ -12918,7 +12918,7 @@
         "slug": "medico",
         "name": "Médico",
         "shortDescription": "A figura de um médico pode tocar em preocupação, cuidado, confiança ou no desejo de apoio, sem trazer nenhuma mensagem médica. Repare em quem foi examinado e se você se sentiu ouvido ou vulnerável.",
-        "modifiedAt": "2026-07-24",
+        "modifiedAt": "2026-10-20",
         "askYourself": [
           "O que o médico mudou na cena?",
           "Qual sensação ficou comigo ao acordar?"
@@ -13098,7 +13098,7 @@
         "slug": "colega-de-trabalho",
         "name": "Colega de trabalho",
         "shortDescription": "Um colega de trabalho no sonho pode envolver trabalho em equipe, competição, reconhecimento ou a pressão do dia a dia no trabalho. A tarefa em questão e a sua relação real com essa pessoa dizem mais do que o cargo sozinho.",
-        "modifiedAt": "2026-07-24",
+        "modifiedAt": "2026-10-20",
         "askYourself": [
           "O que o colega de trabalho mudou na cena?",
           "Qual sensação ficou comigo ao acordar?"
@@ -13276,7 +13276,7 @@
         "slug": "avo-2",
         "name": "Avó",
         "shortDescription": "Sua avó ou outra figura de avó pode evocar memórias pessoais, cuidado, padrões familiares ou tradições herdadas. A atitude dela e o que você sentiu na presença dela ajudam a situar a cena.",
-        "modifiedAt": "2026-07-24",
+        "modifiedAt": "2026-10-20",
         "askYourself": [
           "O que a avó mudou na cena?",
           "Que sensação ficou comigo ao acordar?"
@@ -13454,7 +13454,7 @@
         "slug": "nascimento",
         "name": "Nascimento",
         "shortDescription": "Um nascimento pode colocar um começo, uma responsabilidade crescente ou uma mudança exigente no centro do sonho. Ele não prevê nenhum acontecimento; as pessoas envolvidas e a forma como a cena se desenrolou é que importam mais.",
-        "modifiedAt": "2026-07-24",
+        "modifiedAt": "2026-10-20",
         "askYourself": [
           "O que o nascimento mudou na cena?",
           "Que sensação ficou comigo ao acordar?"
@@ -13632,7 +13632,7 @@
         "slug": "funeral",
         "name": "Funeral",
         "shortDescription": "Um sonho com funeral pode dar forma à despedida, à memória, ao luto ou ao fim de uma fase. Ele não prevê nenhuma morte; a pessoa que está sendo velada e a sua reação oferecem um contexto mais confiável.",
-        "modifiedAt": "2026-07-24",
+        "modifiedAt": "2026-10-20",
         "askYourself": [
           "O que o funeral mudou na cena?",
           "Que sensação ficou comigo ao acordar?"
@@ -13812,7 +13812,7 @@
         "slug": "avo",
         "name": "Avô",
         "shortDescription": "Um avô em um sonho pode trazer para o primeiro plano memórias compartilhadas, valores de família, conselhos ou autoridade. Repare se a presença dele ofereceu apoio, criou distância ou reabriu uma questão antiga.",
-        "modifiedAt": "2026-07-24",
+        "modifiedAt": "2026-10-20",
         "askYourself": [
           "O que o avô mudou na cena?",
           "Qual sensação permaneceu comigo ao acordar?"
@@ -13990,7 +13990,7 @@
         "slug": "sala-de-aula",
         "name": "Sala de aula",
         "shortDescription": "Uma sala de aula pode reavivar experiências de aprendizado, desempenho, pertencimento ou avaliação. Estar ali como aluno, professor ou observador muda a sua posição e o tom emocional do que acontece.",
-        "modifiedAt": "2026-07-24",
+        "modifiedAt": "2026-10-20",
         "askYourself": [
           "O que a sala de aula mudou na cena?",
           "Qual sensação ficou comigo ao acordar?"
@@ -14168,7 +14168,7 @@
         "slug": "banheiro",
         "name": "Banheiro",
         "shortDescription": "Um banheiro pode colocar em foco a privacidade, o cuidado com o corpo, o alívio ou a vulnerabilidade. O estado dele, o acesso que você tinha e as pessoas presentes mostram se você se sentiu protegido ou exposto.",
-        "modifiedAt": "2026-07-24",
+        "modifiedAt": "2026-10-20",
         "askYourself": [
           "O que o banheiro mudou na cena?",
           "Qual sensação ficou comigo ao acordar?"
@@ -14346,7 +14346,7 @@
         "slug": "quarto",
         "name": "Quarto",
         "shortDescription": "Um quarto pode colocar em foco o descanso, a intimidade, o recolhimento ou os limites pessoais. Se o cômodo era familiar, estava modificado ou se outras pessoas entraram nele diz mais do que o lugar em si.",
-        "modifiedAt": "2026-07-24",
+        "modifiedAt": "2026-10-20",
         "askYourself": [
           "O que o quarto mudou na cena?",
           "Que sensação ficou comigo ao acordar?"
@@ -14523,7 +14523,7 @@
         "slug": "cozinha",
         "name": "Cozinha",
         "shortDescription": "A cozinha pode tornar tangíveis o cuidado diário, a cooperação, a criatividade ou as rotinas de família. O que estava sendo preparado e as pessoas que dividiam o espaço dão à cena o seu caráter pessoal.",
-        "modifiedAt": "2026-07-24",
+        "modifiedAt": "2026-10-20",
         "askYourself": [
           "O que a cozinha mudou na cena?",
           "Qual sensação ficou comigo ao acordar?"
@@ -14703,7 +14703,7 @@
         "slug": "local-de-trabalho",
         "name": "Local de trabalho",
         "shortDescription": "Um sonho com o local de trabalho pode se alimentar das tarefas do momento, da pressão por desempenho, do reconhecimento ou dos limites entre trabalho e vida pessoal. Compare o que coincidiu com a realidade e o que apareceu estranhamente alterado.",
-        "modifiedAt": "2026-07-24",
+        "modifiedAt": "2026-10-20",
         "askYourself": [
           "O que o local de trabalho mudou na cena?",
           "Qual sensação permaneceu comigo ao acordar?"
@@ -14883,7 +14883,7 @@
         "slug": "estrada",
         "name": "Estrada",
         "shortDescription": "Uma estrada pode tornar visível a direção que você está seguindo, uma decisão ou os obstáculos ao seu avanço. O traçado, o estado da via e o seu modo de percorrê-la conectam o cenário à sua situação.",
-        "modifiedAt": "2026-07-24",
+        "modifiedAt": "2026-10-20",
         "askYourself": [
           "O que a estrada mudou na cena?",
           "Que sensação ficou comigo ao acordar?"
@@ -15063,7 +15063,7 @@
         "slug": "onibus",
         "name": "Ônibus",
         "shortDescription": "Uma viagem de ônibus pode destacar um trajeto compartilhado, horários fixos ou a dependência das decisões de outras pessoas. Embarcar, descer ou ficar para trás dá a direção emocional dessa viagem.",
-        "modifiedAt": "2026-07-24",
+        "modifiedAt": "2026-10-20",
         "askYourself": [
           "O que o ônibus mudou na cena?",
           "Qual sensação ficou comigo ao acordar?"
@@ -15243,7 +15243,7 @@
         "slug": "bicicleta",
         "name": "Bicicleta",
         "shortDescription": "Andar de bicicleta pode tornar visíveis a independência, o equilíbrio, o esforço ou o seu ritmo pessoal. O terreno, o estado da bicicleta e o quanto de controle você tinha dão o contexto relevante.",
-        "modifiedAt": "2026-07-24",
+        "modifiedAt": "2026-10-20",
         "askYourself": [
           "O que a bicicleta mudou na cena?",
           "Qual sensação ficou comigo ao acordar?"
@@ -15422,7 +15422,7 @@
         "slug": "barco",
         "name": "Barco",
         "shortDescription": "Mover-se de barco em um sonho pode refletir como você navega por uma transição ou por uma situação incerta. A água, o clima, os passageiros e o seu controle sobre a embarcação tornam a travessia algo pessoal.",
-        "modifiedAt": "2026-07-24",
+        "modifiedAt": "2026-10-20",
         "askYourself": [
           "O que o barco mudou na cena?",
           "Qual sensação ficou comigo ao acordar?"
@@ -15600,7 +15600,7 @@
         "slug": "aeroporto",
         "name": "Aeroporto",
         "shortDescription": "Um aeroporto pode concentrar expectativa, despedida, transição ou preparação para uma grande mudança. O destino, a pressão do tempo e os obstáculos mostram qual parte desse movimento teve importância para você.",
-        "modifiedAt": "2026-07-24",
+        "modifiedAt": "2026-10-20",
         "askYourself": [
           "O que o aeroporto mudou na cena?",
           "Qual sensação ficou comigo ao acordar?"
@@ -15780,7 +15780,7 @@
         "slug": "mala",
         "name": "Mala",
         "shortDescription": "A mala pode envolver preparação, experiência carregada ou responsabilidade em meio a uma mudança. O conteúdo, o peso e o fato de você tê-la arrumado ou perdido tornam concreta a ligação com a cena.",
-        "modifiedAt": "2026-07-24",
+        "modifiedAt": "2026-10-20",
         "askYourself": [
           "O que a mala mudou na cena?",
           "Qual sensação ficou comigo ao acordar?"

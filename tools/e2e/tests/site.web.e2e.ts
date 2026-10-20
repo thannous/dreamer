@@ -1367,6 +1367,10 @@ test('the pt-br dictionary links every pt-br symbol, searches and filters in Por
 // These journeys catch a decoded-but-wrong portrait, a transparent rectangle, an effect placed
 // entirely outside a crop, a scene with the wrong editorial reading, and a moving base painting.
 const NEW_SYMBOL_PACKS = [
+  {"id": "arguing", "slug": "dispute", "name": "Dispute", "scenes": ["arguing-with-your-partner", "arguing-with-a-parent-or-with-your-chil", "arguing-with-a-friend"]},
+  {"id": "angel", "slug": "ange", "name": "Ange", "scenes": ["an-angel-speaking-to-you", "a-guardian-angel-protecting-you", "becoming-an-angel"]},
+  {"id": "accident", "slug": "accident", "name": "Accident", "scenes": ["car-accident-while-driving", "witnessing-an-accident", "a-plane-crash"]},
+  {"id": "abandonment", "slug": "abandon", "name": "Abandon", "scenes": ["a-partner-leaving-you", "being-left-behind-by-a-group", "a-parent-who-does-not-come-back"]},
   {"id": "crying", "slug": "pleurer", "name": "Pleurer", "scenes": ["crying-from-sadness-or-grief", "tears-of-joy-or-relief", "crying-in-front-of-others"]},
   {"id": "cliff", "slug": "falaise", "name": "Falaise", "scenes": ["standing-at-the-edge", "falling-off-a-cliff", "jumping-on-purpose"]},
   {"id": "lost", "slug": "perdu", "name": "Être Perdu", "scenes": ["lost-in-a-city", "can-t-find-your-way-home", "lost-in-a-building-or-a-maze"]},

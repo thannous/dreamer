@@ -27,14 +27,17 @@
     },
     "lot-08": {
       "label": "Lot 08, 30 packs complétés avec couvertures conservées"
+    },
+    "lot-09": {
+      "label": "Lot 09, 30 packs avec couvertures conservées et variantes portugaises complétées"
     }
   },
   "symbols": {
     "abandonment": {
-      "lot": null
+      "lot": "lot-09"
     },
     "accident": {
-      "lot": null
+      "lot": "lot-09"
     },
     "airport": {
       "lot": null
@@ -43,7 +46,7 @@
       "lot": null
     },
     "angel": {
-      "lot": null
+      "lot": "lot-09"
     },
     "ant": {
       "lot": null
@@ -52,7 +55,7 @@
       "lot": null
     },
     "arguing": {
-      "lot": null
+      "lot": "lot-09"
     },
     "attack": {
       "lot": null

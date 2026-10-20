@@ -5527,6 +5527,422 @@
           }
         }
       }
+    },
+    "abandonment": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "a-partner-leaving-you": {
+            "variation": "Un conjoint qui vous quitte",
+            "anchor": "a-partner-leaving-you"
+          },
+          "being-left-behind-by-a-group": {
+            "variation": "Être laissé derrière par un groupe",
+            "anchor": "being-left-behind-by-a-group"
+          },
+          "a-parent-who-does-not-come-back": {
+            "variation": "Un parent qui ne revient pas",
+            "anchor": "a-parent-who-does-not-come-back"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "a-partner-leaving-you": {
+            "variation": "A partner leaving you",
+            "anchor": "a-partner-leaving-you"
+          },
+          "being-left-behind-by-a-group": {
+            "variation": "Being left behind by a group",
+            "anchor": "being-left-behind-by-a-group"
+          },
+          "a-parent-who-does-not-come-back": {
+            "variation": "A parent who does not come back",
+            "anchor": "a-parent-who-does-not-come-back"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "a-partner-leaving-you": {
+            "variation": "Que tu pareja te deje",
+            "anchor": "a-partner-leaving-you"
+          },
+          "being-left-behind-by-a-group": {
+            "variation": "Que un grupo te deje atrás",
+            "anchor": "being-left-behind-by-a-group"
+          },
+          "a-parent-who-does-not-come-back": {
+            "variation": "Un padre o una madre que no vuelve",
+            "anchor": "a-parent-who-does-not-come-back"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "a-partner-leaving-you": {
+            "variation": "Der Partner verlässt Sie",
+            "anchor": "a-partner-leaving-you"
+          },
+          "being-left-behind-by-a-group": {
+            "variation": "Von einer Gruppe zurückgelassen werden",
+            "anchor": "being-left-behind-by-a-group"
+          },
+          "a-parent-who-does-not-come-back": {
+            "variation": "Ein Elternteil, das nicht zurückkommt",
+            "anchor": "a-parent-who-does-not-come-back"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "a-partner-leaving-you": {
+            "variation": "Il partner che ti lascia",
+            "anchor": "a-partner-leaving-you"
+          },
+          "being-left-behind-by-a-group": {
+            "variation": "Essere lasciati indietro da un gruppo",
+            "anchor": "being-left-behind-by-a-group"
+          },
+          "a-parent-who-does-not-come-back": {
+            "variation": "Un genitore che non torna",
+            "anchor": "a-parent-who-does-not-come-back"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "a-partner-leaving-you": {
+            "variation": "Parceiro deixando você",
+            "anchor": "a-partner-leaving-you"
+          },
+          "being-left-behind-by-a-group": {
+            "variation": "Ser deixado para trás por um grupo",
+            "anchor": "being-left-behind-by-a-group"
+          },
+          "a-parent-who-does-not-come-back": {
+            "variation": "Pai ou mãe abandonando você",
+            "anchor": "a-parent-who-does-not-come-back"
+          }
+        }
+      }
+    },
+    "accident": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "car-accident-while-driving": {
+            "variation": "Avoir un accident en conduisant",
+            "anchor": "car-accident-while-driving"
+          },
+          "witnessing-an-accident": {
+            "variation": "Être témoin d'un accident",
+            "anchor": "witnessing-an-accident"
+          },
+          "a-plane-crash": {
+            "variation": "Un accident d'avion",
+            "anchor": "a-plane-crash"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "car-accident-while-driving": {
+            "variation": "Car accident while driving",
+            "anchor": "car-accident-while-driving"
+          },
+          "witnessing-an-accident": {
+            "variation": "Witnessing an accident",
+            "anchor": "witnessing-an-accident"
+          },
+          "a-plane-crash": {
+            "variation": "A plane crash",
+            "anchor": "a-plane-crash"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "car-accident-while-driving": {
+            "variation": "Tener un accidente conduciendo",
+            "anchor": "car-accident-while-driving"
+          },
+          "witnessing-an-accident": {
+            "variation": "Presenciar un accidente",
+            "anchor": "witnessing-an-accident"
+          },
+          "a-plane-crash": {
+            "variation": "Un accidente de avión",
+            "anchor": "a-plane-crash"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "car-accident-while-driving": {
+            "variation": "Einen Unfall als Fahrer haben",
+            "anchor": "car-accident-while-driving"
+          },
+          "witnessing-an-accident": {
+            "variation": "Einen Unfall beobachten",
+            "anchor": "witnessing-an-accident"
+          },
+          "a-plane-crash": {
+            "variation": "Ein Flugzeugabsturz",
+            "anchor": "a-plane-crash"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "car-accident-while-driving": {
+            "variation": "Fare un incidente in auto mentre guidi",
+            "anchor": "car-accident-while-driving"
+          },
+          "witnessing-an-accident": {
+            "variation": "Assistere a un incidente stradale altrui",
+            "anchor": "witnessing-an-accident"
+          },
+          "a-plane-crash": {
+            "variation": "Un aereo che cade invece di un’auto",
+            "anchor": "a-plane-crash"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "car-accident-while-driving": {
+            "variation": "Acidente de carro",
+            "anchor": "car-accident-while-driving"
+          },
+          "witnessing-an-accident": {
+            "variation": "Presenciar um acidente",
+            "anchor": "witnessing-an-accident"
+          },
+          "a-plane-crash": {
+            "variation": "Queda de avião",
+            "anchor": "a-plane-crash"
+          }
+        }
+      }
+    },
+    "angel": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "an-angel-speaking-to-you": {
+            "variation": "Un ange qui vous parle",
+            "anchor": "an-angel-speaking-to-you"
+          },
+          "a-guardian-angel-protecting-you": {
+            "variation": "Un ange gardien qui vous protège",
+            "anchor": "a-guardian-angel-protecting-you"
+          },
+          "becoming-an-angel": {
+            "variation": "Devenir un ange",
+            "anchor": "becoming-an-angel"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "an-angel-speaking-to-you": {
+            "variation": "An angel speaking to you",
+            "anchor": "an-angel-speaking-to-you"
+          },
+          "a-guardian-angel-protecting-you": {
+            "variation": "A guardian angel protecting you",
+            "anchor": "a-guardian-angel-protecting-you"
+          },
+          "becoming-an-angel": {
+            "variation": "Becoming an angel",
+            "anchor": "becoming-an-angel"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "an-angel-speaking-to-you": {
+            "variation": "Un ángel que te habla",
+            "anchor": "an-angel-speaking-to-you"
+          },
+          "a-guardian-angel-protecting-you": {
+            "variation": "Un ángel de la guarda que te protege",
+            "anchor": "a-guardian-angel-protecting-you"
+          },
+          "becoming-an-angel": {
+            "variation": "Convertirte en ángel",
+            "anchor": "becoming-an-angel"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "an-angel-speaking-to-you": {
+            "variation": "Ein Engel, der zu Ihnen spricht",
+            "anchor": "an-angel-speaking-to-you"
+          },
+          "a-guardian-angel-protecting-you": {
+            "variation": "Ein Schutzengel, der Sie beschützt",
+            "anchor": "a-guardian-angel-protecting-you"
+          },
+          "becoming-an-angel": {
+            "variation": "Selbst zum Engel werden",
+            "anchor": "becoming-an-angel"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "an-angel-speaking-to-you": {
+            "variation": "Un angelo che ti parla",
+            "anchor": "an-angel-speaking-to-you"
+          },
+          "a-guardian-angel-protecting-you": {
+            "variation": "Un angelo custode che ti protegge",
+            "anchor": "a-guardian-angel-protecting-you"
+          },
+          "becoming-an-angel": {
+            "variation": "Diventare un angelo",
+            "anchor": "becoming-an-angel"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "an-angel-speaking-to-you": {
+            "variation": "Anjo falando com você",
+            "anchor": "an-angel-speaking-to-you"
+          },
+          "a-guardian-angel-protecting-you": {
+            "variation": "Anjo da guarda protegendo você",
+            "anchor": "a-guardian-angel-protecting-you"
+          },
+          "becoming-an-angel": {
+            "variation": "Tornar-se um anjo",
+            "anchor": "becoming-an-angel"
+          }
+        }
+      }
+    },
+    "arguing": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "arguing-with-your-partner": {
+            "variation": "Se disputer avec son partenaire",
+            "anchor": "arguing-with-your-partner"
+          },
+          "arguing-with-a-parent-or-with-your-chil": {
+            "variation": "Se disputer avec un parent ou avec son enfant",
+            "anchor": "arguing-with-a-parent-or-with-your-chil"
+          },
+          "arguing-with-a-friend": {
+            "variation": "Se disputer avec une amie ou un ami",
+            "anchor": "arguing-with-a-friend"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "arguing-with-your-partner": {
+            "variation": "Arguing with your partner",
+            "anchor": "arguing-with-your-partner"
+          },
+          "arguing-with-a-parent-or-with-your-chil": {
+            "variation": "Arguing with a parent or with your child",
+            "anchor": "arguing-with-a-parent-or-with-your-chil"
+          },
+          "arguing-with-a-friend": {
+            "variation": "Arguing with a friend",
+            "anchor": "arguing-with-a-friend"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "arguing-with-your-partner": {
+            "variation": "Discutir con tu pareja",
+            "anchor": "arguing-with-your-partner"
+          },
+          "arguing-with-a-parent-or-with-your-chil": {
+            "variation": "Discutir con tu padre, tu madre o un hijo",
+            "anchor": "arguing-with-a-parent-or-with-your-chil"
+          },
+          "arguing-with-a-friend": {
+            "variation": "Discutir con un amigo",
+            "anchor": "arguing-with-a-friend"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "arguing-with-your-partner": {
+            "variation": "Streit mit dem Partner",
+            "anchor": "arguing-with-your-partner"
+          },
+          "arguing-with-a-parent-or-with-your-chil": {
+            "variation": "Streit mit Mutter, Vater oder dem eigenen Kind",
+            "anchor": "arguing-with-a-parent-or-with-your-chil"
+          },
+          "arguing-with-a-friend": {
+            "variation": "Streit mit einer Freundin oder einem Freund",
+            "anchor": "arguing-with-a-friend"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "arguing-with-your-partner": {
+            "variation": "Litigare con il partner",
+            "anchor": "arguing-with-your-partner"
+          },
+          "arguing-with-a-parent-or-with-your-chil": {
+            "variation": "Litigare con un genitore o con un figlio",
+            "anchor": "arguing-with-a-parent-or-with-your-chil"
+          },
+          "arguing-with-a-friend": {
+            "variation": "Litigare con un amico",
+            "anchor": "arguing-with-a-friend"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "arguing-with-your-partner": {
+            "variation": "Discutir com o parceiro",
+            "anchor": "arguing-with-your-partner"
+          },
+          "arguing-with-a-parent-or-with-your-chil": {
+            "variation": "Discutir com o pai, a mãe ou um filho",
+            "anchor": "arguing-with-a-parent-or-with-your-chil"
+          },
+          "arguing-with-a-friend": {
+            "variation": "Discutir com um amigo",
+            "anchor": "arguing-with-a-friend"
+          }
+        }
+      }
     }
   }
 }
