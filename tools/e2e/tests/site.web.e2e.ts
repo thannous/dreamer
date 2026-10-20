@@ -1393,6 +1393,20 @@ test('the pt-br dictionary links every pt-br symbol, searches and filters in Por
 // These journeys catch a decoded-but-wrong portrait, a transparent rectangle, an effect placed
 // entirely outside a crop, a scene with the wrong editorial reading, and a moving base painting.
 const NEW_SYMBOL_PACKS = [
+  {"id": "phone", "slug": "telephone", "name": "Téléphone", "scenes": ["a-phone-ringing", "not-being-able-to-make-a-call", "missing-a-call"]},
+  {"id": "school", "slug": "ecole", "name": "École", "scenes": ["can-t-find-your-classroom", "forgetting-a-class-all-term", "back-at-school-as-an-adult"]},
+  {"id": "pregnancy", "slug": "grossesse", "name": "Grossesse", "scenes": ["finding-out-you-are-pregnant", "being-heavily-pregnant", "someone-else-is-pregnant"]},
+  {"id": "swimming", "slug": "nager", "name": "Nager", "scenes": ["swimming-effortlessly", "struggling-to-swim", "swimming-underwater"]},
+  {"id": "blood", "slug": "sang", "name": "Sang", "scenes": ["blood-on-your-hands", "bloodstained-clothes-or-objects", "someone-else-s-blood"]},
+  {"id": "child", "slug": "enfant", "name": "Enfant", "scenes": ["a-happy-playing-child", "a-crying-or-upset-child", "a-lost-child"]},
+  {"id": "clothes", "slug": "vetements", "name": "Vêtements", "scenes": ["being-underdressed-in-public", "wearing-someone-else-s-clothes", "not-finding-the-right-outfit"]},
+  {"id": "path", "slug": "chemin", "name": "Chemin / Route", "scenes": ["a-clear-open-path", "an-overgrown-or-blocked-path", "a-fork-or-crossroads"]},
+  {"id": "plane", "slug": "avion", "name": "Avion", "scenes": ["smooth-flight", "turbulence-during-the-flight", "plane-crash-or-emergency-landing"]},
+  {"id": "night", "slug": "nuit", "name": "Nuit / Obscurité", "scenes": ["walking-alone-in-the-dark", "a-starry-or-moonlit-night", "total-darkness"]},
+  {"id": "mouth", "slug": "bouche", "name": "Bouche", "scenes": ["unable-to-open-your-mouth-or-speak", "something-stuck-in-your-mouth", "a-mouth-that-will-not-close"]},
+  {"id": "wedding", "slug": "mariage", "name": "Mariage", "scenes": ["your-own-wedding", "someone-else-s-wedding", "being-late-for-the-wedding"]},
+  {"id": "hospital", "slug": "hopital", "name": "Hôpital", "scenes": ["being-in-a-hospital", "a-hospital-with-doctors-or-nurses", "a-hospital-full-of-sick-people"]},
+  {"id": "running", "slug": "courir", "name": "Courir", "scenes": ["running-away-from-danger", "running-but-moving-slowly", "running-towards-a-goal"]},
   {"id": "chase", "slug": "poursuite", "name": "Poursuite / Être poursuivi", "scenes": ["being-chased-by-a-stranger", "being-chased-by-an-animal", "being-chased-by-someone-you-know"]},
   {"id": "spider", "slug": "araignee", "name": "Araignée", "scenes": ["a-spider-spinning-its-web", "being-caught-in-a-web", "being-bitten-by-a-spider"]},
   {"id": "flood", "slug": "inondation", "name": "Inondation", "scenes": ["floodwater-coming-into-your-home", "being-swept-away-by-floodwater", "escaping-a-flood"]},
