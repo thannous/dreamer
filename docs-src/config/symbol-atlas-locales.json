@@ -2407,6 +2407,110 @@
           "stage-fright-before-going-on": {"variation": "Nervosismo antes de entrar em cena", "anchor": "stage-fright-before-going-on"},
           "performing-without-rehearsing": {"variation": "Atuar sem ter ensaiado", "anchor": "performing-without-rehearsing"}
       } }
+    },
+    "death": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "your-own-death": {
+            "variation": "Votre propre mort",
+            "anchor": "your-own-death"
+          },
+          "a-loved-one-dying": {
+            "variation": "La mort d'un proche",
+            "anchor": "a-loved-one-dying"
+          },
+          "a-stranger-dying": {
+            "variation": "La mort d'un inconnu",
+            "anchor": "a-stranger-dying"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "your-own-death": {
+            "variation": "Your own death",
+            "anchor": "your-own-death"
+          },
+          "a-loved-one-dying": {
+            "variation": "A loved one dying",
+            "anchor": "a-loved-one-dying"
+          },
+          "a-stranger-dying": {
+            "variation": "A stranger dying",
+            "anchor": "a-stranger-dying"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "your-own-death": {
+            "variation": "Tu propia muerte",
+            "anchor": "your-own-death"
+          },
+          "a-loved-one-dying": {
+            "variation": "La muerte de un ser querido",
+            "anchor": "a-loved-one-dying"
+          },
+          "a-stranger-dying": {
+            "variation": "La muerte de un desconocido",
+            "anchor": "a-stranger-dying"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "your-own-death": {
+            "variation": "Der eigene Tod",
+            "anchor": "your-own-death"
+          },
+          "a-loved-one-dying": {
+            "variation": "Tod eines geliebten Menschen",
+            "anchor": "a-loved-one-dying"
+          },
+          "a-stranger-dying": {
+            "variation": "Tod eines Fremden",
+            "anchor": "a-stranger-dying"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "your-own-death": {
+            "variation": "La propria morte",
+            "anchor": "your-own-death"
+          },
+          "a-loved-one-dying": {
+            "variation": "La morte di una persona cara",
+            "anchor": "a-loved-one-dying"
+          },
+          "a-stranger-dying": {
+            "variation": "La morte di uno sconosciuto",
+            "anchor": "a-stranger-dying"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "your-own-death": {
+            "variation": "Sua própria morte",
+            "anchor": "your-own-death"
+          },
+          "a-loved-one-dying": {
+            "variation": "Morte de alguém querido",
+            "anchor": "a-loved-one-dying"
+          },
+          "a-stranger-dying": {
+            "variation": "Morte de um desconhecido",
+            "anchor": "a-stranger-dying"
+          }
+        }
+      }
     }
   }
 }

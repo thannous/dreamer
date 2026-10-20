@@ -8,7 +8,8 @@
     "lot-04": { "label": "Lot 04" },
     "lot-05": { "label": "Lot 05" },
     "lot-06": { "label": "Lot 06" },
-    "lot-07": { "label": "Lot 07, 38 symboles manquants" }
+    "lot-07": { "label": "Lot 07, 38 symboles manquants" },
+    "lot-08": {"label":"Lot 08, 30 packs complétés avec couvertures conservées"}
   },
   "symbols": {
     "abandonment": { "lot": null },
@@ -72,7 +73,7 @@
     "crowd": { "lot": "lot-07" },
     "crush": { "lot": null },
     "crying": { "lot": null },
-    "death": { "lot": null },
+    "death": { "lot": "lot-08" },
     "deceased-person": { "lot": null },
     "deer": { "lot": null },
     "demon": { "lot": null },

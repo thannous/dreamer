@@ -7694,5 +7694,109 @@
         "960": "/img/symbols/atlas-six-v2/stage/accent-960-0981c2ee11f2.webp"
       }
     }
+  },
+  "death": {
+    "hero": {
+      "width": 1400,
+      "height": 768,
+      "avif": {
+        "400": "/img/symbols/atlas-six-v2/death/hero-400-61b02580eca8.avif",
+        "800": "/img/symbols/atlas-six-v2/death/hero-800-aa74f803c762.avif",
+        "1200": "/img/symbols/atlas-six-v2/death/hero-1200-1b7c8db82ce4.avif",
+        "1400": "/img/symbols/atlas-six-v2/death/hero-1400-bcef984e6499.avif"
+      },
+      "webp": {
+        "400": "/img/symbols/atlas-six-v2/death/hero-400-9792d8d56518.webp",
+        "800": "/img/symbols/atlas-six-v2/death/hero-800-8fb487046924.webp",
+        "1200": "/img/symbols/atlas-six-v2/death/hero-1200-60b9a2d24e2b.webp",
+        "1400": "/img/symbols/atlas-six-v2/death/hero-1400-65f4d2f684af.webp"
+      }
+    },
+    "portrait": {
+      "width": 941,
+      "height": 1672,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/death/portrait-480-a7acb662c827.avif",
+        "800": "/img/symbols/atlas-six-v2/death/portrait-800-da05ccafe39b.avif",
+        "941": "/img/symbols/atlas-six-v2/death/portrait-941-429ab5ffab08.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/death/portrait-480-f4c84f1b8f51.webp",
+        "800": "/img/symbols/atlas-six-v2/death/portrait-800-00c63d418ccd.webp",
+        "941": "/img/symbols/atlas-six-v2/death/portrait-941-63818d66947a.webp"
+      }
+    },
+    "plate": {
+      "width": 1254,
+      "height": 1254,
+      "avif": {
+        "700": "/img/symbols/atlas-six-v2/death/plate-700-37b134f9092b.avif",
+        "1254": "/img/symbols/atlas-six-v2/death/plate-1254-01a29e1256a1.avif"
+      },
+      "webp": {
+        "700": "/img/symbols/atlas-six-v2/death/plate-700-fffb29871097.webp",
+        "1254": "/img/symbols/atlas-six-v2/death/plate-1254-f7bed9e96606.webp"
+      }
+    },
+    "scene-your-own-death": {
+      "width": 1693,
+      "height": 929,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/death/scene-your-own-death-320-6510fed0b0a0.avif",
+        "640": "/img/symbols/atlas-six-v2/death/scene-your-own-death-640-fd389902f06a.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/death/scene-your-own-death-320-2940fc35bf2f.webp",
+        "640": "/img/symbols/atlas-six-v2/death/scene-your-own-death-640-a8877f825955.webp"
+      }
+    },
+    "scene-a-loved-one-dying": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/death/scene-a-loved-one-dying-320-56317476644a.avif",
+        "640": "/img/symbols/atlas-six-v2/death/scene-a-loved-one-dying-640-61d91a1b329e.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/death/scene-a-loved-one-dying-320-19d7af85116c.webp",
+        "640": "/img/symbols/atlas-six-v2/death/scene-a-loved-one-dying-640-25494ce1dcc0.webp"
+      }
+    },
+    "scene-a-stranger-dying": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "320": "/img/symbols/atlas-six-v2/death/scene-a-stranger-dying-320-ee4f4e820930.avif",
+        "640": "/img/symbols/atlas-six-v2/death/scene-a-stranger-dying-640-ca7fc1d92d9c.avif"
+      },
+      "webp": {
+        "320": "/img/symbols/atlas-six-v2/death/scene-a-stranger-dying-320-05ccce5fad38.webp",
+        "640": "/img/symbols/atlas-six-v2/death/scene-a-stranger-dying-640-864b8504e6c8.webp"
+      }
+    },
+    "layer": {
+      "width": 1672,
+      "height": 941,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/death/layer-480-10549bf13435.avif",
+        "960": "/img/symbols/atlas-six-v2/death/layer-960-c18cee378756.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/death/layer-480-bb56dc33f2bb.webp",
+        "960": "/img/symbols/atlas-six-v2/death/layer-960-2a0e69d5a52d.webp"
+      }
+    },
+    "accent": {
+      "width": 1693,
+      "height": 929,
+      "avif": {
+        "480": "/img/symbols/atlas-six-v2/death/accent-480-d9690cb6add0.avif",
+        "960": "/img/symbols/atlas-six-v2/death/accent-960-f84a5fc1aab9.avif"
+      },
+      "webp": {
+        "480": "/img/symbols/atlas-six-v2/death/accent-480-cbd268e3a332.webp",
+        "960": "/img/symbols/atlas-six-v2/death/accent-960-9138a6805627.webp"
+      }
+    }
   }
 }

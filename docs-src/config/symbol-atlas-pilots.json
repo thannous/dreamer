@@ -2297,5 +2297,197 @@
         {"texture": "accent", "place": {"fit": "width", "zoom": 1.22, "x": 0.35, "y": 0.57}, "motion": "pulse", "dur": 11, "op": [0.08, 0.19], "blend": "screen"}
       ]
     }
+  },
+  "death": {
+    "slug": "mort",
+    "caveat": null,
+    "scenes": [
+      {
+        "id": "your-own-death",
+        "variation": "Votre propre mort"
+      },
+      {
+        "id": "a-loved-one-dying",
+        "variation": "La mort d'un proche"
+      },
+      {
+        "id": "a-stranger-dying",
+        "variation": "La mort d'un inconnu"
+      }
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.57,
+                0.43
+              ],
+              "zoom": 1.15
+            },
+            "motion": "flow",
+            "move": [
+              0.016,
+              0.018
+            ],
+            "dur": 21,
+            "op": [
+              0.22,
+              0.42
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.69,
+                0.62
+              ],
+              "zoom": 0.78
+            },
+            "motion": "pulse",
+            "dur": 11,
+            "op": [
+              0.16,
+              0.34
+            ],
+            "blend": "screen"
+          }
+        ],
+        "portrait": [
+          {
+            "texture": "layer",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.5,
+                0.35
+              ],
+              "zoom": 1.25
+            },
+            "motion": "flow",
+            "move": [
+              0.016,
+              0.018
+            ],
+            "dur": 21,
+            "op": [
+              0.22,
+              0.42
+            ],
+            "copies": 2
+          },
+          {
+            "texture": "accent",
+            "place": {
+              "fit": "width",
+              "at": [
+                0.54,
+                0.49
+              ],
+              "zoom": 0.95
+            },
+            "motion": "pulse",
+            "dur": 11,
+            "op": [
+              0.16,
+              0.34
+            ],
+            "blend": "screen"
+          }
+        ]
+      },
+      "plate": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.53
+            ],
+            "zoom": 1.07
+          },
+          "motion": "flow",
+          "move": [
+            0.016,
+            0.018
+          ],
+          "dur": 21,
+          "op": [
+            0.22,
+            0.42
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.59
+            ],
+            "zoom": 0.76
+          },
+          "motion": "pulse",
+          "dur": 11,
+          "op": [
+            0.16,
+            0.34
+          ],
+          "blend": "screen"
+        }
+      ],
+      "thumb": [
+        {
+          "texture": "layer",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.42
+            ],
+            "zoom": 1.08
+          },
+          "motion": "flow",
+          "move": [
+            0.016,
+            0.018
+          ],
+          "dur": 21,
+          "op": [
+            0.22,
+            0.42
+          ],
+          "copies": 2
+        },
+        {
+          "texture": "accent",
+          "place": {
+            "fit": "width",
+            "at": [
+              0.5,
+              0.56
+            ],
+            "zoom": 0.82
+          },
+          "motion": "pulse",
+          "dur": 11,
+          "op": [
+            0.16,
+            0.34
+          ],
+          "blend": "screen"
+        }
+      ]
+    }
   }
 }

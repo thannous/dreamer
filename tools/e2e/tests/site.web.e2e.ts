@@ -1393,6 +1393,7 @@ test('the pt-br dictionary links every pt-br symbol, searches and filters in Por
 // These journeys catch a decoded-but-wrong portrait, a transparent rectangle, an effect placed
 // entirely outside a crop, a scene with the wrong editorial reading, and a moving base painting.
 const NEW_SYMBOL_PACKS = [
+  {"id": "death", "slug": "mort", "name": "Mort", "scenes": ["your-own-death", "a-loved-one-dying", "a-stranger-dying"]},
   {"id": "light", "slug": "lumiere", "name": "Lumière", "scenes": ["a-light-switch-that-does-nothing", "a-light-going-out", "a-blinding-light"]},
   {"id": "lighthouse", "slug": "phare", "name": "Phare", "scenes": ["a-lighthouse-beam-sweeping-the-night", "a-lighthouse-that-goes-dark", "seeing-a-lighthouse-from-a-boat-in-a-s"]},
   {"id": "window", "slug": "fenetre", "name": "Fenêtre", "scenes": ["looking-out-of-a-window", "someone-at-the-window", "a-window-that-will-not-close"]},
