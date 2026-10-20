@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import React, { useCallback, useMemo, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, Text, View, type KeyDownEvent } from 'react-native';
 import Animated, { useReducedMotion } from 'react-native-reanimated';
 
 import { EASE } from '@/components/motion/motion';
@@ -48,6 +48,16 @@ export function readScenes(scenes: AtlasScene[], variations: SymbolVariation[], 
     const question = first !== -1 && meaning[first] === '?' ? meaning.slice(0, first + 1) : '';
     return [{ scene, label: card.context, question, excerpt: meaning.slice(question.length).trim() }];
   });
+}
+
+// react-native-web presses with Space only a button; on the web a radio is chosen with it too.
+function spaceChooses(choose: () => void): ((event: KeyDownEvent) => void) | undefined {
+  if (Platform.OS !== 'web') return undefined;
+  return (event) => {
+    if (event.nativeEvent.key !== ' ') return;
+    event.preventDefault();
+    choose();
+  };
 }
 
 /** A painting on show: the chosen one, and the one it is dawning over. */
@@ -113,6 +123,7 @@ export function SymbolScenes({ atlas, symbolId, readings, width, noctalia }: Sym
             <Pressable
               key={scene.id}
               onPress={() => choose(index)}
+              onKeyDown={spaceChooses(() => choose(index))}
               accessibilityRole="radio"
               accessibilityState={{ checked: selected }}
               aria-checked={selected}
