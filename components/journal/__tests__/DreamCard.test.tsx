@@ -41,6 +41,7 @@ jest.mock('react-native', () => {
       </button>
     ),
     StyleSheet: { create: (styles: Record<string, unknown>) => styles },
+    Dimensions: { get: () => ({ width: 390, height: 844, scale: 1, fontScale: 1 }) },
     useWindowDimensions: () => ({ width: 390, height: 844, scale: 1, fontScale: 1 }),
     Text: ({ children, testID, onLayout, numberOfLines }: { children?: React.ReactNode; testID?: string; onLayout?: (event: unknown) => void; numberOfLines?: number }) => {
       React.useLayoutEffect(() => {
@@ -49,7 +50,7 @@ jest.mock('react-native', () => {
       return <span data-testid={testID} data-visible-lines={numberOfLines}>{children}</span>;
     },
     View: ({ children, testID, onLayout }: { children?: React.ReactNode; testID?: string; onLayout?: (event: unknown) => void }) => {
-      // The arrow beside the dream's last line waits for its row's layout.
+      // The arrow beside the dream's last line waits for the height of the labels below it.
       React.useLayoutEffect(() => {
         onLayout?.({ nativeEvent: { layout: { x: 16, y: 60, width: 240, height: 66 } } });
       }, [onLayout]);

@@ -37,11 +37,12 @@ export function DreamStoryHalo({ onDone }: { onDone?: () => void }) {
       accessible={false}
       importantForAccessibility="no-hide-descendants"
       accessibilityElementsHidden
-      className="absolute -bottom-2 -left-2 -right-2 -top-1"
+      className="absolute -bottom-1 -left-1 -right-1 -top-1"
       style={glow as StyleProp<ViewStyle>}
     >
-      <View className="absolute inset-0 rounded-xl bg-champagne opacity-10" />
-      <View className="absolute inset-0 rounded-xl border border-champagne" />
+      {/* The card's 24 pt corners, 4 pt out. */}
+      <View className="absolute inset-0 rounded-[28px] bg-champagne opacity-10" />
+      <View className="absolute inset-0 rounded-[28px] border border-champagne" />
     </Animated.View>
   );
 }
