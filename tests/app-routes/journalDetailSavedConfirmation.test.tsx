@@ -663,6 +663,9 @@ describe('journal detail saved confirmation route', () => {
     expect(mockCategorizeDream).not.toHaveBeenCalled();
 
     await act(async () => { finish(); await initial; });
+    // Offered while editing the page, not on the page as read, which keeps its lines.
+    expect(screen.queryByTestId('dream-metadata-retry')).toBeNull();
+    fireEvent.click(screen.getByTestId(TID.Button.EditDream));
     expect(screen.getByTestId('dream-metadata-retry')).toBeTruthy();
   });
 
@@ -675,12 +678,16 @@ describe('journal detail saved confirmation route', () => {
     mockDreams = [buildDream({ transcript, title: transcript, theme: undefined })];
     const metadata = { title: 'The blue doorway', theme: 'calm', dreamType: 'Symbolic Dream', hasPerson: false, hasAnimal: false };
     mockCategorizeDream.mockImplementationOnce(async () => metadata);
+    mockApplyDreamCategorization.mockImplementationOnce(async (named: any) => ({ ...named, ...metadata }));
     render(<JournalDetailScreen />);
+    fireEvent.click(screen.getByTestId(TID.Button.EditDream));
 
     await act(async () => { fireEvent.click(screen.getByTestId('dream-metadata-retry')); });
 
     expect(mockCategorizeDream).toHaveBeenCalledWith(transcript, 'fr');
     expect(mockApplyDreamCategorization).toHaveBeenCalledWith(mockDreams[0], metadata);
+    // The fields being edited take the new name, so saving keeps it.
+    expect((screen.getByTestId(TID.Input.DreamTitle) as HTMLInputElement).value).toBe('The blue doorway');
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
     expect(screen.queryByTestId('quota-limit')).toBeNull();
     expect(require('expo-router').router.push).not.toHaveBeenCalled();
@@ -691,6 +698,7 @@ describe('journal detail saved confirmation route', () => {
     mockDreams = [buildDream({ transcript, title: transcript, theme: undefined })];
     mockCategorizeDream.mockImplementationOnce(async () => { throw new Error('offline'); });
     render(<JournalDetailScreen />);
+    fireEvent.click(screen.getByTestId(TID.Button.EditDream));
 
     await act(async () => { fireEvent.click(screen.getByTestId('dream-metadata-retry')); });
 
@@ -706,6 +714,7 @@ describe('journal detail saved confirmation route', () => {
     let finish!: (value: unknown) => void;
     mockCategorizeDream.mockReturnValueOnce(new Promise(resolve => { finish = resolve; }));
     const view = render(<JournalDetailScreen />);
+    fireEvent.click(screen.getByTestId(TID.Button.EditDream));
     fireEvent.click(screen.getByTestId('dream-metadata-retry'));
     mockDreams = [buildDream({ transcript, title: 'My chosen title', theme: undefined })];
     view.rerender(<JournalDetailScreen />);
@@ -713,7 +722,7 @@ describe('journal detail saved confirmation route', () => {
     await act(async () => { finish({ title: 'Generated title', theme: 'calm', dreamType: 'Symbolic Dream' }); });
 
     expect(mockApplyDreamCategorization).not.toHaveBeenCalled();
-    expect(screen.getByText('My chosen title')).toBeTruthy();
+    expect((screen.getByTestId(TID.Input.DreamTitle) as HTMLInputElement).value).not.toBe('Generated title');
   });
 
   
@@ -722,6 +731,7 @@ describe('journal detail saved confirmation route', () => {
     const transcript = 'A blue door above the sea.';
     mockDreams = [buildDream({ transcript, title: transcript, theme: undefined })];
     render(<JournalDetailScreen />);
+    fireEvent.click(screen.getByTestId(TID.Button.EditDream));
     await act(async () => { fireEvent.click(screen.getByTestId('dream-metadata-retry')); });
     expect(mockRequestAiConsent).toHaveBeenCalled();
     expect(mockCategorizeDream).not.toHaveBeenCalled();
@@ -1295,12 +1305,13 @@ describe('journal detail saved confirmation route', () => {
     }
   });
 
-  it('does not present the default draft type as a classification and makes missing theme actionable', () => {
+  it('does not present the default draft type as a classification and offers a missing theme while editing', () => {
     mockDreams = [buildDream({ theme: undefined })];
     render(<JournalDetailScreen />);
     expect(screen.getByTestId(TID.Component.MetadataCard).textContent).not.toContain('Symbolic Dream');
-    fireEvent.click(screen.getByRole('button', { name: 'journal.detail.theme_placeholder' }));
-    expect(screen.getByTestId(TID.Input.DreamTitle)).toBeTruthy();
+    expect(screen.queryByRole('button', { name: 'journal.detail.theme_placeholder' })).toBeNull();
+    fireEvent.click(screen.getByTestId(TID.Button.EditDream));
+    expect(screen.getByTestId('chip.theme.calm')).toBeTruthy();
   });
 
   it('edits the name and the story from one control and cancels without writing the dream', () => {
