@@ -1467,7 +1467,7 @@ function atlasCss(sceneIds) {
         /* From 1440px the illustration sits in the opening, beside the meaning. */
         @media (min-width: 1440px) {
             .atlas-decor { display: block; grid-column: 2; grid-row: 1; justify-self: center; align-self: center; width: min(52rem, 100%); pointer-events: none; }
-            /* Where a pack shows its illustration, the questions sit beside the meaning. */
+            /* A page without a pack: at the width where a pack shows its side illustration, its questions sit beside the meaning. */
             .atlas-plate--text > .atlas-questions { grid-column: 2; grid-row: 1; align-self: start; margin-top: 0; padding-top: 0; border-top: 0; }
             .atlas-plate--text > .atlas-keep { grid-row: 2; }
         }
@@ -1606,7 +1606,8 @@ function loadSymbolHeroPortrait() {
   for (const [id, position] of Object.entries(positions)) {
     if (!(catalog.symbols || []).some((item) => item.id === id)) throw new Error(`Hero framing (${file}) ${id}: not a symbol of data/dream-symbols.json`);
     if (id === 'tiger' || Object.hasOwn(SYMBOL_ATLAS_SIX, id)) throw new Error(`Hero framing (${file}) ${id}: an atlas pack frames its own portrait painting`);
-    if (typeof position !== 'string' || !/^\d+(\.\d+)?% \d+(\.\d+)?%$/.test(position)) throw new Error(`Hero framing (${file}) ${id}: expected "<x>% <y>%"`);
+    const match = typeof position === 'string' && position.match(/^(\d+(?:\.\d+)?)% (\d+(?:\.\d+)?)%$/);
+    if (!match || match.slice(1).some((value) => Number(value) > 100)) throw new Error(`Hero framing (${file}) ${id}: expected "<x>% <y>%", each from 0% to 100%`);
   }
   return positions;
 }
