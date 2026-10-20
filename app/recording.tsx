@@ -2021,11 +2021,9 @@ function RecordingScreen() {
                   }}
                   disabled={interactionDisabled}
                   lengthWarning={lengthWarning}
-                  instructionText={keyboardVisible ? '' :
-                    captureIntent === 'remembered'
-                      ? t('recording.remembered.active_instruction')
-                      : t('recording.write.instruction')
-                  }
+                  instructionText={!keyboardVisible && captureIntent === 'remembered'
+                    ? t('recording.remembered.active_instruction')
+                    : ''}
                   switchToVoiceLabel={voiceControlLabel}
                   voiceSupported={isVoiceSupported}
                   voiceStatus={voiceControlStatus}

@@ -97,7 +97,7 @@ export function RecordingConversation(props: Props) {
     : props.weaving ? t('recording.chat.weaving')
     : props.done ? t('recording.conversation.ready')
     : props.needsDecision ? t('recording.conversation.edited')
-    : props.question ?? t(hasStory ? 'dream_recall.question.what_else' : 'recording.conversation.welcome');
+    : props.question ?? (hasStory ? t('dream_recall.question.what_else') : null);
   return <View style={[styles.container, props.compact && styles.compact]} testID="recording-conversation">
     <ScrollView ref={thread} style={[styles.thread, props.compact && styles.threadCompact]}
       contentContainerStyle={styles.messages} scrollEnabled={!props.compact} nestedScrollEnabled
@@ -105,7 +105,6 @@ export function RecordingConversation(props: Props) {
       onScroll={({ nativeEvent }) => { nearBottom.current = nativeEvent.contentSize.height - nativeEvent.contentOffset.y - nativeEvent.layoutMeasurement.height < 48; }}
       scrollEventThrottle={32}
       onContentSizeChange={() => { if (nearBottom.current) thread.current?.scrollToEnd({ animated: false }); }}>
-      {hasStory ? <MarkdownText style={[styles.question, { color: tokens.text.primary }]}>{t('recording.conversation.welcome')}</MarkdownText> : null}
       {sections.map((section, index) => section.text.trim() ? <React.Fragment key={index}>
         {section.question ? <MarkdownText style={[styles.question, { color: tokens.text.primary }]}>{section.question}</MarkdownText> : null}
         <Pressable onPress={props.onReview} disabled={locked || !!props.review} accessibilityRole="button" accessibilityLabel={t('recording.tell.edit')}
@@ -113,7 +112,8 @@ export function RecordingConversation(props: Props) {
           <Text selectable style={[styles.message, { color: tokens.text.primary }]} testID={index === 0 ? 'recording-voice-preview' : undefined}>{section.text.trim()}</Text>
         </Pressable>
       </React.Fragment> : null)}
-      <MarkdownText accessibilityLiveRegion="polite" style={[styles.question, { color: tokens.text.primary }]} testID="recording-conversation-question">{currentQuestion}</MarkdownText>
+      {/* No opening prompt: the empty thread and the reply field already invite the dream. */}
+      {currentQuestion ? <MarkdownText accessibilityLiveRegion="polite" style={[styles.question, { color: tokens.text.primary }]} testID="recording-conversation-question">{currentQuestion}</MarkdownText> : null}
       {props.weaving && !props.review ? <CaptureWeaving /> : null}
       {props.loading ? <ActivityIndicator color={tokens.text.primary} accessibilityLabel={t('recording.conversation.thinking')} /> : null}
       {props.unavailable && !props.review ? <Text style={[styles.hint, { color: tokens.text.secondary }]}>{t('recording.conversation.offline')}</Text> : null}
