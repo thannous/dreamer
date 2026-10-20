@@ -2297,5 +2297,203 @@
         {"texture": "accent", "place": {"fit": "width", "zoom": 1.22, "x": 0.35, "y": 0.57}, "motion": "pulse", "dur": 11, "op": [0.08, 0.19], "blend": "screen"}
       ]
     }
+  },
+  "owl": {
+    "slug": "hibou",
+    "caveat": null,
+    "scenes": [
+      {"id": "regard", "variation": "Un hibou qui vous fixe"},
+      {"id": "cri", "variation": "Entendre un hibou hululer"},
+      {"id": "blanc", "variation": "Un hibou blanc ou une chouette blanche"}
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {"texture": "layer", "place": {"fit": "cover", "zoom": 1.15, "x": 0.5, "y": 0.8}, "motion": "drift", "move": [0.02, 0], "dur": 20, "op": [0.18, 0.42]},
+          {"texture": "accent", "place": {"fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.35}, "motion": "flow", "move": [0.02, 0.05], "dur": 12, "op": [0.2, 0.5], "copies": 2}
+        ],
+        "portrait": [
+          {"texture": "layer", "place": {"fit": "width", "zoom": 1.2, "x": 0.5, "y": 0.78}, "motion": "drift", "move": [0.02, 0], "dur": 20, "op": [0.18, 0.42]},
+          {"texture": "accent", "place": {"fit": "width", "zoom": 1.1, "x": 0.5, "y": 0.3}, "motion": "flow", "move": [0.02, 0.05], "dur": 12, "op": [0.2, 0.5], "copies": 2}
+        ]
+      },
+      "plate": [
+        {"texture": "layer", "place": {"fit": "width", "zoom": 1.05, "x": 0.5, "y": 0.65}, "motion": "drift", "move": [0.02, 0], "dur": 20, "op": [0.18, 0.42]},
+        {"texture": "accent", "place": {"fit": "width", "zoom": 1, "x": 0.5, "y": 0.35}, "motion": "flow", "move": [0.02, 0.05], "dur": 12, "op": [0.2, 0.5], "copies": 2}
+      ],
+      "thumb": [
+        {"texture": "layer", "place": {"fit": "cover", "zoom": 1.15, "x": 0.5, "y": 0.75}, "motion": "drift", "move": [0.02, 0], "dur": 20, "op": [0.25, 0.5]},
+        {"texture": "accent", "place": {"fit": "cover", "zoom": 1.15, "x": 0.5, "y": 0.3}, "motion": "flow", "move": [0.02, 0.05], "dur": 12, "op": [0.25, 0.6], "copies": 2}
+      ]
+    }
+  },
+  "boat": {
+    "slug": "bateau",
+    "caveat": null,
+    "scenes": [
+      {"id": "calme", "variation": "Un bateau sur une eau calme"},
+      {"id": "tempete", "variation": "Un bateau dans la tempête"},
+      {"id": "naufrage", "variation": "Un bateau qui coule ou prend l'eau"}
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.4,
+      "hero": {
+        "landscape": [
+          {"texture": "layer", "place": {"fit": "cover", "zoom": 1.15, "x": 0.5, "y": 0.55}, "motion": "drift", "move": [0.02, 0], "dur": 20, "op": [0.18, 0.42]},
+          {"texture": "accent", "place": {"fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.85}, "motion": "pulse", "dur": 4.2, "op": [0.2, 0.6], "blend": "screen"}
+        ],
+        "portrait": [
+          {"texture": "layer", "place": {"fit": "width", "zoom": 1.2, "x": 0.5, "y": 0.55}, "motion": "drift", "move": [0.02, 0], "dur": 20, "op": [0.18, 0.42]},
+          {"texture": "accent", "place": {"fit": "width", "zoom": 1.1, "x": 0.5, "y": 0.85}, "motion": "pulse", "dur": 4.2, "op": [0.2, 0.6], "blend": "screen"}
+        ]
+      },
+      "plate": [
+        {"texture": "layer", "place": {"fit": "width", "zoom": 1.05, "x": 0.5, "y": 0.5}, "motion": "drift", "move": [0.02, 0], "dur": 20, "op": [0.18, 0.42]},
+        {"texture": "accent", "place": {"fit": "width", "zoom": 1.05, "x": 0.5, "y": 0.8}, "motion": "pulse", "dur": 4.2, "op": [0.2, 0.6], "blend": "screen"}
+      ],
+      "thumb": [
+        {"texture": "layer", "place": {"fit": "cover", "zoom": 1.15, "x": 0.5, "y": 0.5}, "motion": "drift", "move": [0.02, 0], "dur": 20, "op": [0.25, 0.5]},
+        {"texture": "accent", "place": {"fit": "cover", "zoom": 1.15, "x": 0.5, "y": 0.85}, "motion": "pulse", "dur": 4.2, "op": [0.3, 0.7], "blend": "screen"}
+      ]
+    }
+  },
+  "cave": {
+    "slug": "grotte",
+    "caveat": null,
+    "scenes": [
+      {"id": "abri", "variation": "Se cacher dans une grotte"},
+      {"id": "bloquee", "variation": "Être coincé dans une grotte"},
+      {"id": "exploration", "variation": "Explorer une grotte sombre"}
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {"texture": "layer", "place": {"fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.7}, "motion": "flow", "move": [0.004, -0.04], "dur": 12, "op": [0.15, 0.4], "copies": 2},
+          {"texture": "accent", "place": {"fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.45}, "motion": "drift", "move": [0.015, 0.01], "dur": 16, "op": [0.15, 0.45], "blend": "screen"}
+        ],
+        "portrait": [
+          {"texture": "layer", "place": {"fit": "width", "zoom": 1.2, "x": 0.5, "y": 0.7}, "motion": "flow", "move": [0.004, -0.04], "dur": 12, "op": [0.15, 0.4], "copies": 2},
+          {"texture": "accent", "place": {"fit": "width", "zoom": 1.1, "x": 0.5, "y": 0.45}, "motion": "drift", "move": [0.015, 0.01], "dur": 16, "op": [0.15, 0.45], "blend": "screen"}
+        ]
+      },
+      "plate": [
+        {"texture": "layer", "place": {"fit": "width", "zoom": 1.05, "x": 0.5, "y": 0.65}, "motion": "flow", "move": [0.004, -0.04], "dur": 12, "op": [0.15, 0.4], "copies": 2},
+        {"texture": "accent", "place": {"fit": "width", "zoom": 1.05, "x": 0.5, "y": 0.45}, "motion": "drift", "move": [0.015, 0.01], "dur": 16, "op": [0.15, 0.45], "blend": "screen"}
+      ],
+      "thumb": [
+        {"texture": "layer", "place": {"fit": "cover", "zoom": 1.15, "x": 0.5, "y": 0.7}, "motion": "flow", "move": [0.004, -0.04], "dur": 12, "op": [0.2, 0.5], "copies": 2},
+        {"texture": "accent", "place": {"fit": "cover", "zoom": 1.15, "x": 0.5, "y": 0.45}, "motion": "drift", "move": [0.015, 0.01], "dur": 16, "op": [0.2, 0.55], "blend": "screen"}
+      ]
+    }
+  },
+  "rose": {
+    "slug": "rose",
+    "caveat": null,
+    "scenes": [
+      {"id": "rouge", "variation": "Une rose rouge"},
+      {"id": "fanee", "variation": "Une rose fanée ou séchée"},
+      {"id": "epine", "variation": "Se piquer à une épine"}
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {"texture": "layer", "place": {"fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.35}, "motion": "flow", "move": [0.02, 0.06], "dur": 11, "op": [0.25, 0.6], "copies": 2},
+          {"texture": "accent", "place": {"fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.6}, "motion": "pulse", "dur": 3.4, "op": [0.15, 0.6], "blend": "screen"}
+        ],
+        "portrait": [
+          {"texture": "layer", "place": {"fit": "width", "zoom": 1.1, "x": 0.5, "y": 0.35}, "motion": "flow", "move": [0.02, 0.06], "dur": 11, "op": [0.25, 0.6], "copies": 2},
+          {"texture": "accent", "place": {"fit": "width", "zoom": 1.1, "x": 0.5, "y": 0.6}, "motion": "pulse", "dur": 3.4, "op": [0.15, 0.6], "blend": "screen"}
+        ]
+      },
+      "plate": [
+        {"texture": "layer", "place": {"fit": "width", "zoom": 1.05, "x": 0.5, "y": 0.3}, "motion": "flow", "move": [0.02, 0.06], "dur": 11, "op": [0.25, 0.6], "copies": 2},
+        {"texture": "accent", "place": {"fit": "width", "zoom": 1.05, "x": 0.5, "y": 0.55}, "motion": "pulse", "dur": 3.4, "op": [0.15, 0.6], "blend": "screen"}
+      ],
+      "thumb": [
+        {"texture": "layer", "place": {"fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.35}, "motion": "flow", "move": [0.02, 0.06], "dur": 11, "op": [0.3, 0.65], "copies": 2},
+        {"texture": "accent", "place": {"fit": "cover", "zoom": 1.15, "x": 0.5, "y": 0.6}, "motion": "pulse", "dur": 3.4, "op": [0.25, 0.75], "blend": "screen"}
+      ]
+    }
+  },
+  "lightning": {
+    "slug": "eclair",
+    "caveat": null,
+    "scenes": [
+      {"id": "lointain", "variation": "Voir un éclair au loin"},
+      {"id": "arbre", "variation": "La foudre qui tombe sur une maison ou un arbre"},
+      {"id": "abri", "variation": "Se mettre à l'abri de l'orage"}
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.45,
+      "hero": {
+        "landscape": [
+          {"texture": "layer", "place": {"fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.45}, "motion": "flow", "move": [-0.02, 0.06], "dur": 6, "op": [0.22, 0.5], "copies": 2},
+          {"texture": "accent", "place": {"fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.15}, "motion": "pulse", "dur": 7, "op": [0.06, 0.35], "blend": "screen"}
+        ],
+        "portrait": [
+          {"texture": "layer", "place": {"fit": "width", "zoom": 1.1, "x": 0.5, "y": 0.45}, "motion": "flow", "move": [-0.02, 0.06], "dur": 6, "op": [0.22, 0.5], "copies": 2},
+          {"texture": "accent", "place": {"fit": "width", "zoom": 1.1, "x": 0.5, "y": 0.1}, "motion": "pulse", "dur": 7, "op": [0.06, 0.35], "blend": "screen"}
+        ]
+      },
+      "plate": [
+        {"texture": "layer", "place": {"fit": "width", "zoom": 1.1, "x": 0.5, "y": 0.45}, "motion": "flow", "move": [-0.02, 0.06], "dur": 6, "op": [0.22, 0.5], "copies": 2},
+        {"texture": "accent", "place": {"fit": "width", "zoom": 1.1, "x": 0.5, "y": 0.2}, "motion": "pulse", "dur": 7, "op": [0.06, 0.35], "blend": "screen"}
+      ],
+      "thumb": [
+        {"texture": "layer", "place": {"fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.45}, "motion": "flow", "move": [-0.02, 0.06], "dur": 6, "op": [0.28, 0.6], "copies": 2},
+        {"texture": "accent", "place": {"fit": "cover", "zoom": 1.15, "x": 0.5, "y": 0.15}, "motion": "pulse", "dur": 7, "op": [0.1, 0.4], "blend": "screen"}
+      ],
+      "scenes": {
+        "abri": [
+          {"texture": "layer", "place": {"fit": "width", "zoom": 0.4, "at": [0.5, 0.35]}, "motion": "flow", "move": [-0.02, 0.06], "dur": 6, "op": [0.28, 0.6], "copies": 2},
+          {"texture": "accent", "place": {"fit": "width", "zoom": 0.4, "at": [0.5, 0.3]}, "motion": "pulse", "dur": 7, "op": [0.1, 0.4], "blend": "screen"}
+        ]
+      }
+    }
+  },
+  "whale": {
+    "slug": "baleine",
+    "caveat": null,
+    "scenes": [
+      {"id": "proche", "variation": "Une baleine qui nage à vos côtés"},
+      {"id": "echouee", "variation": "Une baleine échouée"},
+      {"id": "saut", "variation": "Une baleine qui saute hors de l'eau"}
+    ],
+    "portraitPosition": "50% 50%",
+    "motion": {
+      "parallax": 0.4,
+      "hero": {
+        "landscape": [
+          {"texture": "layer", "place": {"fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.55}, "motion": "flow", "move": [0.01, -0.03], "dur": 9, "op": [0.2, 0.5], "copies": 2},
+          {"texture": "accent", "place": {"fit": "cover", "zoom": 1.1, "x": 0.5, "y": 0.85}, "motion": "pulse", "dur": 4.5, "op": [0.2, 0.6], "blend": "screen"}
+        ],
+        "portrait": [
+          {"texture": "layer", "place": {"fit": "width", "zoom": 1.2, "x": 0.5, "y": 0.55}, "motion": "flow", "move": [0.01, -0.03], "dur": 9, "op": [0.2, 0.5], "copies": 2},
+          {"texture": "accent", "place": {"fit": "width", "zoom": 1.1, "x": 0.5, "y": 0.85}, "motion": "pulse", "dur": 4.5, "op": [0.2, 0.6], "blend": "screen"}
+        ]
+      },
+      "plate": [
+        {"texture": "layer", "place": {"fit": "width", "zoom": 1.05, "x": 0.5, "y": 0.5}, "motion": "flow", "move": [0.01, -0.03], "dur": 9, "op": [0.2, 0.5], "copies": 2},
+        {"texture": "accent", "place": {"fit": "width", "zoom": 1.05, "x": 0.5, "y": 0.8}, "motion": "pulse", "dur": 4.5, "op": [0.2, 0.6], "blend": "screen"}
+      ],
+      "thumb": [
+        {"texture": "layer", "place": {"fit": "cover", "zoom": 1.15, "x": 0.5, "y": 0.5}, "motion": "flow", "move": [0.01, -0.03], "dur": 9, "op": [0.25, 0.55], "copies": 2},
+        {"texture": "accent", "place": {"fit": "cover", "zoom": 1.15, "x": 0.5, "y": 0.85}, "motion": "pulse", "dur": 4.5, "op": [0.3, 0.7], "blend": "screen"}
+      ],
+      "scenes": {
+        "proche": [
+          {"texture": "layer", "place": {"fit": "cover", "zoom": 1.15, "x": 0.5, "y": 0.65}, "motion": "drift", "move": [0.015, -0.01], "dur": 16, "op": [0.15, 0.35]},
+          {"texture": "accent", "place": {"fit": "cover", "zoom": 1.15, "x": 0.5, "y": 0}, "motion": "pulse", "dur": 5, "op": [0.12, 0.4], "blend": "screen"}
+        ]
+      }
+    }
   }
 }

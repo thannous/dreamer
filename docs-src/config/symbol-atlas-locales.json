@@ -2407,6 +2407,198 @@
           "stage-fright-before-going-on": {"variation": "Nervosismo antes de entrar em cena", "anchor": "stage-fright-before-going-on"},
           "performing-without-rehearsing": {"variation": "Atuar sem ter ensaiado", "anchor": "performing-without-rehearsing"}
       } }
+    },
+    "owl": {
+      "fr": { "caveat": null, "scenes": {
+          "regard": {"variation": "Un hibou qui vous fixe", "anchor": "regard"},
+          "cri": {"variation": "Entendre un hibou hululer", "anchor": "cri"},
+          "blanc": {"variation": "Un hibou blanc ou une chouette blanche", "anchor": "blanc"}
+      } },
+      "en": { "caveat": null, "scenes": {
+          "regard": {"variation": "An owl staring at you", "anchor": "stare"},
+          "cri": {"variation": "Hearing an owl hoot", "anchor": "hoot"},
+          "blanc": {"variation": "A white owl", "anchor": "white-owl"}
+      } },
+      "es": { "caveat": null, "scenes": {
+          "regard": {"variation": "Un búho que te mira fijamente", "anchor": "mirada"},
+          "cri": {"variation": "Oír ulular a un búho", "anchor": "ulular"},
+          "blanc": {"variation": "Un búho blanco o una lechuza", "anchor": "buho-blanco"}
+      } },
+      "de": { "caveat": null, "scenes": {
+          "regard": {"variation": "Eine Eule, die Sie anstarrt", "anchor": "anstarren"},
+          "cri": {"variation": "Eine Eule rufen hören", "anchor": "rufen"},
+          "blanc": {"variation": "Eine weiße Eule", "anchor": "weisse-eule"}
+      } },
+      "it": { "caveat": null, "scenes": {
+          "regard": {"variation": "Un gufo che ti fissa", "anchor": "sguardo"},
+          "cri": {"variation": "Sentire il verso del gufo", "anchor": "verso"},
+          "blanc": {"variation": "Un gufo bianco", "anchor": "gufo-bianco"}
+      } },
+      "pt-br": { "caveat": null, "scenes": {
+          "regard": {"variation": "Uma coruja encarando você", "anchor": "olhar"},
+          "cri": {"variation": "Ouvir uma coruja piar", "anchor": "pio"},
+          "blanc": {"variation": "Uma coruja branca", "anchor": "coruja-branca"}
+      } }
+    },
+    "boat": {
+      "fr": { "caveat": null, "scenes": {
+          "calme": {"variation": "Un bateau sur une eau calme", "anchor": "calme"},
+          "tempete": {"variation": "Un bateau dans la tempête", "anchor": "tempete"},
+          "naufrage": {"variation": "Un bateau qui coule ou prend l'eau", "anchor": "naufrage"}
+      } },
+      "en": { "caveat": null, "scenes": {
+          "calme": {"variation": "A boat on calm water", "anchor": "calm-water"},
+          "tempete": {"variation": "A boat in a storm", "anchor": "storm"},
+          "naufrage": {"variation": "A sinking or leaking boat", "anchor": "sinking"}
+      } },
+      "es": { "caveat": null, "scenes": {
+          "calme": {"variation": "Un barco en aguas tranquilas", "anchor": "aguas-tranquilas"},
+          "tempete": {"variation": "Un barco en una tormenta", "anchor": "tormenta"},
+          "naufrage": {"variation": "Un barco que se hunde o hace agua", "anchor": "hundimiento"}
+      } },
+      "de": { "caveat": null, "scenes": {
+          "calme": {"variation": "Ein Boot auf ruhigem Wasser", "anchor": "ruhiges-wasser"},
+          "tempete": {"variation": "Ein Boot im Sturm", "anchor": "sturm"},
+          "naufrage": {"variation": "Ein sinkendes oder leckes Boot", "anchor": "sinkend"}
+      } },
+      "it": { "caveat": null, "scenes": {
+          "calme": {"variation": "Una barca su acque calme", "anchor": "acque-calme"},
+          "tempete": {"variation": "Una barca nella tempesta", "anchor": "tempesta"},
+          "naufrage": {"variation": "Una barca che affonda o imbarca acqua", "anchor": "affonda"}
+      } },
+      "pt-br": { "caveat": null, "scenes": {
+          "calme": {"variation": "Um barco em águas calmas", "anchor": "aguas-calmas"},
+          "tempete": {"variation": "Um barco na tempestade", "anchor": "tempestade"},
+          "naufrage": {"variation": "Um barco afundando ou fazendo água", "anchor": "naufragio"}
+      } }
+    },
+    "cave": {
+      "fr": { "caveat": null, "scenes": {
+          "abri": {"variation": "Se cacher dans une grotte", "anchor": "abri"},
+          "bloquee": {"variation": "Être coincé dans une grotte", "anchor": "bloquee"},
+          "exploration": {"variation": "Explorer une grotte sombre", "anchor": "exploration"}
+      } },
+      "en": { "caveat": null, "scenes": {
+          "abri": {"variation": "Hiding in a cave", "anchor": "hiding"},
+          "bloquee": {"variation": "Trapped in a cave", "anchor": "trapped"},
+          "exploration": {"variation": "Exploring a dark cave", "anchor": "exploring"}
+      } },
+      "es": { "caveat": null, "scenes": {
+          "abri": {"variation": "Esconderte en una cueva", "anchor": "esconderse"},
+          "bloquee": {"variation": "Quedarte atrapado en una cueva", "anchor": "atrapado"},
+          "exploration": {"variation": "Explorar una cueva oscura", "anchor": "explorar"}
+      } },
+      "de": { "caveat": null, "scenes": {
+          "abri": {"variation": "Sich in einer Höhle verstecken", "anchor": "verstecken"},
+          "bloquee": {"variation": "In einer Höhle eingeschlossen sein", "anchor": "eingeschlossen"},
+          "exploration": {"variation": "Eine dunkle Höhle erkunden", "anchor": "erkunden"}
+      } },
+      "it": { "caveat": null, "scenes": {
+          "abri": {"variation": "Nascondersi in una grotta", "anchor": "nascondersi"},
+          "bloquee": {"variation": "Restare intrappolato in una grotta", "anchor": "intrappolato"},
+          "exploration": {"variation": "Esplorare una grotta buia", "anchor": "esplorare"}
+      } },
+      "pt-br": { "caveat": null, "scenes": {
+          "abri": {"variation": "Esconder-se em uma caverna", "anchor": "esconder-se"},
+          "bloquee": {"variation": "Ficar preso em uma caverna", "anchor": "preso"},
+          "exploration": {"variation": "Explorar uma caverna escura", "anchor": "explorar"}
+      } }
+    },
+    "rose": {
+      "fr": { "caveat": null, "scenes": {
+          "rouge": {"variation": "Une rose rouge", "anchor": "rouge"},
+          "fanee": {"variation": "Une rose fanée ou séchée", "anchor": "fanee"},
+          "epine": {"variation": "Se piquer à une épine", "anchor": "epine"}
+      } },
+      "en": { "caveat": null, "scenes": {
+          "rouge": {"variation": "A red rose", "anchor": "red-rose"},
+          "fanee": {"variation": "A wilted or dried rose", "anchor": "wilted"},
+          "epine": {"variation": "Pricked by a thorn", "anchor": "thorn"}
+      } },
+      "es": { "caveat": null, "scenes": {
+          "rouge": {"variation": "Una rosa roja", "anchor": "rosa-roja"},
+          "fanee": {"variation": "Una rosa marchita o seca", "anchor": "marchita"},
+          "epine": {"variation": "Pincharse con una espina", "anchor": "espina"}
+      } },
+      "de": { "caveat": null, "scenes": {
+          "rouge": {"variation": "Eine rote Rose", "anchor": "rote-rose"},
+          "fanee": {"variation": "Eine verwelkte oder getrocknete Rose", "anchor": "verwelkt"},
+          "epine": {"variation": "Sich an einem Dorn stechen", "anchor": "dorn"}
+      } },
+      "it": { "caveat": null, "scenes": {
+          "rouge": {"variation": "Una rosa rossa", "anchor": "rosa-rossa"},
+          "fanee": {"variation": "Una rosa appassita o secca", "anchor": "appassita"},
+          "epine": {"variation": "Pungersi con una spina", "anchor": "spina"}
+      } },
+      "pt-br": { "caveat": null, "scenes": {
+          "rouge": {"variation": "Uma rosa vermelha", "anchor": "rosa-vermelha"},
+          "fanee": {"variation": "Uma rosa murcha ou seca", "anchor": "murcha"},
+          "epine": {"variation": "Espetar-se em um espinho", "anchor": "espinho"}
+      } }
+    },
+    "lightning": {
+      "fr": { "caveat": null, "scenes": {
+          "lointain": {"variation": "Voir un éclair au loin", "anchor": "lointain"},
+          "arbre": {"variation": "La foudre qui tombe sur une maison ou un arbre", "anchor": "arbre"},
+          "abri": {"variation": "Se mettre à l'abri de l'orage", "anchor": "abri"}
+      } },
+      "en": { "caveat": null, "scenes": {
+          "lointain": {"variation": "Seeing lightning in the distance", "anchor": "distance"},
+          "arbre": {"variation": "Lightning hitting a house or a tree", "anchor": "strike"},
+          "abri": {"variation": "Taking shelter from the storm", "anchor": "shelter"}
+      } },
+      "es": { "caveat": null, "scenes": {
+          "lointain": {"variation": "Ver un rayo a lo lejos", "anchor": "a-lo-lejos"},
+          "arbre": {"variation": "Un rayo que cae sobre una casa o un árbol", "anchor": "impacto"},
+          "abri": {"variation": "Ponerte a cubierto de la tormenta", "anchor": "refugio"}
+      } },
+      "de": { "caveat": null, "scenes": {
+          "lointain": {"variation": "Einen Blitz in der Ferne sehen", "anchor": "ferne"},
+          "arbre": {"variation": "Ein Blitz schlägt in ein Haus oder einen Baum ein", "anchor": "einschlag"},
+          "abri": {"variation": "Vor dem Gewitter Schutz suchen", "anchor": "schutz"}
+      } },
+      "it": { "caveat": null, "scenes": {
+          "lointain": {"variation": "Vedere un fulmine in lontananza", "anchor": "lontananza"},
+          "arbre": {"variation": "Un fulmine che cade su una casa o un albero", "anchor": "colpito"},
+          "abri": {"variation": "Ripararsi dal temporale", "anchor": "riparo"}
+      } },
+      "pt-br": { "caveat": null, "scenes": {
+          "lointain": {"variation": "Ver um raio ao longe", "anchor": "ao-longe"},
+          "arbre": {"variation": "Um raio caindo sobre uma casa ou uma árvore", "anchor": "queda"},
+          "abri": {"variation": "Abrigar-se da tempestade", "anchor": "abrigo"}
+      } }
+    },
+    "whale": {
+      "fr": { "caveat": null, "scenes": {
+          "proche": {"variation": "Une baleine qui nage à vos côtés", "anchor": "proche"},
+          "echouee": {"variation": "Une baleine échouée", "anchor": "echouee"},
+          "saut": {"variation": "Une baleine qui saute hors de l'eau", "anchor": "saut"}
+      } },
+      "en": { "caveat": null, "scenes": {
+          "proche": {"variation": "A whale swimming beside you", "anchor": "beside-you"},
+          "echouee": {"variation": "A beached whale", "anchor": "beached"},
+          "saut": {"variation": "A whale leaping out of the water", "anchor": "breach"}
+      } },
+      "es": { "caveat": null, "scenes": {
+          "proche": {"variation": "Una ballena que nada a tu lado", "anchor": "a-tu-lado"},
+          "echouee": {"variation": "Una ballena varada", "anchor": "varada"},
+          "saut": {"variation": "Una ballena que salta fuera del agua", "anchor": "salto"}
+      } },
+      "de": { "caveat": null, "scenes": {
+          "proche": {"variation": "Ein Wal, der neben Ihnen schwimmt", "anchor": "neben-ihnen"},
+          "echouee": {"variation": "Ein gestrandeter Wal", "anchor": "gestrandet"},
+          "saut": {"variation": "Ein Wal, der aus dem Wasser springt", "anchor": "sprung"}
+      } },
+      "it": { "caveat": null, "scenes": {
+          "proche": {"variation": "Una balena che nuota accanto a te", "anchor": "accanto"},
+          "echouee": {"variation": "Una balena spiaggiata", "anchor": "spiaggiata"},
+          "saut": {"variation": "Una balena che salta fuori dall’acqua", "anchor": "salto"}
+      } },
+      "pt-br": { "caveat": null, "scenes": {
+          "proche": {"variation": "Uma baleia nadando ao seu lado", "anchor": "ao-seu-lado"},
+          "echouee": {"variation": "Uma baleia encalhada", "anchor": "encalhada"},
+          "saut": {"variation": "Uma baleia saltando fora da água", "anchor": "salto"}
+      } }
     }
   }
 }
