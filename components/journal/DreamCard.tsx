@@ -56,11 +56,15 @@ const SCRIM_FADE_LOCATIONS = [0, 0.14, 0.3, 0.5, 0.7, 0.88, 1] as const;
 const SCRIM_FADE_STRENGTH = [0, 0.13, 0.3, 0.52, 0.75, 0.92, 1] as const;
 // The heart and share icons at the card's top right, each a 44 pt touch target.
 const CARD_ACTION_STYLE = { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center' } as const;
+// The date on the icons' line: a pill of the same height and veil as their discs.
+const CARD_DATE_STYLE = { minHeight: 44, borderRadius: 22, paddingHorizontal: 14, flexDirection: 'row', alignItems: 'center', gap: 9, flexShrink: 1, minWidth: 0 } as const;
+// Below this card width (scaled with the text), the date names its month and year only.
+const CARD_DATE_FULL_WIDTH = 340;
 // The arrow beside the dream's last line: 28 pt wide, grown to a 44 pt touch target.
 const EXPAND_ARROW_WIDTH = 28;
-// The reading block's side and bottom padding (px-5, pb-5) and the gap between its lines (gap-1.5).
-const READING_INSET = 20;
-const READING_GAP = 6;
+// The reading block's side and bottom padding (px-6, pb-6) and the gap between its lines (gap-2).
+const READING_INSET = 24;
+const READING_GAP = 8;
 const EXPAND_HIT_SLOP = { top: 11, bottom: 11, left: 8, right: 8 } as const;
 // Narrower than any letter of the reading face, in ems: four lines of it overflow any three.
 const NARROWEST_LETTER_EM = 0.18;
@@ -186,6 +190,11 @@ export const DreamCard = memo(function DreamCard({
   const [reading, setReading] = useState({ key: readingKey, expanded: false, canExpand: false });
   const expanded = reading.key === readingKey && reading.expanded;
   const { canExpand } = reading;
+  // A dream unfolded here folds again once the card shows another one: only then does the card
+  // render again for it, so it comes back folded whichever card it lands in.
+  useEffect(() => {
+    if (reading.expanded && reading.key !== readingKey) setReading((previous) => ({ ...previous, expanded: false }));
+  }, [reading.expanded, reading.key, readingKey]);
   // The dream's last line ends just above its labels, at the foot of the card: their height
   // alone places the arrow beside it. Sizes, not positions, because the web reports a layout
   // only when a size changes, while a recycled card or a resized list can move the text.
@@ -198,7 +207,7 @@ export const DreamCard = memo(function DreamCard({
     && failedImageAttempt !== imageAttemptKey;
   // Only an illustration drifts: the seal's night has no drifting frame. Destructured: read
   // through the returned object, the frame ref keeps React Compiler off this card.
-  const { frame: coverFrame, style: coverParallaxStyle } = useFrameParallax(hasImage ? coverTravel : 0);
+  const { frame: coverFrame, style: coverParallaxStyle, onLayout: onCoverFrameLayout } = useFrameParallax(hasImage ? coverTravel : 0);
   useEffect(() => {
     if (!hasImage) setFoldedReadingHeight(foldedReading.current);
   }, [hasImage]);
@@ -236,7 +245,12 @@ export const DreamCard = memo(function DreamCard({
     : dream.dreamType;
   const typeLabel = getDreamTypeLabel(dreamType, t);
   const locale = getFormattingLocale(currentLang ?? 'en');
-  const dateLine = formatLocaleDate(dream.id, locale, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  // An almanac leaf: the day's numeral, then its weekday over its month and year; a narrow card
+  // keeps the month and year only.
+  const fullDate = coverWidth >= CARD_DATE_FULL_WIDTH * compactTextScale;
+  const dateDay = String(new Date(dream.id).getDate());
+  const dateEyebrow = formatLocaleDate(dream.id, locale, fullDate ? { weekday: 'long' } : { month: 'short' });
+  const dateFoot = formatLocaleDate(dream.id, locale, fullDate ? { month: 'long', year: 'numeric' } : { year: 'numeric' });
   const syncState = isMockModeEnabled() ? 'clean' : getDreamSyncState(dream);
 
   const badges = useMemo(() => {
@@ -245,14 +259,8 @@ export const DreamCard = memo(function DreamCard({
       icon?: Parameters<typeof IconSymbol>[0]['name'];
       variant: keyof typeof BADGE_TEXT_CLASS;
     }[] = [];
-    if (isExplored) {
-      list.push({
-        label: t('journal.badge.explored'),
-        icon: 'bubble.left.and.bubble.right.fill',
-        variant: 'secondary',
-      });
-    }
-    // An analysed dream is the usual case: its card names no state (owner decision 2026-10-20).
+    // An analysed or deepened dream is the usual case: its card names no state (owner
+    // decisions 2026-10-20).
     if (!isAnalyzed && !isExplored) {
       list.push({
         label: analysisState.status === 'pending'
@@ -374,13 +382,7 @@ export const DreamCard = memo(function DreamCard({
   );
   const labelClass = 'min-w-0 shrink font-sans text-[12px] leading-[18px] text-illustration-text';
   const labelIconColor = noctalia.illustration.text;
-  // When, then what the dream is: the date above the title, its labels and state below the text.
-  const dateOverline = (
-    <Text key={`date-${fontScale}`} allowFontScaling={false} style={{ fontSize: 12 * compactTextScale, lineHeight: 16 * compactTextScale, letterSpacing: 1.6 }}
-      className="font-sans-medium text-[12px] uppercase leading-[16px] text-illustration-text">
-      {dateLine}
-    </Text>
-  );
+  // What the dream is, below its text: its kind, theme, signals and state.
   const metadata = (
     <View key={`metadata-${fontScale}`} className="flex-row flex-wrap items-center gap-x-3 gap-y-1 pt-1" testID={testID && `journal.metadata.${testID}`}
       onLayout={(event) => {
@@ -405,10 +407,32 @@ export const DreamCard = memo(function DreamCard({
       {badgeList}
     </View>
   );
-  // Over the painting or the seal's night, each icon sits on a disc of the reading veil.
+  // Over the painting or the seal's night, each icon sits on a disc of the reading veil, and the
+  // date on a pill of it at the line's start. The card's own label already names the date.
   const actionStyle = [CARD_ACTION_STYLE, { backgroundColor: noctalia.illustration.scrim }];
+  const dateChip = (
+    <View key={`date-${fontScale}`} style={[CARD_DATE_STYLE, { backgroundColor: noctalia.illustration.scrim }]} pointerEvents="none"
+      accessible={false} accessibilityElementsHidden importantForAccessibility="no-hide-descendants" testID={testID && `journal.date.${testID}`}>
+      <Text allowFontScaling={false} style={{ fontSize: 24 * compactTextScale, lineHeight: 28 * compactTextScale }}
+        className="font-display text-[24px] leading-[28px] text-illustration-text">
+        {dateDay}
+      </Text>
+      <View className="min-w-0 shrink">
+        <Text allowFontScaling={false} numberOfLines={1} style={{ fontSize: 10 * compactTextScale, lineHeight: 14 * compactTextScale, letterSpacing: 1.6 }}
+          className="font-sans-medium text-[10px] uppercase leading-[14px] text-illustration-text">
+          {dateEyebrow}
+        </Text>
+        <Text allowFontScaling={false} numberOfLines={1} style={{ fontSize: 11 * compactTextScale, lineHeight: 14 * compactTextScale }}
+          className="font-sans text-[11px] leading-[14px] text-illustration-text">
+          {dateFoot}
+        </Text>
+      </View>
+    </View>
+  );
   const actions = (
-    <View className="absolute right-3 top-3 flex-row gap-2">
+    <View className="absolute left-3 right-3 top-3 flex-row items-start justify-between gap-2" pointerEvents="box-none">
+      {dateChip}
+      <View className="flex-row gap-2">
       {onToggleFavorite ? (
         <Pressable accessibilityRole="button" accessibilityState={{ selected: isFavorite }}
           accessibilityLabel={t('journal.badge.favorite')} hitSlop={4} onPress={(event) => { event.stopPropagation(); onToggleFavorite(dream); }}
@@ -424,6 +448,7 @@ export const DreamCard = memo(function DreamCard({
           <IconSymbol name="square.and.arrow.up" size={21} color={labelIconColor} />
         </Pressable>
       ) : null}
+      </View>
     </View>
   );
   // Over the card rather than inside its button: a button never holds another one.
@@ -451,7 +476,7 @@ export const DreamCard = memo(function DreamCard({
         testID={testID && `journal.cover.${testID}`}
       >
         {hasImage ? (
-          <Animated.View ref={coverFrame} style={COVER_FRAME_STYLE} pointerEvents="none">
+          <Animated.View ref={coverFrame} style={COVER_FRAME_STYLE} pointerEvents="none" onLayout={onCoverFrameLayout}>
           <Animated.View style={[{ position: 'absolute', left: 0, right: 0, top: -coverTravel, bottom: -coverTravel }, coverParallaxStyle]}>
           <Image
             source={imageUri ? { uri: imageUri, cacheKey: preferFullImage ? media.imageCacheKey : thumbnailCacheKey } : null}
@@ -494,14 +519,13 @@ export const DreamCard = memo(function DreamCard({
           pointerEvents="none"
         />
         {/* In-flow backing grows with the dream's text; the card grows past 9:16 only when unfolded. */}
-        <View className="gap-1.5 bg-illustration-scrim px-5 pb-5" testID={testID && `journal.text.${testID}`}
+        <View className="gap-2 bg-illustration-scrim px-6 pb-6" testID={testID && `journal.text.${testID}`}
           onLayout={(event) => {
             const { height } = event.nativeEvent.layout;
             if (height <= 0 || expanded) return;
             foldedReading.current = height;
             if (!hasImage) setFoldedReadingHeight((previous) => previous === height ? previous : height);
           }}>
-          {dateOverline}
           {readingText}
           {metadata}
         </View>
