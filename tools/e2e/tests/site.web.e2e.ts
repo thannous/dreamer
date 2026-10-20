@@ -771,7 +771,7 @@ function readAtlasSix() {
     article: box(document.querySelector('article.atlas')),
     rail: box(document.querySelector('.atlas-rail')),
     list: box(document.querySelector('.atlas-scene-list')),
-    reflection: box(document.querySelector('#reflexion')),
+    reflection: box(document.querySelector('.atlas-reflection')),
     reading: box(document.querySelector('.atlas-reading')),
     decor: box(document.querySelector('.atlas-decor')),
     plate: document.querySelector('.atlas-decor')?.getAttribute('data-living-surface') ?? null,
@@ -802,7 +802,7 @@ function readAtlasSix() {
       thumbnails: document.querySelectorAll('.atlas-scene-thumb').length,
     },
     checked: checked?.value ?? null,
-    shown: shown.map(node => ({ scene: node.dataset.scene ?? '', inReading: Boolean(node.closest('#reflexion')), text: flat(node.querySelector('.atlas-scene-question')) + flat(node.querySelector('.atlas-scene-excerpt')) })),
+    shown: shown.map(node => ({ scene: node.dataset.scene ?? '', inReading: Boolean(node.closest('.atlas-reflection')), text: flat(node.querySelector('.atlas-scene-question')) + flat(node.querySelector('.atlas-scene-excerpt')) })),
     card: card ? flat(card.querySelector('p')) : null,
     navGround: getComputedStyle(document.querySelector('#navbar')!).backgroundColor,
   };
@@ -1388,3 +1388,141 @@ test('the pt-br dictionary links every pt-br symbol, searches and filters in Por
   })).toEqual({ path: '/pt-br/simbolos/lugares', lang: 'pt-BR', cards: 40, foreign: [], cemetery: true });
   await app.screenshot('dictionary-pt-br-places-390');
 });
+
+// Missing-symbol work package: the literal list stays independent of the activation config.
+// These journeys catch a decoded-but-wrong portrait, a transparent rectangle, an effect placed
+// entirely outside a crop, a scene with the wrong editorial reading, and a moving base painting.
+const NEW_SYMBOL_PACKS = [
+  {"id": "light", "slug": "lumiere", "name": "Lumière", "scenes": ["a-light-switch-that-does-nothing", "a-light-going-out", "a-blinding-light"]},
+  {"id": "lighthouse", "slug": "phare", "name": "Phare", "scenes": ["a-lighthouse-beam-sweeping-the-night", "a-lighthouse-that-goes-dark", "seeing-a-lighthouse-from-a-boat-in-a-s"]},
+  {"id": "window", "slug": "fenetre", "name": "Fenêtre", "scenes": ["looking-out-of-a-window", "someone-at-the-window", "a-window-that-will-not-close"]},
+  {"id": "train-station", "slug": "gare", "name": "Gare", "scenes": ["missing-the-train", "waiting-on-a-platform", "the-wrong-platform-or-the-wrong-train"]},
+  {"id": "wall", "slug": "mur", "name": "Mur", "scenes": ["a-wall-blocking-your-way", "climbing-over-a-wall", "a-crumbling-or-collapsing-wall"]},
+  {"id": "library", "slug": "bibliotheque", "name": "Bibliothèque", "scenes": ["searching-for-a-book-you-cannot-find", "an-endless-library", "a-silent-library-at-night"]},
+  {"id": "neighbor", "slug": "voisin", "name": "Voisin", "scenes": ["an-argument-with-a-neighbor", "a-neighbor-coming-into-your-home", "a-friendly-or-helpful-neighbor"]},
+  {"id": "hallway", "slug": "couloir", "name": "Couloir", "scenes": ["an-endless-hallway", "doors-on-both-sides", "a-dark-hallway-at-night"]},
+  {"id": "city", "slug": "ville", "name": "Ville", "scenes": ["an-unknown-city", "being-lost-in-a-city", "a-city-at-night"]},
+  {"id": "street", "slug": "rue", "name": "Rue", "scenes": ["an-empty-street-at-night", "a-busy-crowded-street", "the-street-where-you-grew-up"]},
+  {"id": "tunnel", "slug": "tunnel", "name": "Tunnel", "scenes": ["a-dark-tunnel", "light-at-the-end-of-the-tunnel", "a-tunnel-that-narrows"]},
+  {"id": "maze", "slug": "labyrinthe", "name": "Labyrinthe", "scenes": ["lost-in-a-maze-with-no-way-out", "a-hedge-maze-or-garden-maze", "a-maze-of-corridors-or-rooms"]},
+  {"id": "tower", "slug": "tour", "name": "Tour", "scenes": ["climbing-a-tower-or-endless-stairs", "stuck-at-the-top-of-a-tower", "a-tower-collapsing-or-leaning"]},
+  {"id": "wind", "slug": "vent", "name": "Vent", "scenes": ["a-strong-wind-pushing-you-back", "being-lifted-by-the-wind", "wind-blowing-through-the-house"]},
+  {"id": "fog", "slug": "brouillard", "name": "Brouillard", "scenes": ["driving-in-fog", "being-lost-in-fog", "someone-appearing-out-of-the-fog"]},
+  {"id": "ice", "slug": "glace", "name": "Glace / Gel", "scenes": ["thin-ice-cracking-under-you", "falling-through-the-ice", "slipping-or-unable-to-stand-on-ice"]},
+  {"id": "clouds", "slug": "nuages", "name": "Nuages", "scenes": ["white-clouds-drifting-in-a-blue-sky", "dark-clouds-gathering", "walking-or-lying-on-clouds"]},
+  {"id": "waves", "slug": "vagues", "name": "Vagues", "scenes": ["watching-huge-waves-from-the-shore", "being-knocked-over-by-a-wave", "a-wave-about-to-break-over-you"]},
+  {"id": "outer-space", "slug": "espace", "name": "Espace / Planètes", "scenes": ["floating-weightless-in-space", "travelling-to-another-planet", "seeing-the-earth-from-far-away"]},
+  {"id": "burglar", "slug": "cambrioleur", "name": "Voleur / Cambrioleur", "scenes": ["hearing-a-burglar-in-the-house-at-nigh", "being-robbed", "hiding-from-a-burglar"]},
+  {"id": "royalty", "slug": "roi-reine", "name": "Roi / Reine", "scenes": ["meeting-a-king-or-queen", "being-crowned-king-or-queen", "a-king-or-queen-giving-you-an-order"]},
+  {"id": "crowd", "slug": "foule", "name": "Foule", "scenes": ["being-lost-in-a-crowd", "a-crowd-staring-at-you", "speaking-or-performing-in-front-of-a-c"]},
+  {"id": "twins", "slug": "jumeaux", "name": "Jumeaux", "scenes": ["being-pregnant-with-twins", "having-a-twin-you-never-had", "seeing-identical-twins"]},
+  {"id": "dragon", "slug": "dragon", "name": "Dragon", "scenes": ["a-dragon-attacking-or-chasing-you", "fighting-or-slaying-a-dragon", "riding-or-flying-on-a-dragon"]},
+  {"id": "unicorn", "slug": "licorne", "name": "Licorne", "scenes": ["seeing-a-unicorn", "riding-a-unicorn", "a-wounded-black-or-dark-unicorn"]},
+  {"id": "fox", "slug": "renard", "name": "Renard", "scenes": ["a-fox-crossing-the-road", "a-fox-watching-you", "a-fox-biting-or-attacking-you"]},
+  {"id": "fly", "slug": "mouche", "name": "Mouche", "scenes": ["a-swarm-of-flies", "killing-a-fly", "flies-on-food"]},
+  {"id": "jellyfish", "slug": "meduse", "name": "Méduse", "scenes": ["being-stung-by-a-jellyfish", "swimming-among-many-jellyfish", "a-glowing-jellyfish-in-the-dark"]},
+  {"id": "octopus", "slug": "pieuvre", "name": "Pieuvre / Poulpe", "scenes": ["tentacles-wrapping-around-you", "an-octopus-watching-you", "a-cloud-of-ink"]},
+  {"id": "broken-glass", "slug": "verre-brise", "name": "Verre brisé", "scenes": ["walking-on-broken-glass", "breaking-a-glass-yourself", "glass-in-your-mouth"]},
+  {"id": "gift", "slug": "cadeau", "name": "Cadeau", "scenes": ["receiving-an-unexpected-gift", "opening-an-empty-box", "a-gift-from-someone-who-has-died"]},
+  {"id": "bag", "slug": "sac", "name": "Sac / Sac à main", "scenes": ["losing-your-bag", "a-stolen-bag", "a-bag-that-is-too-heavy"]},
+  {"id": "explosion", "slug": "explosion", "name": "Explosion / Bombe", "scenes": ["a-sudden-explosion-out-of-nowhere", "a-bomb-you-have-to-defuse", "an-explosion-in-the-house"]},
+  {"id": "searching", "slug": "chercher", "name": "Chercher quelque chose", "scenes": ["looking-for-your-keys-or-your-phone", "looking-for-your-car-in-a-car-park", "searching-and-never-finding"]},
+  {"id": "driving", "slug": "conduire", "name": "Conduire / Perdre le contrôle", "scenes": ["brakes-that-stop-working", "driving-without-a-licence-or-without-k", "someone-else-grabbing-the-wheel"]},
+  {"id": "climbing", "slug": "grimper", "name": "Grimper", "scenes": ["climbing-a-mountain", "climbing-a-ladder", "never-reaching-the-top"]},
+  {"id": "breakup", "slug": "rupture", "name": "Rupture", "scenes": ["being-left-by-your-current-partner", "breaking-up-with-your-partner", "an-ex-breaking-up-with-you-again"]},
+  {"id": "stage", "slug": "etre-sur-scene", "name": "Être sur scène", "scenes": ["forgetting-your-lines-on-stage", "stage-fright-before-going-on", "performing-without-rehearsing"]},
+  {"id": "clock", "slug": "horloge", "name": "Horloge", "scenes": ["arretee", "aiguilles", "clocher"]},
+  {"id": "candle", "slug": "bougie", "name": "Bougie", "scenes": ["seule", "anniversaire", "ceremonie"]},
+] as const;
+
+for (const page of NEW_SYMBOL_PACKS) {
+  test('new symbol packs: ' + page.id + ' renders every surface and its two effects', { timeout: 180_000 }, async ({ app, browser, screen }) => {
+    await browser.setViewport({ width: 2560, height: 1440 });
+    await app.open('/fr/symboles/' + page.slug + '.html');
+    await browser.emulateMedia({ reducedMotion: 'no-preference' });
+    await expect(screen.getByRole('heading', { level: 1 })).toHaveText(page.name);
+    // Keep the art review clear of the consent banner, using the real opt-out control.
+    if (await browser.evaluate(() => Array.from(document.querySelectorAll('button')).some(button => button.textContent?.trim() === 'Continuer sans mesure'))) {
+      await screen.getByRole('button', { name: 'Continuer sans mesure', exact: true }).tap();
+    }
+    const moving = async (name: string) => {
+      await expect.poll(() => browser.evaluate(readSurfaces).then(all => {
+        const s = surfaceNamed(all, name);
+        return s && [s.living, s.state];
+      })).toEqual(['ready', 'running']);
+      const start = surfaceNamed(await browser.evaluate(readSurfaces), name);
+      expect(start.channels).toEqual(['a', 'b']);
+      expect(start.textures[0]).not.toBe(start.textures[1]);
+      expect(start.opaque.every(count => count > 0)).toBe(true);
+      expect(start.stretch.every(gap => gap < 0.01)).toBe(true);
+      await expect.poll(() => browser.evaluate(readSurfaces).then(all => surfaceNamed(all, name).frames.map((frame, i) => frame !== start.frames[i]))).toEqual([true, true]);
+    };
+    await moving('hero');
+    const wide = await browser.evaluate(readAtlasSix);
+    expect(wide.src).toContain('/' + page.id + '/hero-');
+    expect(wide.overflow).toBe(false);
+    expect(wide.paintingAnimations).toBe(0);
+    expect(wide.hero.top).toBe(0);
+    expect(wide.hero.width).toBe(2560);
+    await app.screenshot('pack-' + page.id + '-2560-hero');
+
+    for (const name of ['plate', ...page.scenes.map(scene => 'scene-' + scene)]) {
+      await browser.evaluate((surface: string) => {
+        document.querySelector('[data-living-surface="' + surface + '"]')!.scrollIntoView({ block: 'center', behavior: 'instant' });
+        return window.scrollY;
+      }, name);
+      await moving(name);
+      if (name === 'plate') await app.screenshot('pack-' + page.id + '-2560-plate');
+    }
+    for (const scene of page.scenes) {
+      const label = await browser.evaluate((id: string) => document.querySelector('label[for="atlas-scene-' + id + '"] .atlas-scene-label')!.textContent!.trim(), scene);
+      await screen.getByText(label, { exact: true }).first().tap();
+      expectSixScene(await browser.evaluate(readAtlasSix), scene);
+    }
+    await app.screenshot('pack-' + page.id + '-2560-scenes');
+    await browser.emulateMedia({ reducedMotion: 'reduce' });
+    await expect.poll(() => browser.evaluate(readSurfaces).then(all => [...new Set(all.map(s => s.state))])).toEqual(['reduced']);
+
+    await browser.setViewport({ width: 390, height: 844 });
+    await app.open('/fr/symboles/' + page.slug + '.html');
+    await browser.emulateMedia({ reducedMotion: 'no-preference' });
+    await moving('hero');
+    const phone = await browser.evaluate(readAtlasSix);
+    expect(phone.src).toContain('/' + page.id + '/portrait-');
+    expect(phone.hero.top).toBe(0);
+    expect(phone.hero.height).toBeCloseTo(844 * 0.75, 0);
+    expect(phone.overflow).toBe(false);
+    expect(await browser.evaluate(() => performance.getEntriesByType('resource').some(e => /\/plate-[0-9]+-/.test(e.name)))).toBe(false);
+    await app.screenshot('pack-' + page.id + '-390-hero');
+    await app.open('/fr/symboles/' + page.slug + '.html#scenes');
+    await expect(screen.getByRole('heading', { name: 'Scènes courantes', exact: true })).toBeVisible();
+    await expect.poll(() => browser.evaluate(() => {
+      const covers = ['#navbar', '.symbol-jump-nav'].map(selector => document.querySelector(selector)!.getBoundingClientRect())
+        .filter(rect => rect.height > 0 && rect.bottom > 0).map(rect => rect.bottom);
+      const title = document.querySelector('#atlas-scenes-title')!.getBoundingClientRect();
+      const hit = document.elementFromPoint(title.left + 8, title.top + title.height / 2);
+      return title.top >= Math.max(0, ...covers) && title.bottom <= innerHeight && Boolean(hit?.closest('#atlas-scenes-title'));
+    }), { timeout: 15_000 }).toBe(true);
+    for (const scene of page.scenes) await moving('scene-' + scene);
+    await app.screenshot('pack-' + page.id + '-390-scenes');
+
+    const catalog = JSON.parse(readFileSync(new URL('../../../data/dream-symbols.json', import.meta.url), 'utf8')).symbols.find((s: {id: string}) => s.id === page.id);
+    const paths: Record<string,string> = { en: 'symbols', es: 'simbolos', de: 'traumsymbole', it: 'simboli', 'pt-br': 'simbolos' };
+    for (const [lang, route] of Object.entries(paths)) {
+      const content = catalog[lang === 'pt-br' ? 'pt' : lang];
+      for (const viewport of [{ width: 2560, height: 1440 }, { width: 390, height: 844 }]) {
+        await browser.setViewport(viewport);
+        await app.open('/' + lang + '/' + route + '/' + content.slug + '.html');
+        await expect(screen.getByRole('heading', { level: 1 })).toHaveText(content.name);
+        await expect.poll(() => browser.evaluate(() => {
+          const img = document.querySelector<HTMLImageElement>('.symbol-hero img');
+          return Boolean(img?.complete && img.naturalWidth && document.querySelectorAll('.atlas-scene-input').length === 3);
+        })).toBe(true);
+        const localized = await browser.evaluate(readAtlasSix);
+        expect(localized.src).toContain('/' + page.id + '/' + (viewport.width === 390 ? 'portrait-' : 'hero-'));
+        expect(localized.overflow).toBe(false);
+        expectSixScene(localized, page.scenes[0]);
+      }
+    }
+  });
+}

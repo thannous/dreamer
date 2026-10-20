@@ -148,7 +148,9 @@ function buildSymbolAtlas(extended = buildExtendedMap()) {
           // The card's own spelling, so the app finds it in whatever copy of the content it holds.
           variation[language] = card.context;
         }
-        return { id: scene.id, image: picture(image), layers: layers(pilot.motion.thumb, image), variation };
+        // A scene may have its own motion; the others move as the thumbnails do on the site.
+        const effects = pilot.motion.scenes?.[scene.id] ?? pilot.motion.thumb;
+        return { id: scene.id, image: picture(image), layers: layers(effects, image), variation };
       });
 
     symbols[id] = {

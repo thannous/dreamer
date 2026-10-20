@@ -10,9 +10,10 @@ const ATLAS_SIX_IMAGES = '/img/symbols/atlas-six-v2';
 
 // A 16:9 texture keeps its ratio over a painting of another ratio: it fits the painting's
 // width ('width') or covers it ('cover'), optionally zoomed on the part that carries the
-// effect, anchored by x and y (0 = left or top edge, 1 = right or bottom edge). The stage
-// clips what overflows; the side illustration also masks it with its own alpha.
-function atlasSixBox({ fit, zoom = 1, x = 0.5, y = 0.5 }, painting, texture) {
+// effect (below 1 for a local glow), anchored by x and y (0 = left or top edge, 1 = right or
+// bottom edge). The stage clips what overflows; the side illustration also masks it with its
+// own alpha. Optional at places the texture centre on a painting coordinate, including near an edge.
+function atlasSixBox({ fit, zoom = 1, x = 0.5, y = 0.5, at }, painting, texture) {
   const ratio = (painting.width / painting.height) / (texture.width / texture.height);
   let w = 1;
   let h = ratio;
@@ -23,7 +24,7 @@ function atlasSixBox({ fit, zoom = 1, x = 0.5, y = 0.5 }, painting, texture) {
   w *= zoom;
   h *= zoom;
   const round = (value) => Number(value.toFixed(4));
-  return [round(x * (1 - w)), round(y * (1 - h)), round(w), round(h)];
+  return [round(at ? at[0] - w / 2 : x * (1 - w)), round(at ? at[1] - h / 2 : y * (1 - h)), round(w), round(h)];
 }
 
 // The texture closest to `max` pixels wide without exceeding it (the smallest otherwise).
