@@ -44,13 +44,20 @@ export const DreamShareImage = forwardRef<ViewInstance, DreamShareImageProps>(fu
     const timer = setTimeout(() => setSettled({ source: imageSource, shown: false }), 10000);
     return () => clearTimeout(timer);
   }, [imageSource, onMediaReady, imageSettled]);
+  // The card's own mark is an image too, loading on its own; it is waited for, never for long.
+  const [markDrawn, setMarkDrawn] = useState(false);
+  useEffect(() => {
+    if (!onMediaReady || markDrawn) return;
+    const timer = setTimeout(() => setMarkDrawn(true), 1000);
+    return () => clearTimeout(timer);
+  }, [onMediaReady, markDrawn]);
   // The card is ready once drawn as it will be captured: with its picture, or without one it
   // has none of or could not show.
   useEffect(() => {
-    if (!onMediaReady) return;
+    if (!onMediaReady || !markDrawn) return;
     if (!imageSource) onMediaReady('', false);
     else if (imageSettled) onMediaReady(imageSource, imageSettled.shown);
-  }, [imageSource, imageSettled, onMediaReady]);
+  }, [imageSource, imageSettled, markDrawn, onMediaReady]);
 
   const dreamTypeLabel = getDreamTypeLabel(dream.dreamType, t);
   const themeLabel = getDreamThemeLabel(dream.theme, t);
@@ -116,6 +123,8 @@ export const DreamShareImage = forwardRef<ViewInstance, DreamShareImageProps>(fu
           <RNImage
             source={require('@/assets/images/icon-transparent.png')}
             style={styles.footerLogo}
+            onLoad={() => setMarkDrawn(true)}
+            onError={() => setMarkDrawn(true)}
           />
         </View>
       </View>
