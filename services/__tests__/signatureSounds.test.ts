@@ -107,7 +107,8 @@ it('keeps the sounds on when turning them off could not be stored', async () => 
   expect(await sounds.getSignatureSoundsEnabled()).toBe(true);
   mockWriteFails = true;
   await expect(sounds.setSignatureSoundsEnabled(false)).rejects.toThrow('storage full');
-  expect(sounds.peekSignatureSoundsEnabled()).toBe(true);
+  // What storage holds is read anew.
+  expect(await sounds.getSignatureSoundsEnabled()).toBe(true);
   sounds.playSignature('seal');
   await settle();
   expect(mockPlayer.play).toHaveBeenCalledTimes(1);

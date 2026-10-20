@@ -309,6 +309,41 @@ describe('useRecordingSession', () => {
     expect(heldOnModeChange).toEqual([true, true]);
   });
 
+  it('keeps the microphone held through an unmount until the forced stop has torn down', async () => {
+    const heldOnReset: boolean[] = [];
+    jest.mocked(setAudioModeAsync).mockImplementation(async (mode) => {
+      if ((mode as { allowsRecording?: boolean }).allowsRecording === false) heldOnReset.push(isMicrophoneHeld());
+    });
+    const { result, unmount } = renderHook(() => useRecordingSession(defaultOptions));
+    await act(async () => {
+      await result.current.startRecording('');
+    });
+    const { forceStopRecording } = result.current;
+
+    // The screen's own cleanup, which forces the stop, runs after the hook's.
+    unmount();
+    expect(isMicrophoneHeld()).toBe(true);
+    await act(async () => {
+      await forceStopRecording('unmount');
+    });
+
+    expect(heldOnReset).toEqual([true]);
+    expect(isMicrophoneHeld()).toBe(false);
+  });
+
+  it('gives the microphone back after an unmount that no forced stop follows', async () => {
+    const { result, unmount } = renderHook(() => useRecordingSession(defaultOptions));
+    await act(async () => {
+      await result.current.startRecording('');
+    });
+
+    unmount();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    // Otherwise the app's cues would stay silent for the rest of the launch.
+    expect(isMicrophoneHeld()).toBe(false);
+  });
+
   it('stopRecording should return transcript result', async () => {
     const { result } = renderHook(() => useRecordingSession(defaultOptions));
 

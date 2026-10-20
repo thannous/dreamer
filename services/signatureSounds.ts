@@ -65,15 +65,17 @@ export function peekSignatureSoundsEnabled(): boolean | null {
   return enabled;
 }
 
-/** Takes effect at once; a choice that could not be stored is let go. */
+/**
+ * Takes effect at once. When the latest choice cannot be stored, what storage holds is in
+ * force again, read anew: an earlier choice that failed too must not be taken for it.
+ */
 export async function setSignatureSoundsEnabled(next: boolean): Promise<void> {
-  const before = enabled;
-  choices += 1;
+  const choice = ++choices;
   enabled = next;
   try {
     await getLucidKeyValueStorage().setItem(STORAGE_KEY, next ? 'on' : 'off');
   } catch (error) {
-    enabled = before;
+    if (choice === choices) enabled = null;
     throw error;
   }
 }

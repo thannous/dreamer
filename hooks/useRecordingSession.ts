@@ -85,10 +85,6 @@ export function useRecordingSession({
   // Held from a start's first audio mode change to its stop's last, with or without a
   // dictation session: the app's cues leave the audio session alone meanwhile.
   const microphoneRef = useRef<(() => void) | null>(null);
-  useEffect(() => () => {
-    microphoneRef.current?.();
-    microphoneRef.current = null;
-  }, []);
   const [isSpeechListening, setIsSpeechListening] = useState(false);
   const [recordingPermissionState, setRecordingPermissionState] =
     useState<RecordingPermissionState>('unknown');
@@ -97,6 +93,17 @@ export function useRecordingSession({
   const recorderReleasedRef = useRef(false);
   const nativeSessionRef = useRef<NativeSpeechSession | null>(null);
   const isRecordingRef = useRef(false);
+  // At unmount, a live recording hands the microphone back through the screen's forced
+  // stop, once its teardown is over. A hold that nothing takes over goes back a turn later.
+  useEffect(() => () => {
+    const left = microphoneRef.current;
+    if (!left) return;
+    setTimeout(() => {
+      if (microphoneRef.current !== left) return;
+      microphoneRef.current = null;
+      left();
+    }, 0);
+  }, []);
   const recordingTransitionRef = useRef(false);
   const stopPromiseRef = useRef<Promise<RecordingSessionResult> | null>(null);
   const hasAutoStoppedRecordingRef = useRef(false);

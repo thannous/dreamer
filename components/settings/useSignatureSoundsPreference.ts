@@ -12,6 +12,7 @@ export function useSignatureSoundsPreference() {
   const [enabled, setEnabled] = useState(() => peekSignatureSoundsEnabled() ?? true);
   // A switch flipped before the stored choice is read keeps the dreamer's word.
   const touched = useRef(false);
+  const toggles = useRef(0);
 
   useEffect(() => {
     let active = true;
@@ -25,8 +26,13 @@ export function useSignatureSoundsPreference() {
 
   const toggle = useCallback((next: boolean) => {
     touched.current = true;
+    const toggled = ++toggles.current;
     setEnabled(next);
-    void setSignatureSoundsEnabled(next).catch(() => setEnabled(!next));
+    // Not stored: the switch shows what storage still holds, once the last flip has failed.
+    void setSignatureSoundsEnabled(next).catch(async () => {
+      const kept = await getSignatureSoundsEnabled();
+      if (toggled === toggles.current) setEnabled(kept);
+    });
   }, []);
 
   return { enabled, toggle };
