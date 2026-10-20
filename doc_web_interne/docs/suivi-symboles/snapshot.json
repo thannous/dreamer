@@ -1,12 +1,14 @@
 {
   "schema": "noctalia.symbol-tracking-snapshot/1",
   "date": "2026-10-20",
-  "sourceRevision": "1a63ecf787bc8d20e322314e1ba17987c83b1198",
-  "sourcePullRequest": 478,
+  "sourceRevision": "9184f780a23f21687350020fa3448d58e4e0aadd",
+  "sourceRevisionScope": "Clean browser-qualified implementation; subsequent tracking-only edits reuse this evidence.",
+  "sourceBranch": "codex/symbol-images-lot-08-30",
+  "integrationOwner": "Codex",
   "totalSymbols": 240,
-  "integratedSymbols": 75,
-  "remainingToIntegrate": 165,
-  "atlasLocalePages": 450,
+  "integratedSymbols": 105,
+  "remainingToIntegrate": 135,
+  "atlasLocalePages": 630,
   "languages": [
     "fr",
     "en",
@@ -18,52 +20,91 @@
   "historicalQaSymbols": 40,
   "historicallyPublishedSymbols": 37,
   "currentStageProofs": {
-    "publication": 240,
+    "publication": 0,
     "approval": 0,
-    "qa": 74
+    "qa": 30
   },
   "files": {
     "workbook": {
-      "sha256": "cb16d6d1a0870615ec9dbeb33497fc4c3f81e7edb77ca1753625c88e2816203e",
-      "path": "suivi-240-symboles-6-langues.xlsx"
+      "path": "suivi-240-symboles-6-langues.xlsx",
+      "sha256": "fb984f920b50e97b7e38f43812e57e86546993bcd72303575d7dc3c0fc391b74"
     },
     "csv": {
-      "sha256": "0a3a5994377bdb09f1981ed54e9cf477c5c1a955982098d41083dad8dd845403",
-      "path": "symbol-rollout.csv"
+      "path": "symbol-rollout.csv",
+      "sha256": "dc0cbce6eb0b1af91f62f70c4822894a038e7a855e925e21eab6cfb7a003490c"
     }
   },
+  "reportSha256": "88d6ad45b67193bdbd031502113a288659a925d7ee9325387933a9bd31c37c2e",
   "checks": {
     "rows": 240,
     "recalculation": true,
     "formulaErrors": 0,
     "formulas": 489,
+    "formulaPreservation": true,
+    "missingRoleCounterexample": true,
+    "unrelatedValuesPreserved": true,
     "nativeExcelApplication": false,
     "filterRange": "A10:AC250",
     "frozenAt": "C11",
     "reopen": true,
-    "export": true
+    "export": true,
+    "renderInspected": true
   },
   "assetAudit": {
+    "scope": "lot-08 only",
     "twoChannelsConfiguredPerComposition": true,
-    "newPacks": 38,
+    "newPacks": 30,
+    "newNativePngs": 210,
+    "reusedPaintedCovers": 30,
+    "selectedRoles": 240,
     "realAlphaChecked": true,
     "rolesPerPack": 8,
-    "derivedFilesPresent": 1444,
+    "derivedFilesPresent": 1140,
     "currentBrowserTemporalQa": true,
-    "nativeArchiveLocallyVerified": false,
-    "visuallySampledPacks": 6
+    "nativeArchivesLocallyVerified": 30,
+    "driveArchiveMetadataVerified": 30,
+    "visuallyInspectedPacks": 30,
+    "visuallyInspectedBrowserScreenshots": 150
   },
-  "qaReceipt": "../qa/symbol-pages-uniform-20261020.json",
-  "qaReceiptSha256": "fe31ccd3607e8f968b734c44af88982100e05b70ee32145e80ebb11246dfda19",
+  "qaReceipt": "../qa/symbol-packs-lot-08-30-20261020.json",
+  "qaReceiptSha256": "2d79fa1b7d2313aa2c5072960842fc735d6ac0c171961fe78bc191355123cfac",
   "commonLayoutSymbols": 240,
   "commonLayoutLocalePages": 1440,
-  "commonAnimatedPacks": 74,
-  "tigerMotionPending": true,
+  "commonAnimatedPacks": 105,
+  "tigerMotionPending": false,
+  "tigerEvidence": "Common-engine implementation inherited from master PR485; no fresh Tiger browser qualification in this selected run.",
+  "driveSources": "https://drive.google.com/drive/folders/1XzmtnMeVfBGWkT6XdLs5hGGI_kBjes0p",
+  "historicalProofs": {
+    "sourceRevision": "1a63ecf787bc8d20e322314e1ba17987c83b1198",
+    "sourcePullRequest": 478,
+    "stageProofs": {
+      "publication": 240,
+      "approval": 0,
+      "qa": 74
+    },
+    "qaReceipt": "../qa/symbol-pages-uniform-20261020.json",
+    "qaReceiptSha256": "fe31ccd3607e8f968b734c44af88982100e05b70ee32145e80ebb11246dfda19",
+    "publication": {
+      "origin": "https://noctalia.app",
+      "deploymentUrl": "https://9146e242.noctalia.pages.dev",
+      "command": "npm run docs:deploy:prod",
+      "releaseCommand": "npm run verify:release:site -- --keep",
+      "releasePassed": true
+    },
+    "assetAudit": {
+      "twoChannelsConfiguredPerComposition": true,
+      "newPacks": 38,
+      "realAlphaChecked": true,
+      "rolesPerPack": 8,
+      "derivedFilesPresent": 1444,
+      "currentBrowserTemporalQa": true,
+      "nativeArchiveLocallyVerified": false,
+      "visuallySampledPacks": 6
+    },
+    "status": "Retained historical evidence; generator identity changed, so these stages are stale for this candidate."
+  },
   "publication": {
-    "origin": "https://noctalia.app",
-    "deploymentUrl": "https://9146e242.noctalia.pages.dev",
-    "command": "npm run docs:deploy:prod",
-    "releaseCommand": "npm run verify:release:site -- --keep",
-    "releasePassed": true
+    "performedForThisBatch": false,
+    "approvalRecordedForThisCandidate": false
   }
 }
