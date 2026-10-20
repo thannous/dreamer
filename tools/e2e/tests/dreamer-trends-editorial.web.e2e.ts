@@ -209,6 +209,9 @@ test('each door opens the journal on exactly those dreams, and the period change
   await expect(page.getByTestId('trends.nights.month.2026-09')).toContainText('7');
   await expect(page.getByTestId('trends.nights.month.2026-10')).toContainText('1');
   // A type counts analyzed dreams only, so its door leaves out The Broken Mirror, symbolic but unread.
+  // The journal draws only the cards near the screen, and a card shows its whole painting (#480):
+  // a window as tall as four cards lets the door's whole result be read at once.
+  await page.setViewportSize({ width: 390, height: 2000 });
   await page.getByTestId('trends.returns.type.symbolic-dream').click();
   await expect(page.getByTestId('btn.filterDate')).toHaveCount(0);
   await expect(journalItems(page)).toHaveCount(4);
