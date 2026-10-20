@@ -104,7 +104,7 @@ describe('TrendsSky with a screen reader', () => {
 });
 
 describe('TrendsSky under a finger', () => {
-  it('opens the star a tap lands on, not the one a slide ends on', () => {
+  it('opens the star a tap lands on, not the one a slide ends or comes back on', () => {
     const onOpenDream = jest.fn();
     const view = render(
       <TrendsSky sky={sky} lit reduced={false} ink="#fff" glow="#fff" glowOpacity={0.3} dust="#fff" t={t}
@@ -120,8 +120,16 @@ describe('TrendsSky under a finger', () => {
     fireEvent.press(stars, touch(226, 162));
     expect(onOpenDream).not.toHaveBeenCalled();
 
+    // Slid away from the older star and back onto it before lifting: still a slide.
+    fireEvent(stars, 'pressIn', touch(97, 116));
+    fireEvent(stars, 'pressMove', touch(160, 116));
+    fireEvent(stars, 'pressMove', touch(99, 117));
+    fireEvent.press(stars, touch(99, 117));
+    expect(onOpenDream).not.toHaveBeenCalled();
+
     // Tapped on the older star, with the small wobble of a real finger.
     fireEvent(stars, 'pressIn', touch(97, 116));
+    fireEvent(stars, 'pressMove', touch(99, 117));
     fireEvent.press(stars, touch(100, 118));
     expect(onOpenDream).toHaveBeenCalledTimes(1);
     expect(onOpenDream).toHaveBeenCalledWith(older);

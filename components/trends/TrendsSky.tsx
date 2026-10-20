@@ -43,6 +43,12 @@ const READER_ACTIONS = [{ name: 'increment' }, { name: 'decrement' }, { name: 'a
 const RING = 30;
 
 type Placed = { dream: DreamAnalysis; x: number; y: number; analyzed: boolean; joined: boolean };
+/** Where a finger came down on the sky, and whether it has slid since. */
+type Press = { x: number; y: number; slid: boolean };
+
+/** A finger that ever strays past the slop was sliding, even if it comes back before lifting. */
+const strayed = (press: Press, { nativeEvent }: GestureResponderEvent) =>
+  press.slid || Math.hypot(nativeEvent.pageX - press.x, nativeEvent.pageY - press.y) > TAP_SLOP;
 
 /** A scatter of faint dust, the same at every visit: depth, not data. */
 function dustOf(width: number) {
@@ -179,15 +185,19 @@ export function TrendsSky({ sky, lit, reduced, ink, glow, glowOpacity, dust, t, 
     }));
   }, [constellations, stars, width]);
 
-  const pressedAt = useRef<{ x: number; y: number } | null>(null);
+  // The sky stays pressed while a finger slides inside it: only a tap opens a dream.
+  const pressedAt = useRef<Press | null>(null);
   const pressIn = useCallback(({ nativeEvent }: GestureResponderEvent) => {
-    pressedAt.current = { x: nativeEvent.pageX, y: nativeEvent.pageY };
+    pressedAt.current = { x: nativeEvent.pageX, y: nativeEvent.pageY, slid: false };
+  }, []);
+  const pressMove = useCallback((event: GestureResponderEvent) => {
+    const press = pressedAt.current;
+    if (press && strayed(press, event)) press.slid = true;
   }, []);
   const pick = useCallback((event: GestureResponderEvent) => {
-    const start = pressedAt.current;
+    const press = pressedAt.current;
     pressedAt.current = null;
-    // The sky stays pressed while a finger slides inside it: only a tap opens a dream.
-    if (start && Math.hypot(event.nativeEvent.pageX - start.x, event.nativeEvent.pageY - start.y) > TAP_SLOP) return;
+    if (press && strayed(press, event)) return;
     // A mouse click on the web carries its point as an offset in the element instead.
     const native = event.nativeEvent as GestureResponderEvent['nativeEvent'] & { offsetX?: number; offsetY?: number };
     const touchX = Number.isFinite(native.locationX) ? native.locationX : native.offsetX ?? Number.NaN;
@@ -299,7 +309,7 @@ export function TrendsSky({ sky, lit, reduced, ink, glow, glowOpacity, dust, t, 
                 style={[styles.ring, { left: ring.x - RING / 2, top: ring.y - RING / 2, borderColor: ink }]} />
             ) : null}
             {/* Touch only: a screen reader and the keyboard step through the dreams on the sky itself. */}
-            <Pressable testID="trends.sky.stars" onPressIn={pressIn} onPress={pick} style={StyleSheet.absoluteFill}
+            <Pressable testID="trends.sky.stars" onPressIn={pressIn} onPressMove={pressMove} onPress={pick} style={StyleSheet.absoluteFill}
               accessible={false} focusable={false} {...(Platform.OS === 'web' ? { tabIndex: -1 } : {})} />
           </>
         ) : null}
