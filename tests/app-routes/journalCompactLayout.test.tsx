@@ -354,8 +354,14 @@ function renderedListViewportStyle() {
   return JSON.parse(viewport?.getAttribute('data-style') ?? '{}') as { flex?: number; marginBottom?: number };
 }
 
-// On phones the header and search always float over the list and scroll away with it,
-// so the list owns the whole viewport above the navigation (or the keyboard).
+// The list's bottom padding beyond its own spacing: the room it leaves for the glass navigation.
+function listNavigationPadding() {
+  return (flattenStyle(mockListProps.contentContainerStyle).paddingBottom ?? 0) - ThemeLayout.spacing.lg;
+}
+
+// On phones the header and search always float over the list and scroll away with it.
+// The glass navigation floats over the list too: dreams scroll behind it to the screen's
+// foot, and the list's bottom padding clears the bar so the last dream stays reachable.
 function expectReachableListViewport(
   width: number,
   height: number,
@@ -371,8 +377,8 @@ function expectReachableListViewport(
   const listViewport = height - reservedOverlay;
 
   expect(Number(screen.getByTestId(TID.Component.SearchBar).getAttribute('data-min-height'))).toBe(searchMinHeight);
-  expect(marginBottom).toBe(reservedOverlay);
-  expect(extraNavPadding).toBe(0);
+  expect(marginBottom).toBe(0);
+  expect(extraNavPadding).toBe(reservedOverlay);
   expect(listStyle.flex).toBe(1);
   expect(listViewport).toBeGreaterThanOrEqual(120);
 
@@ -537,7 +543,7 @@ describe('Journal compact large-text layout', () => {
     const view = render(<JournalScreen />);
     const input = screen.getByTestId(TID.Input.SearchDreams) as HTMLInputElement;
     const list = screen.getByTestId(TID.List.Dreams);
-    const navigationClearance = renderedListViewportStyle().marginBottom;
+    const navigationClearance = listNavigationPadding();
     expect(list.contains(input)).toBe(false);
     expect(list.contains(screen.getByTestId('journal-shared-header'))).toBe(false);
     expect(list.contains(screen.getByTestId('journal-upsell'))).toBe(true);
@@ -553,7 +559,7 @@ describe('Journal compact large-text layout', () => {
     expect(screen.getByTestId(TID.Input.SearchDreams)).toBe(input);
     expect(document.activeElement).toBe(input);
     expect(input.value).toBe('blue room');
-    expect(renderedListViewportStyle().marginBottom).toBe(0);
+    expect(listNavigationPadding()).toBe(0);
     expectReachableListViewport(437, 490, fontScale, true);
     expect(mockListProps.keyboardShouldPersistTaps).toBe('handled');
     expect(mockListProps.keyboardDismissMode).toBe('on-drag');
@@ -562,7 +568,7 @@ describe('Journal compact large-text layout', () => {
     Object.assign(mockWindow, { height: 949 });
     view.rerender(<JournalScreen />);
     expect(screen.getByTestId(TID.Input.SearchDreams)).toBe(input);
-    expect(renderedListViewportStyle().marginBottom).toBe(navigationClearance);
+    expect(listNavigationPadding()).toBe(navigationClearance);
     expectReachableListViewport(437, 949, fontScale);
     view.unmount();
     expect(mockKeyboardListeners.size).toBe(0);
@@ -647,7 +653,9 @@ describe('Journal compact large-text layout', () => {
     const uncoveredListBox = 320 - reservedOverlay;
 
     expect(reservedOverlay).toBeLessThanOrEqual(128);
-    expect(listStyle.marginBottom).toBe(reservedOverlay);
+    // The cards scroll behind the glass bar; the padding keeps the last one above it.
+    expect(listStyle.marginBottom ?? 0).toBe(0);
+    expect(listNavigationPadding()).toBe(reservedOverlay);
     expect(uncoveredListBox).toBeGreaterThanOrEqual(120);
     expect(list.contains(screen.getByTestId(TID.Input.SearchDreams))).toBe(false);
     expect(list.contains(dreamCard)).toBe(true);
