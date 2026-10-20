@@ -6,6 +6,8 @@ import Animated, {
 } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
 
+import { EASE } from '@/components/motion/motion';
+
 import { isRestingScroll, useHeaderScrollY } from './scrollDepth';
 
 // On native the offset reaches the header on the UI thread: a busy JavaScript thread
@@ -106,20 +108,20 @@ export function usePaintingDepthStyle(height: number, frame: 'scrolls' | 'fixed'
 // Test doubles of expo-router may omit useIsFocused; a mounted screen is then in front.
 export const useOnScreen: () => boolean = typeof useIsFocused === 'function' ? useIsFocused : () => true;
 
+// One object, so a render of the screen never starts the arrival again.
+const PAINTING_ARRIVAL = {
+  animationName: { from: { transform: [{ scale: 1.05 }] }, to: { transform: [{ scale: 1 }] } },
+  animationDuration: 1600,
+  animationTimingFunction: EASE.out,
+  animationFillMode: 'both',
+} as const;
+
 /**
- * A painting breathes: a slow zoom in and out, as if the scene were still dreaming.
- * Only on the screen in front, and never with reduced motion.
+ * A painting arrives: as its screen opens it settles from a slight zoom, then rests, and
+ * after that only the scroll moves it. On Android every frame of a moving painting redraws
+ * the whole screen, so an endless breath kept a page at rest busy; this costs a second and
+ * a half once (owner decision 2026-10-20). Never with reduced motion.
  */
-export function usePaintingBreath() {
-  const reduced = useReducedMotion();
-  const onScreen = useOnScreen();
-  if (reduced) return null;
-  return {
-    animationName: { from: { transform: [{ scale: 1 }] }, to: { transform: [{ scale: 1.07 }] } },
-    animationDuration: '18s',
-    animationIterationCount: 'infinite',
-    animationDirection: 'alternate',
-    animationTimingFunction: 'ease-in-out',
-    animationPlayState: onScreen ? 'running' : 'paused',
-  } as const;
+export function usePaintingArrival() {
+  return useReducedMotion() ? null : PAINTING_ARRIVAL;
 }

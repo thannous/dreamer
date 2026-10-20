@@ -170,6 +170,7 @@
     "reflection:completion:run": "node scripts/run-ti559-completion.cjs",
     "reflection:chat:signed:check": "deno check --no-lock supabase/functions/api/evaluation/ti559/chat-20-signed.ts",
     "reflection:chat:signed:run": "node scripts/run-chat20-signed.cjs",
+    "test:apple-auth:db": "node --test scripts/apple-token-privacy-migration.test.cjs",
     "test:analysis-authorization:db": "node scripts/verify-analysis-authorization.mjs",
     "release:plan": "node ./scripts/mobile-release.js plan",
     "release:prepare": "node ./scripts/mobile-release.js prepare",

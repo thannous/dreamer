@@ -1,7 +1,7 @@
 import { useQuickSettings } from '@/context/QuickSettingsContext';
 import { router, useFocusEffect, useIsFocused } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Platform,
   Pressable,
@@ -10,19 +10,20 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { ScreenContainer } from "@/components/ScreenContainer";
+import { HomeDiscoverTiles } from "@/components/home/HomeDiscoverTiles";
+import { HomeRecurringCard } from "@/components/home/HomeRecurringCard";
+import { HomeWeekNights } from "@/components/home/HomeWeekNights";
 import { TodayHero } from "@/components/home/TodayHero";
-import { PersonalReadingCard } from "@/components/inspiration/PersonalReadingCard";
 import { FreeAnalysesNudge, getFreeAnalysesNudge } from "@/components/quota/FreeAnalysesNudge";
 import { useNotificationSettingsController } from "@/components/settings/useNotificationSettingsController";
 import { buildPersonalReading } from "@/lib/personalReading";
-import { PressableScale } from "@/components/motion";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { ThemeLayout } from "@/constants/journalTheme";
 import {
   DESKTOP_BREAKPOINT,
   getBottomNavigationLayout,
 } from "@/constants/layout";
-import { getNoctaliaDesignTokens, type NoctaliaDesignTokens } from "@/constants/noctaliaDesign";
+import { getNoctaliaDesignTokens } from "@/constants/noctaliaDesign";
 import { useDreamsData } from "@/context/DreamsContext";
 import { useTheme } from "@/context/ThemeContext";
 import { ScrollPerfProvider } from "@/context/ScrollPerfContext";
@@ -33,10 +34,7 @@ import { useClearWebFocus } from "@/hooks/useClearWebFocus";
 import { useScrollIdle } from "@/hooks/useScrollIdle";
 import { useTranslation } from "@/hooks/useTranslation";
 import { trackProductEvent } from "@/lib/analytics";
-import { getDreamGuideCopy } from "@/lib/dreamGuideCopy";
-import type { DreamGuideLanguage } from "@/lib/dreamGuideTypes";
 import { isDreamAnalyzed, isDreamExplored } from "@/lib/dreamUsage";
-import { getSleepSoundCopy } from "@/lib/sleepSoundCopy";
 import { isSleepSoundsAvailable } from "@/lib/sleepSoundsFeature";
 import {
   RITUALS,
@@ -46,14 +44,10 @@ import {
   getLocalDateKey,
   shouldResetDailyProgress,
 } from "@/lib/ritualProgressUtils";
-import { TID } from "@/lib/testIDs";
 import { resolveTodayState, type TodayState } from "@/lib/todayState";
 import { getRitualPreference, getRitualStepProgress, getSavedTranscript, saveRitualStepProgress } from "@/services/storageService";
 import { HeaderScrollView, useHeaderScroll } from '@/components/ui/headerStretch';
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
-
-type IconName = Parameters<typeof IconSymbol>[0]["name"];
-type TranslateFn = ReturnType<typeof useTranslation>["t"];
 
 const DATE_CHECK_INTERVAL_MS = 5 * 60 * 1000;
 
@@ -119,11 +113,7 @@ function InspirationScreen() {
   const { colors, mode } = useTheme();
   const openQuickSettings = useQuickSettings();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
-  const { t, currentLang } = useTranslation();
-  const guideCopy = useMemo(
-    () => getDreamGuideCopy((currentLang ?? "en") as DreamGuideLanguage),
-    [currentLang],
-  );
+  const { t } = useTranslation();
   const { width, height, fontScale } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const scrollPerf = useScrollIdle();
@@ -150,13 +140,6 @@ function InspirationScreen() {
     : scrollHeader ? ThemeLayout.spacing.lg : navigationLayout.barHeight
       + navigationLayout.minimumBottomInset
       + ThemeLayout.spacing.lg;
-  const handleOpenSymbols = useCallback(() => {
-    router.push("/symbol-dictionary" as any);
-  }, []);
-  const handleOpenGuides = useCallback(() => {
-    router.push("/dream-guides" as any);
-  }, []);
-
   const personalReading = useMemo(
     () => (dreamsLoaded && dreams.length > 0 ? buildPersonalReading(dreams, now) : null),
     [dreams, dreamsLoaded, now]
@@ -208,10 +191,6 @@ function InspirationScreen() {
   }, [homeFocused, now, todayState]);
 
   const sleepSoundsAvailable = isSleepSoundsAvailable(Platform.OS);
-  const sleepCopy = useMemo(
-    () => getSleepSoundCopy(currentLang ?? "en"),
-    [currentLang],
-  );
 
   const handleTodayCta = useCallback(() => {
     if (!todayState) return;
@@ -233,10 +212,6 @@ function InspirationScreen() {
         return;
     }
   }, [todayState]);
-  const handleOpenSleepSounds = useCallback(() => {
-    router.push("/sleep-sounds" as any);
-  }, []);
-
   const syncTodayClock = useCallback((nextNow = Date.now()) => {
     setNow((current) => {
       const currentKey = getLocalDateKey(new Date(current));
@@ -349,10 +324,10 @@ function InspirationScreen() {
             <TodayHero state={todayState} dream={featuredDream} now={now}
               onPressCta={handleTodayCta} onOpenSettings={openQuickSettings} />
             <View className="px-6">
-              {personalReading ? (
-                <PersonalReadingCard reading={personalReading} nextReminderText={nextReminderText}
-                  animateOnMount={false} compact />
-              ) : null}
+              {personalReading ? <>
+                <HomeWeekNights dreams={dreams} now={now} />
+                <HomeRecurringCard dreams={dreams} reading={personalReading} now={now} />
+              </> : null}
               {freeAnalysesNudge ? <FreeAnalysesNudge nudge={freeAnalysesNudge} /> : null}
               {!notificationSettings.unsupported ? <Pressable
                 onPress={() => router.push('/settings')}
@@ -366,19 +341,8 @@ function InspirationScreen() {
                 <IconSymbol name="chevron.right" size={18} color={noctalia.text.tertiary} />
               </Pressable> : null}
               <View className="pb-6 pt-8">
-                <HomeResourcesRow
-                  t={t}
-                  noctalia={noctalia}
-                  selectedRitualId={selectedRitualId}
-                  sleepSoundsAvailable={sleepSoundsAvailable}
-                  symbolsLabel={t("symbols.home_card_title")}
-                  guidesLabel={guideCopy.screenTitle}
-                  ritualLabel={t("inspiration.ritual.title")}
-                  sleepLabel={sleepCopy.screenTitle}
-                  onOpenSymbols={handleOpenSymbols}
-                  onOpenGuides={handleOpenGuides}
-                  onOpenSleepSounds={handleOpenSleepSounds}
-                />
+                <HomeDiscoverTiles now={now} selectedRitualId={selectedRitualId}
+                  sleepSoundsAvailable={sleepSoundsAvailable} />
               </View>
             </View>
           </ScreenContainer>
@@ -388,100 +352,6 @@ function InspirationScreen() {
     </ScrollPerfProvider>
   );
 }
-
-type HomeResourcesRowProps = {
-  t: TranslateFn;
-  noctalia: NoctaliaDesignTokens;
-  selectedRitualId: RitualId;
-  sleepSoundsAvailable: boolean;
-  symbolsLabel: string;
-  guidesLabel: string;
-  ritualLabel: string;
-  sleepLabel: string;
-  onOpenSymbols: () => void;
-  onOpenGuides: () => void;
-  onOpenSleepSounds: () => void;
-};
-
-const HomeResourcesRow = memo(function HomeResourcesRow({
-  t,
-  noctalia,
-  selectedRitualId,
-  sleepSoundsAvailable,
-  symbolsLabel,
-  guidesLabel,
-  ritualLabel,
-  sleepLabel,
-  onOpenSymbols,
-  onOpenGuides,
-  onOpenSleepSounds,
-}: HomeResourcesRowProps) {
-  const items = [
-    {
-      key: 'symbols',
-      icon: 'book.closed.fill' as IconName,
-      label: symbolsLabel,
-      onPress: onOpenSymbols,
-      testID: TID.Button.HomeResourcesSymbols,
-    },
-    {
-      key: 'guides',
-      icon: 'sparkles' as IconName,
-      label: guidesLabel,
-      onPress: onOpenGuides,
-      testID: TID.Button.HomeResourcesGuides,
-    },
-    {
-      key: 'ritual',
-      icon: 'moon.stars.fill' as IconName,
-      label: ritualLabel,
-      onPress: () => router.push(`/ritual/${selectedRitualId}` as any),
-      testID: TID.Button.HomeResourcesRitual,
-    },
-    ...(sleepSoundsAvailable
-      ? [{
-          key: 'sleep',
-          icon: 'moon.stars.fill' as IconName,
-          label: sleepLabel,
-          onPress: onOpenSleepSounds,
-          testID: TID.Button.HomeSleepSounds,
-        }]
-      : []),
-  ];
-
-  return (
-    <View
-      testID={TID.Component.HomeResources}
-      accessibilityRole="summary"
-      accessibilityLabel={t('home.today.resources')}
-      className="gap-3"
-    >
-      <View className="flex-row items-start gap-3">
-        <View className="mt-[9px] h-px w-[22px] bg-champagne" />
-        <Text className="min-w-0 shrink font-sans-medium text-[12px] leading-[18px] uppercase tracking-[1.6px] text-champagne-on">
-          {t('home.today.resources')}
-        </Text>
-      </View>
-      <View className="flex-row flex-wrap gap-2">
-        {items.map((item) => (
-          <PressableScale
-            key={item.key}
-            onPress={item.onPress}
-            accessibilityRole="button"
-            accessibilityLabel={item.label}
-            testID={item.testID}
-            className="min-h-[44px] min-w-[44px] flex-row items-center gap-2 rounded-full border border-line bg-ink-soft px-3.5 py-2"
-          >
-            <IconSymbol name={item.icon} size={16} color={noctalia.accent.text} />
-            <Text className="font-sans-medium text-[13px] text-ivory" numberOfLines={1}>
-              {item.label}
-            </Text>
-          </PressableScale>
-        ))}
-      </View>
-    </View>
-  );
-});
 
 // QuickAccess section intentionally removed to keep the home
 // focused on guidance, rituals and inspiration rather than navigation.
