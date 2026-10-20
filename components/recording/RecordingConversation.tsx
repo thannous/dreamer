@@ -106,7 +106,8 @@ export function RecordingConversation(props: Props) {
       scrollEventThrottle={32}
       onContentSizeChange={() => { if (nearBottom.current) thread.current?.scrollToEnd({ animated: false }); }}
       // The listening halo takes room from the thread: keep the question being answered in view.
-      onLayout={() => { if (nearBottom.current) thread.current?.scrollToEnd({ animated: false }); }}>
+      // Only while listening, so it never undoes the page's reveal at its top.
+      onLayout={() => { if (listening && nearBottom.current) thread.current?.scrollToEnd({ animated: false }); }}>
       {sections.map((section, index) => section.text.trim() ? <React.Fragment key={index}>
         {section.question ? <MarkdownText style={[styles.question, { color: tokens.text.primary }]}>{section.question}</MarkdownText> : null}
         <Pressable onPress={props.onReview} disabled={locked || !!props.review} accessibilityRole="button" accessibilityLabel={t('recording.tell.edit')}
