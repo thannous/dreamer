@@ -116,12 +116,15 @@ describe('DreamShareSheet', () => {
     expect(onShare).toHaveBeenCalledWith({ painting: false, title: false, date: true, text: 'none' });
   });
 
-  it('never offers an older dream\'s excerpt of its own words as an inspired line', () => {
-    const { onShare } = renderSheet({ dream: { ...dream, promptVersion: 'analysis-2026-09-17.1' } });
-    expect(screen.queryByLabelText('journal.detail.share_sheet.text_quote')).toBeNull();
+  // An older reading kept an excerpt of the dreamer's own words as its line: offered, as its
+  // page shows it, but never chosen for the dreamer.
+  it.each([undefined, 'analysis-2026-09-17.1'])('offers an older reading\'s line without choosing it (%s)', (promptVersion?: string) => {
+    const { onShare } = renderSheet({ dream: { ...dream, promptVersion } });
+    expect(choice('journal.detail.share_sheet.text_quote').getAttribute('aria-checked')).toBe('false');
     expect(choice('journal.detail.share_sheet.text_none').getAttribute('aria-checked')).toBe('true');
+    fireEvent.click(choice('journal.detail.share_sheet.text_quote'));
     fireEvent.click(screen.getByTestId(TID.Button.DreamShareCard));
-    expect(onShare).toHaveBeenCalledWith({ painting: true, title: true, date: true, text: 'none' });
+    expect(onShare).toHaveBeenCalledWith({ painting: true, title: true, date: true, text: 'quote' });
   });
 
   it('waits for an illustration still being signed only while it is on the card', () => {

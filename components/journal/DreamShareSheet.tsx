@@ -1,3 +1,4 @@
+import type { ImageSource } from 'expo-image';
 import React, { useMemo, useState } from 'react';
 import { Text, View } from 'react-native';
 
@@ -81,6 +82,8 @@ export function DreamShareSheet({
   dream,
   date,
   painting,
+  paintingCacheKey,
+  paintingPlaceholder,
   paintingPending,
   sharing,
   capturing,
@@ -92,6 +95,10 @@ export function DreamShareSheet({
   date: string;
   /** The dream's resolved illustration, or '' when it has none to show. */
   painting: string;
+  /** The cache the dream's page keeps its illustration in, so the preview shows it at once. */
+  paintingCacheKey?: string;
+  /** The picture the dream's journal card holds, shown until the illustration is. */
+  paintingPlaceholder?: ImageSource | null;
   /** The illustration is still being resolved. */
   paintingPending: boolean;
   sharing: boolean;
@@ -152,7 +159,9 @@ export function DreamShareSheet({
           pointerEvents="none"
           style={{ width: CARD_WIDTH, height: CARD_HEIGHT, transform: [{ scale: PREVIEW_SCALE }], transformOrigin: 'top left' }}
         >
-          <DreamShareImage dream={dream} t={t} options={card} date={date} resolvedMedia={{ imageUrl: card.painting ? painting : '' }} />
+          <DreamShareImage dream={dream} t={t} options={card} date={date}
+            resolvedMedia={{ imageUrl: card.painting ? painting : '', imageCacheKey: paintingCacheKey }}
+            placeholder={paintingPlaceholder} />
         </View>
       </View>
 

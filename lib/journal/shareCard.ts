@@ -17,32 +17,26 @@ type ShareCardDream = Pick<DreamAnalysis, 'title' | 'transcript' | 'shareableQuo
 /** The longest opening of the story a card carries, in characters. */
 export const SHARE_CARD_STORY_MAX = 320;
 
-/**
- * Whether the dream has a line Noctalia wrote from it. Older dreams kept an excerpt of the
- * dreamer's own words in the same place; that is their story, never an inspired line.
- */
-function hasInspiredLine(dream: ShareCardDream): boolean {
-  return Boolean(dream.shareableQuote?.trim()) && isPoeticDreamQuote(dream);
-}
-
 /** The texts this dream can put on its card, in the order they are offered. */
 export function getShareCardTexts(dream: ShareCardDream): ShareCardText[] {
   const texts: ShareCardText[] = ['none'];
   if (dream.transcript?.trim()) texts.push('story');
-  if (hasInspiredLine(dream)) texts.push('quote');
+  // Every analysed dream offers the line its reading shows, as its page does.
+  if (dream.shareableQuote?.trim()) texts.push('quote');
   return texts;
 }
 
 /**
  * A card as it is first offered: the painting when there is one, the name, the date, and
- * the line the dream inspired. The story, the dreamer's own words, is only ever chosen.
+ * the line Noctalia wrote from the dream. Older readings kept an excerpt of the dreamer's
+ * own words in that place: like the story, the dreamer's own words, it is only ever chosen.
  */
 export function getDefaultShareCardOptions(dream: ShareCardDream): ShareCardOptions {
   return {
     painting: true,
     title: Boolean(dream.title?.trim()),
     date: true,
-    text: hasInspiredLine(dream) ? 'quote' : 'none',
+    text: dream.shareableQuote?.trim() && isPoeticDreamQuote(dream) ? 'quote' : 'none',
   };
 }
 
@@ -50,7 +44,8 @@ export function getDefaultShareCardOptions(dream: ShareCardDream): ShareCardOpti
 export function getShareCardStory(transcript: string, max = SHARE_CARD_STORY_MAX): string {
   const story = transcript.trim().replace(/\s+/g, ' ');
   if (story.length <= max) return story;
-  const opening = story.slice(0, max);
+  // A cut inside an emoji would leave half of it, drawn as a broken character.
+  const opening = story.slice(0, max).replace(/[\uD800-\uDBFF]$/u, '');
   const lastSpace = opening.lastIndexOf(' ');
   const words = lastSpace > max * 0.6 ? opening.slice(0, lastSpace) : opening;
   return `${words.replace(/[\s,;:.!?…-]+$/u, '')}…`;
