@@ -1,15 +1,15 @@
 {
   "schema": "noctalia.symbol-tracking-snapshot/1",
   "date": "2026-10-20",
-  "sourceRevision": "9184f780a23f21687350020fa3448d58e4e0aadd",
-  "sourceRevisionScope": "Clean browser-qualified implementation; subsequent tracking-only edits reuse this evidence.",
-  "integratedMaster": "f71600c97",
-  "sourceBranch": "codex/symbol-images-lot-08-30",
+  "sourceRevision": "fc0d47528b092ffae3e49cc020fbc27e902dc01b",
+  "sourceRevisionScope": "Clean browser-qualified lot-10 implementation; subsequent tracking-only edits reuse it. Lot-08 evidence reused only for unchanged inputs.",
+  "integratedMaster": "1038406132baf06556f6abda8f1620ac4774984b",
+  "sourceBranch": "codex/symbol-images-lot-09-30",
   "integrationOwner": "Codex",
   "totalSymbols": 240,
-  "integratedSymbols": 105,
-  "remainingToIntegrate": 135,
-  "atlasLocalePages": 630,
+  "integratedSymbols": 140,
+  "remainingToIntegrate": 100,
+  "atlasLocalePages": 840,
   "languages": [
     "fr",
     "en",
@@ -23,19 +23,19 @@
   "currentStageProofs": {
     "publication": 0,
     "approval": 0,
-    "qa": 30
+    "qa": 59
   },
   "files": {
     "workbook": {
       "path": "suivi-240-symboles-6-langues.xlsx",
-      "sha256": "bf7ca345e0d50e7ae4a1386bb82f6faf5551772f7729803bab2c15fbc01faec0"
+      "sha256": "5c82ea24d2a69f64281ade36d6e8fb31948459fc4460ef810f23012602ca41c9"
     },
     "csv": {
       "path": "symbol-rollout.csv",
-      "sha256": "4835e06f3d442a1ebd8efb1c93f5d6242b9a9dd860ccc283421f685004145375"
+      "sha256": "46c95aeab40cad4cd218d61d5b21d586750f3bec62da66dea9b69c8a750bff26"
     }
   },
-  "reportSha256": "e9cf4eb1696b8cda63d09618e655265d75fd387261363b4f3f98f40512675dc9",
+  "reportSha256": "fe68cf7fc49c16e1dce2ef6a81838d5b763bce640cc7dfcb014cf2ec7b1fc8db",
   "checks": {
     "rows": 240,
     "recalculation": true,
@@ -49,32 +49,110 @@
     "frozenAt": "C11",
     "reopen": true,
     "export": true,
-    "renderInspected": true
+    "renderInspected": true,
+    "artifactTool": {
+      "counters": [
+        [
+          "Packs d'images",
+          140,
+          "Packs à terminer",
+          100,
+          "Pages avec pack",
+          840,
+          "Pages web",
+          1440
+        ],
+        [
+          "QA mobile",
+          59,
+          "QA 2560 px",
+          59,
+          "Accord Thanh",
+          0,
+          "Publiées",
+          0
+        ]
+      ],
+      "targetRows": [
+        89,
+        91,
+        95,
+        139,
+        96,
+        187,
+        203,
+        157,
+        200,
+        94,
+        171,
+        216,
+        210,
+        186,
+        126,
+        158,
+        192,
+        147,
+        159,
+        225,
+        224,
+        115,
+        133,
+        179,
+        222,
+        107,
+        245,
+        92,
+        244,
+        105,
+        163,
+        140,
+        166,
+        221,
+        104
+      ],
+      "sourceHash": "bf7ca345e0d50e7ae4a1386bb82f6faf5551772f7729803bab2c15fbc01faec0",
+      "reportHash": "fe68cf7fc49c16e1dce2ef6a81838d5b763bce640cc7dfcb014cf2ec7b1fc8db",
+      "formulaPreservation": true,
+      "unrelatedValuesPreserved": true,
+      "missingRoleCounterexample": true,
+      "reopen": "{\"kind\":\"region\",\"sheet\":\"Suivi symboles\",\"address\":\"A4:H5\",\"rows\":2,\"cols\":8,\"nonEmpty\":16,\"text\":16,\"maxTextLength\":16,\"preview\":[[\"Packs d'images\",\"140\",\"Packs à terminer\",\"100\",\"Pages avec pack\",\"840\"],[\"QA mobile\",\"59\",\"QA 2560 px\",\"59\",\"Accord Thanh\",\"0\"]],\"previewAddress\":\"A4:F5\",\"previewRows\":2,\"previewCols\":6}",
+      "nativeFeaturesPreserved": {
+        "formulas": 489,
+        "filter": "A10:AC250",
+        "freezeTopLeft": "C11",
+        "conditionalFormats": 3,
+        "validationRules": 0
+      }
+    }
   },
   "assetAudit": {
-    "scope": "lot-08 only",
-    "twoChannelsConfiguredPerComposition": true,
-    "newPacks": 30,
-    "newNativePngs": 210,
-    "reusedPaintedCovers": 30,
-    "selectedRoles": 240,
-    "realAlphaChecked": true,
-    "rolesPerPack": 8,
-    "derivedFilesPresent": 1140,
-    "currentBrowserTemporalQa": true,
-    "nativeArchivesLocallyVerified": 30,
-    "driveArchiveMetadataVerified": 30,
-    "visuallyInspectedPacks": 30,
-    "visuallyInspectedBrowserScreenshots": 150
+    "scope": "lot-10 only",
+    "newPacks": 29,
+    "newNativePngs": 203,
+    "reusedPaintedCovers": 29,
+    "selectedRoles": 232,
+    "derivedFilesPresent": 1102,
+    "nativeArchivesLocallyVerified": 29,
+    "driveArchiveMetadataVerified": 29,
+    "visuallyInspectedPacks": 29,
+    "visuallyInspectedBrowserScreenshots": 145
   },
-  "qaReceipt": "../qa/symbol-packs-lot-08-30-20261020.json",
-  "qaReceiptSha256": "2d79fa1b7d2313aa2c5072960842fc735d6ac0c171961fe78bc191355123cfac",
+  "qaReceipt": "../qa/symbol-packs-lot-10-30-20261020.json",
+  "qaReceiptSha256": "5f51b46789d6f67d117a312f171812623b446d890a97e002b5c77c004649514c",
+  "reusedCurrentQa": {
+    "lot": "lot-08",
+    "symbols": 30,
+    "revision": "9184f780a23f21687350020fa3448d58e4e0aadd",
+    "receipt": "../qa/symbol-packs-lot-08-30-20261020.json",
+    "receiptSha256": "2d79fa1b7d2313aa2c5072960842fc735d6ac0c171961fe78bc191355123cfac",
+    "reason": "Per-symbol content, mappings, paintings and shared engine inputs unchanged."
+  },
   "commonLayoutSymbols": 240,
   "commonLayoutLocalePages": 1440,
-  "commonAnimatedPacks": 105,
+  "commonAnimatedPacks": 140,
   "tigerMotionPending": false,
   "tigerEvidence": "Common-engine implementation inherited from master PR485; no fresh Tiger browser qualification in this selected run.",
-  "driveSources": "https://drive.google.com/drive/folders/1XzmtnMeVfBGWkT6XdLs5hGGI_kBjes0p",
+  "driveSources": "https://drive.google.com/drive/folders/1fUiZ6cBJMwNNV54MYLLPhvwFd47YfT6Q",
   "historicalProofs": {
     "sourceRevision": "76d7e577dfb7eb5251b0898e994e3a5210bfd56c",
     "sourcePullRequest": 485,
@@ -103,6 +181,12 @@
       "visuallySampledPacks": 6
     },
     "status": "Retained historical evidence; generator identity changed, so these stages are stale for this candidate."
+  },
+  "previousBatchDelivery": {
+    "lot": "lot-08",
+    "pullRequest": "https://github.com/thannous/dreamer/pull/490",
+    "mergeCommit": "01e50efd5",
+    "status": "Observed merged remotely; production publication not checked."
   },
   "publication": {
     "performedForThisBatch": false,

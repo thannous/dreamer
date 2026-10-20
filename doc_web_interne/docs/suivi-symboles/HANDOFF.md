@@ -1,19 +1,21 @@
 # Passation — packs de symboles par lots de 30
 
-## Lot 08 prêt à livrer
+## Lot 10 prêt à livrer
 
-Responsable d'intégration : **Codex**. Branche : `codex/symbol-images-lot-08-30`, master intégré : `f71600c97` (preuves PR487 ; code qualifié identique à master `76d7e577d`). Candidat navigateur propre : `9184f780a23f21687350020fa3448d58e4e0aadd` ; les mises à jour de suivi ultérieures réutilisent cette preuve sans revendiquer un nouveau parcours.
+Responsable d’intégration : **Codex**. Branche : `codex/symbol-images-lot-09-30`, master intégré : `1038406132baf06556f6abda8f1620ac4774984b`. Candidat navigateur propre : `fc0d47528b092ffae3e49cc020fbc27e902dc01b`. Les modifications de suivi ultérieures réutilisent cette preuve sans revendiquer un nouveau parcours.
 
-**30 couvertures conservées, 210 nouveaux PNG, 30 packs complets et 1 140 dérivés**. Les 30 parcours passent dans les six langues à 2560×1440 et 390×844. Les 150 captures et les 30 familles de sources ont été inspectées. Lire [le rapport](../qa/symbol-packs-lot-08-30-20261020.md), [le reçu](../qa/symbol-packs-lot-08-30-20261020.json), [l'Excel et le CSV](README.md). Les originaux, prompts et provenance sont dans [30 ZIP privés Drive](https://drive.google.com/drive/folders/1XzmtnMeVfBGWkT6XdLs5hGGI_kBjes0p) et dans le dossier local `output/symbol-packs-lot-08-30-20261020` du checkout principal. `RECUPERATION.json` décrit la reprise ; `production-queue.json` contient les prochains lots. Les versions rejetées restent conservées localement.
+**29 couvertures conservées, 203 nouveaux PNG, 29 packs et 1 102 dérivés**. Les 29 parcours passent dans les six langues aux deux tailles demandées. Les 145 captures et les 29 familles de sources ont été inspectées. Les 72 variantes portugaises manquantes ont été traduites fidèlement depuis leurs variantes anglaises existantes, puis relues indépendamment ; les interprétations longues existantes sont préservées. La scène accident d’avion utilise l’indice italien 6.
 
-Le candidat contient **105 packs et 135 restants**, soit 630 pages équipées parmi les 1 440 pages du cadre commun. La migration du Tigre au moteur commun provient de master PR485 ; ce lot ne revendique pas un nouveau parcours Tigre. Les 30 QA sont actuelles pour le candidat ; les anciennes preuves restent historiques car le générateur a changé. Aucun accord personnel de Thanh ou nouvelle publication n'est consigné. Les publications PR478 et PR485 demeurent des livraisons historiques vérifiées, pas des preuves de ce nouveau lot.
+Lire [le rapport](../qa/symbol-packs-lot-10-30-20261020.md), [le reçu](../qa/symbol-packs-lot-10-30-20261020.json) et [le suivi Excel/CSV](README.md). Les originaux, prompts et provenance sont dans [29 ZIP privés Drive](https://drive.google.com/drive/folders/1fUiZ6cBJMwNNV54MYLLPhvwFd47YfT6Q) et dans `output/symbol-packs-lot-09-30-20261020` du checkout principal. `RECUPERATION.json` décrit la reprise ; la file persistée du lot 08 conserve l’ordre des prochains lots. Les versions remplacées restent conservées localement.
+
+Le candidat contient **140 packs, 100 restants et 59 QA actuelles**. Les 30 QA du lot 08 restent valides sur leurs entrées inchangées ; ce lot ajoute 29 parcours frais. Le lot 08 est fusionné par la PR490, sans nouvelle qualification de production de notre part. Aucun accord personnel de Thanh, fusion ou publication du lot 10 n’est consigné. Les livraisons PR478 et PR485 restent historiques.
 
 ## Reprendre sans perdre le travail
 
-- Ne pas régénérer les 210 PNG sélectionnés. Les variantes remplacées sont conservées, mais seuls les fichiers sélectionnés dans les manifests et ZIP courants servent le site.
-- Ne pas relancer `manage.mjs configure` du dossier local du lot 08 : sa base précède les mises à jour de master et écraserait des preuves plus récentes. Les 30 profils, langues et scènes sont déjà configurés. Modifier les JSON canoniques directement si nécessaire.
-- Terminer la vérification locale sur le commit livré avant tout push. Remettre une branche et une PR avec le commit vérifié et le résultat de `verify:pr`. Une preuve ciblée de 30 parcours n'est pas une campagne Release complète.
-- Poursuivre ensuite avec la file persistée : lot 09 de 30, puis 30, 30, 30 et 15. Réexaminer le catalogue courant avant de produire pour éviter les doublons d'un autre travail.
+- Ne pas régénérer les 203 PNG actifs du lot 10 ; ses sept variantes Bateau inutilisées restent sauvegardées. Les 210 PNG du lot 08 restent également conservés. Les variantes remplacées sont conservées, mais seuls les fichiers sélectionnés dans les manifests et ZIP courants servent le site.
+- Ne pas relancer `manage.mjs configure` du dossier local du lot 08 : sa base précède les mises à jour de master et écraserait des preuves plus récentes. Les profils, langues et scènes sont déjà configurés. Modifier les JSON canoniques directement si nécessaire.
+- Terminer la vérification locale sur le commit livré avant tout push. Remettre une branche et une PR avec le commit vérifié et le résultat de `verify:pr`. Une preuve ciblée de 29 parcours n'est pas une campagne Release complète.
+- Poursuivre ensuite avec la file persistée : lots 11, 12 et 13 de 30, puis lot 14 de 10. Réexaminer le catalogue courant avant de produire pour éviter les doublons d'un autre travail.
 - Enregistrer chaque image, prompt et provenance dès sa réception ; archiver chaque pack terminé et mettre à jour le suivi par lot. Ne pas remettre le suivi ou les rapports internes sur Drive sans autorisation appropriée à ces documents.
 
 ## Direction artistique et mouvement
@@ -46,4 +48,4 @@ Les placements acceptent `place.at: [x, y]` (centre relatif), et `place.zoom` de
 
 Piloter un symbole représentatif, puis contrôler le lot affecté sur les pages réelles : deux tailles, six langues, trois variantes, effets dans le temps, transparence, titre, scroll, réduction des mouvements et peinture stable. Vérifier que mobile utilise le portrait dédié et ne télécharge pas la plaque masquée. Conserver le reçu, la révision et la commande exacte ; réutiliser seulement les preuves inchangées.
 
-La preuve du lot 08 qualifie le navigateur local, sans appareil physique, application native, mesure de fluidité ou publication. Le premier passage a révélé deux divergences de ponctuation PT, corrigées dans le générateur puis rejouées : **30 réussites, zéro échec ou ignoré, 55 parcours hors sélection**. La revue a aussi corrigé les associations hôpital ES et école IT, sans changer leur contenu éditorial. Les différences mineures sans défaut visible ne justifient pas des retouches sans fin.
+La preuve du lot 10 qualifie le navigateur local, sans appareil physique, application native, mesure de fluidité ou publication : 29 réussites, zéro échec ou ignoré. Les autres parcours sont hors sélection. Les différences mineures sans défaut visible ne justifient pas des retouches sans fin.
