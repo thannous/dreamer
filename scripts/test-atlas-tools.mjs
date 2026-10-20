@@ -564,20 +564,25 @@ test('the rollout report reads states from the repository and stages only from r
   writeRegistry((value) => ({ ...value, records: [record, requalified] }));
   const requalifiedReport = run('out-4e').report;
   assert.equal(bySymbol(requalifiedReport, 'moon').languages.fr.stages.qa.desktop, 'accepted');
-  // A page without a pack takes its phone framing from the generator's framing file: changing it
+  // A page without a pack takes its phone framing from the generator's framing file, centred when the
+  // file leaves it out. Naming that centre leaves its record accepted; a new point makes it stale and
   // changes that page's engine only, not another page's nor a pack's.
-  fs.writeFileSync(path.join(repo, 'docs-src', 'config', 'symbol-hero-portrait.json'), JSON.stringify({ deer: '30% 50%' }));
-  const reframed = run('out-4f').report;
+  const framingFile = path.join(repo, 'docs-src', 'config', 'symbol-hero-portrait.json');
+  const deerEvidence = path.join(repo, 'evidence', 'deer-fr-mobile.png');
+  fs.writeFileSync(deerEvidence, 'deer capture');
+  const deerRecord = { id: 'deer', lang: 'fr', stage: 'qa', surface: 'mobile', verdict: 'accepted', date: '2026-10-19', source: bySymbol(requalifiedReport, 'deer').languages.fr.source, evidence: { path: 'evidence/deer-fr-mobile.png', sha256: sha256('deer capture') } };
+  writeRegistry((value) => ({ ...value, records: [record, requalified, deerRecord] }));
+  fs.writeFileSync(framingFile, JSON.stringify({ deer: '50% 50%' }));
+  assert.equal(bySymbol(run('out-4f').report, 'deer').languages.fr.stages.qa.mobile, 'accepted');
+  fs.writeFileSync(framingFile, JSON.stringify({ deer: '30% 50%' }));
+  const reframed = run('out-4f2').report;
   const engineOf = (report, id) => bySymbol(report, id).languages.fr.source.engine;
-  assert.notEqual(engineOf(reframed, 'deer'), engineOf(requalifiedReport, 'deer'));
+  assert.deepEqual(bySymbol(reframed, 'deer').languages.fr.stale, [{ stage: 'qa', surface: 'mobile', date: '2026-10-19', changed: ['engine'] }]);
   assert.equal(engineOf(reframed, 'spider'), engineOf(requalifiedReport, 'spider'));
   assert.equal(bySymbol(reframed, 'moon').languages.fr.stages.qa.desktop, 'accepted');
   // It also prints the language's shared atlas copy: changing those words makes its record stale,
   // though it has no atlas of its own and the totals stay the same.
-  const deerEvidence = path.join(repo, 'evidence', 'deer-fr-mobile.png');
-  fs.writeFileSync(deerEvidence, 'deer capture');
-  const deerRecord = { id: 'deer', lang: 'fr', stage: 'qa', surface: 'mobile', verdict: 'accepted', date: '2026-10-19', source: bySymbol(reframed, 'deer').languages.fr.source, evidence: { path: 'evidence/deer-fr-mobile.png', sha256: sha256('deer capture') } };
-  writeRegistry((value) => ({ ...value, records: [record, requalified, deerRecord] }));
+  fs.rmSync(framingFile);
   assert.equal(bySymbol(run('out-4g').report, 'deer').languages.fr.stages.qa.mobile, 'accepted');
   const localesFile = path.join(repo, 'docs-src', 'config', 'symbol-atlas-locales.json');
   const localesText = fs.readFileSync(localesFile, 'utf8');
@@ -621,4 +626,24 @@ test('the rollout report reads states from the repository and stages only from r
   const withoutSource = run('out-10');
   assert.equal(withoutSource.status, 1);
   assert.match(withoutSource.stderr, /source needs the content, atlas, assets, engine identities/);
+
+  // The tiger moves on the packs' engine with its own textures: a change of that engine or of those
+  // textures makes its record stale; the script of its former pilot serves no page and changes nothing.
+  fs.writeFileSync(path.join(repo, 'evidence', 'tiger-fr-desktop.png'), 'tiger capture');
+  const tigerRecord = (source) => ({ id: 'tiger', lang: 'fr', stage: 'qa', surface: 'desktop', verdict: 'accepted', date: '2026-10-20', source, evidence: { path: 'evidence/tiger-fr-desktop.png', sha256: sha256('tiger capture') } });
+  const tigerFr = (out) => bySymbol(run(out).report, 'tiger').languages.fr;
+  const staticFile = (...parts) => {
+    const file = path.join(repo, 'docs-src', 'static', 'js', ...parts);
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    return file;
+  };
+  writeRegistry((value) => value);
+  writeRegistry((value) => ({ ...value, records: [tigerRecord(tigerFr('out-11').source)] }));
+  fs.writeFileSync(staticFile('tiger-living', 'c0677c4083d5', 'tiger-living-painting.js'), '// former pilot v2\n');
+  assert.equal(tigerFr('out-12').stages.qa.desktop, 'accepted');
+  fs.writeFileSync(staticFile('symbol-living', 'c97b1746cf68', 'symbol-living.js'), '// common engine v2\n');
+  assert.deepEqual(tigerFr('out-13').stale, [{ stage: 'qa', surface: 'desktop', date: '2026-10-20', changed: ['engine'] }]);
+  writeRegistry((value) => ({ ...value, records: [tigerRecord(tigerFr('out-14').source)] }));
+  fs.writeFileSync(staticFile('tiger-living', '22c79c696a2f', 'assets', 'mist.webp'), 'retouched mist');
+  assert.deepEqual(tigerFr('out-15').stale, [{ stage: 'qa', surface: 'desktop', date: '2026-10-20', changed: ['engine'] }]);
 });

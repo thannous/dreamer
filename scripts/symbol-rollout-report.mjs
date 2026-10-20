@@ -94,17 +94,23 @@ export function buildReport(options) {
   const engineIdentity = (files) => identity(files.map((file) => [file, sha256(fs.readFileSync(at(...file.split('/'))))]));
   const generator = 'docs-src/static/scripts/generate-symbol-pages.js';
   const framingFile = 'docs-src/config/symbol-hero-portrait.json';
+  // The tiger moves on the packs' engine with its own textures and portrait painting, kept in the
+  // asset folders of its former pilot, whose scripts no longer serve any page.
   const engines = {
     page: engineIdentity(engineFiles(generator, framingFile)),
     pilot: engineIdentity(engineFiles(generator, 'docs-src/static/js/symbol-living')),
-    tiger: engineIdentity(engineFiles(generator, 'docs-src/static/js/tiger-living')),
+    tiger: engineIdentity([
+      ...engineFiles(generator, 'docs-src/static/js/symbol-living'),
+      ...engineFiles('docs-src/static/js/tiger-living').filter((file) => file.includes('/assets/')),
+    ]),
   };
 
   // Each page without a pack carries the generator and its own framing only: re-cropping one symbol
-  // leaves the other pages' qualifications reusable.
+  // leaves the other pages' qualifications reusable. Like the generator, a symbol the file leaves out
+  // is centred, so naming that default changes nothing.
   const framing = fs.existsSync(at(...framingFile.split('/'))) ? readJson(at(...framingFile.split('/')), 'the hero framing').value : {};
   const generatorEngine = engineIdentity(engineFiles(generator));
-  const textEngine = (id) => identity({ generator: generatorEngine, framing: framing[id] ?? null });
+  const textEngine = (id) => identity({ generator: generatorEngine, framing: framing[id] || '50% 50%' });
 
   // The registry names every catalog id exactly once, each with a known lot or none.
   const problems = [];
