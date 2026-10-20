@@ -267,6 +267,31 @@ export function campaignFailureRecord(output, error) {
 
 // Only the canonical caller enables this for its own CircleCI web SDK child.
 // No SDK/app output is forwarded, and a live process is not claimed to make progress.
+// A whole-host stall (VM snapshot or pause, memory reclaim) stops every process at
+// once; on resume the attempt deadline has expired, so the next step fails in ms
+// on a page that is fine (2026-10-19: app.open "took" 4m39s, then a tap failed
+// after 47 ms, at the box's "virtual machine fork" resume). The wrapper is idle
+// on async I/O while the SDK runs, so its 1 s heartbeat only falls 30 s behind
+// when the host itself did not run. Diagnostic only: it never changes a result.
+export const HOST_STALL_MS = 30_000;
+export function startHostStallMonitor({ intervalMs = 1_000, stallMs = HOST_STALL_MS, now = Date.now,
+  monotonic = () => performance.now(), setTimer = setInterval, clearTimer = clearInterval } = {}) {
+  const stalls = [];
+  let lastWall = now(), lastMonotonic = monotonic(), stopped = false;
+  const timer = setTimer(() => {
+    const wall = now(), mono = monotonic();
+    const wallGapMs = Math.round(wall - lastWall), monotonicGapMs = Math.round(mono - lastMonotonic);
+    if (Math.max(wallGapMs, monotonicGapMs) - intervalMs >= stallMs) {
+      stalls.push({ resumedAt: new Date(wall).toISOString(), wallGapMs, monotonicGapMs });
+    }
+    lastWall = wall; lastMonotonic = mono;
+  }, intervalMs);
+  timer?.unref?.();
+  return () => {
+    if (!stopped) { stopped = true; clearTimer(timer); }
+    return stalls.map(stall => ({ ...stall }));
+  };
+}
 export function startSdkProgress(child, { enabled, write, onError = () => {}, now = Date.now, setTimer = setInterval, clearTimer = clearInterval }) {
   if (!enabled) return () => {};
   const start = now(); let stopped = false;

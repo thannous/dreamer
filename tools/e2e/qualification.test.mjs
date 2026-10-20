@@ -9,7 +9,7 @@ import { spawnSync } from 'node:child_process';
 import { EventEmitter } from 'node:events';
 import { fileURLToPath } from 'node:url';
 import { virtualLinks } from './test-support/virtual-links.mjs';
-import { SDK_PINS, trackedDiffSha256, verifyReport, preserveStatus, compareSnapshots, aggregateReports, writeOnce, createAttemptOutput, verifyEvidenceFiles, verifyNativeCleanup, campaignFailureRecord, startSdkProgress } from './qualification.mjs';
+import { SDK_PINS, trackedDiffSha256, verifyReport, preserveStatus, compareSnapshots, aggregateReports, writeOnce, createAttemptOutput, verifyEvidenceFiles, verifyNativeCleanup, campaignFailureRecord, startSdkProgress, startHostStallMonitor, HOST_STALL_MS } from './qualification.mjs';
 
 const sha = value => createHash('sha256').update(value).digest('hex');
 const before = { revision: 'a'.repeat(40), files: { 'app/recording.tsx': sha('source') }, outputs: {} };
@@ -327,3 +327,21 @@ test('large real Git diffs retain complete legacy identity and refuse Git failur
     await assert.rejects(trackedDiffSha256(repository, { ...noGit, PATH: join(fixture, 'missing-bin') }), { code: 'ENOENT' });
   } finally { rmSync(fixture, { recursive: true, force: true }); }
 });
+
+// A real VM pause cannot be staged in CI; drive the heartbeat's clocks directly.
+test('the host stall monitor reports a frozen host and never a busy-but-running one', () => {
+  let wall = Date.parse('2026-10-19T22:50:43Z'), mono = 1000, tick, cleared = 0;
+  const stop = startHostStallMonitor({ now: () => wall, monotonic: () => mono,
+    setTimer: (fn, ms) => { tick = fn; assert.equal(ms, 1000); return { unref() {} }; }, clearTimer: () => { cleared++; } });
+  const advance = (ms, { wallOnly = false } = {}) => { wall += ms; if (!wallOnly) mono += ms; tick(); };
+  for (let i = 0; i < 120; i++) advance(1000);
+  advance(1000 + HOST_STALL_MS - 1); // a late tick just under the limit is ordinary scheduling noise
+  advance(279_000); // the 2026-10-19 freeze: both clocks jump
+  advance(1000);
+  advance(95_000, { wallOnly: true }); // a pause the monotonic clock did not count still shows on the wall clock
+  const stalls = stop(); stop();
+  assert.equal(cleared, 1);
+  assert.deepEqual(stalls.map(stall => [stall.wallGapMs, stall.monotonicGapMs]), [[279000, 279000], [95000, 0]]);
+  assert.equal(stalls[0].resumedAt, new Date(Date.parse('2026-10-19T22:50:43Z') + 121_000 + HOST_STALL_MS - 1 + 279_000).toISOString());
+});
+

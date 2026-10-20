@@ -39,6 +39,8 @@ export type NightSkyProps = {
   leaving: boolean;
   /** Play the arrival (settle, halo, shooting star). False when resuming on a later step. */
   arrival: boolean;
+  /** A sheet is told over the scene: under its veil the stars hold still instead of costing every frame. */
+  covered?: boolean;
 };
 
 /**
@@ -52,7 +54,7 @@ export type NightSkyProps = {
  * nothing travels; the sky fades in, stars hold still and the veil still darkens on
  * commit so the change is explained.
  */
-export const NightSky = memo(function NightSky({ step, leaving, arrival }: NightSkyProps) {
+export const NightSky = memo(function NightSky({ step, leaving, arrival, covered = false }: NightSkyProps) {
   const reduced = useReducedMotion();
   const { width, height } = useWindowDimensions();
 
@@ -156,6 +158,7 @@ export const NightSky = memo(function NightSky({ step, leaving, arrival }: Night
                 period={star.period}
                 phase={star.phase}
                 still={reduced}
+                paused={covered}
               />
             );
           })}
@@ -172,8 +175,8 @@ export const NightSky = memo(function NightSky({ step, leaving, arrival }: Night
   );
 });
 
-function Twinkle({ x, y, size, period, phase, still }: {
-  x: number; y: number; size: number; period: number; phase: number; still: boolean;
+function Twinkle({ x, y, size, period, phase, still, paused }: {
+  x: number; y: number; size: number; period: number; phase: number; still: boolean; paused: boolean;
 }) {
   const style = useMemo<CSSStyle<ViewStyle>>(() => (still ? { opacity: 0.7 } : {
     animationName: { from: { opacity: 0.25 }, to: { opacity: 0.95 } },
@@ -182,7 +185,8 @@ function Twinkle({ x, y, size, period, phase, still }: {
     animationIterationCount: 'infinite',
     animationDirection: 'alternate',
     animationTimingFunction: EASE.inOut,
-  }), [period, phase, still]);
+    animationPlayState: paused ? 'paused' : 'running',
+  }), [paused, period, phase, still]);
   return (
     <Animated.View
       style={[
