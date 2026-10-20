@@ -950,6 +950,28 @@ it.each(['ios', 'android'])('shares a card over the journal, which the dreamer s
   expect(mockPush).not.toHaveBeenCalled();
 });
 
+it('follows the shared dream through a sync that names it, and lets it go once closed or deleted', () => {
+  jest.useFakeTimers();
+  try {
+    mockDreams.push({ ...guestDream, clientRequestId: 'unsynced-request', title: 'Selected dream' });
+    const { rerender } = render(<JournalScreen />);
+    fireEvent.click(screen.getByText('Share Selected dream'));
+    // Sync gives the dream its server identity and its painting's name while the sheet is open.
+    mockDreams[0] = { ...mockDreams[0], remoteId: 2501, title: 'Selected dream, named' };
+    rerender(<JournalScreen />);
+    expect(screen.getByTestId('share-composer').getAttribute('data-dream')).toBe('Selected dream, named');
+    fireEvent.click(screen.getByText('Close the share composer'));
+    expect(screen.getByTestId('share-composer').getAttribute('data-visible')).toBe('false');
+    act(() => { jest.advanceTimersByTime(600); });
+    expect(screen.queryByTestId('share-composer')).toBeNull();
+    fireEvent.click(screen.getByText(/^Share Selected dream/));
+    expect(screen.getByTestId('share-composer').getAttribute('data-visible')).toBe('true');
+    mockDreams.length = 0;
+    rerender(<JournalScreen />);
+    expect(screen.queryByTestId('share-composer')).toBeNull();
+  } finally { jest.useRealTimers(); }
+});
+
 it('opens the dream with its share asked for from a card share on the web', () => {
   mockPlatform = 'web';
   mockDreams.push({ ...guestDream, remoteId: 2501, clientRequestId: 'last-request', title: 'Selected dream' });

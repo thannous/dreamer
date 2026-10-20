@@ -2,7 +2,7 @@ import { markPerformance } from '@/lib/performanceTrace';
 import Animated, { useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { useQuickSettings } from '@/context/QuickSettingsContext';
 import { getDreamRouteParams } from '@/lib/dreamRoute';
-import { getDreamIdentityKey } from '@/lib/dreamIdentity';
+import { getDreamIdentityKey, matchesDreamTarget } from '@/lib/dreamIdentity';
 import { UpsellCard } from '@/components/guest/UpsellCard';
 import { DreamerArtworkWindow } from '@/components/ui/DreamerBackground';
 import { PageHeaderContent } from '@/components/inspiration/PageHeader';
@@ -533,10 +533,10 @@ function JournalListScreen() {
   // On a phone, sharing from a card lets the dreamer choose what the shared card shows, over
   // the journal they stay in. The web, with no reliable share sheet, opens the dream, whose
   // share falls back to copying.
-  const [shareTarget, setShareTarget] = useState<{ key: string; dream: DreamAnalysis; open: boolean } | null>(null);
+  const [shareTarget, setShareTarget] = useState<{ dream: DreamAnalysis; open: boolean } | null>(null);
   const handleDreamShare = useCallback((dream: DreamAnalysis) => {
     if (Platform.OS !== 'web') {
-      setShareTarget({ key: getDreamIdentityKey(dream), dream, open: true });
+      setShareTarget({ dream, open: true });
       return;
     }
     if (isNavigatingRef.current) return;
@@ -544,10 +544,15 @@ function JournalListScreen() {
     router.push({ pathname: '/journal/[id]', params: { ...getDreamRouteParams(dream), share: '1' } });
   }, []);
   const closeDreamShare = useCallback(() => setShareTarget((current) => current && { ...current, open: false }), []);
-  // The dream as the journal holds it now; the one asked for while it closes or is gone.
-  const sharedDream = shareTarget
-    ? dreams.find((dream) => getDreamIdentityKey(dream) === shareTarget.key) ?? shareTarget.dream
-    : null;
+  // Once its sheet has slid away, the composer lets go of the dream.
+  useEffect(() => {
+    if (!shareTarget || shareTarget.open) return undefined;
+    const timer = setTimeout(() => setShareTarget((current) => (current && !current.open ? null : current)), 600);
+    return () => clearTimeout(timer);
+  }, [shareTarget]);
+  // The dream as the journal holds it now, through a sync that names it anew; a dream deleted
+  // meanwhile, or another account's, closes the composer.
+  const sharedDream = shareTarget ? dreams.find((dream) => matchesDreamTarget(dream, shareTarget.dream)) ?? null : null;
 
   const handleDreamFavorite = useCallback((dream: DreamAnalysis) => {
     setFavoriteError(null);
