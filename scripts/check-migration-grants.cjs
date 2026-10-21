@@ -65,6 +65,8 @@
 //     whitespace, an escaped quote, parentheses, or a word the lint parses
 //     (begin, atomic, search_path, security, definer, set, role), in any
 //     migration;
+//   - "database-qualified routine name": database.schema.name after
+//     function/procedure/routine;
 //   - "quoted name with a delimiter": a routine statement with a quoted
 //     identifier containing "(", ")", "," or an escaped quote (typmod stripping
 //     and the signature encoding cannot tell "foo(1)" from foo, or "a,b" from a, b);
@@ -972,6 +974,10 @@ function checkFunctionSql(source) {
     }
     if ((privilege.test(statement.text) || schemaWide.test(statement.text)) && /(?:\b(?:to|from)\s+|,\s*)"public"/i.test(statement.raw)) {
       problems.push(`shape rule "quoted public grantee": "public" in quotes is a role named public, not PUBLIC; write PUBLIC unquoted`);
+    }
+    // A database-qualified routine name (db.schema.name) is three parts; the replay reads two, so it fails closed.
+    if (new RegExp(String.raw`\b(?:functions?|procedures?|routines?)\s+(?:if\s+exists\s+)?${IDENT}\s*\.\s*${IDENT}\s*\.\s*${IDENT}`, 'i').test(statement.text)) {
+      problems.push(`shape rule "database-qualified routine name": a routine name with three parts (database.schema.name); write schema.name`);
     }
     if (rollback.test(statement.text)) { rolledBack = true; continue; }
     let match = createRoutine.exec(statement.text);

@@ -605,6 +605,8 @@ drop type public.token cascade;
 create type public.token as enum ('a');
 create function public.claim(x public.token) returns int language sql security definer set search_path = '' as $$ select 1 $$;`,
     [/public\.claim\(token\).*from public"/, /from anon"/, /grant execute/]],
+  'Codex: database-qualified routine name': [`CREATE FUNCTION postgres.public.claim() RETURNS integer LANGUAGE sql SECURITY DEFINER AS $$ SELECT 1 $$;
+grant execute on function "postgres" . public.claim() to authenticated;`, [/shape rule "database-qualified routine name"/, /shape rule "database-qualified routine name"/]],
 };
 
 test('a public security definer function with revokes, a grant and a search_path passes', () => {
