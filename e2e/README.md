@@ -16,7 +16,7 @@ through TesterArmy on an installed Release build; Maestro was retired on 2026-10
 | Suite | Command | Services and proof boundary |
 | --- | --- | --- |
 | Mock web journeys | `test:e2e:web` | Real UI and routing with simulated storage, AI and billing; session continuity and error recovery. |
-| Real local backend | `test:e2e:backend` | Disposable Supabase Auth/Postgres/PostgREST; save/reload, account isolation, server quotas and offline sync. See [backend qualification](../doc_web_interne/docs/e2e-backend-qualification.md). |
+| Real local backend | `test:e2e:backend` | Six TesterArmy cases plus two retained Playwright SDK exceptions against disposable Supabase Auth/Postgres/PostgREST; save/reload, isolation, quotas and offline sync. See [backend qualification](../doc_web_interne/docs/e2e-backend-qualification.md). |
 | Native journeys | `test:testerarmy:mobile -- <dreamer\|lucid\|meditation> <android\|ios>` | TesterArmy on an identified installed Release build, one owned emulator or Simulator. Invariants and limits in the [native matrix](../tools/e2e/NATIVE-MATRIX.md). |
 | Native storage and permissions | none (retired 2026-10-14) | The Maestro permission and offline-storage flows were removed with Maestro and have no TesterArmy counterpart yet; their last results stay in [native checks without a payment](../doc_web_interne/docs/e2e-backend-qualification.md#native-checks-without-a-payment). |
 | RevenueCat Test Store | manual checklist | Purchase, restore and account switch follow [the Test Store checklist](../doc_web_interne/docs/revenuecat-qa-workflow.md#2-revenuecat-test-store--checklist-manuelle); mock billing is covered by the web journeys below. |
@@ -66,8 +66,10 @@ Artifacts (ignored by Git): `test-results/e2e-web-report/` (HTML),
 source revision, dirty state, environment and fixture profiles. Open any trace with
 `mise exec -- npx playwright show-trace <trace.zip>`.
 
-A manually triggered CircleCI pipeline runs these journeys through their TesterArmy
-counterparts (`tools/e2e/README.md`); this Playwright suite remains for local runs.
+Current journeys run locally through TesterArmy (`tools/e2e/README.md`); CircleCI
+runs only an optional installation benchmark. This legacy Playwright suite is
+retained while the exceptions in [the migration inventory](../tools/e2e/MIGRATION.md)
+remain unresolved.
 Existing quality, native and backend gates remain in place.
 
 ## Billing without real payments

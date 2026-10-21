@@ -264,7 +264,7 @@ before/after the campaign and SDK cleanup diagnostics.
 
 ## Historical Dreamer UI parity
 
-The 83 historical browser cases across 16 families run through TesterArmy with
+Historical browser cases run through TesterArmy with
 their exact UI assertions, including mock billing, capture/edit/chat, continuous
 reading, reflection, symbol dictionary, Explorer, settings persistence, Home,
 Trends, responsive navigation, Journal geometry and feature-sheet stories.
@@ -644,3 +644,18 @@ attempt-bound `purchase-attestation.json`, and a native PURCHASE matching Revenu
 `store_transaction_id`. A renewal or stale state is refused. See the runbook for the private
 attestation fields. Run `mise exec -- node --test tools/e2e/iphone-sandbox-guards.test.mjs`
 for the documented unsafe-device/stale-evidence counterexamples without touching a phone.
+
+
+## Local real backend journeys
+
+`npm run test:e2e:backend` owns a disposable native Supabase stack, runs six
+validated public-API TesterArmy cases, then the two retained Playwright SDK
+exceptions (independent simultaneous contexts and true offline/reconnect).
+`npm run test:testerarmy:backend -- --repeat-each 3` selects only the migrated six;
+`npm run test:e2e:backend -- --legacy-playwright` retains the full old eight.
+Use an explicit runner flag for targeted selections. `E2E_WEB_PORT` selects a
+loopback frontend (default 18125), recorded in rerun evidence; one worker, no retry,
+no remote backend, AI or real payment. The existing stack guard, migration fixtures,
+server assertions, account teardown and final stack destruction remain in use.
+See [MIGRATION.md](MIGRATION.md) for exact runs and unresolved exceptions. These
+exceptions and the historical Page bridge prevent a claim of complete API migration.
