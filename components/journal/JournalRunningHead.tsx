@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, type ReactNode } from 'react';
 import { Text, View } from 'react-native';
 
 import { PressableScale } from '@/components/motion';
@@ -17,13 +17,15 @@ const BACK_SIZE = 42;
  * The top of a journal page: the way back to the journal, the round arrow the app's other
  * pages use. It belongs to the page and scrolls away with it. Without `onBack` it is only
  * drawn, as on a page being turned to. A `label` is printed across it in spaced capitals,
- * as a book prints its title at the head of each page; it is decorative.
+ * as a book prints its title at the head of each page; it is decorative. An `aside`, such
+ * as the full moon's seal, sits at the line's other end.
  */
-export function JournalRunningHead({ onBack, testID, backTestID, label }: {
+export function JournalRunningHead({ onBack, testID, backTestID, label, aside }: {
   onBack?: () => void;
   testID?: string;
   backTestID?: string;
   label?: string;
+  aside?: ReactNode;
 }) {
   const { t } = useTranslation();
   const { colors, mode, shadows } = useTheme();
@@ -55,6 +57,7 @@ export function JournalRunningHead({ onBack, testID, backTestID, label }: {
       ) : (
         <View className="items-center justify-center" style={button}>{arrow}</View>
       )}
+      {aside ? <View className="ml-auto">{aside}</View> : null}
     </View>
   );
 }

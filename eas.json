@@ -5,7 +5,7 @@
   },
   "build": {
     "base": {
-      "node": "24.19.0",
+      "node": "24.22.1",
       "env": {
         "SHARP_IGNORE_GLOBAL_LIBVIPS": "1",
         "EXPO_PUBLIC_HD_ILLUSTRATIONS_ENABLED": "false"

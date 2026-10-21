@@ -19,6 +19,7 @@ import { SymbolMedallion } from '@/components/journal/symbols/SymbolMedallion';
 import { PressableScale } from '@/components/motion';
 import { EASE } from '@/components/motion/motion';
 import type { DreamSky, SkyConstellation } from '@/lib/dreamSky';
+import { isFullMoonDream } from '@/lib/fullMoon';
 import type { DreamAnalysis } from '@/lib/types';
 
 import { TrendsSectionHead } from './TrendsSectionHead';
@@ -42,7 +43,7 @@ const READER_ACTIONS = [{ name: 'increment' }, { name: 'decrement' }, { name: 'a
 /** The ring around the star a screen reader or the keyboard is on. */
 const RING = 30;
 
-type Placed = { dream: DreamAnalysis; x: number; y: number; analyzed: boolean; joined: boolean };
+type Placed = { dream: DreamAnalysis; x: number; y: number; analyzed: boolean; joined: boolean; fullMoon: boolean };
 /** Where a finger came down on the sky, and whether it has slid since. */
 type Press = { x: number; y: number; slid: boolean };
 
@@ -62,7 +63,7 @@ function dustOf(width: number) {
 }
 
 /** Drawn again only with the sky's size or stars: choosing a constellation leaves it alone. */
-const StarField = memo(function StarField({ placed, width, ink, glow, glowOpacity, dust }: {
+const StarField = memo(function StarField({ placed, width, ink, glow, glowOpacity, dust, silver }: {
   placed: readonly Placed[];
   width: number;
   ink: string;
@@ -70,6 +71,8 @@ const StarField = memo(function StarField({ placed, width, ink, glow, glowOpacit
   /** How strongly the theme lets its glow show: soft by night, softer on paper. */
   glowOpacity: number;
   dust: string;
+  /** The full moon's rim: it rings the stars of dreams noted after a full moon's night. */
+  silver: string;
 }) {
   const specks = useMemo(() => dustOf(width), [width]);
   return (
@@ -86,6 +89,10 @@ const StarField = memo(function StarField({ placed, width, ink, glow, glowOpacit
       ))}
       {placed.map((star) => (star.analyzed ? (
         <Circle key={`halo-${star.dream.id}`} cx={star.x} cy={star.y} r={star.joined ? 12 : 9} fill={glow} opacity={0.14} />
+      ) : null))}
+      {placed.map((star) => (star.fullMoon ? (
+        <Circle key={`moon-${star.dream.id}`} cx={star.x} cy={star.y} r={star.joined ? 11 : 9}
+          fill="none" stroke={silver} strokeWidth={1.2} opacity={0.9} />
       ) : null))}
       {/* A dream still waiting for its reading is a fainter, smaller star. */}
       {placed.map((star) => (
@@ -151,7 +158,7 @@ const ConstellationLayer = memo(function ConstellationLayer({ constellation, pla
  * dreams one at a time from the newest, naming each, and opens the one it is on. On the
  * web the keyboard does the same with the arrows and Enter. A ring shows the star then.
  */
-export function TrendsSky({ sky, lit, reduced, ink, glow, glowOpacity, dust, t, formatNumber, formatDate, onOpenDream }: {
+export function TrendsSky({ sky, lit, reduced, ink, glow, glowOpacity, dust, silver, t, formatNumber, formatDate, onOpenDream }: {
   sky: DreamSky;
   /** The section is on screen: the sky lights then, not out of sight. */
   lit: boolean;
@@ -160,6 +167,7 @@ export function TrendsSky({ sky, lit, reduced, ink, glow, glowOpacity, dust, t, 
   glow: string;
   glowOpacity: number;
   dust: string;
+  silver: string;
   t: Translate;
   formatNumber: (value: number) => string;
   formatDate: FormatDate;
@@ -182,6 +190,7 @@ export function TrendsSky({ sky, lit, reduced, ink, glow, glowOpacity, dust, t, 
       y: INSET_Y + star.y * (SKY_HEIGHT - 2 * INSET_Y),
       analyzed: star.analyzed,
       joined: joined.has(index),
+      fullMoon: star.fullMoon,
     }));
   }, [constellations, stars, width]);
 
@@ -221,8 +230,9 @@ export function TrendsSky({ sky, lit, reduced, ink, glow, glowOpacity, dust, t, 
   const found = stars.findIndex(({ dream }) => dream.id === heardId);
   const heardAt = found >= 0 ? found : stars.length - 1;
   const heard = stars[heardAt];
-  const describe = useCallback((dream: DreamAnalysis) => `${dream.title?.trim() || t('trends.nights.untitled')}, ${
-    formatDate(dream.id, { day: 'numeric', month: 'long', year: 'numeric' })}`, [formatDate, t]);
+  const describe = useCallback((dream: DreamAnalysis) => [dream.title?.trim() || t('trends.nights.untitled'),
+    formatDate(dream.id, { day: 'numeric', month: 'long', year: 'numeric' }),
+    isFullMoonDream(dream.id) ? t('full_moon.seal') : null].filter(Boolean).join(', '), [formatDate, t]);
   const openHeard = useCallback(() => {
     if (heard) onOpenDream(heard.dream);
   }, [heard, onOpenDream]);
@@ -297,7 +307,7 @@ export function TrendsSky({ sky, lit, reduced, ink, glow, glowOpacity, dust, t, 
         {width > 0 ? (
           <>
             <Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill, field] as StyleProp<ViewStyle>}>
-              <StarField placed={placed} width={width} ink={ink} glow={glow} glowOpacity={glowOpacity} dust={dust} />
+              <StarField placed={placed} width={width} ink={ink} glow={glow} glowOpacity={glowOpacity} dust={dust} silver={silver} />
             </Animated.View>
             {constellations.map((constellation, order) => (
               <ConstellationLayer key={constellation.symbol.linkKey} constellation={constellation} placed={placed}
@@ -338,7 +348,8 @@ export function TrendsSky({ sky, lit, reduced, ink, glow, glowOpacity, dust, t, 
       <Text className="text-body-sm leading-[21px] font-sans text-ivory-muted" accessibilityLiveRegion="polite" testID="trends.sky.caption"
         accessibilityLabel={caption ?? undefined} accessibilityElementsHidden={!caption}
         importantForAccessibility={caption ? 'auto' : 'no-hide-descendants'}>
-        {[caption, t('trends.sky.hint')].filter(Boolean).join(' ')}
+        {[caption, t('trends.sky.hint'), stars.some((star) => star.fullMoon) ? t('trends.sky.full_moon_hint') : null]
+          .filter(Boolean).join(' ')}
       </Text>
     </View>
   );
