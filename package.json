@@ -199,7 +199,9 @@
     "symbols:illustrations:sync": "node ./scripts/sync-symbol-illustrations.js",
     "lint:warnings": "node scripts/check-lint-warnings.js",
     "repository:hygiene": "node scripts/check-repository-hygiene.cjs",
-    "test:repository-hygiene": "node --test scripts/check-repository-hygiene.test.cjs"
+    "test:repository-hygiene": "node --test scripts/check-repository-hygiene.test.cjs",
+    "migrations:grants": "node scripts/check-migration-grants.cjs",
+    "test:migration-grants": "node --test scripts/check-migration-grants.test.cjs"
   },
   "dependencies": {
     "@expo-google-fonts/fraunces": "^0.4.1",

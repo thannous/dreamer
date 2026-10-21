@@ -192,6 +192,9 @@ export default {
     'data/repository-hygiene-baseline.json',
     'scripts/check-lint-warnings.js',
     'scripts/check-lint-warnings.test.js',
+    // Which new public tables may skip explicit grants: only the closed historical list.
+    'scripts/check-migration-grants.cjs',
+    'scripts/check-migration-grants.test.cjs',
     'scripts/lint-warnings-baseline.json',
     'scripts/install-git-hooks.js',
     'scripts/run-jest-changed.js',
@@ -325,6 +328,14 @@ export default {
     {
       name: 'repository-hygiene',
       command: 'npm run repository:hygiene && npm run test:repository-hygiene',
+    },
+    // A new public table gets no Data API grant (Supabase from 2026-10-30, and
+    // auto_expose_new_tables = false locally): its migration must enable RLS and
+    // grant or revoke it for anon, authenticated and service_role.
+    {
+      name: 'migration-grants',
+      command: 'npm run migrations:grants && npm run test:migration-grants',
+      inputs: ['supabase/migrations/**', 'scripts/check-migration-grants.cjs', 'scripts/check-migration-grants.test.cjs', 'package.json'],
     },
     // Independent read-only checks share one supervised step and machine lock.
     // Route declarations are atomically replaced by generate-shared-route-types.
