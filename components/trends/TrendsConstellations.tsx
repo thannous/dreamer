@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { FlatList, Text, View } from 'react-native';
 
 import { PressableScale } from '@/components/motion';
 import type { WeekNights } from '@/lib/weekConstellations';
@@ -36,14 +36,15 @@ export function TrendsConstellations({ weeks, goal, ink, dust, t, formatNumber, 
         subtitle={count === 0 ? t('trends.constellations.empty', { goal: formatNumber(goal) })
           : t(count === 1 ? 'trends.constellations.count_one' : 'trends.constellations.count', { count: formatNumber(count) })} />
       {count > 0 ? (
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12 }}
-          testID="trends.constellations.list">
-          {weeks.map((week) => {
+        // A long journal forms many weeks: only the tiles in view are drawn.
+        <FlatList horizontal data={weeks} keyExtractor={(week) => String(week.start)} showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ gap: 12 }} initialNumToRender={4} windowSize={5} testID="trends.constellations.list"
+          renderItem={({ item: week }) => {
             const name = nameOf(week);
             const dates = datesOf(week);
             const nights = t('trends.constellations.nights', { count: formatNumber(week.count) });
             return (
-              <PressableScale key={week.start} onPress={() => onOpenWeek(week)} haptic="light" accessibilityRole="button"
+              <PressableScale onPress={() => onOpenWeek(week)} haptic="light" accessibilityRole="button"
                 accessibilityLabel={t('trends.constellations.open', { name, dates, nights })}
                 testID={`trends.constellations.week.${week.start}`} style={{ width: TILE_WIDTH }} className="gap-2">
                 <View className="items-center justify-center overflow-hidden rounded-[18px] border border-line bg-ink-card"
@@ -54,8 +55,7 @@ export function TrendsConstellations({ weeks, goal, ink, dust, t, formatNumber, 
                 <Text numberOfLines={1} className="text-caption font-sans text-ivory-muted">{`${dates} · ${nights}`}</Text>
               </PressableScale>
             );
-          })}
-        </ScrollView>
+          }} />
       ) : null}
     </View>
   );

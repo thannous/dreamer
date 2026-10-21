@@ -114,11 +114,14 @@ const morningKeys = new Map<string, boolean>();
 /** Whether a dream noted at this moment was noted the day after a full moon's night. */
 export function isFullMoonDream(timestamp: number): boolean {
   if (!Number.isFinite(timestamp)) return false;
-  const key = getLocalDateKey(new Date(timestamp));
-  let sealed = morningKeys.get(key);
+  const day = new Date(timestamp);
+  const key = getLocalDateKey(day);
+  // A trip to another time zone moves the midnights, and with them the sealed day.
+  const cached = `${key}/${day.getTimezoneOffset()}`;
+  let sealed = morningKeys.get(cached);
   if (sealed === undefined) {
     sealed = fullMoonMorningKey(nearestFullMoon(timestamp)) === key;
-    morningKeys.set(key, sealed);
+    morningKeys.set(cached, sealed);
   }
   return sealed;
 }

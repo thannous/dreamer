@@ -2999,8 +2999,10 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     <View testID="journal.detail.fullMoon" accessible accessibilityLabel={t('full_moon.seal')}
       className="flex-row items-center gap-2 rounded-full py-1.5 pl-1.5 pr-3"
       style={{ backgroundColor: noctalia.illustration.scrim }}>
-      <FullMoonSeal size={24} />
-      <Text allowFontScaling={false} className="font-serif-italic text-[13px] leading-5 text-illustration-text">
+      <FullMoonSeal size={24 * compactTextScale} />
+      <Text key={`full-moon-${windowSize.fontScale}`} allowFontScaling={false}
+        style={{ fontSize: 13 * compactTextScale, lineHeight: 20 * compactTextScale }}
+        className="font-serif-italic text-[13px] leading-5 text-illustration-text">
         {t('full_moon.seal')}
       </Text>
     </View>

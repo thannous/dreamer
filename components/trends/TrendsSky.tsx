@@ -19,6 +19,7 @@ import { SymbolMedallion } from '@/components/journal/symbols/SymbolMedallion';
 import { PressableScale } from '@/components/motion';
 import { EASE } from '@/components/motion/motion';
 import type { DreamSky, SkyConstellation } from '@/lib/dreamSky';
+import { isFullMoonDream } from '@/lib/fullMoon';
 import type { DreamAnalysis } from '@/lib/types';
 
 import { TrendsSectionHead } from './TrendsSectionHead';
@@ -229,8 +230,9 @@ export function TrendsSky({ sky, lit, reduced, ink, glow, glowOpacity, dust, sil
   const found = stars.findIndex(({ dream }) => dream.id === heardId);
   const heardAt = found >= 0 ? found : stars.length - 1;
   const heard = stars[heardAt];
-  const describe = useCallback((dream: DreamAnalysis) => `${dream.title?.trim() || t('trends.nights.untitled')}, ${
-    formatDate(dream.id, { day: 'numeric', month: 'long', year: 'numeric' })}`, [formatDate, t]);
+  const describe = useCallback((dream: DreamAnalysis) => [dream.title?.trim() || t('trends.nights.untitled'),
+    formatDate(dream.id, { day: 'numeric', month: 'long', year: 'numeric' }),
+    isFullMoonDream(dream.id) ? t('full_moon.seal') : null].filter(Boolean).join(', '), [formatDate, t]);
   const openHeard = useCallback(() => {
     if (heard) onOpenDream(heard.dream);
   }, [heard, onOpenDream]);

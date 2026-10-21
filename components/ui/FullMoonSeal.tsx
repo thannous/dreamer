@@ -14,7 +14,7 @@ export function FullMoonSeal({ size = 20 }: { size?: number }) {
   const { colors, mode } = useTheme();
   const moon = useMemo(() => getNoctaliaDesignTokens(colors, mode).fullMoon, [colors, mode]);
   // Two seals on one web page must not share a gradient's id.
-  const light = `full-moon-${useId().replace(/:/g, '')}`;
+  const light = `full-moon-${useId().replace(/[^a-zA-Z0-9]/g, '')}`;
   const r = size / 2;
   return (
     <View accessible={false} importantForAccessibility="no-hide-descendants" accessibilityElementsHidden

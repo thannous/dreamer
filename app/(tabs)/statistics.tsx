@@ -41,7 +41,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { getDreamThemeLabel } from '@/lib/dreamLabels';
 import { getDreamRouteParams } from '@/lib/dreamRoute';
 import { buildPaywallHref } from '@/lib/paywallRoute';
-import { formatQuotaResetDate } from '@/lib/quotaReset';
+import { formatQuotaResetDate, withFirstDayOrdinal } from '@/lib/quotaReset';
 import { buildDreamSky } from '@/lib/dreamSky';
 import {
   buildDreamTrends,
@@ -173,6 +173,17 @@ function StatisticsScreen() {
   const sky = useMemo(() => buildDreamSky(dreams, trends.range, periodSymbols), [dreams, periodSymbols, trends.range]);
   // The formed weeks belong to the whole journal, whatever the period.
   const formedWeeks = useMemo(() => getFormedWeeks(dreams), [dreams]);
+  // Named once per journal: each name reads the whole symbol index.
+  const weekNames = useMemo(() => {
+    if (formedWeeks.length === 0) return new Map<number, string>();
+    const index = getSymbolIndex(dreams, currentLang);
+    return new Map(formedWeeks.map((week) => {
+      const name = nameWeek(week, index);
+      return [week.start, !name
+        ? t('trends.constellations.week_of', { date: withFirstDayOrdinal(formatDate(week.start, { day: 'numeric', month: 'long' }), locale) })
+        : 'symbol' in name ? name.symbol.name : getDreamThemeLabel(name.theme, t) ?? name.theme];
+    }));
+  }, [currentLang, dreams, formatDate, formedWeeks, locale, t]);
 
   const { nightsRef, returnsRef, skyRef, nightsLit, returnsLit, skyLit, onRevealLayout, onRevealScroll } =
     useTrendsReveal(loaded && !trends.empty, trends.count > 0);
@@ -371,11 +382,7 @@ function StatisticsScreen() {
     <View className="border-t border-line pt-7">
       <TrendsConstellations weeks={formedWeeks} goal={CONSTELLATION_NIGHTS} ink={ink} dust={noctalia.text.tertiary}
         t={t} formatNumber={formatNumber}
-        nameOf={(week) => {
-          const name = nameWeek(week, getSymbolIndex(dreams, currentLang));
-          if (!name) return t('trends.constellations.week_of', { date: formatDate(week.start, { day: 'numeric', month: 'long' }) });
-          return 'symbol' in name ? name.symbol.name : getDreamThemeLabel(name.theme, t) ?? name.theme;
-        }}
+        nameOf={(week) => weekNames.get(week.start) ?? ''}
         datesOf={(week) => t('trends.range', { start: shortDate(week.start), end: shortDate(week.end - 1) })}
         onOpenWeek={openWeek} />
     </View>

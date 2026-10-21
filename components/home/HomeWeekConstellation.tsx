@@ -33,7 +33,8 @@ export function HomeWeekConstellation({ dreams, now }: { dreams: DreamAnalysis[]
   const body = week.formed
     ? named ? t('home.constellation.formed', { name: named }) : t('home.constellation.formed_unnamed')
     : !canStillForm(week, now)
-      ? t(week.count === 1 ? 'home.constellation.next_week_one' : 'home.constellation.next_week', { count: week.count })
+      ? t(week.count === 0 ? 'home.constellation.next_week_zero'
+        : week.count === 1 ? 'home.constellation.next_week_one' : 'home.constellation.next_week', { count: week.count })
       : week.count === 0
         ? t('home.constellation.progress_zero', { goal })
         : t(week.count === 1 ? 'home.constellation.progress_one' : 'home.constellation.progress', { count: week.count, goal });

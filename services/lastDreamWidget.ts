@@ -140,7 +140,8 @@ async function publish({ dream, userId, title, date, empty, anniversaries = [] }
   shown = { userId, dream: { id: dream.id, remoteId: dream.remoteId, clientRequestId: dream.clientRequestId } };
   // Only now are the paintings it showed no longer needed.
   removePaintings(new Directory(found.directory), [image, ...days.map((day) => day.props.image)]);
-  return true;
+  // An anniversary left out for now is tried again on the next update.
+  return days.length === anniversaries.length;
 }
 
 /**
@@ -148,7 +149,7 @@ async function publish({ dream, userId, title, date, empty, anniversaries = [] }
  * is none, giving the coming anniversaries their days. Updates run one at a time, and
  * only the latest is laid. A painting that cannot be fetched now (offline) leaves an
  * older dream of the same dreamer in place and clears anything else; the result is false
- * until the widget shows this dream.
+ * until the widget shows this dream and each of its coming anniversaries.
  */
 export function updateLastDreamWidget(update: LastDreamUpdate): Promise<boolean> {
   const turn = ++latest;

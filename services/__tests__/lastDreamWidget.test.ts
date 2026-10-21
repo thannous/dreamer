@@ -259,17 +259,23 @@ describe('anniversaries', () => {
     ]);
   });
 
-  it('leaves to the last dream the day whose painting cannot be fetched', async () => {
+  it('leaves to the last dream the day whose painting cannot be fetched, and asks to be tried again', async () => {
     const service = launch();
     const monthAgo = dream(Date.parse('2026-09-23T06:00:00Z'));
+    const withAnniversary = { ...update(dream(10), 'alice'), anniversaries: [anniversary(monthAgo, NOW + 9 * HOUR)] };
     mockUnreachable.add(monthAgo.imageUrl);
 
-    expect(await service.updateLastDreamWidget({ ...update(dream(10), 'alice'), anniversaries: [anniversary(monthAgo, NOW + 9 * HOUR)] })).toBe(true);
+    expect(await service.updateLastDreamWidget(withAnniversary)).toBe(false);
 
     expect(mockUpdateTimeline).not.toHaveBeenCalled();
     expect(laid()).toHaveLength(1);
     expect(laid()[0]).toMatchObject({ title: 'Dream 10' });
     expect(paintings()).toEqual([laid()[0].image]);
+
+    // Back online, the same update gives the anniversary its day.
+    mockUnreachable.clear();
+    expect(await service.updateLastDreamWidget(withAnniversary)).toBe(true);
+    expect(timeline().map(({ props }) => props.title)).toEqual(['Dream 10', monthAgo.title, 'Dream 10']);
   });
 
   it('drops the anniversaries’ paintings once they are no longer coming', async () => {

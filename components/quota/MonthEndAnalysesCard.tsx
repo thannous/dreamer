@@ -9,7 +9,7 @@ import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getDreamRouteParams } from '@/lib/dreamRoute';
 import type { MonthEndAnalyses } from '@/lib/monthEndAnalyses';
-import { formatQuotaLastDay } from '@/lib/quotaReset';
+import { formatQuotaLastDay, withFirstDayOrdinal } from '@/lib/quotaReset';
 import { TID } from '@/lib/testIDs';
 
 /**
@@ -24,12 +24,15 @@ export function MonthEndAnalysesCard({ offer, now, className }: {
   const { t } = useTranslation();
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
-  const { locale, formatNumber } = useLocaleFormatting();
+  const { locale, formatNumber, formatDate } = useLocaleFormatting();
   const date = formatQuotaLastDay(locale, new Date(now));
   const message = offer.remaining === 1
     ? t('quota.month_end.remaining_one', { date })
     : t('quota.month_end.remaining', { count: formatNumber(offer.remaining), date });
-  const dream = t('quota.month_end.dream', { title: offer.dream.title?.trim() || t('journal.detail.untitled_dream') });
+  const title = offer.dream.title?.trim();
+  // An untitled dream is named by its day rather than by « Untitled dream ».
+  const dream = title ? t('quota.month_end.dream', { title })
+    : t('quota.month_end.dream_untitled', { date: withFirstDayOrdinal(formatDate(offer.dream.id, { day: 'numeric', month: 'long' }), locale) });
   const cta = t('quota.month_end.cta');
 
   return (

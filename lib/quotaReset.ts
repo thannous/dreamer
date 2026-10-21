@@ -33,12 +33,24 @@ export function formatQuotaResetDate(
 ): string {
   const { periodEnd } = getMonthlyQuotaPeriod(now);
   const text = formatLocaleDate(periodEnd, locale, { day: 'numeric', month: 'long', ...options, timeZone: 'UTC' });
+  return withFirstDayOrdinal(text, locale);
+}
+
+/** A date written day first, with the first of the month as French, Italian and Portuguese write it. */
+export function withFirstDayOrdinal(text: string, locale: string): string {
   const firstDay = FIRST_DAY_BY_LANGUAGE[locale.toLowerCase().split(/[-_]/)[0]];
   return firstDay ? text.replace(/^1(?=\s)/, firstDay) : text;
 }
 
-/** The period's last day, as people write it: the included analyses left end with it. */
+/**
+ * The period's last full local day, as people write it: the included analyses left last
+ * through it. The period ends at midnight UTC, so west of UTC that is the day before the
+ * month's last, whose evening already belongs to the next period.
+ */
 export function formatQuotaLastDay(locale: string, now: Date = new Date()): string {
-  const { periodEnd } = getMonthlyQuotaPeriod(now);
-  return formatLocaleDate(new Date(periodEnd.getTime() - 1), locale, { day: 'numeric', month: 'long', timeZone: 'UTC' });
+  const end = getMonthlyQuotaPeriod(now).periodEnd.getTime();
+  const last = new Date(end - 1);
+  const nextMidnight = new Date(last.getFullYear(), last.getMonth(), last.getDate() + 1).getTime();
+  const day = nextMidnight > end ? new Date(last.getFullYear(), last.getMonth(), last.getDate() - 1, 12) : last;
+  return formatLocaleDate(day, locale, { day: 'numeric', month: 'long' });
 }
