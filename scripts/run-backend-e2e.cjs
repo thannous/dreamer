@@ -10,7 +10,7 @@ const { withOwnedProcess } = require('./lib/backend-e2e-process.cjs');
 
 const root = path.resolve(__dirname, '..');
 const args = process.argv.slice(2);
-const webPort = Number(process.env.E2E_WEB_PORT ?? '18125');
+const webPort = Number(process.env.E2E_WEB_PORT ?? '8085');
 if (!Number.isInteger(webPort) || webPort < 1 || webPort > 65535) throw new Error('E2E_WEB_PORT must be a valid TCP port.');
 const runtimeIndex = args.indexOf('--runtime');
 const requestedRuntime = runtimeIndex >= 0 ? args.splice(runtimeIndex, 2)[1] : undefined;

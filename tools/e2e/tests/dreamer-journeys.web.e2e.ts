@@ -135,6 +135,17 @@ test('a search typed in a scrolled journal keeps its field until the user scroll
   await browser.mouse.move(195, 640);
   await browser.mouse.wheel(0, 400);
   await expect.poll(() => readDOM(browser, byId('list.dreams'), (node) => node.scrollTop)).toBeGreaterThan(0);
+  // Wheel dispatch returns before its final scroll events. Let that user
+  // gesture settle before focusing; the letter-driven return below must still
+  // preserve focus, and the later user wheel must still dismiss it.
+  let previousOffset = -1;
+  let settledReads = 0;
+  await expect.poll(async () => {
+    const offset = await readDOM(browser, byId('list.dreams'), node => node.scrollTop);
+    settledReads = offset === previousOffset ? settledReads + 1 : 0;
+    previousOffset = offset;
+    return settledReads;
+  }, { interval: 100, timeout: 5000 }).toBeGreaterThanOrEqual(3);
   // Each letter brings the results back to the top; that return must not take the field away.
   const field = uiScreen.getByRole('textbox', { name: 'Search dreams…' });
   await field.focus();

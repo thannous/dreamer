@@ -1,129 +1,124 @@
-# TesterArmy migration — 2026-10-21
+# TesterArmy public API migration — 2026-10-21
 
-Baseline: `dfc458a11a0173a6db5148e4fa28499c3e4284df`. Scope: E2E journeys;
-unit, component, integration, security and performance checks remain in place.
-No production, merge, remote test-account creation or paid provider action.
-
-Read the installed `e2e@0.21.2` skill and `docs/migrate/playwright.mdx`, plus
-[official coding agents](https://e2e.tester.army/docs/coding-agents) and
-[Playwright migration](https://e2e.tester.army/docs/migrate/playwright).
-The public Browser interface of `@e2e-dev/web@0.15.2` has no `newContext`,
-`setOffline` or `routeWebSocket`. Raw Page is documented for executors rather
-than test bodies; do not call the existing parity bridge a full public-API migration.
+Audit baseline: `dfc458a11a0173a6db5148e4fa28499c3e4284df`.
+Remote `git@github.com:thannous/dreamer.git` fetched and current master
+`ca3c4c93b581968aaec5bb76c21a7582887d1fc3` (#529) integrated without resetting
+other work. The primary checkout, production task and production credentials are
+untouched. This PR builds on #529's runner unification and preserves its current
+product contracts, campaign, new journeys and retirement of duplicate runners.
+Unit, component, integration, security and performance checks remain in place.
 
 ## Before / after inventory
 
-| Existing surface | Before | This change / retained coverage |
+| Surface | Audit snapshot / current master | This PR |
 | --- | --- | --- |
-| `tools/e2e/tests/dreamer*.web.e2e.ts` | TesterArmy, exact regressions plus optional personas; historical Playwright bodies use a transitional Page bridge | Preserved; full six-second seal observation now completes before assertions. Consent journey added with public APIs. Free-reflection port blocked by its missing UI entry; original retained. |
-| `e2e/web/*.spec.ts` (14 files, 68 collected cases) | Playwright; all families except consent already represented under TesterArmy | Consent ported. Title audit: 63 exact mappings (including consent), four existing onboarding replacements follow the owner’s newer story contract, and one blocked free-reflection case. Originals retained; no assertion removed. The Page bridge remains an explicit API migration limit. |
-| `e2e/backend/journal.spec.ts` | 5 real-local-service journeys | Public TesterArmy ports for owner isolation and Free/Plus server allowance (3 cases). Fresh simultaneous contexts and true browser offline/reconnect remain Playwright exceptions, not replaced by reload or route aborts. |
-| `e2e/backend/themes.spec.ts` | 2 real PostgREST/RPC compatibility journeys, one with UI | Both ported with unchanged server assertions and current/legacy theme request shapes. |
-| `e2e/backend/apple-token-privacy.spec.ts` | 1 Auth/Postgres/API lifecycle with synthetic Apple exchange/revocation | Ported to TesterArmy plus Node fetch; private-token checks, failed revocation, deletion cascade and advisor diagnostic retained. No real Apple account. |
-| `e2e/branch/session.spec.ts`, `auth.setup.ts` | 2 shared-session journeys plus guarded setup | Blocked: test branch allowlist empty and no approved account target. Original session persistence and HTTP/WebSocket production guards retained. Do not inject session JSON through recorded browser calls or weaken guards. |
-| `tools/e2e/tests/lucid.web.e2e.ts`, `meditation.web.e2e.ts`, `site.web.e2e.ts` | TesterArmy | Unchanged. |
-| `tools/e2e/tests/*.mobile.e2e.ts` | TesterArmy Release emulator/Simulator journeys | Unchanged; no device/build qualification claimed by this migration. |
-| `*.iphone-sandbox.e2e.ts`, `*.iphone-dogfood.e2e.ts`, native performance configs | Guarded, opt-in TesterArmy physical/dev-client or measurement suites | Preserved; no physical device owned or touched for this task. |
-| Retired Maestro history / manual RevenueCat, real voice and permission checks | Historical or manual, explicitly limited | Not silently restored, deleted or called automated coverage. See NATIVE-MATRIX.md and e2e/README.md. |
-| `scripts/check-image-seo-browser.js`, `scripts/perf/measure-web-fluidity.mjs` | Browser SEO checks / CDP performance measurement, not E2E regression suites | Retained as specialized tooling; CDP CPU tracing is not a TesterArmy public Browser API. |
+| Dreamer historical web coverage | Snapshot: 68 Playwright cases in 14 files plus TesterArmy parity cases. #529 retired duplicate runners and supplied the current free-reflection flow. | 21 families / 114 cases use public `app`, `screen`, `browser` and `e2e.expect`, including billing, capture, journal, illustrations, reflection, guides, symbols, settings, backgrounds, onboarding, responsive layout and a11y. No Page/matcher bridge in their test bodies. |
+| Consent and stable Dreamer journeys | Public TesterArmy tests, including the six-second animation observation under audit. | Preserved; consent retains both named providers, no permission on refusal, later reading, two dialogs, durable permission and original story. The animation waits for its whole observation before checking nonzero/full settled letters and zero replay. |
+| Real local backend | Eight cases, moved into TesterArmy in #529 with Page/context compatibility fixtures. | Six public-API cases: RLS/other-user/anonymous isolation, Free/Plus server quota and sign-out, legacy/current themes and RPC, private Apple-token lifecycle. Two context/offline cases remain explicit compatibility exceptions in the same TesterArmy runner; their bodies are identical to #529. |
+| Shared test-branch sessions | #529 moved two cases/setup into the guarded TesterArmy branch runner. | Preserved. Environment block: no approved allowlisted branch/accounts. The production HTTP/WebSocket guards and private saved-session handling remain. No remote seed or production access. |
+| Lucid, Meditation, site | TesterArmy, including #529's latest journeys. | Preserved; no duplicate runner or new provider. Their existing #529 proof is history, not a new execution claimed here. |
+| Native / physical / Store | Existing guarded TesterArmy suites, one owner per identified device. | No binary/device/data touched; no native, physical, Release, Store or OTA qualification from these web runs. |
+| SEO browser check / CDP profiling | Specialized browser SEO and performance measurements. | Retained as specialized tooling, not misrepresented as product E2E or device qualification. |
 
-No old coverage is deleted. After all six ports passed three times,
-`test:e2e:backend` now runs those six in TesterArmy plus the two explicit Playwright
-SDK exceptions, sequentially against the same guarded stack. `test:testerarmy:backend`
-selects only the six public-API journeys; `test:e2e:backend -- --legacy-playwright`
-retains the entire original suite. Select one runner explicitly for targeted flags.
-The backend candidate cannot be called a complete replacement while its two SDK
-exceptions and branch-account qualification remain open.
+The 21 public families are: backgrounds (5), billing (13), capture-chat (2),
+capture-editor (2), desktop-shell (1), dream-continuous-reading (3), dream-guides
+(3), explorer-repertoire (3), home-editorial (3), journal-margin (6), journeys
+(18), native-large-text-polish (1), onboarding-features (21), plus-channels (7),
+readiness (3), reflection-context (4), review-accessibility (3), settings (3),
+symbol-dictionary (6), trends-editorial (4), visual-overflow (3).
 
-## Corrections and static gate
+The current free-reflection case follows #529's supported visible route: open the
+saved dream, complete an angle, then open the recap's Plus offer and decline back
+to reflection. Every SPA history change and document arrival is recorded through
+public browser evaluation; no intermediate `/dream-chat/` route is allowed.
+An earlier attempted port of the old entry failed 3/3 on `bf754384a`; it was
+reverted before #529 supplied the current route. It is no longer a blocker.
+The newer onboarding cross/Escape/chapter contracts are preserved.
 
-`testerarmy-tooling` now participates in PR validation only when E2E tests,
-runner, config or package inputs change; releases still run it. It invokes types
-and synthetic guards without starting Metro, a browser, native target or model.
-A newly broken test is checked even though root tsc/lint exclude its directory.
-The root application checks keep their existing input reuse.
+## Public API limits and version evidence
 
-`rerunEnvironment` retains explicit `E2E_KEEP_METRO_CACHE=0`, distinct from unset
-(the default warm transform cache). The seal observer polls its completion flag
-and retains nonzero settled letters, all letters visible, and zero animation
-replays throughout the complete observation. README reflects local validation,
-optional benchmark-only CircleCI and transitive AI dependencies / opt-in personas.
+Read the installed `e2e@0.21.2` skill and migration topic and the official
+[coding-agents guide](https://e2e.tester.army/docs/coding-agents),
+[Playwright migration](https://e2e.tester.army/docs/migrate/playwright) and
+[web reference](https://e2e.tester.army/docs/reference/web).
+Registry checks on 2026-10-21 found latest stable `e2e@0.21.2`,
+`@e2e-dev/web@0.15.2`, `@e2e-dev/mobile@0.12.3`, exactly the installed pins.
+The official web nightly `0.15.3-nightly-20261021080401` was downloaded with
+`npm pack --ignore-scripts` and inspected without installation/execution. Its
+Browser type adds only `unrouteAll`; it still lacks `newContext`, `setOffline`
+and `routeWebSocket`, and requires its matching core nightly. No blind upgrade.
 
-## Evidence
+The two backend exceptions preserve simultaneous isolated contexts and true
+browser offline/reconnect, server exactly-once rows, edits/deletion and restart
+proof. Route aborts or a reload would not replace those invariants. Only these
+cases use the compatibility context fixture; all eight execute under TesterArmy.
+The test-branch exception also retains the WebSocket production guard and private
+session setup. Therefore all current E2E entrypoints use TesterArmy, while a claim
+that every case uses only the public Browser API would still be false.
 
-Initial checks on `6e8c11b946a27209879492b31972602821ca03d8`:
-- `npm run verify:pr`: PASS, 16 executed / 3 out of scope, including root types/lint,
-  synthetic backend guards, site, config contracts and TesterArmy tooling.
-- `npm run test:testerarmy:guards`: 49/49 PASS; focused lint and TesterArmy types PASS.
-- Dreamer cold-cache run, two selected cases repeated three times: animation 3/3 PASS;
-  consent 0/3 on historical `/\S{20}/` (requires a single 20-letter word). Actual
-  mock interpretation was present. The port now waits for the interpretation itself,
-  then checks at least 20 non-whitespace characters; decline, later consent, two
-  dialogs, persisted permission and zero forbidden service requests remain unchanged.
-  Original failure preserved in run `1792575802834-66484-9427ca3a-d7f7-4688-bec8-1740e225619b`.
-  Its `rerunEnvironment` correctly records explicit cold cache `0`.
-- Backend first attempt: APP_ALREADY_RUNNING at `8085/status`, no case executed;
-  owned stack destroyed. No foreign process stopped and no reuse enabled. Retry uses
-  an explicit isolated web port, recorded in the rerun command and evidence.
+Date-only clock uses are ported through public `addInitScript`/`evaluate` with a
+per-attempt Date shim, preserving fixed versus elapsed time and native timers.
+The two timer-observation tests wait the complete real 10/5/3/8-second intervals;
+no accelerated private clock is used. Geometry uses IntersectionObserver,
+including ancestor clipping and the pinned matcher's floating-point tolerance.
+DOM text assertions preserve engraved glyph joining; image assertions select the
+last global match, not `:last-of-type`. Pixel contrast retains the same sampled
+copy, masks, crop, luminance thresholds and owner exceptions; screenshots are
+resolved inside the owned evidence directory from the SDK's relative path.
 
-Final execution and revision are recorded below after validation. A collection,
-typecheck, blocked run, skip or API check is never a passed UI/native/Store journey.
+## Audit fixes and commands
 
+`testerarmy-tooling` runs for relevant changed E2E TS/runner/config/package files
+on PRs and for releases. Types and synthetic guards start no browser/device/model;
+unrelated PRs retain their existing reuse. A regression check verifies selection
+of newly added E2E files. `rerunEnvironment` preserves explicit
+`E2E_KEEP_METRO_CACHE=0`; the six-second observer is polled to completion.
+Documentation describes local validation, optional benchmark-only hosted CI and
+transitive AI packages / explicitly requested persona runs.
 
-## Final execution, coverage exceptions and reruns
+- `npm run test:e2e:web`: current Dreamer TesterArmy journeys.
+- `npm run test:e2e:backend` or `npm run test:testerarmy:backend`: all eight local
+  backend cases under TesterArmy; no legacy Playwright runner or legacy flag.
+- `npm run test:e2e:branch`: guarded shared-branch journeys, requiring approved
+  target/accounts before any connection.
+- `npm run test:testerarmy:all`: existing #529 opt-in campaign, including its saved
+  ChatGPT Pro persona stage; unchanged. Exact scenarios invoke no model.
 
-Code candidate: `9c25bda5fc2bbaf57a15bf4c4d95f2b07490d43f` (subsequent
-commits document proof or remove an unsuccessful, newly attempted port; no old
-coverage was removed). App version 3.7.0 / Expo 58.0.14; development web bundles
-from this checkout, no native binary, OTA, Store build or physical qualification.
-Node 24.19.0, Deno 2.7.14, Supabase CLI 2.121.0, pinned TesterArmy/engine versions
-from package-lock. Headless Chromium through Playwright 1.64.0; macOS arm64.
-All retained outputs below are private, ignored by Git under `tools/e2e/.e2e/`.
-Each has source-start/source-end, exact command/env, SDK report, traces, hashes,
-qualification and final `end.json`; successful receipts have stable clean inputs,
-zero model use, no skips/failures and exit 0. Backend API assertions are server
-proof; their initial `/status` open is readiness, not an additional UI journey.
+## Final evidence
 
-| Command actually run | Revision | Result and canonical output suffix |
-| --- | --- | --- |
-| `E2E_WEB_PORT=18125 npm run test:testerarmy:backend -- --repeat-each 3` | `a83190e01` | 18/18 (six cases ×3), `backend-web/1792576101195-31399-fbac5503-af75-4cf2-80f0-1b56650888f4` |
-| `npm run test:e2e:backend` | `9c25bda5f` | Six TesterArmy + two original Playwright exceptions passed, outer exit 0. SDK: `backend-web/1792576278786-34670-90ae02b9-fca4-48ad-9731-ccf8cd074a84`; legacy: `test-results/e2e-backend-results.json`. Stack destroyed. |
-| `E2E_WEB_PORT=8126 E2E_WORKERS=1 E2E_KEEP_METRO_CACHE=0 EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=false npm run test:testerarmy -- run --grep 'declining AI' --repeat-each 3` | `a83190e01` | 3/3, `dreamer-web/1792576087881-30723-a32201ee-fc2d-46b3-96e4-30e5cf01d255` |
-| Same cold-cache environment, `--grep 'declining AI\|plus account watches its dream painted'` | `9c25bda5f` | 2/2, `dreamer-web/1792576279695-34757-7a66e6fd-0c99-4b7e-b79c-8a99d2b4159b`; animation also passed ×3 in the initial mixed red run documented above. |
-| `npm run verify:pr` | `9c25bda5f` | PASS: 12 executed, 4 reused, 3 out of scope. Types, lint/script lint, related Jest, DB/static contracts, site, config, tooling. Final PR head gets its own proof before push. |
+Integrated execution on `0edbb15a0820cc7524544098d7f8f0bf7f27342d`:
+- Backend: `E2E_WEB_PORT=8085 npm run test:e2e:backend`, 8/8 PASS,
+  `backend-web/1792579087077-37163-592beb9f-c291-4544-9ec4-c594f5070b6b`;
+  outer exit 0 and the owned stack destroyed.
+- Full Dreamer EN/feature ON/cold cache: 103 PASS, 3 FAIL, 27 intentional
+  other-context/OFF skips, exit 1. Run
+  `dreamer-web/1792578944175-33686-bc8832d9-d8ec-4250-871e-5be70b2e2815`.
+  The failures were the search's pending wheel/focus and two ambiguous Trends tabs.
+  Current code waits for the actual wheel motion to settle, preserving real
+  per-character typing, return-to-top focus and user-scroll dismissal. Trends
+  explicitly requires a visible tab with the original role. No assertion is removed.
+  Other tested files/fixtures/app inputs are unchanged by these focused repairs;
+  their immutable results remain useful evidence without rerunning five minutes
+  of unchanged onboarding observations.
 
-Backend invocations used disposable native loopback services, unique synthetic
-accounts and server-owned Plus entitlements; external AI/payments/OAuth were blocked.
-Apple token exchange/revocation alone was synthetic. The optional security advisor
-diagnostic is retained in its output; it is not an assertion that all advisors pass.
-No real account/session/credential or production target was used. The first backend
-attempt at port 8085 refused APP_ALREADY_RUNNING, executed zero cases and destroyed
-its stack; no process reuse or foreign process termination bypassed that refusal.
+Final changed-case and locale results are appended after the focused reruns.
 
-Additional counterexample: an attempted public-API port of the free-reflection case
-(`e2e/web/journeys.spec.ts:294`) on `bf754384a` failed 3/3 with LOCATOR_NOT_FOUND at
-`component.dreamDetail.actionCard`. The current completed-reading detail does not
-expose that entry (source and captured UI agree). Its exact output remains
-`dreamer-web/1792576445907-45523-ebf79dcd-129d-4796-83a5-746859a5a727`.
-The unsuccessful new port was reverted; the original Playwright case remains intact.
-Decide its current supported entry/contract before migrating it; do not revive an
-old UI or call a deep link equivalent to the original visible-control journey.
+Development failures are retained privately, not counted as passes: source
+`8b6831b89` had six failures (relative screenshot paths, semantic glyph spacing,
+role ambiguity and focus) in `dreamer-web/1792578203430-29139-c709671e-bf7f-4d13-8f50-0e40bface433`.
+Earlier image selection and viewport-helper failures were corrected with an
+independent review. The preliminary French 25/25 run at
+`1792578553834-30695-02061caa-0a5a-4275-939c-61ba981e5dd1` had uncommitted inputs
+and is preparatory evidence only. An integrated backend attempt on 18125 refused
+CONFIG_LOAD_FAILED before tests because #529 pins origin 8085; its owned stack was
+destroyed. Retry used the verified-free canonical 8085 origin without changing
+that guard. Source-clean final runs and their exact revisions are listed above.
 
-The four unmatched onboarding titles are intentional existing contract updates in
-`dreamer-onboarding-features.web.e2e.ts`: the cross asks before leaving the stories,
-Escape keeps them open, and chapter completion leaves through the door (owner
-change recorded 2026-10-10). This migration preserves them rather than restoring
-outdated close/focus/return expectations from the old suite.
-
-Outstanding: two browser-context/offline SDK exceptions remain active in the
-backend aggregate; the free-reflection entry needs a supported current journey;
-two branch-session journeys await an allowlisted test backend/accounts; historical
-Page bridge bodies still need a public-API conversion before claiming full API
-migration. `test:e2e:web` remains the retained legacy entry; use `test:testerarmy`
-for current Dreamer journeys. No legacy coverage or unit/component/integration
-suite is deleted. Native/physical and full four-context release campaigns were not
-rerun for this test-tooling change and are not qualified here.
-
-Independent read-only final-diff review of `9c25bda5f`: no P1/P2 retained.
-The reviewer confirmed the rejected free-reflection port, active backend exceptions,
-secret isolation and runner cleanup. No native/Store qualification inferred.
+Private outputs stay in ignored `tools/e2e/.e2e/`: source-start/source-end, hashes,
+command/env, SDK report, traces/screenshots, qualification and `end.json`. No
+credentials, private logs or generated images are committed. Backend Auth,
+Postgres and PostgREST are real local services; only Apple exchange/revocation is
+synthetic. External AI/payments/OAuth are blocked. Web mock runs use real local
+UI with mock app services. No production, real Apple/payment, native or Store
+qualification is claimed. Persona and physical-device campaigns were not rerun
+for this test-tooling PR; the two branch sessions remain blocked as stated.

@@ -23,8 +23,10 @@ async function startGuest(ui: ExactWebUI) {
 }
 
 async function openTrends(ui: ExactWebUI) {
-  const { screen: uiScreen, browser } = ui;
-  await browser.locator('[role="tab"][data-testid="tab.stats"]').click();
+  const { screen: uiScreen } = ui;
+  const tab = uiScreen.getByTestId('tab.stats', { visible: true });
+  await expect(tab).toHaveAttribute('role', 'tab');
+  await tab.click();
   await expect(uiScreen.getByTestId('screen.trends', { visible: true })).toHaveCount(1);
 }
 

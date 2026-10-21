@@ -288,18 +288,21 @@ An obsolete expectation may be revised with a recorded product reason and a
 focused current journey. Preserve the old red/pass result as history; it does not
 automatically block feature or framework adoption or permit bypassing local gates.
 
-The retained `surfaceOf()` Page/context bridge keeps CSS, geometry, keyboard, image
-and clock checks. This is a transitional runner migration: the official guide reserves
-raw Page access for executors. These bodies are not claimed as fully migrated to
-public screen/browser APIs; their exact assertions remain until equivalents pass. TesterArmy owns isolated attempts and traces; the pinned isolated
-Playwright 1.64.0 package supplies matchers only. The parity fixture preserves
-Desktop Chrome 1280x720 by default (explicit mobile overrides remain), with
-30-second actions and 15-second exact assertions from the historical config.
-Attempts allow 180 seconds because a fresh Linux locale campaign used 57 seconds
-compiling its first client bundle before the first body; assertions and zero
-retries remain unchanged. Stable journeys
-retain their 390x844 viewport. Service workers and external real services remain
-blocked, and each case starts with `app.open()`.
+The 21 historical Dreamer families now use public `app`/`screen`/`browser`
+actions and `e2e.expect`, including their CSS, geometry, keyboard, images, dates
+and timed observations. No Page or Playwright matcher bridge remains in these
+bodies. The fixture preserves the historical mock/network boundaries and
+1280x720 default viewport with explicit mobile overrides. Attempts keep their
+180-second launch budget; DOM geometry/style polling is bounded at 15 seconds,
+with ordinary SDK actions/assertions governed by e2e.config.ts. Stable journeys
+retain their 390x844 viewport. Each case starts with `app.open()`.
+
+Two backend cases still need the compatibility context fixture for simultaneous
+contexts and true offline/reconnect; the branch-session suite needs its existing
+WebSocket production guard and private session loader. These are explicit public
+API limits, not replacement with route aborts or weakened isolation. All execute
+under the TesterArmy runner when their guarded prerequisites exist. See
+[MIGRATION.md](MIGRATION.md) for exact versions, coverage and evidence.
 
 Cases requiring French or German use actual locale contexts, including
 `navigator.language`, `Intl` and `Accept-Language`, through `E2E_WEB_LOCALE`.
@@ -657,16 +660,13 @@ attestation fields. Run `mise exec -- node --test tools/e2e/iphone-sandbox-guard
 for the documented unsafe-device/stale-evidence counterexamples without touching a phone.
 
 
-## Local real backend journeys
+## Backend public API coverage
 
-`npm run test:e2e:backend` owns a disposable native Supabase stack, runs six
-validated public-API TesterArmy cases, then the two retained Playwright SDK
-exceptions (independent simultaneous contexts and true offline/reconnect).
-`npm run test:testerarmy:backend -- --repeat-each 3` selects only the migrated six;
-`npm run test:e2e:backend -- --legacy-playwright` retains the full old eight.
-Use an explicit runner flag for targeted selections. `E2E_WEB_PORT` selects a
-loopback frontend (default 18125), recorded in rerun evidence; one worker, no retry,
-no remote backend, AI or real payment. The existing stack guard, migration fixtures,
-server assertions, account teardown and final stack destruction remain in use.
-See [MIGRATION.md](MIGRATION.md) for exact runs and unresolved exceptions. These
-exceptions and the historical Page bridge prevent a claim of complete API migration.
+`npm run test:e2e:backend` and `npm run test:testerarmy:backend` run all eight
+cases through TesterArmy against one owned disposable local stack. Six use only
+public SDK APIs. The fresh-context and real-offline cases retain the exact #529
+bodies in `backend-context-exceptions.web.e2e.ts` with an isolated compatibility
+fixture. The backend keeps its canonical local frontend origin on port 8085;
+no foreign server is stopped or reused. There is no legacy Playwright runner or
+legacy selection flag. Server assertions, account cleanup, network boundaries
+and private evidence are preserved; see [MIGRATION.md](MIGRATION.md).

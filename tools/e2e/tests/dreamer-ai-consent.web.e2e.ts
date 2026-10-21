@@ -1,7 +1,7 @@
 import { test } from '@e2e-dev/web';
 import { expect } from 'e2e';
 
-test('declining AI keeps the saved dream unanalyzed, accepting later analyzes it once', async ({ app, screen, browser }) => {
+test('declining AI preserves the saved dream and accepting later analyzes it once', { tags: ['consent', 'recovery'] }, async ({ app, screen, browser }) => {
   const serviceRequests: string[] = [];
   await browser.route('**/*', async route => {
     const url = new URL(route.request.url);
@@ -33,17 +33,18 @@ test('declining AI keeps the saved dream unanalyzed, accepting later analyzes it
     await screen.getByTestId('btn.saveDream').tap();
     await expect(screen.getByTestId('component.transcriptCard')).toContainText(story);
     await expect.poll(() => dialogs.length).toBe(1);
-    expect(dialogs[0]).toMatch(/third-party AI service/);
+    expect(dialogs[0]).toContain('Anthropic (Claude)');
+    expect(dialogs[0]).toContain('Google (Gemini)');
     await expect(screen.getByTestId('component.dreamDetail.readingZone')).toHaveCount(0);
     expect(await browser.evaluate(() => localStorage.getItem('noctalia.aiConsent.v2'))).toBeNull();
     answer = 'accept';
     await screen.getByTestId('btn.dream.primaryCta').tap();
     const interpretation = screen.getByTestId('component.dreamDetail.interpretation');
     await expect(interpretation).toBeVisible();
-    // A reading needs substantive text, not a single unbroken 20-letter word.
-    await expect.poll(async () => (await interpretation.textContent() ?? '').replace(/\s/g, '').length).toBeGreaterThanOrEqual(20);
+    await expect(screen.getByTestId('component.dreamDetail.readingZone')).toContainText(/\S[\s\S]{80}/);
     expect(dialogs).toHaveLength(2);
     expect(await browser.evaluate(() => localStorage.getItem('noctalia.aiConsent.v2'))).toBe('granted');
+    await expect(screen.getByTestId('component.transcriptCard')).toContainText(story);
     await app.screenshot('consent-declined-then-accepted');
   } finally {
     await off();
