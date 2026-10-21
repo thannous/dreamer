@@ -402,6 +402,29 @@ do $$ begin execute 'select ' || '1'; end $$;`, [/shape rule "non-literal execut
   'shape: conditional alter of a routine': [`${definer()}${locked()}
 do $$ begin if true then alter function public.claim(uuid, integer) set search_path = ''; end if; end $$;`, [/shape rule "conditional routine or path change"/]],
   'shape: set_config with a non-literal value': [`select set_config('search_path', current_setting('app.path'), false);`, [/shape rule "non-literal set_config"/]],
+  'pg_temp after a missing schema only': [`create function public.claim() returns int language sql security definer
+set search_path = definitely_missing, pg_temp as $$ select 1 $$;${locked('public.claim()')}`, [/unsafe search_path/]],
+  'shape: %TYPE argument': [`create function public.claim(x public.types.a%TYPE) returns int language sql security definer set search_path = '' as $$ select 1 $$;
+revoke execute on function public.claim(public.types.a%TYPE) from public, anon;
+grant execute on function public.claim(public.types.a%TYPE) to service_role;`, [/shape rule "%TYPE signature"/, /shape rule "%TYPE signature"/, /shape rule "%TYPE signature"/]],
+  'set local in a chained transaction ends at its commit': [`begin;
+commit and chain;
+set local search_path = private;
+commit;
+${definer('claim')}`, [/public\.claim.*from public"/, /from anon"/, /grant execute/]],
+  'last search_path option of a create wins': [`create function public.claim() returns int language sql security definer
+set search_path = '' set search_path = public as $$ select 1 $$;${locked('public.claim()')}`, [/unsafe search_path \(public\)/]],
+  'rollback to a savepoint after a drop': [`begin;
+${definer()}
+savepoint s;
+drop function public.claim(uuid, integer);
+rollback to savepoint s;
+commit;`, [/rollback in a migration that changes routines/]],
+  'shape: quoted "public" grantee': [`${definer()}
+revoke execute on function public.claim(uuid, integer) from "public", anon;
+grant execute on function public.claim(uuid, integer) to service_role;`, [/shape rule "quoted public grantee"/]],
+  'shape: role switch before creating a routine': [`set role authenticated;
+${definer()}${locked()}`, [/shape rule "role switch"/]],
   'owned by a caller role': [`${definer()}${locked()}
 alter function public.claim(uuid, integer) owner to authenticated;`, [/owned by authenticated/]],
   'quoted mixed case is another function': [`${definer('public."Claim"')}${locked('public.claim(uuid, integer)')}`, [/Claim.*from public"/, /from anon"/, /grant execute/]],

@@ -52,7 +52,13 @@
 //   - "non-literal set_config": set_config without two plain string literals
 //     and true/false;
 //   - "alter of an earlier routine": an alter that changes the security or the
-//     search_path of a routine this file does not create.
+//     search_path of a routine this file does not create;
+//   - "role switch": set role / set session authorization in a migration that
+//     changes routines;
+//   - "%TYPE signature": a routine signature with a %TYPE argument;
+//   - "quoted public grantee": "public" quoted in a routine grant or revoke.
+//   A search_path ending with pg_temp is only safe when an existing trusted
+//   schema (pg_catalog or a KNOWN_SCHEMAS entry) comes before it.
 //   Moving such a routine into public checks it as SECURITY DEFINER, handing
 //   any routine to a caller role as owner fails, and so do routine DDL or
 //   routine privileges in dynamic SQL (an `execute ...` whose text names a
@@ -317,7 +323,9 @@ function searchPathChanges(sql) {
     const ended = endStatement.exec(statement.text);
     if (ended && !statement.inBody) {
       if (/rollback|abort/i.test(ended[1])) session = saved;
-      inBlock = false;
+      // AND CHAIN starts a new transaction block at once.
+      inBlock = /\band\s+chain\s*$/i.test(statement.text);
+      if (inBlock) saved = session;
       record(statement.offset, session);
       continue;
     }
@@ -686,7 +694,7 @@ function routineReference(text) {
 
 /**
  * The search_path a `set search_path ...` clause at the start of `raw` sets:
- * 'safe' when it is empty or ends with pg_temp after another schema (PostgreSQL's advice for
+ * 'safe' when it is empty or ends with pg_temp after an existing trusted schema (PostgreSQL's advice for
  * SECURITY DEFINER, so a caller's temporary objects cannot shadow anything),
  * otherwise the unsafe value as written.
  */
@@ -704,7 +712,8 @@ function searchPathSafety(raw) {
   });
   // pg_temp alone (or only pg_temp entries) would search the caller's temporary schema first.
   if (items.every((item) => item === '')) return 'safe';
-  if (items[0] !== 'pg_temp' && items[items.length - 1] === 'pg_temp') return 'safe';
+  // Missing schemas are skipped, so a trusted existing schema must come before pg_temp.
+  if (items[items.length - 1] === 'pg_temp' && items.slice(0, -1).some((item) => item === 'pg_catalog' || KNOWN_SCHEMAS.includes(item)) && items[0] !== 'pg_temp') return 'safe';
   return list[0];
 }
 
@@ -774,6 +783,7 @@ function checkFunctionSql(source) {
   const rollback = new RegExp(String.raw`${LEAD}(?:rollback|abort)\b`, 'i');
   const pathChange = new RegExp(String.raw`${LEAD}(?:set\s+(?:(?:local|session)\s+)?search_path\b|reset\s+(?:search_path|all)\b)`, 'i');
   const touchesRoutines = executed.some((st) => createRoutine.test(st.text) || alterRoutine.test(st.text) || privilege.test(st.text) || schemaWide.test(st.text));
+  const roleSwitch = new RegExp(String.raw`${LEAD}set\s+(?:(?:session|local)\s+)?(?:role\b|session\s+authorization\b)`, 'i');
   let rolledBack = false;
   for (const statement of executed) {
     if (dynamic.test(statement.text)) {
@@ -794,6 +804,15 @@ function checkFunctionSql(source) {
         problems.push(`shape rule "non-literal set_config": set_config must take two plain string literals and true/false`);
       }
     }
+    if (touchesRoutines && roleSwitch.test(statement.text)) {
+      problems.push(`shape rule "role switch": set role or set session authorization in a migration that changes routines; new routines would be owned by that role`);
+    }
+    if ((createRoutine.test(statement.text) || alterRoutine.test(statement.text) || privilege.test(statement.text)) && /%\s*type\b/i.test(statement.text)) {
+      problems.push(`shape rule "%TYPE signature": a routine signature with a %TYPE argument; spell the type out`);
+    }
+    if ((privilege.test(statement.text) || schemaWide.test(statement.text)) && /(?:\b(?:to|from)\s+|,\s*)"public"/i.test(statement.raw)) {
+      problems.push(`shape rule "quoted public grantee": "public" in quotes is a role named public, not PUBLIC; write PUBLIC unquoted`);
+    }
     if (rollback.test(statement.text)) { rolledBack = true; continue; }
     let match = createRoutine.exec(statement.text);
     if (match) {
@@ -805,7 +824,8 @@ function checkFunctionSql(source) {
       const existed = Boolean(routine);
       if (!routine) { routine = fresh(target.schema, target.name, sig); routines.push(routine); }
       const rest = statement.text.slice(start + target.end);
-      const pathAt = rest.search(/\bset\s+search_path\b/i);
+      // Repeated options apply in order: the last SET search_path wins.
+      const pathAt = [...rest.matchAll(/\bset\s+search_path\b/gi)].pop()?.index ?? -1;
       // CREATE OR REPLACE resets every attribute it does not repeat (security invoker, no SET), not the ACL.
       const definer = lastSecurity(rest) === 'definer';
       const path = pathAt < 0 ? null : searchPathSafety(statement.raw.slice(start + target.end + pathAt));
@@ -895,7 +915,7 @@ function checkFunctionSql(source) {
     }
   }
   // Fail closed: a ROLLBACK [TO SAVEPOINT] may discard any revoke or grant before it.
-  if (rolledBack && routines.length) problems.push(`rollback in a migration that changes routines; the lint cannot tell which revokes and grants survive, so do not roll back here`);
+  if (rolledBack && touchesRoutines) problems.push(`rollback in a migration that changes routines; the lint cannot tell which revokes and grants survive, so do not roll back here`);
   // Ownership by a caller role is never right, whatever the routine's security mode.
   for (const routine of routines.filter((r) => !r.definer && CALLER_ROLES.includes(r.owner))) {
     problems.push(`${routine.schema}.${routine.name}${routine.sig === null ? '' : `(${routine.sig})`}: owned by ${routine.owner}, a role API callers use; keep a trusted owner such as postgres`);
