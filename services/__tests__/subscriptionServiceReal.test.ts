@@ -95,7 +95,7 @@ describe('subscriptionServiceReal configuration', () => {
     expect(mockConfigure).toHaveBeenCalledWith({ apiKey: 'test_bundle_key' });
   });
 
-  it('reports a timed-out SDK request as a warning and any other SDK failure as an error', async () => {
+  it('reports a refresh kept on cache as a warning and any other SDK failure as an error', async () => {
     mockSetPublicEnvValue('EXPO_PUBLIC_REVENUECAT_ANDROID_KEY', 'test_bundle_key');
     const service = require('../subscriptionServiceReal');
     await service.initialize();
@@ -105,14 +105,19 @@ describe('subscriptionServiceReal configuration', () => {
     const timedOut = '😿‼️ Remote config refresh failed. Keeping cached configuration. '
       + 'Error: A network error has occurred. La requête a expiré.';
     const misconfigured = 'There is an issue with your configuration. Check the underlying error for more details.';
+    // A purchase or restore that fails offline has no cache behind it.
+    const purchaseOffline = 'Purchase failed. Error: A network error has occurred.';
 
     try {
       forward('ERROR', timedOut);
       forward('ERROR', misconfigured);
+      forward('ERROR', purchaseOffline);
 
+      expect(warn).toHaveBeenCalledTimes(1);
       expect(warn).toHaveBeenCalledWith('[RevenueCat]', timedOut);
-      expect(error).toHaveBeenCalledTimes(1);
+      expect(error).toHaveBeenCalledTimes(2);
       expect(error).toHaveBeenCalledWith('[RevenueCat]', misconfigured);
+      expect(error).toHaveBeenCalledWith('[RevenueCat]', purchaseOffline);
     } finally {
       warn.mockRestore();
       error.mockRestore();

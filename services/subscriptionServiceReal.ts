@@ -41,13 +41,14 @@ let cachedPackages: InternalPackage[] = [];
 // Keep a live listener-driven cache up to date with RevenueCat (source of truth)
 let customerInfoListener: ((info: CustomerInfo) => void) | null = null;
 
-// The SDK logs a request that failed or timed out at error level, though it keeps its cached
-// data and tries again by itself. Such a network hiccup is a warning, so a development build on
-// a slow connection raises no red box; every other SDK error stays an error.
-const TRANSIENT_SDK_LOG = /network ?error|keeping cached/i;
+// The SDK logs a refresh that failed or timed out at error level even when it keeps its cached
+// data (« … Keeping cached configuration. ») and tries again by itself. Only that refresh is a
+// warning, so a development build on a slow connection raises no red box. A purchase, restore or
+// uncached fetch that fails has nothing behind it: it stays an error, logged in production too.
+const CACHE_BACKED_SDK_LOG = /keeping cached/i;
 
 function forwardSdkLog(level: LOG_LEVEL, message: string): void {
-  if (level === LOG_LEVEL.ERROR && !TRANSIENT_SDK_LOG.test(message)) log.error(message);
+  if (level === LOG_LEVEL.ERROR && !CACHE_BACKED_SDK_LOG.test(message)) log.error(message);
   else if (level === LOG_LEVEL.ERROR || level === LOG_LEVEL.WARN) log.warn(message);
   else log.debug(message);
 }
