@@ -38,7 +38,7 @@
       "label": "lot-11, 30 packs"
     },
     "lot-12": {
-      "label": "Lot 12, 30 packs en préparation"
+      "label": "lot-12, 30 packs"
     }
   },
   "symbols": {
@@ -58,7 +58,7 @@
       "lot": "lot-10"
     },
     "ant": {
-      "lot": null
+      "lot": "lot-12"
     },
     "apocalypse": {
       "lot": "lot-10"
@@ -91,7 +91,7 @@
       "lot": null
     },
     "bear": {
-      "lot": null
+      "lot": "lot-12"
     },
     "bedroom": {
       "lot": "lot-10"
@@ -199,22 +199,22 @@
       "lot": null
     },
     "cockroach": {
-      "lot": null
+      "lot": "lot-12"
     },
     "coffin": {
       "lot": null
     },
     "cow": {
-      "lot": null
+      "lot": "lot-12"
     },
     "coworker": {
       "lot": "lot-10"
     },
     "crocodile": {
-      "lot": null
+      "lot": "lot-12"
     },
     "crow": {
-      "lot": null
+      "lot": "lot-12"
     },
     "crowd": {
       "lot": "lot-07"
@@ -250,7 +250,7 @@
       "lot": null
     },
     "dolphin": {
-      "lot": null
+      "lot": "lot-12"
     },
     "door": {
       "lot": "lot-02"
@@ -265,7 +265,7 @@
       "lot": "lot-11"
     },
     "eagle": {
-      "lot": null
+      "lot": "lot-12"
     },
     "earthquake": {
       "lot": "lot-11"
@@ -274,7 +274,7 @@
       "lot": null
     },
     "elephant": {
-      "lot": null
+      "lot": "lot-12"
     },
     "elevator": {
       "lot": "lot-06"
@@ -286,7 +286,7 @@
       "lot": "lot-08"
     },
     "excrement": {
-      "lot": null
+      "lot": "lot-12"
     },
     "explosion": {
       "lot": "lot-07"
@@ -310,7 +310,7 @@
       "lot": "lot-02"
     },
     "fish": {
-      "lot": null
+      "lot": "lot-12"
     },
     "flood": {
       "lot": "lot-08"
@@ -337,13 +337,13 @@
       "lot": "lot-10"
     },
     "frog": {
-      "lot": null
+      "lot": "lot-12"
     },
     "funeral": {
       "lot": "lot-10"
     },
     "garden": {
-      "lot": null
+      "lot": "lot-12"
     },
     "ghost": {
       "lot": "lot-11"
@@ -388,7 +388,7 @@
       "lot": "lot-08"
     },
     "hotel": {
-      "lot": null
+      "lot": "lot-12"
     },
     "house": {
       "lot": "lot-01"
@@ -400,7 +400,7 @@
       "lot": "lot-11"
     },
     "island": {
-      "lot": null
+      "lot": "lot-12"
     },
     "jellyfish": {
       "lot": "lot-07"
@@ -424,7 +424,7 @@
       "lot": null
     },
     "lake": {
-      "lot": null
+      "lot": "lot-12"
     },
     "late": {
       "lot": "lot-11"
@@ -457,7 +457,7 @@
       "lot": "lot-08"
     },
     "mall": {
-      "lot": null
+      "lot": "lot-12"
     },
     "mask": {
       "lot": "lot-12"
@@ -490,7 +490,7 @@
       "lot": "lot-04"
     },
     "mouse": {
-      "lot": null
+      "lot": "lot-12"
     },
     "mouth": {
       "lot": "lot-08"
@@ -556,7 +556,7 @@
       "lot": "lot-11"
     },
     "rabbit": {
-      "lot": null
+      "lot": "lot-12"
     },
     "rain": {
       "lot": "lot-04"
@@ -565,13 +565,13 @@
       "lot": "lot-08"
     },
     "rat": {
-      "lot": null
+      "lot": "lot-12"
     },
     "ring": {
       "lot": "lot-11"
     },
     "river": {
-      "lot": null
+      "lot": "lot-12"
     },
     "road": {
       "lot": "lot-10"
@@ -604,10 +604,10 @@
       "lot": "lot-11"
     },
     "shark": {
-      "lot": null
+      "lot": "lot-12"
     },
     "shoes": {
-      "lot": null
+      "lot": "lot-12"
     },
     "sibling": {
       "lot": "lot-10"
@@ -670,7 +670,7 @@
       "lot": null
     },
     "tornado": {
-      "lot": null
+      "lot": "lot-12"
     },
     "tower": {
       "lot": "lot-07"
@@ -757,7 +757,7 @@
       "lot": "lot-10"
     },
     "worms": {
-      "lot": null
+      "lot": "lot-12"
     },
     "zombie": {
       "lot": "lot-11"

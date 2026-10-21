@@ -18387,6 +18387,2606 @@
           }
         }
       }
+    },
+    "tornado": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "a-tornado-on-the-horizon": {
+            "variation": "Une tornade à l'horizon",
+            "anchor": "a-tornado-on-the-horizon"
+          },
+          "hiding-from-a-tornado": {
+            "variation": "Se cacher d'une tornade",
+            "anchor": "hiding-from-a-tornado"
+          },
+          "being-swept-up-by-a-tornado": {
+            "variation": "Être emporté par une tornade",
+            "anchor": "being-swept-up-by-a-tornado"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "a-tornado-on-the-horizon": {
+            "variation": "A tornado on the horizon",
+            "anchor": "a-tornado-on-the-horizon"
+          },
+          "hiding-from-a-tornado": {
+            "variation": "Hiding from a tornado",
+            "anchor": "hiding-from-a-tornado"
+          },
+          "being-swept-up-by-a-tornado": {
+            "variation": "Being swept up by a tornado",
+            "anchor": "being-swept-up-by-a-tornado"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "a-tornado-on-the-horizon": {
+            "variation": "Un tornado en el horizonte",
+            "anchor": "a-tornado-on-the-horizon"
+          },
+          "hiding-from-a-tornado": {
+            "variation": "Esconderte de un tornado",
+            "anchor": "hiding-from-a-tornado"
+          },
+          "being-swept-up-by-a-tornado": {
+            "variation": "Que un tornado te arrastre",
+            "anchor": "being-swept-up-by-a-tornado"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "a-tornado-on-the-horizon": {
+            "variation": "Ein Tornado am Horizont",
+            "anchor": "a-tornado-on-the-horizon"
+          },
+          "hiding-from-a-tornado": {
+            "variation": "Sich vor einem Tornado verstecken",
+            "anchor": "hiding-from-a-tornado"
+          },
+          "being-swept-up-by-a-tornado": {
+            "variation": "Von einem Tornado erfasst werden",
+            "anchor": "being-swept-up-by-a-tornado"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "a-tornado-on-the-horizon": {
+            "variation": "Un tornado all’orizzonte",
+            "anchor": "a-tornado-on-the-horizon"
+          },
+          "hiding-from-a-tornado": {
+            "variation": "Nascondersi da un tornado",
+            "anchor": "hiding-from-a-tornado"
+          },
+          "being-swept-up-by-a-tornado": {
+            "variation": "Essere travolti da un tornado",
+            "anchor": "being-swept-up-by-a-tornado"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "a-tornado-on-the-horizon": {
+            "variation": "Um tornado no horizonte",
+            "anchor": "a-tornado-on-the-horizon"
+          },
+          "hiding-from-a-tornado": {
+            "variation": "Se esconder de um tornado",
+            "anchor": "hiding-from-a-tornado"
+          },
+          "being-swept-up-by-a-tornado": {
+            "variation": "Ser levado por um tornado",
+            "anchor": "being-swept-up-by-a-tornado"
+          }
+        }
+      }
+    },
+    "hotel": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "looking-for-your-room-and-not-finding-i": {
+            "variation": "Chercher sa chambre sans la trouver",
+            "anchor": "looking-for-your-room-and-not-finding-i"
+          },
+          "arriving-at-reception-with-no-booking": {
+            "variation": "Arriver à la réception sans réservation",
+            "anchor": "arriving-at-reception-with-no-booking"
+          },
+          "a-luxury-hotel": {
+            "variation": "Un hôtel de luxe",
+            "anchor": "a-luxury-hotel"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "looking-for-your-room-and-not-finding-i": {
+            "variation": "Looking for your room and not finding it",
+            "anchor": "looking-for-your-room-and-not-finding-i"
+          },
+          "arriving-at-reception-with-no-booking": {
+            "variation": "Arriving at reception with no booking",
+            "anchor": "arriving-at-reception-with-no-booking"
+          },
+          "a-luxury-hotel": {
+            "variation": "A luxury hotel",
+            "anchor": "a-luxury-hotel"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "looking-for-your-room-and-not-finding-i": {
+            "variation": "Buscar tu habitación y no encontrarla",
+            "anchor": "looking-for-your-room-and-not-finding-i"
+          },
+          "arriving-at-reception-with-no-booking": {
+            "variation": "Llegar a recepción sin reserva",
+            "anchor": "arriving-at-reception-with-no-booking"
+          },
+          "a-luxury-hotel": {
+            "variation": "Un hotel de lujo",
+            "anchor": "a-luxury-hotel"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "looking-for-your-room-and-not-finding-i": {
+            "variation": "Das eigene Zimmer suchen und nicht finden",
+            "anchor": "looking-for-your-room-and-not-finding-i"
+          },
+          "arriving-at-reception-with-no-booking": {
+            "variation": "Ohne Reservierung an der Rezeption stehen",
+            "anchor": "arriving-at-reception-with-no-booking"
+          },
+          "a-luxury-hotel": {
+            "variation": "Ein Luxushotel",
+            "anchor": "a-luxury-hotel"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "looking-for-your-room-and-not-finding-i": {
+            "variation": "Cercare la camera senza trovarla",
+            "anchor": "looking-for-your-room-and-not-finding-i"
+          },
+          "arriving-at-reception-with-no-booking": {
+            "variation": "Arrivare alla reception senza prenotazione",
+            "anchor": "arriving-at-reception-with-no-booking"
+          },
+          "a-luxury-hotel": {
+            "variation": "Un hotel di lusso",
+            "anchor": "a-luxury-hotel"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "looking-for-your-room-and-not-finding-i": {
+            "variation": "Procurar seu quarto sem encontrá-lo",
+            "anchor": "looking-for-your-room-and-not-finding-i"
+          },
+          "arriving-at-reception-with-no-booking": {
+            "variation": "Chegar à recepção sem reserva",
+            "anchor": "arriving-at-reception-with-no-booking"
+          },
+          "a-luxury-hotel": {
+            "variation": "Um hotel de luxo",
+            "anchor": "a-luxury-hotel"
+          }
+        }
+      }
+    },
+    "mall": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "getting-lost-in-a-mall": {
+            "variation": "Se perdre dans un centre commercial",
+            "anchor": "getting-lost-in-a-mall"
+          },
+          "looking-for-a-particular-shop": {
+            "variation": "Chercher un magasin précis",
+            "anchor": "looking-for-a-particular-shop"
+          },
+          "shopping-with-pleasure": {
+            "variation": "Faire du shopping avec plaisir",
+            "anchor": "shopping-with-pleasure"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "getting-lost-in-a-mall": {
+            "variation": "Getting lost in a mall",
+            "anchor": "getting-lost-in-a-mall"
+          },
+          "looking-for-a-particular-shop": {
+            "variation": "Looking for a particular shop",
+            "anchor": "looking-for-a-particular-shop"
+          },
+          "shopping-with-pleasure": {
+            "variation": "Shopping with pleasure",
+            "anchor": "shopping-with-pleasure"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "getting-lost-in-a-mall": {
+            "variation": "Perderte en un centro comercial",
+            "anchor": "getting-lost-in-a-mall"
+          },
+          "looking-for-a-particular-shop": {
+            "variation": "Buscar una tienda concreta",
+            "anchor": "looking-for-a-particular-shop"
+          },
+          "shopping-with-pleasure": {
+            "variation": "Ir de compras con gusto",
+            "anchor": "shopping-with-pleasure"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "getting-lost-in-a-mall": {
+            "variation": "Sich im Einkaufszentrum verirren",
+            "anchor": "getting-lost-in-a-mall"
+          },
+          "looking-for-a-particular-shop": {
+            "variation": "Ein bestimmtes Geschäft suchen",
+            "anchor": "looking-for-a-particular-shop"
+          },
+          "shopping-with-pleasure": {
+            "variation": "Mit Freude shoppen",
+            "anchor": "shopping-with-pleasure"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "getting-lost-in-a-mall": {
+            "variation": "Perdersi in un centro commerciale",
+            "anchor": "getting-lost-in-a-mall"
+          },
+          "looking-for-a-particular-shop": {
+            "variation": "Cercare un negozio preciso",
+            "anchor": "looking-for-a-particular-shop"
+          },
+          "shopping-with-pleasure": {
+            "variation": "Fare shopping con piacere",
+            "anchor": "shopping-with-pleasure"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "getting-lost-in-a-mall": {
+            "variation": "Se perder num shopping",
+            "anchor": "getting-lost-in-a-mall"
+          },
+          "looking-for-a-particular-shop": {
+            "variation": "Procurar uma loja específica",
+            "anchor": "looking-for-a-particular-shop"
+          },
+          "shopping-with-pleasure": {
+            "variation": "Fazer compras com prazer",
+            "anchor": "shopping-with-pleasure"
+          }
+        }
+      }
+    },
+    "cow": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "a-cow-grazing-peacefully": {
+            "variation": "Une vache qui broute paisiblement",
+            "anchor": "a-cow-grazing-peacefully"
+          },
+          "a-cow-charging-or-chasing-you": {
+            "variation": "Une vache qui charge ou vous poursuit",
+            "anchor": "a-cow-charging-or-chasing-you"
+          },
+          "milking-a-cow": {
+            "variation": "Traire une vache",
+            "anchor": "milking-a-cow"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "a-cow-grazing-peacefully": {
+            "variation": "A cow grazing peacefully",
+            "anchor": "a-cow-grazing-peacefully"
+          },
+          "a-cow-charging-or-chasing-you": {
+            "variation": "A cow charging or chasing you",
+            "anchor": "a-cow-charging-or-chasing-you"
+          },
+          "milking-a-cow": {
+            "variation": "Milking a cow",
+            "anchor": "milking-a-cow"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "a-cow-grazing-peacefully": {
+            "variation": "Una vaca pastando tranquila",
+            "anchor": "a-cow-grazing-peacefully"
+          },
+          "a-cow-charging-or-chasing-you": {
+            "variation": "Una vaca que embiste o te persigue",
+            "anchor": "a-cow-charging-or-chasing-you"
+          },
+          "milking-a-cow": {
+            "variation": "Ordeñar una vaca",
+            "anchor": "milking-a-cow"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "a-cow-grazing-peacefully": {
+            "variation": "Eine friedlich grasende Kuh",
+            "anchor": "a-cow-grazing-peacefully"
+          },
+          "a-cow-charging-or-chasing-you": {
+            "variation": "Eine Kuh, die angreift oder Sie verfolgt",
+            "anchor": "a-cow-charging-or-chasing-you"
+          },
+          "milking-a-cow": {
+            "variation": "Eine Kuh melken",
+            "anchor": "milking-a-cow"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "a-cow-grazing-peacefully": {
+            "variation": "Una mucca che pascola tranquilla",
+            "anchor": "a-cow-grazing-peacefully"
+          },
+          "a-cow-charging-or-chasing-you": {
+            "variation": "Una mucca che carica o ti insegue",
+            "anchor": "a-cow-charging-or-chasing-you"
+          },
+          "milking-a-cow": {
+            "variation": "Mungere una mucca",
+            "anchor": "milking-a-cow"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "a-cow-grazing-peacefully": {
+            "variation": "Uma vaca pastando tranquilamente",
+            "anchor": "a-cow-grazing-peacefully"
+          },
+          "a-cow-charging-or-chasing-you": {
+            "variation": "Uma vaca avançando ou correndo atrás de você",
+            "anchor": "a-cow-charging-or-chasing-you"
+          },
+          "milking-a-cow": {
+            "variation": "Ordenhar uma vaca",
+            "anchor": "milking-a-cow"
+          }
+        }
+      }
+    },
+    "rabbit": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "a-rabbit-running-away": {
+            "variation": "Un lapin qui s'enfuit",
+            "anchor": "a-rabbit-running-away"
+          },
+          "holding-or-stroking-a-rabbit": {
+            "variation": "Tenir ou caresser un lapin",
+            "anchor": "holding-or-stroking-a-rabbit"
+          },
+          "a-white-rabbit": {
+            "variation": "Un lapin blanc",
+            "anchor": "a-white-rabbit"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "a-rabbit-running-away": {
+            "variation": "A rabbit running away",
+            "anchor": "a-rabbit-running-away"
+          },
+          "holding-or-stroking-a-rabbit": {
+            "variation": "Holding or stroking a rabbit",
+            "anchor": "holding-or-stroking-a-rabbit"
+          },
+          "a-white-rabbit": {
+            "variation": "A white rabbit",
+            "anchor": "a-white-rabbit"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "a-rabbit-running-away": {
+            "variation": "Un conejo que huye",
+            "anchor": "a-rabbit-running-away"
+          },
+          "holding-or-stroking-a-rabbit": {
+            "variation": "Coger o acariciar un conejo",
+            "anchor": "holding-or-stroking-a-rabbit"
+          },
+          "a-white-rabbit": {
+            "variation": "Un conejo blanco",
+            "anchor": "a-white-rabbit"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "a-rabbit-running-away": {
+            "variation": "Ein Kaninchen, das wegläuft",
+            "anchor": "a-rabbit-running-away"
+          },
+          "holding-or-stroking-a-rabbit": {
+            "variation": "Ein Kaninchen halten oder streicheln",
+            "anchor": "holding-or-stroking-a-rabbit"
+          },
+          "a-white-rabbit": {
+            "variation": "Ein weißes Kaninchen",
+            "anchor": "a-white-rabbit"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "a-rabbit-running-away": {
+            "variation": "Un coniglio che scappa",
+            "anchor": "a-rabbit-running-away"
+          },
+          "holding-or-stroking-a-rabbit": {
+            "variation": "Tenere o accarezzare un coniglio",
+            "anchor": "holding-or-stroking-a-rabbit"
+          },
+          "a-white-rabbit": {
+            "variation": "Un coniglio bianco",
+            "anchor": "a-white-rabbit"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "a-rabbit-running-away": {
+            "variation": "Um coelho fugindo",
+            "anchor": "a-rabbit-running-away"
+          },
+          "holding-or-stroking-a-rabbit": {
+            "variation": "Segurar ou acariciar um coelho",
+            "anchor": "holding-or-stroking-a-rabbit"
+          },
+          "a-white-rabbit": {
+            "variation": "Um coelho branco",
+            "anchor": "a-white-rabbit"
+          }
+        }
+      }
+    },
+    "mouse": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "a-mouse-running-across-the-room": {
+            "variation": "Une souris qui traverse la pièce",
+            "anchor": "a-mouse-running-across-the-room"
+          },
+          "mice-in-the-house": {
+            "variation": "Des souris dans la maison",
+            "anchor": "mice-in-the-house"
+          },
+          "a-white-mouse": {
+            "variation": "Une souris blanche",
+            "anchor": "a-white-mouse"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "a-mouse-running-across-the-room": {
+            "variation": "A mouse running across the room",
+            "anchor": "a-mouse-running-across-the-room"
+          },
+          "mice-in-the-house": {
+            "variation": "Mice in the house",
+            "anchor": "mice-in-the-house"
+          },
+          "a-white-mouse": {
+            "variation": "A white mouse",
+            "anchor": "a-white-mouse"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "a-mouse-running-across-the-room": {
+            "variation": "Un ratón que cruza la habitación",
+            "anchor": "a-mouse-running-across-the-room"
+          },
+          "mice-in-the-house": {
+            "variation": "Ratones en casa",
+            "anchor": "mice-in-the-house"
+          },
+          "a-white-mouse": {
+            "variation": "Un ratón blanco",
+            "anchor": "a-white-mouse"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "a-mouse-running-across-the-room": {
+            "variation": "Eine Maus, die durchs Zimmer huscht",
+            "anchor": "a-mouse-running-across-the-room"
+          },
+          "mice-in-the-house": {
+            "variation": "Mäuse im Haus",
+            "anchor": "mice-in-the-house"
+          },
+          "a-white-mouse": {
+            "variation": "Eine weiße Maus",
+            "anchor": "a-white-mouse"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "a-mouse-running-across-the-room": {
+            "variation": "Un topo che attraversa la stanza",
+            "anchor": "a-mouse-running-across-the-room"
+          },
+          "mice-in-the-house": {
+            "variation": "Topi in casa",
+            "anchor": "mice-in-the-house"
+          },
+          "a-white-mouse": {
+            "variation": "Un topo bianco",
+            "anchor": "a-white-mouse"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "a-mouse-running-across-the-room": {
+            "variation": "Um camundongo atravessando o cômodo",
+            "anchor": "a-mouse-running-across-the-room"
+          },
+          "mice-in-the-house": {
+            "variation": "Camundongos dentro de casa",
+            "anchor": "mice-in-the-house"
+          },
+          "a-white-mouse": {
+            "variation": "Um camundongo branco",
+            "anchor": "a-white-mouse"
+          }
+        }
+      }
+    },
+    "rat": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "a-rat-running-past": {
+            "variation": "Un rat qui passe en courant",
+            "anchor": "a-rat-running-past"
+          },
+          "many-rats": {
+            "variation": "Beaucoup de rats",
+            "anchor": "many-rats"
+          },
+          "a-white-or-pet-rat": {
+            "variation": "Un rat blanc ou apprivoisé",
+            "anchor": "a-white-or-pet-rat"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "a-rat-running-past": {
+            "variation": "A rat running past",
+            "anchor": "a-rat-running-past"
+          },
+          "many-rats": {
+            "variation": "Many rats",
+            "anchor": "many-rats"
+          },
+          "a-white-or-pet-rat": {
+            "variation": "A white or pet rat",
+            "anchor": "a-white-or-pet-rat"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "a-rat-running-past": {
+            "variation": "Una rata que pasa corriendo",
+            "anchor": "a-rat-running-past"
+          },
+          "many-rats": {
+            "variation": "Muchas ratas",
+            "anchor": "many-rats"
+          },
+          "a-white-or-pet-rat": {
+            "variation": "Una rata blanca o domesticada",
+            "anchor": "a-white-or-pet-rat"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "a-rat-running-past": {
+            "variation": "Eine Ratte, die vorbeirennt",
+            "anchor": "a-rat-running-past"
+          },
+          "many-rats": {
+            "variation": "Viele Ratten",
+            "anchor": "many-rats"
+          },
+          "a-white-or-pet-rat": {
+            "variation": "Eine weiße oder zahme Ratte",
+            "anchor": "a-white-or-pet-rat"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "a-rat-running-past": {
+            "variation": "Un ratto che passa di corsa",
+            "anchor": "a-rat-running-past"
+          },
+          "many-rats": {
+            "variation": "Tanti ratti",
+            "anchor": "many-rats"
+          },
+          "a-white-or-pet-rat": {
+            "variation": "Un ratto bianco o addomesticato",
+            "anchor": "a-white-or-pet-rat"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "a-rat-running-past": {
+            "variation": "Um rato passando depressa",
+            "anchor": "a-rat-running-past"
+          },
+          "many-rats": {
+            "variation": "Muitos ratos",
+            "anchor": "many-rats"
+          },
+          "a-white-or-pet-rat": {
+            "variation": "Um rato branco ou de estimação",
+            "anchor": "a-white-or-pet-rat"
+          }
+        }
+      }
+    },
+    "bear": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "being-chased-by-a-bear": {
+            "variation": "Être poursuivi par un ours",
+            "anchor": "being-chased-by-a-bear"
+          },
+          "a-calm-or-friendly-bear": {
+            "variation": "Un ours calme ou amical",
+            "anchor": "a-calm-or-friendly-bear"
+          },
+          "a-sleeping-bear-or-a-den": {
+            "variation": "Un ours endormi ou une tanière",
+            "anchor": "a-sleeping-bear-or-a-den"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "being-chased-by-a-bear": {
+            "variation": "Being chased by a bear",
+            "anchor": "being-chased-by-a-bear"
+          },
+          "a-calm-or-friendly-bear": {
+            "variation": "A calm or friendly bear",
+            "anchor": "a-calm-or-friendly-bear"
+          },
+          "a-sleeping-bear-or-a-den": {
+            "variation": "A sleeping bear or a den",
+            "anchor": "a-sleeping-bear-or-a-den"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "being-chased-by-a-bear": {
+            "variation": "Un oso que te persigue",
+            "anchor": "being-chased-by-a-bear"
+          },
+          "a-calm-or-friendly-bear": {
+            "variation": "Un oso tranquilo o amistoso",
+            "anchor": "a-calm-or-friendly-bear"
+          },
+          "a-sleeping-bear-or-a-den": {
+            "variation": "Un oso dormido o una guarida",
+            "anchor": "a-sleeping-bear-or-a-den"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "being-chased-by-a-bear": {
+            "variation": "Von einem Bären verfolgt werden",
+            "anchor": "being-chased-by-a-bear"
+          },
+          "a-calm-or-friendly-bear": {
+            "variation": "Ein ruhiger oder freundlicher Bär",
+            "anchor": "a-calm-or-friendly-bear"
+          },
+          "a-sleeping-bear-or-a-den": {
+            "variation": "Ein schlafender Bär oder eine Bärenhöhle",
+            "anchor": "a-sleeping-bear-or-a-den"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "being-chased-by-a-bear": {
+            "variation": "Un orso che ti insegue",
+            "anchor": "being-chased-by-a-bear"
+          },
+          "a-calm-or-friendly-bear": {
+            "variation": "Un orso tranquillo o amichevole",
+            "anchor": "a-calm-or-friendly-bear"
+          },
+          "a-sleeping-bear-or-a-den": {
+            "variation": "Un orso che dorme o una tana",
+            "anchor": "a-sleeping-bear-or-a-den"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "being-chased-by-a-bear": {
+            "variation": "Ser perseguido por um urso",
+            "anchor": "being-chased-by-a-bear"
+          },
+          "a-calm-or-friendly-bear": {
+            "variation": "Um urso calmo ou amigável",
+            "anchor": "a-calm-or-friendly-bear"
+          },
+          "a-sleeping-bear-or-a-den": {
+            "variation": "Um urso dormindo ou uma toca",
+            "anchor": "a-sleeping-bear-or-a-den"
+          }
+        }
+      }
+    },
+    "elephant": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "a-calm-elephant": {
+            "variation": "Un éléphant calme",
+            "anchor": "a-calm-elephant"
+          },
+          "a-baby-elephant": {
+            "variation": "Un éléphanteau",
+            "anchor": "a-baby-elephant"
+          },
+          "a-herd-of-elephants": {
+            "variation": "Un troupeau d'éléphants",
+            "anchor": "a-herd-of-elephants"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "a-calm-elephant": {
+            "variation": "A calm elephant",
+            "anchor": "a-calm-elephant"
+          },
+          "a-baby-elephant": {
+            "variation": "A baby elephant",
+            "anchor": "a-baby-elephant"
+          },
+          "a-herd-of-elephants": {
+            "variation": "A herd of elephants",
+            "anchor": "a-herd-of-elephants"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "a-calm-elephant": {
+            "variation": "Un elefante tranquilo",
+            "anchor": "a-calm-elephant"
+          },
+          "a-baby-elephant": {
+            "variation": "Una cría de elefante",
+            "anchor": "a-baby-elephant"
+          },
+          "a-herd-of-elephants": {
+            "variation": "Una manada de elefantes",
+            "anchor": "a-herd-of-elephants"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "a-calm-elephant": {
+            "variation": "Ein ruhiger Elefant",
+            "anchor": "a-calm-elephant"
+          },
+          "a-baby-elephant": {
+            "variation": "Ein Elefantenbaby",
+            "anchor": "a-baby-elephant"
+          },
+          "a-herd-of-elephants": {
+            "variation": "Eine Elefantenherde",
+            "anchor": "a-herd-of-elephants"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "a-calm-elephant": {
+            "variation": "Un elefante tranquillo",
+            "anchor": "a-calm-elephant"
+          },
+          "a-baby-elephant": {
+            "variation": "Un cucciolo di elefante",
+            "anchor": "a-baby-elephant"
+          },
+          "a-herd-of-elephants": {
+            "variation": "Un branco di elefanti",
+            "anchor": "a-herd-of-elephants"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "a-calm-elephant": {
+            "variation": "Um elefante calmo",
+            "anchor": "a-calm-elephant"
+          },
+          "a-baby-elephant": {
+            "variation": "Um filhote de elefante",
+            "anchor": "a-baby-elephant"
+          },
+          "a-herd-of-elephants": {
+            "variation": "Uma manada de elefantes",
+            "anchor": "a-herd-of-elephants"
+          }
+        }
+      }
+    },
+    "fish": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "a-fish-swimming-in-clear-water": {
+            "variation": "Un poisson qui nage dans une eau claire",
+            "anchor": "a-fish-swimming-in-clear-water"
+          },
+          "catching-a-fish": {
+            "variation": "Pêcher un poisson",
+            "anchor": "catching-a-fish"
+          },
+          "a-fish-in-a-bowl-or-an-aquarium": {
+            "variation": "Un poisson dans un bocal ou un aquarium",
+            "anchor": "a-fish-in-a-bowl-or-an-aquarium"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "a-fish-swimming-in-clear-water": {
+            "variation": "A fish swimming in clear water",
+            "anchor": "a-fish-swimming-in-clear-water"
+          },
+          "catching-a-fish": {
+            "variation": "Catching a fish",
+            "anchor": "catching-a-fish"
+          },
+          "a-fish-in-a-bowl-or-an-aquarium": {
+            "variation": "A fish in a bowl or an aquarium",
+            "anchor": "a-fish-in-a-bowl-or-an-aquarium"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "a-fish-swimming-in-clear-water": {
+            "variation": "Un pez nadando en agua clara",
+            "anchor": "a-fish-swimming-in-clear-water"
+          },
+          "catching-a-fish": {
+            "variation": "Pescar un pez",
+            "anchor": "catching-a-fish"
+          },
+          "a-fish-in-a-bowl-or-an-aquarium": {
+            "variation": "Un pez en una pecera o un acuario",
+            "anchor": "a-fish-in-a-bowl-or-an-aquarium"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "a-fish-swimming-in-clear-water": {
+            "variation": "Ein Fisch in klarem Wasser",
+            "anchor": "a-fish-swimming-in-clear-water"
+          },
+          "catching-a-fish": {
+            "variation": "Einen Fisch fangen",
+            "anchor": "catching-a-fish"
+          },
+          "a-fish-in-a-bowl-or-an-aquarium": {
+            "variation": "Ein Fisch im Glas oder Aquarium",
+            "anchor": "a-fish-in-a-bowl-or-an-aquarium"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "a-fish-swimming-in-clear-water": {
+            "variation": "Un pesce che nuota nell’acqua limpida",
+            "anchor": "a-fish-swimming-in-clear-water"
+          },
+          "catching-a-fish": {
+            "variation": "Pescare un pesce",
+            "anchor": "catching-a-fish"
+          },
+          "a-fish-in-a-bowl-or-an-aquarium": {
+            "variation": "Un pesce in una boccia o in un acquario",
+            "anchor": "a-fish-in-a-bowl-or-an-aquarium"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "a-fish-swimming-in-clear-water": {
+            "variation": "Um peixe nadando em água clara",
+            "anchor": "a-fish-swimming-in-clear-water"
+          },
+          "catching-a-fish": {
+            "variation": "Pegar um peixe",
+            "anchor": "catching-a-fish"
+          },
+          "a-fish-in-a-bowl-or-an-aquarium": {
+            "variation": "Um peixe num aquário",
+            "anchor": "a-fish-in-a-bowl-or-an-aquarium"
+          }
+        }
+      }
+    },
+    "shark": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "a-fin-on-the-surface": {
+            "variation": "Un aileron à la surface",
+            "anchor": "a-fin-on-the-surface"
+          },
+          "a-shark-circling-you": {
+            "variation": "Un requin qui tourne autour de vous",
+            "anchor": "a-shark-circling-you"
+          },
+          "swimming-calmly-among-sharks": {
+            "variation": "Nager calmement parmi les requins",
+            "anchor": "swimming-calmly-among-sharks"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "a-fin-on-the-surface": {
+            "variation": "A fin on the surface",
+            "anchor": "a-fin-on-the-surface"
+          },
+          "a-shark-circling-you": {
+            "variation": "A shark circling you",
+            "anchor": "a-shark-circling-you"
+          },
+          "swimming-calmly-among-sharks": {
+            "variation": "Swimming calmly among sharks",
+            "anchor": "swimming-calmly-among-sharks"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "a-fin-on-the-surface": {
+            "variation": "Una aleta en la superficie",
+            "anchor": "a-fin-on-the-surface"
+          },
+          "a-shark-circling-you": {
+            "variation": "Un tiburón que te rodea",
+            "anchor": "a-shark-circling-you"
+          },
+          "swimming-calmly-among-sharks": {
+            "variation": "Nadar tranquilo entre tiburones",
+            "anchor": "swimming-calmly-among-sharks"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "a-fin-on-the-surface": {
+            "variation": "Eine Flosse an der Oberfläche",
+            "anchor": "a-fin-on-the-surface"
+          },
+          "a-shark-circling-you": {
+            "variation": "Ein Hai, der Sie umkreist",
+            "anchor": "a-shark-circling-you"
+          },
+          "swimming-calmly-among-sharks": {
+            "variation": "Ruhig zwischen Haien schwimmen",
+            "anchor": "swimming-calmly-among-sharks"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "a-fin-on-the-surface": {
+            "variation": "Una pinna in superficie",
+            "anchor": "a-fin-on-the-surface"
+          },
+          "a-shark-circling-you": {
+            "variation": "Uno squalo che ti gira intorno",
+            "anchor": "a-shark-circling-you"
+          },
+          "swimming-calmly-among-sharks": {
+            "variation": "Nuotare tranquillo tra gli squali",
+            "anchor": "swimming-calmly-among-sharks"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "a-fin-on-the-surface": {
+            "variation": "Uma barbatana na superfície",
+            "anchor": "a-fin-on-the-surface"
+          },
+          "a-shark-circling-you": {
+            "variation": "Um tubarão circulando ao seu redor",
+            "anchor": "a-shark-circling-you"
+          },
+          "swimming-calmly-among-sharks": {
+            "variation": "Nadar tranquilamente entre tubarões",
+            "anchor": "swimming-calmly-among-sharks"
+          }
+        }
+      }
+    },
+    "dolphin": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "swimming-with-dolphins": {
+            "variation": "Nager avec des dauphins",
+            "anchor": "swimming-with-dolphins"
+          },
+          "being-rescued-by-a-dolphin": {
+            "variation": "Être sauvé par un dauphin",
+            "anchor": "being-rescued-by-a-dolphin"
+          },
+          "a-pod-of-dolphins": {
+            "variation": "Un groupe de dauphins",
+            "anchor": "a-pod-of-dolphins"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "swimming-with-dolphins": {
+            "variation": "Swimming with dolphins",
+            "anchor": "swimming-with-dolphins"
+          },
+          "being-rescued-by-a-dolphin": {
+            "variation": "Being rescued by a dolphin",
+            "anchor": "being-rescued-by-a-dolphin"
+          },
+          "a-pod-of-dolphins": {
+            "variation": "A pod of dolphins",
+            "anchor": "a-pod-of-dolphins"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "swimming-with-dolphins": {
+            "variation": "Nadar con delfines",
+            "anchor": "swimming-with-dolphins"
+          },
+          "being-rescued-by-a-dolphin": {
+            "variation": "Que un delfín te rescate",
+            "anchor": "being-rescued-by-a-dolphin"
+          },
+          "a-pod-of-dolphins": {
+            "variation": "Un grupo de delfines",
+            "anchor": "a-pod-of-dolphins"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "swimming-with-dolphins": {
+            "variation": "Mit Delfinen schwimmen",
+            "anchor": "swimming-with-dolphins"
+          },
+          "being-rescued-by-a-dolphin": {
+            "variation": "Von einem Delfin gerettet werden",
+            "anchor": "being-rescued-by-a-dolphin"
+          },
+          "a-pod-of-dolphins": {
+            "variation": "Eine Gruppe von Delfinen",
+            "anchor": "a-pod-of-dolphins"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "swimming-with-dolphins": {
+            "variation": "Nuotare con i delfini",
+            "anchor": "swimming-with-dolphins"
+          },
+          "being-rescued-by-a-dolphin": {
+            "variation": "Essere salvati da un delfino",
+            "anchor": "being-rescued-by-a-dolphin"
+          },
+          "a-pod-of-dolphins": {
+            "variation": "Un branco di delfini",
+            "anchor": "a-pod-of-dolphins"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "swimming-with-dolphins": {
+            "variation": "Nadar com golfinhos",
+            "anchor": "swimming-with-dolphins"
+          },
+          "being-rescued-by-a-dolphin": {
+            "variation": "Ser resgatado por um golfinho",
+            "anchor": "being-rescued-by-a-dolphin"
+          },
+          "a-pod-of-dolphins": {
+            "variation": "Um grupo de golfinhos",
+            "anchor": "a-pod-of-dolphins"
+          }
+        }
+      }
+    },
+    "frog": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "a-frog-jumping": {
+            "variation": "Une grenouille qui saute",
+            "anchor": "a-frog-jumping"
+          },
+          "a-frog-in-the-house": {
+            "variation": "Une grenouille dans la maison",
+            "anchor": "a-frog-in-the-house"
+          },
+          "lots-of-frogs": {
+            "variation": "Beaucoup de grenouilles",
+            "anchor": "lots-of-frogs"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "a-frog-jumping": {
+            "variation": "A frog jumping",
+            "anchor": "a-frog-jumping"
+          },
+          "a-frog-in-the-house": {
+            "variation": "A frog in the house",
+            "anchor": "a-frog-in-the-house"
+          },
+          "lots-of-frogs": {
+            "variation": "Lots of frogs",
+            "anchor": "lots-of-frogs"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "a-frog-jumping": {
+            "variation": "Una rana que salta",
+            "anchor": "a-frog-jumping"
+          },
+          "a-frog-in-the-house": {
+            "variation": "Una rana en casa",
+            "anchor": "a-frog-in-the-house"
+          },
+          "lots-of-frogs": {
+            "variation": "Muchas ranas",
+            "anchor": "lots-of-frogs"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "a-frog-jumping": {
+            "variation": "Ein springender Frosch",
+            "anchor": "a-frog-jumping"
+          },
+          "a-frog-in-the-house": {
+            "variation": "Ein Frosch im Haus",
+            "anchor": "a-frog-in-the-house"
+          },
+          "lots-of-frogs": {
+            "variation": "Viele Frösche",
+            "anchor": "lots-of-frogs"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "a-frog-jumping": {
+            "variation": "Una rana che salta",
+            "anchor": "a-frog-jumping"
+          },
+          "a-frog-in-the-house": {
+            "variation": "Una rana in casa",
+            "anchor": "a-frog-in-the-house"
+          },
+          "lots-of-frogs": {
+            "variation": "Tante rane",
+            "anchor": "lots-of-frogs"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "a-frog-jumping": {
+            "variation": "Um sapo pulando",
+            "anchor": "a-frog-jumping"
+          },
+          "a-frog-in-the-house": {
+            "variation": "Um sapo dentro de casa",
+            "anchor": "a-frog-in-the-house"
+          },
+          "lots-of-frogs": {
+            "variation": "Muitos sapos",
+            "anchor": "lots-of-frogs"
+          }
+        }
+      }
+    },
+    "ant": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "a-long-line-of-ants": {
+            "variation": "Une longue file de fourmis",
+            "anchor": "a-long-line-of-ants"
+          },
+          "ants-in-the-house": {
+            "variation": "Des fourmis dans la maison",
+            "anchor": "ants-in-the-house"
+          },
+          "an-ant-carrying-a-heavy-load": {
+            "variation": "Une fourmi qui porte une lourde charge",
+            "anchor": "an-ant-carrying-a-heavy-load"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "a-long-line-of-ants": {
+            "variation": "A long line of ants",
+            "anchor": "a-long-line-of-ants"
+          },
+          "ants-in-the-house": {
+            "variation": "Ants in the house",
+            "anchor": "ants-in-the-house"
+          },
+          "an-ant-carrying-a-heavy-load": {
+            "variation": "An ant carrying a heavy load",
+            "anchor": "an-ant-carrying-a-heavy-load"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "a-long-line-of-ants": {
+            "variation": "Una larga fila de hormigas",
+            "anchor": "a-long-line-of-ants"
+          },
+          "ants-in-the-house": {
+            "variation": "Hormigas en casa",
+            "anchor": "ants-in-the-house"
+          },
+          "an-ant-carrying-a-heavy-load": {
+            "variation": "Una hormiga cargando un gran peso",
+            "anchor": "an-ant-carrying-a-heavy-load"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "a-long-line-of-ants": {
+            "variation": "Eine lange Ameisenstraße",
+            "anchor": "a-long-line-of-ants"
+          },
+          "ants-in-the-house": {
+            "variation": "Ameisen in der Wohnung",
+            "anchor": "ants-in-the-house"
+          },
+          "an-ant-carrying-a-heavy-load": {
+            "variation": "Eine Ameise mit schwerer Last",
+            "anchor": "an-ant-carrying-a-heavy-load"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "a-long-line-of-ants": {
+            "variation": "Una lunga fila di formiche",
+            "anchor": "a-long-line-of-ants"
+          },
+          "ants-in-the-house": {
+            "variation": "Formiche in casa",
+            "anchor": "ants-in-the-house"
+          },
+          "an-ant-carrying-a-heavy-load": {
+            "variation": "Una formica con un carico pesante",
+            "anchor": "an-ant-carrying-a-heavy-load"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "a-long-line-of-ants": {
+            "variation": "Uma longa fila de formigas",
+            "anchor": "a-long-line-of-ants"
+          },
+          "ants-in-the-house": {
+            "variation": "Formigas dentro de casa",
+            "anchor": "ants-in-the-house"
+          },
+          "an-ant-carrying-a-heavy-load": {
+            "variation": "Uma formiga carregando algo pesado",
+            "anchor": "an-ant-carrying-a-heavy-load"
+          }
+        }
+      }
+    },
+    "eagle": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "an-eagle-soaring-high": {
+            "variation": "Un aigle qui plane très haut",
+            "anchor": "an-eagle-soaring-high"
+          },
+          "flying-with-an-eagle": {
+            "variation": "Voler avec un aigle",
+            "anchor": "flying-with-an-eagle"
+          },
+          "a-caged-eagle": {
+            "variation": "Un aigle en cage",
+            "anchor": "a-caged-eagle"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "an-eagle-soaring-high": {
+            "variation": "An eagle soaring high",
+            "anchor": "an-eagle-soaring-high"
+          },
+          "flying-with-an-eagle": {
+            "variation": "Flying with an eagle",
+            "anchor": "flying-with-an-eagle"
+          },
+          "a-caged-eagle": {
+            "variation": "A caged eagle",
+            "anchor": "a-caged-eagle"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "an-eagle-soaring-high": {
+            "variation": "Un águila planeando muy alto",
+            "anchor": "an-eagle-soaring-high"
+          },
+          "flying-with-an-eagle": {
+            "variation": "Volar con un águila",
+            "anchor": "flying-with-an-eagle"
+          },
+          "a-caged-eagle": {
+            "variation": "Un águila enjaulada",
+            "anchor": "a-caged-eagle"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "an-eagle-soaring-high": {
+            "variation": "Ein hoch kreisender Adler",
+            "anchor": "an-eagle-soaring-high"
+          },
+          "flying-with-an-eagle": {
+            "variation": "Mit einem Adler fliegen",
+            "anchor": "flying-with-an-eagle"
+          },
+          "a-caged-eagle": {
+            "variation": "Ein Adler im Käfig",
+            "anchor": "a-caged-eagle"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "an-eagle-soaring-high": {
+            "variation": "Un’aquila che plana in alto",
+            "anchor": "an-eagle-soaring-high"
+          },
+          "flying-with-an-eagle": {
+            "variation": "Volare con un’aquila",
+            "anchor": "flying-with-an-eagle"
+          },
+          "a-caged-eagle": {
+            "variation": "Un’aquila in gabbia",
+            "anchor": "a-caged-eagle"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "an-eagle-soaring-high": {
+            "variation": "Uma águia voando alto",
+            "anchor": "an-eagle-soaring-high"
+          },
+          "flying-with-an-eagle": {
+            "variation": "Voar com uma águia",
+            "anchor": "flying-with-an-eagle"
+          },
+          "a-caged-eagle": {
+            "variation": "Uma águia numa gaiola",
+            "anchor": "a-caged-eagle"
+          }
+        }
+      }
+    },
+    "crow": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "a-crow-watching-you": {
+            "variation": "Un corbeau qui vous observe",
+            "anchor": "a-crow-watching-you"
+          },
+          "a-crow-calling-loudly": {
+            "variation": "Un corbeau qui croasse fort",
+            "anchor": "a-crow-calling-loudly"
+          },
+          "a-flock-of-crows": {
+            "variation": "Une nuée de corbeaux",
+            "anchor": "a-flock-of-crows"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "a-crow-watching-you": {
+            "variation": "A crow watching you",
+            "anchor": "a-crow-watching-you"
+          },
+          "a-crow-calling-loudly": {
+            "variation": "A crow calling loudly",
+            "anchor": "a-crow-calling-loudly"
+          },
+          "a-flock-of-crows": {
+            "variation": "A flock of crows",
+            "anchor": "a-flock-of-crows"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "a-crow-watching-you": {
+            "variation": "Un cuervo que te observa",
+            "anchor": "a-crow-watching-you"
+          },
+          "a-crow-calling-loudly": {
+            "variation": "Un cuervo que grazna",
+            "anchor": "a-crow-calling-loudly"
+          },
+          "a-flock-of-crows": {
+            "variation": "Una bandada de cuervos",
+            "anchor": "a-flock-of-crows"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "a-crow-watching-you": {
+            "variation": "Eine Krähe, die Sie beobachtet",
+            "anchor": "a-crow-watching-you"
+          },
+          "a-crow-calling-loudly": {
+            "variation": "Eine laut rufende Krähe",
+            "anchor": "a-crow-calling-loudly"
+          },
+          "a-flock-of-crows": {
+            "variation": "Ein Schwarm Krähen",
+            "anchor": "a-flock-of-crows"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "a-crow-watching-you": {
+            "variation": "Un corvo che ti osserva",
+            "anchor": "a-crow-watching-you"
+          },
+          "a-crow-calling-loudly": {
+            "variation": "Un corvo che gracchia forte",
+            "anchor": "a-crow-calling-loudly"
+          },
+          "a-flock-of-crows": {
+            "variation": "Uno stormo di corvi",
+            "anchor": "a-flock-of-crows"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "a-crow-watching-you": {
+            "variation": "Um corvo observando você",
+            "anchor": "a-crow-watching-you"
+          },
+          "a-crow-calling-loudly": {
+            "variation": "Um corvo grasnando alto",
+            "anchor": "a-crow-calling-loudly"
+          },
+          "a-flock-of-crows": {
+            "variation": "Um bando de corvos",
+            "anchor": "a-flock-of-crows"
+          }
+        }
+      }
+    },
+    "garden": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "a-garden-in-bloom": {
+            "variation": "Un jardin fleuri",
+            "anchor": "a-garden-in-bloom"
+          },
+          "an-overgrown-or-neglected-garden": {
+            "variation": "Un jardin envahi ou à l'abandon",
+            "anchor": "an-overgrown-or-neglected-garden"
+          },
+          "a-dry-or-dying-garden": {
+            "variation": "Un jardin desséché",
+            "anchor": "a-dry-or-dying-garden"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "a-garden-in-bloom": {
+            "variation": "A garden in bloom",
+            "anchor": "a-garden-in-bloom"
+          },
+          "an-overgrown-or-neglected-garden": {
+            "variation": "An overgrown or neglected garden",
+            "anchor": "an-overgrown-or-neglected-garden"
+          },
+          "a-dry-or-dying-garden": {
+            "variation": "A dry or dying garden",
+            "anchor": "a-dry-or-dying-garden"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "a-garden-in-bloom": {
+            "variation": "Un jardín en flor",
+            "anchor": "a-garden-in-bloom"
+          },
+          "an-overgrown-or-neglected-garden": {
+            "variation": "Un jardín descuidado o abandonado",
+            "anchor": "an-overgrown-or-neglected-garden"
+          },
+          "a-dry-or-dying-garden": {
+            "variation": "Un jardín seco",
+            "anchor": "a-dry-or-dying-garden"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "a-garden-in-bloom": {
+            "variation": "Ein blühender Garten",
+            "anchor": "a-garden-in-bloom"
+          },
+          "an-overgrown-or-neglected-garden": {
+            "variation": "Ein verwilderter oder vernachlässigter Garten",
+            "anchor": "an-overgrown-or-neglected-garden"
+          },
+          "a-dry-or-dying-garden": {
+            "variation": "Ein vertrockneter Garten",
+            "anchor": "a-dry-or-dying-garden"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "a-garden-in-bloom": {
+            "variation": "Un giardino fiorito",
+            "anchor": "a-garden-in-bloom"
+          },
+          "an-overgrown-or-neglected-garden": {
+            "variation": "Un giardino incolto o abbandonato",
+            "anchor": "an-overgrown-or-neglected-garden"
+          },
+          "a-dry-or-dying-garden": {
+            "variation": "Un giardino secco",
+            "anchor": "a-dry-or-dying-garden"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "a-garden-in-bloom": {
+            "variation": "Um jardim florido",
+            "anchor": "a-garden-in-bloom"
+          },
+          "an-overgrown-or-neglected-garden": {
+            "variation": "Um jardim tomado pelo mato ou abandonado",
+            "anchor": "an-overgrown-or-neglected-garden"
+          },
+          "a-dry-or-dying-garden": {
+            "variation": "Um jardim seco ou morrendo",
+            "anchor": "a-dry-or-dying-garden"
+          }
+        }
+      }
+    },
+    "island": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "stranded-on-a-deserted-island": {
+            "variation": "Échoué sur une île déserte",
+            "anchor": "stranded-on-a-deserted-island"
+          },
+          "a-paradise-island": {
+            "variation": "Une île paradisiaque",
+            "anchor": "a-paradise-island"
+          },
+          "unable-to-leave-the-island": {
+            "variation": "Ne pas pouvoir quitter l'île",
+            "anchor": "unable-to-leave-the-island"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "stranded-on-a-deserted-island": {
+            "variation": "Stranded on a deserted island",
+            "anchor": "stranded-on-a-deserted-island"
+          },
+          "a-paradise-island": {
+            "variation": "A paradise island",
+            "anchor": "a-paradise-island"
+          },
+          "unable-to-leave-the-island": {
+            "variation": "Unable to leave the island",
+            "anchor": "unable-to-leave-the-island"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "stranded-on-a-deserted-island": {
+            "variation": "Varado en una isla desierta",
+            "anchor": "stranded-on-a-deserted-island"
+          },
+          "a-paradise-island": {
+            "variation": "Una isla paradisíaca",
+            "anchor": "a-paradise-island"
+          },
+          "unable-to-leave-the-island": {
+            "variation": "No poder salir de la isla",
+            "anchor": "unable-to-leave-the-island"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "stranded-on-a-deserted-island": {
+            "variation": "Auf einer einsamen Insel gestrandet",
+            "anchor": "stranded-on-a-deserted-island"
+          },
+          "a-paradise-island": {
+            "variation": "Eine paradiesische Insel",
+            "anchor": "a-paradise-island"
+          },
+          "unable-to-leave-the-island": {
+            "variation": "Die Insel nicht verlassen können",
+            "anchor": "unable-to-leave-the-island"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "stranded-on-a-deserted-island": {
+            "variation": "Naufrago su un’isola deserta",
+            "anchor": "stranded-on-a-deserted-island"
+          },
+          "a-paradise-island": {
+            "variation": "Un’isola paradisiaca",
+            "anchor": "a-paradise-island"
+          },
+          "unable-to-leave-the-island": {
+            "variation": "Non riuscire a lasciare l’isola",
+            "anchor": "unable-to-leave-the-island"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "stranded-on-a-deserted-island": {
+            "variation": "Ficar isolado numa ilha deserta",
+            "anchor": "stranded-on-a-deserted-island"
+          },
+          "a-paradise-island": {
+            "variation": "Uma ilha paradisíaca",
+            "anchor": "a-paradise-island"
+          },
+          "unable-to-leave-the-island": {
+            "variation": "Não conseguir sair da ilha",
+            "anchor": "unable-to-leave-the-island"
+          }
+        }
+      }
+    },
+    "river": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "a-calm-clear-river": {
+            "variation": "Une rivière calme et claire",
+            "anchor": "a-calm-clear-river"
+          },
+          "a-fast-or-raging-river": {
+            "variation": "Une rivière rapide ou déchaînée",
+            "anchor": "a-fast-or-raging-river"
+          },
+          "swept-away-by-the-current": {
+            "variation": "Être emporté par le courant",
+            "anchor": "swept-away-by-the-current"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "a-calm-clear-river": {
+            "variation": "A calm, clear river",
+            "anchor": "a-calm-clear-river"
+          },
+          "a-fast-or-raging-river": {
+            "variation": "A fast or raging river",
+            "anchor": "a-fast-or-raging-river"
+          },
+          "swept-away-by-the-current": {
+            "variation": "Swept away by the current",
+            "anchor": "swept-away-by-the-current"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "a-calm-clear-river": {
+            "variation": "Un río tranquilo y claro",
+            "anchor": "a-calm-clear-river"
+          },
+          "a-fast-or-raging-river": {
+            "variation": "Un río rápido o embravecido",
+            "anchor": "a-fast-or-raging-river"
+          },
+          "swept-away-by-the-current": {
+            "variation": "Que te arrastre la corriente",
+            "anchor": "swept-away-by-the-current"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "a-calm-clear-river": {
+            "variation": "Ein ruhiger, klarer Fluss",
+            "anchor": "a-calm-clear-river"
+          },
+          "a-fast-or-raging-river": {
+            "variation": "Ein reißender Fluss",
+            "anchor": "a-fast-or-raging-river"
+          },
+          "swept-away-by-the-current": {
+            "variation": "Von der Strömung mitgerissen werden",
+            "anchor": "swept-away-by-the-current"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "a-calm-clear-river": {
+            "variation": "Un fiume calmo e limpido",
+            "anchor": "a-calm-clear-river"
+          },
+          "a-fast-or-raging-river": {
+            "variation": "Un fiume impetuoso",
+            "anchor": "a-fast-or-raging-river"
+          },
+          "swept-away-by-the-current": {
+            "variation": "Essere trascinato dalla corrente",
+            "anchor": "swept-away-by-the-current"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "a-calm-clear-river": {
+            "variation": "Um rio calmo e claro",
+            "anchor": "a-calm-clear-river"
+          },
+          "a-fast-or-raging-river": {
+            "variation": "Um rio rápido ou revolto",
+            "anchor": "a-fast-or-raging-river"
+          },
+          "swept-away-by-the-current": {
+            "variation": "Ser levado pela correnteza",
+            "anchor": "swept-away-by-the-current"
+          }
+        }
+      }
+    },
+    "lake": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "a-calm-clear-lake": {
+            "variation": "Un lac calme et clair",
+            "anchor": "a-calm-clear-lake"
+          },
+          "a-dark-or-murky-lake": {
+            "variation": "Un lac sombre ou trouble",
+            "anchor": "a-dark-or-murky-lake"
+          },
+          "swimming-in-a-lake": {
+            "variation": "Nager dans un lac",
+            "anchor": "swimming-in-a-lake"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "a-calm-clear-lake": {
+            "variation": "A calm, clear lake",
+            "anchor": "a-calm-clear-lake"
+          },
+          "a-dark-or-murky-lake": {
+            "variation": "A dark or murky lake",
+            "anchor": "a-dark-or-murky-lake"
+          },
+          "swimming-in-a-lake": {
+            "variation": "Swimming in a lake",
+            "anchor": "swimming-in-a-lake"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "a-calm-clear-lake": {
+            "variation": "Un lago tranquilo y cristalino",
+            "anchor": "a-calm-clear-lake"
+          },
+          "a-dark-or-murky-lake": {
+            "variation": "Un lago oscuro o turbio",
+            "anchor": "a-dark-or-murky-lake"
+          },
+          "swimming-in-a-lake": {
+            "variation": "Nadar en un lago",
+            "anchor": "swimming-in-a-lake"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "a-calm-clear-lake": {
+            "variation": "Ein ruhiger, klarer See",
+            "anchor": "a-calm-clear-lake"
+          },
+          "a-dark-or-murky-lake": {
+            "variation": "Ein dunkler oder trüber See",
+            "anchor": "a-dark-or-murky-lake"
+          },
+          "swimming-in-a-lake": {
+            "variation": "Im See schwimmen",
+            "anchor": "swimming-in-a-lake"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "a-calm-clear-lake": {
+            "variation": "Un lago calmo e limpido",
+            "anchor": "a-calm-clear-lake"
+          },
+          "a-dark-or-murky-lake": {
+            "variation": "Un lago scuro o torbido",
+            "anchor": "a-dark-or-murky-lake"
+          },
+          "swimming-in-a-lake": {
+            "variation": "Nuotare in un lago",
+            "anchor": "swimming-in-a-lake"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "a-calm-clear-lake": {
+            "variation": "Um lago calmo e claro",
+            "anchor": "a-calm-clear-lake"
+          },
+          "a-dark-or-murky-lake": {
+            "variation": "Um lago escuro ou turvo",
+            "anchor": "a-dark-or-murky-lake"
+          },
+          "swimming-in-a-lake": {
+            "variation": "Nadar num lago",
+            "anchor": "swimming-in-a-lake"
+          }
+        }
+      }
+    },
+    "excrement": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "poop-in-a-toilet": {
+            "variation": "Du caca dans les toilettes",
+            "anchor": "poop-in-a-toilet"
+          },
+          "cleaning-poop": {
+            "variation": "Nettoyer des excréments",
+            "anchor": "cleaning-poop"
+          },
+          "poop-in-the-mouth-or-on-the-body": {
+            "variation": "Du caca dans la bouche ou sur le corps",
+            "anchor": "poop-in-the-mouth-or-on-the-body"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "poop-in-a-toilet": {
+            "variation": "Poop in a toilet",
+            "anchor": "poop-in-a-toilet"
+          },
+          "cleaning-poop": {
+            "variation": "Cleaning poop",
+            "anchor": "cleaning-poop"
+          },
+          "poop-in-the-mouth-or-on-the-body": {
+            "variation": "Poop in the mouth or on the body",
+            "anchor": "poop-in-the-mouth-or-on-the-body"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "poop-in-a-toilet": {
+            "variation": "Caca en el váter",
+            "anchor": "poop-in-a-toilet"
+          },
+          "cleaning-poop": {
+            "variation": "Limpiar excremento",
+            "anchor": "cleaning-poop"
+          },
+          "poop-in-the-mouth-or-on-the-body": {
+            "variation": "Caca en la boca o en el cuerpo",
+            "anchor": "poop-in-the-mouth-or-on-the-body"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "poop-in-a-toilet": {
+            "variation": "Kot in der Toilette",
+            "anchor": "poop-in-a-toilet"
+          },
+          "cleaning-poop": {
+            "variation": "Kot sauber machen",
+            "anchor": "cleaning-poop"
+          },
+          "poop-in-the-mouth-or-on-the-body": {
+            "variation": "Kot im Mund oder am Körper",
+            "anchor": "poop-in-the-mouth-or-on-the-body"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "poop-in-a-toilet": {
+            "variation": "Cacca nel water",
+            "anchor": "poop-in-a-toilet"
+          },
+          "cleaning-poop": {
+            "variation": "Pulire la cacca",
+            "anchor": "cleaning-poop"
+          },
+          "poop-in-the-mouth-or-on-the-body": {
+            "variation": "Cacca in bocca o sul corpo",
+            "anchor": "poop-in-the-mouth-or-on-the-body"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "poop-in-a-toilet": {
+            "variation": "Cocô no vaso sanitário",
+            "anchor": "poop-in-a-toilet"
+          },
+          "cleaning-poop": {
+            "variation": "Limpar cocô",
+            "anchor": "cleaning-poop"
+          },
+          "poop-in-the-mouth-or-on-the-body": {
+            "variation": "Cocô na boca ou no corpo",
+            "anchor": "poop-in-the-mouth-or-on-the-body"
+          }
+        }
+      }
+    },
+    "worms": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "worms-in-the-soil": {
+            "variation": "Des vers dans la terre",
+            "anchor": "worms-in-the-soil"
+          },
+          "maggots-or-white-worms": {
+            "variation": "Des asticots ou des vers blancs",
+            "anchor": "maggots-or-white-worms"
+          },
+          "worms-in-food": {
+            "variation": "Des vers dans la nourriture",
+            "anchor": "worms-in-food"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "worms-in-the-soil": {
+            "variation": "Worms in the soil",
+            "anchor": "worms-in-the-soil"
+          },
+          "maggots-or-white-worms": {
+            "variation": "Maggots or white worms",
+            "anchor": "maggots-or-white-worms"
+          },
+          "worms-in-food": {
+            "variation": "Worms in food",
+            "anchor": "worms-in-food"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "worms-in-the-soil": {
+            "variation": "Gusanos en la tierra",
+            "anchor": "worms-in-the-soil"
+          },
+          "maggots-or-white-worms": {
+            "variation": "Gusanos blancos o larvas",
+            "anchor": "maggots-or-white-worms"
+          },
+          "worms-in-food": {
+            "variation": "Gusanos en la comida",
+            "anchor": "worms-in-food"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "worms-in-the-soil": {
+            "variation": "Würmer in der Erde",
+            "anchor": "worms-in-the-soil"
+          },
+          "maggots-or-white-worms": {
+            "variation": "Maden oder weiße Würmer",
+            "anchor": "maggots-or-white-worms"
+          },
+          "worms-in-food": {
+            "variation": "Würmer im Essen",
+            "anchor": "worms-in-food"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "worms-in-the-soil": {
+            "variation": "Vermi nella terra",
+            "anchor": "worms-in-the-soil"
+          },
+          "maggots-or-white-worms": {
+            "variation": "Vermi bianchi o larve",
+            "anchor": "maggots-or-white-worms"
+          },
+          "worms-in-food": {
+            "variation": "Vermi nel cibo",
+            "anchor": "worms-in-food"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "worms-in-the-soil": {
+            "variation": "Vermes na terra",
+            "anchor": "worms-in-the-soil"
+          },
+          "maggots-or-white-worms": {
+            "variation": "Vermes brancos ou vivos",
+            "anchor": "maggots-or-white-worms"
+          },
+          "worms-in-food": {
+            "variation": "Muitos vermes na comida",
+            "anchor": "worms-in-food"
+          }
+        }
+      }
+    },
+    "cockroach": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "a-single-cockroach": {
+            "variation": "Un seul cafard",
+            "anchor": "a-single-cockroach"
+          },
+          "many-cockroaches-or-an-infestation": {
+            "variation": "Beaucoup de cafards ou une invasion",
+            "anchor": "many-cockroaches-or-an-infestation"
+          },
+          "a-cockroach-in-bed-or-on-your-body": {
+            "variation": "Un cafard dans le lit ou sur soi",
+            "anchor": "a-cockroach-in-bed-or-on-your-body"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "a-single-cockroach": {
+            "variation": "A single cockroach",
+            "anchor": "a-single-cockroach"
+          },
+          "many-cockroaches-or-an-infestation": {
+            "variation": "Many cockroaches or an infestation",
+            "anchor": "many-cockroaches-or-an-infestation"
+          },
+          "a-cockroach-in-bed-or-on-your-body": {
+            "variation": "A cockroach in bed or on your body",
+            "anchor": "a-cockroach-in-bed-or-on-your-body"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "a-single-cockroach": {
+            "variation": "Una sola cucaracha",
+            "anchor": "a-single-cockroach"
+          },
+          "many-cockroaches-or-an-infestation": {
+            "variation": "Muchas cucarachas o una plaga",
+            "anchor": "many-cockroaches-or-an-infestation"
+          },
+          "a-cockroach-in-bed-or-on-your-body": {
+            "variation": "Una cucaracha en la cama o encima de ti",
+            "anchor": "a-cockroach-in-bed-or-on-your-body"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "a-single-cockroach": {
+            "variation": "Eine einzelne Kakerlake",
+            "anchor": "a-single-cockroach"
+          },
+          "many-cockroaches-or-an-infestation": {
+            "variation": "Viele Kakerlaken oder ein Befall",
+            "anchor": "many-cockroaches-or-an-infestation"
+          },
+          "a-cockroach-in-bed-or-on-your-body": {
+            "variation": "Eine Kakerlake im Bett oder auf dem Körper",
+            "anchor": "a-cockroach-in-bed-or-on-your-body"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "a-single-cockroach": {
+            "variation": "Un solo scarafaggio",
+            "anchor": "a-single-cockroach"
+          },
+          "many-cockroaches-or-an-infestation": {
+            "variation": "Tanti scarafaggi o un’invasione",
+            "anchor": "many-cockroaches-or-an-infestation"
+          },
+          "a-cockroach-in-bed-or-on-your-body": {
+            "variation": "Uno scarafaggio nel letto o addosso",
+            "anchor": "a-cockroach-in-bed-or-on-your-body"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "a-single-cockroach": {
+            "variation": "Uma única barata",
+            "anchor": "a-single-cockroach"
+          },
+          "many-cockroaches-or-an-infestation": {
+            "variation": "Muitas baratas",
+            "anchor": "many-cockroaches-or-an-infestation"
+          },
+          "a-cockroach-in-bed-or-on-your-body": {
+            "variation": "Uma barata na cama ou na comida",
+            "anchor": "a-cockroach-in-bed-or-on-your-body"
+          }
+        }
+      }
+    },
+    "shoes": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "lost-shoes": {
+            "variation": "Des chaussures perdues",
+            "anchor": "lost-shoes"
+          },
+          "new-shoes": {
+            "variation": "Des chaussures neuves",
+            "anchor": "new-shoes"
+          },
+          "broken-or-worn-out-shoes": {
+            "variation": "Des chaussures cassées ou usées",
+            "anchor": "broken-or-worn-out-shoes"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "lost-shoes": {
+            "variation": "Lost shoes",
+            "anchor": "lost-shoes"
+          },
+          "new-shoes": {
+            "variation": "New shoes",
+            "anchor": "new-shoes"
+          },
+          "broken-or-worn-out-shoes": {
+            "variation": "Broken or worn-out shoes",
+            "anchor": "broken-or-worn-out-shoes"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "lost-shoes": {
+            "variation": "Zapatos perdidos",
+            "anchor": "lost-shoes"
+          },
+          "new-shoes": {
+            "variation": "Zapatos nuevos",
+            "anchor": "new-shoes"
+          },
+          "broken-or-worn-out-shoes": {
+            "variation": "Zapatos rotos o gastados",
+            "anchor": "broken-or-worn-out-shoes"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "lost-shoes": {
+            "variation": "Verlorene Schuhe",
+            "anchor": "lost-shoes"
+          },
+          "new-shoes": {
+            "variation": "Neue Schuhe",
+            "anchor": "new-shoes"
+          },
+          "broken-or-worn-out-shoes": {
+            "variation": "Kaputte oder abgetragene Schuhe",
+            "anchor": "broken-or-worn-out-shoes"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "lost-shoes": {
+            "variation": "Scarpe perse",
+            "anchor": "lost-shoes"
+          },
+          "new-shoes": {
+            "variation": "Scarpe nuove",
+            "anchor": "new-shoes"
+          },
+          "broken-or-worn-out-shoes": {
+            "variation": "Scarpe rotte o consumate",
+            "anchor": "broken-or-worn-out-shoes"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "lost-shoes": {
+            "variation": "Sapatos perdidos ou ausentes",
+            "anchor": "lost-shoes"
+          },
+          "new-shoes": {
+            "variation": "Sapatos novos",
+            "anchor": "new-shoes"
+          },
+          "broken-or-worn-out-shoes": {
+            "variation": "Sapatos quebrados ou desconfortáveis",
+            "anchor": "broken-or-worn-out-shoes"
+          }
+        }
+      }
+    },
+    "crocodile": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "a-crocodile-in-the-water": {
+            "variation": "Un crocodile dans l'eau",
+            "anchor": "a-crocodile-in-the-water"
+          },
+          "being-chased-by-a-crocodile": {
+            "variation": "Être poursuivi par un crocodile",
+            "anchor": "being-chased-by-a-crocodile"
+          },
+          "a-calm-or-friendly-crocodile": {
+            "variation": "Un crocodile calme ou amical",
+            "anchor": "a-calm-or-friendly-crocodile"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "a-crocodile-in-the-water": {
+            "variation": "A crocodile in the water",
+            "anchor": "a-crocodile-in-the-water"
+          },
+          "being-chased-by-a-crocodile": {
+            "variation": "Being chased by a crocodile",
+            "anchor": "being-chased-by-a-crocodile"
+          },
+          "a-calm-or-friendly-crocodile": {
+            "variation": "A calm or friendly crocodile",
+            "anchor": "a-calm-or-friendly-crocodile"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "a-crocodile-in-the-water": {
+            "variation": "Un cocodrilo en el agua",
+            "anchor": "a-crocodile-in-the-water"
+          },
+          "being-chased-by-a-crocodile": {
+            "variation": "Que te persiga un cocodrilo",
+            "anchor": "being-chased-by-a-crocodile"
+          },
+          "a-calm-or-friendly-crocodile": {
+            "variation": "Un cocodrilo tranquilo o amistoso",
+            "anchor": "a-calm-or-friendly-crocodile"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "a-crocodile-in-the-water": {
+            "variation": "Ein Krokodil im Wasser",
+            "anchor": "a-crocodile-in-the-water"
+          },
+          "being-chased-by-a-crocodile": {
+            "variation": "Von einem Krokodil verfolgt werden",
+            "anchor": "being-chased-by-a-crocodile"
+          },
+          "a-calm-or-friendly-crocodile": {
+            "variation": "Ein ruhiges oder zahmes Krokodil",
+            "anchor": "a-calm-or-friendly-crocodile"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "a-crocodile-in-the-water": {
+            "variation": "Un coccodrillo nell’acqua",
+            "anchor": "a-crocodile-in-the-water"
+          },
+          "being-chased-by-a-crocodile": {
+            "variation": "Essere inseguiti da un coccodrillo",
+            "anchor": "being-chased-by-a-crocodile"
+          },
+          "a-calm-or-friendly-crocodile": {
+            "variation": "Un coccodrillo tranquillo o amichevole",
+            "anchor": "a-calm-or-friendly-crocodile"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "a-crocodile-in-the-water": {
+            "variation": "Um crocodilo na água",
+            "anchor": "a-crocodile-in-the-water"
+          },
+          "being-chased-by-a-crocodile": {
+            "variation": "Ser perseguido ou atacado",
+            "anchor": "being-chased-by-a-crocodile"
+          },
+          "a-calm-or-friendly-crocodile": {
+            "variation": "Um crocodilo calmo ou inofensivo",
+            "anchor": "a-calm-or-friendly-crocodile"
+          }
+        }
+      }
     }
   }
 }

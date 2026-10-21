@@ -20884,7 +20884,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>Quando essa imagem aparece em um sonho, a primeira pergunta não é “o que ela sempre significa?”, e sim “por que a minha mente escolheu essa imagem esta noite?”. A resposta costuma estar perto do clima emocional, da mudança, de forças maiores do que você e do ritmo da renovação ou da ruptura.</p>\n<p>O símbolo pode ser terno, irritante, assustador, engraçado ou completamente banal. Esse tom importa. Uma versão calma pode sugerir integração, enquanto uma versão ameaçadora pode mostrar conflito ou fuga.</p>\n<p>Repare no papel que ele desempenhou. Ele bloqueou você, guiou você, observou você, seguiu você ou desapareceu? Nos sonhos, a função costuma revelar mais do que o próprio objeto.</p>\n<p>Use a imagem como uma porta de entrada para a história, não como um veredito. Algumas anotações honestas sobre o cenário e sobre a reação do seu corpo costumam dizer mais do que uma lista fixa de símbolos.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Um tornado no horizonte",
+            "meaning": "Ela ainda estava longe, lenta ou se aproximando? Ver um tornado chegar pode acompanhar uma preocupação que você percebe crescer, sem estar envolvido nela ainda. Anote o que fez enquanto ainda havia tempo."
+          },
+          {
+            "context": "Se esconder de um tornado",
+            "meaning": "Onde você se abrigou: num porão, num banheiro ou num carro? Buscar abrigo pode acompanhar a necessidade de proteger a si mesmo ou as pessoas que ama enquanto algo passa. Você se sentia seguro ali ou apenas esperava?"
+          },
+          {
+            "context": "Ser levado por um tornado",
+            "meaning": "Você foi erguido do chão, girou no ar ou foi deixado em outro lugar? Ser carregado costuma acompanhar a sensação de ser levado pelos acontecimentos. Vale anotar onde você foi parar."
+          }
+        ]
       }
     },
     "hotel": {
@@ -21035,7 +21048,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>O hotel pode parecer estranhamente específico em um sonho, e é por isso que vale levá-lo a sério sem levá-lo ao pé da letra. Ele costuma reunir vários fios ao mesmo tempo: o cenário de uma situação de vida: onde você se sente seguro, exposto, travado ou pronto para se mover.</p>\n<p>Repare se o sonho tornou o símbolo familiar ou estranho. Detalhes familiares podem apontar para uma memória vivida; detalhes estranhos podem mostrar que um padrão antigo está sendo visto de um novo ângulo.</p>\n<p>A pista mais forte costuma ser emocional. Alívio, vergonha, medo, curiosidade, irritação ou saudade estreitam o significado mais rápido do que qualquer interpretação universal.</p>\n<p>Se você registrar o sonho na Noctalia, reserve uma frase para o que aconteceu e outra para aquilo de que isso lembrou você. Esse pequeno contraste costuma revelar o tema de verdade.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Procurar seu quarto sem encontrá-lo",
+            "meaning": "Corredores iguais, um número esquecido ou um andar que não existe? A cena pode corresponder à sensação de ainda não encontrar seu lugar numa situação nova. Anote o que impedia você de avançar: costuma ser o detalhe mais revelador."
+          },
+          {
+            "context": "Chegar à recepção sem reserva",
+            "meaning": "Não esperavam você ou seu nome não estava na lista? A cena pode lembrar o medo de não ser esperado ou reconhecido em algum lugar. Quem estava atrás do balcão?"
+          },
+          {
+            "context": "Um hotel de luxo",
+            "meaning": "Você se sentia à vontade ou deslocado naquele ambiente? Um hotel de luxo pode acompanhar o desejo de descanso e reconhecimento, ou o desconforto de não pertencer. O quanto você se sentia à vontade é a principal pista."
+          }
+        ]
       }
     },
     "lightning": {
@@ -21514,7 +21540,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>O shopping pode parecer estranhamente específico em um sonho, e é justamente por isso que vale levá-lo a sério sem levá-lo ao pé da letra. Ele costuma reunir vários fios ao mesmo tempo: o cenário de uma situação da vida — onde você se sente seguro, exposto, travado ou pronto para se mexer.</p>\n<p>Repare se o sonho deixou o símbolo familiar ou estranho. Detalhes familiares podem apontar para uma memória vivida; detalhes estranhos podem mostrar que um padrão antigo está sendo visto de um novo ângulo.</p>\n<p>A pista mais forte costuma ser emocional. Alívio, vergonha, medo, curiosidade, irritação ou saudade estreitam o significado mais rápido do que qualquer interpretação universal.</p>\n<p>Se você registrar o sonho no Noctalia, guarde uma frase para o que aconteceu e uma frase para aquilo que ele te lembrou. Esse pequeno contraste costuma revelar o tema de verdade.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Se perder num shopping",
+            "meaning": "Passagens iguais, mapas ilegíveis ou uma saída que você não encontra? A cena pode corresponder à sensação de estar sobrecarregado por muitas exigências ou opções. Anote o que impedia você de sair: costuma ser o detalhe mais revelador."
+          },
+          {
+            "context": "Procurar uma loja específica",
+            "meaning": "Você sabia o que queria, mas não encontrava a loja ou ela mudava de lugar. A cena pode lembrar um objetivo claro e difícil de alcançar. O que precisava comprar ali e para quem?"
+          },
+          {
+            "context": "Fazer compras com prazer",
+            "meaning": "Sacolas cheias, roupas que servem e um clima leve: a cena pode acompanhar a vontade de se agradar ou mudar a própria imagem. O que você escolheu e para qual ocasião?"
+          }
+        ]
       }
     },
     "cow": {
@@ -21665,7 +21704,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>A vaca não precisa ser decifrada como uma mensagem secreta. Em um sonho, ela costuma funcionar mais como um marcador: algo na cena pede que você repare no instinto, no apetite, na cautela, na proteção, no medo e nas partes mais indomadas da sua personalidade.</p>\n<p>Comece pelos fatos simples. A imagem estava perto ou longe, era bem-vinda ou perturbadora, comum ou estranhamente intensa? Esses detalhes mantêm a interpretação ancorada no seu sonho, em vez de impor a ele um significado genérico.</p>\n<p>Se o símbolo pareceu acolhedor, ele pode mostrar um recurso, um desejo ou uma memória em que você pode se apoiar. Se pareceu tenso, pode apontar para uma pressão que você vem administrando silenciosamente demais.</p>\n<p>O Noctalia trata esse tipo de símbolo como um convite à reflexão. Anote a cena, a emoção e o que mudou depois que o símbolo apareceu; é normalmente aí que começa o significado útil.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Uma vaca pastando tranquilamente",
+            "meaning": "Ela estava longe no campo ou perto o bastante para tocar? Uma vaca pastando com calma pode acompanhar a necessidade de descanso ou uma fase estável. Anote o que, no dia anterior, trouxe calma ou a sensação de o tempo desacelerar."
+          },
+          {
+            "context": "Uma vaca avançando ou correndo atrás de você",
+            "meaning": "O que provocou a reação: sua presença, um barulho ou nada aparente? A cena pode lembrar uma pressão que parecia inofensiva até chegar perto, ou alguém geralmente paciente perdendo a paciência. Não prevê um acidente."
+          },
+          {
+            "context": "Ordenhar uma vaca",
+            "meaning": "O leite saía com facilidade ou não saía? Ordenhar pode encenar o que você tira de uma situação ou o que os outros tiram de você. Anote se o gesto parecia natural, cansativo ou imposto."
+          }
+        ]
       }
     },
     "rabbit": {
@@ -21816,7 +21868,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>Quando essa imagem aparece em um sonho, a primeira pergunta não é “o que ela sempre significa?”, e sim “por que a minha mente escolheu essa imagem esta noite?”. A resposta costuma estar perto do instinto, do apetite, da cautela, da proteção, do medo e das partes mais selvagens da sua personalidade.</p>\n<p>O símbolo pode ser terno, irritante, assustador, engraçado ou completamente banal. Esse tom importa. Uma versão calma pode sugerir integração, enquanto uma versão ameaçadora pode mostrar conflito ou fuga.</p>\n<p>Observe o papel que ele desempenhou. Ele bloqueou você, guiou você, observou você, seguiu você ou desapareceu? Nos sonhos, a função costuma revelar mais do que o próprio objeto.</p>\n<p>Use a imagem como uma porta de entrada para a história, não como um veredito. Algumas anotações honestas sobre o cenário e sobre a reação do seu corpo costumam dizer mais do que uma lista fixa de símbolos.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Um coelho fugindo",
+            "meaning": "Ele disparou assim que viu você ou você o perseguia? Um coelho fugindo pode acompanhar algo que você não consegue alcançar, ou sua própria vontade de escapar. Anote o que tentava alcançar."
+          },
+          {
+            "context": "Segurar ou acariciar um coelho",
+            "meaning": "Ele estava calmo ou tremia em suas mãos? A cena pode acompanhar ternura ou o cuidado com alguém ou algo frágil. Observe se você se sentia acolhido ou responsável."
+          },
+          {
+            "context": "Um coelho branco",
+            "meaning": "Você o seguia ou ele observava você? Um coelho branco costuma lembrar Alice no País das Maravilhas: curiosidade, atraso e atração pelo desconhecido. Ele não traz sorte nem azar."
+          }
+        ]
       }
     },
     "mouse": {
@@ -21967,7 +22032,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>Um camundongo pode parecer estranhamente específico em um sonho, e por isso vale levá-lo a sério sem levá-lo ao pé da letra. Muitas vezes ele reúne vários fios ao mesmo tempo: instinto, apetite, cautela, proteção, medo e as partes mais indomadas da sua personalidade.</p>\n<p>Repare se o sonho deixou o símbolo familiar ou estranho. Detalhes familiares podem apontar para uma memória vivida; detalhes estranhos podem mostrar que um padrão antigo está sendo visto de um novo ângulo.</p>\n<p>A pista mais forte costuma ser emocional. Alívio, vergonha, medo, curiosidade, irritação ou saudade vão estreitar o significado mais rápido do que qualquer interpretação universal.</p>\n<p>Se você registrar o sonho na Noctalia, guarde uma frase para o que aconteceu e uma frase para aquilo de que isso lembrou você. Esse pequeno contraste costuma revelar o tema real.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Um camundongo atravessando o cômodo",
+            "meaning": "Você o viu claramente ou apenas um vulto pelo canto do olho? Um camundongo correndo pode acompanhar uma preocupação que você percebe só pela metade. Anote o que fazia quando ele apareceu."
+          },
+          {
+            "context": "Camundongos dentro de casa",
+            "meaning": "Era um camundongo ou uma invasão? Camundongos dentro de casa podem trazer o tema do espaço privado: algo que entra, se espalha ou prejudica seu descanso. Se realmente há camundongos na sua casa, o sonho pode estar retomando essa preocupação."
+          },
+          {
+            "context": "Um camundongo branco",
+            "meaning": "Ele era manso, estava numa gaiola ou solto? Um camundongo branco pode parecer mais limpo, mais próximo de um animal de estimação ou de laboratório. Pode acompanhar curiosidade, fragilidade ou a sensação de estar sendo observado."
+          }
+        ]
       }
     },
     "rat": {
@@ -22118,7 +22196,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>O rato não precisa ser decifrado como uma mensagem secreta. Em um sonho, ele geralmente funciona mais como um marcador: algo na cena pede que você repare em instinto, apetite, cautela, proteção, medo e nas partes mais indomadas da sua personalidade.</p>\n<p>Comece pelos fatos simples. A imagem estava perto ou longe, foi bem-vinda ou perturbadora, comum ou estranhamente intensa? Esses detalhes mantêm a interpretação ancorada no seu sonho, em vez de impor a ele um significado genérico.</p>\n<p>Se o símbolo pareceu acolhedor, ele pode mostrar um recurso, um desejo ou uma lembrança em que você pode se apoiar. Se pareceu tenso, pode apontar para uma pressão que você vem administrando em silêncio demais.</p>\n<p>O Noctalia trata esse tipo de símbolo como um convite à reflexão. Registre a cena, a emoção e o que mudou depois que o símbolo apareceu; é aí que costuma começar o significado útil.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Um rato passando depressa",
+            "meaning": "Ele cruzou seu caminho ou fugiu de você? Um rato que passa rapidamente pode acompanhar um incômodo que você percebe de relance. Anote aonde ia e o que ele interrompeu."
+          },
+          {
+            "context": "Muitos ratos",
+            "meaning": "Eles vinham na sua direção ou ocupavam um lugar que você precisava atravessar? Um grupo pode acompanhar algo que se espalha mais rápido do que você consegue lidar: tarefas, rumores ou preocupações. Anote se conseguiu se afastar."
+          },
+          {
+            "context": "Um rato branco ou de estimação",
+            "meaning": "Um rato manso muda o tom: curiosidade, inteligência e, às vezes, ternura. Se era de estimação, a cena pode acompanhar cuidado ou uma nova forma de ver algo que você antes rejeitava. O que fazia você se sentir seguro?"
+          }
+        ]
       }
     },
     "bear": {
@@ -22269,7 +22360,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>Quando essa imagem aparece em um sonho, a primeira pergunta não é “o que ela sempre significa?”, e sim “por que minha mente escolheu esta imagem hoje à noite?”. A resposta costuma estar perto do instinto, do apetite, da cautela, da proteção, do medo e das partes mais indomadas da sua personalidade.</p>\n<p>O símbolo pode ser terno, irritante, assustador, engraçado ou completamente comum. Esse tom importa. Uma versão calma pode sugerir integração, enquanto uma versão ameaçadora pode mostrar conflito ou fuga.</p>\n<p>Repare no papel que ele desempenhou. Ele bloqueou você, guiou você, observou você, seguiu você ou desapareceu? Nos sonhos, a função costuma revelar mais do que o próprio objeto.</p>\n<p>Use a imagem como uma porta de entrada para a história, não como um veredito. Algumas anotações sinceras sobre o cenário e sobre a reação do seu corpo costumam dizer mais do que qualquer lista fixa de símbolos.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Ser perseguido por um urso",
+            "meaning": "Você conseguia se afastar ou ele se aproximava? Um urso em seu encalço costuma acompanhar algo que você evita e que continua chegando mais perto. O que talvez visse se tivesse se virado?"
+          },
+          {
+            "context": "Um urso calmo ou amigável",
+            "meaning": "Ele observava você, seguia seus passos ou deixava você se aproximar? Um urso tranquilo pode acompanhar uma força que você descobre em si ou uma presença protetora. Observe se se sentia seguro ou apenas tolerado."
+          },
+          {
+            "context": "Um urso dormindo ou uma toca",
+            "meaning": "Você o observou dormir ou o acordou sem querer? Um urso hibernando pode acompanhar a necessidade de descansar e se recolher, ou algo que você prefere não despertar. Anote como se sentiu ao se afastar."
+          }
+        ]
       }
     },
     "elephant": {
@@ -22420,7 +22524,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>O elefante pode parecer estranhamente específico em um sonho, e é justamente por isso que vale levá-lo a sério sem levá-lo ao pé da letra. Ele costuma reunir vários fios de uma vez: instinto, apetite, cautela, proteção, medo e as partes mais indomadas da sua personalidade.</p>\n<p>Repare se o sonho tornou o símbolo familiar ou estranho. Detalhes familiares podem apontar para uma memória vivida; detalhes estranhos podem mostrar que um padrão antigo está sendo visto de um novo ângulo.</p>\n<p>A pista mais forte costuma ser emocional. Alívio, vergonha, medo, curiosidade, irritação ou saudade estreitam o significado bem mais rápido do que qualquer interpretação universal.</p>\n<p>Se você registrar o sonho no Noctalia, guarde uma frase para o que aconteceu e uma frase para o que aquilo lembrou você. Esse pequeno contraste muitas vezes revela o tema real.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Um elefante calmo",
+            "meaning": "Ele estava ao seu lado, comia ou deixava você tocá-lo? Um elefante tranquilo pode acompanhar uma presença estável ou uma força em que você confia. Anote se você se sentia pequeno, seguro ou apenas curioso."
+          },
+          {
+            "context": "Um filhote de elefante",
+            "meaning": "Ele estava com a mãe, brincava ou estava perdido? Um filhote de elefante pode acompanhar ternura, um começo ou o cuidado com alguém que depende de você. Um filhote perdido coloca a sensação de estar sozinho em primeiro plano."
+          },
+          {
+            "context": "Uma manada de elefantes",
+            "meaning": "Você observava a manada, caminhava com ela ou estava no caminho dela? Uma manada pode lembrar família, pertencimento e o peso da tradição. Quem parecia liderá-la?"
+          }
+        ]
       }
     },
     "fish": {
@@ -22571,7 +22688,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>O peixe não precisa ser decifrado como uma mensagem secreta. Em um sonho, ele costuma funcionar mais como um marcador: algo na cena pede que você repare no instinto, no apetite, na cautela, na proteção, no medo e nas partes mais indomadas da sua personalidade.</p>\n<p>Comece pelos fatos simples. A imagem estava perto ou longe, era bem-vinda ou perturbadora, comum ou estranhamente intensa? Esses detalhes mantêm a interpretação ancorada no seu sonho, em vez de impor a ele um significado genérico.</p>\n<p>Se o símbolo pareceu acolhedor, ele pode mostrar um recurso, um desejo ou uma lembrança em que você pode se apoiar. Se pareceu tenso, pode apontar para uma pressão que você vem administrando em silêncio demais.</p>\n<p>A Noctalia trata esse tipo de símbolo como um convite à reflexão. Anote a cena, a emoção e o que mudou depois que o símbolo apareceu; costuma ser aí que o significado útil começa.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Um peixe nadando em água clara",
+            "meaning": "Ele deslizava com calma ou fugia rapidamente de você? Um peixe à vontade em água clara pode acompanhar um momento em que você se sente no seu elemento. Anote se você o observava ou nadava ao lado dele."
+          },
+          {
+            "context": "Pegar um peixe",
+            "meaning": "Com vara, rede ou as próprias mãos? Pegar um peixe pode acompanhar a ideia de aproveitar uma oportunidade ou compreender uma ideia; vê-lo escapar pode trazer frustração. Anote o que fez com o peixe."
+          },
+          {
+            "context": "Um peixe num aquário",
+            "meaning": "A água estava limpa, turva ou acabando? Um peixe atrás do vidro pode acompanhar a sensação de estar sendo observado ou de viver num espaço pequeno demais. Quem olhava o aquário?"
+          }
+        ]
       }
     },
     "shark": {
@@ -22722,7 +22852,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>Quando essa imagem aparece em um sonho, a primeira pergunta não é “o que ela sempre significa?”, e sim “por que a minha mente escolheu essa imagem esta noite?”. A resposta costuma estar perto do instinto, do apetite, da cautela, da proteção, do medo e das partes mais indomadas da sua personalidade.</p>\n<p>O símbolo pode ser terno, irritante, assustador, engraçado ou completamente comum. Esse tom importa. Uma versão calma pode sugerir integração, enquanto uma versão ameaçadora pode mostrar conflito ou fuga.</p>\n<p>Observe o papel que ele desempenhou. Ele bloqueou você, guiou você, observou você, seguiu você ou desapareceu? Nos sonhos, a função costuma revelar mais do que o objeto em si.</p>\n<p>Use a imagem como uma porta de entrada para a história, não como um veredito. Algumas anotações honestas sobre o cenário e sobre a reação do seu corpo costumam dizer mais do que uma lista fixa de símbolos.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Uma barbatana na superfície",
+            "meaning": "Você via a barbatana da praia ou de dentro da água? Uma barbatana que aparece antes do tubarão costuma acompanhar uma ameaça que você percebe antes de conseguir nomeá-la. Anote o que fez em seguida."
+          },
+          {
+            "context": "Um tubarão circulando ao seu redor",
+            "meaning": "Por quanto tempo ele circulou e você conseguia ver a praia? A cena costuma lembrar a sensação de ser observado ou testado por alguém que espera um momento de fraqueza. Em que situação você se sente exposto agora?"
+          },
+          {
+            "context": "Nadar tranquilamente entre tubarões",
+            "meaning": "Eles ignoravam você ou nadavam ao seu lado? Manter a calma entre tubarões pode acompanhar uma capacidade crescente de se manter firme num ambiente difícil. Anote se a calma parecia real ou forçada."
+          }
+        ]
       }
     },
     "whale": {
@@ -23037,7 +23180,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>O golfinho não precisa ser decifrado como uma mensagem secreta. Em um sonho, ele costuma funcionar mais como um marcador: algo na cena pede que você repare no instinto, no apetite, na cautela, na proteção, no medo e nas partes mais indomadas da sua personalidade.</p>\n<p>Comece pelos fatos simples. A imagem estava perto ou longe, era bem-vinda ou perturbadora, comum ou estranhamente intensa? Esses detalhes mantêm a interpretação ancorada no seu sonho, em vez de impor a ele um significado genérico.</p>\n<p>Se o símbolo pareceu acolhedor, ele pode mostrar um recurso, um desejo ou uma lembrança em que você pode se apoiar. Se pareceu tenso, pode apontar para uma pressão que você vem administrando em silêncio demais.</p>\n<p>A Noctalia trata esse tipo de símbolo como um convite à reflexão. Anote a cena, a emoção e o que mudou depois que o símbolo apareceu; costuma ser aí que o significado útil começa.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Nadar com golfinhos",
+            "meaning": "Acompanhar o ritmo deles, brincar e mergulhar: a cena pode acompanhar a necessidade de leveza ou de um grupo em que você se sinta à vontade. Você acompanhava com facilidade ou tinha dificuldade?"
+          },
+          {
+            "context": "Ser resgatado por um golfinho",
+            "meaning": "Ser levado de volta à praia pode corresponder à necessidade ou à esperança de apoio numa fase difícil. Anote em quem ou em que pensou ao acordar: às vezes, quem ajuda no sonho tem um rosto na sua vida."
+          },
+          {
+            "context": "Um grupo de golfinhos",
+            "meaning": "Muitos golfinhos se movendo juntos colocam o pertencimento em foco. Você fazia parte do grupo, era convidado a entrar ou ficava à margem? A cena pode lembrar como você se sente entre amigos, familiares ou colegas."
+          }
+        ]
       }
     },
     "frog": {
@@ -23188,7 +23344,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>Quando essa imagem aparece em um sonho, a primeira pergunta não é “o que ela sempre significa?”, e sim “por que a minha mente escolheu essa imagem esta noite?”. A resposta costuma estar perto do instinto, do apetite, da cautela, da proteção, do medo e das partes mais indomadas da sua personalidade.</p>\n<p>O símbolo pode ser terno, irritante, assustador, engraçado ou completamente banal. Esse tom importa. Uma versão calma pode sugerir integração, enquanto uma versão ameaçadora pode mostrar conflito ou fuga.</p>\n<p>Repare no papel que ele desempenhou. Ele bloqueou você, guiou você, observou você, seguiu você ou desapareceu? Nos sonhos, a função costuma revelar mais do que o próprio objeto.</p>\n<p>Use a imagem como uma porta de entrada para a história, não como um veredito. Algumas anotações honestas sobre o cenário e sobre a reação do seu corpo costumam dizer mais do que uma lista fixa de símbolos.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Um sapo pulando",
+            "meaning": "Um salto é rápido e difícil de prever. Pode acompanhar uma mudança que você está prestes a fazer ou uma que pega você de surpresa. O sapo pulava na sua direção, para longe ou para fora do seu alcance?"
+          },
+          {
+            "context": "Um sapo dentro de casa",
+            "meaning": "Um animal do lago na sua cozinha ou no seu quarto pode lembrar algo de fora entrando no espaço privado: trabalho, uma visita ou uma preocupação. Em qual cômodo ele estava e você queria que fosse embora?"
+          },
+          {
+            "context": "Muitos sapos",
+            "meaning": "Sapos por toda parte podem acompanhar a sensação de pequenas coisas se multiplicando até transbordar. A cena não anuncia nenhum infortúnio. Você tentava tirá-los ou apenas observava?"
+          }
+        ]
       }
     },
     "butterfly": {
@@ -23679,7 +23848,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>Quando essa imagem aparece em um sonho, a primeira pergunta não é “o que ela sempre significa?”, e sim “por que a minha mente escolheu essa imagem esta noite?”. A resposta costuma estar perto do instinto, do apetite, da cautela, da proteção, do medo e das partes mais indomadas da sua personalidade.</p>\n<p>O símbolo pode ser terno, irritante, assustador, engraçado ou completamente banal. Esse tom importa. Uma versão calma pode sugerir integração, enquanto uma versão ameaçadora pode revelar conflito ou fuga.</p>\n<p>Repare no papel que ele desempenhou. Ele bloqueou você, guiou você, observou você, seguiu você ou desapareceu? Nos sonhos, a função costuma revelar mais do que o próprio objeto.</p>\n<p>Use a imagem como uma porta de entrada para a história, não como um veredito. Algumas anotações honestas sobre o cenário e sobre a reação do seu corpo costumam dizer mais do que qualquer lista fixa de símbolos.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Uma longa fila de formigas",
+            "meaning": "A fila estava organizada e você sabia aonde levava? Ela pode acompanhar um progresso constante, uma rotina que funciona ou uma equipe unida. Anote se você a observava ou bloqueava o caminho."
+          },
+          {
+            "context": "Formigas dentro de casa",
+            "meaning": "Em qual cômodo elas estavam e por onde entraram? Formigas dentro de casa podem lembrar pequenas preocupações ou tarefas invadindo sua vida privada. O cômodo costuma dizer mais do que os insetos."
+          },
+          {
+            "context": "Uma formiga carregando algo pesado",
+            "meaning": "Uma formiga sozinha arrastando algo muito maior que ela pode encenar seu próprio esforço ou um peso que você carrega sem ajuda. Quem, no sonho ou na sua vida, poderia dividi-lo?"
+          }
+        ]
       }
     },
     "owl": {
@@ -23994,7 +24176,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>A águia não precisa ser decifrada como uma mensagem secreta. Em um sonho, ela costuma funcionar mais como um marcador: algo na cena pede que você repare em instinto, apetite, cautela, proteção, medo e nas partes mais indomadas da sua personalidade.</p>\n<p>Comece pelos fatos simples. A imagem estava perto ou longe, era bem-vinda ou perturbadora, comum ou estranhamente intensa? Esses detalhes mantêm a interpretação ancorada no seu sonho, em vez de impor a ele um significado genérico.</p>\n<p>Se o símbolo pareceu acolhedor, ele pode mostrar um recurso, um desejo ou uma memória em que você pode se apoiar. Se pareceu tenso, pode apontar para uma pressão que você vem administrando em silêncio demais.</p>\n<p>Noctalia trata esse tipo de símbolo como um convite à reflexão. Anote a cena, a emoção e o que mudou depois que o símbolo apareceu; costuma ser aí que começa o significado útil.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Uma águia voando alto",
+            "meaning": "Ela planava tranquilamente lá em cima ou circulava sobre você? A cena pode acompanhar a vontade de ganhar distância e ampliar a visão, ou uma ambição tomando forma. Anote se você se sentia atraído para o alto ou pequeno sob ela."
+          },
+          {
+            "context": "Voar com uma águia",
+            "meaning": "Você estava nas costas dela, voava ao lado ou se tornava a águia? O sonho pode se aproximar de liberdade, confiança ou um novo ponto de vista. O que você via lá de cima?"
+          },
+          {
+            "context": "Uma águia numa gaiola",
+            "meaning": "A gaiola estava trancada, aberta ou você segurava a chave? Uma águia cativa pode encenar uma força ou um plano limitado pelas circunstâncias ou pela sua própria cautela. Do que ela precisaria para voltar a voar?"
+          }
+        ]
       }
     },
     "crow": {
@@ -24145,7 +24340,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>Quando essa imagem aparece em um sonho, a primeira pergunta não é “o que ela sempre significa?”, e sim “por que a minha mente escolheu essa imagem esta noite?”. A resposta costuma estar perto do instinto, do apetite, da cautela, da proteção, do medo e das partes mais indomadas da sua personalidade.</p>\n<p>O símbolo pode ser terno, irritante, assustador, engraçado ou completamente comum. Esse tom importa. Uma versão calma pode sugerir integração, enquanto uma versão ameaçadora pode mostrar conflito ou fuga.</p>\n<p>Observe o papel que ele desempenhou. Ele bloqueou você, guiou você, observou você, seguiu você ou desapareceu? Nos sonhos, a função costuma revelar mais do que o próprio objeto.</p>\n<p>Use a imagem como uma porta de entrada para a história, não como um veredito. Algumas anotações sinceras sobre o cenário e sobre a reação do seu corpo costumam dizer mais do que uma lista fixa de símbolos.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Um corvo observando você",
+            "meaning": "Onde ele estava pousado e a que distância? Um corvo encarando pode acompanhar a sensação de ser observado ou julgado. Anote quem você preferiria que não estivesse olhando por cima do seu ombro agora."
+          },
+          {
+            "context": "Um corvo grasnando alto",
+            "meaning": "O chamado parecia um aviso, um incômodo ou uma convocação? Um grito insistente pode lembrar uma preocupação que retorna ou uma tarefa que você continua adiando. O que fazia quando ele começou?"
+          },
+          {
+            "context": "Um bando de corvos",
+            "meaning": "Eles circulavam, pousavam ao seu redor ou passavam voando? Um bando pode acompanhar o peso de um grupo, o barulho ou a sobrecarga. Anote se você se sentia cercado ou apenas os observava passar."
+          }
+        ]
       }
     },
     "rose": {
@@ -24460,7 +24668,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>O jardim não precisa ser decifrado como uma mensagem secreta. Em um sonho, ele costuma funcionar mais como um marcador: algo na cena pede que você repare no cenário de uma situação de vida: onde você se sente seguro, exposto, travado ou pronto para se mover.</p>\n<p>Comece pelos fatos simples. A imagem estava perto ou longe, era acolhedora ou perturbadora, comum ou estranhamente intensa? Esses detalhes mantêm a interpretação ancorada no seu sonho, em vez de impor a ele um significado genérico.</p>\n<p>Se o símbolo pareceu acolhedor, ele pode mostrar um recurso, um desejo ou uma memória em que você pode se apoiar. Se pareceu tenso, pode apontar para uma pressão que você vem administrando em silêncio demais.</p>\n<p>O Noctalia trata esse tipo de símbolo como um convite à reflexão. Anote a cena, a emoção e o que mudou depois que o símbolo apareceu; costuma ser aí que começa o significado útil.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Um jardim florido",
+            "meaning": "Você caminhava por ele ou o observava de fora? Um jardim florido pode acompanhar uma fase em que os esforços dão resultado ou a necessidade de beleza e calma. Se parecia intocável, pergunte qual ideal ele representava."
+          },
+          {
+            "context": "Um jardim tomado pelo mato ou abandonado",
+            "meaning": "Ele estava selvagem e vivo, ou sufocado e cinzento? Um jardim descuidado pode lembrar algo que você deixou de lado. Não é um julgamento: observe qual canto queria limpar primeiro."
+          },
+          {
+            "context": "Um jardim seco ou morrendo",
+            "meaning": "Faltava água ou já não havia ninguém para cuidar dele? Um jardim ressecado pode acompanhar cansaço ou a falta do que costuma nutrir você: descanso, companhia ou sentido. O que traria a água de volta?"
+          }
+        ]
       }
     },
     "desert": {
@@ -24775,7 +24996,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>A ilha pode parecer estranhamente específica em um sonho, e é justamente por isso que vale levá-la a sério sem levá-la ao pé da letra. Ela costuma reunir vários fios ao mesmo tempo: o cenário de uma situação de vida: onde você se sente seguro, exposto, travado ou pronto para se mover.</p>\n<p>Repare se o sonho tornou o símbolo familiar ou estranho. Detalhes familiares podem apontar para uma memória vivida; detalhes estranhos podem mostrar que um padrão antigo está sendo visto de um novo ângulo.</p>\n<p>A pista mais forte costuma ser emocional. Alívio, vergonha, medo, curiosidade, irritação ou saudade estreitam o significado mais rápido do que qualquer interpretação universal.</p>\n<p>Se você registrar o sonho no Noctalia, guarde uma frase para o que aconteceu e uma frase para aquilo que ele te lembrou. Esse pequeno contraste costuma revelar o tema real.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Ficar isolado numa ilha deserta",
+            "meaning": "Você sofreu um naufrágio, foi deixado para trás ou simplesmente acordou ali? A cena pode acompanhar a sensação de estar isolado ou ter de lidar com tudo sozinho. Ela não prevê nada. Anote se você sinalizava, construía um abrigo ou esperava."
+          },
+          {
+            "context": "Uma ilha paradisíaca",
+            "meaning": "Areia branca, água morna e ninguém pedindo nada: a cena pode refletir a necessidade de descanso ou de mais espaço para si. Se a calma parecia vazia, pode se aproximar da solidão. Você estava sozinho e isso incomodava?"
+          },
+          {
+            "context": "Não conseguir sair da ilha",
+            "meaning": "Sem barco, sem ponte ou água demais para atravessar: a cena pode lembrar uma situação da qual você ainda não enxerga a saída. O que exatamente faltava: um recurso, uma pessoa ou coragem para tentar?"
+          }
+        ]
       }
     },
     "cave": {
@@ -25090,7 +25324,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>Quando essa imagem aparece em um sonho, a primeira pergunta não é “o que ela sempre significa?”, e sim “por que minha mente escolheu essa imagem esta noite?”. A resposta costuma estar perto do clima emocional, da mudança, de forças maiores do que você e do ritmo da renovação ou da ruptura.</p>\n<p>O símbolo pode ser terno, irritante, assustador, engraçado ou completamente banal. Esse tom importa. Uma versão calma pode sugerir integração, enquanto uma versão ameaçadora pode mostrar conflito ou fuga.</p>\n<p>Observe o papel que ele desempenhou. Ele bloqueou você, guiou você, observou você, seguiu você ou desapareceu? Nos sonhos, a função costuma revelar mais do que o próprio objeto.</p>\n<p>Use a imagem como uma porta de entrada para a história, não como um veredicto. Algumas anotações sinceras sobre o cenário e sobre a reação do seu corpo costumam dizer mais do que uma lista fixa de símbolos.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Um rio calmo e claro",
+            "meaning": "Uma água lenta e transparente pode acompanhar uma fase que flui com facilidade ou uma mudança com a qual você está em paz. O que fazia à beira do rio e queria ficar ali?"
+          },
+          {
+            "context": "Um rio rápido ou revolto",
+            "meaning": "Correntes fortes e águas agitadas costumam se associar a pressão ou a uma situação que avança rápido demais. Não é um presságio. Você estava a uma distância segura ou perto o bastante para ser arrastado?"
+          },
+          {
+            "context": "Ser levado pela correnteza",
+            "meaning": "Ser carregado pode lembrar uma decisão que parece acontecer sozinha ou um ritmo que você não determina. Você lutou, boiou ou alcançou a margem? O que ajudou, se algo ajudou?"
+          }
+        ]
       }
     },
     "lake": {
@@ -25241,7 +25488,20 @@
       },
       "pt": {
         "fullInterpretation": "<p>O lago pode parecer estranhamente específico em um sonho, e é justamente por isso que vale levá-lo a sério sem levá-lo ao pé da letra. Ele costuma reunir vários fios ao mesmo tempo: o clima emocional, a mudança, forças maiores do que você e o ritmo da renovação ou da ruptura.</p>\n<p>Repare se o sonho tornou o símbolo familiar ou estranho. Detalhes familiares podem apontar para uma memória vivida; detalhes estranhos podem mostrar que um padrão antigo está sendo visto por um novo ângulo.</p>\n<p>A pista mais forte costuma ser emocional. Alívio, vergonha, medo, curiosidade, irritação ou saudade vão estreitar o significado mais rápido do que qualquer interpretação universal.</p>\n<p>Se você registrar o sonho no Noctalia, guarde uma frase para o que aconteceu e uma frase para o que aquilo te lembrou. Esse pequeno contraste costuma revelar o tema real.</p>",
-        "variations": []
+        "variations": [
+          {
+            "context": "Um lago calmo e claro",
+            "meaning": "Uma água parada e transparente pode acompanhar uma fase tranquila ou a necessidade de desacelerar. Se a calma parecia estranha em vez de agradável, pode apontar para algo contido. O que fazia ali?"
+          },
+          {
+            "context": "Um lago escuro ou turvo",
+            "meaning": "Quando não é possível ver o fundo, a cena costuma trazer inquietação. Pode corresponder a uma incerteza ou a um sentimento que você percebe sem conseguir nomear. Você queria olhar mais de perto ou manter distância?"
+          },
+          {
+            "context": "Nadar num lago",
+            "meaning": "Deslizar com facilidade ou lutar contra a água fria são cenas bem diferentes. Elas podem refletir como você lida com uma emoção quieta, mas profunda. Conseguia tocar o fundo e a margem ainda estava à vista?"
+          }
+        ]
       }
     },
     "waterfall": {
