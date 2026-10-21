@@ -1,32 +1,33 @@
-// Historical UI assertions, run on the public TesterArmy web surface.
-import { createParityTest, expect, withDialog } from '../web-parity-fixtures';
-import type { Page } from 'playwright/test';
-const test = createParityTest();
+import { readDOM, byId, createExactWebTest, expect, withExactDialog } from '../exact-web-fixtures';
+import type { ExactWebUI } from '../exact-web-fixtures';
+// Exact journeys using public TesterArmy APIs.
+const test = createExactWebTest({ locale: 'fr-FR', viewport: { width: 320, height: 568 } });
 
-test.use({ locale: 'fr-FR', viewport: { width: 320, height: 568 } });
 
-async function enter(page: Page) {
-  await page.goto('/');
-  await page.getByTestId('btn.onboarding.intro.next').click();
+async function enter(ui: ExactWebUI) {
+  const { app, screen, browser } = ui;
+  await app.open('/');
+  await screen.getByTestId('btn.onboarding.intro.next').click();
   // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
   if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
-    await withDialog(page, 'accept', () => page.getByTestId('btn.onboarding.feature.close').click());
+    await withExactDialog(browser, 'accept', () => screen.getByTestId('btn.onboarding.feature.close').click());
   }
-  await page.getByTestId('btn.onboarding.skip').click();
-  await expect(page.getByTestId('screen.recording')).toBeVisible();
+  await screen.getByTestId('btn.onboarding.skip').click();
+  await expect(screen.getByTestId('screen.recording')).toBeVisible();
 }
 
-async function expectReadableNavigation(page: Page) {
+async function expectReadableNavigation(ui: ExactWebUI) {
+  const { screen, browser } = ui;
   for (const [id, name] of [
     ['tab.home', 'Aujourd’hui'], ['tab.journal', 'Journal'],
     ['tab.addDream', 'Capturer un rêve'], ['tab.stats', 'Tendances'], ['tab.explore', 'Explorer'],
   ]) {
-    const tab = page.getByTestId(id).filter({ visible: true });
+    const tab = screen.getByTestId(id, { visible: true });
     await expect(tab).toHaveAccessibleName(name);
     const bounds = (await tab.boundingBox())!;
     expect(bounds.width).toBeGreaterThanOrEqual(44);
     expect(bounds.height).toBeGreaterThanOrEqual(44);
-    const text = await tab.evaluate(root => Array.from(root.querySelectorAll<HTMLElement>('[dir="auto"]'))
+    const text = await readDOM(browser, byId(id), root => Array.from(root.querySelectorAll<HTMLElement>('[dir="auto"]'))
       .filter(el => /Outfit/.test(getComputedStyle(el).fontFamily))
       .map(el => {
         const range = document.createRange();
@@ -44,41 +45,45 @@ async function expectReadableNavigation(page: Page) {
   }
 }
 
-test('French destinations fit one readable line on both narrow navigation bars', async ({ page }, info) => {
-  await enter(page);
-  await expectReadableNavigation(page);
-  await page.screenshot({ path: info.outputPath('capture-narrow-labels.png') });
-  await page.getByTestId('tab.home').click();
-  await expect(page.getByTestId('screen.home')).toBeVisible();
-  await expectReadableNavigation(page);
-  await page.screenshot({ path: info.outputPath('today-narrow-labels.png') });
+test('French destinations fit one readable line on both narrow navigation bars', async (ui) => {
+  const { app, screen } = ui;
+  await enter(ui);
+  await expectReadableNavigation(ui);
+  await app.screenshot('capture-narrow-labels.png');
+  await screen.getByTestId('tab.home').click();
+  await expect(screen.getByTestId('screen.home')).toBeVisible();
+  await expectReadableNavigation(ui);
+  await app.screenshot('today-narrow-labels.png');
 });
 
-test('dark Capture keeps its scrollbar themed and its content scrollable', async ({ page }, info) => {
-  await enter(page);
-  await page.getByRole('button', { name: 'Paramètres', exact: true }).click();
-  await page.getByTestId('quick-settings.theme.dark').click();
-  await page.getByTestId('quick-settings.close').click();
-  const recording = page.getByTestId('screen.recording');
-  const color = await recording.evaluate(el => getComputedStyle(el).scrollbarColor);
+test('dark Capture keeps its scrollbar themed and its content scrollable', async (ui) => {
+  const { app, screen, browser } = ui;
+  await enter(ui);
+  await screen.getByRole('button', { name: 'Paramètres', exact: true }).click();
+  await screen.getByTestId('quick-settings.theme.dark').click();
+  await screen.getByTestId('quick-settings.close').click();
+  const color = await readDOM(browser, byId('screen.recording'), el => getComputedStyle(el).scrollbarColor);
   expect(color).not.toBe('auto');
   expect(color).toContain('rgb(3, 4, 13)');
-  const scroll = await recording.evaluate(el => {
+  const scroll = await readDOM(browser, byId('screen.recording'), el => {
     const available = el.scrollHeight > el.clientHeight;
     el.scrollTop = 100;
     return { available, offset: el.scrollTop };
   });
   expect(scroll.available).toBe(true);
   expect(scroll.offset).toBeGreaterThan(0);
-  await page.screenshot({ path: info.outputPath('capture-dark-themed-scrollbar.png') });
+  await app.screenshot('capture-dark-themed-scrollbar.png');
 });
 
-test('French guide punctuation stays attached to its preceding word at320px', async ({ page }, info) => {
-  await enter(page);
-  await page.getByTestId('tab.explore').click();
-  await page.getByTestId('btn.explorer.guides').click();
-  const title = page.getByTestId('dream-guide-understand-dreams').getByText(/^Pourquoi rêvons-nous/);
-  const geometry = await title.evaluate(el => {
+test('French guide punctuation stays attached to its preceding word at320px', async (ui) => {
+  const { app, screen, browser } = ui;
+  await enter(ui);
+  await screen.getByTestId('tab.explore').click();
+  await screen.getByTestId('btn.explorer.guides').click();
+  const title = screen.getByTestId('dream-guide-understand-dreams').getByText(/^Pourquoi rêvons-nous/);
+  await expect(title).toBeVisible();
+  const geometry = await readDOM(browser, byId('dream-guide-understand-dreams'), root => {
+    const el = Array.from(root.querySelectorAll<HTMLElement>('[dir="auto"]')).find(node => node.textContent?.startsWith('Pourquoi rêvons-nous'))!;
     const node = el.firstChild!;
     const text = node.textContent!;
     const punctuation = text.lastIndexOf('?');
@@ -91,5 +96,5 @@ test('French guide punctuation stays attached to its preceding word at320px', as
     return { previousY: previousRange.getBoundingClientRect().y, punctuationY: punctuationRange.getBoundingClientRect().y };
   });
   expect(Math.abs(geometry.previousY - geometry.punctuationY)).toBeLessThan(2);
-  await page.screenshot({ path: info.outputPath('guide-no-orphan-punctuation.png') });
+  await app.screenshot('guide-no-orphan-punctuation.png');
 });

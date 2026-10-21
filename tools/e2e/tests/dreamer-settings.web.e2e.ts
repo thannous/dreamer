@@ -1,145 +1,149 @@
-// Historical exact UI assertions executed under the guarded TesterArmy engine.
-import type { Page } from 'playwright/test';
-import { createParityTest, expect, withDialog } from '../web-parity-fixtures';
+import { readDOM, byId, expectCSS, createExactWebTest, expect, withExactDialog } from '../exact-web-fixtures';
+import type { ExactWebUI } from '../exact-web-fixtures';
+// Exact journeys using public TesterArmy APIs.
 
-const test = createParityTest({ viewport: { width: 390, height: 844 }, locale: 'fr-FR' });
+const test = createExactWebTest({ viewport: { width: 390, height: 844 }, locale: 'fr-FR' });
 
-async function openSettings(page: Page) {
-  await page.getByRole('button', { name: 'Paramètres', exact: true }).click();
-  await page.getByRole('button', { name: /Tous les paramètres/ }).click();
-  await expect(page.getByTestId('screen.settings')).toBeVisible();
+async function openSettings(ui: ExactWebUI) {
+  const { screen } = ui;
+  await screen.getByRole('button', { name: 'Paramètres', exact: true }).click();
+  await screen.getByRole('button', { name: /Tous les paramètres/ }).click();
+  await expect(screen.getByTestId('screen.settings')).toBeVisible();
 }
 
-async function chooseTheme(page: Page, theme: 'light' | 'dark' | 'auto') {
-  await page.getByTestId('settings-theme-choice').click();
+async function chooseTheme(ui: ExactWebUI, theme: 'light' | 'dark' | 'auto') {
+  const { screen } = ui;
+  await screen.getByTestId('settings-theme-choice').click();
   for (const value of ['dynamic', 'auto', 'light', 'dark']) {
-    await expect(page.getByTestId(`settings-theme-choice.option.${value}`)).toBeVisible();
+    await expect(screen.getByTestId(`settings-theme-choice.option.${value}`)).toBeVisible();
   }
-  await page.getByTestId(`settings-theme-choice.option.${theme}`).click();
+  await screen.getByTestId(`settings-theme-choice.option.${theme}`).click();
   // The sheet stays mounted once closed; what the reader sees is that it is gone.
-  await expect(page.getByTestId('settings-theme-choice.sheet')).toBeHidden();
+  await expect(screen.getByTestId('settings-theme-choice.sheet')).toBeHidden();
 }
 
 for (const theme of ['light', 'dark'] as const) {
-  test(`grouped settings preserve account, choices and reminder states in ${theme}`, async ({ page }, testInfo) => {
-    await page.emulateMedia({ colorScheme: theme === 'light' ? 'dark' : 'light' });
-    await page.goto('/', { waitUntil: 'domcontentloaded' });
-    await page.getByTestId('btn.onboarding.intro.next').click();
+  test(`grouped settings preserve account, choices and reminder states in ${theme}`, async (ui) => {
+  const { app, screen, browser } = ui;
+    await browser.emulateMedia({ colorScheme: theme === 'light' ? 'dark' : 'light' });
+    await app.open('/');
+    await screen.getByTestId('btn.onboarding.intro.next').click();
     // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
     if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
-    await withDialog(page, 'accept', () => page.getByTestId('btn.onboarding.feature.close').click());
+    await withExactDialog(browser, 'accept', () => screen.getByTestId('btn.onboarding.feature.close').click());
   }
-    await page.getByTestId('btn.onboarding.skip').click();
-    await expect(page.getByTestId('screen.recording').filter({ visible: true })).toHaveCount(1);
-    await openSettings(page);
-    await page.getByTestId('settings-account-open-signin').click();
-    await expect(page.getByTestId('btn.mockProfile.new')).toBeVisible();
-    await page.getByTestId('btn.mockProfile.new').click();
-    await expect(page.getByTestId('screen.recording').filter({ visible: true })).toHaveCount(1);
-    await openSettings(page);
-    await chooseTheme(page, theme);
+    await screen.getByTestId('btn.onboarding.skip').click();
+    await expect(screen.getByTestId('screen.recording', { visible: true })).toHaveCount(1);
+    await openSettings(ui);
+    await screen.getByTestId('settings-account-open-signin').click();
+    await expect(screen.getByTestId('btn.mockProfile.new')).toBeVisible();
+    await screen.getByTestId('btn.mockProfile.new').click();
+    await expect(screen.getByTestId('screen.recording', { visible: true })).toHaveCount(1);
+    await openSettings(ui);
+    await chooseTheme(ui, theme);
     const background = theme === 'light' ? 'rgb(240, 228, 212)' : 'rgb(3, 4, 13)';
-    await expect(page.getByTestId('screen.settings')).toHaveCSS('background-color', background);
-    await page.emulateMedia({ colorScheme: theme === 'light' ? 'dark' : 'light' });
-    await expect(page.getByTestId('screen.settings')).toHaveCSS('background-color', background);
-    await page.getByTestId('settings-language-choice').click();
-    await page.getByTestId('settings-language-choice.option.fr').click();
-    await expect(page.getByTestId('settings-language-choice.sheet')).toBeHidden();
-    await page.getByTestId('settings-section-account').scrollIntoViewIfNeeded();
-    await page.evaluate(() => window.scrollTo({ left: 0 }));
-    await page.screenshot({ path: testInfo.outputPath(`settings-${theme}-top.png`) });
+    await expectCSS(browser, byId('screen.settings'), 'background-color', background);
+    await browser.emulateMedia({ colorScheme: theme === 'light' ? 'dark' : 'light' });
+    await expectCSS(browser, byId('screen.settings'), 'background-color', background);
+    await screen.getByTestId('settings-language-choice').click();
+    await screen.getByTestId('settings-language-choice.option.fr').click();
+    await expect(screen.getByTestId('settings-language-choice.sheet')).toBeHidden();
+    await screen.getByTestId('settings-section-account').scrollIntoView();
+    await browser.evaluate(() => { window.scrollTo({ left: 0 }); return null; });
+    await app.screenshot(`settings-${theme}-top.png`);
 
-    const reminders = page.getByTestId('settings-notifications-reminder-toggle');
+    const reminders = screen.getByTestId('settings-notifications-reminder-toggle');
     await expect(reminders).toHaveAttribute('aria-checked', 'false');
     await reminders.click();
     await expect(reminders).toHaveAttribute('aria-checked', 'true');
     await expect(reminders).toContainText('Activé');
     const activeThumb = theme === 'light' ? 'rgb(255, 249, 239)' : 'rgb(56, 45, 53)';
     await expect(reminders.getByRole('switch').last()).toBeChecked();
-    await expect.poll(() => reminders.evaluate(element =>
+    await expect.poll(() => readDOM(browser, byId('settings-notifications-reminder-toggle'), element =>
       Array.from(element.querySelectorAll('div')).map(node => getComputedStyle(node).backgroundColor)),
     { message: 'The ON thumb uses the Noctalia palette after the native CSS transition' }).toContain(activeThumb);
-    const weekend = page.getByTestId('settings-notifications-weekend-toggle');
+    const weekend = screen.getByTestId('settings-notifications-weekend-toggle');
     await expect(weekend).toHaveAttribute('aria-checked', 'false');
     await expect(weekend).toContainText('Désactivé');
-    await expect(page.getByTestId('settings-notifications-weekend-time')).toHaveCount(0);
+    await expect(screen.getByTestId('settings-notifications-weekend-time')).toHaveCount(0);
     await weekend.click();
-    await expect(page.getByTestId('settings-notifications-weekend-time')).toBeVisible();
+    await expect(screen.getByTestId('settings-notifications-weekend-time')).toBeVisible();
     await weekend.click();
-    await expect(page.getByTestId('settings-notifications-weekend-time')).toHaveCount(0);
-    const recap = page.getByTestId('settings-notifications-weekly-recap-toggle');
+    await expect(screen.getByTestId('settings-notifications-weekend-time')).toHaveCount(0);
+    const recap = screen.getByTestId('settings-notifications-weekly-recap-toggle');
     await recap.click();
     await expect(recap).toHaveAttribute('aria-checked', 'true');
     await expect(recap).toContainText('Activé');
     await expect(recap.getByRole('switch').last()).toBeChecked();
-    await expect.poll(() => recap.evaluate(element =>
+    await expect.poll(() => readDOM(browser, byId('settings-notifications-weekly-recap-toggle'), element =>
       Array.from(element.querySelectorAll('div')).map(node => getComputedStyle(node).backgroundColor)),
     { message: 'Capture the recap only after its ON thumb has settled' }).toContain(activeThumb);
-    await page.getByTestId('settings-section-notifications').screenshot({ path: testInfo.outputPath(`settings-${theme}-rituals.png`) });
-    await page.getByTestId('settings-notifications-weekday-time').click();
-    await expect(page.getByTestId('settings-notifications-weekday-sheet')).toBeVisible();
-    await page.getByRole('button', { name: 'Terminé', exact: true }).click();
-    await expect(page.getByTestId('settings-notifications-weekday-sheet')).toBeHidden();
-    await expect(page.getByTestId('quota.analysisValue')).toContainText('/ 3');
+    await screen.getByTestId('settings-section-notifications').scrollIntoView();
+    await app.screenshot(`settings-${theme}-rituals.png`);
+    await screen.getByTestId('settings-notifications-weekday-time').click();
+    await expect(screen.getByTestId('settings-notifications-weekday-sheet')).toBeVisible();
+    await screen.getByRole('button', { name: 'Terminé', exact: true }).click();
+    await expect(screen.getByTestId('settings-notifications-weekday-sheet')).toBeHidden();
+    await expect(screen.getByTestId('quota.analysisValue')).toContainText('/ 3');
     for (const id of ['settings-legal-privacy-policy', 'settings-legal-terms-of-use', 'settings-legal-account-deletion', 'settings-legal-contact', 'settings-delete-account']) {
-      await expect(page.getByTestId(id)).toHaveCount(1);
+      await expect(screen.getByTestId(id)).toHaveCount(1);
     }
-    await expect(page.getByTestId('settings-legal-contact')).toContainText('Nous écrire');
-    await expect(page.getByTestId('settings-legal-contact')).toContainText('contact@noctalia.app');
+    await expect(screen.getByTestId('settings-legal-contact')).toContainText('Nous écrire');
+    await expect(screen.getByTestId('settings-legal-contact')).toContainText('contact@noctalia.app');
 
-    await page.getByTestId('settings.back').click();
-    await page.getByRole('button', { name: 'Paramètres', exact: true }).click();
-    await page.getByRole('button', { name: /Tous les paramètres/ }).click();
+    await screen.getByTestId('settings.back').click();
+    await screen.getByRole('button', { name: 'Paramètres', exact: true }).click();
+    await screen.getByRole('button', { name: /Tous les paramètres/ }).click();
     await expect(reminders).toHaveAttribute('aria-checked', 'true');
     await expect(recap).toHaveAttribute('aria-checked', 'true');
-    await chooseTheme(page, 'auto');
+    await chooseTheme(ui, 'auto');
     const systemBackground = theme === 'light' ? 'rgb(3, 4, 13)' : 'rgb(240, 228, 212)';
-    await expect(page.getByTestId('screen.settings')).toHaveCSS('background-color', systemBackground);
-    await page.emulateMedia({ colorScheme: theme });
-    await expect(page.getByTestId('screen.settings')).toHaveCSS('background-color', background);
-    const footer = page.getByTestId('settings-signout-footer');
-    await footer.scrollIntoViewIfNeeded();
-    await page.evaluate(() => window.scrollTo({ left: 0 }));
-    await page.screenshot({ path: testInfo.outputPath(`settings-${theme}-footer.png`) });
-    await page.setViewportSize({ width: 320, height: 844 });
-    const group = page.getByTestId('settings-section-notifications');
-    const widths = await group.evaluate(element => ({ client: element.clientWidth, content: element.scrollWidth }));
+    await expectCSS(browser, byId('screen.settings'), 'background-color', systemBackground);
+    await browser.emulateMedia({ colorScheme: theme });
+    await expectCSS(browser, byId('screen.settings'), 'background-color', background);
+    const footer = screen.getByTestId('settings-signout-footer');
+    await footer.scrollIntoView();
+    await browser.evaluate(() => { window.scrollTo({ left: 0 }); return null; });
+    await app.screenshot(`settings-${theme}-footer.png`);
+    await browser.setViewport({ width: 320, height: 844 });
+    const widths = await readDOM(browser, byId('settings-section-notifications'), element => ({ client: element.clientWidth, content: element.scrollWidth }));
     expect(widths.content, 'Reminder content remains within its group at 320px').toBeLessThanOrEqual(widths.client + 1);
-    await page.setViewportSize({ width: 390, height: 844 });
+    await browser.setViewport({ width: 390, height: 844 });
     await footer.getByTestId('btn.auth.signOut').click();
-    await expect(page.getByTestId('screen.recording').filter({ visible: true })).toHaveCount(1);
-    await openSettings(page);
-    await expect(page.getByTestId('settings-account-open-signin')).toBeVisible();
-    await expect(page.getByTestId('btn.auth.signOut')).toHaveCount(0);
-    await expect(page.getByTestId('settings-delete-account')).toHaveCount(0);
+    await expect(screen.getByTestId('screen.recording', { visible: true })).toHaveCount(1);
+    await openSettings(ui);
+    await expect(screen.getByTestId('settings-account-open-signin')).toBeVisible();
+    await expect(screen.getByTestId('btn.auth.signOut')).toHaveCount(0);
+    await expect(screen.getByTestId('settings-delete-account')).toHaveCount(0);
   });
 }
 
-test('Settings replays the introduction without reopening a finished onboarding', async ({ page }) => {
-  await page.goto('/', { waitUntil: 'domcontentloaded' });
-  await page.getByTestId('btn.onboarding.intro.next').click();
+test('Settings replays the introduction without reopening a finished onboarding', async (ui) => {
+  const { app, screen, browser } = ui;
+  await app.open('/');
+  await screen.getByTestId('btn.onboarding.intro.next').click();
   // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
   if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
-    await withDialog(page, 'accept', () => page.getByTestId('btn.onboarding.feature.close').click());
+    await withExactDialog(browser, 'accept', () => screen.getByTestId('btn.onboarding.feature.close').click());
   }
-  await page.getByTestId('btn.onboarding.skip').click();
-  await expect(page.getByTestId('screen.recording').filter({ visible: true })).toHaveCount(1);
-  await openSettings(page);
-  await page.getByTestId('settings-onboarding-replay').click();
-  await expect(page.getByTestId('component.onboarding.intro')).toBeVisible();
-  await page.getByTestId('btn.onboarding.intro.next').click();
+  await screen.getByTestId('btn.onboarding.skip').click();
+  await expect(screen.getByTestId('screen.recording', { visible: true })).toHaveCount(1);
+  await openSettings(ui);
+  await screen.getByTestId('settings-onboarding-replay').click();
+  await expect(screen.getByTestId('component.onboarding.intro')).toBeVisible();
+  await screen.getByTestId('btn.onboarding.intro.next').click();
   // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
   if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
-    await withDialog(page, 'accept', () => page.getByTestId('btn.onboarding.feature.close').click());
+    await withExactDialog(browser, 'accept', () => screen.getByTestId('btn.onboarding.feature.close').click());
   }
-  await expect(page.getByTestId('component.onboarding.path')).toBeVisible();
-  await page.getByTestId('btn.onboarding.path.memory').click();
-  await page.getByTestId('btn.onboarding.primary').click();
+  await expect(screen.getByTestId('component.onboarding.path')).toBeVisible();
+  await screen.getByTestId('btn.onboarding.path.memory').click();
+  await screen.getByTestId('btn.onboarding.primary').click();
   // The replay returns to Settings instead of starting a capture.
-  await expect(page.getByTestId('screen.settings')).toBeVisible();
-  await expect(page.getByTestId('screen.recording').filter({ visible: true })).toHaveCount(0);
+  await expect(screen.getByTestId('screen.settings')).toBeVisible();
+  await expect(screen.getByTestId('screen.recording', { visible: true })).toHaveCount(0);
   // The saved onboarding is still finished: a fresh start skips it.
-  await page.goto('/', { waitUntil: 'domcontentloaded' });
-  await expect(page.getByTestId('screen.recording').filter({ visible: true })).toHaveCount(1);
-  await expect(page.getByTestId('screen.onboarding')).toHaveCount(0);
+  await app.open('/');
+  await expect(screen.getByTestId('screen.recording', { visible: true })).toHaveCount(1);
+  await expect(screen.getByTestId('screen.onboarding')).toHaveCount(0);
 });
