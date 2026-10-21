@@ -21,7 +21,7 @@ holds the same four versions; the runner refuses another installed version and
 a report from another runner or engine. The engine peer ranges accept e2e 0.21.2.
 Web 0.15.2 drives `playwright-core` 1.64.0, so the matcher Playwright moves to
 1.64.0 too and both share one Chromium build.
-Node 24.19.0 is pinned by the root mise file and satisfies e2e 0.21's
+Node 24.22.1 is pinned by the root mise file and satisfies e2e 0.21's
 `^22.22.3 || >=24.8.0` requirement. The runner uses e2e's bundled TypeScript
 loader; the scoped public matcher preload is unchanged.
 

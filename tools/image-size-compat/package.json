@@ -1,0 +1,12 @@
+{
+  "name": "@noctalia/image-size-compat",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Preserve Metro CommonJS image-size calls using the patched upstream 2.0.4 parser",
+  "main": "index.js",
+  "type": "commonjs",
+  "license": "MIT",
+  "dependencies": {
+    "image-size-patched": "npm:image-size@2.0.4"
+  }
+}

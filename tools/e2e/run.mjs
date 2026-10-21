@@ -87,7 +87,7 @@ function cliEnvironment() {
 // Object spreading loses process.env's case-insensitive lookup on Windows.
 const pathKey = Object.keys(env).find(key => key.toUpperCase() === 'PATH') ?? 'PATH';
 env[pathKey] = [dirname(process.execPath), env[pathKey]].join(delimiter);
-if (process.version !== 'v24.19.0') throw new Error('PINNED_NODE_RUNTIME');
+if (process.version !== 'v24.22.1') throw new Error('PINNED_NODE_RUNTIME');
 const sdk = env.ANDROID_HOME ?? env.ANDROID_SDK_ROOT ?? (process.platform === 'darwin' ? join(homedir(), 'Library/Android/sdk') : undefined);
 if (sdk && existsSync(sdk)) {
   env.ANDROID_HOME = env.ANDROID_SDK_ROOT = sdk;

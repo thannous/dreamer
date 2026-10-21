@@ -8,7 +8,7 @@ parameters:
 jobs:
   e2e-chromium-benchmark:
     docker:
-      - image: cimg/node:24.19.0
+      - image: cimg/node:24.22.1
     resource_class: medium
     steps:
       - checkout

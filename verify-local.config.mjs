@@ -147,7 +147,7 @@ const EDGE_CHECKS = [
 ].join(' && ');
 const DENO = {
   command: 'deno --version',
-  hint: 'run it locally where you run verify:pr (Deno 2.7.14: `mise install`); if this machine cannot, pass --external <check>="owner-machine: <host> <note> on <SHA>" from the machine that ran it; until then the proof is incomplete: do not push, report it as a blocker',
+  hint: 'run it locally where you run verify:pr (Deno 2.9.8: `mise install`); if this machine cannot, pass --external <check>="owner-machine: <host> <note> on <SHA>" from the machine that ran it; until then the proof is incomplete: do not push, report it as a blocker',
 };
 
 const TESTERARMY = {
@@ -363,6 +363,10 @@ export default {
       env: { JEST_CHANGED_SINCE: '' },
     },
     { name: 'db-contracts', command: DB_CONTRACTS },
+    {
+      name: 'dependency-security', command: 'node --test scripts/dependency-security.test.mjs',
+      when: ['package.json', 'package-lock.json', 'tools/braces/', 'tools/image-size-compat/', 'scripts/dependency-security.test.mjs'],
+    },
 
     // ---- verify:pr, only when the commit changes that surface since origin/master.
     { name: 'site', command: 'npm run docs:build && npm run docs:check', when: SITE },

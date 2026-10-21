@@ -1,0 +1,60 @@
+import { readFileSync, readdirSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { createRequire } from 'node:module';
+import { spawnSync } from 'node:child_process';
+
+const require = createRequire(import.meta.url);
+const braces = require('braces');
+
+// CLI/glob attacks cannot be exercised by a browser journey. Check rejection
+// alongside normal behavior through the installed dependency graph.
+test('installed braces rejects deep patterns and ASTs without stack exhaustion', () => {
+  const nested = '{'.repeat(4990) + 'x' + '}'.repeat(4990);
+  for (const method of ['parse', 'compile', 'expand', 'stringify']) {
+    assert.throws(() => braces[method](nested, { maxDepth: Infinity, maxLength: Infinity }), { code: 'ERR_BRACES_DEPTH' });
+  }
+  for (const method of ['compile', 'expand', 'stringify']) {
+    const cycle = { type: 'root', nodes: [] };
+    cycle.nodes.push(cycle);
+    assert.throws(() => braces[method](cycle), { code: 'ERR_BRACES_DEPTH' });
+  }
+  assert.deepEqual(braces.expand('apps/{alpha,beta}/{1..2}'), ['apps/alpha/1', 'apps/alpha/2', 'apps/beta/1', 'apps/beta/2']);
+  assert.equal(braces.compile('{alpha,beta}'), '(alpha|beta)');
+  const matcher = require('micromatch');
+  assert.deepEqual(matcher(['src/a.ts', 'src/b.js', 'src/c.css'], 'src/*.{ts,js}'), ['src/a.ts', 'src/b.js']);
+  assert.throws(() => matcher.braces(nested), { code: 'ERR_BRACES_DEPTH' });
+});
+
+test('Metro keeps its callable Buffer image-size API with the patched parser', () => {
+  const metroRequire = createRequire(require.resolve('metro/package.json'));
+  const imageSize = metroRequire('image-size');
+  assert.equal(typeof imageSize, 'function');
+  assert.equal(imageSize.imageSize, imageSize);
+  const png = Buffer.from('89504e470d0a1a0a0000000d4948445200000002000000030806000000', 'hex');
+  assert.deepEqual(imageSize(png), { width: 2, height: 3, type: 'png' });
+});
+
+test('an ICNS zero-length chunk cannot hang the metadata process', () => {
+  const script = `const imageSize = require('image-size');
+    const malformed = Buffer.alloc(16); malformed.write('icns');
+    malformed.writeUInt32BE(16, 4); malformed.write('ic10', 8);
+    try { imageSize(malformed); process.exitCode = 2; } catch { process.exitCode = 0; }`;
+  const result = spawnSync(process.execPath, ['-e', script], { cwd: new URL('../', import.meta.url), timeout: 2000, encoding: 'utf8' });
+  assert.equal(result.error, undefined);
+  assert.equal(result.status, 0, result.stderr);
+});
+
+test('the legacy Xcode consumer still generates project UUIDs', () => {
+  const xcodeRequire = createRequire(require.resolve('xcode/package.json'));
+  assert.match(xcodeRequire('uuid').v4(), /^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/);
+});
+
+test('the installed braces security patch matches the tracked source', () => {
+  const source = fileURLToPath(new URL('../tools/braces/', import.meta.url));
+  const installed = dirname(require.resolve('braces'));
+  const files = ['index.js', 'package.json', 'LICENSE', ...readdirSync(join(source, 'lib')).map(name => `lib/${name}`)];
+  for (const file of files) assert.deepEqual(readFileSync(join(installed, file)), readFileSync(join(source, file)), file);
+});
