@@ -57,6 +57,11 @@ export async function withPersistentAccounts({ target, accounts, fetch }, config
       const state = { tier, id: config.ids[tier], session, locked: false, requestId: randomUUID(), attempted: false };
       states.push(state);
       if (!session?.access_token || !session?.refresh_token || session.user?.id !== state.id || session.user?.email !== email) refuse('IDENTITY_MISMATCH');
+      // GoTrue can return expires_in only. supabase-js rejects persisted sessions
+      // without expires_at, so normalize exactly as the existing API-login export.
+      if (!Number.isFinite(session.expires_at) && Number.isFinite(session.expires_in) && session.expires_in > 0)
+        session.expires_at = Math.floor(Date.now() / 1000) + session.expires_in;
+      if (!Number.isFinite(session.expires_at) || session.expires_at <= Date.now() / 1000) refuse('SESSION_EXPIRY_REQUIRED');
       const user = await request('/auth/v1/user', { token: session.access_token });
       if (user?.id !== state.id || user?.email !== email) refuse('IDENTITY_MISMATCH');
       const actualTier = await request('/rest/v1/rpc/get_effective_subscription_tier', { method: 'POST', token: session.access_token, data: {} });

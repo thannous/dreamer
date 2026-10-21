@@ -58,7 +58,7 @@ async function main() {
   const sentinelRequest = randomUUID();
   checked(await admin.from('dreams').insert({ user_id: config.ids.free, client_request_id: sentinelRequest,
     title: 'Preserved QA team fixture', transcript: 'Synthetic pre-existing data', interpretation: '', shareable_quote: '', dream_type: 'Symbolic Dream' }));
-  const context = { target: { url: url.origin, ref: 'owned-native-stack' }, accounts, fetch: globalThis.fetch };
+  const context = { target: { url: url.origin, ref: url.hostname.split('.')[0] }, accounts, fetch: globalThis.fetch };
   const cycles = [];
   for (let cycle = 0; cycle < 2; cycle++) {
     stage = `cycle-${cycle + 1}-preflight`;
@@ -75,6 +75,12 @@ async function main() {
       stage = `cycle-${cycle + 1}-cross-account-rls`;
       const privateState = JSON.parse(fs.readFileSync(path.join(run.dir, 'free.json'), 'utf8'));
       const session = JSON.parse(privateState.origins[0].localStorage[0].value);
+      const saved = privateState.origins[0].localStorage[0];
+      const recovered = createClient(url.href, status.ANON_KEY, { auth: { autoRefreshToken: false,
+        storage: { getItem: name => name === saved.name ? saved.value : null, setItem() {}, removeItem() {} } } });
+      assert.equal(checked(await recovered.auth.getSession()).session?.user.id, config.ids.free,
+        'The installed supabase-js client recovers the private exported session');
+      assert.equal(checked(await recovered.auth.getUser()).user.id, config.ids.free);
       const client = createClient(url.href, status.ANON_KEY, { auth: { persistSession: false, autoRefreshToken: false },
         global: { headers: { Authorization: `Bearer ${session.access_token}` } } });
       assert.equal(checked(await client.from('qa_account_leases').select('*')).length, 1);

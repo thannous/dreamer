@@ -31,7 +31,7 @@ function fixture() {
       const account = accounts.find(account => account.email === body.email);
       const user = { id: fail.identity ? randomUUID() : ids[account.tier], email: account.email };
       const access = randomUUID(); sessions.set(access, user);
-      return json(200, { access_token: access, refresh_token: randomUUID(), user });
+      return json(200, { access_token: access, refresh_token: randomUUID(), user, ...(fail.expiry ? {} : { expires_in: 3600 }) });
     }
     const user = sessions.get(token);
     assert.ok(user);
@@ -79,6 +79,9 @@ test('two completed runs retain identity and pre-existing data while removing on
       seen.push(state.accounts); assert.equal(f.leases.size, 2); assert.equal(f.dreams.length, 3);
       assert.equal(fs.statSync(state.dir).mode & 0o777, 0o700);
       assert.equal(fs.statSync(path.join(state.dir, 'free.json')).mode & 0o777, 0o600);
+      const saved = JSON.parse(fs.readFileSync(path.join(state.dir, 'free.json')));
+      assert.ok(JSON.parse(saved.origins[0].localStorage[0].value).expires_at > Date.now() / 1000,
+        'A GoTrue expires_in response becomes a recoverable persisted supabase-js session');
     });
     assert.deepEqual(seen[0], seen[1]); assert.equal(f.leases.size, 0);
     assert.deepEqual(f.dreams.map(row => row.title), ['Kept team fixture']);
@@ -155,4 +158,13 @@ test('production and missing QA configuration refuse before network or credentia
     await assert.rejects(withPersistentQaRun(() => assert.fail(), { env, fetch: () => { called = true; } }), /test-login refused/);
   }
   assert.equal(called, false);
+});
+
+test('a login without usable expiry cannot export an invalid browser session or write data', async () => {
+  const f = fixture(); f.fail.expiry = true;
+  try {
+    await assert.rejects(withPersistentAccounts(f.context, f.config, () => assert.fail()), /QA_SESSION_EXPIRY_REQUIRED/);
+    assert.ok(!f.calls.some(call => call.path.startsWith('/rest/')));
+    assert.equal(f.dreams.length, 1); assert.equal(f.leases.size, 0);
+  } finally { fs.rmSync(f.dir, { recursive: true, force: true }); }
 });
