@@ -137,6 +137,8 @@ test('a search typed in a scrolled journal keeps its field until the user scroll
   await expect.poll(() => readDOM(browser, byId('list.dreams'), (node) => node.scrollTop)).toBeGreaterThan(0);
   // Each letter brings the results back to the top; that return must not take the field away.
   const field = uiScreen.getByRole('textbox', { name: 'Search dreams…' });
+  await field.focus();
+  await expect(field).toBeFocused();
   await field.pressSequentially('The Infinite Library', { delay: 40 });
   await expect(field).toHaveValue('The Infinite Library');
   await expect(field).toBeFocused();

@@ -66,7 +66,9 @@ for (const mode of ['light', 'dark'] as const) {
       await expectInViewport(heading, browser, 1, true, byId('component.metadataCard') + ' [role="heading"]');
       await expectInViewport(metadata, browser, 1);
       // The date is engraved on the rim of the seal at the head of the reading (PR #358).
-      await expect(uiScreen.getByTestId('component.savedDream.sealDate')).toContainText(/\d{4}/);
+      // The SDK semantic tree separates engraved glyphs; preserve the original
+      // DOM textContent assertion so a four-digit year must still be present.
+      await expect.poll(() => readDOM(browser, byId('component.savedDream.sealDate'), node => node.textContent)).toMatch(/\d{4}/);
       // The plate fills the screen, the dream's name set at its foot (PR #358); it never runs past it.
       await expect.poll(async () => (await image.boundingBox())?.height ?? 0).toBeLessThanOrEqual(viewport.height);
       await app.screenshot(`dream-${mode}-arrival-${viewport.width}x${viewport.height}.png`);

@@ -1,5 +1,4 @@
-import { readDOM, byId, expectInViewport, setTestDate, createExactWebTest, expect, withExactDialog } from '../exact-web-fixtures';
-import { readFileSync } from 'node:fs';
+import { readDOM, byId, expectInViewport, screenshotBytes, setTestDate, createExactWebTest, expect, withExactDialog } from '../exact-web-fixtures';
 import type { ExactWebUI } from '../exact-web-fixtures';
 // Exact journeys using public TesterArmy APIs.
 
@@ -24,8 +23,8 @@ async function startGuest(ui: ExactWebUI) {
 }
 
 async function openTrends(ui: ExactWebUI) {
-  const { screen: uiScreen } = ui;
-  await uiScreen.getByTestId('tab.stats').click();
+  const { screen: uiScreen, browser } = ui;
+  await browser.locator('[role="tab"][data-testid="tab.stats"]').click();
   await expect(uiScreen.getByTestId('screen.trends', { visible: true })).toHaveCount(1);
 }
 
@@ -66,7 +65,7 @@ async function expectWithinScreen(ui: ExactWebUI, ids: string[]) {
 async function artifact(ui: ExactWebUI, name: string, ids: string[]) {
   const { app, artifacts } = ui;
   await expectWithinScreen(ui, ids);
-  await artifacts.attach(name, { body: readFileSync(await app.screenshot('trends-evidence')), contentType: 'image/png' });
+  await artifacts.attach(name, { body: await screenshotBytes(app, 'trends-evidence'), contentType: 'image/png' });
 }
 
 const journalItems = (ui: ExactWebUI) => ui.screen.getByTestId(/^dream\.item\.\d+$/, { visible: true });
@@ -88,7 +87,7 @@ test('an empty journal offers its first capture instead of a row of zeros', asyn
   await uiScreen.getByTestId('btn.saveDream').click();
   await expect(uiScreen.getByTestId('component.transcriptCard')).toContainText('A short synthetic dream about a quiet garden.');
   await expect(uiScreen.getByTestId('component.dreamDetail.readingZone')).toContainText(/\S[\s\S]{80}/);
-  await artifacts.attach('first-capture-inline-analysis', { body: readFileSync(await app.screenshot('trends-evidence')), contentType: 'image/png' });
+  await artifacts.attach('first-capture-inline-analysis', { body: await screenshotBytes(app, 'trends-evidence'), contentType: 'image/png' });
   await uiScreen.getByTestId('btn.navigateJournal').click();
   await expect(journalItems(ui)).toContainText('A short synthetic dream about a quiet garden.');
 });
@@ -182,7 +181,7 @@ test('each door opens the journal on exactly those dreams, and the period change
   await expect(journalItems(ui)).toHaveCount(2);
   await expect(journalItems(ui).first()).toContainText('The Infinite Library');
   await expect(journalItems(ui).last()).toContainText('Meeting My Future Self');
-  await artifacts.attach('journal-from-seal', { body: readFileSync(await app.screenshot('trends-evidence')), contentType: 'image/png' });
+  await artifacts.attach('journal-from-seal', { body: await screenshotBytes(app, 'trends-evidence'), contentType: 'image/png' });
 
   // The dreams still to analyze.
   await openTrends(ui);
@@ -208,7 +207,7 @@ test('each door opens the journal on exactly those dreams, and the period change
   await uiScreen.getByTestId('trends.nights.night.2026-09-28').click();
   await expect(uiScreen.getByTestId('trends.nights.selected')).toContainText('The Shadowy Pursuer');
   await expect(uiScreen.getByTestId('trends.nights.selected')).toContainText('to analyze');
-  await artifacts.attach('seven-nights', { body: readFileSync(await app.screenshot('trends-evidence')), contentType: 'image/png' });
+  await artifacts.attach('seven-nights', { body: await screenshotBytes(app, 'trends-evidence'), contentType: 'image/png' });
   await uiScreen.getByTestId(/^trends\.nights\.dream\./).click();
   await expect(uiScreen.getByTestId('component.transcriptCard')).toBeVisible();
   await browser.back();
@@ -226,7 +225,7 @@ test('each door opens the journal on exactly those dreams, and the period change
   await browser.setViewport({ width: 390, height: 3400 });
   await uiScreen.getByTestId('trends.returns.type.symbolic-dream').click();
   await expect(uiScreen.getByTestId('btn.filterDate')).toHaveCount(0);
-  await expectInViewport(uiScreen.getByText('All available results shown', { visible: true }), browser);
+  await expectInViewport(uiScreen.getByText('All available results shown', { visible: true }), browser, 0, true, { selector: byId('screen.journal') + ' [dir="auto"]', text: 'All available results shown' });
   await expect(journalItems(ui)).toHaveCount(4);
   await expect(journalItems(ui).filter({ hasText: 'The Broken Mirror' })).toHaveCount(0);
 });

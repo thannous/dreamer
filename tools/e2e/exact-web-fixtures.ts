@@ -38,7 +38,7 @@ export function createExactWebTest(options: Options = {}) {
   return (title: string, body: (ui: ExactWebUI) => Promise<void>) => test(title, {
     timeout: 180_000,
     tags: ['public-api', `locale-${options.locale ?? 'en-US'}`],
-    skip: options.skip || webLocale === (options.locale ?? 'en-US') ? Boolean(options.skip) : `Requires ${options.locale ?? 'en-US'} browser locale`,
+    skip: options.skip ? true : webLocale === (options.locale ?? 'en-US') ? false : `Requires ${options.locale ?? 'en-US'} browser locale`,
   }, async (ui) => {
     const folder = join(process.env.E2E_OUTPUT!, 'exact-artifacts', randomUUID());
     const artifacts = { async attach(name: string, artifact: { body: string | Buffer; contentType: string }) {
@@ -77,15 +77,16 @@ export async function expectCSS(browser: Browser, selector: string, property: st
     return element ? getComputedStyle(element).getPropertyValue(property) : null;
   }, { selector, property }), { timeout: 15_000 }).toBe(value);
 }
-export async function expectInViewport(target: Locator, browser: Browser, ratio = 0, expected = true, selector?: string) {
+export async function expectInViewport(target: Locator, browser: Browser, ratio = 0, expected = true, selector?: string | { selector: string; text: string }) {
   await expect.poll(async () => {
     if (await target.count() === 0) return false;
     const id = selector ? null : await target.getAttribute('data-testid');
     if (!selector && !id) throw new Error('Viewport assertion needs a stable selector for a node without a test ID');
     // IntersectionObserver, like the old matcher, includes clipping by scroll
     // containers and overflow ancestors, not only the outer window rectangle.
-    const intersection = await browser.evaluate(async selector => {
-      const matches = Array.from(document.querySelectorAll(selector));
+    const query = typeof selector === 'object' ? selector : { selector: selector ?? byId(id!), text: null };
+    const intersection = await browser.evaluate(async ({ selector, text }) => {
+      const matches = Array.from(document.querySelectorAll(selector)).filter(node => text === null || node.textContent === text);
       const visible = matches.filter(node => node.getClientRects().length);
       const node = visible.length === 1 ? visible[0] : matches.length === 1 ? matches[0] : null;
       if (!node) return 0;
@@ -94,9 +95,11 @@ export async function expectInViewport(target: Locator, browser: Browser, ratio 
           observer.disconnect(); resolve(entries[0].intersectionRatio);
         });
         observer.observe(node);
+        requestAnimationFrame(() => {});
       });
-    }, selector ?? byId(id!));
-    return intersection > 0 && intersection >= ratio;
+    }, query);
+    // Same floating-point tolerance as the pinned Playwright matcher.
+    return intersection > 0 && intersection > ratio - 1e-9;
   }, { timeout: 15_000 }).toBe(expected);
 }
 export async function expectCaptureDraftSaved(browser: Browser, text: string) {
