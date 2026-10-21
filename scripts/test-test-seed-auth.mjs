@@ -132,12 +132,12 @@ test('seed creates both accounts, confirms them, clears dreams and sets the tier
   const hdMigration = fs.readFileSync(new URL('../supabase/migrations/20260916185856_hd_illustration_monthly_quota.sql', import.meta.url), 'utf8');
   assert.match(hdMigration, /create table public\.hd_image_credits \([\s\S]*?user_id uuid not null/);
   assert.match(hdMigration, /grant all on public\.hd_image_credits to service_role;/);
-  // Same argument names and premium values as e2e/backend/fixtures.ts.
+  // Same argument names and premium values as tools/e2e/backend-fixtures.ts.
   assert.deepEqual(branch.state.rpc, [
     { p_user_id: U1, p_tier: 'free', p_is_active: false, p_source: 'e2e-seed', p_source_event_id: 'event-id' },
     { p_user_id: U2, p_tier: 'plus', p_is_active: true, p_source: 'e2e-seed', p_source_event_id: 'event-id' },
   ]);
-  const fixture = fs.readFileSync(new URL('../e2e/backend/fixtures.ts', import.meta.url), 'utf8');
+  const fixture = fs.readFileSync(new URL('../tools/e2e/backend-fixtures.ts', import.meta.url), 'utf8');
   assert.match(fixture, /apply_subscription_state_update', \{\s*p_user_id: account\.id, p_tier: 'plus', p_is_active: true,\s*p_source: 'local-e2e-fixture', p_source_event_id: randomUUID\(\),/);
   assert.deepEqual(TIER_STATE.premium, { p_tier: 'plus', p_is_active: true });
   for (const call of branch.state.calls) {
@@ -257,9 +257,10 @@ test('auth setup fails clearly on bad credentials and prints no password', async
   }
 });
 
-test('the web origin matches playwright.branch.config.ts and .auth/ is gitignored', () => {
-  const config = fs.readFileSync(new URL('../playwright.branch.config.ts', import.meta.url), 'utf8');
-  assert.match(config, new RegExp(`const port = ${BRANCH_WEB_PORT};`));
+test('the saved origin matches the TesterArmy branch target and .auth/ is gitignored', () => {
+  const config = fs.readFileSync(new URL('../tools/e2e/e2e.config.ts', import.meta.url), 'utf8');
+  assert.match(config, /branch: BRANCH_WEB_PORT/);
+  assert.equal(BRANCH_WEB_PORT, 8087);
   assert.match(fs.readFileSync(new URL('../.gitignore', import.meta.url), 'utf8'), /^\.auth\/$/m);
 });
 

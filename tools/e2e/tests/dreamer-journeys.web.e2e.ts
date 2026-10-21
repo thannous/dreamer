@@ -1,4 +1,4 @@
-import { readDOM, byId, expectEditable, answerSeal, createExactWebTest, expect, withExactDialog } from '../exact-web-fixtures';
+import { readDOM, byId, expectEditable, answerSeal, startNavigationAudit, createExactWebTest, expect, withExactDialog } from '../exact-web-fixtures';
 import type { ExactWebUI } from '../exact-web-fixtures';
 // Exact journeys using public TesterArmy APIs.
 const test = createExactWebTest();
@@ -359,4 +359,30 @@ test('reflection offers an optional recap after one angle and updates it after a
   await expect(recap).toHaveCount(0);
   await uiScreen.getByRole('button', { name: 'Back', exact: true }).click();
   await app.screenshot('reflection-after-exchanges.png');
+});
+
+// Current owner-supported entry from #529: complete an angle, then the recap
+// offers Plus directly and returns to the same reflection when declined.
+test('free reflection opens Plus directly and declining returns to reflection without entering chat', async (ui) => {
+  const { app, screen: uiScreen, browser } = ui;
+  await selectProfile(ui, 'existing');
+  await journal(ui);
+  await openDream(ui, 'The Infinite Library');
+  await uiScreen.getByTestId('component.dreamDetail.actionCard').click();
+  await uiScreen.getByTestId('btn.dreamCategory.symbols').click();
+  await expect(uiScreen.getByTestId('btn.exploration360.synthesis', { visible: true })).toBeEnabled();
+  await uiScreen.getByRole('button', { name: 'Back', exact: true }).click();
+  const reflection = uiScreen.getByTestId('screen.dreamCategories', { visible: true });
+  await expect(reflection).toBeVisible();
+  await startNavigationAudit(browser);
+  await reflection.getByTestId('btn.exploration360.synthesis').click();
+  await expect(uiScreen.getByTestId('screen.paywall')).toBeVisible();
+  const destinations = await browser.evaluate(() => JSON.parse(sessionStorage.getItem('dreamer.qa.navigation')!) as string[]);
+  expect(destinations.some(path => /^\/dream-chat\//.test(path))).toBe(false);
+  await app.screenshot('reflection-direct-plus.png');
+  await uiScreen.getByTestId('btn.paywall.close').click();
+  await expect(reflection).toBeVisible();
+  await expect(browser).toHaveURL(/\/dream-categories\//);
+  await expect(reflection.getByTestId('btn.exploration360.synthesis')).toBeEnabled();
+  await app.screenshot('reflection-after-declining-plus.png');
 });

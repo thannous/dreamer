@@ -245,7 +245,11 @@ export function QuickSettingsProvider({ children, disabled = false }: React.Prop
           {children}
         </View>
         {!drawerDisabled ? (
-          <View className="absolute inset-0" pointerEvents={visible ? 'auto' : 'none'}
+          // The web drawer is positioned beyond the viewport while closed.
+          // Clip its container so focus/scroll cannot reveal inert content or
+          // add a drawer-width strip of horizontal document overflow. Unlike hidden,
+          // clip cannot be scrolled when the browser restores focus during resize.
+          <View className={Platform.OS === 'web' ? 'absolute inset-0 overflow-clip' : 'absolute inset-0'} pointerEvents={visible ? 'auto' : 'none'}
             {...(Platform.OS === 'web' ? { 'aria-hidden': !visible, inert: !visible } : {})}>
             {reducedMotion ? (visible ? (
               <View className="absolute inset-0 flex-row justify-end">

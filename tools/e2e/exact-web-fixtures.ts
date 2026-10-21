@@ -175,3 +175,23 @@ export async function observeElapsed(browser: Browser, milliseconds: number) {
     return null;
   }, milliseconds);
 }
+
+/** Record every SPA history change and document arrival without a Page event bridge. */
+export async function startNavigationAudit(browser: Browser) {
+  function install() {
+    const key = 'dreamer.qa.navigation';
+    const record = () => {
+      const paths = JSON.parse(sessionStorage.getItem(key) ?? '[]') as string[];
+      paths.push(location.pathname); sessionStorage.setItem(key, JSON.stringify(paths));
+    };
+    for (const method of ['pushState', 'replaceState'] as const) {
+      const original = history[method].bind(history);
+      history[method] = (data, unused, url) => { original(data, unused, url); record(); };
+    }
+    addEventListener('popstate', record); record();
+    return null;
+  }
+  await browser.evaluate(() => { sessionStorage.setItem('dreamer.qa.navigation', '[]'); return null; });
+  await browser.addInitScript(install);
+  await browser.evaluate(install);
+}

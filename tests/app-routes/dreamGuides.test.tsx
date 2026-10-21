@@ -89,7 +89,7 @@ jest.mock('expo-linear-gradient', () => ({
 const { default: DreamGuideDetailScreen } = require('@/app/dream-guide/[id]');
 
 describe('dream guide routes', () => {
-  // Directory rendering and navigation are covered by e2e/web/dream-guides.spec.ts.
+  // Directory rendering and navigation are covered by tools/e2e/tests/dreamer-dream-guides.web.e2e.ts.
   it('renders a general guide as native practical steps', () => {
     mockGuideId = 'remember-dreams';
     render(<DreamGuideDetailScreen />);

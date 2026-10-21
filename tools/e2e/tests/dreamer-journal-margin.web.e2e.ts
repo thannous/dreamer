@@ -42,6 +42,8 @@ async function populatedJournal(ui: ExactWebUI) {
   // intersection while its closing content still covers the cards.
   await expectInViewport(uiScreen.getByTestId('quick-settings.profile'), browser, 0, false);
   await openJournal(ui);
+  // A closed drawer cannot widen the document or return over the journal.
+  await expect.poll(() => browser.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
 }
 
 async function findDream(ui: ExactWebUI, title: string) {

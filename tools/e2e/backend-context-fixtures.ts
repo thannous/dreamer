@@ -1,11 +1,19 @@
+// SDK exception: fresh contexts and true offline state have no public Browser API.
 import { randomUUID } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { createClient } from '@supabase/supabase-js';
-import { test as base, expect, type BrowserContext, type Page } from 'playwright/test';
+import { test as base, surfaceOf } from '@e2e-dev/web';
+import type { BrowserContext, Page, Browser as BrowserSurface } from 'playwright/test';
+import { expect } from './web-parity-fixtures';
+import { webEngine } from './web-engine';
+import { fileURLToPath } from 'node:url';
 import { assertBackendTarget } from '../../scripts/lib/backend-e2e-local.cjs';
+
+export const repoRoot = fileURLToPath(new URL('../../', import.meta.url));
 
 const status = JSON.parse(readFileSync(process.env.E2E_BACKEND_STATUS_FILE!, 'utf8'));
 const url = assertBackendTarget(status);
+const appOrigin = `http://127.0.0.1:${process.env.E2E_WEB_PORT ?? '8085'}`;
 const options = { auth: { persistSession: false, autoRefreshToken: false } };
 export const admin = createClient(url.href, status.SERVICE_ROLE_KEY, options);
 
@@ -15,7 +23,7 @@ export type Account = { id: string; email: string; password: string };
 export async function restrictNetwork(context: BrowserContext) {
   await context.route('**/*', async route => {
     const requestUrl = new URL(route.request().url());
-    if (requestUrl.origin === `http://127.0.0.1:${process.env.E2E_WEB_PORT ?? '8085'}` ||
+    if (requestUrl.origin === appOrigin ||
         (requestUrl.origin === url.origin && !requestUrl.pathname.startsWith('/functions/'))) {
       return route.continue();
     }
@@ -25,7 +33,8 @@ export async function restrictNetwork(context: BrowserContext) {
 }
 
 export async function login(page: Page, account: Account) {
-  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  // A second, empty browser context deliberately has no inherited baseURL.
+  await page.goto(appOrigin + '/', { waitUntil: 'domcontentloaded' });
   await page.getByTestId('btn.onboarding.intro.next').click();
   await page.getByTestId('btn.onboarding.skip').click();
   await expect(page.getByTestId('screen.recording')).toBeVisible();
@@ -59,7 +68,39 @@ export async function journal(page: Page) {
   await expect(page.getByTestId('screen.journal').filter({ visible: true })).toHaveCount(1);
 }
 
-export const test = base.extend<{ accounts: { free: Account; other: Account; plus: Account } }>({
+const contextTest = base.extend<{ context: BrowserContext }>({
+  context: async ({ app, browser }, provide) => {
+    await browser.route('**/*', async route => {
+      const requestUrl = new URL(route.request.url);
+      if (requestUrl.origin === appOrigin ||
+          (requestUrl.origin === url.origin && !requestUrl.pathname.startsWith('/functions/'))) await route.continue();
+      else await route.abort();
+    });
+    await browser.setViewport({ width: 1280, height: 720 });
+    await app.open();
+    const context = surfaceOf(webEngine)!.context() as unknown as BrowserContext;
+    try { await provide(context); }
+    finally { await app.screenshot('backend-outcome'); }
+  },
+});
+// API security assertions share the guarded app lifecycle without provisioning
+// the three journal accounts used only by browser journeys.
+export const apiTest = contextTest;
+const pageTest = contextTest.extend<{ page: Page; browserSurface: BrowserSurface }>({
+  page: async ({ context, app }, provide) => {
+    const page = context.pages()[0];
+    page.setDefaultTimeout(20_000);
+    const goto = page.goto;
+    page.goto = (path, options) => goto.call(page, new URL(path, app.baseUrl!).href, options);
+    try { await provide(page); } finally { page.goto = goto; }
+  },
+  browserSurface: async ({ context }, provide) => {
+    const browser = context.browser();
+    if (!browser) throw new Error('Backend journeys require the SDK-owned browser.');
+    await provide(browser);
+  },
+});
+export const test = pageTest.extend<{ accounts: { free: Account; other: Account; plus: Account } }>({
   accounts: async ({ context }, provide) => {
     await restrictNetwork(context);
     const created: Account[] = [];
