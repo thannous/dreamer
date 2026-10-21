@@ -56,6 +56,7 @@ create function public.fixture_sync_marker(bigint,timestamptz) returns void lang
 const uid='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
 const rid='bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb';
 const rid2='cccccccc-cccc-4ccc-8ccc-cccccccccccc';
+const failedTurnRequest='99999999-9999-4999-8999-999999999999';
 await db.exec(`select set_config('test.jwt_role','service_role',false); select set_config('test.uid','',false);`);
 await db.query(`insert into public.dreams(id,user_id,transcript,analysis_request_id,analysis_status) values(1,$1,'dream A',$2,'pending')`,[uid,rid]);
 const hashA=(await db.query(`select encode(pg_catalog.sha256(convert_to('dream A','UTF8')),'hex') h`)).rows[0].h;
@@ -118,12 +119,21 @@ await db.exec(`select set_config('test.tier','free',false)`);
 await db.exec(`select set_config('test.jwt_role','authenticated',false); select set_config('test.uid','${uid}',false);`);
 const permissions=(await db.query(`select
   to_regprocedure('public.complete_authenticated_chat_turn(bigint,uuid,integer,jsonb)') old_overload,
+  to_regprocedure('public.fail_authenticated_chat_turn(bigint,uuid,integer,text)') old_fail_overload,
   has_function_privilege('authenticated','public.complete_authenticated_chat_turn(uuid,bigint,uuid,integer,jsonb)','EXECUTE') client_completion,
+  has_function_privilege('authenticated','public.fail_authenticated_chat_turn(uuid,bigint,uuid,integer,text)','EXECUTE') client_failure,
+  has_function_privilege('service_role','public.fail_authenticated_chat_turn(uuid,bigint,uuid,integer,text)','EXECUTE') service_failure,
   has_table_privilege('authenticated','public.dream_chat_messages','INSERT') client_model_insert`)).rows[0];
 assert.equal(permissions.old_overload,null);
+assert.equal(permissions.old_fail_overload,null);
 assert.equal(permissions.client_completion,false);
+assert.equal(permissions.client_failure,false);
+assert.equal(permissions.service_failure,true);
 assert.equal(permissions.client_model_insert,false);
 await assert.rejects(() => db.query(`select public.complete_authenticated_chat_turn($1::uuid,2,$2::uuid,1,'{"role":"model","text":"forged"}'::jsonb)`,[uid,rid2]),error=>error.code==='42501');
+await db.query(`insert into public.dream_chat_turns(dream_id,user_id,request_id,status,user_message,attempt_count) values(2,$1,$2,'pending','{"role":"user","text":"hi"}'::jsonb,1)`,[uid,failedTurnRequest]);
+await assert.rejects(() => db.query(`select public.fail_authenticated_chat_turn($1::uuid,2,$2::uuid,1,'CLIENT_ABORT')`,[uid,failedTurnRequest]),error=>error.code==='42501');
+assert.equal((await db.query(`select status from public.dream_chat_turns where request_id=$1`,[failedTurnRequest])).rows[0].status,'pending');
 await db.query(`insert into public.dreams(id,user_id,transcript,exploration_started_at,chat_history) values(2,$1,'imported','2000-01-01','[{"role":"model","text":"forged"}]'::jsonb)`,[uid]);
 assert.equal((await db.query(`select exploration_started_at from public.dreams where id=2`)).rows[0].exploration_started_at,null);
 await db.query(`select public.fixture_sync_marker(2,'2000-01-01'::timestamptz)`);
@@ -133,6 +143,10 @@ await db.query(`update public.dreams set exploration_started_at='2000-01-01',cha
 assert.equal((await db.query(`select exploration_started_at from public.dreams where id=2`)).rows[0].exploration_started_at,null);
 await db.query(`insert into public.dream_chat_turns(dream_id,user_id,request_id,status,user_message,attempt_count) values(2,$1,$2,'pending','{"role":"user","text":"hi"}'::jsonb,1)`,[uid,rid2]);
 await db.exec(`select set_config('test.jwt_role','service_role',false); select set_config('test.uid','',false);`);
+assert.equal((await db.query(`select public.fail_authenticated_chat_turn($1::uuid,2,$2::uuid,2,'WRONG_ATTEMPT') result`,[uid,failedTurnRequest])).rows[0].result,false);
+assert.equal((await db.query(`select public.fail_authenticated_chat_turn('bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb'::uuid,2,$1::uuid,1,'WRONG_OWNER') result`,[failedTurnRequest])).rows[0].result,false);
+assert.equal((await db.query(`select public.fail_authenticated_chat_turn($1::uuid,2,$2::uuid,1,'PROVIDER_FAILED') result`,[uid,failedTurnRequest])).rows[0].result,true);
+assert.equal((await db.query(`select public.fail_authenticated_chat_turn($1::uuid,2,$2::uuid,1,'REPLAY') result`,[uid,failedTurnRequest])).rows[0].result,false);
 const complete=(await db.query(`select public.complete_authenticated_chat_turn($1::uuid,2,$2::uuid,1,'{"role":"model","text":"real"}'::jsonb) result`,[uid,rid2])).rows[0].result;
 assert.equal(complete.completed,true);
 const marker=(await db.query(`select exploration_started_at from public.dreams where id=2`)).rows[0].exploration_started_at;
@@ -145,5 +159,5 @@ assert.equal((await db.query(`select count(*)::integer n from public.quota_usage
 await db.exec(`select set_config('test.jwt_role','authenticated',false); select set_config('test.uid','${uid}',false);`);
 await db.query(`update public.dreams set exploration_started_at='2000-01-01' where id=2`);
 assert.equal(new Date((await db.query(`select exploration_started_at from public.dreams where id=2`)).rows[0].exploration_started_at).getTime(),new Date(marker).getTime());
-console.log('PASS bound receipts reject changed transcripts and repeat spend; legacy receipts denied; direct backdate stripped; service completion mints current marker; immutable marker');
+console.log('PASS bound receipts reject changed transcripts and repeat spend; legacy receipts denied; direct backdate stripped; service-only chat failure and completion; immutable server marker');
 await db.close();

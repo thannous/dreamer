@@ -171,6 +171,43 @@ Deno.test('authenticated chat requires a service completion client before starti
   assertEquals(beganTurn, false);
 });
 
+Deno.test('authenticated chat releases a failed turn through the service client only', async () => {
+  const previousKey = Deno.env.get('GEMINI_API_KEY');
+  Deno.env.delete('GEMINI_API_KEY');
+  try {
+    const { context } = streamingTurn();
+    const released: { name: string; args: Record<string, unknown> }[] = [];
+    const response = await handleChat(context, {
+      admitRequest: async () => ({ tier: 'free', actorClass: 'FREE' }),
+      createAdminClient: ((url: string, key: string) => {
+        assertEquals(url, context.supabaseUrl);
+        assertEquals(key, context.supabaseServiceRoleKey);
+        return {
+          rpc: async (name: string, args: Record<string, unknown>) => {
+            released.push({ name, args });
+            return { data: true, error: null };
+          },
+        };
+      }) as any,
+    });
+
+    assertEquals(response.status, 500);
+    assertEquals(released, [{
+      name: 'fail_authenticated_chat_turn',
+      args: {
+        p_user_id: context.user!.id,
+        p_dream_id: 42,
+        p_request_id: '3f73ab45-9a14-4db9-94a3-d24724457d9e',
+        p_attempt_count: 1,
+        p_error_code: 'CHAT_REQUEST_FAILED',
+      },
+    }]);
+  } finally {
+    if (previousKey == null) Deno.env.delete('GEMINI_API_KEY');
+    else Deno.env.set('GEMINI_API_KEY', previousKey);
+  }
+});
+
 const withChatKeys = async (run: () => Promise<void>) => {
   const originalFetch = globalThis.fetch;
   const saved = { gemini: Deno.env.get('GEMINI_API_KEY'), anthropic: Deno.env.get('ANTHROPIC_API_KEY') };

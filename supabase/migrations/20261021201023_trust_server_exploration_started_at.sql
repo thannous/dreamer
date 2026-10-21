@@ -183,6 +183,55 @@ grant execute on function public.complete_authenticated_chat_turn(uuid, bigint, 
   to service_role;
 drop function public.complete_authenticated_chat_turn(bigint, uuid, integer, jsonb);
 
+-- A client could mark its still-streaming provider turn as failed, then retry
+-- the same request before the model reply was committed. Failure is therefore
+-- a server decision, just like completion; remove the caller-scoped overload.
+create or replace function public.fail_authenticated_chat_turn(
+  p_user_id uuid,
+  p_dream_id bigint,
+  p_request_id uuid,
+  p_attempt_count integer,
+  p_error_code text
+)
+returns boolean
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  caller_role text := coalesce((select auth.jwt() ->> 'role'), '');
+begin
+  if caller_role not in ('service_role', 'supabase_admin') then
+    raise exception 'Chat failure requires service role access' using errcode = '42501';
+  end if;
+  if p_user_id is null then
+    raise exception 'Chat owner is required' using errcode = '42501';
+  end if;
+  if p_attempt_count is null or p_attempt_count not between 1 and 10 then
+    raise exception 'invalid chat attempt';
+  end if;
+
+  update public.dream_chat_turns
+  set status = 'failed',
+      error_code = left(coalesce(p_error_code, 'CHAT_PROVIDER_FAILED'), 128),
+      updated_at = now(),
+      finished_at = now()
+  where dream_id = p_dream_id
+    and request_id = p_request_id
+    and user_id = p_user_id
+    and status = 'pending'
+    and attempt_count = p_attempt_count;
+
+  return found;
+end;
+$$;
+
+revoke all on function public.fail_authenticated_chat_turn(uuid, bigint, uuid, integer, text)
+  from public, anon, authenticated;
+grant execute on function public.fail_authenticated_chat_turn(uuid, bigint, uuid, integer, text)
+  to service_role;
+drop function if exists public.fail_authenticated_chat_turn(bigint, uuid, integer, text);
+
 -- This trigger function runs as its owner; clients cannot invoke it directly.
 revoke all on function public.set_exploration_started_at_from_chat_history()
   from public, anon, authenticated;

@@ -44,7 +44,10 @@ suite('TI528 local lease recovery', () => {
       expect((await owner.rpc('complete_authenticated_chat_turn', completion)).error?.code).toBe('42501');
       const late = await admin.rpc('complete_authenticated_chat_turn', completion);
       expect(late.error).toBeNull(); expect(late.data).toMatchObject({ completed: false, code: 'CHAT_TURN_LEASE_LOST' });
-      const lateFailure = await owner.rpc('fail_authenticated_chat_turn', { p_dream_id: id, p_request_id: request, p_attempt_count: 1, p_error_code: 'SYNTHETIC_LATE' });
+      const failure = { p_user_id: users[0], p_dream_id: id, p_request_id: request, p_attempt_count: 2, p_error_code: 'SYNTHETIC_ABORT' };
+      const clientFailure = await owner.rpc('fail_authenticated_chat_turn', failure);
+      expect(clientFailure.error?.code).toBe('42501');
+      const lateFailure = await admin.rpc('fail_authenticated_chat_turn', { ...failure, p_attempt_count: 1 });
       expect(lateFailure.error).toBeNull(); expect(lateFailure.data).toBe(false);
       const foreignComplete = await admin.rpc('complete_authenticated_chat_turn', { ...completion, p_user_id: users[1], p_attempt_count: 2 });
       expect(foreignComplete.error).toBeNull(); expect(foreignComplete.data).toMatchObject({ completed: false, code: 'CHAT_TURN_NOT_FOUND' });
