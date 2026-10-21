@@ -66,7 +66,15 @@
       "localFileFound": false,
       "driveCopyClaimed": false
     },
-    "verification": "Local ZIP SHA256 plus successful upload and Drive ID, size, private and parent metadata readback. No remote content digest claimed."
+    "verification": "Local ZIP SHA256 plus successful upload and Drive ID, size, private and parent metadata readback. No remote content digest claimed.",
+    "currentArchiveIndex": {
+      "fileId": "16huw2vqXVUTq-MkbT8YMTqW-RGpfyUnu",
+      "url": "https://drive.google.com/file/d/16huw2vqXVUTq-MkbT8YMTqW-RGpfyUnu/view?usp=drivesdk",
+      "bytes": 53989,
+      "sha256": "7bde5168678bf25d7ad5dd07784104091608da905610f8ad03b4eac32cac0c3f",
+      "metadataVerified": true,
+      "private": true
+    }
   },
   "verification": {
     "kind": "Union of recorded clean browser runs; previous per-symbol evidence reused only while its actual inputs still match. Not a fresh full-catalog run on the final tracking commit.",
@@ -155,7 +163,32 @@
       "path": "symbol-rollout.csv",
       "sha256": "1a302fa1b6a93887ecc0b91b82fcb665f9ab58e660e1017ebe188857970adb17"
     },
-    "updatedAfterEachBatch": true
+    "updatedAfterEachBatch": true,
+    "driveCopies": {
+      "authorization": "Explicit user approval in this conversation on 2026-10-22 for the final Excel and CSV only.",
+      "folderId": "1DlN7DcuunoFBLGNmCb2Z3KqLZG0MQmUM",
+      "files": [
+        {
+          "fileId": "1TW79LHKvIa8cqX60VV8vI5sP-v43Saiv",
+          "url": "https://docs.google.com/spreadsheets/d/1TW79LHKvIa8cqX60VV8vI5sP-v43Saiv/edit?usp=drivesdk&ouid=101116459704958679172&rtpof=true&sd=true",
+          "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          "bytes": 39319,
+          "sha256": "6ec623357f3909da6fab49e90ad7c1cd92f0ab4f081063b54e351ea0a6158ebd",
+          "private": true,
+          "metadataVerified": true
+        },
+        {
+          "fileId": "1BQAjbuD2UWPlDfElaJQZ5qcv3ZIe1bau",
+          "url": "https://drive.google.com/file/d/1BQAjbuD2UWPlDfElaJQZ5qcv3ZIe1bau/view?usp=drivesdk",
+          "mimeType": "text/csv",
+          "bytes": 300335,
+          "sha256": "1a302fa1b6a93887ecc0b91b82fcb665f9ab58e660e1017ebe188857970adb17",
+          "private": true,
+          "metadataVerified": true
+        }
+      ],
+      "verification": "Local SHA256, upload success and Drive ID/size/parent/private readback; no remote byte hash."
+    }
   },
   "remaining": [
     "Locate source-library-lot10-v1.zip with the recorded SHA256 to back up the six inherited native source packs. Do not regenerate their accepted paintings."

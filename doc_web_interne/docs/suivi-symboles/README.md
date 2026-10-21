@@ -26,3 +26,7 @@ Les six packs de master #509 sont préservés et indiqués comme réutilisés da
 Sources : [profils et scènes](../../../docs-src/config/symbol-atlas-pilots.json), [images](../../../docs-src/config/symbol-atlas-six-assets.json), [langues](../../../docs-src/config/symbol-atlas-locales.json) et [cadrages sans pack](../../../docs-src/config/symbol-hero-portrait.json). Le classeur est recalculé avec Artifact Tool ; l’application Excel native n’est pas pilotée.
 
 Reconciliation finale des 100 packs : [livraison et limite de sauvegarde](../qa/symbol-packs-final-100-20261022.md). Les trois parcours complémentaires passent également, sans nouvelle publication.
+
+Copies privées Drive autorisées le 22 octobre et vérifiées : [Excel](https://docs.google.com/spreadsheets/d/1TW79LHKvIa8cqX60VV8vI5sP-v43Saiv/edit?usp=drivesdk&ouid=101116459704958679172&rtpof=true&sd=true) · [CSV](https://drive.google.com/file/d/1BQAjbuD2UWPlDfElaJQZ5qcv3ZIe1bau/view?usp=drivesdk). Les empreintes et métadonnées figurent dans le reçu final.
+
+[Index des 100 archives médias actives](https://drive.google.com/file/d/16huw2vqXVUTq-MkbT8YMTqW-RGpfyUnu/view?usp=drivesdk) : utiliser les IDs de cet index lorsque des versions précédentes coexistent dans les dossiers Drive.

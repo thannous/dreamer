@@ -15,7 +15,7 @@ Responsable : **Codex**. Branche : `codex/symbol-images-final-100`. Master du ca
 - Les 100 packs demandés sont intégrés et contrôlés ; aucune génération ne reste dans cette file. Les 94 nouvelles archives natives et les six sauvegardes des dérivés hérités sont sur Drive. Il reste à retrouver l’archive native source-library-lot10-v1.zip des six packs hérités ; ne pas les régénérer.
 - Les plans, prompts et références des prochains lots sont conservés dans `output/symbol-packs-final-100-20261020`. Les indices PT de la préparation initiale ont été rapprochés de master : 60 cartes manquantes sont préparées pour les 20 symboles du lot 12 concernés, sans remplacer les variantes existantes de master.
 - Utiliser les intégrateurs qui mettent à jour les JSON courants. Ne pas relancer un ancien configurateur qui restaure une base historique. Le moteur et les composants restent communs.
-- Sauvegarder chaque PNG dès réception, puis chaque pack sur Drive. Actualiser Excel et CSV par lot. Ne pas transférer les rapports internes ou le suivi vers Drive sans autorisation propre à ces documents.
+- Sauvegarder chaque PNG dès réception, puis chaque pack sur Drive. Actualiser Excel et CSV par lot. Les copies finales de l’Excel et du CSV ont été explicitement autorisées le 22 octobre, envoyées sur le même Drive privé et vérifiées. Cette autorisation ne s’étend pas aux rapports QA internes.
 - Passer `verify:pr` sur le commit exact avant chaque push. La preuve ciblée du lot n’est pas une campagne Release complète. Conserver les limites locales, natives et publiques distinctes.
 
 ## Direction artistique et mouvement

@@ -6,7 +6,7 @@ Le catalogue comporte **240 packs complets, 1 440 pages localisées et 240 QA ac
 
 **Drive contient 94 archives de sources complètes et six archives des 228 dérivés hérités utilisables.** Les ZIP sont privés et leurs identités, tailles et parents ont été relus après envoi. Les six archives héritées ne contiennent pas leurs PNG et prompts originaux : `source-library-lot10-v1.zip` reste à retrouver. Son empreinte attendue est consignée dans [le reçu](symbol-packs-final-100-20261022.json). Il ne faut pas régénérer ces peintures pour masquer cette lacune de sauvegarde.
 
-L’[Excel et le CSV](../suivi-symboles/README.md) ont été actualisés à chaque lot ; le classeur conserve ses 489 formules, ses filtres, ses volets et ses règles de couleur. Les rapports internes restent dans le dépôt ; les sauvegardes Drive contiennent les médias et leur provenance. Les sources et preuves locales sont conservées dans `output/symbol-packs-final-100-20261020` du checkout principal.
+L’[Excel et le CSV](../suivi-symboles/README.md) ont été actualisés à chaque lot ; le classeur conserve ses 489 formules, ses filtres, ses volets et ses règles de couleur. Le suivi Excel et le CSV finaux sont aussi copiés sur le même Drive privé après autorisation explicite du 22 octobre ; leurs métadonnées et tailles ont été vérifiées. Les rapports QA internes restent dans le dépôt. Les sources et preuves locales sont conservées dans `output/symbol-packs-final-100-20261020` du checkout principal.
 
 La qualification concerne le navigateur local. Aucun accord visuel personnel, application native, appareil physique, fusion ou nouvelle publication en production n’est déclaré. Le reçu distingue les archives natives complètes des copies de dérivés et conserve l’identité de chaque campagne.
 

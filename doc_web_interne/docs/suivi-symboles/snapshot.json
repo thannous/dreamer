@@ -369,12 +369,40 @@
   },
   "final100Delivery": {
     "path": "../qa/symbol-packs-final-100-20261022.json",
-    "sha256": "f7603df45859d96a2fd35a684f8d3c5e32af8a1acf1175dea1c099cb5ff209ed",
+    "sha256": "c615345fb852e33e48f565a0f9232a90412dcd54c61d94f1d9e8dfc34a003f8b",
     "nativeSourceArchiveGap": 6
   },
   "browserQualifiedMaster": "a51fd4fad506490fd0ca04e18ff1a1bcf6056901",
   "finalMasterMerge": {
     "contentRevision": "f679338599b18a6caccee87d42559cf8c0bbecf5",
     "scope": "Dependency security update only; browser painting/profile/engine source inputs unchanged."
+  },
+  "trackingDriveCopies": [
+    {
+      "fileId": "1TW79LHKvIa8cqX60VV8vI5sP-v43Saiv",
+      "url": "https://docs.google.com/spreadsheets/d/1TW79LHKvIa8cqX60VV8vI5sP-v43Saiv/edit?usp=drivesdk&ouid=101116459704958679172&rtpof=true&sd=true",
+      "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "bytes": 39319,
+      "sha256": "6ec623357f3909da6fab49e90ad7c1cd92f0ab4f081063b54e351ea0a6158ebd",
+      "private": true,
+      "metadataVerified": true
+    },
+    {
+      "fileId": "1BQAjbuD2UWPlDfElaJQZ5qcv3ZIe1bau",
+      "url": "https://drive.google.com/file/d/1BQAjbuD2UWPlDfElaJQZ5qcv3ZIe1bau/view?usp=drivesdk",
+      "mimeType": "text/csv",
+      "bytes": 300335,
+      "sha256": "1a302fa1b6a93887ecc0b91b82fcb665f9ab58e660e1017ebe188857970adb17",
+      "private": true,
+      "metadataVerified": true
+    }
+  ],
+  "currentMediaDriveIndex": {
+    "fileId": "16huw2vqXVUTq-MkbT8YMTqW-RGpfyUnu",
+    "url": "https://drive.google.com/file/d/16huw2vqXVUTq-MkbT8YMTqW-RGpfyUnu/view?usp=drivesdk",
+    "bytes": 53989,
+    "sha256": "7bde5168678bf25d7ad5dd07784104091608da905610f8ad03b4eac32cac0c3f",
+    "metadataVerified": true,
+    "private": true
   }
 }
