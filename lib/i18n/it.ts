@@ -955,6 +955,7 @@ const translations: Record<string, string> = {
     'recording.status.fallback.language_pack_missing': 'Questo pacchetto lingua è mancante. Scrivi qui il tuo sogno o riprova dopo averlo installato.',
     'recording.status.fallback.no_speech': 'Non è stata rilevata alcuna voce. Scrivi ciò che ricordi o riprova con la voce.',
     'recording.status.fallback.start_failed': 'La registrazione non è partita. Scrivi qui il tuo sogno o riprova con la voce.',
+    'recording.status.fallback.daily_ai_limit': 'La trascrizione ha raggiunto il limite di oggi e torna entro domani. Scrivi qui il tuo sogno o riprova con la voce.',
     'recording.status.fallback.voice_unsupported': 'Questo dispositivo non può registrare la voce. Scrivi qui il tuo sogno.',
     'recording.status.retry_voice': 'Riprova voce',
     'recording.onboarding.step_count': 'Passo {current}/{total}',

@@ -1007,6 +1007,24 @@ describe('Recording screen', () => {
     expect(mockAddDream).not.toHaveBeenCalled();
   });
 
+  it('says once, without an alert, that transcription spent its daily budget', async () => {
+    mockPlatformOS = 'android';
+    mockRecordingPermissionState = 'granted';
+    mockStopRecording.mockImplementation(async () => {
+      mockIsRecordingRef.current = false;
+      return { transcript: '', error: 'daily_ai_limit' };
+    });
+    render(<RecordingScreen />);
+    await awaitEditorReady();
+    fireEvent.click(screen.getByTestId('recording-voice-control'));
+    await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(1));
+    await act(async () => { fireEvent.click(screen.getByTestId('recording-voice-control')); });
+
+    await waitFor(() => expect(screen.getByTestId(TID.Text.RecordingFallbackNotice).textContent)
+      .toContain('recording.status.fallback.daily_ai_limit'));
+    expect(Alert.alert).not.toHaveBeenCalled();
+  });
+
   it('stops inline dictation when clearing and ignores late speech until a new dictation starts', async () => {
     mockPlatformOS = 'android';
     mockRecordingPermissionState = 'granted';

@@ -1143,6 +1143,25 @@ describe('DreamRecallAssistantCard', () => {
       expect(mockSubmitAnswer).not.toHaveBeenCalled();
     });
 
+    it('says when voice stopped because the day’s transcription budget is spent', async () => {
+      mockStopRecording.mockImplementation(async () => {
+        mockRecording.isRecording = false;
+        mockRecording.isRecordingRef.current = false;
+        return { transcript: '', error: 'daily_ai_limit' };
+      });
+      renderActiveQuestion();
+      fireEvent.click(screen.getByTestId(TID.Button.DreamRecallMic));
+      await waitFor(() => {
+        expect(mockStartRecording).toHaveBeenCalled();
+      });
+      fireEvent.click(screen.getByTestId(TID.Button.DreamRecallMic));
+
+      await waitFor(() => {
+        expect(screen.getByText('error.daily_ai_limit')).toBeTruthy();
+      });
+      expect(screen.queryByText('dream_recall.session.voice_error')).toBeNull();
+    });
+
     it('force-stops and clears the answer when the question changes, without mixing transcripts', async () => {
       const view = renderActiveQuestion();
       fireEvent.change(screen.getByTestId(TID.Input.DreamRecallAnswer), {

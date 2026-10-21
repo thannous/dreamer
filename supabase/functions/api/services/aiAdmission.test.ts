@@ -119,7 +119,12 @@ Deno.test('an actor past its daily budget gets a 429 that says when to come back
 });
 
 Deno.test('a daily budget claim with no answer is an outage, not a spent budget', async () => {
-  for (const answer of [{ data: null, error: null }, { data: null, error: { code: '42883' } }]) {
+  for (const answer of [
+    { data: null, error: null },
+    { data: {}, error: null },
+    { data: { allowed: 'yes' }, error: null },
+    { data: null, error: { code: '42883' } },
+  ]) {
     const fakeClient = {
       rpc: async (name: string) =>
         name === 'claim_ai_daily_budget' ? answer : { data: { allowed: true }, error: null },

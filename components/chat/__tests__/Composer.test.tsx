@@ -388,6 +388,20 @@ describe('Composer', () => {
     });
   });
 
+  it('keeps the typed message and says when transcription spent its daily budget', async () => {
+    mockIsRecording = true;
+    mockBaseTranscriptRef.current = 'A blue room';
+    mockStopRecording.mockResolvedValueOnce({ transcript: '', error: 'daily_ai_limit' });
+    const { onSend } = await renderComposer();
+
+    fireEvent.click(screen.getByTestId('composer-send'));
+
+    await waitFor(() => {
+      expect(mockAlert).toHaveBeenCalledWith('recording.alert.transcription_failed.title', 'error.daily_ai_limit');
+      expect(onSend).toHaveBeenCalledWith('A blue room');
+    });
+  });
+
   it('hides the mic when the device cannot capture speech at all', async () => {
     mockResolveDeviceSpeechCapability.mockResolvedValue(UNAVAILABLE_CAPABILITY);
 

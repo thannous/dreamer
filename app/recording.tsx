@@ -294,6 +294,7 @@ function RecordingScreen() {
   const hasSeenMicRationaleRef = useRef(false);
   const recordingStartedAtRef = useRef<number | null>(null);
   const [voiceFallbackReason, setVoiceFallbackReason] = useState<VoiceFallbackReason>(null);
+  const dailyTranscriptionLimitShownRef = useRef(false);
   const [isVoiceFallbackToastVisible, setIsVoiceFallbackToastVisible] = useState(false);
   const [recordingVoiceHintLoadedScope, setRecordingVoiceHintLoadedScope] =
     useState<string | null>(null);
@@ -570,6 +571,7 @@ function RecordingScreen() {
   const recordingSession = useRecordingSession({
     transcriptionLocale,
     t,
+    transcriptionScope: user?.id ?? 'guest',
     onNativeEnd: () => {
       stopRecordingFromNativeEndRef.current?.();
     },
@@ -874,15 +876,19 @@ function RecordingScreen() {
       }
 
       recordingStartedAtRef.current = null;
+      // Even a quiet stop says, once, why the server did not help: its budget comes back tomorrow.
+      if (result.error === 'daily_ai_limit') {
+        if (!dailyTranscriptionLimitShownRef.current) {
+          dailyTranscriptionLimitShownRef.current = true;
+          handleVoiceCaptureFailure('daily_ai_limit');
+        }
+        return;
+      }
       if (silent || reason === 'pause' || reason === 'background') {
         return;
       }
       if (result.error === 'rate_limited') {
         Alert.alert(t('common.error_title'), t('error.rate_limit'));
-        return;
-      }
-      if (result.error === 'daily_ai_limit') {
-        Alert.alert(t('recording.alert.transcription_failed.title'), t('error.daily_ai_limit'));
         return;
       }
       if (result.error === 'stt_unavailable') {
@@ -1580,6 +1586,7 @@ function RecordingScreen() {
       language_pack_missing: 'recording.status.fallback.language_pack_missing',
       no_speech: 'recording.status.fallback.no_speech',
       start_failed: 'recording.status.fallback.start_failed',
+      daily_ai_limit: 'recording.status.fallback.daily_ai_limit',
     };
 
     return t(fallbackKeyByReason[voiceFallbackReason]);

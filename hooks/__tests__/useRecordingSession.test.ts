@@ -602,25 +602,45 @@ describe('useRecordingSession', () => {
         body: { code: 'AI_DAILY_LIMIT', retryAfter: 3600 },
       }));
 
-      const { result } = renderHook(() => useRecordingSession(defaultOptions));
+      const { result, rerender } = renderHook(
+        ({ scope }: { scope: string }) => useRecordingSession({ ...defaultOptions, transcriptionScope: scope }),
+        { initialProps: { scope: 'guest' } }
+      );
+      const record = async () => {
+        let response: RecordingSessionResult | undefined;
+        await act(async () => {
+          await result.current.startRecording('');
+        });
+        await act(async () => {
+          response = await result.current.stopRecording();
+        });
+        return response;
+      };
 
-      await act(async () => {
-        await result.current.startRecording('');
-      });
-      let response: RecordingSessionResult | undefined;
-      await act(async () => {
-        response = await result.current.stopRecording();
-      });
-      expect(response?.error).toBe('daily_ai_limit');
-
-      await act(async () => {
-        await result.current.startRecording('');
-      });
-      await act(async () => {
-        response = await result.current.stopRecording();
-      });
+      expect((await record())?.error).toBe('daily_ai_limit');
+      // Paused: the server is not asked, and the user still hears why.
+      expect((await record())?.error).toBe('daily_ai_limit');
       expect(transcribeAudio).toHaveBeenCalledTimes(1);
-      expect(response?.error).toBe('stt_unavailable');
+
+      // A guest who signs in has the account's own budget.
+      rerender({ scope: 'user-1' });
+      expect((await record())?.error).toBe('stt_unavailable');
+      expect(transcribeAudio).toHaveBeenCalledTimes(2);
+
+      // The budget comes back after the delay the server gave.
+      jest.mocked(transcribeAudio).mockRejectedValueOnce(Object.assign(new Error('HTTP 429'), {
+        status: 429,
+        body: { code: 'AI_DAILY_LIMIT', retryAfter: 3600 },
+      }));
+      expect((await record())?.error).toBe('daily_ai_limit');
+      const now = Date.now();
+      const clock = jest.spyOn(Date, 'now').mockReturnValue(now + 3601 * 1000);
+      try {
+        expect((await record())?.error).toBe('stt_unavailable');
+        expect(transcribeAudio).toHaveBeenCalledTimes(4);
+      } finally {
+        clock.mockRestore();
+      }
     });
 
     it('should return no_speech when native error is "no speech"', async () => {
