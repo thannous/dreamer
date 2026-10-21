@@ -22,6 +22,8 @@ async function chooseTheme(page: Page, theme: 'light' | 'dark' | 'auto') {
   await page.getByTestId('btn.header.explore.settings').click();
   await page.getByTestId(`quick-settings.theme.${theme}`).click();
   await page.getByTestId('quick-settings.close').click();
+  // A closed button/container can be offscreen while drawer content still covers the page.
+  await expect(page.getByTestId('quick-settings.profile')).not.toBeInViewport();
 }
 
 test('compact resources keep their descriptions and explicit or system themes', async ({ page }, info) => {

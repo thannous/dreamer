@@ -3,13 +3,12 @@ import { JournalCompletenessNotice } from '@/components/journal/JournalCompleten
 import { DreamSymbolSheet } from '@/components/journal/symbols/DreamSymbolSheet';
 import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import React, { useCallback, useDeferredValue, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useDeferredValue, useMemo, useState } from 'react';
 import {
   Platform,
   Text,
   View,
   useWindowDimensions,
-  type ViewInstance,
 } from 'react-native';
 import { useReducedMotion } from 'react-native-reanimated';
 import Svg, { Path } from 'react-native-svg';
@@ -25,6 +24,7 @@ import { TrendsPeriodSwitch } from '@/components/trends/TrendsPeriodSwitch';
 import { TrendsReturns } from '@/components/trends/TrendsReturns';
 import { TrendsSky } from '@/components/trends/TrendsSky';
 import { useEndOfLocalDay } from '@/components/trends/useEndOfLocalDay';
+import { useTrendsReveal } from '@/components/trends/useTrendsReveal';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { DESKTOP_BREAKPOINT, getBottomNavigationLayout } from '@/constants/layout';
 import { ThemeLayout } from '@/constants/journalTheme';
@@ -54,8 +54,6 @@ import { HeaderScrollView, useHeaderScroll } from '@/components/ui/headerStretch
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 
 const COMPACT_BREAKPOINT = 360;
-/** A section lights once this much of it has come above the bottom of the screen. */
-const REVEAL_MARGIN = 80;
 
 type Translate = (key: string, params?: Record<string, string | number>) => string;
 
@@ -131,15 +129,7 @@ function StatisticsScreen() {
     setThemePeriod(shownPeriod);
     setSelectedTheme(null);
   }
-  const [nightsLit, setNightsLit] = useState(false);
-  const [returnsLit, setReturnsLit] = useState(false);
-  const [skyLit, setSkyLit] = useState(false);
   const [openSymbol, setOpenSymbol] = useState<string | null>(null);
-  const nightsRef = useRef<ViewInstance | null>(null);
-  const returnsRef = useRef<ViewInstance | null>(null);
-  const skyRef = useRef<ViewInstance | null>(null);
-  // What has lit, read by the scroll handler so it stays the same function and stops measuring.
-  const litRef = useRef({ nights: false, returns: false, sky: false });
 
   const compact = width < COMPACT_BREAKPOINT;
   const largeText = Number.isFinite(fontScale) && fontScale >= 1.3;
@@ -170,22 +160,9 @@ function StatisticsScreen() {
   );
   const sky = useMemo(() => buildDreamSky(dreams, trends.range, periodSymbols), [dreams, periodSymbols, trends.range]);
 
-  const reveal = useCallback(() => {
-    const probe = (ref: React.RefObject<ViewInstance | null>, section: 'nights' | 'returns' | 'sky', light: (value: boolean) => void) => {
-      if (litRef.current[section] || !ref.current) return;
-      ref.current.measureInWindow((_x, y) => {
-        if (litRef.current[section] || !Number.isFinite(y) || y >= height - REVEAL_MARGIN) return;
-        litRef.current[section] = true;
-        light(true);
-      });
-    };
-    probe(nightsRef, 'nights', setNightsLit);
-    probe(returnsRef, 'returns', setReturnsLit);
-    probe(skyRef, 'sky', setSkyLit);
-  }, [height]);
-
-  // Until every section has lit, each scroll event also looks for them on the screen.
-  const handleScroll = useHeaderScroll(nightsLit && returnsLit && (skyLit || trends.count === 0) ? undefined : reveal);
+  const { nightsRef, returnsRef, skyRef, nightsLit, returnsLit, skyLit, onRevealLayout, onRevealScroll } =
+    useTrendsReveal(loaded && !trends.empty, trends.count > 0);
+  const handleScroll = useHeaderScroll(onRevealScroll);
 
   const chooseTheme = useCallback((theme: DreamTheme) => {
     setSelectedTheme((current) => (current === theme ? null : theme));
@@ -334,7 +311,7 @@ function StatisticsScreen() {
   );
 
   const nightsSection = (
-    <View ref={nightsRef} onLayout={reveal} className="border-t border-line pt-7">
+    <View ref={nightsRef} collapsable={false} onLayout={onRevealLayout} className="border-t border-line pt-7">
       <TrendsNights trends={trends} lit={nightsLit} reduced={reduced} ink={ink} onAccent={noctalia.action.primaryText}
         t={t} formatDate={formatDate} formatNumber={formatNumber} locale={locale}
         onOpenDream={openDream} onCapture={capture} />
@@ -342,7 +319,7 @@ function StatisticsScreen() {
   );
 
   const returnsSection = (
-    <View ref={returnsRef} onLayout={reveal} className="border-t border-line pt-7">
+    <View ref={returnsRef} collapsable={false} onLayout={onRevealLayout} className="border-t border-line pt-7">
       <TrendsReturns trends={trends} symbols={periodSymbols} lit={returnsLit || reduced} ink={ink} t={t}
         formatNumber={formatNumber}
         onOpenUnanalyzed={() => openJournal(trends, { analysis: 'unanalyzed' })}
@@ -352,7 +329,7 @@ function StatisticsScreen() {
   );
 
   const skySection = trends.count > 0 ? (
-    <View ref={skyRef} onLayout={reveal} className="border-t border-line pt-7">
+    <View ref={skyRef} collapsable={false} onLayout={onRevealLayout} className="border-t border-line pt-7">
       <TrendsSky sky={sky} lit={skyLit} reduced={reduced} ink={ink} glow={noctalia.atmosphere.glow}
         glowOpacity={noctalia.atmosphere.glowOpacity} dust={noctalia.atmosphere.particle} t={t} formatNumber={formatNumber}
         formatDate={formatDate} onOpenDream={openDream} />
@@ -364,6 +341,8 @@ function StatisticsScreen() {
       <HeaderScrollView
         className="flex-1"
         onScroll={handleScroll}
+        onLayout={onRevealLayout}
+        onContentSizeChange={onRevealLayout}
         scrollEventThrottle={16}
         style={scrollHeader ? { marginBottom: navigationClearance } : undefined}
         // The header scrolls away with the content, as on Today. It already owns
