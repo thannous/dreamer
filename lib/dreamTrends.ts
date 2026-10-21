@@ -1,3 +1,4 @@
+import { isResumableAnalysisRequest } from '@/lib/analysisRequest';
 import { DREAM_THEMES } from '@/lib/dreamThemes';
 import { compareDreamFacets } from '@/lib/dreamFacets';
 import { matchEmotionFamily, type EmotionFamilyId } from '@/lib/dreamEmotions';
@@ -100,6 +101,8 @@ export type DreamTrends = {
   patterns: {
     analyzed: number;
     unanalyzed: number;
+    /** Unanalyzed dreams with no request under way or to resume: only these need a new analysis. */
+    unrequested: number;
     /** Enough analyzed dreams in the period to say what returns. */
     ready: boolean;
     /** Ids of the period's analyzed dreams: what the symbols that return are counted in. */
@@ -475,6 +478,7 @@ export function buildDreamTrends(
     patterns: {
       analyzed: analyzedDreams.length,
       unanalyzed: periodDreams.length - analyzedDreams.length,
+      unrequested: periodDreams.filter((dream) => !isDreamAnalyzed(dream) && !isResumableAnalysisRequest(dream)).length,
       ready,
       analyzedIds: analyzedDreams.map((dream) => dream.id),
       emotions,

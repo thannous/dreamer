@@ -335,10 +335,10 @@ function StatisticsScreen() {
         onOpenUnanalyzed={() => openJournal(trends, { analysis: 'unanalyzed' })}
         onOpenType={(type: DreamType) => openJournal(trends, { dreamType: type, analysis: 'analyzed' })}
         onOpenSymbol={setOpenSymbol}
-        plusHint={analysesUsedUp && trends.patterns.unanalyzed > 0 ? {
-          text: t(trends.patterns.unanalyzed === 1 ? 'trends.returns.plus_hint_one' : 'trends.returns.plus_hint', {
+        plusHint={analysesUsedUp && trends.patterns.unrequested > 0 ? {
+          text: t(trends.patterns.unrequested === 1 ? 'trends.returns.plus_hint_one' : 'trends.returns.plus_hint', {
             date: formatQuotaResetDate(locale),
-            count: formatNumber(trends.patterns.unanalyzed),
+            count: formatNumber(trends.patterns.unrequested),
           }),
           cta: t('trends.returns.plus_cta'),
           onPress: () => router.push(buildPaywallHref('stats_profile')),

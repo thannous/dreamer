@@ -17,7 +17,7 @@ jest.mock('@/components/ui/DreamerBackground', () => ({ DreamerArtworkWindow: ()
 let mockParams: Record<string, string> = { trigger: 'settings' };
 let mockUser = { id: 'user-1' };
 jest.doMock('@/context/AuthContext', () => ({ useAuth: () => ({ user: mockUser }) }));
-let mockDreams: { id: number; title: string; transcript: string }[] = [];
+let mockDreams: { id: number; title: string; transcript: string; clientRequestId?: string }[] = [];
 jest.doMock('@/context/DreamsContext', () => ({ useDreamsData: () => ({ dreams: mockDreams }) }));
 
 let mockHardwareBack: (() => boolean) | undefined;
@@ -363,6 +363,16 @@ describe('Paywall screen', () => {
     expect((await screen.findByTestId(TID.Toast.PaywallSuccess)).textContent).toBe(
       'subscription.paywall.toast.success'
     );
+  });
+
+  it('shows the offered dream\'s own words when two dreams share a timestamp', () => {
+    mockParams = { trigger: 'analysis_cta', dreamId: '42', dreamClientRequestId: 'capture-b', dreamOwnerId: 'user-1' };
+    mockDreams = [
+      { id: 42, title: '', transcript: 'Un phare dans la brume.', clientRequestId: 'capture-a' },
+      { id: 42, title: '', transcript: 'Une gare immense où les trains partent vers la mer.', clientRequestId: 'capture-b' },
+    ];
+    render(<PaywallScreen />);
+    expect(screen.getByTestId(TID.Text.PaywallDreamExcerpt).textContent).toContain('Une gare immense');
   });
 
   it('shows the saved dream, analysis, illustration, plans and purchase together without a comparison step', () => {

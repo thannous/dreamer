@@ -474,6 +474,23 @@ describe('Tendances screen', () => {
     expect(mockPush).toHaveBeenLastCalledWith({ pathname: '/paywall', params: { trigger: 'stats_profile' } });
   });
 
+  it('leaves out of the Plus hint a dream whose analysis is under way or can resume', () => {
+    mockUser = { id: 'user-1' };
+    mockQuota = { tier: 'free', usage: { analysis: { used: 3, limit: 3, remaining: 0 } }, loading: false, error: null };
+    const unread = { isAnalyzed: false, analysisStatus: 'none', interpretation: '', analyzedAt: undefined } as Partial<DreamAnalysis>;
+    const pending = {
+      ...unread,
+      analysisStatus: 'pending',
+      analysisRequestId: '8f14e45f-ceea-4e6b-9a3c-2b1d0f6a7c11',
+    } as Partial<DreamAnalysis>;
+    renderJournal([analyzed(nightsAgo(1)), analyzed(nightsAgo(2), unread), analyzed(nightsAgo(3), pending)]);
+    expect(screen.getByTestId('returns.plusHint').textContent).toMatch(/^trends\.returns\.plus_hint_one:date=.+$/);
+
+    cleanup();
+    renderJournal([analyzed(nightsAgo(1)), analyzed(nightsAgo(3), pending)]);
+    expect(screen.queryByTestId('returns.plusHint')).toBeNull();
+  });
+
   it('says nothing about Plus while free analyses remain', () => {
     mockUser = { id: 'user-1' };
     mockQuota = { tier: 'free', usage: { analysis: { used: 1, limit: 3, remaining: 2 } }, loading: false, error: null };

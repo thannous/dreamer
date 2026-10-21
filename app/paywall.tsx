@@ -20,6 +20,7 @@ import { useAuth } from '@/context/AuthContext';
 import { QUOTAS } from '@/constants/limits';
 import { useDreamsData } from '@/context/DreamsContext';
 import { formatQuotaResetDate } from '@/lib/quotaReset';
+import { resolveDreamRoute } from '@/lib/dreamRoute';
 import { getSavedDreamReturnRoute, requestAnalysisReturnRoute, type AnalysisPaywallParams } from '@/lib/paywallRoute';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
@@ -128,9 +129,13 @@ function PaywallScreen() {
   // The saved-dream offer shows the person's own first words: the dream is what they pay to read.
   const offeredDreamText = useMemo(() => {
     if (!isDreamAnalysisOffer) return '';
-    const dream = dreams.find((item) => String(item.id) === params.dreamId);
+    const dream = resolveDreamRoute(dreams, {
+      id: params.dreamId,
+      remoteId: params.dreamRemoteId,
+      clientRequestId: params.dreamClientRequestId,
+    });
     return (dream?.transcript || dream?.title || '').trim();
-  }, [dreams, isDreamAnalysisOffer, params.dreamId]);
+  }, [dreams, isDreamAnalysisOffer, params.dreamId, params.dreamRemoteId, params.dreamClientRequestId]);
   const resetDate = formatQuotaResetDate(locale);
 
   // Keeps rating requests away from the paywall and the minutes after it.
