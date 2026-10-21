@@ -43,16 +43,22 @@
 //   execute on all functions in schema public to public|anon`.
 //   Moving such a routine into public checks it as SECURITY DEFINER, handing
 //   any routine to a caller role as owner fails, and so do routine DDL or
-//   routine privileges in dynamic SQL (`execute ...`) and any ROLLBACK [TO
-//   SAVEPOINT] in a file that changes routines. A conditional DROP keeps the
-//   routine; any set_config of search_path other than a plain whole-statement
-//   call resets resolution to public.
+//   routine privileges in dynamic SQL (an `execute ...` whose text names a
+//   function, procedure, routine or definer, other than a DROP), a DO body in
+//   an ordinary string that names one, and any ROLLBACK [TO SAVEPOINT] in a
+//   file that changes routines. A conditional DROP keeps the routine and a
+//   conditional CREATE OR REPLACE keeps the worse of both states; a
+//   conditional search_path change, or any set_config other than a plain
+//   whole-statement call on 'search_path', resets resolution to public.
 //
 // Known limit: argument types are compared as written (after alias
 // normalisation such as int4 = integer), not resolved through the search_path.
 // An unqualified type name that exists in two schemas is treated as one type,
 // so two overloads differing only by which schema's type they take are merged.
 // Qualify such types (`private.token`) in routine signatures.
+// Known limit: dynamic SQL that spells routine keywords in pieces
+// ('func' || 'tion') is not recognised; that is deliberate obfuscation, left
+// to code review rather than to this lint.
 // X is matched by name and, when a statement gives an argument list, by
 // signature too: argument names, modes, defaults, OUT arguments and type
 // modifiers are ignored and common aliases are normalised (int4 = integer,
@@ -283,14 +289,16 @@ function searchPathChanges(sql) {
   const setConfig = new RegExp(String.raw`${LEAD}(?:select|perform)\s+(?:pg_catalog\s*\.\s*)?set_config\s*\(`, 'i');
   const resetStatement = new RegExp(String.raw`${LEAD}reset\s+(?:search_path|all)\s*$`, 'i');
   const beginStatement = new RegExp(String.raw`${LEAD}(?:begin(?:\s+(?:work|transaction))?|start\s+transaction)\b(?![\s\S]*\batomic\b)`, 'i');
-  const endStatement = new RegExp(String.raw`${LEAD}(commit|end|rollback|abort)\b(?:\s+(?:work|transaction))?\s*$`, 'i');
+  const endStatement = new RegExp(String.raw`${LEAD}(commit|end|rollback|abort)\b(?:\s+(?:work|transaction))?(?:\s+and\s+(?:no\s+)?chain)?\s*$`, 'i');
   // session: the path outside the transaction block.
   let session = null;
   let saved = null; // session path at BEGIN, restored by ROLLBACK
   let inBlock = false;
   const record = (offset, schemas) => changes.push({ offset, schemas });
+  const touchesPath = (statement) => setStatement.test(statement.text) || resetStatement.test(statement.text) || /\bset_config\s*\(/i.test(statement.text);
   for (const statement of executedStatements(sql)) {
-    if (statement.conditional) continue;
+    // A conditional path change may or may not happen: forget any non-default path (fail closed to public).
+    if (statement.conditional) { if (touchesPath(statement)) { if (!inBlock) session = null; record(statement.offset, null); } continue; }
     if (!statement.inBody && beginStatement.test(statement.text)) { inBlock = true; saved = session; continue; }
     const ended = endStatement.exec(statement.text);
     if (ended && !statement.inBody) {
@@ -310,7 +318,7 @@ function searchPathChanges(sql) {
       if (config) { list = config[1]; local = config[2].toLowerCase() === 'true'; }
       // Any other set_config of search_path (E'...', expressions, inside CASE, ...) may move the path
       // anywhere: fail closed, treat it as the default so unqualified names are checked as public.
-      else if (/\bset_config\s*\(/i.test(statement.text) && /search_path/i.test(statement.raw)) list = 'default';
+      else if (/\bset_config\s*\(/i.test(statement.text)) list = 'default'; // name or value not provably unrelated
     }
     if (list === null) continue;
     const schemas = /^\s*default\s*$/i.test(list) ? null : list.split(',').map((item) => {
@@ -336,9 +344,18 @@ function schemaAt(sql, offset) {
   }
   if (!schemas) return 'public';
   // PostgreSQL skips path entries that do not exist; an unknown schema is treated as missing.
-  const created = new Set([...sql.matchAll(new RegExp(String.raw`\bcreate\s+schema\s+(?:if\s+not\s+exists\s+)?(${IDENT})`, 'gi'))]
-    .filter((m) => m.index < offset).map((m) => ident(m[1])));
-  const first = schemas.find((schema) => schema && (KNOWN_SCHEMAS.includes(schema) || created.has(schema)));
+  // Replay schema creates (unconditional only) and drops (any, fail closed) that ran before `offset`.
+  const exists = new Set(KNOWN_SCHEMAS);
+  const createSchema = new RegExp(String.raw`${LEAD}create\s+schema\s+(?:if\s+not\s+exists\s+)?(${IDENT})`, 'i');
+  const dropSchema = new RegExp(String.raw`${LEAD}drop\s+schema\s+(?:if\s+exists\s+)?([\s\S]+?)(?:\s+(?:cascade|restrict))?\s*$`, 'i');
+  for (const statement of executedStatements(sql)) {
+    if (statement.offset >= offset) break;
+    const created = createSchema.exec(statement.text);
+    if (created && !statement.conditional) exists.add(ident(created[1]));
+    const dropped = dropSchema.exec(statement.text);
+    if (dropped) for (const name of splitTopLevel(dropped[1])) exists.delete(ident(name));
+  }
+  const first = schemas.find((schema) => schema && exists.has(schema));
   return first ?? 'public';
 }
 
@@ -444,7 +461,7 @@ const CONTROL_FLOW = /\b(?:if|case|loop|while|for|foreach|exception|return|exit|
 /** `text` with dollar-quoted bodies and string literals blanked. */
 function blankLiterals(text) {
   const blank = (part) => ' '.repeat(part.length);
-  return text.replace(new RegExp(String.raw`(${DOLLAR_TAG})[\s\S]*?\1`, 'g'), blank).replace(new RegExp(LITERAL, 'g'), blank);
+  return text.replace(new RegExp(String.raw`(?<![\w$])(${DOLLAR_TAG})[\s\S]*?\1`, 'g'), blank).replace(new RegExp(LITERAL, 'g'), blank);
 }
 
 /** `text` with each BEGIN ATOMIC routine body blanked (it only runs when the routine is called). */
@@ -473,11 +490,14 @@ function executedStatements(sql) {
   const scan = (text, base, conditional = false, inBody = false) => {
     for (const statement of statements(text)) {
       const outside = blankAtomicBodies(statement.text
-        .replace(new RegExp(String.raw`(${DOLLAR_TAG})[\s\S]*?\1`, 'g'), blank)
+        .replace(new RegExp(String.raw`(?<![\w$])(${DOLLAR_TAG})[\s\S]*?\1`, 'g'), blank)
         .replace(new RegExp(LITERAL, 'g'), blank));
       result.push({ text: outside, raw: statement.text, offset: base + statement.offset, conditional, inBody });
+      if (/^\s*do\b/i.test(outside) && !new RegExp(String.raw`^\s*do\s+(?:language\s+${IDENT}\s+)?${DOLLAR_TAG}`, 'i').test(statement.text)) {
+        result[result.length - 1].opaqueDo = true; // a DO body in an ordinary string is not read
+      }
       if (/^\s*do\b/i.test(outside)) {
-        for (const body of statement.text.matchAll(new RegExp(String.raw`(${DOLLAR_TAG})([\s\S]*?)\1`, 'g'))) {
+        for (const body of statement.text.matchAll(new RegExp(String.raw`(?<![\w$])(${DOLLAR_TAG})([\s\S]*?)\1`, 'g'))) {
           // A DO body with control flow may skip any of its statements: they are not proof of a grant.
           const branches = CONTROL_FLOW.test(blankLiterals(body[2]));
           scan(body[2], base + statement.offset + body.index + body[1].length, conditional || branches, true);
@@ -614,8 +634,10 @@ function argumentType(definition) {
   const suffix = /(?:\s*\[\s*\d*\s*\])+$|\s+array(?:\s*\[\s*\d*\s*\])?$/i.exec(type);
   if (suffix) { array = '[]'; type = type.slice(0, suffix.index).trim(); }
   const [schema, name] = /^(?:"[^"]*"|[^\s."]+)\s*\.\s*/.test(type) ? qualified(type) : [null, /^"/.test(type) ? ident(type) : type.toLowerCase()];
-  const base = schema && !['public', 'pg_catalog'].includes(schema) ? `${schema}.${name}` : name;
-  return (TYPE_ALIASES.get(base) ?? base) + array;
+  // public.X is X, unless X names a built-in type: then public.int4 is a distinct custom type.
+  const builtin = TYPE_ALIASES.has(name) || [...TYPE_ALIASES.values()].includes(name);
+  if (schema && schema !== 'pg_catalog' && (schema !== 'public' || builtin)) return `${schema}.${name}${array}`;
+  return (TYPE_ALIASES.get(name) ?? name) + array;
 }
 
 /** Normalised signature of a parenthesised argument list (without the parentheses). */
@@ -672,6 +694,12 @@ function searchPathSafety(raw) {
   return list[0];
 }
 
+/** The less safe of two search_path states (null: none set). */
+function worstPath(a, b) {
+  if (a === null || b === null) return null;
+  return a !== 'safe' ? a : b;
+}
+
 /** Problems of the SECURITY DEFINER functions (and procedures) a migration creates, alters or moves into public. */
 function checkFunctionSql(source) {
   const sql = stripComments(source);
@@ -713,14 +741,19 @@ function checkFunctionSql(source) {
     }
   };
   const problems = [];
-  const routineDdl = /\b(?:create\s+(?:or\s+replace\s+)?(?:function|procedure)|alter\s+(?:function|procedure|routine)|(?:grant|revoke)\b[\s\S]*\bon\s+(?:all\s+)?(?:functions?|procedures?|routines?)\b)/i;
+  const routineDdl = /\b(?:functions?|procedures?|routines?|definer)\b/i;
   const dynamic = new RegExp(String.raw`${LEAD}execute\b`, 'i');
   const rollback = new RegExp(String.raw`${LEAD}(?:rollback|abort)\b`, 'i');
   let rolledBack = false;
   for (const statement of executed) {
     // Fail closed: routine DDL or routine privileges built at run time cannot be replayed here.
-    if (dynamic.test(statement.text) && routineDdl.test(statement.raw)) {
+    // A dynamic DROP of a routine cannot open access; anything else naming routines fails.
+    if (dynamic.test(statement.text) && routineDdl.test(statement.raw.replace(/\bdrop\s+(?:function|procedure|routine)\b/gi, ''))) {
       problems.push(`dynamic SQL (execute ...) creates, alters or grants on a routine; write it as a plain statement so the lint can check it`);
+      continue;
+    }
+    if (statement.opaqueDo && routineDdl.test(statement.raw)) {
+      problems.push(`DO block with its body in an ordinary string mentions routines; use a dollar-quoted body so the lint can read it`);
       continue;
     }
     if (rollback.test(statement.text)) { rolledBack = true; continue; }
@@ -731,12 +764,21 @@ function checkFunctionSql(source) {
       if (!target) continue;
       const sig = target.sig ?? '';
       let routine = routines.find((r) => r.schema === target.schema && r.name === target.name && r.sig === sig);
+      const existed = Boolean(routine);
       if (!routine) { routine = fresh(target.schema, target.name, sig); routines.push(routine); }
       const rest = statement.text.slice(start + target.end);
       const pathAt = rest.search(/\bset\s+search_path\b/i);
       // CREATE OR REPLACE resets every attribute it does not repeat (security invoker, no SET), not the ACL.
-      routine.definer = lastSecurity(rest) === 'definer';
-      routine.path = pathAt < 0 ? null : searchPathSafety(statement.raw.slice(start + target.end + pathAt));
+      const definer = lastSecurity(rest) === 'definer';
+      const path = pathAt < 0 ? null : searchPathSafety(statement.raw.slice(start + target.end + pathAt));
+      if (statement.conditional && existed) {
+        // It may not run: keep the worse of both states.
+        routine.definer = routine.definer || definer;
+        routine.path = worstPath(routine.path, path);
+      } else {
+        routine.definer = definer;
+        routine.path = path;
+      }
       continue;
     }
     match = alterRoutine.exec(statement.text);
@@ -762,13 +804,20 @@ function checkFunctionSql(source) {
       }
       const owner = new RegExp(String.raw`^\s*owner\s+to\s+(${IDENT})\s*$`, 'i').exec(rest);
       const security = lastSecurity(rest);
-      const pathAt = rest.search(/\bset\s+search_path\b/i);
+      // SET/RESET actions apply in order: the last one wins.
+      const actions = [...rest.matchAll(/\b(set\s+search_path\b|reset\s+(?:search_path|all)\b)/gi)];
+      const last = actions.pop();
+      const pathAt = last && /^set/i.test(last[1]) ? last.index : -1;
+      const pathReset = Boolean(last) && pathAt < 0;
       for (const routine of found) {
         if (owner) routine.owner = statement.conditional && !CALLER_ROLES.includes(ident(owner[1])) ? routine.owner : ident(owner[1]);
         // A conditional change may not happen: it can make a routine definer, never clear it.
         if (security && !(statement.conditional && security === 'invoker')) routine.definer = security === 'definer';
-        if (pathAt >= 0 && !statement.conditional) routine.path = searchPathSafety(statement.raw.slice(start + target.end + pathAt));
-        else if (/\breset\s+(?:search_path|all)\b/i.test(rest)) { routine.path = null; routine.pathReset = true; }
+        if (pathAt >= 0) {
+          const value = searchPathSafety(statement.raw.slice(start + target.end + pathAt));
+          routine.path = statement.conditional ? worstPath(routine.path, value) : value;
+          if (value !== 'safe') routine.pathUnsafe = value;
+        } else if (pathReset) { routine.path = null; routine.pathReset = true; }
       }
       continue;
     }
@@ -815,6 +864,7 @@ function checkFunctionSql(source) {
   for (const routine of routines.filter((r) => r.earlier && r.schema === 'public' && !r.definer)) {
     const label = `public.${routine.name}${routine.sig === null ? '' : `(${routine.sig})`}`;
     for (const role of ['public', 'anon']) if (routine[role] === 'granted') problems.push(`${label}: execute granted to ${role} on a routine from an earlier migration; re-create it here (security invoker or fully secured) so the lint can see its security mode`);
+    if (routine.pathUnsafe) problems.push(`${label}: unsafe search_path (${routine.pathUnsafe}) set on a routine from an earlier migration; use set search_path = '' or end the list with pg_temp`);
     if (routine.pathReset) problems.push(`${label}: search_path reset on a routine from an earlier migration; re-create it here so the lint can see its security mode`);
   }
   for (const routine of routines.filter((r) => r.schema === 'public' && r.definer)) {

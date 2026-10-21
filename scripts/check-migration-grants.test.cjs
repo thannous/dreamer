@@ -363,6 +363,34 @@ rollback to savepoint s;
 commit;`, [/rollback in a migration that changes routines/]],
   'quoted "PG_TEMP" is not the temporary schema': [`create function public.claim() returns int language sql security definer
 set search_path = public, "PG_TEMP" as $$ select 1 $$;${locked('public.claim()')}`, [/unsafe search_path/]],
+  'conditional create or replace as invoker keeps the definer': [`${definer()}
+do $$ begin if false then create or replace function public.claim(p uuid, n integer) returns int language sql security invoker as $b$ select 1 $b$; end if; end $$;`,
+    [/from public"/, /from anon"/, /grant execute/, /without "set search_path"/]],
+  'routine DDL assembled in dynamic SQL': [`do $$ begin execute format('create %s public.claim() returns int language sql security definer as $q$select 1$q$', 'function'); end $$;`, [/dynamic SQL/]],
+  'public.int4 is not pg_catalog.int4': [`${definer('public.claim', 'x public.int4')}${locked('public.claim(pg_catalog.int4)')}`,
+    [/claim\(public\.int4\): .*from public"/, /from anon"/, /grant execute/]],
+  'dollar tag inside the function name': [`create function public.claim$x$() returns int language sql security definer set search_path = '' as $x$ select 1 $x$;`,
+    [/from public"/, /from anon"/, /grant execute/]],
+  'conditional search_path change falls back to public': [`set search_path = private;
+do $$ begin if true then set search_path = public; end if; end $$;
+${definer('claim')}`, [/public\.claim.*from public"/, /from anon"/, /grant execute/]],
+  'schema created only in an untaken branch does not exist': [`do $$ begin if false then create schema later_schema; end if; end $$;
+set search_path = later_schema, public;
+${definer('claim')}`, [/public\.claim.*from public"/, /from anon"/, /grant execute/]],
+  'dropped schema no longer exists': [`drop schema private cascade;
+set search_path = private, public;
+${definer('claim')}`, [/public\.claim.*from public"/, /from anon"/, /grant execute/]],
+  'computed set_config name falls back to public': [`set search_path = private;
+select set_config('search_' || 'path', 'public', false);
+${definer('claim')}`, [/public\.claim.*from public"/, /from anon"/, /grant execute/]],
+  'set local ends at commit and chain': [`begin;
+set local search_path = private;
+commit and chain;
+${definer('claim')}`, [/public\.claim.*from public"/, /from anon"/, /grant execute/]],
+  'DO body in an ordinary string': [`do 'begin create function public.claim() returns int language sql security definer as $q$ select 1 $q$; end';`, [/DO block with its body in an ordinary string/]],
+  'set then reset in one alter': [`${definer()}${locked()}
+alter function public.claim(uuid, integer) set search_path = '' reset search_path;`, [/without "set search_path"/]],
+  'unsafe search_path set on a routine from an earlier migration': [`alter function public.claim() set search_path = pg_temp;`, [/unsafe search_path \(pg_temp\) set on a routine from an earlier migration/]],
   'owned by a caller role': [`${definer()}${locked()}
 alter function public.claim(uuid, integer) owner to authenticated;`, [/owned by authenticated/]],
   'quoted mixed case is another function': [`${definer('public."Claim"')}${locked('public.claim(uuid, integer)')}`, [/Claim.*from public"/, /from anon"/, /grant execute/]],
