@@ -19,7 +19,11 @@ async function main() {
   const status = JSON.parse(fs.readFileSync(process.env.E2E_BACKEND_STATUS_FILE, 'utf8'));
   const url = assertBackendTarget(status); // before SQL, clients or credentials are used
   stage = 'qa-schema';
-  const schemaFile = fileURLToPath(new URL('account-leases.sql', import.meta.url));
+  // CLI 2.121.0 uses a single prepared statement even for --file. A DO block
+  // keeps this trusted DDL batch atomic without changing the reviewed QA SQL.
+  const schemaFile = path.join(workdir, 'qa-leases.sql');
+  const sql = fs.readFileSync(new URL('account-leases.sql', import.meta.url), 'utf8');
+  fs.writeFileSync(schemaFile, `DO $qa_schema$ BEGIN\n${sql}\nEND; $qa_schema$;`, { mode: 0o600 });
   const query = spawnSync(process.env.E2E_QA_CLI, ['db', 'query', '--workdir', workdir, '--db-url', status.DB_URL,
     '--file', schemaFile, '--yes', '--output-format', 'json'], { cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
   if (query.error || query.status !== 0) {
