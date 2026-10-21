@@ -517,6 +517,8 @@ function blankLiterals(text) {
 function blankAtomicBodies(text) {
   let out = text;
   for (let i = 0; i < out.length; i++) {
+    // A quoted identifier such as "begin atomic" is a name, never a body delimiter.
+    if (out[i] === '"') { i = quotedEnd(out, i) - 1; continue; }
     if (out[i] !== 'b' && out[i] !== 'B') continue;
     const end = atomicBodyEnd(out, i);
     if (end >= 0) { out = out.slice(0, i) + ' '.repeat(end - i) + out.slice(end); i = end - 1; }

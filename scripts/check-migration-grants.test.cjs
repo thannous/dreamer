@@ -559,6 +559,8 @@ do $$ begin execute 'alter schema private owner to service_role'; end $$;`, [/sh
   'caller-owned object: create schema authorization': [`create schema private2 authorization authenticated;
 create schema authorization anon;
 create schema if not exists private3 authorization "service_role";`, [/shape rule "caller-owned object"/, /shape rule "caller-owned object"/, /shape rule "caller-owned object"/]],
+  'Codex: quoted name "begin atomic" is not a body': [`CREATE FUNCTION public."begin atomic"() RETURNS integer LANGUAGE sql SECURITY DEFINER AS $$ SELECT 1 $$;`,
+    [/begin atomic.*from public"/, /from anon"/, /grant execute/, /search_path/]],
 };
 
 test('a public security definer function with revokes, a grant and a search_path passes', () => {
