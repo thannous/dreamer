@@ -106,7 +106,10 @@ describe('useRecordingSession', () => {
     onLimitReached: jest.fn(),
   };
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    // A test that ends while recording unmounts its hook, which gives the microphone back a
+    // turn later (setTimeout 0). Let that turn pass first, so no hold leaks into this test.
+    await new Promise((resolve) => setTimeout(resolve, 0));
     jest.clearAllMocks();
     (Platform as { OS: string }).OS = 'android';
     // Reset default mock implementations
@@ -295,6 +298,7 @@ describe('useRecordingSession', () => {
     jest.mocked(setAudioModeAsync).mockImplementation(async () => {
       heldOnModeChange.push(isMicrophoneHeld());
     });
+    expect(isMicrophoneHeld()).toBe(false);
     const { result } = renderHook(() => useRecordingSession(defaultOptions));
 
     await act(async () => {
