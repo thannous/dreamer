@@ -114,3 +114,46 @@ Deno.test('/guest/session requires and verifies a Turnstile token for web guests
     assertEquals(receivedAction, 'guest_session');
   });
 });
+
+Deno.test('/guest/session logs the Play Integrity verdict code without the token or request data', async () => {
+  const integrityToken = 'secret-integrity-token-value';
+  const requestHash = 'secret-request-hash-value';
+  const fingerprint = 'secret-android-fingerprint';
+  const reasons = ['package_mismatch', 'app_unrecognized', 'nonce_mismatch', 'device_not_integrity', 'decode_error'];
+  const unexpectedReason = `leak:${integrityToken}`;
+
+  const logged: unknown[][] = [];
+  const originalWarn = console.warn;
+  const originalLog = console.log;
+  const originalError = console.error;
+  const capture = (...args: unknown[]) => {
+    logged.push(args);
+  };
+  console.warn = capture;
+  console.log = capture;
+  console.error = capture;
+  try {
+    for (const reason of [...reasons, unexpectedReason]) {
+      const response = await requestGuestSession(
+        { fingerprint, platform: 'android', integrityToken, requestHash },
+        { verifyIntegrity: () => Promise.resolve({ ok: false, reason }) }
+      );
+      assertEquals(response.status, 401);
+      await response.body?.cancel();
+    }
+  } finally {
+    console.warn = originalWarn;
+    console.log = originalLog;
+    console.error = originalError;
+  }
+
+  const rejections = logged
+    .filter((args) => args[0] === '[api] /guest/session integrity rejected')
+    .map((args) => args[1]);
+  assertEquals(rejections, [...reasons, 'other'].map((reason) => ({ reason })));
+
+  const serialized = JSON.stringify(logged);
+  for (const secret of [integrityToken, requestHash, fingerprint]) {
+    assertEquals(serialized.includes(secret), false, `log must not contain ${secret}`);
+  }
+});
