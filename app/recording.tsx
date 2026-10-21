@@ -878,8 +878,7 @@ function RecordingScreen() {
       recordingStartedAtRef.current = null;
       // Even a quiet stop says, once, why the server did not help: its budget comes back tomorrow.
       if (result.error === 'daily_ai_limit') {
-        if (!dailyTranscriptionLimitShownRef.current) {
-          dailyTranscriptionLimitShownRef.current = true;
+        if (reason !== 'background' && !dailyTranscriptionLimitShownRef.current) {
           handleVoiceCaptureFailure('daily_ai_limit');
         }
         return;
@@ -1595,10 +1594,15 @@ function RecordingScreen() {
   useEffect(() => {
     const timeout = setTimeout(() => {
       setIsVoiceFallbackToastVisible(Boolean(textFallbackNotice));
+      // Told once it is on screen, not when a clear or a switch to text wiped it first.
+      if (voiceFallbackReason === 'daily_ai_limit') dailyTranscriptionLimitShownRef.current = true;
     }, 0);
 
     return () => clearTimeout(timeout);
-  }, [textFallbackNotice]);
+  }, [textFallbackNotice, voiceFallbackReason]);
+  useEffect(() => {
+    dailyTranscriptionLimitShownRef.current = false;
+  }, [user?.id]);
 
   const switchToTextMode = useCallback(async () => {
     answerInsertionRef.current = null;

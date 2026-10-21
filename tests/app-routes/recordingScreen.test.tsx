@@ -1023,6 +1023,15 @@ describe('Recording screen', () => {
     await waitFor(() => expect(screen.getByTestId(TID.Text.RecordingFallbackNotice).textContent)
       .toContain('recording.status.fallback.daily_ai_limit'));
     expect(Alert.alert).not.toHaveBeenCalled();
+
+    // Once told, a later limited stop of the same visit stays quiet.
+    fireEvent.click(screen.getByTestId('recording-voice-control'));
+    await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(screen.queryByTestId(TID.Text.RecordingFallbackNotice)).toBeNull());
+    await act(async () => { fireEvent.click(screen.getByTestId('recording-voice-control')); });
+    await act(async () => { await jest.advanceTimersByTimeAsync(10); });
+    expect(mockStopRecording).toHaveBeenCalledTimes(2);
+    expect(screen.queryByTestId(TID.Text.RecordingFallbackNotice)).toBeNull();
   });
 
   it('stops inline dictation when clearing and ignores late speech until a new dictation starts', async () => {
