@@ -513,10 +513,14 @@ function ownedSequences(statement, afterName, table) {
 // PL/pgSQL that can skip statements of a DO block.
 const CONTROL_FLOW = /\b(?:if|case|loop|while|for|foreach|exception|return|exit|continue|raise)\b/i;
 
+/** `text` with dollar-quoted bodies and string literals blanked in one lexical pass (quoted identifiers kept). */
+function blankStrings(text) {
+  return text.replace(new RegExp(String.raw`"(?:[^"]|"")*"|(?<![\w$])(${DOLLAR_TAG})[\s\S]*?\1|${LITERAL}`, 'g'), (part) => (part[0] === '"' ? part : ' '.repeat(part.length)));
+}
+
 /** `text` with dollar-quoted bodies and string literals blanked. */
 function blankLiterals(text) {
-  const blank = (part) => ' '.repeat(part.length);
-  return text.replace(new RegExp(String.raw`(?<![\w$])(${DOLLAR_TAG})[\s\S]*?\1`, 'g'), blank).replace(new RegExp(LITERAL, 'g'), blank);
+  return blankStrings(text);
 }
 
 /** `text` with each BEGIN ATOMIC routine body blanked (it only runs when the routine is called). */
@@ -546,9 +550,8 @@ function executedStatements(sql) {
   const blank = (text) => ' '.repeat(text.length);
   const scan = (text, base, conditional = false, inBody = false) => {
     for (const statement of statements(text)) {
-      const outside = blankAtomicBodies(statement.text
-        .replace(new RegExp(String.raw`(?<![\w$])(${DOLLAR_TAG})[\s\S]*?\1`, 'g'), blank)
-        .replace(new RegExp(LITERAL, 'g'), blank));
+      // One lexical pass: a dollar tag inside an ordinary string (or a quote inside a body) cannot hide options.
+      const outside = blankAtomicBodies(blankStrings(statement.text));
       // "search_path" quoted is the same setting: rewrite it (same length) so every matcher sees it.
       // Only as a SET/RESET setting name (GUC names ignore case); a routine named "SEARCH_PATH" keeps its case.
       const unquote = (value) => value.replace(/(\b(?:set|reset)\s+(?:(?:local|session)\s+)?)"search_path"/gi, '$1 search_path ');
@@ -713,6 +716,12 @@ function argumentType(definition) {
   const suffix = /(?:\s*\[\s*\d*\s*\])+$|\s+array(?:\s*\[\s*\d*\s*\])?$/i.exec(type);
   if (suffix) { array = '[]'; type = type.slice(0, suffix.index).trim(); }
   const [schema, name] = /^(?:"[^"]*"|[^\s."]+)\s*\.\s*/.test(type) ? qualified(type) : [null, /^"/.test(type) ? ident(type) : type.toLowerCase()];
+  // A quoted type name is looked up literally: "char" is the internal one-byte type (not character),
+  // and a quoted SQL alias such as "integer" is no built-in at all.
+  const aliasName = TYPE_ALIASES.has(name) || [...TYPE_ALIASES.values()].includes(name);
+  if (/"$/.test(type) && (name === 'char' || (aliasName && !BUILTIN_TYPES.has(name)))) {
+    return `${schema && schema !== 'pg_catalog' ? `${schema}.` : ''}"${name}"${array}`;
+  }
   // public.X is X, unless X names a built-in type: then public.int4 is a distinct custom type.
   const builtin = TYPE_ALIASES.has(name) || [...TYPE_ALIASES.values()].includes(name) || BUILTIN_TYPES.has(name) || /^(?:_|pg_)/.test(name);
   if (schema && schema !== 'pg_catalog' && (schema !== 'public' || builtin)) return `${schema}.${name}${array}`;

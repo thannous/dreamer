@@ -585,6 +585,11 @@ create function "x y".f() returns int language sql security invoker as $$ select
 create function public.claim(x public.text) returns int language sql security definer as $$ select 1 $$;
 create function public.claim(x pg_catalog.text) returns int language sql security invoker as $$ select 1 $$;`,
     [/public\.claim\(public\.text\).*from public"/, /from anon"/, /grant execute/, /search_path/]],
+  'Codex: dollar tag inside a default string hides no option': [`CREATE FUNCTION public.claim(x text DEFAULT '$body$') RETURNS integer LANGUAGE sql SECURITY DEFINER AS $body$ SELECT 1 $body$;`,
+    [/public\.claim\(text\).*from public"/, /from anon"/, /grant execute/, /search_path/]],
+  'Codex: pg_catalog."char" is not character': [`create function public.claim(x pg_catalog."char") returns int language sql security definer as $$ select 1 $$;
+create function public.claim(x character) returns int language sql security invoker as $$ select 1 $$;`,
+    [/public\.claim\("char"\).*from public"/, /from anon"/, /grant execute/, /search_path/]],
 };
 
 test('a public security definer function with revokes, a grant and a search_path passes', () => {
@@ -607,6 +612,7 @@ test('signatures ignore names, modes, defaults, OUT arguments and type modifiers
   assert.equal(signature('p_values integer[] default array[1, 2], p_n int = 3'), 'integer[],integer');
   assert.equal(signature('a float(1), b float(24), c float(25), d float'), 'real,real,double precision,double precision');
   assert.equal(signature('a public.text, b pg_catalog.text, c text, d public.jsonb, e public.pg_lsn, f public.dreams'), 'public.text,text,text,public.jsonb,public.pg_lsn,dreams');
+  assert.equal(signature('a pg_catalog."char", b "char", c character, d char(1), e "int4", f "integer"'), '"char","char",character,character,integer,"integer"');
 });
 
 test('a schema drop in an earlier migration fails closed', () => {
