@@ -97,6 +97,8 @@
 //
 // Known limit: argument types are compared as written (after alias
 // normalisation such as int4 = integer), not resolved through the search_path.
+// A schema-qualified type keeps its schema unless it is pg_catalog, or public
+// with a name no PostgreSQL 17 built-in type has (public.text is not text).
 // An unqualified type name that exists in two schemas is treated as one type,
 // so two overloads differing only by which schema's type they take are merged.
 // Qualify such types (`private.token`) in routine signatures.
@@ -668,6 +670,23 @@ const TYPE_ALIASES = new Map(Object.entries({
 // Types whose name is several words: an argument equal to one of these has no name.
 const MULTIWORD_TYPE = /^(?:double\s+precision|character\s+varying|bit\s+varying|national\s+character(?:\s+varying)?|(?:timestamp|time)(?:\s*\(\s*\d+\s*\))?\s+with(?:out)?\s+time\s+zone|interval\s+\w+(?:\s+to\s+\w+)?)(?:\s*\(\s*[\d\s,]*\))?(?:\s*\[\s*\d*\s*\])*$/i;
 
+// Every pg_catalog type name in PostgreSQL 17 (pg_type in postgres.bki, without the _array and pg_ names,
+// which are matched by prefix). A public type with one of these names is a distinct type, never the built-in.
+const BUILTIN_TYPES = new Set([
+  'aclitem', 'any', 'anyarray', 'anycompatible', 'anycompatiblearray', 'anycompatiblemultirange',
+  'anycompatiblenonarray', 'anycompatiblerange', 'anyelement', 'anyenum', 'anymultirange',
+  'anynonarray', 'anyrange', 'bit', 'bool', 'box', 'bpchar', 'bytea', 'char', 'cid', 'cidr', 'circle',
+  'cstring', 'date', 'datemultirange', 'daterange', 'event_trigger', 'fdw_handler', 'float4',
+  'float8', 'gtsvector', 'index_am_handler', 'inet', 'int2', 'int2vector', 'int4', 'int4multirange',
+  'int4range', 'int8', 'int8multirange', 'int8range', 'internal', 'interval', 'json', 'jsonb',
+  'jsonpath', 'language_handler', 'line', 'lseg', 'macaddr', 'macaddr8', 'money', 'name', 'numeric',
+  'nummultirange', 'numrange', 'oid', 'oidvector', 'path', 'point', 'polygon', 'record', 'refcursor',
+  'regclass', 'regcollation', 'regconfig', 'regdictionary', 'regnamespace', 'regoper', 'regoperator',
+  'regproc', 'regprocedure', 'regrole', 'regtype', 'table_am_handler', 'text', 'tid', 'time',
+  'timestamp', 'timestamptz', 'timetz', 'trigger', 'tsm_handler', 'tsmultirange', 'tsquery',
+  'tsrange', 'tstzmultirange', 'tstzrange', 'tsvector', 'txid_snapshot', 'unknown', 'uuid', 'varbit',
+  'varchar', 'void', 'xid', 'xid8', 'xml'
+]);
 /** Normalised type of one argument (empty for an OUT argument, which is not part of the signature). */
 function argumentType(definition) {
   let text = definition.trim().replace(/\s*\.\s*/g, '.')
@@ -695,7 +714,7 @@ function argumentType(definition) {
   if (suffix) { array = '[]'; type = type.slice(0, suffix.index).trim(); }
   const [schema, name] = /^(?:"[^"]*"|[^\s."]+)\s*\.\s*/.test(type) ? qualified(type) : [null, /^"/.test(type) ? ident(type) : type.toLowerCase()];
   // public.X is X, unless X names a built-in type: then public.int4 is a distinct custom type.
-  const builtin = TYPE_ALIASES.has(name) || [...TYPE_ALIASES.values()].includes(name);
+  const builtin = TYPE_ALIASES.has(name) || [...TYPE_ALIASES.values()].includes(name) || BUILTIN_TYPES.has(name) || /^(?:_|pg_)/.test(name);
   if (schema && schema !== 'pg_catalog' && (schema !== 'public' || builtin)) return `${schema}.${name}${array}`;
   return (TYPE_ALIASES.get(name) ?? name) + array;
 }

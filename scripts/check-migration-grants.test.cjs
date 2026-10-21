@@ -581,6 +581,10 @@ create schema if not exists private3 authorization "service_role";`, [/shape rul
   'unsafe quoted name: schema qualifier and search_path entry': [`set search_path = "my schema", pg_temp;
 create function "x y".f() returns int language sql security invoker as $$ select 1 $$;`, [/shape rule "unsafe quoted name"/, /shape rule "unsafe quoted name"/]],
   'unsafe quoted name: second role in a grant list': [`grant usage on schema private to postgres, "role x";`, [/shape rule "unsafe quoted name"/]],
+  'Codex: public.text and pg_catalog.text are distinct overloads': [`create type public.text as enum ('a');
+create function public.claim(x public.text) returns int language sql security definer as $$ select 1 $$;
+create function public.claim(x pg_catalog.text) returns int language sql security invoker as $$ select 1 $$;`,
+    [/public\.claim\(public\.text\).*from public"/, /from anon"/, /grant execute/, /search_path/]],
 };
 
 test('a public security definer function with revokes, a grant and a search_path passes', () => {
@@ -602,6 +606,7 @@ test('signatures ignore names, modes, defaults, OUT arguments and type modifiers
   assert.equal(signature('p_user IN uuid, result OUT text, p_list INOUT int[]'), 'uuid,integer[]');
   assert.equal(signature('p_values integer[] default array[1, 2], p_n int = 3'), 'integer[],integer');
   assert.equal(signature('a float(1), b float(24), c float(25), d float'), 'real,real,double precision,double precision');
+  assert.equal(signature('a public.text, b pg_catalog.text, c text, d public.jsonb, e public.pg_lsn, f public.dreams'), 'public.text,text,text,public.jsonb,public.pg_lsn,dreams');
 });
 
 test('a schema drop in an earlier migration fails closed', () => {
