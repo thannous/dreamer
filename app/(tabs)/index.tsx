@@ -13,6 +13,7 @@ import { ScreenContainer } from "@/components/ScreenContainer";
 import { HomeAnniversaryCard } from "@/components/home/HomeAnniversaryCard";
 import { HomeDiscoverTiles } from "@/components/home/HomeDiscoverTiles";
 import { HomeFullMoonRow } from "@/components/home/HomeFullMoonRow";
+import { HomeMoonLetterRow } from "@/components/home/HomeMoonLetterRow";
 import { HomeRecurringCard } from "@/components/home/HomeRecurringCard";
 import { HomeWeekConstellation } from "@/components/home/HomeWeekConstellation";
 import { HomeWeekNights } from "@/components/home/HomeWeekNights";
@@ -41,6 +42,7 @@ import { trackProductEvent } from "@/lib/analytics";
 import { pickDreamAnniversary } from "@/lib/dreamAnniversary";
 import { isDreamAnalyzed, isDreamExplored } from "@/lib/dreamUsage";
 import { getMonthEndAnalyses } from "@/lib/monthEndAnalyses";
+import { getMoonLetterInvite } from "@/lib/moonLetter";
 import { isSleepSoundsAvailable } from "@/lib/sleepSoundsFeature";
 import {
   RITUALS,
@@ -154,6 +156,11 @@ function InspirationScreen() {
   const anniversary = useMemo(
     () => (dreamsLoaded ? pickDreamAnniversary(dreams, now) : null),
     [dreams, dreamsLoaded, now]
+  );
+  // The morning after a full moon and the two days after, for an account: this cycle's letter.
+  const moonLetterInvite = useMemo(
+    () => (dreamsLoaded && user ? getMoonLetterInvite(dreams, now) : null),
+    [dreams, dreamsLoaded, now, user]
   );
   // In the month's last days, the included analyses left and a dream still to read take the nudge's place.
   const monthEndAnalyses = useMemo(() => (dreamsLoaded ? getMonthEndAnalyses({
@@ -340,6 +347,7 @@ function InspirationScreen() {
               onPressCta={handleTodayCta} onOpenSettings={openQuickSettings} />
             <View className="px-6">
               {dreamsLoaded ? <HomeFullMoonRow dreams={dreams} now={now} /> : null}
+              {moonLetterInvite ? <HomeMoonLetterRow invite={moonLetterInvite} /> : null}
               {anniversary ? <HomeAnniversaryCard anniversary={anniversary} /> : null}
               {personalReading ? <>
                 <HomeWeekNights dreams={dreams} now={now} />
