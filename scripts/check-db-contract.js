@@ -432,13 +432,14 @@ async function runGuestAnalysisIdempotencyBehaviorCheck(client) {
   const fingerprint = `db-contract-analysis-${Date.now()}-${Math.random().toString(16).slice(2)}`;
   const requestId = '3f73ab45-9a14-4db9-94a3-d24724457d9e';
   const secondRequestId = '0d38885f-52b1-4c20-a95d-fb8fb6078f3d';
+  const transcriptHash = 'a'.repeat(64);
 
   await client.query('BEGIN');
   try {
     const firstClaim = await queryFunctionJsonResult(
       client,
-      'select public.claim_guest_analysis_quota($1::text, $2::uuid, $3::integer) as result',
-      [fingerprint, requestId, 1]
+      'select public.claim_guest_analysis_quota($1::text, $2::uuid, $3::integer, $4::text) as result',
+      [fingerprint, requestId, 1, transcriptHash]
     );
     if (requireBoolean(firstClaim.allowed, 'first guest analysis claim allowed') !== true) {
       throw new Error('claim_guest_analysis_quota() must allow the first request');
@@ -452,11 +453,12 @@ async function runGuestAnalysisIdempotencyBehaviorCheck(client) {
 
     const duplicateClaim = await queryFunctionJsonResult(
       client,
-      'select public.claim_guest_analysis_quota($1::text, $2::uuid, $3::integer) as result',
-      [fingerprint, requestId, 1]
+      'select public.claim_guest_analysis_quota($1::text, $2::uuid, $3::integer, $4::text) as result',
+      [fingerprint, requestId, 1, transcriptHash]
     );
-    if (requireBoolean(duplicateClaim.allowed, 'duplicate guest analysis claim allowed') !== true) {
-      throw new Error('the same guest analysis request must remain retryable');
+    if (requireBoolean(duplicateClaim.allowed, 'duplicate guest analysis claim allowed') !== false
+        || duplicateClaim.code !== 'ANALYSIS_ALREADY_CLAIMED') {
+      throw new Error('the same guest analysis request must not buy provider work twice');
     }
     if (requireFiniteNumber(duplicateClaim.new_count, 'duplicate guest analysis claim count') !== 1) {
       throw new Error('the same guest analysis request must not increment quota twice');
@@ -465,10 +467,21 @@ async function runGuestAnalysisIdempotencyBehaviorCheck(client) {
       throw new Error('the repeated guest analysis request must be identified as duplicate');
     }
 
+    const changedTranscript = await queryFunctionJsonResult(
+      client,
+      'select public.claim_guest_analysis_quota($1::text, $2::uuid, $3::integer, $4::text) as result',
+      [fingerprint, requestId, 1, 'b'.repeat(64)]
+    );
+    if (requireBoolean(changedTranscript.allowed, 'changed-transcript guest analysis claim allowed') !== false
+        || changedTranscript.code !== 'ANALYSIS_TRANSCRIPT_MISMATCH'
+        || requireFiniteNumber(changedTranscript.new_count, 'changed-transcript guest analysis claim count') !== 1) {
+      throw new Error('a changed transcript must not reuse the prior guest analysis claim');
+    }
+
     const secondClaim = await queryFunctionJsonResult(
       client,
-      'select public.claim_guest_analysis_quota($1::text, $2::uuid, $3::integer) as result',
-      [fingerprint, secondRequestId, 1]
+      'select public.claim_guest_analysis_quota($1::text, $2::uuid, $3::integer, $4::text) as result',
+      [fingerprint, secondRequestId, 1, transcriptHash]
     );
     if (requireBoolean(secondClaim.allowed, 'second guest analysis claim allowed') !== false) {
       throw new Error('a different request must still respect the exhausted quota');
@@ -479,7 +492,7 @@ async function runGuestAnalysisIdempotencyBehaviorCheck(client) {
 
     return {
       ok: true,
-      details: 'guest analysis quota is claimed exactly once per request UUID',
+      details: 'guest analysis receipts reject changed transcripts and repeated provider work',
     };
   } catch (error) {
     return {

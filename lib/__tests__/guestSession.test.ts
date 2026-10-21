@@ -17,6 +17,10 @@ const loadGuestSessionModule = (platform: PlatformName) => {
     Platform: { OS: platform },
   }));
   jest.doMock('@expo/app-integrity', () => ({
+    isSupported: true,
+    generateKeyAsync: jest.fn(async () => 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA='),
+    attestKeyAsync: jest.fn(async () => 'apple-attestation'),
+    generateAssertionAsync: jest.fn(async () => 'apple-assertion'),
     prepareIntegrityTokenProviderAsync: jest.fn(),
     requestIntegrityCheckAsync: jest.fn(),
   }));
@@ -48,6 +52,7 @@ const loadGuestSessionModule = (platform: PlatformName) => {
 
 describe('guestSession bootstrap state', () => {
   afterEach(() => {
+    jest.restoreAllMocks();
     jest.resetModules();
     jest.clearAllMocks();
     jest.unmock('react-native');
@@ -95,11 +100,11 @@ describe('guestSession bootstrap state', () => {
     expect(require('@/lib/http').fetchJSON).not.toHaveBeenCalled();
   });
 
-  it('starts ready on iOS and stays ready when initGuestSession is a no-op', async () => {
+  it('starts ready on supported iOS and prepares App Attest', async () => {
     const guestSession = loadGuestSessionModule('ios');
 
     expect(guestSession.getGuestBootstrapState().status).toBe('ready');
-    await expect(guestSession.initGuestSession()).resolves.toBe(false);
+    await expect(guestSession.initGuestSession()).resolves.toBe(true);
     expect(guestSession.getGuestBootstrapState().status).toBe('ready');
   });
 
@@ -153,10 +158,24 @@ describe('guestSession bootstrap state', () => {
     expect(guestSession.getGuestBootstrapState()).toMatchObject({ status: 'degraded', reasonCode: 'guest_session_unavailable' });
   });
 
-  it('requests an iOS guest session without an integrity token and succeeds', async () => {
+  it('attests an iOS key before requesting a guest session', async () => {
     const guestSession = loadGuestSessionModule('ios');
     const { fetchJSON } = require('@/lib/http') as { fetchJSON: jest.Mock };
-    fetchJSON.mockResolvedValue({
+    const secureStore = require('expo-secure-store');
+    const preAttestToken = JSON.stringify({
+      fingerprint: 'fingerprint',
+      token: 'legacy-ios-guest-token',
+      expiresAt: new Date(Date.now() + 60_000).toISOString(),
+    });
+    secureStore.getItemAsync.mockImplementation(async (key: string) =>
+      key === 'guest-session-v1' ? preAttestToken : null
+    );
+    fetchJSON.mockResolvedValueOnce({
+      challengeId: '11111111-1111-4111-8111-111111111111',
+      challenge: 'fresh-server-challenge',
+      kind: 'attestation',
+      expiresAt: new Date(Date.now() + 180_000).toISOString(),
+    }).mockResolvedValueOnce({
       token: 'ios-guest-token',
       expiresAt: new Date(Date.now() + 60_000).toISOString(),
     });
@@ -168,19 +187,297 @@ describe('guestSession bootstrap state', () => {
       'x-guest-fingerprint': 'fingerprint',
       'x-guest-platform': 'ios',
     });
-    expect(fetchJSON).toHaveBeenCalledWith(
+    expect(secureStore.getItemAsync).toHaveBeenCalledWith('guest-session-v2');
+    expect(secureStore.getItemAsync).not.toHaveBeenCalledWith('guest-session-v1');
+    expect(fetchJSON).toHaveBeenNthCalledWith(1,
+      'https://example.com/guest/session/challenge',
+      expect.objectContaining({
+        method: 'POST',
+        body: { fingerprint: 'fingerprint', keyId: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=' },
+      })
+    );
+    expect(require('@expo/app-integrity').attestKeyAsync).toHaveBeenCalledWith(
+      'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=', 'fresh-server-challenge'
+    );
+    expect(fetchJSON).toHaveBeenNthCalledWith(2,
       'https://example.com/guest/session',
       expect.objectContaining({
         method: 'POST',
         body: {
           fingerprint: 'fingerprint',
           platform: 'ios',
+          keyId: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=',
+          challengeId: '11111111-1111-4111-8111-111111111111',
+          attestationObject: 'apple-attestation',
         },
       })
     );
-    const sessionBody = fetchJSON.mock.calls[0]?.[1]?.body as Record<string, unknown>;
+    const sessionBody = fetchJSON.mock.calls[1]?.[1]?.body as Record<string, unknown>;
     expect(sessionBody).not.toHaveProperty('integrityToken');
     expect(sessionBody).not.toHaveProperty('requestHash');
     expect(guestSession.getGuestBootstrapState().status).toBe('ready');
+  });
+
+  it('uses an assertion for a previously attested iOS key', async () => {
+    const guestSession = loadGuestSessionModule('ios');
+    const { fetchJSON } = require('@/lib/http') as { fetchJSON: jest.Mock };
+    const secureStore = require('expo-secure-store');
+    secureStore.getItemAsync.mockImplementation(async (key: string) =>
+      key === 'guest-app-attest-key-v1' ? 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=' : null
+    );
+    fetchJSON.mockResolvedValueOnce({
+      challengeId: '22222222-2222-4222-8222-222222222222',
+      challenge: 'fresh-assertion-challenge',
+      kind: 'assertion',
+      expiresAt: new Date(Date.now() + 180_000).toISOString(),
+    }).mockResolvedValueOnce({
+      token: 'ios-guest-token', expiresAt: new Date(Date.now() + 60_000).toISOString(),
+    });
+
+    await expect(guestSession.getGuestHeaders({ requireSession: true })).resolves.toMatchObject({
+      'x-guest-token': 'ios-guest-token',
+    });
+    expect(require('@expo/app-integrity').generateAssertionAsync).toHaveBeenCalledWith(
+      'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=', 'fresh-assertion-challenge'
+    );
+    const body = fetchJSON.mock.calls[1]?.[1]?.body as Record<string, unknown>;
+    expect(body).toMatchObject({
+      platform: 'ios', assertionObject: 'apple-assertion',
+      challengeId: '22222222-2222-4222-8222-222222222222',
+    });
+    expect(body).not.toHaveProperty('attestationObject');
+  });
+
+  it('retries an unavailable Apple attestation with the same key and challenge', async () => {
+    const guestSession = loadGuestSessionModule('ios');
+    const { fetchJSON } = require('@/lib/http') as { fetchJSON: jest.Mock };
+    const integrity = require('@expo/app-integrity');
+    const secureStore = require('expo-secure-store');
+    const values = new Map<string, string>();
+    secureStore.getItemAsync.mockImplementation(async (key: string) => values.get(key) ?? null);
+    secureStore.setItemAsync.mockImplementation(async (key: string, value: string) => { values.set(key, value); });
+    secureStore.deleteItemAsync.mockImplementation(async (key: string) => { values.delete(key); });
+    const challenge = {
+      challengeId: 'signed-challenge',
+      challenge: 'stable-client-data',
+      kind: 'attestation',
+      expiresAt: new Date(Date.now() + 180_000).toISOString(),
+    };
+    fetchJSON.mockResolvedValueOnce(challenge).mockResolvedValueOnce({
+      token: 'attested-token', expiresAt: new Date(Date.now() + 60_000).toISOString(),
+    });
+    integrity.attestKeyAsync.mockRejectedValueOnce(Object.assign(
+      new Error('Apple server temporarily unavailable'),
+      { code: 'ERR_APP_INTEGRITY_SERVER_UNAVAILABLE' }
+    ));
+
+    await expect(guestSession.getGuestHeaders({ requireSession: true })).rejects.toMatchObject({
+      code: 'guest_session_unavailable',
+    });
+    expect(fetchJSON).toHaveBeenCalledTimes(1);
+    expect(secureStore.deleteItemAsync).not.toHaveBeenCalledWith('guest-app-attest-key-v1');
+
+    await expect(guestSession.getGuestHeaders({ requireSession: true })).resolves.toMatchObject({
+      'x-guest-token': 'attested-token',
+    });
+    expect(fetchJSON).toHaveBeenCalledTimes(2);
+    expect(fetchJSON.mock.calls[1]?.[0]).toBe('https://example.com/guest/session');
+    expect(integrity.generateKeyAsync).toHaveBeenCalledTimes(1);
+    expect(integrity.attestKeyAsync).toHaveBeenCalledTimes(2);
+    expect(integrity.attestKeyAsync.mock.calls[0]).toEqual(integrity.attestKeyAsync.mock.calls[1]);
+    expect(fetchJSON.mock.calls[1]?.[1]?.body).toMatchObject({
+      keyId: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=',
+      challengeId: 'signed-challenge',
+      attestationObject: 'apple-attestation',
+    });
+  });
+
+  it('restores the same attestation challenge after an app restart within its validity window', async () => {
+    const values = new Map<string, string>();
+    const configureStore = () => {
+      const secureStore = require('expo-secure-store');
+      secureStore.getItemAsync.mockImplementation(async (key: string) => values.get(key) ?? null);
+      secureStore.setItemAsync.mockImplementation(async (key: string, value: string) => { values.set(key, value); });
+      secureStore.deleteItemAsync.mockImplementation(async (key: string) => { values.delete(key); });
+    };
+    const first = loadGuestSessionModule('ios');
+    configureStore();
+    const firstHttp = require('@/lib/http');
+    const firstIntegrity = require('@expo/app-integrity');
+    firstHttp.fetchJSON.mockResolvedValueOnce({
+      challengeId: 'signed-challenge', challenge: 'stable-client-data', kind: 'attestation',
+      expiresAt: new Date(Date.now() + 180_000).toISOString(),
+    });
+    firstIntegrity.attestKeyAsync.mockRejectedValueOnce(Object.assign(
+      new Error('Apple server temporarily unavailable'),
+      { code: 'ERR_APP_INTEGRITY_SERVER_UNAVAILABLE' }
+    ));
+    await expect(first.getGuestHeaders({ requireSession: true })).rejects.toMatchObject({
+      code: 'guest_session_unavailable',
+    });
+    expect(values.has('guest-app-attest-retry-v1')).toBe(true);
+
+    const restored = loadGuestSessionModule('ios');
+    configureStore();
+    const restoredHttp = require('@/lib/http');
+    const restoredIntegrity = require('@expo/app-integrity');
+    restoredHttp.fetchJSON.mockResolvedValueOnce({
+      token: 'attested-token', expiresAt: new Date(Date.now() + 60_000).toISOString(),
+    });
+    await expect(restored.getGuestHeaders({ requireSession: true })).resolves.toMatchObject({
+      'x-guest-token': 'attested-token',
+    });
+    expect(restoredIntegrity.generateKeyAsync).not.toHaveBeenCalled();
+    expect(restoredIntegrity.attestKeyAsync).toHaveBeenCalledWith(
+      'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=', 'stable-client-data'
+    );
+    expect(restoredHttp.fetchJSON).toHaveBeenCalledTimes(1);
+    expect(restoredHttp.fetchJSON.mock.calls[0]?.[0]).toBe('https://example.com/guest/session');
+    expect(values.has('guest-app-attest-retry-v1')).toBe(false);
+  });
+
+  it('replays the same attestation object after an ambiguous session POST failure', async () => {
+    const guestSession = loadGuestSessionModule('ios');
+    const { fetchJSON } = require('@/lib/http') as { fetchJSON: jest.Mock };
+    const integrity = require('@expo/app-integrity');
+    const secureStore = require('expo-secure-store');
+    const values = new Map<string, string>();
+    secureStore.getItemAsync.mockImplementation(async (key: string) => values.get(key) ?? null);
+    secureStore.setItemAsync.mockImplementation(async (key: string, value: string) => { values.set(key, value); });
+    secureStore.deleteItemAsync.mockImplementation(async (key: string) => { values.delete(key); });
+    fetchJSON.mockResolvedValueOnce({
+      challengeId: 'signed-challenge', challenge: 'stable-client-data', kind: 'attestation',
+      expiresAt: new Date(Date.now() + 180_000).toISOString(),
+    }).mockRejectedValueOnce(new Error('Connection lost after submit')).mockResolvedValueOnce({
+      token: 'attested-token', expiresAt: new Date(Date.now() + 60_000).toISOString(),
+    });
+
+    await expect(guestSession.getGuestHeaders({ requireSession: true })).rejects.toMatchObject({
+      code: 'guest_session_unavailable',
+    });
+    expect(values.has('guest-app-attest-retry-v1')).toBe(true);
+    await expect(guestSession.getGuestHeaders({ requireSession: true })).resolves.toMatchObject({
+      'x-guest-token': 'attested-token',
+    });
+    expect(integrity.attestKeyAsync).toHaveBeenCalledTimes(1);
+    expect(fetchJSON.mock.calls.map(([url]: [string]) => url)).toEqual([
+      'https://example.com/guest/session/challenge',
+      'https://example.com/guest/session',
+      'https://example.com/guest/session',
+    ]);
+    expect(fetchJSON.mock.calls[1]?.[1]?.body).toEqual(fetchJSON.mock.calls[2]?.[1]?.body);
+    expect(fetchJSON.mock.calls[1]?.[1]?.retries).toBe(0);
+    expect(fetchJSON.mock.calls[2]?.[1]?.retries).toBe(0);
+    expect(values.has('guest-app-attest-retry-v1')).toBe(false);
+  });
+
+  it('rotates an attestation key after the server definitively rejects its proof', async () => {
+    const guestSession = loadGuestSessionModule('ios');
+    const { fetchJSON } = require('@/lib/http') as { fetchJSON: jest.Mock };
+    const secureStore = require('expo-secure-store');
+    fetchJSON.mockResolvedValueOnce({
+      challengeId: 'signed-challenge', challenge: 'client-data', kind: 'attestation',
+      expiresAt: new Date(Date.now() + 180_000).toISOString(),
+    }).mockRejectedValueOnce(Object.assign(new Error('HTTP 401'), { status: 401 }));
+
+    await expect(guestSession.getGuestHeaders({ requireSession: true })).rejects.toMatchObject({
+      code: 'guest_session_unavailable',
+    });
+    expect(secureStore.deleteItemAsync).toHaveBeenCalledWith('guest-app-attest-key-v1');
+    expect(secureStore.deleteItemAsync).toHaveBeenCalledWith('guest-app-attest-retry-v1');
+    expect(fetchJSON).toHaveBeenCalledTimes(2);
+  });
+
+  it('discards the key after a non-retryable Apple attestation error', async () => {
+    const guestSession = loadGuestSessionModule('ios');
+    const { fetchJSON } = require('@/lib/http') as { fetchJSON: jest.Mock };
+    const integrity = require('@expo/app-integrity');
+    const secureStore = require('expo-secure-store');
+    fetchJSON.mockResolvedValueOnce({
+      challengeId: 'signed-challenge', challenge: 'client-data', kind: 'attestation',
+      expiresAt: new Date(Date.now() + 180_000).toISOString(),
+    });
+    integrity.attestKeyAsync.mockRejectedValueOnce(Object.assign(
+      new Error('Invalid input'), { code: 'ERR_APP_INTEGRITY_INVALID_INPUT' }
+    ));
+
+    await expect(guestSession.getGuestHeaders({ requireSession: true })).rejects.toMatchObject({
+      code: 'guest_session_unavailable',
+    });
+    expect(fetchJSON).toHaveBeenCalledTimes(1);
+    expect(secureStore.deleteItemAsync).toHaveBeenCalledWith('guest-app-attest-key-v1');
+    expect(secureStore.setItemAsync).not.toHaveBeenCalledWith(
+      'guest-app-attest-retry-v1', expect.anything()
+    );
+  });
+
+  it('discards an expired retry instead of submitting it or changing the hash on the same key', async () => {
+    let now = Date.now();
+    jest.spyOn(Date, 'now').mockImplementation(() => now);
+    const guestSession = loadGuestSessionModule('ios');
+    const { fetchJSON } = require('@/lib/http') as { fetchJSON: jest.Mock };
+    const integrity = require('@expo/app-integrity');
+    const secureStore = require('expo-secure-store');
+    const values = new Map<string, string>();
+    secureStore.getItemAsync.mockImplementation(async (key: string) => values.get(key) ?? null);
+    secureStore.setItemAsync.mockImplementation(async (key: string, value: string) => { values.set(key, value); });
+    secureStore.deleteItemAsync.mockImplementation(async (key: string) => { values.delete(key); });
+    integrity.generateKeyAsync.mockResolvedValueOnce('first-key').mockResolvedValueOnce('second-key');
+    integrity.attestKeyAsync.mockRejectedValueOnce(Object.assign(
+      new Error('Apple server temporarily unavailable'),
+      { code: 'ERR_APP_INTEGRITY_SERVER_UNAVAILABLE' }
+    ));
+    fetchJSON.mockResolvedValueOnce({
+      challengeId: 'first-signed-challenge', challenge: 'first-hash-input', kind: 'attestation',
+      expiresAt: new Date(now + 180_000).toISOString(),
+    }).mockResolvedValueOnce({
+      challengeId: 'second-signed-challenge', challenge: 'second-hash-input', kind: 'attestation',
+      expiresAt: new Date(now + 330_000).toISOString(),
+    }).mockResolvedValueOnce({
+      token: 'attested-token', expiresAt: new Date(now + 300_000).toISOString(),
+    });
+
+    await expect(guestSession.getGuestHeaders({ requireSession: true })).rejects.toMatchObject({
+      code: 'guest_session_unavailable',
+    });
+    expect(values.has('guest-app-attest-retry-v1')).toBe(true);
+    now += 130_000;
+    await expect(guestSession.getGuestHeaders({ requireSession: true })).resolves.toMatchObject({
+      'x-guest-token': 'attested-token',
+    });
+    expect(secureStore.deleteItemAsync).toHaveBeenCalledWith('guest-app-attest-key-v1');
+    expect(integrity.generateKeyAsync).toHaveBeenCalledTimes(2);
+    expect(integrity.attestKeyAsync.mock.calls).toEqual([
+      ['first-key', 'first-hash-input'], ['second-key', 'second-hash-input'],
+    ]);
+    expect(fetchJSON.mock.calls.map(([url]: [string]) => url)).toEqual([
+      'https://example.com/guest/session/challenge',
+      'https://example.com/guest/session/challenge',
+      'https://example.com/guest/session',
+    ]);
+    expect(values.has('guest-app-attest-retry-v1')).toBe(false);
+  });
+
+  it('does not submit an attestation when its signed challenge expires during the Apple call', async () => {
+    let now = Date.now();
+    jest.spyOn(Date, 'now').mockImplementation(() => now);
+    const guestSession = loadGuestSessionModule('ios');
+    const { fetchJSON } = require('@/lib/http') as { fetchJSON: jest.Mock };
+    const integrity = require('@expo/app-integrity');
+    const secureStore = require('expo-secure-store');
+    fetchJSON.mockResolvedValueOnce({
+      challengeId: 'signed-challenge', challenge: 'client-data', kind: 'attestation',
+      expiresAt: new Date(now + 180_000).toISOString(),
+    });
+    integrity.attestKeyAsync.mockImplementationOnce(async () => {
+      now += 125_000;
+      return 'late-attestation';
+    });
+
+    await expect(guestSession.getGuestHeaders({ requireSession: true })).rejects.toMatchObject({
+      code: 'guest_session_unavailable',
+    });
+    expect(fetchJSON).toHaveBeenCalledTimes(1);
+    expect(secureStore.deleteItemAsync).toHaveBeenCalledWith('guest-app-attest-key-v1');
   });
 });

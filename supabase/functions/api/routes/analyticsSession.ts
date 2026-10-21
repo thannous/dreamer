@@ -1,5 +1,6 @@
 import { createAnalyticsGuestToken } from '../lib/analyticsGuestToken.ts';
 import { corsHeaders } from '../lib/constants.ts';
+import { verifyGuestToken } from '../lib/guestToken.ts';
 import { verifyAndroidIntegrity } from '../lib/playIntegrity.ts';
 
 function jsonResponse(body: unknown, status: number): Response {
@@ -18,6 +19,13 @@ export async function handleAnalyticsGuestSession(req: Request): Promise<Respons
     const requestHash = body.requestHash;
     const integrityToken = body.integrityToken;
     if (body.platform === 'ios') {
+      if (Object.keys(body).length !== 1) return jsonResponse({ error: 'Invalid integrity proof' }, 401);
+      const guestToken = req.headers.get('x-guest-token')?.trim() ?? null;
+      const fingerprint = req.headers.get('x-guest-fingerprint')?.trim() ?? '';
+      if (!/^[0-9a-f]{64}$/.test(fingerprint) ||
+          !(await verifyGuestToken(guestToken, fingerprint, 'ios')).ok) {
+        return jsonResponse({ error: 'Invalid integrity proof' }, 401);
+      }
       return jsonResponse(await createAnalyticsGuestToken('ios'), 200);
     }
     if (

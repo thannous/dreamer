@@ -105,3 +105,71 @@ Key points
 Notes
 - You can expand with additional endpoints later (chat, TTS) using the same pattern.
 - If you need image generation, swap the placeholder with an API like Replicate or Stable Diffusion (store API key as a secret).
+
+## iOS guest App Attest release preparation
+
+The iOS `/guest/session` route requires an Apple App Attest proof before issuing
+a guest AI token. Its short-lived challenge is signed by the Edge Function;
+only a valid attestation or assertion writes the challenge digest to the
+service-role-only database table. The key is bound to its first guest quota
+fingerprint, and each assertion must advance its stored counter.
+
+Configure the Edge Function with the existing `GUEST_SESSION_SECRET`,
+`SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`. Set
+`IOS_APP_ATTEST_ALLOWED_APPS` to a JSON array of exact identities. Each entry
+has `teamId` (the 10-character Apple App ID prefix), `bundleId`,
+`environment` (`development` or `production`), and
+`allowedBundleVersions` (exact native `CFBundleVersion` strings). For example,
+replace every illustrative Team ID and build number before use:
+
+```json
+[
+  {
+    "teamId": "AAAAAAAAAA",
+    "bundleId": "com.tanuki75.noctalia",
+    "environment": "production",
+    "allowedBundleVersions": ["123"]
+  },
+  {
+    "teamId": "AAAAAAAAAA",
+    "bundleId": "com.tanuki75.noctalia.qa",
+    "environment": "development",
+    "allowedBundleVersions": ["7"]
+  }
+]
+```
+
+An internal ad-hoc build of the main bundle needs its own exact
+`development` entry if it calls the same backend. The structured allowlist
+takes precedence over the older single-app variables
+`IOS_APP_ATTEST_TEAM_ID`, `IOS_APP_ATTEST_BUNDLE_ID`,
+`IOS_APP_ATTEST_ENVIRONMENT` and
+`IOS_APP_ATTEST_ALLOWED_BUNDLE_VERSIONS`; those four remain a fallback when
+the JSON variable is absent. An invalid or missing configuration fails closed.
+Keep all server secrets out of `EXPO_PUBLIC_*` and out of Git.
+Apple's authenticated bundle-version extension is absent on some supported
+iOS versions. In that case the verifier still checks the signed App ID and
+environment, but it cannot enforce `allowedBundleVersions`; do not use that
+list as a universal binary-version gate.
+
+For a release, apply
+`supabase/migrations/20261021201025_ios_guest_app_attest.sql` after checking
+migration history, then configure the exact server identities. Enable the App
+Attest capability and renew provisioning profiles for each Apple App ID used
+by a native build. Check the signed binary's bundle ID, entitlement,
+`CFBundleVersion`, distribution method and destination API. TestFlight and
+App Store use Apple's production App Attest environment; development and
+ad-hoc builds use the development environment. EAS remote build counters
+can differ from the checked-in `app.json` value.
+
+Qualify attestation, refresh assertion, quota access and refusal paths on an
+owned physical iOS device against a matching non-production backend before
+production activation. A Simulator cannot provide App Attest proof. The new
+Edge route rejects old iOS v1 guest tokens immediately, while a new binary
+needs its challenge endpoint; coordinate Edge activation and binary
+availability with an explicit expectation that old iOS builds lose guest AI
+until updated. Local dream recording remains separate. Local fixture and
+database tests do not establish native or production qualification.
+
+Apple references: [validating App Attest objects](https://developer.apple.com/documentation/devicecheck/validating-apps-that-connect-to-your-server),
+[App Attest environment](https://developer.apple.com/documentation/bundleresources/entitlements/com.apple.developer.devicecheck.appattest-environment).

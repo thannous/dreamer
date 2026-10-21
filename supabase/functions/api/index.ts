@@ -20,7 +20,7 @@ import { handleFormatRecall } from './routes/formatRecall.ts';
 import { handleAnalyzeDream, handleAnalyzeDreamFull, handleCategorizeDream } from './routes/dreams.ts';
 import { handleCreateImageJob, handleGetImageJobStatus } from './routes/imageJobs.ts';
 import { handleGenerateImage } from './routes/images.ts';
-import { handleGuestSession } from './routes/guestSession.ts';
+import { handleGuestSession, handleIosGuestChallenge } from './routes/guestSession.ts';
 import {
   handleGuestQaEnroll,
   handleGuestQaRevoke,
@@ -39,6 +39,7 @@ import { createApiHandler, type RouteHandler } from './router.ts';
 
 const routes = new Map<string, RouteHandler>([
   ['POST /guest/session', async (ctx) => handleGuestSession(ctx.req)],
+  ['POST /guest/session/challenge', async (ctx) => handleIosGuestChallenge(ctx.req)],
   ['POST /qa/guest-device/status', handleGuestQaStatus],
   ['POST /qa/guest-device/enroll', handleGuestQaEnroll],
   ['POST /qa/guest-device/revoke', handleGuestQaRevoke],

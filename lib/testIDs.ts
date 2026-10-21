@@ -18,6 +18,7 @@ export const TID = {
     AuthEmail: 'input.auth.email',
     AuthPassword: 'input.auth.password',
     AuthForgotPasswordEmail: 'input.auth.forgotPasswordEmail',
+    AuthRecoveryEmail: 'input.auth.recoveryEmail',
     AuthNewPassword: 'input.auth.newPassword',
     AuthConfirmPassword: 'input.auth.confirmPassword',
   },

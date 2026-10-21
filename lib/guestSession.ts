@@ -32,7 +32,15 @@ export type GuestBootstrapState = {
   updatedAt: number;
 };
 
-const STORAGE_KEY = 'guest-session-v1';
+// Existing iOS v1 tokens were issued before App Attest. Never load one after
+// the server starts requiring attested v2 sessions.
+const STORAGE_KEY = Platform.OS === 'ios' ? 'guest-session-v2' : 'guest-session-v1';
+const APP_ATTEST_KEY_STORAGE_KEY = 'guest-app-attest-key-v1';
+const APP_ATTEST_RETRY_STORAGE_KEY = 'guest-app-attest-retry-v1';
+// The server accepts its signed challenge for three minutes. Leave time for
+// the attestation and the final request to reach it before that deadline.
+const APP_ATTEST_RETRY_MAX_AGE_MS = 2 * 60_000;
+const APP_ATTEST_CHALLENGE_SAFETY_MS = 15_000;
 const EXPIRY_SAFETY_MS = 30_000;
 
 const createInitialGuestBootstrapState = (): GuestBootstrapState => {
@@ -52,6 +60,9 @@ const createInitialGuestBootstrapState = (): GuestBootstrapState => {
 
 let cached: GuestSessionRecord | null = null;
 let preparePromise: Promise<boolean> | null = null;
+let appAttestKeyPromise: Promise<string> | null = null;
+let pendingAppAttestRetry: PendingAppAttestRetry | null = null;
+let appAttestRetryLoaded = false;
 let sessionPromise: Promise<GuestSessionRecord | null> | null = null;
 let sessionEpoch = 0;
 let guestBootstrapState: GuestBootstrapState = createInitialGuestBootstrapState();
@@ -118,6 +129,14 @@ const isProviderInvalidError = (error: unknown): boolean => {
 };
 
 export async function initGuestSession(): Promise<boolean> {
+  if (Platform.OS === 'ios') {
+    if (!AppIntegrity.isSupported) {
+      updateGuestBootstrapState('degraded', GuestSessionErrorCode.UNAVAILABLE);
+      return false;
+    }
+    updateGuestBootstrapState('ready');
+    return true;
+  }
   if (Platform.OS !== 'android') {
     if (Platform.OS === 'web' && !isWebGuestSessionAvailable()) {
       updateGuestBootstrapState('degraded', GuestSessionErrorCode.PLATFORM_UNSUPPORTED);
@@ -158,6 +177,80 @@ const createRequestHash = async (fingerprint: string): Promise<string> => {
   return Crypto.digestStringAsync(Crypto.CryptoDigestAlgorithm.SHA256, seed);
 };
 
+const getAppAttestKeyId = async (): Promise<string> => {
+  if (appAttestKeyPromise) return appAttestKeyPromise;
+  const inFlight = (async () => {
+    const stored = await SecureStore.getItemAsync(APP_ATTEST_KEY_STORAGE_KEY).catch(() => null);
+    if (stored) return stored;
+    const keyId = await AppIntegrity.generateKeyAsync();
+    // Apple's private key stays in the Secure Enclave. Without this identifier
+    // the app cannot use it again after a restart.
+    await SecureStore.setItemAsync(APP_ATTEST_KEY_STORAGE_KEY, keyId);
+    return keyId;
+  })();
+  appAttestKeyPromise = inFlight;
+  try { return await inFlight; } finally { appAttestKeyPromise = null; }
+};
+
+type AppAttestChallengeResponse = {
+  challengeId: string;
+  challenge: string;
+  kind: 'attestation' | 'assertion';
+  expiresAt: string;
+};
+
+type PendingAppAttestRetry = {
+  fingerprint: string;
+  keyId: string;
+  challenge: AppAttestChallengeResponse;
+  expiresAt: number;
+  attestationObject?: string;
+};
+
+const clearAppAttestRetry = async (): Promise<void> => {
+  pendingAppAttestRetry = null;
+  await SecureStore.deleteItemAsync(APP_ATTEST_RETRY_STORAGE_KEY).catch(() => {});
+};
+
+const readAppAttestRetry = async (): Promise<PendingAppAttestRetry | null> => {
+  if (appAttestRetryLoaded) return pendingAppAttestRetry;
+  appAttestRetryLoaded = true;
+  try {
+    const raw = await SecureStore.getItemAsync(APP_ATTEST_RETRY_STORAGE_KEY);
+    if (!raw) return null;
+    const stored = JSON.parse(raw) as PendingAppAttestRetry;
+    if (typeof stored.fingerprint !== 'string' || typeof stored.keyId !== 'string' ||
+        typeof stored.expiresAt !== 'number' || !Number.isFinite(stored.expiresAt) ||
+        !stored.challenge || stored.challenge.kind !== 'attestation' ||
+        typeof stored.challenge.challengeId !== 'string' ||
+        typeof stored.challenge.challenge !== 'string' ||
+        (stored.attestationObject != null && typeof stored.attestationObject !== 'string')) return null;
+    pendingAppAttestRetry = stored;
+  } catch { /* A missing or corrupt local retry record cannot authorize a session. */ }
+  return pendingAppAttestRetry;
+};
+
+const saveAppAttestRetry = async (retry: PendingAppAttestRetry): Promise<boolean> => {
+  pendingAppAttestRetry = retry;
+  appAttestRetryLoaded = true;
+  try {
+    await SecureStore.setItemAsync(APP_ATTEST_RETRY_STORAGE_KEY, JSON.stringify(retry));
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+const discardAppAttestKey = async (): Promise<void> => {
+  await clearAppAttestRetry();
+  await SecureStore.deleteItemAsync(APP_ATTEST_KEY_STORAGE_KEY).catch(() => {});
+};
+
+const isAppAttestError = (error: unknown, code: string): boolean => {
+  const nativeCode = (error as { code?: unknown } | null)?.code;
+  return nativeCode === code || (error instanceof Error && error.message.includes(code));
+};
+
 const mapGuestSessionFailure = (error: unknown): GuestSessionErrorCode => {
   const status = typeof (error as { status?: unknown })?.status === 'number'
     ? Number((error as { status: number }).status)
@@ -191,6 +284,10 @@ const fetchGuestSession = async (fingerprint: string): Promise<GuestSessionRecor
     requestHash?: string;
     integrityToken?: string;
     turnstileToken?: string;
+    keyId?: string;
+    challengeId?: string;
+    attestationObject?: string;
+    assertionObject?: string;
   } = {
     fingerprint,
     platform: Platform.OS,
@@ -244,14 +341,119 @@ const fetchGuestSession = async (fingerprint: string): Promise<GuestSessionRecor
     }
   }
 
+  if (Platform.OS === 'ios') {
+    if (!AppIntegrity.isSupported) {
+      updateGuestBootstrapState('degraded', GuestSessionErrorCode.UNAVAILABLE);
+      return null;
+    }
+    try {
+      let keyId = await getAppAttestKeyId();
+      const pending = await readAppAttestRetry();
+      const pendingExpired = pending !== null &&
+        pending.expiresAt <= Date.now() + APP_ATTEST_CHALLENGE_SAFETY_MS;
+      if (pending && (pendingExpired || pending.keyId !== keyId || pending.fingerprint !== fingerprint)) {
+        // After the signed challenge expires, the old clientDataHash cannot be
+        // submitted. Start a new key instead of silently retrying that key
+        // with a different hash after Apple's serverUnavailable response.
+        if (pending.keyId === keyId && (pendingExpired || pending.fingerprint !== fingerprint)) {
+          await discardAppAttestKey();
+          keyId = await getAppAttestKeyId();
+        } else {
+          await clearAppAttestRetry();
+        }
+      }
+      const retry = !pendingExpired && pending?.keyId === keyId &&
+        pending.fingerprint === fingerprint ? pending : null;
+      const challenge = retry?.challenge ?? await fetchJSON<AppAttestChallengeResponse>(
+        `${base}/guest/session/challenge`,
+        {
+          method: 'POST',
+          body: { fingerprint, keyId },
+          ...NETWORK_REQUEST_POLICIES.guestSessionCreate,
+        }
+      );
+      if (!challenge.challengeId || !challenge.challenge ||
+          (challenge.kind !== 'attestation' && challenge.kind !== 'assertion')) {
+        throw new Error('Invalid App Attest challenge');
+      }
+      const now = Date.now();
+      const serverExpiry = Date.parse(challenge.expiresAt);
+      const expiresAt = retry?.expiresAt ?? Math.min(
+        serverExpiry, now + APP_ATTEST_RETRY_MAX_AGE_MS
+      );
+      if (!Number.isFinite(expiresAt) ||
+          expiresAt <= now + APP_ATTEST_CHALLENGE_SAFETY_MS) {
+        if (retry) await discardAppAttestKey();
+        throw new Error('App Attest challenge expired before attestation');
+      }
+      body.keyId = keyId;
+      body.challengeId = challenge.challengeId;
+      if (challenge.kind === 'attestation') {
+        if (retry?.attestationObject) {
+          body.attestationObject = retry.attestationObject;
+        } else {
+          try {
+            body.attestationObject = await AppIntegrity.attestKeyAsync(keyId, challenge.challenge);
+          } catch (error) {
+            if (isAppAttestError(error, 'ERR_APP_INTEGRITY_SERVER_UNAVAILABLE') &&
+                expiresAt > Date.now() + APP_ATTEST_CHALLENGE_SAFETY_MS) {
+              // Apple requires the same key and clientDataHash after this error.
+              const saved = await saveAppAttestRetry({ fingerprint, keyId, challenge, expiresAt });
+              if (!saved) await discardAppAttestKey();
+            } else {
+              await discardAppAttestKey();
+            }
+            throw error;
+          }
+          // A lost HTTP response is ambiguous: the server may have accepted
+          // the proof. Keep this exact object until it acknowledges the session.
+          const saved = await saveAppAttestRetry({
+            fingerprint, keyId, challenge, expiresAt,
+            attestationObject: body.attestationObject,
+          });
+          if (!saved) {
+            // The proof can still be sent, but a later retry must use a new key.
+            await discardAppAttestKey();
+          }
+        }
+      } else {
+        body.assertionObject = await AppIntegrity.generateAssertionAsync(keyId, challenge.challenge);
+      }
+      if (expiresAt <= Date.now() + APP_ATTEST_CHALLENGE_SAFETY_MS) {
+        if (challenge.kind === 'attestation') await discardAppAttestKey();
+        throw new Error('App Attest challenge expired before submission');
+      }
+    } catch (error) {
+      // An attested key can be lost after restoring/reinstalling the app. The
+      // next bootstrap may generate a new key; it never bypasses verification.
+      if (isAppAttestError(error, 'ERR_APP_INTEGRITY_INVALID_KEY')) {
+        await discardAppAttestKey();
+      }
+      logger.warn('[guestSession] App Attest unavailable', error);
+      updateGuestBootstrapState('degraded', GuestSessionErrorCode.UNAVAILABLE);
+      return null;
+    }
+  }
+
   let response: GuestSessionResponse;
   try {
     response = await fetchJSON<GuestSessionResponse>(`${base}/guest/session`, {
       method: 'POST',
       body,
       ...NETWORK_REQUEST_POLICIES.guestSessionCreate,
+      ...(Platform.OS === 'ios' ? { retries: 0 } : {}),
     });
+    if (Platform.OS === 'ios' && body.attestationObject) {
+      await clearAppAttestRetry();
+    }
   } catch (error) {
+    const status = (error as { status?: unknown } | null)?.status;
+    if (Platform.OS === 'ios' && body.attestationObject &&
+        (status === 400 || status === 401 || status === 403 || status === 422)) {
+      // A definitive rejection means this key cannot be trusted for another
+      // attestation attempt. An ambiguous transport failure keeps the proof.
+      await discardAppAttestKey();
+    }
     updateGuestBootstrapState('degraded', mapGuestSessionFailure(error));
     throw error;
   }

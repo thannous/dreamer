@@ -426,6 +426,15 @@ export async function updatePassword(newPassword: string): Promise<User | null> 
   return data.user ?? null;
 }
 
+/** Native recovery continues through its regular authenticated session. */
+export function getWebRecoveryLinkState(): 'none' | 'pending' | 'invalid' {
+  return 'none';
+}
+
+export async function updatePasswordFromWebRecovery(_email: string, _newPassword: string): Promise<User | null> {
+  throw new Error('Web password recovery is unavailable on this platform.');
+}
+
 /**
  * Observe auth events relevant to password recovery. supabase-js emits
  * `PASSWORD_RECOVERY` when the app is opened from a recovery link; a session

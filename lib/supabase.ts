@@ -3,6 +3,113 @@ import { createClient } from '@supabase/supabase-js';
 import Constants from 'expo-constants';
 import * as SecureStore from 'expo-secure-store';
 import { Platform } from 'react-native';
+import { isPasswordResetPath } from './authRoutes';
+
+type WebRecoveryTokens = { accessToken: string; refreshToken: string };
+type WebRecoveryLinkState = 'none' | 'pending' | 'invalid';
+let webRecoveryTokens: WebRecoveryTokens | null = null;
+let webRecoveryLinkState: WebRecoveryLinkState = 'none';
+let webAuthCode: string | null = null;
+
+const URL_AUTH_PARAMETERS = [
+  'access_token', 'refresh_token', 'provider_token', 'provider_refresh_token',
+  'expires_in', 'expires_at', 'token_type', 'type',
+];
+
+/** Keep URL credentials out of auth-js and the browser address bar. */
+function quarantineWebAuthCallback(): void {
+  if (Platform.OS !== 'web' || typeof window === 'undefined') return;
+
+  const url = new URL(window.location.href);
+  const hash = url.hash.startsWith('#') ? new URLSearchParams(url.hash.slice(1)) : new URLSearchParams();
+  const query = url.searchParams;
+  const hasBearerToken = ['access_token', 'refresh_token', 'provider_token', 'provider_refresh_token']
+    .some((key) => query.has(key) || hash.has(key));
+  const hasCode = query.has('code') || hash.has('code');
+  if (!hasBearerToken && !hasCode) return;
+  // Other product routes can use their own `code` parameter (for example
+  // Lucid's callback). Only configured Supabase return paths own a PKCE code.
+  const isSupabaseReturn = url.pathname === '/recording' || isPasswordResetPath(url.pathname);
+
+  if (!hasBearerToken && hasCode && isSupabaseReturn) {
+    // exchangeCodeForSession enforces the browser's stored PKCE verifier, but
+    // unlike SDK auto-detection it does not sign out an existing user when a
+    // malicious or expired code fails exchange.
+    const source = query.has('code') ? query : hash;
+    const other = source === query ? hash : query;
+    if (source.getAll('code').length === 1 && !other.has('code')) {
+      webAuthCode = source.get('code');
+    }
+    query.delete('code');
+    hash.delete('code');
+    url.hash = hash.toString();
+    try {
+      window.history.replaceState(window.history.state, '', `${url.pathname}${url.search}${url.hash}`);
+    } catch {
+      // URL detection remains disabled below, so the SDK cannot use the code.
+    }
+    return;
+  }
+  if (!hasBearerToken) return;
+
+  const isRecovery = isPasswordResetPath(url.pathname) &&
+    (query.get('type') === 'recovery' || hash.get('type') === 'recovery');
+  if (isPasswordResetPath(url.pathname)) {
+    webRecoveryLinkState = 'invalid';
+  }
+
+  // A token pair must come from one URL component, without duplicate or
+  // competing values. Only an explicit recovery link can be used later.
+  const source = query.has('access_token') || query.has('refresh_token') ? query : hash;
+  const other = source === query ? hash : query;
+  if (isRecovery &&
+    source.getAll('access_token').length === 1 &&
+    source.getAll('refresh_token').length === 1 &&
+    !other.has('access_token') && !other.has('refresh_token') &&
+    source.get('access_token') && source.get('refresh_token')) {
+    webRecoveryTokens = {
+      accessToken: source.get('access_token')!,
+      refreshToken: source.get('refresh_token')!,
+    };
+    webRecoveryLinkState = 'pending';
+  }
+
+  for (const key of URL_AUTH_PARAMETERS) {
+    query.delete(key);
+    hash.delete(key);
+  }
+  // A mixed code/bearer URL cannot be a Supabase PKCE callback. Preserve
+  // unrelated product routes' own code parameters.
+  if (isSupabaseReturn) {
+    query.delete('code');
+    hash.delete('code');
+  }
+  url.hash = hash.toString();
+  try {
+    window.history.replaceState(window.history.state, '', `${url.pathname}${url.search}${url.hash}`);
+  } catch {
+    // The SDK still rejects the URL tokens if history is unavailable.
+  }
+}
+
+export function getWebRecoveryLinkState(): WebRecoveryLinkState {
+  return webRecoveryLinkState;
+}
+
+export function getPendingWebRecoveryTokens(): WebRecoveryTokens | null {
+  return webRecoveryTokens;
+}
+
+export function rotatePendingWebRecoveryTokens(accessToken: string, refreshToken: string): void {
+  if (webRecoveryTokens) {
+    webRecoveryTokens = { accessToken, refreshToken };
+  }
+}
+
+export function clearPendingWebRecoveryTokens(): void {
+  webRecoveryTokens = null;
+  webRecoveryLinkState = 'none';
+}
 
 // Secure storage adapter for native platforms (iOS/Android)
 // Stay comfortably under the ~2KB native limit (and leave room for any platform overhead).
@@ -129,6 +236,8 @@ if (!isSupabaseConfigured) {
 // port: local Supabase ports are assigned per project, and a guessed one could reach another project.
 export const UNCONFIGURED_SUPABASE_URL = 'http://supabase-not-configured.invalid';
 
+quarantineWebAuthCallback();
+
 export const supabase = createClient(
   SUPABASE_URL ?? UNCONFIGURED_SUPABASE_URL,
   SUPABASE_ANON_KEY ?? 'anon-key-not-set',
@@ -138,7 +247,15 @@ export const supabase = createClient(
       storage: Platform.OS === 'web' ? undefined : ExpoSecureStoreAdapter,
       autoRefreshToken: true,
       persistSession: true,
-      detectSessionInUrl: Platform.OS === 'web',
+      // URL callbacks are quarantined above; PKCE codes are exchanged below.
+      // The SDK's auto callback path removes an existing session on a failed
+      // code exchange, so do not let it process URL credentials directly.
+      detectSessionInUrl: false,
+      flowType: Platform.OS === 'web' ? 'pkce' : 'implicit',
     },
   }
 );
+
+export const webAuthCallbackPromise: Promise<void> = webAuthCode
+  ? supabase.auth.exchangeCodeForSession(webAuthCode).then(() => undefined, () => undefined)
+  : Promise.resolve();

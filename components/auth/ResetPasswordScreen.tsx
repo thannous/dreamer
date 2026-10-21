@@ -22,8 +22,8 @@ import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { isLucidTrainer } from '@/lib/appVariant';
-import { onPasswordRecovery, updatePassword } from '@/lib/auth';
-import { PASSWORD_MIN_LENGTH } from '@/lib/authValidation';
+import { getWebRecoveryLinkState, onPasswordRecovery, updatePassword, updatePasswordFromWebRecovery } from '@/lib/auth';
+import { isValidEmail, PASSWORD_MIN_LENGTH } from '@/lib/authValidation';
 import { TID } from '@/lib/testIDs';
 import { HeaderScrollView, useHeaderScroll } from '@/components/ui/headerStretch';
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
@@ -35,6 +35,9 @@ const CONTINUE_DESTINATION = isLucidTrainer ? '/lucid' : '/recording';
 const SIGN_IN_DESTINATION = isLucidTrainer ? '/lucid/account' : '/settings';
 
 const getUpdateErrorKey = (error: unknown): string => {
+  if (error instanceof Error && error.message === 'recovery_email_mismatch') {
+    return 'auth.reset_password.email_mismatch';
+  }
   if (isAuthApiError(error) && error.code === 'same_password') {
     return 'auth.reset_password.same_password';
   }
@@ -44,10 +47,9 @@ const getUpdateErrorKey = (error: unknown): string => {
 /**
  * Landing screen for the password-recovery email link.
  *
- * On web, supabase-js consumes the recovery tokens from the URL fragment when the
- * client initialises and emits `PASSWORD_RECOVERY`; the resulting session also
- * surfaces through `useAuth()`. Either signal unlocks the form. When neither
- * arrives (expired or already-used link) the screen offers a way back to sign-in.
+ * Web links carrying implicit tokens require account-email confirmation before
+ * their session is activated. Same-browser PKCE links and native sessions use
+ * their existing recovery events.
  */
 const ResetPasswordScreen: React.FC = () => {
   // This screen's own scroll, published to its header painting and title.
@@ -57,8 +59,10 @@ const ResetPasswordScreen: React.FC = () => {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { user, loading: authLoading } = useAuth();
+  const webRecoveryLinkState = getWebRecoveryLinkState();
 
   const [recoveryDetected, setRecoveryDetected] = useState(false);
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -79,12 +83,13 @@ const ResetPasswordScreen: React.FC = () => {
     return unsubscribe;
   }, []);
 
-  const hasSession = recoveryDetected || Boolean(user);
+  const hasSession = webRecoveryLinkState === 'pending' ||
+    (webRecoveryLinkState === 'none' && (recoveryDetected || Boolean(user)));
   const phase: Phase = completed
     ? 'success'
     : hasSession
       ? 'ready'
-      : authLoading
+      : webRecoveryLinkState === 'none' && authLoading
         ? 'checking'
         : 'expired';
 
@@ -92,7 +97,8 @@ const ResetPasswordScreen: React.FC = () => {
   const passwordsMatch = password === confirmPassword;
   const showPasswordError = touched.password && password.length > 0 && !passwordValid;
   const showMismatchError = touched.confirm && confirmPassword.length > 0 && !passwordsMatch;
-  const submitDisabled = submitting || !passwordValid || !passwordsMatch;
+  const submitDisabled = submitting || !passwordValid || !passwordsMatch ||
+    (webRecoveryLinkState === 'pending' && !isValidEmail(email));
 
   const handleSubmit = async () => {
     setTouched({ password: true, confirm: true });
@@ -100,7 +106,12 @@ const ResetPasswordScreen: React.FC = () => {
     setSubmitting(true);
     setErrorKey(null);
     try {
-      await updatePassword(password);
+      if (webRecoveryLinkState === 'pending') {
+        await updatePasswordFromWebRecovery(email, password);
+      } else {
+        await updatePassword(password);
+      }
+      setEmail('');
       setPassword('');
       setConfirmPassword('');
       setCompleted(true);
@@ -231,6 +242,28 @@ const ResetPasswordScreen: React.FC = () => {
         <Text style={[styles.subtitle, { color: noctalia.text.secondary }]}>
           {t('auth.reset_password.subtitle')}
         </Text>
+
+        {webRecoveryLinkState === 'pending' ? (
+          <>
+            <Text style={[styles.subtitle, { color: noctalia.text.secondary }]}>
+              {t('auth.reset_password.confirm_email')}
+            </Text>
+            <TextInput
+              testID={TID.Input.AuthRecoveryEmail}
+              style={inputStyle}
+              placeholder={t('auth.reset_password.email')}
+              placeholderTextColor={noctalia.text.secondary}
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoComplete="email"
+              textContentType="emailAddress"
+              autoCapitalize="none"
+              autoCorrect={false}
+              editable={!submitting}
+            />
+          </>
+        ) : null}
 
         <View style={styles.inputWithToggle}>
           <TextInput

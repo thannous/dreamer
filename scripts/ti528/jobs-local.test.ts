@@ -19,7 +19,7 @@ suite('TI528 durable jobs and quota on isolated real database', () => {
         const requests = Array.from({ length: 7 }, () => randomUUID());
         const call = async (id: string) => {
           const result = await admin.rpc(kind === 'analysis' ? 'claim_guest_analysis_quota' : 'claim_guest_chat_message', kind === 'analysis'
-            ? { p_fingerprint: fingerprint, p_analysis_request_id: id, p_limit: 3 }
+            ? { p_fingerprint: fingerprint, p_analysis_request_id: id, p_limit: 3, p_transcript_sha256: 'a'.repeat(64) }
             : { p_fingerprint: fingerprint, p_dream_key: 'synthetic', p_request_id: id, p_limit: 3 });
           expect(result.error).toBeNull(); return result.data;
         };
@@ -113,7 +113,7 @@ suite('TI528 durable jobs and quota on isolated real database', () => {
       for (const client of [anon, ...clients]) {
         expect((await client.rpc('admit_authenticated_analysis_job', analysisParams[0])).error?.code).toBe('42501');
         expect((await client.rpc('claim_guest_chat_message', { p_fingerprint: deniedFingerprint, p_dream_key: 'synthetic', p_request_id: randomUUID(), p_limit: 3 })).error?.code).toBe('42501');
-        expect((await client.rpc('claim_guest_analysis_quota', { p_fingerprint: deniedFingerprint, p_analysis_request_id: randomUUID(), p_limit: 3 })).error?.code).toBe('42501');
+        expect((await client.rpc('claim_guest_analysis_quota', { p_fingerprint: deniedFingerprint, p_analysis_request_id: randomUUID(), p_limit: 3, p_transcript_sha256: 'a'.repeat(64) })).error?.code).toBe('42501');
       }
       const admissions = await Promise.all(analysisParams.map(p => admin.rpc('admit_authenticated_analysis_job', p)));
       admissions.forEach(row => expect(row.error).toBeNull());

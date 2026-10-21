@@ -6,6 +6,7 @@ type AuthenticatedAnalysisQuotaClaim = {
 
 export type GuestAnalysisQuotaClaim = {
   allowed?: boolean;
+  code?: string;
   new_count?: number;
   is_upgraded?: boolean;
   claimed?: boolean;
@@ -27,6 +28,7 @@ export async function claimGuestAnalysisQuota({
   analysisRequestId,
   fingerprint,
   limit,
+  transcriptSha256,
 }: {
   adminClient: {
     rpc: (
@@ -37,6 +39,7 @@ export async function claimGuestAnalysisQuota({
   analysisRequestId: string | null;
   fingerprint: string;
   limit: number;
+  transcriptSha256: string;
 }): Promise<{ claim?: GuestAnalysisQuotaClaim; response?: Response }> {
   if (!analysisRequestId) {
     return {
@@ -54,6 +57,7 @@ export async function claimGuestAnalysisQuota({
     p_fingerprint: fingerprint,
     p_analysis_request_id: analysisRequestId,
     p_limit: limit,
+    p_transcript_sha256: transcriptSha256,
   });
 
   if (error) {

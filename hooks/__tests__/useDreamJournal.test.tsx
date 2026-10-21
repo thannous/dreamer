@@ -3186,7 +3186,7 @@ describe('useDreamJournal', () => {
       });
     });
 
-    it('reuses a persisted request id on retry and lets the server reconcile quota', async () => {
+    it('reuses an unclaimed persisted request id so the server can decide whether quota was spent', async () => {
       const persistedRequestId = '3f73ab45-9a14-4db9-94a3-d24724457d9e';
       const existingDream = buildDream({
         id: 1,
@@ -3196,8 +3196,8 @@ describe('useDreamJournal', () => {
         imageUrl: '',
       });
       setSavedDreams([existingDream]);
-      // A previous server claim may make the optimistic quota look exhausted.
-      // Retrying the same request must still reach the idempotent server claim.
+      // The earlier attempt may have failed before admission. Only the server
+      // knows whether this receipt was already spent.
       mockGetQuotaStatus.mockResolvedValue(buildQuotaStatus({ canAnalyze: false }));
 
       const { result } = await renderLoadedDreamJournal();
@@ -3224,6 +3224,42 @@ describe('useDreamJournal', () => {
           isAnalyzed: true,
         })
       );
+    });
+
+    it.each([
+      'ANALYSIS_ALREADY_CLAIMED',
+      'ANALYSIS_TRANSCRIPT_MISMATCH',
+      'ANALYSIS_IDEMPOTENCY_KEY_REUSED',
+    ])('clears a non-reusable %s receipt before an explicit retry', async (code: string) => {
+      const spentRequestId = '3f73ab45-9a14-4db9-94a3-d24724457d9e';
+      setSavedDreams([buildDream({
+        id: 1,
+        isAnalyzed: false,
+        analysisStatus: 'failed',
+        analysisRequestId: spentRequestId,
+      })]);
+      mockAnalyzeDreamText.mockRejectedValueOnce(Object.assign(new Error('HTTP 409 Conflict'), {
+        status: 409,
+        body: { code },
+      }));
+      mockGetQuotaStatus.mockResolvedValue(buildQuotaStatus({ canAnalyze: true }));
+
+      const { result } = await renderLoadedDreamJournal();
+      await act(async () => {
+        await expect(result.current.analyzeDream(1, 'My dream transcript')).rejects.toThrow('HTTP 409');
+      });
+      expect(result.current.dreams[0]).toEqual(expect.objectContaining({
+        analysisStatus: 'failed',
+        analysisRequestId: undefined,
+      }));
+      expect(mockInvalidateQuota).toHaveBeenCalled();
+
+      await act(async () => {
+        await result.current.analyzeDream(1, 'My dream transcript');
+      });
+      expect(mockGetQuotaStatus).toHaveBeenCalled();
+      expect(mockAnalyzeDreamText.mock.calls[1]?.[3]?.analysisRequestId).not.toBe(spentRequestId);
+      expect(result.current.dreams[0].analysisStatus).toBe('done');
     });
 
     it('resumes a persisted pending request without blocking on optimistic quota', async () => {

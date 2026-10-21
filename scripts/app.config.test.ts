@@ -19,6 +19,7 @@ const MARKERS = [
   'EXPO_PUBLIC_APP_VARIANT',
   'EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID',
   'EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID',
+  'EAS_BUILD_PROFILE',
 ];
 
 function withEnv(
@@ -55,6 +56,25 @@ function baseExpo(): ExpoConfig {
 }
 
 describe('Dreamer QA Expo identity', () => {
+  it('uses production App Attest only for App Store/TestFlight profiles', () => {
+    const entitlement = 'com.apple.developer.devicecheck.appattest-environment';
+    for (const profile of ['release', 'production', 'ai-internal']) {
+      withEnv({ EAS_BUILD_PROFILE: profile }, () => {
+        expect(resolveExpoConfig({ config: baseExpo() } as never).ios?.entitlements?.[entitlement])
+          .toBe('production');
+      });
+    }
+    for (const profile of ['development', 'preview', 'release-smoke']) {
+      withEnv({ EAS_BUILD_PROFILE: profile }, () => {
+        expect(resolveExpoConfig({ config: baseExpo() } as never).ios?.entitlements?.[entitlement])
+          .toBe('development');
+      });
+    }
+    withEnv({ NOCTALIA_APP_VARIANT: 'lucid', EXPO_PUBLIC_APP_VARIANT: 'lucid' }, () => {
+      expect(resolveExpoConfig({ config: baseExpo() } as never).ios?.entitlements)
+        .not.toHaveProperty(entitlement);
+    });
+  });
   it('accepts only unset, 0, or 1 for the native QA marker', () => {
     expect(parseDreamerQaBuildMarker(undefined)).toBe(false);
     expect(parseDreamerQaBuildMarker('')).toBe(false);

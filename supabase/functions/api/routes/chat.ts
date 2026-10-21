@@ -37,6 +37,7 @@ import type { ApiContext } from '../types.ts';
 
 type ChatDependencies = {
   admitRequest?: typeof admitSynchronousAiRequest;
+  createAdminClient?: typeof createClient;
 };
 
 type StoredChatMessage = {
@@ -496,6 +497,9 @@ export async function handleChat(
           headers: { 'Content-Type': 'application/json', ...corsHeaders },
         });
       }
+      if (!supabaseServiceRoleKey) {
+        return serviceUnavailable('Chat state unavailable');
+      }
 
       const remoteDreamId = Number(dreamId);
       if (!Number.isSafeInteger(remoteDreamId) || remoteDreamId <= 0) {
@@ -732,7 +736,13 @@ export async function handleChat(
 
     const persistModelMessage = async (modelMessage: StoredChatMessage) => {
       if (!shouldPersist || !authenticatedTurn) return;
-      const { data, error } = await supabase.rpc('complete_authenticated_chat_turn', {
+      const adminClient = (dependencies.createAdminClient ?? createClient)(
+        supabaseUrl,
+        supabaseServiceRoleKey!,
+        { auth: { autoRefreshToken: false, persistSession: false } }
+      );
+      const { data, error } = await adminClient.rpc('complete_authenticated_chat_turn', {
+        p_user_id: user.id,
         p_dream_id: authenticatedTurn.dreamId,
         p_request_id: authenticatedTurn.requestId,
         p_attempt_count: authenticatedTurn.attemptCount,

@@ -21,6 +21,23 @@ export const DREAMER_QA_OBSERVE = Object.freeze({
   projectId: 'noctalia-qa-local',
   endpointUrl: 'https://127.0.0.1:9/',
 });
+const APP_ATTEST_ENTITLEMENT = 'com.apple.developer.devicecheck.appattest-environment';
+const APP_STORE_PROFILES = new Set(['release', 'production', 'ai-internal']);
+
+function withDreamerAppAttestEnvironment(baseExpo: ExpoConfig): ExpoConfig {
+  // App Store/TestFlight builds use Apple's production App Attest service.
+  // Internal ad hoc builds (including release-smoke) use development.
+  const environment = APP_STORE_PROFILES.has(process.env.EAS_BUILD_PROFILE ?? '')
+    ? 'production' : 'development';
+  if (baseExpo.ios?.entitlements?.[APP_ATTEST_ENTITLEMENT] === environment) return baseExpo;
+  return {
+    ...baseExpo,
+    ios: {
+      ...baseExpo.ios,
+      entitlements: { ...baseExpo.ios?.entitlements, [APP_ATTEST_ENTITLEMENT]: environment },
+    },
+  };
+}
 
 function isLucidNativeMarker(value: string | undefined): boolean {
   if (value === undefined || value === '' || value === 'noctalia') return false;
@@ -171,6 +188,10 @@ function createLucidExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
     NSPhotoLibraryUsageDescription: _photoLibraryUsageDescription,
     ...lucidInfoPlist
   } = baseExpo.ios?.infoPlist ?? {};
+  const {
+    [APP_ATTEST_ENTITLEMENT]: _appAttestEnvironment,
+    ...lucidEntitlements
+  } = baseExpo.ios?.entitlements ?? {};
   // The Siri action "Note a dream" writes to the journal, which Lucid does not have:
   // its build leaves out the app-target Swift in app-intents/.
   const { inlineModules: _inlineModules, ...lucidExperiments } = baseExpo.experiments ?? {};
@@ -188,6 +209,7 @@ function createLucidExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
     runtimeVersion: LUCID_APP_VERSION,
     ios: {
       ...baseExpo.ios,
+      entitlements: lucidEntitlements,
       bundleIdentifier: 'com.tanuki75.noctalia.lucid',
       buildNumber: '1',
       associatedDomains: ['applinks:lucid.noctalia.app'],
@@ -308,8 +330,8 @@ export default function resolveExpoConfig({ config }: ConfigContext): ExpoConfig
   }
 
   if (qaEnabled) {
-    return createDreamerQaExpoConfig(baseExpo);
+    return withDreamerAppAttestEnvironment(createDreamerQaExpoConfig(baseExpo));
   }
 
-  return baseExpo;
+  return withDreamerAppAttestEnvironment(baseExpo);
 }

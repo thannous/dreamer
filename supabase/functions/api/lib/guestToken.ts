@@ -73,7 +73,10 @@ export const createGuestToken = async (
     ? Math.min(now + TOKEN_TTL_MS, qaExpiry)
     : now + TOKEN_TTL_MS;
   const payload: GuestTokenPayload = {
-    v: 1,
+    // v2 proves this iOS session passed the App Attest boundary. Legacy iOS
+    // v1 tokens were minted from an unauthenticated fingerprint and must die
+    // immediately when the new verifier is deployed.
+    v: platform === 'ios' ? 2 : 1,
     fingerprint,
     platform,
     ...(options?.quotaSubject ? { quotaSubject: options.quotaSubject } : {}),
@@ -122,7 +125,7 @@ export const verifyGuestToken = async (
     return { ok: false, reason: 'bad_payload' };
   }
 
-  if (payload.v !== 1) {
+  if (payload.v !== (payload.platform === 'ios' ? 2 : 1)) {
     return { ok: false, reason: 'version_mismatch' };
   }
 

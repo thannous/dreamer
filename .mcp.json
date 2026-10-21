@@ -8,13 +8,16 @@
       "type": "sse",
       "url": "https://mcp.context7.com/mcp",
       "headers": {
-        "CONTEXT7_API_KEY": "ctx7sk-62867755-6cd5-410e-92ff-b5e751a5116d"
+        "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
       },
       "disabled": false
     },
     "chrome-devtools": {
       "command": "npx",
-      "args": ["chrome-devtools-mcp@latest", "--autoConnect"]
+      "args": [
+        "chrome-devtools-mcp@latest",
+        "--autoConnect"
+      ]
     }
   }
 }

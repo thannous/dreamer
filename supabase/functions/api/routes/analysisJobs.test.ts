@@ -28,6 +28,15 @@ Deno.test('analysis quota admission returns a typed upgrade response', async () 
   });
 });
 
+Deno.test('a spent or transcript-mismatched receipt is a conflict, not a retryable rate limit', async () => {
+  for (const code of ['ANALYSIS_ALREADY_CLAIMED', 'ANALYSIS_TRANSCRIPT_MISMATCH']) {
+    const response = blockedAdmissionResponse({ allowed: false, code });
+    assertEquals(response.status, 409);
+    assertEquals(response.headers.get('Retry-After'), null);
+    assertEquals((await response.json()).code, code);
+  }
+});
+
 Deno.test('a Plus account past its daily analyses gets a calm 429 that says when to come back', async () => {
   const response = blockedAdmissionResponse({
     allowed: false,
