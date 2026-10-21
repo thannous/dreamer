@@ -1,10 +1,12 @@
+import { dreamerCampaignContexts } from './tools/e2e/campaign-contexts.mjs';
+
 // Checks of the common delivery rule for this repository, read by
 // scripts/verify-local.mjs. The rule is this repository's own copy,
 // doc_web_interne/docs/regle-commune-livraison.md; what is specific to dreamer
 // is in AGENTS.md, "Notes dreamer". The engine and its tests are this repository's own
 // copy: each repository pins its own ENGINE_SHA256 (below) and verifies it
 // locally; an engine fix is worth porting to the others, but nothing checks
-// that across repositories. This file is data only (no imports).
+// that across repositories. The gate contexts are shared data from tools/e2e/campaign-contexts.mjs.
 //
 //   npm run verify:pr       before every push: the former pre-push `verify:fast`, split
 //                           into checks, plus the surfaces the PR changed.
@@ -155,12 +157,10 @@ const TESTERARMY = {
 };
 
 // The four passes of tools/e2e/README.md that jointly qualify every Dreamer case.
-const DREAMER_PASSES = [
-  'EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=true E2E_WEB_LOCALE=en-US node tools/e2e/run.mjs dreamer web run',
-  'EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=true E2E_WEB_LOCALE=fr-FR node tools/e2e/run.mjs dreamer web run --tag locale-fr-FR',
-  'EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=true E2E_WEB_LOCALE=de-DE node tools/e2e/run.mjs dreamer web run --tag locale-de-DE',
-  "EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=false E2E_WEB_LOCALE=en-US node tools/e2e/run.mjs dreamer web run --grep 'feature sheets stay disabled when switched off'",
-].join(' && ');
+const shellQuote = arg => `'${arg.replaceAll("'", "'\"'\"'")}'`;
+const DREAMER_PASSES = dreamerCampaignContexts.map(({ locale, featureSheets, args }) =>
+  `EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=${featureSheets} E2E_WEB_LOCALE=${locale} node tools/e2e/run.mjs dreamer web run${args.length ? ' ' + args.map(shellQuote).join(' ') : ''}`,
+).join(' && ');
 
 // sha256 of this repository's own copy of scripts/verify-local.mjs. The engine
 // tests compare the file with it, so an engine edit is a deliberate change of
@@ -261,7 +261,7 @@ export default {
     {
       name: 'verify-local-engine',
       command: 'npm run test:verify-local',
-      inputs: ['scripts/verify-local.mjs', 'scripts/test-verify-local*.mjs', 'scripts/test-platform-contracts.mjs', 'scripts/test-test-auth-permissions-native.mjs', 'scripts/test-auth-setup.mjs', 'scripts/test-support/**', 'scripts/run-verify-tests.mjs', 'verify-local.config.mjs', '.gitattributes'],
+      inputs: ['scripts/verify-local.mjs', 'scripts/test-verify-local*.mjs', 'scripts/test-platform-contracts.mjs', 'scripts/test-test-auth-permissions-native.mjs', 'scripts/test-auth-setup.mjs', 'scripts/test-support/**', 'scripts/run-verify-tests.mjs', 'verify-local.config.mjs', 'tools/e2e/campaign-contexts.mjs', '.gitattributes'],
     },
     // The production publish guard of noctalia.app (docs:deploy:prod) against
     // proofs written by this engine in scratch repositories.

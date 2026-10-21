@@ -7,6 +7,7 @@ import { delimiter, join, resolve, basename, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SDK_PINS, digest, trackedDiffSha256, sourceSnapshot, compareSnapshots, verifyReport, aggregateReports, writeOnce, preserveStatus, directoryFiles, hashFiles, createAttemptOutput, verifyEvidenceFiles, verifyNativeCleanup, campaignFailureRecord, startSdkProgress, startHostStallMonitor, HOST_STALL_MS } from './qualification.mjs';
 import { normalizeAvdName, appInputs, nativeInputs, binaryInputs, releaseMetadata, validateReleaseReceipt, verifyInstalledRelease, runWithInstallDiagnostics, validateBuildCommand, archiveReleaseBinary } from './native-release.mjs';
+import { dreamerCampaignContexts } from './campaign-contexts.mjs';
 
 const cwd = fileURLToPath(new URL('.', import.meta.url));
 const root = fileURLToPath(new URL('../../', import.meta.url));
@@ -121,7 +122,7 @@ function read(executable, argv, options = {}) {
   return result.stdout.trim();
 }
 function webInputIdentity() {
-  const sourceFiles = ['e2e.config.ts', 'dreamer-personas.ts', 'web-engine.ts', 'web-parity-fixtures.ts', 'web-fixtures.ts', 'backend-fixtures.ts', 'branch-target.ts', 'full-campaign.mjs', 'preload-web-matchers.mjs', 'run.mjs', 'journeys.ts', 'package.json', 'package-lock.json', 'tsconfig.json',
+  const sourceFiles = ['e2e.config.ts', 'dreamer-personas.ts', 'web-engine.ts', 'web-parity-fixtures.ts', 'web-fixtures.ts', 'backend-fixtures.ts', 'branch-target.ts', 'full-campaign.mjs', 'campaign-contexts.mjs', 'preload-web-matchers.mjs', 'run.mjs', 'journeys.ts', 'package.json', 'package-lock.json', 'tsconfig.json',
     ...readdirSync(join(cwd, 'tests')).filter(name => name.endsWith('.web.e2e.ts')).map(name => `tests/${name}`),
   ].sort();
   return Object.fromEntries(sourceFiles.map(path => [path, createHash('sha256').update(readFileSync(join(cwd, path))).digest('hex')]));
@@ -272,7 +273,7 @@ function collectCampaign() {
   }
   if (!reports.length) diagnostics.push({ qualified: false, code: 'NO_CURRENT_QUALIFIED_REPORTS' });
   if (product === 'dreamer') {
-    for (const [locale, featureSheets] of [['en-US', true], ['fr-FR', true], ['de-DE', true], ['en-US', false]]) {
+    for (const { locale, featureSheets } of dreamerCampaignContexts) {
       if (!reports.some(proof => proof.context?.locale === locale && proof.context?.featureSheets === featureSheets)) diagnostics.push({ qualified: false, code: 'CAMPAIGN_CONTEXT_MISSING', context: { locale, featureSheets } });
     }
   }

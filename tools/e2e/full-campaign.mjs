@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { sourceSnapshot, compareSnapshots, verifyEvidenceFiles } from './qualification.mjs';
+import { dreamerCampaignContexts } from './campaign-contexts.mjs';
 
 const root = fileURLToPath(new URL('../../', import.meta.url));
 
@@ -65,9 +66,9 @@ export async function runFullCampaign() {
       throw new Error('ChatGPT login unavailable. Run npm run test:testerarmy:login first.');
     if (!await execute('site-build', ['--run', 'docs:build'], {}, false)) throw new Error('Generated site build failed.');
     before = sourceSnapshot(root, 'dreamer');
-    for (const [locale, featureSheets] of [['en-US', true], ['fr-FR', true], ['de-DE', true], ['en-US', false]]) {
+    for (const { locale, featureSheets, args } of dreamerCampaignContexts) {
       if (interrupted) break;
-      await execute(`dreamer-${locale}-${featureSheets ? 'sheets' : 'direct'}`, ['tools/e2e/run.mjs', 'dreamer', 'web', 'run'], {
+      await execute(`dreamer-${locale}-${featureSheets ? 'sheets' : 'direct'}`, ['tools/e2e/run.mjs', 'dreamer', 'web', 'run', ...args], {
         E2E_WEB_LOCALE: locale, EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED: String(featureSheets),
       });
     }
@@ -86,7 +87,7 @@ export async function runFullCampaign() {
   try { after = sourceSnapshot(root, 'dreamer'); }
   catch (error) { steps.push({ name: 'source-error', exitCode: 1, error: error.message }); }
   const stable = before && after && compareSnapshots(before, after).sourceStable;
-  const passed = !interrupted && stable && steps.length === 12 && steps.every(row => row.exitCode === 0);
+  const passed = !interrupted && stable && steps.length === dreamerCampaignContexts.length + 8 && steps.every(row => row.exitCode === 0);
   const report = { schemaVersion: 1, id, revision: after?.revision ?? before?.revision ?? null, source: after ?? null, passed: Boolean(passed),
     sourceStable: Boolean(stable), interrupted: interrupted ?? null, steps,
     rerun: 'mise exec -- npm run test:testerarmy:all',
