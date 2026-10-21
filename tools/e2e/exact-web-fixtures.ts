@@ -45,7 +45,7 @@ export function createExactWebTest(options: Options = {}) {
       mkdirSync(folder, { recursive: true });
       writeFileSync(join(folder, `${name}.${artifact.contentType === 'application/json' ? 'json' : 'bin'}`), artifact.body);
     } };
-    await body({ ...ui, artifacts });
+    await body({ app: ui.app, screen: ui.screen, browser: ui.browser, artifacts });
   });
 }
 
