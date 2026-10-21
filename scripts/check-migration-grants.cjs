@@ -61,6 +61,10 @@
 //   - "caller-owned object": alter <any object kind> ... owner to anon,
 //     authenticated, service_role or public (quoted or not, also in a literal
 //     execute), or create schema ... authorization one of them, in any migration;
+//   - "unsafe quoted name": a quoted routine, schema or role name with
+//     whitespace, an escaped quote, parentheses, or a word the lint parses
+//     (begin, atomic, search_path, security, definer, set, role), in any
+//     migration;
 //   - "quoted name with parenthesis": a routine statement with a quoted
 //     identifier containing "(" (typmod stripping cannot tell "foo(1)" from foo);
 //   - "role DDL": create/alter/drop role|user|group (all forms), grant <role>
@@ -865,6 +869,18 @@ function checkFunctionSql(source) {
     if (authorization && CALLER_ROLES.includes(ident(authorization[1]))) {
       found.push(`shape rule "caller-owned object": create schema ... authorization anon, authenticated, service_role or public; callers must never own a schema`);
     }
+    // Quoted routine, schema or role names the parser could misread fail closed: whitespace, an
+    // escaped quote, parentheses, or a word it parses (begin, atomic, search_path, security, definer, set, role).
+    const listStatement = new RegExp(String.raw`${LEAD}(?:grant|revoke|drop\s+(?:function|procedure|routine|schema)|(?:create|alter|drop)\s+(?:role|user|group)|set\b|reset\b|alter\s+(?:function|procedure|routine)\b[\s\S]*\bset\b)`, 'i').test(text);
+    const nameContext = new RegExp(String.raw`(?:\b(?:(?:functions?|procedures?|routines?|schemas?|role|user|group)(?:\s+if\s+(?:not\s+)?exists)?|to|from|by|authorization|search_path\s*=)|${listStatement ? ',' : '(?!)'})\s*(?:${IDENT}\s*\.\s*)?$`, 'i');
+    for (const quoted of text.matchAll(/"(?:[^"]|"")*"/g)) {
+      const name = quoted[0].slice(1, -1);
+      if (!/\s|""|[()]|\b(?:begin|atomic|search_path|security|definer|set|role)\b/i.test(name)) continue;
+      const qualifier = /^\s*\./.test(text.slice(quoted.index + quoted[0].length));
+      if (qualifier || nameContext.test(text.slice(0, quoted.index))) {
+        found.push(`shape rule "unsafe quoted name": quoted routine, schema or role name ${quoted[0]} has whitespace, a quote, parentheses or a parsed keyword; rename it`);
+      }
+    }
     return found;
   };
   let rolledBack = false;
@@ -908,7 +924,7 @@ function checkFunctionSql(source) {
     }
     problems.push(...schemaShapes(statement.text));
     // Typmod stripping cannot tell "foo(1)" from foo, so a quoted name with "(" in a routine statement fails closed.
-    if ((createRoutine.test(statement.text) || alterRoutine.test(statement.text) || privilege.test(statement.text) || /^\s*drop\s+(?:function|procedure|routine)\b/i.test(statement.text)) && /"(?:[^"]|"")*\((?:[^"]|"")*"/.test(statement.text)) {
+    if ((createRoutine.test(statement.text) || alterRoutine.test(statement.text) || privilege.test(statement.text) || /^\s*drop\s+(?:function|procedure|routine)\b/i.test(statement.text)) && [...statement.text.matchAll(/"(?:[^"]|"")*"/g)].some((quoted) => quoted[0].includes('('))) {
       problems.push(`shape rule "quoted name with parenthesis": a routine statement with a quoted identifier containing "("; rename the type or routine`);
     }
     if (touchesRoutines && roleSwitch.test(statement.text)) {

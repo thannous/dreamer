@@ -251,6 +251,11 @@ create function s2.bd() returns void language sql security definer as $$ select 
   'owner to a trusted role and create schema authorization postgres': `alter table public.dreams owner to postgres;
 alter function public.get_user_dreams() owner to postgres;
 create schema if not exists private4 authorization postgres;`,
+  'ordinary quoted routine, schema and role names': `create schema "Private_Data";
+grant usage on schema "Private_Data" to "authenticated";
+drop function if exists public."getUserDreams"();
+create policy "dreams select own" on public.dreams for select to authenticated using (true);
+alter function public."getUserDreams"() owner to "postgres";`,
 };
 
 // Each fails the SECURITY DEFINER rule with the listed problems.
@@ -534,7 +539,7 @@ grant execute on function public.f(public."foo(1)") to authenticated;`, [/shape 
   'escaped quote before -- in an E string hides no DDL': [`SELECT E'prefix\\'-- still string'; CREATE FUNCTION public.f() RETURNS int LANGUAGE sql SECURITY DEFINER AS $$ select 1 $$;`,
     [/public\.f.*from public"/, /from anon"/, /grant execute/, /search_path/]],
   'Codex: quoted SEARCH_PATH routine is not search_path': [`create function public."SEARCH_PATH"() returns int language sql security definer as $$ select 1 $$;
-create function public.search_path() returns int language sql security invoker as $$ select 1 $$;`, [/SEARCH_PATH.*from public"/, /from anon"/, /grant execute/, /search_path/]],
+create function public.search_path() returns int language sql security invoker as $$ select 1 $$;`, [/shape rule "unsafe quoted name"/, /SEARCH_PATH.*from public"/, /from anon"/, /grant execute/, /search_path/]],
   'schema DDL in a file without routines': [`drop schema private cascade;
 alter schema scratch rename to scratch_old;`, [/shape rule "schema DDL"/, /shape rule "schema DDL"/]],
   'Codex: schema owned by a caller on a pg_temp path': [`alter schema private owner to authenticated;
@@ -560,7 +565,22 @@ do $$ begin execute 'alter schema private owner to service_role'; end $$;`, [/sh
 create schema authorization anon;
 create schema if not exists private3 authorization "service_role";`, [/shape rule "caller-owned object"/, /shape rule "caller-owned object"/, /shape rule "caller-owned object"/]],
   'Codex: quoted name "begin atomic" is not a body': [`CREATE FUNCTION public."begin atomic"() RETURNS integer LANGUAGE sql SECURITY DEFINER AS $$ SELECT 1 $$;`,
-    [/begin atomic.*from public"/, /from anon"/, /grant execute/, /search_path/]],
+    [/shape rule "unsafe quoted name"/, /begin atomic.*from public"/, /from anon"/, /grant execute/, /search_path/]],
+  'unsafe quoted name: space in a routine name': [`drop function if exists public."my fn"();`, [/shape rule "unsafe quoted name"/]],
+  'unsafe quoted name: tab in a schema name': [`create schema "my\tschema";`, [/shape rule "unsafe quoted name"/]],
+  'unsafe quoted name: escaped quote in a role name': [`grant usage on schema private to "a""b";`, [/shape rule "unsafe quoted name"/]],
+  'unsafe quoted name: open parenthesis in a routine name': [`drop function public."f(x"();`, [/shape rule "unsafe quoted name"/, /shape rule "quoted name with parenthesis"/]],
+  'unsafe quoted name: close parenthesis in a schema name': [`create schema "s)";`, [/shape rule "unsafe quoted name"/]],
+  'unsafe quoted name: begin': [`create function public."Begin"() returns int language sql security invoker set search_path = '' as $$ select 1 $$;`, [/shape rule "unsafe quoted name"/]],
+  'unsafe quoted name: atomic': [`alter schema "atomic" owner to postgres;`, [/shape rule "unsafe quoted name"/]],
+  'unsafe quoted name: search_path': [`grant usage on schema private to "search_path";`, [/shape rule "unsafe quoted name"/]],
+  'unsafe quoted name: security': [`create schema if not exists "SECURITY";`, [/shape rule "unsafe quoted name"/]],
+  'unsafe quoted name: definer': [`grant usage on schema "my definer" to authenticated;`, [/shape rule "unsafe quoted name"/]],
+  'unsafe quoted name: set': [`revoke usage on schema private from "set";`, [/shape rule "unsafe quoted name"/]],
+  'unsafe quoted name: role': [`alter function public.get_user_dreams() owner to "Role";`, [/shape rule "unsafe quoted name"/]],
+  'unsafe quoted name: schema qualifier and search_path entry': [`set search_path = "my schema", pg_temp;
+create function "x y".f() returns int language sql security invoker as $$ select 1 $$;`, [/shape rule "unsafe quoted name"/, /shape rule "unsafe quoted name"/]],
+  'unsafe quoted name: second role in a grant list': [`grant usage on schema private to postgres, "role x";`, [/shape rule "unsafe quoted name"/]],
 };
 
 test('a public security definer function with revokes, a grant and a search_path passes', () => {
