@@ -19,10 +19,20 @@ async function main() {
   const status = JSON.parse(fs.readFileSync(process.env.E2E_BACKEND_STATUS_FILE, 'utf8'));
   const url = assertBackendTarget(status); // before SQL, clients or credentials are used
   stage = 'qa-schema';
-  const sql = fs.readFileSync(new URL('account-leases.sql', import.meta.url), 'utf8');
+  const schemaFile = fileURLToPath(new URL('account-leases.sql', import.meta.url));
   const query = spawnSync(process.env.E2E_QA_CLI, ['db', 'query', '--workdir', workdir, '--db-url', status.DB_URL,
-    sql, '--output-format', 'json'], { cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
-  if (query.error || query.status !== 0) throw new Error('QA_LOCAL_SCHEMA_FAILED');
+    '--file', schemaFile, '--yes', '--output-format', 'json'], { cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
+  if (query.error || query.status !== 0) {
+    // Classify known CLI/SQL failures without logging stderr, URLs or credentials.
+    const diagnostic = String(query.stderr ?? '');
+    const reason = query.error ? 'CLI_SPAWN' : /multiple commands/i.test(diagnostic) ? 'MULTIPLE_COMMANDS'
+      : /permission denied/i.test(diagnostic) ? 'SQL_PERMISSION'
+      : /syntax error/i.test(diagnostic) ? 'SQL_SYNTAX'
+      : /unknown flag|unexpected argument/i.test(diagnostic) ? 'CLI_ARGUMENT'
+      : /refus|confirm|approval|read.only/i.test(diagnostic) ? 'CLI_CONFIRMATION' : 'UNCLASSIFIED';
+    stage = `qa-schema-${reason}`;
+    throw new Error('QA_LOCAL_SCHEMA_FAILED');
+  }
   const admin = createClient(url.href, status.SERVICE_ROLE_KEY, { auth: { persistSession: false, autoRefreshToken: false } });
   const accounts = ['free', 'premium'].map(tier => ({ tier, email: `e2e+${tier}@qa.example.test` }));
   const config = { anonKey: status.ANON_KEY, passwords: {}, ids: {}, authDir: path.join(workdir, '.auth'), origin: 'http://127.0.0.1:8087' };
