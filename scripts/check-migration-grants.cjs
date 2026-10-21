@@ -65,8 +65,9 @@
 //     whitespace, an escaped quote, parentheses, or a word the lint parses
 //     (begin, atomic, search_path, security, definer, set, role), in any
 //     migration;
-//   - "quoted name with parenthesis": a routine statement with a quoted
-//     identifier containing "(" (typmod stripping cannot tell "foo(1)" from foo);
+//   - "quoted name with a delimiter": a routine statement with a quoted
+//     identifier containing "(", ")", "," or an escaped quote (typmod stripping
+//     and the signature encoding cannot tell "foo(1)" from foo, or "a,b" from a, b);
 //   - "role DDL": create/alter/drop role|user|group (all forms), grant <role>
 //     to anyone, revoke <role> from, reassign owned, drop owned. A file that
 //     needs one must be grandfathered (pinned by SHA-256); none does today;
@@ -951,8 +952,8 @@ function checkFunctionSql(source) {
     }
     problems.push(...schemaShapes(statement.text));
     // Typmod stripping cannot tell "foo(1)" from foo, so a quoted name with "(" in a routine statement fails closed.
-    if ((createRoutine.test(statement.text) || alterRoutine.test(statement.text) || privilege.test(statement.text) || /^\s*drop\s+(?:function|procedure|routine)\b/i.test(statement.text)) && [...statement.text.matchAll(/"(?:[^"]|"")*"/g)].some((quoted) => quoted[0].includes('('))) {
-      problems.push(`shape rule "quoted name with parenthesis": a routine statement with a quoted identifier containing "("; rename the type or routine`);
+    if ((createRoutine.test(statement.text) || alterRoutine.test(statement.text) || privilege.test(statement.text) || /^\s*drop\s+(?:function|procedure|routine)\b/i.test(statement.text)) && [...statement.text.matchAll(/"(?:[^"]|"")*"/g)].some((quoted) => /[(),]|""/.test(quoted[0].slice(1, -1)))) {
+      problems.push(`shape rule "quoted name with a delimiter": a routine statement with a quoted identifier containing "(", ")", "," or an escaped quote; rename the type or routine`);
     }
     if (touchesRoutines && roleSwitch.test(statement.text)) {
       problems.push(`shape rule "role switch": set role or set session authorization in a migration that changes routines; new routines would be owned by that role`);

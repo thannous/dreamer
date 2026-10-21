@@ -535,7 +535,7 @@ drop schema if exists scratch, public cascade;`, [/shape rule "public schema DDL
   'CTO: quoted type name with a parenthesis': [`create function public.f(x public.foo) returns void language sql security definer set search_path = '' as $$ select 1 $$;
 create function public.f(x public."foo(1)") returns void language sql security definer set search_path = '' as $$ select 1 $$;
 revoke execute on function public.f(public."foo(1)") from public, anon;
-grant execute on function public.f(public."foo(1)") to authenticated;`, [/shape rule "quoted name with parenthesis"/, /shape rule "quoted name with parenthesis"/, /shape rule "quoted name with parenthesis"/]],
+grant execute on function public.f(public."foo(1)") to authenticated;`, [/shape rule "quoted name with a delimiter"/, /shape rule "quoted name with a delimiter"/, /shape rule "quoted name with a delimiter"/]],
   'escaped quote before -- in an E string hides no DDL': [`SELECT E'prefix\\'-- still string'; CREATE FUNCTION public.f() RETURNS int LANGUAGE sql SECURITY DEFINER AS $$ select 1 $$;`,
     [/public\.f.*from public"/, /from anon"/, /grant execute/, /search_path/]],
   'Codex: quoted SEARCH_PATH routine is not search_path': [`create function public."SEARCH_PATH"() returns int language sql security definer as $$ select 1 $$;
@@ -569,7 +569,7 @@ create schema if not exists private3 authorization "service_role";`, [/shape rul
   'unsafe quoted name: space in a routine name': [`drop function if exists public."my fn"();`, [/shape rule "unsafe quoted name"/]],
   'unsafe quoted name: tab in a schema name': [`create schema "my\tschema";`, [/shape rule "unsafe quoted name"/]],
   'unsafe quoted name: escaped quote in a role name': [`grant usage on schema private to "a""b";`, [/shape rule "unsafe quoted name"/]],
-  'unsafe quoted name: open parenthesis in a routine name': [`drop function public."f(x"();`, [/shape rule "unsafe quoted name"/, /shape rule "quoted name with parenthesis"/]],
+  'unsafe quoted name: open parenthesis in a routine name': [`drop function public."f(x"();`, [/shape rule "unsafe quoted name"/, /shape rule "quoted name with a delimiter"/]],
   'unsafe quoted name: close parenthesis in a schema name': [`create schema "s)";`, [/shape rule "unsafe quoted name"/]],
   'unsafe quoted name: begin': [`create function public."Begin"() returns int language sql security invoker set search_path = '' as $$ select 1 $$;`, [/shape rule "unsafe quoted name"/]],
   'unsafe quoted name: atomic': [`alter schema "atomic" owner to postgres;`, [/shape rule "unsafe quoted name"/]],
@@ -590,6 +590,13 @@ create function public.claim(x pg_catalog.text) returns int language sql securit
   'Codex: pg_catalog."char" is not character': [`create function public.claim(x pg_catalog."char") returns int language sql security definer as $$ select 1 $$;
 create function public.claim(x character) returns int language sql security invoker as $$ select 1 $$;`,
     [/public\.claim\("char"\).*from public"/, /from anon"/, /grant execute/, /search_path/]],
+  'CTO: quoted type name with a comma': [`create type public."a,b" as enum ('x');
+create type public.a as enum ('x');
+create type public.b as enum ('x');
+create function public.claim(x public."a,b") returns int language sql security definer as $$ select 1 $$;
+create function public.claim(x public.a, y public.b) returns int language sql security invoker as $$ select 1 $$;`, [/shape rule "quoted name with a delimiter"/]],
+  'quoted type name with a close parenthesis or an escaped quote': [`drop function if exists public.f(public."x)");
+drop function if exists public.f(public."x""y");`, [/shape rule "quoted name with a delimiter"/, /shape rule "quoted name with a delimiter"/]],
 };
 
 test('a public security definer function with revokes, a grant and a search_path passes', () => {
