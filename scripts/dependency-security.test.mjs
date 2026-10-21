@@ -1,5 +1,5 @@
 import { readFileSync, readdirSync, realpathSync } from 'node:fs';
-import { dirname, isAbsolute, join, relative } from 'node:path';
+import { dirname, isAbsolute, join, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -22,7 +22,7 @@ function installed(name) {
   try { packageRoot = realpathSync(join(projectRoot, 'node_modules', name)); }
   catch { assert.fail(`${name} resolved outside the ${project} installation`); }
   const path = relative(packageRoot, resolved);
-  assert.ok(path !== '..' && !path.startsWith('../') && !isAbsolute(path), `${name} resolved outside the ${project} installation`);
+  assert.ok(path !== '..' && !path.startsWith(`..${sep}`) && !isAbsolute(path), `${name} resolved outside the ${project} installation`);
   return require(name);
 }
 
