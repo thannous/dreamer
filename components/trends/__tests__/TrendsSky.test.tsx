@@ -26,8 +26,8 @@ const older = dream(12, 'The flooded hall');
 const newer = dream(14, '');
 const sky: DreamSky = {
   stars: [
-    { dream: older, x: 0.3, y: 0.4, analyzed: true },
-    { dream: newer, x: 0.8, y: 0.6, analyzed: false },
+    { dream: older, x: 0.3, y: 0.4, analyzed: true, fullMoon: false },
+    { dream: newer, x: 0.8, y: 0.6, analyzed: false, fullMoon: false },
   ],
   constellations: [],
   total: 2,
@@ -37,7 +37,7 @@ const formatDate = (value: Date | number) => `day ${new Date(value).getDate()}`;
 
 const renderSky = (onOpenDream: (dream: DreamAnalysis) => void) => {
   const view = render(
-    <TrendsSky sky={sky} lit reduced={false} ink="#fff" glow="#fff" glowOpacity={0.3} dust="#fff" t={t}
+    <TrendsSky sky={sky} lit reduced={false} ink="#fff" glow="#fff" glowOpacity={0.3} dust="#fff" silver="#ccc" t={t}
       formatNumber={String} formatDate={formatDate} onOpenDream={onOpenDream} />,
   );
   return view.getByTestId('trends.sky.canvas');
@@ -80,7 +80,7 @@ describe('TrendsSky with a screen reader', () => {
     jest.replaceProperty(Platform, 'OS', 'web');
     const onOpenDream = jest.fn();
     const view = render(
-      <TrendsSky sky={sky} lit reduced={false} ink="#fff" glow="#fff" glowOpacity={0.3} dust="#fff" t={t}
+      <TrendsSky sky={sky} lit reduced={false} ink="#fff" glow="#fff" glowOpacity={0.3} dust="#fff" silver="#ccc" t={t}
         formatNumber={String} formatDate={formatDate} onOpenDream={onOpenDream} />,
     );
     const canvas = view.getByTestId('trends.sky.canvas');
@@ -107,7 +107,7 @@ describe('TrendsSky under a finger', () => {
   it('opens the star a tap lands on, not the one a slide ends or comes back on', () => {
     const onOpenDream = jest.fn();
     const view = render(
-      <TrendsSky sky={sky} lit reduced={false} ink="#fff" glow="#fff" glowOpacity={0.3} dust="#fff" t={t}
+      <TrendsSky sky={sky} lit reduced={false} ink="#fff" glow="#fff" glowOpacity={0.3} dust="#fff" silver="#ccc" t={t}
         formatNumber={String} formatDate={formatDate} onOpenDream={onOpenDream} />,
     );
     fireEvent(view.getByTestId('trends.sky.canvas'), 'layout', { nativeEvent: { layout: { width: 300, height: 280 } } });

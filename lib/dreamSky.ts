@@ -1,6 +1,7 @@
 import type { LinkedSymbol } from '@/lib/symbolLinks';
 import type { PeriodSymbol } from '@/lib/trendsSymbols';
 import { isDreamAnalyzed } from '@/lib/dreamUsage';
+import { isFullMoonDream } from '@/lib/fullMoon';
 import type { DreamAnalysis } from '@/lib/types';
 
 /** Beyond a year of nightly dreams, the oldest stars give way to the newest. */
@@ -14,6 +15,8 @@ export type SkyStar = {
   /** 0 at the top of the sky, 1 at the bottom; the same for a dream in every period. */
   y: number;
   analyzed: boolean;
+  /** Noted after a full moon's night: the star wears a silver ring. */
+  fullMoon: boolean;
 };
 
 /** A symbol that came back in the period, drawn through its dreams in the order they came. */
@@ -80,6 +83,7 @@ export function buildDreamSky(
     x: Math.min(1, Math.max(0, (dream.id - start) / span)),
     y: heightOf(dream.id),
     analyzed: isDreamAnalyzed(dream),
+    fullMoon: isFullMoonDream(dream.id),
   }));
   const at = new Map(stars.map((star, index) => [star.dream.id, index]));
   const constellations = symbols

@@ -19,6 +19,7 @@ import { sparklePath } from '@/components/journal/story/sparkle';
 import { PressableScale } from '@/components/motion';
 import { getFreeAnalysesNudge } from '@/components/quota/FreeAnalysesNudge';
 import { PeriodSeal, PERIOD_SEAL_SIZE } from '@/components/trends/PeriodSeal';
+import { TrendsConstellations } from '@/components/trends/TrendsConstellations';
 import { TrendsFigures } from '@/components/trends/TrendsFigures';
 import { TrendsNights } from '@/components/trends/TrendsNights';
 import { TrendsPeriodSwitch } from '@/components/trends/TrendsPeriodSwitch';
@@ -40,7 +41,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { getDreamThemeLabel } from '@/lib/dreamLabels';
 import { getDreamRouteParams } from '@/lib/dreamRoute';
 import { buildPaywallHref } from '@/lib/paywallRoute';
-import { formatQuotaResetDate } from '@/lib/quotaReset';
+import { formatQuotaResetDate, withFirstDayOrdinal } from '@/lib/quotaReset';
 import { buildDreamSky } from '@/lib/dreamSky';
 import {
   buildDreamTrends,
@@ -55,6 +56,7 @@ import { getSymbolIndex } from '@/lib/symbolLinks';
 import { getPeriodSymbols } from '@/lib/trendsSymbols';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
+import { CONSTELLATION_NIGHTS, getFormedWeeks, nameWeek, type WeekNights } from '@/lib/weekConstellations';
 import { HeaderScrollView, useHeaderScroll } from '@/components/ui/headerStretch';
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 
@@ -169,6 +171,19 @@ function StatisticsScreen() {
     [analyzedIds, symbolIndex],
   );
   const sky = useMemo(() => buildDreamSky(dreams, trends.range, periodSymbols), [dreams, periodSymbols, trends.range]);
+  // The formed weeks belong to the whole journal, whatever the period.
+  const formedWeeks = useMemo(() => getFormedWeeks(dreams), [dreams]);
+  // Named once per journal: each name reads the whole symbol index.
+  const weekNames = useMemo(() => {
+    if (formedWeeks.length === 0) return new Map<number, string>();
+    const index = getSymbolIndex(dreams, currentLang);
+    return new Map(formedWeeks.map((week) => {
+      const name = nameWeek(week, index);
+      return [week.start, !name
+        ? t('trends.constellations.week_of', { date: withFirstDayOrdinal(formatDate(week.start, { day: 'numeric', month: 'long' }), locale) })
+        : 'symbol' in name ? name.symbol.name : getDreamThemeLabel(name.theme, t) ?? name.theme];
+    }));
+  }, [currentLang, dreams, formatDate, formedWeeks, locale, t]);
 
   const { nightsRef, returnsRef, skyRef, nightsLit, returnsLit, skyLit, onRevealLayout, onRevealScroll } =
     useTrendsReveal(loaded && !trends.empty, trends.count > 0);
@@ -180,6 +195,14 @@ function StatisticsScreen() {
 
   const openDream = useCallback((dream: DreamAnalysis) => {
     router.push({ pathname: '/journal/[id]', params: getDreamRouteParams(dream) });
+  }, []);
+
+  // A formed week opens the journal on its Monday to its Sunday.
+  const openWeek = useCallback((week: WeekNights) => {
+    router.navigate({
+      pathname: '/(tabs)/journal',
+      params: toJournalFilterParams({ from: getLocalDateKey(week.start), to: getLocalDateKey(week.end - 1) }, String(Date.now())),
+    });
   }, []);
 
   const capture = useCallback(() => {
@@ -349,10 +372,21 @@ function StatisticsScreen() {
   const skySection = trends.count > 0 ? (
     <View ref={skyRef} collapsable={false} onLayout={onRevealLayout} className="border-t border-line pt-7">
       <TrendsSky sky={sky} lit={skyLit} reduced={reduced} ink={ink} glow={noctalia.atmosphere.glow}
-        glowOpacity={noctalia.atmosphere.glowOpacity} dust={noctalia.atmosphere.particle} t={t} formatNumber={formatNumber}
+        glowOpacity={noctalia.atmosphere.glowOpacity} dust={noctalia.atmosphere.particle} silver={noctalia.fullMoon.rim}
+        t={t} formatNumber={formatNumber}
         formatDate={formatDate} onOpenDream={openDream} />
     </View>
   ) : null;
+
+  const constellationsSection = (
+    <View className="border-t border-line pt-7">
+      <TrendsConstellations weeks={formedWeeks} goal={CONSTELLATION_NIGHTS} ink={ink} dust={noctalia.text.tertiary}
+        t={t} formatNumber={formatNumber}
+        nameOf={(week) => weekNames.get(week.start) ?? ''}
+        datesOf={(week) => t('trends.range', { start: shortDate(week.start), end: shortDate(week.end - 1) })}
+        onOpenWeek={openWeek} />
+    </View>
+  );
 
   return (
     <View className="flex-1 bg-ink" testID="screen.trends">
@@ -396,6 +430,7 @@ function StatisticsScreen() {
                 {nightsSection}
                 {returnsSection}
                 {skySection}
+                {constellationsSection}
               </View>
               {compact ? <View testID="trends.layout.compact" /> : null}
             </View>
