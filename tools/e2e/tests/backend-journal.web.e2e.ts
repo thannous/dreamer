@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
-import { test, expect, login, journal, client, restrictNetwork } from './fixtures';
+import { test, expect, login, journal, client, restrictNetwork } from '../backend-fixtures';
 
-test('a saved dream survives a completely fresh browser and synchronizes edits and deletion', async ({ page, browser, accounts }) => {
+test('a saved dream survives a completely fresh browser and synchronizes edits and deletion', async ({ page, browserSurface, accounts }) => {
   const story = `E2E durable dream ${randomUUID()}: a lighthouse above the ocean.`;
   const owner = client();
   const auth = await owner.auth.signInWithPassword(accounts.free);
@@ -19,7 +19,7 @@ test('a saved dream survives a completely fresh browser and synchronizes edits a
     return result.data?.length;
   }).toBe(1);
 
-  const fresh = await browser.newContext({ locale: 'en-US', serviceWorkers: 'block' });
+  const fresh = await browserSurface.newContext({ locale: 'en-US', serviceWorkers: 'block' });
   await restrictNetwork(fresh);
   const second = await fresh.newPage();
   try {

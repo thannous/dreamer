@@ -4,9 +4,10 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { once } from 'node:events';
 import path from 'node:path';
 import { createInterface } from 'node:readline';
-import { test, expect, admin, client } from './fixtures';
+import { apiTest as test, expect, admin, client, repoRoot } from '../backend-fixtures';
+import { createRequire } from 'node:module';
 
-const { Client } = require('pg');
+const { Client } = createRequire(import.meta.url)('pg');
 
 const status = JSON.parse(readFileSync(process.env.E2E_BACKEND_STATUS_FILE!, 'utf8'));
 
@@ -26,12 +27,12 @@ async function expectCurrentUserSafe(owner: ReturnType<typeof client>, marker: s
 
 // The canonical runner owns and guards this real Auth/Postgres/PostgREST stack.
 // Apple's exchange/revocation alone is synthetic: no provider account or payment.
-test('Apple provider credentials stay private through Auth, refresh, API storage and account deletion', async ({ request }, testInfo) => {
+test('Apple provider credentials stay private through Auth, refresh, API storage and account deletion', async () => {
   const marker = `synthetic-apple-${randomUUID()}`;
   const server = spawn('deno', ['run', '--frozen', '--allow-env',
     `--allow-read=${process.env.E2E_BACKEND_STATUS_FILE}`, '--allow-net=127.0.0.1',
     'api/evaluation/apple-token-privacy-server.ts'], {
-    cwd: path.resolve('supabase/functions'),
+    cwd: path.join(repoRoot, 'supabase/functions'),
     env: { ...process.env, APPLE_PRIVACY_SYNTHETIC_TOKEN: marker }, stdio: ['ignore', 'pipe', 'pipe'],
   });
   const stderr: string[] = [];
@@ -99,10 +100,10 @@ test('Apple provider credentials stay private through Auth, refresh, API storage
     expectClientSafe(refreshed.data, marker);
     expectClientSafe(jwtClaims(refreshed.data.session!.access_token), marker);
     const headers = { Authorization: `Bearer ${refreshed.data.session!.access_token}` };
-    expect((await request.post(`${apiUrl}/auth/apple-token`, { data: { authorizationCode: 'fixture' } })).status()).toBe(401);
-    const saved = await request.post(`${apiUrl}/auth/apple-token`, { headers,
-      data: { authorizationCode: 'fixture', userId: other.data.user!.id } });
-    expect(saved.status()).toBe(200);
+    expect((await fetch(`${apiUrl}/auth/apple-token`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ authorizationCode: 'fixture' }) })).status).toBe(401);
+    const saved = await fetch(`${apiUrl}/auth/apple-token`, { method: 'POST', headers: { ...headers, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ authorizationCode: 'fixture', userId: other.data.user!.id }) });
+    expect(saved.status).toBe(200);
     expect(await saved.json()).toEqual({ ok: true });
     expect((await admin.rpc('read_apple_refresh_token', { p_user_id: ownerId })).data === marker).toBe(true);
     const otherToken = await admin.rpc('read_apple_refresh_token', { p_user_id: other.data.user!.id });
@@ -114,8 +115,8 @@ test('Apple provider credentials stay private through Auth, refresh, API storage
     expectClientSafe(afterStore.data, marker);
     expectClientSafe(jwtClaims(afterStore.data.session!.access_token), marker);
     headers.Authorization = `Bearer ${afterStore.data.session!.access_token}`;
-    const failed = await request.post(`${apiUrl}/auth/apple-token`, { headers, data: { authorizationCode: 'fail-provider' } });
-    expect(failed.status()).toBe(503);
+    const failed = await fetch(`${apiUrl}/auth/apple-token`, { method: 'POST', headers: { ...headers, 'Content-Type': 'application/json' }, body: JSON.stringify({ authorizationCode: 'fail-provider' }) });
+    expect(failed.status).toBe(503);
     expectClientSafe(await failed.json(), marker);
     expect(stderr.join('').includes(marker)).toBe(false);
 
@@ -128,14 +129,14 @@ test('Apple provider credentials stay private through Auth, refresh, API storage
     expect((await owner.auth.getUser()).error).toBeNull();
     expect((await admin.rpc('store_apple_refresh_token', { p_user_id: ownerId,
       p_refresh_token: `${marker}-provider-reject` })).error).toBeNull();
-    const failedDeletion = await request.delete(`${apiUrl}/account`, { headers });
-    expect(failedDeletion.status()).toBe(503);
+    const failedDeletion = await fetch(`${apiUrl}/account`, { method: 'DELETE', headers });
+    expect(failedDeletion.status).toBe(503);
     expect(await failedDeletion.json()).toEqual({ error: 'Apple token revocation failed' });
     expect((await admin.auth.admin.getUserById(ownerId)).error).toBeNull();
-    expect((await request.post(`${apiUrl}/auth/apple-token`, { headers,
-      data: { authorizationCode: 'fixture' } })).status()).toBe(200);
-    const deleted = await request.delete(`${apiUrl}/account`, { headers });
-    expect(deleted.status()).toBe(200);
+    expect((await fetch(`${apiUrl}/auth/apple-token`, { method: 'POST', headers: { ...headers, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ authorizationCode: 'fixture' }) })).status).toBe(200);
+    const deleted = await fetch(`${apiUrl}/account`, { method: 'DELETE', headers });
+    expect(deleted.status).toBe(200);
     expect(await deleted.json()).toEqual({ deleted: true });
     const erased = await admin.rpc('read_apple_refresh_token', { p_user_id: ownerId });
     expect(erased.error).toBeNull();
@@ -144,21 +145,19 @@ test('Apple provider credentials stay private through Auth, refresh, API storage
     // The guarded native database is loopback-only and does not serve TLS.
     const advisorDbUrl = new URL(status.DB_URL);
     advisorDbUrl.searchParams.set('sslmode', 'disable');
-    const advisors = spawnSync(path.resolve('node_modules/.bin/supabase'), [
+    const advisors = spawnSync(path.join(repoRoot, 'node_modules/.bin/supabase'), [
       'db', 'advisors', '--db-url', advisorDbUrl.href, '--type', 'security', '--fail-on', 'none', '--output-format', 'json',
     ], { encoding: 'utf8', env: {
       ...Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.startsWith('SUPABASE_'))),
       NODE_ENV: process.env.NODE_ENV,
-      SUPABASE_HOME: process.env.E2E_SUPABASE_HOME || path.resolve('test-results/backend-e2e-cli-home'),
+      SUPABASE_HOME: process.env.E2E_SUPABASE_HOME || path.join(repoRoot, 'test-results/backend-e2e-cli-home'),
       SUPABASE_EXPERIMENTAL_STACK: '1', DO_NOT_TRACK: '1',
     } });
-    writeFileSync('test-results/apple-token-security-advisors.json', JSON.stringify({
+    writeFileSync(path.join(process.env.E2E_OUTPUT!, 'apple-token-security-advisors.json'), JSON.stringify({
       exitCode: advisors.status, stdout: advisors.stdout, stderr: advisors.stderr,
       error: advisors.error?.message,
     }), { mode: 0o600 });
-    testInfo.annotations.push({ type: 'security-advisors', description: advisors.status === 0
-      ? 'Executed; inspect local advisor output for findings.'
-      : 'Unavailable: inspect local advisor diagnostic; no advisor pass claimed.' });
+    // The advisor receipt is diagnostic; unavailable advisors never count as a pass.
   } finally {
     await db.end();
     for (const id of created) await admin.auth.admin.deleteUser(id);

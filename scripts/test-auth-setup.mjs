@@ -5,7 +5,7 @@
 // runGuarded. The state is what the web app's Supabase client reads: the
 // session JSON under localStorage key sb-<ref>-auth-token (supabase-js default
 // storage key; lib/supabase.ts sets no custom key or storage on web), for the
-// origin of playwright.branch.config.ts. It never prints a token or password.
+// origin of the TesterArmy branch target. It never prints a token or password.
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -14,7 +14,7 @@ import { keyHeaders } from './test-seed-users.mjs';
 
 const ROOT_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const AUTH_DIR = path.join(ROOT_DIR, '.auth');
-// The Expo web server of playwright.branch.config.ts.
+// The Expo web server of the TesterArmy branch target.
 export const BRANCH_WEB_PORT = 8087;
 export const BRANCH_WEB_ORIGIN = `http://127.0.0.1:${BRANCH_WEB_PORT}`;
 

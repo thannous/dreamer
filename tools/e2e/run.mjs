@@ -7,10 +7,17 @@ import { delimiter, join, resolve, basename, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SDK_PINS, digest, trackedDiffSha256, sourceSnapshot, compareSnapshots, verifyReport, aggregateReports, writeOnce, preserveStatus, directoryFiles, hashFiles, createAttemptOutput, verifyEvidenceFiles, verifyNativeCleanup, campaignFailureRecord, startSdkProgress, startHostStallMonitor, HOST_STALL_MS } from './qualification.mjs';
 import { normalizeAvdName, appInputs, nativeInputs, binaryInputs, releaseMetadata, validateReleaseReceipt, verifyInstalledRelease, runWithInstallDiagnostics, validateBuildCommand, archiveReleaseBinary } from './native-release.mjs';
+import { dreamerCampaignContexts } from './campaign-contexts.mjs';
 
 const cwd = fileURLToPath(new URL('.', import.meta.url));
 const root = fileURLToPath(new URL('../../', import.meta.url));
 const parameters = process.argv.slice(2);
+if (parameters[0] === 'all') {
+  if (parameters[1] !== 'web' || ![undefined, 'run'].includes(parameters[2]) || parameters.length > 3)
+    throw new Error('The full campaign takes all web [run], without selections.');
+  const { runFullCampaign } = await import('./full-campaign.mjs');
+  process.exit(await runFullCampaign());
+}
 if (['mobile', 'inspect', 'mcp'].includes(parameters[0])) {
   const mode = parameters.shift();
   if (!parameters[0] || !['android', 'ios'].includes(parameters[1]))
@@ -28,9 +35,9 @@ for (let index = 0; index < rawArgs.length; index++) {
   } else if (rawArgs[index] === '--install-release') installRelease = true;
   else args.push(rawArgs[index]);
 }
-if (!['dreamer', 'lucid', 'meditation', 'site'].includes(product) || !['web', 'android', 'ios'].includes(platform) || !['run', 'list', 'mcp', 'inspect', 'build', 'collect'].includes(command))
-  throw new Error('Usage: run.mjs dreamer|lucid|meditation|site web|android|ios [run|list|mcp|inspect] [e2e flags]');
-if (product === 'site' && platform !== 'web') throw new Error('Site supports web only.');
+if (!['dreamer', 'lucid', 'meditation', 'site', 'backend', 'branch'].includes(product) || !['web', 'android', 'ios'].includes(platform) || !['run', 'list', 'report', 'mcp', 'inspect', 'build', 'collect'].includes(command))
+  throw new Error('Usage: run.mjs dreamer|lucid|meditation|site|backend|branch web|android|ios [run|list|mcp|inspect] [e2e flags]');
+if (['site', 'backend', 'branch'].includes(product) && platform !== 'web') throw new Error('Site and backend support web only.');
 if ((releaseFile || installRelease || command === 'build') && platform === 'web') throw new Error('Release options require a native target.');
 if (installRelease && command !== 'run') throw new Error('Only a native run can request installation.');
 if (command === 'build' && args.length) throw new Error('Build uses the explicit E2E_BUILD_COMMAND descriptor, without SDK flags.');
@@ -63,7 +70,8 @@ const env = { ...process.env, E2E_PRODUCT: product, E2E_PLATFORM: platform, E2E_
 // own browser context and storage: half the cores, at most four. CI keeps e2e's single
 // worker and shards; a native target drives its one named device. The resolved count
 // reaches the config and the evidence's rerun environment.
-if (platform === 'web' && env.E2E_WORKERS === undefined)
+if (['backend', 'branch'].includes(product)) env.E2E_WORKERS = '1';
+else if (platform === 'web' && env.E2E_WORKERS === undefined)
   env.E2E_WORKERS = String(!['', '0', 'false'].includes(env.CI ?? '') ? 1 : Math.min(4, Math.max(1, Math.floor(availableParallelism() / 2))));
 function cliEnvironment() {
   if (platform !== 'web') return env;
@@ -91,6 +99,19 @@ if (command === 'list') {
   if (result.error) throw result.error;
   process.exit(result.status ?? 1);
 }
+if (command === 'report') {
+  if (args.length || platform !== 'web') throw new Error('Report takes one web product, without selections.');
+  const base = join(cwd, '.e2e', `${product}-web`);
+  const latest = existsSync(base) && readdirSync(base).filter(name =>
+    ['end.json', 'summary.md', 'report.json'].every(file => existsSync(join(base, name, file))))
+    .sort((a, b) => Number(b.split('-')[0]) - Number(a.split('-')[0]))[0];
+  if (!latest) throw new Error('No completed TesterArmy run.');
+  const path = join(base, latest);
+  verifyEvidenceFiles(path);
+  console.log(readFileSync(join(path, 'summary.md'), 'utf8'));
+  console.log('TesterArmy report: ' + join(path, 'report.json'));
+  process.exit(JSON.parse(readFileSync(join(path, 'end.json'), 'utf8')).exitCode === 0 ? 0 : 1);
+}
 const relativeOutput = `.e2e/${product}-${platform}/${Date.now()}-${process.pid}-${randomUUID()}`;
 env.E2E_OUTPUT = relativeOutput;
 const output = createAttemptOutput(join(cwd, '.e2e', `${product}-${platform}`), basename(relativeOutput));
@@ -101,7 +122,7 @@ function read(executable, argv, options = {}) {
   return result.stdout.trim();
 }
 function webInputIdentity() {
-  const sourceFiles = ['e2e.config.ts', 'dreamer-personas.ts', 'web-engine.ts', 'web-parity-fixtures.ts', 'preload-web-matchers.mjs', 'run.mjs', 'journeys.ts', 'package.json', 'package-lock.json', 'tsconfig.json',
+  const sourceFiles = ['e2e.config.ts', 'dreamer-personas.ts', 'web-engine.ts', 'web-parity-fixtures.ts', 'web-fixtures.ts', 'backend-fixtures.ts', 'branch-target.ts', 'full-campaign.mjs', 'campaign-contexts.mjs', '../../verify-local.config.mjs', 'preload-web-matchers.mjs', 'run.mjs', 'journeys.ts', 'package.json', 'package-lock.json', 'tsconfig.json',
     ...readdirSync(join(cwd, 'tests')).filter(name => name.endsWith('.web.e2e.ts')).map(name => `tests/${name}`),
   ].sort();
   return Object.fromEntries(sourceFiles.map(path => [path, createHash('sha256').update(readFileSync(join(cwd, path))).digest('hex')]));
@@ -125,7 +146,7 @@ let resourceCleanup = 'not-started';
 const secondary = [];
 const installationErrorDetails = [];
 const startedAt = Date.now();
-const expectedOrigin = platform === 'web' ? `http://127.0.0.1:${env.E2E_WEB_PORT ?? ({ dreamer: 8096, lucid: 8097, meditation: 8098, site: 8099 }[product])}` : undefined;
+const expectedOrigin = platform === 'web' ? `http://127.0.0.1:${env.E2E_WEB_PORT ?? ({ dreamer: 8096, lucid: 8097, meditation: 8098, site: 8099, backend: 8085, branch: 8087 }[product])}` : undefined;
 const pins = Object.fromEntries(['e2e', '@e2e-dev/web', '@e2e-dev/mobile', 'agent-device'].map(name => [name, JSON.parse(readFileSync(join(cwd, 'node_modules', name, 'package.json'), 'utf8')).version]));
 if (Object.entries(SDK_PINS).some(([name, version]) => pins[name] !== version)) throw new Error('INSTALLED_SDK_PINS');
 const campaignId = env.E2E_CAMPAIGN_ID ?? env.CIRCLE_WORKFLOW_JOB_ID ?? null;
@@ -252,7 +273,7 @@ function collectCampaign() {
   }
   if (!reports.length) diagnostics.push({ qualified: false, code: 'NO_CURRENT_QUALIFIED_REPORTS' });
   if (product === 'dreamer') {
-    for (const [locale, featureSheets] of [['en-US', true], ['fr-FR', true], ['de-DE', true], ['en-US', false]]) {
+    for (const { locale, featureSheets } of dreamerCampaignContexts) {
       if (!reports.some(proof => proof.context?.locale === locale && proof.context?.featureSheets === featureSheets)) diagnostics.push({ qualified: false, code: 'CAMPAIGN_CONTEXT_MISSING', context: { locale, featureSheets } });
     }
   }
@@ -268,6 +289,9 @@ function collectCampaign() {
   writeOnce(join(output, 'campaign.json'), { campaignId, revision: sourceBefore.revision, ...aggregate });
 }
 async function runSdk() {
+  // The auth script rejects production and unlisted targets before any request.
+  // Sessions stay in ignored .auth/; their tokens never enter SDK step arguments.
+  if (product === 'branch') read(process.execPath, ['scripts/test-auth-setup.mjs']);
   const collectionArgs = [];
   let repeatCount = 1;
   for (let index = 0; index < args.length; index++) {
@@ -355,7 +379,11 @@ try {
       nodeOptionsRestored: Object.hasOwn(env, 'NODE_OPTIONS') ? 'original value' : 'absent',
     } : {}),
     release: release ? { receipt: resolve(releaseFile ?? join(output, 'release.json')), buildSource: release.source.revision, profile: release.profile } : null,
-    services: platform === 'web' && product !== 'site' ? 'mock services; local real UI' : 'identified local Release / generated site',
+    services: product === 'backend' ? 'owned local Supabase Auth/Postgres/PostgREST; no external AI, OAuth or payment'
+      : product === 'branch' ? 'allowlisted persistent Supabase test branch; guarded existing shared test accounts'
+      : platform === 'web' && product !== 'site' ? 'mock services; local real UI' : 'identified local Release / generated site',
+    ...(product === 'backend' ? { backend: { runtime: env.E2E_BACKEND_RUNTIME, cliVersion: env.E2E_BACKEND_CLI_VERSION,
+      migrationFixtures: JSON.parse(env.E2E_BACKEND_MIGRATION_FIXTURES ?? '{}'), rerun: env.E2E_BACKEND_RERUN } } : {}),
   });
   if (command === 'build') {
     await buildRelease();

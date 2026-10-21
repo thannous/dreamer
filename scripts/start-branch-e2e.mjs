@@ -1,4 +1,4 @@
-// Starts Expo (web via playwright.branch.config.ts, or Metro for a dev client)
+// Starts Expo (web via the TesterArmy branch target, or Metro for a dev client)
 // against the allowlisted test Supabase branch only. The
 // target comes from the guard (production and unlisted refs are refused); the
 // app gets that URL, the branch anon key and the branch functions URL, with
