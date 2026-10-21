@@ -297,5 +297,27 @@
         }
       }
     }
-  ]
+  ],
+  "concurrentMasterTracking": {
+    "revision": "a51fd4fad506490fd0ca04e18ff1a1bcf6056901",
+    "snapshotSha256": "ca69c10458e88e3980bcf4a811e7eb0843f0503a8f3848592f1563612510c33f",
+    "qaReceipt": "../qa/symbol-lot10-delivery-20261020.json",
+    "sourceRevision": "736a14dc4b55127e1e52b51eb50009e66323a387",
+    "currentStageProofs": {
+      "publication": 240,
+      "approval": 0,
+      "qa": 117
+    },
+    "files": {
+      "workbook": {
+        "path": "suivi-240-symboles-6-langues.xlsx",
+        "sha256": "a2eeebcc70a47cf1ebc0c0f0ab72b41fd6fc77f9b58ada2e9c8be799625a8f82"
+      },
+      "csv": {
+        "path": "symbol-rollout.csv",
+        "sha256": "a34571d6a57e193e84475c1896f50812ac712c1ae93b2c09215f2e11677df7f4"
+      }
+    },
+    "note": "Preserved historical tracking. Fresh common-renderer qualification is current on this branch; registry retains every inherited record."
+  }
 }

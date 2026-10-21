@@ -3,9 +3,11 @@ import { getSavedAnalysisAction } from '@/lib/savedAnalysisAccess';
 import { DreamAnalysisContent } from '@/components/journal/DreamAnalysisContent';
 import { isPoeticDreamQuote } from '@/lib/dreamQuote';
 import { CaptureOriginal } from '@/components/recording/CaptureOriginal';
+import { DreamLengthCounter } from '@/components/recording/DreamLengthCounter';
 import { getDreamRecallStorageId } from '@/lib/dreamRecallIdentity';
 import { getDreamRouteParams, resolveDreamRoute } from '@/lib/dreamRoute';
 import { getDreamIdentityKey, matchesDreamTarget } from '@/lib/dreamIdentity';
+import { getDreamTextInputLimit, isDreamTextTooLong } from '@/lib/dreamTextLimit';
 import { markPerformance, markPerformanceAfterFrames, performanceTraceId } from '@/lib/performanceTrace';
 import { getInitialDreamCategorizationKey, isInitialDreamCategorizationPending, subscribeInitialDreamCategorization } from '@/lib/initialDreamCategorization';
 import { useDreamCoverPlaceholder } from '@/hooks/useDreamCoverPlaceholder';
@@ -33,8 +35,7 @@ import { markDreamStoryEpilogue } from '@/lib/dreamStoryEpilogue';
 import { markDreamNamed } from '@/lib/dreamNaming';
 import { DREAM_THEMES } from '@/lib/dreamThemes';
 import { getDreamStoryHandoffName, hasDreamStoryHandoff, markDreamStoryPageReady } from '@/lib/dreamStoryPrologue';
-import { DreamShareImage } from '@/components/journal/DreamShareImage';
-import { DreamShareSheet } from '@/components/journal/DreamShareSheet';
+import { DreamShareComposer } from '@/components/journal/DreamShareComposer';
 import { getImageJobFailure } from '@/lib/imageJobErrors';
 import { ImageRetry } from '@/components/journal/ImageRetry';
 import {
@@ -47,7 +48,7 @@ import {
   type AnalysisNotice,
 } from '@/components/journal/JournalDetailSheets';
 import { DURATION, EASING, PressableScale, Reveal } from '@/components/motion';
-import { QUOTAS } from '@/constants/limits';
+import { DREAM_TRANSCRIPT_MAX_CHARS, QUOTAS } from '@/constants/limits';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useAuth } from '@/context/AuthContext';
 import { SignInToOpenDream } from '@/components/auth/SignInToOpenDream';
@@ -57,7 +58,6 @@ import { useDreamsData, useDreamsActions } from '@/context/DreamsContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
-import { useDreamShareComposite } from '@/hooks/useDreamShareComposite';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useQuota } from '@/hooks/useQuota';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -84,7 +84,7 @@ import {
 import { getDreamAnalysisFreshness } from '@/lib/dreamAnalysisFreshness';
 import { isHdIllustrationsEnabled, isMockModeEnabled } from '@/lib/env';
 import { classifyError, ErrorType, QuotaError, QuotaErrorCode } from '@/lib/errors';
-import { getDreamImageVersion, getImageConfig, withCacheBuster } from '@/lib/imageUtils';
+import { getDreamImageCacheKey, getDreamImageVersion, getImageConfig, withCacheBuster } from '@/lib/imageUtils';
 import {
   resolveJournalIllustrationAccess,
   resolveJournalIllustrationCta,
@@ -92,8 +92,6 @@ import {
   shouldReplaceExistingImage,
   shouldShowCompletedJournalReading,
 } from '@/lib/journalIllustrationPolicy';
-import type { ShareCardOptions } from '@/lib/journal/shareCard';
-import { getFileExtensionFromUrl, getMimeTypeFromExtension } from '@/lib/journal/shareImageUtils';
 import { resolveJournalDreamRecallOfferEligible } from '@/lib/journalDreamRecallOffer';
 import {
   isJournalSavedConfirmationParam,
@@ -147,30 +145,6 @@ type ShareNavigator = Navigator & {
   };
 };
 
-interface ShareImageData {
-  source: string;
-  extension: string;
-  mimeType: string;
-}
-
-type SharePreparationStatus = 'ready' | 'failed' | 'stale';
-
-interface ShareCompositeRequest {
-  id: number;
-  source: string;
-  dream: DreamAnalysis;
-  options: ShareCardOptions;
-  date: string;
-  onMediaReady: (source: string, ready: boolean) => void;
-}
-
-interface PendingShareComposite {
-  id: number;
-  source: string;
-  dreamIdentity: string;
-  resolve: (status: SharePreparationStatus) => void;
-}
-
 const getShareNavigator = (): ShareNavigator | undefined => {
   if (typeof navigator === 'undefined') {
     return undefined;
@@ -188,6 +162,14 @@ const humanizeMemoryValue = (value: string): string => value.replace(/_/g, ' ');
 
 const isTechnicalRevisionConflict = (message?: string | null): boolean =>
   String(message ?? '').toLowerCase().includes('revision conflict');
+
+// Refusals of the server's anti-abuse limits: the dream stays on the device until it passes.
+const getDreamLimitSyncError = (message?: string | null): 'too_long' | 'daily_limit' | null => {
+  const text = String(message ?? '');
+  if (text.includes('DREAM_TRANSCRIPT_TOO_LONG')) return 'too_long';
+  if (text.includes('DAILY_DREAM_LIMIT')) return 'daily_limit';
+  return null;
+};
 
 const generateUUID = (): string => {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
@@ -376,12 +358,26 @@ function ArrivalLater({ play, ready, children }: { play: boolean; ready: boolean
 }
 
 function JournalDetailScreen() {
-  const route = useLocalSearchParams<{ id: string; remoteId?: string; clientRequestId?: string; saved?: string | string[] }>();
+  const route = useLocalSearchParams<{ id: string; remoteId?: string; clientRequestId?: string; saved?: string | string[];
+    recall?: string | string[]; autoAnalyze?: string; analyzeAfterPurchase?: string; share?: string }>();
   // Arriving from the capture seal, the page has its own ceremony: it does not also fall shut.
   const [arrivedFromSeal] = useState(() => isJournalSavedConfirmationParam(route.saved));
   const { user } = useAuth();
   const { dreams } = useDreamsData();
   const dream = resolveDreamRoute(dreams, route);
+  const { state: onboardingState } = useOnboarding();
+  // On a phone, opened to be read, it shows its likeness at once. Not when it is asked to act or
+  // scroll on arrival, opens on its saved moment, or shows a reading under way, none of which its
+  // likeness draws; nor on the web, where a wheel would scroll the page hidden beneath it.
+  const [opensOnLikeness] = useState(() => Platform.OS !== 'web' && !arrivedFromSeal && !route.recall
+    && !route.autoAnalyze && !route.analyzeAfterPurchase && !route.share && dream?.analysisStatus !== 'pending'
+    && !shouldOfferSavedDreamAnalysis({
+      savedParam: route.saved,
+      recallRequested: false,
+      pendingPhase: onboardingState.pendingRecordingIntent?.phase,
+      pendingSavedDreamId: onboardingState.pendingRecordingIntent?.savedDreamId,
+      dreamId: route.id,
+    }));
   // The journal's pages in the order they were written: a later dream lies one page on.
   const neighbours = useMemo(() => {
     if (!dream) return { newer: null, older: null, folio: undefined };
@@ -412,8 +408,8 @@ function JournalDetailScreen() {
   const content = <JournalDetailContent key={JSON.stringify([user?.id, route.id, route.remoteId, route.clientRequestId])}
     dream={dream} folio={neighbours.folio} />;
   return dream
-    ? <JournalPageTurner newer={neighbours.newer} older={neighbours.older} folio={neighbours.folio} tonight hint={!arrivedFromSeal}
-      onTurn={turnTo}>{content}</JournalPageTurner>
+    ? <JournalPageTurner dream={dream} newer={neighbours.newer} older={neighbours.older} folio={neighbours.folio} tonight
+      hint={!arrivedFromSeal} opensOnLikeness={opensOnLikeness} onTurn={turnTo}>{content}</JournalPageTurner>
     : content;
 }
 
@@ -576,7 +572,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       blurActiveElement();
     }
   }, [isShareModalVisible]);
-  const { formatDreamDate, formatDreamTime, formatDreamStamp } = useLocaleFormatting();
+  const { formatDreamDate, formatDreamTime, formatDreamStamp, formatNumber } = useLocaleFormatting();
   const {
     canAnalyzeNow,
     canAnalyze,
@@ -826,8 +822,6 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     };
   }, [revealRecallInput]);
 
-
-  const { shareImageRef, shareComposite } = useDreamShareComposite();
 
   const analysisState = useMemo(() => getDreamAnalysisState(dream), [dream]);
   // Analyses, AI illustrations and conversations can be reported to us.
@@ -1162,64 +1156,22 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     () => (dream?.title ? dream.title : t('journal.title')),
     [dream, t],
   );
-  const shareImage = useMemo<ShareImageData | undefined>(() => {
-    if (!dream) return undefined;
-    const source = media.imageUrl || media.thumbnailUrl;
-    if (!source) return undefined;
-    const extension = getFileExtensionFromUrl(source);
-    return {
-      source,
-      extension,
-      mimeType: getMimeTypeFromExtension(extension),
-    };
-  }, [dream, media.imageUrl, media.thumbnailUrl]);
-  // The share card's picture, as resolved for the page. Without one, the card goes without it.
-  const shareSource = shareImage?.source ?? '';
-  const [shareRequest, setShareRequest] = useState<ShareCompositeRequest | null>(null);
+  // On a phone, the dreamer chooses what the shared card shows, over the page, from the
+  // painting the page already shows.
   const [isShareSheetVisible, setShareSheetVisible] = useState(false);
-  // The chosen card is being drawn, before its capture: leaving then cancels the share.
-  const [isPreparingShare, setPreparingShare] = useState(false);
-  const shareDate = useMemo(() => (dream ? formatDreamDate(dream.id) : ''), [dream, formatDreamDate]);
-  const shareRequestIdRef = useRef(0);
-  const pendingShareRef = useRef<PendingShareComposite | null>(null);
+  const shareMedia = useMemo(() => ({
+    imageUrl: media.imageUrl,
+    thumbnailUrl: media.thumbnailUrl,
+    loading: media.loading,
+    placeholder: coverPlaceholder,
+  }), [coverPlaceholder, media.imageUrl, media.loading, media.thumbnailUrl]);
+  const closeShareSheet = useCallback(() => setShareSheetVisible(false), []);
   const shareInFlightRef = useRef(false);
-  const closeShareSheet = useCallback(() => {
-    const pending = pendingShareRef.current;
-    if (pending) {
-      pendingShareRef.current = null;
-      pending.resolve('stale');
-    } else if (shareInFlightRef.current) {
-      return;
-    }
-    setShareSheetVisible(false);
-  }, []);
   const shareScreenMountedRef = useRef(true);
-  const shareDreamIdentity = dream ? getDreamIdentityKey(dream) : undefined;
-  const latestShareMediaRef = useRef({ source: shareSource, dreamIdentity: shareDreamIdentity });
-  const onShareMediaReady = useCallback((requestId: number, source: string, ready: boolean) => {
-    const pending = pendingShareRef.current;
-    if (!pending || pending.id !== requestId || pending.source !== source) return;
-    pendingShareRef.current = null;
-    pending.resolve(ready && Boolean(shareImageRef.current) ? 'ready' : 'failed');
-  }, [shareImageRef]);
-  useLayoutEffect(() => {
-    latestShareMediaRef.current = { source: shareSource, dreamIdentity: shareDreamIdentity };
-    const pending = pendingShareRef.current;
-    if (pending && ((pending.source && pending.source !== shareSource) || pending.dreamIdentity !== shareDreamIdentity)) {
-      pendingShareRef.current = null;
-      pending.resolve('stale');
-    }
-  }, [shareSource, shareDreamIdentity]);
   useEffect(() => {
     shareScreenMountedRef.current = true;
-    return () => {
-      shareScreenMountedRef.current = false;
-      const pending = pendingShareRef.current;
-      pendingShareRef.current = null;
-      pending?.resolve('stale');
-    };
+    return () => { shareScreenMountedRef.current = false; };
   }, []);
-  const shareMediaPending = Platform.OS !== 'web' && Boolean(dream?.imageUrl || dream?.thumbnailUrl) && media.loading;
   const clipboardSupported = Platform.OS === 'web' && Boolean(getShareNavigator()?.clipboard?.writeText);
 
   // The page has one way to edit it: its name, details and story together.
@@ -1247,6 +1199,15 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       setIsEditing(false);
       return;
     }
+    // A dream stored before the limit may keep its length; a dream not yet synced has none stored.
+    if (normalizedTranscript !== dream.transcript
+      && isDreamTextTooLong(normalizedTranscript, dream.remoteId != null ? dream.transcript : '')) {
+      Alert.alert(
+        t('recording.alert.too_long.title'),
+        t('recording.alert.too_long.message', { max: formatNumber(DREAM_TRANSCRIPT_MAX_CHARS) })
+      );
+      return;
+    }
 
     const updatedDream: DreamAnalysis = {
       ...dream,
@@ -1260,7 +1221,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
 
     await updateDream(updatedDream);
     setIsEditing(false);
-  }, [dream, editableTitle, editableTheme, editableDreamType, editableTranscript, updateDream]);
+  }, [dream, editableTitle, editableTheme, editableDreamType, editableTranscript, formatNumber, t, updateDream]);
 
   const handlePickImage = useCallback(async () => {
     if (!dream || isAnalysisLocked) return;
@@ -1348,9 +1309,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     if (!dream?.imageUrl) return undefined;
     return getDreamImageVersion(dream);
   }, [dream]);
-  const imageCacheKey = dream?.imageUrl && imageVersion
-    ? `${dream.imageUrl}|${imageVersion}`
-    : undefined;
+  const imageCacheKey = dream ? getDreamImageCacheKey(dream) : undefined;
   const displayImageUrl = useMemo(() => {
     if (!dream?.imageUrl) return undefined;
     return media.imageUrl ? withCacheBuster(media.imageUrl, imageVersion) : undefined;
@@ -1400,52 +1359,6 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       if (shareScreenMountedRef.current) setIsSharing(false);
     }
   }, [dream, isAnalysisLocked, openShareModal, shareMessage, shareTitle]);
-
-  // The card as chosen, captured once drawn: after its illustration is displayed or, when
-  // that is left out, cannot be had or shown, without it. The choice stays open over the
-  // system's share sheet and closes once that sheet is done, shared or not.
-  const shareCard = useCallback(async (options: ShareCardOptions) => {
-    if (!dream || isAnalysisLocked || shareInFlightRef.current || !shareDreamIdentity) return;
-    if (options.painting && shareMediaPending) return;
-    shareInFlightRef.current = true;
-    setIsSharing(true);
-    try {
-      const requestId = ++shareRequestIdRef.current;
-      const source = options.painting ? shareSource : '';
-      setPreparingShare(true);
-      const preparation = await new Promise<SharePreparationStatus>(resolve => {
-        pendingShareRef.current = { id: requestId, source, dreamIdentity: shareDreamIdentity, resolve };
-        setShareRequest({
-          id: requestId,
-          source,
-          dream,
-          options,
-          date: shareDate,
-          onMediaReady: (readySource, ready) => onShareMediaReady(requestId, readySource, ready),
-        });
-      });
-      if (shareScreenMountedRef.current) setPreparingShare(false);
-      if (preparation === 'stale'
-        || (source && latestShareMediaRef.current.source !== source)
-        || latestShareMediaRef.current.dreamIdentity !== shareDreamIdentity) return;
-      if (!shareImageRef.current) throw new Error('Dream share card is not mounted');
-
-      await shareComposite(dream);
-      if (shareScreenMountedRef.current) setShareSheetVisible(false);
-    } catch (error) {
-      if (!shareScreenMountedRef.current) return;
-      console.error('Share failed:', error);
-      Alert.alert(t('common.error_title'), t('journal.detail.share.error_message'));
-    } finally {
-      pendingShareRef.current = null;
-      shareInFlightRef.current = false;
-      if (shareScreenMountedRef.current) {
-        setShareRequest(null);
-        setPreparingShare(false);
-        setIsSharing(false);
-      }
-    }
-  }, [dream, isAnalysisLocked, shareComposite, shareSource, shareDate, t, shareMediaPending, shareDreamIdentity, shareImageRef, onShareMediaReady]);
 
   // Opened from a journal card's share icon: share once the dream is here, then drop the request.
   const autoShareDoneRef = useRef(false);
@@ -2186,6 +2099,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
           style={{ maxHeight: Math.max(160, windowSize.height * 0.36) }}
           value={editableTranscript}
           onChangeText={setEditableTranscript}
+          maxLength={getDreamTextInputLimit(editableTranscript.length, dream.transcript.length)}
           onFocus={() => { editingStoryRef.current = true; }}
           onBlur={() => { editingStoryRef.current = false; }}
           placeholder={t('recording.placeholder.accessibility')}
@@ -2197,6 +2111,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       ) : (
         <BookProse text={dream.transcript} />
       )}
+      {isEditing ? <DreamLengthCounter length={editableTranscript.length} style={{ marginTop: 6 }} /> : null}
       {dream.captureOriginalTranscript ? <CaptureOriginal source={dream.captureOriginalTranscript} /> : null}
     </View>
   );
@@ -2404,6 +2319,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       return null;
     }
 
+    const limitSyncError = getDreamLimitSyncError(dream.lastSyncError);
     const title = isSyncConflict
       ? t('journal.detail.sync.conflict_title')
       : isSyncFailed
@@ -2414,7 +2330,11 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
           ? dream.lastSyncError
           : t('journal.detail.sync.conflict_message'))
       : isSyncFailed
-        ? (dream.lastSyncError || t('journal.detail.sync.failed_message'))
+        ? (limitSyncError === 'too_long'
+            ? t('journal.detail.sync.too_long_message', { max: formatNumber(DREAM_TRANSCRIPT_MAX_CHARS) })
+            : limitSyncError === 'daily_limit'
+              ? t('journal.detail.sync.daily_limit_message')
+              : dream.lastSyncError || t('journal.detail.sync.failed_message'))
         : t('journal.detail.sync.pending_message');
     // Icon colours go to a prop, not a style, so they stay on the TS tokens.
     const toneIconColor = isSyncConflict
@@ -3512,16 +3432,12 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
             router.push('/settings?section=account');
           } : undefined}
         />
-        <DreamShareSheet
+        <DreamShareComposer
+          dream={dream}
           visible={isShareSheetVisible}
           onClose={closeShareSheet}
-          onShare={shareCard}
-          dream={dream}
-          date={shareDate}
-          painting={shareSource}
-          paintingPending={shareMediaPending}
-          sharing={isSharing}
-          capturing={isSharing && !isPreparingShare}
+          media={shareMedia}
+          locked={isAnalysisLocked}
         />
         <Modal
           visible={isShareModalVisible}
@@ -3606,21 +3522,6 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
           />
         ) : null}
 
-        {/* Mount the share composite only for an active native share request. */}
-        {shareRequest && (
-          <View className="absolute top-0 left-[-10000px] h-[1350px] w-[1080px]">
-            <DreamShareImage
-              key={shareRequest.id}
-              ref={shareImageRef}
-              dream={shareRequest.dream}
-              t={t}
-              options={shareRequest.options}
-              date={shareRequest.date}
-              resolvedMedia={{ imageUrl: shareRequest.source }}
-              onMediaReady={shareRequest.onMediaReady}
-            />
-          </View>
-        )}
         {/* The journal page's own edges, over everything that rests on it. */}
         {!isEditing ? <JournalPageEdges /> : null}
         </View>

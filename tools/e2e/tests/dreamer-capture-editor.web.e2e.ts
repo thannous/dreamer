@@ -112,3 +112,20 @@ test('capture keeps long and fragmentary stories editable with a reachable save 
   await editor.fill('   ');
   await expect(save).toBeDisabled();
 });
+
+test('capture stops a dream at 20,000 characters and its count shows the maximum only near it', async ({ page }, info) => {
+  await startFrenchCapture(page);
+  const editor = page.getByTestId('input.dreamTranscript');
+  const counter = page.getByTestId('component.recording.draftProgress.count');
+  await editor.fill('r'.repeat(17999));
+  await expect(counter).toHaveText(/^17\s999 caractères$/);
+  await editor.fill('r'.repeat(18500));
+  await expect(counter).toHaveText(/^18\s500 \/ 20\s000 caractères$/);
+  await editor.fill('r'.repeat(20000));
+  await editor.press('End');
+  await editor.pressSequentially('encore');
+  await expect(editor).toHaveValue('r'.repeat(20000));
+  await expect(counter).toHaveText(/^20\s000 caractères, le maximum$/);
+  await expect(page.getByTestId('btn.saveDream')).toBeEnabled();
+  await page.screenshot({ path: info.outputPath('capture-length-limit.png') });
+});

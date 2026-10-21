@@ -31,6 +31,12 @@ create table if not exists public.dreams (
 
 alter table public.dreams enable row level security;
 
+-- New tables get no Data API privilege by default: grant them explicitly.
+grant select, insert, update, delete on table public.dreams to authenticated, service_role;
+revoke all on table public.dreams from anon;
+grant usage, select on sequence public.dreams_id_seq to authenticated, service_role;
+revoke all on sequence public.dreams_id_seq from anon;
+
 create policy "dreams select own" on public.dreams
   for select using (auth.uid() = user_id);
 create policy "dreams insert own" on public.dreams
@@ -40,6 +46,24 @@ create policy "dreams update own" on public.dreams
 create policy "dreams delete own" on public.dreams
   for delete using (auth.uid() = user_id);
 ```
+
+New tables need explicit grants. From 2026-10-30 Supabase gives a new table in `public`
+no privilege for `anon`, `authenticated` or `service_role` (without one, PostgREST answers
+42501), and `supabase/config.toml` sets `[api] auto_expose_new_tables = false` so the local
+stack does the same. A migration that creates a table in `public` must, in the same file,
+enable RLS on it and grant or revoke it explicitly for each of the three roles, plus its
+sequence for a serial or identity column (the SQL above does it for `dreams`); a new view
+or sequence needs the same per-role grant or revoke. `npm run migrations:grants` (part of
+`npm run verify:pr`) enforces it; the migrations from before the rule are listed in
+`scripts/check-migration-grants.cjs`.
+
+A `security definer` function in `public` (created, or switched with `alter function ...
+security definer`) keeps EXECUTE for PUBLIC and anon unless revoked. The same migration must
+`revoke execute on function public.X(...) from public, anon`, grant EXECUTE explicitly to the
+roles that call it (for example `authenticated` or `service_role`), and set a safe
+`search_path`: `set search_path = ''` (then qualify every object in the body) or a list ending
+with `pg_temp`, in the definition or with `alter function ... set search_path`. Never give such a function to `anon`, `authenticated` or `service_role` as owner. For an owner-only function (a trigger function), write the decision as `grant execute on function ... to postgres`. The same lint
+enforces it, with its own list of earlier migrations.
 
 If you already created the table earlier, run:
 

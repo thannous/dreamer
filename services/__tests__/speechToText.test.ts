@@ -127,6 +127,20 @@ describe('transcribeAudio', () => {
     errorSpy.mockRestore();
   });
 
+  it('keeps the daily budget refusal so the caller can stop asking and say so', async () => {
+    setPlatform('ios');
+    const refusal = Object.assign(new Error('HTTP 429'), {
+      status: 429,
+      body: { error: 'Daily AI limit reached', code: 'AI_DAILY_LIMIT', dailyLimit: 30, retryAfter: 3600 },
+    });
+    mockFetchJSONWithSession.mockRejectedValueOnce(refusal);
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+    await expect(transcribeAudio({ uri: 'file:///tmp/audio.wav' })).rejects.toBe(refusal);
+
+    warnSpy.mockRestore();
+  });
+
   it('logs fallback request diagnostics in development', async () => {
     setPlatform('ios');
     (globalThis as typeof globalThis & { __DEV__: boolean }).__DEV__ = true;

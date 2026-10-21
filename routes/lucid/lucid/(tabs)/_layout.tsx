@@ -162,5 +162,5 @@ const styles = StyleSheet.create({
   hiddenTabBarItem: { display: 'none' },
   // Palier « overline » : 11/14. En dessous (10pt) le libellé passait sous les 11pt
   // des HIG et les 12sp de Material, sur l'élément le plus permanent de l'app.
-  tabLabel: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: LucidType.overline[0], lineHeight: LucidType.overline[1], textAlign: 'center', flexShrink: 0, minHeight: LucidType.overline[1] },
+  tabLabel: { fontFamily: 'Outfit_500Medium', fontSize: LucidType.overline[0], lineHeight: LucidType.overline[1], textAlign: 'center', flexShrink: 0, minHeight: LucidType.overline[1] },
 });

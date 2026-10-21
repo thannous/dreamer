@@ -83,7 +83,7 @@ export function RitualPickerSheet({
         <View className="mb-3 flex-row items-start gap-3">
           <Text
             accessibilityRole="header"
-            className="flex-1 font-display-semibold text-[24px] text-ivory"
+            className="flex-1 font-display-semibold text-h2 text-ivory"
           >
             {t("explore.ritual.change")}
           </Text>
@@ -98,7 +98,7 @@ export function RitualPickerSheet({
             <IconSymbol name="xmark" size={24} color={palette.text.primary} />
           </Pressable>
         </View>
-        <Text className="mb-5 font-sans text-[15px] text-ivory-muted">
+        <Text className="mb-5 font-sans text-body text-ivory-muted">
           {t("explore.ritual.choose_hint")}
         </Text>
         <ScrollView
@@ -139,18 +139,18 @@ export function RitualPickerSheet({
                   </View>
                   <View className="flex-1 gap-2">
                     <View className="flex-row flex-wrap items-center justify-between gap-2">
-                      <Text className="font-display-semibold text-[20px] text-ivory">
+                      <Text className="font-display-semibold text-h2 text-ivory">
                         {t(ritual.labelKey)}
                       </Text>
                       {id === currentId ? (
                         <View className="rounded-full border border-line bg-ink-soft px-3 py-1">
-                          <Text className="font-sans-medium text-[13px] text-ivory-muted">
+                          <Text className="font-sans-medium text-body-sm text-ivory-muted">
                             {t("explore.ritual.current")}
                           </Text>
                         </View>
                       ) : null}
                     </View>
-                    <Text className="font-sans text-[15px] text-ivory-muted">
+                    <Text className="font-sans text-body text-ivory-muted">
                       {t(`explore.ritual.description.${id}`)}
                     </Text>
                   </View>
@@ -171,7 +171,7 @@ export function RitualPickerSheet({
           <Text
             accessibilityRole="alert"
             accessibilityLiveRegion="polite"
-            className="mb-4 font-sans text-[15px] text-ivory"
+            className="mb-4 font-sans text-body text-ivory"
           >
             {t("explore.ritual.save_error")}
           </Text>
@@ -184,7 +184,7 @@ export function RitualPickerSheet({
           testID="ritual-picker-confirm"
           className="min-h-14 items-center justify-center rounded-[20px] bg-champagne px-5 py-4"
         >
-          <Text className="text-center font-sans-bold text-[16px] text-on-champagne">
+          <Text className="text-center font-sans-bold text-body text-on-champagne">
             {t(saving ? "explore.ritual.saving" : "explore.ritual.confirm")}
           </Text>
         </Pressable>

@@ -2,7 +2,7 @@ import { markPerformance } from '@/lib/performanceTrace';
 import Animated, { useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { useQuickSettings } from '@/context/QuickSettingsContext';
 import { getDreamRouteParams } from '@/lib/dreamRoute';
-import { getDreamIdentityKey } from '@/lib/dreamIdentity';
+import { getDreamIdentityKey, matchesDreamTarget } from '@/lib/dreamIdentity';
 import { UpsellCard } from '@/components/guest/UpsellCard';
 import { DreamerArtworkWindow } from '@/components/ui/DreamerBackground';
 import { PageHeaderContent } from '@/components/inspiration/PageHeader';
@@ -10,6 +10,7 @@ import { AdvancedFilterSheet, type JournalSortOrder } from '@/components/journal
 import { RemoteJournalList } from '@/components/journal/RemoteJournalList';
 import type { DreamListItem } from '@/lib/journalReadContracts';
 import { DreamCard } from '@/components/journal/DreamCard';
+import { DreamShareComposer } from '@/components/journal/DreamShareComposer';
 import { takeDreamStoryEpilogue } from '@/lib/dreamStoryEpilogue';
 import { EmptyState } from '@/components/journal/EmptyState';
 import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
@@ -437,14 +438,14 @@ function JournalListScreen() {
   }, [mediaUserId]);
 
   const prefetchDreamMedia = useCallback(async (entries: DreamAnalysis[]) => {
-    if (!mediaFocused.current) return;
+    if (!mediaFocused.current || isScrollingRef.current) return;
     const generation = mediaGeneration.current;
     const resolved = await Promise.all(entries.slice(0, PREFETCH_MAX_PER_FLUSH).map(async (dream) => ({
       ...dream,
       ...await resolveWithDiskCache(dream, mediaUserId, false, { variant: 'thumbnail' }),
     })));
     for (const dream of resolved) {
-      if (!mediaFocused.current || generation !== mediaGeneration.current) return;
+      if (!mediaFocused.current || isScrollingRef.current || generation !== mediaGeneration.current) return;
       const uri = getDreamThumbnailUri(dream);
       if (uri && isLikelyOptimizedThumbnailUri(uri) && rememberPrefetchedUri(getDreamThumbnailCacheKey(dream) ?? uri)) {
         await preloadImage(uri, getDreamThumbnailCacheKey(dream));
@@ -540,13 +541,30 @@ function JournalListScreen() {
     router.push({ pathname: '/journal/[id]', params: getDreamRouteParams(dream) });
   }, []);
 
-  // Sharing from a card opens the dream with its share open: on a phone, the dreamer chooses
-  // what the shared card shows; the web, with no reliable share sheet, falls back to copying.
+  // On a phone, sharing from a card lets the dreamer choose what the shared card shows, over
+  // the journal they stay in. The web, with no reliable share sheet, opens the dream, whose
+  // share falls back to copying.
+  const [shareTarget, setShareTarget] = useState<{ dream: DreamAnalysis; open: boolean } | null>(null);
   const handleDreamShare = useCallback((dream: DreamAnalysis) => {
+    if (Platform.OS !== 'web') {
+      setShareTarget({ dream, open: true });
+      return;
+    }
     if (isNavigatingRef.current) return;
     isNavigatingRef.current = true;
     router.push({ pathname: '/journal/[id]', params: { ...getDreamRouteParams(dream), share: '1' } });
   }, []);
+  const closeDreamShare = useCallback(() => setShareTarget((current) => current && { ...current, open: false }), []);
+  // Once its sheet has slid away, the composer lets go of the dream.
+  useEffect(() => {
+    if (!shareTarget || shareTarget.open) return undefined;
+    const timer = setTimeout(() => setShareTarget((current) => (current && !current.open ? null : current)), 600);
+    return () => clearTimeout(timer);
+  }, [shareTarget]);
+  // The dream as the journal holds it now, through a sync that names it anew. A dream deleted
+  // meanwhile, or gone with its account, ends the share: it never reopens by itself.
+  const sharedDream = shareTarget ? dreams.find((dream) => matchesDreamTarget(dream, shareTarget.dream)) ?? null : null;
+  if (shareTarget && !sharedDream) setShareTarget(null);
 
   const handleDreamFavorite = useCallback((dream: DreamAnalysis) => {
     setFavoriteError(null);
@@ -1256,6 +1274,9 @@ function JournalListScreen() {
       sortOrder={sortOrder}
       onSortOrderChange={setSortOrder}
     />
+    {sharedDream ? (
+      <DreamShareComposer dream={sharedDream} visible={shareTarget?.open ?? false} onClose={closeDreamShare} />
+    ) : null}
     </KeyboardAvoidingView>
   );
 }

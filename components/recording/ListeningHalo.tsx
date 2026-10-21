@@ -109,6 +109,6 @@ const styles = StyleSheet.create({
   labelRow: { paddingHorizontal: 12 },
   // In the text area's foot the label hugs the left edge, clear of the buttons on the right.
   labelRowInline: { alignSelf: 'stretch', paddingLeft: 16 },
-  label: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 14, lineHeight: 20, textAlign: 'center' },
+  label: { fontFamily: Fonts.outfit.medium, fontSize: 14, lineHeight: 20, textAlign: 'center' },
   labelInline: { textAlign: 'left' },
 });

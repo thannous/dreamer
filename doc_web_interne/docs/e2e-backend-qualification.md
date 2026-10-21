@@ -5,8 +5,7 @@ Postgres and PostgREST. No production writes, AI calls or payments.
 
 ## Run
 
-Use Node from `mise.toml`, locked dependencies and Chromium (`npx playwright install
-chromium`). The runner owns a disposable stack on the pinned Supabase CLI 2.121.0
+Use Node from `mise.toml`, locked dependencies and TesterArmy Chromium (`npm run test:testerarmy:browsers`). The runner owns a disposable stack on the pinned Supabase CLI 2.121.0
 native runtime. There is no Docker or Podman runtime (founder decision, 2026-10-19):
 
 ```sh
@@ -15,7 +14,7 @@ mise exec -- npm run test:e2e:backend -- --qualify-ti528
 ```
 
 `--runtime native` is still accepted; any other `--runtime` is refused before a
-process starts. The second command runs all seven browser journeys, the database
+process starts. The second command runs all eight backend scenarios, the database
 contracts, then the four TI528 suites (six integration cases) sequentially on the
 same owned stack.
 The runner passes its own private status to TI528 and preserves stack cleanup on
@@ -44,7 +43,7 @@ URLs in those copies are replaced with an unavailable loopback endpoint, and
 scheduled jobs are disabled in the same migration that creates them. Tracked
 migrations are untouched. The runner also asserts zero active cron jobs
 before the suite. These fixture changes prevent unattended production calls; the
-seven browser journeys do not qualify scheduled reconciliation or AI workers.
+eight backend scenarios do not qualify scheduled reconciliation or AI workers.
 It never resets an existing project. Unique accounts are created per test and
 deleted on completion, including failure. The Plus account is provisioned through
 the existing service-role subscription RPC, without a purchase or billing bypass
@@ -76,9 +75,14 @@ contract command receives the validated URL through `SUPABASE_DB_URL`, keeping
 credentials out of npm command banners. See the [TI528 guide](architecture/NOCTALIA-TI528-LOCAL-QUALIFICATION.md)
 for the six cases and historical fixed-port procedure.
 
+The browser and API cases now live under `tools/e2e/tests/backend-*.web.e2e.ts`.
+The owned-stack runner invokes `tools/e2e/run.mjs backend web run`; there is no
+second Playwright test runner. `playwright/test` supplies matchers and public
+browser types only. SDK traces are Markdown steps, without HTTP payload recordings.
+
 ## Assertions and artifacts
 
-Seven browser journeys cover:
+Eight backend scenarios, run by TesterArmy, cover:
 
 1. Save via UI, verify the remote row, sign in through the UI from an empty
    browser context, edit, restart the other client, then delete and restart again.
@@ -93,12 +97,14 @@ Seven browser journeys cover:
    an older app's theme edit replaces the precise value consistently.
 7. Completed readings preserve a precise theme for current apps and its compatible
    legacy projection for older apps.
+8. Apple refresh tokens stay outside the public schema and Data API; rotation,
+   provider revocation failure/retry and account deletion preserve their privacy.
 
-Artifacts are ignored: `test-results/e2e-backend-results.json` includes the tested
-source SHA, dirty-state marker, fixtures, rerun command and individual assertions;
-`test-results/e2e-backend-junit/results.xml` records pass/fail; the HTML report and
-per-test videos show the actual UI. Auth network traces are deliberately disabled
-to avoid recording passwords/JWTs. All stories and identities are synthetic.
+Artifacts (ignored): `tools/e2e/.e2e/backend-web/<attempt>/`. `evidence.json`
+records the source SHA, dirty state, fixtures and rerun command; `report.json`
+and `junit.xml` record individual assertions and pass/fail; `results/*/trace.md`
+and screenshots retain observed outcomes. SDK Markdown traces contain no HTTP
+payload recording. All stories and identities are synthetic.
 
 The report also records the effective CLI version, backend runtime and migration
 fixture adjustments. Focused isolation controls cover hosted/ambiguous target

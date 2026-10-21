@@ -60,7 +60,7 @@ async function theme(page: Page, value: 'dark' | 'light') {
   await page.getByTestId('btn.header.home.settings').click();
   await page.getByTestId(`quick-settings.theme.${value}`).click();
   await page.getByTestId('quick-settings.close').click();
-  await expect(page.getByTestId('quick-settings.drawer')).not.toBeInViewport();
+  await expect(page.getByTestId('quick-settings.profile')).not.toBeInViewport();
   await expect(page.getByTestId('screen.home')).toHaveCSS('background-color', value === 'dark' ? 'rgb(3, 4, 13)' : 'rgb(240, 228, 212)');
 }
 
@@ -97,7 +97,7 @@ test('home keeps the dream image unchanged when explicit themes override the sys
   await page.getByTestId('quick-settings.close').click();
   // The tab bar says Today; the page's headline is the dream, whose action now reads in French.
   await expect(page.getByTestId('btn.home.today.cta')).toContainText('Relire mon rêve');
-  await expect(page.getByTestId('quick-settings.drawer')).not.toBeInViewport();
+  await expect(page.getByTestId('quick-settings.profile')).not.toBeInViewport();
   await expect(page.getByText('Rêve analysé · Touchez pour ouvrir', { exact: true })).toBeHidden();
 
   for (const value of ['dark', 'light'] as const) {

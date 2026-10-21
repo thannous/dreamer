@@ -3,13 +3,12 @@ import { JournalCompletenessNotice } from '@/components/journal/JournalCompleten
 import { DreamSymbolSheet } from '@/components/journal/symbols/DreamSymbolSheet';
 import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import React, { useCallback, useDeferredValue, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useDeferredValue, useMemo, useState } from 'react';
 import {
   Platform,
   Text,
   View,
   useWindowDimensions,
-  type ViewInstance,
 } from 'react-native';
 import { useReducedMotion } from 'react-native-reanimated';
 import Svg, { Path } from 'react-native-svg';
@@ -18,6 +17,7 @@ import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { sparklePath } from '@/components/journal/story/sparkle';
 import { PressableScale } from '@/components/motion';
+import { getFreeAnalysesNudge } from '@/components/quota/FreeAnalysesNudge';
 import { PeriodSeal, PERIOD_SEAL_SIZE } from '@/components/trends/PeriodSeal';
 import { TrendsFigures } from '@/components/trends/TrendsFigures';
 import { TrendsNights } from '@/components/trends/TrendsNights';
@@ -25,17 +25,22 @@ import { TrendsPeriodSwitch } from '@/components/trends/TrendsPeriodSwitch';
 import { TrendsReturns } from '@/components/trends/TrendsReturns';
 import { TrendsSky } from '@/components/trends/TrendsSky';
 import { useEndOfLocalDay } from '@/components/trends/useEndOfLocalDay';
+import { useTrendsReveal } from '@/components/trends/useTrendsReveal';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { DESKTOP_BREAKPOINT, getBottomNavigationLayout } from '@/constants/layout';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
+import { useAuth } from '@/context/AuthContext';
 import { useDreams } from '@/context/DreamsContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
+import { useQuota } from '@/hooks/useQuota';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getDreamThemeLabel } from '@/lib/dreamLabels';
 import { getDreamRouteParams } from '@/lib/dreamRoute';
+import { buildPaywallHref } from '@/lib/paywallRoute';
+import { formatQuotaResetDate } from '@/lib/quotaReset';
 import { buildDreamSky } from '@/lib/dreamSky';
 import {
   buildDreamTrends,
@@ -54,8 +59,6 @@ import { HeaderScrollView, useHeaderScroll } from '@/components/ui/headerStretch
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 
 const COMPACT_BREAKPOINT = 360;
-/** A section lights once this much of it has come above the bottom of the screen. */
-const REVEAL_MARGIN = 80;
 
 type Translate = (key: string, params?: Record<string, string | number>) => string;
 
@@ -112,6 +115,11 @@ function StatisticsScreen() {
   const { dreams, loaded, completeness, reloadDreams } = useDreams();
   const { t, currentLang } = useTranslation();
   const { formatDate, formatNumber, locale } = useLocaleFormatting();
+  const { user } = useAuth();
+  const { tier, usage, loading: quotaLoading, error: quotaError } = useQuota();
+  const analysesUsedUp = getFreeAnalysesNudge({
+    tier, signedIn: Boolean(user), loading: quotaLoading, error: quotaError, usage, maxRemaining: 0,
+  }) !== null;
   const { width, height, fontScale } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const { colors, mode } = useTheme();
@@ -131,15 +139,7 @@ function StatisticsScreen() {
     setThemePeriod(shownPeriod);
     setSelectedTheme(null);
   }
-  const [nightsLit, setNightsLit] = useState(false);
-  const [returnsLit, setReturnsLit] = useState(false);
-  const [skyLit, setSkyLit] = useState(false);
   const [openSymbol, setOpenSymbol] = useState<string | null>(null);
-  const nightsRef = useRef<ViewInstance | null>(null);
-  const returnsRef = useRef<ViewInstance | null>(null);
-  const skyRef = useRef<ViewInstance | null>(null);
-  // What has lit, read by the scroll handler so it stays the same function and stops measuring.
-  const litRef = useRef({ nights: false, returns: false, sky: false });
 
   const compact = width < COMPACT_BREAKPOINT;
   const largeText = Number.isFinite(fontScale) && fontScale >= 1.3;
@@ -170,22 +170,9 @@ function StatisticsScreen() {
   );
   const sky = useMemo(() => buildDreamSky(dreams, trends.range, periodSymbols), [dreams, periodSymbols, trends.range]);
 
-  const reveal = useCallback(() => {
-    const probe = (ref: React.RefObject<ViewInstance | null>, section: 'nights' | 'returns' | 'sky', light: (value: boolean) => void) => {
-      if (litRef.current[section] || !ref.current) return;
-      ref.current.measureInWindow((_x, y) => {
-        if (litRef.current[section] || !Number.isFinite(y) || y >= height - REVEAL_MARGIN) return;
-        litRef.current[section] = true;
-        light(true);
-      });
-    };
-    probe(nightsRef, 'nights', setNightsLit);
-    probe(returnsRef, 'returns', setReturnsLit);
-    probe(skyRef, 'sky', setSkyLit);
-  }, [height]);
-
-  // Until every section has lit, each scroll event also looks for them on the screen.
-  const handleScroll = useHeaderScroll(nightsLit && returnsLit && (skyLit || trends.count === 0) ? undefined : reveal);
+  const { nightsRef, returnsRef, skyRef, nightsLit, returnsLit, skyLit, onRevealLayout, onRevealScroll } =
+    useTrendsReveal(loaded && !trends.empty, trends.count > 0);
+  const handleScroll = useHeaderScroll(onRevealScroll);
 
   const chooseTheme = useCallback((theme: DreamTheme) => {
     setSelectedTheme((current) => (current === theme ? null : theme));
@@ -219,7 +206,7 @@ function StatisticsScreen() {
   if (!loaded) {
     const loadingMessage = (
       <View className={`${scrollHeader ? 'shrink-0' : 'flex-1'} items-center justify-center px-6`} accessibilityLiveRegion="polite">
-        <Text className="text-[16px] font-sans text-ivory-muted text-center">
+        <Text className="text-body font-sans text-ivory-muted text-center">
           {t('trends.loading')}
         </Text>
       </View>
@@ -277,7 +264,7 @@ function StatisticsScreen() {
       <TrendsPeriodSwitch period={period} onChange={setPeriod} reduced={reduced} t={t} />
       <View className="flex-row items-start gap-3">
         <View className="mt-[9px] h-px w-[22px] bg-champagne" />
-        <Text testID="trends.range" className="min-w-0 shrink text-[12px] leading-[18px] font-sans-medium uppercase tracking-[1.6px] text-champagne-on">
+        <Text testID="trends.range" className="min-w-0 shrink text-caption leading-[18px] font-sans-medium uppercase tracking-[1.6px] text-champagne-on">
           {[rangeLabel, compareLabel].filter(Boolean).join(' · ')}
         </Text>
       </View>
@@ -314,27 +301,27 @@ function StatisticsScreen() {
         size={sealSize}
       />
       <Text testID="trends.seal.sentence" accessibilityLiveRegion="polite"
-        className="max-w-[420px] text-center text-[17px] leading-[25px] font-display text-ivory">
+        className="max-w-[420px] text-center text-h3 leading-[26px] font-display text-ivory">
         {sealSentence(trends, selectedTheme, t, formatNumber)}
       </Text>
       {shownTheme && shownCount > 0 ? (
         <PressableScale testID="trends.seal.open" haptic="light" accessibilityRole="button"
           onPress={() => openJournal(trends, { theme: shownTheme })}
           className="min-h-[48px] flex-row items-center gap-2 rounded-full border border-champagne-soft px-5">
-          <Text className="text-[15px] font-sans-bold text-champagne-on">
+          <Text className="text-body font-sans-bold text-champagne-on">
             {t(shownCount === 1 ? 'trends.seal.open_one' : 'trends.seal.open', { count: formatNumber(shownCount) })}
           </Text>
           <IconSymbol name="arrow.right" size={14} color={ink} />
         </PressableScale>
       ) : null}
       {!selectedTheme && trends.themes.dominant ? (
-        <Text className="text-center text-[12px] leading-[16px] font-sans text-ivory-muted">{t('trends.seal.hint')}</Text>
+        <Text className="text-center text-caption font-sans text-ivory-muted">{t('trends.seal.hint')}</Text>
       ) : null}
     </View>
   );
 
   const nightsSection = (
-    <View ref={nightsRef} onLayout={reveal} className="border-t border-line pt-7">
+    <View ref={nightsRef} collapsable={false} onLayout={onRevealLayout} className="border-t border-line pt-7">
       <TrendsNights trends={trends} lit={nightsLit} reduced={reduced} ink={ink} onAccent={noctalia.action.primaryText}
         t={t} formatDate={formatDate} formatNumber={formatNumber} locale={locale}
         onOpenDream={openDream} onCapture={capture} />
@@ -342,17 +329,25 @@ function StatisticsScreen() {
   );
 
   const returnsSection = (
-    <View ref={returnsRef} onLayout={reveal} className="border-t border-line pt-7">
+    <View ref={returnsRef} collapsable={false} onLayout={onRevealLayout} className="border-t border-line pt-7">
       <TrendsReturns trends={trends} symbols={periodSymbols} lit={returnsLit || reduced} ink={ink} t={t}
         formatNumber={formatNumber}
         onOpenUnanalyzed={() => openJournal(trends, { analysis: 'unanalyzed' })}
         onOpenType={(type: DreamType) => openJournal(trends, { dreamType: type, analysis: 'analyzed' })}
-        onOpenSymbol={setOpenSymbol} />
+        onOpenSymbol={setOpenSymbol}
+        plusHint={analysesUsedUp && trends.patterns.unrequested > 0 ? {
+          text: t(trends.patterns.unrequested === 1 ? 'trends.returns.plus_hint_one' : 'trends.returns.plus_hint', {
+            date: formatQuotaResetDate(locale),
+            count: formatNumber(trends.patterns.unrequested),
+          }),
+          cta: t('trends.returns.plus_cta'),
+          onPress: () => router.push(buildPaywallHref('stats_profile')),
+        } : undefined} />
     </View>
   );
 
   const skySection = trends.count > 0 ? (
-    <View ref={skyRef} onLayout={reveal} className="border-t border-line pt-7">
+    <View ref={skyRef} collapsable={false} onLayout={onRevealLayout} className="border-t border-line pt-7">
       <TrendsSky sky={sky} lit={skyLit} reduced={reduced} ink={ink} glow={noctalia.atmosphere.glow}
         glowOpacity={noctalia.atmosphere.glowOpacity} dust={noctalia.atmosphere.particle} t={t} formatNumber={formatNumber}
         formatDate={formatDate} onOpenDream={openDream} />
@@ -364,6 +359,8 @@ function StatisticsScreen() {
       <HeaderScrollView
         className="flex-1"
         onScroll={handleScroll}
+        onLayout={onRevealLayout}
+        onContentSizeChange={onRevealLayout}
         scrollEventThrottle={16}
         style={scrollHeader ? { marginBottom: navigationClearance } : undefined}
         // The header scrolls away with the content, as on Today. It already owns
@@ -382,13 +379,13 @@ function StatisticsScreen() {
                   <Path d={sparklePath(22, 22, 20)} fill={ink} />
                 </Svg>
               </View>
-              <Text className="max-w-[320px] text-center text-[19px] leading-[27px] font-display-semibold text-ivory">
+              <Text className="max-w-[320px] text-center text-h3 leading-[26px] font-display-semibold text-ivory">
                 {t('trends.empty.body')}
               </Text>
               <PressableScale testID="trends.cta.primary" onPress={capture} haptic="light" accessibilityRole="button"
                 accessibilityLabel={t('trends.empty.cta')}
                 className="min-h-[50px] items-center justify-center rounded-[18px] border border-champagne-soft bg-champagne px-[22px]">
-                <Text className="text-[15px] font-sans-bold text-on-champagne">{t('trends.empty.cta')}</Text>
+                <Text className="text-body font-sans-bold text-on-champagne">{t('trends.empty.cta')}</Text>
               </PressableScale>
             </View>
           ) : (

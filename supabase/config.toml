@@ -14,6 +14,10 @@ extra_search_path = ["public", "extensions"]
 # The maximum number of rows returns from a view, table, or stored procedure. Limits payload size
 # for accidental or malicious requests.
 max_rows = 1000
+# New tables, views, sequences and functions in public get no Data API grant
+# for anon, authenticated or service_role: each migration grants what it needs,
+# as Supabase does for every project from 2026-10-30 (CLI default: true).
+auto_expose_new_tables = false
 
 [api.tls]
 # Enable HTTPS endpoints locally using a self-signed certificate.

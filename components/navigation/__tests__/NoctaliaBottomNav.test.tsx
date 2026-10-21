@@ -154,7 +154,7 @@ jest.mock('@/constants/noctaliaDesign', () => ({
 }));
 
 jest.mock('@/constants/theme', () => ({
-  Fonts: { spaceGrotesk: { medium: 'SpaceGrotesk-Medium' } },
+  Fonts: { outfit: { medium: 'Outfit-Medium' } },
 }));
 
 jest.mock('@/context/ThemeContext', () => ({
@@ -425,7 +425,7 @@ describe('NoctaliaBottomNav', () => {
     // Capture sits in the bar row like the other tabs: every cell fills the bar's height so
     // the active tab's background can, rather than Capture having a lifted fixed height.
     expect(center.height).toBe('100%');
-    expect(centerLabel?.getAttribute('data-native-class')).toContain('text-[12px]');
+    expect(centerLabel?.getAttribute('data-native-class')).toContain('text-caption');
     expect(centerLabel?.getAttribute('data-accessible')).toBe('false');
     expect(box.height).toBe(86);
     expect(centerLabel?.getAttribute('data-number-of-lines')).toBe('1');

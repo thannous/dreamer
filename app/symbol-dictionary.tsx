@@ -34,6 +34,7 @@ import {
   getSymbolsByCategory,
   searchSymbols,
 } from "@/services/symbolDictionaryService";
+import { TypeScale } from '@/constants/typeScale';
 
 type BrowseMode = "theme" | "alphabetical";
 
@@ -507,30 +508,30 @@ const styles = StyleSheet.create({
   listHeader: { paddingHorizontal: 20, gap: 8, paddingBottom: 4 },
   headerRow: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", columnGap: 8, rowGap: 4, marginBottom: 8 },
   backButton: { width: 44, minHeight: 44, alignItems: "center", justifyContent: "center", marginLeft: -12 },
-  headerTitle: { flex: 1, flexBasis: 140, minWidth: 0, fontFamily: Fonts.fraunces.semiBold, fontSize: 34, lineHeight: 40, letterSpacing: -0.3 },
+  headerTitle: { flex: 1, flexBasis: 140, minWidth: 0, fontFamily: Fonts.fraunces.semiBold, fontSize: TypeScale.display.fontSize, lineHeight: 40, letterSpacing: -0.3 },
   guidesLink: { minHeight: 44, justifyContent: "center", maxWidth: "100%", paddingHorizontal: 12, borderRadius: 22, borderWidth: StyleSheet.hairlineWidth },
-  guidesText: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 15, lineHeight: 22, flexShrink: 1 },
+  guidesText: { fontFamily: Fonts.outfit.medium, fontSize: TypeScale.body.fontSize, lineHeight: TypeScale.body.lineHeight, flexShrink: 1 },
   popularBlock: { marginTop: 10, marginBottom: 6 },
   eyebrowRow: { flexDirection: "row", alignItems: "center", gap: 10, marginBottom: 12 },
   eyebrowRule: { width: 22, height: 1 },
-  eyebrow: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 12, lineHeight: 16, letterSpacing: 2, textTransform: "uppercase" },
+  eyebrow: { fontFamily: Fonts.outfit.medium, fontSize: TypeScale.caption.fontSize, lineHeight: 16, letterSpacing: 2, textTransform: "uppercase" },
   popularScroller: { marginHorizontal: -20 },
   popularLinks: { gap: 12, paddingHorizontal: 20 },
   poster: { width: 128, height: 168, borderRadius: 16, borderCurve: "continuous", borderWidth: StyleSheet.hairlineWidth, overflow: "hidden", justifyContent: "flex-end", padding: 12 },
   posterPressed: { opacity: 0.85, transform: [{ scale: 0.97 }] },
-  posterName: { fontFamily: Fonts.fraunces.medium, fontSize: 17, lineHeight: 21, color: ART_TEXT },
+  posterName: { fontFamily: Fonts.fraunces.medium, fontSize: TypeScale.h3.fontSize, lineHeight: TypeScale.h3.lineHeight, color: ART_TEXT },
   modeSwitch: { flexDirection: "row", borderBottomWidth: StyleSheet.hairlineWidth },
   modeOption: { flex: 1, minWidth: 0, minHeight: 44, paddingVertical: 10, paddingHorizontal: 12, alignItems: "center", justifyContent: "center" },
-  modeText: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 15, lineHeight: 22, textAlign: "center" },
+  modeText: { fontFamily: Fonts.outfit.medium, fontSize: TypeScale.body.fontSize, lineHeight: TypeScale.body.lineHeight, textAlign: "center" },
   modeUnderline: { position: "absolute", bottom: 0, height: 3, width: 44, borderRadius: 2 },
   filterRow: { gap: 4, paddingVertical: 4 },
   letterOption: { minWidth: 44, minHeight: 44, paddingHorizontal: 10, paddingVertical: 10, borderRadius: 22, alignItems: "center", justifyContent: "center" },
   categoryOption: { minHeight: 44, paddingHorizontal: 10, paddingVertical: 10, borderBottomWidth: 2, alignItems: "center", justifyContent: "center" },
-  filterText: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 15, lineHeight: 22 },
+  filterText: { fontFamily: Fonts.outfit.medium, fontSize: TypeScale.body.fontSize, lineHeight: TypeScale.body.lineHeight },
   unavailable: { opacity: 0.35 },
   pressed: { opacity: 0.78 },
   emptyState: { alignItems: "center", paddingHorizontal: 20, paddingVertical: 48, gap: 12 },
-  emptyText: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 15, lineHeight: 22, textAlign: "center" },
+  emptyText: { fontFamily: Fonts.outfit.regular, fontSize: TypeScale.body.fontSize, lineHeight: TypeScale.body.lineHeight, textAlign: "center" },
 });
 
 export default withHeaderScroll(SymbolDictionaryScreen);

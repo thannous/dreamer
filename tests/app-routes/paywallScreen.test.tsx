@@ -17,6 +17,8 @@ jest.mock('@/components/ui/DreamerBackground', () => ({ DreamerArtworkWindow: ()
 let mockParams: Record<string, string> = { trigger: 'settings' };
 let mockUser = { id: 'user-1' };
 jest.doMock('@/context/AuthContext', () => ({ useAuth: () => ({ user: mockUser }) }));
+let mockDreams: { id: number; title: string; transcript: string; clientRequestId?: string }[] = [];
+jest.doMock('@/context/DreamsContext', () => ({ useDreamsData: () => ({ dreams: mockDreams }) }));
 
 let mockHardwareBack: (() => boolean) | undefined;
 const mockPreventRemove = jest.fn((_prevent: boolean, _callback: () => void) => undefined);
@@ -202,6 +204,7 @@ jest.doMock('@/hooks/useClearWebFocus', () => ({
 
 jest.doMock('@/hooks/useLocaleFormatting', () => ({
   useLocaleFormatting: () => ({
+    locale: 'fr-FR',
     formatDate: () => '1 janvier 2026',
     formatNumber: (value: number) => String(value),
     formatTime: () => '10:30',
@@ -291,6 +294,24 @@ describe('Paywall screen', () => {
   afterEach(() => {
     cleanup();
     jest.clearAllMocks();
+    mockDreams = [];
+  });
+
+  it('compares the free plan and Plus with real numbers, recording and abuse safeguards said once under the table', () => {
+    mockParams = { trigger: 'settings_quota' };
+    render(<PaywallScreen />);
+
+    for (const key of ['exchanges', 'unlimited_exchanges', 'illustrations', 'all_dreams', 'synthesis_360', 'none', 'included']) {
+      expect(screen.getByText(`subscription.paywall.comparison.${key}`)).toBeTruthy();
+    }
+    // The free plan's 3 analyses a month each bring their illustration.
+    expect(screen.getAllByText('subscription.paywall.comparison.free_analyses')).toHaveLength(2);
+    expect(screen.getByText('10')).toBeTruthy();
+    // Plus exchanges are sold as unlimited: the 100-message safety ceiling is never quoted as a number.
+    expect(screen.queryByText('100')).toBeNull();
+    expect(screen.getByText(/subscription\.paywall\.comparison\.recording_note.*subscription\.paywall\.comparison\.fair_use_note/)).toBeTruthy();
+    expect(screen.queryByText('subscription.paywall.comparison.recording')).toBeNull();
+    expect(screen.queryByTestId(TID.Text.PaywallDreamExcerpt)).toBeNull();
   });
 
   it('goes back when the paywall was opened from an existing route', () => {
@@ -348,10 +369,24 @@ describe('Paywall screen', () => {
     );
   });
 
+  it('shows the offered dream\'s own words when two dreams share a timestamp', () => {
+    mockParams = { trigger: 'analysis_cta', dreamId: '42', dreamClientRequestId: 'capture-b', dreamOwnerId: 'user-1' };
+    mockDreams = [
+      { id: 42, title: '', transcript: 'Un phare dans la brume.', clientRequestId: 'capture-a' },
+      { id: 42, title: '', transcript: 'Une gare immense où les trains partent vers la mer.', clientRequestId: 'capture-b' },
+    ];
+    render(<PaywallScreen />);
+    expect(screen.getByTestId(TID.Text.PaywallDreamExcerpt).textContent).toContain('Une gare immense');
+  });
+
   it('shows the saved dream, analysis, illustration, plans and purchase together without a comparison step', () => {
     mockParams = { trigger: 'analysis_cta', dreamId: '42', dreamOwnerId: 'user-1' };
+    mockDreams = [{ id: 42, title: '', transcript: 'Une gare immense où les trains partent vers la mer.' }];
     render(<PaywallScreen />);
     expect(screen.getByText('recording.saved_analysis.title')).toBeTruthy();
+    // The person's own first words, and an honest line on when free analyses come back.
+    expect(screen.getByTestId(TID.Text.PaywallDreamExcerpt).textContent).toContain('Une gare immense');
+    expect(screen.getByText('subscription.paywall.saved_dream.reset')).toBeTruthy();
     expect(screen.getByText('subscription.paywall.saved_dream.analysis')).toBeTruthy();
     expect(screen.getByText('subscription.paywall.saved_dream.illustration')).toBeTruthy();
     expect(screen.getByTestId(TID.Button.PaywallSelectMonthly)).toBeTruthy();

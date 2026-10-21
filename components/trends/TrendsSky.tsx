@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo, useState } from 'react';
+import React, { memo, useCallback, useMemo, useRef, useState } from 'react';
 import {
   AccessibilityInfo,
   Platform,
@@ -32,6 +32,8 @@ const INSET_X = 22;
 const INSET_Y = 26;
 /** A tap this close to a star opens its dream: a finger, not a pixel. */
 const REACH = 30;
+/** A finger that travels farther than this before lifting was sliding over the sky, not tapping a star. */
+const TAP_SLOP = 10;
 const DUST = 72;
 /** The other constellations stay faintly drawn behind the chosen one. */
 const DIMMED = 0.16;
@@ -41,6 +43,12 @@ const READER_ACTIONS = [{ name: 'increment' }, { name: 'decrement' }, { name: 'a
 const RING = 30;
 
 type Placed = { dream: DreamAnalysis; x: number; y: number; analyzed: boolean; joined: boolean };
+/** Where a finger came down on the sky, and whether it has slid since. */
+type Press = { x: number; y: number; slid: boolean };
+
+/** A finger that ever strays past the slop was sliding, even if it comes back before lifting. */
+const strayed = (press: Press, { nativeEvent }: GestureResponderEvent) =>
+  press.slid || Math.hypot(nativeEvent.pageX - press.x, nativeEvent.pageY - press.y) > TAP_SLOP;
 
 /** A scatter of faint dust, the same at every visit: depth, not data. */
 function dustOf(width: number) {
@@ -177,7 +185,19 @@ export function TrendsSky({ sky, lit, reduced, ink, glow, glowOpacity, dust, t, 
     }));
   }, [constellations, stars, width]);
 
+  // The sky stays pressed while a finger slides inside it: only a tap opens a dream.
+  const pressedAt = useRef<Press | null>(null);
+  const pressIn = useCallback(({ nativeEvent }: GestureResponderEvent) => {
+    pressedAt.current = { x: nativeEvent.pageX, y: nativeEvent.pageY, slid: false };
+  }, []);
+  const pressMove = useCallback((event: GestureResponderEvent) => {
+    const press = pressedAt.current;
+    if (press && strayed(press, event)) press.slid = true;
+  }, []);
   const pick = useCallback((event: GestureResponderEvent) => {
+    const press = pressedAt.current;
+    pressedAt.current = null;
+    if (press && strayed(press, event)) return;
     // A mouse click on the web carries its point as an offset in the element instead.
     const native = event.nativeEvent as GestureResponderEvent['nativeEvent'] & { offsetX?: number; offsetY?: number };
     const touchX = Number.isFinite(native.locationX) ? native.locationX : native.offsetX ?? Number.NaN;
@@ -289,7 +309,7 @@ export function TrendsSky({ sky, lit, reduced, ink, glow, glowOpacity, dust, t, 
                 style={[styles.ring, { left: ring.x - RING / 2, top: ring.y - RING / 2, borderColor: ink }]} />
             ) : null}
             {/* Touch only: a screen reader and the keyboard step through the dreams on the sky itself. */}
-            <Pressable testID="trends.sky.stars" onPress={pick} style={StyleSheet.absoluteFill}
+            <Pressable testID="trends.sky.stars" onPressIn={pressIn} onPressMove={pressMove} onPress={pick} style={StyleSheet.absoluteFill}
               accessible={false} focusable={false} {...(Platform.OS === 'web' ? { tabIndex: -1 } : {})} />
           </>
         ) : null}
@@ -306,8 +326,8 @@ export function TrendsSky({ sky, lit, reduced, ink, glow, glowOpacity, dust, t, 
                 accessibilityLabel={t('trends.sky.constellation_label', { symbol: symbol.name, count: formatNumber(joined.length) })}
                 className={`min-h-[44px] max-w-full flex-row items-center gap-2 rounded-full border py-1 pl-1 pr-4 ${on ? 'border-champagne bg-champagne-dim' : 'border-line'}`}>
                 <SymbolMedallion symbol={symbol} size={34} />
-                <Text numberOfLines={1} className="min-w-0 shrink text-[14px] leading-[19px] font-sans-medium text-ivory">{symbol.name}</Text>
-                <Text className="text-[12px] leading-[16px] font-sans text-ivory-muted">{formatNumber(joined.length)}</Text>
+                <Text numberOfLines={1} className="min-w-0 shrink text-body-sm leading-[19px] font-sans-medium text-ivory">{symbol.name}</Text>
+                <Text className="text-caption font-sans text-ivory-muted">{formatNumber(joined.length)}</Text>
               </PressableScale>
             );
           })}
@@ -315,7 +335,7 @@ export function TrendsSky({ sky, lit, reduced, ink, glow, glowOpacity, dust, t, 
       ) : null}
 
       {/* The touch hint is for the eye: a screen reader is told how to open a dream on the sky. */}
-      <Text className="text-[14px] leading-[21px] font-sans text-ivory-muted" accessibilityLiveRegion="polite" testID="trends.sky.caption"
+      <Text className="text-body-sm leading-[21px] font-sans text-ivory-muted" accessibilityLiveRegion="polite" testID="trends.sky.caption"
         accessibilityLabel={caption ?? undefined} accessibilityElementsHidden={!caption}
         importantForAccessibility={caption ? 'auto' : 'no-hide-descendants'}>
         {[caption, t('trends.sky.hint')].filter(Boolean).join(' ')}

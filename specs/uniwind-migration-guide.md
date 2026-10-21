@@ -76,7 +76,7 @@ gold. Every name below exists as `bg-*`, `text-*` and `border-*`.
 ### Typography
 
 `font-display*` (Fraunces — titles, statistics, anything that should feel written),
-`font-sans*` (Space Grotesk — body, buttons, navigation), `font-serif*` (Lora — quotes,
+`font-sans*` (Outfit — body, buttons, navigation), `font-serif*` (Lora — quotes,
 ambient copy). Weight is part of the family name, because that is how React Native
 resolves it: `font-sans-medium`, `font-display-bold`, and so on. Do **not** pair these
 with `font-bold` — a `fontWeight` on top of a named family is either ignored or produces

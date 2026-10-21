@@ -66,6 +66,47 @@ npx jest --runTestsByPath scripts/measure-android-performance.test.js --runInBan
 python3 -m unittest discover -s scripts/android -p 'test_*.py'
 ```
 
+## Main pages and the owned QA app
+
+The reading worker also accepts `--package com.tanuki75.noctalia.qa`, the existing
+side-by-side Dreamer QA profile. Its default stays the base package; other products
+remain refused. Runtime `applicationId` must match the selected package, and package
+identity is part of comparison conditions. The selected app must own the foreground
+window and each UI target before input. A failed UI journey invalidates its trace
+even when FrameTimeline is healthy; resume must replay that failed phase.
+Release/signature/PID/font/trace health
+checks and comparison thresholds stay in force. This additive path follows the
+retirement of TI-429's base-only harness; it does not authorize changing personal data.
+
+Use one phase per screen scenario: `screen-scroll` or `screen-open`. Preparation
+and UI-tree validation remain outside the measurement windows. A screen scenario
+names `screenTestId`, `targetTestId` and `targetLabelSha256` for inspected, existing
+reference content, plus `swipe`, `expected`, and a redacted `name`. `screen-open`
+also names `originScreenTestId`, `navigationTestId` and `returnTestId`; the last
+returns to the origin before each subsequent measured tap. Both modes verify the
+expected screen/content afterwards. Missing or changed content is a failure.
+
+Optional `settleMs` (0–10000, default 1200) fixes the post-action capture window;
+include the full entrance when that is the question, for example 2800 ms on Trends.
+It is a measurement boundary, not a click-to-content latency. Keep it identical
+between candidates; it participates in the scenario hash. Pilot one sample before
+defining the final series. For example, under the existing device lock:
+
+```sh
+npm run android:perf:measure -- --mode reading --device SERIAL \
+  --package com.tanuki75.noctalia.qa --phases screen-scroll \
+  --scenario /private/path/trends.json --trace-processor /path/trace_processor_shell \
+  --pilot --output /private/path/trends-pilot
+```
+
+Functional navigation uses the existing native configuration with
+`E2E_PERF_SCOPE=main-pages`; it selects the QA package explicitly. Use the connected
+phone's name for the SDK's `E2E_PERF_DEVICE` and its adb serial for the device lock.
+With `E2E_PERF_FIXTURE_COUNT=200` or `5000`, it also reuses the existing
+journal reading/return journeys, through the QA-only `noctalia-qa` scheme.
+This scope never resets or seeds the phone. An emulator fixture and a physical
+existing QA journal are distinct preconditions and must be reported separately.
+
 ## Static artwork and APK size
 
 `AtmosphericBackground` keeps the upper ornament and the horizon in separate,

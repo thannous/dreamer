@@ -10,6 +10,7 @@ import { Fonts } from '@/constants/theme';
 import { useTranslation } from '@/hooks/useTranslation';
 import { StoryScene, STORY_DEMO_STEP } from './FeatureStory';
 import { TypingDots, WordReveal, afterTyping } from './story/StoryText';
+import { TypeScale } from '@/constants/typeScale';
 
 /** Beats of the dialogue scenes, in milliseconds from the slide's arrival. */
 export const EXPLORE_BEATS = {
@@ -84,10 +85,10 @@ const styles = StyleSheet.create({
   door: { width: '100%', height: '100%', borderTopLeftRadius: 24, borderTopRightRadius: 24, borderBottomLeftRadius: 8, borderBottomRightRadius: 8 },
   bubble: { borderRadius: 20, borderCurve: 'continuous', borderWidth: 1, paddingHorizontal: 16, paddingVertical: 12, gap: 4, marginRight: 24 },
   reply: { marginLeft: 24, marginRight: 0, borderBottomRightRadius: 6 },
-  speaker: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 12, lineHeight: 16 },
-  message: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 15, lineHeight: 21 },
+  speaker: { fontFamily: Fonts.outfit.medium, fontSize: TypeScale.caption.fontSize, lineHeight: 16 },
+  message: { fontFamily: Fonts.outfit.regular, fontSize: TypeScale.body.fontSize, lineHeight: TypeScale.body.lineHeight },
   choices: { flexDirection: 'row', gap: 10 },
   choice: { flex: 1, minHeight: 52, paddingHorizontal: 12, paddingVertical: 10, borderRadius: 16, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
-  closing: { fontFamily: Fonts.fraunces.regular, fontStyle: 'italic', fontSize: 16, lineHeight: 22, textAlign: 'center', paddingHorizontal: 8 },
-  choiceText: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 14, lineHeight: 19, textAlign: 'center' },
+  closing: { fontFamily: Fonts.fraunces.regular, fontStyle: 'italic', fontSize: TypeScale.body.fontSize, lineHeight: 22, textAlign: 'center', paddingHorizontal: 8 },
+  choiceText: { fontFamily: Fonts.outfit.medium, fontSize: TypeScale.bodySm.fontSize, lineHeight: 19, textAlign: 'center' },
 });

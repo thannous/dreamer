@@ -5,9 +5,11 @@ import { Pressable, Text, View } from 'react-native';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
+import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useTranslation } from '@/hooks/useTranslation';
 import type { PaywallTrigger } from '@/lib/analytics';
 import { buildPaywallHref } from '@/lib/paywallRoute';
+import { formatQuotaResetDate } from '@/lib/quotaReset';
 import { TID } from '@/lib/testIDs';
 import type { QuotaUsage, SubscriptionTier } from '@/lib/types';
 
@@ -53,9 +55,10 @@ export function FreeAnalysesNudge({ nudge, className }: Props) {
   const { t } = useTranslation();
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
+  const { locale } = useLocaleFormatting();
 
   const message = nudge.remaining === 0
-    ? t('quota.free_nudge.empty')
+    ? t('quota.free_nudge.empty', { date: formatQuotaResetDate(locale) })
     : nudge.remaining === 1
       ? t('quota.free_nudge.remaining_one')
       : t('quota.free_nudge.remaining', { remaining: nudge.remaining });
@@ -73,8 +76,8 @@ export function FreeAnalysesNudge({ nudge, className }: Props) {
         <IconSymbol name="sparkles" size={22} color={noctalia.accent.text} />
       </View>
       <View className="min-w-0 flex-1 gap-0.5">
-        <Text className="font-sans text-[15px] leading-[22px] text-ivory">{message}</Text>
-        <Text className="font-sans-medium text-[13px] leading-[18px] text-champagne-on">{cta}</Text>
+        <Text className="font-sans text-body leading-[22px] text-ivory">{message}</Text>
+        <Text className="font-sans-medium text-body-sm leading-[18px] text-champagne-on">{cta}</Text>
       </View>
       <IconSymbol name="chevron.right" size={18} color={noctalia.text.tertiary} />
     </Pressable>

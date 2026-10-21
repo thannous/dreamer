@@ -6,7 +6,7 @@ import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { getShareCardStory, type ShareCardOptions } from '@/lib/journal/shareCard';
 import type { DreamAnalysis } from '@/lib/types';
-import { Image } from 'expo-image';
+import { Image, type ImageSource } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { forwardRef, useEffect, useState } from 'react';
 import { Image as RNImage, StyleSheet, Text, View } from 'react-native';
@@ -15,8 +15,11 @@ import { SEAL_EMBLEMS, SEAL_GOLD } from './story/sealEmblems';
 
 interface DreamShareImageProps {
   dream: DreamAnalysis;
-  resolvedMedia?: { imageUrl: string; thumbnailUrl?: string };
+  /** The painting as the screen resolved it; its cache key is the original's. */
+  resolvedMedia?: { imageUrl: string; thumbnailUrl?: string; imageCacheKey?: string };
   onMediaReady?: (source: string, ready: boolean) => void;
+  /** For a preview: the picture shown until the painting is, the one the dream's card holds. */
+  placeholder?: ImageSource | null;
   /** What the card shows; « Créé par Noctalia Dream » is always on it. */
   options?: ShareCardOptions;
   /** The dream's date as the card writes it. */
@@ -34,7 +37,7 @@ const MARKS_WAIT_MS = 1000;
  * Instagram 4:5 ratio: 1080x1350px
  */
 export const DreamShareImage = forwardRef<ViewInstance, DreamShareImageProps>(function DreamShareImage(
-  { dream, t, resolvedMedia, onMediaReady, options = DEFAULT_OPTIONS, date },
+  { dream, t, resolvedMedia, onMediaReady, placeholder, options = DEFAULT_OPTIONS, date },
   ref
 ) {
   const requestedMedia = useDreamMedia(resolvedMedia ? undefined : dream);
@@ -45,6 +48,10 @@ export const DreamShareImage = forwardRef<ViewInstance, DreamShareImageProps>(fu
 
   // Use imageUrl first, fallback to thumbnailUrl
   const imageSource = options.painting ? media.imageUrl || media.thumbnailUrl || '' : '';
+  // The painting comes from the cache the dream's page filled; a thumbnail is never kept there.
+  const imageCacheKey = imageSource && imageSource === media.imageUrl ? media.imageCacheKey : undefined;
+  // While the painting is still being resolved, the preview holds the card's picture.
+  const heldPicture = options.painting && !imageSource ? placeholder : null;
   const imageSettled = settled?.source === imageSource ? settled : undefined;
   const hasImage = !!imageSource && imageSettled?.shown !== false;
   const settle = (shown: boolean) => setSettled((current) =>
@@ -87,12 +94,17 @@ export const DreamShareImage = forwardRef<ViewInstance, DreamShareImageProps>(fu
     <View ref={ref} style={[styles.container, { backgroundColor: noctalia.screen.background }]} collapsable={false}>
       {hasImage ? (
         <Image
-          source={{ uri: imageSource }}
+          source={{ uri: imageSource, cacheKey: imageCacheKey }}
+          placeholder={placeholder ?? undefined}
+          placeholderContentFit="cover"
+          cachePolicy="memory-disk"
           style={styles.backgroundImage}
           contentFit="cover"
           onDisplay={() => settle(true)}
           onError={() => settle(false)}
         />
+      ) : heldPicture ? (
+        <Image source={heldPicture} cachePolicy="memory-disk" style={styles.backgroundImage} contentFit="cover" />
       ) : (
         <View style={[styles.ground, { backgroundColor: noctalia.screen.background }]}>
           <LinearGradient
@@ -224,7 +236,7 @@ const styles = StyleSheet.create({
     paddingTop: 40,
   },
   date: {
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     fontSize: 26,
     lineHeight: 34,
     letterSpacing: 4,
@@ -244,7 +256,7 @@ const styles = StyleSheet.create({
     lineHeight: 52,
   },
   quoteAttribution: {
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     fontSize: 24,
     lineHeight: 32,
     marginBottom: 24,
@@ -262,7 +274,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   footer: {
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     fontSize: 34,
   },
   footerLogo: {

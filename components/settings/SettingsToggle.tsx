@@ -34,7 +34,7 @@ export function SettingsToggle({ value, onValueChange, disabled, testID }: Props
         trackColor={{ false: colors.divider, true: colors.accent }}
         value={value}
       />
-      <Text accessible={false} className="font-sans text-[12px] leading-[16px] text-ivory-muted">
+      <Text accessible={false} className="font-sans text-caption leading-[16px] text-ivory-muted">
         {t(value ? 'settings.control.enabled' : 'settings.control.disabled')}
       </Text>
     </View>

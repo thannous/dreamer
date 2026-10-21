@@ -7,6 +7,7 @@ import {
   normalizeAiLanguage,
   validateBoundedText,
 } from '../lib/aiRequestPolicy.ts';
+import { PLUS_DAILY_LIMITS, plusDailyLimitResponse } from '../lib/plusDailyLimits.ts';
 import {
   createAnalysisAdminClient,
   triggerAnalysisWorkerAndLog,
@@ -21,6 +22,7 @@ type AnalysisJobAdmission = {
   retry_after_seconds?: number;
   tier?: string;
   limit?: number | null;
+  daily_limit?: number | null;
   new_count?: number | null;
   job?: AnalysisJobRow;
 };
@@ -69,6 +71,14 @@ export const blockedAdmissionResponse = (admission: AnalysisJobAdmission): Respo
       },
       429
     );
+  }
+
+  if (admission.code === 'DAILY_ANALYSIS_LIMIT') {
+    return plusDailyLimitResponse({
+      code: admission.code,
+      dailyLimit: admission.daily_limit ?? PLUS_DAILY_LIMITS.analysis,
+      retryAfterSeconds: admission.retry_after_seconds,
+    });
   }
 
   if (admission.code === 'DREAM_NOT_FOUND') {

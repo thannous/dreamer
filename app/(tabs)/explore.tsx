@@ -53,10 +53,10 @@ function ExplorerRow({ icon, title, body, testID, onPress, separator = false }: 
         <IconSymbol name={icon} size={24} color={noctalia.accent.text} />
       </View>
       <View className="min-w-0 flex-1 gap-1">
-        <Text className="text-[18px] leading-[24px] font-display-semibold text-ivory">
+        <Text className="text-h3 leading-[24px] font-display-semibold text-ivory">
           {title}
         </Text>
-        <Text className="text-[14px] leading-[20px] font-sans text-ivory-muted">
+        <Text className="text-body-sm leading-[20px] font-sans text-ivory-muted">
           {body}
         </Text>
       </View>
@@ -231,28 +231,28 @@ function ExploreScreen() {
                   <IconSymbol name="moon.stars.fill" size={28} color={noctalia.accent.text} />
                 </View>
                 <View className="min-w-0 flex-1 gap-1">
-                  <Text accessibilityRole="header" className="font-display-semibold text-[18px] leading-[24px] text-ivory">
+                  <Text accessibilityRole="header" className="font-display-semibold text-h3 leading-[24px] text-ivory">
                     {t('explore.ritual.title')}
                   </Text>
-                  <Text className="font-sans text-[15px] leading-[20px] text-ivory-muted">
+                  <Text className="font-sans text-body leading-[20px] text-ivory-muted">
                     {t(ritual.labelKey)}
                   </Text>
                 </View>
               </View>
-              <Text className="font-sans text-[14px] leading-[20px] text-ivory-muted">
+              <Text className="font-sans text-body-sm leading-[20px] text-ivory-muted">
                 {t('explore.ritual.body')}
               </Text>
               <Pressable onPress={() => router.push(`/ritual/${ritual.id}`)} accessibilityRole="button"
                 accessibilityLabel={t('explore.ritual.open', { ritual: t(ritual.labelKey) })}
                 testID={TID.Button.ExplorerRitual}
                 className="min-h-[52px] items-center justify-center rounded-[16px] bg-champagne px-4 py-3">
-                <Text className="text-center font-sans-bold text-[15px] leading-[20px] text-on-champagne">
+                <Text className="text-center font-sans-bold text-body leading-[20px] text-on-champagne">
                   {t('explore.ritual.open', { ritual: t(ritual.labelKey) })}
                 </Text>
               </Pressable>
               <Pressable ref={changeRitualRef} focusable onPress={() => setPickerVisible(true)} accessibilityRole="button"
                 testID="explorer-change-ritual" className="min-h-11 items-center justify-center rounded-[16px] px-4 py-2 active:opacity-[0.78]">
-                <Text className="text-center font-sans-medium text-[15px] leading-[20px] text-ivory">{t('explore.ritual.change')}</Text>
+                <Text className="text-center font-sans-medium text-body leading-[20px] text-ivory">{t('explore.ritual.change')}</Text>
               </Pressable>
             </View>
           </View>

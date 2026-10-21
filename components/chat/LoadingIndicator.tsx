@@ -6,6 +6,7 @@ import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { TID } from '@/lib/testIDs';
+import { TypeScale } from '@/constants/typeScale';
 
 /**
  * AnimatedDot - Single pulsing dot with staggered timing
@@ -132,7 +133,7 @@ const loadingStyles = StyleSheet.create({
     borderRadius: 4,
   },
   text: {
-    fontSize: 13,
+    fontSize: TypeScale.bodySm.fontSize,
     fontFamily: Fonts.lora.regularItalic,
   },
 });

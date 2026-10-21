@@ -34,7 +34,14 @@ async function populatedJournal(page: Page) {
   await page.getByTestId('btn.mockProfile.existing').click();
   await expect(page.getByTestId('screen.recording')).toBeVisible();
   await page.setViewportSize({ width: 390, height: 867 });
+  // The desktop-to-phone resize can still be closing the drawer over the cards.
+  // Observe its nonzero profile row: the scroll container itself can have no
+  // intersection while its closing content still covers the cards.
+  await expect(page.getByTestId('quick-settings.profile')).not.toBeInViewport();
   await openJournal(page);
+  // A closed off-screen drawer must not widen the document: otherwise browser
+  // focus/scroll can bring its inert content back over the journal's painting.
+  await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
 }
 
 async function findDream(page: Page, title: string) {
@@ -134,6 +141,7 @@ for (const theme of ['light', 'dark'] as const) {
       await new Promise(requestAnimationFrame);
       await Promise.all(node.getAnimations({ subtree: true }).map((animation) => animation.finished));
     });
+    await expect(page.getByTestId('quick-settings.profile')).not.toBeInViewport();
     await page.screenshot({ path: testInfo.outputPath(`${theme}-compact.png`) });
     // Browser-only 200% text stress check: this does not qualify native Dynamic Type.
     await text.evaluate(node => {
@@ -147,6 +155,7 @@ for (const theme of ['light', 'dark'] as const) {
     });
     // The card grows with its text, and the arrow follows the last line to its new place.
     await expect.poll(arrowGap).toBeLessThanOrEqual(2);
+    await expect(page.getByTestId('quick-settings.profile')).not.toBeInViewport();
     await page.screenshot({ path: testInfo.outputPath(`${theme}-browser-text-200.png`) });
     await card.click();
     await expect(page.getByTestId('component.transcriptCard')).toContainText('Books were floating around me');
@@ -332,7 +341,7 @@ test.describe('French quick filters', () => {
       // Browser-only enlargement; native Dynamic Type remains independently qualified.
       await scroll.evaluate(node => {
         for (const text of Array.from(node.querySelectorAll<HTMLElement>('[dir="auto"]'))) {
-          if (!/SpaceGrotesk/.test(getComputedStyle(text).fontFamily)) continue;
+          if (!/Outfit/.test(getComputedStyle(text).fontFamily)) continue;
           text.dataset.previousFontSize = text.style.fontSize;
           text.style.fontSize = `${parseFloat(getComputedStyle(text).fontSize) * 2}px`;
         }

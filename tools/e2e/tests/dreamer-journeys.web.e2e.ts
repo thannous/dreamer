@@ -171,7 +171,7 @@ test('free user edits a story, cancels deletion, then deletes only that dream', 
 test('free user can open the Plus offer and return without losing the journal', async ({ page }) => {
   await selectProfile(page, 'existing');
   await openSettings(page);
-  await page.getByRole('button', { name: 'Upgrade to Noctalia Plus', exact: true }).click();
+  await page.getByTestId('settings-section-subscription').click();
   await expect(page.getByTestId('screen.paywall')).toBeVisible();
   await page.getByTestId('btn.paywall.selectMonthly').click();
   await expect(page.getByTestId('btn.paywall.selectMonthly')).toHaveAttribute('aria-checked', 'true');
@@ -188,11 +188,12 @@ for (const profile of ['existing', 'plus'] as const) {
     await openSettings(page);
     if (profile === 'existing') {
       await expect(page.getByTestId('quota.analysisValue')).toContainText('/ 3');
-      await page.getByRole('button', { name: 'Upgrade to Noctalia Plus', exact: true }).click();
+      // One way to Plus in the card: the row, not a second upgrade button.
+      await expect(page.getByRole('button', { name: 'Upgrade to Noctalia Plus', exact: true })).toHaveCount(0);
+      await page.getByTestId('settings-section-subscription').click();
       await expect(page.getByTestId('screen.paywall')).toBeVisible();
     } else {
       await expect(page.getByTestId('quota.analysisValue')).toContainText('Unlimited');
-      await expect(page.getByRole('button', { name: 'Upgrade to Noctalia Plus', exact: true })).toHaveCount(0);
     }
   });
 }
@@ -337,4 +338,31 @@ test('reflection offers an optional recap after one angle and updates it after a
   await expect(recap).toHaveCount(0);
   await page.getByRole('button', { name: 'Back', exact: true }).click();
   await page.screenshot({ path: testInfo.outputPath('reflection-after-exchanges.png'), fullPage: false });
+});
+
+// Preserved during the final runner migration: an exhausted account must not
+// enter chat before the offer, and declining must return to the same reflection.
+test('free reflection opens Plus directly and declining returns to reflection without entering chat', async ({ page }, testInfo) => {
+  await selectProfile(page, 'existing');
+  await journal(page);
+  await openDream(page, 'The Infinite Library');
+  await page.getByTestId('component.dreamDetail.actionCard').click();
+  await page.getByTestId('btn.dreamCategory.symbols').click();
+  await expect(page.getByTestId('btn.exploration360.synthesis').filter({ visible: true })).toBeEnabled();
+  await page.getByRole('button', { name: 'Back', exact: true }).click();
+  const reflection = page.getByTestId('screen.dreamCategories').filter({ visible: true });
+  await expect(reflection).toBeVisible();
+  const destinations: string[] = [];
+  page.on('framenavigated', (frame) => {
+    if (frame === page.mainFrame()) destinations.push(new URL(frame.url()).pathname);
+  });
+  await reflection.getByTestId('btn.exploration360.synthesis').click();
+  await expect(page.getByTestId('screen.paywall')).toBeVisible();
+  expect(destinations).not.toContainEqual(expect.stringMatching(/^\/dream-chat\//));
+  await page.screenshot({ path: testInfo.outputPath('reflection-direct-plus.png') });
+  await page.getByTestId('btn.paywall.close').click();
+  await expect(reflection).toBeVisible();
+  await expect(page).toHaveURL(/\/dream-categories\//);
+  await expect(reflection.getByTestId('btn.exploration360.synthesis')).toBeEnabled();
+  await page.screenshot({ path: testInfo.outputPath('reflection-after-declining-plus.png') });
 });

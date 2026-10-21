@@ -23,6 +23,7 @@ import {
   revokeGuestQaDevice,
   type GuestQaStatus,
 } from '@/services/guestQaService';
+import { TypeScale } from '@/constants/typeScale';
 
 const getErrorCode = (error: unknown): string | null => {
   if (typeof error !== 'object' || !error) {
@@ -248,30 +249,30 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 15,
+    fontFamily: Fonts.outfit.bold,
+    fontSize: TypeScale.body.fontSize,
   },
   subtitle: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 12,
+    fontFamily: Fonts.outfit.regular,
+    fontSize: TypeScale.caption.fontSize,
     marginTop: 2,
   },
   status: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 13,
+    fontFamily: Fonts.outfit.medium,
+    fontSize: TypeScale.bodySm.fontSize,
   },
   metrics: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 12,
+    fontFamily: Fonts.outfit.medium,
+    fontSize: TypeScale.caption.fontSize,
   },
   note: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 12,
+    fontFamily: Fonts.outfit.regular,
+    fontSize: TypeScale.caption.fontSize,
     lineHeight: 17,
   },
   error: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 12,
+    fontFamily: Fonts.outfit.medium,
+    fontSize: TypeScale.caption.fontSize,
     lineHeight: 17,
   },
   actions: {
@@ -288,8 +289,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: ThemeLayout.spacing.md,
   },
   primaryLabel: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 13,
+    fontFamily: Fonts.outfit.bold,
+    fontSize: TypeScale.bodySm.fontSize,
   },
   secondaryButton: {
     alignItems: 'center',
@@ -300,8 +301,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: ThemeLayout.spacing.md,
   },
   secondaryLabel: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 13,
+    fontFamily: Fonts.outfit.medium,
+    fontSize: TypeScale.bodySm.fontSize,
   },
   pressed: {
     opacity: 0.68,

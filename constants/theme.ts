@@ -22,11 +22,11 @@ function legacyColors(mode: 'light' | 'dark') {
 export const Colors = { light: legacyColors('light'), dark: legacyColors('dark') };
 
 export const Fonts = {
-  // Space Grotesk - for display/body text
-  spaceGrotesk: {
-    regular: 'SpaceGrotesk_400Regular',
-    medium: 'SpaceGrotesk_500Medium',
-    bold: 'SpaceGrotesk_700Bold',
+  // Outfit - for display/body text
+  outfit: {
+    regular: 'Outfit_400Regular',
+    medium: 'Outfit_500Medium',
+    bold: 'Outfit_700Bold',
   },
   // Lora - for serif/quotes
   lora: {

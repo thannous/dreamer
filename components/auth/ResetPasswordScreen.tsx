@@ -27,6 +27,7 @@ import { PASSWORD_MIN_LENGTH } from '@/lib/authValidation';
 import { TID } from '@/lib/testIDs';
 import { HeaderScrollView, useHeaderScroll } from '@/components/ui/headerStretch';
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
+import { TypeScale } from '@/constants/typeScale';
 
 type Phase = 'checking' | 'ready' | 'success' | 'expired';
 
@@ -384,14 +385,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   title: {
-    fontFamily: isLucidTrainer ? 'Fraunces_600SemiBold' : Fonts.spaceGrotesk.bold,
+    fontFamily: isLucidTrainer ? 'Fraunces_600SemiBold' : Fonts.outfit.bold,
     fontSize: isLucidTrainer ? 34 : 22,
     lineHeight: isLucidTrainer ? 40 : 28,
     marginBottom: ThemeLayout.spacing.xs,
   },
   subtitle: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 14,
+    fontFamily: Fonts.outfit.regular,
+    fontSize: TypeScale.bodySm.fontSize,
     lineHeight: 20,
     marginBottom: ThemeLayout.spacing.md,
   },
@@ -401,8 +402,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: ThemeLayout.spacing.md,
     paddingVertical: 12,
     marginBottom: 10,
-    fontSize: 16,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: TypeScale.body.fontSize,
+    fontFamily: Fonts.outfit.regular,
     width: '100%',
   },
   inputWithToggle: {
@@ -422,12 +423,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   errorText: {
-    fontSize: 12,
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: TypeScale.caption.fontSize,
+    fontFamily: Fonts.outfit.medium,
     marginBottom: ThemeLayout.spacing.xs,
   },
   submitError: {
-    fontSize: 13,
+    fontSize: TypeScale.bodySm.fontSize,
     marginTop: ThemeLayout.spacing.xs,
   },
   primaryButton: {
@@ -441,8 +442,8 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   primaryButtonText: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 16,
+    fontFamily: Fonts.outfit.bold,
+    fontSize: TypeScale.body.fontSize,
   },
   secondaryButton: {
     alignItems: 'center',
@@ -455,8 +456,8 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   secondaryButtonText: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 16,
+    fontFamily: Fonts.outfit.bold,
+    fontSize: TypeScale.body.fontSize,
   },
   buttonPressed: {
     opacity: 0.8,

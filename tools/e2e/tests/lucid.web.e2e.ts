@@ -184,7 +184,7 @@ test('PR237 Lucid compact tabs, program safeguards and account validation remain
         return rect.height >= Number.parseFloat(getComputedStyle(label).lineHeight) && label.scrollWidth <= rect.width + 1;
       });
       const shortcuts = Array.from(document.querySelectorAll('[data-testid="lucid-today-shortcuts"] *'))
-        .filter(node => node.children.length === 0 && node.textContent?.trim() && getComputedStyle(node).fontFamily.includes('SpaceGrotesk'));
+        .filter(node => node.children.length === 0 && node.textContent?.trim() && getComputedStyle(node).fontFamily.includes('Outfit'));
       return { tabs, shortcuts: shortcuts.map(node => {
         const rect = node.getBoundingClientRect();
         return node.scrollHeight <= rect.height + 1 && node.scrollWidth <= rect.width + 1;
@@ -281,4 +281,31 @@ test('PR237 Lucid exercises retain their pause after reload and resume; unsold P
     await expect(screen.getByTestId(testId, { visible: true })).toBeHidden();
     await app.screenshot(`${route}-redirected-home`);
   }
+});
+
+test('Lucid completes a stabilization practice once and preserves its progress after restart', { tags: ['practice', 'persistence'] }, async fixtures => {
+  await completeOnboarding(fixtures);
+  const { app, screen } = fixtures;
+  await app.open('/lucid/stabilization-lab?ambience=dark');
+  const primary = screen.getByTestId('lucid-stabilization-lab-primary', { visible: true });
+  await primary.tap();
+  await screen.getByTestId('lucid-stabilization-lab-repeat', { visible: true }).tap();
+  await expect(screen.getByTestId('lucid-stabilization-lab-step')).toContainText('1 répétition');
+  for (let step = 1; step <= 5; step++) {
+    await expect(screen.getByRole('progressbar', `Étape ${step} sur 5`, { visible: true })).toBeVisible();
+    await primary.tap();
+  }
+  await expect(primary).toContainText('Terminer le laboratoire');
+  await primary.tap();
+  await expect(screen.getByTestId('lucid-stabilization-lab-live')).toContainText('Pratique terminée');
+  await app.restart();
+  await app.open('/lucid/progress?ambience=dark');
+  await expect(screen.getByTestId('lucid-progress-stabilization-practices').getByText('1', { exact: true })).toHaveCount(1);
+  await expect(screen.getByTestId('lucid-progress-stabilization-completions').getByText('1', { exact: true })).toHaveCount(1);
+  // A second restart must not record another completion.
+  await app.restart();
+  await app.open('/lucid/progress?ambience=dark');
+  await expect(screen.getByTestId('lucid-progress-stabilization-practices').getByText('1', { exact: true })).toHaveCount(1);
+  await expect(screen.getByTestId('lucid-progress-stabilization-completions').getByText('1', { exact: true })).toHaveCount(1);
+  await app.screenshot('completed-practice-survives-two-restarts');
 });

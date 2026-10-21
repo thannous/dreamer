@@ -768,23 +768,23 @@ const styles = StyleSheet.create({
   },
   planCopy: { flex: 1, gap: LucidSpace.xs },
   planTitle: {
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: 'Outfit_700Bold',
     fontSize: LucidType.body[0],
     lineHeight: LucidType.body[1],
   },
   planDetail: {
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: 'Outfit_400Regular',
     fontSize: LucidType.bodySm[0],
     lineHeight: LucidType.bodySm[1],
   },
   planReason: { borderTopWidth: 1, paddingTop: LucidSpace.lg, gap: LucidSpace.sm },
   planReasonText: {
-    fontFamily: 'SpaceGrotesk_500Medium',
+    fontFamily: 'Outfit_500Medium',
     fontSize: LucidType.bodySm[0],
     lineHeight: LucidType.bodySm[1],
   },
   errorText: {
-    fontFamily: 'SpaceGrotesk_500Medium',
+    fontFamily: 'Outfit_500Medium',
     fontSize: LucidType.bodySm[0],
     lineHeight: LucidType.bodySm[1],
     textAlign: 'center',
@@ -796,7 +796,7 @@ const styles = StyleSheet.create({
     letterSpacing: -0.8,
   },
   introSubtitle: {
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: 'Outfit_400Regular',
     fontSize: LucidType.bodySm[0],
     lineHeight: LucidType.bodySm[1],
   },
@@ -860,13 +860,13 @@ const styles = StyleSheet.create({
   timeChoiceCopy: { alignItems: 'center', gap: LucidSpace.xs, paddingTop: LucidSpace.sm },
   timeChoiceCopyReflow: { flex: 1, flexDirection: 'row', justifyContent: 'space-between', paddingTop: 0 },
   timeValue: {
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: 'Outfit_700Bold',
     fontSize: LucidType.h3[0],
     lineHeight: LucidType.h3[1],
     fontVariant: ['tabular-nums'],
   },
   timeLabel: {
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: 'Outfit_700Bold',
     fontSize: LucidType.overline[0],
     lineHeight: LucidType.overline[1],
     letterSpacing: 1.2,

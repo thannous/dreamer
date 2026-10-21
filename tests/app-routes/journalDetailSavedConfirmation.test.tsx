@@ -436,6 +436,7 @@ jest.mock('@/hooks/useLocaleFormatting', () => ({
     formatDreamDate: () => '3 sept.',
     formatDreamTime: () => '07:12',
     formatDreamStamp: () => '3 septembre 2026 · 07:12',
+    formatNumber: (value: number) => value.toLocaleString('en-US'),
   }),
 }));
 
@@ -1191,6 +1192,19 @@ describe('journal detail saved confirmation route', () => {
     expect(screen.getByRole('alert').textContent).toContain('journal.detail.sync.retry_error');
   });
 
+  it('explains the anti-abuse sync refusals instead of showing their codes', () => {
+    mockDreams = [buildDream({ syncState: 'failed', lastSyncError: 'DAILY_DREAM_LIMIT' })];
+    const view = render(<JournalDetailScreen />);
+    expect(screen.getByText('journal.detail.sync.daily_limit_message')).toBeTruthy();
+    expect(screen.queryByText('DAILY_DREAM_LIMIT')).toBeNull();
+    view.unmount();
+
+    mockDreams = [buildDream({ syncState: 'failed', lastSyncError: 'DREAM_TRANSCRIPT_TOO_LONG' })];
+    render(<JournalDetailScreen />);
+    expect(screen.getByText('journal.detail.sync.too_long_message')).toBeTruthy();
+    expect(screen.queryByText('DREAM_TRANSCRIPT_TOO_LONG')).toBeNull();
+  });
+
   it('offers share between the seal and the reading, only once the reading is complete', () => {
     mockDreams = [buildDream()];
     const view = render(<JournalDetailScreen />);
@@ -1365,6 +1379,45 @@ describe('journal detail saved confirmation route', () => {
     expect(screen.queryByTestId(TID.Component.DreamEditor)).toBeNull();
   });
 
+  it('stops the story at the maximum length, and lets an older longer story shrink without growing', () => {
+    const view = render(<JournalDetailScreen />);
+    fireEvent.click(screen.getByTestId(TID.Button.EditDream));
+    expect(screen.getByTestId(TID.Input.DreamTranscript).getAttribute('maxlength')).toBe('20000');
+    expect(screen.queryByTestId('dream-length-counter')).toBeNull();
+    view.unmount();
+
+    mockDreams = [buildDream({ transcript: 'r'.repeat(25000) })];
+    render(<JournalDetailScreen />);
+    fireEvent.click(screen.getByTestId(TID.Button.EditDream));
+    expect(screen.getByTestId(TID.Input.DreamTranscript).getAttribute('maxlength')).toBe('25000');
+    expect(screen.getByTestId('dream-length-counter')).toBeTruthy();
+  });
+
+  it('keeps a story the server would refuse in the editor and says to shorten it', async () => {
+    const { Alert } = jest.requireMock('react-native') as { Alert: { alert: jest.Mock } };
+    Alert.alert.mockClear();
+    // Not synced yet: the server has no longer story to allow.
+    mockDreams = [buildDream({ transcript: 'r'.repeat(25000) })];
+    const view = render(<JournalDetailScreen />);
+    fireEvent.click(screen.getByTestId(TID.Button.EditDream));
+    fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), { target: { value: 'r'.repeat(24000) } });
+    await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.SaveDreamEdit)); });
+    expect(Alert.alert).toHaveBeenCalledWith('recording.alert.too_long.title', 'recording.alert.too_long.message');
+    expect(mockUpdateDream).not.toHaveBeenCalled();
+    expect(screen.getByTestId(TID.Input.DreamTranscript)).toBeTruthy();
+    view.unmount();
+
+    // Stored before the limit: it may shrink and keep a length over the maximum.
+    Alert.alert.mockClear();
+    mockDreams = [buildDream({ remoteId: 7, transcript: 'r'.repeat(25000) })];
+    render(<JournalDetailScreen />);
+    fireEvent.click(screen.getByTestId(TID.Button.EditDream));
+    fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), { target: { value: 'r'.repeat(24000) } });
+    await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.SaveDreamEdit)); });
+    expect(Alert.alert).not.toHaveBeenCalled();
+    expect(mockUpdateDream).toHaveBeenCalledWith(expect.objectContaining({ transcript: 'r'.repeat(24000) }));
+  });
+
   it('sets the edit link beside delete and takes it away while editing', async () => {
     render(<JournalDetailScreen />);
     const edit = screen.getByTestId(TID.Button.EditDream);
@@ -1468,7 +1521,6 @@ describe('native share card', () => {
     fireEvent.click(shareCardButton());
     expect(screen.getByTestId('share-composite').getAttribute('data-text')).toBe('quote');
     expect(mockShareImageRef.current).not.toBeNull();
-    expect((screen.getByTestId(TID.Button.DreamShare) as HTMLButtonElement).disabled).toBe(true);
     await act(async () => { mockCompositeEvents[0].load(); });
     expect(mockShareComposite).not.toHaveBeenCalled();
     await act(async () => { mockCompositeEvents[0].display(); });

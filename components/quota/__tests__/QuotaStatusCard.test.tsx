@@ -95,7 +95,7 @@ jest.mock('@/hooks/useTranslation', () => ({
 }));
 
 jest.mock('@/hooks/useLocaleFormatting', () => ({
-  useLocaleFormatting: () => ({ formatDate: () => '1 August 2026' }),
+  useLocaleFormatting: () => ({ locale: 'en-US', formatDate: () => '1 August 2026' }),
 }));
 
 jest.mock('@/hooks/useQuota', () => ({
@@ -127,10 +127,10 @@ jest.mock('@/constants/journalTheme', () => ({
 
 jest.mock('@/constants/theme', () => ({
   Fonts: {
-    spaceGrotesk: {
-      bold: 'SpaceGrotesk-Bold',
-      medium: 'SpaceGrotesk-Medium',
-      regular: 'SpaceGrotesk-Regular',
+    outfit: {
+      bold: 'Outfit-Bold',
+      medium: 'Outfit-Medium',
+      regular: 'Outfit-Regular',
     },
   },
 }));

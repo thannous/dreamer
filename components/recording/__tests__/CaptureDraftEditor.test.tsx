@@ -25,3 +25,17 @@ it('exposes the narrative and answers as inputs but leaves each question read-on
   view.rerender(<CaptureDraftEditor draft={draft} disabled onChange={onChange} onClose={onClose} />);
   expect(view.getByTestId('capture-adjust-section-1').props.editable).toBe(false);
 });
+
+it('lets each section grow only by what the dream has left, and never cuts a longer one', () => {
+  const draft = parseCaptureEditableDraft(`${'r'.repeat(19950)}\n\nQuestion : Quelle couleur ?\nRéponse : Noir.`);
+  const total = draft.sections.reduce((sum, section) => sum + section.prefix.length + section.text.length, 0);
+  const view = render(<CaptureDraftEditor draft={draft} disabled={false} onChange={jest.fn()} onClose={jest.fn()} />);
+  expect(view.getByTestId('capture-adjust-section-1').props.maxLength).toBe('Noir.'.length + 20000 - total);
+  expect(view.getByTestId('capture-adjust-section-0').props.maxLength).toBe(draft.sections[0].text.length + 20000 - total);
+  expect(view.getByTestId('dream-length-counter')).toBeTruthy();
+
+  const long = parseCaptureEditableDraft(`${'r'.repeat(21000)}\n\nQuestion : Quelle couleur ?\nRéponse : Noir.`);
+  view.rerender(<CaptureDraftEditor draft={long} disabled={false} onChange={jest.fn()} onClose={jest.fn()} />);
+  expect(view.getByTestId('capture-adjust-section-0').props.maxLength).toBe(long.sections[0].text.length);
+  expect(view.getByTestId('capture-adjust-section-1').props.maxLength).toBe('Noir.'.length);
+});

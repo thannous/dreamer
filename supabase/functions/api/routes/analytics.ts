@@ -84,6 +84,7 @@ const paywallTrigger = oneOf(
   'analysis_limit',
   'analysis_cta',
   'exploration_limit',
+  'chat_limit',
   'image_generation',
   'stats_profile',
   'settings',

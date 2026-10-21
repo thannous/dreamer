@@ -2,7 +2,7 @@
 
 import { getImageJobFailure } from '@/lib/imageJobErrors';
 
-import { QUOTAS } from '@/constants/limits';
+import { PLUS_DAILY_LIMIT, QUOTAS } from '@/constants/limits';
 import type { SubscriptionTier } from '@/lib/types';
 
 /**
@@ -18,6 +18,9 @@ const DEFAULT_ERROR_MESSAGES: Record<string, string> = {
   'error.timeout': 'Request timed out. The server is taking too long to respond. Please try again.',
   'error.rate_limit': 'Too many requests. Please wait a moment and try again.',
   'error.interpretation_limit': 'You have used your included interpretations. Your dream remains saved in the journal.',
+  'error.daily_analysis_limit': 'You started {limit} analyses in 24 hours, the limit that protects Noctalia from abuse. Your dream stays saved, and you can analyze it by tomorrow.',
+  'error.daily_image_limit': 'You created {limit} illustrations in 24 hours, the limit that protects Noctalia from abuse. Your dream and its analysis stay saved, and you can illustrate it by tomorrow.',
+  'error.daily_ai_limit': 'You reached today’s limit that protects Noctalia from abuse. This feature will be available again by tomorrow, and your dreams stay saved.',
   'error.exploration_limit': 'You have reached the exploration limit for your current plan. Your dream and existing conversation remain available.',
   'error.chat_safety_limit': 'This dream has reached its chat safety limit. Its interpretation remains available in your journal.',
   'error.server': 'Server error. The service is temporarily unavailable. Please try again in a few moments.',
@@ -135,6 +138,12 @@ export const isGuestSessionError = (error: Error): boolean => {
     bodyError.includes('missing integrity token') ||
     bodyError.includes('guest sessions')
   );
+};
+
+/** A recording or legacy AI route refused the request: its daily anti-abuse budget is spent. */
+export const isAiDailyLimitError = (error: unknown): boolean => {
+  const details = getHttpErrorDetails(error);
+  return details?.status === 429 && extractApiErrorInfo(details.body ?? {}).code === 'AI_DAILY_LIMIT';
 };
 
 export enum GuestSessionErrorCode {
@@ -293,6 +302,31 @@ export function classifyError(error: Error, t?: TranslateFunction): ClassifiedEr
         message: error.message,
         originalError: error,
         userMessage: translate('error.interpretation_limit'),
+        canRetry: false,
+      };
+    }
+
+    // Plus is unlimited under fair use: past its 24-hour ceiling, waiting a moment does not help.
+    if (status === 429 && (code === 'DAILY_ANALYSIS_LIMIT' || code === 'DAILY_IMAGE_LIMIT')) {
+      const key = code === 'DAILY_ANALYSIS_LIMIT' ? 'error.daily_analysis_limit' : 'error.daily_image_limit';
+      const limit = typeof body.dailyLimit === 'number' ? body.dailyLimit : PLUS_DAILY_LIMIT;
+      return {
+        type: ErrorType.CLIENT,
+        message: error.message,
+        originalError: error,
+        userMessage: translate(key, key, { limit }),
+        canRetry: false,
+      };
+    }
+
+    // Daily anti-abuse budget of a recording or legacy AI route (services/aiAdmission.ts):
+    // waiting a moment does not help, so no retry.
+    if (isAiDailyLimitError(error)) {
+      return {
+        type: ErrorType.CLIENT,
+        message: error.message,
+        originalError: error,
+        userMessage: translate('error.daily_ai_limit'),
         canRetry: false,
       };
     }

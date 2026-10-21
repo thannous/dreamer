@@ -33,7 +33,7 @@ export function SignInToOpenDream({ destination }: { destination: string | null 
       onPress={() => { void openSignIn(); }}
       className="mt-4 min-h-12 items-center justify-center rounded-sm border border-line px-6 py-3"
     >
-      <Text className="font-sans-bold text-[16px] text-ivory">
+      <Text className="font-sans-bold text-body text-ivory">
         {t('settings.account.button.sign_in')}
       </Text>
     </Pressable>

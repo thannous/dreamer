@@ -148,7 +148,7 @@ export default function SettingsScreen() {
               size={48}
               color={noctalia.accent.text}
             />
-            <Text className="mt-2 text-center font-display-semibold text-[20px] text-ivory">
+            <Text className="mt-2 text-center font-display-semibold text-h2 text-ivory">
               {t('auth.returning_guest.banner_title')}
             </Text>
             <Text className="text-center font-sans text-body-sm text-ivory-muted">
@@ -166,7 +166,7 @@ export default function SettingsScreen() {
 
   const quota = (
     <View className={RN_SLOT_CLASS} testID="settings-quota-rn-content">
-      <QuotaStatusCard onUpgradePress={handleOpenPaywall} presentation="embedded" showTitle={section === 'account'} />
+      <QuotaStatusCard onUpgradePress={handleOpenPaywall} presentation="embedded" showTitle={section === 'account'} showFreeUpgrade={section === 'account'} />
       {showSubscriptionQaLab ? <SubscriptionQALab presentation="embedded" /> : null}
     </View>
   );

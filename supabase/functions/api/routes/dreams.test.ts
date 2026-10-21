@@ -4,7 +4,7 @@ import {
   claimGuestAnalysisQuota,
   isAuthenticatedAnalysisQuotaRetry,
 } from '../lib/analysisQuota.ts';
-import { runDreamCategorization } from './dreams.ts';
+import { quotaBlockedResponse, runDreamCategorization } from './dreams.ts';
 
 Deno.test('authenticated quota recognizes the same request as an idempotent retry', () => {
   assertEquals(
@@ -12,6 +12,27 @@ Deno.test('authenticated quota recognizes the same request as an idempotent retr
     true
   );
   assertEquals(isAuthenticatedAnalysisQuotaRetry({ code: 'QUOTA_EXCEEDED' }), false);
+});
+
+Deno.test('a synchronous Plus analysis past its daily ceiling gets the same calm 429 as a queued one', async () => {
+  const response = quotaBlockedResponse({
+    allowed: false,
+    code: 'DAILY_ANALYSIS_LIMIT',
+    tier: 'plus',
+    limit: null,
+    daily_limit: 10,
+    new_count: 10,
+    retry_after_seconds: 59.2,
+  });
+
+  assertEquals(response.status, 429);
+  assertEquals(response.headers.get('Retry-After'), '60');
+  assertEquals(await response.json(), {
+    error: 'Daily fair use limit reached',
+    code: 'DAILY_ANALYSIS_LIMIT',
+    dailyLimit: 10,
+    retryAfter: 60,
+  });
 });
 
 Deno.test('guest quota claim forwards the stable request id to the idempotent RPC', async () => {

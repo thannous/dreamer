@@ -80,10 +80,10 @@ jest.doMock('@/hooks/useLocaleFormatting', () => ({
 jest.doMock('@/constants/theme', () => ({
   Fonts: {
     fraunces: { semiBold: 'Fraunces-SemiBold', medium: 'Fraunces-Medium' },
-    spaceGrotesk: {
-      regular: 'SpaceGrotesk-Regular',
-      medium: 'SpaceGrotesk-Medium',
-      bold: 'SpaceGrotesk-Bold',
+    outfit: {
+      regular: 'Outfit-Regular',
+      medium: 'Outfit-Medium',
+      bold: 'Outfit-Bold',
     },
   },
 }));
@@ -396,6 +396,8 @@ jest.doMock('@/components/ui/icon-symbol', () => ({
 }));
 
 jest.doMock('@/components/journal/JournalFirstPage', () => ({ JournalFirstPage: () => <div data-testid="journal-first-page" /> }));
+// Sharing a card is covered with the screens that open it, not here.
+jest.doMock('@/components/journal/DreamShareComposer', () => ({ DreamShareComposer: () => null }));
 
 const { default: JournalListScreen } = require('@/app/(tabs)/journal');
 

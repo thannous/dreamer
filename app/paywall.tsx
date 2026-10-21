@@ -17,6 +17,10 @@ import { getLegalLink, type LegalLinkKind } from '@/constants/legalLinks';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
+import { QUOTAS } from '@/constants/limits';
+import { useDreamsData } from '@/context/DreamsContext';
+import { formatQuotaResetDate } from '@/lib/quotaReset';
+import { resolveDreamRoute } from '@/lib/dreamRoute';
 import { getSavedDreamReturnRoute, requestAnalysisReturnRoute, type AnalysisPaywallParams } from '@/lib/paywallRoute';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
@@ -37,6 +41,7 @@ import { classifyPurchaseFailure } from '@/lib/subscriptionErrors';
 import { TID } from '@/lib/testIDs';
 import { HeaderScrollView, useHeaderScroll } from '@/components/ui/headerStretch';
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
+import { TypeScale } from '@/constants/typeScale';
 
 const PAYWALL_MAX_WIDTH = 720;
 const PAYWALL_PAINTING_HEIGHT = 170;
@@ -53,13 +58,19 @@ const STORE_NOTICE_KEY = Platform.select({
  */
 const CTA_TRANSITION = ['backgroundColor', 'borderColor'] as const;
 
+/** What a free account gets against Plus, the numbers every variant's copy can quote. */
+const QUOTA_COPY = {
+  analyses: QUOTAS.free.analysis ?? 0,
+  freeExchanges: QUOTAS.free.messagesPerDream ?? 0,
+};
+
 function PaywallScreen() {
   // This screen's own scroll, published to its header painting and title.
   const onHeaderScroll = useHeaderScroll();
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t, translationRevision, currentLang } = useTranslation();
-  const { formatDate, formatNumber, formatTime } = useLocaleFormatting();
+  const { formatDate, formatNumber, formatTime, locale } = useLocaleFormatting();
   const params = useLocalSearchParams<AnalysisPaywallParams & { trigger?: string }>();
   const { user } = useAuth();
   const userId = user?.id;
@@ -113,6 +124,18 @@ function PaywallScreen() {
   const isDreamAnalysisOffer = paywallTrigger === 'analysis_cta' && Boolean(params.dreamId)
     && params.dreamOwnerId === userId;
   const paywallVariant = useMemo(() => getPaywallVariant(paywallTrigger), [paywallTrigger]);
+  const { dreams } = useDreamsData();
+  // The saved-dream offer shows the person's own first words: the dream is what they pay to read.
+  const offeredDreamText = useMemo(() => {
+    if (!isDreamAnalysisOffer) return '';
+    const dream = resolveDreamRoute(dreams, {
+      id: params.dreamId,
+      remoteId: params.dreamRemoteId,
+      clientRequestId: params.dreamClientRequestId,
+    });
+    return (dream?.transcript || dream?.title || '').trim();
+  }, [dreams, isDreamAnalysisOffer, params.dreamId, params.dreamRemoteId, params.dreamClientRequestId]);
+  const resetDate = formatQuotaResetDate(locale);
 
   // Keeps rating requests away from the paywall and the minutes after it.
   useEffect(() => {
@@ -355,7 +378,7 @@ function PaywallScreen() {
   const headerSubtitle = isActive && !awaitingServerAccess
     ? t(`subscription.paywall.header.subtitle.${activeTierKey}` as const)
     : isDreamAnalysisOffer ? t('subscription.paywall.saved_dream.message')
-      : translateWithFallback(paywallVariant.headerSubtitleKey);
+      : t(paywallVariant.headerSubtitleKey, { ...QUOTA_COPY, date: resetDate });
 
   const formattedExpiryDate = useMemo(() => {
     const expiryDate = subscriptionStatus?.expiryDate;
@@ -384,12 +407,9 @@ function PaywallScreen() {
       if (isDreamAnalysisOffer) {
         return [t('subscription.paywall.saved_dream.analysis'), t('subscription.paywall.saved_dream.illustration')];
       }
-      if (!isActive) {
-        return paywallVariant.featureKeys.map((key) => translateWithFallback(key));
-      }
       return PLUS_PAYWALL_FEATURE_KEYS.map((key) => t(key));
     },
-    [isActive, isDreamAnalysisOffer, paywallVariant.featureKeys, t, translateWithFallback, translationRevision]
+    [isDreamAnalysisOffer, t, translationRevision]
   );
 
   const packageOptions = useMemo(
@@ -455,46 +475,46 @@ function PaywallScreen() {
   const comparisonRows = useMemo(
     () => {
       void translationRevision;
+      // Recording is unlimited on both sides, so it is said once under the table
+      // instead of taking a row: each row here is a real difference.
       return [
-        {
-          key: 'recording',
-          icon: 'book.closed.fill' as const,
-          label: t('subscription.paywall.comparison.recording'),
-          free: t('subscription.paywall.comparison.unlimited_recording'),
-          plus: t('subscription.paywall.comparison.unlimited_recording'),
-          showFreeInfinity: true,
-          showPlusInfinity: true,
-        },
         {
           key: 'analysis',
           icon: 'brain' as const,
           label: t('subscription.paywall.comparison.analysis'),
-          free: t('subscription.paywall.comparison.limited'),
+          free: t('subscription.paywall.comparison.free_analyses', { count: QUOTA_COPY.analyses }),
           plus: t('subscription.paywall.comparison.unlimited'),
-          showFreeInfinity: false,
           showPlusInfinity: true,
+        },
+        {
+          // Each free analysis brings its illustration; Plus illustrates every dream.
+          key: 'illustrations',
+          icon: 'paintpalette' as const,
+          label: t('subscription.paywall.comparison.illustrations'),
+          free: t('subscription.paywall.comparison.free_analyses', { count: QUOTA_COPY.analyses }),
+          plus: t('subscription.paywall.comparison.all_dreams'),
+          showPlusInfinity: false,
         },
         {
           key: 'exploration',
           icon: 'bubble.left.and.bubble.right' as const,
-          label: t('subscription.paywall.comparison.exploration'),
-          free: t('subscription.paywall.comparison.limited'),
-          plus: t('subscription.paywall.comparison.unlimited'),
-          showFreeInfinity: false,
+          label: t('subscription.paywall.comparison.exchanges'),
+          free: formatNumber(QUOTA_COPY.freeExchanges),
+          // Plus sells exchanges as unlimited; the note under the table names the abuse safeguards.
+          plus: t('subscription.paywall.comparison.unlimited_exchanges'),
           showPlusInfinity: true,
         },
         {
           key: 'synthesis',
           icon: 'sparkles' as const,
-          label: t('subscription.paywall.comparison.synthesis'),
-          free: t('subscription.paywall.comparison.essential'),
-          plus: t('subscription.paywall.comparison.deep'),
-          showFreeInfinity: false,
+          label: t('subscription.paywall.comparison.synthesis_360'),
+          free: t('subscription.paywall.comparison.none'),
+          plus: t('subscription.paywall.comparison.included'),
           showPlusInfinity: false,
         },
       ];
     },
-    [t, translationRevision]
+    [formatNumber, t, translationRevision]
   );
 
   if (isDeviceUpgraded) {
@@ -528,10 +548,10 @@ function PaywallScreen() {
           <ScreenContainer maxWidth={PAYWALL_MAX_WIDTH}>
             <View style={styles.upgradedMessageContainer}>
               <Text style={[styles.upgradedTitle, { color: noctalia.text.primary }]}>
-                {translateWithFallback(paywallVariant.cardTitleKey)}
+                {t('subscription.paywall.variant.returning_device.card_title')}
               </Text>
               <Text style={[styles.upgradedSubtitle, { color: noctalia.text.secondary }]}>
-                {translateWithFallback(paywallVariant.cardSubtitleKey)}
+                {t('subscription.paywall.variant.returning_device.card_subtitle')}
               </Text>
 
               <PressableScale
@@ -622,6 +642,20 @@ function PaywallScreen() {
             <Text style={[styles.headerTitle, { color: noctalia.text.primary }]}>{headerTitle}</Text>
             <Text style={[styles.headerSubtitle, { color: noctalia.text.secondary }]}>{headerSubtitle}</Text>
 
+            {offeredDreamText && !isActive ? (
+              <View
+                style={[styles.dreamExcerpt, { backgroundColor: noctalia.surface.base, borderColor: noctalia.surface.borderStrong }]}
+                testID={TID.Text.PaywallDreamExcerpt}
+              >
+                <Text style={[styles.dreamExcerptLabel, { color: noctalia.accent.text }]}>
+                  {t('subscription.paywall.saved_dream.waiting')}
+                </Text>
+                <Text numberOfLines={3} style={[styles.dreamExcerptText, { color: noctalia.text.primary }]}>
+                  {offeredDreamText}
+                </Text>
+              </View>
+            ) : null}
+
             {!isDreamAnalysisOffer ? <SubscriptionExpiryNotice status={subscriptionStatus} loading={loading} /> : null}
 
             {isActive && !awaitingServerAccess && formattedExpiryDate ? (
@@ -647,6 +681,7 @@ function PaywallScreen() {
 
           <Reveal index={1}>
           {!isActive && !isDreamAnalysisOffer ? (
+            <>
             <View
               style={[
                 styles.comparisonTable,
@@ -681,31 +716,15 @@ function PaywallScreen() {
                   accessibilityLabel={`${row.label}. ${t('subscription.paywall.comparison.free')}: ${row.free}. ${t('subscription.paywall.comparison.plus')}: ${row.plus}.`}
                 >
                   <View style={styles.comparisonFeatureCell}>
-                    <View style={[styles.comparisonIcon, { backgroundColor: noctalia.surface.soft }]}>
-                      <IconSymbol name={row.icon} size={15} color={noctalia.accent.text} />
-                    </View>
+                    <IconSymbol name={row.icon} size={17} color={noctalia.accent.text} />
                     <Text style={[styles.comparisonFeatureText, { color: noctalia.text.primary }]}>
                       {row.label}
                     </Text>
                   </View>
                   <View style={styles.comparisonFreeCell}>
-                    <View style={styles.comparisonFreeValue}>
-                      {row.showFreeInfinity ? (
-                        <Text style={[styles.comparisonInfinity, { color: noctalia.accent.text }]}>∞</Text>
-                      ) : null}
-                      <Text
-                        style={[
-                          styles.comparisonFreeText,
-                          {
-                            color: row.showFreeInfinity
-                              ? noctalia.text.primary
-                              : noctalia.text.secondary,
-                          },
-                        ]}
-                      >
-                        {row.free}
-                      </Text>
-                    </View>
+                    <Text style={[styles.comparisonFreeText, { color: noctalia.text.secondary }]}>
+                      {row.free}
+                    </Text>
                   </View>
                   <View style={[styles.comparisonPlusCell, { backgroundColor: noctalia.surface.active }]}>
                     <View style={styles.comparisonPlusValue}>
@@ -720,6 +739,11 @@ function PaywallScreen() {
                 </View>
               ))}
             </View>
+            <Text style={[styles.comparisonNote, { color: noctalia.text.secondary }]}>
+              {t('subscription.paywall.comparison.recording_note')}{' '}
+              {t('subscription.paywall.comparison.fair_use_note')}
+            </Text>
+            </>
           ) : (
             <View style={styles.benefitList}>
               {visibleSubscriptionFeatures.map((feature, index) => (
@@ -879,6 +903,11 @@ function PaywallScreen() {
                 </Text>
               </Pressable>
             ) : null}
+            {!isActive && isDreamAnalysisOffer ? (
+              <Text style={[styles.notice, { color: noctalia.text.secondary }]}>
+                {t('subscription.paywall.saved_dream.reset', { date: resetDate })}
+              </Text>
+            ) : null}
 
           </Reveal>
 
@@ -989,17 +1018,42 @@ const styles = StyleSheet.create({
     minHeight: 44 + ThemeLayout.spacing.sm,
   },
   headerTitle: {
-    fontSize: 28,
-    lineHeight: 31,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: TypeScale.h1.fontSize,
+    lineHeight: TypeScale.h1.lineHeight,
+    letterSpacing: -0.2,
+    fontFamily: Fonts.fraunces.semiBold,
     textAlign: 'center',
   },
   headerSubtitle: {
-    fontSize: 15,
-    lineHeight: 21,
-    fontFamily: Fonts.spaceGrotesk.regular,
-    marginTop: 6,
+    // A short measure keeps the subtitle a centred block, not a ragged paragraph.
+    maxWidth: 340,
+    alignSelf: 'center',
+    fontSize: TypeScale.body.fontSize,
+    lineHeight: TypeScale.body.lineHeight,
+    fontFamily: Fonts.outfit.regular,
+    marginTop: ThemeLayout.spacing.sm,
     textAlign: 'center',
+  },
+  dreamExcerpt: {
+    marginTop: ThemeLayout.spacing.md,
+    paddingHorizontal: ThemeLayout.spacing.md,
+    paddingVertical: 14,
+    borderWidth: 1,
+    borderRadius: ThemeLayout.borderRadius.lg,
+    gap: 6,
+  },
+  dreamExcerptLabel: {
+    fontSize: TypeScale.overline.fontSize,
+    lineHeight: TypeScale.overline.lineHeight,
+    letterSpacing: TypeScale.overline.letterSpacing,
+    textTransform: 'uppercase',
+    fontFamily: Fonts.outfit.bold,
+  },
+  dreamExcerptText: {
+    // The dream in the journal's own voice: Lora, as the person wrote it.
+    fontSize: TypeScale.body.fontSize,
+    lineHeight: TypeScale.body.lineHeight,
+    fontFamily: Fonts.lora.regularItalic,
   },
   kickerRow: {
     minHeight: 24,
@@ -1010,15 +1064,15 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   kickerText: {
-    fontSize: 11,
-    lineHeight: 14,
-    letterSpacing: 2.2,
+    fontSize: TypeScale.overline.fontSize,
+    lineHeight: TypeScale.overline.lineHeight,
+    letterSpacing: TypeScale.overline.letterSpacing,
     textTransform: 'uppercase',
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
   },
   expiryDate: {
-    fontSize: 13,
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: TypeScale.bodySm.fontSize,
+    fontFamily: Fonts.outfit.medium,
     marginBottom: 8,
   },
   closeButton: {
@@ -1037,8 +1091,8 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   },
   closeLabel: {
-    fontSize: 14,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: TypeScale.bodySm.fontSize,
+    fontFamily: Fonts.outfit.regular,
   },
   loadingRow: {
     flexDirection: 'row',
@@ -1047,8 +1101,8 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   loadingLabel: {
-    fontSize: 13,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: TypeScale.bodySm.fontSize,
+    fontFamily: Fonts.outfit.regular,
   },
   scroll: {
     flex: 1,
@@ -1064,42 +1118,46 @@ const styles = StyleSheet.create({
     marginBottom: ThemeLayout.spacing.md,
   },
   comparisonHeaderRow: {
-    minHeight: 48,
+    minHeight: 40,
     flexDirection: 'row',
   },
   comparisonRow: {
-    minHeight: 62,
+    minHeight: 54,
     flexDirection: 'row',
-    borderTopWidth: 1,
+    borderTopWidth: StyleSheet.hairlineWidth,
   },
   comparisonFeatureCell: {
-    flex: 1.35,
+    flex: 1.4,
     minWidth: 0,
-    paddingHorizontal: 10,
-    paddingVertical: 9,
+    paddingLeft: 14,
+    paddingRight: 6,
+    paddingVertical: 10,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 7,
+    gap: 10,
   },
   comparisonFreeCell: {
-    flex: 0.72,
+    flex: 0.8,
     minWidth: 0,
-    paddingHorizontal: 5,
-    paddingVertical: 9,
+    paddingHorizontal: 4,
+    paddingVertical: 10,
     alignItems: 'center',
     justifyContent: 'center',
   },
   comparisonPlusCell: {
-    flex: 1.05,
+    flex: 0.95,
     minWidth: 0,
-    paddingHorizontal: 7,
-    paddingVertical: 9,
+    paddingHorizontal: 6,
+    paddingVertical: 10,
     alignItems: 'center',
     justifyContent: 'center',
   },
   comparisonHeaderText: {
-    fontSize: 12,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: TypeScale.overline.fontSize,
+    lineHeight: TypeScale.overline.lineHeight,
+    letterSpacing: TypeScale.overline.letterSpacing,
+    textTransform: 'uppercase',
+    fontFamily: Fonts.outfit.bold,
     textAlign: 'center',
   },
   comparisonPlusHeader: {
@@ -1109,36 +1167,24 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   comparisonPlusHeaderText: {
-    fontSize: 14,
-    letterSpacing: 0.8,
+    fontSize: TypeScale.overline.fontSize,
+    lineHeight: TypeScale.overline.lineHeight,
+    letterSpacing: TypeScale.overline.letterSpacing,
     textTransform: 'uppercase',
-    fontFamily: Fonts.spaceGrotesk.bold,
-  },
-  comparisonIcon: {
-    width: 27,
-    height: 27,
-    borderRadius: ThemeLayout.borderRadius.full,
-    alignItems: 'center',
-    justifyContent: 'center',
+    fontFamily: Fonts.outfit.bold,
   },
   comparisonFeatureText: {
     flex: 1,
     minWidth: 0,
-    fontSize: 12,
-    lineHeight: 15,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: TypeScale.bodySm.fontSize,
+    lineHeight: 18,
+    fontFamily: Fonts.outfit.medium,
   },
   comparisonFreeText: {
-    fontSize: 12,
-    lineHeight: 15,
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: TypeScale.bodySm.fontSize,
+    lineHeight: 18,
+    fontFamily: Fonts.outfit.regular,
     textAlign: 'center',
-  },
-  comparisonFreeValue: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 3,
   },
   comparisonPlusValue: {
     flexDirection: 'row',
@@ -1147,15 +1193,23 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   comparisonInfinity: {
-    fontSize: 20,
-    lineHeight: 20,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: TypeScale.h3.fontSize,
+    lineHeight: 18,
+    fontFamily: Fonts.outfit.bold,
   },
   comparisonPlusText: {
     flexShrink: 1,
-    fontSize: 12,
-    lineHeight: 15,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: TypeScale.bodySm.fontSize,
+    lineHeight: 18,
+    fontFamily: Fonts.outfit.bold,
+    textAlign: 'center',
+  },
+  comparisonNote: {
+    marginTop: -ThemeLayout.spacing.xs,
+    marginBottom: ThemeLayout.spacing.md,
+    fontSize: TypeScale.caption.fontSize,
+    lineHeight: TypeScale.caption.lineHeight,
+    fontFamily: Fonts.outfit.regular,
     textAlign: 'center',
   },
   pricingGrid: {
@@ -1192,17 +1246,17 @@ const styles = StyleSheet.create({
   },
   benefitText: {
     flexShrink: 1,
-    fontSize: 15,
-    lineHeight: 22,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: TypeScale.body.fontSize,
+    lineHeight: TypeScale.body.lineHeight,
+    fontFamily: Fonts.outfit.regular,
   },
   benefitTextUnlimited: {
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
   },
   benefitInfinity: {
-    fontSize: 19,
-    lineHeight: 20,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: TypeScale.h3.fontSize,
+    lineHeight: TypeScale.h3.lineHeight,
+    fontFamily: Fonts.outfit.bold,
   },
   primaryButton: {
     borderRadius: ThemeLayout.borderRadius.full,
@@ -1214,18 +1268,18 @@ const styles = StyleSheet.create({
   trialFootnote: {
     marginTop: 8,
     textAlign: 'center',
-    fontSize: 12,
+    fontSize: TypeScale.caption.fontSize,
     lineHeight: 16,
   },
   authReason: {
     textAlign: 'center',
-    fontSize: 13,
-    lineHeight: 18,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: TypeScale.bodySm.fontSize,
+    lineHeight: TypeScale.bodySm.lineHeight,
+    fontFamily: Fonts.outfit.regular,
   },
   primaryLabel: {
-    fontSize: 16,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: TypeScale.body.fontSize,
+    fontFamily: Fonts.outfit.bold,
   },
   secondaryButton: {
     alignItems: 'center',
@@ -1236,14 +1290,14 @@ const styles = StyleSheet.create({
     opacity: 0.8,
   },
   secondaryLabel: {
-    fontSize: 14,
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: TypeScale.bodySm.fontSize,
+    fontFamily: Fonts.outfit.medium,
   },
   notice: {
     marginTop: 8,
-    fontSize: 12,
+    fontSize: TypeScale.caption.fontSize,
     lineHeight: 16,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     textAlign: 'center',
   },
   restoreButton: {
@@ -1261,8 +1315,8 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   legalLink: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 12,
+    fontFamily: Fonts.outfit.medium,
+    fontSize: TypeScale.caption.fontSize,
     textDecorationLine: 'underline',
   },
   legalLinkTarget: {
@@ -1273,13 +1327,13 @@ const styles = StyleSheet.create({
     opacity: 0.75,
   },
   legalSeparator: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 12,
+    fontFamily: Fonts.outfit.regular,
+    fontSize: TypeScale.caption.fontSize,
   },
   emptyText: {
     marginTop: ThemeLayout.spacing.md,
-    fontSize: 14,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: TypeScale.bodySm.fontSize,
+    fontFamily: Fonts.outfit.regular,
     textAlign: 'center',
   },
   upgradedMessageContainer: {
@@ -1289,14 +1343,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: ThemeLayout.spacing.md,
   },
   upgradedTitle: {
-    fontSize: 20,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: TypeScale.h2.fontSize,
+    fontFamily: Fonts.outfit.bold,
     marginBottom: ThemeLayout.spacing.md,
     textAlign: 'center',
   },
   upgradedSubtitle: {
-    fontSize: 14,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: TypeScale.bodySm.fontSize,
+    fontFamily: Fonts.outfit.regular,
     textAlign: 'center',
     marginBottom: ThemeLayout.spacing.lg,
     lineHeight: 20,

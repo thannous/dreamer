@@ -1,6 +1,7 @@
 import { getApiBaseUrl } from '@/lib/config';
 import { fetchJSONWithSession } from '@/lib/apiSession';
 import { logger } from '@/lib/logger';
+import { isAiDailyLimitError } from '@/lib/errors';
 import { NETWORK_REQUEST_POLICIES } from '@/lib/networkPolicy';
 import * as FileSystem from 'expo-file-system/legacy';
 import { File } from 'expo-file-system';
@@ -125,8 +126,10 @@ export async function transcribeAudio({
     });
 
     return res.transcript ?? '';
-  } catch {
+  } catch (error) {
     logger.warn('[speechToText] fallback request failed');
+    // The daily budget answers for the whole day: the caller stops asking and says so.
+    if (isAiDailyLimitError(error)) throw error;
     throw new Error('Failed to transcribe audio. Please try again.');
   }
 }

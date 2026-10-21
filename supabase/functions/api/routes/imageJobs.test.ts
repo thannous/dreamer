@@ -5,8 +5,44 @@ import { AI_REQUEST_LIMITS } from '../lib/aiRequestPolicy.ts';
 import { DREAM_CONTEXT_TRANSCRIPT_MAX_CHARS } from '../lib/prompts.ts';
 import {
   canCreateImageJobForTier,
+  checkPlusDailyImageLimit,
   handleCreateImageJob,
 } from './imageJobs.ts';
+
+/** Fake reads for the Plus daily image ceiling: by default no job and no analysis receipt yet. */
+const imageJobHistory = (
+  rows: { existing?: boolean; receipt?: boolean; createdAt?: string[]; failing?: boolean } = {}
+) => {
+  const reads: Record<string, unknown>[] = [];
+  return {
+    reads,
+    from: (table: string) => {
+      const filters: Record<string, unknown> = { table };
+      const query = {
+        select: (columns: string) => { filters.select = columns; return query; },
+        eq: (column: string, value: unknown) => { filters[column] = value; return query; },
+        neq: (column: string, value: unknown) => { filters[`${column} !=`] = value; return query; },
+        gt: (column: string, value: unknown) => { filters[`${column} >`] = value; return query; },
+        order: (column: string, options: { ascending: boolean }) => {
+          filters.order = `${column} ${options.ascending ? 'asc' : 'desc'}`;
+          return query;
+        },
+        limit: async (count: number) => {
+          reads.push({ ...filters, limit: count });
+          if (rows.failing) return { data: null, error: { code: 'XX000' } };
+          if (table === 'quota_usage') return { data: rows.receipt ? [{ id: 'receipt-1' }] : [], error: null };
+          assertEquals(table, 'ai_jobs');
+          if (filters.select === 'id') return { data: rows.existing ? [{ id: 'job-1' }] : [], error: null };
+          return {
+            data: (rows.createdAt ?? []).slice(0, count).map((created_at) => ({ created_at })),
+            error: null,
+          };
+        },
+      };
+      return query;
+    },
+  };
+};
 
 const pendingDream = {
   id: 42,
@@ -135,6 +171,7 @@ Deno.test('standalone image jobs accept a 601-character transcript and bound the
     }),
     {
       createAdminClient: (() => ({
+        from: imageJobHistory().from,
         rpc: async (name: string, args: Record<string, unknown>) => {
           if (name === 'admit_ai_job') {
             payloads.push(args.p_request_payload as Record<string, unknown>);
@@ -177,6 +214,7 @@ Deno.test('standalone image jobs keep the long stored request and bound the mode
     }),
     {
       createAdminClient: (() => ({
+        from: imageJobHistory().from,
         rpc: async (name: string, args: Record<string, unknown>) => {
           if (name === 'admit_ai_job') {
             payloads.push(args.p_request_payload as Record<string, unknown>);
@@ -287,6 +325,7 @@ Deno.test('failed image job retry with the same request id returns queued and re
     createAuthenticatedImageContext(bundledImageBody),
     {
       createAdminClient: (() => ({
+        from: imageJobHistory().from,
         rpc: async (name: string, args: Record<string, unknown>) => {
           rpcCalls.push({ name, args });
           if (name === 'admit_ai_job') {
@@ -352,6 +391,7 @@ Deno.test('image job retry with a mismatched payload returns AI_IDEMPOTENCY_KEY_
     }),
     {
       createAdminClient: (() => ({
+        from: imageJobHistory().from,
         rpc: async (name: string) => {
           rpcCalls.push(name);
           if (name === 'admit_ai_job') {
@@ -387,6 +427,7 @@ Deno.test('failed image retry reuses the existing job id and does not open a sec
     createAuthenticatedImageContext(bundledImageBody),
     {
       createAdminClient: (() => ({
+        from: imageJobHistory().from,
         rpc: async (name: string, args: Record<string, unknown>) => {
           if (name === 'admit_ai_job') {
             admitJobIds.push(args.p_job_id);
@@ -568,4 +609,83 @@ Deno.test('completed free image requires its exact trusted analysis receipt befo
     assertEquals(triggers, outcome === 'authorized' ? 1 : 0);
     if (outcome === 'missing') assertEquals((await response.json()).code, 'FREE_IMAGE_ANALYSIS_REQUIRED');
   }
+});
+
+Deno.test('Plus daily image ceiling blocks the eleventh new image and says when one frees up', async () => {
+  const now = Date.parse('2026-10-21T12:00:00.000Z');
+  const createdAt = Array.from({ length: 10 }, (_, index) =>
+    new Date(now - (index + 1) * 60 * 60 * 1000).toISOString());
+  const history = imageJobHistory({ createdAt });
+
+  const response = await checkPlusDailyImageLimit(history as any, 'user-1', BUNDLED_REQUEST_ID, now);
+
+  assertEquals(response?.status, 429);
+  // The tenth newest image was made 10 hours ago: it leaves the 24-hour window in 14 hours.
+  assertEquals(response?.headers.get('Retry-After'), String(14 * 60 * 60));
+  assertEquals(await response?.json(), {
+    error: 'Daily fair use limit reached',
+    code: 'DAILY_IMAGE_LIMIT',
+    dailyLimit: 10,
+    retryAfter: 14 * 60 * 60,
+  });
+  assertEquals(history.reads[1], {
+    table: 'quota_usage',
+    select: 'id',
+    user_id: 'user-1',
+    quota_type: 'analysis',
+    'metadata->>analysis_request_id': BUNDLED_REQUEST_ID,
+    'occurred_at >': '2026-10-20T12:00:00.000Z',
+    limit: 1,
+  });
+  assertEquals(history.reads[2], {
+    table: 'ai_jobs',
+    select: 'created_at',
+    job_type: 'generate_image',
+    user_id: 'user-1',
+    'status !=': 'failed',
+    'created_at >': '2026-10-20T12:00:00.000Z',
+    order: 'created_at desc',
+    limit: 10,
+  });
+});
+
+Deno.test('Plus daily image ceiling lets through the tenth image, a retry and an analysis\'s own illustration', async () => {
+  const now = Date.parse('2026-10-21T12:00:00.000Z');
+  const nine = Array.from({ length: 9 }, () => new Date(now - 60_000).toISOString());
+  assertEquals(await checkPlusDailyImageLimit(imageJobHistory({ createdAt: nine }) as any, 'user-1', BUNDLED_REQUEST_ID, now), null);
+
+  const ten = Array.from({ length: 10 }, () => new Date(now - 60_000).toISOString());
+  const retry = imageJobHistory({ existing: true, createdAt: ten });
+  assertEquals(await checkPlusDailyImageLimit(retry as any, 'user-1', BUNDLED_REQUEST_ID, now), null);
+  assertEquals(retry.reads.length, 1);
+
+  // An analysis's own illustration (its request id has a receipt) is bounded by the analysis ceiling.
+  const ownImage = imageJobHistory({ receipt: true, createdAt: ten });
+  assertEquals(await checkPlusDailyImageLimit(ownImage as any, 'user-1', BUNDLED_REQUEST_ID, now), null);
+  assertEquals(ownImage.reads.length, 2);
+
+  const failing = await checkPlusDailyImageLimit(imageJobHistory({ failing: true }) as any, 'user-1', BUNDLED_REQUEST_ID, now);
+  assertEquals(failing?.status, 503);
+});
+
+Deno.test('a Plus account past its daily images never reaches image admission', async () => {
+  const recent = Array.from({ length: 10 }, () => new Date(Date.now() - 60_000).toISOString());
+  const rpcCalls: string[] = [];
+  const response = await handleCreateImageJob(
+    createAuthenticatedImageContext(bundledImageBody),
+    {
+      createAdminClient: (() => ({
+        from: imageJobHistory({ createdAt: recent }).from,
+        rpc: async (name: string) => {
+          rpcCalls.push(name);
+          return { data: null, error: null };
+        },
+      })) as any,
+      triggerImageJobWorker: async () => true,
+    }
+  );
+
+  assertEquals(response.status, 429);
+  assertEquals((await response.json()).code, 'DAILY_IMAGE_LIMIT');
+  assertEquals(rpcCalls, []);
 });

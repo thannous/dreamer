@@ -227,6 +227,7 @@ jest.mock('@/hooks/useScrollIdle', () => ({
   }),
 }));
 jest.mock('@/hooks/useClearWebFocus', () => ({ useClearWebFocus: () => undefined }));
+jest.mock('@/hooks/useLocaleFormatting', () => ({ useLocaleFormatting: () => ({ locale: 'fr-FR' }) }));
 jest.mock('@/hooks/useAppState', () => ({
   useAppState: (onForeground?: () => void) => {
     mockForeground = onForeground;
@@ -627,13 +628,21 @@ describe('Home Accueil Aujourd’hui', () => {
     setIntervalSpy.mockRestore();
   });
 
-  it('shows a signed-in free account its remaining analyses and opens the quota offer', async () => {
+  it('leaves the morning screen to the dream while several analyses remain', async () => {
     mockUser = { id: 'user-1' };
     mockQuota = { tier: 'free', loading: false, usage: { analysis: { used: 1, limit: 3, remaining: 2 } } };
     await renderHome([]);
 
+    expect(screen.queryByTestId(TID.Button.FreeAnalysesNudge)).toBeNull();
+  });
+
+  it('shows the last remaining analysis and opens the quota offer', async () => {
+    mockUser = { id: 'user-1' };
+    mockQuota = { tier: 'free', loading: false, usage: { analysis: { used: 2, limit: 3, remaining: 1 } } };
+    await renderHome([]);
+
     const nudge = screen.getByTestId(TID.Button.FreeAnalysesNudge);
-    expect(nudge.textContent).toContain('quota.free_nudge.remaining');
+    expect(nudge.textContent).toContain('quota.free_nudge.remaining_one');
     fireEvent.click(nudge);
     expect(mockPush).toHaveBeenCalledWith({ pathname: '/paywall', params: { trigger: 'settings_quota' } });
   });

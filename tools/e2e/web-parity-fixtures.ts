@@ -11,7 +11,7 @@ import { webEngine, webLocale } from './web-engine';
 // Keep the matcher library out of the test module bundler, as in SkillCodex's
 // existing baseline adapter. Resolve this isolated package's pinned version.
 const matchers: typeof import('playwright/test') = createRequire(import.meta.url)('playwright/test');
-// Match the15-second assertion timeout of playwright.config.ts exactly.
+// Keep the migrated journeys’ 15-second assertion deadline.
 export const expect = matchers.expect.configure({ timeout: 15_000 });
 
 export type ParityInfo = {

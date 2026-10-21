@@ -1,6 +1,6 @@
 /* @jest-environment jsdom */
 
-import { act, renderHook } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { AudioModule, setAudioModeAsync, useAudioRecorder } from 'expo-audio';
 import * as FileSystemLegacy from 'expo-file-system/legacy';
 import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
@@ -106,7 +106,10 @@ describe('useRecordingSession', () => {
     onLimitReached: jest.fn(),
   };
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    // A test that ends while recording unmounts its hook, which gives the microphone back a
+    // turn later (setTimeout 0). Let that turn pass first, so no hold leaks into this test.
+    await new Promise((resolve) => setTimeout(resolve, 0));
     jest.clearAllMocks();
     (Platform as { OS: string }).OS = 'android';
     // Reset default mock implementations
@@ -295,6 +298,7 @@ describe('useRecordingSession', () => {
     jest.mocked(setAudioModeAsync).mockImplementation(async () => {
       heldOnModeChange.push(isMicrophoneHeld());
     });
+    expect(isMicrophoneHeld()).toBe(false);
     const { result } = renderHook(() => useRecordingSession(defaultOptions));
 
     await act(async () => {
@@ -587,6 +591,92 @@ describe('useRecordingSession', () => {
       expect(FileSystemLegacy.deleteAsync).toHaveBeenCalledWith('/path/to/server-fallback.amr', {
         idempotent: true,
       });
+    });
+
+    it('says when server transcription has spent its daily budget, then stops asking it', async () => {
+      const recorder = mockCreateMockRecorder({ uri: '/path/to/server-fallback.amr' });
+      jest.mocked(startNativeSpeechSession).mockResolvedValue(null);
+      jest.mocked(useAudioRecorder).mockReturnValue(recorder as never);
+      jest.mocked(transcribeAudio).mockRejectedValueOnce(Object.assign(new Error('HTTP 429'), {
+        status: 429,
+        body: { code: 'AI_DAILY_LIMIT', retryAfter: 3600 },
+      }));
+
+      const { result, rerender } = renderHook(
+        ({ scope }: { scope: string }) => useRecordingSession({ ...defaultOptions, transcriptionScope: scope }),
+        { initialProps: { scope: 'guest' } }
+      );
+      const record = async () => {
+        let response: RecordingSessionResult | undefined;
+        await act(async () => {
+          await result.current.startRecording('');
+        });
+        await act(async () => {
+          response = await result.current.stopRecording();
+        });
+        return response;
+      };
+
+      expect((await record())?.error).toBe('daily_ai_limit');
+      // Paused: the server is not asked, and the user still hears why.
+      expect((await record())?.error).toBe('daily_ai_limit');
+      expect(transcribeAudio).toHaveBeenCalledTimes(1);
+
+      // A guest who signs in has the account's own budget.
+      rerender({ scope: 'user-1' });
+      expect((await record())?.error).toBe('stt_unavailable');
+      expect(transcribeAudio).toHaveBeenCalledTimes(2);
+
+      // The budget comes back after the delay the server gave.
+      jest.mocked(transcribeAudio).mockRejectedValueOnce(Object.assign(new Error('HTTP 429'), {
+        status: 429,
+        body: { code: 'AI_DAILY_LIMIT', retryAfter: 3600 },
+      }));
+      expect((await record())?.error).toBe('daily_ai_limit');
+      const now = Date.now();
+      const clock = jest.spyOn(Date, 'now').mockReturnValue(now + 3601 * 1000);
+      try {
+        expect((await record())?.error).toBe('stt_unavailable');
+        expect(transcribeAudio).toHaveBeenCalledTimes(4);
+      } finally {
+        clock.mockRestore();
+      }
+    });
+
+    it('does not pause a newly signed-in account for a guest refusal still on its way', async () => {
+      const recorder = mockCreateMockRecorder({ uri: '/path/to/server-fallback.amr' });
+      jest.mocked(startNativeSpeechSession).mockResolvedValue(null);
+      jest.mocked(useAudioRecorder).mockReturnValue(recorder as never);
+      let refuse!: (error: unknown) => void;
+      jest.mocked(transcribeAudio).mockImplementationOnce(() => new Promise((_resolve, reject) => { refuse = reject; }));
+
+      const { result, rerender } = renderHook(
+        ({ scope }: { scope: string }) => useRecordingSession({ ...defaultOptions, transcriptionScope: scope }),
+        { initialProps: { scope: 'guest' } }
+      );
+      await act(async () => {
+        await result.current.startRecording('');
+      });
+      let stopping!: Promise<RecordingSessionResult>;
+      await act(async () => {
+        stopping = result.current.stopRecording();
+      });
+      await waitFor(() => expect(transcribeAudio).toHaveBeenCalledTimes(1));
+      rerender({ scope: 'user-1' });
+      let stale: RecordingSessionResult | undefined;
+      await act(async () => {
+        refuse(Object.assign(new Error('HTTP 429'), { status: 429, body: { code: 'AI_DAILY_LIMIT', retryAfter: 3600 } }));
+        stale = await stopping;
+      });
+      expect(stale?.error).not.toBe('daily_ai_limit');
+
+      await act(async () => {
+        await result.current.startRecording('');
+      });
+      await act(async () => {
+        await result.current.stopRecording();
+      });
+      expect(transcribeAudio).toHaveBeenCalledTimes(2);
     });
 
     it('should return no_speech when native error is "no speech"', async () => {

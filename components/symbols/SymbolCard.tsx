@@ -11,6 +11,7 @@ import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import type { DreamSymbol, SymbolLanguage } from '@/lib/symbolTypes';
 import { TID } from '@/lib/testIDs';
+import { TypeScale } from '@/constants/typeScale';
 
 interface SymbolCardProps {
   symbol: DreamSymbol;
@@ -105,8 +106,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
-  rowTitle: { fontFamily: Fonts.fraunces.medium, fontSize: 19, lineHeight: 25 },
-  rowDescription: { fontSize: 14, lineHeight: 21 },
+  rowTitle: { fontFamily: Fonts.fraunces.medium, fontSize: TypeScale.h3.fontSize, lineHeight: TypeScale.h3.lineHeight },
+  rowDescription: { fontSize: TypeScale.bodySm.fontSize, lineHeight: 21 },
   thumb: { width: 56, height: 56, borderRadius: 12, borderCurve: 'continuous', overflow: 'hidden', alignSelf: 'flex-start', marginTop: 2 },
   rowPressed: { opacity: 0.78 },
   card: {
@@ -129,12 +130,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 15,
+    fontFamily: Fonts.outfit.medium,
+    fontSize: TypeScale.body.fontSize,
   },
   description: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 13,
-    lineHeight: 18,
+    fontFamily: Fonts.outfit.regular,
+    fontSize: TypeScale.bodySm.fontSize,
+    lineHeight: TypeScale.bodySm.lineHeight,
   },
 });

@@ -216,7 +216,13 @@ jest.mock('@/hooks/useLocaleFormatting', () => {
 jest.mock('@/hooks/useClearWebFocus', () => ({ useClearWebFocus: () => {} }));
 jest.mock('@/lib/accessibility', () => ({ blurActiveElement: () => {} }));
 jest.mock('@/lib/analytics', () => ({ trackProductEvent: () => Promise.resolve() }));
-jest.mock('@/lib/imageUtils', () => ({ getDreamThumbnailUri: () => null, preloadImage: () => Promise.resolve() }));
+let mockThumbnailUri: string | null = null;
+const mockPreloadImage = jest.fn(async (_uri: string, _cacheKey?: string) => undefined);
+jest.mock('@/lib/imageUtils', () => ({
+  getDreamThumbnailUri: () => mockThumbnailUri,
+  getDreamThumbnailCacheKey: () => undefined,
+  preloadImage: (uri: string, cacheKey?: string) => mockPreloadImage(uri, cacheKey),
+}));
 jest.mock('@/components/inspiration/AtmosphericBackground', () => ({ AtmosphericBackground: () => null }));
 // The header gets new inline actions on each render of the screen: its renders count the screen's.
 let mockHeaderRenders = 0;
@@ -232,6 +238,13 @@ jest.mock('@/components/journal/DreamCard', () => ({
       <button data-testid={testID} data-scroll-state={scrollState} onClick={() => onPress(dream)}>{dream.title}</button>
       <button onClick={() => onShare(dream)}>Share {dream.title}</button>
     </>
+  ),
+}));
+jest.mock('@/components/journal/DreamShareComposer', () => ({
+  DreamShareComposer: ({ dream, visible, onClose }: any) => (
+    <div data-testid="share-composer" data-dream={dream.title} data-visible={String(visible)}>
+      <button onClick={onClose}>Close the share composer</button>
+    </div>
   ),
 }));
 jest.mock('@/components/journal/JournalFirstPage', () => ({ JournalFirstPage: ({ onStartDream, onSettings }: any) => <div data-testid="journal-first-page"><button onClick={onStartDream}>Start first dream</button><button onClick={onSettings}>Settings</button></div> }));
@@ -453,6 +466,8 @@ function collapseSearchByOverlayGesture(offset: number) {
 }
 
 afterEach(() => {
+  mockThumbnailUri = null;
+  mockPreloadImage.mockClear();
   mockCompleteness = undefined;
   mockRemotePreviewAllowed = false;
   mockReloadDreams.mockClear();
@@ -928,11 +943,54 @@ it('opens the selected card with its stable remote identity when timestamps coll
 });
 
 
-it.each(['ios', 'android', 'web'])('opens the dream with its share composer from a card share on %s', (platform: string) => {
+// Closing the composer used to leave the dreamer on the dream's page, opened behind it.
+it.each(['ios', 'android'])('shares a card over the journal, which the dreamer stays in, on %s', (platform: string) => {
   mockPlatform = platform;
+  mockDreams.push({ ...guestDream, remoteId: 17, title: 'Other dream' }, { ...guestDream, remoteId: 2501, clientRequestId: 'last-request', title: 'Selected dream' });
+  render(<JournalScreen />);
+  expect(screen.queryByTestId('share-composer')).toBeNull();
+  fireEvent.click(screen.getByText('Share Selected dream'));
+  const composer = screen.getByTestId('share-composer');
+  expect(composer.getAttribute('data-dream')).toBe('Selected dream');
+  expect(composer.getAttribute('data-visible')).toBe('true');
+  fireEvent.click(screen.getByText('Close the share composer'));
+  expect(screen.getByTestId('share-composer').getAttribute('data-visible')).toBe('false');
+  expect(mockPush).not.toHaveBeenCalled();
+});
+
+it('follows the shared dream through a sync that names it, and lets it go once closed or deleted', () => {
+  jest.useFakeTimers();
+  try {
+    mockDreams.push({ ...guestDream, clientRequestId: 'unsynced-request', title: 'Selected dream' });
+    const { rerender } = render(<JournalScreen />);
+    fireEvent.click(screen.getByText('Share Selected dream'));
+    // Sync gives the dream its server identity and its painting's name while the sheet is open.
+    mockDreams[0] = { ...mockDreams[0], remoteId: 2501, title: 'Selected dream, named' };
+    rerender(<JournalScreen />);
+    expect(screen.getByTestId('share-composer').getAttribute('data-dream')).toBe('Selected dream, named');
+    fireEvent.click(screen.getByText('Close the share composer'));
+    expect(screen.getByTestId('share-composer').getAttribute('data-visible')).toBe('false');
+    act(() => { jest.advanceTimersByTime(600); });
+    expect(screen.queryByTestId('share-composer')).toBeNull();
+    fireEvent.click(screen.getByText(/^Share Selected dream/));
+    expect(screen.getByTestId('share-composer').getAttribute('data-visible')).toBe('true');
+    const shared = mockDreams[0];
+    mockDreams.length = 0;
+    rerender(<JournalScreen />);
+    expect(screen.queryByTestId('share-composer')).toBeNull();
+    // Back with its account, the dream does not reopen the composer on its own.
+    mockDreams.push(shared);
+    rerender(<JournalScreen />);
+    expect(screen.queryByTestId('share-composer')).toBeNull();
+  } finally { jest.useRealTimers(); }
+});
+
+it('opens the dream with its share asked for from a card share on the web', () => {
+  mockPlatform = 'web';
   mockDreams.push({ ...guestDream, remoteId: 2501, clientRequestId: 'last-request', title: 'Selected dream' });
   render(<JournalScreen />);
   fireEvent.click(screen.getByText('Share Selected dream'));
+  expect(screen.queryByTestId('share-composer')).toBeNull();
   expect(mockPush).toHaveBeenCalledWith({ pathname: '/journal/[id]', params: {
     id: String(guestDream.id), remoteId: '2501', clientRequestId: 'last-request', share: '1',
   } });
@@ -966,4 +1024,25 @@ describe('Journal first page', () => {
     render(<JournalScreen />);
     expect(screen.queryByTestId('journal-first-page')).toBeNull();
   });
+});
+
+
+// A native disk/signing promise can finish after the finger starts scrolling.
+// UI journeys cannot deterministically hold that native promise at this boundary.
+it('defers thumbnail decoding when a pending resolver finishes during a drag and resumes when idle', async () => {
+  mockDreams.push(guestDream);
+  mockThumbnailUri = 'https://example.test/dream-thumb.webp';
+  mockResolveWithDiskCache.mockClear();
+  let finishResolve!: (value: { imageUrl: string; thumbnailUrl: string }) => void;
+  mockResolveWithDiskCache.mockImplementationOnce(() => new Promise((resolve) => { finishResolve = resolve; }));
+  render(<JournalScreen />);
+  await waitFor(() => expect(mockResolveWithDiskCache).toHaveBeenCalledTimes(1));
+  act(() => {
+    mockListProps.onViewableItemsChanged({ viewableItems: [{ index: 0, item: guestDream }], changed: [] });
+    mockListProps.onScrollBeginDrag();
+  });
+  await act(async () => { finishResolve({ imageUrl: '', thumbnailUrl: mockThumbnailUri! }); });
+  expect(mockPreloadImage).not.toHaveBeenCalled();
+  act(() => { mockListProps.onMomentumScrollEnd(); });
+  await waitFor(() => expect(mockPreloadImage).toHaveBeenCalledWith(mockThumbnailUri, undefined));
 });

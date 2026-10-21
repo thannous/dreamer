@@ -237,6 +237,7 @@ export type PaywallTrigger =
   | 'analysis_limit'
   | 'analysis_cta'
   | 'exploration_limit'
+  | 'chat_limit'
   | 'image_generation'
   | 'stats_profile'
   | 'settings'
@@ -361,6 +362,7 @@ export function getPaywallTrigger(value: unknown): PaywallTrigger {
     case 'analysis_limit':
     case 'analysis_cta':
     case 'exploration_limit':
+    case 'chat_limit':
     case 'image_generation':
     case 'stats_profile':
     case 'settings':

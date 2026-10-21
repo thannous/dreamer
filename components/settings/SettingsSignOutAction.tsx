@@ -44,7 +44,7 @@ export function SettingsSignOutAction() {
         testID={TID.Button.AuthSignOut}
       >
         {submitting ? <ActivityIndicator color={colors.textSecondary} /> : (
-          <Text className="font-sans-medium text-[15px] leading-[20px] text-ivory-muted">
+          <Text className="font-sans-medium text-body leading-[20px] text-ivory-muted">
             {t('settings.account.button.sign_out')}
           </Text>
         )}

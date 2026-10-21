@@ -5,6 +5,7 @@ import Svg, { Defs, Path, RadialGradient, Rect, Stop } from 'react-native-svg';
 
 import { DarkTheme } from '@/constants/journalTheme';
 import { Fonts } from '@/constants/theme';
+import { TypeScale } from '@/constants/typeScale';
 
 const COLORS = {
   bgStart: DarkTheme.backgroundDark,
@@ -151,8 +152,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 36,
+    fontFamily: Fonts.outfit.regular,
+    fontSize: TypeScale.hero.fontSize,
     color: COLORS.text,
     textAlign: 'center',
     textTransform: 'uppercase',

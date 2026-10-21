@@ -1,13 +1,14 @@
 import type { PaywallTrigger } from '@/lib/analytics';
 
+/**
+ * The words that change with the path that opened the offer. The comparison table
+ * and the plans below them are the same for everyone.
+ */
 export type PaywallVariant = {
   trigger: PaywallTrigger;
   chipKey: string;
   headerTitleKey: string;
   headerSubtitleKey: string;
-  cardTitleKey: string;
-  cardSubtitleKey: string;
-  featureKeys: readonly string[];
   primaryLabelKey: string;
 };
 
@@ -23,13 +24,6 @@ const variants: Record<PaywallTrigger, PaywallVariant> = {
     chipKey: 'subscription.paywall.variant.analysis_limit.chip',
     headerTitleKey: 'subscription.paywall.variant.analysis_limit.title',
     headerSubtitleKey: 'subscription.paywall.variant.analysis_limit.subtitle',
-    cardTitleKey: 'subscription.paywall.variant.analysis_limit.card_title',
-    cardSubtitleKey: 'subscription.paywall.variant.analysis_limit.card_subtitle',
-    featureKeys: [
-      'subscription.paywall.variant.analysis_limit.feature_1',
-      'subscription.paywall.variant.analysis_limit.feature_2',
-      'subscription.paywall.variant.analysis_limit.feature_3',
-    ],
     primaryLabelKey: 'subscription.paywall.variant.analysis_limit.cta',
   },
   analysis_cta: {
@@ -37,13 +31,6 @@ const variants: Record<PaywallTrigger, PaywallVariant> = {
     chipKey: 'subscription.paywall.variant.analysis_cta.chip',
     headerTitleKey: 'subscription.paywall.variant.analysis_cta.title',
     headerSubtitleKey: 'subscription.paywall.variant.analysis_cta.subtitle',
-    cardTitleKey: 'subscription.paywall.variant.analysis_cta.card_title',
-    cardSubtitleKey: 'subscription.paywall.variant.analysis_cta.card_subtitle',
-    featureKeys: [
-      'subscription.paywall.variant.analysis_cta.feature_1',
-      'subscription.paywall.variant.analysis_cta.feature_2',
-      'subscription.paywall.variant.analysis_cta.feature_3',
-    ],
     primaryLabelKey: 'subscription.paywall.variant.analysis_cta.cta',
   },
   exploration_limit: {
@@ -51,27 +38,20 @@ const variants: Record<PaywallTrigger, PaywallVariant> = {
     chipKey: 'subscription.paywall.variant.exploration_limit.chip',
     headerTitleKey: 'subscription.paywall.variant.exploration_limit.title',
     headerSubtitleKey: 'subscription.paywall.variant.exploration_limit.subtitle',
-    cardTitleKey: 'subscription.paywall.variant.exploration_limit.card_title',
-    cardSubtitleKey: 'subscription.paywall.variant.exploration_limit.card_subtitle',
-    featureKeys: [
-      'subscription.paywall.variant.exploration_limit.feature_1',
-      'subscription.paywall.variant.exploration_limit.feature_2',
-      'subscription.paywall.variant.exploration_limit.feature_3',
-    ],
     primaryLabelKey: 'subscription.paywall.variant.exploration_limit.cta',
+  },
+  chat_limit: {
+    trigger: 'chat_limit',
+    chipKey: 'subscription.paywall.variant.chat_limit.chip',
+    headerTitleKey: 'subscription.paywall.variant.chat_limit.title',
+    headerSubtitleKey: 'subscription.paywall.variant.chat_limit.subtitle',
+    primaryLabelKey: 'subscription.paywall.variant.chat_limit.cta',
   },
   image_generation: {
     trigger: 'image_generation',
     chipKey: 'subscription.paywall.variant.image_generation.chip',
     headerTitleKey: 'subscription.paywall.variant.image_generation.title',
     headerSubtitleKey: 'subscription.paywall.variant.image_generation.subtitle',
-    cardTitleKey: 'subscription.paywall.variant.image_generation.card_title',
-    cardSubtitleKey: 'subscription.paywall.variant.image_generation.card_subtitle',
-    featureKeys: [
-      'subscription.paywall.variant.image_generation.feature_1',
-      'subscription.paywall.variant.image_generation.feature_2',
-      'subscription.paywall.variant.image_generation.feature_3',
-    ],
     primaryLabelKey: 'subscription.paywall.variant.image_generation.cta',
   },
   stats_profile: {
@@ -79,13 +59,6 @@ const variants: Record<PaywallTrigger, PaywallVariant> = {
     chipKey: 'subscription.paywall.variant.stats_profile.chip',
     headerTitleKey: 'subscription.paywall.variant.stats_profile.title',
     headerSubtitleKey: 'subscription.paywall.variant.stats_profile.subtitle',
-    cardTitleKey: 'subscription.paywall.variant.stats_profile.card_title',
-    cardSubtitleKey: 'subscription.paywall.variant.stats_profile.card_subtitle',
-    featureKeys: [
-      'subscription.paywall.variant.stats_profile.feature_1',
-      'subscription.paywall.variant.stats_profile.feature_2',
-      'subscription.paywall.variant.stats_profile.feature_3',
-    ],
     primaryLabelKey: 'subscription.paywall.variant.stats_profile.cta',
   },
   returning_device: {
@@ -93,13 +66,6 @@ const variants: Record<PaywallTrigger, PaywallVariant> = {
     chipKey: 'subscription.paywall.variant.returning_device.chip',
     headerTitleKey: 'subscription.paywall.variant.returning_device.title',
     headerSubtitleKey: 'subscription.paywall.variant.returning_device.subtitle',
-    cardTitleKey: 'subscription.paywall.variant.returning_device.card_title',
-    cardSubtitleKey: 'subscription.paywall.variant.returning_device.card_subtitle',
-    featureKeys: [
-      'subscription.paywall.variant.returning_device.feature_1',
-      'subscription.paywall.variant.returning_device.feature_2',
-      'subscription.paywall.variant.returning_device.feature_3',
-    ],
     primaryLabelKey: 'subscription.paywall.variant.returning_device.cta',
   },
   settings_quota: {
@@ -107,9 +73,6 @@ const variants: Record<PaywallTrigger, PaywallVariant> = {
     chipKey: 'subscription.paywall.variant.settings_quota.chip',
     headerTitleKey: 'subscription.paywall.variant.settings_quota.title',
     headerSubtitleKey: 'subscription.paywall.variant.settings_quota.subtitle',
-    cardTitleKey: 'subscription.paywall.card.title',
-    cardSubtitleKey: 'subscription.paywall.card.subtitle',
-    featureKeys: PLUS_PAYWALL_FEATURE_KEYS,
     primaryLabelKey: 'subscription.paywall.variant.settings_quota.cta',
   },
   settings: {
@@ -117,9 +80,6 @@ const variants: Record<PaywallTrigger, PaywallVariant> = {
     chipKey: 'subscription.paywall.variant.settings.chip',
     headerTitleKey: 'subscription.paywall.variant.settings.title',
     headerSubtitleKey: 'subscription.paywall.variant.settings.subtitle',
-    cardTitleKey: 'subscription.paywall.card.title',
-    cardSubtitleKey: 'subscription.paywall.card.subtitle',
-    featureKeys: PLUS_PAYWALL_FEATURE_KEYS,
     primaryLabelKey: 'subscription.paywall.variant.settings.cta',
   },
   restore: {
@@ -127,9 +87,6 @@ const variants: Record<PaywallTrigger, PaywallVariant> = {
     chipKey: 'subscription.paywall.variant.restore.chip',
     headerTitleKey: 'subscription.paywall.variant.restore.title',
     headerSubtitleKey: 'subscription.paywall.variant.restore.subtitle',
-    cardTitleKey: 'subscription.paywall.card.title',
-    cardSubtitleKey: 'subscription.paywall.card.subtitle',
-    featureKeys: PLUS_PAYWALL_FEATURE_KEYS,
     primaryLabelKey: 'subscription.paywall.variant.restore.cta',
   },
   direct: {
@@ -137,9 +94,6 @@ const variants: Record<PaywallTrigger, PaywallVariant> = {
     chipKey: 'subscription.paywall.variant.direct.chip',
     headerTitleKey: 'subscription.paywall.header.free',
     headerSubtitleKey: 'subscription.paywall.header.subtitle.free',
-    cardTitleKey: 'subscription.paywall.card.title',
-    cardSubtitleKey: 'subscription.paywall.card.subtitle',
-    featureKeys: PLUS_PAYWALL_FEATURE_KEYS,
     primaryLabelKey: 'subscription.paywall.button.primary.free',
   },
 };

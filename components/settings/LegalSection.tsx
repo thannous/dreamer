@@ -145,7 +145,7 @@ export function LegalSection() {
         >
           <IconSymbol name="chart.bar.fill" size={21} color={noctalia.accent.text} />
           <View className="flex-1 gap-0.5">
-            <Text className="flex-1 font-sans text-[15px] leading-[20px] text-ivory">
+            <Text className="flex-1 font-sans text-body leading-[20px] text-ivory">
               {analyticsPreference.title}
             </Text>
             <Text className="font-sans text-caption text-ivory-muted">
@@ -173,7 +173,7 @@ export function LegalSection() {
         >
           <IconSymbol name="exclamationmark.triangle" size={21} color={noctalia.accent.text} />
           <View className="flex-1 gap-0.5">
-            <Text className="flex-1 font-sans text-[15px] leading-[20px] text-ivory">
+            <Text className="flex-1 font-sans text-body leading-[20px] text-ivory">
               {stabilityReports.title}
             </Text>
             <Text className="font-sans text-caption text-ivory-muted">
@@ -200,7 +200,7 @@ export function LegalSection() {
           testID={row.testID}
         >
           <IconSymbol name={row.icon} size={21} color={noctalia.accent.text} />
-          <Text className="flex-1 font-sans text-[15px] leading-[20px] text-ivory">
+          <Text className="flex-1 font-sans text-body leading-[20px] text-ivory">
             {t(row.labelKey)}
           </Text>
           <IconSymbol name="chevron.right" size={20} color={noctalia.text.tertiary} />
@@ -215,7 +215,7 @@ export function LegalSection() {
       >
         <IconSymbol name="envelope" size={21} color={noctalia.accent.text} />
         <View className="flex-1 gap-0.5">
-          <Text className="flex-1 font-sans text-[15px] leading-[20px] text-ivory">
+          <Text className="flex-1 font-sans text-body leading-[20px] text-ivory">
             {t('settings.legal.contact')}
           </Text>
           <Text className="font-sans text-caption text-ivory-muted">{CONTACT_EMAIL}</Text>
@@ -234,7 +234,7 @@ export function LegalSection() {
         >
           <IconSymbol name="trash" size={21} color={noctalia.status.danger.icon} />
           <View className="flex-1 gap-0.5">
-            <Text className="flex-1 font-sans text-[15px] leading-[20px] text-danger-on">
+            <Text className="flex-1 font-sans text-body leading-[20px] text-danger-on">
               {t('settings.deleteAccount.title')}
             </Text>
             <Text className="font-sans text-caption text-ivory-muted">

@@ -21,6 +21,7 @@ import { StoryButton } from './story/StoryButton';
 import { StoryFrame, SUBTITLE_SPACE, SUBTITLE_STAGGER } from './story/StoryFrame';
 import { StoryNight } from './story/StoryNight';
 import { wordRevealDuration } from './story/StoryText';
+import { TypeScale } from '@/constants/typeScale';
 
 export type OnboardingFeature = 'capture' | 'connect' | 'explore';
 const CHAPTERS: OnboardingFeature[] = ['capture', 'connect', 'explore'];
@@ -168,8 +169,8 @@ const styles = StyleSheet.create({
   sceneSlot: { width: '100%', alignItems: 'center', paddingHorizontal: 12 },
   title: { fontFamily: Fonts.fraunces.semiBold, fontSize: 44, lineHeight: 52, textAlign: 'center' },
   // Shaded like the subtitles, so it stays legible over the moon.
-  body: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 17, lineHeight: 24, textAlign: 'center', maxWidth: 300, textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 12 },
-  note: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 12, lineHeight: 17, textAlign: 'center', paddingTop: 12, paddingBottom: 8 },
+  body: { fontFamily: Fonts.outfit.regular, fontSize: TypeScale.body.fontSize, lineHeight: TypeScale.body.lineHeight, textAlign: 'center', maxWidth: 300, textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 12 },
+  note: { fontFamily: Fonts.outfit.regular, fontSize: TypeScale.caption.fontSize, lineHeight: 17, textAlign: 'center', paddingTop: 12, paddingBottom: 8 },
   secondary: { minHeight: 44, alignItems: 'center', justifyContent: 'center', marginTop: 4 },
-  secondaryText: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 14, lineHeight: 20 },
+  secondaryText: { fontFamily: Fonts.outfit.medium, fontSize: TypeScale.bodySm.fontSize, lineHeight: 20 },
 });

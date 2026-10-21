@@ -940,7 +940,7 @@ const styles = StyleSheet.create({
   },
   headerTopRowImmersive: { minHeight: 44 },
   overline: {
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: 'Outfit_700Bold',
     fontSize: LucidType.overline[0],
     lineHeight: LucidType.overline[1],
     letterSpacing: 1.5,
@@ -969,7 +969,7 @@ const styles = StyleSheet.create({
   progressMeter: { flex: 1, paddingBottom: LucidSpace.sm, gap: LucidSpace.sm },
   progressMeterImmersive: { paddingBottom: 0, gap: 0 },
   progressLabel: {
-    fontFamily: 'SpaceGrotesk_500Medium',
+    fontFamily: 'Outfit_500Medium',
     fontSize: LucidType.caption[0],
     lineHeight: LucidType.caption[1],
   },
@@ -1055,25 +1055,25 @@ const styles = StyleSheet.create({
     gap: 0,
   },
   nodeCompactLabel: {
-    fontFamily: 'SpaceGrotesk_500Medium',
+    fontFamily: 'Outfit_500Medium',
     fontSize: LucidType.bodySm[0],
     lineHeight: LucidType.bodySm[1],
   },
-  nodeCompactNumber: { fontFamily: 'SpaceGrotesk_700Bold' },
+  nodeCompactNumber: { fontFamily: 'Outfit_700Bold' },
   nodeMeta: {
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: 'Outfit_700Bold',
     fontSize: LucidType.overline[0],
     lineHeight: LucidType.overline[1],
     textTransform: 'uppercase',
   },
   nodeLabel: {
     flexShrink: 1,
-    fontFamily: 'SpaceGrotesk_500Medium',
+    fontFamily: 'Outfit_500Medium',
     fontSize: LucidType.caption[0],
     lineHeight: LucidType.caption[1],
   },
   nodeLabelCurrent: {
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: 'Outfit_700Bold',
     fontSize: LucidType.bodySm[0],
     lineHeight: LucidType.bodySm[1],
   },
@@ -1124,7 +1124,7 @@ const styles = StyleSheet.create({
     gap: LucidSpace.xs,
   },
   currentPillLabel: {
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: 'Outfit_700Bold',
     fontSize: LucidType.overline[0],
     lineHeight: LucidType.overline[1],
     textTransform: 'uppercase',
@@ -1140,12 +1140,12 @@ const styles = StyleSheet.create({
   },
   durationRow: { flexDirection: 'row', alignItems: 'center', gap: LucidSpace.sm },
   duration: {
-    fontFamily: 'SpaceGrotesk_500Medium',
+    fontFamily: 'Outfit_500Medium',
     fontSize: LucidType.caption[0],
     lineHeight: LucidType.caption[1],
   },
   objective: {
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: 'Outfit_400Regular',
     fontSize: LucidType.bodySm[0],
     lineHeight: LucidType.bodySm[1],
   },
@@ -1159,7 +1159,7 @@ const styles = StyleSheet.create({
     gap: LucidSpace.sm,
   },
   ctaLabel: {
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: 'Outfit_700Bold',
     fontSize: LucidType.body[0],
     lineHeight: LucidType.body[1],
   },
@@ -1179,12 +1179,12 @@ const styles = StyleSheet.create({
   },
   safetyCopy: { flex: 1, gap: LucidSpace.xs },
   safetyTitle: {
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: 'Outfit_700Bold',
     fontSize: LucidType.caption[0],
     lineHeight: LucidType.caption[1],
   },
   safetyBody: {
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: 'Outfit_400Regular',
     fontSize: LucidType.caption[0],
     lineHeight: LucidType.caption[1],
   },

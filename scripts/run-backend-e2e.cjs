@@ -6,6 +6,7 @@ const os = require('node:os');
 const { randomUUID } = require('node:crypto');
 const { spawnSync } = require('node:child_process');
 const { assertBackendTarget, normalizeStackStatus, prepareLocalMigrations } = require('./lib/backend-e2e-local.cjs');
+const { withOwnedProcess } = require('./lib/backend-e2e-process.cjs');
 
 const root = path.resolve(__dirname, '..');
 const args = process.argv.slice(2);
@@ -67,60 +68,71 @@ const statusFile = path.join(workdir, 'status.json');
 let started = false;
 let stackId;
 let cliVersion;
-try {
-  cliVersion = command(cli, ['--version'], { stdio: ['ignore', 'pipe', 'inherit'], encoding: 'utf8' }).trim();
-  const version = /^(\d+)\.(\d+)\.(\d+)/.exec(cliVersion);
-  if (!version || Number(version[1]) < 2 || (Number(version[1]) === 2 && Number(version[2]) < 119)) {
-    throw new Error('The managed local stack requires Supabase CLI 2.119.0 or later');
-  }
-  fs.mkdirSync(cliEnv.SUPABASE_HOME, { recursive: true, mode: 0o700 });
-  started = true;
-  const output = command(cli, ['stack', 'start', '--workdir', workdir, '--runtime', runtime,
-    '--exclude', 'realtime,functions,studio,mail,analytics,pooler', '--eager', '--output-format', 'json'],
-  { stdio: ['ignore', 'pipe', 'inherit'], encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
-  const status = normalizeStackStatus(JSON.parse(output));
-  if (status.LOCAL_E2E_STACK.runtime !== runtime) throw new Error('Unexpected local stack runtime');
-  stackId = status.LOCAL_E2E_STACK.id;
-  fs.writeFileSync(statusFile, JSON.stringify(status), { mode: 0o600 });
-  const safety = JSON.parse(command(cli, ['db', 'query', '--workdir', workdir, '--db-url', status.DB_URL,
-    'select count(*) as active_jobs from cron.job where active', '--output-format', 'json'],
-  { stdio: ['ignore', 'pipe', 'inherit'], encoding: 'utf8' }));
-  if (Number(safety.rows?.[0]?.active_jobs) !== 0) throw new Error('Disposable local cron jobs must be inactive');
-  const url = assertBackendTarget(status);
-  const profile = path.join(workdir, 'expo.env');
-  const publicEnv = {
-    EXPO_PUBLIC_MOCK_MODE: 'false',
-    EXPO_PUBLIC_SUPABASE_URL: url.origin,
-    EXPO_PUBLIC_SUPABASE_ANON_KEY: status.ANON_KEY,
-    EXPO_PUBLIC_API_URL: `${url.origin}/functions/v1/api`,
-    EXPO_PUBLIC_REVENUECAT_WEB_KEY: '',
-    EXPO_PUBLIC_REVENUECAT_ANDROID_KEY: '',
-    EXPO_PUBLIC_REVENUECAT_IOS_KEY: '',
-    EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID: '',
-    EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID: '',
-    EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID: '',
-    EXPO_PUBLIC_TURNSTILE_SITE_KEY: '',
-  };
-  fs.writeFileSync(profile, Object.entries(publicEnv).map(([key, value]) => `${key}=${value}`).join('\n') + '\n', { mode: 0o600 });
-  command(process.execPath, [path.join(path.dirname(require.resolve('playwright/package.json')), 'cli.js'), 'test', '--config', 'playwright.backend.config.ts', ...args], {
-    env: { ...process.env, E2E_BACKEND_STATUS_FILE: statusFile, E2E_BACKEND_PROFILE: profile,
-      E2E_BACKEND_RUNTIME: runtime,
-      E2E_BACKEND_CLI_VERSION: cliVersion,
-      E2E_BACKEND_RERUN: `${rerunEnv}mise exec -- npm run test:e2e:backend${rerunArgs ? ` -- ${rerunArgs}` : ''}`,
-      E2E_BACKEND_MIGRATION_FIXTURES: JSON.stringify(migrationFixtures) },
+async function main() {
+  return withOwnedProcess(async runChild => {
+    try {
+      cliVersion = command(cli, ['--version'], { stdio: ['ignore', 'pipe', 'inherit'], encoding: 'utf8' }).trim();
+      const version = /^(\d+)\.(\d+)\.(\d+)/.exec(cliVersion);
+      if (!version || Number(version[1]) < 2 || (Number(version[1]) === 2 && Number(version[2]) < 119)) {
+        throw new Error('The managed local stack requires Supabase CLI 2.119.0 or later');
+      }
+      fs.mkdirSync(cliEnv.SUPABASE_HOME, { recursive: true, mode: 0o700 });
+      started = true;
+      const output = command(cli, ['stack', 'start', '--workdir', workdir, '--runtime', runtime,
+        '--exclude', 'realtime,functions,studio,mail,analytics,pooler', '--eager', '--output-format', 'json'],
+      { stdio: ['ignore', 'pipe', 'inherit'], encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+      const status = normalizeStackStatus(JSON.parse(output));
+      if (status.LOCAL_E2E_STACK.runtime !== runtime) throw new Error('Unexpected local stack runtime');
+      stackId = status.LOCAL_E2E_STACK.id;
+      fs.writeFileSync(statusFile, JSON.stringify(status), { mode: 0o600 });
+      const safety = JSON.parse(command(cli, ['db', 'query', '--workdir', workdir, '--db-url', status.DB_URL,
+        'select count(*) as active_jobs from cron.job where active', '--output-format', 'json'],
+      { stdio: ['ignore', 'pipe', 'inherit'], encoding: 'utf8' }));
+      if (Number(safety.rows?.[0]?.active_jobs) !== 0) throw new Error('Disposable local cron jobs must be inactive');
+      const url = assertBackendTarget(status);
+      const profile = path.join(workdir, 'expo.env');
+      const publicEnv = {
+        EXPO_PUBLIC_MOCK_MODE: 'false',
+        EXPO_PUBLIC_SUPABASE_URL: url.origin,
+        EXPO_PUBLIC_SUPABASE_ANON_KEY: status.ANON_KEY,
+        EXPO_PUBLIC_API_URL: `${url.origin}/functions/v1/api`,
+        EXPO_PUBLIC_REVENUECAT_WEB_KEY: '',
+        EXPO_PUBLIC_REVENUECAT_ANDROID_KEY: '',
+        EXPO_PUBLIC_REVENUECAT_IOS_KEY: '',
+        EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID: '',
+        EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID: '',
+        EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID: '',
+        EXPO_PUBLIC_TURNSTILE_SITE_KEY: '',
+      };
+      fs.writeFileSync(profile, Object.entries(publicEnv).map(([key, value]) => `${key}=${value}`).join('\n') + '\n', { mode: 0o600 });
+      await runChild(process.execPath, ['tools/e2e/run.mjs', 'backend', 'web', 'run', ...args], {
+        cwd: root,
+        env: { ...process.env, E2E_BACKEND_STATUS_FILE: statusFile, E2E_BACKEND_PROFILE: profile,
+          E2E_BACKEND_RUNTIME: runtime,
+          E2E_BACKEND_CLI_VERSION: cliVersion,
+          E2E_BACKEND_RERUN: `${rerunEnv}mise exec -- npm run test:e2e:backend${rerunArgs ? ` -- ${rerunArgs}` : ''}`,
+          E2E_BACKEND_MIGRATION_FIXTURES: JSON.stringify(migrationFixtures) },
+      });
+      if (qualifyTi528) {
+        await runChild(process.execPath, ['--run', 'db:qualify:local'], {
+          cwd: root,
+          env: { ...process.env, TI528_LOCAL_STATUS: statusFile },
+        });
+      }
+    } finally {
+      // Only this run's randomly named disposable database is removed; no reset or --all.
+      try {
+        if (started) command(cli, ['stack', 'destroy', '--workdir', workdir,
+          ...(stackId ? ['--stack-id', stackId] : []), '--yes'], { stdio: ['ignore', 'pipe', 'inherit'] });
+      } finally {
+        // The owned workdir holds this run's private status file: nothing stays in the temp directory.
+        fs.rmSync(workdir, { recursive: true, force: true });
+      }
+    }
   });
-  if (qualifyTi528) {
-    command(process.execPath, ['--run', 'db:qualify:local'], {
-      env: { ...process.env, TI528_LOCAL_STATUS: statusFile },
-    });
-  }
-} finally {
-  // Only this run's randomly named disposable database is removed; no reset or --all.
-  try {
-    if (started) command(cli, ['stack', 'destroy', '--workdir', workdir,
-      ...(stackId ? ['--stack-id', stackId] : []), '--yes'], { stdio: ['ignore', 'pipe', 'inherit'] });
-  } finally {
-    // The owned workdir holds this run's private status file: nothing stays in the temp directory.
-    fs.rmSync(workdir, { recursive: true, force: true });
-  }
 }
+module.exports = main;
+if (require.main === module) main().catch(error => {
+  console.error(error.message);
+  process.exitCode = error.exitCode ?? 1;
+});

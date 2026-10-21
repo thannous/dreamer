@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 const {
   mockConfigure,
+  mockSetLogHandler,
   mockAddCustomerInfoUpdateListener,
   mockGetCustomerInfo,
   mockOpenURL,
@@ -15,6 +16,7 @@ const {
 
   return {
     mockConfigure: jest.fn(),
+    mockSetLogHandler: jest.fn(),
     mockAddCustomerInfoUpdateListener: jest.fn(),
     mockGetCustomerInfo: jest.fn(async () => ({
       activeSubscriptions: [],
@@ -62,11 +64,13 @@ jest.mock('react-native', () => ({
 
 jest.mock('react-native-purchases', () => ({
   __esModule: true,
+  LOG_LEVEL: { VERBOSE: 'VERBOSE', DEBUG: 'DEBUG', INFO: 'INFO', WARN: 'WARN', ERROR: 'ERROR' },
   default: {
     addCustomerInfoUpdateListener: mockAddCustomerInfoUpdateListener,
     configure: mockConfigure,
     getCustomerInfo: mockGetCustomerInfo,
     invalidateCustomerInfoCache: jest.fn(),
+    setLogHandler: mockSetLogHandler,
     showManageSubscriptions: mockShowManageSubscriptions,
   },
 }));
@@ -89,6 +93,35 @@ describe('subscriptionServiceReal configuration', () => {
 
     expect(service.getStoreMode()).toBe('RevenueCat Test Store');
     expect(mockConfigure).toHaveBeenCalledWith({ apiKey: 'test_bundle_key' });
+  });
+
+  it('reports a refresh kept on cache as a warning and any other SDK failure as an error', async () => {
+    mockSetPublicEnvValue('EXPO_PUBLIC_REVENUECAT_ANDROID_KEY', 'test_bundle_key');
+    const service = require('../subscriptionServiceReal');
+    await service.initialize();
+    const forward = mockSetLogHandler.mock.calls[0]?.[0] as (level: string, message: string) => void;
+    const warn = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    const error = jest.spyOn(console, 'error').mockImplementation(() => {});
+    const timedOut = '😿‼️ Remote config refresh failed. Keeping cached configuration. '
+      + 'Error: A network error has occurred. La requête a expiré.';
+    const misconfigured = 'There is an issue with your configuration. Check the underlying error for more details.';
+    // A purchase or restore that fails offline has no cache behind it.
+    const purchaseOffline = 'Purchase failed. Error: A network error has occurred.';
+
+    try {
+      forward('ERROR', timedOut);
+      forward('ERROR', misconfigured);
+      forward('ERROR', purchaseOffline);
+
+      expect(warn).toHaveBeenCalledTimes(1);
+      expect(warn).toHaveBeenCalledWith('[RevenueCat]', timedOut);
+      expect(error).toHaveBeenCalledTimes(2);
+      expect(error).toHaveBeenCalledWith('[RevenueCat]', misconfigured);
+      expect(error).toHaveBeenCalledWith('[RevenueCat]', purchaseOffline);
+    } finally {
+      warn.mockRestore();
+      error.mockRestore();
+    }
   });
 });
 

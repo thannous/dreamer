@@ -19,6 +19,21 @@ type GuestSessionDependencies = {
   isTurnstileConfigured?: typeof isTurnstileConfigured;
 };
 
+// Verdict codes returned by verifyAndroidIntegrity. Anything else is logged as
+// 'other' so an unexpected value can never carry request data into the log.
+const LOGGED_INTEGRITY_REASONS = new Set([
+  'decode_error',
+  'package_mismatch',
+  'nonce_mismatch',
+  'app_unrecognized',
+  'device_not_integrity',
+]);
+
+export function toLoggedIntegrityReason(reason: string | undefined): string {
+  if (!reason) return 'unknown';
+  return LOGGED_INTEGRITY_REASONS.has(reason) ? reason : 'other';
+}
+
 export async function handleGuestSession(
   req: Request,
   dependencies: GuestSessionDependencies = {}
@@ -67,6 +82,11 @@ export async function handleGuestSession(
         throw error;
       }
       if (!verdict.ok) {
+        // Log the verdict code only. The token, request hash, fingerprint and
+        // caller identity never reach the log.
+        console.warn('[api] /guest/session integrity rejected', {
+          reason: toLoggedIntegrityReason(verdict.reason),
+        });
         return new Response(JSON.stringify({ error: `Integrity check failed (${verdict.reason ?? 'unknown'})` }), {
           status: 401,
           headers: { 'Content-Type': 'application/json', ...corsHeaders },

@@ -4,6 +4,11 @@ import { isHdIllustrationsEnabled } from '../lib/illustrationFlags.ts';
 import { requireGuestSession } from '../lib/guards.ts';
 import { claimGuestQaPaidCall } from '../lib/guestQa.ts';
 import {
+  PLUS_DAILY_LIMITS,
+  PLUS_DAILY_WINDOW_SECONDS,
+  plusDailyLimitResponse,
+} from '../lib/plusDailyLimits.ts';
+import {
   AI_REQUEST_LIMITS,
   aiInputErrorResponse,
   isValidClientRequestId,
@@ -171,6 +176,63 @@ const freeImageAnalysisRequiredResponse = () =>
       headers: { 'Content-Type': 'application/json', ...corsHeaders },
     }
   );
+
+/**
+ * Plus illustrates every dream, subject to abuse prevention: at most
+ * PLUS_DAILY_LIMITS.image new image jobs per rolling 24 hours, those its
+ * analyses bundle included and failed ones left out. A retry of an admitted
+ * request is not a new image, and an analysis of the same 24 hours keeps its own
+ * illustration (its request id has a receipt): the analysis ceiling bounds those.
+ */
+export const checkPlusDailyImageLimit = async (
+  adminClient: Pick<ReturnType<typeof createAdminClient>, 'from'>,
+  userId: string,
+  clientRequestId: string,
+  now = Date.now()
+): Promise<Response | null> => {
+  const { data: existing, error: existingError } = await adminClient
+    .from('ai_jobs')
+    .select('id')
+    .eq('job_type', 'generate_image')
+    .eq('user_id', userId)
+    .eq('client_request_id', clientRequestId)
+    .limit(1);
+  if (existingError) return serviceUnavailable();
+  if (existing?.length) return null;
+
+  const since = new Date(now - PLUS_DAILY_WINDOW_SECONDS * 1000).toISOString();
+  const { data: receipt, error: receiptError } = await adminClient
+    .from('quota_usage')
+    .select('id')
+    .eq('user_id', userId)
+    .eq('quota_type', 'analysis')
+    .eq('metadata->>analysis_request_id', clientRequestId)
+    .gt('occurred_at', since)
+    .limit(1);
+  if (receiptError) return serviceUnavailable();
+  if (receipt?.length) return null;
+
+  const { data: recent, error } = await adminClient
+    .from('ai_jobs')
+    .select('created_at')
+    .eq('job_type', 'generate_image')
+    .eq('user_id', userId)
+    .neq('status', 'failed')
+    .gt('created_at', since)
+    .order('created_at', { ascending: false })
+    .limit(PLUS_DAILY_LIMITS.image);
+  if (error) return serviceUnavailable();
+  if (!recent || recent.length < PLUS_DAILY_LIMITS.image) return null;
+
+  // Once the oldest of these leaves the window, fewer than the limit remain in it.
+  const releasedAt = Date.parse(String(recent[PLUS_DAILY_LIMITS.image - 1].created_at))
+    + PLUS_DAILY_WINDOW_SECONDS * 1000;
+  return plusDailyLimitResponse({
+    code: 'DAILY_IMAGE_LIMIT',
+    dailyLimit: PLUS_DAILY_LIMITS.image,
+    retryAfterSeconds: Number.isFinite(releasedAt) ? (releasedAt - now) / 1000 : null,
+  });
+};
 
 const resolveImageGenerationTier = async (
   supabase: ApiContext['supabase'],
@@ -366,6 +428,11 @@ export async function handleCreateImageJob(
         if (authorization.retryable) return serviceUnavailable(authorization.errorMessage);
         return freeImageAnalysisRequiredResponse();
       }
+    }
+
+    if (user && tierResolution.tier === 'plus') {
+      const dailyLimit = await checkPlusDailyImageLimit(adminClient, user.id, clientRequestId);
+      if (dailyLimit) return dailyLimit;
     }
 
     if (!user && guestCheck.fingerprint) {

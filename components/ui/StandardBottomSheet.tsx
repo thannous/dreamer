@@ -262,7 +262,7 @@ export function StandardBottomSheet({
             {...(process.env.EXPO_OS === 'web' ? { tabIndex: -1 as const } : {})}
             accessible
             accessibilityRole="header"
-            className="flex-1 text-center font-sans-bold text-[20px] text-ivory"
+            className="flex-1 text-center font-sans-bold text-h2 text-ivory"
             style={webTitleFocusResetStyle}
             testID={titleTestID}
           >
@@ -297,7 +297,7 @@ export function StandardBottomSheet({
         {...(process.env.EXPO_OS === 'web' ? { tabIndex: -1 as const } : {})}
         accessible
         accessibilityRole="header"
-        className="mb-2 text-center font-sans-bold text-[20px] text-ivory"
+        className="mb-2 text-center font-sans-bold text-h2 text-ivory"
         style={webTitleFocusResetStyle}
         testID={titleTestID}
       >

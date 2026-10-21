@@ -134,6 +134,6 @@ const styles = StyleSheet.create({
   optionText: {
     fontSize: 15,
     lineHeight: 20,
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
   },
 });

@@ -77,6 +77,20 @@ describe('verify-local.config.mjs', () => {
     }
   });
 
+  it('checks the grants of new public tables on every PR and release', () => {
+    // A migration creating a public table without explicit grants only fails once deployed (42501).
+    const check = config.checks.find((entry) => entry.name === 'migration-grants');
+    expect(check).toBeDefined();
+    expect(check.kinds ?? ['pr', 'release']).toEqual(['pr', 'release']);
+    expect(check.when).toBeUndefined();
+    expect(check.command).toBe('npm run migrations:grants && npm run test:migration-grants');
+    expect(check.inputs).toEqual(expect.arrayContaining(['supabase/migrations/**', 'scripts/check-migration-grants.cjs']));
+    const scripts = scriptsOf('package.json');
+    expect(scripts['migrations:grants']).toBe('node scripts/check-migration-grants.cjs');
+    expect(scripts['test:migration-grants']).toBe('node --test scripts/check-migration-grants.test.cjs');
+    expect(config.deliveryFiles).toEqual(expect.arrayContaining(['scripts/check-migration-grants.cjs', 'scripts/check-migration-grants.test.cjs']));
+  });
+
   it('names only npm scripts that exist in the package each command runs in', () => {
     const packages = { root: scriptsOf('package.json'), meditation: scriptsOf('apps/meditation/package.json') };
     const missing = [];

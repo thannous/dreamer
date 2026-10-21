@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
     marginBottom: ThemeLayout.spacing.md,
   },
   analysisOfferErrorText: {
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     fontSize: 14,
     lineHeight: 20,
     textAlign: 'center',
@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
     marginBottom: ThemeLayout.spacing.md,
   },
   quotaAssuranceText: {
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     fontSize: 13,
     lineHeight: 19,
     textAlign: 'center',
@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: ThemeLayout.spacing.md,
   },
   quotaFeature: {
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     fontSize: 14,
   },
 });
