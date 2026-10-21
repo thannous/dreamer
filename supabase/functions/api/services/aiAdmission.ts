@@ -233,15 +233,16 @@ export const admitSynchronousAiRequest = async (
       p_capability: capability,
       p_daily_limit: policy.dailyLimit,
     });
-    if (dailyError) {
+    const daily = (dailyData ?? null) as AdmissionRpcResult | null;
+    // A missing answer is an outage, not a spent budget: never a 24 h wait for nothing.
+    if (dailyError || typeof daily?.allowed !== 'boolean') {
       console.warn('[api] AI daily budget claim failed', {
         capability,
         code: dailyError?.code ?? null,
       });
       return unavailable();
     }
-    const daily = (dailyData ?? {}) as AdmissionRpcResult;
-    if (daily.allowed !== true) {
+    if (!daily.allowed) {
       const retryAfter = Number.isFinite(daily.retry_after_seconds)
         ? Math.min(86400, Math.max(1, Math.ceil(daily.retry_after_seconds ?? 1)))
         : 86400;

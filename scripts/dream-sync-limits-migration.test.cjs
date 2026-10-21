@@ -63,8 +63,9 @@ describe('dream sync limits migration', () => {
         await claims({ role: 'service_role' });
         try { return await write(); } finally { await as(caller); }
       };
-      const sync = async (mutation) =>
-        (await db.query('select public.sync_dream_mutations($1::jsonb) as result', [JSON.stringify([mutation])])).rows[0].result[0];
+      const syncBatch = async (mutations) =>
+        (await db.query('select public.sync_dream_mutations($1::jsonb) as result', [JSON.stringify(mutations)])).rows[0].result;
+      const sync = async (mutation) => (await syncBatch([mutation]))[0];
       const create = (n, transcript, payload = {}) =>
         sync({ mutation_id: `m${n}`, client_request_id: uuid(n), operation: 'create', entity_key: `d${n}`, payload: { transcript, ...payload } });
       const update = (n, remoteId, payload) =>
@@ -117,6 +118,14 @@ describe('dream sync limits migration', () => {
       expect((await update(201, oldest, { title: 'still editable' })).status).toBe('ack');
       expect((await sync({ mutation_id: 'm202', client_request_id: uuid(202), operation: 'create', entity_key: 'd100',
         payload: { client_request_id: uuid(100), transcript: 'same dream' } })).status).toBe('ack');
+      // In one batch, a refused create does not stop the mutations after it.
+      const batch = await syncBatch([
+        { mutation_id: 'm210', client_request_id: uuid(210), operation: 'create', entity_key: 'd210', payload: { transcript: 'over' } },
+        { mutation_id: 'm211', client_request_id: uuid(211), operation: 'update', entity_key: 'd149', payload: { remote_id: oldest, title: 'kept' } },
+      ]);
+      expect(batch.map((entry) => entry.error ?? entry.status)).toEqual(['DAILY_DREAM_LIMIT', 'ack']);
+      expect(await receipts(210)).toBe(0);
+      expect(await receipts(211)).toBe(1);
       // Once the oldest dream of the window leaves it, the same mutation passes.
       await asService(() => db.query(`update public.dreams set created_at = now() - interval '25 hours' where id = $1`, [oldest]));
       expect((await create(200, 'one more')).status).toBe('ack');

@@ -49,6 +49,15 @@ begin
     raise exception 'mutations must be a json array' using errcode = 'P0001';
   end if;
 
+  -- The per-account lock that counts new dreams, taken before any row lock so
+  -- two batches of one account (two phones) wait in turn instead of deadlocking.
+  -- The table guard takes the same lock again, which is re-entrant.
+  if exists (
+    select 1 from jsonb_array_elements(mutations) as entry where entry.value->>'operation' = 'create'
+  ) then
+    perform pg_advisory_xact_lock(hashtextextended('dreams:new-per-day:' || current_user_id::text, 0));
+  end if;
+
   for mutation in
     select value
     from jsonb_array_elements(mutations)
@@ -113,7 +122,6 @@ begin
          > greatest(max_transcript_chars, coalesce(stored_transcript_chars, 0)) then
         limit_error := 'DREAM_TRANSCRIPT_TOO_LONG';
       elsif not create_exists then
-        perform pg_advisory_xact_lock(hashtextextended('dreams:new-per-day:' || current_user_id::text, 0));
         select count(*)::integer
         into new_dreams_today
         from public.dreams d

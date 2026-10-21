@@ -7,6 +7,7 @@ import * as FileSystemLegacy from 'expo-file-system/legacy';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Alert, AppState, Linking, Platform } from 'react-native';
 
+import { isAiDailyLimitError } from '@/lib/errors';
 import { createScopedLogger } from '@/lib/logger';
 import { handleRecorderReleaseError, RECORDING_OPTIONS } from '@/lib/recording';
 import { waitForPermissionActivityToSettle } from '@/lib/recordingPermissions';
@@ -109,6 +110,8 @@ export function useRecordingSession({
   const hasAutoStoppedRecordingRef = useRef(false);
   const baseTranscriptRef = useRef('');
   const pendingStartRef = useRef<AbortController | null>(null);
+  // Server transcription after its daily budget refused: not asked again before the budget frees up.
+  const serverTranscriptionBlockedUntilRef = useRef(0);
 
   const handleRecorderError = useCallback(
     (context: string, error: unknown) => {
@@ -224,6 +227,7 @@ export function useRecordingSession({
       let nativeError: string | undefined;
       let isLanguagePackMissing = false;
       let isRateLimited = false;
+      let isDailyLimited = false;
       let cleanupUri: string | undefined;
       const microphone = microphoneRef.current;
       microphoneRef.current = null;
@@ -286,7 +290,8 @@ export function useRecordingSession({
         }
 
         const hasNativeSession = Boolean(nativeResultPromise);
-        if (!transcriptText && cleanupUri && Platform.OS !== 'ios') {
+        if (!transcriptText && cleanupUri && Platform.OS !== 'ios'
+          && Date.now() >= serverTranscriptionBlockedUntilRef.current) {
           try {
             transcriptText = (await transcribeAudio({
               uri: cleanupUri,
@@ -301,7 +306,17 @@ export function useRecordingSession({
             }
           } catch (error) {
             log.warn('Server STT fallback failed', error);
+            if (isAiDailyLimitError(error)) {
+              isDailyLimited = true;
+              const retryAfter = Number((error as { body?: { retryAfter?: unknown } }).body?.retryAfter);
+              serverTranscriptionBlockedUntilRef.current =
+                Date.now() + (Number.isFinite(retryAfter) && retryAfter > 0 ? retryAfter : 3600) * 1000;
+            }
           }
+        }
+
+        if (!transcriptText && isDailyLimited) {
+          return { transcript: '', recordedUri: recordedUri ?? uri, error: 'daily_ai_limit' };
         }
 
         if (!hasNativeSession && !transcriptText) {

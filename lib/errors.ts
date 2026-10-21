@@ -20,7 +20,7 @@ const DEFAULT_ERROR_MESSAGES: Record<string, string> = {
   'error.interpretation_limit': 'You have used your included interpretations. Your dream remains saved in the journal.',
   'error.daily_analysis_limit': 'You started {limit} analyses in 24 hours, the limit that protects Noctalia from abuse. Your dream stays saved, and you can analyze it by tomorrow.',
   'error.daily_image_limit': 'You created {limit} illustrations in 24 hours, the limit that protects Noctalia from abuse. Your dream and its analysis stay saved, and you can illustrate it by tomorrow.',
-  'error.daily_ai_limit': 'You reached today’s limit that protects Noctalia from abuse. This help comes back by tomorrow, and your dreams stay saved.',
+  'error.daily_ai_limit': 'You reached today’s limit that protects Noctalia from abuse. This feature will be available again by tomorrow, and your dreams stay saved.',
   'error.exploration_limit': 'You have reached the exploration limit for your current plan. Your dream and existing conversation remain available.',
   'error.chat_safety_limit': 'This dream has reached its chat safety limit. Its interpretation remains available in your journal.',
   'error.server': 'Server error. The service is temporarily unavailable. Please try again in a few moments.',
@@ -138,6 +138,12 @@ export const isGuestSessionError = (error: Error): boolean => {
     bodyError.includes('missing integrity token') ||
     bodyError.includes('guest sessions')
   );
+};
+
+/** A recording or legacy AI route refused the request: its daily anti-abuse budget is spent. */
+export const isAiDailyLimitError = (error: unknown): boolean => {
+  const details = getHttpErrorDetails(error);
+  return details?.status === 429 && extractApiErrorInfo(details.body ?? {}).code === 'AI_DAILY_LIMIT';
 };
 
 export enum GuestSessionErrorCode {
@@ -315,7 +321,7 @@ export function classifyError(error: Error, t?: TranslateFunction): ClassifiedEr
 
     // Daily anti-abuse budget of a recording or legacy AI route (services/aiAdmission.ts):
     // waiting a moment does not help, so no retry.
-    if (status === 429 && code === 'AI_DAILY_LIMIT') {
+    if (isAiDailyLimitError(error)) {
       return {
         type: ErrorType.CLIENT,
         message: error.message,

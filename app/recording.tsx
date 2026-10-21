@@ -881,6 +881,10 @@ function RecordingScreen() {
         Alert.alert(t('common.error_title'), t('error.rate_limit'));
         return;
       }
+      if (result.error === 'daily_ai_limit') {
+        Alert.alert(t('recording.alert.transcription_failed.title'), t('error.daily_ai_limit'));
+        return;
+      }
       if (result.error === 'stt_unavailable') {
         handleVoiceCaptureFailure('stt_unavailable');
         return;

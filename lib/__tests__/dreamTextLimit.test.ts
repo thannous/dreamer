@@ -23,10 +23,14 @@ describe('dream text limit', () => {
   it('refuses what the server would refuse, and lets a stored longer dream shrink', () => {
     expect(isDreamTextTooLong('r'.repeat(20000))).toBe(false);
     expect(isDreamTextTooLong('r'.repeat(20001))).toBe(true);
-    expect(isDreamTextTooLong('r'.repeat(29000), 30000)).toBe(false);
-    expect(isDreamTextTooLong('r'.repeat(30001), 30000)).toBe(true);
-    // An emoji is two units here and one character in PostgreSQL: the app is never looser.
-    expect(isDreamTextTooLong('🌙'.repeat(10001))).toBe(true);
+    expect(isDreamTextTooLong('r'.repeat(29000), 'r'.repeat(30000))).toBe(false);
+    expect(isDreamTextTooLong('r'.repeat(30001), 'r'.repeat(30000))).toBe(true);
+    // Characters as PostgreSQL counts them: an emoji is one, not two UTF-16 units.
+    expect(isDreamTextTooLong('🌙'.repeat(20000))).toBe(false);
+    const storedWithEmoji = `${'r'.repeat(20200)}${'🌙'.repeat(300)}`;
+    expect(storedWithEmoji.length).toBe(20800);
+    expect(isDreamTextTooLong('r'.repeat(20500), storedWithEmoji)).toBe(false);
+    expect(isDreamTextTooLong('r'.repeat(20501), storedWithEmoji)).toBe(true);
   });
 
   it('shows the counter only from 18,000 characters on', () => {

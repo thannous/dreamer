@@ -118,7 +118,7 @@ test('capture stops a dream at 20,000 characters and its count shows the maximum
   const editor = page.getByTestId('input.dreamTranscript');
   const counter = page.getByTestId('component.recording.draftProgress.count');
   await editor.fill('r'.repeat(17999));
-  await expect(counter).toHaveText('17999 caractères');
+  await expect(counter).toHaveText(/^17\s999 caractères$/);
   await editor.fill('r'.repeat(18500));
   await expect(counter).toHaveText(/^18\s500 \/ 20\s000 caractères$/);
   await editor.fill('r'.repeat(20000));

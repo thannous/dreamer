@@ -336,6 +336,11 @@ function Root({
       return;
     }
 
+    if (result.error === 'daily_ai_limit') {
+      Alert.alert(t('recording.alert.transcription_failed.title'), t('error.daily_ai_limit'));
+      return base;
+    }
+
     if (result.error === 'language_pack_missing') {
       return base;
     }

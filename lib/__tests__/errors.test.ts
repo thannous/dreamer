@@ -146,7 +146,7 @@ describe('classifyError', () => {
     expect(result.type).toBe(ErrorType.CLIENT);
     expect(result.canRetry).toBe(false);
     expect(result.userMessage).toBe(
-      'You reached today’s limit that protects Noctalia from abuse. This help comes back by tomorrow, and your dreams stay saved.'
+      'You reached today’s limit that protects Noctalia from abuse. This feature will be available again by tomorrow, and your dreams stay saved.'
     );
   });
 

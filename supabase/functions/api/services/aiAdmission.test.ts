@@ -118,6 +118,30 @@ Deno.test('an actor past its daily budget gets a 429 that says when to come back
   });
 });
 
+Deno.test('a daily budget claim with no answer is an outage, not a spent budget', async () => {
+  for (const answer of [{ data: null, error: null }, { data: null, error: { code: '42883' } }]) {
+    const fakeClient = {
+      rpc: async (name: string) =>
+        name === 'claim_ai_daily_budget' ? answer : { data: { allowed: true }, error: null },
+    };
+    const result = await admitSynchronousAiRequest(
+      {
+        ctx: buildContext(),
+        capability: 'categorize_dream',
+        guestFingerprint: 'qa:11111111-1111-4111-8111-111111111111',
+      },
+      {
+        createAdminClient: (() => fakeClient) as any,
+        readEnv: () => undefined,
+      }
+    );
+
+    if (!(result instanceof Response)) throw new Error('Expected an unavailable response');
+    assertEquals(result.status, 503);
+    assertEquals((await result.json()).code, 'AI_ADMISSION_UNAVAILABLE');
+  }
+});
+
 Deno.test('authenticated admission resolves server tier and returns a bounded 429', async () => {
   const rpcCalls: string[] = [];
   const fakeClient = {

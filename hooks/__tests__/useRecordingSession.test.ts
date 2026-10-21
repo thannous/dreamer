@@ -593,6 +593,36 @@ describe('useRecordingSession', () => {
       });
     });
 
+    it('says when server transcription has spent its daily budget, then stops asking it', async () => {
+      const recorder = mockCreateMockRecorder({ uri: '/path/to/server-fallback.amr' });
+      jest.mocked(startNativeSpeechSession).mockResolvedValue(null);
+      jest.mocked(useAudioRecorder).mockReturnValue(recorder as never);
+      jest.mocked(transcribeAudio).mockRejectedValueOnce(Object.assign(new Error('HTTP 429'), {
+        status: 429,
+        body: { code: 'AI_DAILY_LIMIT', retryAfter: 3600 },
+      }));
+
+      const { result } = renderHook(() => useRecordingSession(defaultOptions));
+
+      await act(async () => {
+        await result.current.startRecording('');
+      });
+      let response: RecordingSessionResult | undefined;
+      await act(async () => {
+        response = await result.current.stopRecording();
+      });
+      expect(response?.error).toBe('daily_ai_limit');
+
+      await act(async () => {
+        await result.current.startRecording('');
+      });
+      await act(async () => {
+        response = await result.current.stopRecording();
+      });
+      expect(transcribeAudio).toHaveBeenCalledTimes(1);
+      expect(response?.error).toBe('stt_unavailable');
+    });
+
     it('should return no_speech when native error is "no speech"', async () => {
       jest.mocked(startNativeSpeechSession).mockResolvedValueOnce({
         stop: jest.fn().mockResolvedValue({ transcript: '', error: 'no speech detected', recordedUri: '/path/audio.caf' }),

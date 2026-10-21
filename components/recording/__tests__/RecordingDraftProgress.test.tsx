@@ -103,7 +103,11 @@ describe('RecordingDraftProgress', () => {
     expect(counter.textContent).not.toMatch(/^0 (caractères|characters|caracteres|Zeichen|caratteri)$/);
   });
 
-  it('says how far a draft is from the maximum length once it nears it', () => {
+  it('formats a long count the same way before and after the maximum comes near', () => {
+    const view = render(<RecordingDraftProgress value={'x'.repeat(17999)} />);
+    expect(screen.getByTestId(TID.Component.RecordingDraftProgressCount).textContent).toBe('17,999 characters');
+    view.unmount();
+
     render(<RecordingDraftProgress value={'x'.repeat(18500)} />);
     const counter = screen.getByTestId(TID.Component.RecordingDraftProgressCount);
     expect(counter.textContent).toBe('18,500 / 20,000 characters');
