@@ -1,9 +1,7 @@
-import { test, surfaceOf } from '@e2e-dev/web';
+import { test } from '@e2e-dev/web';
 import { expect } from 'e2e';
-import type { Page } from 'playwright/test';
 import { isolateWeb } from '../web-fixtures';
 import { meditationJourney } from '../journeys';
-import { webEngine } from '../web-engine';
 
 // CI probes Metro /status before the first static route compiles. The 180s test
 // and config.timeout lifecycle budgets cover cold app.open() and restart;
@@ -78,8 +76,7 @@ test('Meditation resumes audio after restart, completes it and records history a
   await expect.poll(elapsed).toBeGreaterThanOrEqual(paused + 15);
   await expect.poll(elapsed).toBeLessThan(paused + 30);
   // Use the actual accessible seek control; no completion/storage state injection.
-  const page = surfaceOf(webEngine)!.page() as unknown as Page;
-  const slider = page.getByRole('slider', { name: 'Playback position', exact: true });
+  const slider = screen.getByRole('slider', 'Playback position', { exact: true, visible: true });
   const bounds = await slider.boundingBox();
   if (!bounds) throw new Error('Playback seek control is not visible.');
   await slider.click({ position: { x: bounds.width - 0.1, y: bounds.height / 2 } });
