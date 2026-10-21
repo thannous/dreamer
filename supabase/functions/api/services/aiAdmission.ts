@@ -243,9 +243,10 @@ export const admitSynchronousAiRequest = async (
       return unavailable();
     }
     if (!daily.allowed) {
+      // The window is the current hour and the 24 before it: at most 25 hours.
       const retryAfter = Number.isFinite(daily.retry_after_seconds)
-        ? Math.min(86400, Math.max(1, Math.ceil(daily.retry_after_seconds ?? 1)))
-        : 86400;
+        ? Math.min(90000, Math.max(1, Math.ceil(daily.retry_after_seconds ?? 1)))
+        : 90000;
       return jsonResponse(
         {
           error: 'Daily AI limit reached',

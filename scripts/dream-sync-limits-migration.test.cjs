@@ -15,7 +15,7 @@ const text = (length) => 'r'.repeat(length);
 
 // Synthetic PostgreSQL run of the journal write limits: no hosted DB, no credentials.
 describe('dream sync limits migration', () => {
-  it('caps dream length and new dreams per day: sync refusals keep no receipt, direct writes meet the same limits', { timeout: 30000 }, async () => {
+  it('caps dream length and new dreams per day: sync refusals keep no receipt, deletes free no place, direct writes meet the same limits', { timeout: 30000 }, async () => {
     const db = new PGlite();
     try {
       await db.exec(`
@@ -77,6 +77,11 @@ describe('dream sync limits migration', () => {
       const seed = (user, n, length, age) => asService(async () =>
         (await db.query(`insert into public.dreams(user_id, client_request_id, transcript, created_at)
           values ($1, $2, $3, now() - $4::interval) returning id`, [user, uuid(n), text(length), age])).rows[0].id);
+      // New dreams already counted for an account, `hours` hours before the current one.
+      const bucket = (user, hours, count) => asService(() => db.query(`insert into public.dream_creation_buckets(user_id, hour_start, created_count)
+        values ($1, date_trunc('hour', now()) - $2::interval, $3)`, [user, `${hours} hours`, count]));
+      const counted = async (user) => (await db.query(
+        'select coalesce(sum(created_count), 0)::integer as n from public.dream_creation_buckets where user_id = $1', [user])).rows[0].n;
       // A direct Data API write: the caller's own row, past sync_dream_mutations.
       const direct = (n, transcript, createdAt = null) => db.query(`insert into public.dreams(user_id, client_request_id, transcript, created_at)
         values ($1, $2, $3, coalesce($4::timestamptz, now())) returning id, created_at`, [caller, uuid(n), transcript, createdAt]);
@@ -106,10 +111,12 @@ describe('dream sync limits migration', () => {
       expect((await sync({ mutation_id: 'm8', client_request_id: uuid(8), operation: 'create', entity_key: 'd4',
         payload: { client_request_id: uuid(4), transcript: text(29000) } })).status).toBe('ack');
 
-      // Rate: 50 new dreams per rolling 24 hours, older dreams do not count.
+      // Rate: 50 new dreams per rolling 24 hours, counted per hour; older hours do not count.
       for (let n = 100; n < 149; n += 1) await seed(busy, n, 10, '1 hour');
       const oldest = await seed(busy, 149, 10, '23 hours');
-      for (let n = 150; n < 155; n += 1) await seed(busy, n, 10, '25 hours');
+      await bucket(busy, 1, 49);
+      await bucket(busy, 23, 1);
+      await bucket(busy, 26, 5);
       await as(busy);
       const limited = await create(200, 'one more');
       expect(limited).toMatchObject({ status: 'failed', error: 'DAILY_DREAM_LIMIT' });
@@ -126,10 +133,21 @@ describe('dream sync limits migration', () => {
       expect(batch.map((entry) => entry.error ?? entry.status)).toEqual(['DAILY_DREAM_LIMIT', 'ack']);
       expect(await receipts(210)).toBe(0);
       expect(await receipts(211)).toBe(1);
-      // Once the oldest dream of the window leaves it, the same mutation passes.
-      await asService(() => db.query(`update public.dreams set created_at = now() - interval '25 hours' where id = $1`, [oldest]));
-      expect((await create(200, 'one more')).status).toBe('ack');
+      // Once the oldest hour of the window leaves it, the same mutation passes.
+      await asService(() => db.query(`update public.dream_creation_buckets set hour_start = hour_start - interval '4 hours'
+        where user_id = $1 and hour_start = date_trunc('hour', now()) - interval '23 hours'`, [busy]));
+      const admitted = await create(200, 'one more');
+      expect(admitted.status).toBe('ack');
+      expect(await counted(busy)).toBe(56);
       expect((await create(203, 'and another')).error).toBe('DAILY_DREAM_LIMIT');
+      // Deleting dreams, in the same batch or before, never frees a place.
+      const deleted = await syncBatch([
+        { mutation_id: 'm212', client_request_id: uuid(212), operation: 'delete', entity_key: 'd200', payload: { remote_id: admitted.remote_id } },
+        { mutation_id: 'm213', client_request_id: uuid(213), operation: 'create', entity_key: 'd213', payload: { transcript: 'again' } },
+      ]);
+      expect(deleted.map((entry) => entry.error ?? entry.status)).toEqual(['ack', 'DAILY_DREAM_LIMIT']);
+      await db.query('delete from public.dreams where id = $1', [oldest]);
+      expect((await create(214, 'once more')).error).toBe('DAILY_DREAM_LIMIT');
 
       // A direct write past the sync function meets the same limits.
       await expect(direct(205, 'a script dream')).rejects.toMatchObject({ code: '23514', message: 'DAILY_DREAM_LIMIT' });
@@ -142,18 +160,21 @@ describe('dream sync limits migration', () => {
       expect((await create(204, 'calm night')).status).toBe('ack');
 
       await expect(direct(206, text(20001))).rejects.toMatchObject({ code: '23514', message: 'DREAM_TRANSCRIPT_TOO_LONG' });
+      // An old date does not take a direct write out of the day's count.
+      const before = await counted(writer);
       const backdated = (await direct(207, 'an old date', '2000-01-01')).rows[0];
-      expect(Date.now() - new Date(backdated.created_at).getTime()).toBeLessThan(60000);
+      expect(await counted(writer)).toBe(before + 1);
       await expect(db.query('update public.dreams set transcript = $1 where id = $2', [text(20001), backdated.id]))
         .rejects.toMatchObject({ message: 'DREAM_TRANSCRIPT_TOO_LONG' });
       await expect(db.query('update public.dreams set transcript = $1 where id = $2', [text(29001), legacy]))
         .rejects.toMatchObject({ message: 'DREAM_TRANSCRIPT_TOO_LONG' });
       await db.query('update public.dreams set transcript = $1 where id = $2', [text(28000), legacy]);
       expect(await transcriptOf(legacy)).toBe(28000);
-      // The service role is not held.
+      // The service role is not held, nor counted.
       expect(await asService(async () => (await db.query(
         `insert into public.dreams(user_id, client_request_id, transcript) values ($1, $2, $3) returning id`,
         [writer, uuid(208), text(25000)])).rows.length)).toBe(1);
+      expect(await counted(writer)).toBe(before + 1);
 
       const privileges = await db.query(`select role,
         has_function_privilege(role, 'public.sync_dream_mutations(jsonb)', 'execute') as can_execute
@@ -163,6 +184,11 @@ describe('dream sync limits migration', () => {
         { role: 'authenticated', can_execute: true },
         { role: 'service_role', can_execute: true },
       ]);
+      // No caller can read or rewrite the count of new dreams.
+      const buckets = await db.query(`select role,
+        has_table_privilege(role, 'public.dream_creation_buckets', 'select, insert, update, delete') as can_touch
+        from (values ('anon'), ('authenticated'), ('service_role')) roles(role) order by role`);
+      expect(buckets.rows.every((row) => row.can_touch === false)).toBe(true);
     } finally {
       await db.close();
     }

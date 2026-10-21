@@ -115,7 +115,9 @@ export function useRecordingSession({
   const pendingStartRef = useRef<AbortController | null>(null);
   // Server transcription after its daily budget refused: not asked again before the budget frees up.
   const serverTranscriptionBlockedUntilRef = useRef(0);
+  const transcriptionScopeRef = useRef(transcriptionScope);
   useEffect(() => {
+    transcriptionScopeRef.current = transcriptionScope;
     serverTranscriptionBlockedUntilRef.current = 0;
   }, [transcriptionScope]);
 
@@ -301,6 +303,8 @@ export function useRecordingSession({
         if (canAskServer && Date.now() < serverTranscriptionBlockedUntilRef.current) {
           isDailyLimited = true;
         } else if (canAskServer && cleanupUri) {
+          // A refusal for whoever asked: an account signed in meanwhile keeps its own budget.
+          const askedScope = transcriptionScopeRef.current;
           try {
             transcriptText = (await transcribeAudio({
               uri: cleanupUri,
@@ -315,7 +319,7 @@ export function useRecordingSession({
             }
           } catch (error) {
             log.warn('Server STT fallback failed', error);
-            if (isAiDailyLimitError(error)) {
+            if (isAiDailyLimitError(error) && askedScope === transcriptionScopeRef.current) {
               isDailyLimited = true;
               const retryAfter = Number((error as { body?: { retryAfter?: unknown } }).body?.retryAfter);
               serverTranscriptionBlockedUntilRef.current =

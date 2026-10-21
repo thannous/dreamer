@@ -40,9 +40,17 @@ describe('daily AI request budget migration', () => {
 
       const refused = await claim(actor, 'transcribe', 30);
       expect(refused).toMatchObject({ allowed: false, code: 'AI_DAILY_LIMIT', daily_limit: 30, daily_count: 30 });
-      // Every request of this window is in the current hour: it frees up 24 hours after that hour began.
-      expect(refused.retry_after_seconds).toBeGreaterThan(82800);
-      expect(refused.retry_after_seconds).toBeLessThanOrEqual(86400);
+      // Every request of this window is in the current hour: it frees up 25 hours after that hour began.
+      expect(refused.retry_after_seconds).toBeGreaterThan(86400);
+      expect(refused.retry_after_seconds).toBeLessThanOrEqual(90000);
+
+      // The hour that began 24 hours before the current one still counts, so a day never resets early.
+      const boundaryActor = 'c'.repeat(64);
+      await db.query(`insert into public.ai_rate_limit_buckets (actor_hash, capability, window_started_at, request_count)
+        values ($1, 'transcribe_day', date_trunc('hour', clock_timestamp()) - interval '24 hours', 30)`, [boundaryActor]);
+      const boundary = await claim(boundaryActor, 'transcribe', 30);
+      expect(boundary).toMatchObject({ allowed: false, daily_count: 30 });
+      expect(boundary.retry_after_seconds).toBeLessThanOrEqual(3600);
 
       expect((await claim(otherActor, 'transcribe', 30)).allowed).toBe(true);
       expect((await claim(actor, 'categorize_dream', 30)).allowed).toBe(true);

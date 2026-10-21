@@ -1,6 +1,6 @@
 /* @jest-environment jsdom */
 
-import { act, renderHook } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { AudioModule, setAudioModeAsync, useAudioRecorder } from 'expo-audio';
 import * as FileSystemLegacy from 'expo-file-system/legacy';
 import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
@@ -641,6 +641,42 @@ describe('useRecordingSession', () => {
       } finally {
         clock.mockRestore();
       }
+    });
+
+    it('does not pause a newly signed-in account for a guest refusal still on its way', async () => {
+      const recorder = mockCreateMockRecorder({ uri: '/path/to/server-fallback.amr' });
+      jest.mocked(startNativeSpeechSession).mockResolvedValue(null);
+      jest.mocked(useAudioRecorder).mockReturnValue(recorder as never);
+      let refuse!: (error: unknown) => void;
+      jest.mocked(transcribeAudio).mockImplementationOnce(() => new Promise((_resolve, reject) => { refuse = reject; }));
+
+      const { result, rerender } = renderHook(
+        ({ scope }: { scope: string }) => useRecordingSession({ ...defaultOptions, transcriptionScope: scope }),
+        { initialProps: { scope: 'guest' } }
+      );
+      await act(async () => {
+        await result.current.startRecording('');
+      });
+      let stopping!: Promise<RecordingSessionResult>;
+      await act(async () => {
+        stopping = result.current.stopRecording();
+      });
+      await waitFor(() => expect(transcribeAudio).toHaveBeenCalledTimes(1));
+      rerender({ scope: 'user-1' });
+      let stale: RecordingSessionResult | undefined;
+      await act(async () => {
+        refuse(Object.assign(new Error('HTTP 429'), { status: 429, body: { code: 'AI_DAILY_LIMIT', retryAfter: 3600 } }));
+        stale = await stopping;
+      });
+      expect(stale?.error).not.toBe('daily_ai_limit');
+
+      await act(async () => {
+        await result.current.startRecording('');
+      });
+      await act(async () => {
+        await result.current.stopRecording();
+      });
+      expect(transcribeAudio).toHaveBeenCalledTimes(2);
     });
 
     it('should return no_speech when native error is "no speech"', async () => {

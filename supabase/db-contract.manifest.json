@@ -171,6 +171,15 @@
         "refresh_token",
         "updated_at"
       ]
+    },
+    {
+      "schema": "public",
+      "name": "dream_creation_buckets",
+      "requiredColumns": [
+        "user_id",
+        "hour_start",
+        "created_count"
+      ]
     }
   ],
   "requiredFunctions": [
@@ -346,7 +355,7 @@
       "functionSchema": "public",
       "functionName": "guard_dream_size_and_rate",
       "definitionIncludes": [
-        "BEFORE INSERT OR UPDATE",
+        "BEFORE UPDATE ON public.dreams",
         "EXECUTE FUNCTION public.guard_dream_size_and_rate()"
       ]
     },

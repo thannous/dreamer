@@ -43,13 +43,13 @@ begin
     hashtextextended('ai_daily:' || p_actor_hash || ':' || day_capability, 0)
   );
 
-  -- The current hour and the 23 before it: a rolling day, to the hour.
+  -- The current hour and the 24 before it: never looser than a rolling day.
   select coalesce(sum(b.request_count), 0)::integer, min(b.window_started_at)
   into daily_count, oldest_hour
   from public.ai_rate_limit_buckets b
   where b.actor_hash = p_actor_hash
     and b.capability = day_capability
-    and b.window_started_at > hour_start - interval '24 hours';
+    and b.window_started_at >= hour_start - interval '24 hours';
 
   if daily_count >= p_daily_limit then
     return jsonb_build_object(
@@ -60,7 +60,7 @@ begin
       -- The oldest hour leaves the window first and frees its requests.
       'retry_after_seconds', greatest(
         1,
-        ceil(extract(epoch from (oldest_hour + interval '24 hours' - claim_time)))::integer
+        ceil(extract(epoch from (oldest_hour + interval '25 hours' - claim_time)))::integer
       )
     );
   end if;

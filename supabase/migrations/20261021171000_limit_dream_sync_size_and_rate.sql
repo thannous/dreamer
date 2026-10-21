@@ -1,10 +1,23 @@
 -- Anti-abuse limits on journal writes (Thanh, 2026-10-21): a dream holds at most
--- 20,000 characters and an account stores at most 50 new dreams per rolling
+-- 20,000 characters and an account creates at most 50 new dreams per rolling
 -- 24 hours. A longer dream already stored stays editable without growing.
 -- sync_dream_mutations, the app's only write path, refuses with a failed result
 -- and no receipt, so the same mutation passes later; everything else in it is
 -- as of 20261015120000. A trigger holds a direct Data API write, which a script
 -- could use, to the same limits.
+
+-- New dreams per account and hour, written only by the trigger below. A deleted
+-- dream keeps its hour's count, so creating and deleting never frees a place.
+create table if not exists public.dream_creation_buckets (
+  user_id uuid not null references auth.users(id) on delete cascade,
+  hour_start timestamptz not null,
+  created_count integer not null default 0 check (created_count >= 0),
+  primary key (user_id, hour_start)
+);
+
+alter table public.dream_creation_buckets enable row level security;
+
+revoke all on table public.dream_creation_buckets from anon, authenticated, service_role;
 
 create or replace function public.sync_dream_mutations(mutations jsonb)
 returns jsonb
@@ -122,11 +135,12 @@ begin
          > greatest(max_transcript_chars, coalesce(stored_transcript_chars, 0)) then
         limit_error := 'DREAM_TRANSCRIPT_TOO_LONG';
       elsif not create_exists then
-        select count(*)::integer
+        -- The current hour and the 24 before it: never looser than 24 hours.
+        select coalesce(sum(b.created_count), 0)::integer
         into new_dreams_today
-        from public.dreams d
-        where d.user_id = current_user_id
-          and d.created_at > now() - interval '24 hours';
+        from public.dream_creation_buckets b
+        where b.user_id = current_user_id
+          and b.hour_start >= date_trunc('hour', now()) - interval '24 hours';
         if new_dreams_today >= max_new_dreams_per_day then
           limit_error := 'DAILY_DREAM_LIMIT';
         end if;
@@ -409,13 +423,15 @@ revoke execute on function public.sync_dream_mutations(jsonb) from public, anon;
 grant execute on function public.sync_dream_mutations(jsonb) to authenticated, service_role;
 
 -- The same limits for every signed-in write, the Data API included. The service
--- role and database sessions are not held. The daily count reads created_at, so
--- for a signed-in caller the server sets it on insert and keeps it on update.
--- Length is checked after an insert (an upsert that updates a stored dream is
--- checked as an update) and before an update.
+-- role and database sessions are not held. Length is checked after an insert
+-- (an upsert that updates a stored dream is checked as an update) and before an
+-- update. Each new dream is counted in its hour's bucket, which only this
+-- function writes: security definer, since signed-in callers have no access to
+-- the buckets.
 create or replace function public.guard_dream_size_and_rate()
 returns trigger
 language plpgsql
+security definer
 set search_path = ''
 as $$
 declare
@@ -428,14 +444,9 @@ begin
   end if;
 
   if tg_when = 'BEFORE' then
-    if tg_op = 'INSERT' then
-      new.created_at := now();
-    else
-      new.created_at := old.created_at;
-      if char_length(coalesce(new.transcript, ''))
-         > greatest(max_transcript_chars, char_length(coalesce(old.transcript, ''))) then
-        raise exception 'DREAM_TRANSCRIPT_TOO_LONG' using errcode = '23514';
-      end if;
+    if char_length(coalesce(new.transcript, ''))
+       > greatest(max_transcript_chars, char_length(coalesce(old.transcript, ''))) then
+      raise exception 'DREAM_TRANSCRIPT_TOO_LONG' using errcode = '23514';
     end if;
     return new;
   end if;
@@ -444,24 +455,32 @@ begin
     raise exception 'DREAM_TRANSCRIPT_TOO_LONG' using errcode = '23514';
   end if;
   perform pg_advisory_xact_lock(hashtextextended('dreams:new-per-day:' || new.user_id::text, 0));
-  select count(*)::integer
+  select coalesce(sum(b.created_count), 0)::integer
   into new_dreams_today
-  from public.dreams d
-  where d.user_id = new.user_id
-    and d.created_at > now() - interval '24 hours';
-  if new_dreams_today > max_new_dreams_per_day then
+  from public.dream_creation_buckets b
+  where b.user_id = new.user_id
+    and b.hour_start >= date_trunc('hour', now()) - interval '24 hours';
+  if new_dreams_today >= max_new_dreams_per_day then
     raise exception 'DAILY_DREAM_LIMIT' using errcode = '23514';
   end if;
+  insert into public.dream_creation_buckets (user_id, hour_start, created_count)
+  values (new.user_id, date_trunc('hour', now()), 1)
+  on conflict (user_id, hour_start)
+  do update set created_count = public.dream_creation_buckets.created_count + 1;
+  delete from public.dream_creation_buckets b
+  where b.user_id = new.user_id
+    and b.hour_start < now() - interval '2 days';
   return null;
 end;
 $$;
 
 -- Owner only, like the other trigger functions on dreams (20261021120000).
 revoke execute on function public.guard_dream_size_and_rate() from public, anon, authenticated, service_role;
+grant execute on function public.guard_dream_size_and_rate() to postgres;
 
 drop trigger if exists trg_guard_dream_limits_before on public.dreams;
 create trigger trg_guard_dream_limits_before
-before insert or update on public.dreams
+before update on public.dreams
 for each row
 execute function public.guard_dream_size_and_rate();
 
