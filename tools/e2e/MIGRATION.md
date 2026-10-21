@@ -222,8 +222,8 @@ excerpt, chat limit, Trends and free recap contracts were preserved. Conflicts
 in billing/journeys/Plus were resolved into public TesterArmy APIs; the public
 family inventory is now **21 families / 119 cases**, and the deterministic
 Dreamer collection **138 cases**. No application delta exists against #531.
-The base is frozen at `2b4a7d3ea1921b83d55847120508b66eb590feb6`, also returned
-by the final read-only remote check.
+The base was frozen at `2b4a7d3ea1921b83d55847120508b66eb590feb6`, also returned
+by that delivery's read-only remote check. Later remote movement is recorded below.
 
 | New-base execution | Tested revision | Result | Private receipt |
 | --- | --- | --- | --- |
@@ -292,5 +292,42 @@ a native integration contract after those cases: two cycles with the same users,
 preserved prior data, lock contention, RLS and cleanup. It destroys its owned
 stack afterwards and cannot prove a hosted identity remains available.
 
-Validation results and exact revision are recorded after execution; no Docker,
-production, native device, Store or permanent hosted availability is claimed.
+Validation on clean code revision **`c3e04d89fbb1c00dfabdf30017d9a1f7d9c7a83f`**:
+
+| Command / target | Observed result | Evidence / limits |
+| --- | --- | --- |
+| `npm run test:qa:local`, canonical 8085 browser origin | **8/8 backend cases PASS**, then **two reusable-account cycles PASS**, outer exit 0 and exact owned stack destroyed | `backend-web/1792585862895-11732-4f322738-17a9-413c-a91a-e3602cbe8216` plus ignored `test-results/persistent-qa-local.json` identifying this revision and CLI 2.121.0 |
+| Supabase Auth/Postgres/PostgREST native integration | Same existing UUIDs across cycles, pre-existing sentinel retained, contender refused, cross-account lease RLS, exact fixture/session cleanup; installed supabase-js recovers exported session and verifies server user | Real loopback services; synthetic dedicated data only. No mock in the reuse contract. The eight browser cases retain their existing synthetic Apple exchange boundary. |
+| Guard/seed/auth, QA recovery and backend runner tests | **62/62 PASS**, including nine persistent-QA tests | `/tmp/dreamer-qa-contract-tests-final.log`; delayed claim/fixture commits, busy account, failed cleanup, wrong identity, session expiry and production/unconfigured refusal |
+| Focused lint / TesterArmy types | PASS, zero lint warnings | Changed JS/CJS/TS scripts and branch cases; app/tests types and aggregated checks are also recorded in the exact final `verify:pr` proof in PR #530 |
+| `npm run test:qa:check` without hosted configuration | Expected refusal, exit 1, before network | `/tmp/dreamer-persistent-qa-hosted-refusal.log`; **not** a hosted health pass |
+
+The first native contract attempt on `6485fc046` passed its eight browser cases
+but the qualifier failed before account creation: the pinned CLI uses one prepared
+statement even for `db query --file`, rejecting a multi-statement DDL file.
+Diagnostic Apple-only runs on `9ed63a884`, `8656aa4d7`, `558b1d5c2` preserved that
+red outcome and isolated `cannot insert multiple commands into a prepared
+statement`. The reviewed QA SQL is now applied in a single
+[PostgreSQL DO block](https://www.postgresql.org/docs/17/sql-do.html), only on the
+identified owned stack. A two-cycle pilot on `b14f30058` passed; the final full
+command above includes actual persisted-client recovery as well. No raw SQL/HTTP
+error body or credential was logged. The red runs and their exact teardown logs
+remain private, not silently qualified.
+
+Independent review caught an additional recovery race: an errored transport can
+commit a lease/fixture after an immediate empty cleanup read. The fix retains the
+uncertain account's lease/session and recovery manifest, fails the run, and does
+not infer rollback. Two targeted delayed-commit regressions cover it; final delta
+review found no remaining P1/P2.
+
+The integrated application base remains **`2b4a7d3ea1921b83d55847120508b66eb590feb6`**.
+Read-only remote inspection later returned **`c6c1c51e4d0d47b336df21bea004a5486da5b42b`**,
+one commit ahead, changing `services/subscriptionServiceReal.ts` and two test
+files. Per the owner's freeze instruction it was not automatically integrated;
+no fresh application qualification is claimed for that newer base. No application,
+production migration or dependency delta was added by this QA follow-up.
+
+No Docker, production, native device, Store or permanent hosted availability is
+claimed. Actual persistent QA branch/accounts remain pending organization,
+branch-cost approval, domain/target and secure provisioning. The normal runner
+needs no admin key; ephemeral signup/deletion fixtures remain unchanged.
