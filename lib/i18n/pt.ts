@@ -1450,6 +1450,7 @@ const translations: Record<string, string> = {
     'auth.reset_password.checking': 'Verificando seu link…',
     'auth.reset_password.success_title': 'Senha atualizada',
     'auth.reset_password.success_message': 'Sua nova senha foi salva e você está conectado.',
+    'auth.reset_password.success_signin_message': 'Sua nova senha foi salva. Entre com ela para continuar.',
     'auth.reset_password.continue': 'Continuar',
     'auth.reset_password.expired_title': 'Este link não é mais válido',
     'auth.reset_password.expired_message': 'Os links de redefinição expiram rapidamente e só funcionam uma vez. Volte para a tela de login e solicite um novo.',

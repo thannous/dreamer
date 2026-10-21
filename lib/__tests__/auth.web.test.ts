@@ -9,21 +9,17 @@ const mockResetPasswordForEmail = jest.fn();
 const mockUpdateUser = jest.fn();
 const mockGetSession = jest.fn();
 const mockSetSession = jest.fn();
-const mockGetUser = jest.fn();
 const mockSignUp = jest.fn();
 const mockImplicitSignUp = jest.fn();
-const mockRecoveryRefreshSession = jest.fn();
+const mockRecoveryVerifyOtp = jest.fn();
 const mockRecoveryUpdateUser = jest.fn();
-const mockRecoveryGetSession = jest.fn();
 const mockCreateClient = jest.fn(() => ({ auth: {
   signUp: mockImplicitSignUp,
-  refreshSession: mockRecoveryRefreshSession,
+  verifyOtp: mockRecoveryVerifyOtp,
   updateUser: mockRecoveryUpdateUser,
-  getSession: mockRecoveryGetSession,
 } }));
-const mockClearPendingWebRecoveryTokens = jest.fn();
-const mockRotatePendingWebRecoveryTokens = jest.fn();
-let mockPendingWebRecoveryTokens: { accessToken: string; refreshToken: string } | null = null;
+const mockClearPendingWebRecoveryTokenHash = jest.fn();
+let mockPendingWebRecoveryTokenHash: string | null = null;
 const mockResetMockTestState = jest.fn();
 let mockModeEnabled = false;
 const mockOnAuthStateChange = jest.fn();
@@ -53,16 +49,14 @@ jest.mock('../supabase', () => ({
       updateUser: mockUpdateUser,
       getSession: mockGetSession,
       setSession: mockSetSession,
-      getUser: mockGetUser,
       signUp: mockSignUp,
       onAuthStateChange: mockOnAuthStateChange,
     },
   },
-  getPendingWebRecoveryTokens: () => mockPendingWebRecoveryTokens,
+  getPendingWebRecoveryTokenHash: () => mockPendingWebRecoveryTokenHash,
   getSupabasePublicConfiguration: () => ({ projectUrl: 'https://example.supabase.co', publicKey: 'anon' }),
-  getWebRecoveryLinkState: () => mockPendingWebRecoveryTokens ? 'pending' : 'none',
-  clearPendingWebRecoveryTokens: mockClearPendingWebRecoveryTokens,
-  rotatePendingWebRecoveryTokens: mockRotatePendingWebRecoveryTokens,
+  getWebRecoveryLinkState: () => mockPendingWebRecoveryTokenHash ? 'pending' : 'none',
+  clearPendingWebRecoveryTokenHash: mockClearPendingWebRecoveryTokenHash,
 }));
 
 jest.mock('@/services/subscriptionService', () => ({
@@ -145,7 +139,7 @@ describe('web auth helpers', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockModeEnabled = false;
-    mockPendingWebRecoveryTokens = null;
+    mockPendingWebRecoveryTokenHash = null;
     mockSignInWithOAuth.mockResolvedValue({
       data: { url: OAUTH_AUTHORIZE_URL },
       error: null,
@@ -169,14 +163,11 @@ describe('web auth helpers', () => {
     mockSetSession.mockResolvedValue({ data: { session: null }, error: null });
     mockSignUp.mockResolvedValue({ data: { user: { id: 'new-user' }, session: null }, error: null });
     mockImplicitSignUp.mockResolvedValue({ data: { user: { id: 'new-user' }, session: null }, error: null });
-    mockGetUser.mockResolvedValue({ data: { user: { id: 'user-1', email: 'user@example.com' } }, error: null });
-    mockRecoveryRefreshSession.mockResolvedValue({ data: { session: {
-      access_token: 'rotated-access', refresh_token: 'rotated-refresh', user: { id: 'user-1' },
-    } }, error: null });
+    mockRecoveryVerifyOtp.mockResolvedValue({ data: {
+      user: { id: 'user-1', email: 'user@example.com' },
+      session: { access_token: 'recovery-access', user: { id: 'user-1' } },
+    }, error: null });
     mockRecoveryUpdateUser.mockResolvedValue({ data: { user: { id: 'user-1' } }, error: null });
-    mockRecoveryGetSession.mockResolvedValue({ data: { session: {
-      access_token: 'rotated-access', refresh_token: 'rotated-refresh', user: { id: 'user-1' },
-    } }, error: null });
     mockOnAuthStateChange.mockReturnValue({
       data: { subscription: { unsubscribe: jest.fn() } },
     });
@@ -668,22 +659,29 @@ describe('web auth helpers', () => {
     expect(mockSetSession).not.toHaveBeenCalled();
   });
 
-  it('keeps a recovery-link account uncommitted when the entered email differs', async () => {
-    mockPendingWebRecoveryTokens = { accessToken: 'link-access', refreshToken: 'link-refresh' };
+  it('rejects an unverified recovery hash without touching the app session', async () => {
+    mockPendingWebRecoveryTokenHash = 'invalid-hash';
+    mockRecoveryVerifyOtp.mockResolvedValueOnce({ data: { user: null, session: null }, error: new Error('expired link') });
     const auth = require('../auth.web') as typeof import('../auth.web');
 
-    await expect(auth.updatePasswordFromWebRecovery('guest@example.com', 'new-secret'))
-      .rejects.toThrow('recovery_email_mismatch');
+    await expect(auth.updatePasswordFromWebRecovery('user@example.com', 'new-secret'))
+      .rejects.toThrow('expired link');
 
-    expect(mockGetUser).toHaveBeenCalledWith('link-access');
-    expect(mockCreateClient).not.toHaveBeenCalled();
+    expect(mockRecoveryVerifyOtp).toHaveBeenCalledWith({ token_hash: 'invalid-hash', type: 'recovery' });
+    expect(mockRecoveryUpdateUser).not.toHaveBeenCalled();
     expect(mockSetSession).not.toHaveBeenCalled();
     expect(mockUpdateUser).not.toHaveBeenCalled();
   });
 
-  it('updates the confirmed recovery account in isolated memory before activating its session', async () => {
-    mockPendingWebRecoveryTokens = { accessToken: 'link-access', refreshToken: 'link-refresh' };
+  it('confirms the recovery account email and permits a retry of a verified one-use hash', async () => {
+    mockPendingWebRecoveryTokenHash = 'recovery-hash-a';
     const auth = require('../auth.web') as typeof import('../auth.web');
+
+    await expect(auth.updatePasswordFromWebRecovery('other@example.com', 'new-secret'))
+      .rejects.toThrow('recovery_email_mismatch');
+    expect(mockRecoveryVerifyOtp).toHaveBeenCalledTimes(1);
+    expect(mockRecoveryUpdateUser).not.toHaveBeenCalled();
+    expect(mockSetSession).not.toHaveBeenCalled();
 
     const user = await auth.updatePasswordFromWebRecovery(' USER@EXAMPLE.COM ', 'new-secret');
 
@@ -692,19 +690,20 @@ describe('web auth helpers', () => {
         persistSession: false, autoRefreshToken: false, detectSessionInUrl: false,
       }),
     });
-    expect(mockRecoveryRefreshSession).toHaveBeenCalledWith({ refresh_token: 'link-refresh' });
+    expect(mockRecoveryVerifyOtp).toHaveBeenCalledTimes(1);
+    expect(mockRecoveryVerifyOtp).toHaveBeenCalledWith({ token_hash: 'recovery-hash-a', type: 'recovery' });
     expect(mockRecoveryUpdateUser).toHaveBeenCalledWith({ password: 'new-secret' });
-    expect(mockRecoveryUpdateUser.mock.invocationCallOrder[0]).toBeLessThan(mockSetSession.mock.invocationCallOrder[0]);
-    expect(mockSetSession).toHaveBeenCalledWith({ access_token: 'rotated-access', refresh_token: 'rotated-refresh' });
-    expect(mockClearPendingWebRecoveryTokens).toHaveBeenCalledTimes(1);
+    expect(mockSetSession).not.toHaveBeenCalled();
+    expect(mockClearPendingWebRecoveryTokenHash).toHaveBeenCalledTimes(1);
     expect(user?.id).toBe('user-1');
   });
 
-  it('rejects a mismatched recovery token pair without replacing an existing session', async () => {
-    mockPendingWebRecoveryTokens = { accessToken: 'link-access', refreshToken: 'link-refresh' };
-    mockRecoveryRefreshSession.mockResolvedValueOnce({ data: { session: {
-      access_token: 'attacker-access', refresh_token: 'attacker-refresh', user: { id: 'attacker' },
-    } }, error: null });
+  it('rejects a mismatched GoTrue recovery response without replacing an existing session', async () => {
+    mockPendingWebRecoveryTokenHash = 'recovery-hash-b';
+    mockRecoveryVerifyOtp.mockResolvedValueOnce({ data: {
+      user: { id: 'user-1', email: 'user@example.com' },
+      session: { access_token: 'wrong-access', user: { id: 'attacker' } },
+    }, error: null });
     const auth = require('../auth.web') as typeof import('../auth.web');
 
     await expect(auth.updatePasswordFromWebRecovery('user@example.com', 'new-secret'))
@@ -714,14 +713,14 @@ describe('web auth helpers', () => {
   });
 
   it('leaves the app session unchanged when the isolated password update fails', async () => {
-    mockPendingWebRecoveryTokens = { accessToken: 'link-access', refreshToken: 'link-refresh' };
+    mockPendingWebRecoveryTokenHash = 'recovery-hash-c';
     mockRecoveryUpdateUser.mockResolvedValueOnce({ data: { user: null }, error: new Error('weak password') });
     const auth = require('../auth.web') as typeof import('../auth.web');
 
     await expect(auth.updatePasswordFromWebRecovery('user@example.com', 'new-secret'))
       .rejects.toThrow('weak password');
     expect(mockSetSession).not.toHaveBeenCalled();
-    expect(mockClearPendingWebRecoveryTokens).not.toHaveBeenCalled();
+    expect(mockClearPendingWebRecoveryTokenHash).not.toHaveBeenCalled();
   });
 
   it('forwards recovery auth events and unsubscribes', async () => {

@@ -84,6 +84,7 @@ jest.mock('@/lib/auth', () => ({
   updatePassword: mockUpdatePassword,
   updatePasswordFromWebRecovery: mockUpdatePasswordFromWebRecovery,
   getWebRecoveryLinkState: () => mockWebRecoveryLinkState,
+  webAuthCallbackPromise: Promise.resolve(),
 }));
 
 jest.mock('@/constants/journalTheme', () => ({
@@ -271,6 +272,20 @@ describe('ResetPasswordScreen', () => {
     fireEvent.click(submit);
 
     await waitFor(() => expect(mockUpdatePasswordFromWebRecovery).toHaveBeenCalledWith('user@example.com', 'secret123'));
+    expect(mockUpdatePassword).not.toHaveBeenCalled();
+  });
+
+  it('finishes an isolated recovery at explicit sign-in without claiming a session', async () => {
+    mockWebRecoveryLinkState = 'pending';
+    render(<ResetPasswordScreen />);
+    fillPasswords('secret123', 'secret123');
+    fireEvent.change(screen.getByTestId(TID.Input.AuthRecoveryEmail), { target: { value: 'user@example.com' } });
+    fireEvent.click(screen.getByTestId(TID.Button.AuthUpdatePassword));
+
+    await waitFor(() => expect(screen.getByText('auth.reset_password.success_signin_message')).toBeDefined());
+    expect(screen.queryByText('auth.reset_password.success_message')).toBeNull();
+    fireEvent.click(screen.getByTestId(TID.Button.AuthResetContinue));
+    expect(mockReplace).toHaveBeenCalledWith('/settings');
     expect(mockUpdatePassword).not.toHaveBeenCalled();
   });
 

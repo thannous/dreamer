@@ -26,9 +26,10 @@ jest.mock('expo-secure-store', () => ({
 }));
 
 const mockExchangeCodeForSession = jest.fn(async () => ({ data: { session: null }, error: null }));
+const mockSignOut = jest.fn(async () => ({ error: null }));
 const mockCreateClient = jest.fn((url: string, key: string, options: any) => ({
   __options: options,
-  auth: { exchangeCodeForSession: mockExchangeCodeForSession },
+  auth: { exchangeCodeForSession: mockExchangeCodeForSession, signOut: mockSignOut },
 }));
 
 jest.mock('@supabase/supabase-js', () => ({
@@ -64,6 +65,7 @@ describe('supabase secure storage adapter', () => {
     secureStoreData.clear();
     mockCreateClient.mockClear();
     mockExchangeCodeForSession.mockClear();
+    mockSignOut.mockClear();
     Object.values(mockSecureStore).forEach((fn) => fn.mockClear());
     process.env.EXPO_PUBLIC_SUPABASE_URL = 'https://example.com';
     process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY = 'anon-key';
@@ -123,13 +125,17 @@ describe('supabase secure storage adapter', () => {
     expect(auth.storage).toBeUndefined();
   });
 
-  const loadWebAt = (href: string) => {
+  const loadWebAt = (href: string, verifier: string | null = null) => {
     jest.resetModules();
     jest.doMock('react-native', () => ({ Platform: { OS: 'web' } }));
     const replaceState = jest.fn();
     Object.defineProperty(globalThis, 'window', {
       configurable: true,
-      value: { location: { href }, history: { state: null, replaceState } },
+      value: {
+        location: { href },
+        history: { state: null, replaceState },
+        localStorage: { getItem: jest.fn(() => verifier) },
+      },
     });
     return { module: require('../supabase') as typeof import('../supabase'), replaceState };
   };
@@ -142,23 +148,19 @@ describe('supabase secure storage adapter', () => {
     const { module, replaceState } = loadWebAt(href);
 
     expect(module.getWebRecoveryLinkState()).toBe('none');
-    expect(module.getPendingWebRecoveryTokens()).toBeNull();
+    expect(module.getPendingWebRecoveryTokenHash()).toBeNull();
     expect(replaceState).toHaveBeenCalledWith(null, '', '/recording');
     expect((module.supabase as any).__options.auth.detectSessionInUrl).toBe(false);
   });
 
-  it('holds a native-initiated recovery link in memory while removing its URL credentials', () => {
+  it('rejects a recovery URL that supplies a login session instead of GoTrue recovery proof', () => {
     const { module, replaceState } = loadWebAt(
       'https://dream.noctalia.app/auth/reset-password?lang=fr#access_token=recovery-access&refresh_token=recovery-refresh&type=recovery&expires_in=3600'
     );
 
-    expect(module.getWebRecoveryLinkState()).toBe('pending');
-    expect(module.getPendingWebRecoveryTokens()).toEqual({
-      accessToken: 'recovery-access', refreshToken: 'recovery-refresh',
-    });
+    expect(module.getWebRecoveryLinkState()).toBe('invalid');
+    expect(module.getPendingWebRecoveryTokenHash()).toBeNull();
     expect(replaceState).toHaveBeenCalledWith(null, '', '/auth/reset-password?lang=fr');
-    module.clearPendingWebRecoveryTokens();
-    expect(module.getPendingWebRecoveryTokens()).toBeNull();
   });
 
   it('rejects ambiguous recovery tokens without leaving them in the URL', () => {
@@ -167,7 +169,64 @@ describe('supabase secure storage adapter', () => {
     );
 
     expect(module.getWebRecoveryLinkState()).toBe('invalid');
-    expect(module.getPendingWebRecoveryTokens()).toBeNull();
+    expect(module.getPendingWebRecoveryTokenHash()).toBeNull();
+    expect(replaceState).toHaveBeenCalledWith(null, '', '/auth/reset-password');
+  });
+
+  it.each([
+    'https://dream.noctalia.app/auth/reset-password?token_hash=recovery-proof&type=recovery&lang=fr',
+    'https://dream.noctalia.app/auth/reset-password?lang=fr#token_hash=recovery-proof&type=recovery',
+  ])('holds a GoTrue recovery token hash while removing it from the URL: %s', (href: string) => {
+    const { module, replaceState } = loadWebAt(href);
+
+    expect(module.getWebRecoveryLinkState()).toBe('pending');
+    expect(module.getPendingWebRecoveryTokenHash()).toBe('recovery-proof');
+    expect(replaceState).toHaveBeenCalledWith(null, '', '/auth/reset-password?lang=fr');
+    module.clearPendingWebRecoveryTokenHash();
+    expect(module.getPendingWebRecoveryTokenHash()).toBeNull();
+  });
+
+  it.each([
+    'https://dream.noctalia.app/auth/reset-password?token_hash=recovery-proof&type=email',
+    'https://dream.noctalia.app/auth/reset-password?token_hash=recovery-proof&type=recovery&type=recovery',
+    'https://dream.noctalia.app/auth/reset-password?token_hash=recovery-proof&type=recovery#access_token=attacker&refresh_token=attacker',
+    'https://dream.noctalia.app/auth/reset-password?token_hash=recovery-proof&type=recovery&code=oauth-code',
+    'https://dream.noctalia.app/auth/reset-password?token_hash=recovery-proof#type=recovery',
+  ])('rejects mixed or non-recovery token hashes without exchanging them: %s', async (href: string) => {
+    const { module, replaceState } = loadWebAt(href);
+
+    await module.webAuthCallbackPromise;
+    expect(module.getWebRecoveryLinkState()).toBe('invalid');
+    expect(module.getPendingWebRecoveryTokenHash()).toBeNull();
+    expect(mockExchangeCodeForSession).not.toHaveBeenCalled();
+    expect(replaceState).toHaveBeenCalledWith(null, '', '/auth/reset-password');
+  });
+
+  it('keeps the same-browser PKCE recovery code path available', async () => {
+    mockExchangeCodeForSession.mockResolvedValueOnce({
+      data: { session: { user: { id: 'user-1' } }, redirectType: 'PASSWORD_RECOVERY' }, error: null,
+    } as any);
+    const { module, replaceState } = loadWebAt(
+      'https://dream.noctalia.app/auth/reset-password?code=recovery-code&lang=fr',
+      'browser-verifier/PASSWORD_RECOVERY'
+    );
+
+    await module.webAuthCallbackPromise;
+    expect(mockExchangeCodeForSession).toHaveBeenCalledWith('recovery-code');
+    expect(module.getWebRecoveryLinkState()).toBe('none');
+    expect(replaceState).toHaveBeenCalledWith(null, '', '/auth/reset-password?lang=fr');
+  });
+
+  it('does not exchange an OAuth code on the reset route without a recovery PKCE verifier', async () => {
+    const { module, replaceState } = loadWebAt(
+      'https://dream.noctalia.app/auth/reset-password?code=oauth-code',
+      'browser-verifier'
+    );
+
+    await module.webAuthCallbackPromise;
+    expect(module.getWebRecoveryLinkState()).toBe('invalid');
+    expect(mockExchangeCodeForSession).not.toHaveBeenCalled();
+    expect(mockSignOut).not.toHaveBeenCalled();
     expect(replaceState).toHaveBeenCalledWith(null, '', '/auth/reset-password');
   });
 

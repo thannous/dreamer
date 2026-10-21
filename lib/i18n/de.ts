@@ -1450,6 +1450,7 @@ const translations: Record<string, string> = {
     'auth.reset_password.checking': 'Dein Link wird geprüft…',
     'auth.reset_password.success_title': 'Passwort aktualisiert',
     'auth.reset_password.success_message': 'Dein neues Passwort ist gespeichert und du bist angemeldet.',
+    'auth.reset_password.success_signin_message': 'Dein neues Passwort ist gespeichert. Melde dich damit an.',
     'auth.reset_password.continue': 'Weiter',
     'auth.reset_password.expired_title': 'Dieser Link ist nicht mehr gültig',
     'auth.reset_password.expired_message': 'Links zum Zurücksetzen laufen schnell ab und funktionieren nur einmal. Geh zurück zur Anmeldung und fordere einen neuen an.',

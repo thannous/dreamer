@@ -5,15 +5,15 @@ import * as SecureStore from 'expo-secure-store';
 import { Platform } from 'react-native';
 import { isPasswordResetPath } from './authRoutes';
 
-type WebRecoveryTokens = { accessToken: string; refreshToken: string };
-type WebRecoveryLinkState = 'none' | 'pending' | 'invalid';
-let webRecoveryTokens: WebRecoveryTokens | null = null;
+type WebRecoveryLinkState = 'none' | 'checking' | 'pending' | 'invalid';
+let webRecoveryTokenHash: string | null = null;
 let webRecoveryLinkState: WebRecoveryLinkState = 'none';
 let webAuthCode: string | null = null;
+let webAuthCodeIsRecovery = false;
 
 const URL_AUTH_PARAMETERS = [
   'access_token', 'refresh_token', 'provider_token', 'provider_refresh_token',
-  'expires_in', 'expires_at', 'token_type', 'type',
+  'expires_in', 'expires_at', 'token_type', 'type', 'token_hash',
 ];
 
 /** Keep URL credentials out of auth-js and the browser address bar. */
@@ -26,12 +26,13 @@ function quarantineWebAuthCallback(): void {
   const hasBearerToken = ['access_token', 'refresh_token', 'provider_token', 'provider_refresh_token']
     .some((key) => query.has(key) || hash.has(key));
   const hasCode = query.has('code') || hash.has('code');
-  if (!hasBearerToken && !hasCode) return;
+  const hasTokenHash = query.has('token_hash') || hash.has('token_hash');
+  if (!hasBearerToken && !hasCode && !hasTokenHash) return;
   // Other product routes can use their own `code` parameter (for example
   // Lucid's callback). Only configured Supabase return paths own a PKCE code.
   const isSupabaseReturn = url.pathname === '/recording' || isPasswordResetPath(url.pathname);
 
-  if (!hasBearerToken && hasCode && isSupabaseReturn) {
+  if (!hasBearerToken && !hasTokenHash && hasCode && isSupabaseReturn) {
     // exchangeCodeForSession enforces the browser's stored PKCE verifier, but
     // unlike SDK auto-detection it does not sign out an existing user when a
     // malicious or expired code fails exchange.
@@ -39,6 +40,10 @@ function quarantineWebAuthCallback(): void {
     const other = source === query ? hash : query;
     if (source.getAll('code').length === 1 && !other.has('code')) {
       webAuthCode = source.get('code');
+      webAuthCodeIsRecovery = isPasswordResetPath(url.pathname);
+    }
+    if (isPasswordResetPath(url.pathname)) {
+      webRecoveryLinkState = webAuthCode ? 'checking' : 'invalid';
     }
     query.delete('code');
     hash.delete('code');
@@ -50,27 +55,22 @@ function quarantineWebAuthCallback(): void {
     }
     return;
   }
-  if (!hasBearerToken) return;
+  if (!hasBearerToken && !hasTokenHash) return;
 
-  const isRecovery = isPasswordResetPath(url.pathname) &&
-    (query.get('type') === 'recovery' || hash.get('type') === 'recovery');
   if (isPasswordResetPath(url.pathname)) {
     webRecoveryLinkState = 'invalid';
   }
 
-  // A token pair must come from one URL component, without duplicate or
-  // competing values. Only an explicit recovery link can be used later.
-  const source = query.has('access_token') || query.has('refresh_token') ? query : hash;
+  // A recovery token hash must come from one URL component together with its
+  // GoTrue type. Access/refresh pairs are ordinary login sessions, even when
+  // an attacker appends `type=recovery`; they cannot prove a reset request.
+  const source = query.has('token_hash') ? query : hash;
   const other = source === query ? hash : query;
-  if (isRecovery &&
-    source.getAll('access_token').length === 1 &&
-    source.getAll('refresh_token').length === 1 &&
-    !other.has('access_token') && !other.has('refresh_token') &&
-    source.get('access_token') && source.get('refresh_token')) {
-    webRecoveryTokens = {
-      accessToken: source.get('access_token')!,
-      refreshToken: source.get('refresh_token')!,
-    };
+  if (isPasswordResetPath(url.pathname) && hasTokenHash && !hasBearerToken && !hasCode &&
+    source.getAll('token_hash').length === 1 && source.getAll('type').length === 1 &&
+    source.get('type') === 'recovery' && !other.has('token_hash') && !other.has('type') &&
+    source.get('token_hash')) {
+    webRecoveryTokenHash = source.get('token_hash');
     webRecoveryLinkState = 'pending';
   }
 
@@ -96,18 +96,12 @@ export function getWebRecoveryLinkState(): WebRecoveryLinkState {
   return webRecoveryLinkState;
 }
 
-export function getPendingWebRecoveryTokens(): WebRecoveryTokens | null {
-  return webRecoveryTokens;
+export function getPendingWebRecoveryTokenHash(): string | null {
+  return webRecoveryTokenHash;
 }
 
-export function rotatePendingWebRecoveryTokens(accessToken: string, refreshToken: string): void {
-  if (webRecoveryTokens) {
-    webRecoveryTokens = { accessToken, refreshToken };
-  }
-}
-
-export function clearPendingWebRecoveryTokens(): void {
-  webRecoveryTokens = null;
+export function clearPendingWebRecoveryTokenHash(): void {
+  webRecoveryTokenHash = null;
   webRecoveryLinkState = 'none';
 }
 
@@ -235,6 +229,9 @@ if (!isSupabaseConfigured) {
 // Unconfigured builds get an unresolvable placeholder (RFC 2606 .invalid), never a local
 // port: local Supabase ports are assigned per project, and a guessed one could reach another project.
 export const UNCONFIGURED_SUPABASE_URL = 'http://supabase-not-configured.invalid';
+// Match the installed supabase-js default key so existing browser sessions and
+// its password-recovery PKCE verifier remain readable across this update.
+const WEB_AUTH_STORAGE_KEY = `sb-${new URL(SUPABASE_URL ?? UNCONFIGURED_SUPABASE_URL).hostname.split('.')[0]}-auth-token`;
 
 quarantineWebAuthCallback();
 
@@ -245,6 +242,7 @@ export const supabase = createClient(
     auth: {
       // Use secure storage on native platforms, localStorage on web
       storage: Platform.OS === 'web' ? undefined : ExpoSecureStoreAdapter,
+      storageKey: WEB_AUTH_STORAGE_KEY,
       autoRefreshToken: true,
       persistSession: true,
       // URL callbacks are quarantined above; PKCE codes are exchanged below.
@@ -257,5 +255,37 @@ export const supabase = createClient(
 );
 
 export const webAuthCallbackPromise: Promise<void> = webAuthCode
-  ? supabase.auth.exchangeCodeForSession(webAuthCode).then(() => undefined, () => undefined)
+  ? (async () => {
+    if (webAuthCodeIsRecovery) {
+      // In auth-js 2.89.0, resetPasswordForEmail stores the PKCE verifier with
+      // this marker; exchangeCodeForSession installs a session before returning.
+      // Reject an OAuth/sign-in verifier before that side effect can occur.
+      let verifier: string | null = null;
+      try {
+        verifier = window.localStorage.getItem(`${WEB_AUTH_STORAGE_KEY}-code-verifier`);
+      } catch {
+        // A missing/unreadable verifier cannot prove the browser requested reset.
+      }
+      if (!verifier?.endsWith('/PASSWORD_RECOVERY')) {
+        webRecoveryLinkState = 'invalid';
+        return;
+      }
+    }
+
+    try {
+      const { data, error } = await supabase.auth.exchangeCodeForSession(webAuthCode!);
+      if (webAuthCodeIsRecovery) {
+        if (error || !('redirectType' in data) || data.redirectType !== 'PASSWORD_RECOVERY') {
+          webRecoveryLinkState = 'invalid';
+          // A changed verifier or an SDK response mismatch must not leave the
+          // newly exchanged account active on the reset route.
+          if (data.session) await supabase.auth.signOut({ scope: 'local' });
+        } else {
+          webRecoveryLinkState = 'none';
+        }
+      }
+    } catch {
+      if (webAuthCodeIsRecovery) webRecoveryLinkState = 'invalid';
+    }
+  })()
   : Promise.resolve();

@@ -1450,6 +1450,7 @@ const translations: Record<string, string> = {
     'auth.reset_password.checking': 'Verifica del link in corso…',
     'auth.reset_password.success_title': 'Password aggiornata',
     'auth.reset_password.success_message': 'La tua nuova password è stata salvata e hai effettuato l\'accesso.',
+    'auth.reset_password.success_signin_message': 'La tua nuova password è stata salvata. Accedi con quella per continuare.',
     'auth.reset_password.continue': 'Continua',
     'auth.reset_password.expired_title': 'Questo link non è più valido',
     'auth.reset_password.expired_message': 'I link di reimpostazione scadono rapidamente e valgono una sola volta. Torna all\'accesso per richiederne uno nuovo.',

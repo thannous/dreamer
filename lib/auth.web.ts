@@ -5,12 +5,12 @@ import { PASSWORD_RESET_ROUTE } from './authRoutes';
 import { isMockModeEnabled } from './env';
 import { createScopedLogger } from './logger';
 import {
-  clearPendingWebRecoveryTokens,
-  getPendingWebRecoveryTokens,
+  clearPendingWebRecoveryTokenHash,
+  getPendingWebRecoveryTokenHash,
   getSupabasePublicConfiguration,
   getWebRecoveryLinkState,
-  rotatePendingWebRecoveryTokens,
   supabase,
+  webAuthCallbackPromise,
 } from './supabase';
 import type { SubscriptionTier } from './types';
 
@@ -402,30 +402,10 @@ export async function updatePassword(newPassword: string): Promise<User | null> 
   return data.user ?? null;
 }
 
-export { getWebRecoveryLinkState };
+export { getWebRecoveryLinkState, webAuthCallbackPromise };
 
-/**
- * Finish an implicit recovery link without exposing its session to the app first.
- * Native-initiated recovery links can be opened in a different browser, where
- * there is no PKCE verifier. The account email must be explicitly confirmed.
- */
-export async function updatePasswordFromWebRecovery(email: string, newPassword: string): Promise<User | null> {
-  const pending = getPendingWebRecoveryTokens();
-  const configuration = getSupabasePublicConfiguration();
-  if (!pending || !configuration) {
-    throw new Error('Password recovery link is unavailable.');
-  }
-
-  const { data: tokenData, error: tokenError } = await supabase.auth.getUser(pending.accessToken);
-  if (tokenError) throw tokenError;
-  const tokenUser = tokenData.user;
-  if (!tokenUser?.email || tokenUser.email.trim().toLowerCase() !== email.trim().toLowerCase()) {
-    throw new Error('recovery_email_mismatch');
-  }
-
-  // Refresh and change the password in isolated memory. A mismatched or
-  // expired token pair must never replace the user's current app session.
-  const recoveryClient = createClient(configuration.projectUrl, configuration.publicKey, {
+function createIsolatedRecoveryClient(projectUrl: string, publicKey: string) {
+  return createClient(projectUrl, publicKey, {
     auth: {
       storageKey: 'noctalia-recovery-isolated',
       persistSession: false,
@@ -434,43 +414,61 @@ export async function updatePasswordFromWebRecovery(email: string, newPassword: 
       flowType: 'implicit',
     },
   });
-  const { data: refreshData, error: refreshError } = await recoveryClient.auth.refreshSession({
-    refresh_token: pending.refreshToken,
-  });
-  if (refreshError) throw refreshError;
-  const refreshed = refreshData.session;
-  if (!refreshed || refreshed.user.id !== tokenUser.id || !refreshed.access_token || !refreshed.refresh_token) {
-    throw new Error('Password recovery link is invalid.');
-  }
-  rotatePendingWebRecoveryTokens(refreshed.access_token, refreshed.refresh_token);
+}
 
-  const { data: updatedData, error: updateError } = await recoveryClient.auth.updateUser({ password: newPassword });
+/**
+ * Complete a recovery token hash through GoTrue without replacing the app's
+ * session. This also supports a link opened in a browser without the PKCE
+ * verifier, once the hosted recovery email template emits a token hash.
+ */
+let verifiedRecovery: {
+  tokenHash: string;
+  client: ReturnType<typeof createIsolatedRecoveryClient>;
+  user: User;
+} | null = null;
+
+export async function updatePasswordFromWebRecovery(email: string, newPassword: string): Promise<User | null> {
+  const pending = getPendingWebRecoveryTokenHash();
+  const configuration = getSupabasePublicConfiguration();
+  if (!pending || !configuration) {
+    throw new Error('Password recovery link is unavailable.');
+  }
+
+  // Keep the verified session only in this client's memory. A mismatched email
+  // can be retried without redeeming the single-use recovery hash again.
+  if (!verifiedRecovery || verifiedRecovery.tokenHash !== pending) {
+    const client = createIsolatedRecoveryClient(configuration.projectUrl, configuration.publicKey);
+    const { data, error } = await client.auth.verifyOtp({ token_hash: pending, type: 'recovery' });
+    if (error) throw error;
+    if (!data.user?.email || !data.session || data.session.user.id !== data.user.id) {
+      throw new Error('Password recovery link is invalid.');
+    }
+    verifiedRecovery = { tokenHash: pending, client, user: data.user };
+  }
+
+  const recovery = verifiedRecovery;
+  if (!recovery) throw new Error('Password recovery link is invalid.');
+  const { client, user } = recovery;
+  if (user.email!.trim().toLowerCase() !== email.trim().toLowerCase()) {
+    throw new Error('recovery_email_mismatch');
+  }
+
+  const { data: updatedData, error: updateError } = await client.auth.updateUser({ password: newPassword });
   if (updateError) throw updateError;
-  if (updatedData.user?.id !== tokenUser.id) {
+  if (updatedData.user?.id !== user.id) {
     throw new Error('Password recovery account changed.');
   }
 
-  const { data: finalData, error: finalError } = await recoveryClient.auth.getSession();
-  if (finalError) throw finalError;
-  const finalSession = finalData.session;
-  if (!finalSession || finalSession.user.id !== tokenUser.id) {
-    throw new Error('Password recovery session is unavailable.');
-  }
-  const { error: persistError } = await supabase.auth.setSession({
-    access_token: finalSession.access_token,
-    refresh_token: finalSession.refresh_token,
-  });
-  if (persistError) throw persistError;
-  clearPendingWebRecoveryTokens();
+  verifiedRecovery = null;
+  clearPendingWebRecoveryTokenHash();
   return updatedData.user;
 }
 
 /**
  * Observe auth events relevant to password recovery. When the browser opens a
- * recovery link, supabase-js consumes the URL fragment and emits
- * `PASSWORD_RECOVERY`; a subscriber attached later still receives the session
- * through `INITIAL_SESSION`, so callers may treat any event carrying a session
- * as "allowed to set a new password".
+ * recovery PKCE link, the explicit code exchange emits a signed-in session.
+ * The reset page treats the already authenticated account as eligible too;
+ * token-hash recovery stays on a separate memory-only client above.
  */
 export function onPasswordRecovery(
   cb: (event: AuthChangeEvent, session: Session | null) => void

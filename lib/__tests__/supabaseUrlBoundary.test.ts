@@ -52,16 +52,58 @@ describe('real Supabase web URL boundary', () => {
     expect(JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '{}').user.id).toBe('existing-user');
   });
 
-  it('does not activate a recovery link before account confirmation', async () => {
+  it('rejects an implicit recovery link instead of installing its session', async () => {
     history.replaceState(null, '', '/auth/reset-password#access_token=unbound-access&refresh_token=unbound-refresh&type=recovery&expires_in=3600');
     const { supabase, getWebRecoveryLinkState } = require('../supabase') as typeof import('../supabase');
 
     const { data } = await supabase.auth.getSession();
 
     expect(data.session).toBeNull();
-    expect(getWebRecoveryLinkState()).toBe('pending');
+    expect(getWebRecoveryLinkState()).toBe('invalid');
     expect(location.pathname + location.search + location.hash).toBe('/auth/reset-password');
     expect(localStorage.getItem(STORAGE_KEY)).toBeNull();
+  });
+
+  it('does not exchange an OAuth code on the reset route when its verifier is not recovery-scoped', async () => {
+    storeExistingSession();
+    localStorage.setItem(`${STORAGE_KEY}-code-verifier`, 'browser-oauth-verifier');
+    history.replaceState(null, '', '/auth/reset-password?code=oauth-code');
+    const fetchMock = jest.fn(async () => { throw new Error('unexpected exchange'); });
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+
+    const { supabase, getWebRecoveryLinkState, webAuthCallbackPromise } = require('../supabase') as typeof import('../supabase');
+    await webAuthCallbackPromise;
+    const { data } = await supabase.auth.getSession();
+
+    expect(getWebRecoveryLinkState()).toBe('invalid');
+    expect(data.session?.user.id).toBe('existing-user');
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(location.pathname + location.search).toBe('/auth/reset-password');
+  });
+
+  it('exchanges a recovery PKCE code only with the browser recovery verifier', async () => {
+    localStorage.setItem(`${STORAGE_KEY}-code-verifier`, 'browser-recovery-verifier/PASSWORD_RECOVERY');
+    history.replaceState(null, '', '/auth/reset-password?code=recovery-code');
+    const fetchMock = jest.fn(async () => ({
+      ok: true,
+      json: async () => ({
+        access_token: 'recovery-access', refresh_token: 'recovery-refresh',
+        token_type: 'bearer', expires_in: 3600,
+        user: { id: 'recovery-user', email: 'recovery@example.com' },
+      }),
+    }));
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+
+    const { supabase, getWebRecoveryLinkState, webAuthCallbackPromise } = require('../supabase') as typeof import('../supabase');
+    expect(getWebRecoveryLinkState()).toBe('checking');
+    await webAuthCallbackPromise;
+    const { data } = await supabase.auth.getSession();
+
+    expect(getWebRecoveryLinkState()).toBe('none');
+    expect(data.session?.user.id).toBe('recovery-user');
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(fetchMock.mock.calls[0][0]).toContain('/auth/v1/token?grant_type=pkce');
+    expect(location.pathname + location.search).toBe('/auth/reset-password');
   });
 
   it('exchanges a same-browser PKCE code with its stored verifier', async () => {

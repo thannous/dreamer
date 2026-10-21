@@ -1451,6 +1451,7 @@ const translations: Record<string, string> = {
     'auth.reset_password.checking': 'Vérification de ton lien…',
     'auth.reset_password.success_title': 'Mot de passe mis à jour',
     'auth.reset_password.success_message': 'Ton nouveau mot de passe est enregistré et ta session est ouverte.',
+    'auth.reset_password.success_signin_message': 'Ton nouveau mot de passe est enregistré. Connecte-toi avec pour continuer.',
     'auth.reset_password.continue': 'Continuer',
     'auth.reset_password.expired_title': 'Ce lien n\'est plus valide',
     'auth.reset_password.expired_message': 'Les liens de réinitialisation expirent vite et ne servent qu’une fois. Reviens à la connexion pour en demander un nouveau.',

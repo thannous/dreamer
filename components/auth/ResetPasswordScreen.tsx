@@ -22,7 +22,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { isLucidTrainer } from '@/lib/appVariant';
-import { getWebRecoveryLinkState, onPasswordRecovery, updatePassword, updatePasswordFromWebRecovery } from '@/lib/auth';
+import { getWebRecoveryLinkState, onPasswordRecovery, updatePassword, updatePasswordFromWebRecovery, webAuthCallbackPromise } from '@/lib/auth';
 import { isValidEmail, PASSWORD_MIN_LENGTH } from '@/lib/authValidation';
 import { TID } from '@/lib/testIDs';
 import { HeaderScrollView, useHeaderScroll } from '@/components/ui/headerStretch';
@@ -47,9 +47,9 @@ const getUpdateErrorKey = (error: unknown): string => {
 /**
  * Landing screen for the password-recovery email link.
  *
- * Web links carrying implicit tokens require account-email confirmation before
- * their session is activated. Same-browser PKCE links and native sessions use
- * their existing recovery events.
+ * Web token-hash links require account-email confirmation and complete in an
+ * isolated session. Same-browser PKCE links and native sessions use their
+ * existing recovery events.
  */
 const ResetPasswordScreen: React.FC = () => {
   // This screen's own scroll, published to its header painting and title.
@@ -59,7 +59,7 @@ const ResetPasswordScreen: React.FC = () => {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { user, loading: authLoading } = useAuth();
-  const webRecoveryLinkState = getWebRecoveryLinkState();
+  const [webRecoveryLinkState, setWebRecoveryLinkState] = useState(getWebRecoveryLinkState);
 
   const [recoveryDetected, setRecoveryDetected] = useState(false);
   const [email, setEmail] = useState('');
@@ -69,9 +69,14 @@ const ResetPasswordScreen: React.FC = () => {
   const [touched, setTouched] = useState({ password: false, confirm: false });
   const [submitting, setSubmitting] = useState(false);
   const [completed, setCompleted] = useState(false);
+  const [isolatedRecoveryCompleted, setIsolatedRecoveryCompleted] = useState(false);
   const [errorKey, setErrorKey] = useState<string | null>(null);
 
   useEffect(() => {
+    let mounted = true;
+    void webAuthCallbackPromise.then(() => {
+      if (mounted) setWebRecoveryLinkState(getWebRecoveryLinkState());
+    });
     const unsubscribe = onPasswordRecovery((event, session) => {
       if (
         event === 'PASSWORD_RECOVERY' ||
@@ -80,7 +85,10 @@ const ResetPasswordScreen: React.FC = () => {
         setRecoveryDetected(true);
       }
     });
-    return unsubscribe;
+    return () => {
+      mounted = false;
+      unsubscribe();
+    };
   }, []);
 
   const hasSession = webRecoveryLinkState === 'pending' ||
@@ -89,7 +97,7 @@ const ResetPasswordScreen: React.FC = () => {
     ? 'success'
     : hasSession
       ? 'ready'
-      : webRecoveryLinkState === 'none' && authLoading
+      : webRecoveryLinkState === 'checking' || (webRecoveryLinkState === 'none' && authLoading)
         ? 'checking'
         : 'expired';
 
@@ -108,6 +116,7 @@ const ResetPasswordScreen: React.FC = () => {
     try {
       if (webRecoveryLinkState === 'pending') {
         await updatePasswordFromWebRecovery(email, password);
+        setIsolatedRecoveryCompleted(true);
       } else {
         await updatePassword(password);
       }
@@ -126,7 +135,7 @@ const ResetPasswordScreen: React.FC = () => {
   };
 
   const handleContinue = () => {
-    router.replace(CONTINUE_DESTINATION);
+    router.replace(isolatedRecoveryCompleted ? SIGN_IN_DESTINATION : CONTINUE_DESTINATION);
   };
 
   const handleBackToSignIn = () => {
@@ -226,9 +235,13 @@ const ResetPasswordScreen: React.FC = () => {
           {t('auth.reset_password.success_title')}
         </Text>
         <Text style={[styles.subtitle, { color: noctalia.text.secondary }]}>
-          {t('auth.reset_password.success_message')}
+          {t(isolatedRecoveryCompleted
+            ? 'auth.reset_password.success_signin_message'
+            : 'auth.reset_password.success_message')}
         </Text>
-        {renderPrimaryButton(t('auth.reset_password.continue'), handleContinue, {
+        {renderPrimaryButton(t(isolatedRecoveryCompleted
+          ? 'auth.reset_password.back_to_signin'
+          : 'auth.reset_password.continue'), handleContinue, {
           testID: TID.Button.AuthResetContinue,
         })}
       </>

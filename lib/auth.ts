@@ -427,7 +427,9 @@ export async function updatePassword(newPassword: string): Promise<User | null> 
 }
 
 /** Native recovery continues through its regular authenticated session. */
-export function getWebRecoveryLinkState(): 'none' | 'pending' | 'invalid' {
+export { webAuthCallbackPromise } from './supabase';
+
+export function getWebRecoveryLinkState(): 'none' | 'checking' | 'pending' | 'invalid' {
   return 'none';
 }
 

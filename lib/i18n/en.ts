@@ -1450,6 +1450,7 @@ const translations: Record<string, string> = {
     'auth.reset_password.checking': 'Checking your reset link…',
     'auth.reset_password.success_title': 'Password updated',
     'auth.reset_password.success_message': 'Your new password is saved and you are signed in.',
+    'auth.reset_password.success_signin_message': 'Your new password is saved. Sign in with it to continue.',
     'auth.reset_password.continue': 'Continue',
     'auth.reset_password.expired_title': 'This link is no longer valid',
     'auth.reset_password.expired_message': 'Reset links expire quickly and can only be used once. Go back to sign in and request a new one.',

@@ -1450,6 +1450,7 @@ const translations: Record<string, string> = {
     'auth.reset_password.checking': 'Comprobando tu enlace…',
     'auth.reset_password.success_title': 'Contraseña actualizada',
     'auth.reset_password.success_message': 'Tu nueva contraseña se ha guardado y ya has iniciado sesión.',
+    'auth.reset_password.success_signin_message': 'Tu nueva contraseña se ha guardado. Inicia sesión con ella para continuar.',
     'auth.reset_password.continue': 'Continuar',
     'auth.reset_password.expired_title': 'Este enlace ya no es válido',
     'auth.reset_password.expired_message': 'Los enlaces de restablecimiento caducan pronto y solo sirven una vez. Vuelve a iniciar sesión para solicitar uno nuevo.',
