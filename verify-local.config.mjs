@@ -368,6 +368,7 @@ export default {
     {
       name: 'dependency-security',
       command: 'node --test scripts/dependency-security.test.mjs scripts/dependency-security-scope.test.mjs',
+      env: { DEPENDENCY_SECURITY_PROJECT: 'root' },
       when: ['package.json', 'package-lock.json', '.npmrc', 'tools/braces/', 'tools/image-size-compat/', 'scripts/dependency-security*.mjs'],
     },
     // Independent lockfiles must exercise their own installed graph. A patched
