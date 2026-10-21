@@ -34,7 +34,7 @@ const DOCS = ['**/*.md', '**/*.mdx', 'doc_web_interne/**', 'marketing/**', 'spec
 // excluded from tsconfig.json) and the lint paths of package.json never read
 // them, and no TypeScript file imports them. The site check and the TesterArmy
 // typecheck cover them. docs-src/static/img and docs-src/static/data stay
-// inputs (app components and e2e/web import them), like data/.
+// inputs (app components and TesterArmy journeys import them), like data/.
 const SITE_ONLY = [
   'docs-src/static/scripts/**',
   'docs-src/static/js/**',
@@ -250,7 +250,7 @@ export default {
     // The Expo runner re-checks a guarded branch run (marker from start-branch-e2e).
     'scripts/expo-safe-runner.js',
     'scripts/expo-safe-runner.test.js',
-    'playwright.branch.config.ts',
+    'tools/e2e/e2e.config.ts',
     // The suites ci-contracts runs.
     '.circleci/tests/classify-changes.test.sh',
     '.circleci/tests/shared-build-impact.test.py',
@@ -304,13 +304,13 @@ export default {
         // The static test scans every script in scripts/.
         'scripts/**',
         // The seed mirrors this fixture's RPC call; the web origin is pinned here.
-        'e2e/backend/fixtures.ts',
+        'tools/e2e/backend-fixtures.ts',
         'supabase/migrations/20260916185856_hd_illustration_monthly_quota.sql',
         'supabase/migrations/20260316130000_add_dream_sync_revisions.sql',
         'supabase/migrations/20260722124500_add_ai_sync_admission_control.sql',
         'supabase/functions/api/services/aiAdmission.ts',
         'supabase/functions/api/services/storage.ts',
-        'playwright.branch.config.ts',
+        'tools/e2e/e2e.config.ts',
         '.gitignore',
         // The production ref is pinned against app.json.
         'app.json',
@@ -319,8 +319,9 @@ export default {
     // Negative target/scheduler cases cannot safely be exercised by a live browser journey.
     {
       name: 'backend-runner-guards',
-      command: 'node --test scripts/lib/backend-e2e-local.test.cjs scripts/check-native-supabase-runtime.test.cjs',
+      command: 'node --test scripts/lib/backend-e2e-local.test.cjs scripts/lib/backend-e2e-process.test.cjs scripts/check-native-supabase-runtime.test.cjs',
       inputs: ['scripts/lib/backend-e2e-local.cjs', 'scripts/lib/backend-e2e-local.test.cjs', 'scripts/run-backend-e2e.cjs',
+        'scripts/lib/backend-e2e-process.cjs', 'scripts/lib/backend-e2e-process.test.cjs',
         'scripts/check-native-supabase-runtime.cjs', 'scripts/check-native-supabase-runtime.test.cjs', 'supabase/config.toml'],
     },
     // CLI/index failures happen before UI journeys; keep both refusal cases local.
@@ -398,7 +399,7 @@ export default {
       // succeeds the journeys really run and must pass.
       requires: {
         command: 'node scripts/check-native-supabase-runtime.cjs',
-        hint: 'native Supabase runtime, no Docker: needs Linux glibc>=2.35 (WSL2 on Windows) or macOS 14+ Apple silicon, the pinned CLI from `npm ci` and Chromium (`npx playwright install chromium`); if this machine cannot, a machine where the probe passes runs it and passes --external e2e-backend="owner-machine: <host> <note> on <SHA>" (the fixed evidence keyword); until then the proof is incomplete: do not push, report it as a blocker',
+        hint: 'native Supabase runtime, no Docker: needs Linux glibc>=2.35 (WSL2 on Windows) or macOS 14+ Apple silicon, the pinned CLI from `npm ci` and Chromium (`npm run test:testerarmy:browsers`); if this machine cannot, a machine where the probe passes runs it and passes --external e2e-backend="owner-machine: <host> <note> on <SHA>" (the fixed evidence keyword); until then the proof is incomplete: do not push, report it as a blocker',
       },
     },
     {

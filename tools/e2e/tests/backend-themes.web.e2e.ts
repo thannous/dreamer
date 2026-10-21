@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { test, expect, login, journal, client, admin } from './fixtures';
+import { test, expect, login, journal, client, admin } from '../backend-fixtures';
 
 // Apps installed before the luminous and nostalgic themes know only four themes and do not
 // send precise_theme. These are the request shapes such an app makes (services as shipped

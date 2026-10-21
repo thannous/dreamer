@@ -1,6 +1,17 @@
 # TesterArmy E2E
 
 Default framework for new journeys since the owner's 2026-10-05 instruction.
+All active E2E entry points use this runner since 2026-10-21; the duplicated
+Playwright test runners are retired. The complete web campaign is
+`mise exec -- npm run test:testerarmy:all`: four Dreamer locale/feature contexts
+and their coverage union, Lucid, Meditation, the built site, four personas through
+the saved ChatGPT Pro login and the owned local backend. It requires that login
+and fails without actual model calls; no API-key fallback is configured. Use
+`npm run test:testerarmy:login` only if a saved login is missing. Native runs retain
+their separate identified Release/device requirements. See the
+[journey guide](../../e2e/README.md) and
+[migration record](../../doc_web_interne/docs/qa/full-testerarmy-20261021.md).
+
 Follow https://docs.expo.dev/guides/using-e2e/ and the skill bundled in this
 package's `node_modules/e2e/skills/e2e/`. Dependencies and lockfile are isolated
 from the application's Playwright version. The locked runtime is `e2e` 0.21.2,
