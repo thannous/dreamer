@@ -62,8 +62,8 @@ test('symbol artwork fills the page from behind the navbar up to 2560px', { time
     symbols: Array<{ id: string; fr: { slug: string; name: string } }>;
   };
   const ids = ['sex','cheating','kissing','attack','killing','fighting','eating','kidnapping','moving-house','war','vomiting','nails','tsunami','flowers','tiger','deer','pig','monkey','lizard','bat','toilet','church','beach','castle','swimming-pool','alien','celebrity','boss','crush','witch','clown','gun','knife','wallet','doll','gold','coffin','stars','sky','god'];
-  // Atlas pages since lot 05: their hero is the atlas painting; every other id keeps its classic artwork.
-  const atlasIds = ['flowers', 'castle', 'stars'];
+  // Every listed symbol now has a complete pack. Tiger retains its dedicated historical paintings.
+  const atlasIds = ids.filter(id => id !== 'tiger');
   const checkLayout = (image: Awaited<ReturnType<typeof measureHero>>) => {
     expect(image.naturalWidth).toBeGreaterThan(0);
     expect(image.width).toBeCloseTo(Math.min(image.available, 2560), 0);
@@ -102,11 +102,9 @@ test('symbol artwork fills the page from behind the navbar up to 2560px', { time
     checkLayout(await browser.evaluate(measureHero));
     await app.screenshot('symbol-' + id + '-' + width);
   }
-  // On a phone held upright every symbol page takes 75svh from the top, behind the navbar. A page
-  // without a pack crops its own 16:9 painting (cover), centred or on the point its framing names
-  // for a subject painted off-centre.
+  // Each phone hero uses its independently composed portrait and keeps the title under the subject.
   for (const [width, height, id, position] of [
-    [390, 844, 'angel', '50% 50%'], [320, 740, 'moving-house', '50% 50%'], [390, 844, 'alien', '19% 50%'],
+    [390, 844, 'angel', '50% 50%'], [320, 740, 'moving-house', '50% 50%'], [390, 844, 'alien', '50% 50%'],
   ] as const) {
     await browser.setViewport({ width, height });
     const symbol = catalog.symbols.find(item => item.id === id)!;
@@ -114,8 +112,7 @@ test('symbol artwork fills the page from behind the navbar up to 2560px', { time
     await expect(screen.getByRole('heading', { level: 1 })).toBeVisible();
     const image = await browser.evaluate(measureHero);
     expect(image.naturalWidth).toBeGreaterThan(0);
-    // Its own landscape painting, not a portrait one.
-    expect(new URL(image.src).pathname).toMatch(new RegExp('^/img/seo/symbols-v2/' + id + '-v[0-9]+-[0-9]+w\\.(?:webp|avif)$'));
+    expect(new URL(image.src).pathname).toMatch(new RegExp('^/img/symbols/atlas-six-v2/' + id + '/portrait-[0-9]+-[0-9a-f]{12}\\.(?:webp|avif)$'));
     expect([image.objectFit, image.objectPosition]).toEqual(['cover', position]);
     expect([image.heroTop, image.top, image.left]).toEqual([0, 0, 0]);
     expect(image.width).toBeCloseTo(image.available, 0);
@@ -179,14 +176,24 @@ function scrollToY(y: number) {
   return window.scrollY;
 }
 
-test('at a phone viewport a page without a pack takes the 75svh hero by cropping its own painting, without a motion script or file', async ({ app, browser, screen }) => {
-  // At the default 390x844 phone viewport, a page without a pack takes the same 75svh hero by
-  // cropping its own 16:9 painting (cover), without any motion script or the tiger's files.
+test('at a phone viewport a missing motion script keeps the dedicated portrait readable', async ({ app, browser, screen }) => {
+  // All 240 symbols have packs. Exercise actual degradation instead of expecting the former
+  // unpacked deer. The generator's missing-pack branch remains covered by the atlas fixture.
+  await browser.setViewport({ width: 390, height: 844 });
+  await browser.route(/\/js\/symbol-living\/.*\.js$/, route => route.fulfill({ status: 404, body: '' }));
   for (const path of ['/fr/symboles/cerf.html', '/en/symbols/deer.html', '/pt-br/simbolos/cervo.html']) {
     await app.open(path);
     await expect(screen.getByRole('heading', { level: 1 })).toBeVisible();
     await expect.poll(() => browser.evaluate(readMotionLoads).then(read => read.loaded)).toBe(true);
-    expect(await browser.evaluate(readMotionLoads)).toEqual({ scripts: 0, requests: 0, stages: 0, marked: false, ratio: Math.round(390 / (844 * 0.75) * 100) / 100, objectFit: 'cover', loaded: true });
+    const image = await browser.evaluate(measureHero);
+    expect(image.src).toContain('/deer/portrait-');
+    expect(image.objectFit).toBe('cover');
+    expect(image.height).toBeCloseTo(844 * 0.75, 0);
+    expect(image.headingBottom).toBeLessThanOrEqual(image.heroBottom);
+    expect(image.overflow).toBe(false);
+    expect((await browser.evaluate(readMotionLoads)).stages).toBe(0);
+    expect(await browser.evaluate(() => document.querySelectorAll('.atlas-scene-input').length)).toBe(3);
+    await app.screenshot('deer-portrait-without-motion-' + path.split('/')[1]);
   }
 });
 
@@ -1251,9 +1258,9 @@ test('the language menu leads from the French moon atlas to the pt-br and the En
   expect([read.path, read.lang, read.chosen]).toEqual(['/en/symbols/moon', 'en', 'Your scene: Full moon']);
 });
 
-test('a page without an atlas, a missing FAQ or a thumbnail that fails stays in the page\'s language', { timeout: 120_000 }, async ({ app, browser, screen }) => {
+test('the symbol article, a missing FAQ or a thumbnail that fails stays in the page\'s language', { timeout: 120_000 }, async ({ app, browser, screen }) => {
   await browser.setViewport({ width: 390, height: 844 });
-  // A symbol without a pack: the same article, in Portuguese, linking only to pt-br pages.
+  // The complete deer pack keeps the same Portuguese article and localized content links.
   await app.open('/pt-br/simbolos/cervo.html');
   await expect(screen.getByRole('heading', { level: 1 })).toBeVisible();
   expect(await browser.evaluate(() => ({
@@ -1367,6 +1374,175 @@ test('the pt-br dictionary links every pt-br symbol, searches and filters in Por
 // These journeys catch a decoded-but-wrong portrait, a transparent rectangle, an effect placed
 // entirely outside a crop, a scene with the wrong editorial reading, and a moving base painting.
 const NEW_SYMBOL_PACKS = [
+  {"id": "god", "slug": "dieu", "name": "Dieu", "scenes": ["hearing-god-s-voice", "seeing-god-as-a-light-or-a-figure", "praying-to-god"]},
+  {"id": "sky", "slug": "ciel", "name": "Ciel", "scenes": ["a-clear-blue-sky", "a-dark-or-stormy-sky", "strange-lights-or-objects-in-the-sky"]},
+  {"id": "coffin", "slug": "cercueil", "name": "Cercueil", "scenes": ["a-closed-coffin", "lying-in-a-coffin-yourself", "an-empty-coffin"]},
+  {"id": "gold", "slug": "or", "name": "Or", "scenes": ["finding-gold-or-a-treasure", "receiving-gold-jewelry", "gold-coins"]},
+  {"id": "doll", "slug": "poupee", "name": "Poupée", "scenes": ["a-doll-from-your-childhood", "a-doll-that-moves-talks-or-comes-alive", "a-broken-or-damaged-doll"]},
+  {"id": "wallet", "slug": "portefeuille", "name": "Portefeuille", "scenes": ["losing-your-wallet", "finding-a-wallet", "an-empty-wallet"]},
+  {"id": "knife", "slug": "couteau", "name": "Couteau", "scenes": ["being-threatened-or-chased-with-a-knife", "holding-a-knife-or-stabbing-someone", "a-knife-in-the-kitchen-or-on-the-table"]},
+  {"id": "gun", "slug": "arme-a-feu", "name": "Arme à feu / Pistolet", "scenes": ["a-gun-that-jams-or-won-t-fire", "finding-or-carrying-a-gun", "gunshots-in-the-distance"]},
+  {"id": "clown", "slug": "clown", "name": "Clown", "scenes": ["a-scary-or-evil-clown", "a-sad-or-crying-clown", "a-clown-at-a-party-or-a-circus"]},
+  {"id": "witch", "slug": "sorciere", "name": "Sorcière", "scenes": ["a-witch-casting-a-spell-on-you", "a-kind-witch-or-a-healer", "a-witch-s-house-cauldron-or-potion"]},
+  {"id": "crush", "slug": "crush", "name": "Crush", "scenes": ["your-crush-likes-you-back", "your-crush-ignores-or-rejects-you", "your-crush-with-someone-else"]},
+  {"id": "boss", "slug": "patron", "name": "Patron / Chef", "scenes": ["being-fired-by-your-boss", "arguing-with-your-boss-or-being-yelled", "your-boss-praising-or-promoting-you"]},
+  {"id": "celebrity", "slug": "celebrite", "name": "Célébrité", "scenes": ["meeting-a-celebrity", "a-celebrity-who-ignores-you", "becoming-famous-yourself"]},
+  {"id": "alien", "slug": "extraterrestre", "name": "Extraterrestre", "scenes": ["being-abducted-by-aliens", "seeing-a-ufo-in-the-sky", "talking-with-a-friendly-alien"]},
+  {"id": "swimming-pool", "slug": "piscine", "name": "Piscine", "scenes": ["swimming-in-clear-calm-water", "cloudy-or-dirty-pool-water", "an-empty-swimming-pool"]},
+  {"id": "beach", "slug": "plage", "name": "Plage", "scenes": ["a-deserted-beach", "a-beach-at-night", "rising-waves-or-a-storm-on-the-beach"]},
+  {"id": "church", "slug": "eglise", "name": "Église", "scenes": ["an-empty-silent-church", "praying-or-confessing-in-a-church", "a-church-in-ruins-or-abandoned"]},
+  {"id": "toilet", "slug": "toilettes", "name": "Toilettes", "scenes": ["a-blocked-or-overflowing-toilet", "a-toilet-in-full-view-or-with-no-door", "cleaning-a-toilet"]},
+  {"id": "bat", "slug": "chauve-souris", "name": "Chauve-souris", "scenes": ["a-bat-flying-in-the-house", "many-bats-or-a-swarm-at-dusk", "a-bat-hanging-upside-down"]},
+  {"id": "lizard", "slug": "lezard", "name": "Lézard", "scenes": ["a-lizard-in-the-house-or-in-bed", "a-large-lizard-or-an-iguana", "a-lizard-basking-in-the-sun"]},
+  {"id": "monkey", "slug": "singe", "name": "Singe", "scenes": ["a-monkey-stealing-something", "a-monkey-copying-you", "a-baby-monkey-or-a-pet-monkey"]},
+  {"id": "pig", "slug": "cochon", "name": "Cochon", "scenes": ["a-pig-in-the-mud", "piglets", "a-pig-in-the-house"]},
+  {"id": "deer", "slug": "cerf", "name": "Cerf / Biche", "scenes": ["a-deer-on-the-road-at-night", "a-deer-coming-closer-or-eating-from-you", "a-stag-with-large-antlers"]},
+  {"id": "tsunami", "slug": "tsunami", "name": "Tsunami / Raz-de-marée", "scenes": ["seeing-a-giant-wave-on-the-horizon", "running-from-a-tsunami", "surviving-a-tsunami"]},
+  {"id": "nails", "slug": "ongles", "name": "Ongles", "scenes": ["a-broken-or-split-nail", "long-or-painted-nails", "cutting-your-nails"]},
+  {"id": "vomiting", "slug": "vomir", "name": "Vomir", "scenes": ["vomiting-in-public", "vomiting-and-feeling-relief", "feeling-sick-but-unable-to-vomit"]},
+  {"id": "war", "slug": "guerre", "name": "Guerre", "scenes": ["bombs-sirens-or-an-air-raid", "fleeing-a-war-or-hiding", "the-war-ends-or-peace-returns"]},
+  {"id": "moving-house", "slug": "demenagement", "name": "Déménagement", "scenes": ["moving-into-a-new-home", "packing-boxes-that-never-end", "moving-back-to-an-old-home"]},
+  {"id": "kidnapping", "slug": "enlevement", "name": "Enlèvement", "scenes": ["being-kidnapped-by-a-stranger", "being-held-captive", "escaping-from-kidnappers"]},
+  {"id": "eating", "slug": "manger", "name": "Manger / Nourriture", "scenes": ["a-feast-or-a-generous-table", "being-hungry-and-never-getting-to-eat", "sharing-a-meal-with-someone"]},
+  {"id": "fighting", "slug": "se-battre", "name": "Se battre / Bagarre", "scenes": ["fighting-a-stranger", "punches-with-no-strength", "watching-others-fight-or-trying-to-stop"]},
+  {"id": "killing", "slug": "tuer", "name": "Tuer quelqu'un", "scenes": ["killing-in-self-defense", "killing-someone-by-accident", "hiding-a-body-or-running-from-the-polic"]},
+  {"id": "attack", "slug": "etre-attaque", "name": "Être attaqué / Agression", "scenes": ["attacked-by-a-stranger", "attacked-by-someone-you-know", "an-intruder-attacking-you-at-home"]},
+  {"id": "kissing", "slug": "embrasser", "name": "Embrasser / Baiser", "scenes": ["kissing-your-crush", "kissing-an-ex", "kissing-a-friend"]},
+  {"id": "cheating", "slug": "infidelite", "name": "Infidélité / Être trompé", "scenes": ["your-partner-cheating-on-you", "your-partner-cheating-with-your-best-fr", "cheating-on-your-partner"]},
+  {"id": "sex", "slug": "sexe", "name": "Sexe / Faire l'amour", "scenes": ["sex-with-your-partner", "sex-with-a-stranger", "being-interrupted-or-walked-in-on"]},
+  {"id": "wasp", "slug": "guepes", "name": "Guêpes", "scenes": ["a-wasp-sting", "a-wasp-nest", "a-calm-wasp-that-does-not-sting"]},
+  {"id": "cemetery", "slug": "cimetiere", "name": "Cimetière", "scenes": ["walking-through-a-cemetery-at-night", "looking-for-a-specific-grave", "a-peaceful-cemetery-in-daylight"]},
+  {"id": "scorpion", "slug": "scorpion", "name": "Scorpion", "scenes": ["a-scorpion-sting", "a-calm-scorpion", "many-scorpions"]},
+  {"id": "lice", "slug": "poux", "name": "Poux", "scenes": ["lice-in-your-hair", "removing-or-killing-lice", "many-lice"]},
+  {"id": "crocodile", "slug": "crocodile", "name": "Crocodile", "scenes": ["a-crocodile-in-the-water", "being-chased-by-a-crocodile", "a-calm-or-friendly-crocodile"]},
+  {"id": "shoes", "slug": "chaussures", "name": "Chaussures", "scenes": ["lost-shoes", "new-shoes", "broken-or-worn-out-shoes"]},
+  {"id": "cockroach", "slug": "cafard", "name": "Cafard", "scenes": ["a-single-cockroach", "many-cockroaches-or-an-infestation", "a-cockroach-in-bed-or-on-your-body"]},
+  {"id": "worms", "slug": "vers", "name": "Vers", "scenes": ["worms-in-the-soil", "maggots-or-white-worms", "worms-in-food"]},
+  {"id": "excrement", "slug": "caca", "name": "Caca", "scenes": ["poop-in-a-toilet", "cleaning-poop", "poop-in-the-mouth-or-on-the-body"]},
+  {"id": "lake", "slug": "lac", "name": "Lac", "scenes": ["a-calm-clear-lake", "a-dark-or-murky-lake", "swimming-in-a-lake"]},
+  {"id": "river", "slug": "riviere", "name": "Rivière", "scenes": ["a-calm-clear-river", "a-fast-or-raging-river", "swept-away-by-the-current"]},
+  {"id": "island", "slug": "ile", "name": "Île", "scenes": ["stranded-on-a-deserted-island", "a-paradise-island", "unable-to-leave-the-island"]},
+  {"id": "garden", "slug": "jardin", "name": "Jardin", "scenes": ["a-garden-in-bloom", "an-overgrown-or-neglected-garden", "a-dry-or-dying-garden"]},
+  {"id": "crow", "slug": "corbeau", "name": "Corbeau", "scenes": ["a-crow-watching-you", "a-crow-calling-loudly", "a-flock-of-crows"]},
+  {"id": "eagle", "slug": "aigle", "name": "Aigle", "scenes": ["an-eagle-soaring-high", "flying-with-an-eagle", "a-caged-eagle"]},
+  {"id": "ant", "slug": "fourmi", "name": "Fourmi", "scenes": ["a-long-line-of-ants", "ants-in-the-house", "an-ant-carrying-a-heavy-load"]},
+  {"id": "frog", "slug": "grenouille", "name": "Grenouille", "scenes": ["a-frog-jumping", "a-frog-in-the-house", "lots-of-frogs"]},
+  {"id": "dolphin", "slug": "dauphin", "name": "Dauphin", "scenes": ["swimming-with-dolphins", "being-rescued-by-a-dolphin", "a-pod-of-dolphins"]},
+  {"id": "shark", "slug": "requin", "name": "Requin", "scenes": ["a-fin-on-the-surface", "a-shark-circling-you", "swimming-calmly-among-sharks"]},
+  {"id": "fish", "slug": "poisson", "name": "Poisson", "scenes": ["a-fish-swimming-in-clear-water", "catching-a-fish", "a-fish-in-a-bowl-or-an-aquarium"]},
+  {"id": "elephant", "slug": "elephant", "name": "Éléphant", "scenes": ["a-calm-elephant", "a-baby-elephant", "a-herd-of-elephants"]},
+  {"id": "bear", "slug": "ours", "name": "Ours", "scenes": ["being-chased-by-a-bear", "a-calm-or-friendly-bear", "a-sleeping-bear-or-a-den"]},
+  {"id": "rat", "slug": "rat", "name": "Rat", "scenes": ["a-rat-running-past", "many-rats", "a-white-or-pet-rat"]},
+  {"id": "mouse", "slug": "souris", "name": "Souris", "scenes": ["a-mouse-running-across-the-room", "mice-in-the-house", "a-white-mouse"]},
+  {"id": "rabbit", "slug": "lapin", "name": "Lapin", "scenes": ["a-rabbit-running-away", "holding-or-stroking-a-rabbit", "a-white-rabbit"]},
+  {"id": "cow", "slug": "vache", "name": "Vache", "scenes": ["a-cow-grazing-peacefully", "a-cow-charging-or-chasing-you", "milking-a-cow"]},
+  {"id": "mall", "slug": "centre-commercial", "name": "Centre commercial", "scenes": ["getting-lost-in-a-mall", "looking-for-a-particular-shop", "shopping-with-pleasure"]},
+  {"id": "hotel", "slug": "hotel", "name": "Hôtel", "scenes": ["looking-for-your-room-and-not-finding-i", "arriving-at-reception-with-no-booking", "a-luxury-hotel"]},
+  {"id": "tornado", "slug": "tornade", "name": "Tornade", "scenes": ["a-tornado-on-the-horizon", "hiding-from-a-tornado", "being-swept-up-by-a-tornado"]},
+  {"id": "snake", "slug": "serpent", "name": "Serpent", "scenes": ["morsure", "calme", "mue"]},
+  {"id": "ocean", "slug": "mer", "name": "Mer / Océan", "scenes": ["calme", "tempete", "vague"]},
+  {"id": "forest", "slug": "foret", "name": "Forêt", "scenes": ["sombre", "perdu", "chemin"]},
+  {"id": "house", "slug": "maison", "name": "Maison", "scenes": ["inconnue", "enfance", "pieces"]},
+  {"id": "falling", "slug": "chute", "name": "Chute", "scenes": ["hauteur", "sursaut", "voler"]},
+  {"id": "butterfly", "slug": "papillon", "name": "Papillon", "scenes": ["pose", "chrysalide", "prisonnier"]},
+  {"id": "moon", "slug": "lune", "name": "Lune", "scenes": ["pleine", "croissant", "double"]},
+  {"id": "door", "slug": "porte", "name": "Porte", "scenes": ["ouverte", "verrouillee", "choix"]},
+  {"id": "fire", "slug": "feu", "name": "Feu", "scenes": ["reconfort", "incendie", "fumee"]},
+  {"id": "bird", "slug": "oiseau", "name": "Oiseau", "scenes": ["libre", "cage", "chant"]},
+  {"id": "train", "slug": "train", "name": "Train", "scenes": ["voyage", "gare", "tunnel"]},
+  {"id": "water", "slug": "eau", "name": "Eau", "scenes": ["claire", "trouble", "montee"]},
+  {"id": "dog", "slug": "chien", "name": "Chien", "scenes": ["poursuite", "familier", "meute"]},
+  {"id": "teeth", "slug": "dents", "name": "Dents (perdre ses dents)", "scenes": ["chute", "casse", "repousse"]},
+  {"id": "flying", "slug": "voler", "name": "Voler", "scenes": ["libre", "difficile", "ras-sol"]},
+  {"id": "car", "slug": "voiture", "name": "Voiture", "scenes": ["conduite", "passager", "panne"]},
+  {"id": "bridge", "slug": "pont", "name": "Pont", "scenes": ["traversee", "rupture", "hesitation"]},
+  {"id": "cat", "slug": "chat", "name": "Chat", "scenes": ["affectueux", "griffes", "noir"]},
+  {"id": "mountain", "slug": "montagne", "name": "Montagne", "scenes": ["ascension", "sommet", "obstacle"]},
+  {"id": "key", "slug": "cle", "name": "Clé", "scenes": ["trouver", "perdre", "serrure"]},
+  {"id": "rain", "slug": "pluie", "name": "Pluie", "scenes": ["douce", "averse", "fenetre"]},
+  {"id": "stairs", "slug": "escalier", "name": "Escalier", "scenes": ["monter", "descendre", "infini"]},
+  {"id": "mirror", "slug": "miroir", "name": "Miroir", "scenes": ["reflet", "brise", "absent"]},
+  {"id": "horse", "slug": "cheval", "name": "Cheval", "scenes": ["balade", "emballe", "liberte"]},
+  {"id": "castle", "slug": "chateau", "name": "Château", "scenes": ["exploration", "grille", "ruine"]},
+  {"id": "stars", "slug": "etoiles", "name": "Étoiles", "scenes": ["ciel", "filante", "guide"]},
+  {"id": "flowers", "slug": "fleurs", "name": "Fleurs", "scenes": ["bouquet", "fanees", "prairie"]},
+  {"id": "baby", "slug": "bebe", "name": "Bébé", "scenes": ["soins", "pleurs", "trouver"]},
+  {"id": "storm", "slug": "orage", "name": "Orage", "scenes": ["approche", "expose", "abri"]},
+  {"id": "wolf", "slug": "loup", "name": "Loup", "scenes": ["solitaire", "meute", "poursuite"]},
+  {"id": "elevator", "slug": "ascenseur", "name": "Ascenseur", "scenes": ["montee", "descente", "bloque"]},
+  {"id": "book", "slug": "livre", "name": "Livre", "scenes": ["illisible", "blanches", "bibliotheque"]},
+  {"id": "snow", "slug": "neige", "name": "Neige", "scenes": ["chute", "bloque", "marche"]},
+  {"id": "desert", "slug": "desert", "name": "Désert", "scenes": ["seul", "tempete", "oasis"]},
+  {"id": "owl", "slug": "hibou", "name": "Hibou", "scenes": ["regard", "cri", "blanc"]},
+  {"id": "boat", "slug": "bateau", "name": "Bateau", "scenes": ["calme", "tempete", "naufrage"]},
+  {"id": "cave", "slug": "grotte", "name": "Grotte", "scenes": ["abri", "bloquee", "exploration"]},
+  {"id": "rose", "slug": "rose", "name": "Rose", "scenes": ["rouge", "fanee", "epine"]},
+  {"id": "lightning", "slug": "eclair", "name": "Éclair", "scenes": ["lointain", "arbre", "abri"]},
+  {"id": "whale", "slug": "baleine", "name": "Baleine", "scenes": ["proche", "echouee", "saut"]},
+  {"id": "bee", "slug": "abeille", "name": "Abeille", "scenes": ["butinage", "piqure", "essaim"]},
+  {"id": "volcano", "slug": "volcan", "name": "Volcan", "scenes": ["endormi", "eruption", "lave"]},
+  {"id": "waterfall", "slug": "cascade", "name": "Cascade", "scenes": ["contemplation", "sous-eau", "chute"]},
+  {"id": "turtle", "slug": "tortue", "name": "Tortue", "scenes": ["nage", "carapace", "lenteur"]},
+  {"id": "mask", "slug": "masque", "name": "Masque", "scenes": ["porter", "colle", "carnaval"]},
+  {"id": "earthquake", "slug": "tremblement-de-terre", "name": "Tremblement de terre", "scenes": ["your-house-collapsing", "the-ground-splitting-open", "protecting-someone-during-an-earthquake"]},
+  {"id": "prison", "slug": "prison", "name": "Prison", "scenes": ["being-locked-in-a-cell", "being-imprisoned-for-something-you-did", "escaping-from-prison"]},
+  {"id": "zombie", "slug": "zombie", "name": "Zombie", "scenes": ["a-zombie-apocalypse", "a-loved-one-turned-into-a-zombie", "hiding-from-zombies"]},
+  {"id": "monster", "slug": "monstre", "name": "Monstre", "scenes": ["being-chased-by-a-monster", "a-monster-under-the-bed-or-in-the-close", "a-giant-monster"]},
+  {"id": "demon", "slug": "demon", "name": "Démon", "scenes": ["being-chased-by-a-demon", "fighting-a-demon", "talking-or-bargaining-with-a-demon"]},
+  {"id": "ghost", "slug": "fantome", "name": "Fantôme", "scenes": ["seeing-the-ghost-of-a-loved-one-who-die", "being-haunted-by-a-ghost", "a-haunted-house"]},
+  {"id": "shadow", "slug": "ombre", "name": "Ombre", "scenes": ["being-followed-by-a-shadow", "your-shadow-breaking-away", "a-faceless-dark-figure"]},
+  {"id": "hiding", "slug": "se-cacher", "name": "Se cacher", "scenes": ["hiding-from-a-threat", "hiding-from-someone-you-know", "being-found"]},
+  {"id": "screaming", "slug": "cri", "name": "Cri", "scenes": ["screaming-in-fear", "screaming-in-anger", "a-scream-that-will-not-come-out"]},
+  {"id": "paralysis", "slug": "paralysie", "name": "Paralysie", "scenes": ["frozen-in-front-of-a-danger", "legs-that-will-not-run", "waking-up-unable-to-move"]},
+  {"id": "unable-to-speak", "slug": "incapable-de-parler", "name": "Incapable de parler", "scenes": ["a-voice-that-will-not-come-out", "speaking-but-no-one-hears-you", "unable-to-call-for-help"]},
+  {"id": "missing-train", "slug": "rater-un-train", "name": "Rater un train", "scenes": ["watching-the-train-leave", "waiting-on-the-wrong-platform", "running-for-a-train"]},
+  {"id": "late", "slug": "etre-en-retard", "name": "Être en retard", "scenes": ["late-for-work", "late-for-an-exam", "late-for-a-flight-or-a-train"]},
+  {"id": "attic", "slug": "grenier", "name": "Grenier", "scenes": ["climbing-into-the-attic", "finding-old-belongings", "a-dark-or-frightening-attic"]},
+  {"id": "trapped", "slug": "piege", "name": "Piégé", "scenes": ["trapped-in-a-room", "trapped-in-an-elevator", "trapped-while-danger-comes-closer"]},
+  {"id": "drowning", "slug": "noyade", "name": "Noyade", "scenes": ["drowning-in-the-sea-or-deep-water", "drowning-in-a-pool-or-bathtub", "someone-else-drowning"]},
+  {"id": "bleeding", "slug": "saignement", "name": "Saignement", "scenes": ["a-nosebleed", "bleeding-without-pain-or-visible-wound", "stopping-the-bleeding"]},
+  {"id": "surgery", "slug": "chirurgie", "name": "Chirurgie", "scenes": ["being-operated-on", "performing-surgery", "a-loved-one-having-surgery"]},
+  {"id": "basement", "slug": "sous-sol", "name": "Sous-sol", "scenes": ["dark-basement", "flooded-basement", "locked-in-a-basement"]},
+  {"id": "illness", "slug": "maladie", "name": "Maladie", "scenes": ["being-ill-yourself", "a-loved-one-who-is-ill", "a-serious-or-incurable-illness"]},
+  {"id": "pregnancy-test", "slug": "test-de-grossesse", "name": "Test de grossesse", "scenes": ["positive-test", "negative-test", "a-result-you-cannot-read"]},
+  {"id": "heart", "slug": "coeur", "name": "Cœur", "scenes": ["a-racing-heart", "a-broken-heart", "giving-or-receiving-a-heart"]},
+  {"id": "feet", "slug": "pieds", "name": "Pieds", "scenes": ["walking-barefoot", "unable-to-move-your-feet", "washing-feet-or-having-them-washed"]},
+  {"id": "hands", "slug": "mains", "name": "Mains", "scenes": ["hands-that-will-not-obey", "holding-someone-s-hand", "dirty-hands-or-washing-your-hands"]},
+  {"id": "eyes", "slug": "yeux", "name": "Yeux", "scenes": ["being-watched", "not-being-able-to-open-your-eyes", "going-blind"]},
+  {"id": "hair", "slug": "cheveux", "name": "Cheveux", "scenes": ["hair-falling-out", "cutting-your-own-hair", "someone-cutting-your-hair"]},
+  {"id": "letter", "slug": "lettre", "name": "Lettre", "scenes": ["receiving-a-letter", "a-sealed-letter-you-dare-not-open", "an-unreadable-letter"]},
+  {"id": "watch", "slug": "montre", "name": "Montre", "scenes": ["a-stopped-watch", "not-being-able-to-read-the-time", "checking-your-watch-again-and-again"]},
+  {"id": "ring", "slug": "bague", "name": "Bague", "scenes": ["perdue", "fiancailles", "serree"]},
+  {"id": "passport", "slug": "passeport", "name": "Passeport", "scenes": ["losing-your-passport", "an-expired-passport", "being-turned-away-at-the-border"]},
+  {"id": "suitcase", "slug": "valise", "name": "Valise", "scenes": ["packing-a-suitcase", "a-heavy-suitcase", "lost-luggage"]},
+  {"id": "airport", "slug": "aeroport", "name": "Aéroport", "scenes": ["missing-a-flight", "not-finding-your-gate", "losing-your-passport-or-ticket"]},
+  {"id": "bicycle", "slug": "velo", "name": "Vélo", "scenes": ["riding-a-bicycle-with-ease", "falling-off-a-bike", "pedaling-uphill"]},
+  {"id": "bus", "slug": "bus", "name": "Bus", "scenes": ["missing-the-bus", "taking-the-wrong-bus", "not-knowing-where-to-get-off"]},
+  {"id": "road", "slug": "route", "name": "Route", "scenes": ["a-long-or-endless-road", "a-fork-in-the-road", "a-blocked-or-broken-road"]},
+  {"id": "workplace", "slug": "lieu-de-travail", "name": "Lieu de travail", "scenes": ["your-real-workplace", "an-old-job", "being-late-or-unprepared-at-work"]},
+  {"id": "kitchen", "slug": "cuisine", "name": "Cuisine", "scenes": ["cooking-a-meal", "a-messy-or-dirty-kitchen", "your-childhood-kitchen"]},
+  {"id": "bedroom", "slug": "chambre", "name": "Chambre", "scenes": ["your-childhood-bedroom", "an-unfamiliar-bedroom", "someone-comes-into-your-bedroom"]},
+  {"id": "bathroom", "slug": "salle-de-bain", "name": "Salle de bain", "scenes": ["can-t-find-a-toilet", "a-toilet-with-no-door-or-walls", "someone-walks-in"]},
+  {"id": "classroom", "slug": "salle-de-classe", "name": "Salle de classe", "scenes": ["called-to-the-board", "being-the-teacher", "your-old-classroom"]},
+  {"id": "grandfather", "slug": "grand-pere", "name": "Grand-père", "scenes": ["talking-with-your-grandfather", "a-deceased-grandfather", "a-sick-or-ageing-grandfather"]},
+  {"id": "funeral", "slug": "enterrement", "name": "Enterrement", "scenes": ["your-own-funeral", "the-funeral-of-someone-who-is-alive", "the-funeral-of-someone-who-has-died"]},
+  {"id": "birth", "slug": "naissance", "name": "Naissance", "scenes": ["giving-birth", "watching-someone-else-give-birth", "a-difficult-or-painful-birth"]},
+  {"id": "grandmother", "slug": "grand-mere", "name": "Grand-mère", "scenes": ["talking-with-your-grandmother", "a-grandmother-who-has-died", "your-grandmother-s-house"]},
+  {"id": "coworker", "slug": "collegue", "name": "Collègue", "scenes": ["working-with-a-coworker", "arguing-with-a-coworker", "a-coworker-taking-credit-for-your-work"]},
+  {"id": "doctor", "slug": "medecin", "name": "Médecin", "scenes": ["being-examined-by-a-doctor", "getting-bad-news-from-a-doctor", "a-doctor-who-does-not-listen"]},
+  {"id": "police", "slug": "police", "name": "Police", "scenes": ["calling-the-police-for-help", "being-chased-by-the-police", "being-stopped-or-questioned"]},
+  {"id": "teacher", "slug": "professeur", "name": "Professeur", "scenes": ["a-former-teacher", "being-scolded-by-a-teacher", "being-asked-a-question-you-cannot-answe"]},
+  {"id": "stranger", "slug": "inconnu", "name": "Inconnu", "scenes": ["being-followed-by-a-stranger", "a-stranger-in-your-house", "a-kind-or-helpful-stranger"]},
+  {"id": "friend", "slug": "ami", "name": "Ami", "scenes": ["spending-time-with-a-close-friend", "an-old-friend-you-no-longer-see", "fighting-with-a-friend"]},
+  {"id": "partner", "slug": "partenaire", "name": "Partenaire", "scenes": ["an-ordinary-moment-with-your-partner", "your-partner-cheating-on-you", "your-partner-leaving-you"]},
+  {"id": "sibling", "slug": "frere-ou-soeur", "name": "Frère ou sœur", "scenes": ["playing-or-laughing-with-your-sibling", "fighting-with-your-brother-or-sister", "your-sibling-as-a-child"]},
+  {"id": "father", "slug": "pere", "name": "Père", "scenes": ["your-father-as-he-is-today", "a-younger-father-or-a-childhood-scene", "an-angry-or-disappointed-father"]},
+  {"id": "mother", "slug": "mere", "name": "Mère", "scenes": ["your-mother-as-she-is-today", "your-mother-younger-or-in-your-childhoo", "arguing-with-your-mother"]},
+  {"id": "apocalypse", "slug": "apocalypse", "name": "Apocalypse", "scenes": ["a-natural-disaster-ending-the-world", "nuclear-war-or-a-huge-explosion", "a-zombie-apocalypse"]},
+  {"id": "arguing", "slug": "dispute", "name": "Dispute", "scenes": ["arguing-with-your-partner", "arguing-with-a-parent-or-with-your-chil", "arguing-with-a-friend"]},
+  {"id": "angel", "slug": "ange", "name": "Ange", "scenes": ["an-angel-speaking-to-you", "a-guardian-angel-protecting-you", "becoming-an-angel"]},
+  {"id": "accident", "slug": "accident", "name": "Accident", "scenes": ["car-accident-while-driving", "witnessing-an-accident", "a-plane-crash"]},
+  {"id": "abandonment", "slug": "abandon", "name": "Abandon", "scenes": ["a-partner-leaving-you", "being-left-behind-by-a-group", "a-parent-who-does-not-come-back"]},
   {"id": "crying", "slug": "pleurer", "name": "Pleurer", "scenes": ["crying-from-sadness-or-grief", "tears-of-joy-or-relief", "crying-in-front-of-others"]},
   {"id": "cliff", "slug": "falaise", "name": "Falaise", "scenes": ["standing-at-the-edge", "falling-off-a-cliff", "jumping-on-purpose"]},
   {"id": "lost", "slug": "perdu", "name": "Être Perdu", "scenes": ["lost-in-a-city", "can-t-find-your-way-home", "lost-in-a-building-or-a-maze"]},

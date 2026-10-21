@@ -1,0 +1,1189 @@
+{
+  "schema": "noctalia.symbol-artwork-qa/1",
+  "date": "2026-10-22",
+  "lot": "lot-14",
+  "scope": {
+    "requestedPacks": 10,
+    "rolesPerPack": 8,
+    "totalRoles": 80,
+    "freshNativePngs": 70,
+    "retainedPaintedCovers": 10,
+    "symbols": [
+      "witch",
+      "clown",
+      "gun",
+      "knife",
+      "wallet",
+      "doll",
+      "gold",
+      "coffin",
+      "sky",
+      "god"
+    ],
+    "languages": [
+      "fr",
+      "en",
+      "es",
+      "de",
+      "it",
+      "pt-br"
+    ]
+  },
+  "generation": {
+    "tool": "OpenAI image_gen built-in",
+    "selection": "Agent-selected; not owner visual approval",
+    "upscaling": false,
+    "preservation": "Native PNGs, exact submitted prompts, own-symbol references and provenance retained. Replaced candidates remain local. Satisfactory existing covers reused byte-for-byte; the old flat wasp placeholder is replaced where requested. Original retained-cover prompts unavailable.",
+    "sourceArchive": {
+      "folder": "https://drive.google.com/drive/folders/1Ye1CGz0N6mZfyeyaIziRv6jiPd8u4DwI",
+      "archives": [
+        {
+          "id": "gold",
+          "fileName": "noctalia-lot-14-gold-sources.zip",
+          "bytes": 13825239,
+          "sha256": "e6b4939e45321cdadd521def4318681ea2e96b87673c6caab65daba53249f2d1",
+          "packSha256": "009991c9e1459203e1e188c9a97dee9480615d8605fbbf24ab3a1c9384bdb902",
+          "fileId": "14wnegANHndI5r8helrRQV2DIGGYLewY1",
+          "url": "https://drive.google.com/file/d/14wnegANHndI5r8helrRQV2DIGGYLewY1/view?usp=drivesdk",
+          "metadataVerified": true,
+          "private": true
+        },
+        {
+          "id": "doll",
+          "fileName": "noctalia-lot-14-doll-sources.zip",
+          "bytes": 14275179,
+          "sha256": "3f453041bccde9fca2084ca94102619975a397ffd12a2111cb638a49bdb6c222",
+          "packSha256": "f97b70e9f8939fdcd3f0c8c7d102333c0271bc73dfe3f403ebb616b962ab775b",
+          "fileId": "16TE0vv76g56lFm4USb1FE71GhGGuIOEE",
+          "url": "https://drive.google.com/file/d/16TE0vv76g56lFm4USb1FE71GhGGuIOEE/view?usp=drivesdk",
+          "metadataVerified": true,
+          "private": true
+        },
+        {
+          "id": "clown",
+          "fileName": "noctalia-lot-14-clown-sources.zip",
+          "bytes": 13063850,
+          "sha256": "69c856b46cbaf3a6fb93f8dfa406a7f21c95c4c281f2de38a9b17b49861abb1a",
+          "packSha256": "a4cd789e0da3dcc7ae36ebb84153268656e43a63831f3b0763a93a8aaf1eb930",
+          "fileId": "1Eg3-fbzilqM8Z6U81ANxkFbyBiAUTFRp",
+          "url": "https://drive.google.com/file/d/1Eg3-fbzilqM8Z6U81ANxkFbyBiAUTFRp/view?usp=drivesdk",
+          "metadataVerified": true,
+          "private": true
+        },
+        {
+          "id": "gun",
+          "fileName": "noctalia-lot-14-gun-sources.zip",
+          "bytes": 12233177,
+          "sha256": "705510387e8a837ee55d7ca6cf124d38268f167929751efbdd2dfbcb0d355a6d",
+          "packSha256": "19bf6b34dd36979a8e64ca0106c1399d8e92763870c10204fd7ceee9d46b1865",
+          "fileId": "1T5zSXzw7VdF73eu9n0Y95gSz28kdB9jZ",
+          "url": "https://drive.google.com/file/d/1T5zSXzw7VdF73eu9n0Y95gSz28kdB9jZ/view?usp=drivesdk",
+          "metadataVerified": true,
+          "private": true
+        },
+        {
+          "id": "knife",
+          "fileName": "noctalia-lot-14-knife-sources.zip",
+          "bytes": 12320665,
+          "sha256": "95ef86ce340b9db02fbc89ee75082c014973a2517cd283868d5c5d4015377543",
+          "packSha256": "59a26b6fae205cf8aacf4a69b81cfffbfdf9363e11aadf53ed823cb9a8c21135",
+          "fileId": "1R23J-YUrZmbJlyfgh8AWIA12_jiarzA1",
+          "url": "https://drive.google.com/file/d/1R23J-YUrZmbJlyfgh8AWIA12_jiarzA1/view?usp=drivesdk",
+          "metadataVerified": true,
+          "private": true
+        },
+        {
+          "id": "wallet",
+          "fileName": "noctalia-lot-14-wallet-sources.zip",
+          "bytes": 15228007,
+          "sha256": "4e62d9bcf22aafc23cc7aa42d9b18d25182e61d5bbaed5e1fa0379dd846cde19",
+          "packSha256": "bd2b318a131c61a7942cf8461746b5bb126762ebfe5f32bc3dae87f3ab3b8a3a",
+          "fileId": "1BMsGhCQmDKkWtqlg5NZkK6WpHQ0HQl3H",
+          "url": "https://drive.google.com/file/d/1BMsGhCQmDKkWtqlg5NZkK6WpHQ0HQl3H/view?usp=drivesdk",
+          "metadataVerified": true,
+          "private": true
+        },
+        {
+          "id": "witch",
+          "fileName": "noctalia-lot-14-witch-sources.zip",
+          "bytes": 14956295,
+          "sha256": "d2a8530a2d852b9d0659bb31bb482aedc5951b4f352ee907363d91993ac3641d",
+          "packSha256": "93ad42af2c0455da22448c73f63042fa9b8dec02cb25e2149743586605f6860d",
+          "fileId": "19ILyv0hz7xNMm93or_D7ynKFfof7L6hC",
+          "url": "https://drive.google.com/file/d/19ILyv0hz7xNMm93or_D7ynKFfof7L6hC/view?usp=drivesdk",
+          "metadataVerified": true,
+          "private": true
+        },
+        {
+          "id": "sky",
+          "fileName": "noctalia-lot-14-sky-sources.zip",
+          "bytes": 14501001,
+          "sha256": "d46acf0157d4fe58512dd26b117b501b2a76f57075c5f78198c5096ee5a306c6",
+          "packSha256": "cbeb26e2f3cd9aa398688de12915400098af4e8d9151eae7f6174af3be96b384",
+          "fileId": "1fLGdBkC6XkMabeemRqcoEPoKoTDbHzRu",
+          "url": "https://drive.google.com/file/d/1fLGdBkC6XkMabeemRqcoEPoKoTDbHzRu/view?usp=drivesdk",
+          "metadataVerified": true,
+          "private": true
+        },
+        {
+          "id": "god",
+          "fileName": "noctalia-lot-14-god-sources.zip",
+          "bytes": 15098734,
+          "sha256": "f878676355daf13c1efd9ceb9a18e7af77a3c4818c705484cc58c68d0ac39e8f",
+          "packSha256": "55784575e58dd6ef19f08b33897b1de710601251b7936e808ab8c4229934c738",
+          "fileId": "1rxli3EEnFiy70HgcW1kVIZ9NQYfXzvUB",
+          "url": "https://drive.google.com/file/d/1rxli3EEnFiy70HgcW1kVIZ9NQYfXzvUB/view?usp=drivesdk",
+          "metadataVerified": true,
+          "private": true
+        },
+        {
+          "id": "coffin",
+          "fileName": "noctalia-lot-14-coffin-sources.zip",
+          "bytes": 13130187,
+          "sha256": "b8a7dcaebcd4613ba9467e8a57f0723c0587269e3d3f0086e4f2cc2c1788a772",
+          "packSha256": "f840aa3fe72969e99430b10a0838fcb29793a4a20b98643cb6d655143a1c7e5c",
+          "fileId": "1R4froKtuyriiq3fou8FqFLHkHQTCTDWf",
+          "url": "https://drive.google.com/file/d/1R4froKtuyriiq3fou8FqFLHkHQTCTDWf/view?usp=drivesdk",
+          "metadataVerified": true,
+          "private": true
+        }
+      ],
+      "totalBytes": 138632334,
+      "verification": "Local SHA256, successful upload and Drive ID/size/parent/private metadata readback; no remote content digest or second download claimed."
+    }
+  },
+  "integration": {
+    "importer": "scripts/atlas-pack.mjs",
+    "profiles": "docs-src/config/symbol-atlas-pilots.json",
+    "locales": "docs-src/config/symbol-atlas-locales.json",
+    "sharedEngine": true,
+    "paintingsAnimate": false,
+    "effectsPerSurface": 2,
+    "derivedFiles": 380,
+    "languagesShareImages": true,
+    "masterIntegrated": "a51fd4fad506490fd0ca04e18ff1a1bcf6056901",
+    "editorialCompletion": {
+      "existingInterpretationsPreserved": true,
+      "sceneMapping": "Three selected existing variants; language indices resolved individually and independently reviewed."
+    }
+  },
+  "verification": {
+    "revision": "3eadba5f121c1017c032929534d269c330aa5abb",
+    "sourceClean": true,
+    "environment": "Local Chromium, generated static site",
+    "command": [
+      "node",
+      "tools/e2e/run.mjs",
+      "site",
+      "web",
+      "run",
+      "--grep",
+      "new symbol packs: (witch|clown|gun|knife|wallet|doll|gold|coffin|sky|god) renders",
+      "--no-cache"
+    ],
+    "runner": "0.21.2",
+    "engine": "0.15.2",
+    "summary": {
+      "discovered": 266,
+      "selected": 10,
+      "executed": 10,
+      "passed": 10,
+      "failed": 0,
+      "interrupted": 0,
+      "flaky": 0,
+      "skipped": 0
+    },
+    "excludedTests": 256,
+    "artifact": "tools/e2e/.e2e/site-web/1792622632638-424-b316c888-73d0-442f-afed-8664f91fc696",
+    "receipt": "1792622632638-424-b316c888-73d0-442f-afed-8664f91fc696.receipt.json",
+    "receiptSha256": "1c37973071016ceb2d21391ca21343fa5e73addc1324674ccdef8b59005d41fe",
+    "viewports": [
+      [
+        2560,
+        1440
+      ],
+      [
+        390,
+        844
+      ]
+    ],
+    "assertions": [
+      "Six languages: dedicated landscape and portrait decode, localized title, three scenes and no horizontal overflow at both sizes.",
+      "French: all three scene selections match their published content; direct mobile anchors remain usable.",
+      "French: two independently changing effects on hero, plate and three scenes, preserved ratios, stable painting and reduced motion.",
+      "Mobile uses its dedicated portrait without downloading the hidden plate."
+    ],
+    "visualReview": {
+      "run": "1792622632638-424-b316c888-73d0-442f-afed-8664f91fc696",
+      "screenshotsInspected": 50,
+      "galleriesInspected": 2,
+      "ownerApproval": false,
+      "reviewer": "Codex",
+      "findings": [],
+      "checks": [
+        "Desktop hero, plate, scenes and mobile portrait/scenes inspected.",
+        "Transparent organic plate edges, restrained independent effects, complete subjects, readable titles and preserved thumbnail ratios."
+      ],
+      "date": "2026-10-21T22:45:23.109242+00:00"
+    },
+    "build": "passed",
+    "docsCheck": "passed"
+  },
+  "limits": [
+    "Filtered batch browser selection, not a full release campaign.",
+    "No native app, physical device, FPS, owner visual approval, merge or new production publication claimed.",
+    "Earlier QA and publication receipts retained with their original identities; current status derived by the canonical report."
+  ],
+  "packs": [
+    {
+      "id": "clown",
+      "packSha256": "a4cd789e0da3dcc7ae36ebb84153268656e43a63831f3b0763a93a8aaf1eb930",
+      "derivedFiles": 38,
+      "native": {
+        "hero": {
+          "sha256": "6f20e10f77614f75ebc8f5cee261e2d92c442bcb8d4007ff69502bf760e8ad96",
+          "format": "webp",
+          "width": 1600,
+          "height": 900,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "94eee9b8e63db4bbe361fda0d412ead5a2b8befca6419faddf77614e2fa6d131",
+          "format": "png",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "34f5a1194e3ba3586e8bbda7cecc7549e506a04fe601b3e79e373912d89804fb",
+          "format": "png",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.545816,
+            "translucent": 0.453824
+          }
+        },
+        "scene-a-scary-or-evil-clown": {
+          "sha256": "3090570efd7d8603db35c12423388399d82726f1f4e0c29396c7c26b5836631c",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-a-sad-or-crying-clown": {
+          "sha256": "b6d13aed8cfc02488bce6e81bfec712f59ae48d4660db03abfa94c810483b940",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-a-clown-at-a-party-or-a-circus": {
+          "sha256": "881e87e7060df862cdbbe207a28ddb82b2e9020f90adc87518d33eddc1705fbc",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "4105a38069e3dccc37415472afe7f27ea89bf68d09bdaae907519ed9a71e83ae",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.692945,
+            "translucent": 0.307055
+          }
+        },
+        "accent": {
+          "sha256": "3f459841e5c6bf907db7dacb988dea438a221c952559ae9f55e2b53fbf7dad7d",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.543504,
+            "translucent": 0.456496
+          }
+        }
+      }
+    },
+    {
+      "id": "coffin",
+      "packSha256": "f840aa3fe72969e99430b10a0838fcb29793a4a20b98643cb6d655143a1c7e5c",
+      "derivedFiles": 38,
+      "native": {
+        "hero": {
+          "sha256": "923a302166e00feccc0102c6045f532a75db7bdc2a0388457f4fee3931a3a793",
+          "format": "webp",
+          "width": 1600,
+          "height": 900,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "7a096340c8ae829d22373235133cb48c7449a2b409a4743fe9443e8f2a6c955d",
+          "format": "png",
+          "width": 968,
+          "height": 1625,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "42a155dba8d93316140155ed4936c672b84a4f15f4f38d580ba047d547755913",
+          "format": "png",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.423151,
+            "translucent": 0.576545
+          }
+        },
+        "scene-a-closed-coffin": {
+          "sha256": "9e3b83e4864311375af91f0394be27f220d4324dc6ff8ffd647d63e0c1989981",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-lying-in-a-coffin-yourself": {
+          "sha256": "af5224d884d3d212bda218559f02222be0586409efd37323e7b5dfdbc06bbb20",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-an-empty-coffin": {
+          "sha256": "0c60574f9a3031e03cf440423147f42bc062977785dfce9718e9a6b5c5f5a5e5",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "0840b6b357f63280a847f9020812fa2943315b86324c46ba4427d6fb6f0cca8d",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.91482,
+            "translucent": 0.08518
+          }
+        },
+        "accent": {
+          "sha256": "85a73c5f24e7af0c5f0c777c822674467517fbe01aaa1e71eb18250497cc3e63",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.579675,
+            "translucent": 0.420325
+          }
+        }
+      }
+    },
+    {
+      "id": "doll",
+      "packSha256": "f97b70e9f8939fdcd3f0c8c7d102333c0271bc73dfe3f403ebb616b962ab775b",
+      "derivedFiles": 38,
+      "native": {
+        "hero": {
+          "sha256": "7d91e6269d1e707962af35adac87bfb1716cc22d2bfebb5f073edbeebc237b72",
+          "format": "webp",
+          "width": 1600,
+          "height": 900,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "122836370d895cf00595c84dabbc141b5c80eaf1abec701c7e86577f2aa71067",
+          "format": "png",
+          "width": 968,
+          "height": 1625,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "454595d60c01771172dbfc309e392a068a9549cd062bea64f063d2ea85962b65",
+          "format": "png",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.491479,
+            "translucent": 0.508433
+          }
+        },
+        "scene-a-doll-from-your-childhood": {
+          "sha256": "25a694a88209ab98b9728e20726ef550862621eceeb2f9211c8546fdc599b7d2",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-a-doll-that-moves-talks-or-comes-alive": {
+          "sha256": "8575333bcc55d33961bd3708d520194aad33d7f2f7658e0a90910384250ebe03",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-a-broken-or-damaged-doll": {
+          "sha256": "5fda38369c95a4decc1fea2a50ac5c3a5c67a4a0b1e5cf3616d81215e068b533",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "007b888053bea027938964a3b961365e52a16785df86e7a63f7a82969361b898",
+          "format": "png",
+          "width": 1602,
+          "height": 981,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.720615,
+            "translucent": 0.279385
+          }
+        },
+        "accent": {
+          "sha256": "79ef56f67bc05a73d492722b9ef4a062c2d572101a1cce798e37777bb88ed382",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.677437,
+            "translucent": 0.322553
+          }
+        }
+      }
+    },
+    {
+      "id": "god",
+      "packSha256": "55784575e58dd6ef19f08b33897b1de710601251b7936e808ab8c4229934c738",
+      "derivedFiles": 38,
+      "native": {
+        "hero": {
+          "sha256": "60007464ce71267d6afe67ed13e06db016de572438f3f20b414076ae448f76bd",
+          "format": "webp",
+          "width": 1600,
+          "height": 900,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "a128e261df80042c7d054d7fc4b1721e7dbe12f232c15c827238c3929d011d45",
+          "format": "png",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "34864dfe516ba223b39fdbcb0fe068e5f3d4a4939b20ca20a2cc023ec09b9460",
+          "format": "png",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.400784,
+            "translucent": 0.599189
+          }
+        },
+        "scene-hearing-god-s-voice": {
+          "sha256": "36a6ea3f0abb1711d37b8e34dc746f9d17f8a692edce83aca7564f67606496f0",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-seeing-god-as-a-light-or-a-figure": {
+          "sha256": "0a84cd439b16430ebc84cb8351896384b476aaae9cfa26f3c6c0858ae825f6ac",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-praying-to-god": {
+          "sha256": "69cc558e00a8a8e26678a02436dc6d8e595348edef2a3bc20fb8a90c6f00c2cb",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "fab9a208f8789767c9dd4457a4e9cb45a704c4164bd6da4df28a84f8f62e4cdf",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.752176,
+            "translucent": 0.247824
+          }
+        },
+        "accent": {
+          "sha256": "62c8acefc91b985e390f757dc9e301f565520a85e05bdd2444bc383ab4e12100",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.479951,
+            "translucent": 0.520049
+          }
+        }
+      }
+    },
+    {
+      "id": "gold",
+      "packSha256": "009991c9e1459203e1e188c9a97dee9480615d8605fbbf24ab3a1c9384bdb902",
+      "derivedFiles": 38,
+      "native": {
+        "hero": {
+          "sha256": "5ef0244b7f4d81f3138c0e2fe4d81ec27265616071bf1038b01d54800afe17de",
+          "format": "webp",
+          "width": 1600,
+          "height": 900,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "7ed2aa142726d133fce15395c1f0f2a4fd7f5ef31a1290c6103413a2fec9b46e",
+          "format": "png",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "1137415eaf64350ad60ac43ff00a13311f5b5c9d3532313778971722f300711d",
+          "format": "png",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.537897,
+            "translucent": 0.461977
+          }
+        },
+        "scene-finding-gold-or-a-treasure": {
+          "sha256": "0de9154fe580abb452537ed192787a42643373b6e73650c0b1d64d6b487d6180",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-receiving-gold-jewelry": {
+          "sha256": "6d83b2962923da66ba249e89cea2c8a93f20a646654734e4cbdd382862c2d3f6",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-gold-coins": {
+          "sha256": "8dbd95932645b188c7a14f46a0b12503d1da7b0083aee49d83b5e9634c72e2cd",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "1d8e6c50d3644cf10d506b0417b3120edb8847f71e61d47bf5339e1595c32c22",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.759346,
+            "translucent": 0.240654
+          }
+        },
+        "accent": {
+          "sha256": "f5e501b05863e97e89458a3bdd218b81df175782a022c42d055d78ee50bde43b",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.690974,
+            "translucent": 0.309026
+          }
+        }
+      }
+    },
+    {
+      "id": "gun",
+      "packSha256": "19bf6b34dd36979a8e64ca0106c1399d8e92763870c10204fd7ceee9d46b1865",
+      "derivedFiles": 38,
+      "native": {
+        "hero": {
+          "sha256": "a54cd0abf05b9168aaf5986030ad1824fbc856c27d9e4ba9ea53def671460f2a",
+          "format": "webp",
+          "width": 1600,
+          "height": 900,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "5167d4f2072107a726fcb4b170d32335ede5188d6060e89fc7cd38345c4fa100",
+          "format": "png",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "a9b37718dcb20c9412fdf1874a5b8374ee185bdc5d79cc16f5e527b8ae4fa477",
+          "format": "png",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.500484,
+            "translucent": 0.499318
+          }
+        },
+        "scene-a-gun-that-jams-or-won-t-fire": {
+          "sha256": "037cd338639eb03233bbc224a2141a606886c6409ed60903ba716846e9cf7212",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-finding-or-carrying-a-gun": {
+          "sha256": "5c744e7b7d3f80f81d526ec0201a6f03ab401e57e4803960d48916338ad2d600",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-gunshots-in-the-distance": {
+          "sha256": "60c5acb2d689834aa92a9cec99e761938ebcdbd8b06c611680942da2a702e87d",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "de285803339039736954312adaf17711bb7c72ebc74ef60498b2f3caee99b5d5",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.975753,
+            "translucent": 0.024244
+          }
+        },
+        "accent": {
+          "sha256": "82fe49bf5d07d18f0ae7019c2ea4d6338a83abcd4a692df533cdc64e83f00dfa",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.521353,
+            "translucent": 0.478647
+          }
+        }
+      }
+    },
+    {
+      "id": "knife",
+      "packSha256": "59a26b6fae205cf8aacf4a69b81cfffbfdf9363e11aadf53ed823cb9a8c21135",
+      "derivedFiles": 38,
+      "native": {
+        "hero": {
+          "sha256": "c86450dd8eb48c39c83a83360225f8bd7c7e8a4e43299438c25218218708ae54",
+          "format": "webp",
+          "width": 1600,
+          "height": 900,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "5abab65d4742917f6f157653d625ef909ac77c2a8e2b23ee7dd2ea387a941954",
+          "format": "png",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "6f443686e261b3a53498c67b7da4decf27e23a828b5378068a7a00d711d26425",
+          "format": "png",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.478978,
+            "translucent": 0.520807
+          }
+        },
+        "scene-being-threatened-or-chased-with-a-knife": {
+          "sha256": "39937ae209dd04bf4fa6b33d3012537f45020f96791b1643c50abb2d5942669b",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-holding-a-knife-or-stabbing-someone": {
+          "sha256": "197d23372d0e677645edfa077fcd9756390e3d2ecea3ae06440bc6cfe5713e13",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-a-knife-in-the-kitchen-or-on-the-table": {
+          "sha256": "33e930bf5b1d3b50aa673c9f92e6a779fe6fc40e32e2547b5f37fb626d579895",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "5e65efb1a05800fa9f67e0fa84840caae9e8e319a719f1c5cfb56d2d9334c895",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.927744,
+            "translucent": 0.072256
+          }
+        },
+        "accent": {
+          "sha256": "2d11f4771ec2755294dda53db3eab40cea5408b427b0934b9eb528f844c6ab72",
+          "format": "png",
+          "width": 1672,
+          "height": 940,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.728101,
+            "translucent": 0.271898
+          }
+        }
+      }
+    },
+    {
+      "id": "sky",
+      "packSha256": "cbeb26e2f3cd9aa398688de12915400098af4e8d9151eae7f6174af3be96b384",
+      "derivedFiles": 38,
+      "native": {
+        "hero": {
+          "sha256": "7c05b85224cd2275b5fd13e138adb9ed5824fede9ff11f986f876278ba24dd9a",
+          "format": "webp",
+          "width": 1600,
+          "height": 900,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "c5f8f532125bba2747b7b83c90dc667c29008db05dca0e227eb450b7aa050017",
+          "format": "png",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "e82403b3e42dcacb93eafabe2fa45887dbeb93d12e41ab54a64f2163a849f8ff",
+          "format": "png",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.443974,
+            "translucent": 0.555965
+          }
+        },
+        "scene-a-clear-blue-sky": {
+          "sha256": "63fb9cbfd54e774bf454702bf9a4359cfb4c93724a6a5f82956c8eb97f41c9e6",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-a-dark-or-stormy-sky": {
+          "sha256": "8165df2d2306539f2eff269844b141b23f565fef9980fcc81b565c8e96e02a13",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-strange-lights-or-objects-in-the-sky": {
+          "sha256": "e88b8d405290c8417bdc210b8093d51be25b0e9a8878e0e4f302f47adf4bda43",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "cf8a82dc3791b0c7b2e6ad139f8f17f7475709be7113e38517d1bb5618008c4b",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.688845,
+            "translucent": 0.311155
+          }
+        },
+        "accent": {
+          "sha256": "43902984dd9728cb4a753c8c5054697e9235fb767eb24d67363a4948a072d93d",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.814746,
+            "translucent": 0.185254
+          }
+        }
+      }
+    },
+    {
+      "id": "wallet",
+      "packSha256": "bd2b318a131c61a7942cf8461746b5bb126762ebfe5f32bc3dae87f3ab3b8a3a",
+      "derivedFiles": 38,
+      "native": {
+        "hero": {
+          "sha256": "b2aead24f350e04637702954e7e5c53b37b9d6b92b63bb94a5ff74bb93fb183c",
+          "format": "webp",
+          "width": 1600,
+          "height": 900,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "f5bf115e3e91e888fce3dd3739cd418a7f3982f12b2cb186cbe12678e1c52438",
+          "format": "png",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "e31c59591c71b9b92a4e7bb9fe08b2f6d64c8ec9cdf7f4a06fd33226b8ae794b",
+          "format": "png",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.465212,
+            "translucent": 0.534623
+          }
+        },
+        "scene-losing-your-wallet": {
+          "sha256": "406b139dae853bcb156ded8f34746fb52e53ec57b3d7758986c570951baee63e",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-finding-a-wallet": {
+          "sha256": "fccbd9ffb60b249fac1ce7556aa72b033742bc7eeaf44b48743ec7e8c4f1e6dd",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-an-empty-wallet": {
+          "sha256": "12aca692ac6cbde7b5f29dc34cebc2b7e27334ca397cfdec3dc028c7f2967911",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "ceead0b327b5aa910974bf67ef5bf3f2f3837d82afe64e0dd1f13d489eaad476",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.696809,
+            "translucent": 0.303191
+          }
+        },
+        "accent": {
+          "sha256": "3a7049383140c7730675ca39168e4508d39dd5e3f11537f0bd5e75e08ea08970",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.658554,
+            "translucent": 0.341446
+          }
+        }
+      }
+    },
+    {
+      "id": "witch",
+      "packSha256": "93ad42af2c0455da22448c73f63042fa9b8dec02cb25e2149743586605f6860d",
+      "derivedFiles": 38,
+      "native": {
+        "hero": {
+          "sha256": "41835fa610f5fae6f423f871d017d5e3cddc5d63b7c3af1e6e780f4aad65a898",
+          "format": "webp",
+          "width": 1600,
+          "height": 900,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "b2af13fc0a45952cec489a7523b6d73631b171c79e006967b5a4768f499c9bd3",
+          "format": "png",
+          "width": 959,
+          "height": 1639,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "7b74ffb98f968b33faea29f22b19815bb0233efaafb3847632a0e51adc9cb88e",
+          "format": "png",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.40764,
+            "translucent": 0.592244
+          }
+        },
+        "scene-a-witch-casting-a-spell-on-you": {
+          "sha256": "0f544753281f2ac445791c3fc98dfb2da3ef393e43a3de40894b5cb39098d8da",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-a-kind-witch-or-a-healer": {
+          "sha256": "bd80db4530b56f6d31ccd3055c077df41026ceb9cdf0e3c77a466234cdbe743d",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-a-witch-s-house-cauldron-or-potion": {
+          "sha256": "49bedf5dd037312ea70df5aea34bc167366af217277b18fda904908e3d1070a5",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "b74304543a453d4e56239531923643bd77d9d8a9dea44eb37524af68d79b505a",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.773517,
+            "translucent": 0.226483
+          }
+        },
+        "accent": {
+          "sha256": "189e7371ac6c5879b792e18abf50306f469a2a12bba1d5beab1a6922bf6e5e16",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.537121,
+            "translucent": 0.462879
+          }
+        }
+      }
+    }
+  ]
+}

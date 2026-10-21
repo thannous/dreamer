@@ -1316,7 +1316,8 @@ function atlasCss(sceneIds) {
             transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.16s ease-out;
         }
         .atlas-scene:active { transform: scale(0.99); }
-        .atlas-scene-thumb, .atlas-scene-thumb img { display: block; width: 100%; height: 100%; }
+        /* Preserve the landscape painting and its effects when a scene label wraps. */
+        .atlas-scene-thumb, .atlas-scene-thumb img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; }
         .atlas-scene-thumb img { aspect-ratio: 16 / 9; object-fit: cover; }
         .atlas-scene-text { display: grid; gap: 0.2rem; padding: 0.75rem 0; min-width: 0; }
         .atlas-scene-label { font-family: 'Fraunces', ui-serif, Georgia, serif; font-size: 1.1rem; color: var(--cream); }

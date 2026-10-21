@@ -181,6 +181,23 @@
         "hour_start",
         "created_count"
       ]
+    },
+    {
+      "schema": "public",
+      "name": "moon_letters",
+      "requiredColumns": [
+        "user_id",
+        "full_moon_at",
+        "status",
+        "lang",
+        "opening",
+        "body",
+        "dream_count",
+        "dreams_from",
+        "dreams_until",
+        "created_at",
+        "updated_at"
+      ]
     }
   ],
   "requiredFunctions": [
@@ -303,6 +320,12 @@
       "name": "guard_dream_size_and_rate",
       "identityArguments": "",
       "result": "trigger"
+    },
+    {
+      "schema": "public",
+      "name": "delete_moon_letters_of_deleted_dream",
+      "identityArguments": "",
+      "result": "trigger"
     }
   ],
   "requiredTriggers": [
@@ -381,6 +404,17 @@
       "definitionIncludes": [
         "AFTER INSERT",
         "EXECUTE FUNCTION public.guard_dream_size_and_rate()"
+      ]
+    },
+    {
+      "schema": "public",
+      "table": "dreams",
+      "name": "trg_delete_moon_letters_of_deleted_dream",
+      "functionSchema": "public",
+      "functionName": "delete_moon_letters_of_deleted_dream",
+      "definitionIncludes": [
+        "AFTER DELETE",
+        "EXECUTE FUNCTION public.delete_moon_letters_of_deleted_dream()"
       ]
     },
     {

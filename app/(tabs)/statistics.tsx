@@ -21,6 +21,7 @@ import { getFreeAnalysesNudge } from '@/components/quota/FreeAnalysesNudge';
 import { PeriodSeal, PERIOD_SEAL_SIZE } from '@/components/trends/PeriodSeal';
 import { TrendsConstellations } from '@/components/trends/TrendsConstellations';
 import { TrendsFigures } from '@/components/trends/TrendsFigures';
+import { TrendsMoonLetters } from '@/components/trends/TrendsMoonLetters';
 import { TrendsNights } from '@/components/trends/TrendsNights';
 import { TrendsPeriodSwitch } from '@/components/trends/TrendsPeriodSwitch';
 import { TrendsReturns } from '@/components/trends/TrendsReturns';
@@ -43,6 +44,7 @@ import { getDreamRouteParams } from '@/lib/dreamRoute';
 import { buildPaywallHref } from '@/lib/paywallRoute';
 import { formatQuotaResetDate, withFirstDayOrdinal } from '@/lib/quotaReset';
 import { buildDreamSky } from '@/lib/dreamSky';
+import { MOON_LETTER_ROUTE } from '@/lib/moonLetter';
 import {
   buildDreamTrends,
   DEFAULT_DREAM_TRENDS_PERIOD,
@@ -388,6 +390,13 @@ function StatisticsScreen() {
     </View>
   );
 
+  // Letters are kept with an account.
+  const moonLettersSection = user ? (
+    <View className="border-t border-line pt-7">
+      <TrendsMoonLetters t={t} chevron={noctalia.text.tertiary} onOpen={() => router.push(MOON_LETTER_ROUTE)} />
+    </View>
+  ) : null;
+
   return (
     <View className="flex-1 bg-ink" testID="screen.trends">
       <HeaderScrollView
@@ -431,6 +440,7 @@ function StatisticsScreen() {
                 {returnsSection}
                 {skySection}
                 {constellationsSection}
+                {moonLettersSection}
               </View>
               {compact ? <View testID="trends.layout.compact" /> : null}
             </View>

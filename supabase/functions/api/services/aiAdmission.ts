@@ -10,7 +10,8 @@ export type SynchronousAiCapability =
   | 'recall_question'
   | 'chat'
   | 'transcribe'
-  | 'generate_image_legacy';
+  | 'generate_image_legacy'
+  | 'moon_letter';
 
 type AdmissionActorClass = 'GUEST' | 'FREE' | 'PLUS';
 
@@ -44,6 +45,8 @@ const DEFAULTS: Record<SynchronousAiCapability, AdmissionDefaults> = {
   chat: { guest: 12, free: 30, plus: 60, global: 1000 },
   transcribe: { guest: 3, free: 10, plus: 20, global: 200 },
   generate_image_legacy: { guest: 1, free: 2, plus: 8, global: 100 },
+  // Signed-in accounts only, one letter per lunar cycle: room for a failed attempt or two.
+  moon_letter: { guest: 1, free: 2, plus: 2, global: 100 },
 };
 
 /**
@@ -61,6 +64,7 @@ export const DAILY_DEFAULTS: Partial<Record<SynchronousAiCapability, number>> = 
   analyze_dream: 20,
   analyze_dream_full: 10,
   generate_image_legacy: 10,
+  moon_letter: 4,
 };
 
 const envPrefix = (capability: SynchronousAiCapability): string =>
