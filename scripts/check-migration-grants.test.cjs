@@ -5,7 +5,10 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
-const { GRANDFATHER_CUTOFF, GRANDFATHERED, checkMigrationSql, checkMigrations } = require('./check-migration-grants.cjs');
+const {
+  GRANDFATHER_CUTOFF, GRANDFATHERED, FUNCTION_GRANDFATHER_CUTOFF, FUNCTION_GRANDFATHERED,
+  checkMigrationSql, checkFunctionSql, checkMigrations, signature,
+} = require('./check-migration-grants.cjs');
 
 const decided = (table, privileges = 'select, insert, update, delete') => `
 alter table public.${table} enable row level security;
@@ -144,16 +147,16 @@ function withMigrations(files, run) {
 test('only grandfathered historical migrations may fail, and the list stays closed', () => {
   const bad = 'create table public.legacy (id uuid);';
   withMigrations({ '20251019163753_old.sql': bad, '20261021090000_new.sql': PASSING['unquoted, qualified'] }, (dir) => {
-    assert.deepEqual(checkMigrations(dir, ['20251019163753_old.sql']), { files: 2, grandfathered: 1, failures: [], stale: [] });
-    const strict = checkMigrations(dir, []);
+    assert.deepEqual(checkMigrations(dir, { tables: ['20251019163753_old.sql'], functions: [] }), { files: 2, grandfathered: { tables: 1, functions: 0 }, failures: [], stale: [] });
+    const strict = checkMigrations(dir, { tables: [], functions: [] });
     assert.deepEqual(strict.failures.map((failure) => failure.file), ['20251019163753_old.sql']);
-    const passing = checkMigrations(dir, ['20251019163753_old.sql', '20261021090000_new.sql']);
+    const passing = checkMigrations(dir, { tables: ['20251019163753_old.sql', '20261021090000_new.sql'], functions: [] });
     assert.match(passing.stale.join('\n'), /20261021090000_new\.sql: newer than 20261020001047/);
     assert.match(passing.stale.join('\n'), /20261021090000_new\.sql: grandfathered but passes/);
-    assert.match(checkMigrations(dir, ['20251019163753_old.sql', '20250101000000_gone.sql']).stale.join('\n'), /gone\.sql: grandfathered but missing/);
+    assert.match(checkMigrations(dir, { tables: ['20251019163753_old.sql', '20250101000000_gone.sql'], functions: [] }).stale.join('\n'), /gone\.sql: grandfathered but missing/);
   });
   withMigrations({ '20261022000000_new_table.sql': bad }, (dir) => {
-    assert.deepEqual(checkMigrations(dir, []).failures.map((failure) => failure.file), ['20261022000000_new_table.sql']);
+    assert.deepEqual(checkMigrations(dir, { tables: [], functions: [] }).failures.map((failure) => failure.file), ['20261022000000_new_table.sql']);
   });
 });
 
@@ -162,8 +165,123 @@ test('the grandfathered list holds only migrations from before the rule', () => 
   for (const file of GRANDFATHERED) assert.ok(file.slice(0, 14) <= GRANDFATHER_CUTOFF, file);
 });
 
+const definer = (name = 'public.claim', args = 'p_user uuid, p_limit int default 3') => `create or replace function ${name}(${args})
+returns boolean language plpgsql security definer set search_path = ''
+as $$ begin return true; end $$;`;
+const locked = (target = 'public.claim(uuid, integer)', grantee = 'service_role') => `
+revoke execute on function ${target} from public, anon;
+grant execute on function ${target} to ${grantee};`;
+
+// Each passes the SECURITY DEFINER rule.
+const FUNCTION_PASSING = {
+  'qualified, signature with names and defaults': definer() + locked(),
+  'revoke and grant by name only cover every overload': definer() + locked('public.claim'),
+  'upper case, quoted, aliases': `CREATE FUNCTION "public"."Claim"(IN p_user UUID, p_at TIMESTAMPTZ, OUT ok BOOL)
+LANGUAGE sql SECURITY DEFINER SET search_path TO pg_catalog AS $$ select true $$;
+REVOKE ALL ON FUNCTION public."Claim"(uuid, timestamp with time zone) FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION public."Claim"(p_user uuid, p_at timestamptz) FROM anon;
+GRANT EXECUTE ON FUNCTION public."Claim"(uuid, timestamptz) TO authenticated, service_role;`,
+  'unqualified under the default search_path': definer('claim') + locked('claim(uuid, int4)'),
+  'search_path set by alter function': `create function public.claim(uuid) returns boolean language sql security definer as $$ select true $$;
+alter function public.claim(uuid) set search_path = '';${locked('public.claim(uuid)')}`,
+  'separate revokes, several functions in one grant': `${definer('public.a', 'x text')}${definer('public.b', '')}
+revoke all on function public.a(text), public.b() from public;
+revoke all on function public.a(text), public.b() from anon;
+grant execute on function public.a(text), public.b() to service_role;`,
+  'security invoker is not checked': `create function public.helper() returns int language sql security invoker as $$ select 1 $$;`,
+  'definer in another schema is not public': definer('private.claim'),
+  'unqualified under another search_path': `set search_path = private;\n${definer('claim')}`,
+  'definer only inside a function body or string': `create function public.later() returns void language plpgsql as $fn$
+begin execute 'create function public.x() returns int language sql security definer as $q$ select 1 $q$'; end $fn$;
+select 'alter function public.y() security definer';`,
+  'alter ... security definer with the full set': `alter function public.claim(uuid) security definer;
+alter function public.claim(uuid) set search_path = '';${locked('public.claim(uuid)')}`,
+  'procedure': `create procedure public.flush() language plpgsql security definer set search_path = '' as $$ begin end $$;${locked('public.flush()')}`,
+  'a function search_path attribute does not move later tables': `${definer()}${locked()}
+create table notes (id uuid);
+alter table public.notes enable row level security;
+revoke all on public.notes from anon, authenticated, service_role;`,
+};
+
+// Each fails the SECURITY DEFINER rule with the listed problems.
+const FUNCTION_FAILING = {
+  'nothing at all': [definer(), [/claim\(uuid,integer\): .*from public"/, /from anon"/, /grant execute/]],
+  'PUBLIC revoked, anon forgotten': [`${definer()}
+revoke execute on function public.claim(uuid, integer) from public;
+grant execute on function public.claim(uuid, integer) to service_role;`, [/from anon"/]],
+  'no grant to any role': [`${definer()}
+revoke all on function public.claim from public, anon;`, [/without an explicit "grant execute/]],
+  'grant to anon only': [`${definer()}
+revoke all on function public.claim from public, anon;
+grant execute on function public.claim to anon;`, [/granted back to anon/, /without an explicit "grant execute/]],
+  'no search_path': [`create function public.claim(uuid) returns boolean language sql security definer as $$ select true $$;${locked('public.claim(uuid)')}`,
+    [/without "set search_path"/]],
+  'search_path only inside the body': [`create function public.claim(uuid) returns boolean language plpgsql security definer
+as $$ begin set search_path = ''; return true; end $$;${locked('public.claim(uuid)')}`, [/without "set search_path"/]],
+  'grants name another overload': [definer() + locked('public.claim(uuid)'), [/from public"/, /from anon"/, /grant execute/]],
+  'schema-wide revoke is not a decision about the function': [`${definer()}
+revoke execute on all functions in schema public from public, anon;
+grant execute on function public.claim(uuid, integer) to service_role;`, [/from public"/, /from anon"/]],
+  'revoke grant option only': [`${definer()}
+revoke grant option for execute on function public.claim from public, anon;
+grant execute on function public.claim to service_role;`, [/from public"/, /from anon"/]],
+  'unqualified under search_path public, grants elsewhere': [`set search_path to public;
+${definer('claim')}
+set search_path = private;${locked('claim(uuid, integer)')}`, [/from public"/, /from anon"/, /grant execute/]],
+  'created inside a DO block': [`do $do$ begin
+  create function public.claim() returns int language sql security definer as $$ select 1 $$;
+end $do$;`, [/from public"/, /from anon"/, /grant execute/, /search_path/]],
+  'alter ... security definer by name only': [`alter function public.claim security definer;`,
+    [/public\.claim: .*from public"/, /from anon"/, /grant execute/, /search_path/]],
+  'quoted mixed case is another function': [`${definer('public."Claim"')}${locked('public.claim(uuid, integer)')}`, [/Claim.*from public"/, /from anon"/, /grant execute/]],
+};
+
+test('a public security definer function with revokes, a grant and a search_path passes', () => {
+  for (const [name, sql] of Object.entries(FUNCTION_PASSING)) assert.deepEqual(checkMigrationSql(sql), [], name);
+});
+
+test('a public security definer function missing a revoke, a grant or a search_path fails', () => {
+  for (const [name, [sql, expected]] of Object.entries(FUNCTION_FAILING)) {
+    const problems = checkFunctionSql(sql);
+    assert.equal(problems.length, expected.length, `${name}: ${problems.join(' | ')}`);
+    expected.forEach((pattern, index) => assert.match(problems[index], pattern, name));
+  }
+});
+
+test('signatures ignore names, modes, defaults, OUT arguments and type modifiers', () => {
+  assert.equal(signature("p_a int4, in p_b varchar(20) default 'x', out p_c text, variadic p_d text[]"), 'integer,character varying,text[]');
+  assert.equal(signature('double precision, timestamp with time zone, p numeric(10, 2)'), 'double precision,timestamp with time zone,numeric');
+  assert.equal(signature('public.dreams, "Mixed"'), 'dreams,Mixed');
+});
+
+test('each rule has its own closed grandfather list', () => {
+  const oldDefiner = definer();
+  withMigrations({ '20251019163753_old.sql': oldDefiner }, (dir) => {
+    const excused = checkMigrations(dir, { tables: [], functions: ['20251019163753_old.sql'] });
+    assert.deepEqual(excused.failures, []);
+    assert.deepEqual(excused.stale, []);
+    // A table grandfathering does not excuse the function rule.
+    const wrongList = checkMigrations(dir, { tables: ['20251019163753_old.sql'], functions: [] });
+    assert.deepEqual(wrongList.failures.map((failure) => failure.file), ['20251019163753_old.sql']);
+    assert.match(wrongList.stale.join('\n'), /GRANDFATHERED: 20251019163753_old\.sql: grandfathered but passes/);
+  });
+  withMigrations({ '20261030000000_new.sql': oldDefiner, '20251019163753_fixed.sql': oldDefiner + locked() }, (dir) => {
+    const result = checkMigrations(dir, { tables: [], functions: ['20261030000000_new.sql', '20251019163753_fixed.sql', '20250101000000_gone.sql'] });
+    const stale = result.stale.join('\n');
+    assert.match(stale, /FUNCTION_GRANDFATHERED: 20261030000000_new\.sql: newer than 20261021110000/);
+    assert.match(stale, /FUNCTION_GRANDFATHERED: 20251019163753_fixed\.sql: grandfathered but passes/);
+    assert.match(stale, /FUNCTION_GRANDFATHERED: 20250101000000_gone\.sql: grandfathered but missing/);
+    assert.deepEqual(checkMigrations(dir, { tables: [], functions: [] }).failures.map((failure) => failure.file), ['20261030000000_new.sql']);
+  });
+});
+
+test('the function grandfathered list holds only migrations from before its rule', () => {
+  assert.equal(FUNCTION_GRANDFATHERED.length, 23);
+  for (const file of FUNCTION_GRANDFATHERED) assert.ok(file.slice(0, 14) <= FUNCTION_GRANDFATHER_CUTOFF, file);
+});
+
 test('the repository migrations pass', () => {
   const result = spawnSync(process.execPath, [path.join(__dirname, 'check-migration-grants.cjs')], { encoding: 'utf8' });
   assert.equal(result.status, 0, result.stderr);
-  assert.match(result.stdout, /13 grandfathered, 0 failures/);
+  assert.match(result.stdout, /13 grandfathered for tables, 23 for security definer functions, 0 failures/);
 });

@@ -19,18 +19,38 @@
 //     per-role grant or revoke on its sequence (X_<column>_seq, or the identity
 //     column's SEQUENCE NAME).
 // A new public view (materialized or not) or standalone sequence needs the same
-// per-role grant or revoke (views have no RLS). Functions are not checked: a new
-// function keeps PostgreSQL's EXECUTE for PUBLIC even with auto-expose off.
+// per-role grant or revoke (views have no RLS).
+//
+// SECURITY DEFINER functions (auto-expose does not cover functions: a new one
+// keeps EXECUTE for PUBLIC, and Supabase's default privileges add anon). A
+// migration with `create [or replace] function|procedure public.X(...) ...
+// security definer`, or `alter function|procedure|routine public.X[(...)] ...
+// security definer` (quoted or not, any case, unqualified when the search_path
+// resolves it to public), fails unless the same file:
+//   (a) revokes EXECUTE (or ALL) on X from PUBLIC and from anon, and no later
+//       statement of the file grants it back to either;
+//   (b) grants EXECUTE (or ALL) on X to at least one other role;
+//   (c) sets search_path, in the definition (`set search_path = ...`) or with
+//       `alter function X set search_path ...`.
+// X is matched by name and, when a statement gives an argument list, by
+// signature too: argument names, modes, defaults, OUT arguments and type
+// modifiers are ignored and common aliases are normalised (int4 = integer,
+// timestamptz = timestamp with time zone, ...). A target without an argument
+// list covers every overload. `on all functions in schema public` is not a
+// decision about X.
 // Only statements that run while the migration applies count: top-level ones
 // and those of DO blocks. Text in string literals and function bodies, and
 // grants built in EXECUTE strings, are not read.
 //
-// Grandfathered: the migrations listed in GRANDFATHERED were applied before this
+// Grandfathered (tables): the migrations listed in GRANDFATHERED were applied before this
 // rule (the latest is 20261020001047) and can never be edited; their tables got
 // their privileges from auto-expose, kept explicitly by
 // 20261021090000_explicit_public_data_api_grants.sql. The list is closed: an
 // entry must name an existing migration that still fails, so nothing new can
 // join it without this file changing (a delivery file of verify-local).
+// Grandfathered (functions): FUNCTION_GRANDFATHERED, same closed-list rules,
+// cutoff FUNCTION_GRANDFATHER_CUTOFF (the latest migration before the function
+// rule). Each list only excuses its own rule.
 
 const fs = require('node:fs');
 const path = require('node:path');
@@ -54,6 +74,35 @@ const GRANDFATHERED = Object.freeze([
   '20260722124500_add_ai_sync_admission_control.sql',
   '20260722134500_add_idempotent_chat_turns.sql',
   '20260722151231_unify_interpretation_entitlements_and_device_risk.sql',
+]);
+
+// The latest migration that existed before the SECURITY DEFINER rule.
+const FUNCTION_GRANDFATHER_CUTOFF = '20261021110000';
+
+const FUNCTION_GRANDFATHERED = Object.freeze([
+  '20251204000000_create_guest_usage.sql',
+  '20251205000000_create_user_quota_events.sql',
+  '20251212195000_enforce_authenticated_monthly_quotas.sql',
+  '20251213121000_fix_exploration_quota_logging.sql',
+  '20251214000002_add_chat_quota_trigger.sql',
+  '20251215000000_fix_ambiguous_tier_in_quota_triggers.sql',
+  '20251219000000_add_fingerprint_upgrade_tracking.sql',
+  '20251220000000_unify_quota_tables.sql',
+  '20251221000000_fix_fingerprint_upgrade_tracking.sql',
+  '20251222115718_remote_schema.sql',
+  '20251223100000_add_guest_image_quota.sql',
+  '20260316120000_create_ai_jobs.sql',
+  '20260316130000_add_dream_sync_revisions.sql',
+  '20260316140000_add_subscription_state_convergence.sql',
+  '20260616120000_add_dream_memory_metadata.sql',
+  '20260721120000_add_dream_analysis_details.sql',
+  '20260819130000_analysis_job_prompt_version.sql',
+  '20260829120000_requeue_failed_generate_image_jobs.sql',
+  '20260829160000_preserve_image_job_retry_budget.sql',
+  '20260909010000_scope_oauth_product_access.sql',
+  '20260917172941_preserve_plus_analysis_authorization.sql',
+  '20261014183000_allow_luminous_nostalgic_analysis_themes.sql',
+  '20261015120000_add_dream_precise_theme.sql',
 ]);
 
 /** Remove comments, keep string and dollar-quoted contents (they may hold real DDL in DO blocks). */
@@ -112,20 +161,48 @@ function qualified(raw) {
   return parts.length === 2 ? [parts[0], parts[1]] : [null, parts[0]];
 }
 
-/** Schema an unqualified name created at `offset` resolves to, from the last search_path set before it. */
-function schemaAt(sql, offset) {
-  const pattern = /\bset\s+(?:(?:local|session)\s+)?search_path\s*(?:=|\bto\b)\s*([^;]+)|set_config\s*\(\s*'search_path'\s*,\s*'([^']*)'/gi;
-  let schemas = null;
-  for (const match of sql.matchAll(pattern)) {
-    if (match.index > offset) break;
-    const list = match[1] ?? match[2];
-    schemas = /^\s*default\s*$/i.test(list) ? null : list.split(',').map((item) => {
+let pathCache = { sql: null, changes: [] };
+
+/**
+ * search_path changes that run in the migration session, in order: a top-level
+ * (or DO block) `set [local|session] search_path` or a `select|perform
+ * set_config('search_path', ...)`. A function's `set search_path` attribute,
+ * `alter function|role|database ... set search_path` and function bodies do
+ * not change it.
+ */
+function searchPathChanges(sql) {
+  if (pathCache.sql === sql) return pathCache.changes;
+  const changes = [];
+  const setStatement = new RegExp(String.raw`${LEAD}set\s+(?:(?:local|session)\s+)?search_path\s*(?:=|\bto\b)\s*([\s\S]*)$`, 'i');
+  const setConfig = new RegExp(String.raw`${LEAD}(?:select|perform)\b`, 'i');
+  for (const statement of executedStatements(sql)) {
+    const match = setStatement.exec(statement.text);
+    let list = null;
+    if (match) list = statement.raw.slice(match.index + match[0].length - match[1].length).trim();
+    else if (setConfig.test(statement.text)) {
+      const config = /set_config\s*\(\s*'search_path'\s*,\s*'([^']*)'/i.exec(statement.raw);
+      if (config) list = config[1];
+    }
+    if (list === null) continue;
+    const schemas = /^\s*default\s*$/i.test(list) ? null : list.split(',').map((item) => {
       const value = item.trim().replace(/^'(.*)'$/, '$1');
       return value === '"$user"' || value === '$user' ? '$user' : ident(value);
     });
+    changes.push({ offset: statement.offset, schemas });
+  }
+  pathCache = { sql, changes };
+  return changes;
+}
+
+/** Schema an unqualified name created at `offset` resolves to, from the last search_path set before it. */
+function schemaAt(sql, offset) {
+  let schemas = null;
+  for (const change of searchPathChanges(sql)) {
+    if (change.offset > offset) break;
+    schemas = change.schemas;
   }
   if (!schemas) return 'public';
-  const first = schemas.find((schema) => !['$user', 'pg_catalog', 'pg_temp'].includes(schema));
+  const first = schemas.find((schema) => schema && !['$user', 'pg_catalog', 'pg_temp'].includes(schema));
   return first ?? 'public';
 }
 
@@ -313,8 +390,152 @@ function decisions(sql, executed = executedStatements(sql)) {
   return found;
 }
 
-/** Problems of one migration's SQL; an empty list means it passes. */
-function checkMigrationSql(source) {
+
+const TYPE_ALIASES = new Map(Object.entries({
+  int: 'integer', int4: 'integer', integer: 'integer', int8: 'bigint', int2: 'smallint',
+  bool: 'boolean', float8: 'double precision', float: 'double precision', float4: 'real',
+  varchar: 'character varying', char: 'character', bpchar: 'character', decimal: 'numeric',
+  timestamptz: 'timestamp with time zone', timestamp: 'timestamp without time zone',
+  'timestamp without time zone': 'timestamp without time zone',
+  timetz: 'time with time zone', time: 'time without time zone',
+}));
+// Types whose name is several words: an argument equal to one of these has no name.
+const MULTIWORD_TYPE = /^(?:double\s+precision|character\s+varying|bit\s+varying|national\s+character(?:\s+varying)?|(?:timestamp|time)(?:\s*\(\s*\d+\s*\))?\s+with(?:out)?\s+time\s+zone|interval\s+\w+(?:\s+to\s+\w+)?)(?:\s*\(\s*[\d\s,]*\))?(?:\s*\[\s*\d*\s*\])*$/i;
+
+/** Normalised type of one argument (empty for an OUT argument, which is not part of the signature). */
+function argumentType(definition) {
+  let text = definition.trim()
+    .replace(/\s+default\b[\s\S]*$/i, '')
+    .replace(/\s*=[\s\S]*$/, '');
+  const mode = /^(in|out|inout|variadic)\s+/i.exec(text);
+  if (mode) {
+    if (mode[1].toLowerCase() === 'out') return '';
+    text = text.slice(mode[0].length);
+  }
+  if (!MULTIWORD_TYPE.test(text)) {
+    const named = new RegExp(`^${IDENT}\\s+(\\S[\\s\\S]*)$`).exec(text);
+    if (named) text = named[1];
+  }
+  let type = text.replace(/\(\s*[\d\s,]*\)/g, '').replace(/\s+/g, ' ').trim();
+  let array = '';
+  const suffix = /(?:\s*\[\s*\d*\s*\])+$|\s+array(?:\s*\[\s*\d*\s*\])?$/i.exec(type);
+  if (suffix) { array = '[]'; type = type.slice(0, suffix.index).trim(); }
+  const [schema, name] = /^(?:"[^"]*"|[^\s."]+)\s*\.\s*/.test(type) ? qualified(type) : [null, /^"/.test(type) ? ident(type) : type.toLowerCase()];
+  const base = schema && !['public', 'pg_catalog'].includes(schema) ? `${schema}.${name}` : name;
+  return (TYPE_ALIASES.get(base) ?? base) + array;
+}
+
+/** Normalised signature of a parenthesised argument list (without the parentheses). */
+function signature(args) {
+  return splitTopLevel(args).map(argumentType).filter(Boolean).join(',');
+}
+
+/** Balanced parenthesised group starting at `open` (an index of '('): [inner text, index after ')']. */
+function parenthesised(text, open) {
+  let depth = 0;
+  for (let i = open; i < text.length; i++) {
+    if (text[i] === '"') { const end = text.indexOf('"', i + 1); i = end < 0 ? text.length : end; continue; }
+    if (text[i] === '(') depth++;
+    else if (text[i] === ')' && --depth === 0) return [text.slice(open + 1, i), i + 1];
+  }
+  return [text.slice(open + 1), text.length];
+}
+
+/** A routine reference `name[(args)]` at the start of `text`: { name: [schema|null, name], sig: string|null, end }. */
+function routineReference(text) {
+  const match = new RegExp(`^\\s*(${QUALIFIED})\\s*`).exec(text);
+  if (!match) return null;
+  let end = match[0].length;
+  let sig = null;
+  if (text[end] === '(') {
+    const [inner, after] = parenthesised(text, end);
+    sig = signature(inner);
+    end = after;
+  }
+  return { raw: match[1], sig, end };
+}
+
+const sameRoutine = (definer, target) => definer.name === target.name && (target.sig === null || target.sig === definer.sig);
+
+/** Problems of the SECURITY DEFINER functions (and procedures) a migration creates or alters in public. */
+function checkFunctionSql(source) {
+  const sql = stripComments(source);
+  const executed = executedStatements(sql);
+  const createRoutine = new RegExp(String.raw`${LEAD}create\s+(?:or\s+replace\s+)?(?:function|procedure)\s+`, 'i');
+  const alterRoutine = new RegExp(String.raw`${LEAD}alter\s+(?:function|procedure|routine)\s+`, 'i');
+  const privilege = new RegExp(String.raw`${LEAD}(grant|revoke)\s+(grant\s+option\s+for\s+)?([\s\S]+?)\s+on\s+(?:function|procedure|routine)\s+([\s\S]+?)\s+(to|from)\s+([\s\S]+)$`, 'i');
+  const definers = [];
+  const pathTargets = [];
+  const events = [];
+  const lastSecurity = (text) => [...text.matchAll(/\bsecurity\s+(definer|invoker)\b/gi)].pop()?.[1].toLowerCase();
+  for (const statement of executed) {
+    let match = createRoutine.exec(statement.text);
+    if (match) {
+      const reference = routineReference(statement.text.slice(match.index + match[0].length));
+      if (!reference) continue;
+      const [schema, name] = resolve(sql, reference.raw, statement.offset);
+      const rest = statement.text.slice(match.index + match[0].length + reference.end);
+      if (schema === 'public' && lastSecurity(rest) === 'definer') {
+        const sig = reference.sig ?? '';
+        const pathSet = /\bset\s+search_path\b/i.test(rest);
+        const known = definers.find((other) => other.name === name && other.sig === sig);
+        if (known) known.pathSet = known.pathSet || pathSet;
+        else definers.push({ name, sig, pathSet });
+      }
+      continue;
+    }
+    match = alterRoutine.exec(statement.text);
+    if (match) {
+      const reference = routineReference(statement.text.slice(match.index + match[0].length));
+      if (!reference) continue;
+      const [schema, name] = resolve(sql, reference.raw, statement.offset);
+      if (schema !== 'public') continue;
+      const rest = statement.text.slice(match.index + match[0].length + reference.end);
+      const target = { name, sig: reference.sig };
+      if (/\bset\s+search_path\b/i.test(rest)) pathTargets.push(target);
+      if (lastSecurity(rest) === 'definer' && !definers.some((other) => other.name === name && other.sig === (target.sig ?? other.sig))) {
+        definers.push({ name, sig: target.sig, pathSet: false });
+      }
+      continue;
+    }
+    match = privilege.exec(statement.text);
+    if (!match || match[2]) continue; // `revoke grant option for` keeps the privilege itself.
+    if (!/^(?:all(?:\s+privileges)?|(?:[\s\S]*,\s*)?execute(?:\s*,[\s\S]*)?)$/i.test(match[3].trim())) continue;
+    const roles = match[6]
+      .replace(/\s+(?:with\s+grant\s+option|granted\s+by\s+[\s\S]*|cascade|restrict)\s*$/i, '')
+      .split(',').map((role) => ident(role.replace(/^\s*group\s+/i, '')));
+    for (const object of splitTopLevel(match[4])) {
+      const reference = routineReference(object);
+      if (!reference) continue;
+      const [schema, name] = resolve(sql, reference.raw, statement.offset);
+      if (schema === 'public') events.push({ action: match[1].toLowerCase(), target: { name, sig: reference.sig }, roles });
+    }
+  }
+  const problems = [];
+  for (const definer of definers) {
+    const label = `public.${definer.name}${definer.sig === null ? '' : `(${definer.sig})`}`;
+    // An `alter ... security definer` without an argument list covers every overload: match by name.
+    const matches = (target) => definer.sig === null ? target.name === definer.name : sameRoutine(definer, target);
+    const state = { public: 'default', anon: 'default' };
+    const grantees = new Set();
+    for (const event of events.filter((item) => matches(item.target))) {
+      for (const role of event.roles) {
+        if (role in state) state[role] = event.action === 'revoke' ? 'revoked' : 'granted';
+        else if (event.action === 'grant') grantees.add(role);
+      }
+    }
+    for (const role of ['public', 'anon']) {
+      if (state[role] === 'default') problems.push(`${label}: security definer without "revoke execute on function ${label} from ${role}"`);
+      if (state[role] === 'granted') problems.push(`${label}: security definer granted back to ${role} after its revoke`);
+    }
+    if (!grantees.size) problems.push(`${label}: security definer without an explicit "grant execute on function ${label} to <role>"`);
+    if (!definer.pathSet && !pathTargets.some(matches)) problems.push(`${label}: security definer without "set search_path" (in the definition or "alter function ${label} set search_path")`);
+  }
+  return problems;
+}
+
+/** Problems of one migration's public tables, views and sequences. */
+function checkTableSql(source) {
   const sql = stripComments(source);
   const executed = executedStatements(sql);
   const problems = [];
@@ -340,25 +561,50 @@ function checkMigrationSql(source) {
   return problems;
 }
 
-/** Check every migration of `dir`; grandfathered files must exist and still fail. */
-function checkMigrations(dir, grandfathered = GRANDFATHERED) {
+/** Problems of one migration's SQL (tables, then SECURITY DEFINER functions); an empty list means it passes. */
+function checkMigrationSql(source) {
+  return [...checkTableSql(source), ...checkFunctionSql(source)];
+}
+
+const RULES = Object.freeze({
+  tables: { check: checkTableSql, cutoff: GRANDFATHER_CUTOFF, list: GRANDFATHERED, constant: 'GRANDFATHERED' },
+  functions: { check: checkFunctionSql, cutoff: FUNCTION_GRANDFATHER_CUTOFF, list: FUNCTION_GRANDFATHERED, constant: 'FUNCTION_GRANDFATHERED' },
+});
+
+/**
+ * Check every migration of `dir` against each rule. A file grandfathered for a
+ * rule must exist, be at or before that rule's cutoff and still fail it; it is
+ * only excused from that rule.
+ */
+function checkMigrations(dir, grandfathered = {}) {
   const files = fs.readdirSync(dir).filter((file) => file.endsWith('.sql')).sort();
-  const allowed = new Set(grandfathered);
-  const failures = [];
+  const sources = new Map(files.map((file) => [file, fs.readFileSync(path.join(dir, file), 'utf8')]));
+  const failures = new Map();
   const stale = [];
-  for (const file of grandfathered) {
-    if (!files.includes(file)) stale.push(`${file}: grandfathered but missing; remove it from the list`);
-    if (!(file.slice(0, GRANDFATHER_CUTOFF.length) <= GRANDFATHER_CUTOFF)) stale.push(`${file}: newer than ${GRANDFATHER_CUTOFF}; only migrations applied before this rule can be grandfathered`);
-  }
-  for (const file of files) {
-    const problems = checkMigrationSql(fs.readFileSync(path.join(dir, file), 'utf8'));
-    if (allowed.has(file)) {
-      if (!problems.length) stale.push(`${file}: grandfathered but passes; remove it from the list`);
-    } else if (problems.length) {
-      failures.push({ file, problems });
+  const counts = {};
+  for (const [rule, { check, cutoff, list, constant }] of Object.entries(RULES)) {
+    const excused = grandfathered[rule] ?? list;
+    const allowed = new Set(excused);
+    counts[rule] = allowed.size;
+    for (const file of excused) {
+      if (!sources.has(file)) stale.push(`${constant}: ${file}: grandfathered but missing; remove it from the list`);
+      if (!(file.slice(0, cutoff.length) <= cutoff)) stale.push(`${constant}: ${file}: newer than ${cutoff}; only migrations applied before this rule can be grandfathered`);
+    }
+    for (const file of files) {
+      const problems = check(sources.get(file));
+      if (allowed.has(file)) {
+        if (!problems.length) stale.push(`${constant}: ${file}: grandfathered but passes; remove it from the list`);
+      } else if (problems.length) {
+        failures.set(file, [...(failures.get(file) ?? []), ...problems]);
+      }
     }
   }
-  return { files: files.length, grandfathered: allowed.size, failures, stale };
+  return {
+    files: files.length,
+    grandfathered: counts,
+    failures: [...failures].sort(([a], [b]) => a.localeCompare(b)).map(([file, problems]) => ({ file, problems })),
+    stale,
+  };
 }
 
 function main() {
@@ -370,12 +616,17 @@ function main() {
   for (const line of result.stale) console.error(`scripts/check-migration-grants.cjs: ${line}`);
   if (result.failures.length || result.stale.length) {
     console.error('A new public table needs RLS and an explicit grant or revoke for anon, authenticated and service_role (and its sequence) in the same migration.');
+    console.error('A public SECURITY DEFINER function needs, in the same migration, a revoke of EXECUTE from PUBLIC and anon, a grant of EXECUTE to at least one role, and a set search_path.');
     process.exitCode = 1;
     return;
   }
-  console.log(`Migration grants: ${result.files} migrations, ${result.grandfathered} grandfathered, 0 failures.`);
+  console.log(`Migration grants: ${result.files} migrations, ${result.grandfathered.tables} grandfathered for tables, ${result.grandfathered.functions} for security definer functions, 0 failures.`);
 }
 
 if (require.main === module) main();
 
-module.exports = { ROLES, GRANDFATHER_CUTOFF, GRANDFATHERED, stripComments, statements, executedStatements, createdPublicObjects, decisions, checkMigrationSql, checkMigrations };
+module.exports = {
+  ROLES, GRANDFATHER_CUTOFF, GRANDFATHERED, FUNCTION_GRANDFATHER_CUTOFF, FUNCTION_GRANDFATHERED,
+  stripComments, statements, executedStatements, createdPublicObjects, decisions, signature,
+  checkTableSql, checkFunctionSql, checkMigrationSql, checkMigrations,
+};
