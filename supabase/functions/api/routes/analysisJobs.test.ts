@@ -1,6 +1,7 @@
 import { assertEquals } from 'https://deno.land/std@0.224.0/assert/mod.ts';
 
 import type { ApiContext } from '../types.ts';
+import { PLUS_DAILY_LIMITS } from '../lib/plusDailyLimits.ts';
 import {
   blockedAdmissionResponse,
   handleCreateAnalysisJob,
@@ -25,6 +26,38 @@ Deno.test('analysis quota admission returns a typed upgrade response', async () 
     tier: 'free',
     usage: { analysis: { used: 6, limit: 3 } },
   });
+});
+
+Deno.test('a Plus account past its daily analyses gets a calm 429 that says when to come back', async () => {
+  const response = blockedAdmissionResponse({
+    allowed: false,
+    code: 'DAILY_ANALYSIS_LIMIT',
+    tier: 'plus',
+    limit: null,
+    daily_limit: 10,
+    new_count: 10,
+    retry_after_seconds: 3600,
+  });
+
+  assertEquals(response.status, 429);
+  assertEquals(response.headers.get('Retry-After'), '3600');
+  assertEquals(response.headers.get('Access-Control-Allow-Origin'), '*');
+  assertEquals(await response.json(), {
+    error: 'Daily fair use limit reached',
+    code: 'DAILY_ANALYSIS_LIMIT',
+    dailyLimit: 10,
+    retryAfter: 3600,
+  });
+});
+
+Deno.test('the API daily analysis ceiling matches the one the database enforces', async () => {
+  const migration = await Deno.readTextFile(
+    new URL('../../../migrations/20261021153000_cap_plus_daily_analyses.sql', import.meta.url)
+  );
+  assertEquals(
+    migration.match(/daily_limit constant integer := (\d+);/)?.[1],
+    String(PLUS_DAILY_LIMITS.analysis)
+  );
 });
 
 Deno.test('analysis admission backlog responses carry a Retry-After header with CORS', async () => {

@@ -65,11 +65,17 @@ test('a free account that used its analyses learns when they come back and opens
   const offer = page.getByTestId('screen.paywall');
   await expect(offer).toBeVisible();
   await expect(offer).toContainText(comeBack);
-  // Real numbers, not "limited": 3 analyses a month, 10 against 100 exchanges, the synthesis only with Plus.
-  for (const text of ['3 a month', 'Exchanges per dream', '10', '100', '360° synthesis', 'Not included', 'Included']) {
+  // Real numbers, not "limited": 3 analyses a month, each with its illustration, 10 exchanges against
+  // unlimited ones, the synthesis only with Plus.
+  for (const text of ['Illustrations', 'All your dreams', 'Exchanges per dream', '10', '360° synthesis', 'Not included', 'Included']) {
     await expect(offer.getByText(text, { exact: true })).toBeVisible();
   }
+  await expect(offer.getByText('3 a month', { exact: true })).toHaveCount(2);
+  // Analyses and exchanges are both unlimited with Plus; the safety ceiling is never sold as a number.
+  await expect(offer.getByText('Unlimited', { exact: true })).toHaveCount(2);
+  await expect(offer.getByText('100', { exact: true })).toHaveCount(0);
   await expect(offer.getByText('Recording your dreams stays unlimited, with or without Plus.')).toBeVisible();
+  await expect(offer.getByText('Unlimited analyses, illustrations and exchanges, subject to abuse prevention measures.')).toBeVisible();
   await expectOffer(page, 'Included analyses used', 'Your next dreams, read as you wake');
 });
 
@@ -152,7 +158,7 @@ test('the chat message limit opens the Plus offer for a free account', async ({ 
   await expect(banner).toBeVisible();
   // The end of the included exchanges is not an error: no "safety limit" for a free account.
   await expect(banner).toContainText('You’ve used the 10 included exchanges');
-  await expect(banner).toContainText('this conversation continues up to 100 exchanges');
+  await expect(banner).toContainText('With Plus, this conversation continues without limits.');
   await expect(banner).not.toContainText('safety limit');
   await expect(input).toHaveAttribute('placeholder', 'Included exchanges used for this dream');
   const upgrade = page.getByTestId('btn.chat.limitUpgrade');
@@ -160,6 +166,23 @@ test('the chat message limit opens the Plus offer for a free account', async ({ 
   await upgrade.click();
   await expectOffer(page, 'Noctalia Plus', 'Keep this conversation going');
   await expect(banner).toBeVisible();
+});
+
+test('a Plus subscriber chats with no message count', async ({ page }) => {
+  await selectProfile(page, 'plus');
+  await openDream(page, 'The Infinite Library');
+  await page.getByTestId('component.transcriptCard').scrollIntoViewIfNeeded();
+  await page.getByTestId('component.dreamDetail.actionCard').click();
+  await page.getByTestId('btn.dreamCategory.freeChat').click();
+  const input = page.getByTestId('chat.input.message');
+  await expect(input).toBeEditable();
+  await input.fill('E2E Plus message');
+  await page.getByTestId('chat.button.send').click();
+  await expect(page.getByText('E2E Plus message', { exact: true })).toBeVisible();
+  await expect(input).toBeEditable();
+  // Plus exchanges are sold as unlimited: the app never counts down the 100-message safety ceiling.
+  await expect(page.getByTestId('text.chat.messageCounter')).toBeHidden();
+  await expect(page.getByText(/\b\d+\/100\b/)).toHaveCount(0);
 });
 
 test('a saved dream waiting for its reading shows its own first words on the offer', async ({ page }) => {
