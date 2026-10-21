@@ -9,3 +9,5 @@ Le catalogue comporte **240 packs complets, 1 440 pages localisées et 240 QA ac
 L’[Excel et le CSV](../suivi-symboles/README.md) ont été actualisés à chaque lot ; le classeur conserve ses 489 formules, ses filtres, ses volets et ses règles de couleur. Les rapports internes restent dans le dépôt ; les sauvegardes Drive contiennent les médias et leur provenance. Les sources et preuves locales sont conservées dans `output/symbol-packs-final-100-20261020` du checkout principal.
 
 La qualification concerne le navigateur local. Aucun accord visuel personnel, application native, appareil physique, fusion ou nouvelle publication en production n’est déclaré. Le reçu distingue les archives natives complètes des copies de dérivés et conserve l’identité de chaque campagne.
+
+La mise à jour de sécurité des dépendances de master `da747616f` est ensuite intégrée, avec Node 24.22.1. Les peintures, profils, correspondances éditoriales et sources communes de rendu/mouvement restent inchangés. Les reçus navigateur conservent leurs versions effectives ; `verify:pr` doit passer sur le candidat final avec ses dépendances épinglées avant chaque push.

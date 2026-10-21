@@ -3,7 +3,7 @@
   "date": "2026-10-22",
   "sourceRevision": "3eadba5f121c1017c032929534d269c330aa5abb",
   "sourceRevisionScope": "Clean browser-qualified lot-14 implementation; later tracking-only changes reuse this proof. Earlier evidence reused only where its per-symbol inputs are unchanged.",
-  "integratedMaster": "a51fd4fad506490fd0ca04e18ff1a1bcf6056901",
+  "integratedMaster": "da747616fede364c2300fd3b2cf501801ccc0276",
   "sourceBranch": "codex/symbol-images-final-100",
   "integrationOwner": "Codex",
   "totalSymbols": 240,
@@ -369,7 +369,12 @@
   },
   "final100Delivery": {
     "path": "../qa/symbol-packs-final-100-20261022.json",
-    "sha256": "b80d2357a12df14a415c4bcd4f65719bbf2c3293e945cfaf7b9e83f8dcca7202",
+    "sha256": "f7603df45859d96a2fd35a684f8d3c5e32af8a1acf1175dea1c099cb5ff209ed",
     "nativeSourceArchiveGap": 6
+  },
+  "browserQualifiedMaster": "a51fd4fad506490fd0ca04e18ff1a1bcf6056901",
+  "finalMasterMerge": {
+    "contentRevision": "f679338599b18a6caccee87d42559cf8c0bbecf5",
+    "scope": "Dependency security update only; browser painting/profile/engine source inputs unchanged."
   }
 }

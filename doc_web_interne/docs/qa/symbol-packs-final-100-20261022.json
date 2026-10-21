@@ -159,5 +159,11 @@
   },
   "remaining": [
     "Locate source-library-lot10-v1.zip with the recorded SHA256 to back up the six inherited native source packs. Do not regenerate their accepted paintings."
-  ]
+  ],
+  "finalIntegration": {
+    "master": "da747616fede364c2300fd3b2cf501801ccc0276",
+    "contentRevision": "f679338599b18a6caccee87d42559cf8c0bbecf5",
+    "changedSinceBrowserRuns": "Master dependency security update and Node pin. No paintings, profiles, editorial associations or common motion/layout source changed.",
+    "qualificationReuse": "Earlier clean browser receipts keep their actual runtime and revision. Final verify:pr must use the merged pinned dependencies; this is not a new full-catalog browser run."
+  }
 }

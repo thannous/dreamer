@@ -2,7 +2,7 @@
 
 ## Lot 14 qualifié localement
 
-Responsable : **Codex**. Branche : `codex/symbol-images-final-100`. Master intégré : `a51fd4fad506490fd0ca04e18ff1a1bcf6056901`. Candidat navigateur propre : `3eadba5f121c1017c032929534d269c330aa5abb`. Le suivi ultérieur réutilise cette preuve sans revendiquer un nouveau parcours.
+Responsable : **Codex**. Branche : `codex/symbol-images-final-100`. Master du candidat navigateur : `a51fd4fad506490fd0ca04e18ff1a1bcf6056901`. Master intégré ensuite : `da747616fede364c2300fd3b2cf501801ccc0276` (dépendances, Node 24.22.1 ; sources du rendu inchangées). Candidat navigateur propre : `3eadba5f121c1017c032929534d269c330aa5abb`. Le suivi ultérieur réutilise cette preuve sans revendiquer un nouveau parcours.
 
 **10 couvertures conservées, 70 nouveaux PNG, 10 packs et 380 dérivés.** Les 10 parcours passent dans les six langues à 2560×1440 et 390×844. Les 50 captures et les 10 familles de sources sont inspectées. Les interprétations longues et les traductions concurrentes de master sont préservées ; seules les cartes PT manquantes pour les variantes choisies sont ajoutées.
 
