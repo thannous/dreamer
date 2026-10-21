@@ -22,7 +22,9 @@ import { LinearGradient } from 'expo-linear-gradient';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Dimensions, Pressable, Text, View, useWindowDimensions } from 'react-native';
 import { JournalCardSeal, SEAL_FADE_HEIGHT } from '@/components/journal/JournalCardSeal';
+import { FullMoonSeal } from '@/components/ui/FullMoonSeal';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { isFullMoonDream } from '@/lib/fullMoon';
 
 export type DreamCardVariant = 'standard' | 'featured';
 
@@ -247,6 +249,7 @@ export const DreamCard = memo(function DreamCard({
   const dateEyebrow = formatLocaleDate(dream.id, locale, fullDate ? { weekday: 'long' } : { month: 'short' });
   const dateFoot = formatLocaleDate(dream.id, locale, fullDate ? { month: 'long', year: 'numeric' } : { year: 'numeric' });
   const syncState = isMockModeEnabled() ? 'clean' : getDreamSyncState(dream);
+  const fullMoon = isFullMoonDream(dream.id);
 
   const badges = useMemo(() => {
     const list: {
@@ -327,6 +330,7 @@ export const DreamCard = memo(function DreamCard({
     dream.title || t('journal.card.accessibility.open'),
     dateLabel ?? formatLocaleDate(dream.id, locale, { day: 'numeric', month: 'long', year: 'numeric' }),
     isFavorite ? t('journal.badge.favorite') : undefined,
+    fullMoon ? t('full_moon.seal') : undefined,
     typeLabel, recurringLabel, memoryLabel, themeLabel,
     ...badges.map((badge) => badge.label),
   ].filter(Boolean).join(', ');
@@ -423,6 +427,8 @@ export const DreamCard = memo(function DreamCard({
           {dateFoot}
         </Text>
       </View>
+      {/* A dream noted after a full moon's night keeps its silver seal on the date. */}
+      {fullMoon ? <FullMoonSeal size={22 * compactTextScale} /> : null}
     </View>
   );
   const actions = (

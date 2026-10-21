@@ -83,6 +83,7 @@ import {
 } from '@/lib/dreamUsage';
 import { getDreamAnalysisFreshness } from '@/lib/dreamAnalysisFreshness';
 import { isHdIllustrationsEnabled, isMockModeEnabled } from '@/lib/env';
+import { isFullMoonDream } from '@/lib/fullMoon';
 import { classifyError, ErrorType, QuotaError, QuotaErrorCode } from '@/lib/errors';
 import { getDreamImageCacheKey, getDreamImageVersion, getImageConfig, withCacheBuster } from '@/lib/imageUtils';
 import {
@@ -134,6 +135,7 @@ import { PaintingTilt } from '@/components/ui/PaintingTilt';
 import { useOnScreen } from '@/components/ui/headerStretch';
 import { isRestingScroll, useFrameParallax, useHeaderScrollY } from '@/components/ui/scrollDepth';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { FullMoonSeal } from '@/components/ui/FullMoonSeal';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
 const ReadingScrollView = Platform.OS === 'web' ? ScrollView : Animated.ScrollView;
@@ -2992,10 +2994,24 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     );
   };
 
-  // Over a plate the head carries only the way back; on the paper it is printed with the journal's name.
+  // A dream noted after a full moon's night wears its silver seal at the head of its page.
+  const fullMoonSeal = isFullMoonDream(dream.id) ? (
+    <View testID="journal.detail.fullMoon" accessible accessibilityLabel={t('full_moon.seal')}
+      className="flex-row items-center gap-2 rounded-full py-1.5 pl-1.5 pr-3"
+      style={{ backgroundColor: noctalia.illustration.scrim }}>
+      <FullMoonSeal size={24 * compactTextScale} />
+      <Text key={`full-moon-${windowSize.fontScale}`} allowFontScaling={false}
+        style={{ fontSize: 13 * compactTextScale, lineHeight: 20 * compactTextScale }}
+        className="font-serif-italic text-[13px] leading-5 text-illustration-text">
+        {t('full_moon.seal')}
+      </Text>
+    </View>
+  ) : null;
+  // Over a plate the head carries only the way back; on the paper it is printed with the journal's name,
+  // which gives the line to the seal when there is one.
   const runningHead = (
     <JournalRunningHead onBack={handleBackPress} testID="journal.detail.navigation" backTestID={TID.Button.NavigateJournal}
-      label={hasIllustratedCover ? undefined : t('nav.sidebar_tagline')} />
+      label={hasIllustratedCover || fullMoonSeal ? undefined : t('nav.sidebar_tagline')} aside={fullMoonSeal} />
   );
   const sealBlock = (
     <View ref={sealWindowRef} collapsable={false}>

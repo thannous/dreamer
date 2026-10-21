@@ -7,6 +7,7 @@ import { lastDreamImageKey } from '@/lib/homeWidgets';
 import { createScopedLogger } from '@/lib/logger';
 import type { DreamAnalysis } from '@/lib/types';
 import { appLink, getNoctaliaWidgets } from '@/services/noctaliaWidgets';
+import type { LastDreamWidgetProps } from '@/widgets/LastDreamWidget';
 
 const log = createScopedLogger('[LastDreamWidget]');
 
@@ -45,11 +46,22 @@ async function copyPainting(dream: DreamAnalysis, userId: string | null, directo
 }
 
 /** Removes the paintings the widget no longer shows: another dream's, or every one after a sign-out. */
-function removePaintings(shared: Directory, keep?: string): void {
+function removePaintings(shared: Directory, keep: readonly string[] = []): void {
   for (const entry of shared.exists ? shared.list() : []) {
-    if (entry instanceof File && entry.name.startsWith(PAINTING_PREFIX) && entry.uri !== keep) entry.delete();
+    if (entry instanceof File && entry.name.startsWith(PAINTING_PREFIX) && !keep.includes(entry.uri)) entry.delete();
   }
 }
+
+/** A day the widget gives to a dream noted on that date a month or a year before. */
+export type WidgetAnniversary = {
+  /** Its local midnight, and the next one. */
+  from: number;
+  until: number;
+  dream: DreamAnalysis;
+  title: string;
+  /** « Il y a un mois cette nuit », in the app's language. */
+  eyebrow: string;
+};
 
 type LastDreamUpdate = {
   dream: DreamAnalysis | null;
@@ -58,14 +70,22 @@ type LastDreamUpdate = {
   title: string;
   date: string | null;
   empty: string;
+  /** The coming days that show an anniversary instead, oldest first. */
+  anniversaries?: readonly WidgetAnniversary[];
 };
+
+/** The link that opens a dream, with the journal's own identity: an id alone opens nothing when two match. */
+function dreamLink(dream: DreamAnalysis): string {
+  const { id, ...identity } = getDreamRouteParams(dream);
+  return appLink(`journal/${id}`, identity);
+}
 
 /** Whose dream the widget shows, as far as this launch knows. */
 let shown: { userId: string | null; dream: Pick<DreamAnalysis, 'id' | 'remoteId' | 'clientRequestId'> } | null = null;
 let latest = 0;
 let queue: Promise<unknown> = Promise.resolve();
 
-async function publish({ dream, userId, title, date, empty }: LastDreamUpdate, current: () => boolean): Promise<boolean> {
+async function publish({ dream, userId, title, date, empty, anniversaries = [] }: LastDreamUpdate, current: () => boolean): Promise<boolean> {
   const found = getNoctaliaWidgets();
   if (!found) return false;
   const clear = () => {
@@ -91,26 +111,45 @@ async function publish({ dream, userId, title, date, empty }: LastDreamUpdate, c
     if (!kept) clear();
     return false;
   }
-  // The same identity as the journal's own links: an id alone opens nothing when two match.
-  const { id, ...identity } = getDreamRouteParams(dream);
-  found.lastDream.updateSnapshot({
-    image,
-    title,
-    ...(date ? { date } : {}),
-    url: appLink(`journal/${id}`, identity),
-    empty,
-  });
+  const last: LastDreamWidgetProps = { image, title, ...(date ? { date } : {}), url: dreamLink(dream), empty };
+  // An anniversary whose painting cannot be fetched now leaves its day to the last dream.
+  const days: { from: number; until: number; props: LastDreamWidgetProps & { image: string } }[] = [];
+  for (const day of anniversaries) {
+    const painting = await copyPainting(day.dream, userId, found.directory).catch((error: unknown) => {
+      log.warn('Anniversary painting not copied for the widget', error);
+      return null;
+    });
+    if (painting) days.push({ ...day, props: { image: painting, title: day.title, eyebrow: day.eyebrow, url: dreamLink(day.dream), empty } });
+  }
+  if (!current()) return false;
+  if (days.length === 0) {
+    found.lastDream.updateSnapshot(last);
+  } else {
+    // The last dream, then each anniversary from its midnight to the next, then the last dream again.
+    const timeline: { date: Date; props: LastDreamWidgetProps }[] = [];
+    let cursor = Date.now();
+    for (const day of days) {
+      if (day.until <= cursor) continue;
+      if (day.from > cursor) timeline.push({ date: new Date(cursor), props: last });
+      timeline.push({ date: new Date(Math.max(day.from, cursor)), props: day.props });
+      cursor = day.until;
+    }
+    timeline.push({ date: new Date(cursor), props: last });
+    found.lastDream.updateTimeline(timeline);
+  }
   shown = { userId, dream: { id: dream.id, remoteId: dream.remoteId, clientRequestId: dream.clientRequestId } };
-  // Only now is the painting it showed no longer needed.
-  removePaintings(new Directory(found.directory), image);
-  return true;
+  // Only now are the paintings it showed no longer needed.
+  removePaintings(new Directory(found.directory), [image, ...days.map((day) => day.props.image)]);
+  // An anniversary left out for now is tried again on the next update.
+  return days.length === anniversaries.length;
 }
 
 /**
  * Lays the last painted dream on the home screen widget, or its waiting words when there
- * is none. Updates run one at a time, and only the latest is laid. A painting that cannot
- * be fetched now (offline) leaves an older dream of the same dreamer in place and clears
- * anything else; the result is false until the widget shows this dream.
+ * is none, giving the coming anniversaries their days. Updates run one at a time, and
+ * only the latest is laid. A painting that cannot be fetched now (offline) leaves an
+ * older dream of the same dreamer in place and clears anything else; the result is false
+ * until the widget shows this dream and each of its coming anniversaries.
  */
 export function updateLastDreamWidget(update: LastDreamUpdate): Promise<boolean> {
   const turn = ++latest;

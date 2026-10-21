@@ -64,8 +64,12 @@ jest.mock('@/lib/dreamMediaDiskCache', () => ({
   resolveWithDiskCache: async (dream: { imageUrl: string }) => ({ imageStatus: 'ready', imageUrl: dream.imageUrl }),
 }));
 const mockUpdateSnapshot = jest.fn();
+const mockUpdateTimeline = jest.fn();
 jest.mock('@/services/noctaliaWidgets', () => ({
-  getNoctaliaWidgets: () => ({ lastDream: { updateSnapshot: mockUpdateSnapshot }, directory: 'file:///group' }),
+  getNoctaliaWidgets: () => ({
+    lastDream: { updateSnapshot: mockUpdateSnapshot, updateTimeline: mockUpdateTimeline },
+    directory: 'file:///group',
+  }),
   appLink: (path: string, query?: Record<string, string>) => `noctalia://${path}${query && Object.keys(query).length ? `?${new URLSearchParams(query)}` : ''}`,
 }));
 
@@ -105,6 +109,7 @@ beforeEach(() => {
   mockUnreachable.clear();
   mockHoldDownload = null;
   mockUpdateSnapshot.mockClear();
+  mockUpdateTimeline.mockClear();
 });
 
 it('clears another dreamer’s dream after a sign-out, even when the next painting cannot be fetched', async () => {
@@ -206,4 +211,81 @@ it('lets go of a deleted dream even when the one left shares its local id', asyn
   await service.updateLastDreamWidget(update(dream(10, { remoteId: 42 }), 'alice'));
   expect(laid()[1]).toEqual({ url: 'noctalia://recording', empty: 'Your next painted dream will appear here.' });
   expect(paintings()).toEqual([]);
+});
+
+describe('anniversaries', () => {
+  const NOW = Date.parse('2026-10-21T15:00:00Z');
+  const HOUR = 3_600_000;
+  const anniversary = (painted: DreamAnalysis, from: number) => ({
+    from, until: from + 24 * HOUR, dream: painted, title: painted.title, eyebrow: 'A month ago tonight',
+  });
+  let clock: jest.SpyInstance;
+  beforeEach(() => {
+    clock = jest.spyOn(Date, 'now').mockReturnValue(NOW);
+  });
+  afterEach(() => clock.mockRestore());
+  const timeline = () => (mockUpdateTimeline.mock.calls.at(-1)?.[0] ?? []) as { date: Date; props: Record<string, unknown> }[];
+
+  it('gives each coming anniversary its day, and the last dream the days around it', async () => {
+    const service = launch();
+    const monthAgo = dream(Date.parse('2026-09-23T06:00:00Z'));
+    const yearAgo = dream(Date.parse('2025-10-27T06:00:00Z'));
+    const days = [anniversary(monthAgo, NOW + 9 * HOUR), anniversary(yearAgo, NOW + 105 * HOUR)];
+
+    expect(await service.updateLastDreamWidget({ ...update(dream(10), 'alice'), anniversaries: days })).toBe(true);
+
+    expect(mockUpdateSnapshot).not.toHaveBeenCalled();
+    expect(timeline().map(({ date, props }) => [date.getTime() - NOW, props.title, props.eyebrow])).toEqual([
+      [0, 'Dream 10', undefined],
+      [9 * HOUR, monthAgo.title, 'A month ago tonight'],
+      [33 * HOUR, 'Dream 10', undefined],
+      [105 * HOUR, yearAgo.title, 'A month ago tonight'],
+      [129 * HOUR, 'Dream 10', undefined],
+    ]);
+    expect(timeline()[1].props.url).toBe(`noctalia://journal/${monthAgo.id}`);
+    // Every painting the timeline will show stays in the shared folder.
+    expect(new Set(paintings())).toEqual(new Set(timeline().map(({ props }) => props.image)));
+  });
+
+  it('starts on an anniversary already under way', async () => {
+    const service = launch();
+    const monthAgo = dream(Date.parse('2026-09-21T06:00:00Z'));
+
+    await service.updateLastDreamWidget({ ...update(dream(10), 'alice'), anniversaries: [anniversary(monthAgo, NOW - 15 * HOUR)] });
+
+    expect(timeline().map(({ date, props }) => [date.getTime() - NOW, props.title])).toEqual([
+      [0, monthAgo.title],
+      [9 * HOUR, 'Dream 10'],
+    ]);
+  });
+
+  it('leaves to the last dream the day whose painting cannot be fetched, and asks to be tried again', async () => {
+    const service = launch();
+    const monthAgo = dream(Date.parse('2026-09-23T06:00:00Z'));
+    const withAnniversary = { ...update(dream(10), 'alice'), anniversaries: [anniversary(monthAgo, NOW + 9 * HOUR)] };
+    mockUnreachable.add(monthAgo.imageUrl);
+
+    expect(await service.updateLastDreamWidget(withAnniversary)).toBe(false);
+
+    expect(mockUpdateTimeline).not.toHaveBeenCalled();
+    expect(laid()).toHaveLength(1);
+    expect(laid()[0]).toMatchObject({ title: 'Dream 10' });
+    expect(paintings()).toEqual([laid()[0].image]);
+
+    // Back online, the same update gives the anniversary its day.
+    mockUnreachable.clear();
+    expect(await service.updateLastDreamWidget(withAnniversary)).toBe(true);
+    expect(timeline().map(({ props }) => props.title)).toEqual(['Dream 10', monthAgo.title, 'Dream 10']);
+  });
+
+  it('drops the anniversaries’ paintings once they are no longer coming', async () => {
+    const service = launch();
+    const monthAgo = dream(Date.parse('2026-09-23T06:00:00Z'));
+    await service.updateLastDreamWidget({ ...update(dream(10), 'alice'), anniversaries: [anniversary(monthAgo, NOW + 9 * HOUR)] });
+    expect(paintings()).toHaveLength(2);
+
+    await service.updateLastDreamWidget(update(dream(10), 'alice'));
+
+    expect(paintings()).toEqual([laid()[0].image]);
+  });
 });
