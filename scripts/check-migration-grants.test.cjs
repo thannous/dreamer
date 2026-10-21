@@ -203,8 +203,6 @@ grant execute on function public.a(text), public.b() to service_role;`,
   'definer only inside a function body or string': `create function public.later() returns void language plpgsql as $fn$
 begin execute 'create function public.x() returns int language sql security definer as $q$ select 1 $q$'; end $fn$;
 select 'alter function public.y() security definer';`,
-  'alter ... security definer with the full set': `alter function public.claim(uuid) security definer;
-alter function public.claim(uuid) set search_path = '';${locked('public.claim(uuid)')}`,
   'procedure': `create procedure public.flush() language plpgsql security definer set search_path = '' as $$ begin end $$;${locked('public.flush()')}`,
   'a function search_path attribute does not move later tables': `${definer()}${locked()}
 create table notes (id uuid);
@@ -231,6 +229,8 @@ set local search_path = private;
 commit;
 set search_path = private;
 ${definer('claim')}`,
+  'constant execute in a migration that changes routines': `${definer()}${locked()}
+do $$ begin execute 'select 1'; end $$;`,
   'unconditional DO block grants count': `${definer()}
 do $$ begin
   revoke execute on function public.claim(uuid, integer) from public, anon;
@@ -266,8 +266,10 @@ set search_path = private;${locked('claim(uuid, integer)')}`, [/from public"/, /
   'created inside a DO block': [`do $do$ begin
   create function public.claim() returns int language sql security definer as $$ select 1 $$;
 end $do$;`, [/from public"/, /from anon"/, /grant execute/, /search_path/]],
+  'alter ... security definer on an earlier routine, even with the full set': [`alter function public.claim(uuid) security definer;
+alter function public.claim(uuid) set search_path = '';${locked('public.claim(uuid)')}`, [/shape rule "alter of an earlier routine"/, /shape rule "alter of an earlier routine"/]],
   'alter ... security definer by name only': [`alter function public.claim security definer;`,
-    [/public\.claim: .*from public"/, /from anon"/, /grant execute/, /search_path/]],
+    [/shape rule "alter of an earlier routine"/, /public\.claim: .*from public"/, /from anon"/, /grant execute/, /search_path/]],
   'revokes before a drop and recreate do not carry over': [`${locked()}
 drop function public.claim(uuid, integer);
 ${definer()}`, [/from public"/, /from anon"/, /grant execute/]],
@@ -313,7 +315,7 @@ return 1; end $body1$;`, [/from public"/, /from anon"/, /grant execute/]],
   'schema-wide grant afterwards re-opens it': [`${definer()}${locked()}
 grant execute on all functions in schema public to public;`, [/all functions in schema public to public/, /granted back to public/]],
   'conditional security invoker does not clear definer': [`${definer()}
-do $$ begin if false then alter function public.claim(uuid, integer) security invoker; end if; end $$;`, [/from public"/, /from anon"/, /grant execute/]],
+do $$ begin if false then alter function public.claim(uuid, integer) security invoker; end if; end $$;`, [/shape rule "conditional routine or path change"/, /from public"/, /from anon"/, /grant execute/]],
   'set_config that may not run does not move the function': [`select case when false then set_config('search_path', 'private', false) else '' end;
 ${definer('claim')}`, [/public\.claim.*from public"/, /from anon"/, /grant execute/]],
   'revokes and grant inside an E-string': [`${definer()}
@@ -339,11 +341,11 @@ commit;
 ${definer('claim')}`, [/public\.claim.*from public"/, /from anon"/, /grant execute/]],
   'conditional move into public is checked': [`create function private.claim() returns int language sql security definer set search_path = '' as $$ select 1 $$;
 do $$ begin if current_setting('app.env', true) = 'prod' then alter function private.claim() set schema public; end if; end $$;`,
-    [/public\.claim\(\): .*from public"/, /from anon"/, /grant execute/]],
+    [/shape rule "conditional routine or path change"/, /public\.claim\(\): .*from public"/, /from anon"/, /grant execute/]],
   'search_path starting with pg_temp': [`create function public.claim() returns int language sql security definer
 set search_path = pg_temp, public, pg_temp as $$ select 1 $$;${locked('public.claim()')}`, [/unsafe search_path/]],
   'grant to PUBLIC on a routine from an earlier migration': [`grant execute on function public.claim() to public;`, [/public\.claim\(\): execute granted to public on a routine from an earlier migration/]],
-  'search_path reset on a routine from an earlier migration': [`alter function public.claim() reset search_path;`, [/public\.claim\(\): search_path reset on a routine from an earlier migration/]],
+  'search_path reset on a routine from an earlier migration': [`alter function public.claim() reset search_path;`, [/shape rule "alter of an earlier routine"/, /public\.claim\(\): search_path reset on a routine from an earlier migration/]],
   'schema-wide grant to anon': [`grant execute on all functions in schema public to anon;`, [/all functions in schema public to anon/]],
   'conditional drop keeps the routine': [`${definer()}
 do $$ begin if false then drop function public.claim(uuid, integer); end if; end $$;`, [/from public"/, /from anon"/, /grant execute/]],
@@ -352,10 +354,10 @@ ${definer('claim')}
 create schema later_schema;`, [/public\.claim.*from public"/, /from anon"/, /grant execute/]],
   'set_config with an E-string falls back to public': [`set search_path = private, public;
 select set_config('search_path', E'public', false);
-${definer('claim')}`, [/public\.claim.*from public"/, /from anon"/, /grant execute/]],
+${definer('claim')}`, [/shape rule "non-literal set_config"/, /public\.claim.*from public"/, /from anon"/, /grant execute/]],
   'ownership of an earlier routine handed to a caller role': [`alter function public.claim() owner to authenticated;`, [/public\.claim\(\): owned by authenticated/]],
   'earlier routine moved into public is checked as security definer': [`alter function private.claim() set schema public;`, [/public\.claim\(\): .*from public"/, /from anon"/, /grant execute/, /without "set search_path"/]],
-  'routine DDL in dynamic SQL': [`do $$ begin execute 'create function public.claim() returns int language sql security definer as ''select 1'''; end $$;`, [/dynamic SQL/]],
+  'routine DDL in dynamic SQL': [`do $$ begin execute 'create function public.claim() returns int language sql security definer as ''select 1'''; end $$;`, [/shape rule "dynamic routine SQL"/]],
   'rollback to a savepoint after the grants': [`begin;
 ${definer()}
 savepoint s;${locked()}
@@ -365,15 +367,15 @@ commit;`, [/rollback in a migration that changes routines/]],
 set search_path = public, "PG_TEMP" as $$ select 1 $$;${locked('public.claim()')}`, [/unsafe search_path/]],
   'conditional create or replace as invoker keeps the definer': [`${definer()}
 do $$ begin if false then create or replace function public.claim(p uuid, n integer) returns int language sql security invoker as $b$ select 1 $b$; end if; end $$;`,
-    [/from public"/, /from anon"/, /grant execute/, /without "set search_path"/]],
-  'routine DDL assembled in dynamic SQL': [`do $$ begin execute format('create %s public.claim() returns int language sql security definer as $q$select 1$q$', 'function'); end $$;`, [/dynamic SQL/]],
+    [/shape rule "conditional routine or path change"/, /from public"/, /from anon"/, /grant execute/, /without "set search_path"/]],
+  'routine DDL assembled in dynamic SQL': [`do $$ begin execute format('create %s public.claim() returns int language sql security definer as $q$select 1$q$', 'function'); end $$;`, [/shape rule "dynamic routine SQL"/]],
   'public.int4 is not pg_catalog.int4': [`${definer('public.claim', 'x public.int4')}${locked('public.claim(pg_catalog.int4)')}`,
     [/claim\(public\.int4\): .*from public"/, /from anon"/, /grant execute/]],
   'dollar tag inside the function name': [`create function public.claim$x$() returns int language sql security definer set search_path = '' as $x$ select 1 $x$;`,
     [/from public"/, /from anon"/, /grant execute/]],
   'conditional search_path change falls back to public': [`set search_path = private;
 do $$ begin if true then set search_path = public; end if; end $$;
-${definer('claim')}`, [/public\.claim.*from public"/, /from anon"/, /grant execute/]],
+${definer('claim')}`, [/shape rule "conditional routine or path change"/, /public\.claim.*from public"/, /from anon"/, /grant execute/]],
   'schema created only in an untaken branch does not exist': [`do $$ begin if false then create schema later_schema; end if; end $$;
 set search_path = later_schema, public;
 ${definer('claim')}`, [/public\.claim.*from public"/, /from anon"/, /grant execute/]],
@@ -382,15 +384,24 @@ set search_path = private, public;
 ${definer('claim')}`, [/public\.claim.*from public"/, /from anon"/, /grant execute/]],
   'computed set_config name falls back to public': [`set search_path = private;
 select set_config('search_' || 'path', 'public', false);
-${definer('claim')}`, [/public\.claim.*from public"/, /from anon"/, /grant execute/]],
+${definer('claim')}`, [/shape rule "non-literal set_config"/, /public\.claim.*from public"/, /from anon"/, /grant execute/]],
   'set local ends at commit and chain': [`begin;
 set local search_path = private;
 commit and chain;
 ${definer('claim')}`, [/public\.claim.*from public"/, /from anon"/, /grant execute/]],
-  'DO body in an ordinary string': [`do 'begin create function public.claim() returns int language sql security definer as $q$ select 1 $q$; end';`, [/DO block with its body in an ordinary string/]],
+  'DO body in an ordinary string': [`do 'begin create function public.claim() returns int language sql security definer as $q$ select 1 $q$; end';`, [/shape rule "string DO body"/]],
   'set then reset in one alter': [`${definer()}${locked()}
 alter function public.claim(uuid, integer) set search_path = '' reset search_path;`, [/without "set search_path"/]],
-  'unsafe search_path set on a routine from an earlier migration': [`alter function public.claim() set search_path = pg_temp;`, [/unsafe search_path \(pg_temp\) set on a routine from an earlier migration/]],
+  'unsafe search_path set on a routine from an earlier migration': [`alter function public.claim() set search_path = pg_temp;`, [/shape rule "alter of an earlier routine"/, /unsafe search_path \(pg_temp\) set on a routine from an earlier migration/]],
+  'shape: assembled create function in execute (CTO case)': [`do $$ begin execute 'create ' || 'function public.claim() returns int language sql security definer as ''select 1'''; end $$;`, [/shape rule "dynamic routine SQL"/]],
+  'shape: execute mentioning search_path': [`do $$ begin execute 'set search_path = private'; end $$;`, [/shape rule "dynamic routine SQL"/]],
+  'shape: non-literal execute in a migration that changes routines': [`${definer()}${locked()}
+do $$ begin execute 'select ' || '1'; end $$;`, [/shape rule "non-literal execute"/]],
+  'shape: string DO body': [`do 'begin perform 1; end';`, [/shape rule "string DO body"/]],
+  'shape: conditional set_config': [`do $$ begin if true then perform set_config('search_path', 'public', false); end if; end $$;`, [/shape rule "conditional routine or path change"/]],
+  'shape: conditional alter of a routine': [`${definer()}${locked()}
+do $$ begin if true then alter function public.claim(uuid, integer) set search_path = ''; end if; end $$;`, [/shape rule "conditional routine or path change"/]],
+  'shape: set_config with a non-literal value': [`select set_config('search_path', current_setting('app.path'), false);`, [/shape rule "non-literal set_config"/]],
   'owned by a caller role': [`${definer()}${locked()}
 alter function public.claim(uuid, integer) owner to authenticated;`, [/owned by authenticated/]],
   'quoted mixed case is another function': [`${definer('public."Claim"')}${locked('public.claim(uuid, integer)')}`, [/Claim.*from public"/, /from anon"/, /grant execute/]],
@@ -447,12 +458,12 @@ test('a grandfathered migration cannot change', () => {
 });
 
 test('the function grandfathered list holds only migrations from before its rule', () => {
-  assert.equal(FUNCTION_GRANDFATHERED.length, 27);
+  assert.equal(FUNCTION_GRANDFATHERED.length, 28);
   for (const file of FUNCTION_GRANDFATHERED) assert.ok(file.slice(0, 14) <= FUNCTION_GRANDFATHER_CUTOFF, file);
 });
 
 test('the repository migrations pass', () => {
   const result = spawnSync(process.execPath, [path.join(__dirname, 'check-migration-grants.cjs')], { encoding: 'utf8' });
   assert.equal(result.status, 0, result.stderr);
-  assert.match(result.stdout, /13 grandfathered for tables, 27 for security definer functions, 0 failures/);
+  assert.match(result.stdout, /13 grandfathered for tables, 28 for security definer functions, 0 failures/);
 });

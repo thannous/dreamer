@@ -41,6 +41,18 @@
 //   unknown security mode, so granting it EXECUTE to PUBLIC/anon or resetting
 //   its search_path fails (re-create it in the file), and so does `grant
 //   execute on all functions in schema public to public|anon`.
+//   Shape rules (fail closed, whatever the statement would do):
+//   - "dynamic routine SQL": an `execute` whose text mentions function,
+//     procedure, routine, definer or search_path;
+//   - "non-literal execute": an `execute` that is not one constant string, in
+//     a migration that changes routines;
+//   - "string DO body": a DO block whose body is not dollar-quoted;
+//   - "conditional routine or path change": a create/alter of a routine, a
+//     set/reset search_path or a set_config inside a DO block with control flow;
+//   - "non-literal set_config": set_config without two plain string literals
+//     and true/false;
+//   - "alter of an earlier routine": an alter that changes the security or the
+//     search_path of a routine this file does not create.
 //   Moving such a routine into public checks it as SECURITY DEFINER, handing
 //   any routine to a caller role as owner fails, and so do routine DDL or
 //   routine privileges in dynamic SQL (an `execute ...` whose text names a
@@ -161,6 +173,7 @@ const FUNCTION_GRANDFATHERED = Object.freeze([
   '20260616120000_add_dream_memory_metadata.sql',
   '20260623152929_authenticated_analysis_quota_claim.sql',
   '20260721120000_add_dream_analysis_details.sql',
+  '20260723143132_remove_location_subsystem_from_noctalia.sql',
   '20260819130000_analysis_job_prompt_version.sql',
   '20260829120000_requeue_failed_generate_image_jobs.sql',
   '20260829160000_preserve_image_job_retry_budget.sql',
@@ -203,6 +216,7 @@ const GRANDFATHERED_DIGESTS = Object.freeze({
   '20260722124500_add_ai_sync_admission_control.sql': '86e8360c43d341f77f5d66cdc3a011450cae54546c60f84741c1ef7e2e894875',
   '20260722134500_add_idempotent_chat_turns.sql': '5f90eaf2e47211ff17c9e18147232551bae72d72c73c60c035e60da7b996c153',
   '20260722151231_unify_interpretation_entitlements_and_device_risk.sql': '32ecd01cbc9ad5fed36e29d173e9ed94167fc0329789af3ab8b16461be0aa9e6',
+  '20260723143132_remove_location_subsystem_from_noctalia.sql': 'cd1c5ea8a3e0d141cfd5ec7353ceaf150996ba2fa9fde21f7f61942ac41517f5',
   '20260819130000_analysis_job_prompt_version.sql': '29c4d1f56ee9ac1d7735c381f4c860bea31b91f7dba1d0978b0c3b835a227472',
   '20260829120000_requeue_failed_generate_image_jobs.sql': 'cbe93e6d41bab0393203dcc8fb3302cc1b29278cb5dbd1eb16e23e12e0aeae82',
   '20260829160000_preserve_image_job_retry_budget.sql': '5d16817e359fe8734d5e4ef31cfb9b118aca29d92a8b55c6b6c3e14301e3d317',
@@ -694,6 +708,18 @@ function searchPathSafety(raw) {
   return list[0];
 }
 
+/** Top-level arguments of a call whose list starts at `i` (after the opening parenthesis), or null. */
+function argumentList(raw, i) {
+  let depth = 1;
+  for (let j = i; j < raw.length; j++) {
+    const c = raw[j];
+    if (c === '\'' || c === '"') { j = quotedEnd(raw, j) - 1; continue; }
+    if (c === '(') depth++;
+    else if (c === ')' && !--depth) return splitTopLevel(raw.slice(i, j));
+  }
+  return null;
+}
+
 /** The less safe of two search_path states (null: none set). */
 function worstPath(a, b) {
   if (a === null || b === null) return null;
@@ -741,20 +767,32 @@ function checkFunctionSql(source) {
     }
   };
   const problems = [];
-  const routineDdl = /\b(?:functions?|procedures?|routines?|definer)\b/i;
+  // Fail closed by shape: statements whose effect this replay cannot know fail outright.
+  const shapeWords = /\b(?:functions?|procedures?|routines?|definer|search_path)\b/i;
   const dynamic = new RegExp(String.raw`${LEAD}execute\b`, 'i');
+  const constantExecute = new RegExp(String.raw`${LEAD}execute\s+(?:'(?:[^']|'')*'|(?<![\w$])(${DOLLAR_TAG})[\s\S]*?\1)\s*(?:into\s+(?:strict\s+)?[\s\S]*)?$`, 'i');
   const rollback = new RegExp(String.raw`${LEAD}(?:rollback|abort)\b`, 'i');
+  const pathChange = new RegExp(String.raw`${LEAD}(?:set\s+(?:(?:local|session)\s+)?search_path\b|reset\s+(?:search_path|all)\b)`, 'i');
+  const touchesRoutines = executed.some((st) => createRoutine.test(st.text) || alterRoutine.test(st.text) || privilege.test(st.text) || schemaWide.test(st.text));
   let rolledBack = false;
   for (const statement of executed) {
-    // Fail closed: routine DDL or routine privileges built at run time cannot be replayed here.
-    // A dynamic DROP of a routine cannot open access; anything else naming routines fails.
-    if (dynamic.test(statement.text) && routineDdl.test(statement.raw.replace(/\bdrop\s+(?:function|procedure|routine)\b/gi, ''))) {
-      problems.push(`dynamic SQL (execute ...) creates, alters or grants on a routine; write it as a plain statement so the lint can check it`);
+    if (dynamic.test(statement.text)) {
+      if (shapeWords.test(statement.raw)) problems.push(`shape rule "dynamic routine SQL": an execute whose text mentions function, procedure, routine, definer or search_path; write it as a plain statement`);
+      else if (touchesRoutines && !constantExecute.test(statement.raw)) problems.push(`shape rule "non-literal execute": an execute that is not one constant string, in a migration that changes routines`);
       continue;
     }
-    if (statement.opaqueDo && routineDdl.test(statement.raw)) {
-      problems.push(`DO block with its body in an ordinary string mentions routines; use a dollar-quoted body so the lint can read it`);
+    if (statement.opaqueDo) {
+      problems.push(`shape rule "string DO body": a DO block whose body is not dollar-quoted; use do $$ ... $$`);
       continue;
+    }
+    if (statement.conditional && (createRoutine.test(statement.text) || alterRoutine.test(statement.text) || pathChange.test(statement.text) || /\bset_config\s*\(/i.test(statement.text))) {
+      problems.push(`shape rule "conditional routine or path change": a create/alter of a routine or a search_path change inside a DO block with control flow; make it unconditional`);
+    }
+    for (const call of statement.text.matchAll(/\bset_config\s*\(/gi)) {
+      const args = argumentList(statement.raw, call.index + call[0].length);
+      if (!args || args.length !== 3 || !/^'(?:[^']|'')*'$/.test(args[0]) || !/^'(?:[^']|'')*'$/.test(args[1]) || !/^(?:true|false)$/i.test(args[2])) {
+        problems.push(`shape rule "non-literal set_config": set_config must take two plain string literals and true/false`);
+      }
     }
     if (rollback.test(statement.text)) { rolledBack = true; continue; }
     let match = createRoutine.exec(statement.text);
@@ -809,6 +847,9 @@ function checkFunctionSql(source) {
       const last = actions.pop();
       const pathAt = last && /^set/i.test(last[1]) ? last.index : -1;
       const pathReset = Boolean(last) && pathAt < 0;
+      if (found.some((routine) => routine.earlier) && (security || last)) {
+        problems.push(`shape rule "alter of an earlier routine": ${target.schema}.${target.name} comes from an earlier migration and this alter changes its security or search_path; re-create it in this file instead`);
+      }
       for (const routine of found) {
         if (owner) routine.owner = statement.conditional && !CALLER_ROLES.includes(ident(owner[1])) ? routine.owner : ident(owner[1]);
         // A conditional change may not happen: it can make a routine definer, never clear it.
