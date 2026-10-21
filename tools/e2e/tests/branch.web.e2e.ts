@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { readFileSync, lstatSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { test as base, surfaceOf } from '@e2e-dev/web';
@@ -12,6 +12,10 @@ const test = base.extend<{ openAccount: (account: string) => Promise<void> }>({
   openAccount: async ({ app }, provide) => {
     // Refuse before navigation; no production account or request can be used.
     assertTestSupabaseTarget(readTestEnv());
+    const runId = process.env.E2E_QA_RUN_ID;
+    const dir = join(root, '.auth', 'runs', runId ?? '');
+    if (!runId || !/^[0-9a-f-]{36}$/.test(runId) || process.env.E2E_QA_RUN_DIR !== dir || lstatSync(dir).isSymbolicLink())
+      throw new Error('Use the guarded persistent QA runner with its exclusive account leases.');
     const context = surfaceOf(webEngine)!.context() as unknown as BrowserContext;
     const blocked: string[] = [];
     const production = (url: string) => FORBIDDEN_PROJECT_REFS.some((ref: string) => new URL(url).hostname.includes(ref));
@@ -26,7 +30,10 @@ const test = base.extend<{ openAccount: (account: string) => Promise<void> }>({
     try {
       await provide(async account => {
         if (!['free', 'premium'].includes(account)) throw new Error('Unknown guarded account.');
-        const state = JSON.parse(readFileSync(join(root, '.auth', `${account}.json`), 'utf8'));
+        const file = join(dir, `${account}.json`);
+        const stat = lstatSync(file);
+        if (!stat.isFile() || stat.isSymbolicLink() || (stat.mode & 0o077) !== 0) throw new Error('Private QA session permissions are required.');
+        const state = JSON.parse(readFileSync(file, 'utf8'));
         const appOrigin = new URL(app.baseUrl!).origin;
         const origin = state.origins.find((entry: { origin: string }) => entry.origin === appOrigin);
         if (!origin) throw new Error('Saved branch session has the wrong origin.');
@@ -44,7 +51,7 @@ const test = base.extend<{ openAccount: (account: string) => Promise<void> }>({
 });
 
 for (const account of ['free', 'premium']) {
-  test(`${account} opens signed in from the guarded saved session`, async ({ openAccount, screen }) => {
+  test(`${account} opens signed in from the guarded saved session`, async ({ openAccount, screen, app }) => {
     await openAccount(account);
     const intro = screen.getByTestId('btn.onboarding.intro.next', { visible: true });
     const home = screen.getByTestId('btn.recording.home', { visible: true });
@@ -57,5 +64,8 @@ for (const account of ['free', 'premium']) {
     await screen.getByTestId('btn.header.home.settings').tap();
     await screen.getByTestId('quick-settings.all').tap();
     await expect(screen.getByTestId('text.auth.email')).toContainText(`e2e+${account}@`);
+    await app.open('/journal');
+    await expect(screen.getByTestId('screen.journal', { visible: true })).toBeVisible();
+    await expect(screen.getByTestId(/^dream\.item\./, { visible: true }).filter({ hasText: `QA:${process.env.E2E_QA_RUN_ID}:${account}` })).toHaveCount(1);
   });
 }

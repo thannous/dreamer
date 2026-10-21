@@ -77,7 +77,7 @@ async function runnerFixture(args, qualifyStatus = 0, startStatus = 0) {
       if (argv[0] === '--run' && argv[1] === 'db:qualify:local') {
         qualifierReceipt = JSON.parse(fs.readFileSync(options.env.TI528_LOCAL_STATUS, 'utf8'));
       }
-      return { status: argv[0] === '--run' ? qualifyStatus : 0, stdout };
+      return { status: argv[0] === '--run' || argv[0] === 'scripts/qa/qualify-persistent-local.mjs' ? qualifyStatus : 0, stdout };
     };
     const fakeRequire = (name) => {
       if (name === 'node:os') return { ...os, tmpdir: () => ownedRoot };
@@ -185,4 +185,21 @@ test('TI528 failure remains a failed run and destroys only this invocation stack
   const cleanups = result.calls.filter(({ argv }) => argv[0] === 'stack' && argv[1] === 'destroy');
   assert.equal(cleanups.length, 1);
   assert.ok(cleanups[0].argv.includes(result.receipt.LOCAL_E2E_STACK.id));
+});
+
+test('persistent QA qualification follows browser cases on the same owned native stack; failure still destroys it', async () => {
+  for (const code of [0, 23]) {
+    const result = await runnerFixture(['--qualify-persistent-qa'], code);
+    if (code) assert.match(result.failure?.message ?? '', /failed \(23\)/);
+    else assert.equal(result.failure, undefined);
+    const browser = result.calls.findIndex(({ argv }) => argv[0] === 'tools/e2e/run.mjs');
+    const qualifier = result.calls.findIndex(({ argv }) => argv[0] === 'scripts/qa/qualify-persistent-local.mjs');
+    const cleanup = result.calls.findIndex(({ argv }) => argv[0] === 'stack' && argv[1] === 'destroy');
+    assert.ok(qualifier > browser && cleanup > qualifier);
+    assert.ok(!result.calls[browser].argv.includes('--qualify-persistent-qa'));
+    assert.match(result.calls[browser].env.E2E_BACKEND_RERUN, /--qualify-persistent-qa/);
+    assert.equal(path.dirname(result.calls[qualifier].env.E2E_BACKEND_STATUS_FILE), result.calls[qualifier].env.E2E_QA_OWNED_WORKDIR);
+    assert.ok(result.calls[cleanup].argv.includes(result.receipt.LOCAL_E2E_STACK.id));
+    assert.deepEqual(result.leftovers, []);
+  }
 });

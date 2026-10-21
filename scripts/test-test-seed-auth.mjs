@@ -1,11 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { createHash } from 'node:crypto';
 import os from 'node:os';
 import path from 'node:path';
 import { _runGuardedWithListsForTests, TestTargetRefused } from './test-supabase-guard.mjs';
-import { IMAGE_BUCKET, TIER_STATE, aiActorHash, keyHeaders, main as seedMain, makeSeedAction, readSeedSecrets } from './test-seed-users.mjs';
+import { TIER_STATE, keyHeaders, main as seedMain, makeSeedAction, readSeedSecrets } from './test-seed-users.mjs';
 import { BRANCH_WEB_ORIGIN, BRANCH_WEB_PORT, main as authMain, makeAuthAction, readAuthSecrets, storageKey } from './test-auth-setup.mjs';
 import { BRANCH_GUARD_MARKER, DROPPED_NODE_VARS, PASSTHROUGH_EXPO_PUBLIC, RUNNER, branchAppEnv, branchCommand, main as startMain, parseBranchArgs } from './start-branch-e2e.mjs';
 
@@ -111,7 +110,7 @@ function fakeBranch({ users = [], failRpc = false, objects = {} } = {}) {
 const seed = (branch, options = {}) =>
   _runGuardedWithListsForTests(env(options.env), makeSeedAction(readSeedSecrets(env(options.env)), { log: options.log ?? (() => {}), randomUUID: () => 'event-id' }), { allowedRefs: [REF], fetch: branch.fetch });
 
-test('seed creates both accounts, confirms them, clears dreams and sets the tiers like the local fixture', async () => {
+test('seed creates missing QA identities and sets initial tiers without deleting data', async () => {
   const branch = fakeBranch();
   const logs = [];
   const result = await seed(branch, { log: (line) => logs.push(line) });
@@ -120,18 +119,10 @@ test('seed creates both accounts, confirms them, clears dreams and sets the tier
     { email: 'e2e+free@example.com', password: FREE_PW, confirmed: true },
     { email: 'e2e+premium@example.com', password: PREMIUM_PW, confirmed: true },
   ]);
-  assert.deepEqual(branch.state.dreamsDeleted, [`eq.${U1}`, `eq.${U2}`]);
-  assert.deepEqual(branch.state.quotaDeleted, [`eq.${U1}`, `eq.${U2}`]);
-  assert.deepEqual(branch.state.hdDeleted, [`eq.${U1}`, `eq.${U2}`]);
-  assert.deepEqual(branch.state.receiptsDeleted, [`eq.${U1}`, `eq.${U2}`]);
-  const syncMigration = fs.readFileSync(new URL('../supabase/migrations/20260316130000_add_dream_sync_revisions.sql', import.meta.url), 'utf8');
-  assert.match(syncMigration, /create table if not exists public\.dream_sync_receipts \([\s\S]*?user_id uuid not null/);
-  // Only public, anon and authenticated lose access; service_role keeps
-  // Supabase's default grant, which the seed's DELETE relies on.
-  assert.doesNotMatch(syncMigration, /revoke[^;]*on table public\.dream_sync_receipts from[^;]*service_role/);
-  const hdMigration = fs.readFileSync(new URL('../supabase/migrations/20260916185856_hd_illustration_monthly_quota.sql', import.meta.url), 'utf8');
-  assert.match(hdMigration, /create table public\.hd_image_credits \([\s\S]*?user_id uuid not null/);
-  assert.match(hdMigration, /grant all on public\.hd_image_credits to service_role;/);
+  assert.deepEqual(branch.state.dreamsDeleted, []);
+  assert.deepEqual(branch.state.quotaDeleted, []);
+  assert.deepEqual(branch.state.hdDeleted, []);
+  assert.deepEqual(branch.state.receiptsDeleted, []);
   // Same argument names and premium values as tools/e2e/backend-fixtures.ts.
   assert.deepEqual(branch.state.rpc, [
     { p_user_id: U1, p_tier: 'free', p_is_active: false, p_source: 'e2e-seed', p_source_event_id: 'event-id' },
@@ -148,15 +139,17 @@ test('seed creates both accounts, confirms them, clears dreams and sets the tier
   for (const secret of [SERVICE, ANON, FREE_PW, PREMIUM_PW]) assert.ok(!printed.includes(secret));
 });
 
-test('seed is idempotent: a second run resets the same accounts instead of creating new ones', async () => {
+test('seed is idempotent: existing accounts and their credentials/data are retained', async () => {
   const branch = fakeBranch({ users: [{ id: 'other', email: 'someone@example.com' }] });
   await seed(branch);
   const usersAfterFirst = branch.state.users.length;
   branch.state.users[1].password = 'changed-by-hand';
+  const previousCalls = branch.state.calls.length;
   const second = await seed(branch);
   assert.equal(branch.state.users.length, usersAfterFirst);
-  assert.deepEqual(second.map(({ action }) => action), ['reset', 'reset']);
-  assert.equal(branch.state.users[1].password, FREE_PW);
+  assert.deepEqual(second.map(({ action }) => action), ['reused', 'reused']);
+  assert.equal(branch.state.users[1].password, 'changed-by-hand');
+  assert.ok(branch.state.calls.slice(previousCalls).every(call => call.method === 'GET'));
   assert.equal(branch.state.users[0].password, undefined, 'a non-test user is never touched');
   assert.ok(!branch.state.calls.some((call) => call.url.includes('/admin/users/other')));
 });
@@ -165,7 +158,7 @@ test('seed finds an existing account beyond the first page', async () => {
   const filler = Array.from({ length: 200 }, (_, index) => ({ id: `f${index}`, email: `user${index}@example.com` }));
   const branch = fakeBranch({ users: [...filler, { id: LATE, email: 'e2e+premium@example.com' }] });
   const result = await seed(branch);
-  assert.deepEqual(result.map(({ action, id }) => [action, id]), [['created', U1], ['reset', LATE]]);
+  assert.deepEqual(result.map(({ action, id }) => [action, id]), [['created', U1], ['reused', LATE]]);
 });
 
 test('seed errors are redacted and stop the run', async () => {
@@ -249,7 +242,7 @@ test('auth setup fails clearly on bad credentials and prints no password', async
   try {
     await assert.rejects(
       _runGuardedWithListsForTests(env(), makeAuthAction(readAuthSecrets(env()), { dir, log: () => {} }), { allowedRefs: [REF], fetch: branch.fetch }),
-      (error) => /password login failed for e2e\+free@example\.com \(400, invalid_credentials\)/.test(error.message) && !error.message.includes(FREE_PW)
+      (error) => /password login failed \(400\)/.test(error.message) && !error.message.includes(FREE_PW)
     );
     assert.deepEqual(fs.readdirSync(dir), []);
   } finally {
@@ -359,39 +352,20 @@ test('start-branch-e2e hands the runner the guard marker and EXPO_NO_DOTENV=1, a
   assert.ok(RUNNER.endsWith(path.join('scripts', 'expo-safe-runner.js')));
 });
 
-test('seed clears the two accounts\' images (paged list then remove) and AI buckets, never another user or the global rows', async () => {
-  const objects = { [`${uid(77)}/other.png`]: 1 };
-  for (let index = 0; index < 230; index += 1) objects[`${U1}/${String(index).padStart(3, '0')}.png`] = 1;
-  objects[`${U2}/plus.webp`] = 1;
-  const branch = fakeBranch({ objects });
+test('seed leaves pre-existing dreams, image objects, quotas and unrelated users untouched', async () => {
+  const objects = { [`${U1}/kept.png`]: 1, [`${U2}/kept.webp`]: 1, [`${uid(77)}/other.png`]: 1 };
+  const branch = fakeBranch({ objects, users: [
+    { id: U1, email: 'e2e+free@example.com' }, { id: U2, email: 'e2e+premium@example.com' },
+  ] });
   const result = await seed(branch);
-  assert.deepEqual(result.map(({ id }) => id), [U1, U2]);
-  assert.deepEqual(Object.keys(branch.state.objects), [`${uid(77)}/other.png`], 'only the other user\'s object is left');
-  assert.equal(branch.state.removed.length, 231);
-  assert.ok(branch.state.removed.every((name) => name.startsWith(`${U1}/`) || name.startsWith(`${U2}/`)));
-  assert.ok(!branch.state.removed.some((name) => name.includes('emptyFolderPlaceholder')), 'placeholders (id null) are skipped');
-  assert.ok(branch.state.listed.every((prefix) => prefix === `${U1}/` || prefix === `${U2}/`));
-  const removals = branch.state.calls.filter((call) => call.url.endsWith('/storage/v1/object/dream-images'));
-  assert.ok(removals.length >= 4 && removals.every((call) => call.body.prefixes.length <= 100));
-  // AI buckets: sha256("user:<id>") for exactly the two accounts, like hashAiActor.
-  const expected = [U1, U2].map((id) => createHash('sha256').update(`user:${id}`).digest('hex'));
-  assert.deepEqual(branch.state.bucketsDeleted, expected.map((hash) => `eq.${hash}`));
-  assert.deepEqual([aiActorHash(U1), aiActorHash(U2)], expected);
-  assert.ok(!branch.state.bucketsDeleted.includes('eq.global'));
-  const admission = fs.readFileSync(new URL('../supabase/functions/api/services/aiAdmission.ts', import.meta.url), 'utf8');
-  assert.match(admission, /`user:\$\{ctx\.user\.id\}`/);
-  assert.match(admission, /crypto\.subtle\.digest\('SHA-256', encoded\)/);
-  const bucketMigration = fs.readFileSync(new URL('../supabase/migrations/20260722124500_add_ai_sync_admission_control.sql', import.meta.url), 'utf8');
-  assert.match(bucketMigration, /create table if not exists public\.ai_rate_limit_buckets \(\s*actor_hash text not null/);
-  assert.doesNotMatch(bucketMigration, /revoke[^;]*ai_rate_limit_buckets[^;]*service_role/);
-  const storageService = fs.readFileSync(new URL('../supabase/functions/api/services/storage.ts', import.meta.url), 'utf8');
-  assert.match(storageService, /const objectKey = `\$\{resolvedOwnerId\}\/\$\{Date\.now\(\)\}-/, 'images are flat under <userId>/');
-  assert.equal(IMAGE_BUCKET, 'dream-images');
+  assert.deepEqual(result.map(({ id, action }) => [id, action]), [[U1, 'reused'], [U2, 'reused']]);
+  assert.deepEqual(branch.state.objects, objects);
+  assert.ok(branch.state.calls.every(call => call.method === 'GET'));
 });
 
-test('seed refuses to clear Storage for a non-UUID account id', async () => {
+test('seed refuses a malformed existing identity without any Storage operation', async () => {
   const branch = fakeBranch({ users: [{ id: 'not-a-uuid', email: 'e2e+free@example.com' }] });
-  await assert.rejects(seed(branch), /non-UUID user id/);
+  await assert.rejects(seed(branch), /non-UUID existing QA identity/);
   assert.ok(!branch.state.calls.some((call) => call.url.includes('/storage/')));
 });
 

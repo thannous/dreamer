@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url';
 import { SDK_PINS, digest, trackedDiffSha256, sourceSnapshot, compareSnapshots, verifyReport, aggregateReports, writeOnce, preserveStatus, directoryFiles, hashFiles, createAttemptOutput, verifyEvidenceFiles, verifyNativeCleanup, campaignFailureRecord, startSdkProgress, startHostStallMonitor, HOST_STALL_MS } from './qualification.mjs';
 import { normalizeAvdName, appInputs, nativeInputs, binaryInputs, releaseMetadata, validateReleaseReceipt, verifyInstalledRelease, runWithInstallDiagnostics, validateBuildCommand, archiveReleaseBinary } from './native-release.mjs';
 import { dreamerCampaignContexts } from './campaign-contexts.mjs';
+import { withPersistentQaRun } from '../../scripts/test-persistent-qa.mjs';
 
 const cwd = fileURLToPath(new URL('.', import.meta.url));
 const root = fileURLToPath(new URL('../../', import.meta.url));
@@ -122,7 +123,7 @@ function read(executable, argv, options = {}) {
   return result.stdout.trim();
 }
 function webInputIdentity() {
-  const sourceFiles = ['e2e.config.ts', 'dreamer-personas.ts', 'web-engine.ts', 'web-parity-fixtures.ts', 'exact-web-fixtures.ts', 'backend-context-fixtures.ts', 'web-fixtures.ts', 'backend-fixtures.ts', 'branch-target.ts', 'full-campaign.mjs', 'campaign-contexts.mjs', '../../verify-local.config.mjs', 'preload-web-matchers.mjs', 'run.mjs', 'journeys.ts', 'package.json', 'package-lock.json', 'tsconfig.json',
+  const sourceFiles = ['e2e.config.ts', 'dreamer-personas.ts', 'web-engine.ts', 'web-parity-fixtures.ts', 'exact-web-fixtures.ts', 'backend-context-fixtures.ts', 'web-fixtures.ts', 'backend-fixtures.ts', 'branch-target.ts', 'full-campaign.mjs', 'campaign-contexts.mjs', '../../verify-local.config.mjs', '../../scripts/test-persistent-qa.mjs', '../../scripts/lib/persistent-qa.mjs', '../../scripts/qa/account-leases.sql', 'preload-web-matchers.mjs', 'run.mjs', 'journeys.ts', 'package.json', 'package-lock.json', 'tsconfig.json',
     ...readdirSync(join(cwd, 'tests')).filter(name => name.endsWith('.web.e2e.ts')).map(name => `tests/${name}`),
   ].sort();
   return Object.fromEntries(sourceFiles.map(path => [path, createHash('sha256').update(readFileSync(join(cwd, path))).digest('hex')]));
@@ -288,10 +289,7 @@ function collectCampaign() {
   }
   writeOnce(join(output, 'campaign.json'), { campaignId, revision: sourceBefore.revision, ...aggregate });
 }
-async function runSdk() {
-  // The auth script rejects production and unlisted targets before any request.
-  // Sessions stay in ignored .auth/; their tokens never enter SDK step arguments.
-  if (product === 'branch') read(process.execPath, ['scripts/test-auth-setup.mjs']);
+async function runSdkUnchecked() {
   const collectionArgs = [];
   let repeatCount = 1;
   for (let index = 0; index < args.length; index++) {
@@ -313,6 +311,19 @@ async function runSdk() {
     writeOnce(join(output, 'qualification.json'), proof);
   }
   return primary;
+}
+async function runSdk() {
+  if (product !== 'branch') return runSdkUnchecked();
+  let receipt;
+  const status = await withPersistentQaRun(async run => {
+    receipt = { runId: run.runId, targetRef: run.targetRef, accounts: run.accounts.map(account => account.tier) };
+    env.E2E_QA_RUN_ID = run.runId;
+    env.E2E_QA_RUN_DIR = run.dir;
+    try { return await runSdkUnchecked(); }
+    finally { delete env.E2E_QA_RUN_ID; delete env.E2E_QA_RUN_DIR; }
+  });
+  writeOnce(join(output, 'persistent-qa.json'), { ...receipt, health: 'verified at launch', cleanup: 'verified', sdkExitCode: status });
+  return status;
 }
 try {
   sourceBefore = sourceSnapshot(root, product);

@@ -253,6 +253,10 @@ export default {
     'scripts/test-auth-setup.mjs',
     'scripts/start-branch-e2e.mjs',
     'scripts/test-test-seed-auth.mjs',
+    'scripts/test-persistent-qa.mjs',
+    'scripts/lib/persistent-qa.mjs',
+    'scripts/lib/persistent-qa.test.mjs',
+    'scripts/qa/account-leases.sql',
     // The Expo runner re-checks a guarded branch run (marker from start-branch-e2e).
     'scripts/expo-safe-runner.js',
     'scripts/expo-safe-runner.test.js',
@@ -298,7 +302,7 @@ export default {
     // project missing from the allowlist, before any network call.
     {
       name: 'test-supabase-guard',
-      command: 'node --test scripts/test-test-supabase-guard.mjs scripts/test-test-seed-auth.mjs && npm run test:file -- scripts/expo-safe-runner.test.js',
+      command: 'node --test scripts/test-test-supabase-guard.mjs scripts/test-test-seed-auth.mjs scripts/lib/persistent-qa.test.mjs && npm run test:file -- scripts/expo-safe-runner.test.js',
       inputs: [
         'scripts/test-supabase-guard.mjs',
         'scripts/test-test-supabase-guard.mjs',

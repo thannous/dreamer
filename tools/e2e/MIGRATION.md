@@ -264,3 +264,33 @@ passed (10 run, 6 reused, 3 out of scope), proof tree
 again before push and recorded in PR #530. Independent delta review confirms
 Save clipping/restoration and parity of the merged owner assertions, with no
 remaining P1/P2. All outputs stay private and ignored as before.
+
+## Persistent QA identity support (2026-10-21 follow-up)
+
+The owner requested an existing, constant QA identity preserved between runs.
+Inspection found no local branch credentials/sessions, an empty committed allowlist
+and no Noctalia branch in read-only Supabase metadata. Only production project
+metadata was read; no production users/data or credentials were inspected. A hosted
+QA target is not provisioned or qualified. The prepared plan and cost/domain/access
+decisions are in [test-login.md](../../doc_web_interne/docs/test-login.md).
+
+Normal branch runs now verify health, exact pinned Auth UUID/email, effective
+free/Plus tiers and own-row access. A QA-only RLS table provides exclusive
+cross-machine account leases; run UUIDs and registered request UUIDs restrict
+fixture writes/cleanup. Cleanup failure retains the lease and private recovery
+manifest and fails the run. No TTL lock stealing, account-wide delete, password
+rotation, quota reset or global sign-out occurs. Existing seeding now preserves
+existing identities/passwords/data/tiers, creating only missing dedicated QA users
+during explicitly approved initialization. No admin credential is used by normal
+runs, no new admin key was issued, and QA-only SQL is outside production migrations.
+
+Both branch TesterArmy cases keep their session checks and additionally require
+their server-backed per-run journal fixture. They remain **blocked by missing hosted
+QA target**, not passed via mocks. The 8 existing disposable backend journeys,
+including deletion, retain their isolated ephemeral accounts. `test:qa:local` adds
+a native integration contract after those cases: two cycles with the same users,
+preserved prior data, lock contention, RLS and cleanup. It destroys its owned
+stack afterwards and cannot prove a hosted identity remains available.
+
+Validation results and exact revision are recorded after execution; no Docker,
+production, native device, Store or permanent hosted availability is claimed.

@@ -59,7 +59,7 @@ and `app.config.ts`. Meditation has its own package, lockfile and
 | Android performance measurement | [Performance protocol](../../scripts/android/README-performance.md) | Pilot first, use the device lock and identify the installed binary. |
 | TalkBack qualification | [Motorola protocol](qualification-talkback.md) | Pilot the measurement method and restore device settings. |
 | Delivery rule | [Common delivery rule](regle-commune-livraison.md) | Four-line common rule; [local checks and current CI](repository-operations.md#local-validation-and-ci) explain repository-specific execution. |
-| Test login | [Shared test login](test-login.md) | Guard (production refused, allowlisted test projects only), env names, premium mechanism and owner steps. Seed, API login and Playwright storageState for the persistent `e2e` branch (a TesterArmy native sign-in journey will be written once the branch exists); owner dashboard steps. |
+| Test login | [Shared test login](test-login.md) | Guard (production refused, allowlisted test projects only), env names, premium mechanism and owner steps. Pinned reusable identities, health checks, exclusive database leases and run-scoped cleanup for the persistent `e2e` branch; hosted provisioning is pending and native local reuse proof is separate. |
 | Local validation and manual benchmark | [CircleCI guide](circleci-migration.md) | `verify-local.config.mjs` owns all validation. CircleCI runs only the E2E/Chromium installation benchmark: manual/API trigger plus `run_e2e_benchmark=true`. Local rerun: `npm run test:testerarmy:benchmark`. |
 
 ## Find files before reading them

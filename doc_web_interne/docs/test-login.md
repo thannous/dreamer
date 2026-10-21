@@ -1,288 +1,177 @@
-# Shared test login (persistent Supabase test branch)
+# Reusable QA identity (persistent Supabase test branch)
 
-Goal (fleet decision, 2026-10-10): dedicated test accounts on a test Supabase
-backend, logged in through the API, so agents reuse a saved session instead of
-driving the login screen. dreamer is the reference for the other repos.
+Owner intent: dedicated, stable, non-personal accounts that remain available
+between runs. A run logs in to existing identities; it does not replace them.
+The disposable native backend remains separate, including isolated signup and
+account-deletion fixtures.
 
-## Status
+## Current state and provisioning boundary
 
-- **Target (owner decision, option B):** a persistent Supabase branch of the
-  production project, named `e2e`, with its own ref and keys, built from
-  `supabase/migrations`, holding no production data. It is not created yet, so
-  `scripts/test-supabase-targets.json` stays empty and every script refuses to run.
-  Once it exists, its ref (placeholder `<e2e-branch-ref>`, a 20-character lowercase
-  ref) goes into that file through a reviewed PR. Never put a fake ref there.
-- **Built and tested with mocked fetch only:** `npm run test:seed-users`,
-  `npm run test:auth-setup`, the opt-in Playwright suite `npm run test:e2e:branch`,
-  and the guarded Expo start `scripts/start-branch-e2e.mjs`. None has run against a
-  real branch yet. There is no mobile journey for now (see [Mobile](#mobile)).
-- The only other non-production backend is the disposable local stack of
-  `npm run test:e2e:backend` (native Supabase runtime on loopback, no Docker); it is
-  unchanged by test-login.
+Inspection on 2026-10-21 found no `.env.test.local` or saved branch sessions in
+this isolated checkout. The committed `scripts/test-supabase-targets.json` is
+empty. Read-only Supabase project/branch metadata returned the two production
+projects (Noctalia and Shapier) and **no Noctalia test branch**. No production
+users, credentials or data were queried. No hosted identity is available or
+qualified by this PR; hosted branch journeys are blocked before network access.
 
-## Guard (`scripts/test-supabase-guard.mjs`)
+The existing owner choice is a **persistent branch `e2e`** of Noctalia, with its
+own project ref/keys, schema only and no production data. Creating it has cost
+and access effects: provisioning is pending, not performed. Before that action,
+confirm the organization, obtain its current Supabase branch cost quote and
+approve that cost, the QA target and the account domain. Do not infer cost
+approval from the general E2E migration request.
 
-Every test-login script must call `runGuarded(env, action)` before any network
-call. The action receives `{ target, accounts, fetch }`: the canonical
-`target.url`, only the two accounts built from `E2E_ACCOUNT_DOMAIN`
-(`e2e+free@` and `e2e+premium@`), and a `fetch` that refuses any request whose
-origin is not the target and never follows a redirect (`redirect: 'error'`). It must use those and nothing else: never read
-`E2E_SUPABASE_URL` itself, never take another address (a static test checks every
-`scripts/test-*seed*` / `scripts/test-*auth*` script). The policy is not
-configurable by callers: the production ref and key are pinned in the script, and
-the allowlist is the committed file next to it (read relative to the script, not
-the working directory). Only `_assertWithListsForTests` /
-`_runGuardedWithListsForTests` take an allowlist, for the guard's own tests; no
-runtime script may import them, and even they keep production forbidden. It
-refuses, with no override:
+Prepared plan for that decision:
 
-- the production project `usuyppgsmmowzizhaoqj`, also when its ref or its public
-  key appears in any `E2E_*` value, and even if someone allowlists it;
-- any ref not listed in `scripts/test-supabase-targets.json` (empty today, so
-  every project is refused: fail closed), and an allowlist entry that is not a
-  20-character lowercase ref or is the production ref;
-- a URL that is not byte for byte `https://<ref>.supabase.co` (one trailing slash
-  allowed; no port, path, case change, whitespace, custom domain or local URL);
-- a missing or invalid `E2E_ACCOUNT_DOMAIN` (before the action runs);
-- a key in the wrong slot: `E2E_SUPABASE_ANON_KEY` (bundled into the app) must be
-  `sb_publishable_...` or a legacy JWT with `role: anon`;
-  `E2E_SUPABASE_SERVICE_ROLE_KEY` must be `sb_secret_...` or a legacy JWT with
-  `role: service_role`; anything else (swapped keys, other roles, unknown format)
-  is refused;
-- `E2E_SUPABASE_PROJECT_REF` missing or different from the URL ref, and a legacy
-  JWT key whose `ref` claim names another project;
-- any account email other than `e2e+free@<domain>` and `e2e+premium@<domain>`.
+1. Create persistent `e2e` under the approved organization/project, without data
+   copying and without enabling automatic production deployment. Verify its
+   distinct ref, persistence and current service health.
+2. Reconcile the QA schema with this checkout's migrations. Historical cron jobs
+   contain production function URLs: neutralize/disable them in QA before enabling
+   work; keep the Vault reconciliation secret and `REVENUECAT_*` absent. Inspect
+   branch-inherited Edge Functions; deploy this checkout's functions **to QA only**
+   if a journey needs them. The current saved-session/data cases do not.
+3. Apply [account-leases.sql](../../scripts/qa/account-leases.sql) **only to the
+   approved QA database**. It is deliberately outside `supabase/migrations` and
+   never included in production releases. Normal runs need only the existing
+   publishable/anon key, password login, own-row Data API and these own-row lease
+   grants. There is no runner admin credential or new admin key.
+4. Use `e2e+free@<approved-QA-domain>` and `e2e+premium@<approved-QA-domain>`.
+   `qa.noctalia.app` is a candidate requiring domain-owner confirmation, not an
+   existing verified mailbox/domain claim. Use a dedicated QA mailbox/vault;
+   never a personal account. Initialize missing identities once with the existing
+   QA owner's admin credential, assign the initial free/Plus tiers, then remove
+   that credential from the normal runner environment. Verify and pin both Auth
+   UUIDs. Re-running the seed preserves existing passwords, tier and data.
+5. Review the real QA ref into the committed allowlist. Store credentials in the
+   owner's approved password vault and this checkout's ignored `.env.test.local`
+   with mode 0600; directories/sessions are private. Do not copy another checkout's
+   secrets or put a value in a command, chat, report, screenshot or Git.
+6. Run the preflight and two hosted TesterArmy cases; verify the same server Auth
+   UUIDs and pre-existing data survive subsequent runs. Only after that can the
+   hosted identity be described as reusable. Availability still depends on the
+   branch, Auth settings, tier validity and credentials: no perpetual uptime
+   promise follows from a local proof.
 
-`npm run test:env:check` reads `.env.test.local` and runs the guard. It makes no
-request and never prints a key or a password. Adding a test ref to the allowlist is
-an owner-reviewed change (the file is in `deliveryFiles`).
+## Guard and configuration
 
-## Variables (`.env.test.local`, gitignored; names in `.env.test.example`)
+Every hosted entry point uses `runGuarded` before network requests. It refuses
+the production ref `usuyppgsmmowzizhaoqj`/public key even if allowlisted, an empty
+or invalid allowlist, any other ref, a noncanonical URL, a mismatched ref/JWT,
+wrong key roles and account addresses outside the two dedicated aliases. No
+runtime override exists. URLs are exactly `https://<20-character-ref>.supabase.co`
+(with optional trailing slash), with no port, path, credentials or custom host.
+The guarded fetch refuses other origins and redirects. The allowlist is resolved
+relative to the script, never the working directory. A local target cannot pass
+this hosted guard; only the owned native integration runner uses loopback.
 
-| Name | Content |
+`.env.test.example` defines names only. `.env.test.local` is ignored and local to
+this checkout; only its `E2E_*` fields are read:
+
+| Variable | Purpose |
 | --- | --- |
-| `E2E_SUPABASE_URL` | `https://<e2e-branch-ref>.supabase.co` |
-| `E2E_SUPABASE_PROJECT_REF` | the branch ref, equal to the URL ref |
-| `E2E_SUPABASE_ANON_KEY` | branch publishable (`sb_publishable_`) or legacy anon key: password grant, app |
-| `E2E_SUPABASE_SERVICE_ROLE_KEY` | branch secret (`sb_secret_`) or legacy service_role key: seed only |
-| `E2E_ACCOUNT_DOMAIN` | domain of the test accounts (`e2e+free@`, `e2e+premium@`) |
-| `E2E_FREE_PASSWORD` | password of `e2e+free@<domain>` |
-| `E2E_PREMIUM_PASSWORD` | password of `e2e+premium@<domain>` |
+| `E2E_SUPABASE_URL`, `E2E_SUPABASE_PROJECT_REF` | Approved QA URL and the same distinct ref |
+| `E2E_SUPABASE_ANON_KEY` | QA publishable key or legacy anon JWT; never an admin key |
+| `E2E_ACCOUNT_DOMAIN` | Verified dedicated QA domain |
+| `E2E_FREE_PASSWORD`, `E2E_PREMIUM_PASSWORD` | Existing dedicated account passwords, kept private |
+| `E2E_FREE_USER_ID`, `E2E_PREMIUM_USER_ID` | Verified existing Auth UUIDs; distinct and required |
+| `E2E_SUPABASE_SERVICE_ROLE_KEY` | One-time approved seed only; omit for normal runs |
 
-No RevenueCat key is needed (see Premium). These names are `E2E_*` on purpose: an
-`EXPO_PUBLIC_*` name would be bundled into the app. No plus-address controlled by
-the owner is documented in the repo, so the domain is env-driven.
+No `E2E_*` credential belongs in `EXPO_PUBLIC_*`. New Supabase API keys are sent
+on `apikey`; only legacy JWT keys also use `Authorization: Bearer`. See the
+[official API key guidance](https://supabase.com/docs/guides/api/api-keys).
 
-## Premium mechanism (for the seed)
+## Normal lifecycle and shared-account lock
 
-The server owns the tier. `public.apply_subscription_state_update(p_user_id,
-p_tier, p_is_active, ...)` (migrations `20260316140000`, `20260316154500`),
-callable with the service role, writes the subscription state that the quota
-triggers and the app read (`app_metadata` tier, `plus` or `free`). RevenueCat
-webhooks call the same path in production. The local backend fixture
-(`tools/e2e/backend-fixtures.ts`) already makes its Plus account this way with
-`p_tier: 'plus', p_is_active: true, p_source: 'local-e2e-fixture'`. The seed does
-the same on the branch.
+`npm run test:qa:check` executes health, identity, tier, read/write and cleanup
+checks. `npm run test:e2e:branch` holds the same lifecycle around the complete
+TesterArmy run, including collection and server use:
 
-RevenueCat can undo that: in a build with a RevenueCat key,
-`hooks/useSubscriptionInternal.ts` replaces the optimistic metadata tier with the
-RevenueCat status and calls `/subscription/refresh`, which maps a user with no
-RevenueCat customer to `free` and writes it to the server. So the test runtime
-keeps RevenueCat out on both sides:
-- app: no `EXPO_PUBLIC_REVENUECAT_*` key. `scripts/start-branch-e2e.mjs` removes
-  them and sets `EXPO_NO_DOTENV=1`, so web and dev builds use the store-less
-  subscription service of `services/subscriptionService.ts`, which reads the
-  `app_metadata` tier;
-- branch functions: no `REVENUECAT_*` secret, so `/subscription/refresh` answers
-  "RevenueCat not configured" (500) and applies nothing
-  (`supabase/functions/api/routes/subscription.ts`).
-A RevenueCat sandbox entitlement would be the alternative; it is not needed with
-the two rules above (to confirm on the first real run).
+1. Check Auth health; password-login both existing accounts, check exact UUID and
+   email, verify each identity again with server `GET /auth/v1/user`, require the
+   effective free/Plus tier, and check own-data read access. No seed or password
+   reset occurs. Use an Auth policy that permits multiple sessions; a contender's
+   fresh login must not invalidate the owner's session.
+2. Claim `qa_account_leases` for both accounts. A database primary key, with RLS
+   limited to `auth.uid()`, makes the lock effective across machines/checkouts.
+   A conflict fails the run. Every agent using these accounts must use this
+   runner; the lock coordinates the harness, not arbitrary manual app activity.
+3. Save a private recovery manifest and sessions in `.auth/runs/<run-UUID>/`
+   (directory 0700, files 0600). Existing `.auth/free.json` is never reused by the
+   branch runner. No session/token is put in SDK arguments or HTTP/model traces.
+4. Insert one synthetic, unanalysed dream per account, with `QA:<run-UUID>:<tier>`
+   title and a registered unique `client_request_id`. Both browser cases assert
+   their session and this server-backed journal fixture. No AI, image, payment,
+   quota reset or entitlement mutation occurs.
+5. In `finally`, select by **both user UUID and exact registered request UUID**,
+   verify the run title, delete that exact fixture, verify absence, release only
+   this run's lease, and close only this run's local Auth session. Existing dreams,
+   images, receipts, quota and accounts remain. Successful runs remove only their
+   private run directory and record a redacted receipt.
 
-## Login path and captcha
+An insert's response can be lost and commit after an immediate empty read.
+Any indeterminate claim/fixture write retains its manifest and account ownership
+for explicit recovery; it never releases on an immediate empty observation.
+Registered IDs restrict later owner recovery to that attempted run. Cleanup
+failure is a failed run, retains that account's lease and recovery manifest, and
+never becomes a pass because the browser passed. There is **no expiry, automatic
+lock stealing, whole-account reset or global logout**. For crash/cleanup recovery,
+the QA owner first verifies the recorded runner has stopped, checks target and
+manifest UUIDs, then removes only the matching run fixtures/lease. Renew local
+credentials through the approved secure store if the session expired. Never
+release another run or delete account-wide data to bypass a busy account.
 
-- Password sign-in already exists in the app (`components/auth/EmailAuthCard.tsx`,
-  `signInWithEmailPassword` in `lib/auth.ts` and `lib/auth.web.ts`), in every build,
-  for real users. It is a product feature of the production project, not a test
-  switch, so this PR does not and cannot make password login "test only". The test
-  project needs Email provider with password sign-in on; nothing is enabled on
-  production by this work.
-- Turnstile is used only for web guest sessions (`lib/turnstileWeb.ts`, edge
-  function `guestSession`); no sign-in call passes a captcha token, and Supabase Auth
-  captcha is off in `supabase/config.toml`. On the hosted test project, Auth captcha
-  must stay off (dashboard) or the password grant fails. Production is unchanged.
+## Commands and validation
 
-## Scripts
+- `npm run test:env:check`: pure configuration/target guard, no network.
+- `npm run test:qa:check`: guarded hosted lifecycle, no browser; currently blocked
+  because the target/credentials do not exist.
+- `npm run test:e2e:branch`: two TesterArmy saved-session + journal cases on QA;
+  currently unexecuted against a hosted target.
+- `npm run test:qa:guards`: deterministic failure/recovery coverage without secrets
+  or remote services (busy account, uncertain claim, failed cleanup, wrong UUID,
+  body failure and production/unconfigured refusal).
+- `npm run test:qa:local`: canonical native Supabase runner, the existing eight
+  backend browser cases, then two reusable-account cycles on that same owned
+  stack. It checks identical Auth UUIDs, preserved pre-existing data, database
+  lock contention, cross-account RLS and exact cleanup. It creates synthetic
+  accounts once for this stack, **then destroys the entire stack**. This is an
+  integration contract, not a hosted account kept available between invocations.
+  Redacted receipt: ignored `test-results/persistent-qa-local.json`.
+- `npm run test:seed-users`: approved provisioning only. Creates missing dedicated
+  users and assigns their initial server tier with `apply_subscription_state_update`;
+  existing identities are returned unchanged. No password, dreams, quota, storage,
+  rate buckets, sync receipts or entitlement reset. It is never called by a run.
+- `npm run test:auth-setup`: legacy standalone API session export, excluded from
+  normal branch runs; it does not acquire a shared-account lease. Do not use its
+  files to bypass `test:qa:check` / `test:e2e:branch`.
 
-All of them read `.env.test.local` (only the `E2E_*` names), go through the guard
-before any request and print no key, password or token.
+The native runtime is the pinned Supabase CLI 2.121.0 on supported hosts. No
+Docker/Podman fallback. Native proof is recorded separately in the
+[migration evidence](../../tools/e2e/MIGRATION.md).
 
-1. `npm run test:seed-users` (`scripts/test-seed-users.mjs`), with the secret
-   (service role) key. For each of `e2e+free@<domain>` and `e2e+premium@<domain>`:
-   find it through the admin API (`GET /auth/v1/admin/users`, paged), create it
-   (`POST`, `email_confirm: true`) or reset its password (`PUT`), delete its dreams
-   (`DELETE /rest/v1/dreams?user_id=eq.<id>`, as the local fixture does) and its
-   quota usage (`DELETE /rest/v1/quota_usage?user_id=eq.<id>`: those rows are
-   counted per month even when the dream is gone) and its HD illustration credits
-   (`DELETE /rest/v1/hd_image_credits?user_id=eq.<id>`, table of migration
-   `20260916185856`, also counted per month) and its sync receipts
-   (`DELETE /rest/v1/dream_sync_receipts?user_id=eq.<id>`, migration
-   `20260316130000`: a kept receipt would answer a replayed request with the
-   deleted dream), its AI burst buckets (`DELETE
-   /rest/v1/ai_rate_limit_buckets?actor_hash=eq.<sha256("user:<id>")>`, the hash
-   `aiAdmission.ts` uses; the `global` rows stay) and its generated images (Storage
-   API: list `dream-images` under `<id>/` then remove, page by page, only for those
-   two account ids), then set
-   its tier with `apply_subscription_state_update`: `p_tier 'plus', p_is_active
-   true` for premium (the fixture's values), `p_tier 'free', p_is_active false` for
-   free, `p_source 'e2e-seed'`, a fresh `p_source_event_id`. Idempotent: a second run
-   resets the same two accounts and never touches another user. Passwords must be at
-   least 12 characters of printable ASCII without spaces (the seed refuses others:
-   Android test drivers cannot type Unicode, and a native journey will type them).
-2. `npm run test:auth-setup` (`scripts/test-auth-setup.mjs`), with the publishable
-   (anon) key: password grant (`POST /auth/v1/token?grant_type=password`) per
-   account, checks the session belongs to that account, and writes a Playwright
-   storageState to `.auth/free.json` and `.auth/premium.json` (gitignored; folder
-   0700, files 0600). Shape: origin `http://127.0.0.1:8087`, localStorage key
-   `sb-<ref>-auth-token` holding the session JSON, which is what the web app's
-   supabase-js client reads (`lib/supabase.ts` keeps the default storage and key
-   on web; supabase-js 2.89 stores `JSON.stringify(session)` under
-   `sb-<hostname first label>-auth-token`).
-3. Key headers: new `sb_publishable_`/`sb_secret_` keys are sent on `apikey` only,
-   legacy JWT keys also as `Authorization: Bearer`
-   ([API keys, Known limitations](https://supabase.com/docs/guides/api/api-keys)).
+## Web boundaries and future mobile
 
-## Web (TesterArmy)
+The branch Expo start removes shell credentials/endpoints and `NODE_OPTIONS` /
+`NODE_PATH`, forces `EXPO_NO_DOTENV=1`, and rechecks the approved QA URL/keys in
+`expo-safe-runner`. RevenueCat, Google and Turnstile credentials are absent.
+The subscription service reads the server-owned metadata tier; branch Functions
+must also have no RevenueCat secret, so refresh cannot silently downgrade Plus.
+Email/password Auth must be enabled with QA captcha off; production Auth is unchanged.
 
-`npm run test:e2e:branch` runs the guarded TesterArmy `branch-web` target,
-opt-in and separate from the mock and disposable local backend targets. The
-runner calls `npm run test:auth-setup` before its SDK run, then
-`tools/e2e/tests/branch.web.e2e.ts` restores each guarded session.
-The web server is
-`scripts/start-branch-e2e.mjs`: it takes the target from the guard and starts Expo
-with that URL, the branch publishable key, the branch functions URL
-(`https://<ref>.functions.supabase.co/api`), `EXPO_PUBLIC_SUPABASE_FUNCTION_JWT` set to
-the branch key (else `lib/http.ts` falls back to the production legacy JWT in
-`app.json`), mock mode off and `EXPO_NO_DOTENV=1` (no `.env.local` mixed in); no
-`E2E_*` variable reaches Metro, and `NODE_OPTIONS` / `NODE_PATH` are dropped (a preload would run before the runner's final guard). Of the shell's `EXPO_PUBLIC_*` values (inlined into
-the bundle) only an explicit allowlist of feature flags passes
-(`PASSTHROUGH_EXPO_PUBLIC` in the script); keys, endpoints, RevenueCat, Google,
-Turnstile, mock and QA switches are dropped. Arguments: only `--web`,
-`--port <1-65535>`, `--dev-client`, `--clear`, `--lan` and `--localhost` pass;
-anything else (`--profile`, `--profile=...`, `-p`, positional args, `--`) is
-refused before anything starts, so no env file can replace the guarded target.
-The script also sets `NOCTALIA_BRANCH_E2E_GUARD=1` for `scripts/expo-safe-runner.js`.
-With that marker present (any value; it only adds restrictions) the runner refuses
-`--profile` and anything but `expo start`, forces `EXPO_NO_DOTENV=1` (Expo CLI
-would otherwise auto-load `.env`, `.env.local` and the like from the project
-root), and re-runs the guard on the final `EXPO_PUBLIC_SUPABASE_URL`, anon key,
-`EXPO_PUBLIC_API_URL` and `EXPO_PUBLIC_SUPABASE_FUNCTION_JWT` before Expo starts:
-production ref or key anywhere in `EXPO_PUBLIC_*`, a non-allowlisted ref, another
-functions host or a non-anon function key all refuse. Scope: the harness covers Auth and
-database journeys. A branch starts with the parent project's deployed Edge
-Functions and, without the GitHub integration, never receives the functions of
-this checkout; journeys that call functions (analysis, chat) need owner step 4b
-first, else they test stale functions. Edge Functions want
-a JWT: use the branch legacy anon JWT as `E2E_SUPABASE_ANON_KEY` for journeys
-that call them (the guard checks its `ref` claim names the branch); with a
-publishable key, function calls may answer 401. Reports identify the source revision, dirty state, target and exact rerun command.
+The browser fixture aborts production HTTP and Realtime WebSocket requests.
+The latter and private session injection still use the preserved public browser
+surface because this locked TesterArmy Browser API lacks equivalents. No model
+or HTTP payload trace is enabled. Reports identify revision, target and cleanup.
+The branch remains excluded from `test:testerarmy:all` while unprovisioned.
 
-The fixture fails a test if any request reaches the production project: HTTP
-through `context.route` and Realtime WebSockets through `context.routeWebSocket`;
-both are aborted before they leave. Tokens are loaded through the raw public
-browser surface, without placing their values in SDK step arguments. Only SDK
-Markdown steps are retained; no HTTP payload trace or model is enabled.
-`tools/e2e/tests/branch.web.e2e.ts` checks both accounts open signed in. The
-committed target allowlist is still empty: no hosted execution is qualified, and
-this target remains excluded from `test:testerarmy:all`.
+No shared-account mobile journey is qualified. A future one needs an owned build
+pointed at QA and its device lock; a production build cannot use this profile.
+The retired Maestro sign-in never ran and provides no coverage proof. Keep
+isolated ephemeral accounts for tests that intentionally sign up/delete users.
 
-## Mobile
-
-No mobile journey for now. The Maestro sign-in (`npm run test:e2e:branch:mobile`,
-`scripts/maestro-branch-sign-in.mjs`, `maestro/e2e-account-sign-in.yml`) was retired
-with Maestro on 2026-10-14 without ever running: the branch does not exist and the
-allowlist is empty. When the branch exists, a TesterArmy native journey
-(`tools/e2e/`) will sign the shared accounts into the existing EmailAuthCard form
-(`settings-account-open-signin`, `input.auth.email`, `input.auth.password`,
-`btn.auth.signIn`), check that `text.auth.email` is exactly the expected account,
-and take its credentials from `.env.test.local` through the guard, never from the
-command line. It needs a build pointed at the branch: a release build talks to
-production, where these accounts do not exist.
-
-## supabase/config.toml: unchanged (decision)
-
-- Branching reads `config.toml` only through the GitHub integration: the deployment
-  step "Configure - Updates service configurations based on your config.toml file"
-  is "only available for Branching via GitHub"
-  ([Branching](https://supabase.com/docs/guides/deployment/branching)).
-- A persistent branch gets its own settings from a `[remotes.<name>]` block whose
-  `project_id` "must reference an existing branch", applied "when merging a PR
-  into a persistent branch"; with no remote or a wrong id "the configuration step is
-  skipped" ([Branching configuration](https://supabase.com/docs/guides/deployment/branching/configuration)).
-  The branch ref does not exist yet and a fake ref is not allowed, so no block now.
-- On the production branch, the GitHub integration's "Deploy to production"
-  applies new migrations and deploys Edge Functions and storage buckets declared in
-  `config.toml`; "All other configurations, including API, Auth, and seed files, are
-  ignored by default"
-  ([GitHub integration](https://supabase.com/docs/guides/deployment/branching/github-integration)).
-  So the top-level `[auth]` block would not change production auth by default, but
-  the integration would push migrations and functions to production on every merge
-  to `master`, outside the delivery rule (nothing goes to production without thanh's go). Ephemeral preview branches
-  also get the top-level config.
-- Recommendation: no GitHub integration. Create the branch with the CLI or the
-  dashboard and set its Auth settings in the dashboard with the branch selected
-  ("Any changes you make (including ... configuration changes) are now made against
-  the currently selected branch",
-  [Branching via the dashboard](https://supabase.com/docs/guides/deployment/branching/dashboard)).
-  If the integration is ever enabled, add `[remotes.e2e]` (real `project_id`, email
-  password on, captcha off) and keep "Deploy to production" off.
-
-## Owner steps (thanh)
-
-See the click-level list below; production auth settings never change.
-
-1. Plan: branching needs the Pro plan or above; a branch is billed for its usage,
-   from $0.01344 per hour on Micro compute, and branch compute is not covered by
-   compute credits or the spend cap
-   ([Manage Branching usage](https://supabase.com/docs/guides/platform/manage-your-usage/branching)).
-2. Create the persistent branch `e2e` without data:
-   CLI (recommended): `supabase branches create e2e --persistent --project-ref usuyppgsmmowzizhaoqj`
-   (no `--with-data`). Dashboard alternative (public alpha): user menu (top right)
-   > Branching via dashboard > Enable feature; top bar branch selector > Create
-   branch `e2e`, Include data left off; then make it persistent with
-   `supabase branches update e2e --persistent --project-ref usuyppgsmmowzizhaoqj`
-   (the parent project, as no project is linked yet; the dashboard "Switch to
-   persistent" item may only appear for Git-linked branches).
-3. Migrations: a new branch is a clone of the production schema built from the
-   production migration history ("Pull - Retrieves database migrations from your
-   main project"). Check it: `supabase link --project-ref <e2e-branch-ref>`, then
-   `supabase migration list --linked` must show every file of `supabase/migrations`
-   on both sides; apply any missing one with `supabase db push` (still linked to
-   the branch). Re-link production afterwards if you use the link elsewhere.
-4. Ref and keys: `supabase branches list --project-ref usuyppgsmmowzizhaoqj` (column `BRANCH PROJECT ID`) or the
-   dashboard with `e2e` selected; URL `https://<e2e-branch-ref>.supabase.co`;
-   keys under Settings > API Keys with `e2e` selected, or
-   `supabase projects api-keys --project-ref <e2e-branch-ref>` (a branch has its
-   own keys).
-4b. Edge Functions, only for journeys that call them: deploy this checkout's
-   functions to the branch, never to production:
-   `supabase functions deploy --project-ref <e2e-branch-ref>` (with any branch
-   function secret other than `REVENUECAT_*`), then check the versions under Edge
-   Functions with `e2e` selected. Auth and database journeys do not need it.
-5. Auth on the branch (`e2e` selected): Authentication > Sign In / Providers >
-   Email enabled; captcha off at Settings > Authentication > Bot and Abuse
-   Protection > Enable CAPTCHA protection (off). The seed confirms the accounts,
-   so email confirmation can stay on.
-6. Reconcile cron: two migrations (`20251222162951_` and
-   `20251223000000_schedule_revenuecat_reconcile.sql`) schedule
-   `revenuecat_reconcile_daily` with a hard-coded production functions URL. With
-   `e2e` selected, SQL editor: `select cron.unschedule('revenuecat_reconcile_daily');`.
-   The job only calls out when the vault holds `revenuecat_reconcile_secret`; never
-   add it, nor any `REVENUECAT_*` function secret, to the branch
-   (`supabase secrets list --project-ref <e2e-branch-ref>` shows none).
-7. No production data: with `e2e` selected, Authentication > Users is empty and
-   Table Editor > `dreams` has no rows before the first seed.
-8. Review PR: add `<e2e-branch-ref>` to `scripts/test-supabase-targets.json`.
-9. On the machine that runs the tests: copy `.env.test.example` to
-   `.env.test.local`, fill it, run `npm run test:env:check`, then
-   `npm run test:seed-users` and `npm run test:auth-setup`.
+Supabase references: [password login](https://supabase.com/docs/reference/javascript/auth-signinwithpassword),
+[server identity check](https://supabase.com/docs/reference/javascript/auth-getuser),
+[branching](https://supabase.com/docs/guides/deployment/branching),
+[branch configuration](https://supabase.com/docs/guides/deployment/branching/configuration),
+[usage and billing](https://supabase.com/docs/guides/platform/manage-your-usage/branching).

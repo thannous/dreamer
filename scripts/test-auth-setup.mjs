@@ -46,17 +46,10 @@ export function makeAuthAction(secrets, { dir = AUTH_DIR, log = console.log, now
       });
       const text = await response.text();
       if (!response.ok) {
-        // The auth error body carries no secret; it is still not printed whole.
-        let reason = '';
-        try {
-          const parsed = JSON.parse(text);
-          reason = String(parsed.error_code ?? parsed.error ?? parsed.code ?? '').slice(0, 80);
-        } catch {
-          reason = '';
-        }
-        throw new Error(`test-auth-setup: password login failed for ${email} (${response.status}${reason ? `, ${reason}` : ''}). Run npm run test:seed-users first.`);
+        throw new Error(`test-auth-setup: password login failed (${response.status}); response omitted. Verify the existing dedicated QA account.`);
       }
-      const session = JSON.parse(text);
+      let session;
+      try { session = JSON.parse(text); } catch { throw new Error('test-auth-setup: invalid response.'); }
       if (!session.access_token || !session.refresh_token || !session.user?.id) {
         throw new Error(`test-auth-setup: the token endpoint returned no session for ${email}.`);
       }

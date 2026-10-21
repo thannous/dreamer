@@ -670,3 +670,13 @@ fixture. The backend keeps its canonical local frontend origin on port 8085;
 no foreign server is stopped or reused. There is no legacy Playwright runner or
 legacy selection flag. Server assertions, account cleanup, network boundaries
 and private evidence are preserved; see [MIGRATION.md](MIGRATION.md).
+
+## Persistent shared QA identities
+
+The opt-in `npm run test:e2e:branch` acquires database leases around both saved-session
+journeys, checks pinned server identities and creates/cleans only its registered
+run fixtures. Normal runs never seed, reset or delete the shared users. The target
+is still unprovisioned; no hosted execution or perpetual availability is claimed.
+`npm run test:qa:local` validates two reuse cycles on the owned native Supabase
+stack after the eight backend cases, then destroys that stack. Keep signup/deletion
+fixtures ephemeral. See [configuration, recovery and pending owner decisions](../../doc_web_interne/docs/test-login.md).

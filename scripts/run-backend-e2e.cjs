@@ -25,13 +25,16 @@ const runtime = 'native';
 const qualificationIndex = args.indexOf('--qualify-ti528');
 const qualifyTi528 = qualificationIndex >= 0;
 if (qualifyTi528) args.splice(qualificationIndex, 1);
+const qaIndex = args.indexOf('--qualify-persistent-qa');
+const qualifyPersistentQa = qaIndex >= 0;
+if (qualifyPersistentQa) args.splice(qaIndex, 1);
 const workdir = fs.mkdtempSync(path.join(os.tmpdir(), 'noctalia-backend-e2e-'));
 const project = `noctalia-backend-e2e-disposable-${randomUUID().slice(0, 8)}`;
 const target = path.join(workdir, 'supabase');
 const cli = process.env.E2E_SUPABASE_CLI || path.join(root, 'node_modules/.bin/supabase');
 const quote = arg => `'${arg.replaceAll("'", "'\"'\"'")}'`;
 const rerunArgs = [...(requestedRuntime ? ['--runtime', requestedRuntime] : []),
-  ...(qualifyTi528 ? ['--qualify-ti528'] : []), ...args].map(quote).join(' ');
+  ...(qualifyTi528 ? ['--qualify-ti528'] : []), ...(qualifyPersistentQa ? ['--qualify-persistent-qa'] : []), ...args].map(quote).join(' ');
 // Supabase documents this one for root runs of the native runtime; other SUPABASE_* settings are dropped.
 const keptSupabaseEnv = ['SUPABASE_NATIVE_POSTGRES_USER'];
 // The rerun repeats the overrides that chose the executable and the database user.
@@ -122,6 +125,13 @@ async function main() {
         await runChild(process.execPath, ['--run', 'db:qualify:local'], {
           cwd: root,
           env: { ...process.env, TI528_LOCAL_STATUS: statusFile },
+        });
+      }
+      if (qualifyPersistentQa) {
+        await runChild(process.execPath, ['scripts/qa/qualify-persistent-local.mjs'], {
+          cwd: root,
+          env: { ...cliEnv, E2E_BACKEND_STATUS_FILE: statusFile, E2E_QA_OWNED_WORKDIR: workdir,
+            E2E_QA_CLI: cli, E2E_QA_CLI_VERSION: cliVersion },
         });
       }
     } finally {

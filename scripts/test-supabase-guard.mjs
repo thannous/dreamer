@@ -38,6 +38,8 @@ export const ENV_NAMES = Object.freeze([
   'E2E_ACCOUNT_DOMAIN',
   'E2E_FREE_PASSWORD',
   'E2E_PREMIUM_PASSWORD',
+  'E2E_FREE_USER_ID',
+  'E2E_PREMIUM_USER_ID',
 ]);
 
 const REF_PATTERN = /^[a-z0-9]{20}$/;
