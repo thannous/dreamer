@@ -71,7 +71,10 @@ python3 -m unittest discover -s scripts/android -p 'test_*.py'
 The reading worker also accepts `--package com.tanuki75.noctalia.qa`, the existing
 side-by-side Dreamer QA profile. Its default stays the base package; other products
 remain refused. Runtime `applicationId` must match the selected package, and package
-identity is part of comparison conditions. Release/signature/PID/font/trace health
+identity is part of comparison conditions. The selected app must own the foreground
+window and each UI target before input. A failed UI journey invalidates its trace
+even when FrameTimeline is healthy; resume must replay that failed phase.
+Release/signature/PID/font/trace health
 checks and comparison thresholds stay in force. This additive path follows the
 retirement of TI-429's base-only harness; it does not authorize changing personal data.
 

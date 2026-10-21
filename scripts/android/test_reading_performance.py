@@ -48,7 +48,7 @@ class EvidenceTests(unittest.TestCase):
     def test_trace_recovery_does_not_kill_reused_unrelated_pid(self):
         with tempfile.TemporaryDirectory() as directory:
             runner=object.__new__(reading.Runner)
-            runner.o={'device':'test'};runner.out=Path(directory)
+            runner.o={'device':'test'};runner.package=reading.PACKAGE;runner.out=Path(directory)
             runner.state={'activeTrace':dict(pid='123',remote='/owned.trace',local=str(Path(directory)/'trace'),run=1),'rows':[]}
             calls=[]
             runner.adb=lambda *args: calls.append(args)
@@ -149,8 +149,8 @@ class EvidenceTests(unittest.TestCase):
     def test_screen_scroll_refuses_changed_content_and_a_lost_screen(self):
         with tempfile.TemporaryDirectory() as directory:
             runner = self.scenario_runner(directory)
-            ready = ET.fromstring('<hierarchy><node resource-id="screen.trends"><node resource-id="ready" text="27 dreams"/></node></hierarchy>')
-            wrong = ET.fromstring('<hierarchy><node resource-id="screen.recording"/></hierarchy>')
+            ready = ET.fromstring('<hierarchy><node package="com.tanuki75.noctalia.qa" resource-id="screen.trends"><node package="com.tanuki75.noctalia.qa" resource-id="ready" text="27 dreams"/></node></hierarchy>')
+            wrong = ET.fromstring('<hierarchy><node package="com.tanuki75.noctalia.qa" resource-id="screen.recording"/></hierarchy>')
             actions = []
             runner.scroll = lambda: actions.append('scroll')
             runner.measure = lambda run, phase, action: action()
@@ -163,6 +163,52 @@ class EvidenceTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'content changed'):
                 runner.journey(1)
             self.assertEqual(actions, ['scroll'])
+
+    def test_qa_input_refuses_a_foreground_personal_app_even_with_identical_ids(self):
+        # Deliberately exercising this negative case on a personal app is unsafe.
+        with tempfile.TemporaryDirectory() as directory:
+            runner = self.scenario_runner(directory)
+            runner.shell = lambda *args: 'mCurrentFocus=Window{abc u0 com.tanuki75.noctalia/.MainActivity}'
+            runner.adb = lambda *args: self.fail('must refuse before dumping or interacting')
+            for action in [runner.tree, runner.scroll]:
+                with self.assertRaisesRegex(ValueError, 'not foreground'):
+                    action()
+            foreign = ET.fromstring('<node package="com.tanuki75.noctalia" resource-id="screen.trends"/>')
+            self.assertIsNone(runner.find(foreign, 'screen.trends'))
+            with self.assertRaisesRegex(ValueError, 'another application'):
+                runner.tap(foreign)
+
+    def test_failed_ui_trace_stays_invalid_and_resume_replays_the_journey(self):
+        with tempfile.TemporaryDirectory() as directory:
+            runner = self.scenario_runner(directory)
+            runner.o = dict(runs=1, device='owned')
+            runner.preflight = lambda: None
+            runner.assert_same_process = lambda: None
+            runner.shell = lambda *args: 'temperature: 240 level: 80 Thermal Status: 0'
+            runner.adb = lambda *args: b''
+            runner.query = lambda trace, sql: [] if 'stats WHERE' in sql else [dict(frames='10', missed='0', p95='12')]
+            attempts = []
+            def start(run):
+                runner.state['activeTrace'] = dict(pid='123', remote='/owned.trace', local=str(runner.out / f'{len(attempts)}.pftrace'), run=run)
+            runner.start_trace = start
+            def journey(run):
+                attempts.append(run)
+                runner.state['rows'].append(dict(run=run, phase='screen-scroll', startNs=1, endNs=2,
+                    trace=runner.state['activeTrace']['local'], valid=False))
+                if len(attempts) == 1:
+                    raise ValueError('Expected screen is not visible')
+            runner.journey = journey
+            # finish_trace and run's exception/finally/resume logic are real.
+            with patch.object(reading.subprocess, 'run', return_value=reading.subprocess.CompletedProcess([], 0, b'finished', b'')):
+                with self.assertRaisesRegex(ValueError, 'Expected screen'):
+                    runner.run()
+                self.assertFalse(runner.state['rows'][0]['valid'])
+                self.assertIn('Journey failed', runner.state['traces'][0]['errors'][0]['name'])
+                runner.run()
+            self.assertEqual(attempts, [1, 1])
+            self.assertFalse(runner.state['rows'][0]['valid'])
+            self.assertTrue(runner.state['rows'][1]['valid'])
+            self.assertEqual(runner.state['summary']['screen-scroll']['frames'], 10)
 
     def test_different_packages_are_not_comparable(self):
         before, after = self.report(30, [28, 32]), self.report(20, [19, 21])

@@ -109,16 +109,26 @@ class Runner:
         self.state['durations']['elapsedThisInvocationSeconds'] = round(time.monotonic() - self.started, 2)
         save(self.statefile, self.state)
 
+    def assert_foreground(self):
+        windows = self.shell('dumpsys', 'window')
+        focus = re.search(r'mCurrentFocus=Window\{[^\n]*?\s([^\s/]+)/', windows)
+        if focus is None or focus[1] != self.package:
+            raise ValueError('Selected application is not foreground; refusing input')
+
     def tree(self):
+        self.assert_foreground()
         raw = self.adb('exec-out', 'uiautomator', 'dump', '/dev/tty').decode()
         return ET.fromstring(raw[raw.index('<?xml'):raw.rindex('</hierarchy>') + 12])
 
     def find(self, tree, identifier):
-        return next((n for n in tree.iter('node') if n.get('resource-id') == identifier), None)
+        return next((n for n in tree.iter('node') if n.get('resource-id') == identifier and n.get('package') == self.package), None)
 
     def tap(self, node):
         if node is None:
             raise ValueError('Required UI target absent')
+        if node.get('package') != self.package:
+            raise ValueError('UI target belongs to another application; refusing input')
+        self.assert_foreground()
         x, y, right, bottom = map(int, re.findall(r'\d+', node.get('bounds')))
         self.shell('input', 'tap', str((x + right) // 2), str((y + bottom) // 2))
 
@@ -187,6 +197,7 @@ class Runner:
         self.persist()
 
     def assert_same_process(self):
+        self.assert_foreground()
         checks = [
             (self.shell('pidof', self.package), self.state['provenance']['pid'], 'Application process'),
             (self.shell('settings', 'get', 'system', 'font_scale'), self.state['conditions']['fontScale'], 'Font scale'),
@@ -260,6 +271,7 @@ class Runner:
     def scroll(self):
         x, bottom, top, duration = self.scenario['swipe']
         for a,b in [(bottom,top),(bottom,top),(top,bottom),(top,bottom)]:
+            self.assert_foreground()
             self.shell('input', 'swipe', str(x), str(a), str(x), str(b), str(duration))
             time.sleep(.35)
 
@@ -359,6 +371,13 @@ class Runner:
                 status = re.search(r'Thermal Status:\s+(\d+)', thermal)
                 level = re.search(r'level:\s+(\d+)', battery)
                 self.state.setdefault('conditionsByRun', []).append(dict(run=run, thermalStatus=int(status[1]) if status else None, batteryLevel=int(level[1]) if level else None))
+            except BaseException as error:
+                # A healthy frame trace is not a successful UI journey. Preserve
+                # the failure before finally analyzes it, including across resume.
+                trace = self.state.get('activeTrace')
+                if trace and not trace.get('invalidReason'):
+                    trace['invalidReason'] = 'Journey failed: ' + type(error).__name__ + ': ' + str(error)
+                raise
             finally:
                 self.finish_trace()
                 self.state['durations'].setdefault('captureAndAnalysisSeconds', []).append(round(time.monotonic()-capture_started,2))
