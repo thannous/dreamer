@@ -33,8 +33,20 @@ test('Metro keeps its callable Buffer image-size API with the patched parser', (
   const imageSize = metroRequire('image-size');
   assert.equal(typeof imageSize, 'function');
   assert.equal(imageSize.imageSize, imageSize);
+  assert.equal(imageSize.default, imageSize);
   const png = Buffer.from('89504e470d0a1a0a0000000d4948445200000002000000030806000000', 'hex');
   assert.deepEqual(imageSize(png), { width: 2, height: 3, type: 'png' });
+});
+
+test('Metro reads ordinary file-path assets with the patched parser', async () => {
+  const metroRequire = createRequire(require.resolve('metro/package.json'));
+  const { getAssetData } = metroRequire('./src/Assets.js');
+  const assetPath = fileURLToPath(new URL('../assets/images/favicon.png', import.meta.url));
+  const metadata = await getAssetData(assetPath, 'assets/images/favicon.png', [], 'ios', '/assets');
+  assert.equal(metadata.width, 192);
+  assert.equal(metadata.height, 192);
+  assert.equal(metadata.type, 'png');
+  assert.deepEqual(metadata.files, [assetPath]);
 });
 
 test('an ICNS zero-length chunk cannot hang the metadata process', () => {
@@ -57,4 +69,12 @@ test('the installed braces security patch matches the tracked source', () => {
   const installed = dirname(require.resolve('braces'));
   const files = ['index.js', 'package.json', 'LICENSE', ...readdirSync(join(source, 'lib')).map(name => `lib/${name}`)];
   for (const file of files) assert.deepEqual(readFileSync(join(installed, file)), readFileSync(join(source, file)), file);
+});
+
+test('the installed image-size adapter matches the tracked source', () => {
+  const source = fileURLToPath(new URL('../tools/image-size-compat/', import.meta.url));
+  const installed = dirname(require.resolve('image-size'));
+  for (const file of ['index.js', 'package.json']) {
+    assert.deepEqual(readFileSync(join(installed, file)), readFileSync(join(source, file)), file);
+  }
 });
