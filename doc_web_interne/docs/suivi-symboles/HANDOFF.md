@@ -1,18 +1,18 @@
 # Passation — packs de symboles par lots de 30
 
-## Lot 13 qualifié localement
+## Lot 14 qualifié localement
 
-Responsable : **Codex**. Branche : `codex/symbol-images-final-100`. Master intégré : `a51fd4fad506490fd0ca04e18ff1a1bcf6056901`. Candidat navigateur propre : `e03821783020a61aeaaa58d22886e2118781efaa`. Le suivi ultérieur réutilise cette preuve sans revendiquer un nouveau parcours.
+Responsable : **Codex**. Branche : `codex/symbol-images-final-100`. Master intégré : `a51fd4fad506490fd0ca04e18ff1a1bcf6056901`. Candidat navigateur propre : `3eadba5f121c1017c032929534d269c330aa5abb`. Le suivi ultérieur réutilise cette preuve sans revendiquer un nouveau parcours.
 
-**29 couvertures conservées, 211 nouveaux PNG, 30 packs et 1140 dérivés.** Les 30 parcours passent dans les six langues à 2560×1440 et 390×844. Les 150 captures et les 30 familles de sources sont inspectées. Les interprétations longues et les traductions concurrentes de master sont préservées ; seules les cartes PT manquantes pour les variantes choisies sont ajoutées.
+**10 couvertures conservées, 70 nouveaux PNG, 10 packs et 380 dérivés.** Les 10 parcours passent dans les six langues à 2560×1440 et 390×844. Les 50 captures et les 10 familles de sources sont inspectées. Les interprétations longues et les traductions concurrentes de master sont préservées ; seules les cartes PT manquantes pour les variantes choisies sont ajoutées.
 
-[Rapport](../qa/symbol-packs-lot-13-30-20261020.md) · [Reçu](../qa/symbol-packs-lot-13-30-20261020.json) · [Suivi Excel/CSV](README.md). Les sources, prompts et provenance sont dans [30 ZIP privés Drive](https://drive.google.com/drive/folders/1ufCuEvPuIMIs8KZiSlji5KNO42ZQTkJI) et dans `output/symbol-packs-final-100-20261020/lot-13` du checkout principal. `RECUPERATION.json` et `plan.json` permettent la reprise ; ne pas régénérer les fichiers déjà enregistrés.
+[Rapport](../qa/symbol-packs-lot-14-10-20261020.md) · [Reçu](../qa/symbol-packs-lot-14-10-20261020.json) · [Suivi Excel/CSV](README.md). Les sources, prompts et provenance sont dans [10 ZIP privés Drive](https://drive.google.com/drive/folders/1Ye1CGz0N6mZfyeyaIziRv6jiPd8u4DwI) et dans `output/symbol-packs-final-100-20261020/lot-14` du checkout principal. `RECUPERATION.json` et `plan.json` permettent la reprise ; ne pas régénérer les fichiers déjà enregistrés.
 
-État courant : **230 packs, 10 à compléter, 230 QA actuelles**. Les preuves historiques, dont la publication master du lot 09, restent conservées. Aucun accord personnel de Thanh, fusion de cette branche ou nouvelle publication n’est déclaré pour le lot.
+État courant : **240 packs, 0 à compléter, 240 QA actuelles**. Les preuves historiques, dont la publication master du lot 09, restent conservées. Aucun accord personnel de Thanh, fusion de cette branche ou nouvelle publication n’est déclaré pour le lot.
 
 ## Reprendre sans perdre le travail
 
-- Poursuivre les lots suivants de la file 12, 13 et 14 en sautant ceux déjà terminés. Réexaminer les sources avant toute génération pour éviter les doublons.
+- Les 100 packs demandés sont intégrés et contrôlés ; aucune génération ne reste dans cette file. Les 94 nouvelles archives natives et les six sauvegardes des dérivés hérités sont sur Drive. Il reste à retrouver l’archive native source-library-lot10-v1.zip des six packs hérités ; ne pas les régénérer.
 - Les plans, prompts et références des prochains lots sont conservés dans `output/symbol-packs-final-100-20261020`. Les indices PT de la préparation initiale ont été rapprochés de master : 60 cartes manquantes sont préparées pour les 20 symboles du lot 12 concernés, sans remplacer les variantes existantes de master.
 - Utiliser les intégrateurs qui mettent à jour les JSON courants. Ne pas relancer un ancien configurateur qui restaure une base historique. Le moteur et les composants restent communs.
 - Sauvegarder chaque PNG dès réception, puis chaque pack sur Drive. Actualiser Excel et CSV par lot. Ne pas transférer les rapports internes ou le suivi vers Drive sans autorisation propre à ces documents.
@@ -48,4 +48,6 @@ Les placements acceptent `place.at: [x, y]` (centre relatif), et `place.zoom` de
 
 Piloter un symbole représentatif, puis contrôler le lot affecté sur les pages réelles : deux tailles, six langues, trois variantes, effets dans le temps, transparence, titre, scroll, réduction des mouvements et peinture stable. Vérifier que mobile utilise le portrait dédié et ne télécharge pas la plaque masquée. Conserver le reçu, la révision et la commande exacte ; réutiliser seulement les preuves inchangées.
 
-La preuve du lot 13 qualifie le navigateur local : 30 réussites, zéro échec ou ignoré, 226 parcours hors sélection. Elle ne qualifie pas une application native, un appareil physique, les FPS ou une nouvelle publication.
+La preuve du lot 14 qualifie le navigateur local : 10 réussites, zéro échec ou ignoré, 256 parcours hors sélection. Elle ne qualifie pas une application native, un appareil physique, les FPS ou une nouvelle publication.
+
+Reconciliation finale des 100 packs : [livraison et limite de sauvegarde](../qa/symbol-packs-final-100-20261022.md). Les trois parcours complémentaires passent également, sans nouvelle publication.

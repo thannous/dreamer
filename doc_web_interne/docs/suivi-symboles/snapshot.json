@@ -1,15 +1,15 @@
 {
   "schema": "noctalia.symbol-tracking-snapshot/1",
   "date": "2026-10-22",
-  "sourceRevision": "e03821783020a61aeaaa58d22886e2118781efaa",
-  "sourceRevisionScope": "Clean browser-qualified lot-13 implementation; later tracking-only changes reuse this proof. Earlier evidence reused only where its per-symbol inputs are unchanged.",
+  "sourceRevision": "3eadba5f121c1017c032929534d269c330aa5abb",
+  "sourceRevisionScope": "Clean browser-qualified lot-14 implementation; later tracking-only changes reuse this proof. Earlier evidence reused only where its per-symbol inputs are unchanged.",
   "integratedMaster": "a51fd4fad506490fd0ca04e18ff1a1bcf6056901",
   "sourceBranch": "codex/symbol-images-final-100",
   "integrationOwner": "Codex",
   "totalSymbols": 240,
-  "integratedSymbols": 230,
-  "remainingToIntegrate": 10,
-  "atlasLocalePages": 1380,
+  "integratedSymbols": 240,
+  "remainingToIntegrate": 0,
+  "atlasLocalePages": 1440,
   "languages": [
     "fr",
     "en",
@@ -18,24 +18,24 @@
     "it",
     "pt-br"
   ],
-  "historicalQaSymbols": 230,
+  "historicalQaSymbols": 240,
   "historicallyPublishedSymbols": 240,
   "currentStageProofs": {
-    "qa": 230,
+    "qa": 240,
     "approval": 0,
     "publication": 0
   },
   "files": {
     "workbook": {
       "path": "suivi-240-symboles-6-langues.xlsx",
-      "sha256": "511a1e3e21adaaee737bc23ccfcf6e46c12c19ce7b954c817c143e5e12aeb86f"
+      "sha256": "6ec623357f3909da6fab49e90ad7c1cd92f0ab4f081063b54e351ea0a6158ebd"
     },
     "csv": {
       "path": "symbol-rollout.csv",
-      "sha256": "9fbaeaf029599612afd999ff7f32fa66f337fea6ad3916ae1bbb196d82cdfa24"
+      "sha256": "1a302fa1b6a93887ecc0b91b82fcb665f9ab58e660e1017ebe188857970adb17"
     }
   },
-  "reportSha256": "b6be04037927f2da926fe9ba69b7b83d13f41177b7dc9a912a3ce3e926fcd8ec",
+  "reportSha256": "09ab652d0f30effef36232cd24058da92bb6bab5c7abb49933ab6f31e43fda54",
   "checks": {
     "rows": 240,
     "recalculation": true,
@@ -54,19 +54,19 @@
       "counters": [
         [
           "Packs d'images",
-          230,
+          240,
           "Packs à terminer",
-          10,
+          0,
           "Pages avec pack",
-          1380,
+          1440,
           "Pages web",
           1440
         ],
         [
           "QA mobile",
-          230,
+          240,
           "QA 2560 px",
-          230,
+          240,
           "Accord Thanh",
           0,
           "Publiées",
@@ -74,53 +74,33 @@
         ]
       ],
       "counts": {
-        "equipped": 230,
-        "atlas": 1380,
-        "mobile": 230,
-        "desktop": 230,
+        "equipped": 240,
+        "atlas": 1440,
+        "mobile": 240,
+        "desktop": 240,
         "approval": 0,
         "publication": 0,
-        "remaining": 10
+        "remaining": 0
       },
       "targetRows": [
-        214,
-        227,
-        122,
-        164,
-        230,
-        172,
-        144,
-        148,
-        242,
-        228,
-        183,
-        146,
-        136,
-        165,
-        248,
-        35,
-        241,
-        114,
-        124,
-        231,
-        178,
-        117,
-        238,
-        142,
-        207,
-        206,
-        153,
-        111,
-        202,
-        132
+        233,
+        123,
+        101,
+        129,
+        211,
+        212,
+        197,
+        113,
+        121,
+        138
       ],
       "plannedRows": [],
-      "sourceHash": "e430b560daa6ceff8ca4a44eedc2efe36f5960549052ffeb222bb4d66cfee545",
-      "reportHash": "b6be04037927f2da926fe9ba69b7b83d13f41177b7dc9a912a3ce3e926fcd8ec",
+      "sourceHash": "511a1e3e21adaaee737bc23ccfcf6e46c12c19ce7b954c817c143e5e12aeb86f",
+      "reportHash": "09ab652d0f30effef36232cd24058da92bb6bab5c7abb49933ab6f31e43fda54",
       "formulaPreservation": true,
       "unrelatedValuesPreserved": true,
       "missingRoleCounterexample": true,
-      "reopen": "{\"kind\":\"region\",\"sheet\":\"Suivi symboles\",\"address\":\"A4:H5\",\"rows\":2,\"cols\":8,\"nonEmpty\":16,\"text\":16,\"maxTextLength\":16,\"preview\":[[\"Packs d'images\",\"230\",\"Packs à terminer\",\"10\",\"Pages avec pack\",\"1380\"],[\"QA mobile\",\"230\",\"QA 2560 px\",\"230\",\"Accord Thanh\",\"0\"]],\"previewAddress\":\"A4:F5\",\"previewRows\":2,\"previewCols\":6}",
+      "reopen": "{\"kind\":\"region\",\"sheet\":\"Suivi symboles\",\"address\":\"A4:H5\",\"rows\":2,\"cols\":8,\"nonEmpty\":16,\"text\":16,\"maxTextLength\":16,\"preview\":[[\"Packs d'images\",\"240\",\"Packs à terminer\",\"0\",\"Pages avec pack\",\"1440\"],[\"QA mobile\",\"240\",\"QA 2560 px\",\"240\",\"Accord Thanh\",\"0\"]],\"previewAddress\":\"A4:F5\",\"previewRows\":2,\"previewCols\":6}",
       "nativeFeaturesPreserved": {
         "filter": "A10:AC250",
         "freezeTopLeft": "C11",
@@ -130,10 +110,10 @@
       }
     },
     "browser": {
-      "freshBatchPasses": 30,
-      "freshQualifiedSymbols": 30,
+      "freshBatchPasses": 10,
+      "freshQualifiedSymbols": 10,
       "sourceClean": true,
-      "revision": "e03821783020a61aeaaa58d22886e2118781efaa",
+      "revision": "3eadba5f121c1017c032929534d269c330aa5abb",
       "viewports": [
         [
           2560,
@@ -147,26 +127,26 @@
     }
   },
   "assetAudit": {
-    "newBatch": "lot-13",
-    "packs": 30,
-    "retainedCovers": 29,
-    "newNativePngs": 211,
-    "derivedFiles": 1140,
-    "sourcesBackedUp": 30,
+    "newBatch": "lot-14",
+    "packs": 10,
+    "retainedCovers": 10,
+    "newNativePngs": 70,
+    "derivedFiles": 380,
+    "sourcesBackedUp": 10,
     "backupVerification": "Local SHA256 plus Drive ID, size, parent and private metadata readback."
   },
-  "qaReceipt": "../qa/symbol-packs-lot-13-30-20261020.json",
-  "qaReceiptSha256": "af2ba4526c1286cd5a9931ed784b56161d963873a9a534de620f460f56c709a2",
+  "qaReceipt": "../qa/symbol-packs-lot-14-10-20261020.json",
+  "qaReceiptSha256": "316f02111c7b74828a385873c78b5be786cdf38fa641f6a15c9ab228a9b75311",
   "reusedCurrentQa": {
-    "symbols": 200,
+    "symbols": 230,
     "source": "Canonical registry: accepted records whose evidence and per-symbol content, atlas, paintings and engine still match."
   },
   "commonLayoutSymbols": 240,
   "commonLayoutLocalePages": 1440,
-  "commonAnimatedPacks": 230,
+  "commonAnimatedPacks": 240,
   "tigerMotionPending": false,
   "tigerEvidence": "Current Tiger QA is resolved from its matching registry evidence; this document lists the fresh scope. Historical master publication remains separate.",
-  "driveSources": "https://drive.google.com/drive/folders/1ufCuEvPuIMIs8KZiSlji5KNO42ZQTkJI",
+  "driveSources": "https://drive.google.com/drive/folders/1Ye1CGz0N6mZfyeyaIziRv6jiPd8u4DwI",
   "historicalProofs": {
     "sourceRevision": "76d7e577dfb7eb5251b0898e994e3a5210bfd56c",
     "sourcePullRequest": 485,
@@ -220,24 +200,24 @@
     }
   },
   "previousBatchDelivery": {
-    "sourceRevision": "b17117db72da867328bfee7e7b5ac7c17acc0aab",
-    "qaReceipt": "../qa/symbol-packs-lot-12-25-20261020.json",
-    "qaReceiptSha256": "fda26dc43fa43be16f4ebdf180e8441c369c47c00d3bbe8c918a9a23e5cfe159",
-    "integratedSymbols": 200,
-    "remainingToIntegrate": 40,
+    "sourceRevision": "e03821783020a61aeaaa58d22886e2118781efaa",
+    "qaReceipt": "../qa/symbol-packs-lot-13-30-20261020.json",
+    "qaReceiptSha256": "af2ba4526c1286cd5a9931ed784b56161d963873a9a534de620f460f56c709a2",
+    "integratedSymbols": 230,
+    "remainingToIntegrate": 10,
     "currentStageProofs": {
-      "qa": 200,
+      "qa": 230,
       "approval": 0,
       "publication": 0
     },
     "files": {
       "workbook": {
         "path": "suivi-240-symboles-6-langues.xlsx",
-        "sha256": "e430b560daa6ceff8ca4a44eedc2efe36f5960549052ffeb222bb4d66cfee545"
+        "sha256": "511a1e3e21adaaee737bc23ccfcf6e46c12c19ce7b954c817c143e5e12aeb86f"
       },
       "csv": {
         "path": "symbol-rollout.csv",
-        "sha256": "5d2cbe65859ecf2d59499f50cd7f5eecb539d02c48eecbebf2f58dbe086807b1"
+        "sha256": "9fbaeaf029599612afd999ff7f32fa66f337fea6ad3916ae1bbb196d82cdfa24"
       }
     }
   },
@@ -250,8 +230,8 @@
   "registryTotals": {
     "symbols": 240,
     "done": 0,
-    "inProgress": 230,
-    "remaining": 10
+    "inProgress": 240,
+    "remaining": 0
   },
   "completedBatchHistory": [
     {
@@ -341,6 +321,28 @@
           "sha256": "5d2cbe65859ecf2d59499f50cd7f5eecb539d02c48eecbebf2f58dbe086807b1"
         }
       }
+    },
+    {
+      "sourceRevision": "e03821783020a61aeaaa58d22886e2118781efaa",
+      "qaReceipt": "../qa/symbol-packs-lot-13-30-20261020.json",
+      "qaReceiptSha256": "af2ba4526c1286cd5a9931ed784b56161d963873a9a534de620f460f56c709a2",
+      "integratedSymbols": 230,
+      "remainingToIntegrate": 10,
+      "currentStageProofs": {
+        "qa": 230,
+        "approval": 0,
+        "publication": 0
+      },
+      "files": {
+        "workbook": {
+          "path": "suivi-240-symboles-6-langues.xlsx",
+          "sha256": "511a1e3e21adaaee737bc23ccfcf6e46c12c19ce7b954c817c143e5e12aeb86f"
+        },
+        "csv": {
+          "path": "symbol-rollout.csv",
+          "sha256": "9fbaeaf029599612afd999ff7f32fa66f337fea6ad3916ae1bbb196d82cdfa24"
+        }
+      }
     }
   ],
   "concurrentMasterTracking": {
@@ -364,5 +366,10 @@
       }
     },
     "note": "Preserved historical tracking. Fresh common-renderer qualification is current on this branch; registry retains every inherited record."
+  },
+  "final100Delivery": {
+    "path": "../qa/symbol-packs-final-100-20261022.json",
+    "sha256": "b80d2357a12df14a415c4bcd4f65719bbf2c3293e945cfaf7b9e83f8dcca7202",
+    "nativeSourceArchiveGap": 6
   }
 }
