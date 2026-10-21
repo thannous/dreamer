@@ -331,16 +331,15 @@ for (const profile of ['existing', 'plus'] as const) {
     await openSettings(screen);
     // The fixture keeps five completed analyses; displayed free usage caps at its allowance.
     await expect(screen.getByTestId('quota.analysisValue', { visible: true })).toHaveText(profile === 'plus' ? 'Unlimited' : '3 / 3');
-    const upgrade = screen.getByRole('button', 'Upgrade to Noctalia Plus', { visible: true });
     if (profile === 'existing') {
-      await upgrade.tap();
+      await screen.getByTestId('settings-section-subscription', { visible: true }).tap();
       // Signed in, the offer can be bought and restored here: no sign-in reason is shown.
       await expect(screen.getByTestId('btn.paywall.restore', { visible: true })).toBeVisible();
       await expect(screen.getByTestId('text.paywall.authReason')).toHaveCount(0);
       await screen.getByTestId('btn.paywall.selectMonthly', { visible: true }).tap();
       await expect(screen.getByTestId('btn.paywall.selectMonthly', { visible: true })).toHaveAttribute('aria-checked', 'true');
       await screen.getByTestId('btn.paywall.close', { visible: true }).tap();
-    } else await expect(upgrade).toHaveCount(0);
+    }
     await screen.getByTestId('btn.auth.signOut', { visible: true }).tap();
     await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
     await openSettings(screen);

@@ -16,7 +16,13 @@ const mockPush = jest.fn();
 const mockBack = jest.fn();
 const mockReplace = jest.fn();
 let mockDreams: any[] = [];
-let mockIsPlus = false;
+let mockUser: { id: string } | null = { id: 'user-1' };
+let mockQuota: { tier: string; usage: unknown; loading: boolean; error: Error | null } = {
+  tier: 'free',
+  usage: { analysis: { used: 1, limit: 3, remaining: 2 } },
+  loading: false,
+  error: null,
+};
 
 const DAY = 24 * 60 * 60 * 1000;
 const NOW = Date.now();
@@ -48,8 +54,11 @@ jest.mock('@/context/ThemeContext', () => {
 jest.mock('@/context/DreamsContext', () => ({
   useDreamsData: () => ({ dreams: mockDreams, loaded: true }),
 }));
-jest.mock('@/hooks/useSubscription', () => ({
-  useSubscription: () => ({ isActive: mockIsPlus }),
+jest.mock('@/context/AuthContext', () => ({
+  useAuth: () => ({ user: mockUser }),
+}));
+jest.mock('@/hooks/useQuota', () => ({
+  useQuota: () => mockQuota,
 }));
 jest.mock('@/hooks/useLocaleFormatting', () => ({
   useLocaleFormatting: () => ({ formatDate: (date: Date) => date.toISOString().slice(5, 10) }),
@@ -84,7 +93,8 @@ describe('WeeklyRecapScreen', () => {
     cleanup();
     jest.clearAllMocks();
     mockDreams = [];
-    mockIsPlus = false;
+    mockUser = { id: 'user-1' };
+    mockQuota = { tier: 'free', usage: { analysis: { used: 1, limit: 3, remaining: 2 } }, loading: false, error: null };
   });
 
   it('offers to record when the week is empty', () => {
@@ -95,7 +105,7 @@ describe('WeeklyRecapScreen', () => {
     expect(mockPush).toHaveBeenCalledWith('/recording');
   });
 
-  it('shows the week signals, locks the emotion for free users and links the dream to explore', () => {
+  it('shows the week signals, the recurring emotion included, and links the dream to explore', () => {
     mockDreams = [
       analyzed({ id: NOW - DAY, theme: 'calm', symbols: [{ name: 'Water', meaning: '' }], emotions: [{ name: 'fear', insight: '' }] }),
       analyzed({ id: NOW - 2 * DAY, theme: 'calm', symbols: [{ name: 'water', meaning: '' }], emotions: [{ name: 'fear', insight: '' }] }),
@@ -105,23 +115,51 @@ describe('WeeklyRecapScreen', () => {
     expect(screen.getByTestId(TID.Text.WeeklyRecapCount).textContent).toBe('2');
     expect(screen.getByTestId(TID.Text.WeeklyRecapTheme).textContent).toBe('dream.theme.calm');
     expect(screen.getByTestId(TID.Text.WeeklyRecapSymbol).textContent).toBe('weekly_recap.signals.symbol_value|Water,2');
-    expect(screen.queryByTestId(TID.Text.WeeklyRecapEmotion)).toBeNull();
-
-    fireEvent.click(screen.getByTestId(TID.Button.WeeklyRecapUnlockEmotion));
-    expect(mockPush).toHaveBeenCalledWith({ pathname: '/paywall', params: { trigger: 'stats_profile' } });
+    expect(screen.getByTestId(TID.Text.WeeklyRecapEmotion).textContent).toBe('stats.emotion.family.fear');
 
     fireEvent.click(screen.getByTestId(TID.Button.WeeklyRecapOpenDream));
     expect(mockPush).toHaveBeenCalledWith({ pathname: '/journal/[id]', params: { id: String(NOW - DAY) } });
   });
 
-  it('reveals the recurring emotion for Plus subscribers', () => {
-    mockIsPlus = true;
-    mockDreams = [
-      analyzed({ id: NOW - DAY, emotions: [{ name: 'fear', insight: '' }] }),
-      analyzed({ id: NOW - 2 * DAY, emotions: [{ name: 'fear', insight: '' }] }),
-    ];
+  it('opens the dream to analyse while free analyses remain', () => {
+    mockDreams = [analyzed({ id: NOW - DAY, isAnalyzed: false, analysisStatus: 'none', interpretation: '', analyzedAt: undefined })];
     render(<WeeklyRecapScreen />);
 
-    expect(screen.getByTestId(TID.Text.WeeklyRecapEmotion).textContent).toBe('stats.emotion.family.fear');
+    const button = screen.getByTestId(TID.Button.WeeklyRecapOpenDream);
+    expect(button.textContent).toBe('weekly_recap.next.analyze_cta');
+    fireEvent.click(button);
+    expect(mockPush).toHaveBeenCalledWith({ pathname: '/journal/[id]', params: { id: String(NOW - DAY) } });
+  });
+
+  it('opens that dream\'s own Plus offer once the free analyses are used', () => {
+    mockQuota = { ...mockQuota, usage: { analysis: { used: 3, limit: 3, remaining: 0 } } };
+    mockDreams = [analyzed({ id: NOW - DAY, isAnalyzed: false, analysisStatus: 'none', interpretation: '', analyzedAt: undefined })];
+    render(<WeeklyRecapScreen />);
+
+    const button = screen.getByTestId(TID.Button.WeeklyRecapOpenDream);
+    expect(button.textContent).toBe('weekly_recap.next.analyze_cta_plus');
+    fireEvent.click(button);
+    expect(mockPush).toHaveBeenCalledWith({
+      pathname: '/paywall',
+      params: expect.objectContaining({ trigger: 'analysis_cta', dreamId: String(NOW - DAY), dreamOwnerId: 'user-1' }),
+    });
+  });
+
+  it('keeps a failed request on its dream page, where it resumes without a new analysis', () => {
+    mockQuota = { ...mockQuota, usage: { analysis: { used: 3, limit: 3, remaining: 0 } } };
+    mockDreams = [analyzed({
+      id: NOW - DAY,
+      isAnalyzed: false,
+      analysisStatus: 'failed',
+      analysisRequestId: '8f14e45f-ceea-4e6b-9a3c-2b1d0f6a7c11',
+      interpretation: '',
+      analyzedAt: undefined,
+    })];
+    render(<WeeklyRecapScreen />);
+
+    const button = screen.getByTestId(TID.Button.WeeklyRecapOpenDream);
+    expect(button.textContent).toBe('weekly_recap.next.analyze_cta');
+    fireEvent.click(button);
+    expect(mockPush).toHaveBeenCalledWith({ pathname: '/journal/[id]', params: { id: String(NOW - DAY) } });
   });
 });

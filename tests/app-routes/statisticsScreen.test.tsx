@@ -13,6 +13,8 @@ const mockFiguresProps = jest.fn();
 const mockUseDreams = jest.fn();
 const mockWindow = { width: 390, height: 844, scale: 1, fontScale: 1 };
 let mockBottomInset = 0;
+let mockUser: { id: string } | null = null;
+let mockQuota: { tier: string; usage?: unknown; loading: boolean; error: Error | null } = { tier: 'guest', loading: false, error: null };
 jest.mock('@/components/ui/NightSkyBand', () => ({ NightSkyBand: () => null }));
 // This DOM fixture models the web scroll view; jest-expo otherwise selects .native.
 jest.mock('@/components/trends/useTrendsReveal', () => jest.requireActual('@/components/trends/useTrendsReveal.ts'));
@@ -36,6 +38,8 @@ afterEach(() => {
   mockWindow.height = 844;
   mockWindow.fontScale = 1;
   mockBottomInset = 0;
+  mockUser = null;
+  mockQuota = { tier: 'guest', loading: false, error: null };
 });
 
 const analyzed = (
@@ -171,10 +175,11 @@ jest.mock('@/components/trends/TrendsNights', () => ({
   TrendsNights: () => <div data-testid="trends.section.nights" />,
 }));
 jest.mock('@/components/trends/TrendsReturns', () => ({
-  TrendsReturns: ({ onOpenUnanalyzed, onOpenType }: any) => (
+  TrendsReturns: ({ onOpenUnanalyzed, onOpenType, plusHint }: any) => (
     <div data-testid="trends.section.returns">
       <button type="button" data-testid="returns.unanalyzed" onClick={onOpenUnanalyzed} />
       <button type="button" data-testid="returns.type" onClick={() => onOpenType('Nightmare')} />
+      {plusHint ? <button type="button" data-testid="returns.plusHint" onClick={plusHint.onPress}>{plusHint.text}</button> : null}
     </div>
   ),
 }));
@@ -237,6 +242,12 @@ jest.mock('@/hooks/useLocaleFormatting', () => ({
 }));
 jest.mock('@/context/DreamsContext', () => ({
   useDreams: () => mockUseDreams(),
+}));
+jest.mock('@/context/AuthContext', () => ({
+  useAuth: () => ({ user: mockUser }),
+}));
+jest.mock('@/hooks/useQuota', () => ({
+  useQuota: () => mockQuota,
 }));
 jest.mock('@/context/ThemeContext', () => {
   const { DarkTheme } = require('@/constants/journalTheme');
@@ -450,5 +461,42 @@ describe('Tendances screen', () => {
     for (const id of ['trends.section.period', 'trends.section.seal', 'trends.section.nights', 'trends.section.returns', 'trends.section.sky', 'trends.layout.compact']) {
       expect(screen.getByTestId(id)).toBeTruthy();
     }
+  });
+  it('points a free account with used analyses to Plus for its unread dreams', () => {
+    mockUser = { id: 'user-1' };
+    mockQuota = { tier: 'free', usage: { analysis: { used: 3, limit: 3, remaining: 0 } }, loading: false, error: null };
+    const unread = { isAnalyzed: false, analysisStatus: 'none', interpretation: '', analyzedAt: undefined } as Partial<DreamAnalysis>;
+    renderJournal([analyzed(nightsAgo(1)), analyzed(nightsAgo(2), unread), analyzed(nightsAgo(3), unread)]);
+
+    const hint = screen.getByTestId('returns.plusHint');
+    expect(hint.textContent).toMatch(/^trends\.returns\.plus_hint:date=.+\|count=2$/);
+    fireEvent.click(hint);
+    expect(mockPush).toHaveBeenLastCalledWith({ pathname: '/paywall', params: { trigger: 'stats_profile' } });
+  });
+
+  it('leaves out of the Plus hint a dream whose analysis is under way or can resume', () => {
+    mockUser = { id: 'user-1' };
+    mockQuota = { tier: 'free', usage: { analysis: { used: 3, limit: 3, remaining: 0 } }, loading: false, error: null };
+    const unread = { isAnalyzed: false, analysisStatus: 'none', interpretation: '', analyzedAt: undefined } as Partial<DreamAnalysis>;
+    const pending = {
+      ...unread,
+      analysisStatus: 'pending',
+      analysisRequestId: '8f14e45f-ceea-4e6b-9a3c-2b1d0f6a7c11',
+    } as Partial<DreamAnalysis>;
+    renderJournal([analyzed(nightsAgo(1)), analyzed(nightsAgo(2), unread), analyzed(nightsAgo(3), pending)]);
+    expect(screen.getByTestId('returns.plusHint').textContent).toMatch(/^trends\.returns\.plus_hint_one:date=.+$/);
+
+    cleanup();
+    renderJournal([analyzed(nightsAgo(1)), analyzed(nightsAgo(3), pending)]);
+    expect(screen.queryByTestId('returns.plusHint')).toBeNull();
+  });
+
+  it('says nothing about Plus while free analyses remain', () => {
+    mockUser = { id: 'user-1' };
+    mockQuota = { tier: 'free', usage: { analysis: { used: 1, limit: 3, remaining: 2 } }, loading: false, error: null };
+    const unread = { isAnalyzed: false, analysisStatus: 'none', interpretation: '', analyzedAt: undefined } as Partial<DreamAnalysis>;
+    renderJournal([analyzed(nightsAgo(1)), analyzed(nightsAgo(2), unread)]);
+
+    expect(screen.queryByTestId('returns.plusHint')).toBeNull();
   });
 });

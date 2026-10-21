@@ -5,9 +5,11 @@ import { Pressable, Text, View } from 'react-native';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
+import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useTranslation } from '@/hooks/useTranslation';
 import type { PaywallTrigger } from '@/lib/analytics';
 import { buildPaywallHref } from '@/lib/paywallRoute';
+import { formatQuotaResetDate } from '@/lib/quotaReset';
 import { TID } from '@/lib/testIDs';
 import type { QuotaUsage, SubscriptionTier } from '@/lib/types';
 
@@ -53,9 +55,10 @@ export function FreeAnalysesNudge({ nudge, className }: Props) {
   const { t } = useTranslation();
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
+  const { locale } = useLocaleFormatting();
 
   const message = nudge.remaining === 0
-    ? t('quota.free_nudge.empty')
+    ? t('quota.free_nudge.empty', { date: formatQuotaResetDate(locale) })
     : nudge.remaining === 1
       ? t('quota.free_nudge.remaining_one')
       : t('quota.free_nudge.remaining', { remaining: nudge.remaining });
