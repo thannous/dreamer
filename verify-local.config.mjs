@@ -218,6 +218,8 @@ export default {
     'scripts/lib/backend-e2e-local.cjs',
     'tools/e2e/run.mjs',
     'scripts/verify-local-config.test.js',
+    'scripts/dependency-security.test.mjs',
+    'scripts/dependency-security-scope.test.mjs',
     'scripts/pre-push-hook.test.js',
     // The EAS workflows and their config: any edit needs the owner's review
     // (the release gate only catches honest mistakes).
@@ -364,8 +366,35 @@ export default {
     },
     { name: 'db-contracts', command: DB_CONTRACTS },
     {
-      name: 'dependency-security', command: 'node --test scripts/dependency-security.test.mjs',
-      when: ['package.json', 'package-lock.json', 'tools/braces/', 'tools/image-size-compat/', 'scripts/dependency-security.test.mjs'],
+      name: 'dependency-security',
+      command: 'node --test scripts/dependency-security.test.mjs scripts/dependency-security-scope.test.mjs',
+      when: ['package.json', 'package-lock.json', '.npmrc', 'tools/braces/', 'tools/image-size-compat/', 'scripts/dependency-security*.mjs'],
+    },
+    // Independent lockfiles must exercise their own installed graph. A patched
+    // root package cannot qualify Meditation, the legacy docs or site tooling.
+    {
+      name: 'dependency-security-meditation', command: 'node --test scripts/dependency-security.test.mjs',
+      env: { DEPENDENCY_SECURITY_PROJECT: 'meditation' },
+      when: ['apps/meditation/package.json', 'apps/meditation/package-lock.json', 'apps/meditation/.npmrc', 'tools/braces/', 'tools/image-size-compat/', 'scripts/dependency-security*.mjs'],
+      requires: MEDITATION_DEPS,
+    },
+    {
+      name: 'dependency-security-documentation', command: 'node --test scripts/dependency-security.test.mjs',
+      env: { DEPENDENCY_SECURITY_PROJECT: 'documentation' },
+      when: ['doc_web_interne/docs/package.json', 'doc_web_interne/docs/package-lock.json', 'doc_web_interne/docs/.npmrc', 'tools/braces/', 'scripts/dependency-security*.mjs'],
+      requires: {
+        command: 'test -d doc_web_interne/docs/node_modules',
+        hint: 'install the standalone documentation dependencies first: (cd doc_web_interne/docs && npm ci)',
+      },
+    },
+    {
+      name: 'dependency-security-site', command: 'node --test scripts/dependency-security.test.mjs',
+      env: { DEPENDENCY_SECURITY_PROJECT: 'site' },
+      when: ['apps/site/package.json', 'apps/site/package-lock.json', 'apps/site/.npmrc', 'scripts/dependency-security*.mjs'],
+      requires: {
+        command: 'test -d apps/site/node_modules',
+        hint: 'install the standalone site dependencies first: (cd apps/site && npm ci)',
+      },
     },
 
     // ---- verify:pr, only when the commit changes that surface since origin/master.
