@@ -30,17 +30,24 @@
 //   (a) revokes EXECUTE (or ALL) on X from PUBLIC and from anon, and no later
 //       statement of the file grants it back to either;
 //   (b) grants EXECUTE (or ALL) on X to at least one other role;
-//   (c) sets search_path, in the definition (`set search_path = ...`) or with
-//       `alter function X set search_path ...`.
+//   (c) sets a safe search_path, in the definition (`set search_path = ...`)
+//       or with `alter function X set search_path ...`: empty (`''`) or a list
+//       ending with pg_temp, so a caller's temporary objects cannot shadow
+//       anything the body uses unqualified.
 // X is matched by name and, when a statement gives an argument list, by
 // signature too: argument names, modes, defaults, OUT arguments and type
 // modifiers are ignored and common aliases are normalised (int4 = integer,
 // timestamptz = timestamp with time zone, ...). A target without an argument
 // list covers every overload. `on all functions in schema public` is not a
-// decision about X. The file is replayed in order: a later revoke of the only
-// grantee, `alter function X reset search_path|all`, or a `drop` (the new X
-// gets fresh default privileges) undoes what came before it. SQL-standard
-// `begin atomic ... end` bodies are not read, like dollar-quoted ones.
+// decision about X, but a later `grant ... on all functions in schema public
+// to public|anon` re-opens it. The file is replayed in order: a later revoke
+// of the only grantee, `alter function X reset search_path|all`, or a `drop`
+// (the new X gets fresh default privileges) undoes what came before it; a
+// name-only target means the overloads existing at that statement; `alter
+// function ... set schema public` (or rename) moves a routine into the check.
+// SQL-standard `begin atomic ... end` bodies are not read, like dollar-quoted
+// ones, and statements of a DO block with control flow (IF, CASE, loops,
+// EXCEPTION, ...) never count as a grant, revoke, RLS or search_path.
 // Only statements that run while the migration applies count: top-level ones
 // and those of DO blocks. Text in string literals and function bodies, and
 // grants built in EXECUTE strings, are not read.
@@ -53,8 +60,10 @@
 // join it without this file changing (a delivery file of verify-local).
 // Grandfathered (functions): FUNCTION_GRANDFATHERED, same closed-list rules,
 // cutoff FUNCTION_GRANDFATHER_CUTOFF (the latest migration before the function
-// rule). Each list only excuses its own rule.
+// rule). Each list only excuses its own rule, and every grandfathered file must
+// keep the SHA-256 recorded in GRANDFATHERED_DIGESTS.
 
+const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
 
@@ -97,7 +106,9 @@ const FUNCTION_GRANDFATHERED = Object.freeze([
   '20260316120000_create_ai_jobs.sql',
   '20260316130000_add_dream_sync_revisions.sql',
   '20260316140000_add_subscription_state_convergence.sql',
+  '20260316154500_harden_subscription_state_rpcs.sql',
   '20260616120000_add_dream_memory_metadata.sql',
+  '20260623152929_authenticated_analysis_quota_claim.sql',
   '20260721120000_add_dream_analysis_details.sql',
   '20260819130000_analysis_job_prompt_version.sql',
   '20260829120000_requeue_failed_generate_image_jobs.sql',
@@ -107,6 +118,46 @@ const FUNCTION_GRANDFATHERED = Object.freeze([
   '20261014183000_allow_luminous_nostalgic_analysis_themes.sql',
   '20261015120000_add_dream_precise_theme.sql',
 ]);
+
+// A dollar-quote tag: $$ or $name$ (an identifier: letters, digits after the first, underscores).
+const DOLLAR_TAG = String.raw`\$(?:[A-Za-z_][A-Za-z0-9_]*)?\$`;
+
+// SHA-256 of every grandfathered file: a grandfathered migration may not change
+// (a new violation added to it would otherwise hide behind the old ones).
+const GRANDFATHERED_DIGESTS = Object.freeze({
+  '20251019163753_create_kv_table_6e8fb8b0.sql': '432ddc785cced9adb0112bccbfb132ddf37d6b38be9bcbfce49570c5c7d52e6c',
+  '20251204000000_create_guest_usage.sql': 'f2e3a2c61b1c870c676ade4cffcffe1819a3e0ecaba3c1226bfb412c5ca52361',
+  '20251205000000_create_user_quota_events.sql': 'a05ce17f1314545dca1ac3b2c7ffb2b052e00784064abd5e110a1d1797f6288f',
+  '20251212195000_enforce_authenticated_monthly_quotas.sql': 'f1798180f2fab1c25b96f2f946c86f9291bc82ff32c9b42e5250b3d06daf1632',
+  '20251212195800_create_quota_limits_table.sql': '06bec4ca4aa2e8933114f1075d9076aec13464d20024140de3608c17abd6373d',
+  '20251213121000_fix_exploration_quota_logging.sql': '93c5c549fb75b3431bc8bfa467c6a2dcc32452f5e86c08c9a66f1eb8f9dd21c3',
+  '20251214000002_add_chat_quota_trigger.sql': '2b1a9a7f0750de7e6c62a6714421434cf73cab46315ec3ef78ec92d7221a699a',
+  '20251214150000_create_quota_events_table.sql': 'f2f97354e98180b858bab4f0924d95dab2c1bfe9c47f86bbb93b3175b154f413',
+  '20251215000000_fix_ambiguous_tier_in_quota_triggers.sql': '68b15979cd7f376eab71d0f51874222dd0693b179f307fa98a470c9289a4749d',
+  '20251219000000_add_fingerprint_upgrade_tracking.sql': 'a1f4eecf739876bf62e29e9b55c7dbddf219960ba0872f79992c3cf1def858f2',
+  '20251220000000_unify_quota_tables.sql': 'cc02d1637f6478367ccfd1883ab697826bfd6f1038d87f59d6afb0541b7b3cdf',
+  '20251221000000_fix_fingerprint_upgrade_tracking.sql': '52a48b5faf5173595b13b1c58cfa1a26cb801034ec949e7a6d62b0fbb0a6a47e',
+  '20251222115718_remote_schema.sql': 'c7e2299445252f790d90953091bfc7cffd743272d40b6506e63e536fe03db72d',
+  '20251223100000_add_guest_image_quota.sql': '1a220ba80d617566ad7e41c5921246b7e1d8a66c4eb683250769ad1523891409',
+  '20260316120000_create_ai_jobs.sql': 'ef7f1dbab85857c6fa166b48533e90110957a292e4738338f66c9bf48bc9a157',
+  '20260316130000_add_dream_sync_revisions.sql': 'b57dca708a8993225ebe10d03925c207f62254accc67550f473716072e9150f5',
+  '20260316140000_add_subscription_state_convergence.sql': 'fdf87707d1a1ad365d555529021cdfc29f4bd080859d76099d45401b3796f42a',
+  '20260316154500_harden_subscription_state_rpcs.sql': 'f48118fb0c5df0936b16e7676806dbad4ed721fd3c63133aa30a1f0529abc913',
+  '20260616120000_add_dream_memory_metadata.sql': '7447192179e7d6e888aadceca21d4c41b303c3275ad28fe617155a911c078849',
+  '20260623152929_authenticated_analysis_quota_claim.sql': '381cd4fe74d6ecb5f66d0577f26333947d822739c2e345aee43b29125d40cbc6',
+  '20260712214624_add_idempotent_guest_analysis_quota.sql': '0dd24a127896cdd2a47bb011847b0468c8664b068ba9dc10ef32f3bd074d539e',
+  '20260721120000_add_dream_analysis_details.sql': '2c5048cb795ccbac8adad778e5a9ea1003189a3686650914e1b0873077b03dde',
+  '20260722124500_add_ai_sync_admission_control.sql': '86e8360c43d341f77f5d66cdc3a011450cae54546c60f84741c1ef7e2e894875',
+  '20260722134500_add_idempotent_chat_turns.sql': '5f90eaf2e47211ff17c9e18147232551bae72d72c73c60c035e60da7b996c153',
+  '20260722151231_unify_interpretation_entitlements_and_device_risk.sql': '32ecd01cbc9ad5fed36e29d173e9ed94167fc0329789af3ab8b16461be0aa9e6',
+  '20260819130000_analysis_job_prompt_version.sql': '29c4d1f56ee9ac1d7735c381f4c860bea31b91f7dba1d0978b0c3b835a227472',
+  '20260829120000_requeue_failed_generate_image_jobs.sql': 'cbe93e6d41bab0393203dcc8fb3302cc1b29278cb5dbd1eb16e23e12e0aeae82',
+  '20260829160000_preserve_image_job_retry_budget.sql': '5d16817e359fe8734d5e4ef31cfb9b118aca29d92a8b55c6b6c3e14301e3d317',
+  '20260909010000_scope_oauth_product_access.sql': 'f656b084dd6b1de8d7eaa8bb0504974c79db2b95762dfeaf23a7099681d9f613',
+  '20260917172941_preserve_plus_analysis_authorization.sql': '6e1c6643881922ccb7795c24cfe9ed8c78bc8fce7421ad1cc6f7cff24e3301bc',
+  '20261014183000_allow_luminous_nostalgic_analysis_themes.sql': '6358c19cc23148bf413b54a5ce2e8668330b9322e7556d76a45e8b42cfee723c',
+  '20261015120000_add_dream_precise_theme.sql': 'dc771825dc16ddb01d12f594d6d92fdf57d7fe7b8018575422b30dd9458676ca',
+});
 
 /** Remove comments, keep string and dollar-quoted contents (they may hold real DDL in DO blocks). */
 function stripComments(sql) {
@@ -134,7 +185,7 @@ function stripComments(sql) {
       out += sql.slice(i, j + 1);
       i = j + 1;
     } else {
-      const tag = /^\$[A-Za-z_]*\$/.exec(rest);
+      const tag = new RegExp(`^${DOLLAR_TAG}`).exec(rest);
       if (tag && !/[\w$]/.test(sql[i - 1] ?? '')) {
         const end = sql.indexOf(tag[0], i + tag[0].length);
         const stop = end < 0 ? sql.length : end + tag[0].length;
@@ -168,8 +219,8 @@ let pathCache = { sql: null, changes: [] };
 
 /**
  * search_path changes that run in the migration session, in order: a top-level
- * (or DO block) `set [local|session] search_path` or a `select|perform
- * set_config('search_path', ...)`. A function's `set search_path` attribute,
+ * (or unconditional DO block) `set [local|session] search_path`, `reset
+ * search_path|all`, or a `select|perform set_config('search_path', ...)`. A function's `set search_path` attribute,
  * `alter function|role|database ... set search_path` and function bodies do
  * not change it.
  */
@@ -178,10 +229,13 @@ function searchPathChanges(sql) {
   const changes = [];
   const setStatement = new RegExp(String.raw`${LEAD}set\s+(?:(?:local|session)\s+)?search_path\s*(?:=|\bto\b)\s*([\s\S]*)$`, 'i');
   const setConfig = new RegExp(String.raw`${LEAD}(?:select|perform)\b`, 'i');
+  const resetStatement = new RegExp(String.raw`${LEAD}reset\s+(?:search_path|all)\s*$`, 'i');
   for (const statement of executedStatements(sql)) {
+    if (statement.conditional) continue;
     const match = setStatement.exec(statement.text);
     let list = null;
-    if (match) list = statement.raw.slice(match.index + match[0].length - match[1].length).trim();
+    if (resetStatement.test(statement.text)) list = 'default';
+    else if (match) list = statement.raw.slice(match.index + match[0].length - match[1].length).trim();
     else if (setConfig.test(statement.text)) {
       // Only a real call counts: the name must be outside strings and bodies (blanked in `text`).
       const call = /\bset_config\s*\(/i.exec(statement.text);
@@ -253,7 +307,7 @@ function statements(sql) {
       i = j + 1;
       continue;
     }
-    const tag = c === '$' && !/[\w$]/.test(sql[i - 1] ?? '') ? /^\$[A-Za-z_]*\$/.exec(sql.slice(i)) : null;
+    const tag = c === '$' && !/[\w$]/.test(sql[i - 1] ?? '') ? new RegExp(`^${DOLLAR_TAG}`).exec(sql.slice(i)) : null;
     if (tag) {
       const end = sql.indexOf(tag[0], i + tag[0].length);
       i = end < 0 ? sql.length : end + tag[0].length;
@@ -313,6 +367,15 @@ function ownedSequences(statement, afterName, table) {
   return sequences;
 }
 
+// PL/pgSQL that can skip statements of a DO block.
+const CONTROL_FLOW = /\b(?:if|case|loop|while|for|foreach|exception|return|exit|continue|raise)\b/i;
+
+/** `text` with dollar-quoted bodies and string literals blanked. */
+function blankLiterals(text) {
+  const blank = (part) => ' '.repeat(part.length);
+  return text.replace(new RegExp(String.raw`(${DOLLAR_TAG})[\s\S]*?\1`, 'g'), blank).replace(/'(?:[^']|'')*'/g, blank);
+}
+
 /** `text` with each BEGIN ATOMIC routine body blanked (it only runs when the routine is called). */
 function blankAtomicBodies(text) {
   let out = text;
@@ -327,21 +390,26 @@ function blankAtomicBodies(text) {
 /**
  * Statements PostgreSQL runs while applying the migration: the top-level ones
  * and those of DO blocks (not function bodies, which only run when called).
+ * `conditional` marks statements of a DO block with control flow (IF, CASE,
+ * loops, EXCEPTION, ...): they may not run, so they never count as a grant,
+ * a revoke, RLS or a search_path change.
  * `text` has dollar-quoted bodies and string literals blanked, so text inside a
  * string or a function body never counts; `offset` is absolute in `sql`.
  */
 function executedStatements(sql) {
   const result = [];
   const blank = (text) => ' '.repeat(text.length);
-  const scan = (text, base) => {
+  const scan = (text, base, conditional = false) => {
     for (const statement of statements(text)) {
       const outside = blankAtomicBodies(statement.text
-        .replace(/(\$[A-Za-z_]*\$)[\s\S]*?\1/g, blank)
+        .replace(new RegExp(String.raw`(${DOLLAR_TAG})[\s\S]*?\1`, 'g'), blank)
         .replace(/'(?:[^']|'')*'/g, blank));
-      result.push({ text: outside, raw: statement.text, offset: base + statement.offset });
+      result.push({ text: outside, raw: statement.text, offset: base + statement.offset, conditional });
       if (/^\s*do\b/i.test(outside)) {
-        for (const body of statement.text.matchAll(/(\$[A-Za-z_]*\$)([\s\S]*?)\1/g)) {
-          scan(body[2], base + statement.offset + body.index + body[1].length);
+        for (const body of statement.text.matchAll(new RegExp(String.raw`(${DOLLAR_TAG})([\s\S]*?)\1`, 'g'))) {
+          // A DO body with control flow may skip any of its statements: they are not proof of a grant.
+          const branches = CONTROL_FLOW.test(blankLiterals(body[2]));
+          scan(body[2], base + statement.offset + body.index + body[1].length, conditional || branches);
         }
       }
     }
@@ -402,7 +470,7 @@ function rlsTables(sql, executed) {
   const tables = new Set();
   const pattern = new RegExp(String.raw`${LEAD}alter\s+table\s+(?:if\s+exists\s+)?(?:only\s+)?(${QUALIFIED})\s+enable\s+row\s+level\s+security\s*$`, 'i');
   for (const statement of executed) {
-    const match = pattern.exec(statement.text);
+    const match = !statement.conditional && pattern.exec(statement.text);
     if (!match) continue;
     const [schema, name] = resolve(sql, match[1], statement.offset);
     if (schema === 'public') tables.add(name);
@@ -415,7 +483,7 @@ function decisions(sql, executed = executedStatements(sql)) {
   const found = { table: new Map(), sequence: new Map() };
   const grant = new RegExp(String.raw`${LEAD}(grant|revoke)\s+([\s\S]+?)\s+on\s+([\s\S]+?)\s+(to|from)\s+([\s\S]+)$`, 'i');
   for (const statement of executed) {
-    const match = grant.exec(statement.text);
+    const match = !statement.conditional && grant.exec(statement.text);
     if (!match) continue;
     let target = match[3].trim();
     let kind = 'table';
@@ -468,6 +536,8 @@ function argumentType(definition) {
     const named = new RegExp(`^${IDENT}\\s+(\\S[\\s\\S]*)$`).exec(text);
     if (named) text = named[1];
   }
+  // float(p) is real for p <= 24 and double precision above (and without p).
+  text = text.replace(/^float\s*\(\s*(\d+)\s*\)/i, (_, precision) => (Number(precision) <= 24 ? 'real' : 'double precision'));
   let type = text.replace(/\(\s*[\d\s,]*\)/g, '').replace(/\s+/g, ' ').trim();
   let array = '';
   const suffix = /(?:\s*\[\s*\d*\s*\])+$|\s+array(?:\s*\[\s*\d*\s*\])?$/i.exec(type);
@@ -507,7 +577,24 @@ function routineReference(text) {
   return { raw: match[1], sig, end };
 }
 
-/** Problems of the SECURITY DEFINER functions (and procedures) a migration creates or alters in public. */
+/**
+ * The search_path a `set search_path ...` clause at the start of `raw` sets:
+ * 'safe' when it is empty or ends with pg_temp (PostgreSQL's advice for
+ * SECURITY DEFINER, so a caller's temporary objects cannot shadow anything),
+ * otherwise the unsafe value as written.
+ */
+function searchPathSafety(raw) {
+  const clause = /^\s*set\s+search_path\s*(?:=|\bto\b|\bfrom\s+current\b)\s*/i.exec(raw);
+  if (!clause) return null;
+  if (/from\s+current/i.test(clause[0])) return 'from current';
+  const list = /^(?:'(?:[^']|'')*'|"(?:[^"]|"")*"|[A-Za-z_][\w$]*)(?:\s*,\s*(?:'(?:[^']|'')*'|"(?:[^"]|"")*"|[A-Za-z_][\w$]*))*/.exec(raw.slice(clause[0].length));
+  if (!list) return '?';
+  const items = splitTopLevel(list[0]).map((item) => item.replace(/^'(.*)'$/s, '$1').replace(/^"(.*)"$/s, '$1').trim().toLowerCase());
+  if (items.every((item) => item === '') || items[items.length - 1] === 'pg_temp') return 'safe';
+  return list[0];
+}
+
+/** Problems of the SECURITY DEFINER functions (and procedures) a migration creates, alters or moves into public. */
 function checkFunctionSql(source) {
   const sql = stripComments(source);
   const executed = executedStatements(sql);
@@ -515,97 +602,113 @@ function checkFunctionSql(source) {
   const alterRoutine = new RegExp(String.raw`${LEAD}alter\s+(?:function|procedure|routine)\s+`, 'i');
   const dropRoutine = new RegExp(String.raw`${LEAD}drop\s+(?:function|procedure|routine)\s+(?:if\s+exists\s+)?([\s\S]+?)(?:\s+(?:cascade|restrict))?\s*$`, 'i');
   const privilege = new RegExp(String.raw`${LEAD}(grant|revoke)\s+(grant\s+option\s+for\s+)?([\s\S]+?)\s+on\s+(?:function|procedure|routine)\s+([\s\S]+?)\s+(to|from)\s+([\s\S]+)$`, 'i');
+  const schemaWide = new RegExp(String.raw`${LEAD}(grant|revoke)\s+(grant\s+option\s+for\s+)?([\s\S]+?)\s+on\s+all\s+(?:functions|procedures|routines)\s+in\s+schema\s+([\s\S]+?)\s+(to|from)\s+([\s\S]+)$`, 'i');
   const lastSecurity = (text) => [...text.matchAll(/\bsecurity\s+(definer|invoker)\b/gi)].pop()?.[1].toLowerCase();
-  const publicTarget = (raw, offset) => {
-    const reference = routineReference(raw);
-    if (!reference) return null;
-    const [schema, name] = resolve(sql, reference.raw, offset);
-    return schema === 'public' ? { name, sig: reference.sig, end: reference.end } : null;
+  const executes = (privileges) => /^(?:all(?:\s+privileges)?|(?:[\s\S]*,\s*)?execute(?:\s*,[\s\S]*)?)$/i.test(privileges.trim());
+  const roleList = (text) => text
+    .replace(/\s+(?:with\s+grant\s+option|granted\s+by\s+[\s\S]*|cascade|restrict)\s*$/i, '')
+    .split(',').map((role) => ident(role.replace(/^\s*group\s+/i, '')));
+  const reference = (raw, offset) => {
+    const found = routineReference(raw);
+    if (!found) return null;
+    const [schema, name] = resolve(sql, found.raw, offset);
+    return { schema, name, sig: found.sig, end: found.end };
   };
-  // Ordered events: what the migration does to public routines, statement by statement.
-  const events = [];
+  // The routines this file touches, as it runs: what PostgreSQL would hold after each statement.
+  // A routine the file did not create starts from the defaults the rule must override
+  // (PUBLIC and anon can execute) with an unknown, so not definer, security mode.
+  let routines = [];
+  const fresh = (schema, name, sig) => ({ schema, name, sig, definer: false, path: null, public: 'default', anon: 'default', grantees: new Set() });
+  const find = (target) => routines.filter((r) => r.schema === target.schema && r.name === target.name && (target.sig === null || r.sig === null || r.sig === target.sig));
+  const touch = (target) => {
+    const found = find(target);
+    if (found.length) return found;
+    const created = fresh(target.schema, target.name, target.sig);
+    routines.push(created);
+    return [created];
+  };
+  const grantTo = (routine, action, roles) => {
+    for (const role of roles) {
+      if (role === 'public' || role === 'anon') routine[role] = action === 'revoke' ? 'revoked' : 'granted';
+      else if (action === 'grant') routine.grantees.add(role);
+      else routine.grantees.delete(role);
+    }
+  };
   for (const statement of executed) {
     let match = createRoutine.exec(statement.text);
     if (match) {
-      const target = publicTarget(statement.text.slice(match.index + match[0].length), statement.offset);
+      const start = match.index + match[0].length;
+      const target = reference(statement.text.slice(start), statement.offset);
       if (!target) continue;
-      const rest = statement.text.slice(match.index + match[0].length + target.end);
+      const sig = target.sig ?? '';
+      let routine = routines.find((r) => r.schema === target.schema && r.name === target.name && r.sig === sig);
+      if (!routine) { routine = fresh(target.schema, target.name, sig); routines.push(routine); }
+      const rest = statement.text.slice(start + target.end);
+      const pathAt = rest.search(/\bset\s+search_path\b/i);
       // CREATE OR REPLACE resets every attribute it does not repeat (security invoker, no SET), not the ACL.
-      events.push({ type: 'create', target: { name: target.name, sig: target.sig ?? '' }, definer: lastSecurity(rest) === 'definer', pathSet: /\bset\s+search_path\b/i.test(rest) });
+      routine.definer = lastSecurity(rest) === 'definer';
+      routine.path = pathAt < 0 ? null : searchPathSafety(statement.raw.slice(start + target.end + pathAt));
       continue;
     }
     match = alterRoutine.exec(statement.text);
     if (match) {
-      const target = publicTarget(statement.text.slice(match.index + match[0].length), statement.offset);
+      const start = match.index + match[0].length;
+      const target = reference(statement.text.slice(start), statement.offset);
       if (!target) continue;
-      const rest = statement.text.slice(match.index + match[0].length + target.end);
+      const rest = statement.text.slice(start + target.end);
+      const moved = new RegExp(String.raw`^\s*set\s+schema\s+(${IDENT})\s*$`, 'i').exec(rest);
+      const renamed = new RegExp(String.raw`^\s*rename\s+to\s+(${IDENT})\s*$`, 'i').exec(rest);
+      const found = touch(target);
+      if (moved) { for (const routine of found) routine.schema = ident(moved[1]); continue; }
+      if (renamed) { for (const routine of found) routine.name = ident(renamed[1]); continue; }
       const security = lastSecurity(rest);
-      events.push({
-        type: 'alter', target: { name: target.name, sig: target.sig },
-        definer: security ? security === 'definer' : undefined,
-        pathSet: /\bset\s+search_path\b/i.test(rest) ? true : /\breset\s+(?:search_path|all)\b/i.test(rest) ? false : undefined,
-      });
+      const pathAt = rest.search(/\bset\s+search_path\b/i);
+      for (const routine of found) {
+        if (security) routine.definer = security === 'definer';
+        if (pathAt >= 0 && !statement.conditional) routine.path = searchPathSafety(statement.raw.slice(start + target.end + pathAt));
+        else if (/\breset\s+(?:search_path|all)\b/i.test(rest)) routine.path = null;
+      }
       continue;
     }
     match = dropRoutine.exec(statement.text);
     if (match) {
       for (const object of splitTopLevel(match[1])) {
-        const target = publicTarget(object, statement.offset);
-        if (target) events.push({ type: 'drop', target: { name: target.name, sig: target.sig } });
+        const target = reference(object, statement.offset);
+        if (target) { const gone = new Set(find(target)); routines = routines.filter((r) => !gone.has(r)); }
       }
       continue;
     }
-    match = privilege.exec(statement.text);
-    if (!match || match[2]) continue; // `revoke grant option for` keeps the privilege itself.
-    if (!/^(?:all(?:\s+privileges)?|(?:[\s\S]*,\s*)?execute(?:\s*,[\s\S]*)?)$/i.test(match[3].trim())) continue;
-    const roles = match[6]
-      .replace(/\s+(?:with\s+grant\s+option|granted\s+by\s+[\s\S]*|cascade|restrict)\s*$/i, '')
-      .split(',').map((role) => ident(role.replace(/^\s*group\s+/i, '')));
-    for (const object of splitTopLevel(match[4])) {
-      const target = publicTarget(object, statement.offset);
-      if (target) events.push({ type: match[1].toLowerCase(), target: { name: target.name, sig: target.sig }, roles });
+    // A grant inside a DO block that may skip it is no proof; a schema-wide grant still re-opens access.
+    match = schemaWide.exec(statement.text);
+    if (match) {
+      if (match[2] || !executes(match[3]) || match[1].toLowerCase() !== 'grant') continue;
+      const schemas = splitTopLevel(match[4]).map(ident);
+      const roles = roleList(match[6]).filter((role) => role === 'public' || role === 'anon');
+      for (const routine of routines.filter((r) => schemas.includes(r.schema))) grantTo(routine, 'grant', roles);
+      continue;
     }
-  }
-  // Routines that end up SECURITY DEFINER: each created signature, plus `alter ... security definer`
-  // by name only (every overload) when the file creates no overload of that name.
-  const routines = [];
-  for (const event of events) {
-    if (event.type === 'create' && !routines.some((r) => r.name === event.target.name && r.sig === event.target.sig)) routines.push({ ...event.target });
-  }
-  for (const event of events) {
-    if (event.type !== 'alter' || event.definer !== true) continue;
-    const { name, sig } = event.target;
-    if (!routines.some((r) => r.name === name && (sig === null || r.sig === null || r.sig === sig))) routines.push({ name, sig });
+    match = privilege.exec(statement.text);
+    if (!match || match[2] || !executes(match[3])) continue; // `revoke grant option for` keeps the privilege itself.
+    const action = match[1].toLowerCase();
+    if (statement.conditional && action === 'revoke') continue;
+    const roles = roleList(match[6]);
+    for (const object of splitTopLevel(match[4])) {
+      const target = reference(object, statement.offset);
+      if (!target) continue;
+      // A name without arguments means the routines of that name existing at this statement.
+      for (const routine of touch(target)) grantTo(routine, action, statement.conditional ? roles.filter((role) => role === 'public' || role === 'anon') : roles);
+    }
   }
   const problems = [];
-  for (const routine of routines) {
+  for (const routine of routines.filter((r) => r.schema === 'public' && r.definer)) {
     const label = `public.${routine.name}${routine.sig === null ? '' : `(${routine.sig})`}`;
-    const matches = (target) => target.name === routine.name && (routine.sig === null || target.sig === null || target.sig === routine.sig);
-    // Replay the file: a drop gives the routine fresh defaults (PUBLIC and anon can execute again).
-    let state = null;
-    const fresh = () => ({ definer: false, pathSet: false, public: 'default', anon: 'default', grantees: new Set() });
-    for (const event of events.filter((item) => matches(item.target))) {
-      if (event.type === 'drop') { state = null; continue; }
-      state ??= fresh();
-      if (event.type === 'create') { state.definer = event.definer; state.pathSet = event.pathSet; }
-      else if (event.type === 'alter') {
-        if (event.definer !== undefined) state.definer = event.definer;
-        if (event.pathSet !== undefined) state.pathSet = event.pathSet;
-      } else {
-        for (const role of event.roles) {
-          if (role === 'public' || role === 'anon') state[role] = event.type === 'revoke' ? 'revoked' : 'granted';
-          else if (event.type === 'grant') state.grantees.add(role);
-          else state.grantees.delete(role);
-        }
-      }
-    }
-    if (!state?.definer) continue;
     for (const role of ['public', 'anon']) {
-      if (state[role] === 'default') problems.push(`${label}: security definer without "revoke execute on function ${label} from ${role}"`);
-      if (state[role] === 'granted') problems.push(`${label}: security definer granted back to ${role} after its revoke`);
+      if (routine[role] === 'default') problems.push(`${label}: security definer without "revoke execute on function ${label} from ${role}"`);
+      if (routine[role] === 'granted') problems.push(`${label}: security definer granted back to ${role} after its revoke`);
     }
-    if (!state.grantees.size) problems.push(`${label}: security definer without an explicit "grant execute on function ${label} to <role>"`);
-    if (!state.pathSet) problems.push(`${label}: security definer without "set search_path" (in the definition or "alter function ${label} set search_path")`);
+    if (!routine.grantees.size) problems.push(`${label}: security definer without an explicit "grant execute on function ${label} to <role>"`);
+    if (routine.path === null) problems.push(`${label}: security definer without "set search_path" (in the definition or "alter function ${label} set search_path")`);
+    else if (routine.path !== 'safe') problems.push(`${label}: security definer with an unsafe search_path (${routine.path}); use set search_path = '' or end the list with pg_temp`);
   }
   return problems;
 }
@@ -649,12 +752,13 @@ const RULES = Object.freeze({
 
 /**
  * Check every migration of `dir` against each rule. A file grandfathered for a
- * rule must exist, be at or before that rule's cutoff and still fail it; it is
- * only excused from that rule.
+ * rule must exist, be at or before that rule's cutoff, still fail it and keep
+ * its recorded SHA-256; it is only excused from that rule.
  */
 function checkMigrations(dir, grandfathered = {}) {
   const files = fs.readdirSync(dir).filter((file) => file.endsWith('.sql')).sort();
   const sources = new Map(files.map((file) => [file, fs.readFileSync(path.join(dir, file), 'utf8')]));
+  const digests = grandfathered.digests ?? GRANDFATHERED_DIGESTS;
   const failures = new Map();
   const stale = [];
   const counts = {};
@@ -663,8 +767,10 @@ function checkMigrations(dir, grandfathered = {}) {
     const allowed = new Set(excused);
     counts[rule] = allowed.size;
     for (const file of excused) {
-      if (!sources.has(file)) stale.push(`${constant}: ${file}: grandfathered but missing; remove it from the list`);
+      if (!sources.has(file)) { stale.push(`${constant}: ${file}: grandfathered but missing; remove it from the list`); continue; }
       if (!(file.slice(0, cutoff.length) <= cutoff)) stale.push(`${constant}: ${file}: newer than ${cutoff}; only migrations applied before this rule can be grandfathered`);
+      const digest = crypto.createHash('sha256').update(sources.get(file)).digest('hex');
+      if (digests[file] !== digest) stale.push(`${constant}: ${file}: changed since it was grandfathered (sha256 ${digest}); a grandfathered migration cannot be edited`);
     }
     for (const file of files) {
       const problems = check(sources.get(file));
@@ -702,7 +808,7 @@ function main() {
 if (require.main === module) main();
 
 module.exports = {
-  ROLES, GRANDFATHER_CUTOFF, GRANDFATHERED, FUNCTION_GRANDFATHER_CUTOFF, FUNCTION_GRANDFATHERED,
+  ROLES, GRANDFATHER_CUTOFF, GRANDFATHERED, FUNCTION_GRANDFATHER_CUTOFF, FUNCTION_GRANDFATHERED, GRANDFATHERED_DIGESTS,
   stripComments, statements, executedStatements, createdPublicObjects, decisions, signature,
   checkTableSql, checkFunctionSql, checkMigrationSql, checkMigrations,
 };

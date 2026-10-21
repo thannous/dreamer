@@ -60,9 +60,10 @@ or sequence needs the same per-role grant or revoke. `npm run migrations:grants`
 A `security definer` function in `public` (created, or switched with `alter function ...
 security definer`) keeps EXECUTE for PUBLIC and anon unless revoked. The same migration must
 `revoke execute on function public.X(...) from public, anon`, grant EXECUTE explicitly to the
-roles that call it (for example `authenticated` or `service_role`), and set `search_path`
-(`set search_path = ''` in the definition, or `alter function ... set search_path`). The same
-lint enforces it, with its own list of earlier migrations.
+roles that call it (for example `authenticated` or `service_role`), and set a safe
+`search_path`: `set search_path = ''` (then qualify every object in the body) or a list ending
+with `pg_temp`, in the definition or with `alter function ... set search_path`. The same lint
+enforces it, with its own list of earlier migrations.
 
 If you already created the table earlier, run:
 
