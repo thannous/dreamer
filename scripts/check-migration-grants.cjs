@@ -56,9 +56,12 @@
 //   - "role switch": set role / set session authorization in a migration that
 //     changes routines;
 //   - "%TYPE signature": a routine signature with a %TYPE argument;
-//   - "quoted public grantee": "public" quoted in a routine grant or revoke.
-//   A search_path ending with pg_temp is only safe when an existing trusted
-//   schema (pg_catalog or a KNOWN_SCHEMAS entry) comes before it.
+//   - "quoted public grantee": "public" quoted in a routine grant or revoke;
+//   - "ownership reassignment": reassign owned ... to anon|authenticated|service_role;
+//   - "non-ASCII routine name": a routine statement with non-ASCII characters
+//     outside strings (the identifier parser is ASCII only).
+//   A search_path ending with pg_temp is only safe when pg_temp appears once,
+//   last, after an existing trusted schema (pg_catalog or a KNOWN_SCHEMAS entry).
 //   Moving such a routine into public checks it as SECURITY DEFINER, handing
 //   any routine to a caller role as owner fails, and so do routine DDL or
 //   routine privileges in dynamic SQL (an `execute ...` whose text names a
@@ -340,7 +343,7 @@ function searchPathChanges(sql) {
       if (config) { list = config[1]; local = config[2].toLowerCase() === 'true'; }
       // Any other set_config of search_path (E'...', expressions, inside CASE, ...) may move the path
       // anywhere: fail closed, treat it as the default so unqualified names are checked as public.
-      else if (/\bset_config\s*\(/i.test(statement.text)) list = 'default'; // name or value not provably unrelated
+      else if (/\bset_config\s*\(/i.test(statement.text) && !unrelatedSetConfig(statement)) list = 'default'; // name or value not provably unrelated
     }
     if (list === null) continue;
     const schemas = /^\s*default\s*$/i.test(list) ? null : list.split(',').map((item) => {
@@ -632,7 +635,7 @@ const MULTIWORD_TYPE = /^(?:double\s+precision|character\s+varying|bit\s+varying
 
 /** Normalised type of one argument (empty for an OUT argument, which is not part of the signature). */
 function argumentType(definition) {
-  let text = definition.trim()
+  let text = definition.trim().replace(/\s*\.\s*/g, '.')
     .replace(/\s+default\b[\s\S]*$/i, '')
     .replace(/\s*=[\s\S]*$/, '');
   const mode = /^(in|out|inout|variadic)\s+/i.exec(text);
@@ -713,8 +716,17 @@ function searchPathSafety(raw) {
   // pg_temp alone (or only pg_temp entries) would search the caller's temporary schema first.
   if (items.every((item) => item === '')) return 'safe';
   // Missing schemas are skipped, so a trusted existing schema must come before pg_temp.
-  if (items[items.length - 1] === 'pg_temp' && items.slice(0, -1).some((item) => item === 'pg_catalog' || KNOWN_SCHEMAS.includes(item)) && items[0] !== 'pg_temp') return 'safe';
+  // pg_temp only once, last, after an existing trusted schema (missing schemas are skipped).
+  if (items.indexOf('pg_temp') === items.length - 1 && items.slice(0, -1).some((item) => item === 'pg_catalog' || KNOWN_SCHEMAS.includes(item))) return 'safe';
   return list[0];
+}
+
+/** True when every set_config call of the statement names, as a plain literal, a setting other than search_path. */
+function unrelatedSetConfig(statement) {
+  return [...statement.text.matchAll(/\bset_config\s*\(/gi)].every((call) => {
+    const name = (argumentList(statement.raw, call.index + call[0].length) ?? [])[0];
+    return Boolean(name) && /^'(?:[^']|'')*'$/.test(name) && name.slice(1, -1).trim().toLowerCase() !== 'search_path';
+  });
 }
 
 /** Top-level arguments of a call whose list starts at `i` (after the opening parenthesis), or null. */
@@ -800,12 +812,20 @@ function checkFunctionSql(source) {
     }
     for (const call of statement.text.matchAll(/\bset_config\s*\(/gi)) {
       const args = argumentList(statement.raw, call.index + call[0].length);
+      if (args && /^'(?:[^']|'')*'$/.test(args[0] ?? '') && args[0].slice(1, -1).trim().toLowerCase() !== 'search_path') continue;
       if (!args || args.length !== 3 || !/^'(?:[^']|'')*'$/.test(args[0]) || !/^'(?:[^']|'')*'$/.test(args[1]) || !/^(?:true|false)$/i.test(args[2])) {
         problems.push(`shape rule "non-literal set_config": set_config must take two plain string literals and true/false`);
       }
     }
     if (touchesRoutines && roleSwitch.test(statement.text)) {
       problems.push(`shape rule "role switch": set role or set session authorization in a migration that changes routines; new routines would be owned by that role`);
+    }
+    const reassign = new RegExp(String.raw`${LEAD}reassign\s+owned\s+by\s+[\s\S]+?\s+to\s+(${IDENT})\s*$`, 'i').exec(statement.text);
+    if (reassign && CALLER_ROLES.includes(ident(reassign[1]))) {
+      problems.push(`shape rule "ownership reassignment": reassign owned ... to ${ident(reassign[1])}, a role API callers use`);
+    }
+    if ((createRoutine.test(statement.text) || alterRoutine.test(statement.text) || privilege.test(statement.text) || /^\s*drop\s+(?:function|procedure|routine)\b/i.test(statement.text)) && /[^\x00-\x7F]/.test(statement.text)) {
+      problems.push(`shape rule "non-ASCII routine name": a routine statement with non-ASCII characters outside strings; use ASCII or quoted identifiers`);
     }
     if ((createRoutine.test(statement.text) || alterRoutine.test(statement.text) || privilege.test(statement.text)) && /%\s*type\b/i.test(statement.text)) {
       problems.push(`shape rule "%TYPE signature": a routine signature with a %TYPE argument; spell the type out`);

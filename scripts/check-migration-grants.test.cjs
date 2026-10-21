@@ -231,6 +231,9 @@ set search_path = private;
 ${definer('claim')}`,
   'constant execute in a migration that changes routines': `${definer()}${locked()}
 do $$ begin execute 'select 1'; end $$;`,
+  'an unrelated set_config keeps the path': `set search_path = private;
+select set_config('app.foo', current_setting('app.bar'), false);
+${definer('claim')}`,
   'unconditional DO block grants count': `${definer()}
 do $$ begin
   revoke execute on function public.claim(uuid, integer) from public, anon;
@@ -425,6 +428,14 @@ revoke execute on function public.claim(uuid, integer) from "public", anon;
 grant execute on function public.claim(uuid, integer) to service_role;`, [/shape rule "quoted public grantee"/]],
   'shape: role switch before creating a routine': [`set role authenticated;
 ${definer()}${locked()}`, [/shape rule "role switch"/]],
+  'shape: reassign owned to a caller role': [`${definer()}${locked()}
+reassign owned by postgres to authenticated;`, [/shape rule "ownership reassignment"/]],
+  'pg_temp before the last position': [`create function public.claim() returns int language sql security definer
+set search_path = pg_catalog, pg_temp, public, pg_temp as $$ select 1 $$;${locked('public.claim()')}`, [/unsafe search_path/]],
+  'spaced qualifiers keep argument types apart': [`${definer('public.claim', 'public . token')}${locked('public.claim(private.token)')}`,
+    [/claim\(token\): .*from public"/, /from anon"/, /grant execute/]],
+  'shape: non-ASCII routine name': [`create function public.fé() returns int language sql security definer set search_path = '' as $$ select 1 $$;`,
+    [/shape rule "non-ASCII routine name"/, /from public"/, /from anon"/, /grant execute/]],
   'owned by a caller role': [`${definer()}${locked()}
 alter function public.claim(uuid, integer) owner to authenticated;`, [/owned by authenticated/]],
   'quoted mixed case is another function': [`${definer('public."Claim"')}${locked('public.claim(uuid, integer)')}`, [/Claim.*from public"/, /from anon"/, /grant execute/]],
