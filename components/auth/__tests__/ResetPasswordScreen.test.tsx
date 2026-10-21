@@ -12,6 +12,7 @@ type RecoveryListener = (event: string, session: unknown) => void;
 const mockReplace = jest.fn();
 const mockUpdatePassword = jest.fn();
 const mockUpdatePasswordFromWebRecovery = jest.fn();
+const mockUpdatePasswordFromNativeRecovery = jest.fn();
 const mockUnsubscribe = jest.fn();
 let mockRecoveryListeners: RecoveryListener[] = [];
 let mockCurrentUser: { id: string } | null = null;
@@ -83,6 +84,7 @@ jest.mock('@/lib/auth', () => ({
   },
   updatePassword: mockUpdatePassword,
   updatePasswordFromWebRecovery: mockUpdatePasswordFromWebRecovery,
+  updatePasswordFromNativeRecovery: mockUpdatePasswordFromNativeRecovery,
   getWebRecoveryLinkState: () => mockWebRecoveryLinkState,
   webAuthCallbackPromise: Promise.resolve(),
 }));
@@ -126,6 +128,7 @@ describe('ResetPasswordScreen', () => {
     mockWebRecoveryLinkState = 'none';
     mockUpdatePassword.mockResolvedValue({ id: 'user-1' });
     mockUpdatePasswordFromWebRecovery.mockResolvedValue({ id: 'user-1' });
+    mockUpdatePasswordFromNativeRecovery.mockResolvedValue({ id: 'user-1' });
   });
 
   afterEach(() => {
@@ -310,5 +313,24 @@ describe('ResetPasswordScreen', () => {
 
     expect(screen.getByText('auth.reset_password.expired_title')).toBeDefined();
     expect(screen.queryByTestId(TID.Input.AuthNewPassword)).toBeNull();
+  });
+
+  it('uses a verified native hash instead of the active account session', async () => {
+    const { Platform } = jest.requireMock('react-native') as typeof import('react-native');
+    const previousOS = Platform.OS;
+    Platform.OS = 'ios';
+    try {
+      mockCurrentUser = { id: 'other-user' };
+      render(<ResetPasswordScreen nativeRecoveryLink={{ state: 'pending', tokenHash: 'one-use-hash' }} />);
+      fillPasswords('secret123', 'secret123');
+      fireEvent.change(screen.getByTestId(TID.Input.AuthRecoveryEmail), { target: { value: 'user@example.com' } });
+      fireEvent.click(screen.getByTestId(TID.Button.AuthUpdatePassword));
+
+      await waitFor(() => expect(mockUpdatePasswordFromNativeRecovery)
+        .toHaveBeenCalledWith('one-use-hash', 'user@example.com', 'secret123'));
+      expect(mockUpdatePassword).not.toHaveBeenCalled();
+    } finally {
+      Platform.OS = previousOS;
+    }
   });
 });

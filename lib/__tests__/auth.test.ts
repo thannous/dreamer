@@ -22,6 +22,11 @@ const mockSupabaseAuth = {
 };
 
 const mockSupabase = { auth: mockSupabaseAuth };
+const mockRecoveryVerifyOtp = jest.fn();
+const mockRecoveryUpdateUser = jest.fn();
+const mockRecoveryCreateClient = jest.fn(() => ({
+  auth: { verifyOtp: mockRecoveryVerifyOtp, updateUser: mockRecoveryUpdateUser },
+}));
 
 const mockMockAuth = {
   getAccessToken: jest.fn(),
@@ -129,7 +134,12 @@ const loadAuth = async (options?: {
 
   jest.doMock('../supabase', () => ({
     supabase: mockSupabase,
+    getSupabasePublicConfiguration: () => ({
+      projectUrl: 'https://example.supabase.co', publicKey: 'public-key',
+    }),
   }));
+
+  jest.doMock('@supabase/supabase-js', () => ({ createClient: mockRecoveryCreateClient }));
 
   jest.doMock('../mockAuth', () => mockMockAuth);
 
@@ -163,6 +173,16 @@ const loadAuth = async (options?: {
 describe('auth helpers', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockRecoveryVerifyOtp.mockResolvedValue({
+      data: {
+        user: { id: 'recovery-user', email: 'user@example.com' },
+        session: { user: { id: 'recovery-user' } },
+      },
+      error: null,
+    });
+    mockRecoveryUpdateUser.mockResolvedValue({
+      data: { user: { id: 'recovery-user', email: 'user@example.com' } }, error: null,
+    });
     process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID = '';
     process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID = 'ios-client-id';
 
@@ -471,14 +491,46 @@ describe('auth helpers', () => {
     });
   });
 
-  it('routes Lucid Trainer password resets to the companion account link', async () => {
+  it('routes Lucid Trainer password resets to its reset screen', async () => {
     const auth = await loadAuth({ lucidTrainer: true });
 
     await auth.requestPasswordReset('user@example.com');
 
     expect(mockSupabaseAuth.resetPasswordForEmail).toHaveBeenCalledWith('user@example.com', {
-      redirectTo: 'https://lucid.noctalia.app/lucid/account',
+      redirectTo: 'https://lucid.noctalia.app/auth/reset-password',
     });
+  });
+
+  it('redeems a Lucid native recovery hash in an isolated session after email confirmation', async () => {
+    const auth = await loadAuth({ lucidTrainer: true });
+
+    await expect(auth.updatePasswordFromNativeRecovery('one-use-hash', 'other@example.com', 'new-secret'))
+      .rejects.toThrow('recovery_email_mismatch');
+    expect(mockRecoveryUpdateUser).not.toHaveBeenCalled();
+
+    const user = await auth.updatePasswordFromNativeRecovery('one-use-hash', ' USER@EXAMPLE.COM ', 'new-secret');
+    expect(user).toEqual({ id: 'recovery-user', email: 'user@example.com' });
+    expect(mockRecoveryVerifyOtp).toHaveBeenCalledTimes(1);
+    expect(mockRecoveryVerifyOtp).toHaveBeenCalledWith({ token_hash: 'one-use-hash', type: 'recovery' });
+    expect(mockRecoveryCreateClient).toHaveBeenCalledWith('https://example.supabase.co', 'public-key', {
+      auth: expect.objectContaining({
+        persistSession: false, autoRefreshToken: false, detectSessionInUrl: false,
+      }),
+    });
+    expect(mockRecoveryUpdateUser).toHaveBeenCalledWith({ password: 'new-secret' });
+    expect(mockSupabaseAuth.setSession).not.toHaveBeenCalled();
+    expect(mockSupabaseAuth.updateUser).not.toHaveBeenCalled();
+  });
+
+  it('rejects Lucid recovery when GoTrue returns no matching session', async () => {
+    mockRecoveryVerifyOtp.mockResolvedValueOnce({
+      data: { user: { id: 'recovery-user', email: 'user@example.com' }, session: { user: { id: 'other' } } },
+      error: null,
+    });
+    const auth = await loadAuth({ lucidTrainer: true });
+    await expect(auth.updatePasswordFromNativeRecovery('wrong-hash', 'user@example.com', 'new-secret'))
+      .rejects.toThrow('Password recovery link is invalid.');
+    expect(mockRecoveryUpdateUser).not.toHaveBeenCalled();
   });
 
   it('uses the current web origin for the reset-password link on web', async () => {

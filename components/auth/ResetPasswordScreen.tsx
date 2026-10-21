@@ -22,8 +22,9 @@ import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { isLucidTrainer } from '@/lib/appVariant';
-import { getWebRecoveryLinkState, onPasswordRecovery, updatePassword, updatePasswordFromWebRecovery, webAuthCallbackPromise } from '@/lib/auth';
+import { getWebRecoveryLinkState, onPasswordRecovery, updatePassword, updatePasswordFromNativeRecovery, updatePasswordFromWebRecovery, webAuthCallbackPromise } from '@/lib/auth';
 import { isValidEmail, PASSWORD_MIN_LENGTH } from '@/lib/authValidation';
+import type { NativeRecoveryLink } from '@/lib/nativeRecoveryLink';
 import { TID } from '@/lib/testIDs';
 import { HeaderScrollView, useHeaderScroll } from '@/components/ui/headerStretch';
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
@@ -51,7 +52,7 @@ const getUpdateErrorKey = (error: unknown): string => {
  * confirmation and complete in isolated sessions. Native sessions use their
  * existing recovery events.
  */
-const ResetPasswordScreen: React.FC = () => {
+const ResetPasswordScreen: React.FC<{ nativeRecoveryLink?: NativeRecoveryLink }> = ({ nativeRecoveryLink }) => {
   // This screen's own scroll, published to its header painting and title.
   const onHeaderScroll = useHeaderScroll();
   const { colors, mode } = useTheme();
@@ -60,6 +61,8 @@ const ResetPasswordScreen: React.FC = () => {
   const { t } = useTranslation();
   const { user, loading: authLoading } = useAuth();
   const [webRecoveryLinkState, setWebRecoveryLinkState] = useState(getWebRecoveryLinkState);
+  const recoveryLinkState = Platform.OS === 'web'
+    ? webRecoveryLinkState : nativeRecoveryLink?.state ?? 'none';
 
   const [recoveryDetected, setRecoveryDetected] = useState(false);
   const [email, setEmail] = useState('');
@@ -91,13 +94,13 @@ const ResetPasswordScreen: React.FC = () => {
     };
   }, []);
 
-  const hasSession = webRecoveryLinkState === 'pending' ||
-    (webRecoveryLinkState === 'none' && (recoveryDetected || Boolean(user)));
+  const hasSession = recoveryLinkState === 'pending' ||
+    (recoveryLinkState === 'none' && (recoveryDetected || Boolean(user)));
   const phase: Phase = completed
     ? 'success'
     : hasSession
       ? 'ready'
-      : webRecoveryLinkState === 'checking' || (webRecoveryLinkState === 'none' && authLoading)
+      : recoveryLinkState === 'checking' || (recoveryLinkState === 'none' && authLoading)
         ? 'checking'
         : 'expired';
 
@@ -106,7 +109,7 @@ const ResetPasswordScreen: React.FC = () => {
   const showPasswordError = touched.password && password.length > 0 && !passwordValid;
   const showMismatchError = touched.confirm && confirmPassword.length > 0 && !passwordsMatch;
   const submitDisabled = submitting || !passwordValid || !passwordsMatch ||
-    (webRecoveryLinkState === 'pending' && !isValidEmail(email));
+    (recoveryLinkState === 'pending' && !isValidEmail(email));
 
   const handleSubmit = async () => {
     setTouched({ password: true, confirm: true });
@@ -114,8 +117,14 @@ const ResetPasswordScreen: React.FC = () => {
     setSubmitting(true);
     setErrorKey(null);
     try {
-      if (webRecoveryLinkState === 'pending') {
-        await updatePasswordFromWebRecovery(email, password);
+      if (recoveryLinkState === 'pending') {
+        if (Platform.OS === 'web') {
+          await updatePasswordFromWebRecovery(email, password);
+        } else if (nativeRecoveryLink?.state === 'pending') {
+          await updatePasswordFromNativeRecovery(nativeRecoveryLink.tokenHash, email, password);
+        } else {
+          throw new Error('Password recovery link is invalid.');
+        }
         setIsolatedRecoveryCompleted(true);
       } else {
         await updatePassword(password);
@@ -256,7 +265,7 @@ const ResetPasswordScreen: React.FC = () => {
           {t('auth.reset_password.subtitle')}
         </Text>
 
-        {webRecoveryLinkState === 'pending' ? (
+        {recoveryLinkState === 'pending' ? (
           <>
             <Text style={[styles.subtitle, { color: noctalia.text.secondary }]}>
               {t('auth.reset_password.confirm_email')}
