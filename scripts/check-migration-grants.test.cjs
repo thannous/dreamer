@@ -429,7 +429,7 @@ grant execute on function public.claim(uuid, integer) to service_role;`, [/shape
   'shape: role switch before creating a routine': [`set role authenticated;
 ${definer()}${locked()}`, [/shape rule "role switch"/]],
   'shape: reassign owned to a caller role': [`${definer()}${locked()}
-reassign owned by postgres to authenticated;`, [/shape rule "ownership reassignment"/]],
+reassign owned by postgres to authenticated;`, [/shape rule "role DDL"/]],
   'pg_temp before the last position': [`create function public.claim() returns int language sql security definer
 set search_path = pg_catalog, pg_temp, public, pg_temp as $$ select 1 $$;${locked('public.claim()')}`, [/unsafe search_path/]],
   'spaced qualifiers keep argument types apart': [`${definer('public.claim', 'public . token')}${locked('public.claim(private.token)')}`,
@@ -450,10 +450,26 @@ grant execute on function public.f5() to authenticated;
 grant execute on function public.f5() to U&"\\0061non";`, [/shape rule "unicode-escaped identifier"/]],
   'CTO: unicode-escaped grantee on an earlier routine': [`grant execute on function public.get_user_dreams() to U&"\\0061non";`, [/shape rule "unicode-escaped identifier"/]],
   'shape: unicode-escaped identifier with UESCAPE': [`alter function public.claim() owner to U&"!0061non" UESCAPE '!';`, [/shape rule "unicode-escaped identifier"/]],
-  'CTO: role membership grant to anon': [`grant authenticated to anon;`, [/shape rule "role membership"/]],
-  'shape: role membership to quoted roles with options': [`grant service_role to "authenticated" with admin option;
+  'CTO: role membership grant to anon': [`grant authenticated to anon;`, [/shape rule "role DDL"/]],
+  'role grants to any grantee, quoted, with options': [`grant service_role to "authenticated" with admin option;
 grant authenticated to public with inherit true;
-grant anon to service_role;`, [/shape rule "role membership".*authenticated/, /shape rule "role membership".*public/, /shape rule "role membership".*service_role/]],
+grant anon to some_other_role granted by postgres;`, [/shape rule "role DDL"/, /shape rule "role DDL"/, /shape rule "role DDL"/]],
+  'CTO: alter group add user': [`alter group authenticated add user anon;
+ALTER GROUP "authenticated" ADD USER "anon", foo;`, [/shape rule "role DDL"/, /shape rule "role DDL"/]],
+  'CTO: create role with role anon, then grants to it': [`create role bdrole role anon;
+grant execute on function public.get_user_dreams() to bdrole;`, [/shape rule "role DDL"/]],
+  'role DDL: create user and create group': [`create user bduser in role service_role;
+create group bdgroup admin anon;`, [/shape rule "role DDL"/, /shape rule "role DDL"/]],
+  'role DDL: alter role and alter user': [`alter role anon set search_path = private;
+alter user authenticated with bypassrls;`, [/shape rule "role DDL"/, /shape rule "role DDL"/]],
+  'role DDL: drop role, user and group': [`drop role if exists bdrole;
+drop user bduser;
+drop group bdgroup;`, [/shape rule "role DDL"/, /shape rule "role DDL"/, /shape rule "role DDL"/]],
+  'role DDL: revoke a role from a role': [`revoke admin option for authenticated from bdrole;
+revoke service_role from authenticated;`, [/shape rule "role DDL"/, /shape rule "role DDL"/]],
+  'role DDL: reassign owned and drop owned, any target': [`reassign owned by bdrole to postgres;
+drop owned by bdrole;`, [/shape rule "role DDL"/, /shape rule "role DDL"/]],
+  'role DDL inside a DO block': [`do $$ begin create role bdrole2 role anon; end $$;`, [/shape rule "role DDL"/]],
   'owned by a caller role': [`${definer()}${locked()}
 alter function public.claim(uuid, integer) owner to authenticated;`, [/owned by authenticated/]],
   'quoted mixed case is another function': [`${definer('public."Claim"')}${locked('public.claim(uuid, integer)')}`, [/Claim.*from public"/, /from anon"/, /grant execute/]],

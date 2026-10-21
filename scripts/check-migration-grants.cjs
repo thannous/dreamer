@@ -46,8 +46,12 @@
 //     procedure, routine, definer or search_path;
 //   - "non-literal execute": an `execute` that is not one constant string
 //     (concatenation, format, variable or call), in any migration;
-//   - "unicode-escaped identifier": U&"..." or U&'...' outside a dollar-quoted body;
-//   - "role membership": grant <role> to anon|authenticated|service_role|public;
+//   - "unicode-escaped identifier": a U&"..." identifier outside a dollar-quoted
+//     body (U&'...' strings are not matched; PostgreSQL rejects a string where
+//     a role or object name is expected);
+//   - "role DDL": create/alter/drop role|user|group (all forms), grant <role>
+//     to anyone, revoke <role> from, reassign owned, drop owned. A file that
+//     needs one must be grandfathered (pinned by SHA-256); none does today;
 //   - "string DO body": a DO block whose body is not dollar-quoted;
 //   - "conditional routine or path change": a create/alter of a routine, a
 //     set/reset search_path or a set_config inside a DO block with control flow;
@@ -59,7 +63,6 @@
 //     changes routines;
 //   - "%TYPE signature": a routine signature with a %TYPE argument;
 //   - "quoted public grantee": "public" quoted in a routine grant or revoke;
-//   - "ownership reassignment": reassign owned ... to anon|authenticated|service_role;
 //   - "non-ASCII routine name": a routine statement with non-ASCII characters
 //     outside strings (the identifier parser is ASCII only).
 //   A search_path ending with pg_temp is only safe when pg_temp appears once,
@@ -804,6 +807,12 @@ function checkFunctionSql(source) {
   const pathChange = new RegExp(String.raw`${LEAD}(?:set\s+(?:(?:local|session)\s+)?search_path\b|reset\s+(?:search_path|all)\b)`, 'i');
   const touchesRoutines = executed.some((st) => createRoutine.test(st.text) || alterRoutine.test(st.text) || privilege.test(st.text) || schemaWide.test(st.text));
   const roleSwitch = new RegExp(String.raw`${LEAD}set\s+(?:(?:session|local)\s+)?(?:role\b|session\s+authorization\b)`, 'i');
+  const roleDdl = [
+    new RegExp(String.raw`${LEAD}(?:create|alter|drop)\s+(?:role|user|group)\b`, 'i'),
+    new RegExp(String.raw`${LEAD}grant\s+(?![\s\S]*\bon\b)[\s\S]+?\s+to\s+\S`, 'i'),
+    new RegExp(String.raw`${LEAD}revoke\s+(?![\s\S]*\bon\b)[\s\S]+?\s+from\s+\S`, 'i'),
+    new RegExp(String.raw`${LEAD}(?:reassign|drop)\s+owned\s+by\b`, 'i'),
+  ];
   let rolledBack = false;
   for (const statement of executed) {
     if (dynamic.test(statement.text)) {
@@ -826,20 +835,14 @@ function checkFunctionSql(source) {
       }
     }
     if (/(?<![\w$])U&["']/i.test(statement.text)) {
-      problems.push(`shape rule "unicode-escaped identifier": U&"..." or U&'...' outside a dollar-quoted body; write the identifier plainly`);
-    }
-    const membership = new RegExp(String.raw`${LEAD}grant\s+(?![\s\S]*\bon\b)([\s\S]+?)\s+to\s+([\s\S]+?)(?:\s+with\s+(?:admin|inherit|set)\s+[\s\S]*|\s+granted\s+by\s+[\s\S]*)?$`, 'i').exec(statement.text);
-    if (membership) {
-      const grantees = splitTopLevel(membership[2]).map((role) => ident(role.replace(/^\s*group\s+/i, '')));
-      const caller = grantees.find((role) => CALLER_ROLES.includes(role));
-      if (caller) problems.push(`shape rule "role membership": grant ${membership[1].trim()} to ${caller} gives an API role every privilege of another role`);
+      problems.push(`shape rule "unicode-escaped identifier": a U&"..." identifier outside a dollar-quoted body; write the identifier plainly`);
     }
     if (touchesRoutines && roleSwitch.test(statement.text)) {
       problems.push(`shape rule "role switch": set role or set session authorization in a migration that changes routines; new routines would be owned by that role`);
     }
-    const reassign = new RegExp(String.raw`${LEAD}reassign\s+owned\s+by\s+[\s\S]+?\s+to\s+(${IDENT})\s*$`, 'i').exec(statement.text);
-    if (reassign && CALLER_ROLES.includes(ident(reassign[1]))) {
-      problems.push(`shape rule "ownership reassignment": reassign owned ... to ${ident(reassign[1])}, a role API callers use`);
+    // Role DDL of any form changes who holds which privileges; this lint cannot replay it.
+    if (roleDdl.some((pattern) => pattern.test(statement.text))) {
+      problems.push(`shape rule "role DDL": create/alter/drop role|user|group, grant <role> to, revoke <role> from, reassign owned or drop owned; role changes do not belong in a migration`);
     }
     if ((createRoutine.test(statement.text) || alterRoutine.test(statement.text) || privilege.test(statement.text) || /^\s*drop\s+(?:function|procedure|routine)\b/i.test(statement.text)) && /[^\x00-\x7F]/.test(statement.text)) {
       problems.push(`shape rule "non-ASCII routine name": a routine statement with non-ASCII characters outside strings; use ASCII or quoted identifiers`);
