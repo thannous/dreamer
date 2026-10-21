@@ -1,9 +1,10 @@
+import { readDOM, byId, expectCSS, expectInViewport, createExactWebTest, expect, withExactDialog } from '../exact-web-fixtures';
+import type { ExactWebUI } from '../exact-web-fixtures';
 import { createRequire } from 'node:module';
-import type { Page } from 'playwright/test';
-import { createParityTest, expect, withDialog, type ParityInfo } from '../web-parity-fixtures';
+import { readFileSync } from 'node:fs';
 
 const sharp: typeof import('sharp') = createRequire(import.meta.url)('sharp');
-const test = createParityTest({ viewport: { width: 390, height: 844 }, locale: 'fr-FR', reducedMotion: 'reduce' });
+const test = createExactWebTest({ viewport: { width: 390, height: 844 }, locale: 'fr-FR', reducedMotion: 'reduce' });
 
 function luminance(color: number[]) {
   const linear = color.map(value => {
@@ -14,22 +15,23 @@ function luminance(color: number[]) {
 }
 
 /** Measure pixels actually behind visible copy, after temporarily hiding its ink. */
-async function readable(page: Page, info: ParityInfo, label: string) {
-  await page.mouse.move(0, 0);
-  await page.evaluate(() => document.fonts.ready);
+async function readable(ui: ExactWebUI, label: string) {
+  const { app, browser, artifacts } = ui;
+  await browser.mouse.move(0, 0);
+  await browser.evaluate(async () => { await document.fonts.ready; return null; });
   let lastLayout = '';
   let stableFrames = 0;
   await expect.poll(async () => {
-    const layout = await page.evaluate(() => JSON.stringify(Array.from(document.querySelectorAll<HTMLElement>('[dir="auto"],p,input,textarea')).map(node => {
+    const layout = await browser.evaluate(() => JSON.stringify(Array.from(document.querySelectorAll<HTMLElement>('[dir="auto"],p,input,textarea')).map(node => {
       const r = node.getBoundingClientRect();
       return [node.textContent, r.x, r.y, r.width, r.height];
     })));
     stableFrames = layout === lastLayout ? stableFrames + 1 : 0;
     lastLayout = layout;
     return stableFrames;
-  }, { intervals: [100] }).toBeGreaterThanOrEqual(3);
+  }, { interval: 100 }).toBeGreaterThanOrEqual(3);
   for (let attempt = 1; ; attempt++) {
-    const samples = await page.evaluate(() => {
+    const samples = await browser.evaluate(() => {
       const parents = new Set<HTMLElement>();
       const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
       for (let text = walker.nextNode(); text; text = walker.nextNode()) {
@@ -123,13 +125,13 @@ async function readable(page: Page, info: ParityInfo, label: string) {
       return samples;
     });
     try {
-      const buffer = await page.screenshot({ scale: 'css' });
+      const buffer = readFileSync(await app.screenshot(`${label}-masked-${attempt}`));
       // A transient element, such as the analysis outcome pill that closes 6 s after an
       // analysis settles, can leave between sampling and this screenshot. Its rows would
       // then fall on the copy it covered, which was never sampled and so keeps its ink
       // (the 2026-10-17 fr-FR Journal failure measured the Noctalia brand under the pill
       // at a ratio of 1). Measure again whenever the sampled copy moved or left.
-      const unchanged = await page.evaluate(count => {
+      const unchanged = await browser.evaluate(count => {
         const nodes = Array.from(document.querySelectorAll<HTMLElement>('[data-background-contrast]'));
         return nodes.length === count && nodes.every(node => {
           if (!node.isConnected) return false;
@@ -158,16 +160,16 @@ async function readable(page: Page, info: ParityInfo, label: string) {
         }
         return { text: sample.text, color: sample.color, alpha: sample.alpha, minimum: Number(minimum.toFixed(3)), required: sample.required, painted: sample.painted, measured };
       }).filter(result => result.measured > 0);
-      await info.attach(`${label}-contrast`, { contentType: 'application/json', body: JSON.stringify({ method: 'Visible text lines over screenshot pixels with ink hidden; clipped, occluded and disabled copy excluded; painted header copy and the capture instruction recorded, not asserted (owner decision 2026-10-18, PR #428)', attempt, results }, null, 2) });
+      await artifacts.attach(`${label}-contrast`, { contentType: 'application/json', body: JSON.stringify({ method: 'Visible text lines over screenshot pixels with ink hidden; clipped, occluded and disabled copy excluded; painted header copy and the capture instruction recorded, not asserted (owner decision 2026-10-18, PR #428)', attempt, results }, null, 2) });
       try {
         expect(results.length, `${label}: visible text was actually measured`).toBeGreaterThan(0);
         for (const result of results) if (!result.painted) expect(result.minimum, `${label}: ${result.text}`).toBeGreaterThanOrEqual(result.required);
       } catch (error) {
-        await info.attach(`${label}-masked-failure`, { contentType: 'image/png', body: buffer });
+        await artifacts.attach(`${label}-masked-failure`, { contentType: 'image/png', body: buffer });
         throw error;
       }
     } finally {
-      await page.evaluate(() => {
+      await browser.evaluate(() => {
         document.getElementById('background-placeholder-mask')?.remove();
         for (const node of document.querySelectorAll<HTMLElement>('[data-background-contrast]')) {
           const original = node.dataset.backgroundOriginalStyle!;
@@ -177,40 +179,44 @@ async function readable(page: Page, info: ParityInfo, label: string) {
           delete node.dataset.backgroundOriginalStyle;
           delete node.dataset.backgroundBounds;
         }
+        return null;
       });
     }
     break;
   }
-  await page.screenshot({ path: info.outputPath(`${label}.png`), scale: 'css' });
+  await app.screenshot(`${label}.png`);
 }
 
-async function start(page: Page) {
-  await page.goto('/');
-  await page.getByTestId('btn.onboarding.intro.next').click();
+async function start(ui: ExactWebUI) {
+  const { app, screen: uiScreen, browser } = ui;
+  await app.open('/');
+  await uiScreen.getByTestId('btn.onboarding.intro.next').click();
   // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
   if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
-    await withDialog(page, 'accept', () => page.getByTestId('btn.onboarding.feature.close').click());
+    await withExactDialog(browser, 'accept', () => uiScreen.getByTestId('btn.onboarding.feature.close').click());
   }
-  await page.getByTestId('btn.onboarding.skip').click();
-  await expect(page.getByTestId('screen.recording')).toBeVisible();
+  await uiScreen.getByTestId('btn.onboarding.skip').click();
+  await expect(uiScreen.getByTestId('screen.recording')).toBeVisible();
 }
 
-async function theme(page: Page, value: 'light' | 'dark') {
-  await page.getByTestId('tab.home').filter({ visible: true }).click();
-  await page.getByTestId('btn.header.home.settings').click();
-  await page.getByTestId(`quick-settings.theme.${value}`).click();
-  await page.getByTestId('quick-settings.close').click();
-  await expect(page.getByTestId('screen.home')).toHaveCSS('background-color', value === 'dark' ? 'rgb(3, 4, 13)' : 'rgb(240, 228, 212)');
+async function theme(ui: ExactWebUI, value: 'light' | 'dark') {
+  const { screen: uiScreen, browser } = ui;
+  await uiScreen.getByTestId('tab.home', { visible: true }).click();
+  await uiScreen.getByTestId('btn.header.home.settings').click();
+  await uiScreen.getByTestId(`quick-settings.theme.${value}`).click();
+  await uiScreen.getByTestId('quick-settings.close').click();
+  await expectCSS(browser, byId('screen.home'), 'background-color', value === 'dark' ? 'rgb(3, 4, 13)' : 'rgb(240, 228, 212)');
 }
 
-async function artwork(page: Page, scene: string, mode: 'light' | 'dark') {
-  const image = page.getByTestId(`image.background.${scene}`).filter({ visible: true });
+async function artwork(ui: ExactWebUI, scene: string, mode: 'light' | 'dark') {
+  const { screen: uiScreen, browser } = ui;
+  const image = uiScreen.getByTestId(`image.background.${scene}`, { visible: true });
   await expect(image).toBeVisible();
-  await expect.poll(() => image.evaluate(element => {
+  await expect.poll(() => readDOM(browser, byId(`image.background.${scene}`), element => {
     const image = element instanceof HTMLImageElement ? element : element.querySelector('img');
     return Boolean(image?.complete && image.naturalWidth > 0);
   })).toBe(true);
-  const lightness = await image.evaluate(element => {
+  const lightness = await readDOM(browser, byId(`image.background.${scene}`), element => {
     const img = element instanceof HTMLImageElement ? element : element.querySelector('img');
     if (!img) throw new Error('Painting missing');
     const canvas = document.createElement('canvas');
@@ -234,28 +240,30 @@ async function artwork(page: Page, scene: string, mode: 'light' | 'dark') {
  * painting must reach the top edge, lie behind the whole title and still show through its
  * veil: with all text ink hidden, the header differs from the same header without it.
  */
-async function paintedHeader(page: Page, info: ParityInfo, label: string) {
-  const picture = await page.getByTestId('image.background.capture').filter({ visible: true }).elementHandle();
-  const title = page.getByTestId('screen.recording').getByRole('heading').first();
-  const [painting, heading] = await Promise.all([picture?.boundingBox(), title.boundingBox()]);
+async function paintedHeader(ui: ExactWebUI, label: string) {
+  const { app, screen: uiScreen, browser, artifacts } = ui;
+  const picture = uiScreen.getByTestId('image.background.capture', { visible: true });
+  const title = uiScreen.getByTestId('screen.recording').getByRole('heading').first();
+  const [painting, heading] = await Promise.all([picture.boundingBox(), title.boundingBox()]);
   if (!picture || !painting || !heading) throw new Error('Capture painting or title missing');
   expect(painting.y, 'The painting reaches the top edge').toBeLessThanOrEqual(0);
   expect(painting.y + painting.height, 'The painting lies behind the whole title').toBeGreaterThanOrEqual(heading.y + heading.height);
   const clip = { x: 0, y: 0, width: Math.round(painting.width), height: Math.round(heading.y + heading.height) };
-  await page.evaluate(() => {
+  await browser.evaluate(() => {
     const mask = document.createElement('style');
     mask.id = 'painted-header-mask';
     mask.textContent = '* { color: transparent !important; text-shadow: none !important; caret-color: transparent !important; } ::placeholder { color: transparent !important; }';
     document.head.appendChild(mask);
+    return null;
   });
   let shots: Buffer[];
   try {
-    const withPainting = await page.screenshot({ scale: 'css', clip });
-    await picture.evaluate(element => element.style.setProperty('visibility', 'hidden', 'important'));
-    shots = [withPainting, await page.screenshot({ scale: 'css', clip })];
+    const withPainting = await sharp(readFileSync(await app.screenshot(`${label}-painting`))).extract({ left: clip.x, top: clip.y, width: clip.width, height: clip.height }).toBuffer();
+    await readDOM(browser, byId('image.background.capture'), element => element.style.setProperty('visibility', 'hidden', 'important'));
+    shots = [withPainting, await sharp(readFileSync(await app.screenshot(`${label}-bare`))).extract({ left: clip.x, top: clip.y, width: clip.width, height: clip.height }).toBuffer()];
   } finally {
-    await picture.evaluate(element => element.style.removeProperty('visibility'));
-    await page.evaluate(() => document.getElementById('painted-header-mask')?.remove());
+    await readDOM(browser, byId('image.background.capture'), element => element.style.removeProperty('visibility'));
+    await browser.evaluate(() => { document.getElementById('painted-header-mask')?.remove(); return null; });
   }
   const [painted, bare] = await Promise.all(shots.map(shot => sharp(shot).removeAlpha().raw().toBuffer({ resolveWithObject: true })));
   let difference = 0;
@@ -267,152 +275,156 @@ async function paintedHeader(page: Page, info: ParityInfo, label: string) {
     }
   }
   const meanChannelDifference = difference / count;
-  await info.attach(`${label}-painted-header`, { contentType: 'application/json', body: JSON.stringify({ painting, heading, meanChannelDifference, sampledChannels: count, minimum: 2 }) });
+  await artifacts.attach(`${label}-painted-header`, { contentType: 'application/json', body: JSON.stringify({ painting, heading, meanChannelDifference, sampledChannels: count, minimum: 2 }) });
   expect(meanChannelDifference, 'The painting shows through the veil behind the header').toBeGreaterThan(2);
 }
 
 /** Browser history navigation keeps the mock session and avoids a new app launch. */
-async function openRoute(page: Page, path: string) {
-  await page.evaluate(path => {
+async function openRoute(ui: ExactWebUI, path: string) {
+  const { browser } = ui;
+  await browser.evaluate(path => {
     window.history.pushState({}, '', path);
-    window.dispatchEvent(new PopStateEvent('popstate', { state: window.history.state }));
+    window.dispatchEvent(new PopStateEvent('popstate', { state: window.history.state })); return null;
   }, path);
 }
 
 for (const mode of ['light', 'dark'] as const) {
-  test(`contextual backgrounds stay readable throughout Dreamer in ${mode} mode`, async ({ page }, info) => {
-    await start(page);
-    await theme(page, mode);
-    await artwork(page, 'reverie', mode);
-    await readable(page, info, `home-${mode}`);
-    await page.getByTestId('tab.addDream').filter({ visible: true }).click();
-    await artwork(page, 'capture', mode);
-    await paintedHeader(page, info, `capture-${mode}`);
-    await readable(page, info, `capture-${mode}`);
-    await page.getByTestId('input.dreamTranscript').fill('Un phare doré éclairait un lac calme.');
-    await expect(page.getByTestId('btn.saveDream')).toBeEnabled();
-    await readable(page, info, `capture-filled-${mode}`);
-    await page.getByTestId('input.dreamTranscript').fill('');
-    await page.getByTestId('tab.stats').filter({ visible: true }).click();
-    await artwork(page, 'astral', mode);
-    await readable(page, info, `trends-${mode}`);
-    await page.getByTestId('tab.explore').filter({ visible: true }).click();
-    await artwork(page, 'path', mode);
-    await readable(page, info, `explorer-${mode}`);
-    await page.getByTestId('btn.explorer.guides').click();
-    await artwork(page, 'path', mode);
-    await readable(page, info, `guides-${mode}`);
-    await page.getByTestId(/^dream-guide-/).first().click();
-    await artwork(page, 'path', mode);
-    await readable(page, info, `guide-reading-${mode}`);
-    await page.goBack();
-    await page.goBack();
-    await page.getByTestId('btn.explorer.symbols').click();
-    await artwork(page, 'symbols', mode);
-    await readable(page, info, `symbols-${mode}`);
-    await page.getByTestId(/^symbol\.popular\./).first().click();
-    await expect(page.getByTestId('screen.symbolDetail')).toBeVisible();
-    await expect(page.getByTestId('screen.symbolDetail').getByRole('heading', { name: 'Interprétation', exact: true })).toBeVisible();
-    await readable(page, info, `symbol-detail-offline-${mode}`);
-    await page.goBack();
-    await page.goBack();
+  test(`contextual backgrounds stay readable throughout Dreamer in ${mode} mode`, async (ui) => {
+  const { screen: uiScreen, browser } = ui;
+    await start(ui);
+    await theme(ui, mode);
+    await artwork(ui, 'reverie', mode);
+    await readable(ui, `home-${mode}`);
+    await uiScreen.getByTestId('tab.addDream', { visible: true }).click();
+    await artwork(ui, 'capture', mode);
+    await paintedHeader(ui, `capture-${mode}`);
+    await readable(ui, `capture-${mode}`);
+    await uiScreen.getByTestId('input.dreamTranscript').fill('Un phare doré éclairait un lac calme.');
+    await expect(uiScreen.getByTestId('btn.saveDream')).toBeEnabled();
+    await readable(ui, `capture-filled-${mode}`);
+    await uiScreen.getByTestId('input.dreamTranscript').fill('');
+    await uiScreen.getByTestId('tab.stats', { visible: true }).click();
+    await artwork(ui, 'astral', mode);
+    await readable(ui, `trends-${mode}`);
+    await uiScreen.getByTestId('tab.explore', { visible: true }).click();
+    await artwork(ui, 'path', mode);
+    await readable(ui, `explorer-${mode}`);
+    await uiScreen.getByTestId('btn.explorer.guides').click();
+    await artwork(ui, 'path', mode);
+    await readable(ui, `guides-${mode}`);
+    await uiScreen.getByTestId(/^dream-guide-/).first().click();
+    await artwork(ui, 'path', mode);
+    await readable(ui, `guide-reading-${mode}`);
+    await browser.back();
+    await browser.back();
+    await uiScreen.getByTestId('btn.explorer.symbols').click();
+    await artwork(ui, 'symbols', mode);
+    await readable(ui, `symbols-${mode}`);
+    await uiScreen.getByTestId(/^symbol\.popular\./).first().click();
+    await expect(uiScreen.getByTestId('screen.symbolDetail')).toBeVisible();
+    await expect(uiScreen.getByTestId('screen.symbolDetail').getByRole('heading', { name: 'Interprétation', exact: true })).toBeVisible();
+    await readable(ui, `symbol-detail-offline-${mode}`);
+    await browser.back();
+    await browser.back();
     for (const [id, scene] of [['starter', 'ritual'], ['memory', 'journal'], ['lucid', 'astral']]) {
       if (id !== 'starter') {
-        await page.getByTestId('explorer-change-ritual').click();
-        await page.getByTestId(`ritual-choice-${id}`).click();
-        await page.getByTestId('ritual-picker-confirm').click();
-        await expect(page.getByTestId('ritual-picker-confirm')).toHaveCount(0);
+        await uiScreen.getByTestId('explorer-change-ritual').click();
+        await uiScreen.getByTestId(`ritual-choice-${id}`).click();
+        await uiScreen.getByTestId('ritual-picker-confirm').click();
+        await expect(uiScreen.getByTestId('ritual-picker-confirm')).toHaveCount(0);
       }
-      await page.getByTestId('btn.explorer.ritual').click();
-      await artwork(page, scene, mode);
-      await readable(page, info, `ritual-${id}-${mode}`);
-      const step = page.getByRole('checkbox').first();
+      await uiScreen.getByTestId('btn.explorer.ritual').click();
+      await artwork(ui, scene, mode);
+      await readable(ui, `ritual-${id}-${mode}`);
+      const step = uiScreen.getByRole('checkbox').first();
       await step.click();
-      await expect(page.getByText('1/4 étapes', { exact: true })).toBeVisible();
-      await page.goBack();
+      await expect(uiScreen.getByText('1/4 étapes', { exact: true })).toBeVisible();
+      await browser.back();
     }
     for (const [route, screen, scene] of [
       ['/weekly-recap', 'screen.weeklyRecap', 'astral'],
       ['/settings', 'screen.settings', 'journal'],
       ['/auth/reset-password', 'screen.auth.resetPassword', 'journal'],
     ]) {
-      await openRoute(page, route);
-      await expect(page.getByTestId(screen)).toBeVisible();
-      await artwork(page, scene, mode);
-      await readable(page, info, `${screen}-${mode}`);
+      await openRoute(ui, route);
+      await expect(uiScreen.getByTestId(screen)).toBeVisible();
+      await artwork(ui, scene, mode);
+      await readable(ui, `${screen}-${mode}`);
       if (screen === 'screen.settings') {
-        await page.getByTestId('settings-section-subscription').click();
-        await artwork(page, 'observatory', mode);
-        await expect(page.getByTestId('screen.paywall')).toBeVisible();
-        await readable(page, info, `paywall-${mode}`);
-        await page.getByTestId('btn.paywall.close').click();
-        await expect(page.getByTestId('screen.settings')).toBeVisible();
+        await uiScreen.getByTestId('settings-section-subscription').click();
+        await artwork(ui, 'observatory', mode);
+        await expect(uiScreen.getByTestId('screen.paywall')).toBeVisible();
+        await readable(ui, `paywall-${mode}`);
+        await uiScreen.getByTestId('btn.paywall.close').click();
+        await expect(uiScreen.getByTestId('screen.settings')).toBeVisible();
       }
     }
   });
 
-  test(`contextual backgrounds preserve journal and reflection actions in ${mode} mode`, async ({ page }, info) => {
-    await start(page);
-    await theme(page, mode);
-    await page.getByTestId('btn.header.home.settings').click();
-    await page.getByTestId('quick-settings.profile').click();
-    await page.getByTestId('btn.mockProfile.plus').click();
-    await expect(page.getByTestId('screen.recording')).toBeVisible();
-    await page.getByTestId('input.dreamTranscript').fill('Une lanterne flottait entre deux arches au-dessus du lac.');
-    await page.getByTestId('btn.saveDream').click();
-    await expect(page.getByTestId('component.transcriptCard')).toContainText('Une lanterne flottait');
-    await page.getByTestId('btn.dream.primaryCta').click();
-    await expect(page.getByTestId('component.dreamDetail.readingZone')).toContainText(/\S[\s\S]{80}/);
-    await page.getByTestId('component.dreamDetail.actionCard').click();
-    await expect(page.getByTestId('screen.dreamCategories')).toBeVisible();
-    await artwork(page, 'dialogue', mode);
-    await readable(page, info, `reflection-${mode}`);
-    await page.getByTestId('btn.dreamCategory.symbols').click();
-    await artwork(page, 'dialogue', mode);
-    await expect(page.getByTestId('btn.exploration360.synthesis').filter({ visible: true })).toBeEnabled();
-    await readable(page, info, `dialogue-${mode}`);
-    await page.getByRole('button', { name: 'Retour', exact: true }).click();
-    await expect(page.getByTestId('text.reflection.exchangeSaved')).toBeVisible();
-    await page.goBack();
-    await page.getByTestId('btn.navigateJournal').click();
-    await artwork(page, 'journal', mode);
-    await readable(page, info, `journal-${mode}`);
-    await page.getByTestId('input.searchDreams').fill('lanterne');
-    await expect(page.getByTestId(/^dream\.item\./).filter({ visible: true })).toHaveCount(1);
+  test(`contextual backgrounds preserve journal and reflection actions in ${mode} mode`, async (ui) => {
+  const { screen: uiScreen, browser } = ui;
+    await start(ui);
+    await theme(ui, mode);
+    await uiScreen.getByTestId('btn.header.home.settings').click();
+    await uiScreen.getByTestId('quick-settings.profile').click();
+    await uiScreen.getByTestId('btn.mockProfile.plus').click();
+    await expect(uiScreen.getByTestId('screen.recording')).toBeVisible();
+    await uiScreen.getByTestId('input.dreamTranscript').fill('Une lanterne flottait entre deux arches au-dessus du lac.');
+    await uiScreen.getByTestId('btn.saveDream').click();
+    await expect(uiScreen.getByTestId('component.transcriptCard')).toContainText('Une lanterne flottait');
+    await uiScreen.getByTestId('btn.dream.primaryCta').click();
+    await expect(uiScreen.getByTestId('component.dreamDetail.readingZone')).toContainText(/\S[\s\S]{80}/);
+    await uiScreen.getByTestId('component.dreamDetail.actionCard').click();
+    await expect(uiScreen.getByTestId('screen.dreamCategories')).toBeVisible();
+    await artwork(ui, 'dialogue', mode);
+    await readable(ui, `reflection-${mode}`);
+    await uiScreen.getByTestId('btn.dreamCategory.symbols').click();
+    await artwork(ui, 'dialogue', mode);
+    await expect(uiScreen.getByTestId('btn.exploration360.synthesis', { visible: true })).toBeEnabled();
+    await readable(ui, `dialogue-${mode}`);
+    await uiScreen.getByRole('button', { name: 'Retour', exact: true }).click();
+    await expect(uiScreen.getByTestId('text.reflection.exchangeSaved')).toBeVisible();
+    await browser.back();
+    await uiScreen.getByTestId('btn.navigateJournal').click();
+    await artwork(ui, 'journal', mode);
+    await readable(ui, `journal-${mode}`);
+    await uiScreen.getByTestId('input.searchDreams').fill('lanterne');
+    await expect(uiScreen.getByTestId(/^dream\.item\./, { visible: true })).toHaveCount(1);
   });
 }
 
-test('contextual backgrounds remain usable on narrow and desktop screens with a failed image', async ({ page }, info) => {
-  await start(page);
+test('contextual backgrounds remain usable on narrow and desktop screens with a failed image', async (ui) => {
+  const { screen: uiScreen, browser } = ui;
+  await start(ui);
   for (const mode of ['light', 'dark'] as const) {
-    await page.setViewportSize({ width: 390, height: 844 });
-    await theme(page, mode);
+    await browser.setViewport({ width: 390, height: 844 });
+    await theme(ui, mode);
     for (const viewport of [{ width: 320, height: 640 }, { width: 1440, height: 900 }]) {
-      await page.setViewportSize(viewport);
-      await page.getByTestId('tab.explore').filter({ visible: true }).click();
-      await artwork(page, 'path', mode);
-      await readable(page, info, `explorer-${mode}-${viewport.width}`);
-      await expect(page.getByTestId('btn.explorer.guides')).toBeInViewport();
-      await page.getByTestId('tab.addDream').filter({ visible: true }).click();
+      await browser.setViewport(viewport);
+      await uiScreen.getByTestId('tab.explore', { visible: true }).click();
+      await artwork(ui, 'path', mode);
+      await readable(ui, `explorer-${mode}-${viewport.width}`);
+      await expectInViewport(uiScreen.getByTestId('btn.explorer.guides'), browser);
+      await uiScreen.getByTestId('tab.addDream', { visible: true }).click();
       // On a desktop browser the sidebar carries the painting and Capture keeps a plain page.
-      if (viewport.width < 1024) await artwork(page, 'capture', mode);
-      else await expect(page.getByTestId('image.background.capture')).toHaveCount(0);
-      await readable(page, info, `capture-${mode}-${viewport.width}`);
-      await page.getByTestId('input.dreamTranscript').fill('Le ciel était calme.');
-      await expect(page.getByTestId('btn.saveDream')).toBeEnabled();
-      await page.getByTestId('input.dreamTranscript').fill('');
+      if (viewport.width < 1024) await artwork(ui, 'capture', mode);
+      else await expect(uiScreen.getByTestId('image.background.capture')).toHaveCount(0);
+      await readable(ui, `capture-${mode}-${viewport.width}`);
+      await uiScreen.getByTestId('input.dreamTranscript').fill('Le ciel était calme.');
+      await expect(uiScreen.getByTestId('btn.saveDream')).toBeEnabled();
+      await uiScreen.getByTestId('input.dreamTranscript').fill('');
     }
   }
   let aborted = 0;
-  await page.route('**/*observatory-v1*', async route => { aborted++; await route.abort(); });
-  await page.setViewportSize({ width: 390, height: 844 });
-  await page.getByTestId('tab.home').filter({ visible: true }).click();
-  await page.getByTestId('btn.header.home.settings').click();
-  await page.getByTestId('quick-settings.all').click();
-  await page.getByTestId('settings-section-subscription').click();
-  await expect(page.getByTestId('screen.paywall')).toBeVisible();
+  await browser.route('**/*observatory-v1*', async route => { aborted++; await route.abort(); });
+  await browser.setViewport({ width: 390, height: 844 });
+  await uiScreen.getByTestId('tab.home', { visible: true }).click();
+  await uiScreen.getByTestId('btn.header.home.settings').click();
+  await uiScreen.getByTestId('quick-settings.all').click();
+  await uiScreen.getByTestId('settings-section-subscription').click();
+  await expect(uiScreen.getByTestId('screen.paywall')).toBeVisible();
   await expect.poll(() => aborted).toBeGreaterThan(0);
-  await expect(page.getByTestId('image.background.observatory')).toHaveCount(0);
-  await readable(page, info, 'paywall-dark-image-failed');
-  await expect(page.getByTestId('btn.paywall.close')).toBeEnabled();
+  await expect(uiScreen.getByTestId('image.background.observatory')).toHaveCount(0);
+  await readable(ui, 'paywall-dark-image-failed');
+  await expect(uiScreen.getByTestId('btn.paywall.close')).toBeEnabled();
 });

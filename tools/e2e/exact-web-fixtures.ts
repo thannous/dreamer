@@ -107,3 +107,9 @@ export async function expectInnerText(browser: Browser, selector: string, text: 
   await expect.poll(() => readDOM(browser, selector, element => element.innerText.replace(/\s+/g, ' ').trim()), { timeout: 15_000 })
     .toBe(text.replace(/\s+/g, ' ').trim());
 }
+export async function expectEditable(browser: Browser, selector: string) {
+  await expect.poll(() => readDOM(browser, selector, element => {
+    if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) return !element.disabled && !element.readOnly;
+    return element.isContentEditable;
+  }), { timeout: 15_000 }).toBe(true);
+}

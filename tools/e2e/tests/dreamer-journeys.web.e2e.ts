@@ -1,99 +1,109 @@
-// Historical UI assertions, run on the public TesterArmy web surface.
-import type { Page } from 'playwright/test';
-import { answerSeal, createParityTest, expect, withDialog } from '../web-parity-fixtures';
-const test = createParityTest();
+import { readDOM, byId, expectEditable, answerSeal, createExactWebTest, expect, withExactDialog } from '../exact-web-fixtures';
+import type { ExactWebUI } from '../exact-web-fixtures';
+// Exact journeys using public TesterArmy APIs.
+const test = createExactWebTest();
 
-async function startGuest(page: Page) {
-  await page.goto('/', { waitUntil: 'domcontentloaded' });
-  await expect(page.getByTestId('screen.onboarding')).toBeVisible();
-  await page.getByTestId('btn.onboarding.intro.next').click();
+async function startGuest(ui: ExactWebUI) {
+  const { app, screen: uiScreen, browser } = ui;
+  await app.open('/');
+  await expect(uiScreen.getByTestId('screen.onboarding')).toBeVisible();
+  await uiScreen.getByTestId('btn.onboarding.intro.next').click();
   // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
   if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
-    await withDialog(page, 'accept', () => page.getByTestId('btn.onboarding.feature.close').click());
+    await withExactDialog(browser, 'accept', () => uiScreen.getByTestId('btn.onboarding.feature.close').click());
   }
-  await page.getByTestId('btn.onboarding.skip').click();
-  await expect(page.getByTestId('screen.recording')).toBeVisible();
+  await uiScreen.getByTestId('btn.onboarding.skip').click();
+  await expect(uiScreen.getByTestId('screen.recording')).toBeVisible();
 }
 
-async function openSettings(page: Page) {
-  const homeTab = page.getByTestId('btn.recording.home').or(page.getByTestId('tab.home')).filter({ visible: true });
+async function openSettings(ui: ExactWebUI) {
+  const { screen: uiScreen } = ui;
+  const homeTab = uiScreen.getByTestId(/^(btn.recording.home|tab.home)$/, { visible: true });
   if (await homeTab.isVisible()) await homeTab.click();
-  else await page.getByTestId('btn.recording.home').or(page.getByTestId('tab.home')).filter({ visible: true }).click();
-  await page.getByTestId('btn.header.home.settings').click();
-  await page.getByTestId('quick-settings.all').click();
+  else await uiScreen.getByTestId(/^(btn.recording.home|tab.home)$/, { visible: true }).click();
+  await uiScreen.getByTestId('btn.header.home.settings').click();
+  await uiScreen.getByTestId('quick-settings.all').click();
 }
 
-async function selectProfile(page: Page, profile: 'new' | 'existing' | 'plus') {
-  await startGuest(page);
-  await openSettings(page);
-  await page.getByTestId('settings-account-open-signin').click();
-  await page.getByTestId(`btn.mockProfile.${profile}`).click();
-  await expect(page.getByTestId('screen.recording')).toBeVisible();
+async function selectProfile(ui: ExactWebUI, profile: 'new' | 'existing' | 'plus') {
+  const { screen: uiScreen } = ui;
+  await startGuest(ui);
+  await openSettings(ui);
+  await uiScreen.getByTestId('settings-account-open-signin').click();
+  await uiScreen.getByTestId(`btn.mockProfile.${profile}`).click();
+  await expect(uiScreen.getByTestId('screen.recording')).toBeVisible();
 }
 
-async function journal(page: Page) {
-  const back = page.getByTestId('btn.navigateJournal');
+async function journal(ui: ExactWebUI) {
+  const { screen: uiScreen } = ui;
+  const back = uiScreen.getByTestId('btn.navigateJournal');
   if (await back.isVisible()) await back.click();
   else {
-    if (!await page.getByTestId('tab.journal').filter({ visible: true }).isVisible()) {
-      await page.getByTestId('btn.recording.home').or(page.getByTestId('tab.home')).filter({ visible: true }).click();
+    if (!await uiScreen.getByTestId('tab.journal', { visible: true }).isVisible()) {
+      await uiScreen.getByTestId(/^(btn.recording.home|tab.home)$/, { visible: true }).click();
     }
-    await page.getByTestId('tab.journal').filter({ visible: true }).click();
+    await uiScreen.getByTestId('tab.journal', { visible: true }).click();
   }
-  await expect(page.getByTestId('screen.journal').filter({ visible: true })).toHaveCount(1);
+  await expect(uiScreen.getByTestId('screen.journal', { visible: true })).toHaveCount(1);
 }
 
-async function search(page: Page, value: string) {
-  await page.getByRole('textbox', { name: 'Search dreams…' }).fill(value);
+async function search(ui: ExactWebUI, value: string) {
+  const { screen: uiScreen } = ui;
+  await uiScreen.getByRole('textbox', { name: 'Search dreams…' }).fill(value);
 }
 
-async function openDream(page: Page, title: string) {
-  await search(page, title);
-  const card = page.getByTestId(/^dream\.item\./).filter({ hasText: title, visible: true });
+async function openDream(ui: ExactWebUI, title: string) {
+  const { screen: uiScreen } = ui;
+  await search(ui, title);
+  const card = uiScreen.getByTestId(/^dream\.item\./, { visible: true }).filter({ hasText: title });
   await expect(card).toHaveCount(1);
   await card.click();
-  await expect(page.getByTestId('component.transcriptCard')).toBeVisible();
-  await page.getByTestId('component.transcriptCard').scrollIntoViewIfNeeded();
+  await expect(uiScreen.getByTestId('component.transcriptCard')).toBeVisible();
+  await uiScreen.getByTestId('component.transcriptCard').scrollIntoView();
 }
 
-test('guest can start a first dream from onboarding', async ({ page }) => {
-  await startGuest(page);
-  await expect(page.getByTestId('btn.saveDream')).toBeDisabled();
+test('guest can start a first dream from onboarding', async (ui) => {
+  const { screen: uiScreen } = ui;
+  await startGuest(ui);
+  await expect(uiScreen.getByTestId('btn.saveDream')).toBeDisabled();
 });
 
-test('guest keeps the same draft when switching capture modes', async ({ page }) => {
-  await startGuest(page);
-  const transcript = page.getByTestId('input.dreamTranscript');
+test('guest keeps the same draft when switching capture modes', async (ui) => {
+  const { screen: uiScreen } = ui;
+  await startGuest(ui);
+  const transcript = uiScreen.getByTestId('input.dreamTranscript');
   await transcript.fill('E2E draft: a lighthouse above the sea.');
-  await page.getByTestId('btn.recording.inputMode.voice').click();
-  await page.getByTestId('btn.recording.inputMode.text').click();
+  await uiScreen.getByTestId('btn.recording.inputMode.voice').click();
+  await uiScreen.getByTestId('btn.recording.inputMode.text').click();
   await expect(transcript).toHaveValue('E2E draft: a lighthouse above the sea.');
 });
 
-test('guest saves the first dream and can read its simulated analysis', async ({ page }) => {
-  await startGuest(page);
+test('guest saves the first dream and can read its simulated analysis', async (ui) => {
+  const { screen: uiScreen } = ui;
+  await startGuest(ui);
   const story = 'E2E moonlit harbor with a golden lighthouse.';
-  await page.getByTestId('input.dreamTranscript').fill(story);
-  await page.getByTestId('btn.saveDream').click();
-  await expect(page.getByTestId('component.transcriptCard')).toContainText(story);
-  await expect(page.getByTestId('component.dreamDetail.readingZone')).toContainText(/\S[\s\S]{80}/);
-  await expect(page.getByTestId('analysis.reading.modal')).toHaveCount(0);
-  await expect(page.getByTestId('component.transcriptCard')).toContainText(story);
+  await uiScreen.getByTestId('input.dreamTranscript').fill(story);
+  await uiScreen.getByTestId('btn.saveDream').click();
+  await expect(uiScreen.getByTestId('component.transcriptCard')).toContainText(story);
+  await expect(uiScreen.getByTestId('component.dreamDetail.readingZone')).toContainText(/\S[\s\S]{80}/);
+  await expect(uiScreen.getByTestId('analysis.reading.modal')).toHaveCount(0);
+  await expect(uiScreen.getByTestId('component.transcriptCard')).toContainText(story);
 });
 
-test('free user saves a dream and finds the exact story in the journal', async ({ page }) => {
-  await selectProfile(page, 'existing');
+test('free user saves a dream and finds the exact story in the journal', async (ui) => {
+  const { screen: uiScreen } = ui;
+  await selectProfile(ui, 'existing');
   const story = 'E2E sapphire lighthouse above the quiet ocean.';
-  await page.getByTestId('input.dreamTranscript').fill(story);
-  await page.getByTestId('btn.saveDream').click();
-  await expect(page.getByTestId('component.transcriptCard')).toContainText(story);
-  await expect(page.getByTestId('btn.editDream')).toBeEnabled();
-  await page.getByTestId('btn.editDream').click();
-  await page.getByTestId('input.dreamTitle').fill('E2E sapphire lighthouse');
-  await page.getByTestId('btn.saveDreamEdit').click();
-  await journal(page);
-  await openDream(page, 'E2E sapphire lighthouse');
-  await expect(page.getByTestId('component.transcriptCard')).toContainText(story);
+  await uiScreen.getByTestId('input.dreamTranscript').fill(story);
+  await uiScreen.getByTestId('btn.saveDream').click();
+  await expect(uiScreen.getByTestId('component.transcriptCard')).toContainText(story);
+  await expect(uiScreen.getByTestId('btn.editDream')).toBeEnabled();
+  await uiScreen.getByTestId('btn.editDream').click();
+  await uiScreen.getByTestId('input.dreamTitle').fill('E2E sapphire lighthouse');
+  await uiScreen.getByTestId('btn.saveDreamEdit').click();
+  await journal(ui);
+  await openDream(ui, 'E2E sapphire lighthouse');
+  await expect(uiScreen.getByTestId('component.transcriptCard')).toContainText(story);
 });
 
 // Retired 2026-10-14 (seal workflow, PR #358): the capture seal now waits for the dream's
@@ -102,239 +112,249 @@ test('free user saves a dream and finds the exact story in the journal', async (
 // the metadata/transcript draft" stays covered on Android and iOS by the mock-persistent
 // profile with EXPO_PUBLIC_MOCK_CATEGORIZATION_DELAY_MS=30000 (tools/e2e/NATIVE-MATRIX.md).
 
-test('free user searches, sees no match, and recovers the journal', async ({ page }, info) => {
-  await page.setViewportSize({ width: 390, height: 844 });
-  await selectProfile(page, 'existing');
-  await journal(page);
-  await search(page, 'The Infinite Library');
-  await expect(page.getByTestId(/^dream\.item\./)).toHaveCount(1);
-  await expect(page.getByTestId(/^dream\.item\./)).toContainText('The Infinite Library');
-  await page.screenshot({ path: info.outputPath('journal-mobile-entry.png') });
-  await search(page, 'E2E no such dream 93f82');
-  await expect(page.getByTestId(/^dream\.item\./)).toHaveCount(0);
-  await search(page, 'The Infinite Library');
-  await expect(page.getByTestId(/^dream\.item\./)).toHaveCount(1);
+test('free user searches, sees no match, and recovers the journal', async (ui) => {
+  const { app, screen: uiScreen, browser } = ui;
+  await browser.setViewport({ width: 390, height: 844 });
+  await selectProfile(ui, 'existing');
+  await journal(ui);
+  await search(ui, 'The Infinite Library');
+  await expect(uiScreen.getByTestId(/^dream\.item\./)).toHaveCount(1);
+  await expect(uiScreen.getByTestId(/^dream\.item\./)).toContainText('The Infinite Library');
+  await app.screenshot('journal-mobile-entry.png');
+  await search(ui, 'E2E no such dream 93f82');
+  await expect(uiScreen.getByTestId(/^dream\.item\./)).toHaveCount(0);
+  await search(ui, 'The Infinite Library');
+  await expect(uiScreen.getByTestId(/^dream\.item\./)).toHaveCount(1);
 });
 
-test('a search typed in a scrolled journal keeps its field until the user scrolls', async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 844 });
-  await selectProfile(page, 'existing');
-  await journal(page);
-  const list = page.getByTestId('list.dreams').filter({ visible: true });
-  await page.mouse.move(195, 640);
-  await page.mouse.wheel(0, 400);
-  await expect.poll(() => list.evaluate((node) => node.scrollTop)).toBeGreaterThan(0);
+test('a search typed in a scrolled journal keeps its field until the user scrolls', async (ui) => {
+  const { screen: uiScreen, browser } = ui;
+  await browser.setViewport({ width: 390, height: 844 });
+  await selectProfile(ui, 'existing');
+  await journal(ui);
+  await browser.mouse.move(195, 640);
+  await browser.mouse.wheel(0, 400);
+  await expect.poll(() => readDOM(browser, byId('list.dreams'), (node) => node.scrollTop)).toBeGreaterThan(0);
   // Each letter brings the results back to the top; that return must not take the field away.
-  const field = page.getByRole('textbox', { name: 'Search dreams…' });
+  const field = uiScreen.getByRole('textbox', { name: 'Search dreams…' });
   await field.pressSequentially('The Infinite Library', { delay: 40 });
   await expect(field).toHaveValue('The Infinite Library');
   await expect(field).toBeFocused();
-  await expect(page.getByTestId(/^dream\.item\./)).toHaveCount(1);
-  await expect(page.getByTestId(/^dream\.item\./)).toContainText('The Infinite Library');
+  await expect(uiScreen.getByTestId(/^dream\.item\./)).toHaveCount(1);
+  await expect(uiScreen.getByTestId(/^dream\.item\./)).toContainText('The Infinite Library');
   // A gesture that does not move the list (a sideways wheel) leaves the field: wait past
   // the list's dismissal window and the web scroller's end of scroll, then check.
-  const resting = await list.evaluate((node) => node.scrollTop);
-  await page.mouse.move(195, 640);
-  await page.mouse.wheel(120, 0);
-  await page.evaluate(() => new Promise((resolve) => setTimeout(resolve, 400)));
-  expect(await list.evaluate((node) => node.scrollTop)).toBe(resting);
+  const resting = await readDOM(browser, byId('list.dreams'), (node) => node.scrollTop);
+  await browser.mouse.move(195, 640);
+  await browser.mouse.wheel(120, 0);
+  await browser.evaluate(() => new Promise<null>(resolve => setTimeout(() => resolve(null), 400)));
+  expect(await readDOM(browser, byId('list.dreams'), (node) => node.scrollTop)).toBe(resting);
   await expect(field).toBeFocused();
   // The user scrolling the whole journal puts the keyboard away, as a drag does natively.
   await field.fill('');
-  await expect.poll(() => list.evaluate((node) => node.scrollTop)).toBe(0);
-  await page.mouse.move(195, 640);
-  await page.mouse.wheel(0, 400);
-  await expect.poll(() => list.evaluate((node) => node.scrollTop)).toBeGreaterThan(0);
+  await expect.poll(() => readDOM(browser, byId('list.dreams'), (node) => node.scrollTop)).toBe(0);
+  await browser.mouse.move(195, 640);
+  await browser.mouse.wheel(0, 400);
+  await expect.poll(() => readDOM(browser, byId('list.dreams'), (node) => node.scrollTop)).toBeGreaterThan(0);
   await expect(field).not.toBeFocused();
 });
 
-test('free user edits a story, cancels deletion, then deletes only that dream', async ({ page }) => {
-  await selectProfile(page, 'existing');
-  await journal(page);
-  await openDream(page, 'The Infinite Library');
-  await page.getByTestId('btn.editDream').click();
-  await page.getByTestId('input.dreamTranscript').fill('E2E revised story: the library has a blue door.');
-  await page.getByTestId('btn.saveDreamEdit').click();
-  await expect(page.getByTestId('component.transcriptCard')).toContainText('E2E revised story');
-  await page.getByTestId('btn.dream.delete').click();
-  await page.getByRole('button', { name: 'Cancel', exact: true }).click();
-  await expect(page.getByTestId('component.transcriptCard')).toContainText('E2E revised story');
-  await page.getByTestId('btn.dream.delete').click();
-  await page.getByRole('button', { name: 'Delete', exact: true }).click();
-  await expect(page.getByTestId('screen.journal').filter({ visible: true })).toHaveCount(1);
-  await search(page, 'The Infinite Library');
-  await expect(page.getByTestId(/^dream\.item\./)).toHaveCount(0);
-  await search(page, 'Ocean of Stars');
-  await expect(page.getByTestId(/^dream\.item\./)).toHaveCount(1);
+test('free user edits a story, cancels deletion, then deletes only that dream', async (ui) => {
+  const { screen: uiScreen } = ui;
+  await selectProfile(ui, 'existing');
+  await journal(ui);
+  await openDream(ui, 'The Infinite Library');
+  await uiScreen.getByTestId('btn.editDream').click();
+  await uiScreen.getByTestId('input.dreamTranscript').fill('E2E revised story: the library has a blue door.');
+  await uiScreen.getByTestId('btn.saveDreamEdit').click();
+  await expect(uiScreen.getByTestId('component.transcriptCard')).toContainText('E2E revised story');
+  await uiScreen.getByTestId('btn.dream.delete').click();
+  await uiScreen.getByRole('button', { name: 'Cancel', exact: true }).click();
+  await expect(uiScreen.getByTestId('component.transcriptCard')).toContainText('E2E revised story');
+  await uiScreen.getByTestId('btn.dream.delete').click();
+  await uiScreen.getByRole('button', { name: 'Delete', exact: true }).click();
+  await expect(uiScreen.getByTestId('screen.journal', { visible: true })).toHaveCount(1);
+  await search(ui, 'The Infinite Library');
+  await expect(uiScreen.getByTestId(/^dream\.item\./)).toHaveCount(0);
+  await search(ui, 'Ocean of Stars');
+  await expect(uiScreen.getByTestId(/^dream\.item\./)).toHaveCount(1);
 });
 
-test('free user can open the Plus offer and return without losing the journal', async ({ page }) => {
-  await selectProfile(page, 'existing');
-  await openSettings(page);
-  await page.getByRole('button', { name: 'Upgrade to Noctalia Plus', exact: true }).click();
-  await expect(page.getByTestId('screen.paywall')).toBeVisible();
-  await page.getByTestId('btn.paywall.selectMonthly').click();
-  await expect(page.getByTestId('btn.paywall.selectMonthly')).toHaveAttribute('aria-checked', 'true');
-  await page.getByTestId('btn.paywall.close').click();
-  await expect(page.getByTestId('screen.paywall')).toBeHidden();
-  await page.getByRole('button', { name: 'Back', exact: true }).click();
-  await page.getByTestId('tab.journal').filter({ visible: true }).click();
-  await openDream(page, 'The Infinite Library');
+test('free user can open the Plus offer and return without losing the journal', async (ui) => {
+  const { screen: uiScreen } = ui;
+  await selectProfile(ui, 'existing');
+  await openSettings(ui);
+  await uiScreen.getByRole('button', { name: 'Upgrade to Noctalia Plus', exact: true }).click();
+  await expect(uiScreen.getByTestId('screen.paywall')).toBeVisible();
+  await uiScreen.getByTestId('btn.paywall.selectMonthly').click();
+  await expect(uiScreen.getByTestId('btn.paywall.selectMonthly')).toHaveAttribute('aria-checked', 'true');
+  await uiScreen.getByTestId('btn.paywall.close').click();
+  await expect(uiScreen.getByTestId('screen.paywall')).toBeHidden();
+  await uiScreen.getByRole('button', { name: 'Back', exact: true }).click();
+  await uiScreen.getByTestId('tab.journal', { visible: true }).click();
+  await openDream(ui, 'The Infinite Library');
 });
 
 for (const profile of ['existing', 'plus'] as const) {
-  test(`${profile === 'plus' ? 'Plus' : 'free'} user sees the matching analysis allowance`, async ({ page }) => {
-    await selectProfile(page, profile);
-    await openSettings(page);
+  test(`${profile === 'plus' ? 'Plus' : 'free'} user sees the matching analysis allowance`, async (ui) => {
+  const { screen: uiScreen } = ui;
+    await selectProfile(ui, profile);
+    await openSettings(ui);
     if (profile === 'existing') {
-      await expect(page.getByTestId('quota.analysisValue')).toContainText('/ 3');
-      await page.getByRole('button', { name: 'Upgrade to Noctalia Plus', exact: true }).click();
-      await expect(page.getByTestId('screen.paywall')).toBeVisible();
+      await expect(uiScreen.getByTestId('quota.analysisValue')).toContainText('/ 3');
+      await uiScreen.getByRole('button', { name: 'Upgrade to Noctalia Plus', exact: true }).click();
+      await expect(uiScreen.getByTestId('screen.paywall')).toBeVisible();
     } else {
-      await expect(page.getByTestId('quota.analysisValue')).toContainText('Unlimited');
-      await expect(page.getByRole('button', { name: 'Upgrade to Noctalia Plus', exact: true })).toHaveCount(0);
+      await expect(uiScreen.getByTestId('quota.analysisValue')).toContainText('Unlimited');
+      await expect(uiScreen.getByRole('button', { name: 'Upgrade to Noctalia Plus', exact: true })).toHaveCount(0);
     }
   });
 }
 
-test('Plus user signs out and returns to guest without exposing the account journal', async ({ page }) => {
-  await selectProfile(page, 'plus');
-  await openSettings(page);
-  await page.getByTestId('btn.auth.signOut').click();
-  await expect(page.getByTestId('screen.recording')).toBeVisible();
-  await openSettings(page);
-  await expect(page.getByTestId('settings-account-open-signin')).toBeVisible();
-  await expect(page.getByTestId('btn.auth.signOut')).toHaveCount(0);
-  await page.getByTestId('settings.back').click();
-  await page.getByTestId('tab.journal').filter({ visible: true }).click();
-  await expect(page.getByTestId('journal-first-page')).toBeVisible();
-  await expect(page.getByTestId(/^dream\.item\./).filter({ visible: true })).toHaveCount(0);
+test('Plus user signs out and returns to guest without exposing the account journal', async (ui) => {
+  const { screen: uiScreen } = ui;
+  await selectProfile(ui, 'plus');
+  await openSettings(ui);
+  await uiScreen.getByTestId('btn.auth.signOut').click();
+  await expect(uiScreen.getByTestId('screen.recording')).toBeVisible();
+  await openSettings(ui);
+  await expect(uiScreen.getByTestId('settings-account-open-signin')).toBeVisible();
+  await expect(uiScreen.getByTestId('btn.auth.signOut')).toHaveCount(0);
+  await uiScreen.getByTestId('settings.back').click();
+  await uiScreen.getByTestId('tab.journal', { visible: true }).click();
+  await expect(uiScreen.getByTestId('journal-first-page')).toBeVisible();
+  await expect(uiScreen.getByTestId(/^dream\.item\./, { visible: true })).toHaveCount(0);
 });
 
-test('free user adds and removes a favorite through the filtered journal', async ({ page }) => {
-  await selectProfile(page, 'existing');
-  await journal(page);
-  await openDream(page, 'Garden in the Clouds');
-  const transcript = page.getByTestId('component.transcriptCard');
+test('free user adds and removes a favorite through the filtered journal', async (ui) => {
+  const { screen: uiScreen } = ui;
+  await selectProfile(ui, 'existing');
+  await journal(ui);
+  await openDream(ui, 'Garden in the Clouds');
+  const transcript = uiScreen.getByTestId('component.transcriptCard');
   const originalStory = await transcript.textContent();
   expect(originalStory).toContain('I was walking through a beautiful garden');
-  await page.getByTestId('btn.dream.favorite').click();
-  await journal(page);
-  await page.getByRole('button', { name: 'Show favorites only', exact: true }).click();
-  await openDream(page, 'Garden in the Clouds');
-  await page.getByTestId('btn.dream.favorite').click();
-  await journal(page);
+  await uiScreen.getByTestId('btn.dream.favorite').click();
+  await journal(ui);
+  await uiScreen.getByRole('button', { name: 'Show favorites only', exact: true }).click();
+  await openDream(ui, 'Garden in the Clouds');
+  await uiScreen.getByTestId('btn.dream.favorite').click();
+  await journal(ui);
   // Upstream 02a97ad08 retains the journal: a second Favorites click would clear its filter.
-  await expect(page.getByRole('textbox', { name: 'Search dreams…' })).toHaveValue('Garden in the Clouds');
-  await expect(page.getByTestId(/^dream\.item\./).filter({ visible: true })).toHaveCount(0);
-  await page.getByRole('button', { name: 'Show all dreams', exact: true }).click();
-  await openDream(page, 'Garden in the Clouds');
+  await expect(uiScreen.getByRole('textbox', { name: 'Search dreams…' })).toHaveValue('Garden in the Clouds');
+  await expect(uiScreen.getByTestId(/^dream\.item\./, { visible: true })).toHaveCount(0);
+  await uiScreen.getByRole('button', { name: 'Show all dreams', exact: true }).click();
+  await openDream(ui, 'Garden in the Clouds');
   await expect(transcript).toHaveText(originalStory!);
 });
 
-test('Plus user continues a reflection and sees the conversation on revisit', async ({ page }) => {
-  await selectProfile(page, 'plus');
-  await journal(page);
-  await openDream(page, 'The Infinite Library');
-  await page.getByTestId('component.dreamDetail.actionCard').click();
-  await page.getByTestId('btn.dreamCategory.freeChat').click();
-  await page.getByTestId('chat.input.message').fill('E2E: why did the library feel so familiar?');
-  await page.getByTestId('chat.button.send').click();
-  const latest = page.getByRole('button', { name: 'Jump to latest', exact: true });
+test('Plus user continues a reflection and sees the conversation on revisit', async (ui) => {
+  const { screen: uiScreen, browser } = ui;
+  await selectProfile(ui, 'plus');
+  await journal(ui);
+  await openDream(ui, 'The Infinite Library');
+  await uiScreen.getByTestId('component.dreamDetail.actionCard').click();
+  await uiScreen.getByTestId('btn.dreamCategory.freeChat').click();
+  await uiScreen.getByTestId('chat.input.message').fill('E2E: why did the library feel so familiar?');
+  await uiScreen.getByTestId('chat.button.send').click();
+  const latest = uiScreen.getByRole('button', { name: 'Jump to latest', exact: true });
   if (await latest.isVisible()) await latest.click();
-  await expect(page.getByText('E2E: why did the library feel so familiar?', { exact: true })).toBeVisible();
-  await expect(page.getByTestId('chat.input.message')).toBeEditable();
-  const answer = page.getByText(/^(That's an interesting question|Based on your dream,|Dreams like yours often|The elements you mentioned|I sense that this dream)/);
+  await expect(uiScreen.getByText('E2E: why did the library feel so familiar?', { exact: true })).toBeVisible();
+  await expectEditable(browser, byId('chat.input.message'));
+  const answer = uiScreen.getByText(/^(That's an interesting question|Based on your dream,|Dreams like yours often|The elements you mentioned|I sense that this dream)/);
   await expect(answer).toBeVisible();
-  const response = await answer.innerText();
-  await page.getByRole('button', { name: 'Back', exact: true }).click();
-  await page.getByTestId('btn.dreamCategory.freeChat').click();
+  const response = await answer.textContent();
+  await uiScreen.getByRole('button', { name: 'Back', exact: true }).click();
+  await uiScreen.getByTestId('btn.dreamCategory.freeChat').click();
   if (await latest.isVisible()) await latest.click();
-  await expect(page.getByText('E2E: why did the library feel so familiar?', { exact: true })).toBeVisible();
-  await expect(page.getByText(response, { exact: true })).toBeVisible();
-  await page.getByRole('button', { name: 'Back', exact: true }).click();
-  await page.getByRole('button', { name: 'Back', exact: true }).click();
+  await expect(uiScreen.getByText('E2E: why did the library feel so familiar?', { exact: true })).toBeVisible();
+  await expect(uiScreen.getByText(response!, { exact: true })).toBeVisible();
+  await uiScreen.getByRole('button', { name: 'Back', exact: true }).click();
+  await uiScreen.getByRole('button', { name: 'Back', exact: true }).click();
   // Returning can restore the previous scroll position without a new scroll
   // event. Read further in the inline analysis to reveal the contextual dock.
-  const reading = page.getByTestId('component.dreamDetail.readingZone');
-  await reading.scrollIntoViewIfNeeded();
+  const reading = uiScreen.getByTestId('component.dreamDetail.readingZone');
+  await reading.scrollIntoView();
   await reading.hover();
-  await page.mouse.wheel(0, 200);
-  await expect(page.getByTestId('component.dreamDetail.actionCard')).toContainText('Continue my reflection');
+  await browser.mouse.wheel(0, 200);
+  await expect(uiScreen.getByTestId('component.dreamDetail.actionCard')).toContainText('Continue my reflection');
 });
 
-test('exhausted free account can keep a dream and decline the analysis offer', async ({ page }) => {
-  await selectProfile(page, 'existing');
+test('exhausted free account can keep a dream and decline the analysis offer', async (ui) => {
+  const { screen: uiScreen } = ui;
+  await selectProfile(ui, 'existing');
   const story = 'E2E saved even when my analysis allowance is exhausted.';
-  await page.getByTestId('input.dreamTranscript').fill(story);
-  await page.getByTestId('btn.saveDream').click();
-  await expect(page.getByTestId('component.transcriptCard')).toContainText(story);
-  await page.getByTestId('btn.dream.primaryCta').click();
-  await expect(page.getByTestId('screen.paywall')).toBeVisible();
-  await page.getByTestId('btn.paywall.close').click();
-  await expect(page.getByTestId('component.transcriptCard')).toContainText(story);
-  await expect(page.getByRole('button', { name: 'Read the full analysis', exact: true })).toHaveCount(0);
+  await uiScreen.getByTestId('input.dreamTranscript').fill(story);
+  await uiScreen.getByTestId('btn.saveDream').click();
+  await expect(uiScreen.getByTestId('component.transcriptCard')).toContainText(story);
+  await uiScreen.getByTestId('btn.dream.primaryCta').click();
+  await expect(uiScreen.getByTestId('screen.paywall')).toBeVisible();
+  await uiScreen.getByTestId('btn.paywall.close').click();
+  await expect(uiScreen.getByTestId('component.transcriptCard')).toContainText(story);
+  await expect(uiScreen.getByRole('button', { name: 'Read the full analysis', exact: true })).toHaveCount(0);
 });
 
 for (const profile of ['new', 'plus'] as const) {
-  test(`${profile === 'new' ? 'fresh free' : 'Plus'} account can analyze a newly saved dream`, async ({ page }) => {
-    await selectProfile(page, profile);
+  test(`${profile === 'new' ? 'fresh free' : 'Plus'} account can analyze a newly saved dream`, async (ui) => {
+  const { screen: uiScreen } = ui;
+    await selectProfile(ui, profile);
     const story = `E2E ${profile} traveler finds a lantern on a silver bridge.`;
-    await page.getByTestId('input.dreamTranscript').fill(story);
-    await page.getByTestId('btn.saveDream').click();
+    await uiScreen.getByTestId('input.dreamTranscript').fill(story);
+    await uiScreen.getByTestId('btn.saveDream').click();
     // The journal asks during the seal; yes opens the page already reading the dream.
-    await answerSeal(page, 'now');
-    await expect(page.getByTestId('component.transcriptCard')).toContainText(story);
-    await expect(page.getByTestId('component.dreamDetail.readingZone')).toContainText(/\S[\s\S]{80}/);
-    await expect(page.getByTestId('analysis.reading.modal')).toHaveCount(0);
-    await expect(page.getByTestId('screen.paywall')).toHaveCount(0);
-    await expect(page.getByTestId('component.transcriptCard')).toContainText(story);
+    await answerSeal(uiScreen, 'now');
+    await expect(uiScreen.getByTestId('component.transcriptCard')).toContainText(story);
+    await expect(uiScreen.getByTestId('component.dreamDetail.readingZone')).toContainText(/\S[\s\S]{80}/);
+    await expect(uiScreen.getByTestId('analysis.reading.modal')).toHaveCount(0);
+    await expect(uiScreen.getByTestId('screen.paywall')).toHaveCount(0);
+    await expect(uiScreen.getByTestId('component.transcriptCard')).toContainText(story);
   });
 }
 
-test('reflection offers an optional recap after one angle and updates it after another exchange', async ({ page }, testInfo) => {
-  await page.emulateMedia({ reducedMotion: 'reduce' });
-  await page.setViewportSize({ width: 390, height: 867 });
-  await selectProfile(page, 'plus');
-  await page.getByTestId('btn.recording.home').or(page.getByTestId('tab.home')).filter({ visible: true }).click();
-  await page.getByTestId('btn.home.week.recap').click();
-  await expect(page.getByTestId('screen.weeklyRecap')).toBeVisible();
-  await page.getByTestId('btn.weeklyRecap.openDream').click();
-  await expect(page.getByTestId('component.transcriptCard')).toBeVisible();
-  await page.getByTestId('component.transcriptCard').scrollIntoViewIfNeeded();
-  await page.getByTestId('component.dreamDetail.actionCard').click();
+test('reflection offers an optional recap after one angle and updates it after another exchange', async (ui) => {
+  const { app, screen: uiScreen, browser } = ui;
+  await browser.emulateMedia({ reducedMotion: 'reduce' });
+  await browser.setViewport({ width: 390, height: 867 });
+  await selectProfile(ui, 'plus');
+  await uiScreen.getByTestId(/^(btn.recording.home|tab.home)$/, { visible: true }).click();
+  await uiScreen.getByTestId('btn.home.week.recap').click();
+  await expect(uiScreen.getByTestId('screen.weeklyRecap')).toBeVisible();
+  await uiScreen.getByTestId('btn.weeklyRecap.openDream').click();
+  await expect(uiScreen.getByTestId('component.transcriptCard')).toBeVisible();
+  await uiScreen.getByTestId('component.transcriptCard').scrollIntoView();
+  await uiScreen.getByTestId('component.dreamDetail.actionCard').click();
 
-  const categories = page.getByTestId('screen.dreamCategories');
+  const categories = uiScreen.getByTestId('screen.dreamCategories');
   await expect(categories).toBeVisible();
   for (const angle of ['symbols', 'emotions', 'growth']) {
-    await expect(page.getByTestId(`btn.dreamCategory.${angle}`)).toHaveCount(1);
+    await expect(uiScreen.getByTestId(`btn.dreamCategory.${angle}`)).toHaveCount(1);
   }
-  await expect(page.getByTestId('btn.exploration360.synthesis')).toHaveCount(0);
-  await page.getByTestId('btn.dreamCategory.readAnalysis').click();
-  await expect(page.getByTestId('analysis.reading.body')).toContainText('The infinite library represents your vast inner knowledge and memories.');
-  await page.getByTestId('analysis.reading.close').click();
-  await page.screenshot({ path: testInfo.outputPath('reflection-before-exchange.png'), fullPage: false });
-  await page.getByTestId('btn.dreamCategory.symbols').click();
-  const recap = page.getByTestId('btn.exploration360.synthesis').filter({ visible: true });
+  await expect(uiScreen.getByTestId('btn.exploration360.synthesis')).toHaveCount(0);
+  await uiScreen.getByTestId('btn.dreamCategory.readAnalysis').click();
+  await expect(uiScreen.getByTestId('analysis.reading.body')).toContainText('The infinite library represents your vast inner knowledge and memories.');
+  await uiScreen.getByTestId('analysis.reading.close').click();
+  await app.screenshot('reflection-before-exchange.png');
+  await uiScreen.getByTestId('btn.dreamCategory.symbols').click();
+  const recap = uiScreen.getByTestId('btn.exploration360.synthesis', { visible: true });
   await expect(recap).toBeEnabled();
   await expect(recap).toHaveText(/Take stock/);
   await recap.click();
-  await expect(page.getByText('Take stock of my dream', { exact: true }).filter({ visible: true })).toBeVisible();
-  await expect(page.getByTestId('text.reflection.recapCurrent').filter({ visible: true })).toBeVisible();
+  await expect(uiScreen.getByText('Take stock of my dream', { exact: true, visible: true })).toBeVisible();
+  await expect(uiScreen.getByTestId('text.reflection.recapCurrent', { visible: true })).toBeVisible();
   await expect(recap).toHaveCount(0);
-  await page.getByTestId('quick-category-emotions').click();
+  await uiScreen.getByTestId('quick-category-emotions').click();
   await expect(recap).toBeEnabled();
   await expect(recap).toHaveText(/Update recap/);
   await recap.click();
-  await expect(page.getByText('Take stock of my dream', { exact: true }).filter({ visible: true })).toHaveCount(2);
-  await expect(page.getByTestId('text.reflection.recapCurrent').filter({ visible: true })).toBeVisible();
+  await expect(uiScreen.getByText('Take stock of my dream', { exact: true, visible: true })).toHaveCount(2);
+  await expect(uiScreen.getByTestId('text.reflection.recapCurrent', { visible: true })).toBeVisible();
   await expect(recap).toHaveCount(0);
-  await page.getByRole('button', { name: 'Back', exact: true }).click();
+  await uiScreen.getByRole('button', { name: 'Back', exact: true }).click();
   await expect(categories).toBeVisible();
   // Explored angles remain accessible; reopening one must not send it again.
-  await page.getByTestId('btn.dreamCategory.symbols').click();
-  await expect(page.getByText('Take stock of my dream', { exact: true }).filter({ visible: true })).toHaveCount(2);
+  await uiScreen.getByTestId('btn.dreamCategory.symbols').click();
+  await expect(uiScreen.getByText('Take stock of my dream', { exact: true, visible: true })).toHaveCount(2);
   await expect(recap).toHaveCount(0);
-  await page.getByRole('button', { name: 'Back', exact: true }).click();
-  await page.screenshot({ path: testInfo.outputPath('reflection-after-exchanges.png'), fullPage: false });
+  await uiScreen.getByRole('button', { name: 'Back', exact: true }).click();
+  await app.screenshot('reflection-after-exchanges.png');
 });
