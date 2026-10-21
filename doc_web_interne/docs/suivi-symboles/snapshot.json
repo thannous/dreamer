@@ -1,41 +1,41 @@
 {
   "schema": "noctalia.symbol-tracking-snapshot/1",
-  "date": "2026-10-20",
-  "sourceRevision": "736a14dc4b55127e1e52b51eb50009e66323a387",
-  "sourceRevisionScope": "Clean browser-qualified implementation; subsequent tracking-only edits reuse this evidence.",
-  "integratedMaster": "736a14dc4b55127e1e52b51eb50009e66323a387",
-  "sourceBranch": "codex/symbols-lot10-20261020",
+  "date": "2026-10-22",
+  "sourceRevision": "3eadba5f121c1017c032929534d269c330aa5abb",
+  "sourceRevisionScope": "Clean browser-qualified lot-14 implementation; later tracking-only changes reuse this proof. Earlier evidence reused only where its per-symbol inputs are unchanged.",
+  "integratedMaster": "b2460d222752105fdce7f5b8a8fd1704a0757b4f",
+  "sourceBranch": "codex/symbol-images-final-100",
   "integrationOwner": "Codex",
   "totalSymbols": 240,
-  "integratedSymbols": 117,
-  "remainingToIntegrate": 123,
-  "atlasLocalePages": 702,
+  "integratedSymbols": 240,
+  "remainingToIntegrate": 0,
+  "atlasLocalePages": 1440,
   "languages": [
-    "en",
     "fr",
+    "en",
     "es",
     "de",
     "it",
     "pt-br"
   ],
-  "historicalQaSymbols": 40,
-  "historicallyPublishedSymbols": 37,
+  "historicalQaSymbols": 240,
+  "historicallyPublishedSymbols": 240,
   "currentStageProofs": {
-    "publication": 240,
+    "qa": 240,
     "approval": 0,
-    "qa": 117
+    "publication": 0
   },
   "files": {
     "workbook": {
       "path": "suivi-240-symboles-6-langues.xlsx",
-      "sha256": "a2eeebcc70a47cf1ebc0c0f0ab72b41fd6fc77f9b58ada2e9c8be799625a8f82"
+      "sha256": "078acf4b870f7d71decbdeeb767b1495cab4ed5a566235f2d23c0ed6cb0f96b9"
     },
     "csv": {
       "path": "symbol-rollout.csv",
-      "sha256": "a34571d6a57e193e84475c1896f50812ac712c1ae93b2c09215f2e11677df7f4"
+      "sha256": "1a302fa1b6a93887ecc0b91b82fcb665f9ab58e660e1017ebe188857970adb17"
     }
   },
-  "reportSha256": "43fcdb5f312dcf6450b8a630822f9ce22d8f3059c6832ec23d40fd895986ffe4",
+  "reportSha256": "88509a9cc8e5e6348fa02997c317f79aaea3f3f5cf26689a500b9f1793a302af",
   "checks": {
     "rows": 240,
     "recalculation": true,
@@ -49,32 +49,104 @@
     "frozenAt": "C11",
     "reopen": true,
     "export": true,
-    "renderInspected": true
+    "renderInspected": true,
+    "artifactTool": {
+      "counters": [
+        [
+          "Packs d'images",
+          240,
+          "Packs à terminer",
+          0,
+          "Pages avec pack",
+          1440,
+          "Pages web",
+          1440
+        ],
+        [
+          "QA mobile",
+          240,
+          "QA 2560 px",
+          240,
+          "Accord Thanh",
+          0,
+          "Publiées",
+          0
+        ]
+      ],
+      "counts": {
+        "equipped": 240,
+        "atlas": 1440,
+        "mobile": 240,
+        "desktop": 240,
+        "approval": 0,
+        "publication": 0,
+        "remaining": 0
+      },
+      "targetRows": [
+        233,
+        123,
+        101,
+        129,
+        211,
+        212,
+        197,
+        113,
+        121,
+        138
+      ],
+      "plannedRows": [],
+      "sourceHash": "6ec623357f3909da6fab49e90ad7c1cd92f0ab4f081063b54e351ea0a6158ebd",
+      "reportHash": "88509a9cc8e5e6348fa02997c317f79aaea3f3f5cf26689a500b9f1793a302af",
+      "formulaPreservation": true,
+      "unrelatedValuesPreserved": true,
+      "missingRoleCounterexample": true,
+      "reopen": "{\"kind\":\"region\",\"sheet\":\"Suivi symboles\",\"address\":\"A4:H5\",\"rows\":2,\"cols\":8,\"nonEmpty\":16,\"text\":16,\"maxTextLength\":16,\"preview\":[[\"Packs d'images\",\"240\",\"Packs à terminer\",\"0\",\"Pages avec pack\",\"1440\"],[\"QA mobile\",\"240\",\"QA 2560 px\",\"240\",\"Accord Thanh\",\"0\"]],\"previewAddress\":\"A4:F5\",\"previewRows\":2,\"previewCols\":6}",
+      "nativeFeaturesPreserved": {
+        "filter": "A10:AC250",
+        "freezeTopLeft": "C11",
+        "conditionalFormats": 3,
+        "validationRules": 0,
+        "formulas": 489
+      }
+    },
+    "browser": {
+      "freshBatchPasses": 10,
+      "freshQualifiedSymbols": 10,
+      "sourceClean": true,
+      "revision": "3eadba5f121c1017c032929534d269c330aa5abb",
+      "viewports": [
+        [
+          2560,
+          1440
+        ],
+        [
+          390,
+          844
+        ]
+      ]
+    }
   },
   "assetAudit": {
-    "scope": "lot-08 only",
-    "twoChannelsConfiguredPerComposition": true,
-    "newPacks": 30,
-    "newNativePngs": 210,
-    "reusedPaintedCovers": 30,
-    "selectedRoles": 240,
-    "realAlphaChecked": true,
-    "rolesPerPack": 8,
-    "derivedFilesPresent": 1140,
-    "currentBrowserTemporalQa": true,
-    "nativeArchivesLocallyVerified": 30,
-    "driveArchiveMetadataVerified": 30,
-    "visuallyInspectedPacks": 30,
-    "visuallyInspectedBrowserScreenshots": 150
+    "newBatch": "lot-14",
+    "packs": 10,
+    "retainedCovers": 10,
+    "newNativePngs": 70,
+    "derivedFiles": 380,
+    "sourcesBackedUp": 10,
+    "backupVerification": "Local SHA256 plus Drive ID, size, parent and private metadata readback."
   },
-  "qaReceipt": "../qa/symbol-lot10-delivery-20261020.json",
-  "qaReceiptSha256": "05c85a1039678cf4268d83d7b66b3c7b4a8c4da034886e579a7fe1d212af9bec",
+  "qaReceipt": "../qa/symbol-packs-lot-14-10-20261020.json",
+  "qaReceiptSha256": "316f02111c7b74828a385873c78b5be786cdf38fa641f6a15c9ab228a9b75311",
+  "reusedCurrentQa": {
+    "symbols": 230,
+    "source": "Canonical registry: accepted records whose evidence and per-symbol content, atlas, paintings and engine still match."
+  },
   "commonLayoutSymbols": 240,
   "commonLayoutLocalePages": 1440,
-  "commonAnimatedPacks": 117,
+  "commonAnimatedPacks": 240,
   "tigerMotionPending": false,
-  "tigerEvidence": "Common-engine implementation inherited from master PR485; no fresh Tiger browser qualification in this selected run.",
-  "driveSources": "https://drive.google.com/drive/folders/1XzmtnMeVfBGWkT6XdLs5hGGI_kBjes0p",
+  "tigerEvidence": "Current Tiger QA is resolved from its matching registry evidence; this document lists the fresh scope. Historical master publication remains separate.",
+  "driveSources": "https://drive.google.com/drive/folders/1Ye1CGz0N6mZfyeyaIziRv6jiPd8u4DwI",
   "historicalProofs": {
     "sourceRevision": "76d7e577dfb7eb5251b0898e994e3a5210bfd56c",
     "sourcePullRequest": 485,
@@ -102,36 +174,239 @@
       "nativeArchiveLocallyVerified": false,
       "visuallySampledPacks": 6
     },
-    "status": "Retained historical evidence; generator identity changed, so these stages are stale for this candidate."
-  },
-  "publication": {
-    "origin": "https://noctalia.app",
-    "deploymentUrl": "https://fea97f88.noctalia.pages.dev",
-    "command": "npm run docs:deploy:prod",
-    "releaseCommand": "npm run verify:release:site -- --keep",
-    "releasePassed": true,
-    "externalLinks": {
-      "broken": 0,
-      "transientNetworkSkipped": 4
+    "status": "Retained historical evidence; generator identity changed, so these stages are stale for this candidate.",
+    "masterBatch09Delivery": {
+      "receipt": "../qa/symbol-batch09-delivery-20261020.json",
+      "sha256": "652b098bb0f8439198c74247fcb384eddd2d4bf0a9dcd446614acf3e64568a16",
+      "revision": "1038406132baf06556f6abda8f1620ac4774984b",
+      "qualification": {
+        "passed": 91,
+        "sourceClean": false
+      },
+      "publication": {
+        "origin": "https://noctalia.app",
+        "deploymentUrl": "https://ce671c33.noctalia.pages.dev",
+        "command": "npm run docs:deploy:prod",
+        "releaseCommand": "npm run verify:release:site -- --keep",
+        "releasePassed": true
+      },
+      "note": "Inherited evidence retained as recorded; not a fresh execution or publication by this batch."
+    },
+    "previousTrackingBatchDelivery": {
+      "lot": "lot-08",
+      "pullRequest": "https://github.com/thannous/dreamer/pull/490",
+      "mergeCommit": "01e50efd5",
+      "status": "Observed merged remotely; production publication not checked."
     }
   },
-  "sourcePullRequest": 509,
-  "latestBatch": {
-    "id": "lot-10",
-    "symbols": [
-      "bee",
-      "volcano",
-      "ring",
-      "waterfall",
-      "turtle",
-      "mask"
-    ],
-    "newSelectedNativePaintings": 36,
-    "byteExactTextureCopies": 12
+  "previousBatchDelivery": {
+    "sourceRevision": "e03821783020a61aeaaa58d22886e2118781efaa",
+    "qaReceipt": "../qa/symbol-packs-lot-13-30-20261020.json",
+    "qaReceiptSha256": "af2ba4526c1286cd5a9931ed784b56161d963873a9a534de620f460f56c709a2",
+    "integratedSymbols": 230,
+    "remainingToIntegrate": 10,
+    "currentStageProofs": {
+      "qa": 230,
+      "approval": 0,
+      "publication": 0
+    },
+    "files": {
+      "workbook": {
+        "path": "suivi-240-symboles-6-langues.xlsx",
+        "sha256": "511a1e3e21adaaee737bc23ccfcf6e46c12c19ce7b954c817c143e5e12aeb86f"
+      },
+      "csv": {
+        "path": "symbol-rollout.csv",
+        "sha256": "9fbaeaf029599612afd999ff7f32fa66f337fea6ad3916ae1bbb196d82cdfa24"
+      }
+    }
   },
-  "historicalLot08Metadata": {
-    "integratedMaster": "f71600c97",
-    "sourceBranch": "codex/symbol-images-lot-08-30",
-    "reportSha256": "e9cf4eb1696b8cda63d09618e655265d75fd387261363b4f3f98f40512675dc9"
+  "publication": {
+    "performedForThisBatch": false,
+    "approvalRecordedForThisCandidate": false,
+    "currentMatchingSymbols": 0,
+    "meaning": "Current matching publication records; historical public availability is recorded separately."
+  },
+  "registryTotals": {
+    "symbols": 240,
+    "done": 0,
+    "inProgress": 240,
+    "remaining": 0
+  },
+  "completedBatchHistory": [
+    {
+      "sourceRevision": "fc0d47528b092ffae3e49cc020fbc27e902dc01b",
+      "qaReceipt": "../qa/symbol-packs-lot-10-30-20261020.json",
+      "qaReceiptSha256": "5f51b46789d6f67d117a312f171812623b446d890a97e002b5c77c004649514c",
+      "integratedSymbols": 140,
+      "remainingToIntegrate": 100,
+      "currentStageProofs": {
+        "publication": 0,
+        "approval": 0,
+        "qa": 59
+      },
+      "files": {
+        "workbook": {
+          "path": "suivi-240-symboles-6-langues.xlsx",
+          "sha256": "5c82ea24d2a69f64281ade36d6e8fb31948459fc4460ef810f23012602ca41c9"
+        },
+        "csv": {
+          "path": "symbol-rollout.csv",
+          "sha256": "46c95aeab40cad4cd218d61d5b21d586750f3bec62da66dea9b69c8a750bff26"
+        }
+      }
+    },
+    {
+      "sourceRevision": "622dd61d9ef0f43f5a9090416fe6cf21e4224e20",
+      "qaReceipt": "../qa/symbol-packs-lot-11-30-20261020.json",
+      "qaReceiptSha256": "e7677311bbcc680eb017da1c5cce88c2617454515885cee4bd77f03523d55bd5",
+      "integratedSymbols": 170,
+      "remainingToIntegrate": 70,
+      "currentStageProofs": {
+        "qa": 170,
+        "approval": 0,
+        "publication": 177
+      },
+      "files": {
+        "workbook": {
+          "path": "suivi-240-symboles-6-langues.xlsx",
+          "sha256": "64c6dbc6ea4f4c0d4374c0b465349c9f6ce51926f781f0218d37e6cbe6028d9b"
+        },
+        "csv": {
+          "path": "symbol-rollout.csv",
+          "sha256": "26473b461c5c8d77c64aaf34279f2d035c40a58ecfe40a901457c4f9794b4f0b"
+        }
+      }
+    },
+    {
+      "sourceRevision": "34209f968444db816f75779cd5b876df002ae9d3",
+      "qaReceipt": "../qa/symbol-packs-atlas-layout-requalification-20261020.json",
+      "qaReceiptSha256": "8660b5038318b9d9f6b1b9dfaf4627f96e6f53620c112a5a0076202f6a0e01f1",
+      "integratedSymbols": 175,
+      "remainingToIntegrate": 65,
+      "currentStageProofs": {
+        "qa": 175,
+        "approval": 0,
+        "publication": 0
+      },
+      "files": {
+        "workbook": {
+          "path": "suivi-240-symboles-6-langues.xlsx",
+          "sha256": "547d512aafa0e63ed08d502933d92333c1e62d23fccc59a36b13b7e16c5e736f"
+        },
+        "csv": {
+          "path": "symbol-rollout.csv",
+          "sha256": "dfa47c590c76a49dc79242830a1c5be2d697abd5adb53acf3d4973a11fb1a73c"
+        }
+      }
+    },
+    {
+      "sourceRevision": "b17117db72da867328bfee7e7b5ac7c17acc0aab",
+      "qaReceipt": "../qa/symbol-packs-lot-12-25-20261020.json",
+      "qaReceiptSha256": "fda26dc43fa43be16f4ebdf180e8441c369c47c00d3bbe8c918a9a23e5cfe159",
+      "integratedSymbols": 200,
+      "remainingToIntegrate": 40,
+      "currentStageProofs": {
+        "qa": 200,
+        "approval": 0,
+        "publication": 0
+      },
+      "files": {
+        "workbook": {
+          "path": "suivi-240-symboles-6-langues.xlsx",
+          "sha256": "e430b560daa6ceff8ca4a44eedc2efe36f5960549052ffeb222bb4d66cfee545"
+        },
+        "csv": {
+          "path": "symbol-rollout.csv",
+          "sha256": "5d2cbe65859ecf2d59499f50cd7f5eecb539d02c48eecbebf2f58dbe086807b1"
+        }
+      }
+    },
+    {
+      "sourceRevision": "e03821783020a61aeaaa58d22886e2118781efaa",
+      "qaReceipt": "../qa/symbol-packs-lot-13-30-20261020.json",
+      "qaReceiptSha256": "af2ba4526c1286cd5a9931ed784b56161d963873a9a534de620f460f56c709a2",
+      "integratedSymbols": 230,
+      "remainingToIntegrate": 10,
+      "currentStageProofs": {
+        "qa": 230,
+        "approval": 0,
+        "publication": 0
+      },
+      "files": {
+        "workbook": {
+          "path": "suivi-240-symboles-6-langues.xlsx",
+          "sha256": "511a1e3e21adaaee737bc23ccfcf6e46c12c19ce7b954c817c143e5e12aeb86f"
+        },
+        "csv": {
+          "path": "symbol-rollout.csv",
+          "sha256": "9fbaeaf029599612afd999ff7f32fa66f337fea6ad3916ae1bbb196d82cdfa24"
+        }
+      }
+    }
+  ],
+  "concurrentMasterTracking": {
+    "revision": "a51fd4fad506490fd0ca04e18ff1a1bcf6056901",
+    "snapshotSha256": "ca69c10458e88e3980bcf4a811e7eb0843f0503a8f3848592f1563612510c33f",
+    "qaReceipt": "../qa/symbol-lot10-delivery-20261020.json",
+    "sourceRevision": "736a14dc4b55127e1e52b51eb50009e66323a387",
+    "currentStageProofs": {
+      "publication": 240,
+      "approval": 0,
+      "qa": 117
+    },
+    "files": {
+      "workbook": {
+        "path": "suivi-240-symboles-6-langues.xlsx",
+        "sha256": "a2eeebcc70a47cf1ebc0c0f0ab72b41fd6fc77f9b58ada2e9c8be799625a8f82"
+      },
+      "csv": {
+        "path": "symbol-rollout.csv",
+        "sha256": "a34571d6a57e193e84475c1896f50812ac712c1ae93b2c09215f2e11677df7f4"
+      }
+    },
+    "note": "Preserved historical tracking. Fresh common-renderer qualification is current on this branch; registry retains every inherited record."
+  },
+  "final100Delivery": {
+    "path": "../qa/symbol-packs-final-100-20261022.json",
+    "sha256": "8a7bcdab94dca8b261bc4b1ef1a231451b4bf068ce839cdf8f6b384fb9768035",
+    "nativeSourceArchiveGap": 6
+  },
+  "browserQualifiedMaster": "a51fd4fad506490fd0ca04e18ff1a1bcf6056901",
+  "finalMasterMerge": {
+    "contentRevision": "76ad320b81b59372a2d57b91a5b88dd08a3fd0c4",
+    "scope": "Master dependency update and app-only PR537; site painting/profile/engine inputs unchanged."
+  },
+  "trackingDriveCopies": [
+    {
+      "fileId": "1TW79LHKvIa8cqX60VV8vI5sP-v43Saiv",
+      "url": "https://docs.google.com/spreadsheets/d/1TW79LHKvIa8cqX60VV8vI5sP-v43Saiv/edit?usp=drivesdk&ouid=101116459704958679172&rtpof=true&sd=true",
+      "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "bytes": 39315,
+      "sha256": "078acf4b870f7d71decbdeeb767b1495cab4ed5a566235f2d23c0ed6cb0f96b9",
+      "private": true,
+      "metadataVerified": true
+    },
+    {
+      "fileId": "1BQAjbuD2UWPlDfElaJQZ5qcv3ZIe1bau",
+      "url": "https://drive.google.com/file/d/1BQAjbuD2UWPlDfElaJQZ5qcv3ZIe1bau/view?usp=drivesdk",
+      "mimeType": "text/csv",
+      "bytes": 300335,
+      "sha256": "1a302fa1b6a93887ecc0b91b82fcb665f9ab58e660e1017ebe188857970adb17",
+      "private": true,
+      "metadataVerified": true
+    }
+  ],
+  "currentMediaDriveIndex": {
+    "fileId": "16huw2vqXVUTq-MkbT8YMTqW-RGpfyUnu",
+    "url": "https://drive.google.com/file/d/16huw2vqXVUTq-MkbT8YMTqW-RGpfyUnu/view?usp=drivesdk",
+    "bytes": 53989,
+    "sha256": "7bde5168678bf25d7ad5dd07784104091608da905610f8ad03b4eac32cac0c3f",
+    "metadataVerified": true,
+    "private": true
+  },
+  "registryCompaction": {
+    "path": "../qa/symbol-rollout-registry-compaction-20261022.json",
+    "sha256": "0ffb380dd8dd8d3f45c3d07af5aebcf6263cf897e3aa5d426ff9dec1c4db2ae8"
   }
 }

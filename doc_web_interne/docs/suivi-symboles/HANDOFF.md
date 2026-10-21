@@ -1,20 +1,22 @@
-# Passation — images Codex, code Claude, publication Codex
+# Passation — packs de symboles par lots de 30
 
-## Livraison actuelle du lot 10
+## Lot 14 qualifié localement
 
-Abeille, Volcan, Bague, Cascade, Tortue et Masque sont publiés dans les six langues sur `736a14dc4b55127e1e52b51eb50009e66323a387` ([PR509](https://github.com/thannous/dreamer/pull/509)). Total : **117 packs, 123 restants**, 702 pages équipées parmi 1 440 pages communes. [Preuve complète](../qa/symbol-lot10-delivery-20261020.json) ; [suivi](README.md).
+Responsable : **Codex**. Branche : `codex/symbol-images-final-100`. Master du candidat navigateur : `a51fd4fad506490fd0ca04e18ff1a1bcf6056901`. Master intégré ensuite : `da747616fede364c2300fd3b2cf501801ccc0276` (dépendances, Node 24.22.1 ; sources du rendu inchangées). Candidat navigateur propre : `3eadba5f121c1017c032929534d269c330aa5abb`. Le suivi ultérieur réutilise cette preuve sans revendiquer un nouveau parcours.
 
-Codex conserve les 48 sources, prompts et SHA dans `output/noctalia-symbols-lot10-2026-10-20/source-library-lot10-v1.zip` du checkout principal : 36 nouvelles peintures sélectionnées, 12 textures environnementales réutilisées et une correction ImageGen de la couverture Cascade dont l’original est conservé. [Reçu source](../qa/symbol-lot10-sources-20261020.json). Ne pas régénérer les images sélectionnées.
+**10 couvertures conservées, 70 nouveaux PNG, 10 packs et 380 dérivés.** Les 10 parcours passent dans les six langues à 2560×1440 et 390×844. Les 50 captures et les 10 familles de sources sont inspectées. Les interprétations longues et les traductions concurrentes de master sont préservées ; seules les cartes PT manquantes pour les variantes choisies sont ajoutées.
 
-Claude a préparé les cartes manquantes en portugais, les six langues, les trois scènes et les profils du moteur commun. Les placements ont été revus sur les vraies peintures et textures, en compensant leur zone alpha visible. Les étapes publiques sont consignées après le vrai déploiement ; aucun accord personnel n’a été inventé. Les anciens lots et leurs preuves restent conservés.
+[Rapport](../qa/symbol-packs-lot-14-10-20261020.md) · [Reçu](../qa/symbol-packs-lot-14-10-20261020.json) · [Suivi Excel/CSV](README.md). Les sources, prompts et provenance sont dans [10 ZIP privés Drive](https://drive.google.com/drive/folders/1Ye1CGz0N6mZfyeyaIziRv6jiPd8u4DwI) et dans `output/symbol-packs-final-100-20261020/lot-14` du checkout principal. `RECUPERATION.json` et `plan.json` permettent la reprise ; ne pas régénérer les fichiers déjà enregistrés.
+
+État courant : **240 packs, 0 à compléter, 240 QA actuelles**. Les preuves historiques, dont la publication master du lot 09, restent conservées. Aucun accord personnel de Thanh, fusion de cette branche ou nouvelle publication n’est déclaré pour le lot.
 
 ## Reprendre sans perdre le travail
 
-- Ne pas régénérer les 210 PNG sélectionnés. Les variantes remplacées sont conservées, mais seuls les fichiers sélectionnés dans les manifests et ZIP courants servent le site.
-- Ne pas relancer `manage.mjs configure` du dossier local du lot 08 : sa base précède les mises à jour de master et écraserait des preuves plus récentes. Les 30 profils, langues et scènes sont déjà configurés. Modifier les JSON canoniques directement si nécessaire.
-- Terminer la vérification locale sur le commit livré avant tout push. Remettre une branche et une PR avec le commit vérifié et le résultat de `verify:pr`. Une preuve ciblée de 30 parcours n'est pas une campagne Release complète.
-- Réexaminer le registre courant avant le prochain lot : 123 symboles restent sans pack. Le lot 10 est déjà occupé par les six symboles ci-dessus ; les anciennes files de production doivent être rapprochées des IDs actuels avant une nouvelle génération. Respecter la taille de lot demandée par Thanh.
-- Enregistrer chaque image, prompt et provenance dès sa réception ; archiver chaque pack terminé et mettre à jour le suivi par lot. Ne pas remettre le suivi ou les rapports internes sur Drive sans autorisation appropriée à ces documents.
+- Les 100 packs demandés sont intégrés et contrôlés ; aucune génération ne reste dans cette file. Les 94 nouvelles archives natives et les six sauvegardes des dérivés hérités sont sur Drive. Il reste à retrouver l’archive native source-library-lot10-v1.zip des six packs hérités ; ne pas les régénérer.
+- Les plans, prompts et références des prochains lots sont conservés dans `output/symbol-packs-final-100-20261020`. Les indices PT de la préparation initiale ont été rapprochés de master : 60 cartes manquantes sont préparées pour les 20 symboles du lot 12 concernés, sans remplacer les variantes existantes de master.
+- Utiliser les intégrateurs qui mettent à jour les JSON courants. Ne pas relancer un ancien configurateur qui restaure une base historique. Le moteur et les composants restent communs.
+- Sauvegarder chaque PNG dès réception, puis chaque pack sur Drive. Actualiser Excel et CSV par lot. Les copies finales de l’Excel et du CSV ont été explicitement autorisées le 22 octobre, envoyées sur le même Drive privé et vérifiées. Cette autorisation ne s’étend pas aux rapports QA internes.
+- Passer `verify:pr` sur le commit exact avant chaque push. La preuve ciblée du lot n’est pas une campagne Release complète. Conserver les limites locales, natives et publiques distinctes.
 
 ## Direction artistique et mouvement
 
@@ -38,7 +40,7 @@ Deux phénomènes perceptibles sur chaque surface visible : hero, plaque et troi
 | Animation commune | `docs-src/static/js/symbol-living/`, chemin actif déclaré par le générateur |
 | Copie pour l'application | `npm run symbols:dictionary:sync` régénère `data/app/symbol-atlas.json` |
 
-Utiliser `atlas:pack`, `atlas:handoff`, `atlas:gallery` et `atlas:receipt` du package `apps/site` ([catalogue](../../../scripts/README.md#atlas-pages-asset-packs-handoffs-and-qualification-receipts)). Ne pas créer un moteur ou composant par symbole. Modifier `docs-src/`, jamais `docs/` généré. Garder les chemins à empreinte.
+Utiliser `atlas:pack`, `atlas:handoff`, `atlas:gallery` et `atlas:receipt` du package `apps/site` ([catalogue](../../../scripts/README.md#atlas-pages-asset-packs-handoffs-qualification-receipts-and-review-galleries)). Ne pas créer un moteur ou composant par symbole. Modifier `docs-src/`, jamais `docs/` généré. Garder les chemins à empreinte.
 
 Les placements acceptent `place.at: [x, y]` (centre relatif), et `place.zoom` de 0,1 à 4 pour une petite lueur locale. `motion.scenes[sceneId]` remplace les deux effets de `motion.thumb` pour cette scène. Recalculer avec `atlasSixBox` sur les dimensions réelles.
 
@@ -46,4 +48,10 @@ Les placements acceptent `place.at: [x, y]` (centre relatif), et `place.zoom` de
 
 Piloter un symbole représentatif, puis contrôler le lot affecté sur les pages réelles : deux tailles, six langues, trois variantes, effets dans le temps, transparence, titre, scroll, réduction des mouvements et peinture stable. Vérifier que mobile utilise le portrait dédié et ne télécharge pas la plaque masquée. Conserver le reçu, la révision et la commande exacte ; réutiliser seulement les preuves inchangées.
 
-La preuve du lot 08 qualifie le navigateur local, sans appareil physique, application native, mesure de fluidité ou publication. Le premier passage a révélé deux divergences de ponctuation PT, corrigées dans le générateur puis rejouées : **30 réussites, zéro échec ou ignoré, 55 parcours hors sélection**. La revue a aussi corrigé les associations hôpital ES et école IT, sans changer leur contenu éditorial. Les différences mineures sans défaut visible ne justifient pas des retouches sans fin.
+La preuve du lot 14 qualifie le navigateur local : 10 réussites, zéro échec ou ignoré, 256 parcours hors sélection. Elle ne qualifie pas une application native, un appareil physique, les FPS ou une nouvelle publication.
+
+Reconciliation finale des 100 packs : [livraison et limite de sauvegarde](../qa/symbol-packs-final-100-20261022.md). Les trois parcours complémentaires passent également, sans nouvelle publication.
+
+Le registre conserve ses 15 834 preuves en format compact pour rester sous la limite de taille existante. Ne pas réindenter tous les enregistrements lors d’un ajout. Le CSV reste identique ; l’empreinte du rapport affichée dans l’Excel et sa copie Drive sont actualisées.
+
+Master ensuite rapproché avec `b2460d222752105fdce7f5b8a8fd1704a0757b4f` (PR537, évolutions de l’application ; sources du site et preuves par symbole inchangées). Le commit final fait l’objet de sa propre vérification avant push.

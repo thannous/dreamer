@@ -480,6 +480,18 @@ function rolloutFixture() {
   // The site's lots, without its records: their evidence files are not in the fixture, and each
   // stage below starts from what the journey records itself.
   const registry = { ...JSON.parse(fs.readFileSync(registryFile, 'utf8')), records: [] };
+  // This source-identity fixture keeps the completed lots through 09 and six controlled
+  // pending assignments. Later production packs must not remove the unpacked deer used
+  // below to prove that mobile framing invalidates only the affected page's evidence.
+  const fixtureLots = new Set(['tiger', ...Array.from({ length: 9 }, (_, index) => `lot-${String(index + 1).padStart(2, '0')}`)]);
+  for (const symbol of Object.values(registry.symbols)) if (!fixtureLots.has(symbol.lot)) symbol.lot = null;
+  registry.lots = Object.fromEntries(Object.entries(registry.lots).filter(([lot]) => fixtureLots.has(lot)));
+  registry.lots['lot-10'] = { label: 'Controlled pending fixture' };
+  for (const id of ['ring', 'bee', 'waterfall', 'volcano', 'mask', 'turtle']) registry.symbols[id].lot = 'lot-10';
+  const pilotsFile = path.join(repo, 'docs-src', 'config', 'symbol-atlas-pilots.json');
+  const pilots = JSON.parse(fs.readFileSync(pilotsFile, 'utf8'));
+  for (const id of Object.keys(pilots)) if (!registry.symbols[id]?.lot) delete pilots[id];
+  fs.writeFileSync(pilotsFile, JSON.stringify(pilots));
   fs.writeFileSync(registryFile, JSON.stringify(registry));
   const writeRegistry = (change) => fs.writeFileSync(registryFile, JSON.stringify(change(structuredClone(registry))));
   const run = (out) => {

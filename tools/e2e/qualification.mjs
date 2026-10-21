@@ -72,7 +72,8 @@ export function directoryFiles(root, prefix, ignored = new Set()) {
 export function sourceSnapshot(root, product, native = false) {
   const git = (...args) => execFileSync('git', args, { cwd: root, encoding: 'utf8' }).trim();
   const revision = git('rev-parse', 'HEAD');
-  const paths = execFileSync('git', ['ls-files', '-co', '--exclude-standard', '-z'], { cwd: root, encoding: 'utf8' }).split('\0').filter(Boolean);
+  // The complete Atlas has more than 1 MiB of tracked path names; retain every input.
+  const paths = execFileSync('git', ['ls-files', '-co', '--exclude-standard', '-z'], { cwd: root, encoding: 'utf8', maxBuffer: 16 * 1024 * 1024 }).split('\0').filter(Boolean);
   // This is the output directory of scripts/build-experience.js, not an input.
   // Its bytes are retained and compared separately; sourceClean is never forged.
   const allowedOutputPrefixes = product === 'site' ? ['docs-src/static/js/experience/'] : [];
