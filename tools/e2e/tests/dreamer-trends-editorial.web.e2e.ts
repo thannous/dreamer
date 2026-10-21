@@ -107,7 +107,8 @@ test('30 nights read honestly, a chosen sign turns the seal, and Intl.PluralRule
   await expect(uiScreen.getByTestId('trends.figure.nights.value')).toHaveText('8');
   await expect(uiScreen.getByTestId('trends.figure.streak.value')).toHaveText('1');
   // Nothing was noted in the 30 nights before: no comparison is claimed.
-  await expect(uiScreen.getByTestId('trends.range')).toHaveText('Sep 3 – Oct 2');
+  // Preserve the original content assertion independently of its uppercase CSS.
+  await expect.poll(() => readDOM(browser, byId('trends.range'), element => element.textContent)).toBe('Sep 3 – Oct 2');
   await expect(uiScreen.getByTestId('trends.figure.dreams.note')).toHaveCount(0);
   // Three themes hold two dreams each: none leads.
   await expect(uiScreen.getByTestId('trends.seal.sentence')).toHaveText('No theme leads: tap a sign to see its dreams.');
@@ -204,7 +205,7 @@ test('each door opens the journal on exactly those dreams, and the period change
   await expect(uiScreen.getByTestId('trends.period.7')).toHaveAttribute('aria-selected', 'true');
   await expect(uiScreen.getByTestId('trends.figure.dreams.value')).toHaveText('4');
   await expect(uiScreen.getByTestId('trends.figure.dreams.note')).toHaveText('+1');
-  await expect(uiScreen.getByTestId('trends.range')).toHaveText('Sep 26 – Oct 2 · compared with the 7 nights before');
+  await expect.poll(() => readDOM(browser, byId('trends.range'), element => element.textContent)).toBe('Sep 26 – Oct 2 · compared with the 7 nights before');
   await expect(uiScreen.getByTestId(/^trends\.nights\.night\./)).toHaveCount(7);
   await uiScreen.getByTestId('trends.nights.night.2026-09-28').click();
   await expect(uiScreen.getByTestId('trends.nights.selected')).toContainText('The Shadowy Pursuer');
