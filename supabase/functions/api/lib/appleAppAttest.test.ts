@@ -1,14 +1,16 @@
 import { Buffer } from 'node:buffer';
-import { createHash, generateKeyPairSync, sign } from 'node:crypto';
+import { createHash, generateKeyPairSync, sign, X509Certificate } from 'node:crypto';
 import { assertEquals, assertThrows } from 'https://deno.land/std@0.224.0/assert/mod.ts';
 
 import {
+  certificateValidityWindow,
   isValidAppAttestAaguid,
   verifyAppleAppAssertion,
   verifyAppleAppAttestation,
   verifyAppleAppAttestationWithClientDataHash,
 } from './appleAppAttest.ts';
 import { APPLE_OFFICIAL_ATTESTATION_OBJECT } from './appleAppAttestOfficialFixture.ts';
+import { APPLE_APP_ATTEST_ROOT_PEM } from './appleAppAttestRoot.ts';
 
 const challenge = 'example_server_challenge';
 const appId = '1234567890.com.example.myapp';
@@ -28,6 +30,39 @@ const fixtureInput = {
 };
 
 const fixtureHash = new TextEncoder().encode(challenge);
+
+Deno.test('Apple attestation verifies when Edge omits X509 raw, date, and issuer APIs', () => {
+  const properties = ['raw', 'validFromDate', 'validToDate', 'checkIssued'] as const;
+  const descriptors = properties.map((property) =>
+    Object.getOwnPropertyDescriptor(X509Certificate.prototype, property));
+  try {
+    for (const property of properties) {
+      Object.defineProperty(X509Certificate.prototype, property, {
+        configurable: true,
+        get: () => { throw new Error(`X509Certificate.${property} unavailable`); },
+      });
+    }
+    assertEquals(verifyAppleAppAttestationWithClientDataHash(fixtureInput, fixtureHash).appId, appId);
+  } finally {
+    properties.forEach((property, index) => {
+      const descriptor = descriptors[index];
+      if (descriptor) Object.defineProperty(X509Certificate.prototype, property, descriptor);
+      else Reflect.deleteProperty(X509Certificate.prototype, property);
+    });
+  }
+});
+
+Deno.test('certificate validity rejects malformed dates instead of normalizing them', () => {
+  const rootDer = Buffer.from(APPLE_APP_ATTEST_ROOT_PEM.replace(/-----[^-]+-----|\s/g, ''), 'base64');
+  const validity = certificateValidityWindow(rootDer);
+  assertEquals(new Date(validity.from).toISOString(), '2020-03-18T18:32:53.000Z');
+  assertEquals(new Date(validity.to).toISOString(), '2045-03-15T00:00:00.000Z');
+  const malformed = Buffer.from(rootDer);
+  const dateOffset = malformed.indexOf(Buffer.from('200318183253Z'));
+  if (dateOffset < 0) throw new Error('Pinned Apple root validity changed');
+  Buffer.from('200230183253Z').copy(malformed, dateOffset);
+  assertThrows(() => certificateValidityWindow(malformed));
+});
 
 Deno.test('Apple development AAGUID variants stay sandbox-only', () => {
   const encode = (value: string) => new TextEncoder().encode(value);

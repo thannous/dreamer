@@ -26,8 +26,32 @@ const CMS_SIGNED_DATA_OID = Uint8Array.from([0x2a, 0x86, 0x48, 0x86, 0xf7, 0x0d,
 const CMS_DATA_OID = Uint8Array.from([0x2a, 0x86, 0x48, 0x86, 0xf7, 0x0d, 0x01, 0x07, 0x01]);
 const SHA256_OID = Uint8Array.from([0x60, 0x86, 0x48, 0x01, 0x65, 0x03, 0x04, 0x02, 0x01]);
 const APP_ATTEST_RECEIPT_SIGNING_OID = Uint8Array.from([0x2a, 0x86, 0x48, 0x86, 0xf7, 0x63, 0x64, 0x0c, 0x0f]);
-const ROOT_CERTIFICATE = new X509Certificate(APPLE_APP_ATTEST_ROOT_PEM);
-const RECEIPT_ROOT_CERTIFICATE = new X509Certificate(APPLE_APP_RECEIPT_ROOT_G3_PEM);
+
+// Supabase Edge Runtime can parse an X509Certificate while leaving its `raw`
+// getter unimplemented. Retain the exact DER input for all cryptographic checks.
+const CERTIFICATE_DER = new WeakMap<X509Certificate, Uint8Array>();
+
+function certificateFromDer(raw: Uint8Array): X509Certificate {
+  const der = new Uint8Array(raw);
+  const certificate = new X509Certificate(Buffer.from(der));
+  CERTIFICATE_DER.set(certificate, der);
+  return certificate;
+}
+
+function certificateFromPem(pem: string): X509Certificate {
+  const base64 = pem.replace(/-----BEGIN CERTIFICATE-----|-----END CERTIFICATE-----|\s/g, '');
+  if (!/^[A-Za-z0-9+/]+={0,2}$/.test(base64)) invalid();
+  return certificateFromDer(new Uint8Array(Buffer.from(base64, 'base64')));
+}
+
+function certificateDer(certificate: X509Certificate): Uint8Array {
+  const der = CERTIFICATE_DER.get(certificate);
+  if (!der) invalid();
+  return der;
+}
+
+const ROOT_CERTIFICATE = certificateFromPem(APPLE_APP_ATTEST_ROOT_PEM);
+const RECEIPT_ROOT_CERTIFICATE = certificateFromPem(APPLE_APP_RECEIPT_ROOT_G3_PEM);
 
 function invalid(): never {
   throw new Error('Invalid Apple App Attest proof');
@@ -154,7 +178,7 @@ function derChildren(bytes: Uint8Array, parent: DerNode): DerNode[] {
 }
 
 function certificateNonceExtension(certificate: X509Certificate): Uint8Array {
-  const bytes = new Uint8Array(certificate.raw);
+  const bytes = certificateDer(certificate);
   const outer = readDer(bytes, 0);
   if (outer.tag !== 0x30 || outer.end !== bytes.length) invalid();
   const tbs = derChildren(bytes, outer)[0];
@@ -184,7 +208,7 @@ function certificateNonceExtension(certificate: X509Certificate): Uint8Array {
 }
 
 function certificateHasExtension(certificate: X509Certificate, expectedOid: Uint8Array): boolean {
-  const bytes = new Uint8Array(certificate.raw);
+  const bytes = certificateDer(certificate);
   const outer = readDer(bytes, 0);
   const tbs = derChildren(bytes, outer)[0];
   if (tbs?.tag !== 0x30) invalid();
@@ -202,7 +226,7 @@ function certificateHasExtension(certificate: X509Certificate, expectedOid: Uint
 function verifyCertificateSignature(certificate: X509Certificate, issuer: X509Certificate): boolean {
   // Deno 2.7's X509Certificate.verify returns false for Apple's valid EC chain.
   // Verify the certificate's signed TBSCertificate bytes with node:crypto instead.
-  const bytes = new Uint8Array(certificate.raw);
+  const bytes = certificateDer(certificate);
   const outer = readDer(bytes, 0);
   if (outer.tag !== 0x30 || outer.end !== bytes.length) invalid();
   const fields = derChildren(bytes, outer);
@@ -221,19 +245,67 @@ function verifyCertificateSignature(certificate: X509Certificate, issuer: X509Ce
   );
 }
 
+// Edge Runtime's node:crypto compatibility can omit the X509 validity getters.
+// Read the signed TBSCertificate Validity sequence from its original DER.
+// RFC 5280 requires seconds and Zulu time for both supported encodings.
+function certificateTime(bytes: Uint8Array, node: DerNode): number {
+  const length = node.valueEnd - node.valueStart;
+  if ((node.tag !== 0x17 || length !== 13) && (node.tag !== 0x18 || length !== 15)) invalid();
+  const value = String.fromCharCode(...bytes.slice(node.valueStart, node.valueEnd));
+  if (!/^\d+Z$/.test(value)) invalid();
+  const isUtcTime = node.tag === 0x17;
+  const shortYear = Number(value.slice(0, 2));
+  const year = isUtcTime ? (shortYear >= 50 ? 1900 + shortYear : 2000 + shortYear)
+    : Number(value.slice(0, 4));
+  const offset = isUtcTime ? 2 : 4;
+  const month = Number(value.slice(offset, offset + 2));
+  const day = Number(value.slice(offset + 2, offset + 4));
+  const hour = Number(value.slice(offset + 4, offset + 6));
+  const minute = Number(value.slice(offset + 6, offset + 8));
+  const second = Number(value.slice(offset + 8, offset + 10));
+  if (year < 1) invalid();
+  const date = new Date(0);
+  date.setUTCFullYear(year, month - 1, day);
+  date.setUTCHours(hour, minute, second, 0);
+  const time = date.getTime();
+  if (!Number.isFinite(time) || date.getUTCFullYear() !== year ||
+      date.getUTCMonth() !== month - 1 || date.getUTCDate() !== day ||
+      date.getUTCHours() !== hour || date.getUTCMinutes() !== minute ||
+      date.getUTCSeconds() !== second) invalid();
+  return time;
+}
+
+export function certificateValidityWindow(raw: Uint8Array): { from: number; to: number } {
+  const bytes = new Uint8Array(raw);
+  const outer = readDer(bytes, 0);
+  if (outer.tag !== 0x30 || outer.end !== bytes.length) invalid();
+  const tbs = derChildren(bytes, outer)[0];
+  if (tbs?.tag !== 0x30) invalid();
+  const fields = derChildren(bytes, tbs);
+  const validity = fields[fields[0]?.tag === 0xa0 ? 4 : 3];
+  if (validity?.tag !== 0x30) invalid();
+  const bounds = derChildren(bytes, validity);
+  if (bounds.length !== 2) invalid();
+  const from = certificateTime(bytes, bounds[0]);
+  const to = certificateTime(bytes, bounds[1]);
+  if (from >= to) invalid();
+  return { from, to };
+}
+
 function validateChain(rawCertificates: CborValue, now: Date): X509Certificate {
   if (!Array.isArray(rawCertificates) || rawCertificates.length < 2 || rawCertificates.length > 4) invalid();
-  const certificates = rawCertificates.map((raw) => new X509Certificate(Buffer.from(asBytes(raw))));
+  const certificates = rawCertificates.map((raw) => certificateFromDer(asBytes(raw)));
   const chain = [...certificates, ROOT_CERTIFICATE];
   const nowMs = now.getTime();
   if (!Number.isFinite(nowMs)) invalid();
   for (let i = 0; i < chain.length; i += 1) {
     const certificate = chain[i];
-    if (nowMs < certificate.validFromDate.getTime() || nowMs > certificate.validToDate.getTime()) invalid();
+    const validity = certificateValidityWindow(certificateDer(certificate));
+    if (nowMs < validity.from || nowMs > validity.to) invalid();
     if (i > 0 && !certificate.ca) invalid();
     if (i < chain.length - 1) {
       const issuer = chain[i + 1];
-      if (!certificate.checkIssued(issuer) || !verifyCertificateSignature(certificate, issuer)) invalid();
+      if (!certificateIssuedBy(certificate, issuer) || !verifyCertificateSignature(certificate, issuer)) invalid();
     }
   }
   if (!verifyCertificateSignature(ROOT_CERTIFICATE, ROOT_CERTIFICATE)) invalid();
@@ -304,30 +376,46 @@ function berInteger(bytes: Uint8Array, node: DerNode): number {
   return result;
 }
 
-function certificateIssuerDer(certificate: X509Certificate): Uint8Array {
-  const bytes = new Uint8Array(certificate.raw);
+function certificateNameDer(certificate: X509Certificate, name: 'issuer' | 'subject'): Uint8Array {
+  const bytes = certificateDer(certificate);
   const outer = readDer(bytes, 0);
+  if (outer.tag !== 0x30 || outer.end !== bytes.length) invalid();
   const tbs = derChildren(bytes, outer)[0];
   if (!tbs || tbs.tag !== 0x30) invalid();
   const fields = derChildren(bytes, tbs);
-  const issuer = fields[fields[0]?.tag === 0xa0 ? 3 : 2];
-  if (issuer?.tag !== 0x30) invalid();
-  return bytes.slice(issuer.start, issuer.end);
+  const versionOffset = fields[0]?.tag === 0xa0 ? 1 : 0;
+  const field = fields[(name === 'issuer' ? 2 : 4) + versionOffset];
+  if (field?.tag !== 0x30) invalid();
+  return bytes.slice(field.start, field.end);
+}
+
+function certificateIssuerDer(certificate: X509Certificate): Uint8Array {
+  return certificateNameDer(certificate, 'issuer');
+}
+
+function certificateIssuedBy(certificate: X509Certificate, issuer: X509Certificate): boolean {
+  // Edge Runtime's checkIssued can be unimplemented. Exact DER name matching,
+  // followed by the certificate signature check, preserves issuer binding.
+  return equalBytes(certificateIssuerDer(certificate), certificateNameDer(issuer, 'subject'));
 }
 
 function validateReceiptChain(signing: X509Certificate, certificates: X509Certificate[], now: Date): void {
   const root = RECEIPT_ROOT_CERTIFICATE;
-  const remaining = certificates.filter((cert) => cert !== signing && !equalBytes(cert.raw, root.raw));
+  const remaining = certificates.filter((cert) => cert !== signing &&
+    !equalBytes(certificateDer(cert), certificateDer(root)));
+  const nowMs = now.getTime();
+  if (!Number.isFinite(nowMs)) invalid();
   let current = signing;
   for (let depth = 0; depth < 5; depth += 1) {
-    if (now < current.validFromDate || now > current.validToDate) invalid();
-    if (equalBytes(current.raw, root.raw)) {
+    const validity = certificateValidityWindow(certificateDer(current));
+    if (nowMs < validity.from || nowMs > validity.to) invalid();
+    if (equalBytes(certificateDer(current), certificateDer(root))) {
       if (remaining.length !== 0 || !verifyCertificateSignature(root, root)) invalid();
       return;
     }
-    const index = remaining.findIndex((candidate) => current.checkIssued(candidate));
+    const index = remaining.findIndex((candidate) => certificateIssuedBy(current, candidate));
     const issuer = index >= 0 ? remaining.splice(index, 1)[0] : root;
-    if (!current.checkIssued(issuer) || !verifyCertificateSignature(current, issuer) || !issuer.ca) invalid();
+    if (!certificateIssuedBy(current, issuer) || !verifyCertificateSignature(current, issuer) || !issuer.ca) invalid();
     current = issuer;
   }
   invalid();
@@ -361,8 +449,8 @@ function verifyAppleReceipt(input: {
   const certificateNodes = berChildren(bytes, signedData[3]);
   if (certificateNodes.length < 2 || certificateNodes.length > 5 ||
       certificateNodes.some((node) => node.tag !== 0x30)) invalid();
-  const certificates = certificateNodes.map((node) => new X509Certificate(
-    Buffer.from(bytes.slice(node.start, node.end))));
+  const certificates = certificateNodes.map((node) =>
+    certificateFromDer(bytes.slice(node.start, node.end)));
   const signers = berChildren(bytes, signedData[4]);
   if (signers.length !== 1 || signers[0].tag !== 0x30) invalid();
   const signerFields = berChildren(bytes, signers[0]);
@@ -403,7 +491,7 @@ function verifyAppleReceipt(input: {
     return new TextDecoder('utf-8', { fatal: true }).decode(value);
   };
   if (asText(2) !== input.appId ||
-      !equalBytes(attributes.get(3) ?? new Uint8Array(), input.credentialCertificate.raw) ||
+      !equalBytes(attributes.get(3) ?? new Uint8Array(), certificateDer(input.credentialCertificate)) ||
       !equalBytes(attributes.get(4) ?? new Uint8Array(), input.clientDataHash) ||
       asText(6) !== 'ATTEST') invalid();
   const receiptEnvironment = asText(7);
@@ -529,9 +617,11 @@ export function verifyAppleAppAttestationWithClientDataHash(
     input.allowedBundleVersions, input.allowedCategories);
 
   const publicKey = certificate.publicKey;
-  if (publicKey.asymmetricKeyType !== 'ec' || publicKey.asymmetricKeyDetails?.namedCurve !== 'prime256v1') invalid();
+  if (publicKey.asymmetricKeyType !== 'ec') invalid();
   const jwk = publicKey.export({ format: 'jwk' });
-  if (typeof jwk !== 'object' || !jwk.x || !jwk.y) invalid();
+  // Edge Runtime may omit or alias asymmetricKeyDetails.namedCurve. The
+  // exported JWK identifies the same key's curve without weakening the check.
+  if (typeof jwk !== 'object' || jwk.kty !== 'EC' || jwk.crv !== 'P-256' || !jwk.x || !jwk.y) invalid();
   const x = decodeBase64(jwk.x, 100);
   const y = decodeBase64(jwk.y, 100);
   const publicKeyBytes = concat(Uint8Array.of(0x04), x, y);
