@@ -159,6 +159,7 @@ const FUNCTION_GRANDFATHERED = Object.freeze([
   '20260829120000_requeue_failed_generate_image_jobs.sql',
   '20260829160000_preserve_image_job_retry_budget.sql',
   '20260909010000_scope_oauth_product_access.sql',
+  '20260916115955_harden_image_retry_exhaustion_and_role_errors.sql',
   '20260917172941_preserve_plus_analysis_authorization.sql',
   '20261014183000_allow_luminous_nostalgic_analysis_themes.sql',
   '20261015120000_add_dream_precise_theme.sql',
@@ -200,10 +201,11 @@ const GRANDFATHERED_DIGESTS = Object.freeze({
   '20260829120000_requeue_failed_generate_image_jobs.sql': 'cbe93e6d41bab0393203dcc8fb3302cc1b29278cb5dbd1eb16e23e12e0aeae82',
   '20260829160000_preserve_image_job_retry_budget.sql': '5d16817e359fe8734d5e4ef31cfb9b118aca29d92a8b55c6b6c3e14301e3d317',
   '20260909010000_scope_oauth_product_access.sql': 'f656b084dd6b1de8d7eaa8bb0504974c79db2b95762dfeaf23a7099681d9f613',
+  '20260916115955_harden_image_retry_exhaustion_and_role_errors.sql': 'c24920743cf4700febddc566636eeb84a1fd95d643cad453e0363ad45a2c1e80',
   '20260917172941_preserve_plus_analysis_authorization.sql': '6e1c6643881922ccb7795c24cfe9ed8c78bc8fce7421ad1cc6f7cff24e3301bc',
   '20261014183000_allow_luminous_nostalgic_analysis_themes.sql': '6358c19cc23148bf413b54a5ce2e8668330b9322e7556d76a45e8b42cfee723c',
   '20261015120000_add_dream_precise_theme.sql': 'dc771825dc16ddb01d12f594d6d92fdf57d7fe7b8018575422b30dd9458676ca',
-  '20261021090000_explicit_public_data_api_grants.sql': '69c14d7f27085ca4b74fb768a6243eb5f69a530e9aeeff3122e9e2d083e0df4d',
+  '20261021090000_explicit_public_data_api_grants.sql': '518ff8f2be523fa14bb9d8fa44f975359a6d63aba725613982680357b7cc71c0',
 });
 
 /** Remove comments, keep string and dollar-quoted contents (they may hold real DDL in DO blocks). */

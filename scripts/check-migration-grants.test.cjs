@@ -419,12 +419,12 @@ test('a grandfathered migration cannot change', () => {
 });
 
 test('the function grandfathered list holds only migrations from before its rule', () => {
-  assert.equal(FUNCTION_GRANDFATHERED.length, 26);
+  assert.equal(FUNCTION_GRANDFATHERED.length, 27);
   for (const file of FUNCTION_GRANDFATHERED) assert.ok(file.slice(0, 14) <= FUNCTION_GRANDFATHER_CUTOFF, file);
 });
 
 test('the repository migrations pass', () => {
   const result = spawnSync(process.execPath, [path.join(__dirname, 'check-migration-grants.cjs')], { encoding: 'utf8' });
   assert.equal(result.status, 0, result.stderr);
-  assert.match(result.stdout, /13 grandfathered for tables, 26 for security definer functions, 0 failures/);
+  assert.match(result.stdout, /13 grandfathered for tables, 27 for security definer functions, 0 failures/);
 });
