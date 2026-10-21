@@ -53,3 +53,13 @@ test('security URL: code on an unrelated route causes no Supabase token exchange
   expect(tokenExchanges).toBe(0);
   await assertStillGuest(screen);
 });
+
+test('security URL: a recovery hash is removed before the reset form renders', async ({ app, screen, browser }) => {
+  await startGuest(app, screen, browser);
+  await browser.goto('/auth/reset-password?token_hash=e2e-fake-recovery-hash&type=recovery');
+  await expect(browser).toHaveURL('/auth/reset-password');
+  await expect(screen.getByTestId('input.auth.recoveryEmail', { visible: true })).toBeVisible();
+  expect(await browser.evaluate(() => Object.values(localStorage).some(value =>
+    value.includes('e2e-fake-recovery-hash')))).toBe(false);
+  await expect(screen.getByTestId('btn.auth.signOut')).toHaveCount(0);
+});
