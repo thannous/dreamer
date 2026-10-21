@@ -23,6 +23,8 @@ export type LastDreamWidgetProps = {
   title?: string;
   /** When it was dreamt, already written in the app's language. */
   date?: string;
+  /** Instead of the date on an anniversary: « Il y a un mois cette nuit ». */
+  eyebrow?: string;
   /** Opens that dream, or the capture screen before the first one. */
   url: string;
   /** Shown before the first painted dream. */
@@ -69,7 +71,7 @@ const LastDreamWidget = (props: LastDreamWidgetProps, environment: WidgetEnviron
   const medium = environment.widgetFamily === 'systemMedium';
 
   return (
-    <ZStack alignment="bottomLeading" modifiers={[open, fill, containerBackground(ground, 'widget'), accessibilityLabel(props.date ? `${props.title}, ${props.date}` : props.title)]}>
+    <ZStack alignment="bottomLeading" modifiers={[open, fill, containerBackground(ground, 'widget'), accessibilityLabel([props.eyebrow, props.title, props.date].filter(Boolean).join(', '))]}>
       <Image uiImage={props.image} modifiers={[resizable(), aspectRatio({ contentMode: 'fill' }), fill, clipped()]} />
       <Rectangle
         modifiers={[
@@ -78,8 +80,8 @@ const LastDreamWidget = (props: LastDreamWidgetProps, environment: WidgetEnviron
         ]}
       />
       <VStack alignment="leading" spacing={2} modifiers={[padding({ horizontal: 14, bottom: 12 })]}>
-        {props.date ? (
-          <Text modifiers={[font({ size: 11, weight: 'medium' }), foregroundStyle(ink), lineLimit(1)]}>{props.date}</Text>
+        {props.eyebrow || props.date ? (
+          <Text modifiers={[font({ size: 11, weight: 'medium' }), foregroundStyle(ink), lineLimit(1)]}>{props.eyebrow ?? props.date}</Text>
         ) : null}
         <Text modifiers={[font({ size: medium ? 18 : 15, weight: 'semibold', design: 'serif' }), foregroundStyle(ink), lineLimit(2)]}>
           {props.title}

@@ -10,11 +10,15 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { ScreenContainer } from "@/components/ScreenContainer";
+import { HomeAnniversaryCard } from "@/components/home/HomeAnniversaryCard";
 import { HomeDiscoverTiles } from "@/components/home/HomeDiscoverTiles";
+import { HomeFullMoonRow } from "@/components/home/HomeFullMoonRow";
 import { HomeRecurringCard } from "@/components/home/HomeRecurringCard";
+import { HomeWeekConstellation } from "@/components/home/HomeWeekConstellation";
 import { HomeWeekNights } from "@/components/home/HomeWeekNights";
 import { TodayHero } from "@/components/home/TodayHero";
 import { FreeAnalysesNudge, getFreeAnalysesNudge } from "@/components/quota/FreeAnalysesNudge";
+import { MonthEndAnalysesCard } from "@/components/quota/MonthEndAnalysesCard";
 import { useNotificationSettingsController } from "@/components/settings/useNotificationSettingsController";
 import { buildPersonalReading } from "@/lib/personalReading";
 import { IconSymbol } from "@/components/ui/icon-symbol";
@@ -34,7 +38,9 @@ import { useClearWebFocus } from "@/hooks/useClearWebFocus";
 import { useScrollIdle } from "@/hooks/useScrollIdle";
 import { useTranslation } from "@/hooks/useTranslation";
 import { trackProductEvent } from "@/lib/analytics";
+import { pickDreamAnniversary } from "@/lib/dreamAnniversary";
 import { isDreamAnalyzed, isDreamExplored } from "@/lib/dreamUsage";
+import { getMonthEndAnalyses } from "@/lib/monthEndAnalyses";
 import { isSleepSoundsAvailable } from "@/lib/sleepSoundsFeature";
 import {
   RITUALS,
@@ -144,6 +150,15 @@ function InspirationScreen() {
     () => (dreamsLoaded && dreams.length > 0 ? buildPersonalReading(dreams, now) : null),
     [dreams, dreamsLoaded, now]
   );
+  // The dream noted on this date a month or a year ago: today only.
+  const anniversary = useMemo(
+    () => (dreamsLoaded ? pickDreamAnniversary(dreams, now) : null),
+    [dreams, dreamsLoaded, now]
+  );
+  // In the month's last days, the included analyses left and a dream still to read take the nudge's place.
+  const monthEndAnalyses = useMemo(() => (dreamsLoaded ? getMonthEndAnalyses({
+    tier, signedIn: Boolean(user), loading: quotaLoading, error: quotaError, usage, dreams, now,
+  }) : null), [dreams, dreamsLoaded, now, quotaError, quotaLoading, tier, usage, user]);
   const notificationSettings = useNotificationSettingsController();
   const nextReminderText =
     !notificationSettings.unsupported && notificationSettings.notificationsEnabled && notificationSettings.hasPermissions
@@ -324,11 +339,15 @@ function InspirationScreen() {
             <TodayHero state={todayState} dream={featuredDream} now={now}
               onPressCta={handleTodayCta} onOpenSettings={openQuickSettings} />
             <View className="px-6">
+              {dreamsLoaded ? <HomeFullMoonRow dreams={dreams} now={now} /> : null}
+              {anniversary ? <HomeAnniversaryCard anniversary={anniversary} /> : null}
               {personalReading ? <>
                 <HomeWeekNights dreams={dreams} now={now} />
+                <HomeWeekConstellation dreams={dreams} now={now} />
                 <HomeRecurringCard dreams={dreams} reading={personalReading} now={now} />
               </> : null}
-              {freeAnalysesNudge ? <FreeAnalysesNudge nudge={freeAnalysesNudge} /> : null}
+              {monthEndAnalyses ? <MonthEndAnalysesCard offer={monthEndAnalyses} now={now} />
+                : freeAnalysesNudge ? <FreeAnalysesNudge nudge={freeAnalysesNudge} /> : null}
               {!notificationSettings.unsupported ? <Pressable
                 onPress={() => router.push('/settings')}
                 accessibilityRole="button" accessibilityLabel={nextReminderText ?? t('home.today.add_reminder')}

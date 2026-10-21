@@ -36,3 +36,9 @@ export function formatQuotaResetDate(
   const firstDay = FIRST_DAY_BY_LANGUAGE[locale.toLowerCase().split(/[-_]/)[0]];
   return firstDay ? text.replace(/^1(?=\s)/, firstDay) : text;
 }
+
+/** The period's last day, as people write it: the included analyses left end with it. */
+export function formatQuotaLastDay(locale: string, now: Date = new Date()): string {
+  const { periodEnd } = getMonthlyQuotaPeriod(now);
+  return formatLocaleDate(new Date(periodEnd.getTime() - 1), locale, { day: 'numeric', month: 'long', timeZone: 'UTC' });
+}

@@ -28,6 +28,14 @@ export function getNoctaliaPalette(mode: ThemeMode) {
     },
     // Noctalia listening: the halo that swells behind "I'm listening…" with the dreamer's voice.
     listeningHalo: dark ? '#F2D3B8' : '#E7A873',
+    // The full moon's silver seal: its lit face, its seas, and a rim that holds it on paper
+    // (the rim keeps 4.5:1 against the paper).
+    fullMoon: {
+      light: dark ? '#F3F5FA' : '#EEF0F5',
+      shade: dark ? '#AEB6C6' : '#9AA2B2',
+      rim: dark ? '#D9DEE8' : '#5E6778',
+      halo: dark ? 'rgba(217, 222, 232, 0.3)' : 'rgba(94, 103, 120, 0.18)',
+    },
     // The active tab's lens inside that glass: a champagne tint, a sheen across its top, a rim.
     navActive: {
       fill: dark ? 'rgba(234, 212, 180, 0.12)' : 'rgba(124, 76, 43, 0.08)',
@@ -124,6 +132,7 @@ export function getNoctaliaDesignTokens(colors: ThemeColors, mode: ThemeMode) {
     status: p.status,
     nav: { background: colors.navbarBg, border: colors.navbarBorder, active: colors.navbarTextActive, inactive: colors.navbarTextInactive, glass: p.navGlass, activePill: p.navActive },
     listeningHalo: p.listeningHalo,
+    fullMoon: p.fullMoon,
     atmosphere: {
       glow: p.accent,
       glowOpacity: dark ? 0.16 : 0.08,
