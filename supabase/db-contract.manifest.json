@@ -180,6 +180,21 @@
         "hour_start",
         "created_count"
       ]
+    },
+    {
+      "schema": "public",
+      "name": "moon_letters",
+      "requiredColumns": [
+        "user_id",
+        "full_moon_at",
+        "status",
+        "lang",
+        "opening",
+        "body",
+        "dream_count",
+        "created_at",
+        "updated_at"
+      ]
     }
   ],
   "requiredFunctions": [

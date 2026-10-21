@@ -650,7 +650,8 @@ function RootLayoutNav({
         currentPath?.startsWith('/dream-guide/') ||
         currentPath?.startsWith('/ritual/') ||
         currentPath?.startsWith('/sleep-sounds') ||
-        currentPath?.startsWith('/weekly-recap');
+        currentPath?.startsWith('/weekly-recap') ||
+        currentPath?.startsWith('/moon-letter');
 
       if (__DEV__) {
         console.log('[RootLayoutNav] navigateForForeground', {
@@ -950,6 +951,7 @@ const RootNavigator = memo(function RootNavigator({
             <Stack.Screen name="sleep-sounds" options={{ headerShown: false }} />
             <Stack.Screen name="paywall" options={{ headerShown: false }} />
             <Stack.Screen name="weekly-recap" options={{ headerShown: false }} />
+            <Stack.Screen name="moon-letter" options={{ headerShown: false }} />
             <Stack.Screen name="dev/voice-live-spike" options={{ headerShown: false }} />
             </Stack.Protected>
             {/* Lucid screens live under routes/lucid only (Lucid's own router root). */}

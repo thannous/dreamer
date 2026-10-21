@@ -34,6 +34,8 @@ export const NETWORK_REQUEST_POLICIES = {
   recallQuestion: createPolicy(15000, 0, 1200),
   // The narrator waits on this one; past 20 s the review keeps their own words instead.
   formatRecall: createPolicy(20000, 0, 1200),
+  // Claude has 30 s to write the letter, then Gemini its own turn; no retry would pay twice.
+  moonLetter: createPolicy(70000, 0, 1200),
   analyzeDreamFull: createPolicy(60000, 0, 1200),
   chat: createPolicy(45000, 0, 1200), // no auto-retry to avoid duplicate sends
 

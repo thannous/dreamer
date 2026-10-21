@@ -51,6 +51,8 @@ export const CLAUDE_MODELS = {
    * Gemini, as before: its rewrite would take Claude most of that time and leave none for the fallback.
    */
   formatRecall: { model: 'claude-haiku-5-5', effort: 'low', timeoutMs: 10_000, maxTranscriptChars: 4_000 },
+  /** One letter per account and lunar cycle, about 200 words. The app waits 60 s. */
+  moonLetter: { model: 'claude-haiku-5-5', effort: 'low', timeoutMs: 30_000 },
 } as const;
 
 /** Text previews that were retired from the Interactions API (404 on request). */

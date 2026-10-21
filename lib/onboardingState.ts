@@ -723,6 +723,7 @@ const STATIC_NATIVE_ROUTES = new Set([
   'journal',
   'lucid',
   'modal',
+  'moon-letter',
   'onboarding',
   'paywall',
   'recording',
