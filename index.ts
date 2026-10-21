@@ -2,5 +2,5 @@
 // this entry in a headless JS instance to deliver a reminder reply.
 import './services/notificationDreamTask';
 // Scrub web auth URL credentials before Expo Router captures the initial link.
-import './lib/supabase';
+import './lib/webAuthBootstrap';
 import 'expo-router/entry';
