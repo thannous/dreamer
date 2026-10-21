@@ -382,8 +382,8 @@ export function getNativeEmailRedirect(): string {
     : 'https://dream.noctalia.app/recording';
 }
 
-// Both Lucid web and native builds have a reset-password route. Its token hash
-// is redeemed by an isolated client, leaving any existing account untouched.
+// Both web and native builds have a reset-password route. Its token hash is
+// redeemed by an isolated client, leaving any existing account untouched.
 export function getPasswordResetRedirect(): string {
   if (isLucidTrainer) {
     return `https://lucid.noctalia.app${PASSWORD_RESET_ROUTE}`;
@@ -450,7 +450,7 @@ export async function updatePasswordFromNativeRecovery(
   newPassword: string
 ): Promise<User | null> {
   const configuration = getSupabasePublicConfiguration();
-  if (!isLucidTrainer || Platform.OS === 'web' || !tokenHash || !configuration) {
+  if (Platform.OS === 'web' || !tokenHash || !configuration) {
     throw new Error('Password recovery link is unavailable.');
   }
 

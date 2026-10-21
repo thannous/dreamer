@@ -501,8 +501,8 @@ describe('auth helpers', () => {
     });
   });
 
-  it('redeems a Lucid native recovery hash in an isolated session after email confirmation', async () => {
-    const auth = await loadAuth({ lucidTrainer: true });
+  it.each([false, true])('redeems a native recovery hash in an isolated session for lucid=%s', async (lucidTrainer: boolean) => {
+    const auth = await loadAuth({ lucidTrainer });
 
     await expect(auth.updatePasswordFromNativeRecovery('one-use-hash', 'other@example.com', 'new-secret'))
       .rejects.toThrow('recovery_email_mismatch');

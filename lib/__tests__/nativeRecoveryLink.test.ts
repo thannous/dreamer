@@ -1,6 +1,6 @@
 import { parseNativeRecoveryLink } from '../nativeRecoveryLink';
 
-describe('Lucid native recovery links', () => {
+describe('native recovery links', () => {
   it('accepts only one recovery token hash', () => {
     expect(parseNativeRecoveryLink({ token_hash: 'one-use-hash', type: 'recovery' }))
       .toEqual({ state: 'pending', tokenHash: 'one-use-hash' });
