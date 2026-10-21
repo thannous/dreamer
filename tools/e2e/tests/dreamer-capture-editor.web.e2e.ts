@@ -116,13 +116,19 @@ test('capture keeps long and fragmentary stories editable with a reachable save 
     // all of it. A viewport-rectangle-only replacement must not accept this.
     await browser.evaluate(() => {
       const button = document.querySelector<HTMLElement>('[data-testid="btn.saveDream"]')!;
+      const anchor = document.createElement('span');
+      anchor.dataset.testid = 'regression.saveAnchor';
+      anchor.hidden = true;
       const clip = document.createElement('div');
       clip.dataset.testid = 'regression.saveClip';
       Object.assign(clip.style, {
         position: 'fixed', left: '32px', top: '32px', width: '240px',
         height: '0', overflow: 'hidden', zIndex: '2147483647',
       });
-      button.before(clip);
+      button.before(anchor);
+      // A transformed app ancestor makes fixed positioning relative to itself.
+      // Keep this controlled clipping fixture in viewport coordinates instead.
+      document.body.append(clip);
       clip.append(button);
       return null;
     });
@@ -140,7 +146,9 @@ test('capture keeps long and fragmentary stories editable with a reachable save 
     } finally {
       await browser.evaluate(() => {
         const clip = document.querySelector('[data-testid="regression.saveClip"]')!;
-        clip.replaceWith(...clip.childNodes);
+        const anchor = document.querySelector('[data-testid="regression.saveAnchor"]')!;
+        anchor.replaceWith(...clip.childNodes);
+        clip.remove();
         return null;
       });
     }
