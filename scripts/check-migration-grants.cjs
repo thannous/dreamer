@@ -547,7 +547,6 @@ function blankAtomicBodies(text) {
  */
 function executedStatements(sql) {
   const result = [];
-  const blank = (text) => ' '.repeat(text.length);
   const scan = (text, base, conditional = false, inBody = false) => {
     for (const statement of statements(text)) {
       // One lexical pass: a dollar tag inside an ordinary string (or a quote inside a body) cannot hide options.
