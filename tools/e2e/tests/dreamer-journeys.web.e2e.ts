@@ -171,7 +171,7 @@ test('free user edits a story, cancels deletion, then deletes only that dream', 
 test('free user can open the Plus offer and return without losing the journal', async ({ page }) => {
   await selectProfile(page, 'existing');
   await openSettings(page);
-  await page.getByRole('button', { name: 'Upgrade to Noctalia Plus', exact: true }).click();
+  await page.getByTestId('settings-section-subscription').click();
   await expect(page.getByTestId('screen.paywall')).toBeVisible();
   await page.getByTestId('btn.paywall.selectMonthly').click();
   await expect(page.getByTestId('btn.paywall.selectMonthly')).toHaveAttribute('aria-checked', 'true');
@@ -188,11 +188,12 @@ for (const profile of ['existing', 'plus'] as const) {
     await openSettings(page);
     if (profile === 'existing') {
       await expect(page.getByTestId('quota.analysisValue')).toContainText('/ 3');
-      await page.getByRole('button', { name: 'Upgrade to Noctalia Plus', exact: true }).click();
+      // One way to Plus in the card: the row, not a second upgrade button.
+      await expect(page.getByRole('button', { name: 'Upgrade to Noctalia Plus', exact: true })).toHaveCount(0);
+      await page.getByTestId('settings-section-subscription').click();
       await expect(page.getByTestId('screen.paywall')).toBeVisible();
     } else {
       await expect(page.getByTestId('quota.analysisValue')).toContainText('Unlimited');
-      await expect(page.getByRole('button', { name: 'Upgrade to Noctalia Plus', exact: true })).toHaveCount(0);
     }
   });
 }
