@@ -403,12 +403,9 @@ function PaywallScreen() {
       if (isDreamAnalysisOffer) {
         return [t('subscription.paywall.saved_dream.analysis'), t('subscription.paywall.saved_dream.illustration')];
       }
-      if (!isActive) {
-        return paywallVariant.featureKeys.map((key) => translateWithFallback(key));
-      }
       return PLUS_PAYWALL_FEATURE_KEYS.map((key) => t(key));
     },
-    [isActive, isDreamAnalysisOffer, paywallVariant.featureKeys, t, translateWithFallback, translationRevision]
+    [isDreamAnalysisOffer, t, translationRevision]
   );
 
   const packageOptions = useMemo(
@@ -537,10 +534,10 @@ function PaywallScreen() {
           <ScreenContainer maxWidth={PAYWALL_MAX_WIDTH}>
             <View style={styles.upgradedMessageContainer}>
               <Text style={[styles.upgradedTitle, { color: noctalia.text.primary }]}>
-                {translateWithFallback(paywallVariant.cardTitleKey)}
+                {t('subscription.paywall.variant.returning_device.card_title')}
               </Text>
               <Text style={[styles.upgradedSubtitle, { color: noctalia.text.secondary }]}>
-                {translateWithFallback(paywallVariant.cardSubtitleKey)}
+                {t('subscription.paywall.variant.returning_device.card_subtitle')}
               </Text>
 
               <PressableScale
