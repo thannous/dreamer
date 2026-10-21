@@ -102,6 +102,8 @@ npm run android:perf:measure -- --mode reading --device SERIAL \
 Functional navigation uses the existing native configuration with
 `E2E_PERF_SCOPE=main-pages`; it selects the QA package explicitly. Use the connected
 phone's name for the SDK's `E2E_PERF_DEVICE` and its adb serial for the device lock.
+With `E2E_PERF_FIXTURE_COUNT=200` or `5000`, it also reuses the existing
+journal reading/return journeys, through the QA-only `noctalia-qa` scheme.
 This scope never resets or seeds the phone. An emulator fixture and a physical
 existing QA journal are distinct preconditions and must be reported separately.
 
