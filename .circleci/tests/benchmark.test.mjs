@@ -39,7 +39,7 @@ test('the active pipeline has one setup benchmark and uploads only reports, with
   assert.deepEqual(Object.keys(config.jobs), ['e2e-chromium-benchmark']);
   assert.deepEqual(config.workflows['e2e-chromium-benchmark'].jobs, ['e2e-chromium-benchmark']);
   const job = config.jobs['e2e-chromium-benchmark'];
-  assert.deepEqual(job.docker, [{ image: 'cimg/node:24.19.0' }]);
+  assert.deepEqual(job.docker, [{ image: 'cimg/node:24.22.1' }]);
   assert.equal(job.parallelism, undefined);
   assert.deepEqual(job.steps.map(step => typeof step === 'string' ? step : Object.keys(step)[0]), ['checkout', 'run', 'store_artifacts']);
   const scripts = JSON.parse(readFileSync(new URL('../../package.json', import.meta.url), 'utf8')).scripts;

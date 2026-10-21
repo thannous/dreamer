@@ -186,6 +186,29 @@ describe('verify-local.config.mjs', () => {
     ]);
   });
 
+  it('checks each independent security graph when only its manifest or lockfile changes', () => {
+    // A root-only success cannot detect a vulnerable independent installation.
+    const projects = [
+      ['root', ''],
+      ['meditation', 'apps/meditation'],
+      ['documentation', 'doc_web_interne/docs'],
+      ['site', 'apps/site'],
+    ];
+    const result = JSON.parse(execFileSync(process.execPath, [
+      '--input-type=module', '-e',
+      `import { normaliseConfig, matchesAny } from ${JSON.stringify(pathToFileURL(path.join(ROOT, 'scripts/verify-local.mjs')).href)};
+       const config = normaliseConfig(${JSON.stringify(config)});
+       const projects = ${JSON.stringify(projects)};
+       process.stdout.write(JSON.stringify(projects.map(([project, directory]) => {
+         const check = config.checks.find(item => item.name === 'dependency-security' + (project === 'root' ? '' : '-' + project));
+         return { project, selected: ['package.json', 'package-lock.json'].map(file =>
+           Boolean(check && matchesAny((directory ? directory + '/' : '') + file, check.when))),
+           scope: check?.env?.DEPENDENCY_SECURITY_PROJECT };
+       })));`,
+    ], { encoding: 'utf8' }));
+    expect(result).toEqual(projects.map(([project]) => ({ project, selected: [true, true], scope: project })));
+  });
+
   it('reuses site-only inputs but invalidates every shared mobile source and tool', () => {
     // These are the actual fingerprints used for reuse, not a second classifier.
     // A browser cannot detect a stale proof accidentally accepted for app code.
