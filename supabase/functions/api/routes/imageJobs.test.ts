@@ -634,6 +634,7 @@ Deno.test('Plus daily image ceiling blocks the eleventh new image and says when 
     user_id: 'user-1',
     quota_type: 'analysis',
     'metadata->>analysis_request_id': BUNDLED_REQUEST_ID,
+    'occurred_at >': '2026-10-20T12:00:00.000Z',
     limit: 1,
   });
   assertEquals(history.reads[2], {
