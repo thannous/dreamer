@@ -74,6 +74,9 @@ export async function expectCSS(browser: Browser, selector: string, property: st
 }
 export async function expectInViewport(target: Locator, browser: Browser, ratio = 0, expected = true) {
   await expect.poll(async () => {
+    // An unmounted closed drawer is outside the viewport too. boundingBox's
+    // action wait must not outlive the assertion while waiting for its return.
+    if (await target.count() === 0) return false;
     const box = await target.boundingBox();
     const viewport = await browser.evaluate(() => ({ width: innerWidth, height: innerHeight }));
     if (!box || box.width <= 0 || box.height <= 0) return false;
