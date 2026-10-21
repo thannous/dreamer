@@ -117,6 +117,7 @@ const DB_CONTRACTS = [
   'scripts/product-analytics-migration.test.js',
   'scripts/product-analytics-schema-parity.test.js',
   '&& npm run test:analysis-authorization:db',
+  '&& node --test scripts/ai-daily-budget-migration.test.cjs scripts/dream-sync-limits-migration.test.cjs',
 ].join(' ');
 
 // Job meditation-quality. The engine links apps/meditation/node_modules from the

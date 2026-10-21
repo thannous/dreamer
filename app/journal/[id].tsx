@@ -3,9 +3,11 @@ import { getSavedAnalysisAction } from '@/lib/savedAnalysisAccess';
 import { DreamAnalysisContent } from '@/components/journal/DreamAnalysisContent';
 import { isPoeticDreamQuote } from '@/lib/dreamQuote';
 import { CaptureOriginal } from '@/components/recording/CaptureOriginal';
+import { DreamLengthCounter } from '@/components/recording/DreamLengthCounter';
 import { getDreamRecallStorageId } from '@/lib/dreamRecallIdentity';
 import { getDreamRouteParams, resolveDreamRoute } from '@/lib/dreamRoute';
 import { getDreamIdentityKey, matchesDreamTarget } from '@/lib/dreamIdentity';
+import { getDreamTextInputLimit } from '@/lib/dreamTextLimit';
 import { markPerformance, markPerformanceAfterFrames, performanceTraceId } from '@/lib/performanceTrace';
 import { getInitialDreamCategorizationKey, isInitialDreamCategorizationPending, subscribeInitialDreamCategorization } from '@/lib/initialDreamCategorization';
 import { useDreamCoverPlaceholder } from '@/hooks/useDreamCoverPlaceholder';
@@ -2080,6 +2082,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
           style={{ maxHeight: Math.max(160, windowSize.height * 0.36) }}
           value={editableTranscript}
           onChangeText={setEditableTranscript}
+          maxLength={getDreamTextInputLimit(editableTranscript.length, dream.transcript.length)}
           onFocus={() => { editingStoryRef.current = true; }}
           onBlur={() => { editingStoryRef.current = false; }}
           placeholder={t('recording.placeholder.accessibility')}
@@ -2091,6 +2094,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       ) : (
         <BookProse text={dream.transcript} />
       )}
+      {isEditing ? <DreamLengthCounter length={editableTranscript.length} style={{ marginTop: 6 }} /> : null}
       {dream.captureOriginalTranscript ? <CaptureOriginal source={dream.captureOriginalTranscript} /> : null}
     </View>
   );

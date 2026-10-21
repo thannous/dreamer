@@ -21,7 +21,7 @@ import { RememberedDreamProfileChips } from '@/components/recording/RememberedDr
 import { Toast } from '@/components/Toast';
 import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
 import { DESKTOP_BREAKPOINT } from '@/constants/layout';
-import { GUEST_DREAM_RECORDING_LIMIT } from '@/constants/limits';
+import { DREAM_TRANSCRIPT_MAX_CHARS, GUEST_DREAM_RECORDING_LIMIT } from '@/constants/limits';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useDreamsData, useDreamsActions } from '@/context/DreamsContext';
 import { useAuth } from '@/context/AuthContext';
@@ -52,6 +52,7 @@ import { resolveDreamTarget } from '@/lib/dreamIdentity';
 import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
 import { markDreamNamed } from '@/lib/dreamNaming';
 import { markDreamStoryHandoff } from '@/lib/dreamStoryPrologue';
+import { isDreamTextTooLong } from '@/lib/dreamTextLimit';
 import { classifyError, GuestDreamLimitError } from '@/lib/errors';
 import { hasAiConsent } from '@/lib/aiConsent';
 import { formatCaptureNarrative } from '@/services/captureConversation';
@@ -171,7 +172,7 @@ function RecordingScreen() {
   const { colors, mode } = useTheme();
   const { language } = useLanguage();
   const { t } = useTranslation();
-  const { formatDreamStamp } = useLocaleFormatting();
+  const { formatDreamStamp, formatNumber } = useLocaleFormatting();
   const openQuickSettings = useQuickSettings();
   const {
     state: onboardingState,
@@ -1186,6 +1187,14 @@ function RecordingScreen() {
         return;
       }
       const latestTranscript = latestSource.trim();
+      // Typing stops at the maximum; a long dictation can pass it. The text stays here to shorten.
+      if (isDreamTextTooLong(latestTranscript)) {
+        Alert.alert(
+          t('recording.alert.too_long.title'),
+          t('recording.alert.too_long.message', { max: formatNumber(DREAM_TRANSCRIPT_MAX_CHARS) })
+        );
+        return;
+      }
 
       // Persist first. Optional AI categorization must never delay durable capture.
       const dreamToSave = draftDream && draftDream.transcript === latestTranscript
@@ -1309,6 +1318,7 @@ function RecordingScreen() {
     dreams,
     firstGuestReading,
     formatDreamStamp,
+    formatNumber,
     isHydrated,
     isPersisting,
     isRecordingRef,
@@ -2044,6 +2054,7 @@ function RecordingScreen() {
                   }}
                   disabled={interactionDisabled}
                   lengthWarning={lengthWarning}
+                  limitDreamLength
                   instructionText={!keyboardVisible && captureIntent === 'remembered'
                     ? t('recording.remembered.active_instruction')
                     : ''}

@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
+import { useDreamLengthLabel } from '@/components/recording/DreamLengthCounter';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
@@ -21,7 +22,10 @@ export function RecordingDraftProgress({ value }: RecordingDraftProgressProps) {
   const { t } = useTranslation();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const progress = useMemo(() => getRecordingDraftProgress(value), [value]);
-  const countLabel = t(progress.charCount === 1 ? 'recording.draft_progress.count_one' : 'recording.draft_progress.count', { count: progress.charCount });
+  // Near a dream's maximum length, the count says how far it is.
+  const nearMaximum = useDreamLengthLabel(progress.charCount);
+  const countLabel = nearMaximum?.text
+    ?? t(progress.charCount === 1 ? 'recording.draft_progress.count_one' : 'recording.draft_progress.count', { count: progress.charCount });
   const hint = t(`recording.draft_progress.${progress.state}`);
   const shouldShowHint = progress.state !== 'empty';
 
@@ -42,6 +46,7 @@ export function RecordingDraftProgress({ value }: RecordingDraftProgressProps) {
             key={`count-${fontScale}`}
             allowFontScaling={false}
             testID={TID.Component.RecordingDraftProgressCount}
+            accessibilityLabel={nearMaximum?.accessibilityLabel}
             style={[styles.count, captionTypography, { color: noctalia.text.secondary }]}
           >
             {countLabel}

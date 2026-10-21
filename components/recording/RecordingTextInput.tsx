@@ -8,6 +8,7 @@ import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
+import { getDreamTextInputLimit } from '@/lib/dreamTextLimit';
 import { TID } from '@/lib/testIDs';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
@@ -22,6 +23,8 @@ export interface RecordingTextInputProps {
   onSelectionChange?: TextInputProps['onSelectionChange'];
   disabled: boolean;
   lengthWarning: string;
+  /** The text is a whole dream: it stops at the dream's maximum length (the screen's draft count shows it). */
+  limitDreamLength?: boolean;
   instructionText: string;
   switchToVoiceLabel?: string;
   /** False when the device cannot capture speech at all: the mic is hidden, not just disabled. */
@@ -55,6 +58,7 @@ export const RecordingTextInput = forwardRef<TextInputInstance, RecordingTextInp
       onSelectionChange,
       disabled,
       lengthWarning,
+      limitDreamLength = false,
       instructionText,
       switchToVoiceLabel,
       voiceSupported = true,
@@ -136,6 +140,7 @@ export const RecordingTextInput = forwardRef<TextInputInstance, RecordingTextInp
           ref={ref}
           value={value}
           onChangeText={onChange}
+          maxLength={limitDreamLength ? getDreamTextInputLimit(value.length) : undefined}
           selection={selection}
           onSelectionChange={onSelectionChange}
           style={[

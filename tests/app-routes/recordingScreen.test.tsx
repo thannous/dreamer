@@ -1524,6 +1524,24 @@ describe('Recording screen', () => {
     expect(mockCategorizeDream).not.toHaveBeenCalled();
   });
 
+  it('keeps a dream past the maximum length here instead of saving one the sync would refuse', async () => {
+    render(<RecordingScreen />);
+    await awaitEditorReady();
+    fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
+      target: { value: 'r'.repeat(20001) },
+    });
+    await act(async () => { fireEvent.click(getCaptureSaveAction()); });
+    expect(Alert.alert).toHaveBeenCalledWith('recording.alert.too_long.title', 'recording.alert.too_long.message');
+    expect(mockAddDream).not.toHaveBeenCalled();
+    expect((screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value).toHaveLength(20001);
+
+    fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
+      target: { value: 'r'.repeat(20000) },
+    });
+    await act(async () => { fireEvent.click(getCaptureSaveAction()); });
+    expect(mockAddDream).toHaveBeenCalledTimes(1);
+  });
+
   it('persists only once for rapid save presses before storage resolves', async () => {
     let finish!: (dream: DreamAnalysis) => void;
     mockAddDream.mockImplementationOnce(() => new Promise<DreamAnalysis>(resolve => { finish = resolve; }));

@@ -138,6 +138,18 @@ describe('classifyError', () => {
     expect(image.userMessage).toBe('error.daily_image_limit:10');
   });
 
+  it('tells an account past a daily AI budget that the help comes back tomorrow, without a retry', () => {
+    const result = classifyError(Object.assign(new Error('HTTP 429 Too Many Requests'), {
+      status: 429,
+      body: { error: 'Daily AI limit reached', code: 'AI_DAILY_LIMIT', dailyLimit: 30, retryAfter: 3600 },
+    }));
+    expect(result.type).toBe(ErrorType.CLIENT);
+    expect(result.canRetry).toBe(false);
+    expect(result.userMessage).toBe(
+      'You reached today’s limit that protects Noctalia from abuse. This help comes back by tomorrow, and your dreams stay saved.'
+    );
+  });
+
   it('names the same Plus daily ceiling as the server', () => {
     const server = readFileSync(join(__dirname, '../../supabase/functions/api/lib/plusDailyLimits.ts'), 'utf8');
     expect(server).toContain(`PLUS_DAILY_LIMITS = { analysis: ${PLUS_DAILY_LIMIT}, image: ${PLUS_DAILY_LIMIT} }`);

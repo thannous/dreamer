@@ -56,6 +56,7 @@ jest.mock('@/hooks/useTranslation', () => ({
         'recording.draft_progress.count': '{count} characters',
         'recording.draft_progress.count_one': '{count} character',
         'recording.draft_progress.ready': 'Ready to save.',
+        'recording.length.near': '{count} / {max} characters',
       };
       let value = values[key] ?? key;
       if (params) {
@@ -100,6 +101,12 @@ describe('RecordingDraftProgress', () => {
     const counter = screen.getByTestId(TID.Component.RecordingDraftProgressCount);
     expect(counter.textContent).toBe(`${draft.length} characters`);
     expect(counter.textContent).not.toMatch(/^0 (caractères|characters|caracteres|Zeichen|caratteri)$/);
+  });
+
+  it('says how far a draft is from the maximum length once it nears it', () => {
+    render(<RecordingDraftProgress value={'x'.repeat(18500)} />);
+    const counter = screen.getByTestId(TID.Component.RecordingDraftProgressCount);
+    expect(counter.textContent).toBe('18,500 / 20,000 characters');
   });
 
   it('renders the actual localized count for a 601-character draft without a 600 limit', () => {

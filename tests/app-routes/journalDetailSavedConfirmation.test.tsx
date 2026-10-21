@@ -1365,6 +1365,20 @@ describe('journal detail saved confirmation route', () => {
     expect(screen.queryByTestId(TID.Component.DreamEditor)).toBeNull();
   });
 
+  it('stops the story at the maximum length, and lets an older longer story shrink without growing', () => {
+    const view = render(<JournalDetailScreen />);
+    fireEvent.click(screen.getByTestId(TID.Button.EditDream));
+    expect(screen.getByTestId(TID.Input.DreamTranscript).getAttribute('maxlength')).toBe('20000');
+    expect(screen.queryByTestId('dream-length-counter')).toBeNull();
+    view.unmount();
+
+    mockDreams = [buildDream({ transcript: 'r'.repeat(25000) })];
+    render(<JournalDetailScreen />);
+    fireEvent.click(screen.getByTestId(TID.Button.EditDream));
+    expect(screen.getByTestId(TID.Input.DreamTranscript).getAttribute('maxlength')).toBe('25000');
+    expect(screen.getByTestId('dream-length-counter')).toBeTruthy();
+  });
+
   it('sets the edit link beside delete and takes it away while editing', async () => {
     render(<JournalDetailScreen />);
     const edit = screen.getByTestId(TID.Button.EditDream);
