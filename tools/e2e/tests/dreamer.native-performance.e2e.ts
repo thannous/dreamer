@@ -1,11 +1,14 @@
 import { test } from '@e2e-dev/mobile';
 import { expect } from 'e2e';
 
+// The QA profile owns a separate scheme, so links never open the personal app.
+const scheme = process.env.E2E_PERF_SCOPE === 'main-pages' ? 'noctalia-qa' : 'noctalia';
+
 // Read-only journey on a separately prepared synthetic journal. Installation,
 // fixture loading, native timings and profiling remain outside the UI driver.
 test('native journal preserves reading and list position across repeated returns', async ({ app, screen, device }) => {
   await app.open();
-  await device.openLink('noctalia://journal');
+  await device.openLink(`${scheme}://journal`);
   await expect(screen.getByTestId('screen.journal')).toBeVisible();
   const reference = screen.getByRole('button', /^Noctalia performance 013,/);
   await screen.scrollUntilVisible(reference, { timeout: 90_000 });
@@ -38,7 +41,7 @@ test('native journal preserves reading and list position across repeated returns
 
 test('native direct dream link can return to the journal', async ({ app, screen, device }) => {
   await app.open();
-  await device.openLink('noctalia://journal/1791266400000');
+  await device.openLink(`${scheme}://journal/1791266400000`);
   await expect(screen.getByTestId('screen.dreamDetail')).toBeVisible();
   await expect(screen.getByRole('heading', 'Noctalia performance 013', { exact: true })).toBeVisible();
   await screen.getByTestId('btn.navigateJournal').tap();
@@ -52,7 +55,7 @@ test('native direct dream link can return to the journal', async ({ app, screen,
 if (process.env.E2E_PERF_FIXTURE_UI === 'framerate') {
   test('native illustrated reading reveals its actions and keeps its return interactive', async ({ app, screen, device }) => {
     await app.open();
-    await device.openLink('noctalia://journal/1792216800000');
+    await device.openLink(`${scheme}://journal/1792216800000`);
     await expect(screen.getByTestId('screen.dreamDetail')).toBeVisible();
     await expect(screen.getByRole('heading', 'Noctalia performance 002', { exact: true })).toBeVisible();
     await expect(screen.getByTestId('component.journal.illustration')).toBeVisible();
@@ -80,7 +83,7 @@ if (process.env.E2E_PERF_FIXTURE_UI === 'framerate') {
 if (process.env.E2E_PERF_FIXTURE_COUNT === '5000') {
   test('native journal searches the complete stored history and preserves the query on return', async ({ app, screen, device }) => {
     await app.open();
-    await device.openLink('noctalia://journal');
+    await device.openLink(`${scheme}://journal`);
     await expect(screen.getByTestId('screen.journal')).toBeVisible();
     const search = screen.getByTestId('input.searchDreams');
     await screen.scrollUntilVisible(search, { direction: 'up' });
@@ -132,7 +135,7 @@ if (process.env.E2E_PERF_FIXTURE_COUNT === '5000') {
 if (process.env.E2E_PERF_FIXTURE_MEDIA === 'local') {
   test('native journal illustrates thumbnails and recovers readable entries after image failures', async ({ app, screen, device }) => {
     await app.open();
-    await device.openLink('noctalia://journal');
+    await device.openLink(`${scheme}://journal`);
     await expect(screen.getByTestId('screen.journal')).toBeVisible();
     const search = screen.getByTestId('input.searchDreams');
     for (const index of [1, 2, 3, 4]) {
@@ -169,7 +172,7 @@ if (process.env.E2E_PERF_FIXTURE_MEDIA === 'local') {
         await app.screenshot(`native-local-media-original-${index}`);
         await screen.getByTestId('btn.journal.illustration.close').tap();
       }
-      await device.openLink('noctalia://journal');
+      await device.openLink(`${scheme}://journal`);
       await expect(screen.getByTestId('screen.journal')).toBeVisible();
       await expect(screen.getByTestId('screen.dreamDetail')).toBeHidden();
     }
