@@ -157,7 +157,7 @@
     "directory": "doc_web_interne/docs/suivi-symboles",
     "workbook": {
       "path": "suivi-240-symboles-6-langues.xlsx",
-      "sha256": "6ec623357f3909da6fab49e90ad7c1cd92f0ab4f081063b54e351ea0a6158ebd"
+      "sha256": "078acf4b870f7d71decbdeeb767b1495cab4ed5a566235f2d23c0ed6cb0f96b9"
     },
     "csv": {
       "path": "symbol-rollout.csv",
@@ -172,8 +172,8 @@
           "fileId": "1TW79LHKvIa8cqX60VV8vI5sP-v43Saiv",
           "url": "https://docs.google.com/spreadsheets/d/1TW79LHKvIa8cqX60VV8vI5sP-v43Saiv/edit?usp=drivesdk&ouid=101116459704958679172&rtpof=true&sd=true",
           "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-          "bytes": 39319,
-          "sha256": "6ec623357f3909da6fab49e90ad7c1cd92f0ab4f081063b54e351ea0a6158ebd",
+          "bytes": 39315,
+          "sha256": "078acf4b870f7d71decbdeeb767b1495cab4ed5a566235f2d23c0ed6cb0f96b9",
           "private": true,
           "metadataVerified": true
         },
@@ -198,5 +198,11 @@
     "contentRevision": "f679338599b18a6caccee87d42559cf8c0bbecf5",
     "changedSinceBrowserRuns": "Master dependency security update and Node pin. No paintings, profiles, editorial associations or common motion/layout source changed.",
     "qualificationReuse": "Earlier clean browser receipts keep their actual runtime and revision. Final verify:pr must use the merged pinned dependencies; this is not a new full-catalog browser run."
+  },
+  "registryCompaction": {
+    "path": "symbol-rollout-registry-compaction-20261022.json",
+    "sha256": "0ffb380dd8dd8d3f45c3d07af5aebcf6263cf897e3aa5d426ff9dec1c4db2ae8",
+    "recordsPreserved": 15834,
+    "formattingOnly": true
   }
 }

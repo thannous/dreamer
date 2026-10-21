@@ -1,0 +1,17 @@
+{
+  "records": 15834,
+  "beforeBytes": 11223628,
+  "afterBytes": 9070906,
+  "beforeSha256": "a2f4fd3b7ab156036884f3ba71d80fc2d2850ae3a26b94051972b983325a8f32",
+  "afterSha256": "4b9bb785a008e4b51f1bcdc49a28f35be558d96ed8970cd7e82e68bca7ac8981",
+  "allJsonValuesAndRecordOrderPreserved": true,
+  "reason": "Existing pre-push 10MiB file limit; compact whitespace only, keep the size guard unchanged.",
+  "date": "2026-10-22",
+  "independentReview": "No P1/P2. Full JSON equality, record order, canonical report and CSV checked.",
+  "canonicalReportSha256": "88509a9cc8e5e6348fa02997c317f79aaea3f3f5cf26689a500b9f1793a302af",
+  "canonicalReportOnlyChangedField": "inputs.registry",
+  "csvBytesUnchanged": true,
+  "currentQaPacks": 240,
+  "existingSizeGuardUnchanged": true,
+  "compatibility": "Metadata formatting and final array suffix retained for existing upsert and append tools."
+}

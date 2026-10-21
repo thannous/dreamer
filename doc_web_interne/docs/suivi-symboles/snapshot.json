@@ -28,14 +28,14 @@
   "files": {
     "workbook": {
       "path": "suivi-240-symboles-6-langues.xlsx",
-      "sha256": "6ec623357f3909da6fab49e90ad7c1cd92f0ab4f081063b54e351ea0a6158ebd"
+      "sha256": "078acf4b870f7d71decbdeeb767b1495cab4ed5a566235f2d23c0ed6cb0f96b9"
     },
     "csv": {
       "path": "symbol-rollout.csv",
       "sha256": "1a302fa1b6a93887ecc0b91b82fcb665f9ab58e660e1017ebe188857970adb17"
     }
   },
-  "reportSha256": "09ab652d0f30effef36232cd24058da92bb6bab5c7abb49933ab6f31e43fda54",
+  "reportSha256": "88509a9cc8e5e6348fa02997c317f79aaea3f3f5cf26689a500b9f1793a302af",
   "checks": {
     "rows": 240,
     "recalculation": true,
@@ -95,8 +95,8 @@
         138
       ],
       "plannedRows": [],
-      "sourceHash": "511a1e3e21adaaee737bc23ccfcf6e46c12c19ce7b954c817c143e5e12aeb86f",
-      "reportHash": "09ab652d0f30effef36232cd24058da92bb6bab5c7abb49933ab6f31e43fda54",
+      "sourceHash": "6ec623357f3909da6fab49e90ad7c1cd92f0ab4f081063b54e351ea0a6158ebd",
+      "reportHash": "88509a9cc8e5e6348fa02997c317f79aaea3f3f5cf26689a500b9f1793a302af",
       "formulaPreservation": true,
       "unrelatedValuesPreserved": true,
       "missingRoleCounterexample": true,
@@ -369,7 +369,7 @@
   },
   "final100Delivery": {
     "path": "../qa/symbol-packs-final-100-20261022.json",
-    "sha256": "c615345fb852e33e48f565a0f9232a90412dcd54c61d94f1d9e8dfc34a003f8b",
+    "sha256": "a70cef5abbf61da65145bf93fd2e181fb252349dd17b12fafc7b6852234c2741",
     "nativeSourceArchiveGap": 6
   },
   "browserQualifiedMaster": "a51fd4fad506490fd0ca04e18ff1a1bcf6056901",
@@ -382,8 +382,8 @@
       "fileId": "1TW79LHKvIa8cqX60VV8vI5sP-v43Saiv",
       "url": "https://docs.google.com/spreadsheets/d/1TW79LHKvIa8cqX60VV8vI5sP-v43Saiv/edit?usp=drivesdk&ouid=101116459704958679172&rtpof=true&sd=true",
       "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-      "bytes": 39319,
-      "sha256": "6ec623357f3909da6fab49e90ad7c1cd92f0ab4f081063b54e351ea0a6158ebd",
+      "bytes": 39315,
+      "sha256": "078acf4b870f7d71decbdeeb767b1495cab4ed5a566235f2d23c0ed6cb0f96b9",
       "private": true,
       "metadataVerified": true
     },
@@ -404,5 +404,9 @@
     "sha256": "7bde5168678bf25d7ad5dd07784104091608da905610f8ad03b4eac32cac0c3f",
     "metadataVerified": true,
     "private": true
+  },
+  "registryCompaction": {
+    "path": "../qa/symbol-rollout-registry-compaction-20261022.json",
+    "sha256": "0ffb380dd8dd8d3f45c3d07af5aebcf6263cf897e3aa5d426ff9dec1c4db2ae8"
   }
 }

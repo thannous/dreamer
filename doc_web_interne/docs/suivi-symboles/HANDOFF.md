@@ -51,3 +51,5 @@ Piloter un symbole représentatif, puis contrôler le lot affecté sur les pages
 La preuve du lot 14 qualifie le navigateur local : 10 réussites, zéro échec ou ignoré, 256 parcours hors sélection. Elle ne qualifie pas une application native, un appareil physique, les FPS ou une nouvelle publication.
 
 Reconciliation finale des 100 packs : [livraison et limite de sauvegarde](../qa/symbol-packs-final-100-20261022.md). Les trois parcours complémentaires passent également, sans nouvelle publication.
+
+Le registre conserve ses 15 834 preuves en format compact pour rester sous la limite de taille existante. Ne pas réindenter tous les enregistrements lors d’un ajout. Le CSV reste identique ; l’empreinte du rapport affichée dans l’Excel et sa copie Drive sont actualisées.
