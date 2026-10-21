@@ -51,8 +51,8 @@
 //     a role or object name is expected);
 //   - "non-PL/pgSQL DO": a DO block in another language;
 //   - "set schema": SET SCHEMA (an alias for SET search_path);
-//   - "schema DDL with routines": drop schema or alter schema ... rename in a
-//     migration that changes routines;
+//   - "schema DDL": drop schema or alter schema ... rename, in any migration
+//     (schema existence is replayed per file only);
 //   - "public schema DDL": alter schema ... rename from or to public, or drop
 //     schema public, in any migration;
 //   - "caller-writable schema": grant create or all [privileges] on a schema to
@@ -539,7 +539,8 @@ function executedStatements(sql) {
         .replace(new RegExp(String.raw`(?<![\w$])(${DOLLAR_TAG})[\s\S]*?\1`, 'g'), blank)
         .replace(new RegExp(LITERAL, 'g'), blank));
       // "search_path" quoted is the same setting: rewrite it (same length) so every matcher sees it.
-      const unquote = (value) => value.replace(/"search_path"/gi, ' search_path ');
+      // Only as a SET/RESET setting name (GUC names ignore case); a routine named "SEARCH_PATH" keeps its case.
+      const unquote = (value) => value.replace(/(\b(?:set|reset)\s+(?:(?:local|session)\s+)?)"search_path"/gi, '$1 search_path ');
       result.push({ text: unquote(outside), raw: unquote(statement.text), offset: base + statement.offset, conditional, inBody });
       if (/^\s*do\b/i.test(outside) && !new RegExp(String.raw`^\s*do\s+(?:language\s+${IDENT}\s+)?${DOLLAR_TAG}`, 'i').test(statement.text)) {
         result[result.length - 1].opaqueDo = true; // a DO body in an ordinary string is not read
@@ -839,6 +840,9 @@ function checkFunctionSql(source) {
     if ((schemaRename && [schemaRename[1], schemaRename[2]].some((name) => ident(name) === 'public'))
       || (schemaDrop && schemaDrop[1].split(',').some((name) => ident(name) === 'public'))) {
       found.push(`shape rule "public schema DDL": alter schema ... rename from or to public, or drop schema public; never swap the public schema in a migration`);
+    } else if (schemaRename || schemaDrop) {
+      // Schema existence is replayed per file only, so any drop or rename fails closed in every migration.
+      found.push(`shape rule "schema DDL": drop schema or alter schema ... rename; schema existence is not replayed across migrations`);
     }
     // CREATE on a schema lets a caller plant objects that shadow unqualified names on any path that lists it.
     const schemaGrant = new RegExp(String.raw`${LEAD}grant\s+([\s\S]+?)\s+on\s+schema\s+[\s\S]+?\s+to\s+([\s\S]+)$`, 'i').exec(text);
@@ -886,9 +890,6 @@ function checkFunctionSql(source) {
     }
     if (new RegExp(String.raw`${LEAD}set\s+(?:(?:local|session)\s+)?schema\b`, 'i').test(statement.text)) {
       problems.push(`shape rule "set schema": SET SCHEMA is an alias for SET search_path; write set search_path`);
-    }
-    if (touchesRoutines && new RegExp(String.raw`${LEAD}(?:drop\s+schema|alter\s+schema\s+[\s\S]+?\s+rename\s+to)\b`, 'i').test(statement.text)) {
-      problems.push(`shape rule "schema DDL with routines": drop schema or alter schema ... rename in a migration that changes routines; split it into its own migration`);
     }
     problems.push(...schemaShapes(statement.text));
     // Typmod stripping cannot tell "foo(1)" from foo, so a quoted name with "(" in a routine statement fails closed.

@@ -246,8 +246,6 @@ end $$;`,
   'schema grants without create to callers, create to postgres': `grant usage on schema private to authenticated, anon;
 grant create on schema private to postgres;
 grant all on schema private to supabase_admin;`,
-  'rename and drop of a non-public schema in a file without routines': `alter schema scratch rename to scratch_old;
-drop schema if exists scratch_old cascade;`,
   'CTO: schema swap, file A (s2 is not public)': `create schema s2; grant usage on schema s2 to anon;
 create function s2.bd() returns void language sql security definer as $$ select 1 $$;`,
 };
@@ -395,7 +393,7 @@ set search_path = later_schema, public;
 ${definer('claim')}`, [/public\.claim.*from public"/, /from anon"/, /grant execute/]],
   'dropped schema no longer exists': [`drop schema private cascade;
 set search_path = private, public;
-${definer('claim')}`, [/shape rule "schema DDL with routines"/, /public\.claim.*from public"/, /from anon"/, /grant execute/]],
+${definer('claim')}`, [/shape rule "schema DDL"/, /public\.claim.*from public"/, /from anon"/, /grant execute/]],
   'computed set_config name falls back to public': [`set search_path = private;
 select set_config('search_' || 'path', 'public', false);
 ${definer('claim')}`, [/shape rule "non-literal set_config"/, /public\.claim.*from public"/, /from anon"/, /grant execute/]],
@@ -501,10 +499,10 @@ ${definer('claim')}`, [/shape rule "set schema"/]],
     [/shape rule "non-PL\/pgSQL DO"/]],
   'schema renamed before the path is used': [`alter schema private rename to old_private;
 set search_path = private, public;
-${definer('claim')}`, [/shape rule "schema DDL with routines"/, /public\.claim.*from public"/, /from anon"/, /grant execute/]],
+${definer('claim')}`, [/shape rule "schema DDL"/, /public\.claim.*from public"/, /from anon"/, /grant execute/]],
   'dropped schema before a pg_temp path': [`drop schema private cascade;
 create function public.claim() returns int language sql security definer
-set search_path = private, pg_temp as $$ select 1 $$;${locked('public.claim()')}`, [/shape rule "schema DDL with routines"/]],
+set search_path = private, pg_temp as $$ select 1 $$;${locked('public.claim()')}`, [/shape rule "schema DDL"/]],
   'owned by a caller role': [`${definer()}${locked()}
 alter function public.claim(uuid, integer) owner to authenticated;`, [/owned by authenticated/]],
   'quoted mixed case is another function': [`${definer('public."Claim"')}${locked('public.claim(uuid, integer)')}`, [/Claim.*from public"/, /from anon"/, /grant execute/]],
@@ -532,6 +530,10 @@ revoke execute on function public.f(public."foo(1)") from public, anon;
 grant execute on function public.f(public."foo(1)") to authenticated;`, [/shape rule "quoted name with parenthesis"/, /shape rule "quoted name with parenthesis"/, /shape rule "quoted name with parenthesis"/]],
   'escaped quote before -- in an E string hides no DDL': [`SELECT E'prefix\\'-- still string'; CREATE FUNCTION public.f() RETURNS int LANGUAGE sql SECURITY DEFINER AS $$ select 1 $$;`,
     [/public\.f.*from public"/, /from anon"/, /grant execute/, /search_path/]],
+  'Codex: quoted SEARCH_PATH routine is not search_path': [`create function public."SEARCH_PATH"() returns int language sql security definer as $$ select 1 $$;
+create function public.search_path() returns int language sql security invoker as $$ select 1 $$;`, [/SEARCH_PATH.*from public"/, /from anon"/, /grant execute/, /search_path/]],
+  'schema DDL in a file without routines': [`drop schema private cascade;
+alter schema scratch rename to scratch_old;`, [/shape rule "schema DDL"/, /shape rule "schema DDL"/]],
 };
 
 test('a public security definer function with revokes, a grant and a search_path passes', () => {
@@ -553,6 +555,17 @@ test('signatures ignore names, modes, defaults, OUT arguments and type modifiers
   assert.equal(signature('p_user IN uuid, result OUT text, p_list INOUT int[]'), 'uuid,integer[]');
   assert.equal(signature('p_values integer[] default array[1, 2], p_n int = 3'), 'integer[],integer');
   assert.equal(signature('a float(1), b float(24), c float(25), d float'), 'real,real,double precision,double precision');
+});
+
+test('a schema drop in an earlier migration fails closed', () => {
+  withMigrations({
+    '20261030000000_a.sql': 'drop schema private cascade;',
+    '20261030000001_b.sql': `set search_path = private, public;
+create function claim() returns int language sql security definer as $$ select 1 $$;`,
+  }, (dir) => {
+    const result = checkMigrations(dir, { tables: [], functions: [] });
+    assert.ok(result.failures.some((failure) => failure.file === '20261030000000_a.sql'));
+  });
 });
 
 test('a public schema swap split across two migrations still fails', () => {
