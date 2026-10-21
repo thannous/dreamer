@@ -65,11 +65,15 @@ test('a free account that used its analyses learns when they come back and opens
   const offer = page.getByTestId('screen.paywall');
   await expect(offer).toBeVisible();
   await expect(offer).toContainText(comeBack);
-  // Real numbers, not "limited": 3 analyses a month, 10 against 100 exchanges, the synthesis only with Plus.
-  for (const text of ['3 a month', 'Exchanges per dream', '10', '100', '360° synthesis', 'Not included', 'Included']) {
+  // Real numbers, not "limited": 3 analyses a month, 10 exchanges against unlimited ones, the synthesis only with Plus.
+  for (const text of ['3 a month', 'Exchanges per dream', '10', '360° synthesis', 'Not included', 'Included']) {
     await expect(offer.getByText(text, { exact: true })).toBeVisible();
   }
+  // Analyses and exchanges are both unlimited with Plus; the safety ceiling is never sold as a number.
+  await expect(offer.getByText('Unlimited', { exact: true })).toHaveCount(2);
+  await expect(offer.getByText('100', { exact: true })).toHaveCount(0);
   await expect(offer.getByText('Recording your dreams stays unlimited, with or without Plus.')).toBeVisible();
+  await expect(offer.getByText('Unlimited exchanges, subject to abuse prevention measures.')).toBeVisible();
   await expectOffer(page, 'Included analyses used', 'Your next dreams, read as you wake');
 });
 
@@ -152,7 +156,7 @@ test('the chat message limit opens the Plus offer for a free account', async ({ 
   await expect(banner).toBeVisible();
   // The end of the included exchanges is not an error: no "safety limit" for a free account.
   await expect(banner).toContainText('You’ve used the 10 included exchanges');
-  await expect(banner).toContainText('this conversation continues up to 100 exchanges');
+  await expect(banner).toContainText('With Plus, this conversation continues without limits.');
   await expect(banner).not.toContainText('safety limit');
   await expect(input).toHaveAttribute('placeholder', 'Included exchanges used for this dream');
   const upgrade = page.getByTestId('btn.chat.limitUpgrade');

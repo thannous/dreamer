@@ -297,15 +297,17 @@ describe('Paywall screen', () => {
     mockDreams = [];
   });
 
-  it('compares the free plan and Plus with real numbers, recording said once under the table', () => {
+  it('compares the free plan and Plus with real numbers, recording and abuse safeguards said once under the table', () => {
     mockParams = { trigger: 'settings_quota' };
     render(<PaywallScreen />);
 
-    for (const key of ['free_analyses', 'exchanges', 'synthesis_360', 'none', 'included', 'recording_note']) {
+    for (const key of ['free_analyses', 'exchanges', 'unlimited_exchanges', 'synthesis_360', 'none', 'included']) {
       expect(screen.getByText(`subscription.paywall.comparison.${key}`)).toBeTruthy();
     }
     expect(screen.getByText('10')).toBeTruthy();
-    expect(screen.getByText('100')).toBeTruthy();
+    // Plus exchanges are sold as unlimited: the 100-message safety ceiling is never quoted as a number.
+    expect(screen.queryByText('100')).toBeNull();
+    expect(screen.getByText(/subscription\.paywall\.comparison\.recording_note.*subscription\.paywall\.comparison\.fair_use_note/)).toBeTruthy();
     expect(screen.queryByText('subscription.paywall.comparison.recording')).toBeNull();
     expect(screen.queryByTestId(TID.Text.PaywallDreamExcerpt)).toBeNull();
   });

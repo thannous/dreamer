@@ -280,7 +280,6 @@ function DreamChatContent() {
   // A free account's ceiling is the end of its included exchanges, not a safety stop.
   const freeLimitCopy = useMemo(() => ({
     free: messageLimit ?? QUOTAS.free.messagesPerDream ?? 0,
-    plus: QUOTAS.plus.messagesPerDream ?? 0,
   }), [messageLimit]);
 
   const isExistingExploration = useMemo(() => {
@@ -1337,7 +1336,7 @@ type ComposerFooterProps = {
   messageCounterLabel: string;
   messageLimitReached: boolean;
   messagesRemaining: number;
-  freeLimitCopy: { free: number; plus: number };
+  freeLimitCopy: { free: number };
   t: (key: string, replacements?: { [k: string]: string | number }) => string;
   tier: string;
   onUpgrade: () => void;

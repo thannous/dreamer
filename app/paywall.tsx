@@ -62,7 +62,6 @@ const CTA_TRANSITION = ['backgroundColor', 'borderColor'] as const;
 const QUOTA_COPY = {
   analyses: QUOTAS.free.analysis ?? 0,
   freeExchanges: QUOTAS.free.messagesPerDream ?? 0,
-  exchanges: QUOTAS.plus.messagesPerDream ?? 0,
 };
 
 function PaywallScreen() {
@@ -492,8 +491,9 @@ function PaywallScreen() {
           icon: 'bubble.left.and.bubble.right' as const,
           label: t('subscription.paywall.comparison.exchanges'),
           free: formatNumber(QUOTA_COPY.freeExchanges),
-          plus: formatNumber(QUOTA_COPY.exchanges),
-          showPlusInfinity: false,
+          // Plus sells exchanges as unlimited; the note under the table names the abuse safeguards.
+          plus: t('subscription.paywall.comparison.unlimited_exchanges'),
+          showPlusInfinity: true,
         },
         {
           key: 'synthesis',
@@ -731,7 +731,8 @@ function PaywallScreen() {
               ))}
             </View>
             <Text style={[styles.comparisonNote, { color: noctalia.text.secondary }]}>
-              {t('subscription.paywall.comparison.recording_note')}
+              {t('subscription.paywall.comparison.recording_note')}{' '}
+              {t('subscription.paywall.comparison.fair_use_note')}
             </Text>
             </>
           ) : (
