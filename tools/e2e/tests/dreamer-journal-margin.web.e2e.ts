@@ -39,6 +39,9 @@ async function populatedJournal(page: Page) {
   // intersection while its closing content still covers the cards.
   await expect(page.getByTestId('quick-settings.profile')).not.toBeInViewport();
   await openJournal(page);
+  // A closed off-screen drawer must not widen the document: otherwise browser
+  // focus/scroll can bring its inert content back over the journal's painting.
+  await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
 }
 
 async function findDream(page: Page, title: string) {

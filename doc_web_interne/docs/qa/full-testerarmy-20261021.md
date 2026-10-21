@@ -52,6 +52,18 @@ signals, failed-child cleanup and handler removal. This isolation control avoids
 leaking a live database just to reproduce process ownership. The reviewer closed
 this correction and the report-selection correction after focused delta review.
 
+The full campaign reproduced a pre-existing web drawer defect: closed quick
+settings widened the document by 366px at a 390px viewport. Browser focus/scroll
+could then expose the inert drawer over the journal (dark case failed in the
+full pass and in a focused repeat). The exact width counterexample is retained
+in `dreamer-journal-margin.web.e2e.ts`; the web-only overlay now clips its
+off-screen drawer with `overflow: clip`. A diagnostic confirmed that `hidden`
+created a scroll container with `scrollLeft=366`, so it could still reveal the
+closed panel during focus restoration. The non-scrollable clipping boundary
+preserves the drawer’s internal vertical scrolling. See [CSS overflow](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/overflow). Native rendering is unchanged by that conditional style.
+Baseline measurement artifact:
+`tools/e2e/.e2e/dreamer-web/1792574261492-98317-0b0a386f-8a89-469b-8a7e-2cc7bb77cba7/`.
+
 ## Remaining qualification boundaries
 
 Native suites already use Army but this tooling migration does not qualify new
