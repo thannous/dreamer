@@ -14,6 +14,8 @@ const mockUseDreams = jest.fn();
 const mockWindow = { width: 390, height: 844, scale: 1, fontScale: 1 };
 let mockBottomInset = 0;
 jest.mock('@/components/ui/NightSkyBand', () => ({ NightSkyBand: () => null }));
+// This DOM fixture models the web scroll view; jest-expo otherwise selects .native.
+jest.mock('@/components/trends/useTrendsReveal', () => jest.requireActual('@/components/trends/useTrendsReveal.ts'));
 
 jest.mock('react-native-safe-area-context', () => ({
   useSafeAreaInsets: () => ({ top: 24, bottom: mockBottomInset, left: 0, right: 0 }),

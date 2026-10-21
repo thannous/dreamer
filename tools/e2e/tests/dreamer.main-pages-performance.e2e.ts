@@ -25,3 +25,37 @@ test('main pages remain navigable across repeated visits', async ({ app, screen 
   }
   await app.screenshot('home-return');
 });
+
+// The caller explicitly identifies the owned synthetic journal; no phone data is
+// seeded here. Changing period changes section heights, which must invalidate
+// reveal positions while keeping the same content and navigation outcomes.
+if (['200', '5000'].includes(process.env.E2E_PERF_FIXTURE_COUNT ?? '')) {
+  test('trends reveals every section after period layout changes and keeps filters usable', async ({ app, screen }) => {
+    await app.open();
+    await screen.getByTestId('tab.stats').tap();
+    const all = screen.getByTestId('trends.period.all');
+    await screen.scrollUntilVisible(all, { direction: 'up' });
+    await all.tap();
+    await expect(screen.getByTestId('trends.figure.dreams.value')).toHaveText(process.env.E2E_PERF_FIXTURE_COUNT!);
+    for (const section of ['nights', 'returns', 'sky']) {
+      const target = screen.getByTestId(`trends.section.${section}`);
+      await screen.scrollUntilVisible(target);
+      await expect(target).toBeVisible();
+      await app.screenshot(`trends-all-${section}`);
+    }
+    const week = screen.getByTestId('trends.period.7');
+    await screen.scrollUntilVisible(week, { direction: 'up' });
+    await week.tap();
+    const calendar = screen.getByTestId('trends.nights.calendar');
+    await screen.scrollUntilVisible(calendar);
+    await expect(calendar).toBeVisible();
+    await app.screenshot('trends-week-calendar');
+    await screen.getByTestId('tab.journal').tap();
+    await expect(screen.getByTestId('screen.journal')).toBeVisible();
+    await screen.getByTestId('tab.stats').tap();
+    await expect(calendar).toBeVisible();
+    await screen.scrollUntilVisible(all, { direction: 'up' });
+    await all.tap();
+    await expect(screen.getByTestId('trends.figure.dreams.value')).toHaveText(process.env.E2E_PERF_FIXTURE_COUNT!);
+  });
+}
