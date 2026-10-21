@@ -35,7 +35,6 @@ async function theme(ui: ExactWebUI, value: 'light' | 'dark' | 'auto') {
   await expectInViewport(screen.getByTestId('quick-settings.drawer'), browser, 0, false);
 }
 
-
 test('capture gives the story room, respects explicit and automatic themes, and saves the exact draft', async (ui) => {
   const { app, screen, browser } = ui;
   await startFrenchCapture(ui);

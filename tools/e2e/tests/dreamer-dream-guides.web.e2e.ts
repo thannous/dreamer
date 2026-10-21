@@ -1,11 +1,11 @@
-// Historical exact UI assertions executed under the guarded TesterArmy engine.
-import type { Locator, Page } from 'playwright/test';
-import { createParityTest, expect, withDialog } from '../web-parity-fixtures';
+import { readDOM, byId, expectCSS, expectInViewport, setTestDate, createExactWebTest, expect, withExactDialog } from '../exact-web-fixtures';
+import type { ExactWebUI } from '../exact-web-fixtures';
+// Exact journeys using public TesterArmy APIs.
 import { PRACTICAL_DREAM_GUIDES } from '../../../data/practicalDreamGuides';
 import curation from '../../../docs-src/static/data/curation-pages.json';
 import dictionary from '../../../data/dream-symbols.json';
 
-const test = createParityTest({ locale: 'fr-FR', viewport: { width: 390, height: 844 }, timezoneId: 'Europe/Paris' });
+const test = createExactWebTest({ locale: 'fr-FR', viewport: { width: 390, height: 844 } });
 
 const symbolIds = ['most-common-dream-symbols', 'scary-dream-symbols', 'animal-dream-symbols', 'water-dream-symbols'];
 const guides = [
@@ -18,62 +18,58 @@ const guides = [
   }),
 ];
 
-async function openGuides(page: Page, preference: 'light' | 'dark' | 'auto') {
-  await page.goto('/');
-  await page.getByTestId('btn.onboarding.intro.next').click();
+async function openGuides(ui: ExactWebUI, preference: 'light' | 'dark' | 'auto') {
+  const { app, screen: uiScreen, browser } = ui;
+  await app.open('/');
+  await uiScreen.getByTestId('btn.onboarding.intro.next').click();
   // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
   if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
-    await withDialog(page, 'accept', () => page.getByTestId('btn.onboarding.feature.close').click());
+    await withExactDialog(browser, 'accept', () => uiScreen.getByTestId('btn.onboarding.feature.close').click());
   }
-  await page.getByTestId('btn.onboarding.skip').click();
-  await expect(page.getByTestId('screen.recording')).toBeVisible();
-  await page.getByRole('button', { name: 'Paramètres', exact: true }).click();
-  const appearance = page.getByTestId(`quick-settings.theme.${preference}`);
+  await uiScreen.getByTestId('btn.onboarding.skip').click();
+  await expect(uiScreen.getByTestId('screen.recording')).toBeVisible();
+  await uiScreen.getByRole('button', { name: 'Paramètres', exact: true }).click();
+  const appearance = uiScreen.getByTestId(`quick-settings.theme.${preference}`);
   await appearance.click();
-  await page.getByTestId('quick-settings.close').click();
-  await page.getByRole('tab', { name: 'Explorer', exact: true }).click();
-  await expect(page.getByTestId('screen.explore')).toBeVisible();
-  await page.getByTestId('btn.explorer.guides').click();
-  await expect(page.getByTestId('screen.dreamGuides')).toBeVisible();
+  await uiScreen.getByTestId('quick-settings.close').click();
+  await uiScreen.getByRole('tab', { name: 'Explorer', exact: true }).click();
+  await expect(uiScreen.getByTestId('screen.explore')).toBeVisible();
+  await uiScreen.getByTestId('btn.explorer.guides').click();
+  await expect(uiScreen.getByTestId('screen.dreamGuides')).toBeVisible();
 }
 
-async function expectCompleteText(text: Locator, row: Locator) {
-  await expect(text).toBeVisible();
-  const rowElement = await row.elementHandle();
-  // Rows settle after a theme or locale change: read the text and its row in the same frame,
-  // once laid out, rather than one before the other.
-  const fits = () => text.evaluate((element, rowNode) => {
+async function expectCompleteText(browser: ExactWebUI['browser'], rowId: string, text: string) {
+  await expect(browser.locator(byId(rowId)).getByText(text, { exact: true })).toBeVisible();
+  const fits = () => browser.evaluate(({ rowId, text }) => {
+    const row = document.querySelector(`[data-testid="${rowId}"]`)!;
+    const element = Array.from(row.querySelectorAll<HTMLElement>('[dir="auto"]')).find(node => node.textContent === text)!;
     const bounds = element.getBoundingClientRect();
-    const rowBounds = (rowNode as Element).getBoundingClientRect();
-    const range = document.createRange();
-    range.selectNodeContents(element);
+    const rowBounds = row.getBoundingClientRect();
+    const range = document.createRange(); range.selectNodeContents(element);
     const fragments = Array.from(range.getClientRects());
-    const textBottom = Math.max(...fragments.map((rect) => rect.bottom));
-    return {
-      startsOnScreen: Math.min(...fragments.map((rect) => rect.left)) >= 0,
-      // Visible serif glyphs and trailing spaces may overhang their line box.
-      endsOnScreen: Math.max(...fragments.map((rect) => rect.right)) <= innerWidth,
-      startsInRow: Math.min(...fragments.map((rect) => rect.top)) >= rowBounds.top - 1,
-      endsInBox: textBottom <= bounds.bottom + 1,
-      endsInRow: textBottom <= rowBounds.bottom + 1,
-    };
-  }, rowElement);
-  await expect.poll(fits).toEqual({ startsOnScreen: true, endsOnScreen: true, startsInRow: true, endsInBox: true, endsInRow: true });
+    const bottom = Math.max(...fragments.map(rect => rect.bottom));
+    return { startsOnScreen: Math.min(...fragments.map(rect => rect.left)) >= 0,
+      endsOnScreen: Math.max(...fragments.map(rect => rect.right)) <= innerWidth,
+      startsInRow: Math.min(...fragments.map(rect => rect.top)) >= rowBounds.top - 1,
+      endsInBox: bottom <= bounds.bottom + 1, endsInRow: bottom <= rowBounds.bottom + 1 };
+  }, { rowId, text });
+  await expect.poll(fits, { timeout: 15_000 }).toEqual({ startsOnScreen: true, endsOnScreen: true, startsInRow: true, endsInBox: true, endsInRow: true });
 }
 
-async function checkReading(page: Page) {
-  const screen = page.getByTestId('screen.dreamGuides');
+async function checkReading(ui: ExactWebUI) {
+  const { screen: uiScreen, browser } = ui;
+  const screen = uiScreen.getByTestId('screen.dreamGuides');
   await expect(screen.getByTestId(/^dream-guide-/)).toHaveCount(guides.length);
   const geometry = [];
   for (const guide of guides) {
     const row = screen.getByTestId(`dream-guide-${guide.id}`);
-    await expect(row).toHaveRole('button');
+    await expect(row).toHaveAttribute('role', 'button');
     await expect(row).toContainText(guide.metadata);
-    await expectCompleteText(row.getByText(guide.title, { exact: true }), row);
-    await expectCompleteText(row.getByText(guide.metaDescription, { exact: true }), row);
+    await expectCompleteText(browser, `dream-guide-${guide.id}`, guide.title);
+    await expectCompleteText(browser, `dream-guide-${guide.id}`, guide.metaDescription);
     const bounds = (await row.boundingBox())!;
     expect(bounds.x).toBeGreaterThanOrEqual(0);
-    expect(bounds.x + bounds.width).toBeLessThanOrEqual(page.viewportSize()!.width);
+    expect(bounds.x + bounds.width).toBeLessThanOrEqual((await browser.evaluate(() => innerWidth)));
     geometry.push({ id: guide.id, ...bounds });
   }
   // The rows settle after the theme or locale changes their text: read them once laid out.
@@ -82,42 +78,42 @@ async function checkReading(page: Page) {
     return boxes.every((box, i) => i === 0 || box!.y >= boxes[i - 1]!.y + boxes[i - 1]!.height);
   }).toBe(true);
   await expect(screen).toContainText(`${dictionary.symbols.length} symboles`);
-  const dictionaryButton = screen.getByTestId('btn.dreamGuides.dictionary');
-  await expectCompleteText(dictionaryButton.getByText('Ouvrir le dictionnaire', { exact: true }), dictionaryButton);
+  await expectCompleteText(browser, 'btn.dreamGuides.dictionary', 'Ouvrir le dictionnaire');
   return geometry;
 }
 
 for (const theme of ['light', 'dark'] as const) {
-  test(`guides preserve complete French promises and destinations in ${theme}`, async ({ page }, testInfo) => {
-    await page.clock.setFixedTime(new Date('2026-10-03T12:00:00+02:00'));
-    await page.emulateMedia({ colorScheme: theme === 'light' ? 'dark' : 'light' });
-    await openGuides(page, theme);
-    const screen = page.getByTestId('screen.dreamGuides');
-    const report = [{ viewport: '390', rows: await checkReading(page) }];
-    await expect(screen).toHaveCSS('background-color', theme === 'light' ? 'rgb(240, 228, 212)' : 'rgb(3, 4, 13)');
-    await page.screenshot({ path: testInfo.outputPath(`${theme}-390.png`) });
+  test(`guides preserve complete French promises and destinations in ${theme}`, async (ui) => {
+  const { app, screen: uiScreen, browser, artifacts } = ui;
+    await setTestDate(browser, '2026-10-03T12:00:00+02:00');
+    await browser.emulateMedia({ colorScheme: theme === 'light' ? 'dark' : 'light' });
+    await openGuides(ui, theme);
+    const screen = uiScreen.getByTestId('screen.dreamGuides');
+    const report = [{ viewport: '390', rows: await checkReading(ui) }];
+    await expectCSS(browser, byId('screen.dreamGuides'), 'background-color', theme === 'light' ? 'rgb(240, 228, 212)' : 'rgb(3, 4, 13)');
+    await app.screenshot(`${theme}-390.png`);
 
     if (theme === 'light') {
       for (const guide of guides) {
         await screen.getByTestId(`dream-guide-${guide.id}`).click();
-        await expect(page).toHaveURL(new RegExp(`/dream-guide/${guide.id}$`));
-        const detail = page.getByTestId('screen.dreamGuideDetail');
+        await expect(browser).toHaveURL(new RegExp(`/dream-guide/${guide.id}$`));
+        const detail = uiScreen.getByTestId('screen.dreamGuideDetail');
         await expect(detail.getByText(guide.title, { exact: true })).toBeVisible();
         await detail.getByRole('button', { name: 'Retour', exact: true }).click();
         await expect(screen).toBeVisible();
       }
       await screen.getByTestId('btn.dreamGuides.dictionary').click();
-      await expect(page).toHaveURL(/\/symbol-dictionary$/);
-      await expect(page.getByPlaceholder('Rechercher un symbole...')).toBeVisible();
-      await page.getByRole('button', { name: 'Retour', exact: true }).filter({ visible: true }).click();
+      await expect(browser).toHaveURL(/\/symbol-dictionary$/);
+      await expect(uiScreen.getByPlaceholder('Rechercher un symbole...')).toBeVisible();
+      await uiScreen.getByRole('button', { name: 'Retour', exact: true, visible: true }).click();
       await expect(screen).toBeVisible();
     }
 
-    await page.setViewportSize({ width: 320, height: 568 });
-    report.push({ viewport: '320', rows: await checkReading(page) });
-    await page.screenshot({ path: testInfo.outputPath(`${theme}-320.png`) });
+    await browser.setViewport({ width: 320, height: 568 });
+    report.push({ viewport: '320', rows: await checkReading(ui) });
+    await app.screenshot(`${theme}-320.png`);
     // Browser-only enlargement stress: not proof of native Dynamic Type.
-    const enlarged = await screen.evaluate((root) => {
+    const enlarged = await readDOM(browser, byId('screen.dreamGuides'), (root) => {
       const text = Array.from(root.querySelectorAll<HTMLElement>('[dir="auto"]'))
         .map((element) => ({ element, style: getComputedStyle(element) }))
         .filter(({ style }) => /Fraunces|Outfit/.test(style.fontFamily))
@@ -129,22 +125,22 @@ for (const theme of ['light', 'dark'] as const) {
       return text.length;
     });
     expect(enlarged).toBeGreaterThan(16);
-    report.push({ viewport: '320, text 200%', rows: await checkReading(page) });
+    report.push({ viewport: '320, text 200%', rows: await checkReading(ui) });
     const last = screen.getByTestId('dream-guide-water-dream-symbols');
-    await last.scrollIntoViewIfNeeded();
-    await expect(last).toBeInViewport();
-    await page.screenshot({ path: testInfo.outputPath(`${theme}-320-large-text.png`) });
-    await testInfo.attach('reading-geometry', { body: JSON.stringify(report, null, 2), contentType: 'application/json' });
+    await last.scrollIntoView();
+    await expectInViewport(last, browser);
+    await app.screenshot(`${theme}-320-large-text.png`);
+    await artifacts.attach('reading-geometry', { body: JSON.stringify(report, null, 2), contentType: 'application/json' });
   });
 }
 
-test('guides follow the system preference and keep explicit appearance choices', async ({ page }) => {
-  await page.emulateMedia({ colorScheme: 'light' });
-  await openGuides(page, 'auto');
-  const screen = page.getByTestId('screen.dreamGuides');
-  await expect(screen).toHaveCSS('background-color', 'rgb(240, 228, 212)');
-  await page.emulateMedia({ colorScheme: 'dark' });
-  await expect(screen).toHaveCSS('background-color', 'rgb(3, 4, 13)');
-  await page.emulateMedia({ colorScheme: 'light' });
-  await expect(screen).toHaveCSS('background-color', 'rgb(240, 228, 212)');
+test('guides follow the system preference and keep explicit appearance choices', async (ui) => {
+  const { browser } = ui;
+  await browser.emulateMedia({ colorScheme: 'light' });
+  await openGuides(ui, 'auto');
+  await expectCSS(browser, byId('screen.dreamGuides'), 'background-color', 'rgb(240, 228, 212)');
+  await browser.emulateMedia({ colorScheme: 'dark' });
+  await expectCSS(browser, byId('screen.dreamGuides'), 'background-color', 'rgb(3, 4, 13)');
+  await browser.emulateMedia({ colorScheme: 'light' });
+  await expectCSS(browser, byId('screen.dreamGuides'), 'background-color', 'rgb(240, 228, 212)');
 });

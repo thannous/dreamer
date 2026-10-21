@@ -3,7 +3,6 @@ import type { ExactWebUI } from '../exact-web-fixtures';
 // Exact journeys using public TesterArmy APIs.
 const test = createExactWebTest({ locale: 'fr-FR', viewport: { width: 320, height: 568 } });
 
-
 async function enter(ui: ExactWebUI) {
   const { app, screen, browser } = ui;
   await app.open('/');

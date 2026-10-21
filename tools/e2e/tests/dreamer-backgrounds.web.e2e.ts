@@ -1,7 +1,6 @@
-import { readDOM, byId, expectCSS, expectInViewport, createExactWebTest, expect, withExactDialog } from '../exact-web-fixtures';
+import { readDOM, byId, expectCSS, expectInViewport, screenshotBytes, createExactWebTest, expect, withExactDialog } from '../exact-web-fixtures';
 import type { ExactWebUI } from '../exact-web-fixtures';
 import { createRequire } from 'node:module';
-import { readFileSync } from 'node:fs';
 
 const sharp: typeof import('sharp') = createRequire(import.meta.url)('sharp');
 const test = createExactWebTest({ viewport: { width: 390, height: 844 }, locale: 'fr-FR', reducedMotion: 'reduce' });
@@ -125,7 +124,7 @@ async function readable(ui: ExactWebUI, label: string) {
       return samples;
     });
     try {
-      const buffer = readFileSync(await app.screenshot(`${label}-masked-${attempt}`));
+      const buffer = await screenshotBytes(app, `${label}-masked-${attempt}`);
       // A transient element, such as the analysis outcome pill that closes 6 s after an
       // analysis settles, can leave between sampling and this screenshot. Its rows would
       // then fall on the copy it covered, which was never sampled and so keeps its ink
@@ -258,9 +257,9 @@ async function paintedHeader(ui: ExactWebUI, label: string) {
   });
   let shots: Buffer[];
   try {
-    const withPainting = await sharp(readFileSync(await app.screenshot(`${label}-painting`))).extract({ left: clip.x, top: clip.y, width: clip.width, height: clip.height }).toBuffer();
+    const withPainting = await sharp(await screenshotBytes(app, `${label}-painting`)).extract({ left: clip.x, top: clip.y, width: clip.width, height: clip.height }).toBuffer();
     await readDOM(browser, byId('image.background.capture'), element => element.style.setProperty('visibility', 'hidden', 'important'));
-    shots = [withPainting, await sharp(readFileSync(await app.screenshot(`${label}-bare`))).extract({ left: clip.x, top: clip.y, width: clip.width, height: clip.height }).toBuffer()];
+    shots = [withPainting, await sharp(await screenshotBytes(app, `${label}-bare`)).extract({ left: clip.x, top: clip.y, width: clip.width, height: clip.height }).toBuffer()];
   } finally {
     await readDOM(browser, byId('image.background.capture'), element => element.style.removeProperty('visibility'));
     await browser.evaluate(() => { document.getElementById('painted-header-mask')?.remove(); return null; });

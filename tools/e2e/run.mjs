@@ -101,7 +101,7 @@ function read(executable, argv, options = {}) {
   return result.stdout.trim();
 }
 function webInputIdentity() {
-  const sourceFiles = ['e2e.config.ts', 'dreamer-personas.ts', 'web-engine.ts', 'web-parity-fixtures.ts', 'backend-fixtures.ts', 'web-fixtures.ts', 'preload-web-matchers.mjs', 'run.mjs', 'journeys.ts', 'package.json', 'package-lock.json', 'tsconfig.json',
+  const sourceFiles = ['e2e.config.ts', 'dreamer-personas.ts', 'web-engine.ts', 'web-parity-fixtures.ts', 'exact-web-fixtures.ts', 'backend-fixtures.ts', 'web-fixtures.ts', 'preload-web-matchers.mjs', 'run.mjs', 'journeys.ts', 'package.json', 'package-lock.json', 'tsconfig.json',
     ...readdirSync(join(cwd, 'tests')).filter(name => name.endsWith('.web.e2e.ts')).map(name => `tests/${name}`),
   ].sort();
   return Object.fromEntries(sourceFiles.map(path => [path, createHash('sha256').update(readFileSync(join(cwd, path))).digest('hex')]));

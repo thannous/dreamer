@@ -76,7 +76,7 @@ for (const theme of ['light', 'dark'] as const) {
     await uiScreen.getByTestId('btn.symbolDictionary.guides').click();
     await expect(uiScreen.getByTestId('screen.dreamGuides')).toBeVisible();
     await uiScreen.getByTestId('btn.dreamGuides.dictionary').click();
-    await expect(screen).toBeVisible();
+    await expect(uiScreen.getByTestId('screen.symbolDictionary', { visible: true })).toBeVisible();
     await uiScreen.getByTestId('symbol-dictionary-back', { visible: true }).click();
     await expect(uiScreen.getByTestId('screen.dreamGuides')).toBeVisible();
   });

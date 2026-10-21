@@ -1,14 +1,14 @@
 import { test as base } from '@e2e-dev/web';
 import type { Browser, DialogHandler } from '@e2e-dev/web';
 import { expect } from 'e2e';
-import { mkdirSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { mkdirSync, writeFileSync, readdirSync, readFileSync } from 'node:fs';
+import { join, resolve, isAbsolute } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import type { App, Screen, Locator, JsonValue } from 'e2e';
 import { webLocale } from './web-engine';
 
 export type ExactWebUI = { app: App; screen: Screen; browser: Browser; artifacts: { attach(name: string, artifact: { body: string | Buffer; contentType: string }): Promise<void> } };
-type Options = { viewport?: { width: number; height: number }; reducedMotion?: 'reduce' | 'no-preference'; locale?: string };
+type Options = { viewport?: { width: number; height: number }; reducedMotion?: 'reduce' | 'no-preference'; locale?: string; setup?: (ui: ExactWebUI) => Promise<void>; skip?: boolean };
 
 /** Exact UI journeys with the historical mock boundary; no raw Page or matcher bridge. */
 export function createExactWebTest(options: Options = {}) {
@@ -38,14 +38,17 @@ export function createExactWebTest(options: Options = {}) {
   return (title: string, body: (ui: ExactWebUI) => Promise<void>) => test(title, {
     timeout: 180_000,
     tags: ['public-api', `locale-${options.locale ?? 'en-US'}`],
-    skip: webLocale === (options.locale ?? 'en-US') ? false : `Requires ${options.locale ?? 'en-US'} browser locale`,
+    skip: options.skip || webLocale === (options.locale ?? 'en-US') ? Boolean(options.skip) : `Requires ${options.locale ?? 'en-US'} browser locale`,
   }, async (ui) => {
     const folder = join(process.env.E2E_OUTPUT!, 'exact-artifacts', randomUUID());
     const artifacts = { async attach(name: string, artifact: { body: string | Buffer; contentType: string }) {
       mkdirSync(folder, { recursive: true });
       writeFileSync(join(folder, `${name}.${artifact.contentType === 'application/json' ? 'json' : 'bin'}`), artifact.body);
     } };
-    await body({ app: ui.app, screen: ui.screen, browser: ui.browser, artifacts });
+    const exact = { app: ui.app, screen: ui.screen, browser: ui.browser, artifacts };
+    await artifacts.attach('browser-context', { contentType: 'application/json', body: JSON.stringify(await ui.browser.evaluate(() => ({ language: navigator.language, locale: Intl.DateTimeFormat().resolvedOptions().locale, timezone: Intl.DateTimeFormat().resolvedOptions().timeZone, width: innerWidth, height: innerHeight }))) });
+    if (options.setup) await options.setup(exact);
+    await body(exact);
   });
 }
 
@@ -56,13 +59,15 @@ export async function withExactDialog(browser: Browser, handler: DialogHandler, 
 export { expect };
 
 /** Trusted DOM assertions through the public browser evaluation boundary. */
-export async function readDOM<T extends JsonValue | void>(browser: Browser, selector: string, read: (element: HTMLElement) => T): Promise<T extends void ? null : T> {
-  return browser.evaluate(`(() => {
+export async function readDOM<T extends JsonValue | void, Arg extends JsonValue = null>(browser: Browser, selector: string,
+  read: (element: HTMLElement, arg: Arg) => T | Promise<T>, arg: Arg = null as Arg, match: 'unique' | 'last' = 'unique'): Promise<T extends void ? null : T> {
+  return browser.evaluate(`(async () => {
     const matches = [...document.querySelectorAll(${JSON.stringify(selector)})];
     const visible = matches.filter(el => el.getClientRects().length && getComputedStyle(el).visibility !== 'hidden');
-    const element = visible.length === 1 ? visible[0] : matches.length === 1 ? matches[0] : null;
+    const element = ${JSON.stringify(match)} === 'last' ? matches.at(-1)
+      : visible.length === 1 ? visible[0] : matches.length === 1 ? matches[0] : null;
     if (!element) throw new Error('DOM assertion requires one element: ' + ${JSON.stringify(selector)});
-    return (${read.toString()})(element) ?? null;
+    return await (${read.toString()})(element, ${JSON.stringify(arg)}) ?? null;
   })()`);
 }
 export const byId = (id: string) => `[data-testid=${JSON.stringify(id)}]`;
@@ -72,17 +77,26 @@ export async function expectCSS(browser: Browser, selector: string, property: st
     return element ? getComputedStyle(element).getPropertyValue(property) : null;
   }, { selector, property }), { timeout: 15_000 }).toBe(value);
 }
-export async function expectInViewport(target: Locator, browser: Browser, ratio = 0, expected = true) {
+export async function expectInViewport(target: Locator, browser: Browser, ratio = 0, expected = true, selector?: string) {
   await expect.poll(async () => {
-    // An unmounted closed drawer is outside the viewport too. boundingBox's
-    // action wait must not outlive the assertion while waiting for its return.
     if (await target.count() === 0) return false;
-    const box = await target.boundingBox();
-    const viewport = await browser.evaluate(() => ({ width: innerWidth, height: innerHeight }));
-    if (!box || box.width <= 0 || box.height <= 0) return false;
-    const intersection = Math.max(0, Math.min(box.x + box.width, viewport.width) - Math.max(box.x, 0))
-      * Math.max(0, Math.min(box.y + box.height, viewport.height) - Math.max(box.y, 0));
-    return intersection > 0 && intersection / (box.width * box.height) >= ratio;
+    const id = selector ? null : await target.getAttribute('data-testid');
+    if (!selector && !id) throw new Error('Viewport assertion needs a stable selector for a node without a test ID');
+    // IntersectionObserver, like the old matcher, includes clipping by scroll
+    // containers and overflow ancestors, not only the outer window rectangle.
+    const intersection = await browser.evaluate(async selector => {
+      const matches = Array.from(document.querySelectorAll(selector));
+      const visible = matches.filter(node => node.getClientRects().length);
+      const node = visible.length === 1 ? visible[0] : matches.length === 1 ? matches[0] : null;
+      if (!node) return 0;
+      return new Promise<number>(resolve => {
+        const observer = new IntersectionObserver(entries => {
+          observer.disconnect(); resolve(entries[0].intersectionRatio);
+        });
+        observer.observe(node);
+      });
+    }, selector ?? byId(id!));
+    return intersection > 0 && intersection >= ratio;
   }, { timeout: 15_000 }).toBe(expected);
 }
 export async function expectCaptureDraftSaved(browser: Browser, text: string) {
@@ -109,7 +123,52 @@ export async function expectInnerText(browser: Browser, selector: string, text: 
 }
 export async function expectEditable(browser: Browser, selector: string) {
   await expect.poll(() => readDOM(browser, selector, element => {
-    if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) return !element.disabled && !element.readOnly;
+    if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) return !element.matches(':disabled') && !element.readOnly && !element.closest('[aria-disabled="true"]');
     return element.isContentEditable;
   }), { timeout: 15_000 }).toBe(true);
+}
+
+/** Consume the public screenshot artifact, whose returned path is attempt-relative. */
+export async function screenshotBytes(app: App, label: string) {
+  const artifact = await app.screenshot(`${randomUUID()}-${label}`);
+  const root = resolve(process.env.E2E_OUTPUT!);
+  if (isAbsolute(artifact)) {
+    if (!artifact.startsWith(root + '/')) throw new Error('Screenshot escaped the owned evidence directory');
+    return readFileSync(artifact);
+  }
+  const candidates = readdirSync(root, { recursive: true }).map(String)
+    .filter(path => path.endsWith('/' + artifact) || path === artifact);
+  if (candidates.length !== 1) throw new Error(`Expected one owned screenshot artifact, found ${candidates.length}: ${artifact}`);
+  return readFileSync(join(root, candidates[0]));
+}
+/** Fixed Date values with native timers left intact; no private engine clock. */
+export async function setTestDate(browser: Browser, iso: string, mode: 'fixed' | 'elapsed' = 'fixed') {
+  function install(options: { iso: string; mode: 'fixed' | 'elapsed'; anchor?: number } | null) {
+    if (!options) return null;
+    const scope = window as unknown as { __dreamerQANativeDate?: DateConstructor };
+    const NativeDate = scope.__dreamerQANativeDate ?? Date;
+    scope.__dreamerQANativeDate = NativeDate;
+    const state = { ...options, anchor: options.anchor ?? NativeDate.now() };
+    sessionStorage.setItem('dreamer.qa.date', JSON.stringify(state));
+    const timestamp = NativeDate.parse(state.iso);
+    const now = () => timestamp + (state.mode === 'elapsed' ? NativeDate.now() - state.anchor : 0);
+    window.Date = new Proxy(NativeDate, {
+      construct(target, args, receiver) { return Reflect.construct(target, args.length ? args : [now()], receiver); },
+      apply() { return new NativeDate(now()).toString(); },
+      get(target, key, receiver) { return key === 'now' ? now : Reflect.get(target, key, receiver); },
+    });
+    return null;
+  }
+  // Every registered init script reads the current state. Switching light/night
+  // before reload therefore does not depend on init-script registration order.
+  await browser.addInitScript(`(${install.toString()})(JSON.parse(sessionStorage.getItem('dreamer.qa.date') || 'null'))`);
+  await browser.evaluate(install, { iso, mode });
+}
+export async function observeElapsed(browser: Browser, milliseconds: number) {
+  await browser.evaluate(async milliseconds => {
+    const start = performance.now();
+    await new Promise(resolve => setTimeout(resolve, milliseconds));
+    if (performance.now() - start < milliseconds - 1) throw new Error('Observation ended before its full interval');
+    return null;
+  }, milliseconds);
 }

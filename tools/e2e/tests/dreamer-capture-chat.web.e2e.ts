@@ -36,7 +36,6 @@ async function finish(ui: ExactWebUI) {
   await expect(screen.getByTestId('capture-review-card')).toBeVisible();
 }
 
-
 test('chat keeps chronological replies, edits and pending details through reload, then saves the exact card once into its saved moment', async (ui) => {
   const { app, screen, browser } = ui;
   await startChat(ui);

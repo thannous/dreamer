@@ -53,8 +53,8 @@ for (const mode of ['light', 'dark'] as const) {
     // art (a bundled 9:16 .webp) rather than requiring the wrapper to contain one img.
     const renderedImage = browser.locator(byId('btn.journal.illustration.expand') + ' img[src*="webp"]').last();
     await expect(renderedImage).toBeVisible();
-    await expect.poll(() => readDOM(browser, byId('btn.journal.illustration.expand') + ' img[src*="webp"]:last-of-type', el => (el as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
-    await expectCSS(browser, byId('btn.journal.illustration.expand') + ' img[src*="webp"]:last-of-type', 'opacity', '1');
+    await expect.poll(() => readDOM(browser, byId('btn.journal.illustration.expand') + ' img[src*="webp"]', el => (el as HTMLImageElement).naturalWidth, null, 'last')).toBeGreaterThan(0);
+    await expect.poll(() => readDOM(browser, byId('btn.journal.illustration.expand') + ' img[src*="webp"]', el => getComputedStyle(el).opacity, null, 'last')).toBe('1');
     // Reopen from the list so this proves arrival, rather than a scrolled state
     // left over from editing or generating an illustration.
     await uiScreen.getByTestId('btn.navigateJournal').click();
@@ -63,7 +63,7 @@ for (const mode of ['light', 'dark'] as const) {
     const metadata = uiScreen.getByTestId('component.metadataCard');
     for (const viewport of [{ width: 393, height: 852 }, { width: 320, height: 568 }, { width: 844, height: 390 }]) {
       await browser.setViewport(viewport);
-      await expectInViewport(heading, browser, 1);
+      await expectInViewport(heading, browser, 1, true, byId('component.metadataCard') + ' [role="heading"]');
       await expectInViewport(metadata, browser, 1);
       // The date is engraved on the rim of the seal at the head of the reading (PR #358).
       await expect(uiScreen.getByTestId('component.savedDream.sealDate')).toContainText(/\d{4}/);
@@ -73,7 +73,7 @@ for (const mode of ['light', 'dark'] as const) {
     }
     await browser.setViewport({ width: 320, height: 568 });
     await addCSS(browser, '[data-testid="component.metadataCard"] [role="heading"] { font-size: 42px !important; line-height: 54px !important; }');
-    await expectInViewport(heading, browser, 1);
+    await expectInViewport(heading, browser, 1, true, byId('component.metadataCard') + ' [role="heading"]');
     await expectInViewport(metadata, browser, 1);
     await app.screenshot(`dream-${mode}-arrival-large-title.png`);
     await browser.evaluate(() => { document.getElementById('e2e-layout-stress')?.remove(); return null; });
