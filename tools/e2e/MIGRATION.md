@@ -17,6 +17,7 @@ Unit, component, integration, security and performance checks remain in place.
 | Real local backend | Eight cases, moved into TesterArmy in #529 with Page/context compatibility fixtures. | Six public-API cases: RLS/other-user/anonymous isolation, Free/Plus server quota and sign-out, legacy/current themes and RPC, private Apple-token lifecycle. Two context/offline cases remain explicit compatibility exceptions in the same TesterArmy runner; their bodies are identical to #529. |
 | Shared test-branch sessions | #529 moved two cases/setup into the guarded TesterArmy branch runner. | Preserved. Environment block: no approved allowlisted branch/accounts. The production HTTP/WebSocket guards and private saved-session handling remain. No remote seed or production access. |
 | Lucid, Meditation, site | TesterArmy, including #529's latest journeys. | Preserved; no duplicate runner or new provider. Their existing #529 proof is history, not a new execution claimed here. |
+| Outside `tools/e2e`: Lucid visual journey | `tests/e2e/lucid-visual-journey.mjs`, a manually invoked in-app browser journey. | Retired only after the four `PR237` equivalents in `lucid.web.e2e.ts` passed on `70c197ca6`. Password and hands-phase assertions retained explicitly; onboarding/time contrast, narrow tabs, programs/WBTB, account validation, morning→Journal→Atlas and both labs' persistence remain. Canonical command: `E2E_WEB_LOCALE=fr-FR npm run test:testerarmy:lucid -- run --grep PR237`. |
 | Native / physical / Store | Existing guarded TesterArmy suites, one owner per identified device. | No binary/device/data touched; no native, physical, Release, Store or OTA qualification from these web runs. |
 | SEO browser check / CDP profiling | Specialized browser SEO and performance measurements. | Retained as specialized tooling, not misrepresented as product E2E or device qualification. |
 
@@ -34,6 +35,16 @@ public browser evaluation; no intermediate `/dream-chat/` route is allowed.
 An earlier attempted port of the old entry failed 3/3 on `bf754384a`; it was
 reverted before #529 supplied the current route. It is no longer a blocker.
 The newer onboarding cross/Escape/chapter contracts are preserved.
+
+The repository-wide inventory also checked `e2e/`, `tests/e2e/`, native suites,
+and browser scripts. `e2e/` now contains the current guide and retained image
+fixture; #529 already retired its old suites/configs. The last Meditation Page
+access (audio seek at the slider's right edge) uses the public locator's same
+positioned click, preserving real audio, restart, history and streak assertions.
+`scripts/check-image-seo-browser.js` and
+`scripts/perf/measure-web-fluidity.mjs` remain specialized SEO/CDP measurements;
+they are not parallel product journey runners. Unit/component/integration tests
+are retained. No old product journey is silently excluded from the inventory.
 
 ## Public API limits and version evidence
 

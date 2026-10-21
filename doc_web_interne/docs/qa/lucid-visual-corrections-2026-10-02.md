@@ -13,21 +13,13 @@ Lot issu de l’audit graphique local du même jour. Intégration : branche `cod
 
 ## Validation répétable
 
-Le parcours `tests/e2e/lucid-visual-journey.mjs` utilise le navigateur intégré et une origine locale vierge. Il effectue de vraies interactions UI, avec deux rêves explicitement fictifs ; il ne crée aucun compte réel, n’envoie aucun e-mail et ne déclenche aucun achat.
+Mise à jour du 21 octobre 2026 : le parcours manuel `tests/e2e/lucid-visual-journey.mjs` a été retiré après validation de ses quatre équivalents `PR237` dans `tools/e2e/tests/lucid.web.e2e.ts` : **4/4 PASS** sur `70c197ca6`, rapport privé `lucid-web/1792580329982-12050-65841e80-c336-4965-947e-038013ae3d4f`. Ils utilisent les API publiques TesterArmy avec une origine locale et des données fictives ; aucun compte, e-mail ou achat réel.
 
-Démarrer `mise exec -- npm run start:lucid:mock -- --web --port 8097` selon l’autorisation macOS requise par AGENTS. Depuis le Browser node_repl, après le bootstrap documenté du navigateur :
-
-```js
-var { runLucidVisualJourney } = await import('/absolute/checkout/tests/e2e/lucid-visual-journey.mjs');
-await runLucidVisualJourney({
-  browser,
-  base: 'http://localhost:8097', // origine vierge : choisir un autre port si elle a déjà été utilisée
-  output: '/private/tmp/lucid-visual-e2e',
-  revision: '<git rev-parse HEAD>',
-});
+```bash
+E2E_WEB_LOCALE=fr-FR npm run test:testerarmy:lucid -- run --grep PR237
 ```
 
-Le rapport JSON identifie la révision, le profil, les préconditions, chaque assertion, les URL et snapshots DOM ; les captures restent locales. Il vérifie contraste du sélecteur, sauvegarde des horaires, intégrité des libellés, programmes et sécurité WBTB, formulaire invalide, sauvegarde matin→Journal→signes→Atlas, absence de consignes techniques dans l’UI principale, indisponibilité Health et reprise persistée des deux laboratoires.
+Le runner prépare le serveur local isolé et conserve les traces et captures. Contraste du sélecteur, sauvegarde des horaires, intégrité des libellés, programmes et sécurité WBTB, formulaire invalide (mot de passe court compris), matin→Journal→signes→Atlas, absence de consignes techniques, indisponibilité Health et reprise des deux laboratoires restent vérifiés. Le registre courant et les limites figurent dans [la migration TesterArmy](../../../../tools/e2e/MIGRATION.md). Les résultats ci-dessous restent le compte rendu historique du 2 octobre.
 
 Les assertions ont précédé l’implémentation ; le défaut de contraste a été reproduit sur la source initiale. Aucun nouveau test isolé n’a été ajouté. Les fixtures existantes sont mises à jour ; les assertions cosmétiques et trois tests de structure (hauteur des onglets, colonne de métriques, forme du visuel SSILD) sont retirés. Les assertions de stockage, de consentement, d’erreur et de reprise restent en place. Les contrôles de livraison sont lint ciblé, types app/tests et `mise exec -- npm run test:prepush` sur le worktree propre et committé, puis CI sur le head de la PR.
 
