@@ -159,7 +159,9 @@ begin
   end if;
 
   -- A retry of a claimed request returned above, so only new analyses meet the
-  -- rolling 24-hour ceiling. Its own lock covers windows across month changes.
+  -- rolling 24-hour ceiling. Only authorization receipts count: the legacy
+  -- trigger rows of imported guest dreams carry no request id. Its own lock
+  -- covers windows across month changes.
   if analysis_limit is null then
     perform pg_advisory_xact_lock(hashtextextended(format('quota:analysis-daily:%s', p_user_id::text), 0));
 
@@ -168,6 +170,7 @@ begin
     from public.quota_usage e
     where e.user_id = p_user_id
       and e.quota_type = 'analysis'
+      and e.metadata ? 'analysis_request_id'
       and e.occurred_at > claim_time - interval '24 hours';
 
     if daily_count >= daily_limit then
@@ -177,6 +180,7 @@ begin
       from public.quota_usage e
       where e.user_id = p_user_id
         and e.quota_type = 'analysis'
+        and e.metadata ? 'analysis_request_id'
         and e.occurred_at > claim_time - interval '24 hours'
       order by e.occurred_at desc
       offset daily_limit - 1

@@ -9,17 +9,19 @@ import {
   handleCreateImageJob,
 } from './imageJobs.ts';
 
-/** Fake ai_jobs reads for the Plus daily image ceiling: by default no job yet. */
-const imageJobHistory = (rows: { existing?: boolean; createdAt?: string[]; failing?: boolean } = {}) => {
+/** Fake reads for the Plus daily image ceiling: by default no job and no analysis receipt yet. */
+const imageJobHistory = (
+  rows: { existing?: boolean; receipt?: boolean; createdAt?: string[]; failing?: boolean } = {}
+) => {
   const reads: Record<string, unknown>[] = [];
   return {
     reads,
     from: (table: string) => {
-      assertEquals(table, 'ai_jobs');
-      const filters: Record<string, unknown> = {};
+      const filters: Record<string, unknown> = { table };
       const query = {
         select: (columns: string) => { filters.select = columns; return query; },
         eq: (column: string, value: unknown) => { filters[column] = value; return query; },
+        neq: (column: string, value: unknown) => { filters[`${column} !=`] = value; return query; },
         gt: (column: string, value: unknown) => { filters[`${column} >`] = value; return query; },
         order: (column: string, options: { ascending: boolean }) => {
           filters.order = `${column} ${options.ascending ? 'asc' : 'desc'}`;
@@ -28,6 +30,8 @@ const imageJobHistory = (rows: { existing?: boolean; createdAt?: string[]; faili
         limit: async (count: number) => {
           reads.push({ ...filters, limit: count });
           if (rows.failing) return { data: null, error: { code: 'XX000' } };
+          if (table === 'quota_usage') return { data: rows.receipt ? [{ id: 'receipt-1' }] : [], error: null };
+          assertEquals(table, 'ai_jobs');
           if (filters.select === 'id') return { data: rows.existing ? [{ id: 'job-1' }] : [], error: null };
           return {
             data: (rows.createdAt ?? []).slice(0, count).map((created_at) => ({ created_at })),
@@ -625,16 +629,26 @@ Deno.test('Plus daily image ceiling blocks the eleventh new image and says when 
     retryAfter: 14 * 60 * 60,
   });
   assertEquals(history.reads[1], {
+    table: 'quota_usage',
+    select: 'id',
+    user_id: 'user-1',
+    quota_type: 'analysis',
+    'metadata->>analysis_request_id': BUNDLED_REQUEST_ID,
+    limit: 1,
+  });
+  assertEquals(history.reads[2], {
+    table: 'ai_jobs',
     select: 'created_at',
     job_type: 'generate_image',
     user_id: 'user-1',
+    'status !=': 'failed',
     'created_at >': '2026-10-20T12:00:00.000Z',
     order: 'created_at desc',
     limit: 10,
   });
 });
 
-Deno.test('Plus daily image ceiling lets the tenth image and any retry of an admitted request through', async () => {
+Deno.test('Plus daily image ceiling lets through the tenth image, a retry and an analysis\'s own illustration', async () => {
   const now = Date.parse('2026-10-21T12:00:00.000Z');
   const nine = Array.from({ length: 9 }, () => new Date(now - 60_000).toISOString());
   assertEquals(await checkPlusDailyImageLimit(imageJobHistory({ createdAt: nine }) as any, 'user-1', BUNDLED_REQUEST_ID, now), null);
@@ -643,6 +657,11 @@ Deno.test('Plus daily image ceiling lets the tenth image and any retry of an adm
   const retry = imageJobHistory({ existing: true, createdAt: ten });
   assertEquals(await checkPlusDailyImageLimit(retry as any, 'user-1', BUNDLED_REQUEST_ID, now), null);
   assertEquals(retry.reads.length, 1);
+
+  // An analysis's own illustration (its request id has a receipt) is bounded by the analysis ceiling.
+  const ownImage = imageJobHistory({ receipt: true, createdAt: ten });
+  assertEquals(await checkPlusDailyImageLimit(ownImage as any, 'user-1', BUNDLED_REQUEST_ID, now), null);
+  assertEquals(ownImage.reads.length, 2);
 
   const failing = await checkPlusDailyImageLimit(imageJobHistory({ failing: true }) as any, 'user-1', BUNDLED_REQUEST_ID, now);
   assertEquals(failing?.status, 503);

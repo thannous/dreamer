@@ -1,4 +1,8 @@
 import { describe, expect, it, jest } from '@jest/globals';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+
+import { PLUS_DAILY_LIMIT } from '@/constants/limits';
 import {
     canRetryError,
     classifyError,
@@ -132,6 +136,11 @@ describe('classifyError', () => {
     }), t);
     expect(image.canRetry).toBe(false);
     expect(image.userMessage).toBe('error.daily_image_limit:10');
+  });
+
+  it('names the same Plus daily ceiling as the server', () => {
+    const server = readFileSync(join(__dirname, '../../supabase/functions/api/lib/plusDailyLimits.ts'), 'utf8');
+    expect(server).toContain(`PLUS_DAILY_LIMITS = { analysis: ${PLUS_DAILY_LIMIT}, image: ${PLUS_DAILY_LIMIT} }`);
   });
 
   it('should classify HTTP 503 status as server error', () => {

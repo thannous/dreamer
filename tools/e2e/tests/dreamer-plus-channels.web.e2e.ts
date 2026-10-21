@@ -168,6 +168,23 @@ test('the chat message limit opens the Plus offer for a free account', async ({ 
   await expect(banner).toBeVisible();
 });
 
+test('a Plus subscriber chats with no message count', async ({ page }) => {
+  await selectProfile(page, 'plus');
+  await openDream(page, 'The Infinite Library');
+  await page.getByTestId('component.transcriptCard').scrollIntoViewIfNeeded();
+  await page.getByTestId('component.dreamDetail.actionCard').click();
+  await page.getByTestId('btn.dreamCategory.freeChat').click();
+  const input = page.getByTestId('chat.input.message');
+  await expect(input).toBeEditable();
+  await input.fill('E2E Plus message');
+  await page.getByTestId('chat.button.send').click();
+  await expect(page.getByText('E2E Plus message', { exact: true })).toBeVisible();
+  await expect(input).toBeEditable();
+  // Plus exchanges are sold as unlimited: the app never counts down the 100-message safety ceiling.
+  await expect(page.getByTestId('text.chat.messageCounter')).toBeHidden();
+  await expect(page.getByText(/\b\d+\/100\b/)).toHaveCount(0);
+});
+
 test('a saved dream waiting for its reading shows its own first words on the offer', async ({ page }) => {
   await selectProfile(page, 'existing');
   const story = 'E2E sleeper walks through an immense station where trains leave for the sea.';

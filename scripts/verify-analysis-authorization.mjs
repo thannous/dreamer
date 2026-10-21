@@ -106,15 +106,17 @@ try {
   for (let id = 101; id <= 112; id++) {
     await query('insert into dreams(id,user_id,analysis_request_id) values ($1,$2,$3)', [id, daily, request(id)]);
   }
-  await query("insert into quota_usage(user_id,dream_id,quota_type,occurred_at,metadata) values ($1,100,'analysis',now()-interval '25 hours','{}')", [daily]);
+  await query("insert into quota_usage(user_id,dream_id,quota_type,occurred_at,metadata) values ($1,100,'analysis',now()-interval '25 hours',jsonb_build_object('analysis_request_id',$2::text))", [daily, request(100)]);
+  // A legacy trigger row (an imported guest dream) has no request id: it is not a new analysis.
+  await query("insert into quota_usage(user_id,dream_id,quota_type,occurred_at) values ($1,99,'analysis',now()-interval '1 hour')", [daily]);
   const dailyClaim = async id => (await query('select public.claim_authenticated_analysis_quota($1,$2,$3) as result', [daily, id, request(id)]))[0].result;
   const dailyReceipts = async () => Number((await query("select count(*) as n from quota_usage where user_id=$1 and quota_type='analysis'", [daily]))[0].n);
   const firstTen = [];
   for (let id = 101; id <= 110; id++) firstTen.push(await dailyClaim(id));
-  check(firstTen.every(result => result.allowed && result.code === 'UNLIMITED'), 'ten Plus analyses in 24 hours are allowed, an older claim does not count');
+  check(firstTen.every(result => result.allowed && result.code === 'UNLIMITED'), 'ten Plus analyses in 24 hours are allowed, neither an older claim nor a legacy row counts');
   const capped = await dailyClaim(111);
   check(capped.code === 'DAILY_ANALYSIS_LIMIT' && capped.daily_limit === 10 && capped.limit === null && capped.claimed === false
-    && await dailyReceipts() === 11, 'the eleventh new Plus analysis in 24 hours is refused without a receipt');
+    && await dailyReceipts() === 12, 'the eleventh new Plus analysis in 24 hours is refused without a receipt');
   check(capped.retry_after_seconds > 86000 && capped.retry_after_seconds <= 86400, 'the refusal says when the oldest of the ten leaves the window');
   check((await dailyClaim(110)).code === 'ANALYSIS_ALREADY_CLAIMED', 'a retry of a claimed request is not blocked by the ceiling');
   const queuedCapped = (await query("select public.admit_authenticated_analysis_job($1,$2,112,$3,'fr',false,3,10,600,100,1000) as result", [request(1120), daily, request(112)]))[0].result;
