@@ -30,13 +30,14 @@ test('main pages remain navigable across repeated visits', async ({ app, screen 
 // seeded here. Changing period changes section heights, which must invalidate
 // reveal positions while keeping the same content and navigation outcomes.
 if (['200', '5000'].includes(process.env.E2E_PERF_FIXTURE_COUNT ?? '')) {
-  test('trends reveals every section after period layout changes and keeps filters usable', async ({ app, screen }) => {
+  test('trends reveals every section after period layout changes and keeps period controls usable', async ({ app, screen }) => {
     await app.open();
+    const count = process.env.E2E_PERF_FIXTURE_COUNT === '5000' ? /^5[\s,.]?000$/u : '200';
     await screen.getByTestId('tab.stats').tap();
     const all = screen.getByTestId('trends.period.all');
     await screen.scrollUntilVisible(all, { direction: 'up' });
     await all.tap();
-    await expect(screen.getByTestId('trends.figure.dreams.value')).toHaveText(process.env.E2E_PERF_FIXTURE_COUNT!);
+    await expect(screen.getByTestId('trends.figure.dreams.value')).toHaveText(count);
     for (const section of ['nights', 'returns', 'sky']) {
       const target = screen.getByTestId(`trends.section.${section}`);
       await screen.scrollUntilVisible(target);
@@ -56,6 +57,6 @@ if (['200', '5000'].includes(process.env.E2E_PERF_FIXTURE_COUNT ?? '')) {
     await expect(calendar).toBeVisible();
     await screen.scrollUntilVisible(all, { direction: 'up' });
     await all.tap();
-    await expect(screen.getByTestId('trends.figure.dreams.value')).toHaveText(process.env.E2E_PERF_FIXTURE_COUNT!);
+    await expect(screen.getByTestId('trends.figure.dreams.value')).toHaveText(count);
   });
 }
