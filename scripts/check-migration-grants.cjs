@@ -274,16 +274,11 @@ function stripComments(sql) {
         if (sql.startsWith('/*', i)) { depth++; i += 2; } else if (sql.startsWith('*/', i)) { depth--; i += 2; if (!depth) break; } else i++;
       }
       out += ' ';
-    } else if (sql[i] === '\'') {
-      let j = i + 1;
-      while (j < sql.length && !(sql[j] === '\'' && sql[j + 1] !== '\'')) j += sql[j] === '\'' ? 2 : 1;
-      out += sql.slice(i, j + 1);
-      i = j + 1;
-    } else if (sql[i] === '"') {
-      let j = i + 1;
-      while (j < sql.length && !(sql[j] === '"' && sql[j + 1] !== '"')) j += sql[j] === '"' ? 2 : 1;
-      out += sql.slice(i, j + 1);
-      i = j + 1;
+    } else if (sql[i] === '\'' || sql[i] === '"') {
+      // The same scanner as the statement splitter: E'...' strings honour backslash escapes.
+      const end = quotedEnd(sql, i);
+      out += sql.slice(i, end);
+      i = end;
     } else {
       const tag = new RegExp(`^${DOLLAR_TAG}`).exec(rest);
       if (tag && !/[\w$]/.test(sql[i - 1] ?? '')) {

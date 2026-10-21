@@ -530,6 +530,8 @@ drop schema if exists scratch, public cascade;`, [/shape rule "public schema DDL
 create function public.f(x public."foo(1)") returns void language sql security definer set search_path = '' as $$ select 1 $$;
 revoke execute on function public.f(public."foo(1)") from public, anon;
 grant execute on function public.f(public."foo(1)") to authenticated;`, [/shape rule "quoted name with parenthesis"/, /shape rule "quoted name with parenthesis"/, /shape rule "quoted name with parenthesis"/]],
+  'escaped quote before -- in an E string hides no DDL': [`SELECT E'prefix\\'-- still string'; CREATE FUNCTION public.f() RETURNS int LANGUAGE sql SECURITY DEFINER AS $$ select 1 $$;`,
+    [/public\.f.*from public"/, /from anon"/, /grant execute/, /search_path/]],
 };
 
 test('a public security definer function with revokes, a grant and a search_path passes', () => {
