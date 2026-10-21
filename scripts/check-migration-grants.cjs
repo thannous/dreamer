@@ -1,22 +1,29 @@
 #!/usr/bin/env node
 'use strict';
-// Data API privileges of new public tables (Supabase, from 2026-10-30, and
+// Data API privileges of new public objects (Supabase, from 2026-10-30, and
 // supabase/config.toml `[api] auto_expose_new_tables = false` locally): a new
-// table in public gets no grant for anon, authenticated or service_role, so a
-// migration that creates one must say what each role gets.
+// table, view or sequence in public gets no grant for anon, authenticated or
+// service_role, so the migration that creates one must say what each role gets.
 //
-// A migration with `create table [if not exists] public.X` (quoted or not, any
-// case; an unqualified name counts when the file's search_path resolves it to
-// public, which is the default) fails unless the same file has:
+// A migration with `create [unlogged] table [if not exists] public.X` (quoted or
+// not, any case; an unqualified name counts when the search_path in force at
+// that statement resolves it to public, which is the default), or with
+// `alter table ... set schema public`, fails unless the same file has:
 //   - `alter table [if exists] [only] X enable row level security`;
 //   - for each of anon, authenticated and service_role, a `grant ... on [table] X
 //     to <role>` or `revoke ... on [table] X from <role>` naming X itself
-//     (`on all tables in schema public` does not count: it is not a decision
-//     about X);
+//     (`on all tables in schema public` and PUBLIC do not count: they are not a
+//     decision about X for that role; an unqualified target resolves through
+//     the search_path too);
 //   - when X has a serial, smallserial, bigserial or identity column, the same
-//     per-role grant or revoke on its sequence (the default name X_<column>_seq).
-// Only plain SQL statements count: a grant built inside a function body or an
-// EXECUTE string is not read.
+//     per-role grant or revoke on its sequence (X_<column>_seq, or the identity
+//     column's SEQUENCE NAME).
+// A new public view (materialized or not) or standalone sequence needs the same
+// per-role grant or revoke (views have no RLS). Functions are not checked: a new
+// function keeps PostgreSQL's EXECUTE for PUBLIC even with auto-expose off.
+// Only statements that run while the migration applies count: top-level ones
+// and those of DO blocks. Text in string literals and function bodies, and
+// grants built in EXECUTE strings, are not read.
 //
 // Grandfathered: the migrations listed in GRANDFATHERED were applied before this
 // rule (the latest is 20261020001047) and can never be edited; their tables got
@@ -167,8 +174,8 @@ function splitTopLevel(body) {
   return parts.map((part) => part.trim()).filter(Boolean);
 }
 
-/** Columns that own a sequence: serial types and identity columns. */
-function sequenceColumns(statement, afterName) {
+/** Sequences a column list owns: serial types and identity columns ([schema|null, name]). */
+function ownedSequences(statement, afterName, table) {
   const open = statement.indexOf('(', afterName);
   if (open < 0 || /^\s*(?:partition\s+of|as\b)/i.test(statement.slice(afterName, open))) return [];
   let depth = 0;
@@ -177,56 +184,113 @@ function sequenceColumns(statement, afterName) {
     if (statement[i] === '(') depth++;
     else if (statement[i] === ')' && --depth === 0) { close = i; break; }
   }
-  const columns = [];
+  const sequences = [];
   for (const definition of splitTopLevel(statement.slice(open + 1, close < 0 ? undefined : close))) {
     if (/^(?:constraint|primary|unique|check|foreign|exclude|like)\b/i.test(definition)) continue;
     const match = new RegExp(`^(${IDENT})\\s+([\\s\\S]*)$`).exec(definition);
     if (!match) continue;
+    const column = ident(match[1]);
     const rest = match[2];
-    if (/^(?:small|big)?serial[248]?\b/i.test(rest) || /\bgenerated\s+(?:always|by\s+default)\s+as\s+identity\b/i.test(rest)) {
-      columns.push(ident(match[1]));
-    }
+    const identity = /\bgenerated\s+(?:always|by\s+default)\s+as\s+identity\b([\s\S]*)/i.exec(rest);
+    if (!identity && !/^(?:small|big)?serial[248]?\b/i.test(rest)) continue;
+    // An identity column may name its sequence: GENERATED ... AS IDENTITY (SEQUENCE NAME x).
+    const custom = identity && new RegExp(String.raw`^\s*\([\s\S]*?\bsequence\s+name\s+(${QUALIFIED})`, 'i').exec(identity[1]);
+    sequences.push({ column, sequence: custom ? qualified(custom[1]) : [null, `${table}_${column}_seq`] });
   }
-  return columns;
+  return sequences;
 }
 
-/** The tables of public a migration creates, with the columns owning a sequence. */
-function createdPublicTables(sql) {
-  const tables = [];
-  const createTable = new RegExp(String.raw`(?:^|\b(?:begin|then|else|loop)\b)\s*create\s+(?:(?:global|local)\s+)?(?:(temp|temporary)\s+|unlogged\s+)?table\s+(?:if\s+not\s+exists\s+)?(${QUALIFIED})`, 'i');
+/**
+ * Statements PostgreSQL runs while applying the migration: the top-level ones
+ * and those of DO blocks (not function bodies, which only run when called).
+ * `text` has dollar-quoted bodies and string literals blanked, so text inside a
+ * string or a function body never counts; `offset` is absolute in `sql`.
+ */
+function executedStatements(sql) {
+  const result = [];
+  const blank = (text) => ' '.repeat(text.length);
   const scan = (text, base) => {
     for (const statement of statements(text)) {
-      // Dollar-quoted bodies are scanned below, on their own.
-      const outside = statement.text.replace(/(\$[A-Za-z_]*\$)[\s\S]*?\1/g, (body) => ' '.repeat(body.length));
-      const match = createTable.exec(outside);
-      if (match && !match[1]) {
-        const [schema, name] = qualified(match[2]);
-        const resolved = schema ?? schemaAt(sql, base + statement.offset);
-        if (resolved === 'public' && !tables.some((table) => table.name === name)) {
-          tables.push({ name, sequences: sequenceColumns(statement.text, match.index + match[0].length) });
+      const outside = statement.text
+        .replace(/(\$[A-Za-z_]*\$)[\s\S]*?\1/g, blank)
+        .replace(/'(?:[^']|'')*'/g, blank);
+      result.push({ text: outside, raw: statement.text, offset: base + statement.offset });
+      if (/^\s*do\b/i.test(outside)) {
+        for (const body of statement.text.matchAll(/(\$[A-Za-z_]*\$)([\s\S]*?)\1/g)) {
+          scan(body[2], base + statement.offset + body.index + body[1].length);
         }
-      }
-      // DO blocks and function bodies: their statements are SQL too.
-      for (const body of statement.text.matchAll(/(\$[A-Za-z_]*\$)([\s\S]*?)\1/g)) {
-        scan(body[2], base + statement.offset + body.index + body[1].length);
       }
     }
   };
   scan(sql, 0);
+  return result;
+}
+
+// A statement may open a PL/pgSQL block or branch inside a DO body.
+const LEAD = String.raw`^(?:[\s\S]*?\b(?:begin|then|else|loop)\b)?\s*`;
+
+/** Schema an object reference resolves to at `offset` (search_path for an unqualified name). */
+function resolve(sql, raw, offset) {
+  const [schema, name] = qualified(raw);
+  return [schema ?? schemaAt(sql, offset), name];
+}
+
+/** The public tables, views and standalone sequences a migration creates or moves into public. */
+function createdPublicObjects(sql, executed) {
+  const objects = [];
+  const add = (kind, name, sequences = []) => {
+    if (!objects.some((object) => object.kind === kind && object.name === name)) objects.push({ kind, name, sequences });
+  };
+  const createTable = new RegExp(String.raw`${LEAD}create\s+(?:(?:global|local)\s+)?(?:(temp|temporary)\s+|unlogged\s+)?table\s+(?:if\s+not\s+exists\s+)?(${QUALIFIED})`, 'i');
+  const createView = new RegExp(String.raw`${LEAD}create\s+(?:or\s+replace\s+)?(?:(temp|temporary)\s+)?(?:recursive\s+)?(?:materialized\s+)?view\s+(?:if\s+not\s+exists\s+)?(${QUALIFIED})`, 'i');
+  const createSequence = new RegExp(String.raw`${LEAD}create\s+(?:(temp|temporary)\s+|unlogged\s+)?sequence\s+(?:if\s+not\s+exists\s+)?(${QUALIFIED})`, 'i');
+  const moveTable = new RegExp(String.raw`${LEAD}alter\s+(table|view|materialized\s+view|sequence)\s+(?:if\s+exists\s+)?(${QUALIFIED})\s+set\s+schema\s+(${IDENT})\s*$`, 'i');
+  for (const statement of executed) {
+    let match = createTable.exec(statement.text);
+    if (match && !match[1]) {
+      const [schema, name] = resolve(sql, match[2], statement.offset);
+      if (schema === 'public') add('table', name, ownedSequences(statement.raw, match.index + match[0].length, name));
+      continue;
+    }
+    match = createView.exec(statement.text);
+    if (match && !match[1]) {
+      const [schema, name] = resolve(sql, match[2], statement.offset);
+      if (schema === 'public') add('view', name);
+      continue;
+    }
+    match = createSequence.exec(statement.text);
+    if (match && !match[1]) {
+      const [schema, name] = resolve(sql, match[2], statement.offset);
+      if (schema === 'public') add('sequence', name);
+      continue;
+    }
+    match = moveTable.exec(statement.text);
+    if (match && ident(match[3]) === 'public') {
+      const kind = /sequence/i.test(match[1]) ? 'sequence' : /view/i.test(match[1]) ? 'view' : 'table';
+      add(kind, qualified(match[2])[1]);
+    }
+  }
+  return objects;
+}
+
+/** Public tables (and views) a migration enables RLS on. */
+function rlsTables(sql, executed) {
+  const tables = new Set();
+  const pattern = new RegExp(String.raw`${LEAD}alter\s+table\s+(?:if\s+exists\s+)?(?:only\s+)?(${QUALIFIED})\s+enable\s+row\s+level\s+security\s*$`, 'i');
+  for (const statement of executed) {
+    const match = pattern.exec(statement.text);
+    if (!match) continue;
+    const [schema, name] = resolve(sql, match[1], statement.offset);
+    if (schema === 'public') tables.add(name);
+  }
   return tables;
 }
 
-/** Whether a reference (qualified or not) names public.<name>. */
-function namesPublic(raw, name) {
-  const [schema, object] = qualified(raw);
-  return object === name && (schema === null || schema === 'public');
-}
-
-/** Roles each table or sequence of public gets an explicit grant or revoke for. */
-function decisions(sql) {
+/** Roles each public table (or view) and sequence gets an explicit grant or revoke for. */
+function decisions(sql, executed = executedStatements(sql)) {
   const found = { table: new Map(), sequence: new Map() };
-  const grant = /^\s*(grant|revoke)\s+([\s\S]+?)\s+on\s+([\s\S]+?)\s+(to|from)\s+([\s\S]+)$/i;
-  for (const statement of statements(sql)) {
+  const grant = new RegExp(String.raw`${LEAD}(grant|revoke)\s+([\s\S]+?)\s+on\s+([\s\S]+?)\s+(to|from)\s+([\s\S]+)$`, 'i');
+  for (const statement of executed) {
     const match = grant.exec(statement.text);
     if (!match) continue;
     let target = match[3].trim();
@@ -238,8 +302,9 @@ function decisions(sql) {
       .replace(/\s+(?:with\s+grant\s+option|granted\s+by\s+[\s\S]*|cascade|restrict)\s*$/i, '')
       .split(',').map((role) => ident(role.replace(/^\s*group\s+/i, '')));
     for (const object of target.split(',')) {
-      const [schema, name] = qualified(object);
-      if (schema !== null && schema !== 'public') continue;
+      // An unqualified target resolves through the search_path in force at that statement.
+      const [schema, name] = resolve(sql, object, statement.offset);
+      if (schema !== 'public') continue;
       const set = found[kind].get(name) ?? new Set();
       for (const role of roles) set.add(role);
       found[kind].set(name, set);
@@ -251,22 +316,24 @@ function decisions(sql) {
 /** Problems of one migration's SQL; an empty list means it passes. */
 function checkMigrationSql(source) {
   const sql = stripComments(source);
+  const executed = executedStatements(sql);
   const problems = [];
-  const granted = decisions(sql);
-  for (const table of createdPublicTables(sql)) {
-    const label = `public.${table.name}`;
-    const rls = [...sql.matchAll(new RegExp(String.raw`\balter\s+table\s+(?:if\s+exists\s+)?(?:only\s+)?(${QUALIFIED})\s+enable\s+row\s+level\s+security`, 'gi'))]
-      .some((match) => namesPublic(match[1], table.name));
-    if (!rls) problems.push(`${label}: no "alter table ${label} enable row level security"`);
-    const roles = granted.table.get(table.name) ?? new Set();
-    const missing = ROLES.filter((role) => !roles.has(role));
-    if (missing.length) problems.push(`${label}: no explicit grant or revoke on the table for ${missing.join(', ')}`);
-    for (const column of table.sequences) {
-      const sequence = `${table.name}_${column}_seq`;
-      const sequenceRoles = granted.sequence.get(sequence) ?? new Set();
-      const sequenceMissing = ROLES.filter((role) => !sequenceRoles.has(role));
+  const granted = decisions(sql, executed);
+  const rls = rlsTables(sql, executed);
+  const missingFor = (map, name) => {
+    const roles = map.get(name) ?? new Set();
+    return ROLES.filter((role) => !roles.has(role));
+  };
+  for (const object of createdPublicObjects(sql, executed)) {
+    const label = `public.${object.name}`;
+    if (object.kind === 'table' && !rls.has(object.name)) problems.push(`${label}: no "alter table ${label} enable row level security"`);
+    const missing = missingFor(object.kind === 'sequence' ? granted.sequence : granted.table, object.name);
+    if (missing.length) problems.push(`${label}: no explicit grant or revoke on the ${object.kind} for ${missing.join(', ')}`);
+    for (const { column, sequence: [schema, name] } of object.sequences) {
+      const sequenceLabel = `${schema ?? 'public'}.${name}`;
+      const sequenceMissing = (schema ?? 'public') === 'public' ? missingFor(granted.sequence, name) : [];
       if (sequenceMissing.length) {
-        problems.push(`${label}: column ${column} owns sequence public.${sequence}; no explicit grant or revoke on it for ${sequenceMissing.join(', ')}`);
+        problems.push(`${label}: column ${column} owns sequence ${sequenceLabel}; no explicit grant or revoke on it for ${sequenceMissing.join(', ')}`);
       }
     }
   }
@@ -311,4 +378,4 @@ function main() {
 
 if (require.main === module) main();
 
-module.exports = { ROLES, GRANDFATHER_CUTOFF, GRANDFATHERED, stripComments, statements, createdPublicTables, decisions, checkMigrationSql, checkMigrations };
+module.exports = { ROLES, GRANDFATHER_CUTOFF, GRANDFATHERED, stripComments, statements, executedStatements, createdPublicObjects, decisions, checkMigrationSql, checkMigrations };
