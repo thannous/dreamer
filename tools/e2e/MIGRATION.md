@@ -27,9 +27,11 @@ than test bodies; do not call the existing parity bridge a full public-API migra
 | Retired Maestro history / manual RevenueCat, real voice and permission checks | Historical or manual, explicitly limited | Not silently restored, deleted or called automated coverage. See NATIVE-MATRIX.md and e2e/README.md. |
 | `scripts/check-image-seo-browser.js`, `scripts/perf/measure-web-fluidity.mjs` | Browser SEO checks / CDP performance measurement, not E2E regression suites | Retained as specialized tooling; CDP CPU tracing is not a TesterArmy public Browser API. |
 
-No old coverage is deleted. Until equivalent execution passes, `test:e2e:backend`
-continues to run the full original suite. `test:testerarmy:backend` pilots the six
-compatible ports through the same guarded stack owner, unique fixtures and cleanup.
+No old coverage is deleted. After all six ports passed three times,
+`test:e2e:backend` now runs those six in TesterArmy plus the two explicit Playwright
+SDK exceptions, sequentially against the same guarded stack. `test:testerarmy:backend`
+selects only the six public-API journeys; `test:e2e:backend -- --legacy-playwright`
+retains the entire original suite. Select one runner explicitly for targeted flags.
 The backend candidate cannot be called a complete replacement while its two SDK
 exceptions and branch-account qualification remain open.
 

@@ -15,7 +15,7 @@ export type Account = { id: string; email: string; password: string };
 export async function restrictNetwork(context: BrowserContext) {
   await context.route('**/*', async route => {
     const requestUrl = new URL(route.request().url());
-    if (requestUrl.origin === 'http://127.0.0.1:8085' ||
+    if (requestUrl.origin === `http://127.0.0.1:${process.env.E2E_WEB_PORT ?? '8085'}` ||
         (requestUrl.origin === url.origin && !requestUrl.pathname.startsWith('/functions/'))) {
       return route.continue();
     }

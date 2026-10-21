@@ -5,6 +5,10 @@ if (!process.env.E2E_BACKEND_STATUS_FILE || !process.env.E2E_BACKEND_PROFILE) {
   throw new Error('Use npm run test:e2e:backend to prepare the isolated backend and Expo profile');
 }
 
+const port = Number(process.env.E2E_WEB_PORT ?? '8085');
+if (!Number.isInteger(port) || port < 1 || port > 65535) throw new Error('Invalid E2E_WEB_PORT');
+const origin = `http://127.0.0.1:${port}`;
+
 export default defineConfig({
   metadata: {
     sourceRevision: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(),
@@ -31,11 +35,11 @@ export default defineConfig({
     ['junit', { outputFile: 'test-results/e2e-backend-junit/results.xml' }],
   ],
   // Videos + machine-readable assertions prove the journey without recording Auth JWTs in network traces.
-  use: { baseURL: 'http://127.0.0.1:8085', locale: 'en-US', serviceWorkers: 'block', actionTimeout: 20_000, trace: 'off', video: 'on', screenshot: 'only-on-failure' },
+  use: { baseURL: origin, locale: 'en-US', serviceWorkers: 'block', actionTimeout: 20_000, trace: 'off', video: 'on', screenshot: 'only-on-failure' },
   projects: [{ name: 'chromium-real-backend', use: { ...devices['Desktop Chrome'] } }],
   webServer: {
-    command: 'npm run start:backend-e2e -- --web --port 8085',
-    url: 'http://127.0.0.1:8085/node_modules/expo-router/entry.bundle?platform=web&dev=true&hot=false&lazy=true&transform.engine=hermes&transform.routerRoot=app&transform.reactCompiler=true&unstable_transformProfile=hermes-stable',
+    command: `npm run start:backend-e2e -- --web --port ${port}`,
+    url: `${origin}/node_modules/expo-router/entry.bundle?platform=web&dev=true&hot=false&lazy=true&transform.engine=hermes&transform.routerRoot=app&transform.reactCompiler=true&unstable_transformProfile=hermes-stable`,
     reuseExistingServer: false,
     timeout: 180_000,
   },
