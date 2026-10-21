@@ -89,7 +89,7 @@ proof; their initial `/status` open is readiness, not an additional UI journey.
 | `E2E_WEB_PORT=18125 npm run test:testerarmy:backend -- --repeat-each 3` | `a83190e01` | 18/18 (six cases ×3), `backend-web/1792576101195-31399-fbac5503-af75-4cf2-80f0-1b56650888f4` |
 | `npm run test:e2e:backend` | `9c25bda5f` | Six TesterArmy + two original Playwright exceptions passed, outer exit 0. SDK: `backend-web/1792576278786-34670-90ae02b9-fca4-48ad-9731-ccf8cd074a84`; legacy: `test-results/e2e-backend-results.json`. Stack destroyed. |
 | `E2E_WEB_PORT=8126 E2E_WORKERS=1 E2E_KEEP_METRO_CACHE=0 EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=false npm run test:testerarmy -- run --grep 'declining AI' --repeat-each 3` | `a83190e01` | 3/3, `dreamer-web/1792576087881-30723-a32201ee-fc2d-46b3-96e4-30e5cf01d255` |
-| Same cold-cache environment, `--grep 'declining AI|plus account watches its dream painted'` | `9c25bda5f` | 2/2, `dreamer-web/1792576279695-34757-7a66e6fd-0c99-4b7e-b79c-8a99d2b4159b`; animation also passed ×3 in the initial mixed red run documented above. |
+| Same cold-cache environment, `--grep 'declining AI\|plus account watches its dream painted'` | `9c25bda5f` | 2/2, `dreamer-web/1792576279695-34757-7a66e6fd-0c99-4b7e-b79c-8a99d2b4159b`; animation also passed ×3 in the initial mixed red run documented above. |
 | `npm run verify:pr` | `9c25bda5f` | PASS: 12 executed, 4 reused, 3 out of scope. Types, lint/script lint, related Jest, DB/static contracts, site, config, tooling. Final PR head gets its own proof before push. |
 
 Backend invocations used disposable native loopback services, unique synthetic
@@ -123,3 +123,7 @@ migration. `test:e2e:web` remains the retained legacy entry; use `test:testerarm
 for current Dreamer journeys. No legacy coverage or unit/component/integration
 suite is deleted. Native/physical and full four-context release campaigns were not
 rerun for this test-tooling change and are not qualified here.
+
+Independent read-only final-diff review of `9c25bda5f`: no P1/P2 retained.
+The reviewer confirmed the rejected free-reflection port, active backend exceptions,
+secret isolation and runner cleanup. No native/Store qualification inferred.
