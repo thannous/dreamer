@@ -53,6 +53,13 @@
 //   - "set schema": SET SCHEMA (an alias for SET search_path);
 //   - "schema DDL with routines": drop schema or alter schema ... rename in a
 //     migration that changes routines;
+//   - "public schema DDL": alter schema ... rename from or to public, or drop
+//     schema public, in any migration;
+//   - "caller-writable schema": grant create or all [privileges] on a schema to
+//     anon, authenticated, service_role or public (quoted or not, lists, with
+//     grant option), in any migration;
+//   - "quoted name with parenthesis": a routine statement with a quoted
+//     identifier containing "(" (typmod stripping cannot tell "foo(1)" from foo);
 //   - "role DDL": create/alter/drop role|user|group (all forms), grant <role>
 //     to anyone, revoke <role> from, reassign owned, drop owned. A file that
 //     needs one must be grandfathered (pinned by SHA-256); none does today;
@@ -827,11 +834,31 @@ function checkFunctionSql(source) {
 
     new RegExp(String.raw`${LEAD}(?:reassign|drop)\s+owned\s+by\b`, 'i'),
   ];
+  /** Schema shape rules, for a statement or the command of a constant execute. */
+  const schemaShapes = (text) => {
+    const found = [];
+    // Public schema DDL in any migration: renaming another schema into public (or public away)
+    // or dropping it swaps every unqualified name, across files, which this replay cannot follow.
+    const schemaRename = new RegExp(String.raw`${LEAD}alter\s+schema\s+(${IDENT})\s+rename\s+to\s+(${IDENT})`, 'i').exec(text);
+    const schemaDrop = new RegExp(String.raw`${LEAD}drop\s+schema\s+(?:if\s+exists\s+)?([\s\S]+?)\s*(?:\b(?:cascade|restrict)\s*)?$`, 'i').exec(text);
+    if ((schemaRename && [schemaRename[1], schemaRename[2]].some((name) => ident(name) === 'public'))
+      || (schemaDrop && schemaDrop[1].split(',').some((name) => ident(name) === 'public'))) {
+      found.push(`shape rule "public schema DDL": alter schema ... rename from or to public, or drop schema public; never swap the public schema in a migration`);
+    }
+    // CREATE on a schema lets a caller plant objects that shadow unqualified names on any path that lists it.
+    const schemaGrant = new RegExp(String.raw`${LEAD}grant\s+([\s\S]+?)\s+on\s+schema\s+[\s\S]+?\s+to\s+([\s\S]+)$`, 'i').exec(text);
+    if (schemaGrant && schemaGrant[1].split(',').some((privilege) => /^(?:create|all(?:\s+privileges)?)$/i.test(privilege.trim()))
+      && roleList(schemaGrant[2]).some((role) => CALLER_ROLES.includes(role))) {
+      found.push(`shape rule "caller-writable schema": grant create or all on a schema to anon, authenticated, service_role or public; callers must never create objects in a schema`);
+    }
+    return found;
+  };
   let rolledBack = false;
   for (const statement of executed) {
     if (dynamic.test(statement.text)) {
       const literal = constantExecute.exec(statement.raw);
       const command = literal ? statement.raw.slice(statement.raw.search(/\bexecute\b/i) + 7).trim().replace(/^'([\s\S]*)'[\s\S]*$/, '$1').replace(/^(\$[A-Za-z_0-9]*\$)([\s\S]*?)\1[\s\S]*$/, '$2') : '';
+      problems.push(...schemaShapes(command));
       if (shapeWords.test(statement.raw) || roleDdl.some((pattern) => pattern.test(command))) problems.push(`shape rule "dynamic routine SQL": an execute whose text mentions function, procedure, routine, definer, search_path, role, user, group, owner, owned or authorization; write it as a plain statement`);
       else if (!constantExecute.test(statement.raw)) problems.push(`shape rule "non-literal execute": an execute that is not one constant string (concatenation, format, variable or call)`);
       continue;
@@ -867,6 +894,11 @@ function checkFunctionSql(source) {
     }
     if (touchesRoutines && new RegExp(String.raw`${LEAD}(?:drop\s+schema|alter\s+schema\s+[\s\S]+?\s+rename\s+to)\b`, 'i').test(statement.text)) {
       problems.push(`shape rule "schema DDL with routines": drop schema or alter schema ... rename in a migration that changes routines; split it into its own migration`);
+    }
+    problems.push(...schemaShapes(statement.text));
+    // Typmod stripping cannot tell "foo(1)" from foo, so a quoted name with "(" in a routine statement fails closed.
+    if ((createRoutine.test(statement.text) || alterRoutine.test(statement.text) || privilege.test(statement.text) || /^\s*drop\s+(?:function|procedure|routine)\b/i.test(statement.text)) && /"(?:[^"]|"")*\((?:[^"]|"")*"/.test(statement.text)) {
+      problems.push(`shape rule "quoted name with parenthesis": a routine statement with a quoted identifier containing "("; rename the type or routine`);
     }
     if (touchesRoutines && roleSwitch.test(statement.text)) {
       problems.push(`shape rule "role switch": set role or set session authorization in a migration that changes routines; new routines would be owned by that role`);

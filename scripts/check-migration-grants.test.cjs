@@ -243,6 +243,13 @@ do $$ begin
   revoke execute on function public.claim(uuid, integer) from public, anon;
   grant execute on function public.claim(uuid, integer) to service_role;
 end $$;`,
+  'schema grants without create to callers, create to postgres': `grant usage on schema private to authenticated, anon;
+grant create on schema private to postgres;
+grant all on schema private to supabase_admin;`,
+  'rename and drop of a non-public schema in a file without routines': `alter schema scratch rename to scratch_old;
+drop schema if exists scratch_old cascade;`,
+  'CTO: schema swap, file A (s2 is not public)': `create schema s2; grant usage on schema s2 to anon;
+create function s2.bd() returns void language sql security definer as $$ select 1 $$;`,
 };
 
 // Each fails the SECURITY DEFINER rule with the listed problems.
@@ -501,6 +508,28 @@ set search_path = private, pg_temp as $$ select 1 $$;${locked('public.claim()')}
   'owned by a caller role': [`${definer()}${locked()}
 alter function public.claim(uuid, integer) owner to authenticated;`, [/owned by authenticated/]],
   'quoted mixed case is another function': [`${definer('public."Claim"')}${locked('public.claim(uuid, integer)')}`, [/Claim.*from public"/, /from anon"/, /grant execute/]],
+  'CTO: create on schema public for authenticated, definer on public, pg_temp': [`grant create on schema public to authenticated;
+create function public.f() returns void language plpgsql security definer set search_path = public, pg_temp as $$ begin perform helper(); end $$;
+revoke execute on function public.f() from public, anon;
+grant execute on function public.f() to authenticated;`, [/shape rule "caller-writable schema"/]],
+  'CTO: usage, create on a new private schema on the path': [`create schema private;
+grant usage, create on schema private to authenticated;
+create function public.f() returns void language plpgsql security definer set search_path = private, pg_temp as $$ begin perform helper(); end $$;
+revoke execute on function public.f() from public, anon;
+grant execute on function public.f() to authenticated;`, [/shape rule "caller-writable schema"/]],
+  'CTO: create on schema extensions for anon': [`grant create on schema extensions to anon;`, [/shape rule "caller-writable schema"/]],
+  'caller-writable schema: quoted, lists, all privileges, with grant option': [`grant all privileges on schema "private", extensions to postgres, "service_role" with grant option;
+grant ALL on schema private to public;
+grant usage,create on schema private to group authenticated granted by postgres;`, [/shape rule "caller-writable schema"/, /shape rule "caller-writable schema"/, /shape rule "caller-writable schema"/]],
+  'caller-writable schema inside a literal execute': [`do $$ begin execute 'grant create on schema public to anon'; end $$;`, [/shape rule "caller-writable schema"/]],
+  'CTO: schema swap, file B': [`alter schema public rename to public_old2;
+alter schema s2 rename to public;`, [/shape rule "public schema DDL"/, /shape rule "public schema DDL"/]],
+  'public schema DDL: quoted public and drop in a list': [`alter schema "public" rename to old_public;
+drop schema if exists scratch, public cascade;`, [/shape rule "public schema DDL"/, /shape rule "public schema DDL"/]],
+  'CTO: quoted type name with a parenthesis': [`create function public.f(x public.foo) returns void language sql security definer set search_path = '' as $$ select 1 $$;
+create function public.f(x public."foo(1)") returns void language sql security definer set search_path = '' as $$ select 1 $$;
+revoke execute on function public.f(public."foo(1)") from public, anon;
+grant execute on function public.f(public."foo(1)") to authenticated;`, [/shape rule "quoted name with parenthesis"/, /shape rule "quoted name with parenthesis"/, /shape rule "quoted name with parenthesis"/]],
 };
 
 test('a public security definer function with revokes, a grant and a search_path passes', () => {
@@ -522,6 +551,18 @@ test('signatures ignore names, modes, defaults, OUT arguments and type modifiers
   assert.equal(signature('p_user IN uuid, result OUT text, p_list INOUT int[]'), 'uuid,integer[]');
   assert.equal(signature('p_values integer[] default array[1, 2], p_n int = 3'), 'integer[],integer');
   assert.equal(signature('a float(1), b float(24), c float(25), d float'), 'real,real,double precision,double precision');
+});
+
+test('a public schema swap split across two migrations still fails', () => {
+  withMigrations({
+    '20261030000000_a.sql': `create schema s2; grant usage on schema s2 to anon;
+create function s2.bd() returns void language sql security definer as $$ select 1 $$;`,
+    '20261030000001_b.sql': `alter schema public rename to public_old2;
+alter schema s2 rename to public;`,
+  }, (dir) => {
+    const result = checkMigrations(dir, { tables: [], functions: [] });
+    assert.deepEqual(result.failures.map((failure) => failure.file), ['20261030000001_b.sql']);
+  });
 });
 
 test('each rule has its own closed grandfather list', () => {
