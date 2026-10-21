@@ -1440,7 +1440,7 @@ const translations: Record<string, string> = {
     'auth.forgot_password.error_title': 'L’e-mail n’est pas parti',
     'auth.forgot_password.error_message': 'L’e-mail n’a pas pu partir. Réessaie dans un instant.',
     'auth.reset_password.title': 'Choisis un nouveau mot de passe',
-    'auth.reset_password.subtitle': 'Définis un nouveau mot de passe pour ton compte. Ta session restera ouverte sur cet appareil.',
+    'auth.reset_password.subtitle': 'Définis un nouveau mot de passe pour ton compte.',
     'auth.reset_password.confirm_email': 'Saisis l’adresse e-mail qui a reçu ce lien pour confirmer le compte.',
     'auth.reset_password.email': 'E-mail du compte',
     'auth.reset_password.email_mismatch': 'Ce lien ne correspond pas à cette adresse e-mail.',

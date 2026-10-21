@@ -1439,7 +1439,7 @@ const translations: Record<string, string> = {
     'auth.forgot_password.error_title': 'The email wasn’t sent',
     'auth.forgot_password.error_message': 'The email couldn’t be sent. Try again in a moment.',
     'auth.reset_password.title': 'Choose a new password',
-    'auth.reset_password.subtitle': 'Pick a new password for your account. You will stay signed in on this device.',
+    'auth.reset_password.subtitle': 'Pick a new password for your account.',
     'auth.reset_password.confirm_email': 'Enter the email address that received this reset link to confirm the account.',
     'auth.reset_password.email': 'Account email',
     'auth.reset_password.email_mismatch': 'This reset link does not match that email address.',
