@@ -16,8 +16,14 @@
 -- TRUNCATE, REFERENCES, TRIGGER and MAINTAIN, which PostgREST never needs and
 -- RLS does not cover.
 
--- Unused key-value table (no client or Edge Function reference); RLS with no policy.
-revoke all on table public.kv_store_6e8fb8b0 from anon, authenticated;
+-- Unused key-value table (no client or Edge Function reference); RLS with no
+-- policy. It only exists in a local replay, not in production.
+do $$
+begin
+  if to_regclass('public.kv_store_6e8fb8b0') is not null then
+    revoke all on table public.kv_store_6e8fb8b0 from anon, authenticated;
+  end if;
+end $$;
 
 -- Waitlist: only the anonymous signup insert its RLS policy allows is kept.
 revoke all on table public.waitlist_subscribers from anon, authenticated;
@@ -55,5 +61,14 @@ grant select on table public.lucid_trainer_reset_fences to authenticated;
 
 -- Identity sequences: nextval for an identity column needs no sequence
 -- privilege, and UPDATE would let any client setval them.
-revoke all on sequence public.dreams_id_seq1 from anon, authenticated;
+-- The sequence behind dreams.id is dreams_id_seq in production and
+-- dreams_id_seq1 in a local replay: revoke on whichever owns the column.
+do $$
+declare
+  dreams_id_sequence text := pg_get_serial_sequence('public.dreams', 'id');
+begin
+  if dreams_id_sequence is not null then
+    execute format('revoke all on sequence %s from anon, authenticated', dreams_id_sequence);
+  end if;
+end $$;
 revoke all on sequence public.dream_sync_receipts_id_seq from anon, authenticated;
