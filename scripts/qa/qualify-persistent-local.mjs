@@ -24,13 +24,16 @@ async function main() {
     '--file', schemaFile, '--yes', '--output-format', 'json'], { cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
   if (query.error || query.status !== 0) {
     // Classify known CLI/SQL failures without logging stderr, URLs or credentials.
-    const diagnostic = String(query.stderr ?? '');
+    const diagnostic = `${query.stderr ?? ''}\n${query.stdout ?? ''}`;
     const reason = query.error ? 'CLI_SPAWN' : /multiple commands/i.test(diagnostic) ? 'MULTIPLE_COMMANDS'
       : /permission denied/i.test(diagnostic) ? 'SQL_PERMISSION'
       : /syntax error/i.test(diagnostic) ? 'SQL_SYNTAX'
       : /unknown flag|unexpected argument/i.test(diagnostic) ? 'CLI_ARGUMENT'
       : /refus|confirm|approval|read.only/i.test(diagnostic) ? 'CLI_CONFIRMATION' : 'UNCLASSIFIED';
-    stage = `qa-schema-${reason}`;
+    // Only a fixed dictionary of diagnostic words is printable, never raw output.
+    const vocabulary = new Set('cannot insert multiple commands prepared statement query failed database connection connect does not exist parameter parameters sql file postgres server error protocol result set schema permission syntax unsupported notice'.split(' '));
+    const hint = diagnostic.toLowerCase().split(/[^a-z]+/).filter(word => vocabulary.has(word)).slice(-24).join('-');
+    stage = `qa-schema-${reason}:${hint}`;
     throw new Error('QA_LOCAL_SCHEMA_FAILED');
   }
   const admin = createClient(url.href, status.SERVICE_ROLE_KEY, { auth: { persistSession: false, autoRefreshToken: false } });
