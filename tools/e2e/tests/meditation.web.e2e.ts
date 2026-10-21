@@ -79,7 +79,9 @@ test('Meditation resumes audio after restart, completes it and records history a
   const slider = screen.getByRole('slider', 'Playback position', { exact: true, visible: true });
   const bounds = await slider.boundingBox();
   if (!bounds) throw new Error('Playback seek control is not visible.');
-  await slider.click({ position: { x: bounds.width - 0.1, y: bounds.height / 2 } });
+  // SDK pointer coordinates round to whole viewport pixels. Stay one pixel
+  // inside the track; width - 0.1 rounded onto its outside edge and missed it.
+  await slider.click({ position: { x: bounds.width - 1, y: bounds.height / 2 } });
   await expect(screen.getByTestId('screen.sessionComplete', { visible: true })).toBeVisible();
   await screen.getByTestId('btn.complete.home', { visible: true }).tap();
   for (let restart = 0; restart < 2; restart++) {
