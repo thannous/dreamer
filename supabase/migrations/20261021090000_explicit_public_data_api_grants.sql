@@ -61,7 +61,6 @@ end $$;
 -- Functions.
 grant execute on function public.begin_authenticated_chat_turn(bigint, uuid, jsonb) to service_role;
 grant execute on function public.complete_authenticated_chat_turn(bigint, uuid, integer, jsonb) to service_role;
-grant execute on function public.create_journal_import_grant(text, bigint[]) to service_role;
 grant execute on function public.delete_lucid_trainer_data() to service_role;
 grant execute on function public.enforce_authenticated_monthly_quota() to anon, authenticated, service_role;
 grant execute on function public.enforce_quota_for_chat() to anon, authenticated, service_role;
@@ -72,10 +71,25 @@ grant execute on function public.legacy_dream_theme(text) to anon, authenticated
 grant execute on function public.log_user_quota_event() to anon, authenticated, service_role;
 grant execute on function public.project_dream_precise_theme() to anon, authenticated, service_role;
 grant execute on function public.project_image_job_failure_reason() to service_role;
-grant execute on function public.read_journal_import_page(uuid, integer) to service_role;
-grant execute on function public.revoke_journal_import_grant(uuid) to service_role;
 grant execute on function public.serialize_dream_for_sync(public.dreams) to anon, authenticated, service_role;
 grant execute on function public.set_exploration_started_at_from_chat_history() to anon, authenticated, service_role;
 grant execute on function public.sync_dream_mutations(jsonb) to anon, service_role;
 grant execute on function public.sync_lucid_trainer_mutations(jsonb) to service_role;
 grant execute on function public.touch_dream_revision() to anon, authenticated, service_role;
+
+-- Journal import functions come from 20260909020000_journal_import_grants,
+-- which production has not applied: grant only where they exist.
+do $$
+declare
+  fn text;
+begin
+  foreach fn in array array[
+    'public.create_journal_import_grant(text, bigint[])',
+    'public.read_journal_import_page(uuid, integer)',
+    'public.revoke_journal_import_grant(uuid)'
+  ] loop
+    if to_regprocedure(fn) is not null then
+      execute format('grant execute on function %s to service_role', to_regprocedure(fn));
+    end if;
+  end loop;
+end $$;
