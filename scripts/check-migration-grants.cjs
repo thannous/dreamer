@@ -41,6 +41,18 @@
 //   unknown security mode, so granting it EXECUTE to PUBLIC/anon or resetting
 //   its search_path fails (re-create it in the file), and so does `grant
 //   execute on all functions in schema public to public|anon`.
+//   Moving such a routine into public checks it as SECURITY DEFINER, handing
+//   any routine to a caller role as owner fails, and so do routine DDL or
+//   routine privileges in dynamic SQL (`execute ...`) and any ROLLBACK [TO
+//   SAVEPOINT] in a file that changes routines. A conditional DROP keeps the
+//   routine; any set_config of search_path other than a plain whole-statement
+//   call resets resolution to public.
+//
+// Known limit: argument types are compared as written (after alias
+// normalisation such as int4 = integer), not resolved through the search_path.
+// An unqualified type name that exists in two schemas is treated as one type,
+// so two overloads differing only by which schema's type they take are merged.
+// Qualify such types (`private.token`) in routine signatures.
 // X is matched by name and, when a statement gives an argument list, by
 // signature too: argument names, modes, defaults, OUT arguments and type
 // modifiers are ignored and common aliases are normalised (int4 = integer,
@@ -294,6 +306,9 @@ function searchPathChanges(sql) {
       const call = setConfig.exec(statement.text);
       const config = call && /^\s*'search_path'\s*,\s*'([^']*)'\s*,\s*(true|false)\s*\)\s*$/i.exec(statement.raw.slice(call.index + call[0].length));
       if (config) { list = config[1]; local = config[2].toLowerCase() === 'true'; }
+      // Any other set_config of search_path (E'...', expressions, inside CASE, ...) may move the path
+      // anywhere: fail closed, treat it as the default so unqualified names are checked as public.
+      else if (/\bset_config\s*\(/i.test(statement.text) && /search_path/i.test(statement.raw)) list = 'default';
     }
     if (list === null) continue;
     const schemas = /^\s*default\s*$/i.test(list) ? null : list.split(',').map((item) => {
@@ -309,7 +324,7 @@ function searchPathChanges(sql) {
 }
 
 /** Schema an unqualified name created at `offset` resolves to, from the last search_path set before it
- * (its first existing schema: Supabase's, the repository's, or one this file creates; `$user`, pg_catalog
+ * (its first existing schema: Supabase's, the repository's, or one this file created before it; `$user`, pg_catalog
  * and pg_temp never receive a new object here). */
 function schemaAt(sql, offset) {
   let schemas = null;
@@ -319,7 +334,8 @@ function schemaAt(sql, offset) {
   }
   if (!schemas) return 'public';
   // PostgreSQL skips path entries that do not exist; an unknown schema is treated as missing.
-  const created = new Set([...sql.matchAll(new RegExp(String.raw`\bcreate\s+schema\s+(?:if\s+not\s+exists\s+)?(${IDENT})`, 'gi'))].map((m) => ident(m[1])));
+  const created = new Set([...sql.matchAll(new RegExp(String.raw`\bcreate\s+schema\s+(?:if\s+not\s+exists\s+)?(${IDENT})`, 'gi'))]
+    .filter((m) => m.index < offset).map((m) => ident(m[1])));
   const first = schemas.find((schema) => schema && (KNOWN_SCHEMAS.includes(schema) || created.has(schema)));
   return first ?? 'public';
 }
@@ -642,7 +658,12 @@ function searchPathSafety(raw) {
   if (/from\s+current/i.test(clause[0])) return 'from current';
   const list = /^(?:'(?:[^']|'')*'|"(?:[^"]|"")*"|[A-Za-z_][\w$]*)(?:\s*,\s*(?:'(?:[^']|'')*'|"(?:[^"]|"")*"|[A-Za-z_][\w$]*))*/.exec(raw.slice(clause[0].length));
   if (!list) return '?';
-  const items = splitTopLevel(list[0]).map((item) => item.replace(/^'(.*)'$/s, '$1').replace(/^"(.*)"$/s, '$1').trim().toLowerCase());
+  // Only pg_temp itself (unquoted in any case, or exactly "pg_temp" quoted) is the temporary-schema alias.
+  const items = splitTopLevel(list[0]).map((item) => {
+    const value = item.replace(/^'(.*)'$/s, '$1').trim();
+    const quoted = /^"(.*)"$/s.exec(value);
+    return quoted ? (quoted[1] === 'pg_temp' ? 'pg_temp' : `"${quoted[1]}"`) : value.toLowerCase();
+  });
   // pg_temp alone (or only pg_temp entries) would search the caller's temporary schema first.
   if (items.every((item) => item === '')) return 'safe';
   if (items[0] !== 'pg_temp' && items[items.length - 1] === 'pg_temp') return 'safe';
@@ -690,7 +711,17 @@ function checkFunctionSql(source) {
     }
   };
   const problems = [];
+  const routineDdl = /\b(?:create\s+(?:or\s+replace\s+)?(?:function|procedure)|alter\s+(?:function|procedure|routine)|(?:grant|revoke)\b[\s\S]*\bon\s+(?:all\s+)?(?:functions?|procedures?|routines?)\b)/i;
+  const dynamic = new RegExp(String.raw`${LEAD}execute\b`, 'i');
+  const rollback = new RegExp(String.raw`${LEAD}(?:rollback|abort)\b`, 'i');
+  let rolledBack = false;
   for (const statement of executed) {
+    // Fail closed: routine DDL or routine privileges built at run time cannot be replayed here.
+    if (dynamic.test(statement.text) && routineDdl.test(statement.raw)) {
+      problems.push(`dynamic SQL (execute ...) creates, alters or grants on a routine; write it as a plain statement so the lint can check it`);
+      continue;
+    }
+    if (rollback.test(statement.text)) { rolledBack = true; continue; }
     let match = createRoutine.exec(statement.text);
     if (match) {
       const start = match.index + match[0].length;
@@ -719,7 +750,10 @@ function checkFunctionSql(source) {
         for (const routine of found) {
           // A conditional move may or may not happen: keep the routine where it was too.
           const next = statement.conditional ? { ...routine, grantees: new Set(routine.grantees) } : routine;
+          const from = routine.schema;
           if (moved) next.schema = ident(moved[1]); else next.name = ident(renamed[1]);
+          // A routine from an earlier migration moved into public may be SECURITY DEFINER: check it as one.
+          if (next.earlier && next.schema === 'public' && from !== 'public') next.definer = true;
           if (next !== routine) routines.push(next);
         }
         continue;
@@ -738,6 +772,7 @@ function checkFunctionSql(source) {
     }
     match = dropRoutine.exec(statement.text);
     if (match) {
+      if (statement.conditional) continue; // the drop may not happen: keep the routine and its state
       for (const object of splitTopLevel(match[1])) {
         const target = reference(object, statement.offset);
         if (target) { const gone = new Set(find(target)); routines = routines.filter((r) => !gone.has(r)); }
@@ -766,6 +801,12 @@ function checkFunctionSql(source) {
       // A name without arguments means the routines of that name existing at this statement.
       for (const routine of touch(target)) grantTo(routine, action, statement.conditional ? roles.filter((role) => role === 'public' || role === 'anon') : roles);
     }
+  }
+  // Fail closed: a ROLLBACK [TO SAVEPOINT] may discard any revoke or grant before it.
+  if (rolledBack && routines.length) problems.push(`rollback in a migration that changes routines; the lint cannot tell which revokes and grants survive, so do not roll back here`);
+  // Ownership by a caller role is never right, whatever the routine's security mode.
+  for (const routine of routines.filter((r) => !r.definer && CALLER_ROLES.includes(r.owner))) {
+    problems.push(`${routine.schema}.${routine.name}${routine.sig === null ? '' : `(${routine.sig})`}: owned by ${routine.owner}, a role API callers use; keep a trusted owner such as postgres`);
   }
   // Fail closed for a routine created by an earlier migration (its security mode is unknown here):
   // re-opening it to PUBLIC/anon or dropping its search_path must restate the whole decision in this file.

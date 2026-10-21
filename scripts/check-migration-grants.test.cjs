@@ -345,6 +345,24 @@ set search_path = pg_temp, public, pg_temp as $$ select 1 $$;${locked('public.cl
   'grant to PUBLIC on a routine from an earlier migration': [`grant execute on function public.claim() to public;`, [/public\.claim\(\): execute granted to public on a routine from an earlier migration/]],
   'search_path reset on a routine from an earlier migration': [`alter function public.claim() reset search_path;`, [/public\.claim\(\): search_path reset on a routine from an earlier migration/]],
   'schema-wide grant to anon': [`grant execute on all functions in schema public to anon;`, [/all functions in schema public to anon/]],
+  'conditional drop keeps the routine': [`${definer()}
+do $$ begin if false then drop function public.claim(uuid, integer); end if; end $$;`, [/from public"/, /from anon"/, /grant execute/]],
+  'schema created later in the file does not exist yet': [`set search_path = later_schema, public;
+${definer('claim')}
+create schema later_schema;`, [/public\.claim.*from public"/, /from anon"/, /grant execute/]],
+  'set_config with an E-string falls back to public': [`set search_path = private, public;
+select set_config('search_path', E'public', false);
+${definer('claim')}`, [/public\.claim.*from public"/, /from anon"/, /grant execute/]],
+  'ownership of an earlier routine handed to a caller role': [`alter function public.claim() owner to authenticated;`, [/public\.claim\(\): owned by authenticated/]],
+  'earlier routine moved into public is checked as security definer': [`alter function private.claim() set schema public;`, [/public\.claim\(\): .*from public"/, /from anon"/, /grant execute/, /without "set search_path"/]],
+  'routine DDL in dynamic SQL': [`do $$ begin execute 'create function public.claim() returns int language sql security definer as ''select 1'''; end $$;`, [/dynamic SQL/]],
+  'rollback to a savepoint after the grants': [`begin;
+${definer()}
+savepoint s;${locked()}
+rollback to savepoint s;
+commit;`, [/rollback in a migration that changes routines/]],
+  'quoted "PG_TEMP" is not the temporary schema': [`create function public.claim() returns int language sql security definer
+set search_path = public, "PG_TEMP" as $$ select 1 $$;${locked('public.claim()')}`, [/unsafe search_path/]],
   'owned by a caller role': [`${definer()}${locked()}
 alter function public.claim(uuid, integer) owner to authenticated;`, [/owned by authenticated/]],
   'quoted mixed case is another function': [`${definer('public."Claim"')}${locked('public.claim(uuid, integer)')}`, [/Claim.*from public"/, /from anon"/, /grant execute/]],
