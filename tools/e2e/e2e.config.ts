@@ -45,7 +45,7 @@ const requestedWorkers = process.env.E2E_WORKERS;
 if (requestedWorkers !== undefined && (native || !/^[1-9]\d?$/.test(requestedWorkers)))
   throw new Error('E2E_WORKERS takes 1-99 web workers; native runs use one device.');
 const workers = Number(requestedWorkers ?? 1);
-if (product === 'backend' && (workers !== 1 || port !== 8085)) throw new Error('Backend fixtures require one worker and port 8085.');
+if (product === 'backend' && workers !== 1) throw new Error('Backend fixtures require one worker.');
 if (product === 'backend' && (!process.env.E2E_BACKEND_STATUS_FILE || !process.env.E2E_BACKEND_PROFILE || !process.env.E2E_BACKEND_PASSWORD_FILE))
   throw new Error('Use npm run test:testerarmy:backend to own and guard the backend stack.');
 if (personas && workers !== 1) throw new Error('Bound the persona pilot with E2E_WORKERS=1.');

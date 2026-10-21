@@ -38,7 +38,10 @@ test('declining AI keeps the saved dream unanalyzed, accepting later analyzes it
     expect(await browser.evaluate(() => localStorage.getItem('noctalia.aiConsent.v2'))).toBeNull();
     answer = 'accept';
     await screen.getByTestId('btn.dream.primaryCta').tap();
-    await expect(screen.getByTestId('component.dreamDetail.readingZone')).toContainText(/\S{20}/);
+    const interpretation = screen.getByTestId('component.dreamDetail.interpretation');
+    await expect(interpretation).toBeVisible();
+    // A reading needs substantive text, not a single unbroken 20-letter word.
+    await expect.poll(async () => (await interpretation.textContent()).replace(/\s/g, '').length).toBeGreaterThanOrEqual(20);
     expect(dialogs).toHaveLength(2);
     expect(await browser.evaluate(() => localStorage.getItem('noctalia.aiConsent.v2'))).toBe('granted');
     await app.screenshot('consent-declined-then-accepted');
