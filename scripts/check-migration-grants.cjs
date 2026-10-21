@@ -37,6 +37,10 @@
 //   It also fails when X is handed to a caller role (`alter function X owner to
 //   anon|authenticated|service_role`). An owner-only routine (a trigger
 //   function) records its decision as `grant execute on function X to postgres`.
+//   Fail closed across files: a routine this file does not create has an
+//   unknown security mode, so granting it EXECUTE to PUBLIC/anon or resetting
+//   its search_path fails (re-create it in the file), and so does `grant
+//   execute on all functions in schema public to public|anon`.
 // X is matched by name and, when a statement gives an argument list, by
 // signature too: argument names, modes, defaults, OUT arguments and type
 // modifiers are ignored and common aliases are normalised (int4 = integer,
@@ -146,6 +150,7 @@ const FUNCTION_GRANDFATHERED = Object.freeze([
   '20260917172941_preserve_plus_analysis_authorization.sql',
   '20261014183000_allow_luminous_nostalgic_analysis_themes.sql',
   '20261015120000_add_dream_precise_theme.sql',
+  '20261021090000_explicit_public_data_api_grants.sql',
 ]);
 
 // A dollar-quote tag: $$ or $name$ (an identifier: letters, digits after the first, underscores).
@@ -186,6 +191,7 @@ const GRANDFATHERED_DIGESTS = Object.freeze({
   '20260917172941_preserve_plus_analysis_authorization.sql': '6e1c6643881922ccb7795c24cfe9ed8c78bc8fce7421ad1cc6f7cff24e3301bc',
   '20261014183000_allow_luminous_nostalgic_analysis_themes.sql': '6358c19cc23148bf413b54a5ce2e8668330b9322e7556d76a45e8b42cfee723c',
   '20261015120000_add_dream_precise_theme.sql': 'dc771825dc16ddb01d12f594d6d92fdf57d7fe7b8018575422b30dd9458676ca',
+  '20261021090000_explicit_public_data_api_grants.sql': '69c14d7f27085ca4b74fb768a6243eb5f69a530e9aeeff3122e9e2d083e0df4d',
 });
 
 /** Remove comments, keep string and dollar-quoted contents (they may hold real DDL in DO blocks). */
@@ -639,7 +645,7 @@ function searchPathSafety(raw) {
   const items = splitTopLevel(list[0]).map((item) => item.replace(/^'(.*)'$/s, '$1').replace(/^"(.*)"$/s, '$1').trim().toLowerCase());
   // pg_temp alone (or only pg_temp entries) would search the caller's temporary schema first.
   if (items.every((item) => item === '')) return 'safe';
-  if (items[items.length - 1] === 'pg_temp' && items.some((item) => item !== 'pg_temp' && item !== '')) return 'safe';
+  if (items[0] !== 'pg_temp' && items[items.length - 1] === 'pg_temp') return 'safe';
   return list[0];
 }
 
@@ -672,7 +678,7 @@ function checkFunctionSql(source) {
   const touch = (target) => {
     const found = find(target);
     if (found.length) return found;
-    const created = fresh(target.schema, target.name, target.sig);
+    const created = { ...fresh(target.schema, target.name, target.sig), earlier: true };
     routines.push(created);
     return [created];
   };
@@ -683,6 +689,7 @@ function checkFunctionSql(source) {
       else routine.grantees.delete(role);
     }
   };
+  const problems = [];
   for (const statement of executed) {
     let match = createRoutine.exec(statement.text);
     if (match) {
@@ -725,7 +732,7 @@ function checkFunctionSql(source) {
         // A conditional change may not happen: it can make a routine definer, never clear it.
         if (security && !(statement.conditional && security === 'invoker')) routine.definer = security === 'definer';
         if (pathAt >= 0 && !statement.conditional) routine.path = searchPathSafety(statement.raw.slice(start + target.end + pathAt));
-        else if (/\breset\s+(?:search_path|all)\b/i.test(rest)) routine.path = null;
+        else if (/\breset\s+(?:search_path|all)\b/i.test(rest)) { routine.path = null; routine.pathReset = true; }
       }
       continue;
     }
@@ -743,6 +750,8 @@ function checkFunctionSql(source) {
       if (match[2] || !executes(match[3]) || match[1].toLowerCase() !== 'grant') continue;
       const schemas = splitTopLevel(match[4]).map(ident);
       const roles = roleList(match[6]).filter((role) => role === 'public' || role === 'anon');
+      // Fail closed: earlier migrations' definer routines in that schema cannot be seen from here.
+      if (schemas.includes('public')) for (const role of roles) problems.push(`grant execute on all functions in schema public to ${role}: re-opens every public SECURITY DEFINER routine, grant per routine instead`);
       for (const routine of routines.filter((r) => schemas.includes(r.schema))) grantTo(routine, 'grant', roles);
       continue;
     }
@@ -758,7 +767,13 @@ function checkFunctionSql(source) {
       for (const routine of touch(target)) grantTo(routine, action, statement.conditional ? roles.filter((role) => role === 'public' || role === 'anon') : roles);
     }
   }
-  const problems = [];
+  // Fail closed for a routine created by an earlier migration (its security mode is unknown here):
+  // re-opening it to PUBLIC/anon or dropping its search_path must restate the whole decision in this file.
+  for (const routine of routines.filter((r) => r.earlier && r.schema === 'public' && !r.definer)) {
+    const label = `public.${routine.name}${routine.sig === null ? '' : `(${routine.sig})`}`;
+    for (const role of ['public', 'anon']) if (routine[role] === 'granted') problems.push(`${label}: execute granted to ${role} on a routine from an earlier migration; re-create it here (security invoker or fully secured) so the lint can see its security mode`);
+    if (routine.pathReset) problems.push(`${label}: search_path reset on a routine from an earlier migration; re-create it here so the lint can see its security mode`);
+  }
   for (const routine of routines.filter((r) => r.schema === 'public' && r.definer)) {
     const label = `public.${routine.name}${routine.sig === null ? '' : `(${routine.sig})`}`;
     for (const role of ['public', 'anon']) {

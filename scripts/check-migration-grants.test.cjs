@@ -311,7 +311,7 @@ return 1; end $body1$;`, [/from public"/, /from anon"/, /grant execute/]],
   'float(1) and float(25) are different overloads': [`${definer('public.claim', 'x float(1)')}${locked('public.claim(float(25))')}`,
     [/claim\(real\): .*from public"/, /from anon"/, /grant execute/]],
   'schema-wide grant afterwards re-opens it': [`${definer()}${locked()}
-grant execute on all functions in schema public to public;`, [/granted back to public/]],
+grant execute on all functions in schema public to public;`, [/all functions in schema public to public/, /granted back to public/]],
   'conditional security invoker does not clear definer': [`${definer()}
 do $$ begin if false then alter function public.claim(uuid, integer) security invoker; end if; end $$;`, [/from public"/, /from anon"/, /grant execute/]],
   'set_config that may not run does not move the function': [`select case when false then set_config('search_path', 'private', false) else '' end;
@@ -340,6 +340,11 @@ ${definer('claim')}`, [/public\.claim.*from public"/, /from anon"/, /grant execu
   'conditional move into public is checked': [`create function private.claim() returns int language sql security definer set search_path = '' as $$ select 1 $$;
 do $$ begin if current_setting('app.env', true) = 'prod' then alter function private.claim() set schema public; end if; end $$;`,
     [/public\.claim\(\): .*from public"/, /from anon"/, /grant execute/]],
+  'search_path starting with pg_temp': [`create function public.claim() returns int language sql security definer
+set search_path = pg_temp, public, pg_temp as $$ select 1 $$;${locked('public.claim()')}`, [/unsafe search_path/]],
+  'grant to PUBLIC on a routine from an earlier migration': [`grant execute on function public.claim() to public;`, [/public\.claim\(\): execute granted to public on a routine from an earlier migration/]],
+  'search_path reset on a routine from an earlier migration': [`alter function public.claim() reset search_path;`, [/public\.claim\(\): search_path reset on a routine from an earlier migration/]],
+  'schema-wide grant to anon': [`grant execute on all functions in schema public to anon;`, [/all functions in schema public to anon/]],
   'owned by a caller role': [`${definer()}${locked()}
 alter function public.claim(uuid, integer) owner to authenticated;`, [/owned by authenticated/]],
   'quoted mixed case is another function': [`${definer('public."Claim"')}${locked('public.claim(uuid, integer)')}`, [/Claim.*from public"/, /from anon"/, /grant execute/]],
@@ -396,12 +401,12 @@ test('a grandfathered migration cannot change', () => {
 });
 
 test('the function grandfathered list holds only migrations from before its rule', () => {
-  assert.equal(FUNCTION_GRANDFATHERED.length, 25);
+  assert.equal(FUNCTION_GRANDFATHERED.length, 26);
   for (const file of FUNCTION_GRANDFATHERED) assert.ok(file.slice(0, 14) <= FUNCTION_GRANDFATHER_CUTOFF, file);
 });
 
 test('the repository migrations pass', () => {
   const result = spawnSync(process.execPath, [path.join(__dirname, 'check-migration-grants.cjs')], { encoding: 'utf8' });
   assert.equal(result.status, 0, result.stderr);
-  assert.match(result.stdout, /13 grandfathered for tables, 25 for security definer functions, 0 failures/);
+  assert.match(result.stdout, /13 grandfathered for tables, 26 for security definer functions, 0 failures/);
 });
