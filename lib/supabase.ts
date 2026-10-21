@@ -15,7 +15,7 @@ function createIsolatedPkceRecoveryClient(projectUrl: string, publicKey: string,
   // reaching another recovery tab or the app's primary auth client.
   const storageKey = `noctalia-recovery-pkce-${Date.now()}-${Math.random().toString(36).slice(2)}`;
   const values = new Map<string, string>([[`${storageKey}-code-verifier`, verifier]]);
-  return createClient(projectUrl, publicKey, {
+  const client = createClient(projectUrl, publicKey, {
     auth: {
       storageKey,
       storage: {
@@ -31,10 +31,12 @@ function createIsolatedPkceRecoveryClient(projectUrl: string, publicKey: string,
       flowType: 'pkce',
     },
   });
+  return { client, clear: () => values.clear() };
 }
 
 let webRecoveryPkce: {
-  client: ReturnType<typeof createIsolatedPkceRecoveryClient>;
+  client: ReturnType<typeof createIsolatedPkceRecoveryClient>['client'];
+  clear: () => void;
   user: User;
 } | null = null;
 
@@ -145,8 +147,12 @@ export async function updatePasswordFromPendingWebRecoveryPkce(email: string, ne
   const { data, error } = await recovery.client.auth.updateUser({ password: newPassword });
   if (error) throw error;
   if (!data.user || data.user.id !== recovery.user.id) {
+    recovery.clear();
+    webRecoveryPkce = null;
+    webRecoveryLinkState = 'invalid';
     throw new Error('Password recovery account changed.');
   }
+  recovery.clear();
   webRecoveryPkce = null;
   webRecoveryLinkState = 'none';
   return data.user;
@@ -321,20 +327,23 @@ export const webAuthCallbackPromise: Promise<void> = webAuthCode
 
       // The marker and its verifier are transferred only to a distinct
       // memory-backed client. A recovery code never reaches the app client.
+      let isolated: ReturnType<typeof createIsolatedPkceRecoveryClient> | null = null;
       try {
         window.localStorage.removeItem(`${WEB_AUTH_STORAGE_KEY}-code-verifier`);
-        const client = createIsolatedPkceRecoveryClient(
+        isolated = createIsolatedPkceRecoveryClient(
           configuration.projectUrl, configuration.publicKey, verifier
         );
-        const { data, error } = await client.auth.exchangeCodeForSession(webAuthCode!);
+        const { data, error } = await isolated.client.auth.exchangeCodeForSession(webAuthCode!);
         if (error || !('redirectType' in data) || data.redirectType !== 'PASSWORD_RECOVERY' ||
           !data.user?.email || !data.session || data.session.user.id !== data.user.id) {
+          isolated.clear();
           webRecoveryLinkState = 'invalid';
           return;
         }
-        webRecoveryPkce = { client, user: data.user };
+        webRecoveryPkce = { client: isolated.client, clear: isolated.clear, user: data.user };
         webRecoveryLinkState = 'pending';
       } catch {
+        isolated?.clear();
         webRecoveryLinkState = 'invalid';
       }
       return;
