@@ -404,7 +404,11 @@ export default {
     {
       name: 'testerarmy-tooling',
       command: 'npm run test:testerarmy:typecheck && npm run test:testerarmy:guards',
-      kinds: ['release'],
+      // Static types and synthetic guards only: no browser, device, model or build.
+      // Unrelated PRs do not pay for this check; releases always run it.
+      when: ['tools/e2e/**/*.ts', 'tools/e2e/*.mjs', 'tools/e2e/*.json'],
+      inputs: ['tools/e2e/**', 'e2e/backend/**', 'scripts/lib/backend-e2e-local.cjs', 'package.json', 'package-lock.json'],
+      exclude: DOCS,
       specialised: true,
       requires: TESTERARMY,
     },

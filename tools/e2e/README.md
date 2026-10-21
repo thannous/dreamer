@@ -17,8 +17,8 @@ loader; the scoped public matcher preload is unchanged.
 Local web runs use several workers: half the CPU cores, at most four, or
 `E2E_WORKERS=<n>`. Files run in parallel against the one local server, each
 attempt in its own browser context and storage; a file's tests stay in order.
-CI (`CI` set) keeps one worker and shards across containers, and native runs keep
-one worker per named device. e2e 0.21.2 starts the slowest files first only when
+Headless environments (`CI` set) keep one worker; optional local sharding uses
+the same campaign collector. Native runs keep one worker per named device. e2e 0.21.2 starts the slowest files first only when
 the previous report sits in the same output directory, which this runner never
 reuses, so files start in collection order.
 
@@ -268,17 +268,19 @@ The 83 historical browser cases across 16 families run through TesterArmy with
 their exact UI assertions, including mock billing, capture/edit/chat, continuous
 reading, reflection, symbol dictionary, Explorer, settings persistence, Home,
 Trends, responsive navigation, Journal geometry and feature-sheet stories.
-The original Playwright web suite remains for local runs. Since the owner decision
-of 2026-10-08, CI runs these 83 cases only here: every Playwright title has a
-TesterArmy counterpart, with a stricter quota assertion and one Europe/Paris
-browser timezone. Backend suites remain required. The relevant
+The original Playwright web suite remains available while replacements are validated.
+TesterArmy owns local journey runs, with exact quota assertions and one Europe/Paris
+browser timezone. See [the migration inventory](MIGRATION.md) for current coverage
+and explicit exceptions. Backend qualification remains required. The relevant
 functional assertions protect the current contract.
 An obsolete expectation may be revised with a recorded product reason and a
 focused current journey. Preserve the old red/pass result as history; it does not
-automatically block feature or framework adoption or permit silently bypassing CI.
+automatically block feature or framework adoption or permit bypassing local gates.
 
-The public `surfaceOf()` Page/context keeps CSS, geometry, keyboard, image and
-clock checks. TesterArmy owns isolated attempts and traces; the pinned isolated
+The retained `surfaceOf()` Page/context bridge keeps CSS, geometry, keyboard, image
+and clock checks. This is a transitional runner migration: the official guide reserves
+raw Page access for executors. These bodies are not claimed as fully migrated to
+public screen/browser APIs; their exact assertions remain until equivalents pass. TesterArmy owns isolated attempts and traces; the pinned isolated
 Playwright 1.64.0 package supplies matchers only. The parity fixture preserves
 Desktop Chrome 1280x720 by default (explicit mobile overrides remain), with
 30-second actions and 15-second exact assertions from the historical config.
@@ -300,9 +302,9 @@ EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=true E2E_WEB_LOCALE=de-DE mise exe
 EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=false E2E_WEB_LOCALE=en-US mise exec -- node tools/e2e/run.mjs dreamer web run --grep 'feature sheets stay disabled when switched off'
 ```
 
-The existing Dreamer CI check runs the same four passes and retains every
-timestamped report, screenshot, trace, source/input hashes and browser-context
-artifact. Lucid, Meditation and site commands keep their existing behavior;
+The local `testerarmy-dreamer` release check runs those four passes and retains
+every timestamped report, screenshot, trace, source/input hashes and browser-context
+artifact. CircleCI runs only its optional installation benchmark. Lucid, Meditation and site commands keep their existing behavior;
 locale flags apply only to web. `E2E_WEB_PORT` can select an isolated local port.
 The matcher preload applies only to the CLI/workers. Expo receives the caller's
 original `NODE_OPTIONS` value or absence; native and inspection commands receive
@@ -476,8 +478,8 @@ The existing Playwright visual journey remains; native Lucid runs here (`lucid.m
 Every invocation has a fresh UUID output under
 `tools/e2e/.e2e/<product>-<platform>/<timestamp>-<pid>-<uuid>/`; collisions never
 overwrite prior evidence. `sdk.log` and each managed server's `app.log` are inside
-that output, so all locale/flag partitions are uploaded by the existing CI artifact
-step. `evidence.json` carries exact command, campaign/context, pins, test source,
+that output. Local artifacts stay private; no automatic hosted validation or
+artifact upload runs on push. `evidence.json` carries exact command, campaign/context, pins, test source,
 build receipt and requested media. `source-start.json` / `source-end.json` retain
 path→SHA inputs without raw diffs. `installed-start.json` / `installed-end.json`
 identify the installed binary. `files.json` hashes output files written before the
@@ -541,19 +543,18 @@ restored between them.
 synthetic fixtures, without starting an engine or device. These controls supplement
 real journeys and never establish application or physical qualification.
 
-Agent goals can be added with an authorized model provider, one goal per call
-and exact critical-outcome assertions. No provider is configured by default.
-The optional `@e2e-dev/decision` / Jev setup described in the installed
-`docs/decision-models.mdx` additionally requires `ai` 7.0.128 or later. This
-package installs neither that executor nor `ai`; exact journeys require no
-model dependency, and the upgrade does not enable a provider.
+Exact journeys require no model calls. The pinned SDK transitively includes AI SDK
+packages; installing them does not enable model calls or a paid provider. The optional
+`E2E_PERSONAS=1` pilot configures the existing supported ChatGPT subscription adapter
+with bounded goals and exact assertions, as documented above. Ordinary runs keep
+zero-model-use qualification. Jev / `@e2e-dev/decision` is not configured.
 Use a provider barrier when replay must never call a model; strict cache alone
-does not forbid a call on a cache miss. Existing Playwright, backend and
-CI checks remain until an explicitly reviewed pipeline change. Still-relevant
-assertions remain until their replacement passes; obsolete historical criteria
-may be revised with their current product reason and old result preserved.
-A listed or
-typechecked test is not evidence that the user journey passed.
+does not forbid a call on a cache miss. Preserve still-relevant coverage until its
+replacement passes. A listed or typechecked test is not a passed user journey.
+
+`verify:pr` runs `testerarmy-tooling` only for changed TesterArmy TypeScript,
+runner, config or package inputs; it typechecks and runs synthetic guard tests,
+without an engine, app build, device or model. Release validation always runs it.
 
 ## agent-device inspection and live exploration
 

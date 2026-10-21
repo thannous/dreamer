@@ -539,7 +539,7 @@ test('plus account watches its dream painted into the window, then finds it glow
   // While the illustration lands, the astrolabe holds still: the date engraved on its rim
   // stays whole, never fading out, and nothing but the illustration plays its entrance again.
   await browser.evaluate(() => {
-    const w = window as unknown as { __sealDate: { settled: number; lowest: number | null; replayed: number } };
+    const w = window as unknown as { __sealDate: { settled: number; lowest: number | null; replayed: number; complete: boolean } };
     // Letters seen, each through every view down from the rim's date.
     const seen = () => {
       const date = document.querySelector('[data-testid="component.savedDream.sealDate"]');
@@ -560,7 +560,7 @@ test('plus account watches its dream painted into the window, then finds it glow
         return animation.playState === 'running' && target instanceof Element && !artwork.contains(target);
       }).length;
     };
-    w.__sealDate = { settled: seen(), lowest: null, replayed: 0 };
+    w.__sealDate = { settled: seen(), lowest: null, replayed: 0, complete: false };
     const start = performance.now();
     const tick = () => {
       const artwork = document.querySelector('[data-testid="component.dreamDetail.savedMoment.artwork"]');
@@ -569,6 +569,7 @@ test('plus account watches its dream painted into the window, then finds it glow
         w.__sealDate.replayed = Math.max(w.__sealDate.replayed, replaying(artwork));
       }
       if (performance.now() - start < 6000) requestAnimationFrame(tick);
+      else w.__sealDate.complete = true;
     };
     requestAnimationFrame(tick);
     return null;
@@ -576,8 +577,10 @@ test('plus account watches its dream painted into the window, then finds it glow
   await screen.getByTestId('btn.journal.illustrate', { visible: true }).tap();
   // Painted in the seal's window: no canvas of its own is added to the page.
   await expect(screen.getByTestId('component.dreamDetail.savedMoment.artwork')).toHaveCount(1);
-  await new Promise((resolve) => setTimeout(resolve, 1200));
-  const sealDate = await browser.evaluate(() => (window as unknown as { __sealDate: { settled: number; lowest: number | null; replayed: number } }).__sealDate);
+  await expect.poll(() => browser.evaluate(() =>
+    (window as unknown as { __sealDate: { complete: boolean } }).__sealDate.complete),
+  { timeout: 10_000, message: 'the full six-second seal observation completes' }).toBe(true);
+  const sealDate = await browser.evaluate(() => (window as unknown as { __sealDate: { settled: number; lowest: number | null; replayed: number; complete: boolean } }).__sealDate);
   expect(sealDate.settled).toBeGreaterThan(0);
   expect(sealDate.lowest).toBe(sealDate.settled);
   expect(sealDate.replayed).toBe(0);

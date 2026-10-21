@@ -168,6 +168,19 @@ describe('verify-local.config.mjs', () => {
     expect(pr.find((check) => check.command.includes('docs:build')).when).toEqual(expect.arrayContaining(['docs-src/', 'data/']));
   });
 
+  it('checks TesterArmy changes before push without launching a browser on unrelated PRs', () => {
+    // UI journeys cannot detect a missing static gate for a newly broken test file.
+    const check = config.checks.find(entry => entry.name === 'testerarmy-tooling');
+    expect(check.kinds ?? ['pr', 'release']).toEqual(['pr', 'release']);
+    expect(check.command).toBe('npm run test:testerarmy:typecheck && npm run test:testerarmy:guards');
+    const selected = JSON.parse(execFileSync(process.execPath, ['--input-type=module', '-e',
+      `import { matchesAny } from ${JSON.stringify(pathToFileURL(path.join(ROOT, 'scripts/verify-local.mjs')).href)};
+       const paths = ['tools/e2e/tests/new.web.e2e.ts', 'tools/e2e/e2e.config.ts', 'tools/e2e/run.mjs', 'tools/e2e/package-lock.json', 'app/settings.tsx', 'tools/e2e/README.md'];
+       process.stdout.write(JSON.stringify(paths.map(file => matchesAny(file, ${JSON.stringify(check.when)}))));`,
+    ], { encoding: 'utf8' }));
+    expect(selected).toEqual([true, true, true, true, false, false]);
+  });
+
   it('runs benchmark contracts for a change to any benchmark manifest alone', () => {
     // These manifests can change the canonical command or browser version
     // without touching CI YAML. A browser journey cannot detect a skipped guard.

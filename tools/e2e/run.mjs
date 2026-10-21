@@ -28,9 +28,9 @@ for (let index = 0; index < rawArgs.length; index++) {
   } else if (rawArgs[index] === '--install-release') installRelease = true;
   else args.push(rawArgs[index]);
 }
-if (!['dreamer', 'lucid', 'meditation', 'site'].includes(product) || !['web', 'android', 'ios'].includes(platform) || !['run', 'list', 'mcp', 'inspect', 'build', 'collect'].includes(command))
-  throw new Error('Usage: run.mjs dreamer|lucid|meditation|site web|android|ios [run|list|mcp|inspect] [e2e flags]');
-if (product === 'site' && platform !== 'web') throw new Error('Site supports web only.');
+if (!['dreamer', 'lucid', 'meditation', 'site', 'backend'].includes(product) || !['web', 'android', 'ios'].includes(platform) || !['run', 'list', 'mcp', 'inspect', 'build', 'collect'].includes(command))
+  throw new Error('Usage: run.mjs dreamer|lucid|meditation|site|backend web|android|ios [run|list|mcp|inspect] [e2e flags]');
+if (['site', 'backend'].includes(product) && platform !== 'web') throw new Error('Site and backend support web only.');
 if ((releaseFile || installRelease || command === 'build') && platform === 'web') throw new Error('Release options require a native target.');
 if (installRelease && command !== 'run') throw new Error('Only a native run can request installation.');
 if (command === 'build' && args.length) throw new Error('Build uses the explicit E2E_BUILD_COMMAND descriptor, without SDK flags.');
@@ -64,7 +64,7 @@ const env = { ...process.env, E2E_PRODUCT: product, E2E_PLATFORM: platform, E2E_
 // worker and shards; a native target drives its one named device. The resolved count
 // reaches the config and the evidence's rerun environment.
 if (platform === 'web' && env.E2E_WORKERS === undefined)
-  env.E2E_WORKERS = String(!['', '0', 'false'].includes(env.CI ?? '') ? 1 : Math.min(4, Math.max(1, Math.floor(availableParallelism() / 2))));
+  env.E2E_WORKERS = String(product === 'backend' ? 1 : !['', '0', 'false'].includes(env.CI ?? '') ? 1 : Math.min(4, Math.max(1, Math.floor(availableParallelism() / 2))));
 function cliEnvironment() {
   if (platform !== 'web') return env;
   return {
@@ -125,7 +125,7 @@ let resourceCleanup = 'not-started';
 const secondary = [];
 const installationErrorDetails = [];
 const startedAt = Date.now();
-const expectedOrigin = platform === 'web' ? `http://127.0.0.1:${env.E2E_WEB_PORT ?? ({ dreamer: 8096, lucid: 8097, meditation: 8098, site: 8099 }[product])}` : undefined;
+const expectedOrigin = platform === 'web' ? `http://127.0.0.1:${env.E2E_WEB_PORT ?? ({ dreamer: 8096, lucid: 8097, meditation: 8098, site: 8099, backend: 8085 }[product])}` : undefined;
 const pins = Object.fromEntries(['e2e', '@e2e-dev/web', '@e2e-dev/mobile', 'agent-device'].map(name => [name, JSON.parse(readFileSync(join(cwd, 'node_modules', name, 'package.json'), 'utf8')).version]));
 if (Object.entries(SDK_PINS).some(([name, version]) => pins[name] !== version)) throw new Error('INSTALLED_SDK_PINS');
 const campaignId = env.E2E_CAMPAIGN_ID ?? env.CIRCLE_WORKFLOW_JOB_ID ?? null;
@@ -344,7 +344,7 @@ try {
     revision: read('git', ['rev-parse', 'HEAD']), workingTree: read('git', ['status', '--porcelain']),
     trackedDiffSha256: diffSha256,
     command: ['node', 'tools/e2e/run.mjs', product, platform, command, ...args, ...(releaseFile ? ['--release-receipt', resolve(releaseFile)] : []), ...(installRelease ? ['--install-release'] : [])],
-    rerunEnvironment: platform === 'web' ? { E2E_WEB_LOCALE: context().locale, EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED: String(context().featureSheets), E2E_WEB_PORT: new URL(expectedOrigin).port, E2E_WORKERS: env.E2E_WORKERS, E2E_KEEP_METRO_CACHE: env.E2E_KEEP_METRO_CACHE === '1' ? '1' : null,
+    rerunEnvironment: platform === 'web' ? { E2E_WEB_LOCALE: context().locale, EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED: String(context().featureSheets), E2E_WEB_PORT: new URL(expectedOrigin).port, E2E_WORKERS: env.E2E_WORKERS, E2E_KEEP_METRO_CACHE: env.E2E_KEEP_METRO_CACHE ?? null,
       ...(env.E2E_PERSONAS === '1' ? { E2E_PERSONAS: '1', E2E_PERSONA_MODEL: context().personaModel } : {}) } : { E2E_DEVICE: env.E2E_DEVICE ?? null, E2E_AVD_NAME: env.E2E_AVD_NAME ?? 'Pixel_9_API_37',
       ...(env.E2E_PERSONAS === '1' ? { E2E_PERSONAS: '1', E2E_PERSONA_MODEL: context().personaModel } : {}) },
     ...(platform === 'web' ? {
@@ -355,7 +355,8 @@ try {
       nodeOptionsRestored: Object.hasOwn(env, 'NODE_OPTIONS') ? 'original value' : 'absent',
     } : {}),
     release: release ? { receipt: resolve(releaseFile ?? join(output, 'release.json')), buildSource: release.source.revision, profile: release.profile } : null,
-    services: platform === 'web' && product !== 'site' ? 'mock services; local real UI' : 'identified local Release / generated site',
+    ...(product === 'backend' ? { backend: { runtime: env.E2E_BACKEND_RUNTIME, cliVersion: env.E2E_BACKEND_CLI_VERSION, migrationFixtures: JSON.parse(env.E2E_BACKEND_MIGRATION_FIXTURES ?? '{}'), rerun: env.E2E_BACKEND_RERUN } } : {}),
+    services: product === 'backend' ? 'disposable local Supabase Auth/Postgres/PostgREST; external AI and payments blocked' : platform === 'web' && product !== 'site' ? 'mock services; local real UI' : 'identified local Release / generated site',
   });
   if (command === 'build') {
     await buildRelease();

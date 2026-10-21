@@ -9,6 +9,9 @@ const { assertBackendTarget, normalizeStackStatus, prepareLocalMigrations } = re
 
 const root = path.resolve(__dirname, '..');
 const args = process.argv.slice(2);
+const testerarmyIndex = args.indexOf('--testerarmy');
+const testerarmy = testerarmyIndex >= 0;
+if (testerarmy) args.splice(testerarmyIndex, 1);
 const runtimeIndex = args.indexOf('--runtime');
 const requestedRuntime = runtimeIndex >= 0 ? args.splice(runtimeIndex, 2)[1] : undefined;
 // The native Supabase runtime is the only owned stack: no Docker, no Podman.
@@ -27,7 +30,7 @@ const project = `noctalia-backend-e2e-disposable-${randomUUID().slice(0, 8)}`;
 const target = path.join(workdir, 'supabase');
 const cli = process.env.E2E_SUPABASE_CLI || path.join(root, 'node_modules/.bin/supabase');
 const quote = arg => `'${arg.replaceAll("'", "'\"'\"'")}'`;
-const rerunArgs = [...(requestedRuntime ? ['--runtime', requestedRuntime] : []),
+const rerunArgs = [...(testerarmy ? ['--testerarmy'] : []), ...(requestedRuntime ? ['--runtime', requestedRuntime] : []),
   ...(qualifyTi528 ? ['--qualify-ti528'] : []), ...args].map(quote).join(' ');
 // Supabase documents this one for root runs of the native runtime; other SUPABASE_* settings are dropped.
 const keptSupabaseEnv = ['SUPABASE_NATIVE_POSTGRES_USER'];
@@ -102,8 +105,12 @@ try {
     EXPO_PUBLIC_TURNSTILE_SITE_KEY: '',
   };
   fs.writeFileSync(profile, Object.entries(publicEnv).map(([key, value]) => `${key}=${value}`).join('\n') + '\n', { mode: 0o600 });
-  command(process.execPath, [path.join(path.dirname(require.resolve('playwright/package.json')), 'cli.js'), 'test', '--config', 'playwright.backend.config.ts', ...args], {
-    env: { ...process.env, E2E_BACKEND_STATUS_FILE: statusFile, E2E_BACKEND_PROFILE: profile,
+  const passwordFile = path.join(workdir, 'password');
+  fs.writeFileSync(passwordFile, `E2e!${randomUUID()}`, { mode: 0o600 });
+  command(process.execPath, testerarmy
+    ? ['tools/e2e/run.mjs', 'backend', 'web', 'run', ...args]
+    : [path.join(path.dirname(require.resolve('playwright/package.json')), 'cli.js'), 'test', '--config', 'playwright.backend.config.ts', ...args], {
+    env: { ...process.env, E2E_BACKEND_PASSWORD_FILE: passwordFile, E2E_BACKEND_STATUS_FILE: statusFile, E2E_BACKEND_PROFILE: profile,
       E2E_BACKEND_RUNTIME: runtime,
       E2E_BACKEND_CLI_VERSION: cliVersion,
       E2E_BACKEND_RERUN: `${rerunEnv}mise exec -- npm run test:e2e:backend${rerunArgs ? ` -- ${rerunArgs}` : ''}`,
