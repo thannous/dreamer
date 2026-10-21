@@ -248,6 +248,9 @@ grant create on schema private to postgres;
 grant all on schema private to supabase_admin;`,
   'CTO: schema swap, file A (s2 is not public)': `create schema s2; grant usage on schema s2 to anon;
 create function s2.bd() returns void language sql security definer as $$ select 1 $$;`,
+  'owner to a trusted role and create schema authorization postgres': `alter table public.dreams owner to postgres;
+alter function public.get_user_dreams() owner to postgres;
+create schema if not exists private4 authorization postgres;`,
 };
 
 // Each fails the SECURITY DEFINER rule with the listed problems.
@@ -367,7 +370,7 @@ create schema later_schema;`, [/public\.claim.*from public"/, /from anon"/, /gra
   'set_config with an E-string falls back to public': [`set search_path = private, public;
 select set_config('search_path', E'public', false);
 ${definer('claim')}`, [/shape rule "non-literal set_config"/, /public\.claim.*from public"/, /from anon"/, /grant execute/]],
-  'ownership of an earlier routine handed to a caller role': [`alter function public.claim() owner to authenticated;`, [/public\.claim\(\): owned by authenticated/]],
+  'ownership of an earlier routine handed to a caller role': [`alter function public.claim() owner to authenticated;`, [/shape rule "caller-owned object"/, /public\.claim\(\): owned by authenticated/]],
   'earlier routine moved into public is checked as security definer': [`alter function private.claim() set schema public;`, [/public\.claim\(\): .*from public"/, /from anon"/, /grant execute/, /without "set search_path"/]],
   'routine DDL in dynamic SQL': [`do $$ begin execute 'create function public.claim() returns int language sql security definer as ''select 1'''; end $$;`, [/shape rule "dynamic routine SQL"/]],
   'rollback to a savepoint after the grants': [`begin;
@@ -504,7 +507,7 @@ ${definer('claim')}`, [/shape rule "schema DDL"/, /public\.claim.*from public"/,
 create function public.claim() returns int language sql security definer
 set search_path = private, pg_temp as $$ select 1 $$;${locked('public.claim()')}`, [/shape rule "schema DDL"/]],
   'owned by a caller role': [`${definer()}${locked()}
-alter function public.claim(uuid, integer) owner to authenticated;`, [/owned by authenticated/]],
+alter function public.claim(uuid, integer) owner to authenticated;`, [/shape rule "caller-owned object"/, /owned by authenticated/]],
   'quoted mixed case is another function': [`${definer('public."Claim"')}${locked('public.claim(uuid, integer)')}`, [/Claim.*from public"/, /from anon"/, /grant execute/]],
   'CTO: create on schema public for authenticated, definer on public, pg_temp': [`grant create on schema public to authenticated;
 create function public.f() returns void language plpgsql security definer set search_path = public, pg_temp as $$ begin perform helper(); end $$;
@@ -537,9 +540,25 @@ alter schema scratch rename to scratch_old;`, [/shape rule "schema DDL"/, /shape
   'Codex: schema owned by a caller on a pg_temp path': [`alter schema private owner to authenticated;
 create function public.f() returns void language plpgsql security definer set search_path = private, pg_temp as $$ begin perform helper(); end $$;
 revoke execute on function public.f() from public, anon;
-grant execute on function public.f() to authenticated;`, [/shape rule "caller-writable schema"/]],
+grant execute on function public.f() to authenticated;`, [/shape rule "caller-owned object"/]],
   'caller-owned schema: quoted role, inside a literal execute': [`alter schema extensions owner to "anon";
-do $$ begin execute 'alter schema private owner to service_role'; end $$;`, [/shape rule "caller-writable schema"/, /shape rule "caller-writable schema"/, /shape rule "dynamic routine SQL"/]],
+do $$ begin execute 'alter schema private owner to service_role'; end $$;`, [/shape rule "caller-owned object"/, /shape rule "caller-owned object"/, /shape rule "dynamic routine SQL"/]],
+  'caller-owned object: table': [`alter table public.dreams owner to authenticated;`, [/shape rule "caller-owned object"/]],
+  'caller-owned object: view': [`alter view public.v owner to anon;`, [/shape rule "caller-owned object"/]],
+  'caller-owned object: materialized view': [`alter materialized view public.mv owner to service_role;`, [/shape rule "caller-owned object"/]],
+  'caller-owned object: sequence': [`alter sequence public.s owner to "authenticated";`, [/shape rule "caller-owned object"/]],
+  'caller-owned object: type': [`alter type public.mood owner to public;`, [/shape rule "caller-owned object"/]],
+  'caller-owned object: domain': [`alter domain public.d owner to anon;`, [/shape rule "caller-owned object"/]],
+  'caller-owned object: function': [`alter function public.get_user_dreams() owner to anon;`, [/shape rule "caller-owned object"/, /get_user_dreams\(\): owned by anon/]],
+  'caller-owned object: procedure': [`alter procedure public.p() owner to authenticated;`, [/shape rule "caller-owned object"/, /p\(\): owned by authenticated/]],
+  'caller-owned object: routine': [`alter routine public.r() owner to service_role;`, [/shape rule "caller-owned object"/, /r\(\): owned by service_role/]],
+  'caller-owned object: operator': [`alter operator public.=== (int, int) owner to anon;`, [/shape rule "caller-owned object"/]],
+  'caller-owned object: schema': [`alter schema private owner to "anon";`, [/shape rule "caller-owned object"/]],
+  'caller-owned object: foreign table (any other kind)': [`alter foreign table public.ft owner to authenticated;`, [/shape rule "caller-owned object"/]],
+  'caller-owned object: table if exists only, mixed case': [`ALTER TABLE IF EXISTS ONLY public.dreams OWNER TO "service_role";`, [/shape rule "caller-owned object"/]],
+  'caller-owned object: create schema authorization': [`create schema private2 authorization authenticated;
+create schema authorization anon;
+create schema if not exists private3 authorization "service_role";`, [/shape rule "caller-owned object"/, /shape rule "caller-owned object"/, /shape rule "caller-owned object"/]],
 };
 
 test('a public security definer function with revokes, a grant and a search_path passes', () => {

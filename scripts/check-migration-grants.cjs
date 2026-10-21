@@ -57,7 +57,10 @@
 //     schema public, in any migration;
 //   - "caller-writable schema": grant create or all [privileges] on a schema to
 //     anon, authenticated, service_role or public (quoted or not, lists, with
-//     grant option), or alter schema ... owner to one of them, in any migration;
+//     grant option), in any migration;
+//   - "caller-owned object": alter <any object kind> ... owner to anon,
+//     authenticated, service_role or public (quoted or not, also in a literal
+//     execute), or create schema ... authorization one of them, in any migration;
 //   - "quoted name with parenthesis": a routine statement with a quoted
 //     identifier containing "(" (typmod stripping cannot tell "foo(1)" from foo);
 //   - "role DDL": create/alter/drop role|user|group (all forms), grant <role>
@@ -850,10 +853,15 @@ function checkFunctionSql(source) {
       && roleList(schemaGrant[2]).some((role) => CALLER_ROLES.includes(role))) {
       found.push(`shape rule "caller-writable schema": grant create or all on a schema to anon, authenticated, service_role or public; callers must never create objects in a schema`);
     }
-    // A caller that owns a schema can create in it, like a CREATE grant.
-    const schemaOwner = new RegExp(String.raw`${LEAD}alter\s+schema\s+${IDENT}\s+owner\s+to\s+(${IDENT})`, 'i').exec(text);
-    if (schemaOwner && CALLER_ROLES.includes(ident(schemaOwner[1]))) {
-      found.push(`shape rule "caller-writable schema": alter schema ... owner to anon, authenticated, service_role or public; callers must never own a schema`);
+    // A caller that owns an object (any kind: table, view, sequence, type, routine, schema, ...) controls
+    // it like its creator: it can alter it, grant on it and, for a schema, create in it.
+    const owner = new RegExp(String.raw`${LEAD}alter\b[\s\S]*?\bowner\s+to\s+(${IDENT})`, 'i').exec(text);
+    if (owner && CALLER_ROLES.includes(ident(owner[1]))) {
+      found.push(`shape rule "caller-owned object": alter ... owner to anon, authenticated, service_role or public; callers must never own an object`);
+    }
+    const authorization = new RegExp(String.raw`${LEAD}create\s+schema\s+(?:if\s+not\s+exists\s+)?(?:${IDENT}\s+)?authorization\s+(${IDENT})`, 'i').exec(text);
+    if (authorization && CALLER_ROLES.includes(ident(authorization[1]))) {
+      found.push(`shape rule "caller-owned object": create schema ... authorization anon, authenticated, service_role or public; callers must never own a schema`);
     }
     return found;
   };
