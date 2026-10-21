@@ -534,6 +534,12 @@ grant execute on function public.f(public."foo(1)") to authenticated;`, [/shape 
 create function public.search_path() returns int language sql security invoker as $$ select 1 $$;`, [/SEARCH_PATH.*from public"/, /from anon"/, /grant execute/, /search_path/]],
   'schema DDL in a file without routines': [`drop schema private cascade;
 alter schema scratch rename to scratch_old;`, [/shape rule "schema DDL"/, /shape rule "schema DDL"/]],
+  'Codex: schema owned by a caller on a pg_temp path': [`alter schema private owner to authenticated;
+create function public.f() returns void language plpgsql security definer set search_path = private, pg_temp as $$ begin perform helper(); end $$;
+revoke execute on function public.f() from public, anon;
+grant execute on function public.f() to authenticated;`, [/shape rule "caller-writable schema"/]],
+  'caller-owned schema: quoted role, inside a literal execute': [`alter schema extensions owner to "anon";
+do $$ begin execute 'alter schema private owner to service_role'; end $$;`, [/shape rule "caller-writable schema"/, /shape rule "caller-writable schema"/, /shape rule "dynamic routine SQL"/]],
 };
 
 test('a public security definer function with revokes, a grant and a search_path passes', () => {

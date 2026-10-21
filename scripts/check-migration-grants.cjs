@@ -57,7 +57,7 @@
 //     schema public, in any migration;
 //   - "caller-writable schema": grant create or all [privileges] on a schema to
 //     anon, authenticated, service_role or public (quoted or not, lists, with
-//     grant option), in any migration;
+//     grant option), or alter schema ... owner to one of them, in any migration;
 //   - "quoted name with parenthesis": a routine statement with a quoted
 //     identifier containing "(" (typmod stripping cannot tell "foo(1)" from foo);
 //   - "role DDL": create/alter/drop role|user|group (all forms), grant <role>
@@ -849,6 +849,11 @@ function checkFunctionSql(source) {
     if (schemaGrant && schemaGrant[1].split(',').some((privilege) => /^(?:create|all(?:\s+privileges)?)$/i.test(privilege.trim()))
       && roleList(schemaGrant[2]).some((role) => CALLER_ROLES.includes(role))) {
       found.push(`shape rule "caller-writable schema": grant create or all on a schema to anon, authenticated, service_role or public; callers must never create objects in a schema`);
+    }
+    // A caller that owns a schema can create in it, like a CREATE grant.
+    const schemaOwner = new RegExp(String.raw`${LEAD}alter\s+schema\s+${IDENT}\s+owner\s+to\s+(${IDENT})`, 'i').exec(text);
+    if (schemaOwner && CALLER_ROLES.includes(ident(schemaOwner[1]))) {
+      found.push(`shape rule "caller-writable schema": alter schema ... owner to anon, authenticated, service_role or public; callers must never own a schema`);
     }
     return found;
   };
