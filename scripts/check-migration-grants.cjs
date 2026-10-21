@@ -983,6 +983,15 @@ function checkFunctionSql(source) {
       let routine = routines.find((r) => r.schema === target.schema && r.name === target.name && r.sig === sig);
       const existed = Boolean(routine);
       if (!routine) { routine = fresh(target.schema, target.name, sig); routines.push(routine); }
+      // A plain CREATE only succeeds when the routine is gone (DROP ... CASCADE of a type, schema or
+      // extension can remove it), so it starts from the default ACL, never from the tracked one.
+      if (existed && !/\bor\s+replace\b/i.test(match[0])) {
+        if (statement.conditional) { routine.public = 'default'; routine.anon = 'default'; } else {
+          const replaced = fresh(target.schema, target.name, sig);
+          routines[routines.indexOf(routine)] = replaced;
+          routine = replaced;
+        }
+      }
       const rest = statement.text.slice(start + target.end);
       // Repeated options apply in order: the last SET search_path wins.
       const pathAt = [...rest.matchAll(/\bset\s+search_path\b/gi)].pop()?.index ?? -1;

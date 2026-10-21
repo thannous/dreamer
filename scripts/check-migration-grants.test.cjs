@@ -597,6 +597,14 @@ create function public.claim(x public."a,b") returns int language sql security d
 create function public.claim(x public.a, y public.b) returns int language sql security invoker as $$ select 1 $$;`, [/shape rule "quoted name with a delimiter"/]],
   'quoted type name with a close parenthesis or an escaped quote': [`drop function if exists public.f(public."x)");
 drop function if exists public.f(public."x""y");`, [/shape rule "quoted name with a delimiter"/, /shape rule "quoted name with a delimiter"/]],
+  'Codex: plain create after DROP TYPE CASCADE starts from the default ACL': [`create type public.token as enum ('a');
+create function public.claim(x public.token) returns int language sql security definer set search_path = '' as $$ select 1 $$;
+revoke execute on function public.claim(public.token) from public, anon;
+grant execute on function public.claim(public.token) to authenticated;
+drop type public.token cascade;
+create type public.token as enum ('a');
+create function public.claim(x public.token) returns int language sql security definer set search_path = '' as $$ select 1 $$;`,
+    [/public\.claim\(token\).*from public"/, /from anon"/, /grant execute/]],
 };
 
 test('a public security definer function with revokes, a grant and a search_path passes', () => {
