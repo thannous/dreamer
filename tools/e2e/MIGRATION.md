@@ -16,7 +16,7 @@ Unit, component, integration, security and performance checks remain in place.
 | Consent and stable Dreamer journeys | Public TesterArmy tests, including the six-second animation observation under audit. | Preserved; consent retains both named providers, no permission on refusal, later reading, two dialogs, durable permission and original story. The animation waits for its whole observation before checking nonzero/full settled letters and zero replay. |
 | Real local backend | Eight cases, moved into TesterArmy in #529 with Page/context compatibility fixtures. | Six public-API cases: RLS/other-user/anonymous isolation, Free/Plus server quota and sign-out, legacy/current themes and RPC, private Apple-token lifecycle. Two context/offline cases remain explicit compatibility exceptions in the same TesterArmy runner; their bodies are identical to #529. |
 | Shared test-branch sessions | #529 moved two cases/setup into the guarded TesterArmy branch runner. | Preserved. Environment block: no approved allowlisted branch/accounts. The production HTTP/WebSocket guards and private saved-session handling remain. No remote seed or production access. |
-| Lucid, Meditation, site | TesterArmy, including #529's latest journeys. | Preserved; no duplicate runner or new provider. Their existing #529 proof is history, not a new execution claimed here. |
+| Lucid, Meditation, site | TesterArmy, including #529's latest journeys. | Preserved; the focused Lucid and Meditation validations below are new. Other unchanged #529 results remain historical; no new site/native/persona execution is claimed. |
 | Outside `tools/e2e`: Lucid visual journey | `tests/e2e/lucid-visual-journey.mjs`, a manually invoked in-app browser journey. | Retired only after the four `PR237` equivalents in `lucid.web.e2e.ts` passed on `70c197ca6`. Password and hands-phase assertions retained explicitly; onboarding/time contrast, narrow tabs, programs/WBTB, account validation, morning→Journal→Atlas and both labs' persistence remain. Canonical command: `E2E_WEB_LOCALE=fr-FR npm run test:testerarmy:lucid -- run --grep PR237`. |
 | Native / physical / Store | Existing guarded TesterArmy suites, one owner per identified device. | No binary/device/data touched; no native, physical, Release, Store or OTA qualification from these web runs. |
 | SEO browser check / CDP profiling | Specialized browser SEO and performance measurements. | Retained as specialized tooling, not misrepresented as product E2E or device qualification. |
@@ -97,39 +97,96 @@ transitive AI packages / explicitly requested persona runs.
 
 ## Final evidence
 
-Integrated execution on `0edbb15a0820cc7524544098d7f8f0bf7f27342d`:
-- Backend: `E2E_WEB_PORT=8085 npm run test:e2e:backend`, 8/8 PASS,
-  `backend-web/1792579087077-37163-592beb9f-c291-4544-9ec4-c594f5070b6b`;
-  outer exit 0 and the owned stack destroyed.
-- Full Dreamer EN/feature ON/cold cache: 103 PASS, 3 FAIL, 27 intentional
-  other-context/OFF skips, exit 1. Run
-  `dreamer-web/1792578944175-33686-bc8832d9-d8ec-4250-871e-5be70b2e2815`.
-  The failures were the search's pending wheel/focus and two ambiguous Trends tabs.
-  Current code waits for the actual wheel motion to settle, preserving real
-  per-character typing, return-to-top focus and user-scroll dismissal. Trends
-  explicitly requires a visible tab with the original role. No assertion is removed.
-  Other tested files/fixtures/app inputs are unchanged by these focused repairs;
-  their immutable results remain useful evidence without rerunning five minutes
-  of unchanged onboarding observations.
+Code candidate: `67b2df43b18efb23171d5778e96ef37f0de04ef1`; later edits only
+record evidence/documentation. The final documentation commit and its exact
+`verify:pr` proof are identified in the draft PR. No application source changed
+relative to integrated master `ca3c4c93b581968aaec5bb76c21a7582887d1fc3`.
 
-Final changed-case and locale results are appended after the focused reruns.
+Build/target: app 3.7.0, Expo 58.0.14 development web bundles on macOS arm64,
+Node 24.19.0/npm 11.17.0, Deno 2.7.14, Supabase CLI 2.121.0,
+Chromium 156.0.8078.4, SDK pins listed above. Dreamer uses real local UI with
+mock auth/storage/AI/billing and synthetic data. Backend uses real disposable
+local Auth/Postgres/PostgREST and Deno API; only Apple exchange/revocation are
+synthetic. External AI/payments/OAuth are blocked. Lucid uses fictional local
+notes; Meditation uses local audio/state. There is no native build or real Store
+qualification here. Every run below has clean, stable source-start/source-end
+and immutable `end.json`; red runs remain red.
 
-Development failures are retained privately, not counted as passes: source
-`8b6831b89` had six failures (relative screenshot paths, semantic glyph spacing,
-role ambiguity and focus) in `dreamer-web/1792578203430-29139-c709671e-bf7f-4d13-8f50-0e40bface433`.
-Earlier image selection and viewport-helper failures were corrected with an
-independent review. The preliminary French 25/25 run at
-`1792578553834-30695-02061caa-0a5a-4275-939c-61ba981e5dd1` had uncommitted inputs
-and is preparatory evidence only. An integrated backend attempt on 18125 refused
-CONFIG_LOAD_FAILED before tests because #529 pins origin 8085; its owned stack was
-destroyed. Retry used the verified-free canonical 8085 origin without changing
-that guard. Source-clean final runs and their exact revisions are listed above.
+| Scope | Revision | Result | Private receipt under `tools/e2e/.e2e/` |
+| --- | --- | --- | --- |
+| Full Dreamer EN, feature ON, cold cache | `0edbb15a0820cc7524544098d7f8f0bf7f27342d` | 103 PASS, 3 FAIL, 27 deliberate other-context/OFF skips; exit 1 | `dreamer-web/1792578944175-33686-bc8832d9-d8ec-4250-871e-5be70b2e2815` |
+| Search focus, strengthened consent, empty Trends journal, each ×3 | `5355dfb124d601568865561139ca235460ac5e82` | These 9 attempts PASS; the same run's other 6 Trends attempts FAIL on uppercase rendered text | `dreamer-web/1792579716100-45049-5af39eca-3246-4346-aa09-49f67c928a7a` |
+| Both repaired populated Trends cases, each ×3 | `165d48c6378f58a6ab51027d8e50a6a54dcdfc7c` | 6/6 PASS, exit 0 | `dreamer-web/1792580087599-7718-8abb4865-decc-44c6-bdf8-97243eafdb98` |
+| All FR public journeys, feature ON | `70c197ca63c6d3c123001857f56b19ed37f4071c` | 25/25 PASS, exit 0 | `dreamer-web/1792580329323-11964-de42b59f-5440-4ab8-9d3c-e5972b898509` |
+| German Trends, feature ON, 320 px | `a1d911651bac570d5aff7b7998b142c7920f5622` | 1/1 PASS, exit 0 | `dreamer-web/1792580471300-15797-faf1a6c2-0600-4835-b33d-3836aefd380a` |
+| EN feature OFF, cold cache | `a1d911651bac570d5aff7b7998b142c7920f5622` | 1/1 PASS, exit 0; receipt retains cache setting `0` | `dreamer-web/1792580505015-16632-35af7715-a5b4-4922-9ab4-fa701d5bc2b6` |
+| Default local backend, all public + compatibility cases | `165d48c6378f58a6ab51027d8e50a6a54dcdfc7c` | 8/8 PASS, outer exit 0, owned stack destroyed | `backend-web/1792580089591-7965-39419ac1-ba6d-4f9b-8ad4-ada91d4034fd` |
+| Four Lucid equivalents of the old manual visual journey | `70c197ca63c6d3c123001857f56b19ed37f4071c` | 4/4 PASS, exit 0, before retiring old entry | `lucid-web/1792580329982-12050-65841e80-c336-4965-947e-038013ae3d4f` |
+| Meditation onboarding/favourites/audio | `a1d911651bac570d5aff7b7998b142c7920f5622` | First two PASS; audio FAIL because SDK rounded the pointer outside the track | `meditation-web/1792580470724-15711-c8432ab3-2d1e-4c8c-b89c-9fccbbbc8a55` |
+| Repaired public audio seek/restart/completion, ×3 | `67b2df43b18efb23171d5778e96ef37f0de04ef1` | 3/3 PASS, exit 0; same near-end click one whole pixel inside the actual control | `meditation-web/1792580611996-18475-3ae5d87b-ab1d-4ab0-b091-762ff88afb6e` |
 
-Private outputs stay in ignored `tools/e2e/.e2e/`: source-start/source-end, hashes,
-command/env, SDK report, traces/screenshots, qualification and `end.json`. No
-credentials, private logs or generated images are committed. Backend Auth,
-Postgres and PostgREST are real local services; only Apple exchange/revocation is
-synthetic. External AI/payments/OAuth are blocked. Web mock runs use real local
-UI with mock app services. No production, real Apple/payment, native or Store
-qualification is claimed. Persona and physical-device campaigns were not rerun
-for this test-tooling PR; the two branch sessions remain blocked as stated.
+The reports' passed IDs cover all **133 current deterministic Dreamer cases**
+across their four contexts (106 EN/ON, 25 FR/ON, 1 DE/ON, 1 EN/OFF), including the
+114 cases in the 21 ported families. One old consent title is superseded by its
+strengthened rerun and is counted only once. This is combined evidence after
+focused repairs, **not one freshly green full campaign**. Changed bodies were
+rerun; unchanged test/fixture/app inputs retain their immutable results. No
+unchanged five-minute onboarding observation was rerun merely for a docs edit.
+Excluded cases in focused reports are not counted as passes. No unresolved
+Dreamer mock-web failure remains in this evidence set.
+
+Exact commands (prefix `E2E_WEB_PORT=8126 E2E_WORKERS=2` for Dreamer;
+`E2E_WEB_PORT=8127 E2E_WORKERS=2` for Lucid;
+`E2E_WEB_PORT=8128 E2E_WORKERS=1` for Meditation):
+
+```sh
+# Full EN/ON run; preserved red result, followed by focused repairs below.
+E2E_WEB_LOCALE=en-US E2E_KEEP_METRO_CACHE=0 EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=true npm run test:testerarmy -- run
+# Search, consent and empty Trends: 3/3 each; populated Trends red in this same run.
+E2E_WEB_LOCALE=en-US EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=true npm run test:testerarmy -- run --grep 'a search typed|declining AI|30 nights read|each door opens|an empty journal offers' --repeat-each 3
+# Corrected populated Trends: 6/6.
+E2E_WEB_LOCALE=en-US EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=true npm run test:testerarmy -- run --grep '30 nights read|each door opens' --repeat-each 3
+E2E_WEB_LOCALE=fr-FR EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=true npm run test:testerarmy -- run --tag public-api --tag locale-fr-FR --tag-mode all
+E2E_WEB_LOCALE=de-DE EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=true npm run test:testerarmy -- run --tag public-api --tag locale-de-DE --tag-mode all
+E2E_WEB_LOCALE=en-US E2E_KEEP_METRO_CACHE=0 EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=false npm run test:testerarmy -- run --grep 'feature sheets stay disabled when switched off'
+npm run test:e2e:backend # fixed canonical local web origin 8085
+E2E_WEB_LOCALE=fr-FR npm run test:testerarmy:lucid -- run --grep PR237
+E2E_WEB_LOCALE=en-US npm run test:testerarmy:meditation -- run
+E2E_WEB_LOCALE=en-US npm run test:testerarmy:meditation -- run --grep 'resumes audio' --repeat-each 3
+```
+
+Types, focused lint with zero warnings, backend/process guards (31), TesterArmy
+guards (49) and the applicable root checks passed. `verify:pr` on `5355dfb124d6`
+ran 16 checks, reused 0, with 3 out of scope; its proof key is
+`2ac4938e2a38e51ab673c1b64209f383dcca3afa`. The final head is independently checked
+before push. Independent final-diff and focused delta reviews found no remaining
+P1/P2 after correcting viewport clipping, image selection, screenshot paths,
+semantic text, focus, consent and documentation discrepancies.
+
+Development failures are retained privately and not counted as passes. The
+French run `dreamer-web/1792580164271-8663-1c35958e-5c71-4dc6-8ce0-6fc3549508b2`
+on `165d48c63` passed 24/25; a scene remounted between image readiness and pixel
+read. Reading both atomically preserves the same 80×60 sampling/coefficients and
+>.55/<.5 thresholds; the final 25/25 rerun above covers all backgrounds. Earlier
+screenshot paths, glyph spacing, image selection and viewport-helper failures
+remain in their private receipts. The preparatory French 25/25 on uncommitted
+inputs is not used as final evidence. An integrated backend attempt on 18125
+refused CONFIG_LOAD_FAILED before tests because #529 pins origin 8085; its owned
+stack was destroyed. The canonical default run above passed without weakening
+the origin guard.
+
+The optional shared branch was checked before connection: `E2E_SUPABASE_URL`
+is unset, `allowedProjectRefs` is empty; guard result: “test-login refused:
+E2E_SUPABASE_URL is not set. Nothing was sent.” Its two cases remain preserved,
+unexecuted and blocked on an owned approved target/accounts. No override, remote
+seed or production credential change was attempted. The API compatibility limits
+above also remain explicit: two backend context/offline bodies and the branch
+WebSocket/private-session boundary have no public Browser equivalent in the
+versions inspected; preserved coverage is preferable to replacing their invariant.
+
+Private outputs stay in ignored `tools/e2e/.e2e/`: source identities/hashes,
+command/env, report, traces/screenshots, qualification and `end.json`. Credentials,
+private logs and generated images are not committed. No production, real
+Apple/payment, physical-device, native Release, Store or OTA qualification is
+claimed. The optional ChatGPT Pro/persona campaign and unaffected site/native
+suites were not rerun for this test-tooling PR.

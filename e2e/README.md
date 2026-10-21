@@ -3,8 +3,10 @@
 All active E2E commands use TesterArmy: Dreamer, Lucid, Meditation, the marketing
 site, the disposable local backend and the optional persistent test branch.
 The former Playwright test runners and duplicated suites were retired on
-2026-10-21. Public Playwright browser APIs and matchers remain available through
-the TesterArmy web engine for geometry, clocks and exact assertions.
+2026-10-21. Dreamer's historical web families now use public TesterArmy APIs;
+the remaining context/offline and branch-session compatibility limits are explicit
+in the [migration inventory](../tools/e2e/MIGRATION.md). The old manual Lucid
+visual entry was retired after its four TesterArmy equivalents passed.
 
 ## Run the complete web campaign
 
