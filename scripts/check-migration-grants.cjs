@@ -49,6 +49,10 @@
 //   - "unicode-escaped identifier": a U&"..." identifier outside a dollar-quoted
 //     body (U&'...' strings are not matched; PostgreSQL rejects a string where
 //     a role or object name is expected);
+//   - "non-PL/pgSQL DO": a DO block in another language;
+//   - "set schema": SET SCHEMA (an alias for SET search_path);
+//   - "schema DDL with routines": drop schema or alter schema ... rename in a
+//     migration that changes routines;
 //   - "role DDL": create/alter/drop role|user|group (all forms), grant <role>
 //     to anyone, revoke <role> from, reassign owned, drop owned. A file that
 //     needs one must be grandfathered (pinned by SHA-256); none does today;
@@ -334,6 +338,8 @@ function searchPathChanges(sql) {
     // A conditional path change may or may not happen: forget any non-default path (fail closed to public).
     if (statement.conditional) { if (touchesPath(statement)) { if (!inBlock) session = null; record(statement.offset, null); } continue; }
     if (!statement.inBody && beginStatement.test(statement.text)) { inBlock = true; saved = session; continue; }
+    // ROLLBACK TO SAVEPOINT may restore any earlier path: fall back to public (fail closed).
+    if (new RegExp(String.raw`${LEAD}rollback\s+(?:work\s+|transaction\s+)?to\b`, 'i').test(statement.text)) { session = null; record(statement.offset, null); continue; }
     const ended = endStatement.exec(statement.text);
     if (ended && !statement.inBody) {
       if (/rollback|abort/i.test(ended[1])) session = saved;
@@ -390,6 +396,8 @@ function schemaAt(sql, offset) {
     if (created && !statement.conditional) exists.add(ident(created[1]));
     const dropped = dropSchema.exec(statement.text);
     if (dropped) for (const name of splitTopLevel(dropped[1])) exists.delete(ident(name));
+    const renamed = new RegExp(String.raw`${LEAD}alter\s+schema\s+(${IDENT})\s+rename\s+to\s+(${IDENT})\s*$`, 'i').exec(statement.text);
+    if (renamed) { exists.delete(ident(renamed[1])); if (!statement.conditional) exists.add(ident(renamed[2])); }
   }
   const first = schemas.find((schema) => schema && exists.has(schema));
   return first ?? 'public';
@@ -528,10 +536,14 @@ function executedStatements(sql) {
       const outside = blankAtomicBodies(statement.text
         .replace(new RegExp(String.raw`(?<![\w$])(${DOLLAR_TAG})[\s\S]*?\1`, 'g'), blank)
         .replace(new RegExp(LITERAL, 'g'), blank));
-      result.push({ text: outside, raw: statement.text, offset: base + statement.offset, conditional, inBody });
+      // "search_path" quoted is the same setting: rewrite it (same length) so every matcher sees it.
+      const unquote = (value) => value.replace(/"search_path"/gi, ' search_path ');
+      result.push({ text: unquote(outside), raw: unquote(statement.text), offset: base + statement.offset, conditional, inBody });
       if (/^\s*do\b/i.test(outside) && !new RegExp(String.raw`^\s*do\s+(?:language\s+${IDENT}\s+)?${DOLLAR_TAG}`, 'i').test(statement.text)) {
         result[result.length - 1].opaqueDo = true; // a DO body in an ordinary string is not read
       }
+      const language = /^\s*do\b/i.test(outside) && new RegExp(String.raw`\blanguage\s+(${IDENT})`, 'i').exec(outside);
+      if (language && ident(language[1]) !== 'plpgsql') result[result.length - 1].foreignDo = ident(language[1]);
       if (/^\s*do\b/i.test(outside)) {
         for (const body of statement.text.matchAll(new RegExp(String.raw`(?<![\w$])(${DOLLAR_TAG})([\s\S]*?)\1`, 'g'))) {
           // A DO body with control flow may skip any of its statements: they are not proof of a grant.
@@ -618,7 +630,7 @@ function decisions(sql, executed = executedStatements(sql)) {
     else if (/^table\s/i.test(target)) target = target.replace(/^table\s+/i, '');
     else if (/^(?:all\s|schema\s|function\s|procedure\s|routine\s|database\s|domain\s|type\s|language\s|large\s|foreign\s|tablespace\s|parameter\s)/i.test(target)) continue;
     const roles = match[5]
-      .replace(/\s+(?:with\s+grant\s+option|granted\s+by\s+[\s\S]*|cascade|restrict)\s*$/i, '')
+      .replace(/(?:\s+(?:with\s+grant\s+option|granted\s+by\s+(?:"(?:[^"]|"")*"|\S+)|cascade|restrict))+\s*$/i, '')
       .split(',').map((role) => ident(role.replace(/^\s*group\s+/i, '')));
     for (const object of target.split(',')) {
       // An unqualified target resolves through the search_path in force at that statement.
@@ -770,7 +782,7 @@ function checkFunctionSql(source) {
   const lastSecurity = (text) => [...text.matchAll(/\bsecurity\s+(definer|invoker)\b/gi)].pop()?.[1].toLowerCase();
   const executes = (privileges) => /^(?:all(?:\s+privileges)?|(?:[\s\S]*,\s*)?execute(?:\s*,[\s\S]*)?)$/i.test(privileges.trim());
   const roleList = (text) => text
-    .replace(/\s+(?:with\s+grant\s+option|granted\s+by\s+[\s\S]*|cascade|restrict)\s*$/i, '')
+    .replace(/(?:\s+(?:with\s+grant\s+option|granted\s+by\s+(?:"(?:[^"]|"")*"|\S+)|cascade|restrict))+\s*$/i, '')
     .split(',').map((role) => ident(role.replace(/^\s*group\s+/i, '')));
   const reference = (raw, offset) => {
     const found = routineReference(raw);
@@ -800,7 +812,7 @@ function checkFunctionSql(source) {
   };
   const problems = [];
   // Fail closed by shape: statements whose effect this replay cannot know fail outright.
-  const shapeWords = /\b(?:functions?|procedures?|routines?|definer|search_path)\b/i;
+  const shapeWords = /\b(?:functions?|procedures?|routines?|definer|search_path|role|user|group|owned|owner|authorization)\b/i;
   const dynamic = new RegExp(String.raw`${LEAD}execute\b`, 'i');
   const constantExecute = new RegExp(String.raw`${LEAD}execute\s+(?:'(?:[^']|'')*'|(?<![\w$])(${DOLLAR_TAG})[\s\S]*?\1)\s*(?:into\s+(?:strict\s+)?[\s\S]*)?$`, 'i');
   const rollback = new RegExp(String.raw`${LEAD}(?:rollback|abort)\b`, 'i');
@@ -811,12 +823,16 @@ function checkFunctionSql(source) {
     new RegExp(String.raw`${LEAD}(?:create|alter|drop)\s+(?:role|user|group)\b`, 'i'),
     new RegExp(String.raw`${LEAD}grant\s+(?![\s\S]*\bon\b)[\s\S]+?\s+to\s+\S`, 'i'),
     new RegExp(String.raw`${LEAD}revoke\s+(?![\s\S]*\bon\b)[\s\S]+?\s+from\s+\S`, 'i'),
+    // Schema DDL changes which path entries exist; with routines in the same file it fails closed.
+
     new RegExp(String.raw`${LEAD}(?:reassign|drop)\s+owned\s+by\b`, 'i'),
   ];
   let rolledBack = false;
   for (const statement of executed) {
     if (dynamic.test(statement.text)) {
-      if (shapeWords.test(statement.raw)) problems.push(`shape rule "dynamic routine SQL": an execute whose text mentions function, procedure, routine, definer or search_path; write it as a plain statement`);
+      const literal = constantExecute.exec(statement.raw);
+      const command = literal ? statement.raw.slice(statement.raw.search(/\bexecute\b/i) + 7).trim().replace(/^'([\s\S]*)'[\s\S]*$/, '$1').replace(/^(\$[A-Za-z_0-9]*\$)([\s\S]*?)\1[\s\S]*$/, '$2') : '';
+      if (shapeWords.test(statement.raw) || roleDdl.some((pattern) => pattern.test(command))) problems.push(`shape rule "dynamic routine SQL": an execute whose text mentions function, procedure, routine, definer, search_path, role, user, group, owner, owned or authorization; write it as a plain statement`);
       else if (!constantExecute.test(statement.raw)) problems.push(`shape rule "non-literal execute": an execute that is not one constant string (concatenation, format, variable or call)`);
       continue;
     }
@@ -824,12 +840,21 @@ function checkFunctionSql(source) {
       problems.push(`shape rule "string DO body": a DO block whose body is not dollar-quoted; use do $$ ... $$`);
       continue;
     }
+    if (statement.foreignDo) {
+      problems.push(`shape rule "non-PL/pgSQL DO": a DO block in language ${statement.foreignDo}; only PL/pgSQL bodies can be read`);
+      continue;
+    }
     if (statement.conditional && (createRoutine.test(statement.text) || alterRoutine.test(statement.text) || pathChange.test(statement.text) || /\bset_config\s*\(/i.test(statement.text))) {
       problems.push(`shape rule "conditional routine or path change": a create/alter of a routine or a search_path change inside a DO block with control flow; make it unconditional`);
     }
     for (const call of statement.text.matchAll(/\bset_config\s*\(/gi)) {
       const args = argumentList(statement.raw, call.index + call[0].length);
-      if (args && /^'(?:[^']|'')*'$/.test(args[0] ?? '') && args[0].slice(1, -1).trim().toLowerCase() !== 'search_path') continue;
+      const setting = args && /^'(?:[^']|'')*'$/.test(args[0] ?? '') ? args[0].slice(1, -1).trim().toLowerCase() : null;
+      if (setting === 'role' || setting === 'session_authorization') {
+        problems.push(`shape rule "role switch": set_config('${setting}', ...) switches the role; do not change roles in a migration`);
+        continue;
+      }
+      if (setting !== null && setting !== 'search_path') continue;
       if (!args || args.length !== 3 || !/^'(?:[^']|'')*'$/.test(args[0]) || !/^'(?:[^']|'')*'$/.test(args[1]) || !/^(?:true|false)$/i.test(args[2])) {
         problems.push(`shape rule "non-literal set_config": set_config must take two plain string literals and true/false`);
       }
@@ -837,11 +862,19 @@ function checkFunctionSql(source) {
     if (/(?<![\w$])U&["']/i.test(statement.text)) {
       problems.push(`shape rule "unicode-escaped identifier": a U&"..." identifier outside a dollar-quoted body; write the identifier plainly`);
     }
+    if (new RegExp(String.raw`${LEAD}set\s+(?:(?:local|session)\s+)?schema\b`, 'i').test(statement.text)) {
+      problems.push(`shape rule "set schema": SET SCHEMA is an alias for SET search_path; write set search_path`);
+    }
+    if (touchesRoutines && new RegExp(String.raw`${LEAD}(?:drop\s+schema|alter\s+schema\s+[\s\S]+?\s+rename\s+to)\b`, 'i').test(statement.text)) {
+      problems.push(`shape rule "schema DDL with routines": drop schema or alter schema ... rename in a migration that changes routines; split it into its own migration`);
+    }
     if (touchesRoutines && roleSwitch.test(statement.text)) {
       problems.push(`shape rule "role switch": set role or set session authorization in a migration that changes routines; new routines would be owned by that role`);
     }
     // Role DDL of any form changes who holds which privileges; this lint cannot replay it.
-    if (roleDdl.some((pattern) => pattern.test(statement.text))) {
+    // Quoted identifiers are blanked first, so a role named "on" cannot pass for the ON keyword.
+    const unquoted = statement.text.replace(/"(?:[^"]|"")*"/g, (name) => 'x'.repeat(name.length));
+    if (roleDdl.some((pattern) => pattern.test(unquoted))) {
       problems.push(`shape rule "role DDL": create/alter/drop role|user|group, grant <role> to, revoke <role> from, reassign owned or drop owned; role changes do not belong in a migration`);
     }
     if ((createRoutine.test(statement.text) || alterRoutine.test(statement.text) || privilege.test(statement.text) || /^\s*drop\s+(?:function|procedure|routine)\b/i.test(statement.text)) && /[^\x00-\x7F]/.test(statement.text)) {

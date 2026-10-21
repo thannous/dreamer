@@ -127,6 +127,10 @@ do $$ begin
     grant select on public.notes to anon, authenticated, service_role;
   end if;
 end $$;`, [/no "alter table public\.notes enable row level security"/, /no explicit grant or revoke on the table for anon, authenticated, service_role/]],
+  'path rolled back to a savepoint': [`savepoint s;
+set local search_path = private;
+rollback to savepoint s;
+create table notes (id uuid);`, [/no "alter table public\.notes enable row level security"/, /no explicit grant or revoke on the table for anon, authenticated, service_role/]],
   'unlogged table': [`create unlogged table public.cache (k text primary key);`, [/no "alter table public\.cache/, /public\.cache: no explicit grant/]],
 };
 
@@ -384,7 +388,7 @@ set search_path = later_schema, public;
 ${definer('claim')}`, [/public\.claim.*from public"/, /from anon"/, /grant execute/]],
   'dropped schema no longer exists': [`drop schema private cascade;
 set search_path = private, public;
-${definer('claim')}`, [/public\.claim.*from public"/, /from anon"/, /grant execute/]],
+${definer('claim')}`, [/shape rule "schema DDL with routines"/, /public\.claim.*from public"/, /from anon"/, /grant execute/]],
   'computed set_config name falls back to public': [`set search_path = private;
 select set_config('search_' || 'path', 'public', false);
 ${definer('claim')}`, [/shape rule "non-literal set_config"/, /public\.claim.*from public"/, /from anon"/, /grant execute/]],
@@ -470,6 +474,30 @@ revoke service_role from authenticated;`, [/shape rule "role DDL"/, /shape rule 
   'role DDL: reassign owned and drop owned, any target': [`reassign owned by bdrole to postgres;
 drop owned by bdrole;`, [/shape rule "role DDL"/, /shape rule "role DDL"/]],
   'role DDL inside a DO block': [`do $$ begin create role bdrole2 role anon; end $$;`, [/shape rule "role DDL"/]],
+  'execute of literal role or ownership DDL': [`do $$ begin
+  execute 'reassign owned by postgres to authenticated';
+  execute 'grant authenticated to anon';
+  execute 'alter group authenticated add user anon';
+  execute $q$grant service_role to anon$q$;
+end $$;`, [/shape rule "dynamic routine SQL"/, /shape rule "dynamic routine SQL"/, /shape rule "dynamic routine SQL"/, /shape rule "dynamic routine SQL"/]],
+  'set_config of role is a role switch': [`select set_config('role', 'authenticated', false);
+${definer()}${locked()}`, [/shape rule "role switch"/]],
+  'role named "on" granted to anon': [`grant "on" to anon;`, [/shape rule "role DDL"/]],
+  'with grant option and granted by together': [`${definer()}${locked()}
+grant execute on function public.claim(uuid, integer) to anon with grant option granted by postgres;`, [/granted back to anon/]],
+  'quoted "search_path" in an alter': [`${definer()}${locked()}
+alter function public.claim(uuid, integer) set "search_path" = public;`, [/unsafe search_path \(public\)/]],
+  'set schema alias': [`set search_path = private;
+set schema 'public';
+${definer('claim')}`, [/shape rule "set schema"/]],
+  'DO block in another language': [`do $$ plpy.execute("create function public.claim() returns int language sql security definer as 'select 1'") $$ language plpython3u;`,
+    [/shape rule "non-PL\/pgSQL DO"/]],
+  'schema renamed before the path is used': [`alter schema private rename to old_private;
+set search_path = private, public;
+${definer('claim')}`, [/shape rule "schema DDL with routines"/, /public\.claim.*from public"/, /from anon"/, /grant execute/]],
+  'dropped schema before a pg_temp path': [`drop schema private cascade;
+create function public.claim() returns int language sql security definer
+set search_path = private, pg_temp as $$ select 1 $$;${locked('public.claim()')}`, [/shape rule "schema DDL with routines"/]],
   'owned by a caller role': [`${definer()}${locked()}
 alter function public.claim(uuid, integer) owner to authenticated;`, [/owned by authenticated/]],
   'quoted mixed case is another function': [`${definer('public."Claim"')}${locked('public.claim(uuid, integer)')}`, [/Claim.*from public"/, /from anon"/, /grant execute/]],
