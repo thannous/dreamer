@@ -211,13 +211,12 @@ async function artwork(ui: ExactWebUI, scene: string, mode: 'light' | 'dark') {
   const { screen: uiScreen, browser } = ui;
   const image = uiScreen.getByTestId(`image.background.${scene}`, { visible: true });
   await expect(image).toBeVisible();
-  await expect.poll(() => readDOM(browser, byId(`image.background.${scene}`), element => {
-    const image = element instanceof HTMLImageElement ? element : element.querySelector('img');
-    return Boolean(image?.complete && image.naturalWidth > 0);
-  })).toBe(true);
-  const lightness = await readDOM(browser, byId(`image.background.${scene}`), element => {
+  let lightness: number | null = null;
+  // Read readiness and pixels together: the same scene can remount between routes.
+  await expect.poll(async () => {
+    const measured = await readDOM(browser, byId(`image.background.${scene}`), element => {
     const img = element instanceof HTMLImageElement ? element : element.querySelector('img');
-    if (!img) throw new Error('Painting missing');
+    if (!img?.complete || img.naturalWidth === 0) return null;
     const canvas = document.createElement('canvas');
     canvas.width = 80; canvas.height = 60;
     const ctx = canvas.getContext('2d')!;
@@ -226,7 +225,10 @@ async function artwork(ui: ExactWebUI, scene: string, mode: 'light' | 'dark') {
     let sum = 0;
     for (let i = 0; i < pixels.length; i += 4) sum += pixels[i] * 0.2126 + pixels[i + 1] * 0.7152 + pixels[i + 2] * 0.0722;
     return sum / (80 * 60 * 255);
-  });
+    });
+    lightness = measured;
+    return measured !== null;
+  }, { message: `${scene}: loaded painting pixels are measured` }).toBe(true);
   // A night painting behind the light interface reproduces the owner's defect.
   if (mode === 'light') expect(lightness, `${scene}: a luminous painting in the paper theme`).toBeGreaterThan(0.55);
   else expect(lightness, `${scene}: the night painting is retained in dark mode`).toBeLessThan(0.5);

@@ -213,6 +213,7 @@ test('PR237 Lucid compact tabs, program safeguards and account validation remain
   });
   expect(surface).toBe('rgb(255, 255, 255)');
   await screen.getByTestId('input.auth.email', { visible: true }).fill('invalid-email');
+  await screen.getByTestId('input.auth.password', { visible: true }).fill('short');
   await expect(screen.getByTestId('btn.auth.signIn', { visible: true })).toBeDisabled();
   await app.screenshot('lucid-invalid-account-form');
   await screen.getByRole('button', 'Terminé', { visible: true }).tap();
@@ -258,6 +259,7 @@ test('PR237 Lucid exercises retain their pause after reload and resume; unsold P
     const pause = screen.getByTestId(`lucid-${lab}-lab-pause`, { visible: true });
     await primary.tap();
     await expect(screen.getByRole('progressbar', lab === 'ssild' ? /^Sens 1 sur/ : /^Étape 1 sur/, { visible: true })).toBeVisible();
+    if (lab === 'stabilization') await expect(screen.getByText('Regardez vos mains', { visible: true })).toBeVisible();
     await pause.tap();
     await expect(screen.getByText(/^En pause\./, { visible: true })).toBeVisible();
     await browser.reload();
