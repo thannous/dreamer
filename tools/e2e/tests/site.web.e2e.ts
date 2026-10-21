@@ -62,8 +62,8 @@ test('symbol artwork fills the page from behind the navbar up to 2560px', { time
     symbols: Array<{ id: string; fr: { slug: string; name: string } }>;
   };
   const ids = ['sex','cheating','kissing','attack','killing','fighting','eating','kidnapping','moving-house','war','vomiting','nails','tsunami','flowers','tiger','deer','pig','monkey','lizard','bat','toilet','church','beach','castle','swimming-pool','alien','celebrity','boss','crush','witch','clown','gun','knife','wallet','doll','gold','coffin','stars','sky','god'];
-  // Atlas pages since lot 05: their hero is the atlas painting; every other id keeps its classic artwork.
-  const atlasIds = ['flowers', 'castle', 'stars'];
+  // Every listed symbol now has a complete pack. Tiger retains its dedicated historical paintings.
+  const atlasIds = ids.filter(id => id !== 'tiger');
   const checkLayout = (image: Awaited<ReturnType<typeof measureHero>>) => {
     expect(image.naturalWidth).toBeGreaterThan(0);
     expect(image.width).toBeCloseTo(Math.min(image.available, 2560), 0);
@@ -102,11 +102,9 @@ test('symbol artwork fills the page from behind the navbar up to 2560px', { time
     checkLayout(await browser.evaluate(measureHero));
     await app.screenshot('symbol-' + id + '-' + width);
   }
-  // On a phone held upright every symbol page takes 75svh from the top, behind the navbar. A page
-  // without a pack crops its own 16:9 painting (cover), centred or on the point its framing names
-  // for a subject painted off-centre.
+  // Each phone hero uses its independently composed portrait and keeps the title under the subject.
   for (const [width, height, id, position] of [
-    [390, 844, 'angel', '50% 50%'], [320, 740, 'moving-house', '50% 50%'], [390, 844, 'alien', '19% 50%'],
+    [390, 844, 'angel', '50% 50%'], [320, 740, 'moving-house', '50% 50%'], [390, 844, 'alien', '50% 50%'],
   ] as const) {
     await browser.setViewport({ width, height });
     const symbol = catalog.symbols.find(item => item.id === id)!;
@@ -114,8 +112,7 @@ test('symbol artwork fills the page from behind the navbar up to 2560px', { time
     await expect(screen.getByRole('heading', { level: 1 })).toBeVisible();
     const image = await browser.evaluate(measureHero);
     expect(image.naturalWidth).toBeGreaterThan(0);
-    // Its own landscape painting, not a portrait one.
-    expect(new URL(image.src).pathname).toMatch(new RegExp('^/img/seo/symbols-v2/' + id + '-v[0-9]+-[0-9]+w\\.(?:webp|avif)$'));
+    expect(new URL(image.src).pathname).toMatch(new RegExp('^/img/symbols/atlas-six-v2/' + id + '/portrait-[0-9]+-[0-9a-f]{12}\\.(?:webp|avif)$'));
     expect([image.objectFit, image.objectPosition]).toEqual(['cover', position]);
     expect([image.heroTop, image.top, image.left]).toEqual([0, 0, 0]);
     expect(image.width).toBeCloseTo(image.available, 0);
@@ -179,14 +176,24 @@ function scrollToY(y: number) {
   return window.scrollY;
 }
 
-test('at a phone viewport a page without a pack takes the 75svh hero by cropping its own painting, without a motion script or file', async ({ app, browser, screen }) => {
-  // At the default 390x844 phone viewport, a page without a pack takes the same 75svh hero by
-  // cropping its own 16:9 painting (cover), without any motion script or the tiger's files.
+test('at a phone viewport a missing motion script keeps the dedicated portrait readable', async ({ app, browser, screen }) => {
+  // All 240 symbols have packs. Exercise actual degradation instead of expecting the former
+  // unpacked deer. The generator's missing-pack branch remains covered by the atlas fixture.
+  await browser.setViewport({ width: 390, height: 844 });
+  await browser.route(/\/js\/symbol-living\/.*\.js$/, route => route.fulfill({ status: 404, body: '' }));
   for (const path of ['/fr/symboles/cerf.html', '/en/symbols/deer.html', '/pt-br/simbolos/cervo.html']) {
     await app.open(path);
     await expect(screen.getByRole('heading', { level: 1 })).toBeVisible();
     await expect.poll(() => browser.evaluate(readMotionLoads).then(read => read.loaded)).toBe(true);
-    expect(await browser.evaluate(readMotionLoads)).toEqual({ scripts: 0, requests: 0, stages: 0, marked: false, ratio: Math.round(390 / (844 * 0.75) * 100) / 100, objectFit: 'cover', loaded: true });
+    const image = await browser.evaluate(measureHero);
+    expect(image.src).toContain('/deer/portrait-');
+    expect(image.objectFit).toBe('cover');
+    expect(image.height).toBeCloseTo(844 * 0.75, 0);
+    expect(image.headingBottom).toBeLessThanOrEqual(image.heroBottom);
+    expect(image.overflow).toBe(false);
+    expect((await browser.evaluate(readMotionLoads)).stages).toBe(0);
+    expect(await browser.evaluate(() => document.querySelectorAll('.atlas-scene-input').length)).toBe(3);
+    await app.screenshot('deer-portrait-without-motion-' + path.split('/')[1]);
   }
 });
 
@@ -1251,9 +1258,9 @@ test('the language menu leads from the French moon atlas to the pt-br and the En
   expect([read.path, read.lang, read.chosen]).toEqual(['/en/symbols/moon', 'en', 'Your scene: Full moon']);
 });
 
-test('a page without an atlas, a missing FAQ or a thumbnail that fails stays in the page\'s language', { timeout: 120_000 }, async ({ app, browser, screen }) => {
+test('the symbol article, a missing FAQ or a thumbnail that fails stays in the page\'s language', { timeout: 120_000 }, async ({ app, browser, screen }) => {
   await browser.setViewport({ width: 390, height: 844 });
-  // A symbol without a pack: the same article, in Portuguese, linking only to pt-br pages.
+  // The complete deer pack keeps the same Portuguese article and localized content links.
   await app.open('/pt-br/simbolos/cervo.html');
   await expect(screen.getByRole('heading', { level: 1 })).toBeVisible();
   expect(await browser.evaluate(() => ({
@@ -1367,6 +1374,16 @@ test('the pt-br dictionary links every pt-br symbol, searches and filters in Por
 // These journeys catch a decoded-but-wrong portrait, a transparent rectangle, an effect placed
 // entirely outside a crop, a scene with the wrong editorial reading, and a moving base painting.
 const NEW_SYMBOL_PACKS = [
+  {"id": "god", "slug": "dieu", "name": "Dieu", "scenes": ["hearing-god-s-voice", "seeing-god-as-a-light-or-a-figure", "praying-to-god"]},
+  {"id": "sky", "slug": "ciel", "name": "Ciel", "scenes": ["a-clear-blue-sky", "a-dark-or-stormy-sky", "strange-lights-or-objects-in-the-sky"]},
+  {"id": "coffin", "slug": "cercueil", "name": "Cercueil", "scenes": ["a-closed-coffin", "lying-in-a-coffin-yourself", "an-empty-coffin"]},
+  {"id": "gold", "slug": "or", "name": "Or", "scenes": ["finding-gold-or-a-treasure", "receiving-gold-jewelry", "gold-coins"]},
+  {"id": "doll", "slug": "poupee", "name": "Poupée", "scenes": ["a-doll-from-your-childhood", "a-doll-that-moves-talks-or-comes-alive", "a-broken-or-damaged-doll"]},
+  {"id": "wallet", "slug": "portefeuille", "name": "Portefeuille", "scenes": ["losing-your-wallet", "finding-a-wallet", "an-empty-wallet"]},
+  {"id": "knife", "slug": "couteau", "name": "Couteau", "scenes": ["being-threatened-or-chased-with-a-knife", "holding-a-knife-or-stabbing-someone", "a-knife-in-the-kitchen-or-on-the-table"]},
+  {"id": "gun", "slug": "arme-a-feu", "name": "Arme à feu / Pistolet", "scenes": ["a-gun-that-jams-or-won-t-fire", "finding-or-carrying-a-gun", "gunshots-in-the-distance"]},
+  {"id": "clown", "slug": "clown", "name": "Clown", "scenes": ["a-scary-or-evil-clown", "a-sad-or-crying-clown", "a-clown-at-a-party-or-a-circus"]},
+  {"id": "witch", "slug": "sorciere", "name": "Sorcière", "scenes": ["a-witch-casting-a-spell-on-you", "a-kind-witch-or-a-healer", "a-witch-s-house-cauldron-or-potion"]},
   {"id": "crush", "slug": "crush", "name": "Crush", "scenes": ["your-crush-likes-you-back", "your-crush-ignores-or-rejects-you", "your-crush-with-someone-else"]},
   {"id": "boss", "slug": "patron", "name": "Patron / Chef", "scenes": ["being-fired-by-your-boss", "arguing-with-your-boss-or-being-yelled", "your-boss-praising-or-promoting-you"]},
   {"id": "celebrity", "slug": "celebrite", "name": "Célébrité", "scenes": ["meeting-a-celebrity", "a-celebrity-who-ignores-you", "becoming-famous-yourself"]},

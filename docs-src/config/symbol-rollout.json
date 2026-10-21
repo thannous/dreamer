@@ -42,6 +42,9 @@
     },
     "lot-13": {
       "label": "lot-13, 30 packs"
+    },
+    "lot-14": {
+      "label": "lot-14, 10 packs"
     }
   },
   "symbols": {
@@ -199,13 +202,13 @@
       "lot": "lot-07"
     },
     "clown": {
-      "lot": null
+      "lot": "lot-14"
     },
     "cockroach": {
       "lot": "lot-12"
     },
     "coffin": {
-      "lot": null
+      "lot": "lot-14"
     },
     "cow": {
       "lot": "lot-12"
@@ -250,7 +253,7 @@
       "lot": "lot-03"
     },
     "doll": {
-      "lot": null
+      "lot": "lot-14"
     },
     "dolphin": {
       "lot": "lot-12"
@@ -355,10 +358,10 @@
       "lot": "lot-07"
     },
     "god": {
-      "lot": null
+      "lot": "lot-14"
     },
     "gold": {
-      "lot": null
+      "lot": "lot-14"
     },
     "grandfather": {
       "lot": "lot-10"
@@ -367,7 +370,7 @@
       "lot": "lot-10"
     },
     "gun": {
-      "lot": null
+      "lot": "lot-14"
     },
     "hair": {
       "lot": "lot-11"
@@ -424,7 +427,7 @@
       "lot": "lot-10"
     },
     "knife": {
-      "lot": null
+      "lot": "lot-14"
     },
     "lake": {
       "lot": "lot-12"
@@ -616,7 +619,7 @@
       "lot": "lot-10"
     },
     "sky": {
-      "lot": null
+      "lot": "lot-14"
     },
     "snake": {
       "lot": "lot-01"
@@ -718,7 +721,7 @@
       "lot": "lot-07"
     },
     "wallet": {
-      "lot": null
+      "lot": "lot-14"
     },
     "war": {
       "lot": "lot-13"
@@ -751,7 +754,7 @@
       "lot": "lot-07"
     },
     "witch": {
-      "lot": null
+      "lot": "lot-14"
     },
     "wolf": {
       "lot": "lot-06"

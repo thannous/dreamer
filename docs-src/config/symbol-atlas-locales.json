@@ -24107,6 +24107,1046 @@
           }
         }
       }
+    },
+    "witch": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "a-witch-casting-a-spell-on-you": {
+            "variation": "Une sorcière qui vous jette un sort",
+            "anchor": "a-witch-casting-a-spell-on-you"
+          },
+          "a-kind-witch-or-a-healer": {
+            "variation": "Une sorcière bienveillante ou une guérisseuse",
+            "anchor": "a-kind-witch-or-a-healer"
+          },
+          "a-witch-s-house-cauldron-or-potion": {
+            "variation": "La maison, le chaudron ou la potion d'une sorcière",
+            "anchor": "a-witch-s-house-cauldron-or-potion"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "a-witch-casting-a-spell-on-you": {
+            "variation": "A witch casting a spell on you",
+            "anchor": "a-witch-casting-a-spell-on-you"
+          },
+          "a-kind-witch-or-a-healer": {
+            "variation": "A kind witch or a healer",
+            "anchor": "a-kind-witch-or-a-healer"
+          },
+          "a-witch-s-house-cauldron-or-potion": {
+            "variation": "A witch's house, cauldron or potion",
+            "anchor": "a-witch-s-house-cauldron-or-potion"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "a-witch-casting-a-spell-on-you": {
+            "variation": "Una bruja que te lanza un hechizo",
+            "anchor": "a-witch-casting-a-spell-on-you"
+          },
+          "a-kind-witch-or-a-healer": {
+            "variation": "Una bruja buena o una curandera",
+            "anchor": "a-kind-witch-or-a-healer"
+          },
+          "a-witch-s-house-cauldron-or-potion": {
+            "variation": "La casa, el caldero o la poción de una bruja",
+            "anchor": "a-witch-s-house-cauldron-or-potion"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "a-witch-casting-a-spell-on-you": {
+            "variation": "Eine Hexe verzaubert Sie",
+            "anchor": "a-witch-casting-a-spell-on-you"
+          },
+          "a-kind-witch-or-a-healer": {
+            "variation": "Eine gütige Hexe oder Heilerin",
+            "anchor": "a-kind-witch-or-a-healer"
+          },
+          "a-witch-s-house-cauldron-or-potion": {
+            "variation": "Das Haus, der Kessel oder der Trank einer Hexe",
+            "anchor": "a-witch-s-house-cauldron-or-potion"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "a-witch-casting-a-spell-on-you": {
+            "variation": "Una strega che ti fa un incantesimo",
+            "anchor": "a-witch-casting-a-spell-on-you"
+          },
+          "a-kind-witch-or-a-healer": {
+            "variation": "Una strega buona o una guaritrice",
+            "anchor": "a-kind-witch-or-a-healer"
+          },
+          "a-witch-s-house-cauldron-or-potion": {
+            "variation": "La casa, il calderone o la pozione di una strega",
+            "anchor": "a-witch-s-house-cauldron-or-potion"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "a-witch-casting-a-spell-on-you": {
+            "variation": "Uma bruxa jogando um feitiço em você",
+            "anchor": "a-witch-casting-a-spell-on-you"
+          },
+          "a-kind-witch-or-a-healer": {
+            "variation": "Uma bruxa bondosa ou uma curandeira",
+            "anchor": "a-kind-witch-or-a-healer"
+          },
+          "a-witch-s-house-cauldron-or-potion": {
+            "variation": "A casa, o caldeirão ou a poção de uma bruxa",
+            "anchor": "a-witch-s-house-cauldron-or-potion"
+          }
+        }
+      }
+    },
+    "clown": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "a-scary-or-evil-clown": {
+            "variation": "Un clown effrayant ou maléfique",
+            "anchor": "a-scary-or-evil-clown"
+          },
+          "a-sad-or-crying-clown": {
+            "variation": "Un clown triste ou qui pleure",
+            "anchor": "a-sad-or-crying-clown"
+          },
+          "a-clown-at-a-party-or-a-circus": {
+            "variation": "Un clown à une fête ou au cirque",
+            "anchor": "a-clown-at-a-party-or-a-circus"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "a-scary-or-evil-clown": {
+            "variation": "A scary or evil clown",
+            "anchor": "a-scary-or-evil-clown"
+          },
+          "a-sad-or-crying-clown": {
+            "variation": "A sad or crying clown",
+            "anchor": "a-sad-or-crying-clown"
+          },
+          "a-clown-at-a-party-or-a-circus": {
+            "variation": "A clown at a party or a circus",
+            "anchor": "a-clown-at-a-party-or-a-circus"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "a-scary-or-evil-clown": {
+            "variation": "Un payaso que da miedo",
+            "anchor": "a-scary-or-evil-clown"
+          },
+          "a-sad-or-crying-clown": {
+            "variation": "Un payaso triste o que llora",
+            "anchor": "a-sad-or-crying-clown"
+          },
+          "a-clown-at-a-party-or-a-circus": {
+            "variation": "Un payaso en una fiesta o en el circo",
+            "anchor": "a-clown-at-a-party-or-a-circus"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "a-scary-or-evil-clown": {
+            "variation": "Ein Horrorclown",
+            "anchor": "a-scary-or-evil-clown"
+          },
+          "a-sad-or-crying-clown": {
+            "variation": "Ein trauriger oder weinender Clown",
+            "anchor": "a-sad-or-crying-clown"
+          },
+          "a-clown-at-a-party-or-a-circus": {
+            "variation": "Ein Clown auf einer Feier oder im Zirkus",
+            "anchor": "a-clown-at-a-party-or-a-circus"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "a-scary-or-evil-clown": {
+            "variation": "Un pagliaccio inquietante o cattivo",
+            "anchor": "a-scary-or-evil-clown"
+          },
+          "a-sad-or-crying-clown": {
+            "variation": "Un pagliaccio triste o che piange",
+            "anchor": "a-sad-or-crying-clown"
+          },
+          "a-clown-at-a-party-or-a-circus": {
+            "variation": "Un pagliaccio a una festa o al circo",
+            "anchor": "a-clown-at-a-party-or-a-circus"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "a-scary-or-evil-clown": {
+            "variation": "Um palhaço assustador",
+            "anchor": "a-scary-or-evil-clown"
+          },
+          "a-sad-or-crying-clown": {
+            "variation": "Um palhaço triste ou chorando",
+            "anchor": "a-sad-or-crying-clown"
+          },
+          "a-clown-at-a-party-or-a-circus": {
+            "variation": "Um palhaço numa festa ou no circo",
+            "anchor": "a-clown-at-a-party-or-a-circus"
+          }
+        }
+      }
+    },
+    "gun": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "a-gun-that-jams-or-won-t-fire": {
+            "variation": "Une arme qui s'enraye",
+            "anchor": "a-gun-that-jams-or-won-t-fire"
+          },
+          "finding-or-carrying-a-gun": {
+            "variation": "Trouver ou porter une arme",
+            "anchor": "finding-or-carrying-a-gun"
+          },
+          "gunshots-in-the-distance": {
+            "variation": "Des coups de feu au loin",
+            "anchor": "gunshots-in-the-distance"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "a-gun-that-jams-or-won-t-fire": {
+            "variation": "A gun that jams or won't fire",
+            "anchor": "a-gun-that-jams-or-won-t-fire"
+          },
+          "finding-or-carrying-a-gun": {
+            "variation": "Finding or carrying a gun",
+            "anchor": "finding-or-carrying-a-gun"
+          },
+          "gunshots-in-the-distance": {
+            "variation": "Gunshots in the distance",
+            "anchor": "gunshots-in-the-distance"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "a-gun-that-jams-or-won-t-fire": {
+            "variation": "Un arma que se encasquilla",
+            "anchor": "a-gun-that-jams-or-won-t-fire"
+          },
+          "finding-or-carrying-a-gun": {
+            "variation": "Encontrar o llevar un arma",
+            "anchor": "finding-or-carrying-a-gun"
+          },
+          "gunshots-in-the-distance": {
+            "variation": "Disparos a lo lejos",
+            "anchor": "gunshots-in-the-distance"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "a-gun-that-jams-or-won-t-fire": {
+            "variation": "Eine Waffe, die klemmt",
+            "anchor": "a-gun-that-jams-or-won-t-fire"
+          },
+          "finding-or-carrying-a-gun": {
+            "variation": "Eine Waffe finden oder tragen",
+            "anchor": "finding-or-carrying-a-gun"
+          },
+          "gunshots-in-the-distance": {
+            "variation": "Schüsse in der Ferne",
+            "anchor": "gunshots-in-the-distance"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "a-gun-that-jams-or-won-t-fire": {
+            "variation": "Una pistola che si inceppa",
+            "anchor": "a-gun-that-jams-or-won-t-fire"
+          },
+          "finding-or-carrying-a-gun": {
+            "variation": "Trovare o portare una pistola",
+            "anchor": "finding-or-carrying-a-gun"
+          },
+          "gunshots-in-the-distance": {
+            "variation": "Spari in lontananza",
+            "anchor": "gunshots-in-the-distance"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "a-gun-that-jams-or-won-t-fire": {
+            "variation": "Uma arma que trava",
+            "anchor": "a-gun-that-jams-or-won-t-fire"
+          },
+          "finding-or-carrying-a-gun": {
+            "variation": "Encontrar ou carregar uma arma",
+            "anchor": "finding-or-carrying-a-gun"
+          },
+          "gunshots-in-the-distance": {
+            "variation": "Tiros ao longe",
+            "anchor": "gunshots-in-the-distance"
+          }
+        }
+      }
+    },
+    "knife": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "being-threatened-or-chased-with-a-knife": {
+            "variation": "Être menacé ou poursuivi avec un couteau",
+            "anchor": "being-threatened-or-chased-with-a-knife"
+          },
+          "holding-a-knife-or-stabbing-someone": {
+            "variation": "Tenir un couteau ou poignarder quelqu'un",
+            "anchor": "holding-a-knife-or-stabbing-someone"
+          },
+          "a-knife-in-the-kitchen-or-on-the-table": {
+            "variation": "Un couteau dans la cuisine ou sur la table",
+            "anchor": "a-knife-in-the-kitchen-or-on-the-table"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "being-threatened-or-chased-with-a-knife": {
+            "variation": "Being threatened or chased with a knife",
+            "anchor": "being-threatened-or-chased-with-a-knife"
+          },
+          "holding-a-knife-or-stabbing-someone": {
+            "variation": "Holding a knife or stabbing someone",
+            "anchor": "holding-a-knife-or-stabbing-someone"
+          },
+          "a-knife-in-the-kitchen-or-on-the-table": {
+            "variation": "A knife in the kitchen or on the table",
+            "anchor": "a-knife-in-the-kitchen-or-on-the-table"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "being-threatened-or-chased-with-a-knife": {
+            "variation": "Que te amenacen o te persigan con un cuchillo",
+            "anchor": "being-threatened-or-chased-with-a-knife"
+          },
+          "holding-a-knife-or-stabbing-someone": {
+            "variation": "Tener un cuchillo o apuñalar a alguien",
+            "anchor": "holding-a-knife-or-stabbing-someone"
+          },
+          "a-knife-in-the-kitchen-or-on-the-table": {
+            "variation": "Un cuchillo en la cocina o sobre la mesa",
+            "anchor": "a-knife-in-the-kitchen-or-on-the-table"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "being-threatened-or-chased-with-a-knife": {
+            "variation": "Mit einem Messer bedroht oder verfolgt werden",
+            "anchor": "being-threatened-or-chased-with-a-knife"
+          },
+          "holding-a-knife-or-stabbing-someone": {
+            "variation": "Ein Messer halten oder zustechen",
+            "anchor": "holding-a-knife-or-stabbing-someone"
+          },
+          "a-knife-in-the-kitchen-or-on-the-table": {
+            "variation": "Ein Messer in der Küche oder auf dem Tisch",
+            "anchor": "a-knife-in-the-kitchen-or-on-the-table"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "being-threatened-or-chased-with-a-knife": {
+            "variation": "Essere minacciati o inseguiti con un coltello",
+            "anchor": "being-threatened-or-chased-with-a-knife"
+          },
+          "holding-a-knife-or-stabbing-someone": {
+            "variation": "Tenere un coltello o accoltellare qualcuno",
+            "anchor": "holding-a-knife-or-stabbing-someone"
+          },
+          "a-knife-in-the-kitchen-or-on-the-table": {
+            "variation": "Un coltello in cucina o sul tavolo",
+            "anchor": "a-knife-in-the-kitchen-or-on-the-table"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "being-threatened-or-chased-with-a-knife": {
+            "variation": "Ser ameaçado ou perseguido com uma faca",
+            "anchor": "being-threatened-or-chased-with-a-knife"
+          },
+          "holding-a-knife-or-stabbing-someone": {
+            "variation": "Segurar uma faca ou ferir alguém",
+            "anchor": "holding-a-knife-or-stabbing-someone"
+          },
+          "a-knife-in-the-kitchen-or-on-the-table": {
+            "variation": "Uma faca na cozinha ou na mesa",
+            "anchor": "a-knife-in-the-kitchen-or-on-the-table"
+          }
+        }
+      }
+    },
+    "wallet": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "losing-your-wallet": {
+            "variation": "Perdre son portefeuille",
+            "anchor": "losing-your-wallet"
+          },
+          "finding-a-wallet": {
+            "variation": "Trouver un portefeuille",
+            "anchor": "finding-a-wallet"
+          },
+          "an-empty-wallet": {
+            "variation": "Un portefeuille vide",
+            "anchor": "an-empty-wallet"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "losing-your-wallet": {
+            "variation": "Losing your wallet",
+            "anchor": "losing-your-wallet"
+          },
+          "finding-a-wallet": {
+            "variation": "Finding a wallet",
+            "anchor": "finding-a-wallet"
+          },
+          "an-empty-wallet": {
+            "variation": "An empty wallet",
+            "anchor": "an-empty-wallet"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "losing-your-wallet": {
+            "variation": "Perder la cartera",
+            "anchor": "losing-your-wallet"
+          },
+          "finding-a-wallet": {
+            "variation": "Encontrar una billetera",
+            "anchor": "finding-a-wallet"
+          },
+          "an-empty-wallet": {
+            "variation": "Una cartera vacía",
+            "anchor": "an-empty-wallet"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "losing-your-wallet": {
+            "variation": "Die Geldbörse verlieren",
+            "anchor": "losing-your-wallet"
+          },
+          "finding-a-wallet": {
+            "variation": "Ein Portemonnaie finden",
+            "anchor": "finding-a-wallet"
+          },
+          "an-empty-wallet": {
+            "variation": "Eine leere Geldbörse",
+            "anchor": "an-empty-wallet"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "losing-your-wallet": {
+            "variation": "Perdere il portafoglio",
+            "anchor": "losing-your-wallet"
+          },
+          "finding-a-wallet": {
+            "variation": "Trovare un portafoglio",
+            "anchor": "finding-a-wallet"
+          },
+          "an-empty-wallet": {
+            "variation": "Un portafoglio vuoto",
+            "anchor": "an-empty-wallet"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "losing-your-wallet": {
+            "variation": "Perder a carteira",
+            "anchor": "losing-your-wallet"
+          },
+          "finding-a-wallet": {
+            "variation": "Achar uma carteira",
+            "anchor": "finding-a-wallet"
+          },
+          "an-empty-wallet": {
+            "variation": "Uma carteira vazia",
+            "anchor": "an-empty-wallet"
+          }
+        }
+      }
+    },
+    "doll": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "a-doll-from-your-childhood": {
+            "variation": "La poupée de votre enfance",
+            "anchor": "a-doll-from-your-childhood"
+          },
+          "a-doll-that-moves-talks-or-comes-alive": {
+            "variation": "Une poupée qui bouge, parle ou prend vie",
+            "anchor": "a-doll-that-moves-talks-or-comes-alive"
+          },
+          "a-broken-or-damaged-doll": {
+            "variation": "Une poupée cassée ou abîmée",
+            "anchor": "a-broken-or-damaged-doll"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "a-doll-from-your-childhood": {
+            "variation": "A doll from your childhood",
+            "anchor": "a-doll-from-your-childhood"
+          },
+          "a-doll-that-moves-talks-or-comes-alive": {
+            "variation": "A doll that moves, talks or comes alive",
+            "anchor": "a-doll-that-moves-talks-or-comes-alive"
+          },
+          "a-broken-or-damaged-doll": {
+            "variation": "A broken or damaged doll",
+            "anchor": "a-broken-or-damaged-doll"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "a-doll-from-your-childhood": {
+            "variation": "La muñeca de tu infancia",
+            "anchor": "a-doll-from-your-childhood"
+          },
+          "a-doll-that-moves-talks-or-comes-alive": {
+            "variation": "Una muñeca que se mueve, habla o cobra vida",
+            "anchor": "a-doll-that-moves-talks-or-comes-alive"
+          },
+          "a-broken-or-damaged-doll": {
+            "variation": "Una muñeca rota o estropeada",
+            "anchor": "a-broken-or-damaged-doll"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "a-doll-from-your-childhood": {
+            "variation": "Die Puppe aus Ihrer Kindheit",
+            "anchor": "a-doll-from-your-childhood"
+          },
+          "a-doll-that-moves-talks-or-comes-alive": {
+            "variation": "Eine Puppe, die sich bewegt, spricht oder lebendig wird",
+            "anchor": "a-doll-that-moves-talks-or-comes-alive"
+          },
+          "a-broken-or-damaged-doll": {
+            "variation": "Eine kaputte oder beschädigte Puppe",
+            "anchor": "a-broken-or-damaged-doll"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "a-doll-from-your-childhood": {
+            "variation": "La bambola della tua infanzia",
+            "anchor": "a-doll-from-your-childhood"
+          },
+          "a-doll-that-moves-talks-or-comes-alive": {
+            "variation": "Una bambola che si muove, parla o prende vita",
+            "anchor": "a-doll-that-moves-talks-or-comes-alive"
+          },
+          "a-broken-or-damaged-doll": {
+            "variation": "Una bambola rotta o rovinata",
+            "anchor": "a-broken-or-damaged-doll"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "a-doll-from-your-childhood": {
+            "variation": "A boneca da sua infância",
+            "anchor": "a-doll-from-your-childhood"
+          },
+          "a-doll-that-moves-talks-or-comes-alive": {
+            "variation": "Uma boneca que se mexe, fala ou ganha vida",
+            "anchor": "a-doll-that-moves-talks-or-comes-alive"
+          },
+          "a-broken-or-damaged-doll": {
+            "variation": "Uma boneca quebrada ou estragada",
+            "anchor": "a-broken-or-damaged-doll"
+          }
+        }
+      }
+    },
+    "gold": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "finding-gold-or-a-treasure": {
+            "variation": "Trouver de l'or ou un trésor",
+            "anchor": "finding-gold-or-a-treasure"
+          },
+          "receiving-gold-jewelry": {
+            "variation": "Recevoir un bijou en or",
+            "anchor": "receiving-gold-jewelry"
+          },
+          "gold-coins": {
+            "variation": "Des pièces d'or",
+            "anchor": "gold-coins"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "finding-gold-or-a-treasure": {
+            "variation": "Finding gold or a treasure",
+            "anchor": "finding-gold-or-a-treasure"
+          },
+          "receiving-gold-jewelry": {
+            "variation": "Receiving gold jewelry",
+            "anchor": "receiving-gold-jewelry"
+          },
+          "gold-coins": {
+            "variation": "Gold coins",
+            "anchor": "gold-coins"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "finding-gold-or-a-treasure": {
+            "variation": "Encontrar oro o un tesoro",
+            "anchor": "finding-gold-or-a-treasure"
+          },
+          "receiving-gold-jewelry": {
+            "variation": "Recibir una joya de oro",
+            "anchor": "receiving-gold-jewelry"
+          },
+          "gold-coins": {
+            "variation": "Monedas de oro",
+            "anchor": "gold-coins"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "finding-gold-or-a-treasure": {
+            "variation": "Gold oder einen Schatz finden",
+            "anchor": "finding-gold-or-a-treasure"
+          },
+          "receiving-gold-jewelry": {
+            "variation": "Goldschmuck geschenkt bekommen",
+            "anchor": "receiving-gold-jewelry"
+          },
+          "gold-coins": {
+            "variation": "Goldmünzen",
+            "anchor": "gold-coins"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "finding-gold-or-a-treasure": {
+            "variation": "Trovare oro o un tesoro",
+            "anchor": "finding-gold-or-a-treasure"
+          },
+          "receiving-gold-jewelry": {
+            "variation": "Ricevere un gioiello d’oro",
+            "anchor": "receiving-gold-jewelry"
+          },
+          "gold-coins": {
+            "variation": "Monete d’oro",
+            "anchor": "gold-coins"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "finding-gold-or-a-treasure": {
+            "variation": "Achar ouro ou um tesouro",
+            "anchor": "finding-gold-or-a-treasure"
+          },
+          "receiving-gold-jewelry": {
+            "variation": "Ganhar uma joia de ouro",
+            "anchor": "receiving-gold-jewelry"
+          },
+          "gold-coins": {
+            "variation": "Moedas de ouro",
+            "anchor": "gold-coins"
+          }
+        }
+      }
+    },
+    "coffin": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "a-closed-coffin": {
+            "variation": "Un cercueil fermé",
+            "anchor": "a-closed-coffin"
+          },
+          "lying-in-a-coffin-yourself": {
+            "variation": "Être soi-même dans un cercueil",
+            "anchor": "lying-in-a-coffin-yourself"
+          },
+          "an-empty-coffin": {
+            "variation": "Un cercueil vide",
+            "anchor": "an-empty-coffin"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "a-closed-coffin": {
+            "variation": "A closed coffin",
+            "anchor": "a-closed-coffin"
+          },
+          "lying-in-a-coffin-yourself": {
+            "variation": "Lying in a coffin yourself",
+            "anchor": "lying-in-a-coffin-yourself"
+          },
+          "an-empty-coffin": {
+            "variation": "An empty coffin",
+            "anchor": "an-empty-coffin"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "a-closed-coffin": {
+            "variation": "Un ataúd cerrado",
+            "anchor": "a-closed-coffin"
+          },
+          "lying-in-a-coffin-yourself": {
+            "variation": "Verte dentro de un ataúd",
+            "anchor": "lying-in-a-coffin-yourself"
+          },
+          "an-empty-coffin": {
+            "variation": "Un ataúd vacío",
+            "anchor": "an-empty-coffin"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "a-closed-coffin": {
+            "variation": "Ein geschlossener Sarg",
+            "anchor": "a-closed-coffin"
+          },
+          "lying-in-a-coffin-yourself": {
+            "variation": "Selbst im Sarg liegen",
+            "anchor": "lying-in-a-coffin-yourself"
+          },
+          "an-empty-coffin": {
+            "variation": "Ein leerer Sarg",
+            "anchor": "an-empty-coffin"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "a-closed-coffin": {
+            "variation": "Una bara chiusa",
+            "anchor": "a-closed-coffin"
+          },
+          "lying-in-a-coffin-yourself": {
+            "variation": "Essere dentro una bara",
+            "anchor": "lying-in-a-coffin-yourself"
+          },
+          "an-empty-coffin": {
+            "variation": "Una bara vuota",
+            "anchor": "an-empty-coffin"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "a-closed-coffin": {
+            "variation": "Um caixão fechado",
+            "anchor": "a-closed-coffin"
+          },
+          "lying-in-a-coffin-yourself": {
+            "variation": "Estar dentro de um caixão",
+            "anchor": "lying-in-a-coffin-yourself"
+          },
+          "an-empty-coffin": {
+            "variation": "Um caixão vazio",
+            "anchor": "an-empty-coffin"
+          }
+        }
+      }
+    },
+    "sky": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "a-clear-blue-sky": {
+            "variation": "Un ciel bleu et dégagé",
+            "anchor": "a-clear-blue-sky"
+          },
+          "a-dark-or-stormy-sky": {
+            "variation": "Un ciel noir ou orageux",
+            "anchor": "a-dark-or-stormy-sky"
+          },
+          "strange-lights-or-objects-in-the-sky": {
+            "variation": "Des lumières ou des objets étranges dans le ciel",
+            "anchor": "strange-lights-or-objects-in-the-sky"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "a-clear-blue-sky": {
+            "variation": "A clear blue sky",
+            "anchor": "a-clear-blue-sky"
+          },
+          "a-dark-or-stormy-sky": {
+            "variation": "A dark or stormy sky",
+            "anchor": "a-dark-or-stormy-sky"
+          },
+          "strange-lights-or-objects-in-the-sky": {
+            "variation": "Strange lights or objects in the sky",
+            "anchor": "strange-lights-or-objects-in-the-sky"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "a-clear-blue-sky": {
+            "variation": "Un cielo azul y despejado",
+            "anchor": "a-clear-blue-sky"
+          },
+          "a-dark-or-stormy-sky": {
+            "variation": "Un cielo oscuro o de tormenta",
+            "anchor": "a-dark-or-stormy-sky"
+          },
+          "strange-lights-or-objects-in-the-sky": {
+            "variation": "Luces u objetos extraños en el cielo",
+            "anchor": "strange-lights-or-objects-in-the-sky"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "a-clear-blue-sky": {
+            "variation": "Ein klarer blauer Himmel",
+            "anchor": "a-clear-blue-sky"
+          },
+          "a-dark-or-stormy-sky": {
+            "variation": "Ein dunkler oder stürmischer Himmel",
+            "anchor": "a-dark-or-stormy-sky"
+          },
+          "strange-lights-or-objects-in-the-sky": {
+            "variation": "Seltsame Lichter oder Objekte am Himmel",
+            "anchor": "strange-lights-or-objects-in-the-sky"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "a-clear-blue-sky": {
+            "variation": "Un cielo azzurro e sereno",
+            "anchor": "a-clear-blue-sky"
+          },
+          "a-dark-or-stormy-sky": {
+            "variation": "Un cielo scuro o tempestoso",
+            "anchor": "a-dark-or-stormy-sky"
+          },
+          "strange-lights-or-objects-in-the-sky": {
+            "variation": "Luci o oggetti strani nel cielo",
+            "anchor": "strange-lights-or-objects-in-the-sky"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "a-clear-blue-sky": {
+            "variation": "Um céu azul e limpo",
+            "anchor": "a-clear-blue-sky"
+          },
+          "a-dark-or-stormy-sky": {
+            "variation": "Um céu escuro ou de tempestade",
+            "anchor": "a-dark-or-stormy-sky"
+          },
+          "strange-lights-or-objects-in-the-sky": {
+            "variation": "Luzes ou objetos estranhos no céu",
+            "anchor": "strange-lights-or-objects-in-the-sky"
+          }
+        }
+      }
+    },
+    "god": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "hearing-god-s-voice": {
+            "variation": "Entendre la voix de Dieu",
+            "anchor": "hearing-god-s-voice"
+          },
+          "seeing-god-as-a-light-or-a-figure": {
+            "variation": "Voir Dieu comme une lumière ou une silhouette",
+            "anchor": "seeing-god-as-a-light-or-a-figure"
+          },
+          "praying-to-god": {
+            "variation": "Prier Dieu",
+            "anchor": "praying-to-god"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "hearing-god-s-voice": {
+            "variation": "Hearing God's voice",
+            "anchor": "hearing-god-s-voice"
+          },
+          "seeing-god-as-a-light-or-a-figure": {
+            "variation": "Seeing God as a light or a figure",
+            "anchor": "seeing-god-as-a-light-or-a-figure"
+          },
+          "praying-to-god": {
+            "variation": "Praying to God",
+            "anchor": "praying-to-god"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "hearing-god-s-voice": {
+            "variation": "Oír la voz de Dios",
+            "anchor": "hearing-god-s-voice"
+          },
+          "seeing-god-as-a-light-or-a-figure": {
+            "variation": "Ver a Dios como una luz o una figura",
+            "anchor": "seeing-god-as-a-light-or-a-figure"
+          },
+          "praying-to-god": {
+            "variation": "Rezar a Dios",
+            "anchor": "praying-to-god"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "hearing-god-s-voice": {
+            "variation": "Gottes Stimme hören",
+            "anchor": "hearing-god-s-voice"
+          },
+          "seeing-god-as-a-light-or-a-figure": {
+            "variation": "Gott als Licht oder Gestalt sehen",
+            "anchor": "seeing-god-as-a-light-or-a-figure"
+          },
+          "praying-to-god": {
+            "variation": "Zu Gott beten",
+            "anchor": "praying-to-god"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "hearing-god-s-voice": {
+            "variation": "Sentire la voce di Dio",
+            "anchor": "hearing-god-s-voice"
+          },
+          "seeing-god-as-a-light-or-a-figure": {
+            "variation": "Vedere Dio come una luce o una figura",
+            "anchor": "seeing-god-as-a-light-or-a-figure"
+          },
+          "praying-to-god": {
+            "variation": "Pregare Dio",
+            "anchor": "praying-to-god"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "hearing-god-s-voice": {
+            "variation": "Ouvir a voz de Deus",
+            "anchor": "hearing-god-s-voice"
+          },
+          "seeing-god-as-a-light-or-a-figure": {
+            "variation": "Ver Deus como uma luz ou uma figura",
+            "anchor": "seeing-god-as-a-light-or-a-figure"
+          },
+          "praying-to-god": {
+            "variation": "Rezar para Deus",
+            "anchor": "praying-to-god"
+          }
+        }
+      }
     }
   }
 }
