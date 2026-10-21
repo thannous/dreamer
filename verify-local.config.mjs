@@ -1,12 +1,10 @@
-import { dreamerCampaignContexts } from './tools/e2e/campaign-contexts.mjs';
-
 // Checks of the common delivery rule for this repository, read by
 // scripts/verify-local.mjs. The rule is this repository's own copy,
 // doc_web_interne/docs/regle-commune-livraison.md; what is specific to dreamer
 // is in AGENTS.md, "Notes dreamer". The engine and its tests are this repository's own
 // copy: each repository pins its own ENGINE_SHA256 (below) and verifies it
 // locally; an engine fix is worth porting to the others, but nothing checks
-// that across repositories. The gate contexts are shared data from tools/e2e/campaign-contexts.mjs.
+// that across repositories. This file is standalone data; the verifier copies it outside the checkout.
 //
 //   npm run verify:pr       before every push: the former pre-push `verify:fast`, split
 //                           into checks, plus the surfaces the PR changed.
@@ -156,9 +154,17 @@ const TESTERARMY = {
   hint: 'run it locally where you run verify:pr (after `npm run test:testerarmy:setup && npm run test:testerarmy:browsers` in the main checkout); if this machine cannot, pass --external <check>="owner-machine: <host> <note> on <SHA>" from the machine that ran it; until then the proof is incomplete: do not push, report it as a blocker',
 };
 
+// The full campaign and release gate share these four complete coverage contexts.
+export const DREAMER_CAMPAIGN_CONTEXTS = [
+  { locale: 'en-US', featureSheets: true, args: [] },
+  { locale: 'fr-FR', featureSheets: true, args: ['--tag', 'locale-fr-FR'] },
+  { locale: 'de-DE', featureSheets: true, args: ['--tag', 'locale-de-DE'] },
+  { locale: 'en-US', featureSheets: false, args: ['--grep', 'feature sheets stay disabled when switched off'] },
+];
+
 // The four passes of tools/e2e/README.md that jointly qualify every Dreamer case.
 const shellQuote = arg => `'${arg.replaceAll("'", "'\"'\"'")}'`;
-const DREAMER_PASSES = dreamerCampaignContexts.map(({ locale, featureSheets, args }) =>
+const DREAMER_PASSES = DREAMER_CAMPAIGN_CONTEXTS.map(({ locale, featureSheets, args }) =>
   `EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=${featureSheets} E2E_WEB_LOCALE=${locale} node tools/e2e/run.mjs dreamer web run${args.length ? ' ' + args.map(shellQuote).join(' ') : ''}`,
 ).join(' && ');
 

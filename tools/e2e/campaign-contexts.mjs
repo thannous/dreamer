@@ -1,9 +1,3 @@
-// The release gate and full campaign share the same complete coverage union.
-// Locale-specific suites run in their actual language; English-labelled tests
-// stay in the full English pass, and the OFF-only case has its own bundle.
-export const dreamerCampaignContexts = [
-  { locale: 'en-US', featureSheets: true, args: [] },
-  { locale: 'fr-FR', featureSheets: true, args: ['--tag', 'locale-fr-FR'] },
-  { locale: 'de-DE', featureSheets: true, args: ['--tag', 'locale-de-DE'] },
-  { locale: 'en-US', featureSheets: false, args: ['--grep', 'feature sheets stay disabled when switched off'] },
-];
+// The verifier copies its config outside the checkout, so the config stays
+// self-contained. Runners read that same exported data through this adapter.
+export { DREAMER_CAMPAIGN_CONTEXTS as dreamerCampaignContexts } from '../../verify-local.config.mjs';
