@@ -8,7 +8,7 @@ import { Platform } from 'react-native';
 let mockParams: Record<string, string | string[] | undefined> = {};
 const mockSetParams = jest.fn();
 
-jest.mock('react-native', () => jest.requireActual('../../../tests/react-native-stub'));
+jest.mock('react-native', () => jest.requireActual('../react-native-stub'));
 jest.mock('expo-router', () => ({
   useLocalSearchParams: () => mockParams,
   router: { setParams: mockSetParams },
@@ -20,7 +20,7 @@ jest.mock('@/components/auth/ResetPasswordScreen', () => ({
   ),
 }));
 
-const { default: ResetPasswordRoute } = require('../reset-password') as typeof import('../reset-password');
+const { default: ResetPasswordRoute } = require('../../app/auth/reset-password') as typeof import('../../app/auth/reset-password');
 
 afterEach(() => {
   cleanup();
