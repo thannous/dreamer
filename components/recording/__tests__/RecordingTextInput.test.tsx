@@ -22,6 +22,7 @@ jest.mock('react-native', () => {
     (
       {
         editable = true,
+        maxLength,
         onBlur,
         onChangeText,
         onFocus,
@@ -31,6 +32,7 @@ jest.mock('react-native', () => {
         value,
       }: {
         editable?: boolean;
+        maxLength?: number;
         onBlur?: () => void;
         onChangeText?: (value: string) => void;
         onFocus?: () => void;
@@ -45,6 +47,7 @@ jest.mock('react-native', () => {
         ref={ref}
         data-testid={testID}
         disabled={!editable}
+        data-max-length={maxLength}
         data-native-style={JSON.stringify(flattenStyle(style))}
         placeholder={placeholder}
         value={value}
@@ -235,6 +238,26 @@ describe('RecordingTextInput', () => {
     mockWindowWidth = 390;
     mockWindowHeight = 844;
     mockFontScale = 1;
+  });
+
+  it('stops a whole dream at its maximum length without ever cutting a longer text', () => {
+    const props = {
+      onChange: jest.fn(),
+      disabled: false,
+      lengthWarning: '',
+      instructionText: '',
+      onSwitchToVoice: jest.fn(),
+    };
+    const { rerender } = render(<RecordingTextInput {...props} value="A short dream" limitDreamLength />);
+    expect(screen.getByTestId(TID.Input.DreamTranscript).getAttribute('data-max-length')).toBe('20000');
+
+    // A long dictation already in the text is never cut, it only stops growing.
+    rerender(<RecordingTextInput {...props} value={'r'.repeat(21000)} limitDreamLength />);
+    expect(screen.getByTestId(TID.Input.DreamTranscript).getAttribute('data-max-length')).toBe('21000');
+
+    // An answer in the conversation is not a whole dream.
+    rerender(<RecordingTextInput {...props} value={'r'.repeat(19000)} />);
+    expect(screen.getByTestId(TID.Input.DreamTranscript).getAttribute('data-max-length')).toBeNull();
   });
 
   it('offers an inline microphone in write mode without starting automatically', () => {

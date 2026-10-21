@@ -7,6 +7,7 @@ import * as FileSystemLegacy from 'expo-file-system/legacy';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Alert, AppState, Linking, Platform } from 'react-native';
 
+import { isAiDailyLimitError } from '@/lib/errors';
 import { createScopedLogger } from '@/lib/logger';
 import { handleRecorderReleaseError, RECORDING_OPTIONS } from '@/lib/recording';
 import { waitForPermissionActivityToSettle } from '@/lib/recordingPermissions';
@@ -71,6 +72,8 @@ export interface UseRecordingSessionOptions {
   onLanguagePackMissing?: (info: { locale: string; installedLocales: string[] }) => void;
   /** Called when native recognition ends without an explicit stop/abort. */
   onNativeEnd?: () => void;
+  /** Whose server transcription budget this is (an account or the guest); a new one lifts a pause. */
+  transcriptionScope?: string;
 }
 
 export function useRecordingSession({
@@ -80,6 +83,7 @@ export function useRecordingSession({
   onLimitReached,
   onLanguagePackMissing,
   onNativeEnd,
+  transcriptionScope,
 }: UseRecordingSessionOptions) {
   const [isRecording, setIsRecording] = useState(false);
   // Held from a start's first audio mode change to its stop's last, with or without a
@@ -109,6 +113,13 @@ export function useRecordingSession({
   const hasAutoStoppedRecordingRef = useRef(false);
   const baseTranscriptRef = useRef('');
   const pendingStartRef = useRef<AbortController | null>(null);
+  // Server transcription after its daily budget refused: not asked again before the budget frees up.
+  const serverTranscriptionBlockedUntilRef = useRef(0);
+  const transcriptionScopeRef = useRef(transcriptionScope);
+  useEffect(() => {
+    transcriptionScopeRef.current = transcriptionScope;
+    serverTranscriptionBlockedUntilRef.current = 0;
+  }, [transcriptionScope]);
 
   const handleRecorderError = useCallback(
     (context: string, error: unknown) => {
@@ -224,6 +235,7 @@ export function useRecordingSession({
       let nativeError: string | undefined;
       let isLanguagePackMissing = false;
       let isRateLimited = false;
+      let isDailyLimited = false;
       let cleanupUri: string | undefined;
       const microphone = microphoneRef.current;
       microphoneRef.current = null;
@@ -286,7 +298,13 @@ export function useRecordingSession({
         }
 
         const hasNativeSession = Boolean(nativeResultPromise);
-        if (!transcriptText && cleanupUri && Platform.OS !== 'ios') {
+        const canAskServer = !transcriptText && Boolean(cleanupUri) && Platform.OS !== 'ios';
+        // While the daily budget is spent, the server is not asked and the user hears why.
+        if (canAskServer && Date.now() < serverTranscriptionBlockedUntilRef.current) {
+          isDailyLimited = true;
+        } else if (canAskServer && cleanupUri) {
+          // A refusal for whoever asked: an account signed in meanwhile keeps its own budget.
+          const askedScope = transcriptionScopeRef.current;
           try {
             transcriptText = (await transcribeAudio({
               uri: cleanupUri,
@@ -301,7 +319,18 @@ export function useRecordingSession({
             }
           } catch (error) {
             log.warn('Server STT fallback failed', error);
+            if (isAiDailyLimitError(error) && askedScope === transcriptionScopeRef.current) {
+              isDailyLimited = true;
+              const retryAfter = Number((error as { body?: { retryAfter?: unknown } }).body?.retryAfter);
+              serverTranscriptionBlockedUntilRef.current =
+                Date.now() + (Number.isFinite(retryAfter) && retryAfter > 0 ? retryAfter : 3600) * 1000;
+            }
           }
+        }
+
+        // A missing language pack has its own advice, which helps more than the budget's.
+        if (!transcriptText && isDailyLimited && !isLanguagePackMissing) {
+          return { transcript: '', recordedUri: recordedUri ?? uri, error: 'daily_ai_limit' };
         }
 
         if (!hasNativeSession && !transcriptText) {

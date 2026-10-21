@@ -3,8 +3,11 @@ import { StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
+import { useDreamLengthLabel } from '@/components/recording/DreamLengthCounter';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
+import { formatLocaleNumber } from '@/lib/dateUtils';
+import { getFormattingLocale } from '@/lib/locale';
 import { TID } from '@/lib/testIDs';
 import { getRecordingDraftProgress } from '@/lib/recordingDraftProgress';
 
@@ -18,10 +21,15 @@ export function RecordingDraftProgress({ value }: RecordingDraftProgressProps) {
   const controlFontScale = Math.min(1.3, Math.max(1, fontScale));
   const hintTypography = { fontSize: 13 * controlFontScale, lineHeight: 16 * controlFontScale };
   const captionTypography = { fontSize: 12 * controlFontScale, lineHeight: 16 * controlFontScale };
-  const { t } = useTranslation();
+  const { t, currentLang } = useTranslation();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const progress = useMemo(() => getRecordingDraftProgress(value), [value]);
-  const countLabel = t(progress.charCount === 1 ? 'recording.draft_progress.count_one' : 'recording.draft_progress.count', { count: progress.charCount });
+  // Near a dream's maximum length, the count says how far it is.
+  const nearMaximum = useDreamLengthLabel(progress.charCount);
+  const countLabel = nearMaximum?.text
+    ?? t(progress.charCount === 1 ? 'recording.draft_progress.count_one' : 'recording.draft_progress.count', {
+      count: formatLocaleNumber(progress.charCount, getFormattingLocale(currentLang)),
+    });
   const hint = t(`recording.draft_progress.${progress.state}`);
   const shouldShowHint = progress.state !== 'empty';
 
@@ -42,6 +50,7 @@ export function RecordingDraftProgress({ value }: RecordingDraftProgressProps) {
             key={`count-${fontScale}`}
             allowFontScaling={false}
             testID={TID.Component.RecordingDraftProgressCount}
+            accessibilityLabel={nearMaximum?.accessibilityLabel}
             style={[styles.count, captionTypography, { color: noctalia.text.secondary }]}
           >
             {countLabel}

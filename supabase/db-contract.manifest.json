@@ -171,6 +171,15 @@
         "refresh_token",
         "updated_at"
       ]
+    },
+    {
+      "schema": "public",
+      "name": "dream_creation_buckets",
+      "requiredColumns": [
+        "user_id",
+        "hour_start",
+        "created_count"
+      ]
     }
   ],
   "requiredFunctions": [
@@ -269,6 +278,18 @@
       "name": "read_apple_refresh_token",
       "identityArguments": "p_user_id uuid",
       "result": "text"
+    },
+    {
+      "schema": "public",
+      "name": "claim_ai_daily_budget",
+      "identityArguments": "p_actor_hash text, p_capability text, p_daily_limit integer",
+      "result": "jsonb"
+    },
+    {
+      "schema": "public",
+      "name": "guard_dream_size_and_rate",
+      "identityArguments": "",
+      "result": "trigger"
     }
   ],
   "requiredTriggers": [
@@ -325,6 +346,28 @@
       "definitionIncludes": [
         "BEFORE INSERT OR UPDATE",
         "EXECUTE FUNCTION public.project_dream_precise_theme()"
+      ]
+    },
+    {
+      "schema": "public",
+      "table": "dreams",
+      "name": "trg_guard_dream_limits_before",
+      "functionSchema": "public",
+      "functionName": "guard_dream_size_and_rate",
+      "definitionIncludes": [
+        "BEFORE UPDATE ON public.dreams",
+        "EXECUTE FUNCTION public.guard_dream_size_and_rate()"
+      ]
+    },
+    {
+      "schema": "public",
+      "table": "dreams",
+      "name": "trg_guard_dream_limits_after",
+      "functionSchema": "public",
+      "functionName": "guard_dream_size_and_rate",
+      "definitionIncludes": [
+        "AFTER INSERT",
+        "EXECUTE FUNCTION public.guard_dream_size_and_rate()"
       ]
     },
     {

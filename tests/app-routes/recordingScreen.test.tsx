@@ -1007,6 +1007,33 @@ describe('Recording screen', () => {
     expect(mockAddDream).not.toHaveBeenCalled();
   });
 
+  it('says once, without an alert, that transcription spent its daily budget', async () => {
+    mockPlatformOS = 'android';
+    mockRecordingPermissionState = 'granted';
+    mockStopRecording.mockImplementation(async () => {
+      mockIsRecordingRef.current = false;
+      return { transcript: '', error: 'daily_ai_limit' };
+    });
+    render(<RecordingScreen />);
+    await awaitEditorReady();
+    fireEvent.click(screen.getByTestId('recording-voice-control'));
+    await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(1));
+    await act(async () => { fireEvent.click(screen.getByTestId('recording-voice-control')); });
+
+    await waitFor(() => expect(screen.getByTestId(TID.Text.RecordingFallbackNotice).textContent)
+      .toContain('recording.status.fallback.daily_ai_limit'));
+    expect(Alert.alert).not.toHaveBeenCalled();
+
+    // Once told, a later limited stop of the same visit stays quiet.
+    fireEvent.click(screen.getByTestId('recording-voice-control'));
+    await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(screen.queryByTestId(TID.Text.RecordingFallbackNotice)).toBeNull());
+    await act(async () => { fireEvent.click(screen.getByTestId('recording-voice-control')); });
+    await act(async () => { await jest.advanceTimersByTimeAsync(10); });
+    expect(mockStopRecording).toHaveBeenCalledTimes(2);
+    expect(screen.queryByTestId(TID.Text.RecordingFallbackNotice)).toBeNull();
+  });
+
   it('stops inline dictation when clearing and ignores late speech until a new dictation starts', async () => {
     mockPlatformOS = 'android';
     mockRecordingPermissionState = 'granted';
@@ -1522,6 +1549,24 @@ describe('Recording screen', () => {
       .toBe('A dream I want to keep');
     expect(mockReplace).not.toHaveBeenCalled();
     expect(mockCategorizeDream).not.toHaveBeenCalled();
+  });
+
+  it('keeps a dream past the maximum length here instead of saving one the sync would refuse', async () => {
+    render(<RecordingScreen />);
+    await awaitEditorReady();
+    fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
+      target: { value: 'r'.repeat(20001) },
+    });
+    await act(async () => { fireEvent.click(getCaptureSaveAction()); });
+    expect(Alert.alert).toHaveBeenCalledWith('recording.alert.too_long.title', 'recording.alert.too_long.message');
+    expect(mockAddDream).not.toHaveBeenCalled();
+    expect((screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value).toHaveLength(20001);
+
+    fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
+      target: { value: 'r'.repeat(20000) },
+    });
+    await act(async () => { fireEvent.click(getCaptureSaveAction()); });
+    expect(mockAddDream).toHaveBeenCalledTimes(1);
   });
 
   it('persists only once for rapid save presses before storage resolves', async () => {

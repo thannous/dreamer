@@ -5,7 +5,9 @@ import { DREAM_STORY, entrance, recapLineDelay, recapSettled } from '@/component
 import { useTheme } from '@/context/ThemeContext';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTranslation } from '@/hooks/useTranslation';
+import { DreamLengthCounter } from '@/components/recording/DreamLengthCounter';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { getDreamTextInputLimit } from '@/lib/dreamTextLimit';
 import { TID } from '@/lib/testIDs';
 
 type Props = {
@@ -92,6 +94,7 @@ export function CaptureConversationCard(props: Props) {
     {editing ? <TextInput
       testID="capture-review-text" accessibilityLabel={t('recording.review.title')}
       value={props.text} onChangeText={props.onChange} multiline autoFocus editable={!props.disabled}
+      maxLength={getDreamTextInputLimit(props.text.length)}
       className="max-h-[260px] min-h-[120px] rounded-[10px] border border-line p-2.5 font-serif text-[17px] leading-7 text-ivory"
       style={{ textAlignVertical: 'top' }}
     /> : <View testID="capture-review-narrative" className="gap-3">
@@ -101,6 +104,7 @@ export function CaptureConversationCard(props: Props) {
         </Told>
       ))}
     </View>}
+    {editing ? <DreamLengthCounter length={props.text.length} /> : null}
 
     <Told motion={motion.actions} className="gap-3">
       <Pressable onPress={() => { if (editing) Keyboard.dismiss(); setEditing(!editing); }} disabled={props.disabled}

@@ -1,4 +1,5 @@
-import { assertEquals, assertMatch } from 'https://deno.land/std@0.224.0/assert/mod.ts';
+import { assert, assertEquals, assertMatch } from 'https://deno.land/std@0.224.0/assert/mod.ts';
+import { PLUS_DAILY_LIMITS } from '../lib/plusDailyLimits.ts';
 import type { ApiContext } from '../types.ts';
 import {
   admitSynchronousAiRequest,
@@ -18,7 +19,7 @@ const buildContext = (overrides: Partial<ApiContext> = {}): ApiContext => ({
 
 Deno.test('synchronous AI admission defaults are tier-aware and environment-bounded', () => {
   const guest = resolveSynchronousAiAdmissionPolicy('transcribe', 'GUEST', () => undefined);
-  assertEquals(guest, { windowSeconds: 600, actorLimit: 3, globalLimit: 200 });
+  assertEquals(guest, { windowSeconds: 600, actorLimit: 3, globalLimit: 200, dailyLimit: 30 });
 
   const plus = resolveSynchronousAiAdmissionPolicy('chat', 'PLUS', (name) => {
     if (name === 'AI_SYNC_RATE_WINDOW_SECONDS') return '120';
@@ -26,7 +27,16 @@ Deno.test('synchronous AI admission defaults are tier-aware and environment-boun
     if (name === 'AI_CHAT_GLOBAL_MAX_PER_WINDOW') return '2500';
     return undefined;
   });
-  assertEquals(plus, { windowSeconds: 120, actorLimit: 10000, globalLimit: 2500 });
+  assertEquals(plus, { windowSeconds: 120, actorLimit: 10000, globalLimit: 2500, dailyLimit: null });
+
+  const recall = resolveSynchronousAiAdmissionPolicy('recall_question', 'FREE', (name) =>
+    name === 'AI_RECALL_QUESTION_MAX_PER_DAY' ? '20000' : undefined);
+  assertEquals(recall.dailyLimit, 10000);
+  assertEquals(resolveSynchronousAiAdmissionPolicy('analyze_dream_full', 'PLUS', () => undefined).dailyLimit, 10);
+  // Retries count on /analyzeDream: its request budget never blocks the 10 new analyses Plus may start.
+  const analysis = resolveSynchronousAiAdmissionPolicy('analyze_dream', 'PLUS', () => undefined).dailyLimit;
+  assertEquals(analysis, 20);
+  assert(analysis! > PLUS_DAILY_LIMITS.analysis);
 });
 
 Deno.test('AI actors are hashed deterministically before database admission', async () => {
@@ -60,11 +70,81 @@ Deno.test('guest admission sends only a hashed actor and capability policy', asy
   );
 
   assertEquals(result, { tier: 'free', actorClass: 'GUEST' });
-  assertEquals(rpcCalls.length, 1);
-  assertEquals(rpcCalls[0].name, 'claim_ai_request_window');
+  assertEquals(rpcCalls.map((call) => call.name), ['claim_ai_request_window', 'claim_ai_daily_budget']);
   assertMatch(String(rpcCalls[0].args.p_actor_hash), /^[a-f0-9]{64}$/);
-  assertEquals(JSON.stringify(rpcCalls[0]).includes('private-fingerprint'), false);
+  assertEquals(JSON.stringify(rpcCalls).includes('private-fingerprint'), false);
   assertEquals(rpcCalls[0].args.p_actor_limit, 4);
+  assertEquals(rpcCalls[1].args, {
+    p_actor_hash: rpcCalls[0].args.p_actor_hash,
+    p_capability: 'categorize_dream',
+    p_daily_limit: 30,
+  });
+});
+
+Deno.test('an actor past its daily budget gets a 429 that says when to come back, before any paid call', async () => {
+  const rpcCalls: string[] = [];
+  const fakeClient = {
+    rpc: async (name: string) => {
+      rpcCalls.push(name);
+      if (name === 'claim_ai_daily_budget') {
+        return { data: { allowed: false, code: 'AI_DAILY_LIMIT', retry_after_seconds: 3599.2 }, error: null };
+      }
+      return { data: { allowed: true }, error: null };
+    },
+  };
+
+  const result = await admitSynchronousAiRequest(
+    {
+      ctx: buildContext(),
+      capability: 'transcribe',
+      guestFingerprint: 'qa:11111111-1111-4111-8111-111111111111',
+    },
+    {
+      createAdminClient: (() => fakeClient) as any,
+      readEnv: () => undefined,
+    }
+  );
+
+  if (!(result instanceof Response)) throw new Error('Expected a daily budget response');
+  // A refused request never reaches the QA paid-call budget.
+  assertEquals(rpcCalls, ['claim_ai_request_window', 'claim_ai_daily_budget']);
+  assertEquals(result.status, 429);
+  assertEquals(result.headers.get('Retry-After'), '3600');
+  assertEquals(await result.json(), {
+    error: 'Daily AI limit reached',
+    code: 'AI_DAILY_LIMIT',
+    dailyLimit: 30,
+    retryAfter: 3600,
+  });
+});
+
+Deno.test('a daily budget claim with no answer is an outage, not a spent budget', async () => {
+  for (const answer of [
+    { data: null, error: null },
+    { data: {}, error: null },
+    { data: { allowed: 'yes' }, error: null },
+    { data: null, error: { code: '42883' } },
+  ]) {
+    const fakeClient = {
+      rpc: async (name: string) =>
+        name === 'claim_ai_daily_budget' ? answer : { data: { allowed: true }, error: null },
+    };
+    const result = await admitSynchronousAiRequest(
+      {
+        ctx: buildContext(),
+        capability: 'categorize_dream',
+        guestFingerprint: 'qa:11111111-1111-4111-8111-111111111111',
+      },
+      {
+        createAdminClient: (() => fakeClient) as any,
+        readEnv: () => undefined,
+      }
+    );
+
+    if (!(result instanceof Response)) throw new Error('Expected an unavailable response');
+    assertEquals(result.status, 503);
+    assertEquals((await result.json()).code, 'AI_ADMISSION_UNAVAILABLE');
+  }
 });
 
 Deno.test('authenticated admission resolves server tier and returns a bounded 429', async () => {

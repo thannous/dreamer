@@ -3,9 +3,11 @@ import { getSavedAnalysisAction } from '@/lib/savedAnalysisAccess';
 import { DreamAnalysisContent } from '@/components/journal/DreamAnalysisContent';
 import { isPoeticDreamQuote } from '@/lib/dreamQuote';
 import { CaptureOriginal } from '@/components/recording/CaptureOriginal';
+import { DreamLengthCounter } from '@/components/recording/DreamLengthCounter';
 import { getDreamRecallStorageId } from '@/lib/dreamRecallIdentity';
 import { getDreamRouteParams, resolveDreamRoute } from '@/lib/dreamRoute';
 import { getDreamIdentityKey, matchesDreamTarget } from '@/lib/dreamIdentity';
+import { getDreamTextInputLimit, isDreamTextTooLong } from '@/lib/dreamTextLimit';
 import { markPerformance, markPerformanceAfterFrames, performanceTraceId } from '@/lib/performanceTrace';
 import { getInitialDreamCategorizationKey, isInitialDreamCategorizationPending, subscribeInitialDreamCategorization } from '@/lib/initialDreamCategorization';
 import { useDreamCoverPlaceholder } from '@/hooks/useDreamCoverPlaceholder';
@@ -46,7 +48,7 @@ import {
   type AnalysisNotice,
 } from '@/components/journal/JournalDetailSheets';
 import { DURATION, EASING, PressableScale, Reveal } from '@/components/motion';
-import { QUOTAS } from '@/constants/limits';
+import { DREAM_TRANSCRIPT_MAX_CHARS, QUOTAS } from '@/constants/limits';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useAuth } from '@/context/AuthContext';
 import { SignInToOpenDream } from '@/components/auth/SignInToOpenDream';
@@ -160,6 +162,14 @@ const humanizeMemoryValue = (value: string): string => value.replace(/_/g, ' ');
 
 const isTechnicalRevisionConflict = (message?: string | null): boolean =>
   String(message ?? '').toLowerCase().includes('revision conflict');
+
+// Refusals of the server's anti-abuse limits: the dream stays on the device until it passes.
+const getDreamLimitSyncError = (message?: string | null): 'too_long' | 'daily_limit' | null => {
+  const text = String(message ?? '');
+  if (text.includes('DREAM_TRANSCRIPT_TOO_LONG')) return 'too_long';
+  if (text.includes('DAILY_DREAM_LIMIT')) return 'daily_limit';
+  return null;
+};
 
 const generateUUID = (): string => {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
@@ -562,7 +572,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       blurActiveElement();
     }
   }, [isShareModalVisible]);
-  const { formatDreamDate, formatDreamTime, formatDreamStamp } = useLocaleFormatting();
+  const { formatDreamDate, formatDreamTime, formatDreamStamp, formatNumber } = useLocaleFormatting();
   const {
     canAnalyzeNow,
     canAnalyze,
@@ -1189,6 +1199,15 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       setIsEditing(false);
       return;
     }
+    // A dream stored before the limit may keep its length; a dream not yet synced has none stored.
+    if (normalizedTranscript !== dream.transcript
+      && isDreamTextTooLong(normalizedTranscript, dream.remoteId != null ? dream.transcript : '')) {
+      Alert.alert(
+        t('recording.alert.too_long.title'),
+        t('recording.alert.too_long.message', { max: formatNumber(DREAM_TRANSCRIPT_MAX_CHARS) })
+      );
+      return;
+    }
 
     const updatedDream: DreamAnalysis = {
       ...dream,
@@ -1202,7 +1221,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
 
     await updateDream(updatedDream);
     setIsEditing(false);
-  }, [dream, editableTitle, editableTheme, editableDreamType, editableTranscript, updateDream]);
+  }, [dream, editableTitle, editableTheme, editableDreamType, editableTranscript, formatNumber, t, updateDream]);
 
   const handlePickImage = useCallback(async () => {
     if (!dream || isAnalysisLocked) return;
@@ -2080,6 +2099,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
           style={{ maxHeight: Math.max(160, windowSize.height * 0.36) }}
           value={editableTranscript}
           onChangeText={setEditableTranscript}
+          maxLength={getDreamTextInputLimit(editableTranscript.length, dream.transcript.length)}
           onFocus={() => { editingStoryRef.current = true; }}
           onBlur={() => { editingStoryRef.current = false; }}
           placeholder={t('recording.placeholder.accessibility')}
@@ -2091,6 +2111,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       ) : (
         <BookProse text={dream.transcript} />
       )}
+      {isEditing ? <DreamLengthCounter length={editableTranscript.length} style={{ marginTop: 6 }} /> : null}
       {dream.captureOriginalTranscript ? <CaptureOriginal source={dream.captureOriginalTranscript} /> : null}
     </View>
   );
@@ -2298,6 +2319,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       return null;
     }
 
+    const limitSyncError = getDreamLimitSyncError(dream.lastSyncError);
     const title = isSyncConflict
       ? t('journal.detail.sync.conflict_title')
       : isSyncFailed
@@ -2308,7 +2330,11 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
           ? dream.lastSyncError
           : t('journal.detail.sync.conflict_message'))
       : isSyncFailed
-        ? (dream.lastSyncError || t('journal.detail.sync.failed_message'))
+        ? (limitSyncError === 'too_long'
+            ? t('journal.detail.sync.too_long_message', { max: formatNumber(DREAM_TRANSCRIPT_MAX_CHARS) })
+            : limitSyncError === 'daily_limit'
+              ? t('journal.detail.sync.daily_limit_message')
+              : dream.lastSyncError || t('journal.detail.sync.failed_message'))
         : t('journal.detail.sync.pending_message');
     // Icon colours go to a prop, not a style, so they stay on the TS tokens.
     const toneIconColor = isSyncConflict

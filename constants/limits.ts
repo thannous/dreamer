@@ -7,6 +7,13 @@ export type UserTier = 'guest' | 'free' | 'plus';
 export const GUEST_DREAM_RECORDING_LIMIT = 5;
 
 /**
+ * Longest dream text the journal syncs, against abuse (Thanh, 2026-10-21). The
+ * sync function refuses more (migration 20261021171000); a longer dream stored
+ * before stays editable as long as it does not grow.
+ */
+export const DREAM_TRANSCRIPT_MAX_CHARS = 20_000;
+
+/**
  * Plus abuse prevention: new analyses, and new illustrations, per rolling 24 hours.
  * The server enforces it (PLUS_DAILY_LIMITS in supabase/functions/api/lib/plusDailyLimits.ts);
  * the app only names it when the server's answer omits it.
