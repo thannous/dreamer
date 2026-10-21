@@ -42,7 +42,41 @@ the full result. Exact steps do not invoke a model.
 
 ## Validation
 
-Validation results and the canonical campaign receipt are appended after execution.
+The canonical full campaign passed on the clean revision
+`0d7b6b1a200e2e61cdfb9c2d53e18aa1a2b490f9`: all 12 command stages exited zero,
+the before/after source snapshot is stable, and no child result is reused from
+the earlier interrupted development campaigns.
+
+| Fresh E2E result | Passed cases |
+| --- | ---: |
+| Dreamer, union of EN/FR/DE and feature on/off contexts | 133/133 |
+| Lucid | 8/8 |
+| Meditation | 3/3 |
+| Site | 97/97 |
+| ChatGPT Pro personas | 4/4 |
+| Local backend | 8/8 |
+| Total, excluding preflights and duplicate union accounting | **253/253** |
+
+The four Pro personas completed seven `agent.act()` goals through
+`chatgpt.responses` / `gpt-6.1-sol`, with **23 actual model calls** through the
+saved OpenAI login. Provider prompt-cache accounting does not represent a replay:
+all seven goals executed fresh, with the SDK replay cache disabled. The backend
+wrapper exited zero after its owned-stack cleanup.
+
+Canonical receipt:
+`tools/e2e/.e2e/full/full-1792574567661-123ea861-2e32-4d62-a091-0c07b46515df/report.json`.
+It references each child report, exact commands/environment and tested revision.
+Rerun from the repository root: `mise exec -- npm run test:testerarmy:all`.
+The subsequent update to this evidence document changes no application or test
+input; the campaign remains evidence for the revision named above.
+
+`mise exec -- npm run verify:pr` passed on that revision: nine checks freshly run,
+six reused on identical inputs, three out of scope. The PR records the final
+committed head and its own verification proof. Additional focused checks passed:
+Army test types, 49 SDK/runner guards, 36 backend/auth guards (including four
+process-ownership cases), and four light/dark journal counterexamples. The
+guarded hosted-branch collection refused its empty allowlist before network
+access, as required; it is not included in the passed-case total.
 
 Independent review identified an interruption defect: killing the synchronous
 backend wrapper could skip its finally and leave its descendant and owned stack
