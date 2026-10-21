@@ -1,18 +1,20 @@
 # TesterArmy public API migration — 2026-10-21
 
 Audit baseline: `dfc458a11a0173a6db5148e4fa28499c3e4284df`.
-Remote `git@github.com:thannous/dreamer.git` fetched and current master
-`ca3c4c93b581968aaec5bb76c21a7582887d1fc3` (#529) integrated without resetting
-other work. The primary checkout, production task and production credentials are
-untouched. This PR builds on #529's runner unification and preserves its current
-product contracts, campaign, new journeys and retirement of duplicate runners.
-Unit, component, integration, security and performance checks remain in place.
+The verified remote is `git@github.com:thannous/dreamer.git`. Initial master
+`ca3c4c93b581968aaec5bb76c21a7582887d1fc3` (#529) was integrated; the follow-up
+below also integrates `2b4a7d3ea1921b83d55847120508b66eb590feb6` (#531).
+That latter base is explicitly frozen for delivery; the final remote check still
+points to it. No reset or concurrent-work overwrite. The primary checkout,
+production task and production credentials are untouched. The PR preserves both
+owner changesets' product contracts and new journeys. Unit, component,
+integration, security and performance checks remain in place.
 
 ## Before / after inventory
 
 | Surface | Audit snapshot / current master | This PR |
 | --- | --- | --- |
-| Dreamer historical web coverage | Snapshot: 68 Playwright cases in 14 files plus TesterArmy parity cases. #529 retired duplicate runners and supplied the current free-reflection flow. | 21 families / 114 cases use public `app`, `screen`, `browser` and `e2e.expect`, including billing, capture, journal, illustrations, reflection, guides, symbols, settings, backgrounds, onboarding, responsive layout and a11y. No Page/matcher bridge in their test bodies. |
+| Dreamer historical web coverage | Snapshot: 68 Playwright cases in 14 files plus TesterArmy parity cases. #529 retired duplicate runners and supplied the current free-reflection flow. | 21 families / 119 cases (the initial 114 plus five new #531 cases) use public `app`, `screen`, `browser` and `e2e.expect`, including billing, capture, journal, illustrations, reflection, guides, symbols, settings, backgrounds, onboarding, responsive layout and a11y. No Page/matcher bridge in their test bodies. |
 | Consent and stable Dreamer journeys | Public TesterArmy tests, including the six-second animation observation under audit. | Preserved; consent retains both named providers, no permission on refusal, later reading, two dialogs, durable permission and original story. The animation waits for its whole observation before checking nonzero/full settled letters and zero replay. |
 | Real local backend | Eight cases, moved into TesterArmy in #529 with Page/context compatibility fixtures. | Six public-API cases: RLS/other-user/anonymous isolation, Free/Plus server quota and sign-out, legacy/current themes and RPC, private Apple-token lifecycle. Two context/offline cases remain explicit compatibility exceptions in the same TesterArmy runner; their bodies are identical to #529. |
 | Shared test-branch sessions | #529 moved two cases/setup into the guarded TesterArmy branch runner. | Preserved. Environment block: no approved allowlisted branch/accounts. The production HTTP/WebSocket guards and private saved-session handling remain. No remote seed or production access. |
@@ -24,7 +26,7 @@ Unit, component, integration, security and performance checks remain in place.
 The 21 public families are: backgrounds (5), billing (13), capture-chat (2),
 capture-editor (2), desktop-shell (1), dream-continuous-reading (3), dream-guides
 (3), explorer-repertoire (3), home-editorial (3), journal-margin (6), journeys
-(18), native-large-text-polish (1), onboarding-features (21), plus-channels (7),
+(18), native-large-text-polish (1), onboarding-features (21), plus-channels (12),
 readiness (3), reflection-context (4), review-accessibility (3), settings (3),
 symbol-dictionary (6), trends-editorial (4), visual-overflow (3).
 
@@ -95,10 +97,11 @@ transitive AI packages / explicitly requested persona runs.
 - `npm run test:testerarmy:all`: existing #529 opt-in campaign, including its saved
   ChatGPT Pro persona stage; unchanged. Exact scenarios invoke no model.
 
-## Final evidence
+## Historical evidence before the #531 integration
 
-Code candidate: `67b2df43b18efb23171d5778e96ef37f0de04ef1`; later edits only
-record evidence/documentation. The final documentation commit and its exact
+Previously delivered code candidate: `67b2df43b18efb23171d5778e96ef37f0de04ef1`.
+This section describes the earlier #529 base; the following section records the
+new #531 build and P2 follow-up. The final documentation commit and its exact
 `verify:pr` proof are identified in the draft PR. No application source changed
 relative to integrated master `ca3c4c93b581968aaec5bb76c21a7582887d1fc3`.
 
@@ -125,7 +128,7 @@ and immutable `end.json`; red runs remain red.
 | Meditation onboarding/favourites/audio | `a1d911651bac570d5aff7b7998b142c7920f5622` | First two PASS; audio FAIL because SDK rounded the pointer outside the track | `meditation-web/1792580470724-15711-c8432ab3-2d1e-4c8c-b89c-9fccbbbc8a55` |
 | Repaired public audio seek/restart/completion, ×3 | `67b2df43b18efb23171d5778e96ef37f0de04ef1` | 3/3 PASS, exit 0; same near-end click one whole pixel inside the actual control | `meditation-web/1792580611996-18475-3ae5d87b-ab1d-4ab0-b091-762ff88afb6e` |
 
-The reports' passed IDs cover all **133 current deterministic Dreamer cases**
+The reports' passed IDs cover all **133 deterministic Dreamer cases of that earlier base**
 across their four contexts (106 EN/ON, 25 FR/ON, 1 DE/ON, 1 EN/OFF), including the
 114 cases in the 21 ported families. One old consent title is superseded by its
 strengthened rerun and is counted only once. This is combined evidence after
@@ -133,7 +136,8 @@ focused repairs, **not one freshly green full campaign**. Changed bodies were
 rerun; unchanged test/fixture/app inputs retain their immutable results. No
 unchanged five-minute onboarding observation was rerun merely for a docs edit.
 Excluded cases in focused reports are not counted as passes. No unresolved
-Dreamer mock-web failure remains in this evidence set.
+Dreamer mock-web failure remained in that earlier evidence set. It does not
+qualify the later #531 application build by itself.
 
 Exact commands (prefix `E2E_WEB_PORT=8126 E2E_WORKERS=2` for Dreamer;
 `E2E_WEB_PORT=8127 E2E_WORKERS=2` for Lucid;
@@ -190,3 +194,73 @@ private logs and generated images are not committed. No production, real
 Apple/payment, physical-device, native Release, Store or OTA qualification is
 claimed. The optional ChatGPT Pro/persona campaign and unaffected site/native
 suites were not rerun for this test-tooling PR.
+
+## Follow-up P2: Save clipping and #531 integration
+
+Review of delivered `faa7960611d1b8b3267865b99b6bf70e0548d51c` found one
+remaining viewport-only assertion in Capture's short-window case. It now uses
+`expectInViewport` (public `IntersectionObserver`, ancestor clipping included)
+after scrolling, keeping the prior x/y rectangle bounds. The same case now
+constructs the precise counterexample in both 320×640 and 640×390: the real Save
+button has a positive rectangle entirely within the window, yet an overflow
+ancestor clips all its pixels. The helper must report false. A hidden anchor
+restores the same button to its exact former parent position in `finally`; the
+fixture is removed, the button scrolled into view and its intersection required
+again. No application or personal data is modified.
+
+The first fixture under the application passed the portrait counterexample but
+failed its landscape precondition because a transformed ancestor moved its fixed
+rectangle above the window. Receipt
+`dreamer-web/1792581528473-37097-2811fcaa-33dd-48b0-a371-84bfe782f2db`
+therefore remains red (3 PASS, 3 FAIL) on `b149b721e`. The corrected fixture is
+positioned under `document.body`, independent of application transforms, with
+the restoration anchor retained. Its two journeys each pass three repetitions.
+
+During this follow-up, master advanced to #531. Its five new Plus cases, renamed
+Home paths, account/subscription entry distinction, dated quota copy, per-dream
+excerpt, chat limit, Trends and free recap contracts were preserved. Conflicts
+in billing/journeys/Plus were resolved into public TesterArmy APIs; the public
+family inventory is now **21 families / 119 cases**, and the deterministic
+Dreamer collection **138 cases**. No application delta exists against #531.
+The base is frozen at `2b4a7d3ea1921b83d55847120508b66eb590feb6`, also returned
+by the final read-only remote check.
+
+| New-base execution | Tested revision | Result | Private receipt |
+| --- | --- | --- | --- |
+| Billing (13), journeys (18), Plus channels (12), Trends EN (3), core (16) | `b149b721e20638e0964bdfea00b570ed9d57b607` | 62/62 PASS, exit 0 | `dreamer-web/1792581528473-37100-d4c1dabd-1af3-4671-b2b6-cfe621798bc6` |
+| Capture incl. clipping counterexample, both cases ×3 | `d4fc6fe582ed7a3d1b4e5b9f8bee319f14c66b24` | 6/6 PASS, exit 0 | `dreamer-web/1792581951064-51938-ccd65d36-bc0e-44f4-8103-a3a3a98a91ce` |
+| FR public journeys, feature ON | `d4fc6fe58` | 25/25 PASS, exit 0 | `dreamer-web/1792581951064-51939-f8747f4a-427e-464f-8dcd-bc4026fce01b` |
+| German Trends, feature ON | `d4fc6fe58` | 1/1 PASS, exit 0 | `dreamer-web/1792582012383-53134-520ee6d1-aa72-48b4-a531-047173f61c46` |
+| EN feature OFF, cache retained | `d4fc6fe58` | 1/1 PASS, exit 0 | `dreamer-web/1792582143775-66098-06683d98-78d2-4576-9b71-a780e17daab2` |
+| Real local backend | `d4fc6fe58` | 8/8 PASS, outer exit 0, owned stack destroyed | `backend-web/1792582057998-58793-e1ffddc5-2853-4713-8b96-34ab22ebf427` |
+
+Every successful new-base receipt above has clean, stable start/end sources.
+These executions cover **91 of the 138 current Dreamer IDs**; the other 47 were
+not rerun on #531. Their earlier results retain their exact revisions above.
+This is focused revalidation after integration, not a new complete release or
+persona campaign. Native/Store/physical-device limits and the two backend API
+compatibility cases / two blocked branch sessions are unchanged.
+
+Commands: Capture used the Dreamer EN/ON prefix on port 8126 with
+`--grep 'capture gives the story room|capture keeps long and fragmentary' --repeat-each 3`.
+The 62-case selection on port 8127 is recorded verbatim in its `evidence.json`;
+it covers all five listed files' EN cases. FR/DE use the same locale/tag commands
+above, ports 8127/8126 respectively. The successful OFF command uses
+`E2E_KEEP_METRO_CACHE=1`, the same OFF grep and port 8126, after backend completion.
+`npm run test:e2e:backend` used its canonical 8085 origin.
+
+The attempted OFF cold-cache diagnostic
+`dreamer-web/1792582065176-59967-f5bbc575-717e-4312-a399-1b27c1337430`
+failed before tests with APP_UNREACHABLE / Metro ENOTEMPTY while clearing the
+shared cache during another local compilation. Exit 3, zero executed tests, no
+qualification. No manual cache deletion, process termination or SDK patch was
+used. The later OFF pass retained the cache and waited until the backend ended.
+The earlier cold-cache `0` evidence remains historical; the recorded rerun flag
+still preserves `0` exactly.
+
+Types and focused zero-warning lint pass. Integrated `verify:pr` on `b149b721e`
+passed (10 run, 6 reused, 3 out of scope), proof tree
+`760522ae2c2ffce0814fa73dd434d022b7285bdb`. The final delivery head is verified
+again before push and recorded in PR #530. Independent delta review confirms
+Save clipping/restoration and parity of the merged owner assertions, with no
+remaining P1/P2. All outputs stay private and ignored as before.
