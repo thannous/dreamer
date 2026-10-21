@@ -185,7 +185,11 @@ test('a saved dream waiting for its reading shows its own first words on the off
 // subscription card: its quota card keeps the one way to Plus there.
 test('the account screen keeps its own way to Plus for a free account', async ({ page }) => {
   await selectProfile(page, 'existing');
-  await page.goto('/settings?section=account', { waitUntil: 'domcontentloaded' });
+  // Browser history keeps the mock session; a page load would start a new app launch.
+  await page.evaluate(() => {
+    window.history.pushState({}, '', '/settings?section=account');
+    window.dispatchEvent(new PopStateEvent('popstate', { state: window.history.state }));
+  });
   await expect(page.getByTestId('screen.account')).toBeVisible();
   await expect(page.getByTestId('quota.analysisValue')).toHaveText('3 / 3');
   await page.getByRole('button', { name: 'Upgrade to Noctalia Plus', exact: true }).click();
