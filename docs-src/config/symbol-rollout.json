@@ -39,6 +39,9 @@
     },
     "lot-12": {
       "label": "lot-12, 30 packs"
+    },
+    "lot-13": {
+      "label": "lot-13, 30 packs"
     }
   },
   "symbols": {
@@ -52,7 +55,7 @@
       "lot": "lot-10"
     },
     "alien": {
-      "lot": null
+      "lot": "lot-13"
     },
     "angel": {
       "lot": "lot-10"
@@ -67,7 +70,7 @@
       "lot": "lot-10"
     },
     "attack": {
-      "lot": null
+      "lot": "lot-13"
     },
     "attic": {
       "lot": "lot-11"
@@ -82,13 +85,13 @@
       "lot": "lot-11"
     },
     "bat": {
-      "lot": null
+      "lot": "lot-13"
     },
     "bathroom": {
       "lot": "lot-10"
     },
     "beach": {
-      "lot": null
+      "lot": "lot-13"
     },
     "bear": {
       "lot": "lot-12"
@@ -121,7 +124,7 @@
       "lot": "lot-06"
     },
     "boss": {
-      "lot": null
+      "lot": "lot-13"
     },
     "breakup": {
       "lot": "lot-07"
@@ -157,22 +160,22 @@
       "lot": "lot-09"
     },
     "celebrity": {
-      "lot": null
+      "lot": "lot-13"
     },
     "cemetery": {
-      "lot": null
+      "lot": "lot-13"
     },
     "chase": {
       "lot": "lot-08"
     },
     "cheating": {
-      "lot": null
+      "lot": "lot-13"
     },
     "child": {
       "lot": "lot-08"
     },
     "church": {
-      "lot": null
+      "lot": "lot-13"
     },
     "city": {
       "lot": "lot-07"
@@ -220,7 +223,7 @@
       "lot": "lot-07"
     },
     "crush": {
-      "lot": null
+      "lot": "lot-13"
     },
     "crying": {
       "lot": "lot-08"
@@ -232,7 +235,7 @@
       "lot": "lot-08"
     },
     "deer": {
-      "lot": null
+      "lot": "lot-13"
     },
     "demon": {
       "lot": "lot-11"
@@ -271,7 +274,7 @@
       "lot": "lot-11"
     },
     "eating": {
-      "lot": null
+      "lot": "lot-13"
     },
     "elephant": {
       "lot": "lot-12"
@@ -304,7 +307,7 @@
       "lot": "lot-11"
     },
     "fighting": {
-      "lot": null
+      "lot": "lot-13"
     },
     "fire": {
       "lot": "lot-02"
@@ -409,13 +412,13 @@
       "lot": "lot-04"
     },
     "kidnapping": {
-      "lot": null
+      "lot": "lot-13"
     },
     "killing": {
-      "lot": null
+      "lot": "lot-13"
     },
     "kissing": {
-      "lot": null
+      "lot": "lot-13"
     },
     "kitchen": {
       "lot": "lot-10"
@@ -436,7 +439,7 @@
       "lot": "lot-07"
     },
     "lice": {
-      "lot": null
+      "lot": "lot-13"
     },
     "light": {
       "lot": "lot-07"
@@ -451,7 +454,7 @@
       "lot": "lot-08"
     },
     "lizard": {
-      "lot": null
+      "lot": "lot-13"
     },
     "lost": {
       "lot": "lot-08"
@@ -475,7 +478,7 @@
       "lot": "lot-08"
     },
     "monkey": {
-      "lot": null
+      "lot": "lot-13"
     },
     "monster": {
       "lot": "lot-11"
@@ -496,10 +499,10 @@
       "lot": "lot-08"
     },
     "moving-house": {
-      "lot": null
+      "lot": "lot-13"
     },
     "nails": {
-      "lot": null
+      "lot": "lot-13"
     },
     "neighbor": {
       "lot": "lot-07"
@@ -538,7 +541,7 @@
       "lot": "lot-08"
     },
     "pig": {
-      "lot": null
+      "lot": "lot-13"
     },
     "plane": {
       "lot": "lot-08"
@@ -589,7 +592,7 @@
       "lot": "lot-08"
     },
     "scorpion": {
-      "lot": null
+      "lot": "lot-13"
     },
     "screaming": {
       "lot": "lot-11"
@@ -598,7 +601,7 @@
       "lot": "lot-07"
     },
     "sex": {
-      "lot": null
+      "lot": "lot-13"
     },
     "shadow": {
       "lot": "lot-11"
@@ -655,7 +658,7 @@
       "lot": "lot-08"
     },
     "swimming-pool": {
-      "lot": null
+      "lot": "lot-13"
     },
     "teacher": {
       "lot": "lot-10"
@@ -667,7 +670,7 @@
       "lot": "tiger"
     },
     "toilet": {
-      "lot": null
+      "lot": "lot-13"
     },
     "tornado": {
       "lot": "lot-12"
@@ -688,7 +691,7 @@
       "lot": "lot-08"
     },
     "tsunami": {
-      "lot": null
+      "lot": "lot-13"
     },
     "tunnel": {
       "lot": "lot-07"
@@ -709,7 +712,7 @@
       "lot": "lot-12"
     },
     "vomiting": {
-      "lot": null
+      "lot": "lot-13"
     },
     "wall": {
       "lot": "lot-07"
@@ -718,10 +721,10 @@
       "lot": null
     },
     "war": {
-      "lot": null
+      "lot": "lot-13"
     },
     "wasp": {
-      "lot": null
+      "lot": "lot-13"
     },
     "watch": {
       "lot": "lot-11"

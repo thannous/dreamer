@@ -20987,6 +20987,3126 @@
           }
         }
       }
+    },
+    "lice": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "lice-in-your-hair": {
+            "variation": "Des poux dans vos cheveux",
+            "anchor": "lice-in-your-hair"
+          },
+          "removing-or-killing-lice": {
+            "variation": "Enlever ou tuer des poux",
+            "anchor": "removing-or-killing-lice"
+          },
+          "many-lice": {
+            "variation": "Beaucoup de poux",
+            "anchor": "many-lice"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "lice-in-your-hair": {
+            "variation": "Lice in your hair",
+            "anchor": "lice-in-your-hair"
+          },
+          "removing-or-killing-lice": {
+            "variation": "Removing or killing lice",
+            "anchor": "removing-or-killing-lice"
+          },
+          "many-lice": {
+            "variation": "Many lice",
+            "anchor": "many-lice"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "lice-in-your-hair": {
+            "variation": "Piojos en tu pelo",
+            "anchor": "lice-in-your-hair"
+          },
+          "removing-or-killing-lice": {
+            "variation": "Quitar o matar piojos",
+            "anchor": "removing-or-killing-lice"
+          },
+          "many-lice": {
+            "variation": "Muchos piojos",
+            "anchor": "many-lice"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "lice-in-your-hair": {
+            "variation": "Läuse in den eigenen Haaren",
+            "anchor": "lice-in-your-hair"
+          },
+          "removing-or-killing-lice": {
+            "variation": "Läuse entfernen oder töten",
+            "anchor": "removing-or-killing-lice"
+          },
+          "many-lice": {
+            "variation": "Viele Läuse",
+            "anchor": "many-lice"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "lice-in-your-hair": {
+            "variation": "Pidocchi nei tuoi capelli",
+            "anchor": "lice-in-your-hair"
+          },
+          "removing-or-killing-lice": {
+            "variation": "Togliere o uccidere pidocchi",
+            "anchor": "removing-or-killing-lice"
+          },
+          "many-lice": {
+            "variation": "Molti pidocchi",
+            "anchor": "many-lice"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "lice-in-your-hair": {
+            "variation": "Piolhos no seu cabelo",
+            "anchor": "lice-in-your-hair"
+          },
+          "removing-or-killing-lice": {
+            "variation": "Tirar ou matar piolhos",
+            "anchor": "removing-or-killing-lice"
+          },
+          "many-lice": {
+            "variation": "Muitos piolhos",
+            "anchor": "many-lice"
+          }
+        }
+      }
+    },
+    "scorpion": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "a-scorpion-sting": {
+            "variation": "Une piqûre de scorpion",
+            "anchor": "a-scorpion-sting"
+          },
+          "a-calm-scorpion": {
+            "variation": "Un scorpion calme",
+            "anchor": "a-calm-scorpion"
+          },
+          "many-scorpions": {
+            "variation": "Beaucoup de scorpions",
+            "anchor": "many-scorpions"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "a-scorpion-sting": {
+            "variation": "A scorpion sting",
+            "anchor": "a-scorpion-sting"
+          },
+          "a-calm-scorpion": {
+            "variation": "A calm scorpion",
+            "anchor": "a-calm-scorpion"
+          },
+          "many-scorpions": {
+            "variation": "Many scorpions",
+            "anchor": "many-scorpions"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "a-scorpion-sting": {
+            "variation": "La picadura de un escorpión",
+            "anchor": "a-scorpion-sting"
+          },
+          "a-calm-scorpion": {
+            "variation": "Un escorpión tranquilo",
+            "anchor": "a-calm-scorpion"
+          },
+          "many-scorpions": {
+            "variation": "Muchos escorpiones",
+            "anchor": "many-scorpions"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "a-scorpion-sting": {
+            "variation": "Ein Skorpionstich",
+            "anchor": "a-scorpion-sting"
+          },
+          "a-calm-scorpion": {
+            "variation": "Ein ruhiger Skorpion",
+            "anchor": "a-calm-scorpion"
+          },
+          "many-scorpions": {
+            "variation": "Viele Skorpione",
+            "anchor": "many-scorpions"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "a-scorpion-sting": {
+            "variation": "La puntura di uno scorpione",
+            "anchor": "a-scorpion-sting"
+          },
+          "a-calm-scorpion": {
+            "variation": "Uno scorpione tranquillo",
+            "anchor": "a-calm-scorpion"
+          },
+          "many-scorpions": {
+            "variation": "Tanti scorpioni",
+            "anchor": "many-scorpions"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "a-scorpion-sting": {
+            "variation": "Uma ferroada ou ataque de escorpião",
+            "anchor": "a-scorpion-sting"
+          },
+          "a-calm-scorpion": {
+            "variation": "Um escorpião calmo ou à espreita",
+            "anchor": "a-calm-scorpion"
+          },
+          "many-scorpions": {
+            "variation": "Muitos escorpiões ou escorpiões escondidos",
+            "anchor": "many-scorpions"
+          }
+        }
+      }
+    },
+    "cemetery": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "walking-through-a-cemetery-at-night": {
+            "variation": "Marcher dans un cimetière la nuit",
+            "anchor": "walking-through-a-cemetery-at-night"
+          },
+          "looking-for-a-specific-grave": {
+            "variation": "Chercher une tombe précise",
+            "anchor": "looking-for-a-specific-grave"
+          },
+          "a-peaceful-cemetery-in-daylight": {
+            "variation": "Un cimetière paisible en plein jour",
+            "anchor": "a-peaceful-cemetery-in-daylight"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "walking-through-a-cemetery-at-night": {
+            "variation": "Walking through a cemetery at night",
+            "anchor": "walking-through-a-cemetery-at-night"
+          },
+          "looking-for-a-specific-grave": {
+            "variation": "Looking for a specific grave",
+            "anchor": "looking-for-a-specific-grave"
+          },
+          "a-peaceful-cemetery-in-daylight": {
+            "variation": "A peaceful cemetery in daylight",
+            "anchor": "a-peaceful-cemetery-in-daylight"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "walking-through-a-cemetery-at-night": {
+            "variation": "Caminar por un cementerio de noche",
+            "anchor": "walking-through-a-cemetery-at-night"
+          },
+          "looking-for-a-specific-grave": {
+            "variation": "Buscar una tumba concreta",
+            "anchor": "looking-for-a-specific-grave"
+          },
+          "a-peaceful-cemetery-in-daylight": {
+            "variation": "Un cementerio tranquilo de día",
+            "anchor": "a-peaceful-cemetery-in-daylight"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "walking-through-a-cemetery-at-night": {
+            "variation": "Nachts über einen Friedhof gehen",
+            "anchor": "walking-through-a-cemetery-at-night"
+          },
+          "looking-for-a-specific-grave": {
+            "variation": "Ein bestimmtes Grab suchen",
+            "anchor": "looking-for-a-specific-grave"
+          },
+          "a-peaceful-cemetery-in-daylight": {
+            "variation": "Ein friedlicher Friedhof bei Tag",
+            "anchor": "a-peaceful-cemetery-in-daylight"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "walking-through-a-cemetery-at-night": {
+            "variation": "Camminare in un cimitero di notte",
+            "anchor": "walking-through-a-cemetery-at-night"
+          },
+          "looking-for-a-specific-grave": {
+            "variation": "Cercare una tomba precisa",
+            "anchor": "looking-for-a-specific-grave"
+          },
+          "a-peaceful-cemetery-in-daylight": {
+            "variation": "Un cimitero tranquillo di giorno",
+            "anchor": "a-peaceful-cemetery-in-daylight"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "walking-through-a-cemetery-at-night": {
+            "variation": "Caminhar entre túmulos à noite",
+            "anchor": "walking-through-a-cemetery-at-night"
+          },
+          "looking-for-a-specific-grave": {
+            "variation": "Procurar ou visitar um túmulo específico",
+            "anchor": "looking-for-a-specific-grave"
+          },
+          "a-peaceful-cemetery-in-daylight": {
+            "variation": "Um cemitério abandonado ou tranquilo à luz do dia",
+            "anchor": "a-peaceful-cemetery-in-daylight"
+          }
+        }
+      }
+    },
+    "wasp": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "a-wasp-sting": {
+            "variation": "Une piqûre de guêpe",
+            "anchor": "a-wasp-sting"
+          },
+          "a-wasp-nest": {
+            "variation": "Un nid de guêpes",
+            "anchor": "a-wasp-nest"
+          },
+          "a-calm-wasp-that-does-not-sting": {
+            "variation": "Une guêpe calme qui ne pique pas",
+            "anchor": "a-calm-wasp-that-does-not-sting"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "a-wasp-sting": {
+            "variation": "A wasp sting",
+            "anchor": "a-wasp-sting"
+          },
+          "a-wasp-nest": {
+            "variation": "A wasp nest",
+            "anchor": "a-wasp-nest"
+          },
+          "a-calm-wasp-that-does-not-sting": {
+            "variation": "A calm wasp that does not sting",
+            "anchor": "a-calm-wasp-that-does-not-sting"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "a-wasp-sting": {
+            "variation": "Una picadura de avispa",
+            "anchor": "a-wasp-sting"
+          },
+          "a-wasp-nest": {
+            "variation": "Un nido de avispas",
+            "anchor": "a-wasp-nest"
+          },
+          "a-calm-wasp-that-does-not-sting": {
+            "variation": "Una avispa tranquila que no pica",
+            "anchor": "a-calm-wasp-that-does-not-sting"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "a-wasp-sting": {
+            "variation": "Ein Wespenstich",
+            "anchor": "a-wasp-sting"
+          },
+          "a-wasp-nest": {
+            "variation": "Ein Wespennest",
+            "anchor": "a-wasp-nest"
+          },
+          "a-calm-wasp-that-does-not-sting": {
+            "variation": "Eine ruhige Wespe, die nicht sticht",
+            "anchor": "a-calm-wasp-that-does-not-sting"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "a-wasp-sting": {
+            "variation": "Una puntura di vespa",
+            "anchor": "a-wasp-sting"
+          },
+          "a-wasp-nest": {
+            "variation": "Un nido di vespe",
+            "anchor": "a-wasp-nest"
+          },
+          "a-calm-wasp-that-does-not-sting": {
+            "variation": "Una vespa tranquilla che non punge",
+            "anchor": "a-calm-wasp-that-does-not-sting"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "a-wasp-sting": {
+            "variation": "Uma ferroada de vespa",
+            "anchor": "a-wasp-sting"
+          },
+          "a-wasp-nest": {
+            "variation": "Um ninho de vespas",
+            "anchor": "a-wasp-nest"
+          },
+          "a-calm-wasp-that-does-not-sting": {
+            "variation": "Uma vespa calma que não ferroa",
+            "anchor": "a-calm-wasp-that-does-not-sting"
+          }
+        }
+      }
+    },
+    "sex": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "sex-with-your-partner": {
+            "variation": "Faire l'amour avec son partenaire",
+            "anchor": "sex-with-your-partner"
+          },
+          "sex-with-a-stranger": {
+            "variation": "Avec un inconnu",
+            "anchor": "sex-with-a-stranger"
+          },
+          "being-interrupted-or-walked-in-on": {
+            "variation": "Être interrompu ou surpris",
+            "anchor": "being-interrupted-or-walked-in-on"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "sex-with-your-partner": {
+            "variation": "Sex with your partner",
+            "anchor": "sex-with-your-partner"
+          },
+          "sex-with-a-stranger": {
+            "variation": "Sex with a stranger",
+            "anchor": "sex-with-a-stranger"
+          },
+          "being-interrupted-or-walked-in-on": {
+            "variation": "Being interrupted or walked in on",
+            "anchor": "being-interrupted-or-walked-in-on"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "sex-with-your-partner": {
+            "variation": "Sexo con tu pareja",
+            "anchor": "sex-with-your-partner"
+          },
+          "sex-with-a-stranger": {
+            "variation": "Con un desconocido",
+            "anchor": "sex-with-a-stranger"
+          },
+          "being-interrupted-or-walked-in-on": {
+            "variation": "Que te interrumpan o te pillen",
+            "anchor": "being-interrupted-or-walked-in-on"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "sex-with-your-partner": {
+            "variation": "Sex mit dem eigenen Partner",
+            "anchor": "sex-with-your-partner"
+          },
+          "sex-with-a-stranger": {
+            "variation": "Mit einer fremden Person",
+            "anchor": "sex-with-a-stranger"
+          },
+          "being-interrupted-or-walked-in-on": {
+            "variation": "Unterbrochen oder ertappt werden",
+            "anchor": "being-interrupted-or-walked-in-on"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "sex-with-your-partner": {
+            "variation": "Fare l’amore con il proprio partner",
+            "anchor": "sex-with-your-partner"
+          },
+          "sex-with-a-stranger": {
+            "variation": "Con uno sconosciuto",
+            "anchor": "sex-with-a-stranger"
+          },
+          "being-interrupted-or-walked-in-on": {
+            "variation": "Essere interrotti o sorpresi",
+            "anchor": "being-interrupted-or-walked-in-on"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "sex-with-your-partner": {
+            "variation": "Sexo com o seu parceiro",
+            "anchor": "sex-with-your-partner"
+          },
+          "sex-with-a-stranger": {
+            "variation": "Com um desconhecido",
+            "anchor": "sex-with-a-stranger"
+          },
+          "being-interrupted-or-walked-in-on": {
+            "variation": "Ser interrompido ou flagrado",
+            "anchor": "being-interrupted-or-walked-in-on"
+          }
+        }
+      }
+    },
+    "cheating": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "your-partner-cheating-on-you": {
+            "variation": "Son partenaire qui vous trompe",
+            "anchor": "your-partner-cheating-on-you"
+          },
+          "your-partner-cheating-with-your-best-fr": {
+            "variation": "Être trompé avec son meilleur ami ou sa meilleure amie",
+            "anchor": "your-partner-cheating-with-your-best-fr"
+          },
+          "cheating-on-your-partner": {
+            "variation": "Tromper son partenaire",
+            "anchor": "cheating-on-your-partner"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "your-partner-cheating-on-you": {
+            "variation": "Your partner cheating on you",
+            "anchor": "your-partner-cheating-on-you"
+          },
+          "your-partner-cheating-with-your-best-fr": {
+            "variation": "Your partner cheating with your best friend",
+            "anchor": "your-partner-cheating-with-your-best-fr"
+          },
+          "cheating-on-your-partner": {
+            "variation": "Cheating on your partner",
+            "anchor": "cheating-on-your-partner"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "your-partner-cheating-on-you": {
+            "variation": "Tu pareja te engaña",
+            "anchor": "your-partner-cheating-on-you"
+          },
+          "your-partner-cheating-with-your-best-fr": {
+            "variation": "Tu pareja con tu mejor amigo o amiga",
+            "anchor": "your-partner-cheating-with-your-best-fr"
+          },
+          "cheating-on-your-partner": {
+            "variation": "Engañar a tu pareja",
+            "anchor": "cheating-on-your-partner"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "your-partner-cheating-on-you": {
+            "variation": "Der Partner geht fremd",
+            "anchor": "your-partner-cheating-on-you"
+          },
+          "your-partner-cheating-with-your-best-fr": {
+            "variation": "Fremdgehen mit der besten Freundin oder dem besten Freund",
+            "anchor": "your-partner-cheating-with-your-best-fr"
+          },
+          "cheating-on-your-partner": {
+            "variation": "Selbst fremdgehen",
+            "anchor": "cheating-on-your-partner"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "your-partner-cheating-on-you": {
+            "variation": "Il partner che ti tradisce",
+            "anchor": "your-partner-cheating-on-you"
+          },
+          "your-partner-cheating-with-your-best-fr": {
+            "variation": "Il partner con il tuo migliore amico o la tua migliore amica",
+            "anchor": "your-partner-cheating-with-your-best-fr"
+          },
+          "cheating-on-your-partner": {
+            "variation": "Tradire il proprio partner",
+            "anchor": "cheating-on-your-partner"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "your-partner-cheating-on-you": {
+            "variation": "O parceiro traindo você",
+            "anchor": "your-partner-cheating-on-you"
+          },
+          "your-partner-cheating-with-your-best-fr": {
+            "variation": "Traição com o melhor amigo ou a melhor amiga",
+            "anchor": "your-partner-cheating-with-your-best-fr"
+          },
+          "cheating-on-your-partner": {
+            "variation": "Trair o seu parceiro",
+            "anchor": "cheating-on-your-partner"
+          }
+        }
+      }
+    },
+    "kissing": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "kissing-your-crush": {
+            "variation": "Embrasser son crush",
+            "anchor": "kissing-your-crush"
+          },
+          "kissing-an-ex": {
+            "variation": "Embrasser son ex",
+            "anchor": "kissing-an-ex"
+          },
+          "kissing-a-friend": {
+            "variation": "Embrasser un ami ou une amie",
+            "anchor": "kissing-a-friend"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "kissing-your-crush": {
+            "variation": "Kissing your crush",
+            "anchor": "kissing-your-crush"
+          },
+          "kissing-an-ex": {
+            "variation": "Kissing an ex",
+            "anchor": "kissing-an-ex"
+          },
+          "kissing-a-friend": {
+            "variation": "Kissing a friend",
+            "anchor": "kissing-a-friend"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "kissing-your-crush": {
+            "variation": "Besar a la persona que te gusta",
+            "anchor": "kissing-your-crush"
+          },
+          "kissing-an-ex": {
+            "variation": "Besar a tu ex",
+            "anchor": "kissing-an-ex"
+          },
+          "kissing-a-friend": {
+            "variation": "Besar a un amigo o una amiga",
+            "anchor": "kissing-a-friend"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "kissing-your-crush": {
+            "variation": "Den Schwarm küssen",
+            "anchor": "kissing-your-crush"
+          },
+          "kissing-an-ex": {
+            "variation": "Den Ex küssen",
+            "anchor": "kissing-an-ex"
+          },
+          "kissing-a-friend": {
+            "variation": "Einen Freund oder eine Freundin küssen",
+            "anchor": "kissing-a-friend"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "kissing-your-crush": {
+            "variation": "Baciare la persona che ti piace",
+            "anchor": "kissing-your-crush"
+          },
+          "kissing-an-ex": {
+            "variation": "Baciare l’ex",
+            "anchor": "kissing-an-ex"
+          },
+          "kissing-a-friend": {
+            "variation": "Baciare un amico o un’amica",
+            "anchor": "kissing-a-friend"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "kissing-your-crush": {
+            "variation": "Beijar o crush",
+            "anchor": "kissing-your-crush"
+          },
+          "kissing-an-ex": {
+            "variation": "Beijar o ex",
+            "anchor": "kissing-an-ex"
+          },
+          "kissing-a-friend": {
+            "variation": "Beijar um amigo ou uma amiga",
+            "anchor": "kissing-a-friend"
+          }
+        }
+      }
+    },
+    "attack": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "attacked-by-a-stranger": {
+            "variation": "Être attaqué par un inconnu",
+            "anchor": "attacked-by-a-stranger"
+          },
+          "attacked-by-someone-you-know": {
+            "variation": "Être agressé par quelqu'un que vous connaissez",
+            "anchor": "attacked-by-someone-you-know"
+          },
+          "an-intruder-attacking-you-at-home": {
+            "variation": "Un intrus qui vous attaque chez vous",
+            "anchor": "an-intruder-attacking-you-at-home"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "attacked-by-a-stranger": {
+            "variation": "Attacked by a stranger",
+            "anchor": "attacked-by-a-stranger"
+          },
+          "attacked-by-someone-you-know": {
+            "variation": "Attacked by someone you know",
+            "anchor": "attacked-by-someone-you-know"
+          },
+          "an-intruder-attacking-you-at-home": {
+            "variation": "An intruder attacking you at home",
+            "anchor": "an-intruder-attacking-you-at-home"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "attacked-by-a-stranger": {
+            "variation": "Que te ataque un desconocido",
+            "anchor": "attacked-by-a-stranger"
+          },
+          "attacked-by-someone-you-know": {
+            "variation": "Que te ataque alguien conocido",
+            "anchor": "attacked-by-someone-you-know"
+          },
+          "an-intruder-attacking-you-at-home": {
+            "variation": "Un intruso que te ataca en casa",
+            "anchor": "an-intruder-attacking-you-at-home"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "attacked-by-a-stranger": {
+            "variation": "Von einem Fremden angegriffen werden",
+            "anchor": "attacked-by-a-stranger"
+          },
+          "attacked-by-someone-you-know": {
+            "variation": "Von einer bekannten Person angegriffen werden",
+            "anchor": "attacked-by-someone-you-know"
+          },
+          "an-intruder-attacking-you-at-home": {
+            "variation": "Ein Eindringling greift Sie zu Hause an",
+            "anchor": "an-intruder-attacking-you-at-home"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "attacked-by-a-stranger": {
+            "variation": "Essere aggrediti da uno sconosciuto",
+            "anchor": "attacked-by-a-stranger"
+          },
+          "attacked-by-someone-you-know": {
+            "variation": "Essere aggrediti da qualcuno che conosci",
+            "anchor": "attacked-by-someone-you-know"
+          },
+          "an-intruder-attacking-you-at-home": {
+            "variation": "Un intruso che ti aggredisce in casa",
+            "anchor": "an-intruder-attacking-you-at-home"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "attacked-by-a-stranger": {
+            "variation": "Ser atacado por um estranho",
+            "anchor": "attacked-by-a-stranger"
+          },
+          "attacked-by-someone-you-know": {
+            "variation": "Ser atacado por alguém conhecido",
+            "anchor": "attacked-by-someone-you-know"
+          },
+          "an-intruder-attacking-you-at-home": {
+            "variation": "Um intruso que ataca você em casa",
+            "anchor": "an-intruder-attacking-you-at-home"
+          }
+        }
+      }
+    },
+    "killing": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "killing-in-self-defense": {
+            "variation": "Tuer pour se défendre",
+            "anchor": "killing-in-self-defense"
+          },
+          "killing-someone-by-accident": {
+            "variation": "Tuer quelqu'un par accident",
+            "anchor": "killing-someone-by-accident"
+          },
+          "hiding-a-body-or-running-from-the-polic": {
+            "variation": "Cacher un corps ou fuir la police",
+            "anchor": "hiding-a-body-or-running-from-the-polic"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "killing-in-self-defense": {
+            "variation": "Killing in self-defense",
+            "anchor": "killing-in-self-defense"
+          },
+          "killing-someone-by-accident": {
+            "variation": "Killing someone by accident",
+            "anchor": "killing-someone-by-accident"
+          },
+          "hiding-a-body-or-running-from-the-polic": {
+            "variation": "Hiding a body or running from the police",
+            "anchor": "hiding-a-body-or-running-from-the-polic"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "killing-in-self-defense": {
+            "variation": "Matar en defensa propia",
+            "anchor": "killing-in-self-defense"
+          },
+          "killing-someone-by-accident": {
+            "variation": "Matar a alguien por accidente",
+            "anchor": "killing-someone-by-accident"
+          },
+          "hiding-a-body-or-running-from-the-polic": {
+            "variation": "Esconder un cuerpo o huir de la policía",
+            "anchor": "hiding-a-body-or-running-from-the-polic"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "killing-in-self-defense": {
+            "variation": "In Notwehr töten",
+            "anchor": "killing-in-self-defense"
+          },
+          "killing-someone-by-accident": {
+            "variation": "Jemanden aus Versehen töten",
+            "anchor": "killing-someone-by-accident"
+          },
+          "hiding-a-body-or-running-from-the-polic": {
+            "variation": "Eine Leiche verstecken oder vor der Polizei fliehen",
+            "anchor": "hiding-a-body-or-running-from-the-polic"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "killing-in-self-defense": {
+            "variation": "Uccidere per legittima difesa",
+            "anchor": "killing-in-self-defense"
+          },
+          "killing-someone-by-accident": {
+            "variation": "Uccidere qualcuno per sbaglio",
+            "anchor": "killing-someone-by-accident"
+          },
+          "hiding-a-body-or-running-from-the-polic": {
+            "variation": "Nascondere un cadavere o fuggire dalla polizia",
+            "anchor": "hiding-a-body-or-running-from-the-polic"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "killing-in-self-defense": {
+            "variation": "Matar em legítima defesa",
+            "anchor": "killing-in-self-defense"
+          },
+          "killing-someone-by-accident": {
+            "variation": "Matar alguém sem querer",
+            "anchor": "killing-someone-by-accident"
+          },
+          "hiding-a-body-or-running-from-the-polic": {
+            "variation": "Esconder um corpo ou fugir da polícia",
+            "anchor": "hiding-a-body-or-running-from-the-polic"
+          }
+        }
+      }
+    },
+    "fighting": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "fighting-a-stranger": {
+            "variation": "Se battre avec un inconnu",
+            "anchor": "fighting-a-stranger"
+          },
+          "punches-with-no-strength": {
+            "variation": "Des coups sans force",
+            "anchor": "punches-with-no-strength"
+          },
+          "watching-others-fight-or-trying-to-stop": {
+            "variation": "Voir d'autres se battre ou tenter de les séparer",
+            "anchor": "watching-others-fight-or-trying-to-stop"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "fighting-a-stranger": {
+            "variation": "Fighting a stranger",
+            "anchor": "fighting-a-stranger"
+          },
+          "punches-with-no-strength": {
+            "variation": "Punches with no strength",
+            "anchor": "punches-with-no-strength"
+          },
+          "watching-others-fight-or-trying-to-stop": {
+            "variation": "Watching others fight or trying to stop them",
+            "anchor": "watching-others-fight-or-trying-to-stop"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "fighting-a-stranger": {
+            "variation": "Pelear con un desconocido",
+            "anchor": "fighting-a-stranger"
+          },
+          "punches-with-no-strength": {
+            "variation": "Golpes sin fuerza",
+            "anchor": "punches-with-no-strength"
+          },
+          "watching-others-fight-or-trying-to-stop": {
+            "variation": "Ver pelear a otros o intentar separarlos",
+            "anchor": "watching-others-fight-or-trying-to-stop"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "fighting-a-stranger": {
+            "variation": "Mit einem Fremden kämpfen",
+            "anchor": "fighting-a-stranger"
+          },
+          "punches-with-no-strength": {
+            "variation": "Kraftlose Schläge",
+            "anchor": "punches-with-no-strength"
+          },
+          "watching-others-fight-or-trying-to-stop": {
+            "variation": "Anderen beim Kämpfen zusehen oder dazwischengehen",
+            "anchor": "watching-others-fight-or-trying-to-stop"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "fighting-a-stranger": {
+            "variation": "Fare a botte con uno sconosciuto",
+            "anchor": "fighting-a-stranger"
+          },
+          "punches-with-no-strength": {
+            "variation": "Pugni senza forza",
+            "anchor": "punches-with-no-strength"
+          },
+          "watching-others-fight-or-trying-to-stop": {
+            "variation": "Vedere altri fare a botte o cercare di separarli",
+            "anchor": "watching-others-fight-or-trying-to-stop"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "fighting-a-stranger": {
+            "variation": "Brigar com um estranho",
+            "anchor": "fighting-a-stranger"
+          },
+          "punches-with-no-strength": {
+            "variation": "Socos sem força",
+            "anchor": "punches-with-no-strength"
+          },
+          "watching-others-fight-or-trying-to-stop": {
+            "variation": "Ver outras pessoas brigando ou tentar separá-las",
+            "anchor": "watching-others-fight-or-trying-to-stop"
+          }
+        }
+      }
+    },
+    "eating": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "a-feast-or-a-generous-table": {
+            "variation": "Un festin ou une table généreuse",
+            "anchor": "a-feast-or-a-generous-table"
+          },
+          "being-hungry-and-never-getting-to-eat": {
+            "variation": "Avoir faim sans jamais pouvoir manger",
+            "anchor": "being-hungry-and-never-getting-to-eat"
+          },
+          "sharing-a-meal-with-someone": {
+            "variation": "Partager un repas avec quelqu'un",
+            "anchor": "sharing-a-meal-with-someone"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "a-feast-or-a-generous-table": {
+            "variation": "A feast or a generous table",
+            "anchor": "a-feast-or-a-generous-table"
+          },
+          "being-hungry-and-never-getting-to-eat": {
+            "variation": "Being hungry and never getting to eat",
+            "anchor": "being-hungry-and-never-getting-to-eat"
+          },
+          "sharing-a-meal-with-someone": {
+            "variation": "Sharing a meal with someone",
+            "anchor": "sharing-a-meal-with-someone"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "a-feast-or-a-generous-table": {
+            "variation": "Un festín o una mesa abundante",
+            "anchor": "a-feast-or-a-generous-table"
+          },
+          "being-hungry-and-never-getting-to-eat": {
+            "variation": "Tener hambre y no llegar a comer",
+            "anchor": "being-hungry-and-never-getting-to-eat"
+          },
+          "sharing-a-meal-with-someone": {
+            "variation": "Compartir una comida con alguien",
+            "anchor": "sharing-a-meal-with-someone"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "a-feast-or-a-generous-table": {
+            "variation": "Ein Festmahl oder ein reich gedeckter Tisch",
+            "anchor": "a-feast-or-a-generous-table"
+          },
+          "being-hungry-and-never-getting-to-eat": {
+            "variation": "Hungrig sein und nie zum Essen kommen",
+            "anchor": "being-hungry-and-never-getting-to-eat"
+          },
+          "sharing-a-meal-with-someone": {
+            "variation": "Mit jemandem eine Mahlzeit teilen",
+            "anchor": "sharing-a-meal-with-someone"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "a-feast-or-a-generous-table": {
+            "variation": "Un banchetto o una tavola abbondante",
+            "anchor": "a-feast-or-a-generous-table"
+          },
+          "being-hungry-and-never-getting-to-eat": {
+            "variation": "Avere fame e non riuscire a mangiare",
+            "anchor": "being-hungry-and-never-getting-to-eat"
+          },
+          "sharing-a-meal-with-someone": {
+            "variation": "Condividere un pasto con qualcuno",
+            "anchor": "sharing-a-meal-with-someone"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "a-feast-or-a-generous-table": {
+            "variation": "Um banquete ou uma mesa farta",
+            "anchor": "a-feast-or-a-generous-table"
+          },
+          "being-hungry-and-never-getting-to-eat": {
+            "variation": "Sentir fome e nunca conseguir comer",
+            "anchor": "being-hungry-and-never-getting-to-eat"
+          },
+          "sharing-a-meal-with-someone": {
+            "variation": "Dividir uma refeição com alguém",
+            "anchor": "sharing-a-meal-with-someone"
+          }
+        }
+      }
+    },
+    "kidnapping": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "being-kidnapped-by-a-stranger": {
+            "variation": "Être enlevé par un inconnu",
+            "anchor": "being-kidnapped-by-a-stranger"
+          },
+          "being-held-captive": {
+            "variation": "Être séquestré",
+            "anchor": "being-held-captive"
+          },
+          "escaping-from-kidnappers": {
+            "variation": "S'échapper de ses ravisseurs",
+            "anchor": "escaping-from-kidnappers"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "being-kidnapped-by-a-stranger": {
+            "variation": "Being kidnapped by a stranger",
+            "anchor": "being-kidnapped-by-a-stranger"
+          },
+          "being-held-captive": {
+            "variation": "Being held captive",
+            "anchor": "being-held-captive"
+          },
+          "escaping-from-kidnappers": {
+            "variation": "Escaping from kidnappers",
+            "anchor": "escaping-from-kidnappers"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "being-kidnapped-by-a-stranger": {
+            "variation": "Que te secuestre un desconocido",
+            "anchor": "being-kidnapped-by-a-stranger"
+          },
+          "being-held-captive": {
+            "variation": "Estar cautivo",
+            "anchor": "being-held-captive"
+          },
+          "escaping-from-kidnappers": {
+            "variation": "Escapar de los secuestradores",
+            "anchor": "escaping-from-kidnappers"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "being-kidnapped-by-a-stranger": {
+            "variation": "Von einem Fremden entführt werden",
+            "anchor": "being-kidnapped-by-a-stranger"
+          },
+          "being-held-captive": {
+            "variation": "Gefangen gehalten werden",
+            "anchor": "being-held-captive"
+          },
+          "escaping-from-kidnappers": {
+            "variation": "Den Entführern entkommen",
+            "anchor": "escaping-from-kidnappers"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "being-kidnapped-by-a-stranger": {
+            "variation": "Essere rapiti da uno sconosciuto",
+            "anchor": "being-kidnapped-by-a-stranger"
+          },
+          "being-held-captive": {
+            "variation": "Essere tenuti prigionieri",
+            "anchor": "being-held-captive"
+          },
+          "escaping-from-kidnappers": {
+            "variation": "Scappare dai rapitori",
+            "anchor": "escaping-from-kidnappers"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "being-kidnapped-by-a-stranger": {
+            "variation": "Ser sequestrado por um estranho",
+            "anchor": "being-kidnapped-by-a-stranger"
+          },
+          "being-held-captive": {
+            "variation": "Ficar em cativeiro",
+            "anchor": "being-held-captive"
+          },
+          "escaping-from-kidnappers": {
+            "variation": "Fugir dos sequestradores",
+            "anchor": "escaping-from-kidnappers"
+          }
+        }
+      }
+    },
+    "moving-house": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "moving-into-a-new-home": {
+            "variation": "Emménager dans une nouvelle maison",
+            "anchor": "moving-into-a-new-home"
+          },
+          "packing-boxes-that-never-end": {
+            "variation": "Faire des cartons sans fin",
+            "anchor": "packing-boxes-that-never-end"
+          },
+          "moving-back-to-an-old-home": {
+            "variation": "Retourner dans son ancienne maison",
+            "anchor": "moving-back-to-an-old-home"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "moving-into-a-new-home": {
+            "variation": "Moving into a new home",
+            "anchor": "moving-into-a-new-home"
+          },
+          "packing-boxes-that-never-end": {
+            "variation": "Packing boxes that never end",
+            "anchor": "packing-boxes-that-never-end"
+          },
+          "moving-back-to-an-old-home": {
+            "variation": "Moving back to an old home",
+            "anchor": "moving-back-to-an-old-home"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "moving-into-a-new-home": {
+            "variation": "Mudarte a una casa nueva",
+            "anchor": "moving-into-a-new-home"
+          },
+          "packing-boxes-that-never-end": {
+            "variation": "Hacer cajas que nunca se acaban",
+            "anchor": "packing-boxes-that-never-end"
+          },
+          "moving-back-to-an-old-home": {
+            "variation": "Volver a tu antigua casa",
+            "anchor": "moving-back-to-an-old-home"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "moving-into-a-new-home": {
+            "variation": "In ein neues Zuhause ziehen",
+            "anchor": "moving-into-a-new-home"
+          },
+          "packing-boxes-that-never-end": {
+            "variation": "Kartons packen ohne Ende",
+            "anchor": "packing-boxes-that-never-end"
+          },
+          "moving-back-to-an-old-home": {
+            "variation": "In die alte Wohnung zurückkehren",
+            "anchor": "moving-back-to-an-old-home"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "moving-into-a-new-home": {
+            "variation": "Trasferirsi in una casa nuova",
+            "anchor": "moving-into-a-new-home"
+          },
+          "packing-boxes-that-never-end": {
+            "variation": "Fare scatoloni senza fine",
+            "anchor": "packing-boxes-that-never-end"
+          },
+          "moving-back-to-an-old-home": {
+            "variation": "Tornare nella vecchia casa",
+            "anchor": "moving-back-to-an-old-home"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "moving-into-a-new-home": {
+            "variation": "Mudar para uma casa nova",
+            "anchor": "moving-into-a-new-home"
+          },
+          "packing-boxes-that-never-end": {
+            "variation": "Fazer caixas sem fim",
+            "anchor": "packing-boxes-that-never-end"
+          },
+          "moving-back-to-an-old-home": {
+            "variation": "Voltar para a casa antiga",
+            "anchor": "moving-back-to-an-old-home"
+          }
+        }
+      }
+    },
+    "war": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "bombs-sirens-or-an-air-raid": {
+            "variation": "Bombes, sirènes ou bombardement",
+            "anchor": "bombs-sirens-or-an-air-raid"
+          },
+          "fleeing-a-war-or-hiding": {
+            "variation": "Fuir la guerre ou se cacher",
+            "anchor": "fleeing-a-war-or-hiding"
+          },
+          "the-war-ends-or-peace-returns": {
+            "variation": "La guerre finit ou la paix revient",
+            "anchor": "the-war-ends-or-peace-returns"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "bombs-sirens-or-an-air-raid": {
+            "variation": "Bombs, sirens or an air raid",
+            "anchor": "bombs-sirens-or-an-air-raid"
+          },
+          "fleeing-a-war-or-hiding": {
+            "variation": "Fleeing a war or hiding",
+            "anchor": "fleeing-a-war-or-hiding"
+          },
+          "the-war-ends-or-peace-returns": {
+            "variation": "The war ends or peace returns",
+            "anchor": "the-war-ends-or-peace-returns"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "bombs-sirens-or-an-air-raid": {
+            "variation": "Bombas, sirenas o un bombardeo",
+            "anchor": "bombs-sirens-or-an-air-raid"
+          },
+          "fleeing-a-war-or-hiding": {
+            "variation": "Huir de la guerra o esconderte",
+            "anchor": "fleeing-a-war-or-hiding"
+          },
+          "the-war-ends-or-peace-returns": {
+            "variation": "La guerra termina o vuelve la paz",
+            "anchor": "the-war-ends-or-peace-returns"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "bombs-sirens-or-an-air-raid": {
+            "variation": "Bomben, Sirenen oder ein Luftangriff",
+            "anchor": "bombs-sirens-or-an-air-raid"
+          },
+          "fleeing-a-war-or-hiding": {
+            "variation": "Vor dem Krieg fliehen oder sich verstecken",
+            "anchor": "fleeing-a-war-or-hiding"
+          },
+          "the-war-ends-or-peace-returns": {
+            "variation": "Der Krieg endet oder Frieden kehrt zurück",
+            "anchor": "the-war-ends-or-peace-returns"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "bombs-sirens-or-an-air-raid": {
+            "variation": "Bombe, sirene o un bombardamento",
+            "anchor": "bombs-sirens-or-an-air-raid"
+          },
+          "fleeing-a-war-or-hiding": {
+            "variation": "Fuggire dalla guerra o nascondersi",
+            "anchor": "fleeing-a-war-or-hiding"
+          },
+          "the-war-ends-or-peace-returns": {
+            "variation": "La guerra finisce o torna la pace",
+            "anchor": "the-war-ends-or-peace-returns"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "bombs-sirens-or-an-air-raid": {
+            "variation": "Bombas, sirenes ou bombardeio",
+            "anchor": "bombs-sirens-or-an-air-raid"
+          },
+          "fleeing-a-war-or-hiding": {
+            "variation": "Fugir da guerra ou se esconder",
+            "anchor": "fleeing-a-war-or-hiding"
+          },
+          "the-war-ends-or-peace-returns": {
+            "variation": "A guerra acaba ou a paz volta",
+            "anchor": "the-war-ends-or-peace-returns"
+          }
+        }
+      }
+    },
+    "vomiting": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "vomiting-in-public": {
+            "variation": "Vomir en public",
+            "anchor": "vomiting-in-public"
+          },
+          "vomiting-and-feeling-relief": {
+            "variation": "Vomir et se sentir soulagé",
+            "anchor": "vomiting-and-feeling-relief"
+          },
+          "feeling-sick-but-unable-to-vomit": {
+            "variation": "Avoir la nausée sans pouvoir vomir",
+            "anchor": "feeling-sick-but-unable-to-vomit"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "vomiting-in-public": {
+            "variation": "Vomiting in public",
+            "anchor": "vomiting-in-public"
+          },
+          "vomiting-and-feeling-relief": {
+            "variation": "Vomiting and feeling relief",
+            "anchor": "vomiting-and-feeling-relief"
+          },
+          "feeling-sick-but-unable-to-vomit": {
+            "variation": "Feeling sick but unable to vomit",
+            "anchor": "feeling-sick-but-unable-to-vomit"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "vomiting-in-public": {
+            "variation": "Vomitar en público",
+            "anchor": "vomiting-in-public"
+          },
+          "vomiting-and-feeling-relief": {
+            "variation": "Vomitar y sentir alivio",
+            "anchor": "vomiting-and-feeling-relief"
+          },
+          "feeling-sick-but-unable-to-vomit": {
+            "variation": "Tener náuseas sin poder vomitar",
+            "anchor": "feeling-sick-but-unable-to-vomit"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "vomiting-in-public": {
+            "variation": "Sich vor anderen übergeben",
+            "anchor": "vomiting-in-public"
+          },
+          "vomiting-and-feeling-relief": {
+            "variation": "Erbrechen und Erleichterung spüren",
+            "anchor": "vomiting-and-feeling-relief"
+          },
+          "feeling-sick-but-unable-to-vomit": {
+            "variation": "Übelkeit, ohne erbrechen zu können",
+            "anchor": "feeling-sick-but-unable-to-vomit"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "vomiting-in-public": {
+            "variation": "Vomitare in pubblico",
+            "anchor": "vomiting-in-public"
+          },
+          "vomiting-and-feeling-relief": {
+            "variation": "Vomitare e sentire sollievo",
+            "anchor": "vomiting-and-feeling-relief"
+          },
+          "feeling-sick-but-unable-to-vomit": {
+            "variation": "Avere la nausea senza riuscire a vomitare",
+            "anchor": "feeling-sick-but-unable-to-vomit"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "vomiting-in-public": {
+            "variation": "Vomitar em público",
+            "anchor": "vomiting-in-public"
+          },
+          "vomiting-and-feeling-relief": {
+            "variation": "Vomitar e sentir alívio",
+            "anchor": "vomiting-and-feeling-relief"
+          },
+          "feeling-sick-but-unable-to-vomit": {
+            "variation": "Sentir enjoo sem conseguir vomitar",
+            "anchor": "feeling-sick-but-unable-to-vomit"
+          }
+        }
+      }
+    },
+    "nails": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "a-broken-or-split-nail": {
+            "variation": "Un ongle cassé ou fendu",
+            "anchor": "a-broken-or-split-nail"
+          },
+          "long-or-painted-nails": {
+            "variation": "Des ongles longs ou vernis",
+            "anchor": "long-or-painted-nails"
+          },
+          "cutting-your-nails": {
+            "variation": "Se couper les ongles",
+            "anchor": "cutting-your-nails"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "a-broken-or-split-nail": {
+            "variation": "A broken or split nail",
+            "anchor": "a-broken-or-split-nail"
+          },
+          "long-or-painted-nails": {
+            "variation": "Long or painted nails",
+            "anchor": "long-or-painted-nails"
+          },
+          "cutting-your-nails": {
+            "variation": "Cutting your nails",
+            "anchor": "cutting-your-nails"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "a-broken-or-split-nail": {
+            "variation": "Una uña rota o partida",
+            "anchor": "a-broken-or-split-nail"
+          },
+          "long-or-painted-nails": {
+            "variation": "Uñas largas o pintadas",
+            "anchor": "long-or-painted-nails"
+          },
+          "cutting-your-nails": {
+            "variation": "Cortarse las uñas",
+            "anchor": "cutting-your-nails"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "a-broken-or-split-nail": {
+            "variation": "Ein abgebrochener oder eingerissener Nagel",
+            "anchor": "a-broken-or-split-nail"
+          },
+          "long-or-painted-nails": {
+            "variation": "Lange oder lackierte Nägel",
+            "anchor": "long-or-painted-nails"
+          },
+          "cutting-your-nails": {
+            "variation": "Nägel schneiden",
+            "anchor": "cutting-your-nails"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "a-broken-or-split-nail": {
+            "variation": "Un’unghia rotta o spezzata",
+            "anchor": "a-broken-or-split-nail"
+          },
+          "long-or-painted-nails": {
+            "variation": "Unghie lunghe o smaltate",
+            "anchor": "long-or-painted-nails"
+          },
+          "cutting-your-nails": {
+            "variation": "Tagliarsi le unghie",
+            "anchor": "cutting-your-nails"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "a-broken-or-split-nail": {
+            "variation": "Uma unha quebrada ou lascada",
+            "anchor": "a-broken-or-split-nail"
+          },
+          "long-or-painted-nails": {
+            "variation": "Unhas grandes ou pintadas",
+            "anchor": "long-or-painted-nails"
+          },
+          "cutting-your-nails": {
+            "variation": "Cortar as unhas",
+            "anchor": "cutting-your-nails"
+          }
+        }
+      }
+    },
+    "tsunami": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "seeing-a-giant-wave-on-the-horizon": {
+            "variation": "Voir une vague géante à l'horizon",
+            "anchor": "seeing-a-giant-wave-on-the-horizon"
+          },
+          "running-from-a-tsunami": {
+            "variation": "Fuir un tsunami",
+            "anchor": "running-from-a-tsunami"
+          },
+          "surviving-a-tsunami": {
+            "variation": "Survivre à un tsunami",
+            "anchor": "surviving-a-tsunami"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "seeing-a-giant-wave-on-the-horizon": {
+            "variation": "Seeing a giant wave on the horizon",
+            "anchor": "seeing-a-giant-wave-on-the-horizon"
+          },
+          "running-from-a-tsunami": {
+            "variation": "Running from a tsunami",
+            "anchor": "running-from-a-tsunami"
+          },
+          "surviving-a-tsunami": {
+            "variation": "Surviving a tsunami",
+            "anchor": "surviving-a-tsunami"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "seeing-a-giant-wave-on-the-horizon": {
+            "variation": "Ver una ola gigante en el horizonte",
+            "anchor": "seeing-a-giant-wave-on-the-horizon"
+          },
+          "running-from-a-tsunami": {
+            "variation": "Huir de un tsunami",
+            "anchor": "running-from-a-tsunami"
+          },
+          "surviving-a-tsunami": {
+            "variation": "Sobrevivir a un tsunami",
+            "anchor": "surviving-a-tsunami"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "seeing-a-giant-wave-on-the-horizon": {
+            "variation": "Eine Riesenwelle am Horizont",
+            "anchor": "seeing-a-giant-wave-on-the-horizon"
+          },
+          "running-from-a-tsunami": {
+            "variation": "Vor einem Tsunami fliehen",
+            "anchor": "running-from-a-tsunami"
+          },
+          "surviving-a-tsunami": {
+            "variation": "Einen Tsunami überleben",
+            "anchor": "surviving-a-tsunami"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "seeing-a-giant-wave-on-the-horizon": {
+            "variation": "Vedere un’onda gigante all’orizzonte",
+            "anchor": "seeing-a-giant-wave-on-the-horizon"
+          },
+          "running-from-a-tsunami": {
+            "variation": "Scappare da uno tsunami",
+            "anchor": "running-from-a-tsunami"
+          },
+          "surviving-a-tsunami": {
+            "variation": "Sopravvivere a uno tsunami",
+            "anchor": "surviving-a-tsunami"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "seeing-a-giant-wave-on-the-horizon": {
+            "variation": "Ver uma onda gigante no horizonte",
+            "anchor": "seeing-a-giant-wave-on-the-horizon"
+          },
+          "running-from-a-tsunami": {
+            "variation": "Fugir de um tsunami",
+            "anchor": "running-from-a-tsunami"
+          },
+          "surviving-a-tsunami": {
+            "variation": "Sobreviver a um tsunami",
+            "anchor": "surviving-a-tsunami"
+          }
+        }
+      }
+    },
+    "deer": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "a-deer-on-the-road-at-night": {
+            "variation": "Un cerf ou une biche sur la route la nuit",
+            "anchor": "a-deer-on-the-road-at-night"
+          },
+          "a-deer-coming-closer-or-eating-from-you": {
+            "variation": "Une biche qui s'approche ou mange dans votre main",
+            "anchor": "a-deer-coming-closer-or-eating-from-you"
+          },
+          "a-stag-with-large-antlers": {
+            "variation": "Un cerf aux grands bois",
+            "anchor": "a-stag-with-large-antlers"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "a-deer-on-the-road-at-night": {
+            "variation": "A deer on the road at night",
+            "anchor": "a-deer-on-the-road-at-night"
+          },
+          "a-deer-coming-closer-or-eating-from-you": {
+            "variation": "A deer coming closer or eating from your hand",
+            "anchor": "a-deer-coming-closer-or-eating-from-you"
+          },
+          "a-stag-with-large-antlers": {
+            "variation": "A stag with large antlers",
+            "anchor": "a-stag-with-large-antlers"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "a-deer-on-the-road-at-night": {
+            "variation": "Un ciervo o un venado en la carretera de noche",
+            "anchor": "a-deer-on-the-road-at-night"
+          },
+          "a-deer-coming-closer-or-eating-from-you": {
+            "variation": "Una cierva que se acerca o come de tu mano",
+            "anchor": "a-deer-coming-closer-or-eating-from-you"
+          },
+          "a-stag-with-large-antlers": {
+            "variation": "Un ciervo con grandes astas",
+            "anchor": "a-stag-with-large-antlers"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "a-deer-on-the-road-at-night": {
+            "variation": "Ein Reh auf der Straße bei Nacht",
+            "anchor": "a-deer-on-the-road-at-night"
+          },
+          "a-deer-coming-closer-or-eating-from-you": {
+            "variation": "Ein Reh, das näher kommt oder aus der Hand frisst",
+            "anchor": "a-deer-coming-closer-or-eating-from-you"
+          },
+          "a-stag-with-large-antlers": {
+            "variation": "Ein Hirsch mit großem Geweih",
+            "anchor": "a-stag-with-large-antlers"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "a-deer-on-the-road-at-night": {
+            "variation": "Un cervo in strada di notte",
+            "anchor": "a-deer-on-the-road-at-night"
+          },
+          "a-deer-coming-closer-or-eating-from-you": {
+            "variation": "Una cerva che si avvicina o mangia dalla tua mano",
+            "anchor": "a-deer-coming-closer-or-eating-from-you"
+          },
+          "a-stag-with-large-antlers": {
+            "variation": "Un cervo con grandi corna",
+            "anchor": "a-stag-with-large-antlers"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "a-deer-on-the-road-at-night": {
+            "variation": "Um cervo ou veado na estrada à noite",
+            "anchor": "a-deer-on-the-road-at-night"
+          },
+          "a-deer-coming-closer-or-eating-from-you": {
+            "variation": "Uma corça que se aproxima ou come na sua mão",
+            "anchor": "a-deer-coming-closer-or-eating-from-you"
+          },
+          "a-stag-with-large-antlers": {
+            "variation": "Um cervo com chifres grandes",
+            "anchor": "a-stag-with-large-antlers"
+          }
+        }
+      }
+    },
+    "pig": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "a-pig-in-the-mud": {
+            "variation": "Un cochon dans la boue",
+            "anchor": "a-pig-in-the-mud"
+          },
+          "piglets": {
+            "variation": "Des porcelets",
+            "anchor": "piglets"
+          },
+          "a-pig-in-the-house": {
+            "variation": "Un cochon dans la maison",
+            "anchor": "a-pig-in-the-house"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "a-pig-in-the-mud": {
+            "variation": "A pig in the mud",
+            "anchor": "a-pig-in-the-mud"
+          },
+          "piglets": {
+            "variation": "Piglets",
+            "anchor": "piglets"
+          },
+          "a-pig-in-the-house": {
+            "variation": "A pig in the house",
+            "anchor": "a-pig-in-the-house"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "a-pig-in-the-mud": {
+            "variation": "Un cerdo en el barro",
+            "anchor": "a-pig-in-the-mud"
+          },
+          "piglets": {
+            "variation": "Cerditos",
+            "anchor": "piglets"
+          },
+          "a-pig-in-the-house": {
+            "variation": "Un cerdo dentro de casa",
+            "anchor": "a-pig-in-the-house"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "a-pig-in-the-mud": {
+            "variation": "Ein Schwein im Schlamm",
+            "anchor": "a-pig-in-the-mud"
+          },
+          "piglets": {
+            "variation": "Ferkel",
+            "anchor": "piglets"
+          },
+          "a-pig-in-the-house": {
+            "variation": "Ein Schwein im Haus",
+            "anchor": "a-pig-in-the-house"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "a-pig-in-the-mud": {
+            "variation": "Un maiale nel fango",
+            "anchor": "a-pig-in-the-mud"
+          },
+          "piglets": {
+            "variation": "Maialini",
+            "anchor": "piglets"
+          },
+          "a-pig-in-the-house": {
+            "variation": "Un maiale in casa",
+            "anchor": "a-pig-in-the-house"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "a-pig-in-the-mud": {
+            "variation": "Um porco na lama",
+            "anchor": "a-pig-in-the-mud"
+          },
+          "piglets": {
+            "variation": "Porquinhos",
+            "anchor": "piglets"
+          },
+          "a-pig-in-the-house": {
+            "variation": "Um porco dentro de casa",
+            "anchor": "a-pig-in-the-house"
+          }
+        }
+      }
+    },
+    "monkey": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "a-monkey-stealing-something": {
+            "variation": "Un singe qui vous vole quelque chose",
+            "anchor": "a-monkey-stealing-something"
+          },
+          "a-monkey-copying-you": {
+            "variation": "Un singe qui vous imite",
+            "anchor": "a-monkey-copying-you"
+          },
+          "a-baby-monkey-or-a-pet-monkey": {
+            "variation": "Un bébé singe ou un singe apprivoisé",
+            "anchor": "a-baby-monkey-or-a-pet-monkey"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "a-monkey-stealing-something": {
+            "variation": "A monkey stealing something",
+            "anchor": "a-monkey-stealing-something"
+          },
+          "a-monkey-copying-you": {
+            "variation": "A monkey copying you",
+            "anchor": "a-monkey-copying-you"
+          },
+          "a-baby-monkey-or-a-pet-monkey": {
+            "variation": "A baby monkey or a pet monkey",
+            "anchor": "a-baby-monkey-or-a-pet-monkey"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "a-monkey-stealing-something": {
+            "variation": "Un mono que te roba algo",
+            "anchor": "a-monkey-stealing-something"
+          },
+          "a-monkey-copying-you": {
+            "variation": "Un mono que te imita",
+            "anchor": "a-monkey-copying-you"
+          },
+          "a-baby-monkey-or-a-pet-monkey": {
+            "variation": "Un mono bebé o un mono domesticado",
+            "anchor": "a-baby-monkey-or-a-pet-monkey"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "a-monkey-stealing-something": {
+            "variation": "Ein Affe, der Ihnen etwas stiehlt",
+            "anchor": "a-monkey-stealing-something"
+          },
+          "a-monkey-copying-you": {
+            "variation": "Ein Affe, der Sie nachäfft",
+            "anchor": "a-monkey-copying-you"
+          },
+          "a-baby-monkey-or-a-pet-monkey": {
+            "variation": "Ein Affenbaby oder ein zahmer Affe",
+            "anchor": "a-baby-monkey-or-a-pet-monkey"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "a-monkey-stealing-something": {
+            "variation": "Una scimmia che ti ruba qualcosa",
+            "anchor": "a-monkey-stealing-something"
+          },
+          "a-monkey-copying-you": {
+            "variation": "Una scimmia che ti imita",
+            "anchor": "a-monkey-copying-you"
+          },
+          "a-baby-monkey-or-a-pet-monkey": {
+            "variation": "Una scimmietta o una scimmia addomesticata",
+            "anchor": "a-baby-monkey-or-a-pet-monkey"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "a-monkey-stealing-something": {
+            "variation": "Um macaco roubando algo",
+            "anchor": "a-monkey-stealing-something"
+          },
+          "a-monkey-copying-you": {
+            "variation": "Um macaco imitando você",
+            "anchor": "a-monkey-copying-you"
+          },
+          "a-baby-monkey-or-a-pet-monkey": {
+            "variation": "Um filhote de macaco ou um macaco de estimação",
+            "anchor": "a-baby-monkey-or-a-pet-monkey"
+          }
+        }
+      }
+    },
+    "lizard": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "a-lizard-in-the-house-or-in-bed": {
+            "variation": "Un lézard dans la maison ou dans le lit",
+            "anchor": "a-lizard-in-the-house-or-in-bed"
+          },
+          "a-large-lizard-or-an-iguana": {
+            "variation": "Un grand lézard ou un iguane",
+            "anchor": "a-large-lizard-or-an-iguana"
+          },
+          "a-lizard-basking-in-the-sun": {
+            "variation": "Un lézard au soleil",
+            "anchor": "a-lizard-basking-in-the-sun"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "a-lizard-in-the-house-or-in-bed": {
+            "variation": "A lizard in the house or in bed",
+            "anchor": "a-lizard-in-the-house-or-in-bed"
+          },
+          "a-large-lizard-or-an-iguana": {
+            "variation": "A large lizard or an iguana",
+            "anchor": "a-large-lizard-or-an-iguana"
+          },
+          "a-lizard-basking-in-the-sun": {
+            "variation": "A lizard basking in the sun",
+            "anchor": "a-lizard-basking-in-the-sun"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "a-lizard-in-the-house-or-in-bed": {
+            "variation": "Una lagartija en casa o en la cama",
+            "anchor": "a-lizard-in-the-house-or-in-bed"
+          },
+          "a-large-lizard-or-an-iguana": {
+            "variation": "Un lagarto grande o una iguana",
+            "anchor": "a-large-lizard-or-an-iguana"
+          },
+          "a-lizard-basking-in-the-sun": {
+            "variation": "Una lagartija tomando el sol",
+            "anchor": "a-lizard-basking-in-the-sun"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "a-lizard-in-the-house-or-in-bed": {
+            "variation": "Eine Eidechse im Haus oder im Bett",
+            "anchor": "a-lizard-in-the-house-or-in-bed"
+          },
+          "a-large-lizard-or-an-iguana": {
+            "variation": "Eine große Echse oder ein Leguan",
+            "anchor": "a-large-lizard-or-an-iguana"
+          },
+          "a-lizard-basking-in-the-sun": {
+            "variation": "Eine Eidechse in der Sonne",
+            "anchor": "a-lizard-basking-in-the-sun"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "a-lizard-in-the-house-or-in-bed": {
+            "variation": "Una lucertola in casa o nel letto",
+            "anchor": "a-lizard-in-the-house-or-in-bed"
+          },
+          "a-large-lizard-or-an-iguana": {
+            "variation": "Una grande lucertola o un’iguana",
+            "anchor": "a-large-lizard-or-an-iguana"
+          },
+          "a-lizard-basking-in-the-sun": {
+            "variation": "Una lucertola al sole",
+            "anchor": "a-lizard-basking-in-the-sun"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "a-lizard-in-the-house-or-in-bed": {
+            "variation": "Uma lagartixa dentro de casa ou na cama",
+            "anchor": "a-lizard-in-the-house-or-in-bed"
+          },
+          "a-large-lizard-or-an-iguana": {
+            "variation": "Um lagarto grande, como um teiú ou uma iguana",
+            "anchor": "a-large-lizard-or-an-iguana"
+          },
+          "a-lizard-basking-in-the-sun": {
+            "variation": "Um lagarto tomando sol",
+            "anchor": "a-lizard-basking-in-the-sun"
+          }
+        }
+      }
+    },
+    "bat": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "a-bat-flying-in-the-house": {
+            "variation": "Une chauve-souris dans la maison",
+            "anchor": "a-bat-flying-in-the-house"
+          },
+          "many-bats-or-a-swarm-at-dusk": {
+            "variation": "Une nuée de chauves-souris au crépuscule",
+            "anchor": "many-bats-or-a-swarm-at-dusk"
+          },
+          "a-bat-hanging-upside-down": {
+            "variation": "Une chauve-souris suspendue la tête en bas",
+            "anchor": "a-bat-hanging-upside-down"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "a-bat-flying-in-the-house": {
+            "variation": "A bat flying in the house",
+            "anchor": "a-bat-flying-in-the-house"
+          },
+          "many-bats-or-a-swarm-at-dusk": {
+            "variation": "Many bats or a swarm at dusk",
+            "anchor": "many-bats-or-a-swarm-at-dusk"
+          },
+          "a-bat-hanging-upside-down": {
+            "variation": "A bat hanging upside down",
+            "anchor": "a-bat-hanging-upside-down"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "a-bat-flying-in-the-house": {
+            "variation": "Un murciélago dentro de casa",
+            "anchor": "a-bat-flying-in-the-house"
+          },
+          "many-bats-or-a-swarm-at-dusk": {
+            "variation": "Muchos murciélagos al anochecer",
+            "anchor": "many-bats-or-a-swarm-at-dusk"
+          },
+          "a-bat-hanging-upside-down": {
+            "variation": "Un murciélago colgado boca abajo",
+            "anchor": "a-bat-hanging-upside-down"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "a-bat-flying-in-the-house": {
+            "variation": "Eine Fledermaus im Haus",
+            "anchor": "a-bat-flying-in-the-house"
+          },
+          "many-bats-or-a-swarm-at-dusk": {
+            "variation": "Viele Fledermäuse in der Dämmerung",
+            "anchor": "many-bats-or-a-swarm-at-dusk"
+          },
+          "a-bat-hanging-upside-down": {
+            "variation": "Eine Fledermaus, die kopfüber hängt",
+            "anchor": "a-bat-hanging-upside-down"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "a-bat-flying-in-the-house": {
+            "variation": "Un pipistrello in casa",
+            "anchor": "a-bat-flying-in-the-house"
+          },
+          "many-bats-or-a-swarm-at-dusk": {
+            "variation": "Tanti pipistrelli al tramonto",
+            "anchor": "many-bats-or-a-swarm-at-dusk"
+          },
+          "a-bat-hanging-upside-down": {
+            "variation": "Un pipistrello appeso a testa in giù",
+            "anchor": "a-bat-hanging-upside-down"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "a-bat-flying-in-the-house": {
+            "variation": "Um morcego dentro de casa",
+            "anchor": "a-bat-flying-in-the-house"
+          },
+          "many-bats-or-a-swarm-at-dusk": {
+            "variation": "Muitos morcegos ao anoitecer",
+            "anchor": "many-bats-or-a-swarm-at-dusk"
+          },
+          "a-bat-hanging-upside-down": {
+            "variation": "Um morcego de cabeça para baixo",
+            "anchor": "a-bat-hanging-upside-down"
+          }
+        }
+      }
+    },
+    "toilet": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "a-blocked-or-overflowing-toilet": {
+            "variation": "Des toilettes bouchées ou qui débordent",
+            "anchor": "a-blocked-or-overflowing-toilet"
+          },
+          "a-toilet-in-full-view-or-with-no-door": {
+            "variation": "Des toilettes à la vue de tous ou sans porte",
+            "anchor": "a-toilet-in-full-view-or-with-no-door"
+          },
+          "cleaning-a-toilet": {
+            "variation": "Nettoyer des toilettes",
+            "anchor": "cleaning-a-toilet"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "a-blocked-or-overflowing-toilet": {
+            "variation": "A blocked or overflowing toilet",
+            "anchor": "a-blocked-or-overflowing-toilet"
+          },
+          "a-toilet-in-full-view-or-with-no-door": {
+            "variation": "A toilet in full view or with no door",
+            "anchor": "a-toilet-in-full-view-or-with-no-door"
+          },
+          "cleaning-a-toilet": {
+            "variation": "Cleaning a toilet",
+            "anchor": "cleaning-a-toilet"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "a-blocked-or-overflowing-toilet": {
+            "variation": "Un inodoro atascado o desbordado",
+            "anchor": "a-blocked-or-overflowing-toilet"
+          },
+          "a-toilet-in-full-view-or-with-no-door": {
+            "variation": "Un inodoro a la vista de todos o sin puerta",
+            "anchor": "a-toilet-in-full-view-or-with-no-door"
+          },
+          "cleaning-a-toilet": {
+            "variation": "Limpiar un inodoro",
+            "anchor": "cleaning-a-toilet"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "a-blocked-or-overflowing-toilet": {
+            "variation": "Eine verstopfte oder überlaufende Toilette",
+            "anchor": "a-blocked-or-overflowing-toilet"
+          },
+          "a-toilet-in-full-view-or-with-no-door": {
+            "variation": "Eine Toilette vor aller Augen oder ohne Tür",
+            "anchor": "a-toilet-in-full-view-or-with-no-door"
+          },
+          "cleaning-a-toilet": {
+            "variation": "Eine Toilette putzen",
+            "anchor": "cleaning-a-toilet"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "a-blocked-or-overflowing-toilet": {
+            "variation": "Un gabinetto intasato o che trabocca",
+            "anchor": "a-blocked-or-overflowing-toilet"
+          },
+          "a-toilet-in-full-view-or-with-no-door": {
+            "variation": "Un gabinetto in vista di tutti o senza porta",
+            "anchor": "a-toilet-in-full-view-or-with-no-door"
+          },
+          "cleaning-a-toilet": {
+            "variation": "Pulire il gabinetto",
+            "anchor": "cleaning-a-toilet"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "a-blocked-or-overflowing-toilet": {
+            "variation": "Um vaso entupido ou transbordando",
+            "anchor": "a-blocked-or-overflowing-toilet"
+          },
+          "a-toilet-in-full-view-or-with-no-door": {
+            "variation": "Um vaso à vista de todos ou sem porta",
+            "anchor": "a-toilet-in-full-view-or-with-no-door"
+          },
+          "cleaning-a-toilet": {
+            "variation": "Limpar um vaso sanitário",
+            "anchor": "cleaning-a-toilet"
+          }
+        }
+      }
+    },
+    "church": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "an-empty-silent-church": {
+            "variation": "Une église vide et silencieuse",
+            "anchor": "an-empty-silent-church"
+          },
+          "praying-or-confessing-in-a-church": {
+            "variation": "Prier ou se confesser à l'église",
+            "anchor": "praying-or-confessing-in-a-church"
+          },
+          "a-church-in-ruins-or-abandoned": {
+            "variation": "Une église en ruine ou abandonnée",
+            "anchor": "a-church-in-ruins-or-abandoned"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "an-empty-silent-church": {
+            "variation": "An empty, silent church",
+            "anchor": "an-empty-silent-church"
+          },
+          "praying-or-confessing-in-a-church": {
+            "variation": "Praying or confessing in a church",
+            "anchor": "praying-or-confessing-in-a-church"
+          },
+          "a-church-in-ruins-or-abandoned": {
+            "variation": "A church in ruins or abandoned",
+            "anchor": "a-church-in-ruins-or-abandoned"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "an-empty-silent-church": {
+            "variation": "Una iglesia vacía y en silencio",
+            "anchor": "an-empty-silent-church"
+          },
+          "praying-or-confessing-in-a-church": {
+            "variation": "Rezar o confesarse en una iglesia",
+            "anchor": "praying-or-confessing-in-a-church"
+          },
+          "a-church-in-ruins-or-abandoned": {
+            "variation": "Una iglesia en ruinas o abandonada",
+            "anchor": "a-church-in-ruins-or-abandoned"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "an-empty-silent-church": {
+            "variation": "Eine leere, stille Kirche",
+            "anchor": "an-empty-silent-church"
+          },
+          "praying-or-confessing-in-a-church": {
+            "variation": "In einer Kirche beten oder beichten",
+            "anchor": "praying-or-confessing-in-a-church"
+          },
+          "a-church-in-ruins-or-abandoned": {
+            "variation": "Eine verfallene oder verlassene Kirche",
+            "anchor": "a-church-in-ruins-or-abandoned"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "an-empty-silent-church": {
+            "variation": "Una chiesa vuota e silenziosa",
+            "anchor": "an-empty-silent-church"
+          },
+          "praying-or-confessing-in-a-church": {
+            "variation": "Pregare o confessarsi in chiesa",
+            "anchor": "praying-or-confessing-in-a-church"
+          },
+          "a-church-in-ruins-or-abandoned": {
+            "variation": "Una chiesa in rovina o abbandonata",
+            "anchor": "a-church-in-ruins-or-abandoned"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "an-empty-silent-church": {
+            "variation": "Uma igreja vazia e silenciosa",
+            "anchor": "an-empty-silent-church"
+          },
+          "praying-or-confessing-in-a-church": {
+            "variation": "Rezar ou se confessar na igreja",
+            "anchor": "praying-or-confessing-in-a-church"
+          },
+          "a-church-in-ruins-or-abandoned": {
+            "variation": "Uma igreja em ruínas ou abandonada",
+            "anchor": "a-church-in-ruins-or-abandoned"
+          }
+        }
+      }
+    },
+    "beach": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "a-deserted-beach": {
+            "variation": "Une plage déserte",
+            "anchor": "a-deserted-beach"
+          },
+          "a-beach-at-night": {
+            "variation": "Une plage la nuit",
+            "anchor": "a-beach-at-night"
+          },
+          "rising-waves-or-a-storm-on-the-beach": {
+            "variation": "Des vagues qui montent ou une tempête sur la plage",
+            "anchor": "rising-waves-or-a-storm-on-the-beach"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "a-deserted-beach": {
+            "variation": "A deserted beach",
+            "anchor": "a-deserted-beach"
+          },
+          "a-beach-at-night": {
+            "variation": "A beach at night",
+            "anchor": "a-beach-at-night"
+          },
+          "rising-waves-or-a-storm-on-the-beach": {
+            "variation": "Rising waves or a storm on the beach",
+            "anchor": "rising-waves-or-a-storm-on-the-beach"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "a-deserted-beach": {
+            "variation": "Una playa desierta",
+            "anchor": "a-deserted-beach"
+          },
+          "a-beach-at-night": {
+            "variation": "Una playa de noche",
+            "anchor": "a-beach-at-night"
+          },
+          "rising-waves-or-a-storm-on-the-beach": {
+            "variation": "Olas que suben o una tormenta en la playa",
+            "anchor": "rising-waves-or-a-storm-on-the-beach"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "a-deserted-beach": {
+            "variation": "Ein menschenleerer Strand",
+            "anchor": "a-deserted-beach"
+          },
+          "a-beach-at-night": {
+            "variation": "Ein Strand bei Nacht",
+            "anchor": "a-beach-at-night"
+          },
+          "rising-waves-or-a-storm-on-the-beach": {
+            "variation": "Steigende Wellen oder Sturm am Strand",
+            "anchor": "rising-waves-or-a-storm-on-the-beach"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "a-deserted-beach": {
+            "variation": "Una spiaggia deserta",
+            "anchor": "a-deserted-beach"
+          },
+          "a-beach-at-night": {
+            "variation": "Una spiaggia di notte",
+            "anchor": "a-beach-at-night"
+          },
+          "rising-waves-or-a-storm-on-the-beach": {
+            "variation": "Onde che salgono o una tempesta in spiaggia",
+            "anchor": "rising-waves-or-a-storm-on-the-beach"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "a-deserted-beach": {
+            "variation": "Uma praia deserta",
+            "anchor": "a-deserted-beach"
+          },
+          "a-beach-at-night": {
+            "variation": "Uma praia à noite",
+            "anchor": "a-beach-at-night"
+          },
+          "rising-waves-or-a-storm-on-the-beach": {
+            "variation": "Ondas subindo ou tempestade na praia",
+            "anchor": "rising-waves-or-a-storm-on-the-beach"
+          }
+        }
+      }
+    },
+    "swimming-pool": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "swimming-in-clear-calm-water": {
+            "variation": "Nager dans une eau claire et calme",
+            "anchor": "swimming-in-clear-calm-water"
+          },
+          "cloudy-or-dirty-pool-water": {
+            "variation": "Une eau trouble ou sale",
+            "anchor": "cloudy-or-dirty-pool-water"
+          },
+          "an-empty-swimming-pool": {
+            "variation": "Une piscine vide",
+            "anchor": "an-empty-swimming-pool"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "swimming-in-clear-calm-water": {
+            "variation": "Swimming in clear, calm water",
+            "anchor": "swimming-in-clear-calm-water"
+          },
+          "cloudy-or-dirty-pool-water": {
+            "variation": "Cloudy or dirty pool water",
+            "anchor": "cloudy-or-dirty-pool-water"
+          },
+          "an-empty-swimming-pool": {
+            "variation": "An empty swimming pool",
+            "anchor": "an-empty-swimming-pool"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "swimming-in-clear-calm-water": {
+            "variation": "Nadar en agua clara y tranquila",
+            "anchor": "swimming-in-clear-calm-water"
+          },
+          "cloudy-or-dirty-pool-water": {
+            "variation": "Agua turbia o sucia",
+            "anchor": "cloudy-or-dirty-pool-water"
+          },
+          "an-empty-swimming-pool": {
+            "variation": "Una piscina vacía",
+            "anchor": "an-empty-swimming-pool"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "swimming-in-clear-calm-water": {
+            "variation": "In klarem, ruhigem Wasser schwimmen",
+            "anchor": "swimming-in-clear-calm-water"
+          },
+          "cloudy-or-dirty-pool-water": {
+            "variation": "Trübes oder schmutziges Wasser",
+            "anchor": "cloudy-or-dirty-pool-water"
+          },
+          "an-empty-swimming-pool": {
+            "variation": "Ein leeres Schwimmbecken",
+            "anchor": "an-empty-swimming-pool"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "swimming-in-clear-calm-water": {
+            "variation": "Nuotare in acqua limpida e calma",
+            "anchor": "swimming-in-clear-calm-water"
+          },
+          "cloudy-or-dirty-pool-water": {
+            "variation": "Acqua torbida o sporca",
+            "anchor": "cloudy-or-dirty-pool-water"
+          },
+          "an-empty-swimming-pool": {
+            "variation": "Una piscina vuota",
+            "anchor": "an-empty-swimming-pool"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "swimming-in-clear-calm-water": {
+            "variation": "Nadar em água limpa e calma",
+            "anchor": "swimming-in-clear-calm-water"
+          },
+          "cloudy-or-dirty-pool-water": {
+            "variation": "Água turva ou suja",
+            "anchor": "cloudy-or-dirty-pool-water"
+          },
+          "an-empty-swimming-pool": {
+            "variation": "Uma piscina vazia",
+            "anchor": "an-empty-swimming-pool"
+          }
+        }
+      }
+    },
+    "alien": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "being-abducted-by-aliens": {
+            "variation": "Être enlevé par des extraterrestres",
+            "anchor": "being-abducted-by-aliens"
+          },
+          "seeing-a-ufo-in-the-sky": {
+            "variation": "Voir un ovni dans le ciel",
+            "anchor": "seeing-a-ufo-in-the-sky"
+          },
+          "talking-with-a-friendly-alien": {
+            "variation": "Parler avec un extraterrestre bienveillant",
+            "anchor": "talking-with-a-friendly-alien"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "being-abducted-by-aliens": {
+            "variation": "Being abducted by aliens",
+            "anchor": "being-abducted-by-aliens"
+          },
+          "seeing-a-ufo-in-the-sky": {
+            "variation": "Seeing a UFO in the sky",
+            "anchor": "seeing-a-ufo-in-the-sky"
+          },
+          "talking-with-a-friendly-alien": {
+            "variation": "Talking with a friendly alien",
+            "anchor": "talking-with-a-friendly-alien"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "being-abducted-by-aliens": {
+            "variation": "Ser abducido por extraterrestres",
+            "anchor": "being-abducted-by-aliens"
+          },
+          "seeing-a-ufo-in-the-sky": {
+            "variation": "Ver un ovni en el cielo",
+            "anchor": "seeing-a-ufo-in-the-sky"
+          },
+          "talking-with-a-friendly-alien": {
+            "variation": "Hablar con un extraterrestre amable",
+            "anchor": "talking-with-a-friendly-alien"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "being-abducted-by-aliens": {
+            "variation": "Von Außerirdischen entführt werden",
+            "anchor": "being-abducted-by-aliens"
+          },
+          "seeing-a-ufo-in-the-sky": {
+            "variation": "Ein UFO am Himmel sehen",
+            "anchor": "seeing-a-ufo-in-the-sky"
+          },
+          "talking-with-a-friendly-alien": {
+            "variation": "Mit einem freundlichen Außerirdischen sprechen",
+            "anchor": "talking-with-a-friendly-alien"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "being-abducted-by-aliens": {
+            "variation": "Essere rapiti dagli alieni",
+            "anchor": "being-abducted-by-aliens"
+          },
+          "seeing-a-ufo-in-the-sky": {
+            "variation": "Vedere un UFO nel cielo",
+            "anchor": "seeing-a-ufo-in-the-sky"
+          },
+          "talking-with-a-friendly-alien": {
+            "variation": "Parlare con un alieno gentile",
+            "anchor": "talking-with-a-friendly-alien"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "being-abducted-by-aliens": {
+            "variation": "Ser abduzido por extraterrestres",
+            "anchor": "being-abducted-by-aliens"
+          },
+          "seeing-a-ufo-in-the-sky": {
+            "variation": "Ver um óvni no céu",
+            "anchor": "seeing-a-ufo-in-the-sky"
+          },
+          "talking-with-a-friendly-alien": {
+            "variation": "Conversar com um extraterrestre gentil",
+            "anchor": "talking-with-a-friendly-alien"
+          }
+        }
+      }
+    },
+    "celebrity": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "meeting-a-celebrity": {
+            "variation": "Rencontrer une célébrité",
+            "anchor": "meeting-a-celebrity"
+          },
+          "a-celebrity-who-ignores-you": {
+            "variation": "Une célébrité qui vous ignore",
+            "anchor": "a-celebrity-who-ignores-you"
+          },
+          "becoming-famous-yourself": {
+            "variation": "Devenir célèbre",
+            "anchor": "becoming-famous-yourself"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "meeting-a-celebrity": {
+            "variation": "Meeting a celebrity",
+            "anchor": "meeting-a-celebrity"
+          },
+          "a-celebrity-who-ignores-you": {
+            "variation": "A celebrity who ignores you",
+            "anchor": "a-celebrity-who-ignores-you"
+          },
+          "becoming-famous-yourself": {
+            "variation": "Becoming famous yourself",
+            "anchor": "becoming-famous-yourself"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "meeting-a-celebrity": {
+            "variation": "Conocer a un famoso",
+            "anchor": "meeting-a-celebrity"
+          },
+          "a-celebrity-who-ignores-you": {
+            "variation": "Un famoso que te ignora",
+            "anchor": "a-celebrity-who-ignores-you"
+          },
+          "becoming-famous-yourself": {
+            "variation": "Ser famoso tú",
+            "anchor": "becoming-famous-yourself"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "meeting-a-celebrity": {
+            "variation": "Einen Star treffen",
+            "anchor": "meeting-a-celebrity"
+          },
+          "a-celebrity-who-ignores-you": {
+            "variation": "Ein Star, der Sie ignoriert",
+            "anchor": "a-celebrity-who-ignores-you"
+          },
+          "becoming-famous-yourself": {
+            "variation": "Selbst berühmt werden",
+            "anchor": "becoming-famous-yourself"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "meeting-a-celebrity": {
+            "variation": "Incontrare una persona famosa",
+            "anchor": "meeting-a-celebrity"
+          },
+          "a-celebrity-who-ignores-you": {
+            "variation": "Una persona famosa che ti ignora",
+            "anchor": "a-celebrity-who-ignores-you"
+          },
+          "becoming-famous-yourself": {
+            "variation": "Diventare famoso",
+            "anchor": "becoming-famous-yourself"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "meeting-a-celebrity": {
+            "variation": "Conhecer uma pessoa famosa",
+            "anchor": "meeting-a-celebrity"
+          },
+          "a-celebrity-who-ignores-you": {
+            "variation": "Uma pessoa famosa que ignora você",
+            "anchor": "a-celebrity-who-ignores-you"
+          },
+          "becoming-famous-yourself": {
+            "variation": "Ficar famoso",
+            "anchor": "becoming-famous-yourself"
+          }
+        }
+      }
+    },
+    "boss": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "being-fired-by-your-boss": {
+            "variation": "Être licencié par son patron",
+            "anchor": "being-fired-by-your-boss"
+          },
+          "arguing-with-your-boss-or-being-yelled": {
+            "variation": "Se disputer avec son patron ou se faire crier dessus",
+            "anchor": "arguing-with-your-boss-or-being-yelled"
+          },
+          "your-boss-praising-or-promoting-you": {
+            "variation": "Être félicité ou promu par son patron",
+            "anchor": "your-boss-praising-or-promoting-you"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "being-fired-by-your-boss": {
+            "variation": "Being fired by your boss",
+            "anchor": "being-fired-by-your-boss"
+          },
+          "arguing-with-your-boss-or-being-yelled": {
+            "variation": "Arguing with your boss or being yelled at",
+            "anchor": "arguing-with-your-boss-or-being-yelled"
+          },
+          "your-boss-praising-or-promoting-you": {
+            "variation": "Your boss praising or promoting you",
+            "anchor": "your-boss-praising-or-promoting-you"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "being-fired-by-your-boss": {
+            "variation": "Que tu jefe te despida",
+            "anchor": "being-fired-by-your-boss"
+          },
+          "arguing-with-your-boss-or-being-yelled": {
+            "variation": "Discutir con tu jefe o que te grite",
+            "anchor": "arguing-with-your-boss-or-being-yelled"
+          },
+          "your-boss-praising-or-promoting-you": {
+            "variation": "Que tu jefe te felicite o te ascienda",
+            "anchor": "your-boss-praising-or-promoting-you"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "being-fired-by-your-boss": {
+            "variation": "Vom Chef gekündigt werden",
+            "anchor": "being-fired-by-your-boss"
+          },
+          "arguing-with-your-boss-or-being-yelled": {
+            "variation": "Streit mit dem Chef oder angeschrien werden",
+            "anchor": "arguing-with-your-boss-or-being-yelled"
+          },
+          "your-boss-praising-or-promoting-you": {
+            "variation": "Vom Chef gelobt oder befördert werden",
+            "anchor": "your-boss-praising-or-promoting-you"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "being-fired-by-your-boss": {
+            "variation": "Essere licenziati dal capo",
+            "anchor": "being-fired-by-your-boss"
+          },
+          "arguing-with-your-boss-or-being-yelled": {
+            "variation": "Litigare con il capo o essere sgridati",
+            "anchor": "arguing-with-your-boss-or-being-yelled"
+          },
+          "your-boss-praising-or-promoting-you": {
+            "variation": "Il capo che ti loda o ti promuove",
+            "anchor": "your-boss-praising-or-promoting-you"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "being-fired-by-your-boss": {
+            "variation": "Ser demitido pelo chefe",
+            "anchor": "being-fired-by-your-boss"
+          },
+          "arguing-with-your-boss-or-being-yelled": {
+            "variation": "Brigar com o chefe ou levar uma bronca",
+            "anchor": "arguing-with-your-boss-or-being-yelled"
+          },
+          "your-boss-praising-or-promoting-you": {
+            "variation": "Ser elogiado ou promovido pelo chefe",
+            "anchor": "your-boss-praising-or-promoting-you"
+          }
+        }
+      }
+    },
+    "crush": {
+      "fr": {
+        "caveat": null,
+        "scenes": {
+          "your-crush-likes-you-back": {
+            "variation": "Son crush qui vous aime en retour",
+            "anchor": "your-crush-likes-you-back"
+          },
+          "your-crush-ignores-or-rejects-you": {
+            "variation": "Son crush qui vous ignore ou vous rejette",
+            "anchor": "your-crush-ignores-or-rejects-you"
+          },
+          "your-crush-with-someone-else": {
+            "variation": "Son crush avec quelqu'un d'autre",
+            "anchor": "your-crush-with-someone-else"
+          }
+        }
+      },
+      "en": {
+        "caveat": null,
+        "scenes": {
+          "your-crush-likes-you-back": {
+            "variation": "Your crush likes you back",
+            "anchor": "your-crush-likes-you-back"
+          },
+          "your-crush-ignores-or-rejects-you": {
+            "variation": "Your crush ignores or rejects you",
+            "anchor": "your-crush-ignores-or-rejects-you"
+          },
+          "your-crush-with-someone-else": {
+            "variation": "Your crush with someone else",
+            "anchor": "your-crush-with-someone-else"
+          }
+        }
+      },
+      "es": {
+        "caveat": null,
+        "scenes": {
+          "your-crush-likes-you-back": {
+            "variation": "Te corresponde",
+            "anchor": "your-crush-likes-you-back"
+          },
+          "your-crush-ignores-or-rejects-you": {
+            "variation": "Te ignora o te rechaza",
+            "anchor": "your-crush-ignores-or-rejects-you"
+          },
+          "your-crush-with-someone-else": {
+            "variation": "La ves con otra persona",
+            "anchor": "your-crush-with-someone-else"
+          }
+        }
+      },
+      "de": {
+        "caveat": null,
+        "scenes": {
+          "your-crush-likes-you-back": {
+            "variation": "Der Schwarm erwidert Ihre Gefühle",
+            "anchor": "your-crush-likes-you-back"
+          },
+          "your-crush-ignores-or-rejects-you": {
+            "variation": "Der Schwarm ignoriert Sie oder weist Sie ab",
+            "anchor": "your-crush-ignores-or-rejects-you"
+          },
+          "your-crush-with-someone-else": {
+            "variation": "Der Schwarm mit jemand anderem",
+            "anchor": "your-crush-with-someone-else"
+          }
+        }
+      },
+      "it": {
+        "caveat": null,
+        "scenes": {
+          "your-crush-likes-you-back": {
+            "variation": "La persona che ti piace ricambia",
+            "anchor": "your-crush-likes-you-back"
+          },
+          "your-crush-ignores-or-rejects-you": {
+            "variation": "Ti ignora o ti rifiuta",
+            "anchor": "your-crush-ignores-or-rejects-you"
+          },
+          "your-crush-with-someone-else": {
+            "variation": "La vedi con qualcun altro",
+            "anchor": "your-crush-with-someone-else"
+          }
+        }
+      },
+      "pt-br": {
+        "caveat": null,
+        "scenes": {
+          "your-crush-likes-you-back": {
+            "variation": "O crush correspondendo",
+            "anchor": "your-crush-likes-you-back"
+          },
+          "your-crush-ignores-or-rejects-you": {
+            "variation": "O crush ignorando ou rejeitando você",
+            "anchor": "your-crush-ignores-or-rejects-you"
+          },
+          "your-crush-with-someone-else": {
+            "variation": "O crush com outra pessoa",
+            "anchor": "your-crush-with-someone-else"
+          }
+        }
+      }
     }
   }
 }
