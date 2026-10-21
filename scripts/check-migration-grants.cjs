@@ -34,6 +34,9 @@
 //       or with `alter function X set search_path ...`: empty (`''`) or a list
 //       ending with pg_temp, so a caller's temporary objects cannot shadow
 //       anything the body uses unqualified.
+//   It also fails when X is handed to a caller role (`alter function X owner to
+//   anon|authenticated|service_role`). An owner-only routine (a trigger
+//   function) records its decision as `grant execute on function X to postgres`.
 // X is matched by name and, when a statement gives an argument list, by
 // signature too: argument names, modes, defaults, OUT arguments and type
 // modifiers are ignored and common aliases are normalised (int4 = integer,
@@ -68,6 +71,32 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const ROLES = ['anon', 'authenticated', 'service_role'];
+// Schemas that exist when a migration runs: Supabase's own and those the repository's migrations
+// create. A new schema created in an earlier migration and then used through search_path must be
+// added here, or unqualified names under it are checked as public.
+const KNOWN_SCHEMAS = Object.freeze([
+  'public', 'extensions', 'auth', 'storage', 'realtime', 'graphql', 'graphql_public', 'vault', 'pgsodium',
+  'net', 'cron', 'supabase_functions', 'supabase_migrations', 'pgbouncer',
+  'analytics_private', 'app_authorization_private', 'apple_auth_private', 'auth_guard_private', 'private', 'qa_private',
+]);
+// Roles API requests run as (and PUBLIC): never the owner of a SECURITY DEFINER routine.
+const CALLER_ROLES = ['public', ...ROLES];
+
+// A string literal: an escape string (E'...', backslash escapes) or a plain one ('' escapes).
+const LITERAL = String.raw`(?<![\w$])[Ee]'(?:[^'\\]|\\[\s\S]|'')*'|'(?:[^']|'')*'`;
+
+/** Index after the quoted literal or identifier starting at `i` (E'...' strings honour backslash escapes). */
+function quotedEnd(sql, i) {
+  const c = sql[i];
+  const escapes = c === '\'' && /[Ee]/.test(sql[i - 1] ?? '') && !/[\w$]/.test(sql[i - 2] ?? '');
+  let j = i + 1;
+  while (j < sql.length) {
+    if (escapes && sql[j] === '\\') { j += 2; continue; }
+    if (sql[j] === c) { if (sql[j + 1] === c) { j += 2; continue; } return j + 1; }
+    j++;
+  }
+  return sql.length;
+}
 
 // The latest migration that existed before this rule: nothing after it can be grandfathered.
 const GRANDFATHER_CUTOFF = '20261020001047';
@@ -220,40 +249,63 @@ let pathCache = { sql: null, changes: [] };
 /**
  * search_path changes that run in the migration session, in order: a top-level
  * (or unconditional DO block) `set [local|session] search_path`, `reset
- * search_path|all`, or a `select|perform set_config('search_path', ...)`. A function's `set search_path` attribute,
+ * search_path|all`, or a `select|perform set_config('search_path', '...', local)` that is the
+ * whole statement. `set local` and a local set_config end at COMMIT/END; ROLLBACK also undoes
+ * session changes made in the block. A function's `set search_path` attribute,
  * `alter function|role|database ... set search_path` and function bodies do
  * not change it.
  */
 function searchPathChanges(sql) {
   if (pathCache.sql === sql) return pathCache.changes;
   const changes = [];
-  const setStatement = new RegExp(String.raw`${LEAD}set\s+(?:(?:local|session)\s+)?search_path\s*(?:=|\bto\b)\s*([\s\S]*)$`, 'i');
-  const setConfig = new RegExp(String.raw`${LEAD}(?:select|perform)\b`, 'i');
+  const setStatement = new RegExp(String.raw`${LEAD}set\s+(?:(local|session)\s+)?search_path\s*(?:=|\bto\b)\s*([\s\S]*)$`, 'i');
+  // Only a statement that is the call itself: inside CASE, WHERE, ... it may never be evaluated.
+  const setConfig = new RegExp(String.raw`${LEAD}(?:select|perform)\s+(?:pg_catalog\s*\.\s*)?set_config\s*\(`, 'i');
   const resetStatement = new RegExp(String.raw`${LEAD}reset\s+(?:search_path|all)\s*$`, 'i');
+  const beginStatement = new RegExp(String.raw`${LEAD}(?:begin(?:\s+(?:work|transaction))?|start\s+transaction)\b(?![\s\S]*\batomic\b)`, 'i');
+  const endStatement = new RegExp(String.raw`${LEAD}(commit|end|rollback|abort)\b(?:\s+(?:work|transaction))?\s*$`, 'i');
+  // session: the path outside the transaction block; current: what is in force now.
+  let session = null;
+  let current = null;
+  let saved = null; // session path at BEGIN, restored by ROLLBACK
+  let inBlock = false;
+  const record = (offset, schemas) => { current = schemas; changes.push({ offset, schemas }); };
   for (const statement of executedStatements(sql)) {
     if (statement.conditional) continue;
+    if (!statement.inBody && beginStatement.test(statement.text)) { inBlock = true; saved = session; continue; }
+    const ended = endStatement.exec(statement.text);
+    if (ended && !statement.inBody) {
+      if (/rollback|abort/i.test(ended[1])) session = saved;
+      inBlock = false;
+      record(statement.offset, session);
+      continue;
+    }
     const match = setStatement.exec(statement.text);
     let list = null;
+    let local = false;
     if (resetStatement.test(statement.text)) list = 'default';
-    else if (match) list = statement.raw.slice(match.index + match[0].length - match[1].length).trim();
-    else if (setConfig.test(statement.text)) {
-      // Only a real call counts: the name must be outside strings and bodies (blanked in `text`).
-      const call = /\bset_config\s*\(/i.exec(statement.text);
-      const config = call && /^set_config\s*\(\s*'search_path'\s*,\s*'([^']*)'/i.exec(statement.raw.slice(call.index));
-      if (config) list = config[1];
+    else if (match) { list = statement.raw.slice(match.index + match[0].length - match[2].length).trim(); local = /local/i.test(match[1] ?? ''); }
+    else {
+      const call = setConfig.exec(statement.text);
+      const config = call && /^\s*'search_path'\s*,\s*'([^']*)'\s*,\s*(true|false)\s*\)\s*$/i.exec(statement.raw.slice(call.index + call[0].length));
+      if (config) { list = config[1]; local = config[2].toLowerCase() === 'true'; }
     }
     if (list === null) continue;
     const schemas = /^\s*default\s*$/i.test(list) ? null : list.split(',').map((item) => {
       const value = item.trim().replace(/^'(.*)'$/, '$1');
       return value === '"$user"' || value === '$user' ? '$user' : ident(value);
     });
-    changes.push({ offset: statement.offset, schemas });
+    // A local change lasts until the end of the transaction block (or of the file, which runs as one transaction).
+    if (!local || !inBlock) session = schemas;
+    record(statement.offset, schemas);
   }
   pathCache = { sql, changes };
   return changes;
 }
 
-/** Schema an unqualified name created at `offset` resolves to, from the last search_path set before it. */
+/** Schema an unqualified name created at `offset` resolves to, from the last search_path set before it
+ * (its first existing schema: Supabase's, the repository's, or one this file creates; `$user`, pg_catalog
+ * and pg_temp never receive a new object here). */
 function schemaAt(sql, offset) {
   let schemas = null;
   for (const change of searchPathChanges(sql)) {
@@ -261,13 +313,16 @@ function schemaAt(sql, offset) {
     schemas = change.schemas;
   }
   if (!schemas) return 'public';
-  const first = schemas.find((schema) => schema && !['$user', 'pg_catalog', 'pg_temp'].includes(schema));
+  // PostgreSQL skips path entries that do not exist; an unknown schema is treated as missing.
+  const created = new Set([...sql.matchAll(new RegExp(String.raw`\bcreate\s+schema\s+(?:if\s+not\s+exists\s+)?(${IDENT})`, 'gi'))].map((m) => ident(m[1])));
+  const first = schemas.find((schema) => schema && (KNOWN_SCHEMAS.includes(schema) || created.has(schema)));
   return first ?? 'public';
 }
 
 /**
  * End (index after END) of a SQL-standard `BEGIN ATOMIC ... END` routine body
- * starting at `i`, or -1 when none starts there. CASE ... END nests inside it.
+ * starting at `i`, or -1 when none starts there. CASE ... END nests inside it;
+ * quoted and dollar-quoted literals are skipped.
  */
 function atomicBodyEnd(sql, i) {
   const start = /^begin\s+atomic\b/i.exec(sql.slice(i));
@@ -276,10 +331,11 @@ function atomicBodyEnd(sql, i) {
   let j = i + start[0].length;
   while (j < sql.length) {
     const c = sql[j];
-    if (c === '\'' || c === '"') {
-      let k = j + 1;
-      while (k < sql.length && !(sql[k] === c && sql[k + 1] !== c)) k += sql[k] === c ? 2 : 1;
-      j = k + 1;
+    if (c === '\'' || c === '"') { j = quotedEnd(sql, j); continue; }
+    const tag = c === '$' && !/[\w$]/.test(sql[j - 1] ?? '') ? new RegExp(`^${DOLLAR_TAG}`).exec(sql.slice(j)) : null;
+    if (tag) {
+      const close = sql.indexOf(tag[0], j + tag[0].length);
+      j = close < 0 ? sql.length : close + tag[0].length;
       continue;
     }
     const word = /[\w$]/.test(sql[j - 1] ?? '') ? null : /^(case|end)\b/i.exec(sql.slice(j, j + 5));
@@ -301,12 +357,7 @@ function statements(sql) {
   let i = 0;
   while (i < sql.length) {
     const c = sql[i];
-    if (c === '\'' || c === '"') {
-      let j = i + 1;
-      while (j < sql.length && !(sql[j] === c && sql[j + 1] !== c)) j += sql[j] === c ? 2 : 1;
-      i = j + 1;
-      continue;
-    }
+    if (c === '\'' || c === '"') { i = quotedEnd(sql, i); continue; }
     const tag = c === '$' && !/[\w$]/.test(sql[i - 1] ?? '') ? new RegExp(`^${DOLLAR_TAG}`).exec(sql.slice(i)) : null;
     if (tag) {
       const end = sql.indexOf(tag[0], i + tag[0].length);
@@ -329,11 +380,8 @@ function splitTopLevel(body) {
   let start = 0;
   for (let i = 0; i < body.length; i++) {
     const c = body[i];
-    if (c === '\'' || c === '"') {
-      let j = i + 1;
-      while (j < body.length && !(body[j] === c && body[j + 1] !== c)) j += body[j] === c ? 2 : 1;
-      i = j;
-    } else if (c === '(' || c === '[') depth++;
+    if (c === '\'' || c === '"') i = quotedEnd(body, i) - 1;
+    else if (c === '(' || c === '[') depth++;
     else if (c === ')' || c === ']') depth--;
     else if (c === ',' && depth === 0) { parts.push(body.slice(start, i)); start = i + 1; }
   }
@@ -373,7 +421,7 @@ const CONTROL_FLOW = /\b(?:if|case|loop|while|for|foreach|exception|return|exit|
 /** `text` with dollar-quoted bodies and string literals blanked. */
 function blankLiterals(text) {
   const blank = (part) => ' '.repeat(part.length);
-  return text.replace(new RegExp(String.raw`(${DOLLAR_TAG})[\s\S]*?\1`, 'g'), blank).replace(/'(?:[^']|'')*'/g, blank);
+  return text.replace(new RegExp(String.raw`(${DOLLAR_TAG})[\s\S]*?\1`, 'g'), blank).replace(new RegExp(LITERAL, 'g'), blank);
 }
 
 /** `text` with each BEGIN ATOMIC routine body blanked (it only runs when the routine is called). */
@@ -399,17 +447,17 @@ function blankAtomicBodies(text) {
 function executedStatements(sql) {
   const result = [];
   const blank = (text) => ' '.repeat(text.length);
-  const scan = (text, base, conditional = false) => {
+  const scan = (text, base, conditional = false, inBody = false) => {
     for (const statement of statements(text)) {
       const outside = blankAtomicBodies(statement.text
         .replace(new RegExp(String.raw`(${DOLLAR_TAG})[\s\S]*?\1`, 'g'), blank)
-        .replace(/'(?:[^']|'')*'/g, blank));
-      result.push({ text: outside, raw: statement.text, offset: base + statement.offset, conditional });
+        .replace(new RegExp(LITERAL, 'g'), blank));
+      result.push({ text: outside, raw: statement.text, offset: base + statement.offset, conditional, inBody });
       if (/^\s*do\b/i.test(outside)) {
         for (const body of statement.text.matchAll(new RegExp(String.raw`(${DOLLAR_TAG})([\s\S]*?)\1`, 'g'))) {
           // A DO body with control flow may skip any of its statements: they are not proof of a grant.
           const branches = CONTROL_FLOW.test(blankLiterals(body[2]));
-          scan(body[2], base + statement.offset + body.index + body[1].length, conditional || branches);
+          scan(body[2], base + statement.offset + body.index + body[1].length, conditional || branches, true);
         }
       }
     }
@@ -579,7 +627,7 @@ function routineReference(text) {
 
 /**
  * The search_path a `set search_path ...` clause at the start of `raw` sets:
- * 'safe' when it is empty or ends with pg_temp (PostgreSQL's advice for
+ * 'safe' when it is empty or ends with pg_temp after another schema (PostgreSQL's advice for
  * SECURITY DEFINER, so a caller's temporary objects cannot shadow anything),
  * otherwise the unsafe value as written.
  */
@@ -590,7 +638,9 @@ function searchPathSafety(raw) {
   const list = /^(?:'(?:[^']|'')*'|"(?:[^"]|"")*"|[A-Za-z_][\w$]*)(?:\s*,\s*(?:'(?:[^']|'')*'|"(?:[^"]|"")*"|[A-Za-z_][\w$]*))*/.exec(raw.slice(clause[0].length));
   if (!list) return '?';
   const items = splitTopLevel(list[0]).map((item) => item.replace(/^'(.*)'$/s, '$1').replace(/^"(.*)"$/s, '$1').trim().toLowerCase());
-  if (items.every((item) => item === '') || items[items.length - 1] === 'pg_temp') return 'safe';
+  // pg_temp alone (or only pg_temp entries) would search the caller's temporary schema first.
+  if (items.every((item) => item === '')) return 'safe';
+  if (items[items.length - 1] === 'pg_temp' && items.some((item) => item !== 'pg_temp' && item !== '')) return 'safe';
   return list[0];
 }
 
@@ -618,7 +668,7 @@ function checkFunctionSql(source) {
   // A routine the file did not create starts from the defaults the rule must override
   // (PUBLIC and anon can execute) with an unknown, so not definer, security mode.
   let routines = [];
-  const fresh = (schema, name, sig) => ({ schema, name, sig, definer: false, path: null, public: 'default', anon: 'default', grantees: new Set() });
+  const fresh = (schema, name, sig) => ({ schema, name, sig, definer: false, path: null, owner: null, public: 'default', anon: 'default', grantees: new Set() });
   const find = (target) => routines.filter((r) => r.schema === target.schema && r.name === target.name && (target.sig === null || r.sig === null || r.sig === target.sig));
   const touch = (target) => {
     const found = find(target);
@@ -659,12 +709,22 @@ function checkFunctionSql(source) {
       const moved = new RegExp(String.raw`^\s*set\s+schema\s+(${IDENT})\s*$`, 'i').exec(rest);
       const renamed = new RegExp(String.raw`^\s*rename\s+to\s+(${IDENT})\s*$`, 'i').exec(rest);
       const found = touch(target);
-      if (moved) { for (const routine of found) routine.schema = ident(moved[1]); continue; }
-      if (renamed) { for (const routine of found) routine.name = ident(renamed[1]); continue; }
+      if (moved || renamed) {
+        for (const routine of found) {
+          // A conditional move may or may not happen: keep the routine where it was too.
+          const next = statement.conditional ? { ...routine, grantees: new Set(routine.grantees) } : routine;
+          if (moved) next.schema = ident(moved[1]); else next.name = ident(renamed[1]);
+          if (next !== routine) routines.push(next);
+        }
+        continue;
+      }
+      const owner = new RegExp(String.raw`^\s*owner\s+to\s+(${IDENT})\s*$`, 'i').exec(rest);
       const security = lastSecurity(rest);
       const pathAt = rest.search(/\bset\s+search_path\b/i);
       for (const routine of found) {
-        if (security) routine.definer = security === 'definer';
+        if (owner) routine.owner = statement.conditional && !CALLER_ROLES.includes(ident(owner[1])) ? routine.owner : ident(owner[1]);
+        // A conditional change may not happen: it can make a routine definer, never clear it.
+        if (security && !(statement.conditional && security === 'invoker')) routine.definer = security === 'definer';
         if (pathAt >= 0 && !statement.conditional) routine.path = searchPathSafety(statement.raw.slice(start + target.end + pathAt));
         else if (/\breset\s+(?:search_path|all)\b/i.test(rest)) routine.path = null;
       }
@@ -709,6 +769,7 @@ function checkFunctionSql(source) {
     if (!routine.grantees.size) problems.push(`${label}: security definer without an explicit "grant execute on function ${label} to <role>"`);
     if (routine.path === null) problems.push(`${label}: security definer without "set search_path" (in the definition or "alter function ${label} set search_path")`);
     else if (routine.path !== 'safe') problems.push(`${label}: security definer with an unsafe search_path (${routine.path}); use set search_path = '' or end the list with pg_temp`);
+    if (CALLER_ROLES.includes(routine.owner)) problems.push(`${label}: security definer owned by ${routine.owner}, a role API callers use; keep a trusted owner such as postgres`);
   }
   return problems;
 }
@@ -808,7 +869,7 @@ function main() {
 if (require.main === module) main();
 
 module.exports = {
-  ROLES, GRANDFATHER_CUTOFF, GRANDFATHERED, FUNCTION_GRANDFATHER_CUTOFF, FUNCTION_GRANDFATHERED, GRANDFATHERED_DIGESTS,
+  ROLES, KNOWN_SCHEMAS, GRANDFATHER_CUTOFF, GRANDFATHERED, FUNCTION_GRANDFATHER_CUTOFF, FUNCTION_GRANDFATHERED, GRANDFATHERED_DIGESTS,
   stripComments, statements, executedStatements, createdPublicObjects, decisions, signature,
   checkTableSql, checkFunctionSql, checkMigrationSql, checkMigrations,
 };

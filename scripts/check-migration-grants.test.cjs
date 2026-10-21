@@ -223,6 +223,14 @@ set search_path = public, extensions, pg_temp as $$ select 1 $$;${locked('public
   'moved into public, then secured': `create function private.claim() returns int language sql security definer set search_path = '' as $$ select 1 $$;
 alter function private.claim() set schema public;${locked('public.claim()')}`,
   'float precision picks the overload': `${definer('public.claim', 'x float(1)')}${locked('public.claim(real)')}`,
+  'owner-only, recorded as a grant to postgres': `${definer()}
+revoke execute on function public.claim(uuid, integer) from public, anon;
+grant execute on function public.claim(uuid, integer) to postgres;`,
+  'set local inside a block ends at commit, then created elsewhere': `begin;
+set local search_path = private;
+commit;
+set search_path = private;
+${definer('claim')}`,
   'unconditional DO block grants count': `${definer()}
 do $$ begin
   revoke execute on function public.claim(uuid, integer) from public, anon;
@@ -304,6 +312,36 @@ return 1; end $body1$;`, [/from public"/, /from anon"/, /grant execute/]],
     [/claim\(real\): .*from public"/, /from anon"/, /grant execute/]],
   'schema-wide grant afterwards re-opens it': [`${definer()}${locked()}
 grant execute on all functions in schema public to public;`, [/granted back to public/]],
+  'conditional security invoker does not clear definer': [`${definer()}
+do $$ begin if false then alter function public.claim(uuid, integer) security invoker; end if; end $$;`, [/from public"/, /from anon"/, /grant execute/]],
+  'set_config that may not run does not move the function': [`select case when false then set_config('search_path', 'private', false) else '' end;
+${definer('claim')}`, [/public\.claim.*from public"/, /from anon"/, /grant execute/]],
+  'revokes and grant inside an E-string': [`${definer()}
+select E'not SQL: \\'; revoke execute on function public.claim(uuid, integer) from public, anon; grant execute on function public.claim(uuid, integer) to service_role; select \\'';`,
+    [/from public"/, /from anon"/, /grant execute/]],
+  'dollar literal with END inside a begin atomic body': [`create function public.claim() returns text language sql security definer set search_path = ''
+begin atomic
+  select $q$x end y$q$;
+  revoke execute on function public.claim() from public, anon;
+  grant execute on function public.claim() to service_role;
+end;`, [/from public"/, /from anon"/, /grant execute/]],
+  'search_path of pg_temp alone': [`create function public.claim() returns int language sql security definer
+set search_path = pg_temp as $$ select 1 $$;${locked('public.claim()')}`, [/unsafe search_path \(pg_temp\)/]],
+  'a missing schema on the path is skipped': [`set search_path = definitely_missing, public;
+${definer('claim')}`, [/public\.claim.*from public"/, /from anon"/, /grant execute/]],
+  'set local ends at commit': [`begin;
+set local search_path = private;
+commit;
+${definer('claim')}`, [/public\.claim.*from public"/, /from anon"/, /grant execute/]],
+  'local set_config ends at commit': [`begin;
+select set_config('search_path', 'private', true);
+commit;
+${definer('claim')}`, [/public\.claim.*from public"/, /from anon"/, /grant execute/]],
+  'conditional move into public is checked': [`create function private.claim() returns int language sql security definer set search_path = '' as $$ select 1 $$;
+do $$ begin if current_setting('app.env', true) = 'prod' then alter function private.claim() set schema public; end if; end $$;`,
+    [/public\.claim\(\): .*from public"/, /from anon"/, /grant execute/]],
+  'owned by a caller role': [`${definer()}${locked()}
+alter function public.claim(uuid, integer) owner to authenticated;`, [/owned by authenticated/]],
   'quoted mixed case is another function': [`${definer('public."Claim"')}${locked('public.claim(uuid, integer)')}`, [/Claim.*from public"/, /from anon"/, /grant execute/]],
 };
 
