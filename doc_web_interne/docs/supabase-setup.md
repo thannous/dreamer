@@ -41,6 +41,15 @@ create policy "dreams delete own" on public.dreams
   for delete using (auth.uid() = user_id);
 ```
 
+New tables need explicit grants. From 2026-10-30 Supabase gives a new table in `public`
+no privilege for `anon`, `authenticated` or `service_role` (without one, PostgREST answers
+42501), and `supabase/config.toml` sets `[api] auto_expose_new_tables = false` so the local
+stack does the same. A migration that creates a table in `public` must, in the same file,
+enable RLS on it and grant or revoke it explicitly for each of the three roles, plus its
+sequence for a serial or identity column. `npm run migrations:grants` (part of
+`npm run verify:pr`) enforces it; the migrations from before the rule are listed in
+`scripts/check-migration-grants.cjs`.
+
 If you already created the table earlier, run:
 
 ```sql
