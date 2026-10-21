@@ -2,18 +2,18 @@
 
 ## Lot 11 qualifié localement
 
-Responsable : **Codex**. Branche : `codex/symbol-images-final-100`. Master intégré : `5e8e19df2247744006ed5ebb61501fff353b2e8e`. Candidat navigateur propre : `622dd61d9ef0f43f5a9090416fe6cf21e4224e20`. Le suivi ultérieur réutilise cette preuve sans revendiquer un nouveau parcours.
+Responsable : **Codex**. Branche : `codex/symbol-images-final-100`. Master intégré : `e19d21589ef35c2373afa50faf991ef8ceb1195d`. Candidat navigateur propre : `34209f968444db816f75779cd5b876df002ae9d3`. Le suivi ultérieur réutilise cette preuve sans revendiquer un nouveau parcours.
 
-**30 couvertures conservées, 210 nouveaux PNG, 30 packs et 1140 dérivés.** Les 30 parcours passent dans les six langues à 2560×1440 et 390×844. Les 150 captures et les 30 familles de sources sont inspectées. Les interprétations longues et les traductions concurrentes de master sont préservées ; seules les cartes PT manquantes pour les variantes choisies sont ajoutées.
+**29 couvertures conservées, 203 nouveaux PNG, 29 packs et 1102 dérivés.** Les 177 parcours passent dans les six langues à 2560×1440 et 390×844. Les 145 captures et les 29 familles de sources sont inspectées. Les interprétations longues et les traductions concurrentes de master sont préservées ; seules les cartes PT manquantes pour les variantes choisies sont ajoutées.
 
-[Rapport](../qa/symbol-packs-lot-11-30-20261020.md) · [Reçu](../qa/symbol-packs-lot-11-30-20261020.json) · [Suivi Excel/CSV](README.md). Les sources, prompts et provenance sont dans [30 ZIP privés Drive](https://drive.google.com/drive/folders/1I3ezCQgUTgPD758S_NZRMbQ5x7C7hz__) et dans `output/symbol-packs-final-100-20261020/lot-11` du checkout principal. `RECUPERATION.json` et `plan.json` permettent la reprise ; ne pas régénérer les fichiers déjà enregistrés.
+[Rapport](../qa/symbol-packs-atlas-layout-requalification-20261020.md) · [Reçu](../qa/symbol-packs-atlas-layout-requalification-20261020.json) · [Suivi Excel/CSV](README.md). Les sources, prompts et provenance sont dans [29 ZIP privés Drive](https://drive.google.com/drive/folders/1I3ezCQgUTgPD758S_NZRMbQ5x7C7hz__) et dans `output/symbol-packs-final-100-20261020/lot-11` du checkout principal. `RECUPERATION.json` et `plan.json` permettent la reprise ; ne pas régénérer les fichiers déjà enregistrés.
 
-État courant : **170 packs, 70 à compléter, 170 QA actuelles**. Les preuves historiques, dont la publication master du lot 09, restent conservées. Aucun accord personnel de Thanh, fusion de cette branche ou nouvelle publication n’est déclaré pour le lot.
+État courant : **175 packs, 65 à compléter, 175 QA actuelles**. Les preuves historiques, dont la publication master du lot 09, restent conservées. Aucun accord personnel de Thanh, fusion de cette branche ou nouvelle publication n’est déclaré pour le lot.
 
 ## Reprendre sans perdre le travail
 
 - Poursuivre les lots suivants de la file 12, 13 et 14 en sautant ceux déjà terminés. Réexaminer les sources avant toute génération pour éviter les doublons.
-- Les plans, prompts et références des prochains lots sont conservés dans `output/symbol-packs-final-100-20261020`. Les indices PT de la préparation initiale ont été rapprochés de master : quatre cartes supplémentaires sont ajoutées au lot 12 sans remplacer ses cartes existantes.
+- Les plans, prompts et références des prochains lots sont conservés dans `output/symbol-packs-final-100-20261020`. Les indices PT de la préparation initiale ont été rapprochés de master : 60 cartes manquantes sont préparées pour les 20 symboles du lot 12 concernés, sans remplacer les variantes existantes de master.
 - Utiliser les intégrateurs qui mettent à jour les JSON courants. Ne pas relancer un ancien configurateur qui restaure une base historique. Le moteur et les composants restent communs.
 - Sauvegarder chaque PNG dès réception, puis chaque pack sur Drive. Actualiser Excel et CSV par lot. Ne pas transférer les rapports internes ou le suivi vers Drive sans autorisation propre à ces documents.
 - Passer `verify:pr` sur le commit exact avant chaque push. La preuve ciblée du lot n’est pas une campagne Release complète. Conserver les limites locales, natives et publiques distinctes.
@@ -48,4 +48,4 @@ Les placements acceptent `place.at: [x, y]` (centre relatif), et `place.zoom` de
 
 Piloter un symbole représentatif, puis contrôler le lot affecté sur les pages réelles : deux tailles, six langues, trois variantes, effets dans le temps, transparence, titre, scroll, réduction des mouvements et peinture stable. Vérifier que mobile utilise le portrait dédié et ne télécharge pas la plaque masquée. Conserver le reçu, la révision et la commande exacte ; réutiliser seulement les preuves inchangées.
 
-La preuve du lot 11 qualifie le navigateur local : 30 réussites, zéro échec ou ignoré, 120 parcours hors sélection. Elle ne qualifie pas une application native, un appareil physique, les FPS ou une nouvelle publication.
+La preuve du lot 11 qualifie le navigateur local : 177 réussites, zéro échec ou ignoré, 24 parcours hors sélection. Elle ne qualifie pas une application native, un appareil physique, les FPS ou une nouvelle publication.
