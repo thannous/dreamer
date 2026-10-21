@@ -37,6 +37,25 @@ export function countCycleDreams(dreams: readonly DreamAnalysis[], cycle: MoonCy
   return dreams.filter((dream) => dream.id >= cycle.dreamsFrom && dream.id < until && Boolean(dream.transcript?.trim())).length;
 }
 
+/** A full moon named by a link may differ from ours by rounding. */
+const NAMED_TOLERANCE_MS = 60 * 60 * 1000;
+
+/**
+ * The full moon the letter screen asks for: an earlier one a link names, whose letter is only
+ * read, or none for the cycle under way, whose letter may then be written. Before the morning
+ * after its full moon that cycle still misses its last night, so the screen shows the previous
+ * letter instead.
+ */
+export function moonLetterTarget(named: string | undefined, now: number): string | undefined {
+  const cycle = moonCycleAt(now);
+  const asked = named ? Date.parse(named) : NaN;
+  if (Number.isFinite(asked) && asked < cycle.fullMoonAt - NAMED_TOLERANCE_MS) return named;
+  if (getLocalDateKey(new Date(now)) < fullMoonMorningKey(cycle.fullMoonAt)) {
+    return new Date(cycle.previousFullMoonAt).toISOString();
+  }
+  return undefined;
+}
+
 export type MoonLetterInvite = { fullMoonAt: number; dreamCount: number };
 
 /**

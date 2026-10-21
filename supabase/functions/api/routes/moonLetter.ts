@@ -23,9 +23,11 @@ type Dependencies = {
 export const MOON_LETTER_MIN_DREAMS = 3;
 /** The most recent dreams of a cycle the letter reads, and how much of each. */
 const MAX_DREAMS = 30;
+/** The api's row cap: far more dreams than a cycle holds, so the count stays exact. */
+const MAX_CYCLE_DREAMS = 1000;
 const EXCERPT_CHARS = 700;
 /** A request that holds a letter longer than this has failed; another may write it. */
-const WRITING_TIMEOUT_MS = 2 * 60 * 1000;
+const WRITING_TIMEOUT_MS = 3 * 60 * 1000;
 const PREVIOUS_LETTERS = 12;
 /** A full moon named by the app may differ from ours by rounding. */
 const FULL_MOON_TOLERANCE_MS = 2 * 60 * 1000;
@@ -52,7 +54,8 @@ type DreamRow = {
   title: string | null;
   transcript: string | null;
   theme: string | null;
-  analysis_details: Record<string, unknown> | null;
+  symbols: unknown;
+  emotions: unknown;
 };
 
 /** An answer that breaks the letter's contract. */
@@ -92,10 +95,10 @@ Return only JSON {"opening": string, "body": string}.`;
 const dreamDay = (iso: string) => iso.slice(0, 10);
 
 /**
- * The full moon letter of the cycle under way, or of an earlier one when `fullMoonAt` names
- * it. The current cycle's letter is written on its first request once the cycle holds enough
- * dreams; an earlier cycle only shows the letter it had. Plus reads the whole letter, a free
- * account its opening sentence only.
+ * The full moon letter of the cycle under way, or the one `fullMoonAt` names. Only a request
+ * that names no full moon writes: the current cycle's letter, on its first request once the
+ * cycle holds enough dreams. A named full moon only shows the letter it has. Plus reads the
+ * whole letter, a free account its opening sentence only.
  */
 export async function handleMoonLetter(ctx: ApiContext, deps: Dependencies = {}): Promise<Response> {
   const unauthorized = requireUser(ctx.user);
@@ -109,13 +112,15 @@ export async function handleMoonLetter(ctx: ApiContext, deps: Dependencies = {})
   const now = (deps.now ?? Date.now)();
   const cycle = moonCycleAt(now);
   let fullMoonAt = cycle.fullMoonAt;
-  if (body.fullMoonAt !== undefined && body.fullMoonAt !== null) {
+  // The app asks for the AI consent before a request that may write, the one naming no full moon.
+  const named = body.fullMoonAt !== undefined && body.fullMoonAt !== null;
+  if (named) {
     const asked = typeof body.fullMoonAt === 'string' ? Date.parse(body.fullMoonAt) : NaN;
-    const named = Number.isFinite(asked) ? nearestFullMoon(asked) : NaN;
-    if (!Number.isFinite(named) || Math.abs(named - asked) > FULL_MOON_TOLERANCE_MS || named > cycle.fullMoonAt) {
+    const nearest = Number.isFinite(asked) ? nearestFullMoon(asked) : NaN;
+    if (!Number.isFinite(nearest) || Math.abs(nearest - asked) > FULL_MOON_TOLERANCE_MS || nearest > cycle.fullMoonAt) {
       return jsonResponse({ error: 'Invalid full moon' }, 400);
     }
-    fullMoonAt = named;
+    fullMoonAt = nearest;
   }
   const fullMoonIso = new Date(fullMoonAt).toISOString();
 
@@ -170,20 +175,20 @@ export async function handleMoonLetter(ctx: ApiContext, deps: Dependencies = {})
   try {
     const existing = await readLetter();
     if (existing?.status === 'ready') return await respond(existing);
+    const beingWritten = Boolean(existing && Date.parse(existing.updated_at) > now - WRITING_TIMEOUT_MS);
     // An earlier cycle keeps the letter it had: none is written after its time.
-    if (fullMoonAt !== cycle.fullMoonAt) return await respond(null, { reason: 'not_written' });
-    if (existing && Date.parse(existing.updated_at) > now - WRITING_TIMEOUT_MS) {
-      return await respond(null, { reason: 'writing' });
-    }
+    if (named || fullMoonAt !== cycle.fullMoonAt) return await respond(null, { reason: beingWritten ? 'writing' : 'not_written' });
+    if (beingWritten) return await respond(null, { reason: 'writing' });
 
-    // The caller's own dreams, through its row-level security.
+    // The caller's own dreams, through its row-level security, the newest first.
     const until = new Date(Math.min(now, cycle.dreamsUntil)).toISOString();
     const { data: dreamRows, error: dreamsError } = await ctx.supabase.from('dreams')
-      .select('created_at, title, transcript, theme, analysis_details')
+      .select('created_at, title, transcript, theme, symbols:analysis_details->symbols, emotions:analysis_details->emotions')
+      .eq('user_id', userId)
       .gte('created_at', new Date(cycle.dreamsFrom).toISOString()).lt('created_at', until)
-      .order('created_at', { ascending: true });
+      .order('created_at', { ascending: false }).limit(MAX_CYCLE_DREAMS);
     if (dreamsError) return jsonResponse({ error: 'Letters unavailable' }, 503);
-    const dreams = ((dreamRows ?? []) as DreamRow[]).filter((dream) => dream.transcript?.trim());
+    const dreams = ((dreamRows ?? []) as DreamRow[]).filter((dream) => dream.transcript?.trim()).reverse();
     if (dreams.length < MOON_LETTER_MIN_DREAMS) {
       return await respond(null, { reason: 'too_few_dreams', dreamCount: dreams.length });
     }
@@ -196,10 +201,16 @@ export async function handleMoonLetter(ctx: ApiContext, deps: Dependencies = {})
         .eq('user_id', userId).eq('full_moon_at', fullMoonIso).eq('status', 'writing').eq('updated_at', existing.updated_at)
         .select('updated_at');
       if (error) throw error;
-      if (!taken?.length) return await respond(await readLetter(), { reason: 'writing' });
+      if (!taken?.length) {
+        const other = await readLetter();
+        return await respond(other, other?.status === 'ready' ? {} : { reason: 'writing' });
+      }
     } else {
-      const { error } = await letters()
-        .insert({ user_id: userId, full_moon_at: fullMoonIso, status: 'writing', lang, dream_count: dreams.length, updated_at: heldAt });
+      const { error } = await letters().insert({
+        user_id: userId, full_moon_at: fullMoonIso, status: 'writing', lang, dream_count: dreams.length, updated_at: heldAt,
+        // Deleting a dream of this window deletes the letter that read it.
+        dreams_from: new Date(cycle.dreamsFrom).toISOString(), dreams_until: new Date(cycle.dreamsUntil).toISOString(),
+      });
       if (error?.code === '23505') {
         const other = await readLetter();
         return await respond(other, other?.status === 'ready' ? {} : { reason: 'writing' });
@@ -229,8 +240,8 @@ export async function handleMoonLetter(ctx: ApiContext, deps: Dependencies = {})
           date: dreamDay(dream.created_at),
           title: dream.title?.trim().slice(0, 120) || null,
           theme: dream.theme ?? null,
-          symbols: names(dream.analysis_details?.symbols),
-          emotions: names(dream.analysis_details?.emotions),
+          symbols: names(dream.symbols),
+          emotions: names(dream.emotions),
           dream: excerpt(dream.transcript ?? ''),
         })),
       });
@@ -267,7 +278,10 @@ export async function handleMoonLetter(ctx: ApiContext, deps: Dependencies = {})
       .update({ status: 'ready', opening: written.opening, body: written.body, updated_at: new Date((deps.now ?? Date.now)()).toISOString() })
       .eq('user_id', userId).eq('full_moon_at', fullMoonIso).eq('status', 'writing').eq('updated_at', heldAt)
       .select('full_moon_at, status, lang, opening, body, dream_count, updated_at');
-    if (saveError) throw saveError;
+    if (saveError) {
+      await release();
+      throw saveError;
+    }
     // Taken over after a timeout: whichever letter was kept is the one to show.
     const letter = (saved as LetterRow[] | null)?.[0] ?? await readLetter();
     return await respond(letter, letter?.status === 'ready' ? {} : { reason: 'writing' });

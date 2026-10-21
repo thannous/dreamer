@@ -60,9 +60,10 @@ function table(rows: Row[], onInsert?: (row: Row) => { code: string } | null) {
 // Tuesday 27 October 2026, the morning after the 26 October full moon (04:12 UTC).
 const NOW = Date.parse('2026-10-27T07:00:00Z');
 const FULL_MOON = '2026-10-26T04:11:49.432Z';
+// symbols and emotions as PostgREST returns them for `symbols:analysis_details->symbols`.
 const dream = (iso: string, extra: Row = {}): Row => ({
   user_id: 'u1', created_at: iso, title: `Dream ${iso.slice(5, 10)}`, transcript: 'I walked along a river of glass.', theme: 'calm',
-  analysis_details: { symbols: [{ name: 'River' }], emotions: [{ name: 'Calm' }] }, ...extra,
+  symbols: [{ name: 'River' }], emotions: [{ name: 'Calm' }], ...extra,
 });
 const cycleDreams = () => [
   // The day of the previous full moon belongs to the cycle before.
@@ -136,6 +137,8 @@ Deno.test('writes the cycle’s letter once, from its own dreams, and gives Plus
   assertEquals(sent.dreams.map((entry: { date: string }) => entry.date), ['2026-10-02', '2026-10-19', '2026-10-26']);
   assertEquals(sent.dreams[0].symbols, ['River']);
   assertEquals(letters[0].status, 'ready');
+  // The window a deleted dream is matched against.
+  assertEquals([letters[0].dreams_from, letters[0].dreams_until], ['2026-09-27T16:49:03.885Z', '2026-10-27T04:11:49.432Z']);
 
   // Read again: the same letter, no second writing.
   const again = await (await handleMoonLetter(ctx({ lang: 'fr' }), deps)).json();
@@ -200,6 +203,20 @@ Deno.test('an earlier cycle shows the letter it had, and is never written afterw
   // The current letter lists the earlier one.
   const current = await (await handleMoonLetter(ctx({ lang: 'fr' }), deps)).json();
   assertEquals(current.previous, [{ fullMoonAt: '2026-09-26T16:49:03.885Z', opening: 'Septembre.', dreamCount: 4 }]);
+  assertEquals(calls.generate, 1);
+});
+
+Deno.test('a request naming the current full moon only reads, so it never writes without the app asking consent', async () => {
+  const { ctx, deps, letters, calls } = setup();
+  const named = await (await handleMoonLetter(ctx({ lang: 'fr', fullMoonAt: FULL_MOON }), deps)).json();
+  assertEquals(named.letter, null);
+  assertEquals(named.reason, 'not_written');
+  assertEquals(letters.length, 0);
+  assertEquals(calls.admit + calls.generate, 0);
+  // Once written, naming it reads it.
+  await handleMoonLetter(ctx({ lang: 'fr' }), deps);
+  const read = await (await handleMoonLetter(ctx({ lang: 'fr', fullMoonAt: FULL_MOON }), deps)).json();
+  assertStringIncludes(read.letter.opening, 'rivière de verre');
   assertEquals(calls.generate, 1);
 });
 

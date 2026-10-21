@@ -1,5 +1,5 @@
-import { router, useLocalSearchParams } from 'expo-router';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { router, useLocalSearchParams, useNavigation } from 'expo-router';
+import React, { useCallback, useEffect, useEffectEvent, useMemo, useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -13,16 +13,19 @@ import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useQuota } from '@/hooks/useQuota';
 import { useTranslation } from '@/hooks/useTranslation';
 import { requestAiConsent } from '@/lib/aiConsent';
+import { CONTACT_EMAIL, openContactMail } from '@/lib/contact';
+import { isMockModeEnabled } from '@/lib/env';
 import { nearestFullMoon } from '@/lib/fullMoon';
+import { moonLetterTarget } from '@/lib/moonLetter';
 import { buildPaywallHref } from '@/lib/paywallRoute';
 import { withFirstDayOrdinal } from '@/lib/quotaReset';
 import { TID } from '@/lib/testIDs';
 import { fetchMoonLetter, type MoonLetterResult } from '@/services/moonLetterService';
 
 const SYNODIC_MONTH_MS = 29.530588861 * 24 * 60 * 60 * 1000;
-/** While another request writes the letter, look again this often, this many times. */
+/** While another request writes the letter, look again this often, for as long as the api holds it. */
 const WRITING_RETRY_MS = 4000;
-const WRITING_RETRIES = 10;
+const WRITING_RETRIES = 45;
 
 type State =
   | { kind: 'loading' }
@@ -43,27 +46,33 @@ export function MoonLetterScreen() {
   const { formatDate, locale } = useLocaleFormatting();
   const { user } = useAuth();
   const { tier } = useQuota();
+  const navigation = useNavigation();
   const params = useLocalSearchParams<{ fullMoonAt?: string }>();
-  const asked = typeof params.fullMoonAt === 'string' && params.fullMoonAt ? params.fullMoonAt : undefined;
+  const named = typeof params.fullMoonAt === 'string' && params.fullMoonAt ? params.fullMoonAt : undefined;
+  // Which letter the screen shows is settled when it opens.
+  const [openedAt] = useState(() => Date.now());
+  const asked = useMemo(() => moonLetterTarget(named, openedAt), [named, openedAt]);
   const [state, setState] = useState<State>({ kind: 'loading' });
   // Each request, and how many times in a row it found the letter being written.
   const [attempt, setAttempt] = useState({ count: 0, writing: 0 });
 
   const signedIn = Boolean(user);
-  const plus = tier === 'plus';
+  // The api knows the account's plan; only the mock letter asks the app.
+  const mockPlus = isMockModeEnabled() && tier === 'plus';
+  const askConsent = useEffectEvent(() => requestAiConsent(t));
   useEffect(() => {
     if (!signedIn) return;
     const controller = new AbortController();
     let timer: ReturnType<typeof setTimeout> | null = null;
     void (async () => {
-      setState({ kind: 'loading' });
+      setState((current) => (current.kind === 'loaded' ? current : { kind: 'loading' }));
       // This cycle's letter may be written now: the dreams go to the AI only with consent.
-      if (!asked && !(await requestAiConsent(t))) {
+      if (!asked && !(await askConsent())) {
         if (!controller.signal.aborted) setState({ kind: 'consent' });
         return;
       }
       try {
-        const result = await fetchMoonLetter({ lang: currentLang, fullMoonAt: asked, mockPlus: plus, signal: controller.signal });
+        const result = await fetchMoonLetter({ lang: currentLang, fullMoonAt: asked, mockPlus, signal: controller.signal });
         if (controller.signal.aborted) return;
         if (result.reason === 'writing' && attempt.writing < WRITING_RETRIES) {
           timer = setTimeout(() => setAttempt((value) => ({ count: value.count + 1, writing: value.writing + 1 })), WRITING_RETRY_MS);
@@ -78,7 +87,7 @@ export function MoonLetterScreen() {
       controller.abort();
       if (timer) clearTimeout(timer);
     };
-  }, [asked, attempt, currentLang, plus, signedIn, t]);
+  }, [asked, attempt, currentLang, mockPlus, signedIn]);
 
   const retry = useCallback(() => setAttempt((value) => ({ count: value.count + 1, writing: 0 })), []);
   const back = useCallback(() => (router.canGoBack() ? router.back() : router.replace('/')), []);
@@ -88,6 +97,21 @@ export function MoonLetterScreen() {
   const letter = result?.letter ?? null;
   const fullMoonAt = result?.fullMoonAt ?? asked;
   const paragraphs = letter?.body ? letter.body.split(/\n\s*\n/).map((part) => part.trim()).filter(Boolean) : [];
+
+  // Back from the paywall with Plus, the letter opens whole.
+  const locked = Boolean(letter?.locked);
+  useEffect(() => (locked ? navigation.addListener('focus', retry) : undefined), [locked, navigation, retry]);
+
+  // The reference lets us find the reported letter.
+  const report = useCallback(() => {
+    if (!letter) return;
+    void openContactMail({
+      subject: t('journal.detail.report.subject'),
+      body: t('moon_letter.report.body', { reference: letter.fullMoonAt }),
+      unavailableTitle: t('journal.detail.report.button'),
+      unavailableMessage: t('contact.mail_unavailable', { email: CONTACT_EMAIL }),
+    });
+  }, [letter, t]);
 
   const message = (text: string, action?: { label: string; onPress: () => void; testID: string }) => (
     <View className="gap-4 rounded-[20px] border border-line bg-ink-card p-5">
@@ -147,6 +171,12 @@ export function MoonLetterScreen() {
                 <Text className="font-sans text-caption text-ivory-muted">
                   {t('moon_letter.footer', { count: letter.dreamCount })}
                 </Text>
+                <Pressable onPress={report} accessibilityRole="link" testID={TID.Button.MoonLetterReport}
+                  hitSlop={{ top: 4, bottom: 4, left: 8, right: 8 }}
+                  className="min-h-[44px] flex-row items-center gap-1.5 self-start active:opacity-70">
+                  <IconSymbol name="flag" size={15} color={noctalia.text.tertiary} />
+                  <Text className="font-sans text-[13px] text-ivory-muted">{t('journal.detail.report.button')}</Text>
+                </Pressable>
               </View>
             ) : result?.reason === 'too_few_dreams' ? message(
               t('moon_letter.too_few', {

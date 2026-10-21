@@ -145,6 +145,7 @@ export const TID = {
     MoonLetterPlus: 'btn.moonLetter.plus',
     MoonLetterRecord: 'btn.moonLetter.record',
     MoonLetterPrevious: 'btn.moonLetter.previous',
+    MoonLetterReport: 'btn.moonLetter.report',
     HomeConstellation: 'btn.home.constellation',
     MonthEndAnalyses: 'btn.quota.monthEndAnalyses',
     HomeResourcesGuides: 'btn.home.resources.guides',
