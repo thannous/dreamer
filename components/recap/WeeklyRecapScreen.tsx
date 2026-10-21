@@ -17,6 +17,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useQuota } from '@/hooks/useQuota';
 import { useTranslation } from '@/hooks/useTranslation';
+import { isResumableAnalysisRequest } from '@/lib/analysisRequest';
 import { getDreamThemeLabel, getEmotionFamilyLabel } from '@/lib/dreamLabels';
 import { buildAnalysisPaywallHref } from '@/lib/paywallRoute';
 import { TID } from '@/lib/testIDs';
@@ -107,7 +108,9 @@ function WeeklyRecapContent() {
   const themeLabel = recap.topTheme ? getDreamThemeLabel(recap.topTheme.theme, t) : null;
   const emotionLabel = recap.topEmotion ? getEmotionFamilyLabel(recap.topEmotion.family, t) : null;
   const nextDream = recap.dreamToExplore ?? recap.dreamToAnalyze;
-  const analyzeWithPlus = !recap.dreamToExplore && analysesUsedUp;
+  // A pending or failed request resumes on the dream page without a new analysis.
+  const analyzeWithPlus = !recap.dreamToExplore && analysesUsedUp
+    && !(nextDream && isResumableAnalysisRequest(nextDream));
 
   return (
     <View style={[styles.container, { backgroundColor: noctalia.screen.background }]} testID={TID.Screen.WeeklyRecap}>

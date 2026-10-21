@@ -1427,6 +1427,7 @@ function ComposerFooter({
           <GesturePressable
             onPress={onUpgrade}
             testID={TID.Button.ChatLimitUpgrade}
+            accessibilityRole="button"
             style={[
               styles.limitCardCta,
               { backgroundColor: noctalia.action.primary, borderColor: noctalia.action.primaryBorder },
@@ -1461,6 +1462,7 @@ function ComposerFooter({
               <GesturePressable
                 onPress={onUpgrade}
                 testID={TID.Button.ChatLimitUpgrade}
+                accessibilityRole="button"
                 style={[
                   styles.limitCtaButton,
                   { backgroundColor: noctalia.status.danger.icon },

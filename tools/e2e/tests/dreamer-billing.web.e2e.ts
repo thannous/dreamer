@@ -38,6 +38,8 @@ async function assertPlus(page: Page) {
   await expect(page.getByTestId('toast.paywall.success')).toBeVisible();
   await page.getByTestId('btn.paywall.close').click();
   await expect(page.getByTestId('quota.analysisValue')).toContainText('Unlimited');
+  // A subscriber has nothing to wait for: no renewal date for included analyses.
+  await expect(page.getByText(/Your included analyses renew on/)).toHaveCount(0);
 }
 
 for (const interval of ['Monthly', 'Annual']) {
@@ -98,6 +100,7 @@ test('restore with no mock receipt keeps the account free', async ({ page }) => 
   await expect(page.getByTestId('toast.paywall.success')).toHaveCount(0);
   await page.getByTestId('btn.paywall.close').click();
   await expect(page.getByTestId('quota.analysisValue')).toHaveText('3 / 3');
+  await expect(page.getByText(/Your included analyses renew on [A-Z][a-z]+ \d{1,2}, \d{4}/)).toBeVisible();
   await expect(page.getByTestId('settings-section-subscription')).toBeVisible();
 });
 

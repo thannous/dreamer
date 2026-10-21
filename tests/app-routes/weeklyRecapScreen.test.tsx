@@ -144,4 +144,22 @@ describe('WeeklyRecapScreen', () => {
       params: expect.objectContaining({ trigger: 'analysis_cta', dreamId: String(NOW - DAY), dreamOwnerId: 'user-1' }),
     });
   });
+
+  it('keeps a failed request on its dream page, where it resumes without a new analysis', () => {
+    mockQuota = { ...mockQuota, usage: { analysis: { used: 3, limit: 3, remaining: 0 } } };
+    mockDreams = [analyzed({
+      id: NOW - DAY,
+      isAnalyzed: false,
+      analysisStatus: 'failed',
+      analysisRequestId: '8f14e45f-ceea-4e6b-9a3c-2b1d0f6a7c11',
+      interpretation: '',
+      analyzedAt: undefined,
+    })];
+    render(<WeeklyRecapScreen />);
+
+    const button = screen.getByTestId(TID.Button.WeeklyRecapOpenDream);
+    expect(button.textContent).toBe('weekly_recap.next.analyze_cta');
+    fireEvent.click(button);
+    expect(mockPush).toHaveBeenCalledWith({ pathname: '/journal/[id]', params: { id: String(NOW - DAY) } });
+  });
 });

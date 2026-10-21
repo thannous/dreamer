@@ -181,13 +181,24 @@ test('a saved dream waiting for its reading shows its own first words on the off
   await expect(page.getByTestId('component.transcriptCard')).toContainText(story);
 });
 
+// Image errors and the paywall sign-in send people to the account screen, which has no
+// subscription card: its quota card keeps the one way to Plus there.
+test('the account screen keeps its own way to Plus for a free account', async ({ page }) => {
+  await selectProfile(page, 'existing');
+  await page.goto('/settings?section=account', { waitUntil: 'domcontentloaded' });
+  await expect(page.getByTestId('screen.account')).toBeVisible();
+  await expect(page.getByTestId('quota.analysisValue')).toHaveText('3 / 3');
+  await page.getByRole('button', { name: 'Upgrade to Noctalia Plus', exact: true }).click();
+  await expectOffer(page, 'Noctalia Plus', 'Analyze dreams without limits');
+});
+
 test('Trends points to Plus only when used analyses leave dreams unread', async ({ page }) => {
   await selectProfile(page, 'existing');
   await page.getByTestId('tab.stats').filter({ visible: true }).click();
   const hint = page.getByTestId('trends.returns.plusHint');
   await hint.scrollIntoViewIfNeeded();
   await expect(hint).toContainText(comeBack);
-  await expect(hint).toContainText(/With Plus, (these \d+ dreams join|this dream joins) your trends right now/);
+  await expect(hint).toContainText(/With Plus, you can analyze (these \d+ dreams|this dream) now so (they join|it joins) your trends/);
   await hint.click();
   await expectOffer(page, 'Trends', 'Trends that count every dream');
   await expect(page.getByTestId('screen.trends')).toBeVisible();
