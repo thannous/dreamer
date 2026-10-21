@@ -7,6 +7,13 @@ export type UserTier = 'guest' | 'free' | 'plus';
 export const GUEST_DREAM_RECORDING_LIMIT = 5;
 
 /**
+ * Plus abuse prevention: new analyses, and new illustrations, per rolling 24 hours.
+ * The server enforces it (PLUS_DAILY_LIMITS in supabase/functions/api/lib/plusDailyLimits.ts);
+ * the app only names it when the server's answer omits it.
+ */
+export const PLUS_DAILY_LIMIT = 10;
+
+/**
  * Quota limits by user tier
  * null = unlimited
  */

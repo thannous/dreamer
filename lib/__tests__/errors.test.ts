@@ -114,6 +114,26 @@ describe('classifyError', () => {
     expect(result.userMessage).toContain('included interpretations');
   });
 
+  it('tells a Plus account past its daily ceiling to come back tomorrow, never to retry in a moment', () => {
+    const analysis = classifyError(Object.assign(new Error('HTTP 429 Too Many Requests'), {
+      status: 429,
+      body: { code: 'DAILY_ANALYSIS_LIMIT', dailyLimit: 10, retryAfter: 3600 },
+    }));
+    expect(analysis.type).toBe(ErrorType.CLIENT);
+    expect(analysis.canRetry).toBe(false);
+    expect(analysis.userMessage).toBe(
+      'You started 10 analyses in 24 hours, the limit that protects Noctalia from abuse. Your dream stays saved, and you can analyze it by tomorrow.'
+    );
+
+    const t = jest.fn((key: string, params?: Record<string, string | number>) => `${key}:${params?.limit}`);
+    const image = classifyError(Object.assign(new Error('HTTP 429 Too Many Requests'), {
+      status: 429,
+      body: { code: 'DAILY_IMAGE_LIMIT' },
+    }), t);
+    expect(image.canRetry).toBe(false);
+    expect(image.userMessage).toBe('error.daily_image_limit:10');
+  });
+
   it('should classify HTTP 503 status as server error', () => {
     const error = Object.assign(new Error('HTTP 503 Service Unavailable'), { status: 503 });
     const result = classifyError(error);

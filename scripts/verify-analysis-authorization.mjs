@@ -98,6 +98,33 @@ try {
   await db.exec("update dreams set image_url='synthetic-existing-image' where id=6");
   await query("update ai_jobs set status='failed' where id=$1",[request(61)]);
   check(await reason() === null,'an existing image is never replaced by a failure notice');
+  // Plus stays unlimited per month with at most 10 new analyses per rolling 24 hours.
+  await db.exec(await migration('20261021153000_cap_plus_daily_analyses'));
+  await db.exec("select set_config('test.tier','plus',false)");
+  const daily = '00000000-0000-4000-8000-000000000003';
+  await query('insert into auth.users values ($1)', [daily]);
+  for (let id = 101; id <= 112; id++) {
+    await query('insert into dreams(id,user_id,analysis_request_id) values ($1,$2,$3)', [id, daily, request(id)]);
+  }
+  await query("insert into quota_usage(user_id,dream_id,quota_type,occurred_at,metadata) values ($1,100,'analysis',now()-interval '25 hours','{}')", [daily]);
+  const dailyClaim = async id => (await query('select public.claim_authenticated_analysis_quota($1,$2,$3) as result', [daily, id, request(id)]))[0].result;
+  const dailyReceipts = async () => Number((await query("select count(*) as n from quota_usage where user_id=$1 and quota_type='analysis'", [daily]))[0].n);
+  const firstTen = [];
+  for (let id = 101; id <= 110; id++) firstTen.push(await dailyClaim(id));
+  check(firstTen.every(result => result.allowed && result.code === 'UNLIMITED'), 'ten Plus analyses in 24 hours are allowed, an older claim does not count');
+  const capped = await dailyClaim(111);
+  check(capped.code === 'DAILY_ANALYSIS_LIMIT' && capped.daily_limit === 10 && capped.limit === null && capped.claimed === false
+    && await dailyReceipts() === 11, 'the eleventh new Plus analysis in 24 hours is refused without a receipt');
+  check(capped.retry_after_seconds > 86000 && capped.retry_after_seconds <= 86400, 'the refusal says when the oldest of the ten leaves the window');
+  check((await dailyClaim(110)).code === 'ANALYSIS_ALREADY_CLAIMED', 'a retry of a claimed request is not blocked by the ceiling');
+  const queuedCapped = (await query("select public.admit_authenticated_analysis_job($1,$2,112,$3,'fr',false,3,10,600,100,1000) as result", [request(1120), daily, request(112)]))[0].result;
+  check(queuedCapped.code === 'DAILY_ANALYSIS_LIMIT' && Number((await query('select count(*) as n from ai_jobs where user_id=$1', [daily]))[0].n) === 0,
+    'the queued path meets the same ceiling and admits no job');
+  await query("update quota_usage set occurred_at=now()-interval '24 hours 1 minute' where user_id=$1 and dream_id=101", [daily]);
+  check((await dailyClaim(111)).allowed, 'a claim leaving the 24-hour window frees one analysis');
+  await db.exec("select set_config('test.tier','free',false)");
+  check((await dailyClaim(112)).code === 'QUOTA_EXCEEDED', 'the free monthly quota answers first, the daily ceiling is Plus only');
+  await db.exec("select set_config('test.tier','plus',false)");
   const grants = await query("select bool_and(not has_function_privilege('anon',p.oid,'EXECUTE') and not has_function_privilege('authenticated',p.oid,'EXECUTE') and has_function_privilege('service_role',p.oid,'EXECUTE')) as restricted from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='public' and p.proname in ('claim_authenticated_analysis_quota','admit_authenticated_analysis_job','reserve_authenticated_analysis_authorization')");
   check(grants[0].restricted,'RPCs remain service-role only');
   await db.exec("select set_config('request.jwt.claims','{\"role\":\"authenticated\"}',false)");

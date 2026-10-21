@@ -301,9 +301,11 @@ describe('Paywall screen', () => {
     mockParams = { trigger: 'settings_quota' };
     render(<PaywallScreen />);
 
-    for (const key of ['free_analyses', 'exchanges', 'unlimited_exchanges', 'synthesis_360', 'none', 'included']) {
+    for (const key of ['exchanges', 'unlimited_exchanges', 'illustrations', 'all_dreams', 'synthesis_360', 'none', 'included']) {
       expect(screen.getByText(`subscription.paywall.comparison.${key}`)).toBeTruthy();
     }
+    // The free plan's 3 analyses a month each bring their illustration.
+    expect(screen.getAllByText('subscription.paywall.comparison.free_analyses')).toHaveLength(2);
     expect(screen.getByText('10')).toBeTruthy();
     // Plus exchanges are sold as unlimited: the 100-message safety ceiling is never quoted as a number.
     expect(screen.queryByText('100')).toBeNull();

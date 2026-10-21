@@ -3,6 +3,7 @@ import { aiLanguageName, type AiLanguage, localizedForAi } from '../lib/aiLangua
 import { corsHeaders, GUEST_LIMITS } from '../lib/constants.ts';
 import { describeDreamThemes, LEGACY_DREAM_THEMES, normalizeDreamTheme } from '../lib/dreamThemes.ts';
 import { CLAUDE_MODELS } from '../lib/models.ts';
+import { PLUS_DAILY_LIMITS, plusDailyLimitResponse } from '../lib/plusDailyLimits.ts';
 import { CATEGORIZE_DREAM_SCHEMA, DREAM_TYPE_VALUES, withDreamThemes } from '../lib/schemas.ts';
 import { requestClaudeJson, runClaudeFirst } from '../services/claude.ts';
 import {
@@ -80,9 +81,11 @@ type AuthenticatedAnalysisQuotaClaim = {
   code?: string;
   tier?: string;
   limit?: number | null;
+  daily_limit?: number | null;
   new_count?: number;
   claimed?: boolean;
   claim_id?: string;
+  retry_after_seconds?: number;
 };
 
 const uuidPattern =
@@ -105,7 +108,7 @@ const toUuid = (value: unknown): string | null => {
   return uuidPattern.test(trimmed) ? trimmed : null;
 };
 
-const quotaBlockedResponse = (claim: AuthenticatedAnalysisQuotaClaim): Response => {
+export const quotaBlockedResponse = (claim: AuthenticatedAnalysisQuotaClaim): Response => {
   const used = toCount(claim.new_count);
   const limit = typeof claim.limit === 'number' ? claim.limit : null;
 
@@ -118,6 +121,14 @@ const quotaBlockedResponse = (claim: AuthenticatedAnalysisQuotaClaim): Response 
       }),
       { status: 429, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
     );
+  }
+
+  if (claim.code === 'DAILY_ANALYSIS_LIMIT') {
+    return plusDailyLimitResponse({
+      code: claim.code,
+      dailyLimit: claim.daily_limit ?? PLUS_DAILY_LIMITS.analysis,
+      retryAfterSeconds: claim.retry_after_seconds,
+    });
   }
 
   if (isAuthenticatedAnalysisQuotaRetry(claim)) {

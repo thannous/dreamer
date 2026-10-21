@@ -487,6 +487,15 @@ function PaywallScreen() {
           showPlusInfinity: true,
         },
         {
+          // Each free analysis brings its illustration; Plus illustrates every dream.
+          key: 'illustrations',
+          icon: 'paintpalette' as const,
+          label: t('subscription.paywall.comparison.illustrations'),
+          free: t('subscription.paywall.comparison.free_analyses', { count: QUOTA_COPY.analyses }),
+          plus: t('subscription.paywall.comparison.all_dreams'),
+          showPlusInfinity: false,
+        },
+        {
           key: 'exploration',
           icon: 'bubble.left.and.bubble.right' as const,
           label: t('subscription.paywall.comparison.exchanges'),

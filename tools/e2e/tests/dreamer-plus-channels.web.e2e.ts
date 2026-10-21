@@ -65,15 +65,17 @@ test('a free account that used its analyses learns when they come back and opens
   const offer = page.getByTestId('screen.paywall');
   await expect(offer).toBeVisible();
   await expect(offer).toContainText(comeBack);
-  // Real numbers, not "limited": 3 analyses a month, 10 exchanges against unlimited ones, the synthesis only with Plus.
-  for (const text of ['3 a month', 'Exchanges per dream', '10', '360° synthesis', 'Not included', 'Included']) {
+  // Real numbers, not "limited": 3 analyses a month, each with its illustration, 10 exchanges against
+  // unlimited ones, the synthesis only with Plus.
+  for (const text of ['Illustrations', 'All your dreams', 'Exchanges per dream', '10', '360° synthesis', 'Not included', 'Included']) {
     await expect(offer.getByText(text, { exact: true })).toBeVisible();
   }
+  await expect(offer.getByText('3 a month', { exact: true })).toHaveCount(2);
   // Analyses and exchanges are both unlimited with Plus; the safety ceiling is never sold as a number.
   await expect(offer.getByText('Unlimited', { exact: true })).toHaveCount(2);
   await expect(offer.getByText('100', { exact: true })).toHaveCount(0);
   await expect(offer.getByText('Recording your dreams stays unlimited, with or without Plus.')).toBeVisible();
-  await expect(offer.getByText('Unlimited exchanges, subject to abuse prevention measures.')).toBeVisible();
+  await expect(offer.getByText('Unlimited analyses, illustrations and exchanges, subject to abuse prevention measures.')).toBeVisible();
   await expectOffer(page, 'Included analyses used', 'Your next dreams, read as you wake');
 });
 
