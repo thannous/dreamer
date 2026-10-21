@@ -44,8 +44,10 @@
 //   Shape rules (fail closed, whatever the statement would do):
 //   - "dynamic routine SQL": an `execute` whose text mentions function,
 //     procedure, routine, definer or search_path;
-//   - "non-literal execute": an `execute` that is not one constant string, in
-//     a migration that changes routines;
+//   - "non-literal execute": an `execute` that is not one constant string
+//     (concatenation, format, variable or call), in any migration;
+//   - "unicode-escaped identifier": U&"..." or U&'...' outside a dollar-quoted body;
+//   - "role membership": grant <role> to anon|authenticated|service_role|public;
 //   - "string DO body": a DO block whose body is not dollar-quoted;
 //   - "conditional routine or path change": a create/alter of a routine, a
 //     set/reset search_path or a set_config inside a DO block with control flow;
@@ -184,6 +186,8 @@ const FUNCTION_GRANDFATHERED = Object.freeze([
   '20260721120000_add_dream_analysis_details.sql',
   '20260723143132_remove_location_subsystem_from_noctalia.sql',
   '20260819130000_analysis_job_prompt_version.sql',
+  '20260827200000_lucid_dream_sign_sync.sql',
+  '20260829010000_lucid_dream_atlas_sync.sql',
   '20260829120000_requeue_failed_generate_image_jobs.sql',
   '20260829160000_preserve_image_job_retry_budget.sql',
   '20260909010000_scope_oauth_product_access.sql',
@@ -192,6 +196,7 @@ const FUNCTION_GRANDFATHERED = Object.freeze([
   '20261014183000_allow_luminous_nostalgic_analysis_themes.sql',
   '20261015120000_add_dream_precise_theme.sql',
   '20261021090000_explicit_public_data_api_grants.sql',
+  '20261021100000_tighten_public_data_api_grants.sql',
 ]);
 
 // A dollar-quote tag: $$ or $name$ (an identifier: letters, digits after the first, underscores).
@@ -227,6 +232,8 @@ const GRANDFATHERED_DIGESTS = Object.freeze({
   '20260722151231_unify_interpretation_entitlements_and_device_risk.sql': '32ecd01cbc9ad5fed36e29d173e9ed94167fc0329789af3ab8b16461be0aa9e6',
   '20260723143132_remove_location_subsystem_from_noctalia.sql': 'cd1c5ea8a3e0d141cfd5ec7353ceaf150996ba2fa9fde21f7f61942ac41517f5',
   '20260819130000_analysis_job_prompt_version.sql': '29c4d1f56ee9ac1d7735c381f4c860bea31b91f7dba1d0978b0c3b835a227472',
+  '20260827200000_lucid_dream_sign_sync.sql': '61df7f16d8c8d7e55f131b74eaae4de3ef2a6cd8becff4d1516f00bc5962afec',
+  '20260829010000_lucid_dream_atlas_sync.sql': 'eca5ffa99093ae6c920eff1103c73d9008b52b459e47487deb3e0be9e66c51ae',
   '20260829120000_requeue_failed_generate_image_jobs.sql': 'cbe93e6d41bab0393203dcc8fb3302cc1b29278cb5dbd1eb16e23e12e0aeae82',
   '20260829160000_preserve_image_job_retry_budget.sql': '5d16817e359fe8734d5e4ef31cfb9b118aca29d92a8b55c6b6c3e14301e3d317',
   '20260909010000_scope_oauth_product_access.sql': 'f656b084dd6b1de8d7eaa8bb0504974c79db2b95762dfeaf23a7099681d9f613',
@@ -235,6 +242,7 @@ const GRANDFATHERED_DIGESTS = Object.freeze({
   '20261014183000_allow_luminous_nostalgic_analysis_themes.sql': '6358c19cc23148bf413b54a5ce2e8668330b9322e7556d76a45e8b42cfee723c',
   '20261015120000_add_dream_precise_theme.sql': 'dc771825dc16ddb01d12f594d6d92fdf57d7fe7b8018575422b30dd9458676ca',
   '20261021090000_explicit_public_data_api_grants.sql': '518ff8f2be523fa14bb9d8fa44f975359a6d63aba725613982680357b7cc71c0',
+  '20261021100000_tighten_public_data_api_grants.sql': 'f7998816f45ba9ea5d6df555b500cdc92ce7acdc5b356b3cfaccefd85fc6a9a2',
 });
 
 /** Remove comments, keep string and dollar-quoted contents (they may hold real DDL in DO blocks). */
@@ -800,7 +808,7 @@ function checkFunctionSql(source) {
   for (const statement of executed) {
     if (dynamic.test(statement.text)) {
       if (shapeWords.test(statement.raw)) problems.push(`shape rule "dynamic routine SQL": an execute whose text mentions function, procedure, routine, definer or search_path; write it as a plain statement`);
-      else if (touchesRoutines && !constantExecute.test(statement.raw)) problems.push(`shape rule "non-literal execute": an execute that is not one constant string, in a migration that changes routines`);
+      else if (!constantExecute.test(statement.raw)) problems.push(`shape rule "non-literal execute": an execute that is not one constant string (concatenation, format, variable or call)`);
       continue;
     }
     if (statement.opaqueDo) {
@@ -816,6 +824,15 @@ function checkFunctionSql(source) {
       if (!args || args.length !== 3 || !/^'(?:[^']|'')*'$/.test(args[0]) || !/^'(?:[^']|'')*'$/.test(args[1]) || !/^(?:true|false)$/i.test(args[2])) {
         problems.push(`shape rule "non-literal set_config": set_config must take two plain string literals and true/false`);
       }
+    }
+    if (/(?<![\w$])U&["']/i.test(statement.text)) {
+      problems.push(`shape rule "unicode-escaped identifier": U&"..." or U&'...' outside a dollar-quoted body; write the identifier plainly`);
+    }
+    const membership = new RegExp(String.raw`${LEAD}grant\s+(?![\s\S]*\bon\b)([\s\S]+?)\s+to\s+([\s\S]+?)(?:\s+with\s+(?:admin|inherit|set)\s+[\s\S]*|\s+granted\s+by\s+[\s\S]*)?$`, 'i').exec(statement.text);
+    if (membership) {
+      const grantees = splitTopLevel(membership[2]).map((role) => ident(role.replace(/^\s*group\s+/i, '')));
+      const caller = grantees.find((role) => CALLER_ROLES.includes(role));
+      if (caller) problems.push(`shape rule "role membership": grant ${membership[1].trim()} to ${caller} gives an API role every privilege of another role`);
     }
     if (touchesRoutines && roleSwitch.test(statement.text)) {
       problems.push(`shape rule "role switch": set role or set session authorization in a migration that changes routines; new routines would be owned by that role`);

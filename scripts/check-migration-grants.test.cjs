@@ -436,6 +436,24 @@ set search_path = pg_catalog, pg_temp, public, pg_temp as $$ select 1 $$;${locke
     [/claim\(token\): .*from public"/, /from anon"/, /grant execute/]],
   'shape: non-ASCII routine name': [`create function public.fé() returns int language sql security definer set search_path = '' as $$ select 1 $$;`,
     [/shape rule "non-ASCII routine name"/, /from public"/, /from anon"/, /grant execute/]],
+  'CTO: assembled create function in a file with no other routine change': [`do $$ begin execute 'cre' || 'ate func' || 'tion public.backdoor() returns setof auth.users language sql sec' || 'urity def' || 'iner as $b$ select * from auth.users $b$'; end $$;`,
+    [/shape rule "non-literal execute"/]],
+  'CTO: assembled grant to anon': [`do $$ begin execute 'grant execute on fun' || 'ction public.get_user_dreams() to anon'; end $$;`, [/shape rule "non-literal execute"/]],
+  'CTO: format with assembled keywords': [`do $$ begin execute format('create %s public.bd() returns int language sql security %s as %L', 'func'||'tion', 'def'||'iner', 'select 1'); end $$;`,
+    [/shape rule "non-literal execute"/]],
+  'CTO: conditional assembled create or replace': [`do $$ begin if true then execute 'create or replace func' || 'tion public.bd2() returns int language sql security def' || 'iner as ''select 1'''; end if; end $$;`,
+    [/shape rule "non-literal execute"/]],
+  'shape: execute of a variable': [`do $$ declare q text := 'select 1'; begin execute q; end $$;`, [/shape rule "non-literal execute"/]],
+  'CTO: unicode-escaped anon grantee': [`create function public.f5() returns int language sql security definer set search_path = '' as $$ select 1 $$;
+revoke execute on function public.f5() from public, anon;
+grant execute on function public.f5() to authenticated;
+grant execute on function public.f5() to U&"\\0061non";`, [/shape rule "unicode-escaped identifier"/]],
+  'CTO: unicode-escaped grantee on an earlier routine': [`grant execute on function public.get_user_dreams() to U&"\\0061non";`, [/shape rule "unicode-escaped identifier"/]],
+  'shape: unicode-escaped identifier with UESCAPE': [`alter function public.claim() owner to U&"!0061non" UESCAPE '!';`, [/shape rule "unicode-escaped identifier"/]],
+  'CTO: role membership grant to anon': [`grant authenticated to anon;`, [/shape rule "role membership"/]],
+  'shape: role membership to quoted roles with options': [`grant service_role to "authenticated" with admin option;
+grant authenticated to public with inherit true;
+grant anon to service_role;`, [/shape rule "role membership".*authenticated/, /shape rule "role membership".*public/, /shape rule "role membership".*service_role/]],
   'owned by a caller role': [`${definer()}${locked()}
 alter function public.claim(uuid, integer) owner to authenticated;`, [/owned by authenticated/]],
   'quoted mixed case is another function': [`${definer('public."Claim"')}${locked('public.claim(uuid, integer)')}`, [/Claim.*from public"/, /from anon"/, /grant execute/]],
@@ -492,12 +510,12 @@ test('a grandfathered migration cannot change', () => {
 });
 
 test('the function grandfathered list holds only migrations from before its rule', () => {
-  assert.equal(FUNCTION_GRANDFATHERED.length, 28);
+  assert.equal(FUNCTION_GRANDFATHERED.length, 31);
   for (const file of FUNCTION_GRANDFATHERED) assert.ok(file.slice(0, 14) <= FUNCTION_GRANDFATHER_CUTOFF, file);
 });
 
 test('the repository migrations pass', () => {
   const result = spawnSync(process.execPath, [path.join(__dirname, 'check-migration-grants.cjs')], { encoding: 'utf8' });
   assert.equal(result.status, 0, result.stderr);
-  assert.match(result.stdout, /13 grandfathered for tables, 28 for security definer functions, 0 failures/);
+  assert.match(result.stdout, /13 grandfathered for tables, 31 for security definer functions, 0 failures/);
 });
