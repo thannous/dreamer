@@ -1,6 +1,6 @@
 import Constants from 'expo-constants';
 import { Linking, Platform } from 'react-native';
-import Purchases, { CustomerInfo, PurchasesPackage } from 'react-native-purchases';
+import Purchases, { CustomerInfo, LOG_LEVEL, PurchasesPackage } from 'react-native-purchases';
 
 import {
   mapPackage as mapPackagePure,
@@ -40,6 +40,17 @@ let ensureConfiguredQueue: Promise<void> = Promise.resolve();
 let cachedPackages: InternalPackage[] = [];
 // Keep a live listener-driven cache up to date with RevenueCat (source of truth)
 let customerInfoListener: ((info: CustomerInfo) => void) | null = null;
+
+// The SDK logs a request that failed or timed out at error level, though it keeps its cached
+// data and tries again by itself. Such a network hiccup is a warning, so a development build on
+// a slow connection raises no red box; every other SDK error stays an error.
+const TRANSIENT_SDK_LOG = /network ?error|keeping cached/i;
+
+function forwardSdkLog(level: LOG_LEVEL, message: string): void {
+  if (level === LOG_LEVEL.ERROR && !TRANSIENT_SDK_LOG.test(message)) log.error(message);
+  else if (level === LOG_LEVEL.ERROR || level === LOG_LEVEL.WARN) log.warn(message);
+  else log.debug(message);
+}
 
 function isAnonymousAppUserId(appUserId: string | null | undefined): boolean {
   return typeof appUserId === 'string' && appUserId.startsWith('$RCAnonymousID:');
@@ -103,6 +114,8 @@ async function ensureConfiguredImpl(normalizedUserId: string | null): Promise<vo
   // Best practice: start anonymous, then link authenticated users via logIn/logOut.
   // This prevents orphaning purchases that happened before sign-in and makes webhook `app_user_id` mapping reliable.
   if (!sameConfig) {
+    // Set first: configure installs the SDK's own handler only when none is set.
+    Purchases.setLogHandler(forwardSdkLog);
     Purchases.configure({ apiKey });
 
     // Subscribe once to live customer info updates so the app UI reflects
