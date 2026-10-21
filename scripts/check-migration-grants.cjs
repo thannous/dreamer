@@ -264,12 +264,11 @@ function searchPathChanges(sql) {
   const resetStatement = new RegExp(String.raw`${LEAD}reset\s+(?:search_path|all)\s*$`, 'i');
   const beginStatement = new RegExp(String.raw`${LEAD}(?:begin(?:\s+(?:work|transaction))?|start\s+transaction)\b(?![\s\S]*\batomic\b)`, 'i');
   const endStatement = new RegExp(String.raw`${LEAD}(commit|end|rollback|abort)\b(?:\s+(?:work|transaction))?\s*$`, 'i');
-  // session: the path outside the transaction block; current: what is in force now.
+  // session: the path outside the transaction block.
   let session = null;
-  let current = null;
   let saved = null; // session path at BEGIN, restored by ROLLBACK
   let inBlock = false;
-  const record = (offset, schemas) => { current = schemas; changes.push({ offset, schemas }); };
+  const record = (offset, schemas) => changes.push({ offset, schemas });
   for (const statement of executedStatements(sql)) {
     if (statement.conditional) continue;
     if (!statement.inBody && beginStatement.test(statement.text)) { inBlock = true; saved = session; continue; }
