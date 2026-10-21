@@ -102,16 +102,48 @@ test('capture keeps long and fragmentary stories editable with a reachable save 
   for (const viewport of [{ width: 320, height: 640 }, { width: 640, height: 390 }]) {
     await browser.setViewport(viewport);
     await expect(editor).toHaveValue(story.repeat(5));
-    await expect.poll(async () => {
-      await save.scrollIntoView();
-      const box = await save.boundingBox();
-      return Boolean(box && box.y >= 0 && box.y + box.height <= viewport.height);
-    }, { timeout: 15_000 }).toBe(true);
+    await save.scrollIntoView();
+    await expectInViewport(save, browser);
     const box = await save.boundingBox();
     expect(box).not.toBeNull();
     expect(box!.x).toBeGreaterThanOrEqual(0);
     expect(box!.x + box!.width).toBeLessThanOrEqual(viewport.width);
     await app.screenshot(`capture-${viewport.width}x${viewport.height}.png`);
+
+    // Counterexample: Save's box fits the window, but an overflow ancestor clips
+    // all of it. A viewport-rectangle-only replacement must not accept this.
+    await browser.evaluate(() => {
+      const button = document.querySelector<HTMLElement>('[data-testid="btn.saveDream"]')!;
+      const clip = document.createElement('div');
+      clip.dataset.testid = 'regression.saveClip';
+      Object.assign(clip.style, {
+        position: 'fixed', left: '32px', top: '32px', width: '240px',
+        height: '0', overflow: 'hidden', zIndex: '2147483647',
+      });
+      button.before(clip);
+      clip.append(button);
+      return null;
+    });
+    try {
+      const clippedBox = await save.boundingBox();
+      expect(clippedBox).not.toBeNull();
+      expect(clippedBox!.width).toBeGreaterThan(0);
+      expect(clippedBox!.height).toBeGreaterThan(0);
+      expect(clippedBox!.x).toBeGreaterThanOrEqual(0);
+      expect(clippedBox!.x + clippedBox!.width).toBeLessThanOrEqual(viewport.width);
+      expect(clippedBox!.y).toBeGreaterThanOrEqual(0);
+      expect(clippedBox!.y + clippedBox!.height).toBeLessThanOrEqual(viewport.height);
+      await expectInViewport(save, browser, 0, false);
+      await app.screenshot(`capture-save-clipped-${viewport.width}x${viewport.height}.png`);
+    } finally {
+      await browser.evaluate(() => {
+        const clip = document.querySelector('[data-testid="regression.saveClip"]')!;
+        clip.replaceWith(...clip.childNodes);
+        return null;
+      });
+    }
+    await save.scrollIntoView();
+    await expectInViewport(save, browser);
   }
   await editor.fill('   ');
   await expect(save).toBeDisabled();
