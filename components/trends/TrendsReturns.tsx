@@ -25,7 +25,7 @@ const typeSlug = (type: DreamType) => type.toLowerCase().replace(/\s+/g, '-');
  * dreams, each a door to those dreams in the journal. Below three analyzed dreams nothing
  * is said to return; the stars show how far off that is.
  */
-export function TrendsReturns({ trends, symbols, lit, ink, t, formatNumber, onOpenUnanalyzed, onOpenType, onOpenSymbol }: {
+export function TrendsReturns({ trends, symbols, lit, ink, t, formatNumber, onOpenUnanalyzed, onOpenType, onOpenSymbol, plusHint }: {
   trends: DreamTrends;
   /** The symbols that came back in the period's analyzed dreams, most present first. */
   symbols: readonly PeriodSymbol[];
@@ -37,6 +37,8 @@ export function TrendsReturns({ trends, symbols, lit, ink, t, formatNumber, onOp
   onOpenUnanalyzed: () => void;
   onOpenType: (type: DreamType) => void;
   onOpenSymbol: (linkKey: string) => void;
+  /** Only once the month's free analyses are used: the unread dreams could join through Plus. */
+  plusHint?: { text: string; cta: string; onPress: () => void };
 }) {
   const { analyzed, unanalyzed, ready, emotions, types } = trends.patterns;
   const missing = Math.max(0, MIN_DREAMS_FOR_TRENDS - analyzed);
@@ -64,6 +66,20 @@ export function TrendsReturns({ trends, symbols, lit, ink, t, formatNumber, onOp
           </PressableScale>
         ) : null}
       </TrendsSectionHead>
+      {plusHint ? (
+        <PressableScale testID="trends.returns.plusHint" onPress={plusHint.onPress} haptic="light"
+          accessibilityRole="button" accessibilityLabel={`${plusHint.text} ${plusHint.cta}`}
+          className="min-h-[60px] flex-row items-center gap-3 border-y border-line py-3">
+          <View className="h-10 w-10 items-center justify-center rounded-full border border-champagne-soft">
+            <IconSymbol name="sparkles" size={18} color={ink} />
+          </View>
+          <View className="min-w-0 flex-1 gap-0.5">
+            <Text className="text-body-sm leading-[20px] font-sans text-ivory">{plusHint.text}</Text>
+            <Text className="text-body-sm leading-[18px] font-sans-medium text-champagne-on">{plusHint.cta}</Text>
+          </View>
+          <IconSymbol name="chevron.right" size={12} color={ink} />
+        </PressableScale>
+      ) : null}
 
       {!ready ? (
         <View className="card flex-row items-center gap-4 px-4 py-4" testID="trends.returns.threshold" accessible>

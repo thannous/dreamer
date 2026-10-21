@@ -14,13 +14,15 @@ type Exploration360PanelProps = {
   onSynthesisPress?: () => void;
   onReadSynthesisPress?: () => void;
   synthesisDisabled?: boolean;
+  /** Whether the synthesis is a Plus feature for this account; a subscriber needs no reminder. */
+  requiresPlus?: boolean;
   style?: ViewStyle;
   variant?: 'inline' | 'reflection';
 };
 
 /** Optional recap of the exchanges so far, without a required three-angle journey. */
 export function Exploration360Panel({ hasSynthesis, canGenerateSynthesis, onSynthesisPress,
-  onReadSynthesisPress, synthesisDisabled = false, style, variant = 'inline' }: Exploration360PanelProps) {
+  onReadSynthesisPress, synthesisDisabled = false, requiresPlus = true, style, variant = 'inline' }: Exploration360PanelProps) {
   const { t } = useTranslation();
   const { colors, mode } = useTheme();
   const tokens = getNoctaliaDesignTokens(colors, mode);
@@ -46,7 +48,7 @@ export function Exploration360Panel({ hasSynthesis, canGenerateSynthesis, onSynt
       <Text style={[styles.buttonText, reflection && styles.reflectionButtonText, { color: current ? tokens.accent.text : tokens.action.primaryText }]}>{t(actionKey)}</Text>
       <IconSymbol name="arrow.right" size={reflection ? 22 : 18} color={current ? tokens.accent.text : tokens.action.primaryText} />
     </Pressable> : null}
-    {!current ? <Text style={[styles.access, reflection && styles.reflectionAccess, { color: tokens.text.secondary }]}>{t('dream_categories.recap.plus')}</Text> : null}
+    {!current && requiresPlus ? <Text style={[styles.access, reflection && styles.reflectionAccess, { color: tokens.text.secondary }]}>{t('dream_categories.recap.plus')}</Text> : null}
   </View>;
 }
 

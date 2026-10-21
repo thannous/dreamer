@@ -95,7 +95,7 @@ jest.mock('@/hooks/useTranslation', () => ({
 }));
 
 jest.mock('@/hooks/useLocaleFormatting', () => ({
-  useLocaleFormatting: () => ({ formatDate: () => '1 August 2026' }),
+  useLocaleFormatting: () => ({ locale: 'en-US', formatDate: () => '1 August 2026' }),
 }));
 
 jest.mock('@/hooks/useQuota', () => ({

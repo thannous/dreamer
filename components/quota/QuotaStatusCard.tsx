@@ -16,7 +16,7 @@ import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { QUOTAS } from '@/constants/limits';
 import { createScopedLogger } from '@/lib/logger';
-import { getMonthlyQuotaPeriod } from '@/lib/quotaReset';
+import { formatQuotaResetDate } from '@/lib/quotaReset';
 import { TypeScale } from '@/constants/typeScale';
 
 const log = createScopedLogger('[QuotaStatusCard]');
@@ -34,6 +34,8 @@ type Props = {
   onUpgradePress?: () => void;
   presentation?: 'card' | 'embedded';
   showTitle?: boolean;
+  /** A free account's upgrade button. Settings turns it off: its Noctalia Plus row sits right below. */
+  showFreeUpgrade?: boolean;
 };
 
 const formatUsage = (usage?: UsageEntry, unlimitedLabel?: string) => {
@@ -74,6 +76,7 @@ export const QuotaStatusCard: React.FC<Props> = ({
   onUpgradePress,
   presentation = 'card',
   showTitle = true,
+  showFreeUpgrade = true,
 }) => {
   const { user } = useAuth();
   const { colors, mode } = useTheme();
@@ -84,7 +87,7 @@ export const QuotaStatusCard: React.FC<Props> = ({
     quotaStatus, loading, error, refetch, tier, subscriptionStatus, subscriptionLoading,
     subscriptionRefreshing, refreshSubscription,
   } = useQuota();
-  const { formatDate } = useLocaleFormatting();
+  const { locale } = useLocaleFormatting();
   const isDegradedGuest = !user && quotaStatus?.guestBootstrapStatus === 'degraded';
 
   const rows = useMemo(() => {
@@ -117,7 +120,7 @@ export const QuotaStatusCard: React.FC<Props> = ({
   const subscriptionPending = subscriptionLoading || subscriptionRefreshing;
   const subscriptionKnown = tier === 'guest' || Boolean(subscriptionStatus);
   // Subscription actions must remain available even when usage cannot be loaded.
-  const showCta = !subscriptionPending && !isPaidTier && subscriptionKnown;
+  const showCta = !subscriptionPending && !isPaidTier && subscriptionKnown && (tier === 'guest' || showFreeUpgrade);
   const ctaLabel = tier === 'guest'
     ? t('settings.quota.cta_guest')
     : t('settings.quota.cta_upgrade');
@@ -130,17 +133,11 @@ export const QuotaStatusCard: React.FC<Props> = ({
   const freeResetMessage = useMemo(() => {
     if (tier !== 'free') return null;
     try {
-      const { periodEnd } = getMonthlyQuotaPeriod();
-      const dateStr = formatDate(periodEnd, {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-      });
-      return t('settings.quota.free_reset_message', { date: dateStr });
+      return t('settings.quota.free_reset_message', { date: formatQuotaResetDate(locale, { year: 'numeric' }) });
     } catch {
       return null;
     }
-  }, [t, tier, formatDate]);
+  }, [t, tier, locale]);
 
   const [managing, setManaging] = useState(false);
   const [manageError, setManageError] = useState(false);

@@ -30,7 +30,8 @@ async function setupFreeAccount(ui: ExactWebUI) {
 
 async function offer(ui: ExactWebUI) {
   const { screen } = ui;
-  await screen.getByRole('button', { name: 'Upgrade to Noctalia Plus', exact: true }).click();
+  // Settings keeps one way to Plus in the subscription card.
+  await screen.getByTestId('settings-section-subscription').click();
   await expect(screen.getByTestId('screen.paywall')).toBeVisible();
   await screen.getByTestId('btn.paywall.selectMonthly').click();
 }
@@ -40,7 +41,8 @@ async function assertPlus(ui: ExactWebUI) {
   await expect(screen.getByTestId('toast.paywall.success')).toBeVisible();
   await screen.getByTestId('btn.paywall.close').click();
   await expect(screen.getByTestId('quota.analysisValue')).toContainText('Unlimited');
-  await expect(screen.getByRole('button', { name: 'Upgrade to Noctalia Plus', exact: true })).toHaveCount(0);
+  // A subscriber has no renewal date for included analyses.
+  await expect(screen.getByText(/Your included analyses renew on/)).toHaveCount(0);
 }
 
 for (const interval of ['Monthly', 'Annual']) {
@@ -106,7 +108,8 @@ test('restore with no mock receipt keeps the account free', async (ui) => {
   await expect(screen.getByTestId('toast.paywall.success')).toHaveCount(0);
   await screen.getByTestId('btn.paywall.close').click();
   await expect(screen.getByTestId('quota.analysisValue')).toHaveText('3 / 3');
-  await expect(screen.getByRole('button', { name: 'Upgrade to Noctalia Plus', exact: true })).toBeVisible();
+  await expect(screen.getByText(/Your included analyses renew on [A-Z][a-z]+ \d{1,2}, \d{4}/)).toBeVisible();
+  await expect(screen.getByTestId('settings-section-subscription')).toBeVisible();
 });
 
 test('cancelled renewal keeps Plus until expiry, then free limits return without losing dreams', async (ui) => {

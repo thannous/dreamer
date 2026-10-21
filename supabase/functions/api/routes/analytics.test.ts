@@ -129,6 +129,7 @@ Deno.test('purchase funnel events accept categorical properties only', () => {
     ['purchase_failed', { trigger: 'stats_profile', plan: 'annual', reason: 'cancelled' }],
     ['restore_completed', { trigger: 'direct', outcome: 'nothing_to_restore' }],
     ['paywall_dismissed', { trigger: 'exploration_limit', tier: 'guest', plan_selected: false }],
+    ['paywall_plan_selected', { trigger: 'chat_limit', plan: 'monthly', tier: 'free' }],
   ];
   for (const [event_name, properties] of accepted) {
     assertEquals(validateProductAnalyticsEvent(validEvent({ event_name, properties }), now), true, event_name);

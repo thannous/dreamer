@@ -197,7 +197,7 @@ test('free user can open the Plus offer and return without losing the journal', 
   const { screen: uiScreen } = ui;
   await selectProfile(ui, 'existing');
   await openSettings(ui);
-  await uiScreen.getByRole('button', { name: 'Upgrade to Noctalia Plus', exact: true }).click();
+  await uiScreen.getByTestId('settings-section-subscription').click();
   await expect(uiScreen.getByTestId('screen.paywall')).toBeVisible();
   await uiScreen.getByTestId('btn.paywall.selectMonthly').click();
   await expect(uiScreen.getByTestId('btn.paywall.selectMonthly')).toHaveAttribute('aria-checked', 'true');
@@ -215,11 +215,12 @@ for (const profile of ['existing', 'plus'] as const) {
     await openSettings(ui);
     if (profile === 'existing') {
       await expect(uiScreen.getByTestId('quota.analysisValue')).toContainText('/ 3');
-      await uiScreen.getByRole('button', { name: 'Upgrade to Noctalia Plus', exact: true }).click();
+      // One way to Plus in the card: its row, not a second upgrade button.
+      await expect(uiScreen.getByRole('button', { name: 'Upgrade to Noctalia Plus', exact: true })).toHaveCount(0);
+      await uiScreen.getByTestId('settings-section-subscription').click();
       await expect(uiScreen.getByTestId('screen.paywall')).toBeVisible();
     } else {
       await expect(uiScreen.getByTestId('quota.analysisValue')).toContainText('Unlimited');
-      await expect(uiScreen.getByRole('button', { name: 'Upgrade to Noctalia Plus', exact: true })).toHaveCount(0);
     }
   });
 }
