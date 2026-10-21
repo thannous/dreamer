@@ -9,7 +9,9 @@ import {
   getPendingWebRecoveryTokenHash,
   getSupabasePublicConfiguration,
   getWebRecoveryLinkState,
+  hasPendingWebRecoveryPkce,
   supabase,
+  updatePasswordFromPendingWebRecoveryPkce,
   webAuthCallbackPromise,
 } from './supabase';
 import type { SubscriptionTier } from './types';
@@ -428,6 +430,9 @@ let verifiedRecovery: {
 } | null = null;
 
 export async function updatePasswordFromWebRecovery(email: string, newPassword: string): Promise<User | null> {
+  if (hasPendingWebRecoveryPkce()) {
+    return updatePasswordFromPendingWebRecoveryPkce(email, newPassword);
+  }
   const pending = getPendingWebRecoveryTokenHash();
   const configuration = getSupabasePublicConfiguration();
   if (!pending || !configuration) {
@@ -466,9 +471,9 @@ export async function updatePasswordFromWebRecovery(email: string, newPassword: 
 
 /**
  * Observe auth events relevant to password recovery. When the browser opens a
- * recovery PKCE link, the explicit code exchange emits a signed-in session.
- * The reset page treats the already authenticated account as eligible too;
- * token-hash recovery stays on a separate memory-only client above.
+ * recovery link, PKCE and token-hash exchanges stay in isolated clients.
+ * The reset page also permits an already authenticated account to update its
+ * own password through the app session.
  */
 export function onPasswordRecovery(
   cb: (event: AuthChangeEvent, session: Session | null) => void

@@ -20,6 +20,8 @@ const mockCreateClient = jest.fn(() => ({ auth: {
 } }));
 const mockClearPendingWebRecoveryTokenHash = jest.fn();
 let mockPendingWebRecoveryTokenHash: string | null = null;
+let mockPendingWebRecoveryPkce = false;
+const mockUpdatePasswordFromPendingWebRecoveryPkce = jest.fn();
 const mockResetMockTestState = jest.fn();
 let mockModeEnabled = false;
 const mockOnAuthStateChange = jest.fn();
@@ -56,6 +58,8 @@ jest.mock('../supabase', () => ({
   getPendingWebRecoveryTokenHash: () => mockPendingWebRecoveryTokenHash,
   getSupabasePublicConfiguration: () => ({ projectUrl: 'https://example.supabase.co', publicKey: 'anon' }),
   getWebRecoveryLinkState: () => mockPendingWebRecoveryTokenHash ? 'pending' : 'none',
+  hasPendingWebRecoveryPkce: () => mockPendingWebRecoveryPkce,
+  updatePasswordFromPendingWebRecoveryPkce: mockUpdatePasswordFromPendingWebRecoveryPkce,
   clearPendingWebRecoveryTokenHash: mockClearPendingWebRecoveryTokenHash,
 }));
 
@@ -140,6 +144,7 @@ describe('web auth helpers', () => {
     jest.clearAllMocks();
     mockModeEnabled = false;
     mockPendingWebRecoveryTokenHash = null;
+    mockPendingWebRecoveryPkce = false;
     mockSignInWithOAuth.mockResolvedValue({
       data: { url: OAUTH_AUTHORIZE_URL },
       error: null,
@@ -168,6 +173,7 @@ describe('web auth helpers', () => {
       session: { access_token: 'recovery-access', user: { id: 'user-1' } },
     }, error: null });
     mockRecoveryUpdateUser.mockResolvedValue({ data: { user: { id: 'user-1' } }, error: null });
+    mockUpdatePasswordFromPendingWebRecoveryPkce.mockResolvedValue({ id: 'user-1' });
     mockOnAuthStateChange.mockReturnValue({
       data: { subscription: { unsubscribe: jest.fn() } },
     });
@@ -671,6 +677,19 @@ describe('web auth helpers', () => {
     expect(mockRecoveryUpdateUser).not.toHaveBeenCalled();
     expect(mockSetSession).not.toHaveBeenCalled();
     expect(mockUpdateUser).not.toHaveBeenCalled();
+  });
+
+  it('updates a verified PKCE recovery through its isolated client', async () => {
+    mockPendingWebRecoveryPkce = true;
+    const auth = require('../auth.web') as typeof import('../auth.web');
+
+    const user = await auth.updatePasswordFromWebRecovery('user@example.com', 'new-secret');
+
+    expect(mockUpdatePasswordFromPendingWebRecoveryPkce).toHaveBeenCalledWith('user@example.com', 'new-secret');
+    expect(mockRecoveryVerifyOtp).not.toHaveBeenCalled();
+    expect(mockSetSession).not.toHaveBeenCalled();
+    expect(mockUpdateUser).not.toHaveBeenCalled();
+    expect(user?.id).toBe('user-1');
   });
 
   it('confirms the recovery account email and permits a retry of a verified one-use hash', async () => {

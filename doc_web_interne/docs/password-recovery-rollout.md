@@ -2,8 +2,8 @@
 
 The Dreamer web reset route accepts only two GoTrue recovery proofs:
 
-- A same-browser PKCE `code` from `resetPasswordForEmail`, bound to the browser's stored recovery verifier.
-- A `token_hash` with `type=recovery`, redeemed through `verifyOtp` in an isolated in-memory client. The reset screen confirms the account email, changes the password and sends the user to explicit sign-in; it never installs this session in the app.
+- A same-browser PKCE `code` from `resetPasswordForEmail`, bound to the browser's stored recovery verifier and exchanged in a memory-only client.
+- A `token_hash` with `type=recovery`, redeemed through `verifyOtp` in an isolated in-memory client. The reset screen confirms the account email, changes the password and sends the user to explicit sign-in; neither recovery path installs its session in the app.
 
 An `access_token`/`refresh_token` URL, even with `type=recovery`, is rejected and removed from the address bar. Existing implicit links therefore expire at the new web client. A reset started on iOS/Android or opened in a different browser requires the hosted Supabase **Reset password** email template to link directly to the app with a token hash:
 

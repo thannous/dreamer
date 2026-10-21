@@ -82,15 +82,18 @@ describe('real Supabase web URL boundary', () => {
   });
 
   it('exchanges a recovery PKCE code only with the browser recovery verifier', async () => {
+    storeExistingSession();
     localStorage.setItem(`${STORAGE_KEY}-code-verifier`, 'browser-recovery-verifier/PASSWORD_RECOVERY');
     history.replaceState(null, '', '/auth/reset-password?code=recovery-code');
-    const fetchMock = jest.fn(async () => ({
+    const fetchMock = jest.fn(async (input: RequestInfo | URL, _init?: RequestInit) => ({
       ok: true,
-      json: async () => ({
-        access_token: 'recovery-access', refresh_token: 'recovery-refresh',
-        token_type: 'bearer', expires_in: 3600,
-        user: { id: 'recovery-user', email: 'recovery@example.com' },
-      }),
+      json: async () => String(input).endsWith('/user')
+        ? { user: { id: 'recovery-user', email: 'recovery@example.com' } }
+        : {
+          access_token: 'recovery-access', refresh_token: 'recovery-refresh',
+          token_type: 'bearer', expires_in: 3600,
+          user: { id: 'recovery-user', email: 'recovery@example.com' },
+        },
     }));
     globalThis.fetch = fetchMock as unknown as typeof fetch;
 
@@ -99,10 +102,22 @@ describe('real Supabase web URL boundary', () => {
     await webAuthCallbackPromise;
     const { data } = await supabase.auth.getSession();
 
-    expect(getWebRecoveryLinkState()).toBe('none');
-    expect(data.session?.user.id).toBe('recovery-user');
+    expect(getWebRecoveryLinkState()).toBe('pending');
+    expect(data.session?.user.id).toBe('existing-user');
     expect(fetchMock).toHaveBeenCalledTimes(1);
     expect(fetchMock.mock.calls[0][0]).toContain('/auth/v1/token?grant_type=pkce');
+    const { updatePasswordFromPendingWebRecoveryPkce } = require('../supabase') as typeof import('../supabase');
+    await expect(updatePasswordFromPendingWebRecoveryPkce('other@example.com', 'new-secret'))
+      .rejects.toThrow('recovery_email_mismatch');
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    await updatePasswordFromPendingWebRecoveryPkce('recovery@example.com', 'new-secret');
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect((fetchMock.mock.calls[1][1]?.headers as Record<string, string>).Authorization)
+      .toBe('Bearer recovery-access');
+    const { data: after } = await supabase.auth.getSession();
+    expect(after.session?.user.id).toBe('existing-user');
+    expect(localStorage.getItem(STORAGE_KEY)).toContain('existing-user');
+    expect(Object.keys(localStorage).filter((key) => key.startsWith('noctalia-recovery-pkce-'))).toEqual([]);
     expect(location.pathname + location.search).toBe('/auth/reset-password');
   });
 

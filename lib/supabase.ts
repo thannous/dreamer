@@ -1,5 +1,5 @@
 import 'react-native-url-polyfill/auto';
-import { createClient } from '@supabase/supabase-js';
+import { createClient, type User } from '@supabase/supabase-js';
 import Constants from 'expo-constants';
 import * as SecureStore from 'expo-secure-store';
 import { Platform } from 'react-native';
@@ -10,6 +10,33 @@ let webRecoveryTokenHash: string | null = null;
 let webRecoveryLinkState: WebRecoveryLinkState = 'none';
 let webAuthCode: string | null = null;
 let webAuthCodeIsRecovery = false;
+function createIsolatedPkceRecoveryClient(projectUrl: string, publicKey: string, verifier: string) {
+  // A distinct key also prevents auth-js BroadcastChannel notifications from
+  // reaching another recovery tab or the app's primary auth client.
+  const storageKey = `noctalia-recovery-pkce-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  const values = new Map<string, string>([[`${storageKey}-code-verifier`, verifier]]);
+  return createClient(projectUrl, publicKey, {
+    auth: {
+      storageKey,
+      storage: {
+        getItem: (key) => values.get(key) ?? null,
+        setItem: (key, value) => { values.set(key, value); },
+        removeItem: (key) => { values.delete(key); },
+      },
+      // auth-js needs persistSession to use the supplied storage. This adapter
+      // is private to the client and never writes a browser or native store.
+      persistSession: true,
+      autoRefreshToken: false,
+      detectSessionInUrl: false,
+      flowType: 'pkce',
+    },
+  });
+}
+
+let webRecoveryPkce: {
+  client: ReturnType<typeof createIsolatedPkceRecoveryClient>;
+  user: User;
+} | null = null;
 
 const URL_AUTH_PARAMETERS = [
   'access_token', 'refresh_token', 'provider_token', 'provider_refresh_token',
@@ -103,6 +130,26 @@ export function getPendingWebRecoveryTokenHash(): string | null {
 export function clearPendingWebRecoveryTokenHash(): void {
   webRecoveryTokenHash = null;
   webRecoveryLinkState = 'none';
+}
+
+export function hasPendingWebRecoveryPkce(): boolean {
+  return webRecoveryPkce !== null;
+}
+
+export async function updatePasswordFromPendingWebRecoveryPkce(email: string, newPassword: string): Promise<User> {
+  const recovery = webRecoveryPkce;
+  if (!recovery) throw new Error('Password recovery link is unavailable.');
+  if (!recovery.user.email || recovery.user.email.trim().toLowerCase() !== email.trim().toLowerCase()) {
+    throw new Error('recovery_email_mismatch');
+  }
+  const { data, error } = await recovery.client.auth.updateUser({ password: newPassword });
+  if (error) throw error;
+  if (!data.user || data.user.id !== recovery.user.id) {
+    throw new Error('Password recovery account changed.');
+  }
+  webRecoveryPkce = null;
+  webRecoveryLinkState = 'none';
+  return data.user;
 }
 
 // Secure storage adapter for native platforms (iOS/Android)
@@ -261,31 +308,42 @@ export const webAuthCallbackPromise: Promise<void> = webAuthCode
       // this marker; exchangeCodeForSession installs a session before returning.
       // Reject an OAuth/sign-in verifier before that side effect can occur.
       let verifier: string | null = null;
+      const configuration = getSupabasePublicConfiguration();
       try {
         verifier = window.localStorage.getItem(`${WEB_AUTH_STORAGE_KEY}-code-verifier`);
       } catch {
         // A missing/unreadable verifier cannot prove the browser requested reset.
       }
-      if (!verifier?.endsWith('/PASSWORD_RECOVERY')) {
+      if (!configuration || !verifier?.endsWith('/PASSWORD_RECOVERY')) {
         webRecoveryLinkState = 'invalid';
         return;
       }
+
+      // The marker and its verifier are transferred only to a distinct
+      // memory-backed client. A recovery code never reaches the app client.
+      try {
+        window.localStorage.removeItem(`${WEB_AUTH_STORAGE_KEY}-code-verifier`);
+        const client = createIsolatedPkceRecoveryClient(
+          configuration.projectUrl, configuration.publicKey, verifier
+        );
+        const { data, error } = await client.auth.exchangeCodeForSession(webAuthCode!);
+        if (error || !('redirectType' in data) || data.redirectType !== 'PASSWORD_RECOVERY' ||
+          !data.user?.email || !data.session || data.session.user.id !== data.user.id) {
+          webRecoveryLinkState = 'invalid';
+          return;
+        }
+        webRecoveryPkce = { client, user: data.user };
+        webRecoveryLinkState = 'pending';
+      } catch {
+        webRecoveryLinkState = 'invalid';
+      }
+      return;
     }
 
     try {
-      const { data, error } = await supabase.auth.exchangeCodeForSession(webAuthCode!);
-      if (webAuthCodeIsRecovery) {
-        if (error || !('redirectType' in data) || data.redirectType !== 'PASSWORD_RECOVERY') {
-          webRecoveryLinkState = 'invalid';
-          // A changed verifier or an SDK response mismatch must not leave the
-          // newly exchanged account active on the reset route.
-          if (data.session) await supabase.auth.signOut({ scope: 'local' });
-        } else {
-          webRecoveryLinkState = 'none';
-        }
-      }
+      await supabase.auth.exchangeCodeForSession(webAuthCode!);
     } catch {
-      if (webAuthCodeIsRecovery) webRecoveryLinkState = 'invalid';
+      // A failed sign-in code leaves any existing app session unchanged.
     }
   })()
   : Promise.resolve();

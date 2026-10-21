@@ -47,8 +47,8 @@ const getUpdateErrorKey = (error: unknown): string => {
 /**
  * Landing screen for the password-recovery email link.
  *
- * Web token-hash links require account-email confirmation and complete in an
- * isolated session. Same-browser PKCE links and native sessions use their
+ * Web token-hash and same-browser PKCE recovery links require account-email
+ * confirmation and complete in isolated sessions. Native sessions use their
  * existing recovery events.
  */
 const ResetPasswordScreen: React.FC = () => {

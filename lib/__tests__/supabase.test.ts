@@ -26,11 +26,18 @@ jest.mock('expo-secure-store', () => ({
 }));
 
 const mockExchangeCodeForSession = jest.fn(async () => ({ data: { session: null }, error: null }));
+const mockRecoveryExchangeCodeForSession = jest.fn();
+const mockRecoveryUpdateUser = jest.fn();
 const mockSignOut = jest.fn(async () => ({ error: null }));
-const mockCreateClient = jest.fn((url: string, key: string, options: any) => ({
-  __options: options,
-  auth: { exchangeCodeForSession: mockExchangeCodeForSession, signOut: mockSignOut },
-}));
+const mockCreateClient = jest.fn((url: string, key: string, options: any) => options.auth.storageKey?.startsWith('noctalia-recovery-pkce-')
+  ? { __options: options, auth: {
+    exchangeCodeForSession: mockRecoveryExchangeCodeForSession,
+    updateUser: mockRecoveryUpdateUser,
+  } }
+  : { __options: options, auth: {
+    exchangeCodeForSession: mockExchangeCodeForSession,
+    signOut: mockSignOut,
+  } });
 
 jest.mock('@supabase/supabase-js', () => ({
   createClient: mockCreateClient,
@@ -65,6 +72,8 @@ describe('supabase secure storage adapter', () => {
     secureStoreData.clear();
     mockCreateClient.mockClear();
     mockExchangeCodeForSession.mockClear();
+    mockRecoveryExchangeCodeForSession.mockReset();
+    mockRecoveryUpdateUser.mockReset();
     mockSignOut.mockClear();
     Object.values(mockSecureStore).forEach((fn) => fn.mockClear());
     process.env.EXPO_PUBLIC_SUPABASE_URL = 'https://example.com';
@@ -134,7 +143,7 @@ describe('supabase secure storage adapter', () => {
       value: {
         location: { href },
         history: { state: null, replaceState },
-        localStorage: { getItem: jest.fn(() => verifier) },
+        localStorage: { getItem: jest.fn(() => verifier), removeItem: jest.fn() },
       },
     });
     return { module: require('../supabase') as typeof import('../supabase'), replaceState };
@@ -203,17 +212,25 @@ describe('supabase secure storage adapter', () => {
   });
 
   it('keeps the same-browser PKCE recovery code path available', async () => {
-    mockExchangeCodeForSession.mockResolvedValueOnce({
-      data: { session: { user: { id: 'user-1' } }, redirectType: 'PASSWORD_RECOVERY' }, error: null,
-    } as any);
+    mockRecoveryExchangeCodeForSession.mockResolvedValueOnce({ data: {
+      user: { id: 'user-1', email: 'user@example.com' },
+      session: { user: { id: 'user-1' } },
+      redirectType: 'PASSWORD_RECOVERY',
+    }, error: null });
+    mockRecoveryUpdateUser.mockResolvedValueOnce({ data: { user: { id: 'user-1' } }, error: null });
     const { module, replaceState } = loadWebAt(
       'https://dream.noctalia.app/auth/reset-password?code=recovery-code&lang=fr',
       'browser-verifier/PASSWORD_RECOVERY'
     );
 
     await module.webAuthCallbackPromise;
-    expect(mockExchangeCodeForSession).toHaveBeenCalledWith('recovery-code');
-    expect(module.getWebRecoveryLinkState()).toBe('none');
+    expect(mockExchangeCodeForSession).not.toHaveBeenCalled();
+    expect(mockRecoveryExchangeCodeForSession).toHaveBeenCalledWith('recovery-code');
+    expect(module.getWebRecoveryLinkState()).toBe('pending');
+    expect(module.hasPendingWebRecoveryPkce()).toBe(true);
+    await module.updatePasswordFromPendingWebRecoveryPkce('user@example.com', 'new-secret');
+    expect(mockRecoveryUpdateUser).toHaveBeenCalledWith({ password: 'new-secret' });
+    expect(module.hasPendingWebRecoveryPkce()).toBe(false);
     expect(replaceState).toHaveBeenCalledWith(null, '', '/auth/reset-password?lang=fr');
   });
 
@@ -226,6 +243,7 @@ describe('supabase secure storage adapter', () => {
     await module.webAuthCallbackPromise;
     expect(module.getWebRecoveryLinkState()).toBe('invalid');
     expect(mockExchangeCodeForSession).not.toHaveBeenCalled();
+    expect(mockRecoveryExchangeCodeForSession).not.toHaveBeenCalled();
     expect(mockSignOut).not.toHaveBeenCalled();
     expect(replaceState).toHaveBeenCalledWith(null, '', '/auth/reset-password');
   });
