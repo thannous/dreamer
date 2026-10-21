@@ -3,7 +3,7 @@
   "date": "2026-10-22",
   "sourceRevision": "3eadba5f121c1017c032929534d269c330aa5abb",
   "sourceRevisionScope": "Clean browser-qualified lot-14 implementation; later tracking-only changes reuse this proof. Earlier evidence reused only where its per-symbol inputs are unchanged.",
-  "integratedMaster": "da747616fede364c2300fd3b2cf501801ccc0276",
+  "integratedMaster": "b2460d222752105fdce7f5b8a8fd1704a0757b4f",
   "sourceBranch": "codex/symbol-images-final-100",
   "integrationOwner": "Codex",
   "totalSymbols": 240,
@@ -369,13 +369,13 @@
   },
   "final100Delivery": {
     "path": "../qa/symbol-packs-final-100-20261022.json",
-    "sha256": "a70cef5abbf61da65145bf93fd2e181fb252349dd17b12fafc7b6852234c2741",
+    "sha256": "8a7bcdab94dca8b261bc4b1ef1a231451b4bf068ce839cdf8f6b384fb9768035",
     "nativeSourceArchiveGap": 6
   },
   "browserQualifiedMaster": "a51fd4fad506490fd0ca04e18ff1a1bcf6056901",
   "finalMasterMerge": {
-    "contentRevision": "f679338599b18a6caccee87d42559cf8c0bbecf5",
-    "scope": "Dependency security update only; browser painting/profile/engine source inputs unchanged."
+    "contentRevision": "76ad320b81b59372a2d57b91a5b88dd08a3fd0c4",
+    "scope": "Master dependency update and app-only PR537; site painting/profile/engine inputs unchanged."
   },
   "trackingDriveCopies": [
     {
