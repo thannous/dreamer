@@ -201,6 +201,14 @@ alter function public.claim(uuid) set search_path = '';${locked('public.claim(uu
 create table notes (id uuid);
 alter table public.notes enable row level security;
 revoke all on public.notes from anon, authenticated, service_role;`,
+  'argument mode after the name': `create function public.claim(p_user IN uuid, result OUT text) language sql security definer
+set search_path = '' as $$ select 'ok' $$;${locked('public.claim(uuid)')}`,
+  'commas inside a default array': `${definer('public.claim', 'p_values integer[] default array[1, 2], p_n int default 1')}${locked('public.claim(integer[], integer)')}`,
+  'begin atomic body with case, grants after it': `create function public.claim(x int) returns int language sql security definer set search_path = ''
+begin atomic
+  select case when x > 0 then 1 else 0 end;
+end;${locked('public.claim(integer)')}`,
+  'dropped and recreated, grants after the recreate': `drop function if exists public.claim(uuid, integer);${definer()}${locked()}`,
 };
 
 // Each fails the SECURITY DEFINER rule with the listed problems.
@@ -233,6 +241,23 @@ set search_path = private;${locked('claim(uuid, integer)')}`, [/from public"/, /
 end $do$;`, [/from public"/, /from anon"/, /grant execute/, /search_path/]],
   'alter ... security definer by name only': [`alter function public.claim security definer;`,
     [/public\.claim: .*from public"/, /from anon"/, /grant execute/, /search_path/]],
+  'revokes before a drop and recreate do not carry over': [`${locked()}
+drop function public.claim(uuid, integer);
+${definer()}`, [/from public"/, /from anon"/, /grant execute/]],
+  'the only grantee is revoked again': [`${definer()}${locked()}
+revoke execute on function public.claim(uuid, integer) from service_role;`, [/without an explicit "grant execute/]],
+  'set_config only inside a string does not move the function': [`select $q$set_config('search_path', 'private', false)$q$;
+${definer('claim')}`, [/public\.claim.*from public"/, /from anon"/, /grant execute/]],
+  'revokes and grants inside a begin atomic body do not run': [`create function public.claim() returns int language sql security definer set search_path = ''
+begin atomic
+  revoke execute on function public.claim() from public, anon;
+  grant execute on function public.claim() to service_role;
+  select 1;
+end;`, [/from public"/, /from anon"/, /grant execute/]],
+  'search_path reset afterwards': [`${definer()}${locked()}
+alter function public.claim(uuid, integer) reset search_path;`, [/without "set search_path"/]],
+  'reset all afterwards': [`${definer()}${locked()}
+alter function public.claim reset all;`, [/without "set search_path"/]],
   'quoted mixed case is another function': [`${definer('public."Claim"')}${locked('public.claim(uuid, integer)')}`, [/Claim.*from public"/, /from anon"/, /grant execute/]],
 };
 
@@ -252,6 +277,8 @@ test('signatures ignore names, modes, defaults, OUT arguments and type modifiers
   assert.equal(signature("p_a int4, in p_b varchar(20) default 'x', out p_c text, variadic p_d text[]"), 'integer,character varying,text[]');
   assert.equal(signature('double precision, timestamp with time zone, p numeric(10, 2)'), 'double precision,timestamp with time zone,numeric');
   assert.equal(signature('public.dreams, "Mixed"'), 'dreams,Mixed');
+  assert.equal(signature('p_user IN uuid, result OUT text, p_list INOUT int[]'), 'uuid,integer[]');
+  assert.equal(signature('p_values integer[] default array[1, 2], p_n int = 3'), 'integer[],integer');
 });
 
 test('each rule has its own closed grandfather list', () => {

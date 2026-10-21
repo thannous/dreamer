@@ -37,7 +37,10 @@
 // modifiers are ignored and common aliases are normalised (int4 = integer,
 // timestamptz = timestamp with time zone, ...). A target without an argument
 // list covers every overload. `on all functions in schema public` is not a
-// decision about X.
+// decision about X. The file is replayed in order: a later revoke of the only
+// grantee, `alter function X reset search_path|all`, or a `drop` (the new X
+// gets fresh default privileges) undoes what came before it. SQL-standard
+// `begin atomic ... end` bodies are not read, like dollar-quoted ones.
 // Only statements that run while the migration applies count: top-level ones
 // and those of DO blocks. Text in string literals and function bodies, and
 // grants built in EXECUTE strings, are not read.
@@ -180,7 +183,9 @@ function searchPathChanges(sql) {
     let list = null;
     if (match) list = statement.raw.slice(match.index + match[0].length - match[1].length).trim();
     else if (setConfig.test(statement.text)) {
-      const config = /set_config\s*\(\s*'search_path'\s*,\s*'([^']*)'/i.exec(statement.raw);
+      // Only a real call counts: the name must be outside strings and bodies (blanked in `text`).
+      const call = /\bset_config\s*\(/i.exec(statement.text);
+      const config = call && /^set_config\s*\(\s*'search_path'\s*,\s*'([^']*)'/i.exec(statement.raw.slice(call.index));
       if (config) list = config[1];
     }
     if (list === null) continue;
@@ -206,7 +211,36 @@ function schemaAt(sql, offset) {
   return first ?? 'public';
 }
 
-/** Split on top-level semicolons (outside quotes, dollar quotes and parentheses do not matter for `;`). */
+/**
+ * End (index after END) of a SQL-standard `BEGIN ATOMIC ... END` routine body
+ * starting at `i`, or -1 when none starts there. CASE ... END nests inside it.
+ */
+function atomicBodyEnd(sql, i) {
+  const start = /^begin\s+atomic\b/i.exec(sql.slice(i));
+  if (!start || /[\w$]/.test(sql[i - 1] ?? '')) return -1;
+  let depth = 1;
+  let j = i + start[0].length;
+  while (j < sql.length) {
+    const c = sql[j];
+    if (c === '\'' || c === '"') {
+      let k = j + 1;
+      while (k < sql.length && !(sql[k] === c && sql[k + 1] !== c)) k += sql[k] === c ? 2 : 1;
+      j = k + 1;
+      continue;
+    }
+    const word = /[\w$]/.test(sql[j - 1] ?? '') ? null : /^(case|end)\b/i.exec(sql.slice(j, j + 5));
+    if (word) {
+      depth += word[1].toLowerCase() === 'case' ? 1 : -1;
+      j += word[1].length;
+      if (!depth) return j;
+      continue;
+    }
+    j++;
+  }
+  return sql.length;
+}
+
+/** Split on top-level semicolons (outside quotes, dollar quotes and BEGIN ATOMIC bodies). */
 function statements(sql) {
   const result = [];
   let start = 0;
@@ -225,6 +259,8 @@ function statements(sql) {
       i = end < 0 ? sql.length : end + tag[0].length;
       continue;
     }
+    const atomic = (c === 'b' || c === 'B') ? atomicBodyEnd(sql, i) : -1;
+    if (atomic >= 0) { i = atomic; continue; }
     if (c === ';') { result.push({ text: sql.slice(start, i), offset: start }); start = i + 1; }
     i++;
   }
@@ -232,7 +268,7 @@ function statements(sql) {
   return result;
 }
 
-/** Top-level comma split of a parenthesised column list. */
+/** Top-level comma split of a parenthesised list (commas inside (), [] and quotes do not split). */
 function splitTopLevel(body) {
   const parts = [];
   let depth = 0;
@@ -243,8 +279,8 @@ function splitTopLevel(body) {
       let j = i + 1;
       while (j < body.length && !(body[j] === c && body[j + 1] !== c)) j += body[j] === c ? 2 : 1;
       i = j;
-    } else if (c === '(') depth++;
-    else if (c === ')') depth--;
+    } else if (c === '(' || c === '[') depth++;
+    else if (c === ')' || c === ']') depth--;
     else if (c === ',' && depth === 0) { parts.push(body.slice(start, i)); start = i + 1; }
   }
   parts.push(body.slice(start));
@@ -277,6 +313,17 @@ function ownedSequences(statement, afterName, table) {
   return sequences;
 }
 
+/** `text` with each BEGIN ATOMIC routine body blanked (it only runs when the routine is called). */
+function blankAtomicBodies(text) {
+  let out = text;
+  for (let i = 0; i < out.length; i++) {
+    if (out[i] !== 'b' && out[i] !== 'B') continue;
+    const end = atomicBodyEnd(out, i);
+    if (end >= 0) { out = out.slice(0, i) + ' '.repeat(end - i) + out.slice(end); i = end - 1; }
+  }
+  return out;
+}
+
 /**
  * Statements PostgreSQL runs while applying the migration: the top-level ones
  * and those of DO blocks (not function bodies, which only run when called).
@@ -288,9 +335,9 @@ function executedStatements(sql) {
   const blank = (text) => ' '.repeat(text.length);
   const scan = (text, base) => {
     for (const statement of statements(text)) {
-      const outside = statement.text
+      const outside = blankAtomicBodies(statement.text
         .replace(/(\$[A-Za-z_]*\$)[\s\S]*?\1/g, blank)
-        .replace(/'(?:[^']|'')*'/g, blank);
+        .replace(/'(?:[^']|'')*'/g, blank));
       result.push({ text: outside, raw: statement.text, offset: base + statement.offset });
       if (/^\s*do\b/i.test(outside)) {
         for (const body of statement.text.matchAll(/(\$[A-Za-z_]*\$)([\s\S]*?)\1/g)) {
@@ -408,11 +455,16 @@ function argumentType(definition) {
     .replace(/\s+default\b[\s\S]*$/i, '')
     .replace(/\s*=[\s\S]*$/, '');
   const mode = /^(in|out|inout|variadic)\s+/i.exec(text);
+  // PostgreSQL also accepts the mode after the name: `p_user IN uuid`, `result OUT text`.
+  const modeAfterName = !mode && new RegExp(`^${IDENT}\\s+(in|out|inout|variadic)\\s+(\\S[\\s\\S]*)$`, 'i').exec(text);
   if (mode) {
     if (mode[1].toLowerCase() === 'out') return '';
     text = text.slice(mode[0].length);
+  } else if (modeAfterName) {
+    if (modeAfterName[1].toLowerCase() === 'out') return '';
+    text = modeAfterName[2];
   }
-  if (!MULTIWORD_TYPE.test(text)) {
+  if (!modeAfterName && !MULTIWORD_TYPE.test(text)) {
     const named = new RegExp(`^${IDENT}\\s+(\\S[\\s\\S]*)$`).exec(text);
     if (named) text = named[1];
   }
@@ -455,46 +507,51 @@ function routineReference(text) {
   return { raw: match[1], sig, end };
 }
 
-const sameRoutine = (definer, target) => definer.name === target.name && (target.sig === null || target.sig === definer.sig);
-
 /** Problems of the SECURITY DEFINER functions (and procedures) a migration creates or alters in public. */
 function checkFunctionSql(source) {
   const sql = stripComments(source);
   const executed = executedStatements(sql);
   const createRoutine = new RegExp(String.raw`${LEAD}create\s+(?:or\s+replace\s+)?(?:function|procedure)\s+`, 'i');
   const alterRoutine = new RegExp(String.raw`${LEAD}alter\s+(?:function|procedure|routine)\s+`, 'i');
+  const dropRoutine = new RegExp(String.raw`${LEAD}drop\s+(?:function|procedure|routine)\s+(?:if\s+exists\s+)?([\s\S]+?)(?:\s+(?:cascade|restrict))?\s*$`, 'i');
   const privilege = new RegExp(String.raw`${LEAD}(grant|revoke)\s+(grant\s+option\s+for\s+)?([\s\S]+?)\s+on\s+(?:function|procedure|routine)\s+([\s\S]+?)\s+(to|from)\s+([\s\S]+)$`, 'i');
-  const definers = [];
-  const pathTargets = [];
-  const events = [];
   const lastSecurity = (text) => [...text.matchAll(/\bsecurity\s+(definer|invoker)\b/gi)].pop()?.[1].toLowerCase();
+  const publicTarget = (raw, offset) => {
+    const reference = routineReference(raw);
+    if (!reference) return null;
+    const [schema, name] = resolve(sql, reference.raw, offset);
+    return schema === 'public' ? { name, sig: reference.sig, end: reference.end } : null;
+  };
+  // Ordered events: what the migration does to public routines, statement by statement.
+  const events = [];
   for (const statement of executed) {
     let match = createRoutine.exec(statement.text);
     if (match) {
-      const reference = routineReference(statement.text.slice(match.index + match[0].length));
-      if (!reference) continue;
-      const [schema, name] = resolve(sql, reference.raw, statement.offset);
-      const rest = statement.text.slice(match.index + match[0].length + reference.end);
-      if (schema === 'public' && lastSecurity(rest) === 'definer') {
-        const sig = reference.sig ?? '';
-        const pathSet = /\bset\s+search_path\b/i.test(rest);
-        const known = definers.find((other) => other.name === name && other.sig === sig);
-        if (known) known.pathSet = known.pathSet || pathSet;
-        else definers.push({ name, sig, pathSet });
-      }
+      const target = publicTarget(statement.text.slice(match.index + match[0].length), statement.offset);
+      if (!target) continue;
+      const rest = statement.text.slice(match.index + match[0].length + target.end);
+      // CREATE OR REPLACE resets every attribute it does not repeat (security invoker, no SET), not the ACL.
+      events.push({ type: 'create', target: { name: target.name, sig: target.sig ?? '' }, definer: lastSecurity(rest) === 'definer', pathSet: /\bset\s+search_path\b/i.test(rest) });
       continue;
     }
     match = alterRoutine.exec(statement.text);
     if (match) {
-      const reference = routineReference(statement.text.slice(match.index + match[0].length));
-      if (!reference) continue;
-      const [schema, name] = resolve(sql, reference.raw, statement.offset);
-      if (schema !== 'public') continue;
-      const rest = statement.text.slice(match.index + match[0].length + reference.end);
-      const target = { name, sig: reference.sig };
-      if (/\bset\s+search_path\b/i.test(rest)) pathTargets.push(target);
-      if (lastSecurity(rest) === 'definer' && !definers.some((other) => other.name === name && other.sig === (target.sig ?? other.sig))) {
-        definers.push({ name, sig: target.sig, pathSet: false });
+      const target = publicTarget(statement.text.slice(match.index + match[0].length), statement.offset);
+      if (!target) continue;
+      const rest = statement.text.slice(match.index + match[0].length + target.end);
+      const security = lastSecurity(rest);
+      events.push({
+        type: 'alter', target: { name: target.name, sig: target.sig },
+        definer: security ? security === 'definer' : undefined,
+        pathSet: /\bset\s+search_path\b/i.test(rest) ? true : /\breset\s+(?:search_path|all)\b/i.test(rest) ? false : undefined,
+      });
+      continue;
+    }
+    match = dropRoutine.exec(statement.text);
+    if (match) {
+      for (const object of splitTopLevel(match[1])) {
+        const target = publicTarget(object, statement.offset);
+        if (target) events.push({ type: 'drop', target: { name: target.name, sig: target.sig } });
       }
       continue;
     }
@@ -505,31 +562,50 @@ function checkFunctionSql(source) {
       .replace(/\s+(?:with\s+grant\s+option|granted\s+by\s+[\s\S]*|cascade|restrict)\s*$/i, '')
       .split(',').map((role) => ident(role.replace(/^\s*group\s+/i, '')));
     for (const object of splitTopLevel(match[4])) {
-      const reference = routineReference(object);
-      if (!reference) continue;
-      const [schema, name] = resolve(sql, reference.raw, statement.offset);
-      if (schema === 'public') events.push({ action: match[1].toLowerCase(), target: { name, sig: reference.sig }, roles });
+      const target = publicTarget(object, statement.offset);
+      if (target) events.push({ type: match[1].toLowerCase(), target: { name: target.name, sig: target.sig }, roles });
     }
   }
+  // Routines that end up SECURITY DEFINER: each created signature, plus `alter ... security definer`
+  // by name only (every overload) when the file creates no overload of that name.
+  const routines = [];
+  for (const event of events) {
+    if (event.type === 'create' && !routines.some((r) => r.name === event.target.name && r.sig === event.target.sig)) routines.push({ ...event.target });
+  }
+  for (const event of events) {
+    if (event.type !== 'alter' || event.definer !== true) continue;
+    const { name, sig } = event.target;
+    if (!routines.some((r) => r.name === name && (sig === null || r.sig === null || r.sig === sig))) routines.push({ name, sig });
+  }
   const problems = [];
-  for (const definer of definers) {
-    const label = `public.${definer.name}${definer.sig === null ? '' : `(${definer.sig})`}`;
-    // An `alter ... security definer` without an argument list covers every overload: match by name.
-    const matches = (target) => definer.sig === null ? target.name === definer.name : sameRoutine(definer, target);
-    const state = { public: 'default', anon: 'default' };
-    const grantees = new Set();
+  for (const routine of routines) {
+    const label = `public.${routine.name}${routine.sig === null ? '' : `(${routine.sig})`}`;
+    const matches = (target) => target.name === routine.name && (routine.sig === null || target.sig === null || target.sig === routine.sig);
+    // Replay the file: a drop gives the routine fresh defaults (PUBLIC and anon can execute again).
+    let state = null;
+    const fresh = () => ({ definer: false, pathSet: false, public: 'default', anon: 'default', grantees: new Set() });
     for (const event of events.filter((item) => matches(item.target))) {
-      for (const role of event.roles) {
-        if (role in state) state[role] = event.action === 'revoke' ? 'revoked' : 'granted';
-        else if (event.action === 'grant') grantees.add(role);
+      if (event.type === 'drop') { state = null; continue; }
+      state ??= fresh();
+      if (event.type === 'create') { state.definer = event.definer; state.pathSet = event.pathSet; }
+      else if (event.type === 'alter') {
+        if (event.definer !== undefined) state.definer = event.definer;
+        if (event.pathSet !== undefined) state.pathSet = event.pathSet;
+      } else {
+        for (const role of event.roles) {
+          if (role === 'public' || role === 'anon') state[role] = event.type === 'revoke' ? 'revoked' : 'granted';
+          else if (event.type === 'grant') state.grantees.add(role);
+          else state.grantees.delete(role);
+        }
       }
     }
+    if (!state?.definer) continue;
     for (const role of ['public', 'anon']) {
       if (state[role] === 'default') problems.push(`${label}: security definer without "revoke execute on function ${label} from ${role}"`);
       if (state[role] === 'granted') problems.push(`${label}: security definer granted back to ${role} after its revoke`);
     }
-    if (!grantees.size) problems.push(`${label}: security definer without an explicit "grant execute on function ${label} to <role>"`);
-    if (!definer.pathSet && !pathTargets.some(matches)) problems.push(`${label}: security definer without "set search_path" (in the definition or "alter function ${label} set search_path")`);
+    if (!state.grantees.size) problems.push(`${label}: security definer without an explicit "grant execute on function ${label} to <role>"`);
+    if (!state.pathSet) problems.push(`${label}: security definer without "set search_path" (in the definition or "alter function ${label} set search_path")`);
   }
   return problems;
 }
