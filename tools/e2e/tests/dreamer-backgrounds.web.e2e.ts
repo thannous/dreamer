@@ -215,16 +215,16 @@ async function artwork(ui: ExactWebUI, scene: string, mode: 'light' | 'dark') {
   // Read readiness and pixels together: the same scene can remount between routes.
   await expect.poll(async () => {
     const measured = await readDOM(browser, byId(`image.background.${scene}`), element => {
-    const img = element instanceof HTMLImageElement ? element : element.querySelector('img');
-    if (!img?.complete || img.naturalWidth === 0) return null;
-    const canvas = document.createElement('canvas');
-    canvas.width = 80; canvas.height = 60;
-    const ctx = canvas.getContext('2d')!;
-    ctx.drawImage(img, 0, 0, 80, 60);
-    const pixels = ctx.getImageData(0, 0, 80, 60).data;
-    let sum = 0;
-    for (let i = 0; i < pixels.length; i += 4) sum += pixels[i] * 0.2126 + pixels[i + 1] * 0.7152 + pixels[i + 2] * 0.0722;
-    return sum / (80 * 60 * 255);
+      const img = element instanceof HTMLImageElement ? element : element.querySelector('img');
+      if (!img?.complete || img.naturalWidth === 0) return null;
+      const canvas = document.createElement('canvas');
+      canvas.width = 80; canvas.height = 60;
+      const ctx = canvas.getContext('2d')!;
+      ctx.drawImage(img, 0, 0, 80, 60);
+      const pixels = ctx.getImageData(0, 0, 80, 60).data;
+      let sum = 0;
+      for (let i = 0; i < pixels.length; i += 4) sum += pixels[i] * 0.2126 + pixels[i + 1] * 0.7152 + pixels[i + 2] * 0.0722;
+      return sum / (80 * 60 * 255);
     });
     lightness = measured;
     return measured !== null;
