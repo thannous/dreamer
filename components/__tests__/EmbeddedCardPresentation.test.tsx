@@ -178,6 +178,7 @@ jest.mock('@/lib/navigationIntents', () => ({
 
 jest.mock('@/lib/quotaReset', () => ({
   getMonthlyQuotaPeriod: () => ({ periodEnd: new Date('2026-08-01T00:00:00Z') }),
+  formatQuotaResetDate: () => 'August 1, 2026',
 }));
 
 jest.mock('@/lib/supabase', () => ({ isSupabaseConfigured: true }));

@@ -166,7 +166,7 @@ export default function SettingsScreen() {
 
   const quota = (
     <View className={RN_SLOT_CLASS} testID="settings-quota-rn-content">
-      <QuotaStatusCard onUpgradePress={handleOpenPaywall} presentation="embedded" showTitle={section === 'account'} />
+      <QuotaStatusCard onUpgradePress={handleOpenPaywall} presentation="embedded" showTitle={section === 'account'} showFreeUpgrade={false} />
       {showSubscriptionQaLab ? <SubscriptionQALab presentation="embedded" /> : null}
     </View>
   );

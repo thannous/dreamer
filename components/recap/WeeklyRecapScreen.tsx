@@ -12,11 +12,13 @@ import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useDreamsData } from '@/context/DreamsContext';
 import { useTheme } from '@/context/ThemeContext';
+import { getFreeAnalysesNudge } from '@/components/quota/FreeAnalysesNudge';
+import { useAuth } from '@/context/AuthContext';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
-import { useSubscription } from '@/hooks/useSubscription';
+import { useQuota } from '@/hooks/useQuota';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getDreamThemeLabel, getEmotionFamilyLabel } from '@/lib/dreamLabels';
-import { buildPaywallHref } from '@/lib/paywallRoute';
+import { buildAnalysisPaywallHref } from '@/lib/paywallRoute';
 import { TID } from '@/lib/testIDs';
 import { requestStoreReviewIfDue } from '@/lib/storeReview';
 import { buildWeeklyRecap } from '@/lib/weeklyRecap';
@@ -26,9 +28,9 @@ import { TypeScale } from '@/constants/typeScale';
 
 /**
  * "Your week in dreams": the Sunday-morning recap opened from the weekly push
- * or from the home screen. Free users see rhythm, theme and symbol; the
- * recurring emotion stays a Plus signal (same gate as the Statistics screen)
- * and doubles as a contextual entry to the paywall.
+ * or from the home screen. Everyone sees rhythm, theme, symbol and emotion, as
+ * in Trends. Plus appears only when the dream left to analyse cannot be read
+ * this month: its button then opens that dream's own offer.
  */
 function WeeklyRecapContent() {
   // This screen's own scroll, published to its header painting and title.
@@ -39,7 +41,11 @@ function WeeklyRecapContent() {
   const insets = useSafeAreaInsets();
   const { formatDate } = useLocaleFormatting();
   const { dreams, loaded } = useDreamsData();
-  const { isActive: isPlus } = useSubscription();
+  const { user } = useAuth();
+  const { tier, usage, loading: quotaLoading, error: quotaError } = useQuota();
+  const analysesUsedUp = getFreeAnalysesNudge({
+    tier, signedIn: Boolean(user), loading: quotaLoading, error: quotaError, usage, maxRemaining: 0,
+  }) !== null;
   const [now] = useState(() => Date.now());
 
   const recap = useMemo(() => buildWeeklyRecap(dreams, now), [dreams, now]);
@@ -88,10 +94,9 @@ function WeeklyRecapContent() {
   const handleOpenDream = useCallback((dream: DreamAnalysis) => {
     router.push({ pathname: '/journal/[id]', params: getDreamRouteParams(dream) });
   }, []);
-
-  const handleUnlockEmotions = useCallback(() => {
-    router.push(buildPaywallHref('stats_profile'));
-  }, []);
+  const handleAnalyzeWithPlus = useCallback((dream: DreamAnalysis) => {
+    if (user) router.push(buildAnalysisPaywallHref(dream, user.id));
+  }, [user]);
 
   const backButtonTop = insets.top + ThemeLayout.spacing.sm;
   const cardStyle = [
@@ -102,6 +107,7 @@ function WeeklyRecapContent() {
   const themeLabel = recap.topTheme ? getDreamThemeLabel(recap.topTheme.theme, t) : null;
   const emotionLabel = recap.topEmotion ? getEmotionFamilyLabel(recap.topEmotion.family, t) : null;
   const nextDream = recap.dreamToExplore ?? recap.dreamToAnalyze;
+  const analyzeWithPlus = !recap.dreamToExplore && analysesUsedUp;
 
   return (
     <View style={[styles.container, { backgroundColor: noctalia.screen.background }]} testID={TID.Screen.WeeklyRecap}>
@@ -204,25 +210,9 @@ function WeeklyRecapContent() {
                 </View>
                 <View style={[styles.signalRow, styles.signalRowLast]}>
                   <Text style={[styles.signalLabel, { color: noctalia.text.secondary }]}>{t('weekly_recap.signals.emotion')}</Text>
-                  {isPlus ? (
-                    <Text style={[styles.signalValue, { color: noctalia.text.primary }]} testID={TID.Text.WeeklyRecapEmotion}>
-                      {emotionLabel ?? t('weekly_recap.signals.none')}
-                    </Text>
-                  ) : (
-                    <Pressable
-                      onPress={handleUnlockEmotions}
-                      accessibilityRole="button"
-                      testID={TID.Button.WeeklyRecapUnlockEmotion}
-                      style={[styles.lockedPill, { backgroundColor: noctalia.surface.soft, borderColor: noctalia.surface.border }]}
-                    >
-                      <IconSymbol name="lock.fill" size={12} color={noctalia.accent.text} />
-                      <Text style={[styles.lockedLabel, { color: noctalia.accent.text }]}>
-                        {recap.topEmotion
-                          ? t('weekly_recap.signals.emotion_locked')
-                          : t('weekly_recap.signals.emotion_locked_empty')}
-                      </Text>
-                    </Pressable>
-                  )}
+                  <Text style={[styles.signalValue, { color: noctalia.text.primary }]} testID={TID.Text.WeeklyRecapEmotion}>
+                    {emotionLabel ?? t('weekly_recap.signals.none')}
+                  </Text>
                 </View>
               </View>
 
@@ -241,7 +231,7 @@ function WeeklyRecapContent() {
                     {nextDream.transcript}
                   </Text>
                   <Pressable
-                    onPress={() => handleOpenDream(nextDream)}
+                    onPress={() => (analyzeWithPlus ? handleAnalyzeWithPlus(nextDream) : handleOpenDream(nextDream))}
                     accessibilityRole="button"
                     testID={TID.Button.WeeklyRecapOpenDream}
                     style={({ pressed }) => [
@@ -251,7 +241,8 @@ function WeeklyRecapContent() {
                     ]}
                   >
                     <Text style={[styles.primaryLabel, { color: noctalia.action.primaryText }]}>
-                      {recap.dreamToExplore ? t('weekly_recap.next.explore_cta') : t('weekly_recap.next.analyze_cta')}
+                      {recap.dreamToExplore ? t('weekly_recap.next.explore_cta')
+                        : analyzeWithPlus ? t('weekly_recap.next.analyze_cta_plus') : t('weekly_recap.next.analyze_cta')}
                     </Text>
                   </Pressable>
                 </View>
@@ -392,19 +383,6 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     fontFamily: Fonts.outfit.bold,
     fontSize: TypeScale.body.fontSize,
-  },
-  lockedPill: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    paddingVertical: 6,
-    paddingHorizontal: 10,
-    borderRadius: 999,
-    borderWidth: 1,
-  },
-  lockedLabel: {
-    fontFamily: Fonts.outfit.bold,
-    fontSize: TypeScale.caption.fontSize,
   },
   primary: {
     marginTop: 6,

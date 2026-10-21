@@ -17,6 +17,7 @@ import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { sparklePath } from '@/components/journal/story/sparkle';
 import { PressableScale } from '@/components/motion';
+import { getFreeAnalysesNudge } from '@/components/quota/FreeAnalysesNudge';
 import { PeriodSeal, PERIOD_SEAL_SIZE } from '@/components/trends/PeriodSeal';
 import { TrendsFigures } from '@/components/trends/TrendsFigures';
 import { TrendsNights } from '@/components/trends/TrendsNights';
@@ -29,13 +30,17 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { DESKTOP_BREAKPOINT, getBottomNavigationLayout } from '@/constants/layout';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
+import { useAuth } from '@/context/AuthContext';
 import { useDreams } from '@/context/DreamsContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
+import { useQuota } from '@/hooks/useQuota';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getDreamThemeLabel } from '@/lib/dreamLabels';
 import { getDreamRouteParams } from '@/lib/dreamRoute';
+import { buildPaywallHref } from '@/lib/paywallRoute';
+import { formatQuotaResetDate } from '@/lib/quotaReset';
 import { buildDreamSky } from '@/lib/dreamSky';
 import {
   buildDreamTrends,
@@ -110,6 +115,11 @@ function StatisticsScreen() {
   const { dreams, loaded, completeness, reloadDreams } = useDreams();
   const { t, currentLang } = useTranslation();
   const { formatDate, formatNumber, locale } = useLocaleFormatting();
+  const { user } = useAuth();
+  const { tier, usage, loading: quotaLoading, error: quotaError } = useQuota();
+  const analysesUsedUp = getFreeAnalysesNudge({
+    tier, signedIn: Boolean(user), loading: quotaLoading, error: quotaError, usage, maxRemaining: 0,
+  }) !== null;
   const { width, height, fontScale } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const { colors, mode } = useTheme();
@@ -324,7 +334,15 @@ function StatisticsScreen() {
         formatNumber={formatNumber}
         onOpenUnanalyzed={() => openJournal(trends, { analysis: 'unanalyzed' })}
         onOpenType={(type: DreamType) => openJournal(trends, { dreamType: type, analysis: 'analyzed' })}
-        onOpenSymbol={setOpenSymbol} />
+        onOpenSymbol={setOpenSymbol}
+        plusHint={analysesUsedUp && trends.patterns.unanalyzed > 0 ? {
+          text: t(trends.patterns.unanalyzed === 1 ? 'trends.returns.plus_hint_one' : 'trends.returns.plus_hint', {
+            date: formatQuotaResetDate(locale),
+            count: formatNumber(trends.patterns.unanalyzed),
+          }),
+          cta: t('trends.returns.plus_cta'),
+          onPress: () => router.push(buildPaywallHref('stats_profile')),
+        } : undefined} />
     </View>
   );
 

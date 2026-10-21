@@ -60,6 +60,16 @@ const variants: Record<PaywallTrigger, PaywallVariant> = {
     ],
     primaryLabelKey: 'subscription.paywall.variant.exploration_limit.cta',
   },
+  chat_limit: {
+    trigger: 'chat_limit',
+    chipKey: 'subscription.paywall.variant.chat_limit.chip',
+    headerTitleKey: 'subscription.paywall.variant.chat_limit.title',
+    headerSubtitleKey: 'subscription.paywall.variant.chat_limit.subtitle',
+    cardTitleKey: 'subscription.paywall.card.title',
+    cardSubtitleKey: 'subscription.paywall.card.subtitle',
+    featureKeys: PLUS_PAYWALL_FEATURE_KEYS,
+    primaryLabelKey: 'subscription.paywall.variant.chat_limit.cta',
+  },
   image_generation: {
     trigger: 'image_generation',
     chipKey: 'subscription.paywall.variant.image_generation.chip',

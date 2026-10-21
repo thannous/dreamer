@@ -130,7 +130,7 @@ function DreamCategoriesScreen() {
           </View>
 
           <Exploration360Panel hasSynthesis={status.hasSynthesis} canGenerateSynthesis={status.canGenerateSynthesis}
-            onSynthesisPress={openSynthesis} synthesisDisabled={!subscriptionReady}
+            onSynthesisPress={openSynthesis} synthesisDisabled={!subscriptionReady} requiresPlus={!canUseSynthesis}
             onReadSynthesisPress={openChat} variant="reflection" style={styles.recap} />
 
           <Pressable onPress={openChat} testID={TID.Button.DreamFreeChat} accessibilityRole="button"

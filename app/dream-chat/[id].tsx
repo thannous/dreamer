@@ -277,6 +277,11 @@ function DreamChatContent() {
   const messageCounterLabel = typeof messageLimit === 'number'
     ? t('dream_chat.message_counter', { used: userMessageCount, limit: messageLimit })
     : '';
+  // A free account's ceiling is the end of its included exchanges, not a safety stop.
+  const freeLimitCopy = useMemo(() => ({
+    free: messageLimit ?? QUOTAS.free.messagesPerDream ?? 0,
+    plus: QUOTAS.plus.messagesPerDream ?? 0,
+  }), [messageLimit]);
 
   const isExistingExploration = useMemo(() => {
     if (!dream) return false;
@@ -290,7 +295,7 @@ function DreamChatContent() {
   const openMessageLimitUpgrade = useCallback(() => {
     router.push(tier === 'guest'
       ? '/settings?section=account&auth=signup'
-      : buildPaywallHref('exploration_limit'));
+      : buildPaywallHref('chat_limit'));
   }, [tier]);
 
   const showMessageLimitAlert = useCallback(() => {
@@ -306,11 +311,11 @@ function DreamChatContent() {
         }]),
     ];
     Alert.alert(
-      t('dream_chat.message_limit.title'),
-      t('dream_chat.limit_warning'),
+      tier === 'free' ? t('dream_chat.limit_free.title', freeLimitCopy) : t('dream_chat.message_limit.title'),
+      tier === 'free' ? t('dream_chat.limit_free.body', freeLimitCopy) : t('dream_chat.limit_warning'),
       actions
     );
-  }, [openMessageLimitUpgrade, t, tier]);
+  }, [freeLimitCopy, openMessageLimitUpgrade, t, tier]);
 
   const runQuotaCheck = useCallback(async () => {
     if (!isMountedRef.current) return;
@@ -1162,6 +1167,7 @@ function DreamChatContent() {
         hasSynthesis={exploration360Status.hasSynthesis}
         onSynthesisPress={handleSynthesisPress}
         synthesisDisabled={isInteractionLocked || !hasQuotaCheckClearance || isQuotaGateBlocked}
+        requiresPlus={!canUseExploration360Synthesis(tier)}
         style={styles.exploration360Panel}
       />
       {targetFailedMessage ? (
@@ -1256,7 +1262,7 @@ function DreamChatContent() {
   );
 
   const composerPlaceholder = messageLimitReached
-    ? t('dream_chat.input.limit_placeholder')
+    ? t(tier === 'free' ? 'dream_chat.input.limit_placeholder_free' : 'dream_chat.input.limit_placeholder')
     : t('dream_chat.input.placeholder');
 
   const shouldShowCounter = typeof messageLimit === 'number';
@@ -1270,6 +1276,7 @@ function DreamChatContent() {
       messageCounterLabel={messageCounterLabel}
       messageLimitReached={messageLimitReached}
       messagesRemaining={messagesRemaining}
+      freeLimitCopy={freeLimitCopy}
       t={t}
       tier={tier}
       onUpgrade={openMessageLimitUpgrade}
@@ -1330,6 +1337,7 @@ type ComposerFooterProps = {
   messageCounterLabel: string;
   messageLimitReached: boolean;
   messagesRemaining: number;
+  freeLimitCopy: { free: number; plus: number };
   t: (key: string, replacements?: { [k: string]: string | number }) => string;
   tier: string;
   onUpgrade: () => void;
@@ -1349,6 +1357,7 @@ function ComposerFooter({
   messageCounterLabel,
   messageLimitReached,
   messagesRemaining,
+  freeLimitCopy,
   t,
   tier,
   onUpgrade,
@@ -1366,10 +1375,11 @@ function ComposerFooter({
     };
   }, [isKeyboardVisible, visible]);
 
-  const isLowRemaining = messagesRemaining <= 5;
+  // The last two exchanges take the accent, never an alarm: running out is not an error.
+  const isLowRemaining = messagesRemaining <= 2;
   const pillBackground = noctalia.surface.raised;
   const pillBorder = noctalia.surface.border;
-  const counterColor = isLowRemaining ? noctalia.status.danger.text : noctalia.text.primary;
+  const counterColor = isLowRemaining ? noctalia.accent.text : noctalia.text.primary;
 
   return (
     <Animated.View
@@ -1396,7 +1406,40 @@ function ComposerFooter({
         </View>
       )}
 
-      {messageLimitReached && (
+      {messageLimitReached && tier === 'free' && (
+        <View
+          testID={TID.Text.ChatLimitBanner}
+          style={[styles.limitCard, { backgroundColor: noctalia.surface.raised, borderColor: noctalia.surface.borderStrong }]}
+        >
+          <View style={styles.limitCardContent}>
+            <View style={[styles.limitCardIcon, { backgroundColor: noctalia.surface.active }]}>
+              <IconSymbol name="sparkles" size={16} color={noctalia.accent.text} />
+            </View>
+            <View style={styles.limitCardCopy}>
+              <Text style={[styles.limitCardTitle, { color: noctalia.text.primary }]}>
+                {t('dream_chat.limit_free.title', freeLimitCopy)}
+              </Text>
+              <Text style={[styles.limitCardBody, { color: noctalia.text.secondary }]}>
+                {t('dream_chat.limit_free.body', freeLimitCopy)}
+              </Text>
+            </View>
+          </View>
+          <GesturePressable
+            onPress={onUpgrade}
+            testID={TID.Button.ChatLimitUpgrade}
+            style={[
+              styles.limitCardCta,
+              { backgroundColor: noctalia.action.primary, borderColor: noctalia.action.primaryBorder },
+            ]}
+          >
+            <Text style={[styles.limitCardCtaText, { color: noctalia.action.primaryText }]}>
+              {t('dream_chat.limit_cta_free')}
+            </Text>
+          </GesturePressable>
+        </View>
+      )}
+
+      {messageLimitReached && tier !== 'free' && (
         <View
           testID={TID.Text.ChatLimitBanner}
           style={[
@@ -1424,9 +1467,7 @@ function ComposerFooter({
                 ]}
               >
                 <Text style={[styles.limitCtaText, { color: noctalia.action.primaryText }]}>
-                  {tier === 'guest'
-                    ? t('dream_chat.limit_cta_guest')
-                    : t('dream_chat.limit_cta_free')}
+                  {t('dream_chat.limit_cta_guest')}
                 </Text>
               </GesturePressable>
             </View>
@@ -1694,6 +1735,53 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.outfit.medium,
     fontSize: TypeScale.caption.fontSize,
     fontWeight: '600',
+  },
+  limitCard: {
+    width: '100%',
+    gap: 14,
+    padding: 16,
+    marginBottom: 8,
+    borderRadius: 16,
+    borderWidth: 1,
+  },
+  limitCardContent: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 12,
+  },
+  limitCardIcon: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  limitCardCopy: {
+    flex: 1,
+    minWidth: 0,
+    gap: 4,
+  },
+  limitCardTitle: {
+    fontFamily: Fonts.fraunces.semiBold,
+    fontSize: TypeScale.h3.fontSize,
+    lineHeight: TypeScale.h3.lineHeight,
+  },
+  limitCardBody: {
+    fontFamily: Fonts.outfit.regular,
+    fontSize: TypeScale.bodySm.fontSize,
+    lineHeight: TypeScale.bodySm.lineHeight,
+  },
+  limitCardCta: {
+    minHeight: 44,
+    borderRadius: 999,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+  },
+  limitCardCtaText: {
+    fontFamily: Fonts.outfit.bold,
+    fontSize: TypeScale.body.fontSize,
   },
   footerWrapper: {
     width: '100%',
