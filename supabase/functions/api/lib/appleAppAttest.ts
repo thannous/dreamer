@@ -668,6 +668,9 @@ export function verifyAppleAppAssertion(input: {
   const counter = new DataView(authData.buffer, authData.byteOffset + 33, 4).getUint32(0, false);
   if (counter <= input.previousCounter || counter === 0) invalid();
   const data = concat(authData, sha256(encoder.encode(input.challenge)));
-  if (!verifySignature('sha256', Buffer.from(data), input.publicKeyPem, Buffer.from(signature))) invalid();
+  // App Attest signs the nonce as the ECDSA-SHA256 message, not the
+  // authenticator data concatenation itself.
+  const nonce = sha256(data);
+  if (!verifySignature('sha256', Buffer.from(nonce), input.publicKeyPem, Buffer.from(signature))) invalid();
   return counter;
 }

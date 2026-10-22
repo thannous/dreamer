@@ -113,13 +113,14 @@ Deno.test('assertion verifies signed challenge and strictly increasing counter',
   createHash('sha256').update(appId).digest().copy(authData, 0);
   authData.writeUInt32BE(1, 33);
   const signed = Buffer.concat([authData, createHash('sha256').update(assertionChallenge).digest()]);
-  const signature = sign('sha256', signed, privateKey);
-  const assertionObject = Buffer.concat([
+  const nonce = createHash('sha256').update(signed).digest();
+  const encodeAssertion = (signature: Buffer) => Buffer.concat([
     Buffer.from([0xa2, 0x69]), Buffer.from('signature'),
     Buffer.from([0x58, signature.length]), signature,
     Buffer.from([0x71]), Buffer.from('authenticatorData'),
     Buffer.from([0x58, authData.length]), authData,
   ]).toString('base64');
+  const assertionObject = encodeAssertion(sign('sha256', nonce, privateKey));
   const input = {
     assertionObject,
     challenge: assertionChallenge,
@@ -133,4 +134,6 @@ Deno.test('assertion verifies signed challenge and strictly increasing counter',
   assertThrows(() => verifyAppleAppAssertion({ ...input, previousCounter: 1 }));
   assertThrows(() => verifyAppleAppAssertion({ ...input, challenge: 'fresh_server_challenge_99999' }));
   assertThrows(() => verifyAppleAppAssertion({ ...input, expectedAppId: '1234567890.com.other.app' }));
+  assertThrows(() => verifyAppleAppAssertion({ ...input,
+    assertionObject: encodeAssertion(sign('sha256', signed, privateKey)) }));
 });
