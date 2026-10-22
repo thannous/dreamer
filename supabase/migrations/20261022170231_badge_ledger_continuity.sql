@@ -54,6 +54,11 @@ grant all on table public.badge_ledgers to service_role;
 create policy badge_ledger_read on public.badge_ledgers for select to authenticated using ((select auth.uid()) = user_id);
 create policy badge_ledger_create on public.badge_ledgers for insert to authenticated with check ((select auth.uid()) = user_id);
 create policy badge_ledger_update on public.badge_ledgers for update to authenticated using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
+-- Collections belong to Dreamer, even when another product uses the same account.
+create policy app_product_scope on public.badge_ledgers
+  as restrictive for all to authenticated
+  using ((select public.current_app_product()) in ('legacy', 'journal'))
+  with check ((select public.current_app_product()) in ('legacy', 'journal'));
 
 -- SECURITY INVOKER preserves RLS. Expected account also prevents a session-switch race:
 -- an in-flight A worker must not send its facts using B's newly refreshed auth token.
@@ -63,6 +68,9 @@ declare current_row public.badge_ledgers%rowtype; accepted boolean := false;
 begin
   if auth.uid() is null or auth.uid() is distinct from p_user_id then
     raise exception 'Badge account mismatch' using errcode = '42501';
+  end if;
+  if public.current_app_product() not in ('legacy', 'journal') then
+    raise exception 'Application scope does not allow badge collection access' using errcode = '42501';
   end if;
   if (p_revision is null) <> (p_ledger is null) then
     raise exception 'Badge revision and ledger must be provided together' using errcode = '22023';

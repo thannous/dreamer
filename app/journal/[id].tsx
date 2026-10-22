@@ -3240,7 +3240,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
               </ArrivalLater>
             ) : null}
 
-            {!isEditing ? <DreamPersonalNotes key={`${user?.id ?? 'guest'}:${getDreamIdentityKey(dream)}`} dream={dream} disabled={isAnalysisLocked} /> : null}
+            {!isEditing ? <DreamPersonalNotes dream={dream} disabled={isAnalysisLocked} /> : null}
 
             {/* A guest reads on into what an account keeps and adds. */}
             {showCompletedReading && !readingInFlight ? renderFirstValueBackupCard() : null}

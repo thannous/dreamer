@@ -32,7 +32,8 @@
         "has_person",
         "has_animal",
         "memory",
-        "analysis_details"
+        "analysis_details",
+        "personal_notes"
       ]
     },
     {

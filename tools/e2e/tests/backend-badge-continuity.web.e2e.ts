@@ -1,3 +1,6 @@
+import { readFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
+import { assertBackendTarget } from '../../../scripts/lib/backend-e2e-local.cjs';
 import { randomUUID } from 'node:crypto';
 import { admin, test, expect, login, client, restrictNetwork } from '../backend-fixtures';
 
@@ -124,5 +127,65 @@ test('saved and reading badges restore on an empty browser with their original a
     } finally {
       await fresh.close();
       await owner.auth.signOut();
+    }
+  });
+
+// Auth signatures are tested by the existing login journeys. This transaction exercises
+// the exact PostgreSQL authenticated role and signed-claim interpretation against real RLS;
+// no OAuth provider, external identity or production registry is changed.
+test('Dreamer badge and guide state reject other product scopes on the same account',
+  { tags: ['badges', 'guides', 'security', 'product-scope'] }, async ({ accounts }) => {
+    const status = JSON.parse(readFileSync(process.env.E2E_BACKEND_STATUS_FILE!, 'utf8'));
+    assertBackendTarget(status);
+    const { Client } = createRequire(import.meta.url)('pg');
+    const db = new Client({ connectionString: status.DB_URL });
+    const journalClient = `e2e-journal-${randomUUID()}`;
+    const lucidClient = `e2e-lucid-${randomUUID()}`;
+    await db.connect();
+    try {
+      await db.query('begin');
+      await db.query('insert into app_authorization_private.oauth_clients(client_id, product) values ($1, $2), ($3, $4)',
+        [journalClient, 'journal', lucidClient, 'lucid']);
+      await db.query('insert into public.badge_ledgers(user_id, ledger) values ($1, $2)', [accounts.free.id, facts(['water'])]);
+      await db.query('insert into public.guide_reading_progress(user_id,guide_id,section,updated_at_ms,completed_at_ms) values ($1,$2,2,100,100)',
+        [accounts.free.id, 'dream-journal']);
+      await db.query('set local role authenticated');
+      const scopes = [
+        { claims: {}, allowed: true, product: 'legacy' },
+        { claims: { client_id: journalClient }, allowed: true, product: 'journal' },
+        { claims: { client_id: lucidClient }, allowed: false, product: 'lucid' },
+        { claims: { client_id: `e2e-meditation-${randomUUID()}` }, allowed: false, product: 'unknown' },
+        { claims: { client_id: `e2e-unknown-${randomUUID()}` }, allowed: false, product: 'unknown' },
+        { claims: { client_id: '' }, allowed: false, product: 'unknown' },
+        // Editable app hints cannot turn a non-journal OAuth token into a journal token.
+        { claims: { client_id: lucidClient, user_metadata: { product: 'journal', app_product: 'journal' } }, allowed: false, product: 'lucid' },
+      ];
+      for (const scope of scopes) {
+        await db.query("select set_config('request.jwt.claims', $1, true)", [JSON.stringify({ sub: accounts.free.id, role: 'authenticated', ...scope.claims })]);
+        expect((await db.query('select public.current_app_product() as product')).rows[0].product).toBe(scope.product);
+        for (const table of ['badge_ledgers', 'guide_reading_progress']) {
+          const read = await db.query(`select user_id from public.${table} where user_id = $1`, [accounts.free.id]);
+          expect(read.rowCount).toBe(scope.allowed ? 1 : 0);
+          const update = await db.query(`update public.${table} set user_id = user_id where user_id = $1 returning user_id`, [accounts.free.id]);
+          expect(update.rowCount).toBe(scope.allowed ? 1 : 0);
+        }
+        const calls = [
+          { sql: 'insert into public.badge_ledgers(user_id) values ($1) on conflict (user_id) do nothing', args: [accounts.free.id] },
+          { sql: 'insert into public.guide_reading_progress(user_id,guide_id,section,updated_at_ms,completed_at_ms) values ($1,$2,2,100,100) on conflict (user_id,guide_id) do nothing', args: [accounts.free.id, 'dream-journal'] },
+          { sql: 'select public.sync_badge_ledger($1, null, null) as result', args: [accounts.free.id] },
+          { sql: 'select public.merge_guide_reading_progress($1,$2,2,100,100) as result', args: [accounts.free.id, 'dream-journal'] },
+        ];
+        for (const call of calls) {
+          await db.query('savepoint product_call');
+          let code: string | undefined;
+          try { await db.query(call.sql, call.args); }
+          catch (error) { code = (error as { code?: string }).code; }
+          await db.query('rollback to savepoint product_call');
+          expect(code).toBe(scope.allowed ? undefined : '42501');
+        }
+      }
+    } finally {
+      await db.query('rollback');
+      await db.end();
     }
   });

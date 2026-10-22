@@ -1,8 +1,9 @@
-import { client, expect, journal, login, restrictNetwork, test } from '../backend-fixtures';
+import { client, expect, login, restrictNetwork, test } from '../backend-fixtures';
 import type { Page } from 'playwright/test';
 
 async function openGuides(page: Page) {
-  await journal(page);
+  const settingsBack = page.getByTestId('settings.back');
+  if (await settingsBack.isVisible()) await settingsBack.click();
   await page.getByTestId('tab.explore').filter({ visible: true }).click();
   await page.getByTestId('btn.explorer.guides').filter({ visible: true }).click();
   await expect(page.getByTestId('screen.dreamGuides')).toBeVisible();

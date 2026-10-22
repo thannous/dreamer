@@ -359,7 +359,7 @@ export function stampActionTiers(ledger: BadgeLedger, now: number): BadgeLedger 
 
 /** Marks a family's tiers as unveiled up to the one the collection showed, or every one earned. */
 export function revealBadgeFamily(ledger: BadgeLedger, id: BadgeFamilyId, shown: number = 0): BadgeLedger {
-  const level = Math.min(3, Math.max((ledger.earned[id] ?? []).length, shown)) as BadgeTierLevel;
+  const level = Math.min(3, Math.max(0, shown || (ledger.earned[id] ?? []).length)) as BadgeTierLevel;
   if ((ledger.revealed[id] ?? 0) >= level) return ledger;
   return { ...ledger, revealed: { ...ledger.revealed, [id]: level } };
 }
