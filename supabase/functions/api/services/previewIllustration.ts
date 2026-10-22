@@ -145,11 +145,11 @@ async function takePreparedPainting(admin: AdminClient, input: Parameters<typeof
         .then(() => undefined, () => undefined);
       return null;
     }
-    await removePreviewObjects(admin, input.bucket, [row.band_path]);
-    // Moved: the row now holds the painting under the account's prefix until a link is made.
-    await previews()
-      .update({ image_path: ownPath, band_path: null, band_url: null })
-      .eq('user_id', input.userId).eq('dream_id', input.dreamId).eq('image_status', 'used');
+    // Moved: the row holds the painting under the account's prefix (its band kept) until a link is made.
+    if (ownPath !== row.image_path) {
+      await previews().update({ image_path: ownPath })
+        .eq('user_id', input.userId).eq('dream_id', input.dreamId).eq('image_status', 'used').eq('image_path', row.image_path);
+    }
     const { data: signed, error: signError } = await objects.createSignedUrl(ownPath, SIGNED_URL_SECONDS);
     if (signError || !signed?.signedUrl) {
       // Linked later by the next job, from where it now lies.
@@ -158,7 +158,8 @@ async function takePreparedPainting(admin: AdminClient, input: Parameters<typeof
         .then(() => undefined, () => undefined);
       return null;
     }
-    await previews().update({ image_path: null })
+    await removePreviewObjects(admin, input.bucket, [row.band_path]);
+    await previews().update({ image_path: null, band_path: null, band_url: null })
       .eq('user_id', input.userId).eq('dream_id', input.dreamId).eq('image_status', 'used').eq('image_path', ownPath);
     return { path: ownPath, url: signed.signedUrl };
   } catch {

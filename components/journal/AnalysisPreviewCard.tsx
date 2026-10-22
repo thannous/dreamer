@@ -31,8 +31,8 @@ type State =
   | { kind: 'loading' }
   /** Nothing to show: the dream page's own action stands. */
   | { kind: 'hidden' }
-  | { kind: 'preparing' }
-  | { kind: 'failed' }
+  | { kind: 'preparing'; subject: string }
+  | { kind: 'failed'; subject: string }
   /** The result of one dream, language and text: another subject reads as loading. */
   | { kind: 'loaded'; result: AnalysisPreviewResult; subject: string };
 
@@ -73,7 +73,7 @@ export function AnalysisPreviewCard({ remoteDreamId, transcript, onOpenPlus, onO
     const readAgain = (writing: boolean) => {
       // A writing that never ends can be asked again; a painting that never ends leaves the reading.
       if (request.polls >= MAX_POLLS) {
-        if (writing) setState({ kind: 'failed' });
+        if (writing) setState({ kind: 'failed', subject });
         return;
       }
       timer = setTimeout(() => setRequest((value) => ({ ...value, count: value.count + 1, prepare: false, polls: value.polls + 1 })), POLL_MS);
@@ -95,7 +95,7 @@ export function AnalysisPreviewCard({ remoteDreamId, transcript, onOpenPlus, onO
           return;
         }
         // A refused dream keeps the page's own action; a failed preparation can be tried again.
-        setState(prepareNow && !refusal ? { kind: 'failed' } : { kind: 'hidden' });
+        setState(prepareNow && !refusal ? { kind: 'failed', subject } : { kind: 'hidden' });
       }
     })();
     return () => {
@@ -107,12 +107,12 @@ export function AnalysisPreviewCard({ remoteDreamId, transcript, onOpenPlus, onO
   const prepare = useCallback(async () => {
     // The dream's text goes to the AI only with consent.
     if (!(await requestAiConsent(t))) return;
-    setState({ kind: 'preparing' });
+    setState({ kind: 'preparing', subject });
     setRequest((value) => ({ count: value.count + 1, prepare: true, polls: 0, subject }));
   }, [subject, t]);
 
   // Another dream, language or text shows nothing of the former one while it loads.
-  const shown: State = state.kind === 'loaded' && state.subject !== subject ? { kind: 'loading' } : state;
+  const shown: State = 'subject' in state && state.subject !== subject ? { kind: 'loading' } : state;
   const result = shown.kind === 'loaded' ? shown.result : null;
   // A note on the week's limit leaves the page's own offer in place. While the card loads it
   // holds the step too, so the page's offer does not show and then vanish.

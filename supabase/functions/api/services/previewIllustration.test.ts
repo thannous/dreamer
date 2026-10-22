@@ -249,7 +249,7 @@ Deno.test('a painting that cannot be moved stays ready for the next job instead 
   const storage = fakeStorage();
   const rows: Row[] = [{
     user_id: 'u1', dream_id: 7, status: 'used', image_status: 'ready', image_prompt: 'A river of glass',
-    image_path: 'previews/u1/7-a.jpg', band_path: null, band_url: null,
+    image_path: 'previews/u1/7-a.jpg', band_path: 'previews/u1/7-a-band.jpg', band_url: 'https://example.test/band',
   }];
   const admin = { from: previewsTable(rows), storage };
   const input = { bucket: 'dream-images', userId: 'u1', dreamId: 7, prompt: 'A river of glass' };
@@ -275,15 +275,19 @@ Deno.test('a painting moved but not linked is linked by the next job from where 
         : { data: { signedUrl: `https://example.test/sign/${path}?token=t` }, error: null }),
     }),
   };
+  storage.objects.set('previews/u1/7-a-band.jpg', new Uint8Array([2]));
   const rows: Row[] = [{
     user_id: 'u1', dream_id: 7, status: 'used', image_status: 'ready', image_prompt: 'A river of glass',
-    image_path: 'previews/u1/7-a.jpg', band_path: null, band_url: null,
+    image_path: 'previews/u1/7-a.jpg', band_path: 'previews/u1/7-a-band.jpg', band_url: 'https://example.test/band',
   }];
   const admin = { from: previewsTable(rows), storage: flaky };
   const input = { bucket: 'dream-images', userId: 'u1', dreamId: 7, prompt: 'A river of glass' };
   assertEquals(await takePreparedIllustration(admin, input), null);
-  assertEquals([rows[0].image_status, rows[0].image_path], ['ready', 'u1/7-a.jpg']);
+  // Ready again with its band, as analysis_previews_painted_has_image requires.
+  assertEquals([rows[0].image_status, rows[0].image_path, rows[0].band_path], ['ready', 'u1/7-a.jpg', 'previews/u1/7-a-band.jpg']);
+  assert(rows[0].band_url);
   failSign = false;
   assertEquals(await takePreparedIllustration(admin, input), 'https://example.test/sign/u1/7-a.jpg?token=t');
   assertEquals([...storage.objects.keys()], ['u1/7-a.jpg']);
+  assertEquals([rows[0].image_status, rows[0].image_path, rows[0].band_path, rows[0].band_url], ['used', null, null, null]);
 });
