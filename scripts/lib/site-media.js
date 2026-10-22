@@ -46,6 +46,9 @@ function readMedia(root) {
     }
     seen.add(relative);
   }
+  if (config.bundledPaths !== undefined && (!Array.isArray(config.bundledPaths) ||
+      new Set(config.bundledPaths).size !== config.bundledPaths.length ||
+      config.bundledPaths.some(relative => !seen.has(relative)))) throw new Error('Bundled media must name distinct manifest entries');
   if (config.publicOrigin) {
     const url = new URL(config.publicOrigin);
     if (url.protocol !== 'https:' || url.username || url.password || url.pathname !== '/' || url.search || url.hash || url.hostname.endsWith('.r2.dev')) {

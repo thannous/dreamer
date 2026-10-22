@@ -86,20 +86,29 @@ function detach(root) {
   if (!media || media.config.delivery !== 'cdn') throw new Error('Enable CDN delivery only after remote verification');
   assertRemoteReceipt(root, media);
   verifyLocal(root);
+  // Keep the small shared assets imported by the native app available in a clean checkout.
+  const bundled = new Set(media.config.bundledPaths || []);
+  if (bundled.size) {
+    const kept = spawnSync('git', ['ls-files', '--error-unmatch', '--', ...[...bundled].map(file => `${STATIC}/${file}`)], { cwd: root, stdio: 'pipe' });
+    if (kept.status !== 0) throw new Error('Bundled native images must remain tracked before media detachment');
+  }
+  const detachable = media.manifest.files.filter(row => !bundled.has(row[0]));
   // Remove index entries only, leaving every local byte and the entire existing history intact.
-  const list = path.join(root, CACHE, 'detach-paths.txt');
-  fs.mkdirSync(path.dirname(list), { recursive: true });
-  fs.writeFileSync(list, media.manifest.files.map(row => `${STATIC}/${row[0]}`).join('\0') + '\0');
-  const result = spawnSync('git', ['rm', '--cached', '--ignore-unmatch', '--quiet', `--pathspec-from-file=${list}`, '--pathspec-file-nul'],
-    { cwd: root, encoding: 'utf8' });
-  if (result.status !== 0) throw new Error('Git refused to detach the media; no force option is used');
+  if (detachable.length) {
+    const list = path.join(root, CACHE, 'detach-paths.txt');
+    fs.mkdirSync(path.dirname(list), { recursive: true });
+    fs.writeFileSync(list, detachable.map(row => `${STATIC}/${row[0]}`).join('\0') + '\0');
+    const result = spawnSync('git', ['rm', '--cached', '--ignore-unmatch', '--quiet', `--pathspec-from-file=${list}`, '--pathspec-file-nul'],
+      { cwd: root, encoding: 'utf8' });
+    if (result.status !== 0) throw new Error('Git refused to detach the media; no force option is used');
+  }
   const ignore = path.join(root, '.gitignore');
   const pattern = '/docs-src/static/img/';
   if (!fs.readFileSync(ignore, 'utf8').split(/\r?\n/).includes(pattern)) {
     fs.appendFileSync(ignore, `\n# Restored byte-for-byte from the versioned CDN media manifest\n${pattern}\n`);
   }
   verifyLocal(root);
-  return { detached: media.manifest.files.length, localFilesPreserved: true };
+  return { detached: detachable.length, localFilesPreserved: true };
 }
 
 async function main(args = process.argv.slice(2), root = ROOT) {

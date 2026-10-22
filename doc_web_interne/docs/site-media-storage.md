@@ -4,6 +4,8 @@ Le site garde son hébergement Cloudflare Pages. Les images de `docs-src/static/
 deviennent des entrées binaires versionnées dans Cloudflare R2, diffusées par le
 CDN `https://media.noctalia.app`. Git conserve leur inventaire, les configurations,
 les outils et les preuves ; Drive conserve les archives d'origine et de secours.
+Quinze petites images aussi embarquées dans l'accueil mobile restent suivies dans
+Git à leur chemin initial : 238 750 octets, listés dans `bundledPaths`.
 
 ## État constaté le 22 octobre 2026
 
@@ -105,7 +107,8 @@ mise exec -- npm run docs:media -- detach
 ```
 
 Cette commande exige le reçu CDN complet et les octets locaux correspondants.
-Elle retire seulement les chemins vérifiés de l'index Git, sans `--force`, puis
+Elle retire seulement les chemins vérifiés hors `bundledPaths` de l'index Git,
+sans `--force`, puis
 les ignore. Aucun fichier local, archive Drive, objet R2 ou historique Git n'est
 supprimé. Une reconstruction depuis un checkout neuf doit être validée avant
 la livraison ; `verify:pr` l'effectue dans sa copie isolée.
@@ -203,3 +206,12 @@ ce Cache-Control par `public, max-age=300, must-revalidate`, sans modifier les
 autres en-têtes ni le cache CSS. Les objets R2 versionnés restent immuables un an.
 Le repli local conserve ses règles existantes. Cela permet à une nouvelle version
 ou à un retour arrière de changer la destination d'un alias en cinq minutes.
+
+L'audit des imports mobiles a identifié 15 fichiers utilisés par `require()`
+dans `components/onboarding/` : ils restent donc dans Git, aux mêmes chemins et
+avec les mêmes octets que `origin/master`. Les 14 239 fichiers sont tous sauvegardés
+et diffusables sur R2 ; **14 224 sortent du suivi Git, soit 1 120 886 442 octets**.
+`detach` exige que les fichiers `bundledPaths` restent suivis avant toute opération.
+Aucun code, chemin d'import ou rendu natif ne change. Pour de nouveaux médias
+exclusivement mobiles, préférer le dossier d'assets de l'application ; un média
+partagé à embarquer doit être ajouté à cette liste et suivi explicitement dans Git.

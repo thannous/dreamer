@@ -100,6 +100,24 @@ describe('media preservation and recovery', () => {
     expect(git(['rev-parse', 'HEAD'])).toBe(head);
   });
 
+  it('keeps native bundled images tracked even when all site copies use the CDN', async () => {
+    setup({ delivery: 'cdn' });
+    const configFile = path.join(root, 'docs-src/config/site-media-storage.json');
+    const config = JSON.parse(fs.readFileSync(configFile, 'utf8'));
+    fs.writeFileSync(configFile, JSON.stringify({ ...config, bundledPaths: [relative] }));
+    const git = args => {
+      const result = spawnSync('git', args, { cwd: root, encoding: 'utf8' });
+      if (result.status !== 0) throw new Error(result.stderr);
+      return result.stdout.trim();
+    };
+    git(['init', '-q']); git(['add', '.']);
+    git(['-c', 'user.name=Media Test', '-c', 'user.email=media@example.com', '-c', 'commit.gpgsign=false', 'commit', '-qm', 'fixture']);
+    await verifyRemote(root, { fetcher: async () => response(original) });
+    expect(detach(root)).toEqual({ detached: 0, localFilesPreserved: true });
+    expect(git(['ls-files', 'docs-src/static/' + relative])).toBe('docs-src/static/' + relative);
+    expect(fs.readFileSync(localPath(root, relative))).toEqual(original);
+  });
+
   it('stages a CDN redirect without image binaries only after full verification, preserving the built files', async () => {
     setup({ delivery: 'cdn' });
     const docsDir = path.join(root, 'docs');
