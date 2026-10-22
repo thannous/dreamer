@@ -4,6 +4,7 @@ import { Platform, View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { DesktopSidebar } from '@/components/navigation/DesktopSidebar';
+import { DarkTheme } from '@/constants/journalTheme';
 import { DESKTOP_BREAKPOINT } from '@/constants/layout';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { SideGuttersProvider } from '@/context/ContentWindowContext';
@@ -16,10 +17,17 @@ import { useTheme } from '@/context/ThemeContext';
  * tabs in the root stack.
  */
 const FULL_WINDOW_PREFIXES = ['/onboarding', '/auth', '/paywall', '/lucid', '/dev'];
+/** Routes painted at night whatever the chosen theme, whose gutters must be night too. */
+const NIGHT_ONLY_PREFIXES = ['/onboarding'];
+const NIGHT_GROUND = getNoctaliaDesignTokens(DarkTheme, 'dark').screen.background;
+
+function isUnder(pathname: string, prefixes: string[]): boolean {
+  return prefixes.some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`));
+}
 
 export function shouldShowDesktopSidebar(pathname: string | null | undefined): boolean {
   if (!pathname) return false;
-  return !FULL_WINDOW_PREFIXES.some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`));
+  return !isUnder(pathname, FULL_WINDOW_PREFIXES);
 }
 
 /**
@@ -33,8 +41,12 @@ export function DesktopShell({ children }: { children: React.ReactNode }) {
   const { width } = useWindowDimensions();
   const { left, right } = useSafeAreaInsets();
   const { colors, mode } = useTheme();
-  const ground = useMemo(() => getNoctaliaDesignTokens(colors, mode).screen.background, [colors, mode]);
   const pathname = usePathname();
+  const nightOnly = Boolean(pathname && isUnder(pathname, NIGHT_ONLY_PREFIXES));
+  const ground = useMemo(
+    () => (nightOnly ? NIGHT_GROUND : getNoctaliaDesignTokens(colors, mode).screen.background),
+    [colors, mode, nightOnly],
+  );
   const showSidebar = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT && shouldShowDesktopSidebar(pathname);
 
   // Keep one wrapper tree whether or not the sidebar or the gutters show. Swapping
