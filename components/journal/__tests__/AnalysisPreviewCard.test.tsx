@@ -132,6 +132,13 @@ it('prepares only for the language and text it was asked for', async () => {
   screen.rerender(card());
   await waitFor(() => expect(mockFetchPreview).toHaveBeenCalledTimes(3));
   expect(mockFetchPreview).toHaveBeenLastCalledWith(expect.objectContaining({ lang: 'en', prepare: false }));
+
+  // Back to French: the tap was already sent, the card only reads.
+  mockLang = 'fr';
+  mockFetchPreview.mockResolvedValueOnce(preview());
+  screen.rerender(card());
+  await waitFor(() => expect(mockFetchPreview).toHaveBeenCalledTimes(4));
+  expect(mockFetchPreview).toHaveBeenLastCalledWith(expect.objectContaining({ lang: 'fr', prepare: false }));
 });
 
 it('says when the next prepared analysis comes after this week’s', async () => {

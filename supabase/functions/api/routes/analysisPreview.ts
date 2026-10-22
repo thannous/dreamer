@@ -38,6 +38,8 @@ type Dependencies = {
  * hold_analysis_preview (20261021235000) uses the same three minutes.
  */
 const WRITING_TIMEOUT_MS = 3 * 60 * 1000;
+/** A reading written later than this after its hold is not saved: the hold could be gone, the week taken. */
+const SAVE_DEADLINE_MS = WRITING_TIMEOUT_MS - 30 * 1000;
 /** A painting still under way after this has failed: the dream's analysis paints its own. */
 const PAINTING_TIMEOUT_MS = 3 * 60 * 1000;
 
@@ -242,6 +244,7 @@ export async function handleAnalysisPreview(ctx: ApiContext, deps: Dependencies 
       }
       // A reading the analysis job could not save is no preview.
       if (!isPreparedReading(reading)) return refused('PREVIEW_FAILED', 502);
+      if ((deps.now ?? Date.now)() - Date.parse(heldAt) > SAVE_DEADLINE_MS) return refused('PREVIEW_FAILED', 502);
 
       savedAt = new Date((deps.now ?? Date.now)()).toISOString();
       prompt = reading.imagePrompt.trim();

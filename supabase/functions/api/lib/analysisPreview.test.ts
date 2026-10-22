@@ -74,6 +74,8 @@ Deno.test('a prepared reading is one the analysis job can save as it is', () => 
     { title: 'x'.repeat(501) },
     { interpretation: '' },
     { interpretation: 'x'.repeat(20001) },
+    // Postgres trims spaces only: a newline counts toward the limit.
+    { interpretation: `${'x'.repeat(20000)}\n` },
     { shareableQuote: 'x'.repeat(2001) },
     { theme: 'stormy' },
     { dreamType: 'x'.repeat(201) },

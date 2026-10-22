@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -56,9 +56,12 @@ export function AnalysisPreviewCard({ remoteDreamId, transcript, onOpenPlus, cla
   // The dream, language and text a preparation was asked for: once they change, the next read only reads.
   const subject = `${remoteDreamId}|${currentLang}|${transcript}`;
   const [request, setRequest] = useState({ count: 0, prepare: false, polls: 0, subject: '' });
-  const prepareNow = request.prepare && request.subject === subject;
+  // Each tap sends its preparation once, even when the language goes and comes back.
+  const sentPreparation = useRef(-1);
 
   useEffect(() => {
+    const prepareNow = request.prepare && request.subject === subject && sentPreparation.current !== request.count;
+    if (prepareNow) sentPreparation.current = request.count;
     const controller = new AbortController();
     let timer: ReturnType<typeof setTimeout> | null = null;
     const readAgain = () => {
@@ -89,7 +92,7 @@ export function AnalysisPreviewCard({ remoteDreamId, transcript, onOpenPlus, cla
       controller.abort();
       if (timer) clearTimeout(timer);
     };
-  }, [currentLang, prepareNow, remoteDreamId, request, transcript]);
+  }, [currentLang, remoteDreamId, request, subject]);
 
   const prepare = useCallback(async () => {
     // The dream's text goes to the AI only with consent.

@@ -169,7 +169,9 @@ execute function public.clear_analysis_preview_of_deleted_dream();
 
 -- An analyzed dream spends its prepared reading, whichever way it was
 -- analyzed: the analysis job took it, or the dream was analyzed without it.
--- The painting stays for the image job, which takes it by its prompt.
+-- The painting stays for the image job, which takes it by its prompt. A
+-- writing that failed (held over three minutes) gave nothing and stays out
+-- of the week.
 create or replace function public.spend_analysis_preview_of_analyzed_dream()
 returns trigger
 language plpgsql
@@ -181,7 +183,7 @@ begin
   set status = 'used', reading = null, updated_at = now()
   where p.user_id = new.user_id
     and p.dream_id = new.id
-    and p.status in ('writing', 'ready');
+    and (p.status = 'ready' or (p.status = 'writing' and p.updated_at > now() - interval '3 minutes'));
   return null;
 end;
 $$;

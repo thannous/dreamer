@@ -283,6 +283,14 @@ Deno.test('any failure once held gives the week back', async () => {
   assertEquals([refused.status, (await refused.json()).code], [502, 'PREVIEW_FAILED']);
   assertEquals(unsavable.previews.length, 0);
 
+  // Written after its hold could have lapsed, a reading is not saved over another dream's week.
+  let late = NOW;
+  const slow = setup({ analyze: async () => { late = NOW + 160_000; return reading(); } });
+  slow.deps.now = () => late;
+  const tooLate = await handleAnalysisPreview(slow.ctx(prepare), slow.deps);
+  assertEquals([tooLate.status, (await tooLate.json()).code], [502, 'PREVIEW_FAILED']);
+  assertEquals(slow.previews.length, 0);
+
   const thrown = setup({ admit: () => Promise.reject(new Error('admission down')) });
   const failed = await handleAnalysisPreview(thrown.ctx(prepare), thrown.deps);
   assertEquals([failed.status, (await failed.json()).code], [503, 'PREVIEW_UNAVAILABLE']);

@@ -40,15 +40,17 @@ export function previewOf(reading: StructuredDreamAnalysis, title: string) {
   };
 }
 
+/** Postgres btrim() with no characters given: spaces only, not other whitespace. */
+const btrim = (value: string) => value.replace(/^ +| +$/g, '');
 const trimmedWithin = (value: unknown, min: number, max: number) =>
-  typeof value === 'string' && value.trim().length >= min && value.trim().length <= max;
+  typeof value === 'string' && btrim(value).length >= min && btrim(value).length <= max;
 
 /** A reading complete_authenticated_analysis_job saves as it is: same fields, same limits. */
 export function isPreparedReading(value: unknown): value is StructuredDreamAnalysis {
   const reading = value as Partial<StructuredDreamAnalysis> | null;
   return Boolean(reading) && trimmedWithin(reading?.title, 1, 500) && trimmedWithin(reading?.interpretation, 1, 20000)
     && trimmedWithin(reading?.shareableQuote, 0, 2000)
-    && typeof reading?.theme === 'string' && DREAM_THEME_VALUES.includes(reading.theme.trim())
+    && typeof reading?.theme === 'string' && DREAM_THEME_VALUES.includes(btrim(reading.theme))
     && trimmedWithin(reading?.dreamType, 0, 200) && trimmedWithin(reading?.imagePrompt, 1, 1000)
     && Array.isArray(reading?.symbols) && Array.isArray(reading?.emotions) && Array.isArray(reading?.reflectionQuestions);
 }
