@@ -118,9 +118,12 @@ function JournalListScreen() {
   const firstUsefulList = useRef(false);
   const firstUsefulContent = useRef(false);
   const flatListRef = useRef<FlashListRef<DreamAnalysis>>(null);
-  // The dream at the top of the list when its columns change (an iPhone Duo folded or
-  // opened, a phone turned): the list remounts in its new columns and opens on that dream.
-  const resumeIndexRef = useRef<number | null>(null);
+  // The dream at the top of the list, and the one kept when its columns change (an iPhone
+  // Duo folded or opened, a phone turned): the list remounts in its new columns and opens on
+  // that dream. Kept by identity, so it is only found again among the same dreams.
+  const topDreamKeyRef = useRef<string | null>(null);
+  const resumeDreamKeyRef = useRef<string | null>(null);
+  const listItemsRef = useRef<DreamAnalysis[]>([]);
   const searchInputRef = useRef<TextInputInstance>(null);
   const { width, height, fontScale } = useContentWindow();
   const insets = useSafeAreaInsets();
@@ -129,9 +132,10 @@ function JournalListScreen() {
       firstUsefulList.current = true;
       markPerformance('journal.first_list_painted');
     }
-    const resumeIndex = resumeIndexRef.current;
-    resumeIndexRef.current = null;
-    if (resumeIndex) {
+    const resumeKey = resumeDreamKeyRef.current;
+    resumeDreamKeyRef.current = null;
+    const resumeIndex = resumeKey ? listItemsRef.current.findIndex((item) => getDreamIdentityKey(item) === resumeKey) : -1;
+    if (resumeIndex > 0) {
       // Below the status bar: the search has scrolled away by then.
       void flatListRef.current?.scrollToIndex({ index: resumeIndex, animated: false, viewOffset: -(insets.top + ThemeLayout.spacing.sm) });
     }
@@ -140,7 +144,12 @@ function JournalListScreen() {
   const isWeb = Platform.OS === 'web';
   const isDesktopLayout = isWeb && width >= DESKTOP_BREAKPOINT;
   // One column on a phone or the folded Duo, two open, three when the open Duo lies on its side.
-  const windowClass = getWindowClass(width, height);
+  // The web window follows the visual viewport, which the on-screen keyboard shrinks; the
+  // page keeps its height, so focusing the search never regroups the dreams.
+  const columnsHeight = isWeb && typeof document !== 'undefined'
+    ? Math.max(height, document.documentElement.clientHeight)
+    : height;
+  const windowClass = getWindowClass(width, columnsHeight);
   const listColumns = windowClass === 'expanded' ? 3 : windowClass === 'large' ? 2 : 1;
   const desktopColumns = width >= 1440 ? 4 : 3;
   const navigationLayout = getBottomNavigationLayout(width, height, fontScale);
@@ -167,13 +176,16 @@ function JournalListScreen() {
       : insets.top + ThemeLayout.spacing.sm + searchBarLayout(fontScale).minHeight + ThemeLayout.spacing.sm;
   const overlayNavClearance = isDesktopLayout || isKeyboardVisible ? 0 : navigationClearance;
   const searchConsumesLayout = isDesktopLayout;
-  // A column change remounts the list; keyboard/height changes retain its offset.
+  // A column change remounts the list, which opens on the same dream; the keyboard keeps
+  // its columns and offset.
   const mobileListKey = listColumns > 1 ? `tablet-${listColumns}col` : 'mobile-cards-1col';
+  // The columns of the list on screen: the desktop grid keeps its own.
+  const columnsKey = isDesktopLayout ? `desktop-${desktopColumns}` : mobileListKey;
   const listScrollY = useSharedValue(0);
   // The journal's own scroll, read by its header, painting and dream cards.
   const headerScrollY = useHeaderScrollY();
   const staticScrollY = useRef(0);
-  const scrollLayout = useRef({ mobileListKey, isDesktopLayout, searchConsumesLayout });
+  const scrollLayout = useRef({ columnsKey, searchConsumesLayout });
   // Open at the top and gone once scrolled past: those two hand back the same transform on
   // each scroll frame, since Reanimated commits a style each time it gets a new one.
   const searchEnds = useMemo(() => ({
@@ -285,9 +297,9 @@ function JournalListScreen() {
 
   useLayoutEffect(() => {
     const previous = scrollLayout.current;
-    if (previous.mobileListKey !== mobileListKey || previous.isDesktopLayout !== isDesktopLayout) {
-      // The first dream in view, before the remount's own first rows replace it.
-      resumeIndexRef.current = viewableRangeRef.current?.min ?? null;
+    if (previous.columnsKey !== columnsKey) {
+      // The dream at the top, before the remount's own first rows replace it.
+      resumeDreamKeyRef.current = topDreamKeyRef.current;
       staticScrollY.current = 0;
       listScrollY.set(0);
     } else if (previous.searchConsumesLayout !== searchConsumesLayout) {
@@ -295,8 +307,8 @@ function JournalListScreen() {
       if (searchConsumesLayout) staticScrollY.current = listScrollY.get();
       else listScrollY.set(staticScrollY.current);
     }
-    scrollLayout.current = { mobileListKey, isDesktopLayout, searchConsumesLayout };
-  }, [mobileListKey, isDesktopLayout, searchConsumesLayout, listScrollY]);
+    scrollLayout.current = { columnsKey, searchConsumesLayout };
+  }, [columnsKey, searchConsumesLayout, listScrollY]);
 
   const setScrolling = useCallback((next: boolean) => {
     isScrollingRef.current = next;
@@ -424,6 +436,14 @@ function JournalListScreen() {
     dateRange.start, dateRange.end, quickFilter, showRememberedOnly, showRecurringOnly, analysisStatus,
     symbolThread?.linkKey ?? null, sortOrder]);
   const { visibleItems, hasMore, loadMore } = useJournalListPagination(filteredDreams, paginationScope);
+  useLayoutEffect(() => {
+    listItemsRef.current = visibleItems;
+  }, [visibleItems]);
+  useLayoutEffect(() => {
+    // New results: the dream kept for a column change belonged to the previous ones.
+    topDreamKeyRef.current = null;
+    resumeDreamKeyRef.current = null;
+  }, [paginationScope]);
   const paginationFooter = hasMore ? (
     <PressableScale onPress={loadMore} accessibilityRole="button" className="min-h-[48px] items-center justify-center p-4">
       <Text className="font-sans-bold text-body text-champagne-on">{t('journal.pagination.more')}</Text>
@@ -606,6 +626,19 @@ function JournalListScreen() {
     const end = Math.min(currentFilteredDreams.length - 1, range.max + JOURNAL_LIST.PRELOAD_BUFFER);
     await prefetchDreamMedia(currentFilteredDreams.slice(start, end + 1));
   }, [prefetchDreamMedia]);
+
+  // The dream at the top is the first one at least half in view, not the last sliver of a
+  // row the reader has nearly scrolled past.
+  const viewabilityConfigCallbackPairs = useMemo(() => [{
+    viewabilityConfig: { itemVisiblePercentThreshold: 50, minimumViewTime: JOURNAL_LIST.MINIMUM_VIEW_TIME },
+    onViewableItemsChanged: ({ viewableItems }: ViewabilityInfo) => {
+      let top: ViewToken<DreamAnalysis> | null = null;
+      for (const token of viewableItems) {
+        if (typeof token.index === 'number' && (top === null || token.index < (top.index ?? 0))) top = token;
+      }
+      topDreamKeyRef.current = top?.item ? getDreamIdentityKey(top.item) : null;
+    },
+  }], []);
 
   const onViewableItemsChanged = useCallback(({ viewableItems }: ViewabilityInfo) => {
     let min = Number.POSITIVE_INFINITY;
@@ -1220,6 +1253,7 @@ function JournalListScreen() {
         showsVerticalScrollIndicator={false}
         viewabilityConfig={viewabilityConfig}
         onViewableItemsChanged={onViewableItemsChanged}
+        viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs}
         onScrollBeginDrag={handleScrollBegin}
         onScrollEndDrag={scheduleIdle}
         onMomentumScrollBegin={handleScrollBegin}
@@ -1257,6 +1291,7 @@ function JournalListScreen() {
         showsVerticalScrollIndicator={false}
         viewabilityConfig={viewabilityConfig}
         onViewableItemsChanged={onViewableItemsChanged}
+        viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs}
         onScrollBeginDrag={handleScrollBegin}
         onScrollEndDrag={scheduleIdle}
         onMomentumScrollBegin={handleScrollBegin}

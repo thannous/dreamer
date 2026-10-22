@@ -93,8 +93,8 @@ const BACKGROUND_IMAGE = require('@/assets/images/onboarding-reverie-background.
 // The immersive artwork always needs its nocturnal contrast, independently of
 // the user's app theme. The privacy sheet retains the app's own palette.
 const ONBOARDING_TOKENS = getNoctaliaDesignTokens(DarkTheme, 'dark');
-// Narrower than any phone, as in Split View on the open iPhone Duo: the top bar can no
-// longer hold the full-size wordmark, the step counter and the skip button side by side.
+// As narrow as Split View on the open iPhone Duo (about 290 pt): the top bar can no longer
+// hold the full-size wordmark, the step counter and the skip button side by side.
 const NARROW_TOP_BAR_WIDTH = 360;
 
 const webTitleFocusResetStyle: TextStyle | null = process.env.EXPO_OS === 'web'

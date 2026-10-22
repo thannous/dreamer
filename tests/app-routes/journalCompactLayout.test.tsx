@@ -930,6 +930,13 @@ describe('Journal on an iPhone Duo', () => {
     }
   });
 
+  const tokens = (indices: number[]) => indices.map((index) => ({ index, item: mockListProps.data[index], key: String(index), isViewable: true }));
+  // The list's two viewability reports: any part in view (for thumbnails), at least half in view.
+  const report = ({ inView, halfInView }: { inView: number[]; halfInView: number[] }) => act(() => {
+    mockListProps.onViewableItemsChanged({ viewableItems: tokens(inView), changed: [] });
+    mockListProps.viewabilityConfigCallbackPairs[0].onViewableItemsChanged({ viewableItems: tokens(halfInView), changed: [] });
+  });
+
   it.each([
     [412, 678, 1], // folded, less its status bar column
     [669, 951, 2], // open
@@ -940,13 +947,13 @@ describe('Journal on an iPhone Duo', () => {
     expect(mockListProps.numColumns).toBe(columns);
   });
 
-  it('opens the new columns on the dream that was in view when the Duo folds', () => {
+  it('opens the new columns on the dream at the top when the Duo folds', () => {
     Object.assign(mockWindow, { width: 669, height: 951 });
     const view = render(<JournalScreen />);
-    act(() => {
-      mockListProps.onLoad();
-      mockListProps.onViewableItemsChanged({ viewableItems: [{ index: 4 }, { index: 5 }], changed: [] });
-    });
+    act(() => { mockListProps.onLoad(); });
+    // The last sliver of the row of dreams 4 and 5 is still in view; 6 and 7 fill the screen.
+    report({ inView: [4, 5, 6, 7], halfInView: [6, 7] });
+    expect(mockListProps.viewabilityConfigCallbackPairs[0].viewabilityConfig.itemVisiblePercentThreshold).toBe(50);
     expect(mockListScrollToIndex).not.toHaveBeenCalled();
 
     Object.assign(mockWindow, { width: 412, height: 678 });
@@ -955,7 +962,7 @@ describe('Journal on an iPhone Duo', () => {
     act(() => { mockListProps.onLoad(); });
     expect(mockListScrollToIndex).toHaveBeenCalledTimes(1);
     expect(mockListScrollToIndex).toHaveBeenCalledWith({
-      index: 4,
+      index: 6,
       animated: false,
       viewOffset: -(MOCK_INSETS.top + ThemeLayout.spacing.sm),
     });
@@ -968,15 +975,59 @@ describe('Journal on an iPhone Duo', () => {
   it('keeps a journal read from its first dream at the top when the Duo opens', () => {
     Object.assign(mockWindow, { width: 412, height: 678 });
     const view = render(<JournalScreen />);
-    act(() => {
-      mockListProps.onViewableItemsChanged({ viewableItems: [{ index: 0 }, { index: 1 }], changed: [] });
-    });
+    report({ inView: [0, 1], halfInView: [0] });
 
     Object.assign(mockWindow, { width: 669, height: 951 });
     view.rerender(<JournalScreen />);
     expect(mockListProps.numColumns).toBe(2);
     act(() => { mockListProps.onLoad(); });
     expect(mockListScrollToIndex).not.toHaveBeenCalled();
+  });
+
+  it('does not carry the dream kept through a fold into new search results', () => {
+    Object.assign(mockWindow, { width: 669, height: 951 });
+    const view = render(<JournalScreen />);
+    report({ inView: [4, 5], halfInView: [4, 5] });
+    Object.assign(mockWindow, { width: 412, height: 678 });
+    view.rerender(<JournalScreen />);
+
+    fireEvent.change(screen.getByTestId(TID.Input.SearchDreams), { target: { value: 'Night' } });
+    act(() => { mockListProps.onLoad(); });
+    expect(mockListProps.data.length).toBeGreaterThan(4);
+    expect(mockListScrollToIndex).not.toHaveBeenCalled();
+  });
+
+  it('keeps the desktop grid where it is when only the window height changes', () => {
+    mockPlatform = 'web';
+    Object.assign(mockWindow, { width: 1280, height: 800 });
+    const view = render(<JournalScreen />);
+    report({ inView: [4, 5, 6], halfInView: [4, 5, 6] });
+
+    // Short enough to regroup a phone list, which the desktop grid does not use.
+    Object.assign(mockWindow, { width: 1280, height: 400 });
+    view.rerender(<JournalScreen />);
+    expect(mockListProps.numColumns).toBe(3);
+    act(() => { mockListProps.onLoad(); });
+    expect(mockListScrollToIndex).not.toHaveBeenCalled();
+  });
+
+  it('keeps three columns on the web while the keyboard covers the open Duo on its side', () => {
+    mockPlatform = 'web';
+    const page = Object.getOwnPropertyDescriptor(document.documentElement, 'clientHeight');
+    Object.defineProperty(document.documentElement, 'clientHeight', { configurable: true, get: () => 669 });
+    try {
+      Object.assign(mockWindow, { width: 897, height: 669 });
+      const view = render(<JournalScreen />);
+      expect(mockListProps.numColumns).toBe(3);
+
+      // The visual viewport, which the web window follows, shrinks above the keyboard.
+      Object.assign(mockWindow, { width: 897, height: 370 });
+      view.rerender(<JournalScreen />);
+      expect(mockListProps.numColumns).toBe(3);
+    } finally {
+      if (page) Object.defineProperty(document.documentElement, 'clientHeight', page);
+      else delete (document.documentElement as { clientHeight?: number }).clientHeight;
+    }
   });
 });
 

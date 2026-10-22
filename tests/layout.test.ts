@@ -167,6 +167,11 @@ describe('getWindowClass', () => {
     [768, 1024, 'large'], // a tablet
     [897, 669, 'expanded'], // the open Duo on its side, less its status bar column
     [1280, 800, 'expanded'],
+    [599, 900, 'compact'],
+    [600, 900, 'large'],
+    [839, 600, 'large'],
+    [840, 480, 'expanded'],
+    [840, 479, 'large'],
   ] as [number, number, WindowClass][])('classifies a %i × %i window as %s', (width: number, height: number, expected: WindowClass) => {
     expect(getWindowClass(width, height)).toBe(expected);
   });
