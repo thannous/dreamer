@@ -73,12 +73,18 @@ async function openAccountSettings(page: Page) {
   await page.getByTestId('quick-settings.all').click();
 }
 
-async function signInExistingGuest(page: Page, account: Account) {
+async function signInExistingGuest(page: Page, account: Account, freshOnboarding = false) {
   await openAccountSettings(page);
   await page.getByTestId('settings-account-open-signin').click();
   await page.getByTestId('input.auth.email').fill(account.email);
   await page.getByTestId('input.auth.password').fill(account.password);
   await page.getByTestId('btn.auth.signIn').click();
+  if (freshOnboarding) {
+    // Only A inherits guest onboarding. B completes its own first-run flow.
+    await expect(page.getByTestId('screen.onboarding')).toBeVisible();
+    await page.getByTestId('btn.onboarding.intro.next').click();
+    await page.getByTestId('btn.onboarding.skip').click();
+  }
   await expect(page.getByTestId('screen.recording')).toBeVisible();
   await openAccountSettings(page);
   await expect(page.getByTestId('text.auth.email')).toContainText(account.email);
@@ -106,7 +112,7 @@ test('backend guide progress belongs to the first account even when all guides s
   await expect.poll(async () => Boolean((await owner.from('guide_reading_progress').select('completed_at_ms').eq('guide_id', 'dream-journal').single()).data?.completed_at_ms)).toBe(true);
   await page.getByTestId('btn.auth.signOut').click();
   await expect(page.getByTestId('screen.recording')).toBeVisible();
-  await signInExistingGuest(page, accounts.other);
+  await signInExistingGuest(page, accounts.other, true);
   await openGuides(page);
   await expect(page.getByTestId('guides.reading.summary')).toHaveText('0 of 8 guides completed');
   await expect(page.getByTestId('guide-progress-dream-journal')).toHaveText('Not opened');
