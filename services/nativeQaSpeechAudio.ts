@@ -1,5 +1,4 @@
 import * as Application from 'expo-application';
-import { Asset } from 'expo-asset';
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 import type { ExpoSpeechRecognitionOptions } from 'expo-speech-recognition/build/ExpoSpeechRecognitionModule.types';
@@ -25,6 +24,9 @@ export async function getNativeQaSpeechAudioSource(): Promise<ExpoSpeechRecognit
   if (Platform.OS === 'android' && Number(Platform.Version) < 33) {
     throw new Error('Native QA file recognition requires Android API 33 or later.');
   }
+  // Keep native asset initialization behind the QA identity and endpoint guards.
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { Asset } = require('expo-asset') as typeof import('expo-asset');
   const asset = Asset.fromModule(require('../assets/qa/dreamer-dictation-en.wav'));
   await asset.downloadAsync();
   if (!asset.localUri?.startsWith('file://')) throw new Error('Native QA speech fixture is not a local file.');

@@ -18,8 +18,37 @@ test('Dreamer native offline creation and edit survive process restart and synch
       const before = await backend.owner.from('dreams').select('id');
       expect(before.error).toBeNull();
       expect(before.data).toEqual([]);
-      await nativeTap(screen, 'btn.editDream');
-      await screen.getByTestId('input.dreamTranscript', { visible: true }).fill(revision);
+      const edit = screen.getByTestId('btn.editDream', { visible: true });
+      await screen.scrollUntilVisible(edit);
+      if (platform === 'ios') {
+        // Native visibility does not establish that the fixed dock leaves the
+        // edit control uncovered. Measure before choosing a single scroll.
+        const dock = screen.getByTestId('component.dreamDetail.actionDock', { visible: true });
+        const geometry = async () => {
+          const button = await edit.boundingBox();
+          const hasDock = await dock.count();
+          const overlay = hasDock ? await dock.boundingBox() : null;
+          if (!button || (hasDock && !overlay)) throw new Error('Offline edit geometry is unavailable.');
+          const covered = !!overlay && button.x < overlay.x + overlay.width
+            && button.x + button.width > overlay.x && button.y < overlay.y + overlay.height
+            && button.y + button.height > overlay.y;
+          return { button, overlay, covered };
+        };
+        const beforeScroll = await geometry();
+        console.info('[native-offline-edit-geometry]', JSON.stringify({ stage: 'before', ...beforeScroll }));
+        if (beforeScroll.covered) {
+          await screen.swipe({ direction: 'down', momentum: 'slow' });
+          const afterScroll = await geometry();
+          console.info('[native-offline-edit-geometry]', JSON.stringify({ stage: 'after', ...afterScroll }));
+          if (afterScroll.covered) throw new Error('The fixed dock still covers Edit after one native scroll.');
+        }
+      }
+      await expect(edit).toBeEnabled();
+      await edit.tap();
+      await expect(screen.getByTestId('component.dreamEditor', { visible: true })).toBeVisible();
+      const editorInput = screen.getByTestId('input.dreamTranscript', { visible: true });
+      await expect(editorInput).toBeEnabled();
+      await editorInput.fill(revision);
       if (platform === 'ios') await screen.getByTestId('btn.journal.dismissKeyboard', { visible: true }).tap();
       else await device.dismissKeyboard();
       await nativeTap(screen, 'btn.saveDreamEdit');
@@ -106,8 +135,10 @@ test('Dreamer native guest dream and draft survive real sign-in, reconnect and a
       await nativeJournal(screen);
       const search = screen.getByTestId('input.searchDreams', { visible: true });
       await search.fill(transcript);
-      if (platform === 'ios') await search.press('Enter');
-      else await device.dismissKeyboard();
+      // Filtering needs no submission. iOS can open the matching card while the
+      // keyboard is visible (the list uses keyboardShouldPersistTaps=handled).
+      if (platform === 'android') await device.dismissKeyboard();
+      await expect(search).toHaveValue(transcript);
       const cards = screen.getByTestId(/^dream\.item\./, { visible: true });
       await expect(cards).toHaveCount(1);
       await cards.first().tap();
