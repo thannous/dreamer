@@ -133,5 +133,16 @@ try {
   await db.exec("select set_config('request.jwt.claims','{\"role\":\"authenticated\"}',false)");
   await assert.rejects(() => claim(4),e => e.code === '42501'); checks++;
   await assert.rejects(() => admit(),e => e.code === '42501'); checks++;
+  // Keep the historical quota/Plus cases above, then verify the migration
+  // retires the real unbound function rather than only changing API callers.
+  await db.exec(await migration('20261022013139_retire_unbound_authenticated_analysis_quota'));
+  check((await query("select to_regprocedure('public.claim_authenticated_analysis_quota(uuid,bigint,uuid)') as legacy"))[0].legacy === null,
+    'unbound authenticated quota RPC is absent after migration');
+  await db.exec("select set_config('request.jwt.claims','{\"role\":\"service_role\"}',false)");
+  await assert.rejects(
+    () => query('select public.claim_authenticated_analysis_quota($1::uuid,$2::bigint,$3::uuid)', [user, 4, request(4)]),
+    e => e.code === '42883'
+  ); checks++;
+  check((await admit()).duplicate === true, 'queued analysis admission still works after legacy RPC removal');
   console.log(JSON.stringify({status:'ok',checks,engine:'PGlite',hosted_access:false,concurrency_tested:false}));
 } finally { await db.close(); }

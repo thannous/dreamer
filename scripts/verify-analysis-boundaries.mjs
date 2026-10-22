@@ -29,7 +29,7 @@ create function public.complete_authenticated_chat_turn(bigint,uuid,integer,json
 create function private.claim_guest_analysis_import(uuid,uuid,uuid,text,timestamptz,text) returns boolean language sql as $$ select false $$;
 revoke all on public.dream_chat_messages from public, anon, authenticated;
 `);
-for (const name of ['20261021201021_bind_analysis_receipts_to_transcript.sql','20261021201023_trust_server_exploration_started_at.sql']) {
+for (const name of ['20261021201021_bind_analysis_receipts_to_transcript.sql','20261021201023_trust_server_exploration_started_at.sql','20261022013139_retire_unbound_authenticated_analysis_quota.sql']) {
   try { await db.exec(readFileSync(new URL(`../supabase/migrations/${name}`, import.meta.url),'utf8')); console.log('migration parsed',name); }
   catch(error) { console.error('migration error',name,error.message); throw error; }
 }
