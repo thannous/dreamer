@@ -136,7 +136,7 @@ function setup(options: {
       status: 'ready', reading: args.p_reading, updated_at: savedAt,
       image_status: 'painting', image_prompt: args.p_image_prompt, image_updated_at: savedAt,
     });
-    return { state: 'saved', saved_at: savedAt };
+    return { state: 'saved', saved_at: savedAt, row: { ...held } };
   };
   const admin = {
     rpc: async (name: string, args: Record<string, unknown>) => {

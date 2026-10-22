@@ -4,7 +4,7 @@ import { AI_REQUEST_LIMITS, isValidUuid } from '../api/lib/aiRequestPolicy.ts';
 import { hashAnalysisTranscript } from '../api/lib/analysisTranscriptHash.ts';
 import { resolveStoredTranscriptForAi } from '../api/lib/prompts.ts';
 import { takePreparedReading, transcriptSha256 } from '../api/lib/analysisPreview.ts';
-import { attachPreparedIllustration } from '../api/services/previewIllustration.ts';
+import { attachPreparedIllustration, type AttachedPainting } from '../api/services/previewIllustration.ts';
 import {
   ANALYSIS_JOB_WORKER_AUTH_HEADER,
   createAnalysisAdminClient,
@@ -171,6 +171,20 @@ const processAnalysisJob = async (input: {
 }) => {
   const adminClient = createAnalysisAdminClient(input.supabaseUrl, input.serviceRoleKey);
   let job: AnalysisJobRow | null = null;
+  let attachedPainting: AttachedPainting | null = null;
+  // An analysis not saved: the painting attached for it leaves the dream only if the dream's
+  // text is no longer the one it was painted from. Asked again for the same text, it stays.
+  const dropStalePainting = async () => {
+    if (!attachedPainting || !job) return;
+    try {
+      const { data, error } = await adminClient.from('dreams').select('transcript')
+        .eq('id', job.dream_id).eq('user_id', job.user_id).maybeSingle();
+      if (error || (data && await hasAuthorizedAnalysisTranscript(job, (data as any).transcript))) return;
+      await attachedPainting.detach();
+    } catch {
+      console.warn('[analysis-job-worker] could not check a prepared painting', { jobId: job.id });
+    }
+  };
 
   try {
     job = await claimSpecificJob(adminClient, input.jobId);
@@ -242,7 +256,7 @@ const processAnalysisJob = async (input: {
     // Opened with no illustration asked, the dream gets the painting its preview already paid
     // for before its analysis shows as done, so the app reads both at once. A painting still
     // under way is left to the image job that "Illustrer" asks for, which waits for it.
-    const attachedPainting = prepared && job.request_payload?.replaceExistingImage !== true
+    attachedPainting = prepared && job.request_payload?.replaceExistingImage !== true
       ? await attachPreparedIllustration(adminClient, {
         bucket: input.storageBucket, userId: job.user_id, dreamId: job.dream_id, prompt: prepared.imagePrompt.trim(),
         analysisRequestId: job.client_request_id, waitMs: 0,
@@ -274,9 +288,9 @@ const processAnalysisJob = async (input: {
 
     const completion = (completionData ?? {}) as Record<string, any>;
     if (completion.completed !== true) {
-      // Refused (the text edited or the analysis asked again meanwhile): the painting of the
-      // former reading leaves the dream.
-      await attachedPainting?.detach();
+      // Refused (the text edited or the analysis asked again meanwhile): the painting of a
+      // former text leaves the dream.
+      await dropStalePainting();
       await failJob(
         adminClient,
         job,
@@ -320,6 +334,7 @@ const processAnalysisJob = async (input: {
       }
       return;
     }
+    await dropStalePainting();
     await failJob(adminClient, job, serialized.errorCode, serialized.errorMessage);
   }
 };

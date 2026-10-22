@@ -92,6 +92,11 @@ export type TakenPainting = {
   settle: () => Promise<void>;
   /** Not stored after all: ready again for the next job, from where it now lies. */
   giveBack: () => Promise<void>;
+  /**
+   * After a failure that may hide a stored link (a lost answer, a later step failing): settled
+   * when the dream holds it, given back otherwise, so it is never linked twice.
+   */
+  release: () => Promise<void>;
 };
 
 /**
@@ -165,14 +170,30 @@ export async function takePreparedIllustration(admin: AdminClient, input: {
       return null;
     }
     const bandPath = row.band_path;
+    const url = signed.signedUrl as string;
+    const settle = async () => {
+      await removePreviewObjects(admin, input.bucket, [bandPath]);
+      await held(ownPath, { image_path: null, band_path: null, band_url: null });
+    };
     return {
       path: ownPath,
-      url: signed.signedUrl,
-      settle: async () => {
-        await removePreviewObjects(admin, input.bucket, [bandPath]);
-        await held(ownPath, { image_path: null, band_path: null, band_url: null });
-      },
+      url,
+      settle,
       giveBack: () => giveBack(ownPath),
+      release: async () => {
+        let linked: unknown;
+        try {
+          const { data, error } = await admin.from('dreams').select('image_url')
+            .eq('id', input.dreamId).eq('user_id', input.userId).maybeSingle();
+          // Unknown: kept as it is (taken), rather than risk a second link to the same object.
+          if (error) return;
+          linked = data?.image_url;
+        } catch {
+          return;
+        }
+        if (linked === url) await settle();
+        else await giveBack(ownPath);
+      },
     };
   } catch {
     console.warn('[analysis-preview] could not take a prepared painting');
@@ -216,9 +237,9 @@ export async function attachPreparedIllustration(admin: AdminClient, input: {
       .eq('analysis_request_id', input.analysisRequestId).eq('analysis_status', 'pending')
       .or('image_url.is.null,image_url.eq.')
       .select('id');
-    // A lost answer may hide a saved link: the painting then stays where it is, ready again.
+    // A lost answer may hide a saved link: the painting is settled if the dream holds it, ready again otherwise.
     if (setError) {
-      await painting.giveBack();
+      await painting.release();
       return null;
     }
     if (!set?.length) {

@@ -594,8 +594,9 @@ const processImageJob = async (input: {
         });
       }
     } catch (error) {
-      // Not stored: the prepared painting waits for the next attempt instead of being paid again.
-      await takenPainting?.giveBack();
+      // Not stored: the prepared painting waits for the next attempt instead of being paid again
+      // (settled instead if the dream holds it already, so it is never linked twice).
+      await takenPainting?.release();
       const serialized = serializeImageJobError(error);
       let guestClaimCleared = false;
       if (claimedQuotaThisRun && !startedUpstream) {

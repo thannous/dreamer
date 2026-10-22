@@ -349,3 +349,37 @@ Deno.test('a painting attached before an analysis refused leaves the dream, and 
   assertEquals(await attachPreparedIllustration(askedAgain.admin, input), null);
   assertEquals(askedAgain.dreams[0].image_url, null);
 });
+
+Deno.test('after a failure that may hide a stored link, the painting is settled if the dream holds it, given back otherwise', async () => {
+  const setup = (imageUrl: (url: string) => string | null) => {
+    const storage = fakeStorage();
+    storage.objects.set('previews/u1/7-a.jpg', new Uint8Array([1]));
+    storage.objects.set('previews/u1/7-a-band.jpg', new Uint8Array([2]));
+    const previews: Row[] = [{
+      user_id: 'u1', dream_id: 7, status: 'used', image_status: 'ready', image_prompt: 'A river of glass',
+      image_path: 'previews/u1/7-a.jpg', band_path: 'previews/u1/7-a-band.jpg', band_url: 'https://example.test/band',
+    }];
+    const dreams: Row[] = [{ id: 7, user_id: 'u1', image_url: null }];
+    const admin = { from: (name: string) => (name === 'dreams' ? previewsTable(dreams) : previewsTable(previews))(), storage };
+    return { admin, storage, previews, dreams, link: (url: string) => { dreams[0].image_url = imageUrl(url); } };
+  };
+  const input = { bucket: 'dream-images', userId: 'u1', dreamId: 7, prompt: 'A river of glass' };
+
+  // The link was stored before the failure: the painting is the dream's for good, never taken again.
+  const stored = setup((url) => url);
+  const kept = await takePreparedIllustration(stored.admin, input);
+  assert(kept);
+  stored.link(kept.url);
+  await kept.release();
+  assertEquals([stored.previews[0].image_status, stored.previews[0].image_path, stored.previews[0].band_path], ['used', null, null]);
+  assertEquals([...stored.storage.objects.keys()], ['u1/7-a.jpg']);
+  assertEquals(await take(stored.admin, input), null);
+
+  // Not stored: ready again for the next job.
+  const lost = setup(() => null);
+  const back = await takePreparedIllustration(lost.admin, input);
+  assert(back);
+  lost.link(back.url);
+  await back.release();
+  assertEquals([lost.previews[0].image_status, lost.previews[0].image_path], ['ready', 'u1/7-a.jpg']);
+});

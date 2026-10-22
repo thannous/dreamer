@@ -155,6 +155,7 @@ set search_path = ''
 as $$
 declare
   dream_row record;
+  saved_row public.analysis_previews%rowtype;
   saved_at timestamptz := now();
 begin
   if p_user_id is null or p_dream_id is null or p_held_at is null or p_reading is null then
@@ -185,11 +186,12 @@ begin
   where p.user_id = p_user_id
     and p.dream_id = p_dream_id
     and p.status = 'writing'
-    and p.updated_at = p_held_at;
+    and p.updated_at = p_held_at
+  returning p.* into saved_row;
   if not found then
     return jsonb_build_object('state', 'lost');
   end if;
-  return jsonb_build_object('state', 'saved', 'saved_at', saved_at);
+  return jsonb_build_object('state', 'saved', 'saved_at', saved_at, 'row', to_jsonb(saved_row));
 end;
 $$;
 

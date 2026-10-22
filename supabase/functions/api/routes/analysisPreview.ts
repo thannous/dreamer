@@ -76,7 +76,7 @@ type DreamRow = {
 };
 
 /** What save_analysis_preview answers. */
-type Save = { state?: 'saved' | 'gone' | 'analyzed' | 'pending' | 'changed' | 'lost'; saved_at?: string };
+type Save = { state?: 'saved' | 'gone' | 'analyzed' | 'pending' | 'changed' | 'lost'; saved_at?: string; row?: PreviewRow };
 
 /** What hold_analysis_preview answers. */
 type Hold = {
@@ -234,6 +234,7 @@ export async function handleAnalysisPreview(ctx: ApiContext, deps: Dependencies 
     const heldAt = hold.held_at;
 
     let saved = false;
+    let savedRow: PreviewRow | null = null;
     let prompt = '';
     let savedAt = '';
     try {
@@ -269,8 +270,11 @@ export async function handleAnalysisPreview(ctx: ApiContext, deps: Dependencies 
       });
       if (saveError) throw saveError;
       const save = (saveData ?? {}) as Save;
-      saved = save.state === 'saved' && typeof save.saved_at === 'string';
-      if (saved) savedAt = save.saved_at!;
+      saved = save.state === 'saved' && typeof save.saved_at === 'string' && Boolean(save.row);
+      if (saved) {
+        savedAt = save.saved_at!;
+        savedRow = save.row!;
+      }
       else if (save.state === 'gone') return refused('DREAM_NOT_FOUND', 404);
       else if (save.state === 'analyzed') return refused('ALREADY_ANALYZED', 409);
       else if (save.state === 'pending') return refused('ANALYSIS_PENDING', 409);
@@ -292,7 +296,8 @@ export async function handleAnalysisPreview(ctx: ApiContext, deps: Dependencies 
       }
       await removePreviewObjects(admin, ctx.storageBucket, [hold.previous_image_path, hold.previous_band_path]);
     }
-    const kept = await readPreview();
+    // The row as saved: its painting starts whatever happens to the dream from now on.
+    const kept = savedRow;
     if (!matches(kept)) return status('writing');
 
     // The painting follows the reading: the account reads the start of its analysis meanwhile.
