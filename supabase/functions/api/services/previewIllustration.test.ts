@@ -237,6 +237,23 @@ Deno.test('a dream illustrated between the read and the link keeps its own illus
   assertEquals(await attached(admin, { bucket: 'dream-images', userId: 'u1', dreamId: 7, prompt: 'A river of glass', analysisRequestId: 'r1' }), false);
   assertEquals(dreams[0].image_url, 'https://example.test/own.jpg');
   assertEquals([...storage.objects.keys()], []);
+
+  // A dream that cannot be read again may hold the painting through another job: the object stays.
+  const kept = fakeStorage();
+  kept.objects.set('previews/u1/7-a.jpg', new Uint8Array([1]));
+  const keptPreviews: Row[] = [{ ...previews[0], image_status: 'ready', image_path: 'previews/u1/7-a.jpg' }];
+  const unreadable = { select: () => unreadable, eq: () => unreadable, maybeSingle: async () => ({ data: null, error: { message: 'down' } }) };
+  let keptReads = 0;
+  const keptAdmin = {
+    from: (name: string) => {
+      if (name !== 'dreams') return previewsTable(keptPreviews)();
+      const read = keptReads++;
+      return read === 0 ? stale : read === 1 ? previewsTable(dreams)() : unreadable;
+    },
+    storage: kept,
+  };
+  assertEquals(await attached(keptAdmin, { bucket: 'dream-images', userId: 'u1', dreamId: 7, prompt: 'A river of glass', analysisRequestId: 'r1' }), false);
+  assertEquals([...kept.objects.keys()], ['u1/7-a.jpg']);
 });
 
 Deno.test('with no wait, a painting under way is left for later', async () => {

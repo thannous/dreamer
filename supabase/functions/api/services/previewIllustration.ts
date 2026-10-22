@@ -304,11 +304,11 @@ export async function attachPreparedIllustration(admin: AdminClient, input: {
     }
     if (!set?.length) {
       // Illustrated or asked again meanwhile: the taken painting would be left unseen, unless
-      // another job linked this very painting meanwhile.
+      // another job linked this very painting meanwhile. An unreadable dream keeps the object.
       await painting.settle();
-      const { data: now } = await dreams().select('image_url')
+      const { data: current, error: currentError } = await dreams().select('image_url')
         .eq('id', input.dreamId).eq('user_id', input.userId).maybeSingle();
-      if (!linksTo(now?.image_url, painting.path)) await removeObject(admin, input.bucket, painting.path);
+      if (!currentError && !linksTo(current?.image_url, painting.path)) await removeObject(admin, input.bucket, painting.path);
       return null;
     }
     await painting.settle();
