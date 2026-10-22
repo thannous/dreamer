@@ -84,10 +84,12 @@ export function BadgeDetail({ state, t, formatNumber, formatDate, onClose, onRev
     lightX.set(withDelay(240, withTiming(0.25, { duration: 1100, easing: EASING.out })));
   }, [arrivedFaceDown, lightX, reduced]);
 
-  // A screen reader lands on the card held, or on its back while it waits to be turned.
-  const focusRef = useRef<React.ComponentRef<typeof View>>(null);
+  // A screen reader lands on the card held, or on its back while it waits to be turned. Both
+  // refs stay attached from mount: an animated view does not take a ref that changes later.
+  const backRef = useRef<React.ComponentRef<typeof View>>(null);
+  const frontRef = useRef<React.ComponentRef<typeof View>>(null);
   useEffect(() => {
-    const target = focusRef.current;
+    const target = (faceDown ? backRef : frontRef).current;
     if (!target) return;
     // The web has no node handles: the element itself takes the focus.
     if (Platform.OS === 'web') {
@@ -183,7 +185,7 @@ export function BadgeDetail({ state, t, formatNumber, formatDate, onClose, onRev
             <Animated.View style={[{ position: faceDown ? 'relative' : 'absolute', inset: faceDown ? undefined : 0 }, backStyle]}
               pointerEvents={faceDown ? 'auto' : 'none'} aria-hidden={!faceDown}
               accessibilityElementsHidden={!faceDown} importantForAccessibility={faceDown ? 'auto' : 'no-hide-descendants'}>
-              <PressableScale ref={faceDown ? focusRef : undefined} onPress={reveal} disabled={!faceDown} haptic="medium" accessibilityRole="button"
+              <PressableScale ref={backRef} onPress={reveal} disabled={!faceDown} haptic="medium" accessibilityRole="button"
                 accessibilityLabel={t('badges.a11y.new_card', { name, tier: heldTier ? badgeTierName(t, heldTier) : '' })}
                 accessibilityHint={t('badges.detail.reveal_hint')} testID="collection.detail.reveal">
                 <BadgeCardBackFace tier={heldTier ?? 'bronze'} width={cardWidth} caption={t('badges.detail.reveal')} />
@@ -192,11 +194,16 @@ export function BadgeDetail({ state, t, formatNumber, formatDate, onClose, onRev
           ) : null}
           <Animated.View style={[faceDown ? { position: 'absolute', inset: 0 } : null, frontStyle]} pointerEvents={faceDown ? 'none' : 'auto'}
             aria-hidden={faceDown} accessibilityElementsHidden={faceDown} importantForAccessibility={faceDown ? 'no-hide-descendants' : 'auto'}>
+            {/* The image a screen reader or the keyboard lands on is a plain view with a stable
+                ref, so the web hands it the element. The web focuses only an element with a tab
+                index; -1 adds no tab stop. */}
+            <View ref={frontRef} accessible accessibilityRole="image"
+              tabIndex={Platform.OS === 'web' ? -1 : undefined}
+              accessibilityLabel={shownVeiled
+                ? t('badges.a11y.preview', { name, tier: badgeTierName(t, shownTier) })
+                : `${name}, ${badgeTierName(t, shownTier)}`}>
             <GestureDetector gesture={pan}>
-              <Animated.View ref={faceDown ? undefined : focusRef} style={leanStyle} accessible accessibilityRole="image"
-                accessibilityLabel={shownVeiled
-                  ? t('badges.a11y.preview', { name, tier: badgeTierName(t, shownTier) })
-                  : `${name}, ${badgeTierName(t, shownTier)}`}>
+              <Animated.View style={leanStyle}>
                 <BadgeCardFrame tier={shownVeiled ? null : shownTier} width={cardWidth}
                   light={reduced ? null : { x: lightX, y: lightY }}>
                   <View className="flex-1 items-center justify-center gap-5 px-4 pb-6 pt-7">
@@ -217,6 +224,7 @@ export function BadgeDetail({ state, t, formatNumber, formatDate, onClose, onRev
                 </BadgeCardFrame>
               </Animated.View>
             </GestureDetector>
+            </View>
           </Animated.View>
           {!reduced ? <RevealBurst progress={burst} width={cardWidth} height={cardHeight} color={getBadgeMaterial(heldTier).ink} /> : null}
         </View>
