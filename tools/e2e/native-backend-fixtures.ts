@@ -83,10 +83,30 @@ export async function nativeSettings(screen: TestFixtures['screen']) {
   await expect(screen.getByTestId('screen.settings', { visible: true })).toBeVisible();
 }
 
-async function nativeRecordingAfterAuth(screen: TestFixtures['screen']) {
+async function nativeDestinationAfterPasswordPrompt(
+  screen: TestFixtures['screen'],
+  platform: TestFixtures['platform'],
+  destinationCount: () => Promise<number>,
+) {
+  // iOS may offer to store these disposable credentials after Return submits.
+  // Match the complete observed password-saving title, never a generic alert.
+  const prompt = screen.getByText(/^Enregistrer le mot de passe\s*\?$/, { visible: true });
+  await expect.poll(async () => await destinationCount()
+    + (platform === 'ios' ? await prompt.count() : 0)).toBeGreaterThan(0);
+  if (platform === 'ios' && await prompt.count()) {
+    const later = screen.getByRole('button', 'Plus tard', { visible: true });
+    await expect(later).toHaveCount(1);
+    await later.tap();
+    await expect(prompt).toHaveCount(0);
+    await expect.poll(destinationCount).toBeGreaterThan(0);
+  }
+}
+
+async function nativeRecordingAfterAuth(screen: TestFixtures['screen'], platform: TestFixtures['platform']) {
   const onboarding = screen.getByTestId('screen.onboarding', { visible: true });
   const recording = screen.getByTestId('screen.recording', { visible: true });
-  await expect.poll(async () => (await onboarding.count()) + (await recording.count())).toBeGreaterThan(0);
+  await nativeDestinationAfterPasswordPrompt(screen, platform,
+    async () => (await onboarding.count()) + (await recording.count()));
   if (await onboarding.count()) {
     // Onboarding is scoped to an account. A second account intentionally does
     // not inherit the guest's completion; take its normal UI exit if presented.
@@ -112,23 +132,23 @@ export async function nativeGuest({ app, screen, platform }: Pick<NativeFixtures
   const pendingSpeechPermission = screen.getByRole('alert',
     /^Autoriser «\s*Noctalia QA\s*» à accéder aux propos tenus grâce à la reconnaissance vocale\s*\?$/,
     { visible: true });
-  await expect.poll(async () => await destinationCount()
-    + (platform === 'ios' ? await pendingSpeechPermission.count() : 0)).toBeGreaterThan(0);
+  await nativeDestinationAfterPasswordPrompt(screen, platform, async () => await destinationCount()
+    + (platform === 'ios' ? await pendingSpeechPermission.count() : 0));
   if (platform === 'ios' && await pendingSpeechPermission.count()) {
     await screen.getByRole('button', 'Autoriser', { visible: true }).tap();
     await expect(pendingSpeechPermission).toHaveCount(0);
-    await expect.poll(destinationCount).toBeGreaterThan(0);
+    await nativeDestinationAfterPasswordPrompt(screen, platform, destinationCount);
   }
   // Onboarding may belong to an authenticated account after an interrupted
   // login. Reach Settings before clearing the container, including on iOS.
-  if (await onboarding.count()) await nativeRecordingAfterAuth(screen);
+  if (await onboarding.count()) await nativeRecordingAfterAuth(screen, platform);
   await nativeSettings(screen);
   const signOut = screen.getByTestId('btn.auth.signOut', { visible: true });
   // Settings is scrollable: locate the account action even if below the viewport.
   if (await screen.getByTestId('text.auth.email').count()) {
     await screen.scrollUntilVisible(signOut);
     await signOut.tap();
-    await nativeRecordingAfterAuth(screen);
+    await nativeRecordingAfterAuth(screen, platform);
   }
   // run.mjs verifies the named disposable emulator/Simulator and Release receipt before this fixture.
   await app.clearState();
@@ -180,7 +200,7 @@ export async function nativeLogin(fixtures: NativeFixtures, account: 'owner' | '
     await device.dismissKeyboard();
     await nativeTap(screen, 'btn.auth.signIn');
   }
-  await nativeRecordingAfterAuth(screen);
+  await nativeRecordingAfterAuth(screen, platform);
   await nativeSettings(screen);
   const email = screen.getByTestId('text.auth.email', { visible: true });
   await screen.scrollUntilVisible(email, { direction: 'up' });
@@ -191,7 +211,7 @@ export async function nativeLogin(fixtures: NativeFixtures, account: 'owner' | '
 export async function nativeSignOut(fixtures: NativeFixtures) {
   await nativeSettings(fixtures.screen);
   await nativeTap(fixtures.screen, 'btn.auth.signOut');
-  await nativeRecordingAfterAuth(fixtures.screen);
+  await nativeRecordingAfterAuth(fixtures.screen, fixtures.platform);
 }
 
 export async function nativeJournal(screen: TestFixtures['screen']) {

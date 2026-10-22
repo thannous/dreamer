@@ -23,8 +23,15 @@ async function prepareVoice(fixtures: VoiceFixtures) {
   await expect(fixtures.screen.getByTestId('input.dreamTranscript', { visible: true })).toHaveValue('');
 }
 
-async function startMicrophone({ screen }: VoiceFixtures) {
-  await tap(screen, 'btn.recordToggle');
+async function startMicrophone({ app, screen }: VoiceFixtures) {
+  // Permission changes may terminate iOS. Observe the fresh editable Capture
+  // after reopening before issuing the one microphone action.
+  await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
+  await expect(screen.getByTestId('input.dreamTranscript', { visible: true })).toBeEnabled();
+  const record = screen.getByTestId('btn.recordToggle', { visible: true });
+  await screen.scrollUntilVisible(record, { direction: 'down' });
+  await expect(record).toBeEnabled();
+  await record.tap();
   // Both native sheets present asynchronously; iOS also omits the wrapper
   // from its tree. Wait for the actual action or an observed next speech state.
   const allow = screen.getByTestId('btn.recording.micRationale.allow', { visible: true });
@@ -32,13 +39,29 @@ async function startMicrophone({ screen }: VoiceFixtures) {
   const speechPrompt = screen.getByText(/(?:Speech Recognition|reconnaissance vocale)/i, { visible: true });
   const denied = screen.getByText('Microphone permission is required to record dreams.', { visible: true });
   const editor = screen.getByTestId('input.dreamTranscript', { visible: true });
-  await expect.poll(async () => (await allow.count()) > 0
-    || (await microphonePrompt.count()) > 0
-    || (await speechPrompt.count()) > 0
-    || (await denied.count()) > 0
-    || (await screen.getByTestId('recording-write-listening-status', { visible: true }).count()) > 0
-    || ((await editor.count()) > 0 && /blue lighthouse/i.test(await editor.inputValue())),
-  { timeout: 30_000 }).toBe(true);
+  try {
+    await expect.poll(async () => (await allow.count()) > 0
+      || (await microphonePrompt.count()) > 0
+      || (await speechPrompt.count()) > 0
+      || (await denied.count()) > 0
+      || (await screen.getByTestId('recording-write-listening-status', { visible: true }).count()) > 0
+      || ((await editor.count()) > 0 && /blue lighthouse/i.test(await editor.inputValue())),
+    { timeout: 30_000 }).toBe(true);
+  } catch (error) {
+    // The permission-reset cleanup can terminate the app. Preserve its actual
+    // failed state first; a boolean poll alone does not attach a native tree.
+    await app.screenshot('native-voice-start-failed-before-permission-reset').catch(() => undefined);
+    const observations = await Promise.allSettled([
+      editor.count(), editor.inputValue(), record.isEnabled(),
+      screen.getByText(/.*/, { visible: true }).allTextContents(),
+      screen.getByRole('button', /.*/, { visible: true }).allTextContents(),
+      screen.getByRole('alert', /.*/, { visible: true }).allTextContents(),
+    ]);
+    const labels = ['editorCount', 'editorValue', 'recordEnabled', 'text', 'buttons', 'alerts'];
+    const observed = Object.fromEntries(observations.map((result, index) => [labels[index],
+      result.status === 'fulfilled' ? result.value : String(result.reason)]));
+    throw new Error(`${error instanceof Error ? error.message : String(error)}\nNative voice state: ${JSON.stringify(observed)}`, { cause: error });
+  }
   if (await allow.count()) await allow.tap();
 }
 
