@@ -5,6 +5,7 @@ import { DarkTheme, ThemeLayout } from '@/constants/journalTheme';
 import { DESKTOP_BREAKPOINT } from '@/constants/layout';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
+import { useContentWindow } from '@/context/ContentWindowContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import React, { type ReactNode, memo, useState } from 'react';
@@ -15,7 +16,6 @@ import {
   StyleSheet,
   Text,
   View,
-  useWindowDimensions,
   type TextStyle,
   type ViewStyle,
 } from 'react-native';
@@ -102,7 +102,7 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
   const { colors, mode } = useTheme();
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  const { width, height: windowHeight, fontScale } = useWindowDimensions();
+  const { width, height: windowHeight, fontScale } = useContentWindow();
   const isNarrow = width < 480;
   // Beside the desktop sidebar the wordmark is already on screen.
   const showBrand = !(Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT);

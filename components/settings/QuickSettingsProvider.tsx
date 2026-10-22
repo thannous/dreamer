@@ -103,7 +103,8 @@ export function QuickSettingsContent({ onClose, onSettings, onAccount, onPlus }:
   return (
     <ScrollView className="flex-1 bg-ink" testID="quick-settings.drawer" accessibilityViewIsModal
       keyboardShouldPersistTaps="handled"
-      contentContainerStyle={{ paddingTop: insets.top + 16, paddingBottom: insets.bottom + 24, paddingHorizontal: 20, gap: 28 }}>
+      // The drawer opens from the right edge, where the iPhone Duo keeps its status bar column.
+      contentContainerStyle={{ paddingTop: insets.top + 16, paddingBottom: insets.bottom + 24, paddingLeft: 20, paddingRight: 20 + insets.right, gap: 28 }}>
       <View className="flex-row items-center justify-between gap-3">
         <Text accessibilityRole="header" className="min-w-0 flex-1 font-display text-h2 leading-[30px] text-ivory">{t('settings.quick.title')}</Text>
         <Pressable onPress={onClose} testID="quick-settings.close" accessibilityRole="button" accessibilityLabel={t('settings.quick.close')}
@@ -196,7 +197,8 @@ export function QuickSettingsProvider({ children, disabled = false }: React.Prop
   const { colors, mode } = useTheme();
   const { t } = useTranslation();
   const tokens = getNoctaliaDesignTokens(colors, mode);
-  const drawerWidth = Math.min(380, Math.max(280, width - 24));
+  const { right: rightInset } = useSafeAreaInsets();
+  const drawerWidth = Math.min(380 + rightInset, Math.max(280, width - 24));
   const visible = open && origin === pathname && !drawerDisabled;
   const close = useCallback(() => setOpen(false), []);
   // `show` is the context value: read the route when the drawer opens, so a navigation

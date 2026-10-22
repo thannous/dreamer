@@ -63,7 +63,7 @@ export function AnalysisFlightIndicator() {
       animate={{ opacity: 1, translateY: 0 }}
       transition={{ type: 'timing', duration: 260 }}
       pointerEvents="box-none"
-      style={[styles.host, { top: insets.top + 8 }]}
+      style={[styles.host, { top: insets.top + 8, left: insets.left, right: insets.right }]}
     >
       <Pressable
         accessibilityRole="button"

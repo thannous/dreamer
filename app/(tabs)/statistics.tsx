@@ -1,3 +1,4 @@
+import { useContentWindow } from '@/context/ContentWindowContext';
 import { useQuickSettings } from '@/context/QuickSettingsContext';
 import { JournalCompletenessNotice } from '@/components/journal/JournalCompletenessNotice';
 import { DreamSymbolSheet } from '@/components/journal/symbols/DreamSymbolSheet';
@@ -8,7 +9,6 @@ import {
   Platform,
   Text,
   View,
-  useWindowDimensions,
 } from 'react-native';
 import { useReducedMotion } from 'react-native-reanimated';
 import Svg, { Path } from 'react-native-svg';
@@ -124,7 +124,7 @@ function StatisticsScreen() {
   const analysesUsedUp = getFreeAnalysesNudge({
     tier, signedIn: Boolean(user), loading: quotaLoading, error: quotaError, usage, maxRemaining: 0,
   }) !== null;
-  const { width, height, fontScale } = useWindowDimensions();
+  const { width, height, fontScale } = useContentWindow();
   const insets = useSafeAreaInsets();
   const { colors, mode } = useTheme();
   const openQuickSettings = useQuickSettings();

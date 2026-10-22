@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useSyncExternalStore, type ReactNode } from 'react';
-import { AppState, Platform, StyleSheet, View, useWindowDimensions, type LayoutChangeEvent } from 'react-native';
+import { AppState, Platform, StyleSheet, View, type LayoutChangeEvent } from 'react-native';
 import Animated, {
   SensorType, useAnimatedReaction, useAnimatedSensor, useAnimatedStyle, useReducedMotion, useSharedValue, withTiming,
   type SharedValue,
@@ -7,6 +7,7 @@ import Animated, {
 import { scheduleOnRN } from 'react-native-worklets';
 
 import { DURATION, EASING } from '@/components/motion/motion';
+import { useContentWindow } from '@/context/ContentWindowContext';
 
 import { useOnScreen } from './headerStretch';
 import { useHeaderScrollY } from './scrollDepth';
@@ -55,7 +56,7 @@ function tiltZoom({ width, height }: { width: number; height: number }): number 
 
 /** The frame a painting fills, the screen until it is laid out. */
 function useFrame() {
-  const screen = useWindowDimensions();
+  const screen = useContentWindow();
   const [frame, setFrame] = useState<{ width: number; height: number } | null>(null);
   const onLayout = ({ nativeEvent: { layout } }: LayoutChangeEvent) => setFrame((previous) => (
     previous?.width === layout.width && previous.height === layout.height

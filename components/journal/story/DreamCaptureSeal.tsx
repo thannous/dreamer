@@ -8,7 +8,6 @@ import {
   Platform,
   Text,
   View,
-  useWindowDimensions,
   type ImageSourcePropType,
   type LayoutChangeEvent,
   type StyleProp,
@@ -28,6 +27,7 @@ import { EASE } from '@/components/motion/motion';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { getNoctaliaPalette } from '@/constants/noctaliaPalette';
 import { Fonts } from '@/constants/theme';
+import { useContentWindow } from '@/context/ContentWindowContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
@@ -257,7 +257,7 @@ export function DreamCaptureSeal({ name, mark, provisionalName, date, previousPa
   /** The window is open: the dream's page can take over, reading the dream if so answered. */
   onSealed: (read: boolean) => void;
 }) {
-  const { width, height, fontScale } = useWindowDimensions();
+  const { width, height, fontScale } = useContentWindow();
   const insets = useSafeAreaInsets();
   const { colors, mode } = useTheme();
   const { t } = useTranslation();

@@ -10,6 +10,7 @@ import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { getSymbolIllustration } from '@/constants/symbolIllustrations';
 import { DREAMER_ARTWORK } from '@/constants/dreamerArtwork';
 import { Fonts } from '@/constants/theme';
+import { useContentWindow } from '@/context/ContentWindowContext';
 import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
 import { useOnboarding } from '@/context/OnboardingContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -84,7 +85,7 @@ export default function SymbolDetailScreen() {
   const lang: SymbolLanguage = currentLang;
   const scrollPerf = useScrollIdle();
   const insets = useSafeAreaInsets();
-  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
+  const { width: windowWidth, height: windowHeight } = useContentWindow();
   // Measured, since a wide web window may give the screen less than the window.
   const [heroWidth, setHeroWidth] = useState(windowWidth);
   const [bodyWidth, setBodyWidth] = useState(windowWidth);

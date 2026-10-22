@@ -7,7 +7,6 @@ import {
   Pressable,
   Text,
   View,
-  useWindowDimensions,
 } from "react-native";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { HomeAnniversaryCard } from "@/components/home/HomeAnniversaryCard";
@@ -29,6 +28,7 @@ import {
   getBottomNavigationLayout,
 } from "@/constants/layout";
 import { getNoctaliaDesignTokens } from "@/constants/noctaliaDesign";
+import { useContentWindow } from "@/context/ContentWindowContext";
 import { useDreamsData } from "@/context/DreamsContext";
 import { useTheme } from "@/context/ThemeContext";
 import { ScrollPerfProvider } from "@/context/ScrollPerfContext";
@@ -122,7 +122,7 @@ function InspirationScreen() {
   const openQuickSettings = useQuickSettings();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
-  const { width, height, fontScale } = useWindowDimensions();
+  const { width, height, fontScale } = useContentWindow();
   const insets = useSafeAreaInsets();
   const scrollPerf = useScrollIdle();
   const { dreams, loaded: dreamsLoaded } = useDreamsData();

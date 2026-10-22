@@ -1,6 +1,6 @@
 import * as Haptics from 'expo-haptics';
 import React, { useEffect, useRef } from 'react';
-import { Pressable, StyleSheet, View, useWindowDimensions } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import Animated, {
   Easing, interpolate, useAnimatedStyle, useReducedMotion, useSharedValue, withDelay, withTiming,
 } from 'react-native-reanimated';
@@ -10,6 +10,7 @@ import { EASE, EASING } from '@/components/motion/motion';
 import { DarkTheme } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { StoryNight } from './StoryNight';
+import { useContentWindow } from '@/context/ContentWindowContext';
 
 const NIGHT = getNoctaliaDesignTokens(DarkTheme, 'dark');
 
@@ -83,7 +84,7 @@ const MOTES = [
  */
 export function DoorPassage({ onCovered, onDone }: { onCovered: () => void; onDone: () => void }) {
   const reduced = useReducedMotion();
-  const { width, height } = useWindowDimensions();
+  const { width, height } = useContentWindow();
   // The night is already there when the sheet slides away: nothing of the previous step shows through.
   const veil = useSharedValue(1);
   const arrive = useSharedValue(reduced ? 1 : 0);

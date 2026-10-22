@@ -1,10 +1,10 @@
 import { Image, type ImageSource } from 'expo-image';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useWindowDimensions } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
 
 import { EASING } from '@/components/motion/motion';
+import { useContentWindow } from '@/context/ContentWindowContext';
 
 /** The illustration's flight from the seal's window to the plate, and its fade once the plate shows under it. */
 const FLIGHT = 1150;
@@ -40,7 +40,7 @@ export function CoverFlight({ source, from, to, height, travel, landed, onArrive
   onArrived: () => void;
   onGone: () => void;
 }) {
-  const { width } = useWindowDimensions();
+  const { width } = useContentWindow();
   const [ratio, setRatio] = useState(PORTRAIT);
   const flight = useSharedValue(0);
   const fade = useSharedValue(1);

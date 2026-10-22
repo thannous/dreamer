@@ -1,11 +1,12 @@
 import React, { forwardRef, useMemo, useState } from 'react';
-import { Pressable, StyleSheet, Text, TextInput, View, useWindowDimensions, type TextInputProps, type TextInputInstance } from 'react-native';
+import { Pressable, StyleSheet, Text, TextInput, View, type TextInputProps, type TextInputInstance } from 'react-native';
 
 import { ListeningHalo } from '@/components/recording/ListeningHalo';
 import { MicButton, type MicButtonStatus } from '@/components/recording/MicButton';
 import { getRecordingComposerLayout, LARGE_TEXT_FONT_SCALE } from '@/constants/layout';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
+import { useContentWindow } from '@/context/ContentWindowContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getDreamTextInputLimit } from '@/lib/dreamTextLimit';
@@ -80,7 +81,7 @@ export const RecordingTextInput = forwardRef<TextInputInstance, RecordingTextInp
   ) {
     const { colors, mode } = useTheme();
     const { t } = useTranslation();
-    const { width, height, fontScale } = useWindowDimensions();
+    const { width, height, fontScale } = useContentWindow();
     const controlFontScale = Math.min(1.3, Math.max(1, fontScale));
     const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
     const composerLayout = useMemo(

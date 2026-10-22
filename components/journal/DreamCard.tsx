@@ -4,6 +4,7 @@ import { useDreamMedia } from '@/hooks/useDreamMedia';
 import { PressableScale } from '@/components/motion';
 import { DreamStoryHalo } from '@/components/journal/story/DreamStoryHalo';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
+import { useContentWindow } from '@/context/ContentWindowContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
@@ -20,7 +21,7 @@ import { DreamAnalysis } from '@/lib/types';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Dimensions, Pressable, Text, View, useWindowDimensions } from 'react-native';
+import { Dimensions, Platform, Pressable, Text, View } from 'react-native';
 import { JournalCardSeal, SEAL_FADE_HEIGHT } from '@/components/journal/JournalCardSeal';
 import { FullMoonSeal } from '@/components/ui/FullMoonSeal';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -89,7 +90,7 @@ export const DreamCard = memo(function DreamCard({
   onGlowDone,
 }: DreamCardProps) {
   const { colors, mode } = useTheme();
-  const { fontScale, width: windowWidth } = useWindowDimensions();
+  const { fontScale, width: windowWidth, height: windowHeight } = useContentWindow();
   const compactTextScale = Math.min(1.3, Math.max(1, fontScale));
   const titleTextScale = Math.min(1.4, Math.max(1, fontScale));
   const captionStyle = { fontSize: 12 * compactTextScale, lineHeight: 18 * compactTextScale };
@@ -172,9 +173,12 @@ export const DreamCard = memo(function DreamCard({
     ? `${dream.transcript.slice(0, foldLength).replace(/[\uD800-\uDBFF]$/u, '')}…`
     : dream.transcript, [dream.transcript, foldLength]);
   // 9:16, the format the paintings are generated in: on a phone the whole painting shows.
-  // Never taller than most of the screen, so a short screen still sees the dream's text. The
-  // screen, not the window: a mobile browser's window follows its toolbars and keyboard.
-  const coverMinHeight = Math.min(coverWidth * 16 / 9, Math.round(Dimensions.get('screen').height * 0.8));
+  // Never taller than most of the screen, so a short screen still sees the dream's text. On
+  // the web the screen, not the window: a mobile browser's window follows its toolbars and
+  // keyboard. A native window keeps its height under the keyboard, and on the iPhone Duo,
+  // whose two displays make "the screen" ambiguous, it is the display the dream is on.
+  const coverMaxHeight = Platform.OS === 'web' ? Dimensions.get('screen').height : windowHeight;
+  const coverMinHeight = Math.min(coverWidth * 16 / 9, Math.round(coverMaxHeight * 0.8));
   // The scrim's own colour at rising strength, so the painting eases into the backing.
   const scrimFade = useMemo(() => {
     const base = Number(/([\d.]+)\)$/.exec(noctalia.illustration.scrim)?.[1] ?? 1);

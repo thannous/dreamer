@@ -50,6 +50,7 @@ import {
 import { DURATION, EASING, PressableScale, Reveal } from '@/components/motion';
 import { DREAM_TRANSCRIPT_MAX_CHARS, QUOTAS } from '@/constants/limits';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
+import { useContentWindow, useSideGutters } from '@/context/ContentWindowContext';
 import { useAuth } from '@/context/AuthContext';
 import { SignInToOpenDream } from '@/components/auth/SignInToOpenDream';
 import { dreamAuthReturnDestination } from '@/lib/authReturnIntent';
@@ -123,7 +124,6 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  useWindowDimensions,
   View,
 } from 'react-native';
 import Animated, {
@@ -507,7 +507,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   const { user } = useAuth();
   const { colors, shadows, mode } = useTheme();
   const insets = useSafeAreaInsets();
-  const windowSize = useWindowDimensions();
+  const windowSize = useContentWindow();
+  const sideGutters = useSideGutters();
   const compactTextScale = Math.min(1.3, Math.max(1, windowSize.fontScale));
   const titleTextScale = Math.min(1.4, Math.max(1, windowSize.fontScale));
   const metadataTextStyle = { fontSize: 14 * compactTextScale, lineHeight: 20 * compactTextScale };
@@ -1984,7 +1985,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     const seal = sealWindowRef.current;
     if (!seal || !onScreen || coverFlight || isEditing || isIllustrationFullscreen) return;
     seal.measureInWindow((x, y, sealWidth) => {
-      const centre = { x: x + sealWidth / 2, y: y + SEAL_MEASURES.orbit / 2 };
+      // The flight is drawn inside the page, which starts after the left safe area.
+      const centre = { x: x - sideGutters.left + sealWidth / 2, y: y + SEAL_MEASURES.orbit / 2 };
       if (centre.y < insets.top + 24 || centre.y > viewportHeight - 96) return;
       // The painting leaves the seal: heard and felt once, as it goes.
       playSignature('painting');
@@ -2001,7 +2003,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       setCoverFlight({ from: { ...centre, size: SEAL_MEASURES.medallion }, to: { top, drift }, landed: false });
     });
   }, [coverFlight, coverHeight, coverTravel, insets.top, isEditing, isIllustrationFullscreen, onScreen, readingContentTop, readingScrollOffset,
-    reducedMotion, revealPlate, viewportHeight, windowSize.height]);
+    reducedMotion, revealPlate, sideGutters.left, viewportHeight, windowSize.height]);
   useEffect(() => {
     if (!sealHoldsArtwork) return;
     const frame = requestAnimationFrame(releaseArtwork);

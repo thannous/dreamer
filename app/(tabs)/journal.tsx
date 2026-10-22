@@ -1,5 +1,6 @@
 import { markPerformance } from '@/lib/performanceTrace';
 import Animated, { useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
+import { useContentWindow } from '@/context/ContentWindowContext';
 import { useQuickSettings } from '@/context/QuickSettingsContext';
 import { getDreamRouteParams } from '@/lib/dreamRoute';
 import { getDreamIdentityKey, matchesDreamTarget } from '@/lib/dreamIdentity';
@@ -60,7 +61,6 @@ import {
   type NativeSyntheticEvent,
   type TextInputInstance,
   View,
-  useWindowDimensions,
 } from 'react-native';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
@@ -125,7 +125,7 @@ function JournalListScreen() {
   }, []);
   const flatListRef = useRef<FlashListRef<DreamAnalysis>>(null);
   const searchInputRef = useRef<TextInputInstance>(null);
-  const { width, height, fontScale } = useWindowDimensions();
+  const { width, height, fontScale } = useContentWindow();
   const insets = useSafeAreaInsets();
 
   const isWeb = Platform.OS === 'web';
