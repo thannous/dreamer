@@ -29,6 +29,57 @@ describe('guide reading recovery and isolation (races not exercised by the UI jo
     await activateGuideReadingScope('user:b');
     expect(stored('user:b')).toEqual({});
   });
+  it('retries the first claim write for A after auth loading without losing the transfer intent', async () => {
+    await activateGuideReadingScope('guest');
+    updateGuideReading('guest', 'dream-journal', 2);
+    await flushGuideReadingForTests();
+    suspendGuideReadingScope();
+    mockFailKey = guideReadingStorageKey('guest');
+    await activateGuideReadingScope('user:a', { transferGuest: true });
+    expect(stored('guest').__claimOwner).toBeUndefined();
+    expect(stored('user:a')).toEqual({});
+    mockFailKey = null;
+    await retryGuideReading('user:a');
+    expect(stored('user:a')['dream-journal'].section).toBe(2);
+    expect(stored('guest')).toEqual({});
+    await activateGuideReadingScope('guest');
+    await activateGuideReadingScope('user:b', { transferGuest: true });
+    expect(stored('user:b')).toEqual({});
+  });
+  it('cannot reassign an undurable claim to B when A never retries', async () => {
+    await activateGuideReadingScope('guest');
+    updateGuideReading('guest', 'dream-journal', 2);
+    await flushGuideReadingForTests();
+    mockFailKey = guideReadingStorageKey('guest');
+    await activateGuideReadingScope('user:a', { transferGuest: true });
+    mockFailKey = null;
+    await activateGuideReadingScope('user:b', { transferGuest: true });
+    expect(stored('user:a')['dream-journal'].section).toBe(2);
+    expect(stored('user:b')).toEqual({});
+    expect(stored('guest')).toEqual({});
+  });
+  it('removes the failed first claim on account deletion so another account cannot inherit it', async () => {
+    await activateGuideReadingScope('guest');
+    updateGuideReading('guest', 'dream-journal', 2);
+    await flushGuideReadingForTests();
+    mockFailKey = guideReadingStorageKey('guest');
+    await activateGuideReadingScope('user:a', { transferGuest: true });
+    mockFailKey = null;
+    await forgetGuideReading('a');
+    await activateGuideReadingScope('user:b', { transferGuest: true });
+    expect(stored('guest')).toEqual({});
+    expect(stored('user:a')).toEqual({});
+    expect(stored('user:b')).toEqual({});
+  });
+  it('does not claim unrelated guest data on a cold authenticated start or its retry', async () => {
+    mockStore.set(guideReadingStorageKey('guest'), JSON.stringify({ 'dream-journal': { section: 2, updatedAt: 100 } }));
+    await activateGuideReadingScope('user:a');
+    await retryGuideReading('user:a');
+    await activateGuideReadingScope('user:b');
+    expect(stored('user:a')).toEqual({});
+    expect(stored('user:b')).toEqual({});
+    expect(stored('guest')['dream-journal'].section).toBe(2);
+  });
   it('finishes an interrupted guest transfer for its reserved owner while opening B', async () => {
     await activateGuideReadingScope('guest');
     updateGuideReading('guest', 'dream-journal', 2, true);

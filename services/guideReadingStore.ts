@@ -10,6 +10,9 @@ type Snapshot = { scope: GuideReadingScope | null; ready: boolean; entries: Guid
 const empty: Snapshot = { scope: null, ready: false, entries: {}, saving: false, error: false };
 let snapshot = empty;
 let generation = 0;
+// Keep the observed guest-to-account owner through failed reads/claim writes and retries.
+// A cold authenticated start never creates this intent; it comes only from a live transition.
+let pendingGuestClaim: GuideReadingScope | null = null;
 const forgotten = new Set<GuideReadingScope>();
 let queue: Promise<void> = Promise.resolve();
 const listeners = new Set<() => void>();
@@ -24,6 +27,7 @@ export function activateGuideReadingScope(scope: GuideReadingScope, options?: { 
   if (snapshot.scope === scope && snapshot.ready) return Promise.resolve();
   if (snapshot.scope === scope) return queue;
   const transferGuest = scope !== 'guest' && (options?.transferGuest ?? snapshot.scope === 'guest');
+  if (transferGuest && !pendingGuestClaim) pendingGuestClaim = scope;
   const token = ++generation;
   publish({ ...empty, scope });
   return enqueue(async () => {
@@ -31,11 +35,13 @@ export function activateGuideReadingScope(scope: GuideReadingScope, options?: { 
       const storage = getLucidKeyValueStorage();
       const guestRaw = await storage.getItem(guideReadingStorageKey('guest'));
       const guest = guestRaw ? JSON.parse(guestRaw) as Record<string, unknown> : null;
-      let claim = typeof guest?.__claimOwner === 'string' && guest.__claimOwner.startsWith('user:')
+      const storedClaim = typeof guest?.__claimOwner === 'string' && guest.__claimOwner.startsWith('user:')
         ? guest.__claimOwner as GuideReadingScope : null;
-      if (guest && !claim && transferGuest) {
-        // Reserve ownership before writing the account. A failed/interrupted transfer cannot give it to account B.
-        claim = scope;
+      if (storedClaim) pendingGuestClaim = storedClaim;
+      const claim = storedClaim ?? pendingGuestClaim;
+      if (!guest) pendingGuestClaim = null;
+      if (guest && claim && !storedClaim) {
+        // Do not forget the owner if this first durable claim write fails.
         await storage.setItem(guideReadingStorageKey('guest'), JSON.stringify({ ...guest, __claimOwner: claim }));
       }
       if (guest && claim) {
@@ -45,6 +51,7 @@ export function activateGuideReadingScope(scope: GuideReadingScope, options?: { 
         }
         // A subsequent scope can finish this local transfer for its reserved owner, without seeing the contents.
         await storage.removeItem(guideReadingStorageKey('guest'));
+        pendingGuestClaim = null;
       }
       const raw = await storage.getItem(guideReadingStorageKey(scope));
       const entries = raw ? parseGuideReading(JSON.parse(raw)) : {};
@@ -119,9 +126,12 @@ export function forgetGuideReading(userId: string): Promise<void> {
     const storage = getLucidKeyValueStorage();
     await storage.removeItem(guideReadingStorageKey(scope));
     const guestRaw = await storage.getItem(guideReadingStorageKey('guest'));
-    if (guestRaw && (JSON.parse(guestRaw) as Record<string, unknown>).__claimOwner === scope) {
+    const guestOwner = guestRaw ? (JSON.parse(guestRaw) as Record<string, unknown>).__claimOwner ?? pendingGuestClaim : pendingGuestClaim;
+    if (guestRaw && guestOwner === scope) {
       await storage.removeItem(guideReadingStorageKey('guest'));
+      pendingGuestClaim = null;
     }
+    if (pendingGuestClaim === scope) pendingGuestClaim = null;
   });
 }
 
@@ -136,4 +146,4 @@ export function retryGuideReading(scope: GuideReadingScope): Promise<void> {
 const subscribe = (listener: () => void) => { listeners.add(listener); return () => { listeners.delete(listener); }; };
 export function useGuideReadingSnapshot(): Snapshot { return useSyncExternalStore(subscribe, () => snapshot, () => snapshot); }
 export function flushGuideReadingForTests(): Promise<void> { return queue; }
-export function resetGuideReadingForTests(): void { suspendGuideReadingScope(); queue = Promise.resolve(); forgotten.clear(); listeners.clear(); }
+export function resetGuideReadingForTests(): void { suspendGuideReadingScope(); queue = Promise.resolve(); pendingGuestClaim = null; forgotten.clear(); listeners.clear(); }
