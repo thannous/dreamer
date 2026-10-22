@@ -52,6 +52,7 @@ const mockReloadDreams = jest.fn(async () => undefined);
 let mockCompleteness: { status: 'incomplete' | 'loading' } | undefined;
 let mockRemotePreviewAllowed = false;
 const mockListScrollToOffset = jest.fn();
+const mockListScrollToIndex = jest.fn();
 const mockKeyboardDismiss = jest.fn();
 let mockPlatform = 'android';
 let mockListProps: Record<string, any> = {};
@@ -296,6 +297,7 @@ jest.mock('@shopify/flash-list', () => {
           nativeEvent: { contentOffset: { y: Math.max(0, args?.offset ?? 0) } },
         });
       },
+      scrollToIndex: async (args: { index: number }) => { mockListScrollToIndex(args); },
     }));
     const Empty = props.ListEmptyComponent;
     return <div
@@ -479,6 +481,7 @@ afterEach(() => {
   mockKeyboardListeners.clear();
   mockRetryPersistence.mockClear();
   mockListScrollToOffset.mockClear();
+  mockListScrollToIndex.mockClear();
   mockKeyboardDismiss.mockClear();
 });
 
@@ -917,6 +920,63 @@ describe('Journal compact large-text layout', () => {
     expect(mockListProps.ListHeaderComponent).toBeUndefined();
     expect(mockListProps.style).toBeUndefined();
     expect(mockListProps.numColumns).toBe(4);
+  });
+});
+
+describe('Journal on an iPhone Duo', () => {
+  beforeEach(() => {
+    for (let night = 0; night < 8; night += 1) {
+      mockDreams.push({ ...guestDream, id: guestDream.id - night * 86_400_000, title: `Night ${night}` });
+    }
+  });
+
+  it.each([
+    [412, 678, 1], // folded, less its status bar column
+    [669, 951, 2], // open
+    [897, 669, 3], // open on its side, less its status bar column
+  ])('lays a %i by %i window out in %i columns', (width: number, height: number, columns: number) => {
+    Object.assign(mockWindow, { width, height });
+    render(<JournalScreen />);
+    expect(mockListProps.numColumns).toBe(columns);
+  });
+
+  it('opens the new columns on the dream that was in view when the Duo folds', () => {
+    Object.assign(mockWindow, { width: 669, height: 951 });
+    const view = render(<JournalScreen />);
+    act(() => {
+      mockListProps.onLoad();
+      mockListProps.onViewableItemsChanged({ viewableItems: [{ index: 4 }, { index: 5 }], changed: [] });
+    });
+    expect(mockListScrollToIndex).not.toHaveBeenCalled();
+
+    Object.assign(mockWindow, { width: 412, height: 678 });
+    view.rerender(<JournalScreen />);
+    expect(mockListProps.numColumns).toBe(1);
+    act(() => { mockListProps.onLoad(); });
+    expect(mockListScrollToIndex).toHaveBeenCalledTimes(1);
+    expect(mockListScrollToIndex).toHaveBeenCalledWith({
+      index: 4,
+      animated: false,
+      viewOffset: -(MOCK_INSETS.top + ThemeLayout.spacing.sm),
+    });
+
+    // Loaded again in the same columns (a filter on the web), the list stays where it is.
+    act(() => { mockListProps.onLoad(); });
+    expect(mockListScrollToIndex).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps a journal read from its first dream at the top when the Duo opens', () => {
+    Object.assign(mockWindow, { width: 412, height: 678 });
+    const view = render(<JournalScreen />);
+    act(() => {
+      mockListProps.onViewableItemsChanged({ viewableItems: [{ index: 0 }, { index: 1 }], changed: [] });
+    });
+
+    Object.assign(mockWindow, { width: 669, height: 951 });
+    view.rerender(<JournalScreen />);
+    expect(mockListProps.numColumns).toBe(2);
+    act(() => { mockListProps.onLoad(); });
+    expect(mockListScrollToIndex).not.toHaveBeenCalled();
   });
 });
 

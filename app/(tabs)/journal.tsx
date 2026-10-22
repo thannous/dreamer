@@ -28,8 +28,8 @@ import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import {
   DESKTOP_BREAKPOINT,
   LAYOUT_MAX_WIDTH,
-  TABLET_BREAKPOINT,
   getBottomNavigationLayout,
+  getWindowClass,
 } from '@/constants/layout';
 import { useDreams } from '@/context/DreamsContext';
 import { AuthContext } from '@/context/AuthContext';
@@ -117,20 +117,31 @@ function JournalListScreen() {
   const { formatShortDate: formatDreamListDate } = useLocaleFormatting();
   const firstUsefulList = useRef(false);
   const firstUsefulContent = useRef(false);
+  const flatListRef = useRef<FlashListRef<DreamAnalysis>>(null);
+  // The dream at the top of the list when its columns change (an iPhone Duo folded or
+  // opened, a phone turned): the list remounts in its new columns and opens on that dream.
+  const resumeIndexRef = useRef<number | null>(null);
+  const searchInputRef = useRef<TextInputInstance>(null);
+  const { width, height, fontScale } = useContentWindow();
+  const insets = useSafeAreaInsets();
   const onListLoaded = useCallback(() => {
     if (!firstUsefulList.current) {
       firstUsefulList.current = true;
       markPerformance('journal.first_list_painted');
     }
-  }, []);
-  const flatListRef = useRef<FlashListRef<DreamAnalysis>>(null);
-  const searchInputRef = useRef<TextInputInstance>(null);
-  const { width, height, fontScale } = useContentWindow();
-  const insets = useSafeAreaInsets();
+    const resumeIndex = resumeIndexRef.current;
+    resumeIndexRef.current = null;
+    if (resumeIndex) {
+      // Below the status bar: the search has scrolled away by then.
+      void flatListRef.current?.scrollToIndex({ index: resumeIndex, animated: false, viewOffset: -(insets.top + ThemeLayout.spacing.sm) });
+    }
+  }, [insets.top]);
 
   const isWeb = Platform.OS === 'web';
   const isDesktopLayout = isWeb && width >= DESKTOP_BREAKPOINT;
-  const isTabletLayout = !isDesktopLayout && width >= TABLET_BREAKPOINT;
+  // One column on a phone or the folded Duo, two open, three when the open Duo lies on its side.
+  const windowClass = getWindowClass(width, height);
+  const listColumns = windowClass === 'expanded' ? 3 : windowClass === 'large' ? 2 : 1;
   const desktopColumns = width >= 1440 ? 4 : 3;
   const navigationLayout = getBottomNavigationLayout(width, height, fontScale);
   // Keep the shared brand header and search outside the column-keyed list so
@@ -157,7 +168,7 @@ function JournalListScreen() {
   const overlayNavClearance = isDesktopLayout || isKeyboardVisible ? 0 : navigationClearance;
   const searchConsumesLayout = isDesktopLayout;
   // A column change remounts the list; keyboard/height changes retain its offset.
-  const mobileListKey = isTabletLayout ? 'tablet-2col' : 'mobile-cards-1col';
+  const mobileListKey = listColumns > 1 ? `tablet-${listColumns}col` : 'mobile-cards-1col';
   const listScrollY = useSharedValue(0);
   // The journal's own scroll, read by its header, painting and dream cards.
   const headerScrollY = useHeaderScrollY();
@@ -275,6 +286,8 @@ function JournalListScreen() {
   useLayoutEffect(() => {
     const previous = scrollLayout.current;
     if (previous.mobileListKey !== mobileListKey || previous.isDesktopLayout !== isDesktopLayout) {
+      // The first dream in view, before the remount's own first rows replace it.
+      resumeIndexRef.current = viewableRangeRef.current?.min ?? null;
       staticScrollY.current = 0;
       listScrollY.set(0);
     } else if (previous.searchConsumesLayout !== searchConsumesLayout) {
@@ -1225,9 +1238,9 @@ function JournalListScreen() {
         onEndReachedThreshold={0.5}
         ListFooterComponent={listFooter}
         keyExtractor={keyExtractor}
-        renderItem={isTabletLayout ? renderDreamItemTablet : renderDreamItem}
+        renderItem={listColumns > 1 ? renderDreamItemTablet : renderDreamItem}
         extraData={storyGlowKey ?? undefined}
-        numColumns={isTabletLayout ? 2 : 1}
+        numColumns={listColumns}
         // Perf: helps FlashList recycle views by layout type to reduce scroll-time layout work.
         getItemType={getDreamItemType}
         contentContainerStyle={listContentStyle}

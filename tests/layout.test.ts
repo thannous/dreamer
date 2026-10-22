@@ -8,7 +8,9 @@ import {
   getBottomNavigationItemStyle,
   getRecordingComposerLayout,
   getTabBarHorizontalLayout,
+  getWindowClass,
   isNarrowBottomNavigation,
+  type WindowClass,
 } from '@/constants/layout';
 
 describe('getBottomNavigationLayout', () => {
@@ -151,6 +153,22 @@ describe('narrow bottom navigation', () => {
     // The open iPhone Duo on its side, less its status bar column: five tabs, not a ruler.
     expect(getTabBarHorizontalLayout(897)).toEqual({ start: 128.5, end: 128.5 });
     expect(getTabBarHorizontalLayout(1280)).toEqual({ start: 320, end: 320 });
+  });
+});
+
+describe('getWindowClass', () => {
+  it.each([
+    [390, 844, 'compact'], // a phone
+    [412, 678, 'compact'], // the folded iPhone Duo, less its status bar column
+    [330, 951, 'compact'], // half of the open Duo in Split View
+    [874, 402, 'large'], // a phone on its side keeps its two columns
+    [624, 466, 'large'], // the folded Duo on its side
+    [669, 951, 'large'], // the open Duo
+    [768, 1024, 'large'], // a tablet
+    [897, 669, 'expanded'], // the open Duo on its side, less its status bar column
+    [1280, 800, 'expanded'],
+  ] as [number, number, WindowClass][])('classifies a %i × %i window as %s', (width: number, height: number, expected: WindowClass) => {
+    expect(getWindowClass(width, height)).toBe(expected);
   });
 });
 
