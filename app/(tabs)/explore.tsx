@@ -1,6 +1,7 @@
 import type { ViewInstance } from 'react-native';
 import { useContentWindow } from '@/context/ContentWindowContext';
 import { useQuickSettings } from '@/context/QuickSettingsContext';
+import { CollectionEntryCard } from '@/components/badges/CollectionEntry';
 import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
 import { RitualPickerSheet } from '@/components/ritual/RitualPickerSheet';
 import { ScreenContainer } from '@/components/ScreenContainer';
@@ -199,6 +200,7 @@ function ExploreScreen() {
         {header}
         <ScreenContainer key="resources">
           <View className="gap-5 px-4 pt-3">
+            <CollectionEntryCard testID="btn.explore.collection" />
             <View className="border-t border-line">
               <ExplorerRow
                 icon="book.closed.fill"

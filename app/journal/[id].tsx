@@ -59,6 +59,7 @@ import { useOnboarding } from '@/context/OnboardingContext';
 import { useDreamsData, useDreamsActions } from '@/context/DreamsContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
+import { useBadgeReading } from '@/hooks/useBadgeReading';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useQuota } from '@/hooks/useQuota';
@@ -105,6 +106,7 @@ import { buildAnalysisPaywallHref, buildPaywallHref, consumePurchasedAnalysisRet
 import { sortWithSelectionFirst } from '@/lib/sorting';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
+import { recordBadgeEvent } from '@/services/badgeLedgerStore';
 import { categorizeDream } from '@/services/geminiService';
 import { playSignature } from '@/services/signatureSounds';
 import { getStaleAnalysisBannerDismissed, saveStaleAnalysisBannerDismissed } from '@/services/storageService';
@@ -617,6 +619,10 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     latestMetadataDreamRef.current = dream;
     return () => { latestMetadataDreamRef.current = undefined; };
   }, [dream]);
+  // Read again: the page stayed open a moment on a dream kept since an earlier day.
+  useBadgeReading(dream ? dream.clientRequestId ?? `local:${dream.id}` : null, () => {
+    if (dream) recordBadgeEvent({ type: 'dream_reopened', dream, now: Date.now() });
+  });
   const hasUncategorizedDraft = Boolean(dream && !dream.isAnalyzed && dream.analysisStatus !== 'pending'
     && !dream.theme && dream.title === deriveDraftTitle(dream.transcript, ''));
   const needsMetadataRecovery = hasUncategorizedDraft && !initialCategorizationPending;
@@ -731,6 +737,26 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     return items;
   }, [dreamMemory, t]);
   const [editableTranscript, setEditableTranscript] = useState('');
+  // For the collection: what the page held when editing began, and which fields the
+  // dreamer changed by hand. A name or type found by the AI meanwhile is not theirs.
+  const editStartRef = useRef<{ title: string; theme: string; dreamType: string; transcript: string } | null>(null);
+  const editTouchedRef = useRef({ title: false, transcript: false, classification: false });
+  const editTitle = useCallback((text: string) => {
+    editTouchedRef.current.title = true;
+    setEditableTitle(text);
+  }, []);
+  const editTranscript = useCallback((text: string) => {
+    editTouchedRef.current.transcript = true;
+    setEditableTranscript(text);
+  }, []);
+  const chooseEditableDreamType = useCallback((type: string) => {
+    editTouchedRef.current.classification = true;
+    setEditableDreamType(type);
+  }, []);
+  const chooseEditableTheme = useCallback((theme: string) => {
+    editTouchedRef.current.classification = true;
+    setEditableTheme(theme);
+  }, []);
   const [isEditing, setIsEditing] = useState(false);
   const [isPickingImage, setIsPickingImage] = useState(false);
   // A page being written in, or its illustration held open, is not leafed through.
@@ -1183,9 +1209,16 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   // The page has one way to edit it: its name, details and story together.
   const startEditing = useCallback(() => {
     if (isAnalysisLocked) return;
+    editStartRef.current = dream ? {
+      title: dream.title,
+      theme: dream.theme ?? '',
+      dreamType: dream.dreamType,
+      transcript: dream.transcript,
+    } : null;
+    editTouchedRef.current = { title: false, transcript: false, classification: false };
     setHeldTitle(null);
     setIsEditing(true);
-  }, [isAnalysisLocked]);
+  }, [dream, isAnalysisLocked]);
 
   const cancelEditing = useCallback(() => {
     Keyboard.dismiss();
@@ -1227,6 +1260,20 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
 
     await updateDream(updatedDream);
     setIsEditing(false);
+    // Saved: each field the dreamer changed by hand, and that now differs, counts once.
+    const start = editStartRef.current;
+    const touched = editTouchedRef.current;
+    if (start) {
+      if (touched.transcript && normalizedTranscript !== start.transcript) {
+        recordBadgeEvent({ type: 'narrative_edited', dream: updatedDream });
+      }
+      if (touched.title && normalizedTitle !== start.title) {
+        recordBadgeEvent({ type: 'title_edited', dream: updatedDream });
+      }
+      if (touched.classification && (normalizedTheme !== start.theme || normalizedDreamType !== start.dreamType)) {
+        recordBadgeEvent({ type: 'classification_edited', dream: updatedDream });
+      }
+    }
   }, [dream, editableTitle, editableTheme, editableDreamType, editableTranscript, formatNumber, t, updateDream]);
 
   const handlePickImage = useCallback(async () => {
@@ -2117,7 +2164,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
           multiline
           style={{ maxHeight: Math.max(160, windowSize.height * 0.36) }}
           value={editableTranscript}
-          onChangeText={setEditableTranscript}
+          onChangeText={editTranscript}
           maxLength={getDreamTextInputLimit(editableTranscript.length, dream.transcript.length)}
           onFocus={() => { editingStoryRef.current = true; }}
           onBlur={() => { editingStoryRef.current = false; }}
@@ -2181,7 +2228,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
               className="mb-3 border-b border-line pb-1 font-serif-bold text-[24px] leading-8 text-ivory"
               selectTextOnFocus
               value={editableTitle}
-              onChangeText={setEditableTitle}
+              onChangeText={editTitle}
               placeholder={t('journal.detail.title_placeholder')}
               accessibilityLabel={t('journal.detail.title_placeholder')}
               placeholderTextColor={noctalia.text.secondary}
@@ -2261,7 +2308,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
                     <Pressable
                       key={type}
                       testID={`chip.type.${type}`}
-                      onPress={() => setEditableDreamType(type)}
+                      onPress={() => chooseEditableDreamType(type)}
                       className={`rounded-[20px] border px-3 py-1.5 ${
                         selected ? 'border-champagne-soft bg-champagne' : 'border-line'
                       }`}
@@ -2299,7 +2346,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
                   <Pressable
                     key={theme}
                     testID={`chip.theme.${theme}`}
-                    onPress={() => setEditableTheme(theme)}
+                    onPress={() => chooseEditableTheme(theme)}
                     className={`rounded-[20px] border px-3 py-1.5 ${
                       selected ? 'border-champagne-soft bg-champagne' : 'border-line'
                     }`}

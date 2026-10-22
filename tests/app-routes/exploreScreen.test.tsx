@@ -103,6 +103,11 @@ jest.mock('@/components/NoctaliaScreenHeader', () => ({
   ),
 }));
 
+// The collection's door has its own journey; here it only takes its place in the list.
+jest.mock('@/components/badges/CollectionEntry', () => ({
+  CollectionEntryCard: ({ testID }: { testID?: string }) => <button data-testid={testID} />,
+}));
+
 jest.mock('@/components/ScreenContainer', () => ({
   ScreenContainer: ({ children }: any) => <div>{children}</div>,
 }));

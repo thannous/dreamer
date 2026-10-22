@@ -56,6 +56,7 @@ import { markDreamStoryHandoff } from '@/lib/dreamStoryPrologue';
 import { isDreamTextTooLong } from '@/lib/dreamTextLimit';
 import { classifyError, GuestDreamLimitError } from '@/lib/errors';
 import { hasAiConsent } from '@/lib/aiConsent';
+import { recordBadgeEvent } from '@/services/badgeLedgerStore';
 import { formatCaptureNarrative } from '@/services/captureConversation';
 import {
   getInitialDreamCategorizationKey,
@@ -460,6 +461,9 @@ function RecordingScreen() {
   const textInputRef = useRef<TextInputInstance | null>(null);
   const scrollViewRef = useRef<React.ElementRef<typeof ScrollView> | null>(null);
   const lastInputSourceRef = useRef<RecordingInputModePreference>('text');
+  // How this capture's words arrived, for the collection: recognized speech, or typing.
+  const voicedCaptureRef = useRef(false);
+  const typedCaptureRef = useRef(false);
   const transcriptionLocale = useMemo(() => getTranscriptionLocale(language), [language]);
 
   // Voice is blocked only when the device cannot capture speech at all. Every
@@ -508,6 +512,7 @@ function RecordingScreen() {
     (text: string) => {
       if (!isHydrated || noteInput(text) !== true) return;
       lastInputSourceRef.current = 'text';
+      if (text.trim()) typedCaptureRef.current = true;
       if (!captureStartedTrackedRef.current && text.trim().length > 0) {
         captureStartedTrackedRef.current = true;
         void trackProductEvent('dream_capture_started', {
@@ -546,7 +551,9 @@ function RecordingScreen() {
       const insertion = dictationInsertionRef.current ?? { base: answer, selection: { start: answer.length, end: answer.length } };
       const result = insertDictation(insertion, speech);
       dictationInsertionRef.current = insertion;
-      return noteReviewAnswer(result.text);
+      const applied = noteReviewAnswer(result.text);
+      if (applied) voicedCaptureRef.current = true;
+      return applied;
     }
     const base = baseTranscriptRef.current;
     const insertion = dictationInsertionRef.current ?? {
@@ -563,6 +570,7 @@ function RecordingScreen() {
     if (answerInsertionRef.current) {
       setCurrentAnswer(result.text.slice(answerInsertionRef.current.base.length).trimStart());
     }
+    voicedCaptureRef.current = true;
     return true;
   }, [isHydrated, noteInput, noteReviewAnswer]);
 
@@ -695,6 +703,8 @@ function RecordingScreen() {
     transcriptSelectionRef.current = undefined;
     setTranscriptSelection(undefined);
     captureStartedTrackedRef.current = false;
+    voicedCaptureRef.current = false;
+    typedCaptureRef.current = false;
   }, [resetConversation]);
 
   const navigateToSavedDream = useCallback((
@@ -1223,6 +1233,10 @@ function RecordingScreen() {
       markPerformance('journal.save_acknowledged', { trace: saveTrace });
       if (isNewDream) {
         void trackDreamSaveMilestone(isFirstDream);
+        // Spoken words make it a told dream; otherwise typed ones make it a written one.
+        // A restored draft alone says neither.
+        const voiced = voicedCaptureRef.current;
+        recordBadgeEvent({ type: 'dream_saved', dream: savedDream, voiced, typed: !voiced && typedCaptureRef.current });
       }
       clearAfterSuccessfulSave();
       setDraftDream(savedDream);
@@ -1674,6 +1688,7 @@ function RecordingScreen() {
     const draft = updateCaptureDraftSection(editableCapture, index, text);
     const source = serializeCaptureEditableDraft(draft);
     if (!noteInput(source)) return;
+    typedCaptureRef.current = true;
     if (source !== baseTranscriptRef.current) invalidateCaptureSource(baseTranscriptRef.current);
     setEditableCapture(draft);
     baseTranscriptRef.current = source;
@@ -1811,6 +1826,7 @@ function RecordingScreen() {
       ? insertDictation(insertion, text)
       : { text: insertion.storyBase, selection: { start: insertion.storyBase.length, end: insertion.storyBase.length } };
     if (noteInput(result.text) !== true) return;
+    if (text.trim()) typedCaptureRef.current = true;
     answerInsertionRef.current = insertion;
     setAnswerBase(insertion.storyBase);
     setCurrentAnswer(text);

@@ -10,6 +10,7 @@ import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
 import { useTheme } from '@/context/ThemeContext';
+import { useBadgeReading } from '@/hooks/useBadgeReading';
 import { useScrollIdle } from '@/hooks/useScrollIdle';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getDreamGuideCopy } from '@/lib/dreamGuideCopy';
@@ -21,6 +22,7 @@ import {
   getDreamGuideSymbols,
   getPracticalDreamGuideContent,
 } from '@/services/dreamGuideService';
+import { recordBadgeEvent } from '@/services/badgeLedgerStore';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
 import { HeaderScrollView, useHeaderScroll } from '@/components/ui/headerStretch';
@@ -43,6 +45,11 @@ function DreamGuideDetailScreen() {
     () => (guide?.kind === 'symbols' ? getDreamGuideSymbols(guide) : []),
     [guide],
   );
+  // For the collection: a guide read for a moment.
+  const readGuideId = guide?.id ?? null;
+  useBadgeReading(readGuideId, () => {
+    if (readGuideId) recordBadgeEvent({ type: 'guide_viewed', guideId: readGuideId });
+  });
 
   if (!guide) {
     return (

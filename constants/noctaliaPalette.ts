@@ -66,6 +66,21 @@ export function getNoctaliaPalette(mode: ThemeMode) {
     illustration: dark
       ? { text: '#FFF9EF', scrim: 'rgba(3, 4, 13, 0.86)', transparent: 'rgba(3, 4, 13, 0)' }
       : { text: '#382D35', scrim: 'rgba(245, 234, 219, 0.92)', transparent: 'rgba(245, 234, 219, 0)' },
+    // The collection's cards are night objects in either theme, like the illustrations they
+    // hold: a night ground, a frame of the tier's metal (shadow, light, shadow, edge), the
+    // glow it casts and an ink at 4.5:1 or more on that ground. A card not yet earned has
+    // no metal. The foil and sheen are the light the gold and silver cards catch.
+    collection: {
+      ground: ['#121A42', '#070B24', '#03040D'] as const,
+      text: '#FFF9EF',
+      muted: '#B7AEC9',
+      locked: { frame: ['#2B3150', '#4A5175', '#2B3150', '#1C2038'] as const, glow: 'rgba(183, 174, 201, 0.12)', ink: '#B7AEC9' },
+      bronze: { frame: ['#6B3F22', '#E6AE7E', '#9A5F35', '#4E2D18'] as const, glow: 'rgba(230, 174, 126, 0.3)', ink: '#EDBE95' },
+      silver: { frame: ['#6F7789', '#F5F7FC', '#A3ACBD', '#4E5566'] as const, glow: 'rgba(225, 231, 243, 0.3)', ink: '#E3E8F2' },
+      gold: { frame: ['#7E5414', '#FFF0B8', '#C9973A', '#5E3E0C'] as const, glow: 'rgba(255, 214, 128, 0.42)', ink: '#F5D88E' },
+      foil: ['rgba(255, 170, 205, 0)', 'rgba(255, 170, 205, 0.5)', 'rgba(255, 236, 170, 0.5)', 'rgba(150, 240, 220, 0.5)', 'rgba(165, 175, 255, 0.5)', 'rgba(255, 170, 230, 0.5)', 'rgba(255, 170, 205, 0)'] as const,
+      sheen: ['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 0.5)', 'rgba(255, 255, 255, 0)'] as const,
+    },
     danger: dark ? '#E6A49B' : '#873830',
     status: {
       danger: { background: dark ? '#302126' : '#E4C2AF', border: dark ? '#936D68' : '#A56959', text: dark ? '#E6A49B' : '#873830', icon: dark ? '#E6A49B' : '#873830' },
@@ -133,6 +148,7 @@ export function getNoctaliaDesignTokens(colors: ThemeColors, mode: ThemeMode) {
     nav: { background: colors.navbarBg, border: colors.navbarBorder, active: colors.navbarTextActive, inactive: colors.navbarTextInactive, glass: p.navGlass, activePill: p.navActive },
     listeningHalo: p.listeningHalo,
     fullMoon: p.fullMoon,
+    collection: p.collection,
     atmosphere: {
       glow: p.accent,
       glowOpacity: dark ? 0.16 : 0.08,

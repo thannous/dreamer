@@ -47,6 +47,7 @@ import { getDreamThumbnailCacheKey, getDreamThumbnailUri, preloadImage } from '@
 import { trackProductEvent } from '@/lib/analytics';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
+import { recordBadgeEvent } from '@/services/badgeLedgerStore';
 import { FlashList, type FlashListRef, type ListRenderItemInfo, type ViewToken } from '@shopify/flash-list';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -239,6 +240,9 @@ function JournalListScreen() {
   const [sortOrder, setSortOrder] = useState<JournalSortOrder>('newest');
   // A symbol's link key: only the dreams of its thread.
   const [selectedSymbol, setSelectedSymbol] = useState<string | null>(null);
+  // For the collection: whether the dreamer chose a filter here. Another screen's preset is not theirs.
+  const [filtersSetByHand, setFiltersSetByHand] = useState(false);
+  const badgeNarrowingRef = useRef({ searched: false, filtered: false });
 
   // Another screen (Tendances, a symbol's sheet) can open the journal on a set of dreams:
   // its filters replace the current ones and then stay like filters set by hand (shown as
@@ -264,6 +268,7 @@ function JournalListScreen() {
       setAnalysisStatus(filterLink.analysis);
       setSelectedSymbol(filterLink.symbol);
       setSortOrder('newest');
+      setFiltersSetByHand(false);
     }
   }
   // The params leave the route so they apply only once.
@@ -428,6 +433,10 @@ function JournalListScreen() {
     if (!previewMounted.current || previewScopeRef.current.userId !== userId) return;
     void reloadDreams();
     router.push({ pathname: '/journal/[id]', params: getDreamRouteParams(full) });
+    // This list only shows under a search, never under a filter.
+    if (badgeNarrowingRef.current.searched) {
+      recordBadgeEvent({ type: 'journal_result_opened', searched: true, filtered: false, now: Date.now() });
+    }
   }, [mediaUserId, loadRemoteDreamForPreview, reloadDreams]);
   const previewFiltersSupported = !selectedTheme && !selectedDreamType && !dateRange.start && !dateRange.end &&
     quickFilter === 'all' && !showRememberedOnly && !showRecurringOnly && !analysisStatus && !symbolThread &&
@@ -531,6 +540,7 @@ function JournalListScreen() {
     setAnalysisStatus(null);
     setSelectedSymbol(null);
     setSortOrder('newest');
+    setFiltersSetByHand(false);
   }, []);
 
   const handleQuickFilterPress = useCallback((next: JournalQuickFilter) => {
@@ -538,30 +548,37 @@ function JournalListScreen() {
       handleClearFilters();
       return;
     }
+    setFiltersSetByHand(true);
     setQuickFilter((current) => (current === next ? 'all' : next));
   }, [handleClearFilters]);
 
   const toggleThemeFilter = useCallback((theme: DreamTheme) => {
+    setFiltersSetByHand(true);
     setSelectedTheme((current) => (theme === current ? null : theme));
   }, []);
 
   const toggleDreamTypeFilter = useCallback((dreamType: DreamType) => {
+    setFiltersSetByHand(true);
     setSelectedDreamType((current) => (dreamType === current ? null : dreamType));
   }, []);
 
   const handleDateRangeChange = useCallback((start: Date | null, end: Date | null) => {
+    setFiltersSetByHand(true);
     setDateRange({ start, end });
   }, []);
 
   const handleRememberedToggle = useCallback(() => {
+    setFiltersSetByHand(true);
     setShowRememberedOnly((prev) => !prev);
   }, []);
 
   const handleRecurringToggle = useCallback(() => {
+    setFiltersSetByHand(true);
     setShowRecurringOnly((prev) => !prev);
   }, []);
 
   const handleAnalysisStatusChange = useCallback((status: JournalAnalysisStatusFilter | null) => {
+    setFiltersSetByHand(true);
     setAnalysisStatus(status);
   }, []);
 
@@ -572,6 +589,8 @@ function JournalListScreen() {
     }
     isNavigatingRef.current = true;
     router.push({ pathname: '/journal/[id]', params: getDreamRouteParams(dream) });
+    const { searched, filtered } = badgeNarrowingRef.current;
+    if (searched || filtered) recordBadgeEvent({ type: 'journal_result_opened', searched, filtered, now: Date.now() });
   }, []);
 
   // On a phone, sharing from a card lets the dreamer choose what the shared card shows, over
@@ -862,6 +881,21 @@ function JournalListScreen() {
     analysisStatus ||
     hasNonDefaultSort
   );
+  // The list a result is opened from: a search typed here, a filter chosen here.
+  const filteredByHand = filtersSetByHand && !!(
+    selectedTheme ||
+    selectedDreamType ||
+    dateRange.start ||
+    dateRange.end ||
+    quickFilter !== 'all' ||
+    showRememberedOnly ||
+    showRecurringOnly ||
+    analysisStatus
+  );
+  const searchedNow = deferredSearchQuery.trim().length > 0;
+  useEffect(() => {
+    badgeNarrowingRef.current = { searched: searchedNow, filtered: filteredByHand };
+  }, [filteredByHand, searchedNow]);
   const canStartRememberedDreamFromEmpty = dreams.length === 0 && !hasActiveFilter;
   const handleStartRememberedDreamFromEmpty = useCallback(() => {
     void trackProductEvent('empty_journal_remembered_cta_clicked', {

@@ -21,3 +21,13 @@ les originaux comme sources. Ne pas déclarer le parcours ou les effets qualifi�
 sur la seule base des images.
 
 Le brief produit transmis à Claude est dans [PLAN.md](PLAN.md).
+
+## Intégration dans l’app
+
+L’app n’embarque pas ces PNG : elle utilise des exports WebP qui gardent la
+transparence, `app/<family-id>.webp` (720 px, carte tenue en main) et
+`app/<family-id>-small.webp` (320 px, album et rangée des niveaux). Après une
+nouvelle livraison, régénérer avec `node scripts/export-badge-artwork.mjs` ;
+`--check` signale un export manquant. La correspondance famille/fichier et les
+habillages bronze, argent et or sont décrits dans
+[les règles de la collection](../../../lib/badges/README.md).

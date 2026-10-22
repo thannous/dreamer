@@ -4,6 +4,7 @@ import { router } from 'expo-router';
 import React, { memo, useMemo } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 
+import { CollectionFan, COLLECTION_ROUTE } from '@/components/badges/CollectionEntry';
 import { PressableScale } from '@/components/motion';
 import { getDreamerArtwork } from '@/constants/dreamerArtwork';
 import { DarkTheme } from '@/constants/journalTheme';
@@ -15,6 +16,8 @@ import { getDreamGuideCopy } from '@/lib/dreamGuideCopy';
 import type { DreamGuideLanguage } from '@/lib/dreamGuideTypes';
 import type { RitualId } from '@/lib/inspirationRituals';
 import { getSleepSoundCopy } from '@/lib/sleepSoundCopy';
+import { useBadgeSummary } from '@/hooks/useBadgeSummary';
+import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { TID } from '@/lib/testIDs';
 import { getSymbolById } from '@/services/symbolDictionaryService';
 
@@ -47,6 +50,8 @@ function getDailySymbolId(now: number): string | undefined {
 type Tile = {
   key: string;
   art: ImageSource | number | undefined;
+  /** Drawn in place of a painting. */
+  scene?: React.ReactNode;
   eyebrow?: string;
   title: string;
   onPress: () => void;
@@ -69,8 +74,10 @@ export const HomeDiscoverTiles = memo(function HomeDiscoverTiles({ now, selected
   const symbol = symbolId ? getSymbolById(symbolId) : undefined;
   const guideCopy = useMemo(() => getDreamGuideCopy(language as DreamGuideLanguage), [language]);
   const sleepCopy = useMemo(() => getSleepSoundCopy(language), [language]);
+  const { formatNumber } = useLocaleFormatting();
+  const badges = useBadgeSummary();
 
-  const tiles: Tile[] = [
+  const doors: Tile[] = [
     ...(symbolId && symbol ? [{
       key: 'symbol',
       art: getSymbolIllustration(symbolId, 'poster'),
@@ -107,7 +114,24 @@ export const HomeDiscoverTiles = memo(function HomeDiscoverTiles({ now, selected
       onPress: () => router.push('/symbol-dictionary' as any),
       testID: TID.Button.HomeResourcesSymbols,
     },
+    {
+      key: 'collection',
+      art: undefined,
+      scene: <View className="absolute inset-x-0 top-3 items-center"><CollectionFan width={112} /></View>,
+      // A card waiting to be turned over is said first.
+      eyebrow: badges.unrevealedCards > 0
+        ? t(badges.unrevealedCards === 1 ? 'badges.new_cards_one' : 'badges.new_cards', { count: formatNumber(badges.unrevealedCards) })
+        : undefined,
+      title: t('badges.title'),
+      onPress: () => router.push(COLLECTION_ROUTE),
+      testID: 'btn.home.collection',
+    },
   ];
+  // A card waiting to be turned over moves the collection beside the symbol of the day.
+  const collectionDoor = doors[doors.length - 1];
+  const tiles = badges.unrevealedCards > 0
+    ? [...doors.slice(0, 1), collectionDoor, ...doors.slice(1, -1)]
+    : doors;
 
   return (
     <View testID={TID.Component.HomeResources} accessibilityRole="summary"
@@ -126,7 +150,7 @@ export const HomeDiscoverTiles = memo(function HomeDiscoverTiles({ now, selected
             accessibilityLabel={tile.eyebrow ? `${tile.eyebrow}, ${tile.title}` : tile.title}
             testID={tile.testID} style={TILE}
             className="overflow-hidden rounded-[20px] border border-line">
-            {tile.art ? <Image source={tile.art} contentFit="cover" cachePolicy="memory-disk" style={IMAGE_FILL} /> : null}
+            {tile.art ? <Image source={tile.art} contentFit="cover" cachePolicy="memory-disk" style={IMAGE_FILL} /> : tile.scene ?? null}
             {/* Dense from mid-height: three-line titles start there, even on the light paintings. */}
             <LinearGradient colors={VEIL} locations={[0.2, 0.45, 0.65, 1]} style={IMAGE_FILL} />
             <View className="flex-1 justify-end p-3.5">
