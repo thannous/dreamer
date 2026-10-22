@@ -88,6 +88,16 @@ export const weekKey = (timestamp: number): string => getLocalDateKey(startOfWee
 export const monthKey = (timestamp: number): string => getLocalDateKey(timestamp).slice(0, 7);
 
 const splitAliases = (key: string) => key.split('|').filter(Boolean);
+const stableAliases = (aliases: readonly string[]) => aliases.filter((alias) => alias.startsWith('c:') || alias.startsWith('r:'));
+const sharesDream = (known: readonly string[], incoming: readonly string[]) => {
+  const knownStable = stableAliases(known);
+  const incomingStable = stableAliases(incoming);
+  // Local timestamps can collide across devices. When both have stable identities,
+  // only an actual shared UUID/server row establishes that this is the same dream.
+  const left = knownStable.length && incomingStable.length ? knownStable : known;
+  const right = knownStable.length && incomingStable.length ? incomingStable : incoming;
+  return left.some((alias) => right.includes(alias));
+};
 
 /**
  * Distinct dreams among alias groups. Sync gives a dream its server id later, so two groups
@@ -112,7 +122,8 @@ export function countDistinctDreams(groups: Iterable<readonly string[]>): number
     const node = parent.length;
     parent.push(node);
     distinct += 1;
-    for (const alias of group) {
+    const stable = stableAliases(group);
+    for (const alias of stable.length ? stable : group) {
       const known = owner.get(alias);
       if (known === undefined) {
         owner.set(alias, node);
@@ -145,7 +156,7 @@ function addKey(ledger: BadgeLedger, id: BadgeFamilyId, key: string): BadgeLedge
 function addDreamAliases(ledger: BadgeLedger, id: BadgeFamilyId, aliases: readonly string[]): BadgeLedger {
   if (aliases.length === 0) return ledger;
   const keys = ledger.keys[id] ?? [];
-  const index = keys.findIndex((key) => splitAliases(key).some((alias) => aliases.includes(alias)));
+  const index = keys.findIndex((key) => sharesDream(splitAliases(key), aliases));
   if (index < 0) return addKey(ledger, id, aliases.join('|'));
   // Already counted: it may have received its server id since, which joins its names.
   const known = splitAliases(keys[index]);
@@ -301,6 +312,13 @@ export function settleBadgeLedger(
 ): BadgeLedger {
   const reading = readJournal(dreams);
   let next = ledger;
+  // Keep identities as well as maxima: disjoint devices and later-deleted dreams must
+  // contribute once when their histories meet. A maximum alone cannot be added safely.
+  for (const aliases of reading.saved) next = addDreamAliases(next, 'night-journal', aliases);
+  for (const key of reading.days) next = addKey(next, 'gentle-rhythm', key);
+  for (const key of reading.weeks) next = addKey(next, 'night-thread', key);
+  for (const key of reading.months) next = addKey(next, 'moon-cycles', key);
+  for (const aliases of reading.remembered) next = addDreamAliases(next, 'memory-keeper', aliases);
   for (const aliases of reading.favorites) next = addDreamAliases(next, 'treasure-keeper', aliases);
   for (const aliases of reading.pictured) next = addDreamAliases(next, 'dream-painter', aliases);
   const progress = progressFrom(next, reading);

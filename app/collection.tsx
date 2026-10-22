@@ -13,6 +13,8 @@ import { HeaderScrollView, useHeaderScroll } from '@/components/ui/headerStretch
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
+import { useAuth } from '@/context/AuthContext';
+import { useBadgeSyncStatus } from '@/services/badgeSyncStatus';
 import { useContentWindow } from '@/context/ContentWindowContext';
 import { useDreamsData } from '@/context/DreamsContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -67,6 +69,8 @@ function openAction(state: BadgeFamilyState) {
  */
 function CollectionScreen() {
   const onHeaderScroll = useHeaderScroll();
+  const { user } = useAuth();
+  const syncStatus = useBadgeSyncStatus(user?.id);
   const insets = useSafeAreaInsets();
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
@@ -130,6 +134,9 @@ function CollectionScreen() {
 
         <View className="gap-3">
           <Text className="font-sans text-body text-ivory-muted">{t('badges.subtitle')}</Text>
+          <Text accessibilityLiveRegion="polite" testID="collection.sync-status" className="font-sans text-body-sm text-ivory-muted">
+            {t(`badges.sync.${syncStatus}`)}
+          </Text>
           <View className="gap-3 rounded-[24px] border border-line bg-ink-card p-4" testID="collection.summary">
             <View className="flex-row flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
               <Text className="font-display-semibold text-h2 text-ivory" testID="collection.summary.count">{summary}</Text>

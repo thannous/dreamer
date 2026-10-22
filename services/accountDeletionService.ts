@@ -1,3 +1,4 @@
+import { forgetBadgeLedger } from '@/services/badgeLedgerStore';
 import { signOut } from '@/lib/auth';
 import { getApiBaseUrl } from '@/lib/config';
 import { fetchJSON } from '@/lib/http';
@@ -44,6 +45,11 @@ export async function finalizeAccountDeletion(deletedUserId: string): Promise<vo
   } catch {
     // Best-effort: a waiting reply stays tied to the deleted account and is
     // never imported into another journal.
+  }
+  try {
+    await forgetBadgeLedger(deletedUserId);
+  } catch {
+    // Account-scoped cache remains unreachable after sign-out; never transferred to a guest.
   }
   await signOut();
 }

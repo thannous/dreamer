@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import { fetchJSON } from '@/lib/http';
 import { signOut } from '@/lib/auth';
+import { forgetBadgeLedger } from '@/services/badgeLedgerStore';
 import { forgetNotificationDreams } from '@/services/notificationDreamInbox';
 import { clearRemoteDreamStorage } from '@/services/storageService';
 import {
@@ -21,6 +22,8 @@ jest.mock('@/lib/auth', () => ({
   signOut: jest.fn(),
 }));
 
+jest.mock('@/services/badgeLedgerStore', () => ({ forgetBadgeLedger: jest.fn() }));
+
 jest.mock('@/services/notificationDreamInbox', () => ({
   forgetNotificationDreams: jest.fn(),
 }));
@@ -32,6 +35,7 @@ jest.mock('@/services/storageService', () => ({
 const mockFetchJSON = jest.mocked(fetchJSON);
 const mockSignOut = jest.mocked(signOut);
 const mockClearRemoteDreamStorage = jest.mocked(clearRemoteDreamStorage);
+const mockForgetBadgeLedger = jest.mocked(forgetBadgeLedger);
 const mockForgetNotificationDreams = jest.mocked(forgetNotificationDreams);
 
 describe('requestAccountDeletion', () => {
@@ -73,17 +77,19 @@ describe('finalizeAccountDeletion', () => {
     mockForgetNotificationDreams.mockImplementation(async (scope: string) => {
       calls.push(`forget ${scope}`);
     });
+    mockForgetBadgeLedger.mockImplementation(async (id: string) => { calls.push(`badges ${id}`); });
     mockSignOut.mockImplementation(async () => {
       calls.push('signOut');
     });
 
     await finalizeAccountDeletion('user-1');
 
-    expect(calls).toEqual(['clear', 'forget user:user-1', 'signOut']);
+    expect(calls).toEqual(['clear', 'forget user:user-1', 'badges user-1', 'signOut']);
   });
 
   it('still signs out when cache clearing fails', async () => {
     mockClearRemoteDreamStorage.mockRejectedValue(new Error('sqlite busy'));
+    mockForgetBadgeLedger.mockRejectedValue(new Error('badge storage busy'));
     mockSignOut.mockResolvedValue(undefined);
 
     await finalizeAccountDeletion('user-1');

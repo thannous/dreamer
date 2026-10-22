@@ -2,7 +2,8 @@
 
 Twenty families, each earned in bronze, silver and gold (60 cards). The catalogue
 (`catalog.ts`) holds the thresholds; `ledger.ts` decides what counts; the store
-(`services/badgeLedgerStore.ts`) keeps it on the device; `app/collection.tsx` and
+(`services/badgeLedgerStore.ts`) keeps it on the device, with an account backup via
+`services/badgeLedgerSync.ts`; `app/collection.tsx` and
 `components/badges/` show it. Family ids match Codex's artwork files
 (`assets/images/badges/<family-id>-v1.png`, see its `catalogue.json`).
 
@@ -28,9 +29,28 @@ never taken back, whatever happens to the journal later.
 Readings, searches and edits were never recorded before the collection: they
 count from the day it ships. The ledger is per scope (`guest` or `user:<id>`),
 on this device; a guest's ledger joins the first account that opens after it,
-as its dreams do. Nothing is synced to the server: on a new device the journal
-families come back from the synced journal, the others start again. Dream keys
-are identity aliases only (`c:`, `r:`, `l:`), never content.
+as its dreams do. Signed-in accounts also merge this ledger with a private Supabase
+`badge_ledgers` row. Every device unions distinct facts, preserves maxima and the
+first acquisition date of each tier. An optimistic revision check prevents a late
+client overwriting another device; an ambiguous acknowledgement can be replayed.
+Journal identities/days are retained up to each family's gold threshold, so deleted
+dreams still contribute once. Older ledgers that stored only a maximum keep that
+maximum, but cannot reconstruct identities that were never recorded.
+
+Cloud retry runs after local changes, on foreground/reconnection and every 30 seconds
+while active. The local ledger itself is the pending state: offline or a missing
+migration does not block progress. The collection shows when the account backup is
+pending; it never claims local-only or mock data is backed up. The RPC binds the
+expected user as well as enforcing RLS, so a changed session cannot upload A's
+ledger into B's account. Confirmed account deletion cascades the server row and
+removes that account's local copy after pending writes. Ordinary dream deletion
+does not revoke earned cards.
+
+Dream keys are identity aliases only (`c:`, `r:`, `l:`), never content. Neither
+stories, notes, search strings nor emotion data are in the payload. The server
+accepts only the twenty known families and bounded identifiers/counts/dates.
+The migration must be deployed through an explicitly authorized backend release;
+local implementation/tests alone do not make account backup available in production.
 
 ## Presentation
 

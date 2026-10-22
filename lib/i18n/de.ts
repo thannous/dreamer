@@ -2037,6 +2037,10 @@ const translations: Record<string, string> = {
     'dream_recall.session.voice_stop': 'Stopp',
     'dream_recall.session.voice_error': 'Die Stimme konnte nicht verwendet werden. Du kannst stattdessen schreiben.',
     // The badge collection: twenty families, each earned in bronze, silver and gold.
+    'badges.sync.local': 'Sammlung auf diesem Gerät gespeichert. Melde dich an, um sie anderswo wiederherzustellen.',
+    'badges.sync.pending': 'Sammlung wird synchronisiert…',
+    'badges.sync.synced': 'Sammlung in deinem Konto gesichert.',
+    'badges.sync.unavailable': 'Sammlung auf diesem Gerät gespeichert. Kontosicherung ausstehend; wir versuchen es automatisch erneut.',
     'badges.title': 'Sammlung',
     'badges.subtitle': 'Zwanzig Kartenfamilien, die im Rhythmus deiner Nächte von Bronze zu Gold wachsen.',
     'badges.summary': '{count} von {total} Karten',

@@ -3,6 +3,8 @@ import { describe, expect, it, beforeEach } from '@jest/globals';
 import { computeBadgeProgress, createEmptyBadgeLedger } from '@/lib/badges/ledger';
 import {
   activateBadgeScope,
+  forgetBadgeLedger,
+  mergeRemoteBadgeLedger,
   flushBadgeLedgerWritesForTests,
   recordBadgeEvent,
   resetBadgeLedgerStoreForTests,
@@ -104,4 +106,21 @@ describe('badge ledger store', () => {
     await flushBadgeLedgerWritesForTests();
     expect(stored('user:a').keys['symbol-explorer']).toEqual(['moon', 'water']);
   });
+});
+
+// These schedules cannot be made deterministic through UI E2E alone.
+it('ignores a late account response and clears only the deleted account after pending writes', async () => {
+  mockStore.clear();
+  resetBadgeLedgerStoreForTests();
+  await activateBadgeScope('user:a');
+  recordBadgeEvent({ type: 'symbol_viewed', symbolId: 'water' });
+  await flushBadgeLedgerWritesForTests();
+  const a = stored('user:a');
+  await activateBadgeScope('user:b');
+  mergeRemoteBadgeLedger('user:a', a);
+  recordBadgeEvent({ type: 'symbol_viewed', symbolId: 'moon' });
+  await forgetBadgeLedger('a');
+  await flushBadgeLedgerWritesForTests();
+  expect(stored('user:a')).toBeNull();
+  expect(stored('user:b').keys['symbol-explorer']).toEqual(['moon']);
 });

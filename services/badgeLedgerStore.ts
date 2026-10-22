@@ -145,7 +145,8 @@ const subscribe = (listener: () => void) => {
     listeners.delete(listener);
   };
 };
-const getSnapshot = () => snapshot;
+export const getBadgeLedgerSnapshot = () => snapshot;
+const getSnapshot = getBadgeLedgerSnapshot;
 
 export function useBadgeLedger(): BadgeLedgerSnapshot {
   return useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
@@ -164,4 +165,23 @@ export function resetBadgeLedgerStoreForTests(): void {
 /** Test-only: resolves once every queued read and write has finished. */
 export function flushBadgeLedgerWritesForTests(): Promise<void> {
   return writes;
+}
+
+/** Merge only into the same still-active account; late remote responses cannot leak. */
+export function mergeRemoteBadgeLedger(scope: BadgeScope, remote: BadgeLedger): void {
+  if (snapshot.scope !== scope || !snapshot.ready) return;
+  change((ledger) => mergeBadgeLedgers(ledger, remote));
+}
+
+/** Local completion after confirmed account deletion; remote rows cascade with auth.users. */
+export async function forgetBadgeLedger(userId: string): Promise<void> {
+  const scope: BadgeScope = `user:${userId}`;
+  if (snapshot.scope === scope) {
+    activation += 1;
+    waiting = [];
+    beforeScope = [];
+    publish({ scope: null, ledger: createEmptyBadgeLedger(), ready: false });
+  }
+  writes = writes.catch(() => undefined).then(() => getLucidKeyValueStorage().removeItem(storageKey(scope)));
+  await writes;
 }

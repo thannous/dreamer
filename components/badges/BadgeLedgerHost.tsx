@@ -1,5 +1,7 @@
 import { useEffect } from 'react';
 
+import { BadgeSyncHost } from './BadgeSyncHost';
+
 import { useAuth } from '@/context/AuthContext';
 import { useDreamsData } from '@/context/DreamsContext';
 import { scheduleIdleTask } from '@/lib/scheduleIdleTask';
@@ -36,5 +38,5 @@ export function BadgeLedgerHost() {
     };
   }, [activeScope, dreams, loaded, loading, ready, scope]);
 
-  return null;
+  return <BadgeSyncHost />;
 }
