@@ -58,6 +58,27 @@ const normalizeTier = (value: unknown): 'free' | 'plus' =>
 export const resolveReplaceExistingImageFlag = (value: unknown): boolean =>
   value === true;
 
+// deno-lint-ignore no-explicit-any
+type PreviewLookupClient = { from: (table: string) => any };
+
+/**
+ * A dream with no illustration whose analysis preview painted (or is painting) one: its
+ * analysis takes that painting with it, whichever way the account opens it, rather than
+ * leaving it unseen and paying for another later.
+ */
+export async function bundlesPreparedPainting(admin: PreviewLookupClient, userId: string, dreamId: number): Promise<boolean> {
+  try {
+    const { data: preview, error } = await admin.from('analysis_previews').select('image_status')
+      .eq('user_id', userId).eq('dream_id', dreamId).maybeSingle();
+    if (error || !['ready', 'painting'].includes(preview?.image_status)) return false;
+    const { data: dream, error: dreamError } = await admin.from('dreams').select('image_url')
+      .eq('id', dreamId).eq('user_id', userId).maybeSingle();
+    return !dreamError && Boolean(dream) && !dream.image_url;
+  } catch {
+    return false;
+  }
+}
+
 export const blockedAdmissionResponse = (admission: AnalysisJobAdmission): Response => {
   if (admission.code === 'QUOTA_EXCEEDED') {
     const used = typeof admission.new_count === 'number' ? Math.max(0, admission.new_count) : 0;
@@ -183,13 +204,15 @@ export async function handleCreateAnalysisJob(ctx: ApiContext): Promise<Response
     }
     const tier = normalizeTier(tierData);
     const policy = resolveAnalysisJobAdmissionPolicy(tier);
+    const replaceExistingImage = resolveReplaceExistingImageFlag(body.replaceExistingImage)
+      || await bundlesPreparedPainting(adminClient, ctx.user.id, dreamId);
     const { data, error } = await adminClient.rpc('admit_authenticated_analysis_job', {
       p_job_id: crypto.randomUUID(),
       p_user_id: ctx.user.id,
       p_dream_id: dreamId,
       p_analysis_request_id: requestIdInput.value,
       p_lang: normalizeAiLanguage(langInput.value || 'en'),
-      p_replace_existing_image: resolveReplaceExistingImageFlag(body.replaceExistingImage),
+      p_replace_existing_image: replaceExistingImage,
       p_max_attempts: policy.maxAttempts,
       p_max_active_per_actor: policy.maxActive,
       p_window_seconds: policy.windowSeconds,

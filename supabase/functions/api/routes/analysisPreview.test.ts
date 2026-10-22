@@ -45,6 +45,7 @@ function table(rows: Row[], key: string[] = ['user_id', 'dream_id']) {
       delete: () => { action = { kind: 'delete' }; return builder; },
       eq: (column: string, value: unknown) => { filters.push((row) => row[column] === value); return builder; },
       neq: (column: string, value: unknown) => { filters.push((row) => row[column] !== value); return builder; },
+      in: (column: string, values: unknown[]) => { filters.push((row) => values.includes(row[column])); return builder; },
       gt: (column: string, value: string) => { filters.push((row) => String(row[column]) > value); return builder; },
       order: (column: string, options: { ascending: boolean }) => { order = { column, ascending: options.ascending }; return builder; },
       limit: (count: number) => { limit = count; return builder; },
@@ -339,6 +340,21 @@ Deno.test('a failed painting leaves the reading, without a band', async () => {
   assertEquals(result.state, 'ready');
   assertEquals(result.preview.image, { state: 'none', bandUrl: null });
   assertEquals(previews[0].image_status, 'failed');
+});
+
+Deno.test('a dream opened while its painting is under way keeps that painting for its illustration', async () => {
+  let previews: Row[] = [];
+  const setupResult = setup({
+    paint: () => {
+      // The account opens the analysis meanwhile: the is_analyzed trigger spends the reading.
+      Object.assign(previews[0], { status: 'used', reading: null });
+      return Promise.resolve({ imagePath: 'previews/u1/7-a.jpg', bandPath: 'previews/u1/7-a-band.jpg', bandUrl: 'https://example.test/sign/band' });
+    },
+  });
+  previews = setupResult.previews;
+  await handleAnalysisPreview(setupResult.ctx(prepare), setupResult.deps);
+  assertEquals([previews[0].status, previews[0].image_status, previews[0].image_path], ['used', 'ready', 'previews/u1/7-a.jpg']);
+  assertEquals(setupResult.calls.removed, []);
 });
 
 Deno.test('analyzed, pending or missing dreams have no preview', async () => {

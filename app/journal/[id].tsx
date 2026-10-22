@@ -3116,7 +3116,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
             <View>{renderStaleBanner()}</View>
             {analysisPreviewDreamId != null && user ? (
               <AnalysisPreviewCard remoteDreamId={analysisPreviewDreamId} transcript={dream.transcript}
-                onOpenPlus={() => router.push(buildAnalysisPaywallHref(dream, user.id, { prepared: true }))}
+                onOpenPlus={(prepared) => router.push(buildAnalysisPaywallHref(dream, user.id, { prepared }))}
                 onOfferChange={setPreviewHoldsOffer} />
             ) : null}
             {readingBegun ? (

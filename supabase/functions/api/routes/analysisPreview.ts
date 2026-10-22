@@ -5,6 +5,7 @@ import { AI_REQUEST_LIMITS, normalizeAiLanguage } from '../lib/aiRequestPolicy.t
 import { resolveStoredTranscriptForAi } from '../lib/prompts.ts';
 import {
   ANALYSIS_PREVIEW_WINDOW_MS,
+  PREVIEW_PAINTING_TIMEOUT_MS,
   isPreparedReading,
   previewOf,
   transcriptSha256,
@@ -40,8 +41,6 @@ type Dependencies = {
 const WRITING_TIMEOUT_MS = 3 * 60 * 1000;
 /** A reading written later than this after its hold is not saved: the hold could be gone, the week taken. */
 const SAVE_DEADLINE_MS = WRITING_TIMEOUT_MS - 30 * 1000;
-/** A painting still under way after this has failed: the dream's analysis paints its own. */
-const PAINTING_TIMEOUT_MS = 3 * 60 * 1000;
 
 const runInEdgeBackground = (task: Promise<void>): boolean => {
   const edgeRuntime = (globalThis as { EdgeRuntime?: { waitUntil?: (promise: Promise<unknown>) => void } }).EdgeRuntime;
@@ -171,7 +170,7 @@ export async function handleAnalysisPreview(ctx: ApiContext, deps: Dependencies 
         ...previewOf(row.reading, keepStoredDreamClass(dream, row.reading).title),
         image: row.image_status === 'ready' && row.band_url
           ? { state: 'ready', bandUrl: row.band_url }
-          : row.image_status === 'painting' && Date.parse(row.image_updated_at ?? '') > now - PAINTING_TIMEOUT_MS
+          : row.image_status === 'painting' && Date.parse(row.image_updated_at ?? '') > now - PREVIEW_PAINTING_TIMEOUT_MS
             ? { state: 'painting', bandUrl: null }
             : { state: 'none', bandUrl: null },
       },
@@ -275,8 +274,9 @@ export async function handleAnalysisPreview(ctx: ApiContext, deps: Dependencies 
 
     // The painting follows the reading: the account reads the start of its analysis meanwhile.
     const painting = async () => {
+      // Opened meanwhile, the preview is spent but its painting is still the analysis's illustration.
       const stillPainting = (values: Record<string, unknown>) => previews().update(values)
-        .eq('user_id', userId).eq('dream_id', dreamId).eq('status', 'ready')
+        .eq('user_id', userId).eq('dream_id', dreamId).in('status', ['ready', 'used'])
         .eq('image_status', 'painting').eq('image_updated_at', savedAt);
       try {
         const painted = await (deps.paint ?? paintPreparedIllustration)({
@@ -286,7 +286,7 @@ export async function handleAnalysisPreview(ctx: ApiContext, deps: Dependencies 
           image_status: 'ready', image_path: painted.imagePath, band_path: painted.bandPath, band_url: painted.bandUrl,
           image_updated_at: new Date((deps.now ?? Date.now)()).toISOString(),
         }).select('dream_id');
-        // Opened or deleted meanwhile: the analysis paints its own, this one goes.
+        // Deleted or painted again meanwhile: this one goes.
         if (error || !data?.length) await removePreviewObjects(admin, ctx.storageBucket, [painted.imagePath, painted.bandPath]);
       } catch {
         // Provider payloads and prompts must not enter logs.

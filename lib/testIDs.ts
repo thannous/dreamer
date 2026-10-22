@@ -149,6 +149,7 @@ export const TID = {
     AnalysisPreviewPrepare: 'btn.analysisPreview.prepare',
     AnalysisPreviewRetry: 'btn.analysisPreview.retry',
     AnalysisPreviewPlus: 'btn.analysisPreview.plus',
+    AnalysisPreviewPlusNow: 'btn.analysisPreview.plusNow',
     HomeConstellation: 'btn.home.constellation',
     MonthEndAnalyses: 'btn.quota.monthEndAnalyses',
     HomeResourcesGuides: 'btn.home.resources.guides',

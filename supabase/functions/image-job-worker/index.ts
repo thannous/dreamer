@@ -3,6 +3,9 @@ import { serve } from 'https://deno.land/std@0.224.0/http/server.ts';
 import { GUEST_LIMITS, corsHeaders } from '../api/lib/constants.ts';
 import { ensureImagePrompt, generateAndStoreImage } from '../api/services/imagePipeline.ts';
 import { takePreparedIllustration } from '../api/services/previewIllustration.ts';
+import { transcriptSha256 } from '../api/lib/analysisPreview.ts';
+import { AI_REQUEST_LIMITS } from '../api/lib/aiRequestPolicy.ts';
+import { resolveStoredTranscriptForAi } from '../api/lib/prompts.ts';
 import { createStorageHelpers } from '../api/services/storage.ts';
 import { resolveImageModel, type ImageGenerationTier } from '../api/services/geminiImages.ts';
 import { reserveHdImageCredit, finishHdImageCredit } from '../api/services/hdImageQuota.ts';
@@ -314,6 +317,23 @@ export const markTerminalFailure = async (
   await persistDreamImageFailure(adminClient, job);
 };
 
+/** The fingerprint of the dream's text as its analysis preview read it; undefined when it cannot be read. */
+const storedTranscriptSha256 = async (
+  adminClient: ReturnType<typeof createAdminClient>,
+  userId: string,
+  dreamId: number
+): Promise<string | undefined> => {
+  try {
+    const { data, error } = await adminClient.from('dreams').select('transcript')
+      .eq('id', dreamId).eq('user_id', userId).maybeSingle();
+    if (error || !data) return undefined;
+    const transcript = resolveStoredTranscriptForAi(data.transcript, AI_REQUEST_LIMITS.transcriptRequestChars);
+    return transcript.ok ? await transcriptSha256(transcript.storedTranscript) : undefined;
+  } catch {
+    return undefined;
+  }
+};
+
 const requeueJob = async (
   adminClient: ReturnType<typeof createAdminClient>,
   job: ImageJobRow,
@@ -490,24 +510,31 @@ const processImageJob = async (input: {
       claimedQuotaThisRun = quotaDecision.claimed === true;
 
       let prompt = String(requestPayload.prompt ?? '').trim();
-      if (!prompt) {
+      // The painting prepared with the dream's analysis preview, from this same prompt (or,
+      // asked with the dream's text only, from this same text), is this illustration: it is
+      // not painted twice.
+      const takesPrepared = Boolean(job.user_id) && job.dream_id != null && imageSize === '1K';
+      let preparedImageUrl = takesPrepared && !prompt
+        ? await takePreparedIllustration(adminClient, {
+          bucket: input.storageBucket, userId: job.user_id!, dreamId: job.dream_id!,
+          transcriptSha256: await storedTranscriptSha256(adminClient, job.user_id!, job.dream_id!),
+        })
+        : null;
+      if (!prompt && !preparedImageUrl) {
         startedUpstream = true;
         prompt = await ensureImagePrompt({
           apiKey,
           prompt: requestPayload.prompt,
           transcript: requestPayload.transcript,
         });
+      } else if (takesPrepared && !preparedImageUrl) {
+        preparedImageUrl = await takePreparedIllustration(adminClient, {
+          bucket: input.storageBucket, userId: job.user_id!, dreamId: job.dream_id!, prompt,
+        });
       }
 
       startedUpstream = true;
       const ownerId = job.user_id ?? `guest_${job.guest_fingerprint ?? 'guest'}`;
-      // The painting prepared with the dream's analysis preview, from this same prompt, is
-      // this illustration: it is not painted twice.
-      const preparedImageUrl = job.user_id && job.dream_id != null && imageSize === '1K'
-        ? await takePreparedIllustration(adminClient, {
-          bucket: input.storageBucket, userId: job.user_id, dreamId: job.dream_id, prompt,
-        })
-        : null;
       if (preparedImageUrl && requestPayload.previousImageUrl) {
         await createStorageHelpers({
           supabaseUrl: input.supabaseUrl,

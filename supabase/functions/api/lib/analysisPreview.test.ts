@@ -33,6 +33,12 @@ Deno.test('a free account reads the first sentence of the reading, whole', () =>
   assertEquals(opening.includes('mo…'), false);
 });
 
+Deno.test('the first sentence is read past the Markdown heading and emphasis', () => {
+  assertEquals(previewOpening('## Ce qui ressort\n\nLa **rivière de verre** te porte vers la maison.\n\n## Lectures possibles\n\nUne autre.'),
+    'La rivière de verre te porte vers la maison.');
+  assertEquals(previewOpening('### Ce qui ressort\n- Le mot *« verre »* revient. Puis la suite.'), 'Le mot « verre » revient.');
+});
+
 Deno.test('the preview names at most six symbols and none of their meanings', () => {
   assertEquals(previewOf(reading, 'Titre'), {
     title: 'Titre',

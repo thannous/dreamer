@@ -21,9 +21,21 @@ export async function transcriptSha256(text: string): Promise<string> {
   return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, '0')).join('');
 }
 
+/**
+ * The reading's prose, as plain text: the interpretation is Markdown, opened by a heading
+ * meaning "What stands out", and the card shows its first sentence as a plain line.
+ */
+const plainProse = (markdown: string) => markdown
+  .split('\n').filter((line) => !/^\s*#{1,6}(\s|$)/.test(line)).join('\n')
+  .replace(/^\s*(?:[-*+]|\d+[.)]|>)\s+/gm, '')
+  .replace(/(\*\*|__|\*|_|`)(\S(?:.*?\S)?)\1/g, '$2');
+
+/** A painting still under way after this has failed. */
+export const PREVIEW_PAINTING_TIMEOUT_MS = 3 * 60 * 1000;
+
 /** The reading's first sentence, as a free account reads it. */
 export function previewOpening(interpretation: string): string {
-  const text = interpretation.trim().replace(/\s+/g, ' ');
+  const text = plainProse(interpretation).trim().replace(/\s+/g, ' ');
   const sentence = (/^.+?[.!?…](?=\s|$)/u.exec(text)?.[0] ?? text).trim();
   if (sentence.length <= OPENING_MAX_CHARS) return sentence;
   const cut = sentence.slice(0, OPENING_MAX_CHARS);

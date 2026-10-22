@@ -2,13 +2,16 @@ import { decodeBase64 } from 'https://deno.land/std@0.224.0/encoding/base64.ts';
 import { Image } from 'https://deno.land/x/imagescript@1.3.0/mod.ts';
 import { generateImageFromPrompt, resolveImageModel } from './geminiImages.ts';
 import { prepareIllustrationForStorage } from './imagePipeline.ts';
-import { PREVIEW_OBJECT_PREFIX } from '../lib/analysisPreview.ts';
+import { PREVIEW_OBJECT_PREFIX, PREVIEW_PAINTING_TIMEOUT_MS } from '../lib/analysisPreview.ts';
 
 /** The share of the painting's height the band shows, around its middle. */
 const BAND_SHARE = 1 / 3;
 const BAND_QUALITY = 80;
 /** As long as a dream's own illustration link (services/storage.ts). */
 const SIGNED_URL_SECONDS = 60 * 60 * 24 * 365;
+/** How long an image job waits for a prepared painting under way rather than paying for another. */
+const PAINTING_WAIT_MS = 90 * 1000;
+const PAINTING_POLL_MS = 3000;
 
 // deno-lint-ignore no-explicit-any
 type AdminClient = { from: (table: string) => any; storage: { from: (bucket: string) => any } };
@@ -77,21 +80,42 @@ export async function removePreviewObjects(admin: AdminClient, bucket: string, p
 }
 
 /**
- * The painting prepared for this dream from this very image prompt, moved to the account's
- * own prefix and linked like any dream illustration; null when there is none to take.
+ * The painting prepared for this dream from this very image prompt (or, for a job asked with
+ * the dream's text only, from this very text), moved to the account's own prefix and linked
+ * like any dream illustration; null when there is none to take. A painting still under way is
+ * waited for: the analysis was opened before it was done.
  */
 export async function takePreparedIllustration(admin: AdminClient, input: {
   bucket: string;
   userId: string;
   dreamId: number;
-  prompt: string;
+  prompt?: string;
+  transcriptSha256?: string;
+  now?: () => number;
+  sleep?: (ms: number) => Promise<void>;
 }): Promise<string | null> {
   try {
     const previews = () => admin.from('analysis_previews');
-    const { data: row, error } = await previews()
-      .select('image_status, image_prompt, image_path, band_path')
-      .eq('user_id', input.userId).eq('dream_id', input.dreamId).maybeSingle();
-    if (error || row?.image_status !== 'ready' || row.image_prompt !== input.prompt || typeof row.image_path !== 'string') return null;
+    const now = input.now ?? Date.now;
+    const sleep = input.sleep ?? ((ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms)));
+    const read = async () => {
+      const { data, error } = await previews()
+        .select('image_status, image_prompt, image_path, band_path, transcript_sha256, image_updated_at')
+        .eq('user_id', input.userId).eq('dream_id', input.dreamId).maybeSingle();
+      if (error || !data) return null;
+      const same = input.prompt
+        ? data.image_prompt === input.prompt
+        : Boolean(input.transcriptSha256) && data.transcript_sha256 === input.transcriptSha256;
+      return same ? data : null;
+    };
+    let row = await read();
+    const waitUntil = now() + PAINTING_WAIT_MS;
+    while (row?.image_status === 'painting' && now() < waitUntil
+      && Date.parse(row.image_updated_at ?? '') > now() - PREVIEW_PAINTING_TIMEOUT_MS) {
+      await sleep(PAINTING_POLL_MS);
+      row = await read();
+    }
+    if (row?.image_status !== 'ready' || typeof row.image_path !== 'string') return null;
     const { data: taken, error: takeError } = await previews()
       .update({ image_status: 'used', image_updated_at: new Date().toISOString() })
       .eq('user_id', input.userId).eq('dream_id', input.dreamId).eq('image_status', 'ready').eq('image_path', row.image_path)

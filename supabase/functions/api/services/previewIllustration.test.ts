@@ -120,3 +120,52 @@ Deno.test('the image job takes the painting of the same prompt once, into the ac
   // Taken: a second job paints its own.
   assertEquals(await takePreparedIllustration(admin, input), null);
 });
+
+Deno.test('a job asked with the dream’s text only takes the painting of that same text', async () => {
+  const storage = fakeStorage();
+  storage.objects.set('previews/u1/7-a.jpg', new Uint8Array([1]));
+  const rows: Row[] = [{
+    user_id: 'u1', dream_id: 7, status: 'used', image_status: 'ready', image_prompt: 'A river of glass', transcript_sha256: 'sha-1',
+    image_path: 'previews/u1/7-a.jpg', band_path: null, band_url: null,
+  }];
+  const admin = { from: previewsTable(rows), storage };
+  const input = { bucket: 'dream-images', userId: 'u1', dreamId: 7 };
+
+  assertEquals(await takePreparedIllustration(admin, input), null);
+  assertEquals(await takePreparedIllustration(admin, { ...input, transcriptSha256: 'sha-edited' }), null);
+  assertEquals(await takePreparedIllustration(admin, { ...input, transcriptSha256: 'sha-1' }), 'https://example.test/sign/u1/7-a.jpg?token=t');
+});
+
+Deno.test('a painting under way is waited for, not paid for twice', async () => {
+  const storage = fakeStorage();
+  const start = Date.parse('2026-10-22T07:00:00Z');
+  let clock = start;
+  const rows: Row[] = [{
+    user_id: 'u1', dream_id: 7, status: 'used', image_status: 'painting', image_prompt: 'A river of glass',
+    image_path: null, band_path: null, band_url: null, image_updated_at: new Date(start - 20_000).toISOString(),
+  }];
+  const admin = { from: previewsTable(rows), storage };
+  const input = { bucket: 'dream-images', userId: 'u1', dreamId: 7, prompt: 'A river of glass', now: () => clock };
+  // The preview's painter stores it a few seconds later.
+  const sleep = async (ms: number) => {
+    clock += ms;
+    if (clock - start >= 9000) {
+      storage.objects.set('previews/u1/7-a.jpg', new Uint8Array([1]));
+      Object.assign(rows[0], { image_status: 'ready', image_path: 'previews/u1/7-a.jpg' });
+    }
+  };
+  assertEquals(await takePreparedIllustration(admin, { ...input, sleep }), 'https://example.test/sign/u1/7-a.jpg?token=t');
+
+  // A painting that never ends is waited for a bounded time only.
+  Object.assign(rows[0], { image_status: 'painting', image_path: null, image_updated_at: new Date(clock).toISOString() });
+  const waitedFrom = clock;
+  assertEquals(await takePreparedIllustration(admin, { ...input, sleep: async (ms: number) => { clock += ms; } }), null);
+  assert(clock - waitedFrom <= 93_000);
+  // A painting under way for longer than its three minutes has failed: nothing to wait for.
+  const before = clock;
+  clock += 4 * 60_000;
+  const slept: number[] = [];
+  assertEquals(await takePreparedIllustration(admin, { ...input, sleep: async (ms: number) => { slept.push(ms); } }), null);
+  assertEquals(slept, []);
+  assert(clock > before);
+});

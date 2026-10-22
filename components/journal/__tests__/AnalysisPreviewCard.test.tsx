@@ -73,7 +73,42 @@ it('invites to prepare the analysis, with consent, then shows its start and lock
   expect(screen.getByTestId('component.analysisPreview.band')).toBeTruthy();
   expect(screen.getByText('journal.detail.preview.or_free:1er novembre')).toBeTruthy();
   fireEvent.press(screen.getByTestId('btn.analysisPreview.plus'));
-  expect(onOpenPlus).toHaveBeenCalledTimes(1);
+  expect(onOpenPlus).toHaveBeenCalledWith(true);
+});
+
+it('holds the page’s offer while it offers one, and gives it back on a weekly note', async () => {
+  const onOfferChange = jest.fn();
+  mockFetchPreview.mockResolvedValueOnce({ state: 'available', preview: null, preparedAt: null, retryAt: null });
+  const onOpenPlus = jest.fn();
+  const screen = render(<AnalysisPreviewCard remoteDreamId={7} transcript="Je marchais." onOpenPlus={onOpenPlus} onOfferChange={onOfferChange} />);
+  // Loading already holds it, so the page's own offer never shows and then vanishes.
+  expect(onOfferChange).toHaveBeenLastCalledWith(true);
+  await waitFor(() => expect(screen.getByText('journal.detail.preview.invite')).toBeTruthy());
+  expect(onOfferChange).not.toHaveBeenCalledWith(false);
+  // The invitation keeps a way to Plus, for a dream not prepared yet.
+  fireEvent.press(screen.getByTestId('btn.analysisPreview.plusNow'));
+  expect(onOpenPlus).toHaveBeenCalledWith(false);
+
+  mockFetchPreview.mockResolvedValueOnce({ state: 'weekly_limit', preview: null, preparedAt: null, retryAt: '2026-10-29T07:00:00.000Z' });
+  screen.rerender(<AnalysisPreviewCard remoteDreamId={8} transcript="Je volais." onOpenPlus={onOpenPlus} onOfferChange={onOfferChange} />);
+  await waitFor(() => expect(onOfferChange).toHaveBeenLastCalledWith(false));
+  screen.unmount();
+  expect(onOfferChange).toHaveBeenLastCalledWith(false);
+});
+
+it('offers to try again when a writing never ends', async () => {
+  jest.useFakeTimers();
+  try {
+    mockFetchPreview.mockResolvedValue({ state: 'writing', preview: null, preparedAt: null, retryAt: null });
+    const screen = renderCard();
+    for (let poll = 0; poll <= 50; poll += 1) {
+      await act(async () => { jest.advanceTimersByTime(4000); });
+    }
+    await waitFor(() => expect(screen.getByTestId('btn.analysisPreview.retry')).toBeTruthy());
+    expect(screen.getByTestId('btn.analysisPreview.plusNow')).toBeTruthy();
+  } finally {
+    jest.useRealTimers();
+  }
 });
 
 it('prepares nothing without consent', async () => {

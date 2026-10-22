@@ -44,7 +44,8 @@ export function AnalysisPreviewCard({ remoteDreamId, transcript, onOpenPlus, onO
   remoteDreamId: number;
   /** The dream's text: an edited dream is read again. */
   transcript: string;
-  onOpenPlus: () => void;
+  /** Plus, for a prepared analysis to read or for a dream to analyze. */
+  onOpenPlus: (prepared: boolean) => void;
   /** True while the card holds the dream's next step, so the page shows no second offer. */
   onOfferChange?: (holdsOffer: boolean) => void;
   className?: string;
@@ -66,8 +67,12 @@ export function AnalysisPreviewCard({ remoteDreamId, transcript, onOpenPlus, onO
     if (prepareNow) sentPreparation.current = request.count;
     const controller = new AbortController();
     let timer: ReturnType<typeof setTimeout> | null = null;
-    const readAgain = () => {
-      if (request.polls >= MAX_POLLS) return;
+    const readAgain = (writing: boolean) => {
+      // A writing that never ends can be asked again; a painting that never ends leaves the reading.
+      if (request.polls >= MAX_POLLS) {
+        if (writing) setState({ kind: 'failed' });
+        return;
+      }
       timer = setTimeout(() => setRequest((value) => ({ ...value, count: value.count + 1, prepare: false, polls: value.polls + 1 })), POLL_MS);
     };
     void (async () => {
@@ -77,13 +82,13 @@ export function AnalysisPreviewCard({ remoteDreamId, transcript, onOpenPlus, onO
         });
         if (controller.signal.aborted) return;
         setState({ kind: 'loaded', result });
-        if (result.state === 'writing' || result.preview?.image.state === 'painting') readAgain();
+        if (result.state === 'writing' || result.preview?.image.state === 'painting') readAgain(result.state === 'writing');
       } catch (error) {
         if (controller.signal.aborted) return;
         const refusal = analysisPreviewRefusal(error);
         // A failed read while waiting keeps what shows and reads again.
         if (request.polls > 0 && !prepareNow && !refusal) {
-          readAgain();
+          readAgain(false);
           return;
         }
         // A refused dream keeps the page's own action; a failed preparation can be tried again.
@@ -104,15 +109,16 @@ export function AnalysisPreviewCard({ remoteDreamId, transcript, onOpenPlus, onO
   }, [subject, t]);
 
   const result = state.kind === 'loaded' ? state.result : null;
-  // A note on the week's limit leaves the page's own offer in place.
-  const holdsOffer = state.kind === 'preparing' || state.kind === 'failed'
+  // A note on the week's limit leaves the page's own offer in place. While the card loads it
+  // holds the step too, so the page's offer does not show and then vanish.
+  const holdsOffer = state.kind === 'loading' || state.kind === 'preparing' || state.kind === 'failed'
     || (result !== null && result.state !== 'weekly_limit');
   useEffect(() => { onOfferChange?.(holdsOffer); }, [holdsOffer, onOfferChange]);
   useEffect(() => () => onOfferChange?.(false), [onOfferChange]);
   const day = (iso: string) => withFirstDayOrdinal(formatDate(Date.parse(iso), { day: 'numeric', month: 'long' }), locale);
   let content: React.ReactNode = null;
   if (result?.state === 'ready' && result.preview) {
-    content = <PreviewReading preview={result.preview} body={body} noctalia={noctalia} onOpenPlus={onOpenPlus}
+    content = <PreviewReading preview={result.preview} body={body} noctalia={noctalia} onOpenPlus={() => onOpenPlus(true)}
       freeDate={formatQuotaResetDate(locale)} />;
   } else if (state.kind === 'preparing' || result?.state === 'writing') {
     content = (
@@ -134,6 +140,10 @@ export function AnalysisPreviewCard({ remoteDreamId, transcript, onOpenPlus, onO
           <Text className="font-sans-bold text-body text-champagne-on">
             {t(failed ? 'journal.detail.preview.retry' : 'journal.detail.preview.invite_cta')}
           </Text>
+        </Pressable>
+        <Pressable onPress={() => onOpenPlus(false)} accessibilityRole="button" testID={TID.Button.AnalysisPreviewPlusNow}
+          className="min-h-[44px] items-center justify-center active:opacity-80">
+          <Text className="font-sans text-body-sm text-ivory-muted underline">{t('journal.detail.preview.plus_now')}</Text>
         </Pressable>
       </View>
     );

@@ -1,4 +1,4 @@
-import { buildPaywallHref, requestAnalysisReturnRoute, consumePurchasedAnalysisReturn, getSavedDreamReturnRoute, hasPendingPurchasedAnalysisReturn } from '@/lib/paywallRoute';
+import { buildAnalysisPaywallHref, buildPaywallHref, requestAnalysisReturnRoute, consumePurchasedAnalysisReturn, getSavedDreamReturnRoute, hasPendingPurchasedAnalysisReturn } from '@/lib/paywallRoute';
 
 describe('paywallRoute', () => {
   it('builds a paywall route with contextual trigger params', () => {
@@ -9,6 +9,17 @@ describe('paywallRoute', () => {
   });
 });
 
+
+describe('analysis paywall route', () => {
+  const dream = { id: 42, remoteId: 17, clientRequestId: 'request-17' } as never;
+
+  it('says an analysis is already prepared only when it is', () => {
+    expect(buildAnalysisPaywallHref(dream, 'owner', { prepared: true })).toMatchObject({ params: { trigger: 'analysis_cta', prepared: '1' } });
+    for (const options of [undefined, { prepared: false }, { afterSave: true }]) {
+      expect((buildAnalysisPaywallHref(dream, 'owner', options) as { params: Record<string, string> }).params).not.toHaveProperty('prepared');
+    }
+  });
+});
 
 describe('analysis return route', () => {
   it.each([

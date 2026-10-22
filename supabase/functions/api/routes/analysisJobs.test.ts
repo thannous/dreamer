@@ -4,6 +4,7 @@ import type { ApiContext } from '../types.ts';
 import { PLUS_DAILY_LIMITS } from '../lib/plusDailyLimits.ts';
 import {
   blockedAdmissionResponse,
+  bundlesPreparedPainting,
   handleCreateAnalysisJob,
   handleGetAnalysisJobStatus,
   resolveAnalysisJobAdmissionPolicy,
@@ -157,4 +158,25 @@ Deno.test('analysis job status rejects malformed job identifiers before database
   const response = await handleGetAnalysisJobStatus(buildContext({ jobId: 'not-a-uuid' }));
   assertEquals(response.status, 400);
   assertEquals((await response.json()).field, 'jobId');
+});
+
+Deno.test('an analysis takes along the painting its preview prepared, never over an illustration', async () => {
+  const lookup = (preview: Record<string, unknown> | null, dream: Record<string, unknown> | null) => ({
+    from: (table: string) => {
+      const builder = {
+        select: () => builder,
+        eq: () => builder,
+        maybeSingle: async () => ({ data: table === 'analysis_previews' ? preview : dream, error: null }),
+      };
+      return builder;
+    },
+  });
+  assertEquals(await bundlesPreparedPainting(lookup({ image_status: 'ready' }, { image_url: null }), 'u1', 7), true);
+  assertEquals(await bundlesPreparedPainting(lookup({ image_status: 'painting' }, { image_url: '' }), 'u1', 7), true);
+  assertEquals(await bundlesPreparedPainting(lookup({ image_status: 'ready' }, { image_url: 'https://example.test/own.jpg' }), 'u1', 7), false);
+  for (const status of ['none', 'failed', 'used', 'removed']) {
+    assertEquals(await bundlesPreparedPainting(lookup({ image_status: status }, { image_url: null }), 'u1', 7), false);
+  }
+  assertEquals(await bundlesPreparedPainting(lookup(null, { image_url: null }), 'u1', 7), false);
+  assertEquals(await bundlesPreparedPainting({ from: () => { throw new Error('down'); } }, 'u1', 7), false);
 });
