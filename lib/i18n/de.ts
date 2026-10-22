@@ -1237,7 +1237,7 @@ const translations: Record<string, string> = {
     'settings.account.button.sign_in': 'Anmelden',
     'settings.account.button.sign_up': 'Registrieren',
     'settings.account.button.sign_out': 'Abmelden',
-    'settings.account.hint.configure_supabase': 'Supabase-Schlüssel konfigurieren, um die Authentifizierung zu aktivieren',
+    'settings.account.hint.auth_unavailable': 'Die Anmeldung mit einem Konto ist in dieser Version der App nicht verfügbar.',
     'settings.account.mock.quick_title': 'Schnellanmeldung (Mock-Modus)',
     'settings.account.mock.quick_description': 'Wähle ein vordefiniertes Profil, um Abläufe sofort zu testen.',
     'settings.account.mock.profile.new': 'Neuer Benutzer',
@@ -1794,7 +1794,7 @@ const translations: Record<string, string> = {
     // Legal links & account deletion
     'settings.legal.sectionTitle': 'Rechtliches',
     'settings.stability.title': 'Stabilitätsberichte',
-    'settings.stability.description': 'Sendet Startzeiten und Abstürze der App an Expo, nie deine Trauminhalte.',
+    'settings.stability.description': 'Sendet uns Startzeiten und Abstürze der App, nie deine Trauminhalte.',
     'settings.stability.toggle_label': 'Stabilitätsberichte senden',
     'settings.legal.privacyPolicy': 'Datenschutzerklärung',
     'settings.legal.termsOfUse': 'Nutzungsbedingungen',

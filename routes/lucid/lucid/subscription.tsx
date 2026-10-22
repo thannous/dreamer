@@ -112,7 +112,7 @@ export const COPY = {
     statusFree: 'This account currently uses the free plan.',
     stateTitle: 'Subscription status',
     stateBody:
-      'Purchases use the device store through RevenueCat and then converge with the connected Noctalia account.',
+      'Purchases go through the device store, then are linked to the connected Noctalia account.',
     renewsOn: 'Renews on {date}',
     accessUntil: 'Access until {date}',
     expired: 'Plus access ended on {date}',
@@ -202,7 +202,7 @@ export const COPY = {
     statusFree: 'Ce compte utilise actuellement la formule gratuite.',
     stateTitle: 'État de l’abonnement',
     stateBody:
-      'Les achats passent par la boutique de l’appareil via RevenueCat, puis convergent avec le compte Noctalia connecté.',
+      'Les achats passent par la boutique de l’appareil, puis sont rattachés au compte Noctalia connecté.',
     renewsOn: 'Renouvellement le {date}',
     accessUntil: 'Accès jusqu’au {date}',
     expired: 'Plus a pris fin le {date}',
@@ -292,7 +292,7 @@ export const COPY = {
     statusFree: 'Esta cuenta usa actualmente el plan gratuito.',
     stateTitle: 'Estado de la suscripción',
     stateBody:
-      'Las compras usan la tienda del dispositivo mediante RevenueCat y después convergen con la cuenta de Noctalia conectada.',
+      'Las compras pasan por la tienda del dispositivo y después se vinculan a la cuenta de Noctalia conectada.',
     renewsOn: 'Se renueva el {date}',
     accessUntil: 'Acceso hasta el {date}',
     expired: 'Plus terminó el {date}',
@@ -382,7 +382,7 @@ export const COPY = {
     statusFree: 'Dieses Konto verwendet derzeit den kostenlosen Tarif.',
     stateTitle: 'Abonnementstatus',
     stateBody:
-      'Käufe laufen über den Gerätestore via RevenueCat und werden anschließend mit dem verbundenen Noctalia-Konto abgeglichen.',
+      'Käufe laufen über den Store des Geräts und werden danach mit dem verbundenen Noctalia-Konto verknüpft.',
     renewsOn: 'Verlängerung am {date}',
     accessUntil: 'Zugang bis {date}',
     expired: 'Plus-Zugang endete am {date}',
@@ -472,7 +472,7 @@ export const COPY = {
     statusFree: 'Questo account usa attualmente il piano gratuito.',
     stateTitle: 'Stato dell’abbonamento',
     stateBody:
-      'Gli acquisti usano lo store del dispositivo tramite RevenueCat e poi convergono con l’account Noctalia collegato.',
+      'Gli acquisti passano dallo store del dispositivo e poi vengono collegati all’account Noctalia connesso.',
     renewsOn: 'Rinnovo il {date}',
     accessUntil: 'Accesso fino al {date}',
     expired: 'L’accesso Plus è terminato il {date}',

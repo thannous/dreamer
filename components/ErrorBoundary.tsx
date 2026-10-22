@@ -58,7 +58,10 @@ function DefaultErrorFallback({ error, resetError }: { error: Error; resetError:
   return (
     <View style={[styles.container, { backgroundColor: noctalia.screen.background }]}>
       <Text style={[styles.title, { color: noctalia.text.primary }]}>Something went wrong</Text>
-      <Text style={[styles.message, { color: noctalia.text.secondary }]}>{error.message}</Text>
+      <Text style={[styles.message, { color: noctalia.text.secondary }]}>
+        {/* A raw exception message is technical: only developers see it. */}
+        {__DEV__ ? error.message : 'An unexpected error occurred.'}
+      </Text>
       <Pressable
         style={[
           styles.button,

@@ -143,7 +143,7 @@ const MEDITATION_DEPS = {
 const EDGE_CHECKS = [
   'cd supabase/functions',
   'deno check --frozen api/index.ts analysis-job-worker/index.ts image-job-worker/index.ts revenuecat-webhook/index.ts',
-  'deno test --frozen --allow-env --allow-net=deno.land --allow-read=../migrations api revenuecat-webhook image-job-worker',
+  'deno test --frozen --allow-env --allow-net=deno.land --allow-read=../migrations api revenuecat-webhook image-job-worker analysis-job-worker',
 ].join(' && ');
 const DENO = {
   command: 'deno --version',

@@ -1231,6 +1231,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   const handlePickImage = useCallback(async () => {
     if (!dream || isAnalysisLocked) return;
 
+    const cropErrorMessage = t('journal.detail.image.crop_error');
     try {
       setIsPickingImage(true);
       const ImagePicker = await import('expo-image-picker');
@@ -1253,10 +1254,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
         return;
       }
 
-      const croppedAsset = await cropDreamImageToAspect(
-        asset,
-        t('journal.detail.image.crop_error')
-      );
+      const croppedAsset = await cropDreamImageToAspect(asset, cropErrorMessage);
       const selectedUri = Platform.OS === 'web' && croppedAsset.base64
         ? `data:${croppedAsset.mimeType ?? 'image/jpeg'};base64,${croppedAsset.base64}`
         : croppedAsset.uri;
@@ -1280,7 +1278,10 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       await updateDream(updatedDream);
       setIsEditing(false);
     } catch (error) {
-      const msg = error instanceof Error ? error.message : t('common.unknown_error');
+      // A raw exception message is technical and often English: show a plain one.
+      const msg = error instanceof Error && error.message === cropErrorMessage
+        ? cropErrorMessage
+        : classifyError(error instanceof Error ? error : new Error(String(error)), t).userMessage;
       Alert.alert(t('common.error_title'), msg);
     } finally {
       setIsPickingImage(false);

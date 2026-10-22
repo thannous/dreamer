@@ -1237,7 +1237,7 @@ const translations: Record<string, string> = {
     'settings.account.button.sign_in': 'Sign in',
     'settings.account.button.sign_up': 'Sign up',
     'settings.account.button.sign_out': 'Sign out',
-    'settings.account.hint.configure_supabase': 'Configure Supabase keys to enable authentication',
+    'settings.account.hint.auth_unavailable': 'Signing in to an account is not available in this version of the app.',
     'settings.account.mock.quick_title': 'Quick sign-in (mock mode)',
     'settings.account.mock.quick_description': 'Choose a preset profile to test flows instantly.',
     'settings.account.mock.profile.new': 'New user',
@@ -1921,7 +1921,7 @@ const translations: Record<string, string> = {
     // Legal links & account deletion
     'settings.legal.sectionTitle': 'Legal',
     'settings.stability.title': 'Stability reports',
-    'settings.stability.description': 'Sends the app’s startup times and crashes to Expo, never your dream content.',
+    'settings.stability.description': 'Sends us the app’s startup times and crashes, never your dream content.',
     'settings.stability.toggle_label': 'Send stability reports',
     'settings.legal.privacyPolicy': 'Privacy Policy',
     'settings.legal.termsOfUse': 'Terms of Use',

@@ -352,7 +352,7 @@ const runInBackground = (task: Promise<void>): boolean => {
   return true;
 };
 
-serve(async (req: Request) => {
+const handleAnalysisJobWorkerRequest = async (req: Request): Promise<Response> => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
   if (req.method !== 'POST') return json({ error: 'Method not allowed' }, 405);
 
@@ -376,4 +376,12 @@ serve(async (req: Request) => {
     console.error('[analysis-job-worker] Unhandled worker request error');
     return json({ error: 'Internal server error' }, 500);
   }
-});
+};
+
+const shouldListenForWorkerRequests = (): boolean =>
+  import.meta.main
+  || typeof (globalThis as { EdgeRuntime?: unknown }).EdgeRuntime !== 'undefined';
+
+if (shouldListenForWorkerRequests()) {
+  serve(handleAnalysisJobWorkerRequest);
+}
