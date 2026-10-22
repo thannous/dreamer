@@ -7,6 +7,7 @@ const JOURNAL_ROUTES = new Set([
   'POST /recall-question',
   'POST /format-recall',
   'POST /moon-letter',
+  'POST /analysis-preview',
   'POST /analyzeDreamFull', 'POST /categorizeDream',
   'POST /analysis-jobs', 'POST /analysis-jobs/status',
   'POST /image-jobs', 'POST /image-jobs/status',

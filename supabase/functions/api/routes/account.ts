@@ -1,5 +1,6 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 
+import { PREVIEW_OBJECT_PREFIX } from '../lib/analysisPreview.ts';
 import { revokeAppleTokens } from '../lib/appleTokenRevoke.ts';
 import { corsHeaders } from '../lib/constants.ts';
 import type { ApiContext } from '../types.ts';
@@ -27,8 +28,9 @@ const defaultAdminClientFactory: AdminClientFactory = (url, serviceRoleKey) =>
 
 /**
  * Removes every Storage object owned by the user. Generated dream images are
- * uploaded under the `<userId>/` prefix (see services/storage.ts), so a
- * prefix-scoped listing covers all of them.
+ * uploaded under the `<userId>/` prefix (see services/storage.ts), and the
+ * paintings of prepared analyses under `previews/<userId>/`
+ * (services/previewIllustration.ts), so two prefix-scoped listings cover all of them.
  */
 async function deleteUserStorageObjects(
   // SupabaseClient generics vary by jsr version; ApiContext already treats clients as `any`.
@@ -36,7 +38,13 @@ async function deleteUserStorageObjects(
   bucket: string,
   userId: string
 ): Promise<boolean> {
-  const prefix = `${userId}/`;
+  for (const prefix of [`${userId}/`, `${PREVIEW_OBJECT_PREFIX}/${userId}/`]) {
+    if (!await deleteStorageObjectsUnder(adminClient, bucket, prefix)) return false;
+  }
+  return true;
+}
+
+async function deleteStorageObjectsUnder(adminClient: any, bucket: string, prefix: string): Promise<boolean> {
   for (let page = 0; page < STORAGE_LIST_MAX_PAGES; page += 1) {
     const { data, error } = await adminClient.storage.from(bucket).list(prefix, {
       limit: STORAGE_LIST_PAGE_SIZE,

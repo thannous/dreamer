@@ -197,6 +197,26 @@
         "created_at",
         "updated_at"
       ]
+    },
+    {
+      "schema": "public",
+      "name": "analysis_previews",
+      "requiredColumns": [
+        "user_id",
+        "dream_id",
+        "status",
+        "lang",
+        "transcript_sha256",
+        "reading",
+        "image_status",
+        "image_prompt",
+        "image_path",
+        "band_path",
+        "band_url",
+        "image_updated_at",
+        "created_at",
+        "updated_at"
+      ]
     }
   ],
   "requiredFunctions": [
@@ -313,6 +333,12 @@
       "name": "delete_moon_letters_of_deleted_dream",
       "identityArguments": "",
       "result": "trigger"
+    },
+    {
+      "schema": "public",
+      "name": "clear_analysis_preview_of_deleted_dream",
+      "identityArguments": "",
+      "result": "trigger"
     }
   ],
   "requiredTriggers": [
@@ -402,6 +428,17 @@
       "definitionIncludes": [
         "AFTER DELETE",
         "EXECUTE FUNCTION public.delete_moon_letters_of_deleted_dream()"
+      ]
+    },
+    {
+      "schema": "public",
+      "table": "dreams",
+      "name": "trg_clear_analysis_preview_of_deleted_dream",
+      "functionSchema": "public",
+      "functionName": "clear_analysis_preview_of_deleted_dream",
+      "definitionIncludes": [
+        "AFTER DELETE",
+        "EXECUTE FUNCTION public.clear_analysis_preview_of_deleted_dream()"
       ]
     },
     {

@@ -3,7 +3,12 @@ import { describeDreamThemes, LEGACY_DREAM_THEMES, normalizeDreamTheme } from '.
 import { CLAUDE_MODELS } from '../lib/models.ts';
 import { ANALYZE_DREAM_SCHEMA, DREAM_TYPE_VALUES, withDreamThemes } from '../lib/schemas.ts';
 import { DREAM_SYMBOL_IDS } from '../lib/dreamSymbolIds.ts';
-import { normalizeDreamSymbolId, normalizePersonalSymbolKey, type KnownDreamSymbol } from '../lib/dreamSymbols.ts';
+import {
+  collectKnownDreamSymbols,
+  normalizeDreamSymbolId,
+  normalizePersonalSymbolKey,
+  type KnownDreamSymbol,
+} from '../lib/dreamSymbols.ts';
 import { ClaudeStopError, requestClaudeJson } from './claude.ts';
 import {
   callGeminiWithFallback,
@@ -217,6 +222,60 @@ export const sanitizeAnalysisDetails = (analysis: unknown): DreamAnalysisDetails
  * /analyzeDreamFull at 60 s (lib/networkPolicy.ts); a stalled Claude call must leave
  * time for the Gemini fallback (and the image) before then.
  */
+/** How many of the dreamer's latest readings their own symbols are gathered from. */
+const KNOWN_SYMBOL_DREAMS = 200;
+
+/**
+ * The dreamer's own symbols from their latest readings, for the analysis of `dreamId`.
+ * The client must be the service role or the dreamer's own. A failed lookup only costs the links.
+ */
+export const loadKnownDreamSymbols = async (
+  // deno-lint-ignore no-explicit-any
+  client: { from: (table: string) => any },
+  userId: string,
+  dreamId: number,
+  route: string
+): Promise<KnownDreamSymbol[]> => {
+  try {
+    const { data, error } = await client
+      .from('dreams')
+      .select('analysis_details')
+      .eq('user_id', userId)
+      .eq('is_analyzed', true)
+      .neq('id', dreamId)
+      .order('analyzed_at', { ascending: false, nullsFirst: false })
+      .limit(KNOWN_SYMBOL_DREAMS);
+    if (error) throw error;
+    return collectKnownDreamSymbols((data ?? []).map((row: { analysis_details?: unknown }) => row.analysis_details));
+  } catch {
+    // Never log the error: a row could carry dream content.
+    console.warn(`[api] ${route}: known symbols unavailable`);
+    return [];
+  }
+};
+
+/**
+ * A dream its pre-analysis classed keeps that class and the name its seal wrote: the
+ * reading neither classes nor renames it. Synchronized values are shared across app
+ * versions; request capability negotiation does not filter journal reads.
+ * precise_theme holds the full theme; theme is only its projection for older apps.
+ */
+export const keepStoredDreamClass = (
+  dream: { title?: unknown; theme?: unknown; precise_theme?: unknown; dream_type?: unknown },
+  reading: StructuredDreamAnalysis
+): StructuredDreamAnalysis => {
+  const storedTheme = [dream.precise_theme, dream.theme]
+    .find((value): value is string => typeof value === 'string' && value.length > 0);
+  if (storedTheme === undefined) return reading;
+  const name = typeof dream.title === 'string' ? dream.title.trim() : '';
+  return {
+    ...reading,
+    title: name && name.length <= 500 ? name : reading.title,
+    theme: storedTheme,
+    dreamType: String(dream.dream_type ?? reading.dreamType),
+  };
+};
+
 export const CLAUDE_SYNC_ANALYSIS_TIMEOUT_MS = 20_000;
 
 export const runDreamAnalysis = async (options: {

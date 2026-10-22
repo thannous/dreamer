@@ -2,6 +2,8 @@ import { verifyAnalysisImageAuthorization } from '../api/services/analysisAuthor
 import { serve } from 'https://deno.land/std@0.224.0/http/server.ts';
 import { GUEST_LIMITS, corsHeaders } from '../api/lib/constants.ts';
 import { ensureImagePrompt, generateAndStoreImage } from '../api/services/imagePipeline.ts';
+import { takePreparedIllustration } from '../api/services/previewIllustration.ts';
+import { createStorageHelpers } from '../api/services/storage.ts';
 import { resolveImageModel, type ImageGenerationTier } from '../api/services/geminiImages.ts';
 import { reserveHdImageCredit, finishHdImageCredit } from '../api/services/hdImageQuota.ts';
 import { requireHdIllustrationsEnabled } from '../api/lib/illustrationFlags.ts';
@@ -499,7 +501,22 @@ const processImageJob = async (input: {
 
       startedUpstream = true;
       const ownerId = job.user_id ?? `guest_${job.guest_fingerprint ?? 'guest'}`;
-      const result = await generateAndStoreImage({
+      // The painting prepared with the dream's analysis preview, from this same prompt, is
+      // this illustration: it is not painted twice.
+      const preparedImageUrl = job.user_id && job.dream_id != null && imageSize === '1K'
+        ? await takePreparedIllustration(adminClient, {
+          bucket: input.storageBucket, userId: job.user_id, dreamId: job.dream_id, prompt,
+        })
+        : null;
+      if (preparedImageUrl && requestPayload.previousImageUrl) {
+        await createStorageHelpers({
+          supabaseUrl: input.supabaseUrl,
+          supabaseServiceRoleKey: input.serviceRoleKey,
+          storageBucket: input.storageBucket,
+          ownerId,
+        }).deleteImageFromStorage(requestPayload.previousImageUrl, ownerId);
+      }
+      const result = preparedImageUrl ? { imageUrl: preparedImageUrl } : await generateAndStoreImage({
         apiKey,
         model: resolveImageModel(imageTierDecision.tier, undefined, imageSize),
         imageSize,

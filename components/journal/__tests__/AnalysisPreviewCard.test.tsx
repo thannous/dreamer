@@ -1,0 +1,124 @@
+import React from 'react';
+import { act, fireEvent, render, waitFor } from '@testing-library/react-native-legacy';
+
+import { HttpError } from '@/lib/http';
+import { AnalysisPreviewCard } from '../AnalysisPreviewCard';
+
+const mockFetchPreview = jest.fn();
+const mockConsent = jest.fn();
+jest.mock('@/services/analysisPreviewService', () => ({
+  ...jest.requireActual('@/services/analysisPreviewService'),
+  fetchAnalysisPreview: (...args: unknown[]) => mockFetchPreview(...args),
+}));
+jest.mock('@/lib/aiConsent', () => ({ requestAiConsent: () => mockConsent() }));
+jest.mock('@/hooks/useTranslation', () => ({
+  useTranslation: () => ({
+    t: (key: string, params?: Record<string, unknown>) => (params?.date ? `${key}:${params.date}` : key),
+    currentLang: 'fr',
+  }),
+}));
+jest.mock('@/hooks/useLocaleFormatting', () => ({
+  useLocaleFormatting: () => ({ locale: 'fr-FR', formatDate: (time: number) => new Date(time).toISOString().slice(0, 10) }),
+}));
+jest.mock('@/lib/quotaReset', () => ({ formatQuotaResetDate: () => '1er novembre', withFirstDayOrdinal: (text: string) => text }));
+jest.mock('@/context/ThemeContext', () => ({ useTheme: () => ({ colors: {}, mode: 'dark' }) }));
+jest.mock('@/constants/noctaliaDesign', () => ({
+  getNoctaliaDesignTokens: () => ({
+    surface: { base: '#14131A' }, accent: { text: '#EAD4B4' }, text: { tertiary: '#888888' }, action: { primaryText: '#03040D' },
+  }),
+}));
+jest.mock('@/components/ui/icon-symbol', () => ({ IconSymbol: () => null }));
+jest.mock('expo-linear-gradient', () => ({ LinearGradient: () => null }));
+jest.mock('expo-image', () => ({ Image: () => null }));
+jest.mock('../JournalBook', () => {
+  const { Text } = require('react-native');
+  return {
+    BookSectionMark: ({ label }: { label: string }) => <Text>{label}</Text>,
+    BookSubheading: ({ children }: { children: string }) => <Text>{children}</Text>,
+    useBookBody: () => ({}),
+  };
+});
+
+const preview = (image: Record<string, unknown> = { state: 'ready', bandUrl: 'https://x.test/sign/band.jpg?token=t' }) => ({
+  state: 'ready',
+  preview: { title: 'La rivière de verre', opening: 'Ton rêve fait de la rivière un passage.', symbols: ['Rivière', 'Maison'], image },
+  preparedAt: '2026-10-22T07:00:00.000Z',
+  retryAt: null,
+});
+
+beforeEach(() => {
+  mockFetchPreview.mockReset();
+  mockConsent.mockReset().mockResolvedValue(true);
+});
+
+const renderCard = (onOpenPlus = jest.fn()) => render(
+  <AnalysisPreviewCard remoteDreamId={7} transcript="Je marchais." onOpenPlus={onOpenPlus} />,
+);
+
+it('invites to prepare the analysis, with consent, then shows its start and locked rest', async () => {
+  mockFetchPreview.mockResolvedValueOnce({ state: 'available', preview: null, preparedAt: null, retryAt: null });
+  const onOpenPlus = jest.fn();
+  const screen = renderCard(onOpenPlus);
+  await waitFor(() => expect(screen.getByText('journal.detail.preview.invite')).toBeTruthy());
+  expect(mockFetchPreview).toHaveBeenLastCalledWith(expect.objectContaining({ remoteDreamId: 7, lang: 'fr', prepare: false }));
+
+  mockFetchPreview.mockResolvedValueOnce(preview());
+  fireEvent.press(screen.getByTestId('btn.analysisPreview.prepare'));
+  await waitFor(() => expect(screen.getByText('Ton rêve fait de la rivière un passage.')).toBeTruthy());
+  expect(mockConsent).toHaveBeenCalledTimes(1);
+  expect(mockFetchPreview).toHaveBeenLastCalledWith(expect.objectContaining({ prepare: true }));
+  expect(screen.getByText('La rivière de verre')).toBeTruthy();
+  expect(screen.getByText('Rivière')).toBeTruthy();
+  expect(screen.getByTestId('component.analysisPreview.band')).toBeTruthy();
+  expect(screen.getByText('journal.detail.preview.or_free:1er novembre')).toBeTruthy();
+  fireEvent.press(screen.getByTestId('btn.analysisPreview.plus'));
+  expect(onOpenPlus).toHaveBeenCalledTimes(1);
+});
+
+it('prepares nothing without consent', async () => {
+  mockFetchPreview.mockResolvedValueOnce({ state: 'available', preview: null, preparedAt: null, retryAt: null });
+  mockConsent.mockResolvedValue(false);
+  const screen = renderCard();
+  await waitFor(() => expect(screen.getByTestId('btn.analysisPreview.prepare')).toBeTruthy());
+  await act(async () => { fireEvent.press(screen.getByTestId('btn.analysisPreview.prepare')); });
+  expect(mockFetchPreview).toHaveBeenCalledTimes(1);
+  expect(screen.getByText('journal.detail.preview.invite')).toBeTruthy();
+});
+
+it('reads again while the painting is under way, until its band arrives', async () => {
+  jest.useFakeTimers();
+  try {
+    mockFetchPreview.mockResolvedValueOnce(preview({ state: 'painting', bandUrl: null })).mockResolvedValueOnce(preview());
+    const screen = renderCard();
+    await waitFor(() => expect(screen.getByText('journal.detail.preview.painting')).toBeTruthy());
+    await act(async () => { jest.advanceTimersByTime(4000); });
+    await waitFor(() => expect(screen.getByTestId('component.analysisPreview.band')).toBeTruthy());
+    expect(mockFetchPreview).toHaveBeenLastCalledWith(expect.objectContaining({ prepare: false }));
+  } finally {
+    jest.useRealTimers();
+  }
+});
+
+it('says when the next prepared analysis comes after this week’s', async () => {
+  mockFetchPreview.mockResolvedValueOnce({ state: 'weekly_limit', preview: null, preparedAt: null, retryAt: '2026-10-29T07:00:00.000Z' });
+  const screen = renderCard();
+  await waitFor(() => expect(screen.getByText('journal.detail.preview.weekly_limit:2026-10-29')).toBeTruthy());
+  expect(screen.queryByTestId('btn.analysisPreview.prepare')).toBeNull();
+});
+
+it('steps aside for a refused dream, and offers a retry after a failed preparation', async () => {
+  mockFetchPreview.mockRejectedValueOnce(new HttpError({ status: 409, statusText: '', url: '', bodyText: '', body: { code: 'CAN_ANALYZE' } }));
+  const refused = renderCard();
+  await waitFor(() => expect(mockFetchPreview).toHaveBeenCalledTimes(1));
+  expect(refused.queryByTestId('component.analysisPreview')).toBeNull();
+  refused.unmount();
+
+  mockFetchPreview.mockReset();
+  mockFetchPreview.mockResolvedValueOnce({ state: 'available', preview: null, preparedAt: null, retryAt: null })
+    .mockRejectedValueOnce(new HttpError({ status: 502, statusText: '', url: '', bodyText: '', body: { code: 'PREVIEW_FAILED' } }));
+  const screen = renderCard();
+  await waitFor(() => expect(screen.getByTestId('btn.analysisPreview.prepare')).toBeTruthy());
+  fireEvent.press(screen.getByTestId('btn.analysisPreview.prepare'));
+  await waitFor(() => expect(screen.getByText('journal.detail.preview.failed')).toBeTruthy());
+  expect(screen.getByTestId('btn.analysisPreview.retry')).toBeTruthy();
+});

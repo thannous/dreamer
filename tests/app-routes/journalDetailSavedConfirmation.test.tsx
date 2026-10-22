@@ -257,6 +257,8 @@ jest.mock('@/components/inspiration/AtmosphericBackground', () => ({
 
 // The page's paper grain is decorative art; these journeys only need the page.
 jest.mock('@/components/journal/JournalPaper', () => ({ JournalPaper: () => null }));
+// The prepared analysis has its own tests; this page's saved moment never shows it.
+jest.mock('@/components/journal/AnalysisPreviewCard', () => ({ AnalysisPreviewCard: () => null }));
 // Leafing through the journal is a gesture around the page; these journeys only need the page.
 jest.mock('@/components/journal/JournalPageTurner', () => ({
   JournalPageTurner: ({ children, newer, older, onTurn }: {

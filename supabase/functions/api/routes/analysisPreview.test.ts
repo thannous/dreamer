@@ -1,0 +1,283 @@
+import { assert, assertEquals } from 'https://deno.land/std@0.224.0/assert/mod.ts';
+import { handleAnalysisPreview } from './analysisPreview.ts';
+import { transcriptSha256 } from '../lib/analysisPreview.ts';
+import { isProductRouteAllowed } from '../lib/productAuthorization.ts';
+import type { StructuredDreamAnalysis } from '../services/dreamAnalysis.ts';
+import type { ApiContext } from '../types.ts';
+
+// A small in-memory PostgREST: enough of the query builder for the previews and dreams.
+type Row = Record<string, unknown>;
+type Filter = (row: Row) => boolean;
+
+function table(rows: Row[], key: string[] = ['user_id', 'dream_id']) {
+  return () => {
+    const filters: Filter[] = [];
+    let action: { kind: 'select' } | { kind: 'insert'; row: Row } | { kind: 'update'; values: Row } | { kind: 'delete' } = { kind: 'select' };
+    let order: { column: string; ascending: boolean } | null = null;
+    let limit = Infinity;
+    const run = () => {
+      if (action.kind === 'insert') {
+        const inserted = action.row;
+        if (rows.some((row) => key.every((column) => row[column] === inserted[column]))) return { data: null, error: { code: '23505' } };
+        rows.push({ ...inserted });
+        return { data: null, error: null };
+      }
+      const matched = rows.filter((row) => filters.every((filter) => filter(row)));
+      if (action.kind === 'update') {
+        for (const row of matched) Object.assign(row, action.values);
+        return { data: matched.map((row) => ({ ...row })), error: null };
+      }
+      if (action.kind === 'delete') {
+        for (const row of matched) rows.splice(rows.indexOf(row), 1);
+        return { data: null, error: null };
+      }
+      const sorted = order ? [...matched].sort((a, b) => {
+        const left = String(a[order!.column]);
+        const right = String(b[order!.column]);
+        return (left < right ? -1 : left > right ? 1 : 0) * (order!.ascending ? 1 : -1);
+      }) : matched;
+      return { data: sorted.slice(0, limit).map((row) => ({ ...row })), error: null };
+    };
+    const builder = {
+      select: () => builder,
+      insert: (row: Row) => { action = { kind: 'insert', row }; return builder; },
+      update: (values: Row) => { action = { kind: 'update', values }; return builder; },
+      delete: () => { action = { kind: 'delete' }; return builder; },
+      eq: (column: string, value: unknown) => { filters.push((row) => row[column] === value); return builder; },
+      neq: (column: string, value: unknown) => { filters.push((row) => row[column] !== value); return builder; },
+      gt: (column: string, value: string) => { filters.push((row) => String(row[column]) > value); return builder; },
+      order: (column: string, options: { ascending: boolean }) => { order = { column, ascending: options.ascending }; return builder; },
+      limit: (count: number) => { limit = count; return builder; },
+      maybeSingle: async () => {
+        const { data, error } = run();
+        return { data: (data as Row[] | null)?.[0] ?? null, error };
+      },
+      then: (resolve: (value: unknown) => unknown, reject: (reason: unknown) => unknown) => Promise.resolve(run()).then(resolve, reject),
+    };
+    return builder;
+  };
+}
+
+const NOW = Date.parse('2026-10-22T07:00:00Z');
+const DAY = 24 * 60 * 60 * 1000;
+const iso = (time: number) => new Date(time).toISOString();
+const TRANSCRIPT = 'Je marchais sur une rivière de verre vers la maison de mon enfance.';
+
+const reading = (extra: Partial<StructuredDreamAnalysis> = {}): StructuredDreamAnalysis => ({
+  title: 'La rivière de verre',
+  interpretation: 'Ton rêve fait de la rivière un passage plutôt qu’un obstacle. La maison de ton enfance attend au bout, éclairée.',
+  shareableQuote: 'Une rivière de verre',
+  theme: 'calm',
+  dreamType: 'Symbolic Dream',
+  imagePrompt: 'A river of glass at dusk leading to a lit childhood home',
+  promptVersion: 'test',
+  symbols: [
+    { name: 'Rivière', meaning: 'Un passage entre deux rives de ta vie.' },
+    { name: 'Maison', meaning: 'Ce qui t’attend.' },
+  ],
+  emotions: [{ name: 'Calme', insight: 'Tu avances sans peur.' }],
+  reflectionQuestions: ['Vers quoi marches-tu ?'],
+  ...extra,
+});
+
+function setup(options: {
+  tier?: string;
+  canAnalyze?: boolean;
+  dream?: Row;
+  previews?: Row[];
+  analyze?: () => Promise<StructuredDreamAnalysis>;
+  paint?: () => Promise<{ imagePath: string; bandPath: string; bandUrl: string }>;
+  admit?: () => Promise<unknown>;
+} = {}) {
+  const previews = options.previews ?? [];
+  const dreams: Row[] = [
+    {
+      id: 7, user_id: 'u1', title: 'Rêve du 22 octobre', transcript: TRANSCRIPT, is_analyzed: false, analysis_status: 'none',
+      theme: null, precise_theme: null, dream_type: null, analysis_details: null, ...options.dream,
+    },
+    { id: 3, user_id: 'u1', is_analyzed: true, analyzed_at: '2026-10-01T00:00:00Z', analysis_details: { symbols: [{ name: 'Rivière de verre', key: 'glass-river' }] } },
+  ];
+  const calls = { analyze: 0, admit: 0, paint: 0, quota: 0, analyzeOptions: [] as Record<string, unknown>[] };
+  const admin = {
+    rpc: async (name: string) => (name === 'get_effective_subscription_tier' ? { data: options.tier ?? 'free', error: null } : { data: null, error: { code: 'x' } }),
+    from: (name: string) => {
+      if (name === 'dreams') return table(dreams, ['id'])();
+      assertEquals(name, 'analysis_previews');
+      return table(previews)();
+    },
+    storage: { from: () => ({ remove: async () => ({ error: null }) }) },
+  };
+  const ctx = (body: unknown, user: unknown = { id: 'u1' }): ApiContext => ({
+    req: new Request('https://example.test/analysis-preview', { method: 'POST', body: JSON.stringify(body) }),
+    user,
+    supabase: {
+      // Row-level security: the caller reads its own dreams only.
+      from: (name: string) => { assertEquals(name, 'dreams'); return table(dreams.filter((row) => row.user_id === 'u1'), ['id'])(); },
+      rpc: async (name: string) => {
+        assertEquals(name, 'get_authenticated_quota_snapshot');
+        calls.quota++;
+        return { data: { tier: 'free', canAnalyze: options.canAnalyze ?? false }, error: null };
+      },
+    },
+    supabaseUrl: 'https://example.test', supabaseServiceRoleKey: 'service-role', storageBucket: 'dream-images',
+  });
+  const deps = {
+    now: () => NOW,
+    apiKey: 'gemini-key',
+    anthropicApiKey: null,
+    createAdminClient: (() => admin) as never,
+    admit: (async () => { calls.admit++; return options.admit ? await options.admit() : { tier: 'free', actorClass: 'FREE' }; }) as never,
+    analyze: (async (analyzeOptions: Record<string, unknown>) => {
+      calls.analyze++;
+      calls.analyzeOptions.push(analyzeOptions);
+      return options.analyze ? await options.analyze() : reading();
+    }) as never,
+    paint: (async () => {
+      calls.paint++;
+      return options.paint ? await options.paint() : {
+        imagePath: 'previews/u1/7-a.jpg', bandPath: 'previews/u1/7-a-band.jpg', bandUrl: 'https://example.test/sign/band',
+      };
+    }) as never,
+  };
+  return { ctx, deps, previews, dreams, calls };
+}
+
+const prepare = { dreamId: 7, lang: 'fr', prepare: true };
+
+Deno.test('the prepared analysis is a journal route, for signed-in free accounts', async () => {
+  assertEquals(isProductRouteAllowed('journal', 'POST /analysis-preview'), true);
+  assertEquals(isProductRouteAllowed('lucid', 'POST /analysis-preview'), false);
+  const { ctx, deps, calls } = setup();
+  assertEquals((await handleAnalysisPreview(ctx(prepare, null), deps)).status, 401);
+  assertEquals((await handleAnalysisPreview(ctx({ dreamId: -1, lang: 'fr' }), deps)).status, 400);
+  assertEquals((await handleAnalysisPreview(ctx({ dreamId: 7 }), deps)).status, 400);
+  assertEquals((await handleAnalysisPreview(ctx({ ...prepare, prepare: 'yes' }), deps)).status, 400);
+  const plus = setup({ tier: 'plus' });
+  const refused = await handleAnalysisPreview(plus.ctx(prepare), plus.deps);
+  assertEquals([refused.status, (await refused.json()).code], [409, 'PLUS_ANALYZES']);
+  assertEquals(calls.analyze + plus.calls.analyze, 0);
+});
+
+Deno.test('without prepare, it only says a preview can be prepared and costs nothing', async () => {
+  const { ctx, deps, previews, calls } = setup();
+  const result = await (await handleAnalysisPreview(ctx({ dreamId: 7, lang: 'fr' }), deps)).json();
+  assertEquals(result, { state: 'available', preview: null, preparedAt: null, retryAt: null });
+  assertEquals([calls.analyze, calls.admit, calls.quota, previews.length], [0, 0, 0, 0]);
+});
+
+Deno.test('prepares the analysis once and gives its title, first sentence, symbols and painted band only', async () => {
+  const { ctx, deps, previews, calls } = setup();
+  const response = await handleAnalysisPreview(ctx(prepare), deps);
+  assertEquals(response.status, 200);
+  const result = await response.json();
+  assertEquals(result.state, 'ready');
+  assertEquals(result.preview, {
+    title: 'La rivière de verre',
+    opening: 'Ton rêve fait de la rivière un passage plutôt qu’un obstacle.',
+    symbols: ['Rivière', 'Maison'],
+    image: { state: 'ready', bandUrl: 'https://example.test/sign/band' },
+  });
+  assertEquals(result.preparedAt, iso(NOW));
+  // The rest of the reading and the whole painting stay on the server.
+  const sent = JSON.stringify(result);
+  for (const hidden of ['éclairée', 'Un passage entre deux rives', 'Tu avances sans peur', 'Vers quoi', 'previews/u1/7-a.jpg']) {
+    assert(!sent.includes(hidden), hidden);
+  }
+  assertEquals(previews[0].status, 'ready');
+  assertEquals(previews[0].transcript_sha256, await transcriptSha256(TRANSCRIPT));
+  assertEquals(previews[0].image_status, 'ready');
+  assertEquals(previews[0].image_prompt, 'A river of glass at dusk leading to a lit childhood home');
+  assertEquals((previews[0].reading as StructuredDreamAnalysis).symbols[0].meaning, 'Un passage entre deux rives de ta vie.');
+  // The same reading the analysis job writes: same route rules, the dreamer's own symbols.
+  assertEquals(calls.analyzeOptions[0].route, '/analysis-preview');
+  assertEquals(calls.analyzeOptions[0].lang, 'fr');
+  assertEquals(calls.analyzeOptions[0].knownSymbols, [{ key: 'glass-river', name: 'Rivière de verre' }]);
+
+  // Read again, prepared or not: the same preview, no second writing.
+  const again = await (await handleAnalysisPreview(ctx({ dreamId: 7, lang: 'fr' }), deps)).json();
+  assertEquals(again.preview.opening, result.preview.opening);
+  await handleAnalysisPreview(ctx(prepare), deps);
+  assertEquals([calls.analyze, calls.paint, calls.admit], [1, 1, 1]);
+});
+
+Deno.test('a classed dream keeps the name its seal wrote', async () => {
+  const { ctx, deps } = setup({ dream: { theme: 'calm', precise_theme: 'luminous', title: 'Le passage de verre' } });
+  const result = await (await handleAnalysisPreview(ctx(prepare), deps)).json();
+  assertEquals(result.preview.title, 'Le passage de verre');
+});
+
+Deno.test('an account with an analysis left analyzes the dream instead', async () => {
+  const { ctx, deps, previews, calls } = setup({ canAnalyze: true });
+  const response = await handleAnalysisPreview(ctx(prepare), deps);
+  assertEquals([response.status, (await response.json()).code], [409, 'CAN_ANALYZE']);
+  assertEquals([calls.analyze, previews.length], [0, 0]);
+});
+
+Deno.test('one new prepared analysis per rolling week', async () => {
+  const lastWeek = (time: number, extra: Row = {}): Row => ({
+    user_id: 'u1', dream_id: 5, status: 'ready', lang: 'fr', transcript_sha256: 'a'.repeat(64), reading: reading(),
+    image_status: 'none', created_at: iso(time), updated_at: iso(time), ...extra,
+  });
+  const blocked = setup({ previews: [lastWeek(NOW - 2 * DAY)] });
+  const result = await (await handleAnalysisPreview(blocked.ctx(prepare), blocked.deps)).json();
+  assertEquals(result, { state: 'weekly_limit', preview: null, preparedAt: null, retryAt: iso(NOW + 5 * DAY) });
+  // Spent or deleted, this week's preview still counts.
+  const spent = setup({ previews: [lastWeek(NOW - DAY, { status: 'used', reading: null })] });
+  assertEquals((await (await handleAnalysisPreview(spent.ctx(prepare), spent.deps)).json()).state, 'weekly_limit');
+  assertEquals(blocked.calls.analyze + spent.calls.analyze, 0);
+
+  // Older than a week, or a writing that failed long ago, it no longer does.
+  const open = setup({ previews: [lastWeek(NOW - 8 * DAY), lastWeek(NOW - DAY, { dream_id: 6, status: 'writing', reading: null, updated_at: iso(NOW - DAY) })] });
+  assertEquals((await (await handleAnalysisPreview(open.ctx(prepare), open.deps)).json()).state, 'ready');
+});
+
+Deno.test('an edited dream is not shown the reading of its former text', async () => {
+  const { ctx, deps, previews } = setup();
+  await handleAnalysisPreview(ctx(prepare), deps);
+  const edited = setup({ previews, dream: { transcript: `${TRANSCRIPT} Puis la rivière a gelé.` } });
+  const result = await (await handleAnalysisPreview(edited.ctx({ dreamId: 7, lang: 'fr' }), edited.deps)).json();
+  assertEquals([result.state, result.preview], ['weekly_limit', null]);
+});
+
+Deno.test('a failed reading costs the week nothing', async () => {
+  const { ctx, deps, previews } = setup({ analyze: () => Promise.reject(new Error('provider down')) });
+  const response = await handleAnalysisPreview(ctx(prepare), deps);
+  assertEquals([response.status, (await response.json()).code], [502, 'PREVIEW_FAILED']);
+  assertEquals(previews.length, 0);
+
+  const refused = setup({ admit: async () => new Response('{}', { status: 429 }) });
+  assertEquals((await handleAnalysisPreview(refused.ctx(prepare), refused.deps)).status, 429);
+  assertEquals([refused.previews.length, refused.calls.analyze], [0, 0]);
+});
+
+Deno.test('a failed painting leaves the reading, without a band', async () => {
+  const { ctx, deps, previews } = setup({ paint: () => Promise.reject(new Error('no image')) });
+  const result = await (await handleAnalysisPreview(ctx(prepare), deps)).json();
+  assertEquals(result.state, 'ready');
+  assertEquals(result.preview.image, { state: 'none', bandUrl: null });
+  assertEquals(previews[0].image_status, 'failed');
+});
+
+Deno.test('analyzed, pending or missing dreams have no preview', async () => {
+  for (const [dream, status, code] of [
+    [{ is_analyzed: true }, 409, 'ALREADY_ANALYZED'],
+    [{ analysis_status: 'pending' }, 409, 'ANALYSIS_PENDING'],
+    [{ user_id: 'u2' }, 404, 'DREAM_NOT_FOUND'],
+    [{ transcript: '   ' }, 422, 'INVALID_TRANSCRIPT'],
+  ] as const) {
+    const { ctx, deps, calls } = setup({ dream });
+    const response = await handleAnalysisPreview(ctx(prepare), deps);
+    assertEquals([response.status, (await response.json()).code], [status, code]);
+    assertEquals(calls.analyze, 0);
+  }
+});
+
+Deno.test('a preview being written is not written twice', async () => {
+  const writing: Row = {
+    user_id: 'u1', dream_id: 7, status: 'writing', lang: 'fr', transcript_sha256: 'a'.repeat(64), reading: null,
+    image_status: 'none', created_at: iso(NOW - 30_000), updated_at: iso(NOW - 30_000),
+  };
+  const { ctx, deps, calls } = setup({ previews: [writing] });
+  assertEquals((await (await handleAnalysisPreview(ctx(prepare), deps)).json()).state, 'writing');
+  assertEquals(calls.analyze, 0);
+});

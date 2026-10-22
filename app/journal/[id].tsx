@@ -1,5 +1,6 @@
 import type { LayoutChangeEvent, ViewInstance, ScrollViewInstance, TextInputInstance } from 'react-native';
 import { getSavedAnalysisAction } from '@/lib/savedAnalysisAccess';
+import { AnalysisPreviewCard } from '@/components/journal/AnalysisPreviewCard';
 import { DreamAnalysisContent } from '@/components/journal/DreamAnalysisContent';
 import { isPoeticDreamQuote } from '@/lib/dreamQuote';
 import { CaptureOriginal } from '@/components/recording/CaptureOriginal';
@@ -1961,6 +1962,9 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   // The seal, under the name and before the story, at the head of the reading: from the
   // capture on arrival, and on every page whose dream is being or has been read.
   const readingBegun = readingInFlight || showCompletedReading;
+  // Past its monthly analyses, a free account may still read the start of this dream's analysis.
+  const analysisPreviewDreamId = user && !isPlus && savedAnalysisAction === 'upgrade' && !canResumeAnalysis
+    && !readingBegun && !isAnalysisLocked && !isEditing && dream && !dream.isAnalyzed ? dream.remoteId ?? null : null;
   const sealVisible = !shouldHideHeroMedia && (opensOnSavedMoment || readingBegun);
   // On a page opened again, the seal bears the dream's type and theme as its reading left them.
   const sealTheme = dream?.theme;
@@ -3105,6 +3109,10 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
             ) : null}
             {/* The reading, under its seal and before the story it reads. */}
             <View>{renderStaleBanner()}</View>
+            {analysisPreviewDreamId != null && user ? (
+              <AnalysisPreviewCard remoteDreamId={analysisPreviewDreamId} transcript={dream.transcript}
+                onOpenPlus={() => router.push(buildAnalysisPaywallHref(dream, user.id))} />
+            ) : null}
             {readingBegun ? (
               <OpenUp appear={readingInFlight}
                 onLayout={({ nativeEvent }) => { readingZoneTopRef.current = nativeEvent.layout.y; }}>
