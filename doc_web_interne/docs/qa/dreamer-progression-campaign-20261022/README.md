@@ -144,10 +144,15 @@ mise exec -- node --test doc_web_interne/docs/qa/dreamer-progression-campaign-20
   achèvement d’un guide, puis collection. Mesures : clés i18n brutes, débordement
   horizontal, éléments hors écran, erreurs JS.
 - Avec `--limits` (en-US) : collage de 4 001 caractères et plafond de 50 notes.
-- Captures hors Git (`test-results/`, ignoré). Le script sort en échec si une langue
-  n’a pas pu être inspectée jusqu’au bout.
-- Rejouer : démarrer d’abord le serveur web mock avec les réglages utilisés ici, puis
-  lancer l’inspection quand `http://127.0.0.1:8096/` répond.
+- Captures et rapport hors Git (`test-results/`, ignoré). Le rapport `report*.json`
+  enregistre la révision du checkout et l’URL servie.
+- Le script refuse de tourner si les sources de l’app diffèrent de 271fd2b (seul ce
+  dossier de campagne peut changer).
+- Il sort en échec à la moindre régression relevée : étape incomplète, erreur de page,
+  clé brute, débordement, contrôle hors écran, ou limite non honnête avec `--limits`.
+  Tant qu’A3 n’est pas corrigée, `--limits` sort donc en échec en la reproduisant.
+- Rejouer : démarrer d’abord le serveur web mock depuis ce même checkout avec les
+  réglages utilisés ici, puis lancer l’inspection quand `http://127.0.0.1:8096/` répond.
 
 ```sh
 EXPO_NO_METRO_LAZY=1 EXPO_PUBLIC_MOCK_AUDIO=true EXPO_PUBLIC_MOCK_PERSISTENCE=true \

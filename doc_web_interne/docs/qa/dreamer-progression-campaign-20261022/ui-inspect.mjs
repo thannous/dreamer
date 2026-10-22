@@ -1,10 +1,36 @@
 // QA inspection (not a TesterArmy journey), campaign 2026-10-22: mock web dev server of the candidate.
 // U01: notes/guides/collection in six locales at 320 px; Q01 UI: 4001 characters, 50 notes.
+import { execFileSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { mkdirSync, writeFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 const require = createRequire(new URL('../../../../tools/e2e/package.json', import.meta.url));
 const { chromium } = require('playwright');
 const base = process.env.QA_WEB_URL ?? 'http://127.0.0.1:8096';
+// The evidence belongs to candidate 271fd2b: the inspection runs from a checkout whose app
+// sources are the candidate's (this campaign folder aside), the checkout the rerun steps start
+// the mock server from, and records that identity in its report.
+const CANDIDATE = '271fd2b5c879e22f42b08979f9af842b0561ec45';
+const root = fileURLToPath(new URL('../../../../', import.meta.url));
+const matchesCandidate = () => {
+  try {
+    execFileSync('git', ['-C', root, 'diff', '--quiet', CANDIDATE, '--', '.',
+      ':(exclude)doc_web_interne/docs/qa/dreamer-progression-campaign-20261022'], { stdio: 'ignore' });
+    return true;
+  } catch {
+    return false;
+  }
+};
+const source = {
+  revision: execFileSync('git', ['-C', root, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(),
+  candidate: CANDIDATE,
+  appMatchesCandidate: matchesCandidate(),
+  url: base,
+};
+if (!source.appMatchesCandidate) {
+  console.error(`App sources at ${source.revision} differ from candidate ${CANDIDATE}: this inspection records that candidate only.`);
+  process.exit(1);
+}
 // Screenshots stay outside Git (private QA artifacts).
 const out = process.env.QA_OUT ?? 'test-results/qa-progression-inspect';
 mkdirSync(out, { recursive: true });
@@ -117,10 +143,33 @@ for (const locale of locales) {
   await context.close();
 }
 await browser.close();
-writeFileSync(`${out}/report${limits ? '-limits' : ''}.json`, JSON.stringify(report, null, 2));
-// The report keeps every locale, but an incomplete inspection is not a pass.
-const failed = Object.entries(report).filter(([, entry]) => entry.failure).map(([locale]) => locale);
-if (failed.length) {
-  console.error(`Inspection incomplete for: ${failed.join(', ')}`);
-  process.exitCode = 1;
+// Every audited regression fails the run, not only an incomplete locale: a page error, a raw
+// key, an overflow, a control off screen or a limit that is not honest.
+function problemsOf(entry) {
+  const found = [];
+  if (entry.failure) found.push(`incomplete: ${entry.failure}`);
+  if (entry.errors.length) found.push(`page errors: ${entry.errors.join(' | ')}`);
+  const audits = Object.entries(entry).filter(([, value]) => value && typeof value === 'object' && 'rawKeys' in value);
+  if (entry.atFifty?.shot) audits.push(['atFifty', entry.atFifty.shot]);
+  for (const [name, value] of audits) {
+    if (value.rawKeys.length) found.push(`${name}: raw keys ${value.rawKeys.join(', ')}`);
+    if (value.overflowX) found.push(`${name}: horizontal overflow`);
+    if (value.outside.length) found.push(`${name}: off screen ${value.outside.join(', ')}`);
+  }
+  if (limits) {
+    // Q01 expects an explicit refusal past 4,000 characters, never a silent cut (anomaly A3).
+    if (entry.paste4001?.valueLength !== 4001) {
+      found.push(`A3: a 4,001-character paste keeps ${entry.paste4001?.valueLength ?? 'no'} characters`);
+    }
+    const fifty = entry.atFifty;
+    if (!fifty || fifty.addButtons !== 0 || fifty.notesCount !== 50 || !fifty.editEnabled || !fifty.editSaved) {
+      found.push('50-note ceiling: adding still offered or an existing note not editable');
+    }
+  }
+  return found;
 }
+const problems = Object.fromEntries(Object.entries(report).map(([locale, entry]) => [locale, problemsOf(entry)]));
+writeFileSync(`${out}/report${limits ? '-limits' : ''}.json`, JSON.stringify({ source, problems, locales: report }, null, 2));
+const failing = Object.entries(problems).filter(([, found]) => found.length);
+for (const [locale, found] of failing) console.error(`${locale}: ${found.join('; ')}`);
+if (failing.length) process.exitCode = 1;
