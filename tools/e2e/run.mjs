@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url';
 import { SDK_PINS, digest, trackedDiffSha256, sourceSnapshot, compareSnapshots, verifyReport, aggregateReports, writeOnce, preserveStatus, directoryFiles, hashFiles, createAttemptOutput, verifyEvidenceFiles, verifyNativeCleanup, campaignFailureRecord, startSdkProgress, startHostStallMonitor, HOST_STALL_MS } from './qualification.mjs';
 import { normalizeAvdName, appInputs, nativeInputs, binaryInputs, releaseMetadata, validateReleaseReceipt, verifyInstalledRelease, runWithInstallDiagnostics, validateBuildCommand, archiveReleaseBinary } from './native-release.mjs';
 import { dreamerCampaignContexts } from './campaign-contexts.mjs';
+import { readNativeBackendState } from './native-backend-state.ts';
 
 const cwd = fileURLToPath(new URL('.', import.meta.url));
 const root = fileURLToPath(new URL('../../', import.meta.url));
@@ -66,6 +67,10 @@ if (!existsSync(cli)) throw new Error('Install with npm run test:testerarmy:setu
 const matcherPreload = new URL('./preload-web-matchers.mjs', import.meta.url).href;
 const webNodeArgs = platform === 'web' ? ['--import', matcherPreload] : [];
 const env = { ...process.env, E2E_PRODUCT: product, E2E_PLATFORM: platform, E2E_TELEMETRY_DISABLED: '1', DO_NOT_TRACK: '1' };
+const nativeJourneys = env.E2E_NATIVE_JOURNEYS === '1' || env.E2E_BUILD_PROFILE === 'local-backend';
+if (nativeJourneys && (product !== 'dreamer' || platform === 'web' || env.E2E_PERSONAS === '1'))
+  throw new Error('Local backend journeys require Dreamer on one owned native QA target.');
+if (nativeJourneys) env.E2E_NATIVE_JOURNEYS = '1';
 // Local web files run in parallel against the one local server, each attempt in its
 // own browser context and storage: half the cores, at most four. CI keeps e2e's single
 // worker and shards; a native target drives its one named device. The resolved count
@@ -115,7 +120,8 @@ if (command === 'report') {
 const relativeOutput = `.e2e/${product}-${platform}/${Date.now()}-${process.pid}-${randomUUID()}`;
 env.E2E_OUTPUT = relativeOutput;
 const output = createAttemptOutput(join(cwd, '.e2e', `${product}-${platform}`), basename(relativeOutput));
-const bundle = { dreamer: 'com.tanuki75.noctalia', lucid: 'com.tanuki75.noctalia.lucid', meditation: 'com.noctalia.meditation' }[product];
+const bundle = nativeJourneys ? 'com.tanuki75.noctalia.qa'
+  : { dreamer: 'com.tanuki75.noctalia', lucid: 'com.tanuki75.noctalia.lucid', meditation: 'com.noctalia.meditation' }[product];
 function read(executable, argv, options = {}) {
   const result = spawnSync(executable, argv, { cwd: root, env, encoding: 'utf8', ...options });
   if (result.error || result.status !== 0) throw result.error ?? new Error(result.stderr || `${executable} failed`);
@@ -128,6 +134,7 @@ function webInputIdentity() {
   return Object.fromEntries(sourceFiles.map(path => [path, createHash('sha256').update(readFileSync(join(cwd, path))).digest('hex')]));
 }
 let lock;
+let reversePort;
 let hostStalls = [];
 let fd;
 let identity;
@@ -187,6 +194,19 @@ async function buildRelease() {
   const buildEnv = { ...env, CI: '1', EXPO_NO_DOTENV: '1' };
   const appRoot = product === 'meditation' ? join(root, 'apps/meditation') : root;
   const profileFile = buildEnv.E2E_BUILD_ENV_FILE;
+  const backend = nativeJourneys ? readNativeBackendState() : null;
+  if (backend) {
+    if (profileFile || buildEnv.EAS_BUILD === 'true') throw new Error('Local backend is only an isolated local QA build.');
+    const profileValues = Object.fromEntries(readFileSync(backend.profilePath, 'utf8').trim().split('\n').map(line => {
+      const equal = line.indexOf('='); return [line.slice(0, equal), line.slice(equal + 1)];
+    }));
+    if (profileValues.EXPO_PUBLIC_SUPABASE_URL !== backend.proxy.origin
+      || profileValues.EXPO_PUBLIC_SUPABASE_ANON_KEY !== backend.status.ANON_KEY
+      || profileValues.EXPO_PUBLIC_API_URL !== `${backend.proxy.origin}/functions/v1/api`)
+      throw new Error('Local backend build profile differs from the owned stack.');
+    Object.assign(buildEnv, profileValues, { NOCTALIA_DREAMER_QA_BUILD: '1',
+      EXPO_PUBLIC_NATIVE_QA_AUDIO: 'true', EXPO_PUBLIC_ANALYSIS_JOBS_ENABLED: 'true' });
+  }
   if (profileFile) {
     if (!['.env.mock', '.env.lucid.mock'].includes(profileFile) || (product === 'dreamer' && profileFile !== '.env.mock') || (product === 'lucid' && profileFile !== '.env.lucid.mock') || product === 'meditation') throw new Error('Unknown build environment profile.');
     require(join(root, 'scripts/expo-safe-runner.js')).loadEnvProfile(profileFile, { cwd: root, env: buildEnv });
@@ -210,11 +230,14 @@ async function buildRelease() {
     mock: buildEnv.EXPO_PUBLIC_MOCK_MODE === 'true', persistence: buildEnv.EXPO_PUBLIC_MOCK_PERSISTENCE === 'true',
     audioMock: buildEnv.EXPO_PUBLIC_MOCK_AUDIO === 'true', featureSheets: buildEnv.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED !== 'false',
     categorizationDelayMs: Number(buildEnv.EXPO_PUBLIC_MOCK_CATEGORIZATION_DELAY_MS ?? 0),
+    ...(backend ? { nativeQaAudio: true, backend: { origin: backend.proxy.origin,
+      stackId: backend.status.LOCAL_E2E_STACK.id, anonKeySha256: digest(backend.status.ANON_KEY) } } : {}),
   };
-  if (!['production-apk', 'mock-persistent', 'lucid-mock', 'meditation-local'].includes(profile.name)
+  if (!['production-apk', 'mock-persistent', 'local-backend', 'lucid-mock', 'meditation-local'].includes(profile.name)
     || !Number.isSafeInteger(profile.categorizationDelayMs)
     || (product === 'lucid' && profile.name !== 'lucid-mock') || (product === 'meditation' && profile.name !== 'meditation-local')
-    || (product === 'dreamer' && !['production-apk', 'mock-persistent'].includes(profile.name))
+    || (product === 'dreamer' && !['production-apk', 'mock-persistent', 'local-backend'].includes(profile.name))
+    || (profile.name === 'local-backend' && (!backend || profile.mock || profile.persistence || profile.audioMock))
     || (profile.name === 'production-apk' && profile.mock)
     || (profile.name === 'mock-persistent' && (!profile.mock || !profile.persistence))
     || (profile.categorizationDelayMs !== 0 && (!profile.mock || !profile.persistence || profile.categorizationDelayMs < 20000 || profile.categorizationDelayMs > 60000)))
@@ -339,6 +362,21 @@ try {
     writeFileSync(fd, JSON.stringify({ pid: process.pid, product, platform, device }));
     if (!releaseFile) throw new Error('E2E_RELEASE_RECEIPT is required; create it through the explicit native build command.');
     release = JSON.parse(readFileSync(resolve(releaseFile), 'utf8'));
+    if (nativeJourneys) {
+      const backend = readNativeBackendState();
+      if (release.profile.name !== 'local-backend' || release.profile.backend?.origin !== backend.proxy.origin
+        || release.profile.backend?.stackId !== backend.status.LOCAL_E2E_STACK.id
+        || release.profile.backend?.anonKeySha256 !== digest(backend.status.ANON_KEY))
+        throw new Error('Release does not belong to the live disposable backend.');
+      env.E2E_NATIVE_QA_AUDIO = String(release.profile.nativeQaAudio === true);
+      if (platform === 'android') {
+        const port = new URL(backend.proxy.origin).port;
+        if (read('adb', ['-s', identity, 'reverse', '--list']).split('\n').some(line => line.includes(`tcp:${port}`)))
+          throw new Error('Existing Android reverse mapping belongs to another invocation.');
+        read('adb', ['-s', identity, 'reverse', `tcp:${port}`, `tcp:${port}`]);
+        reversePort = port;
+      }
+    }
     const artifact = binaryInputs(release.binary.path, platform);
     validateReleaseReceipt(release, { product, platform, bundle, inputDigest: appInputs(root, product).inputDigest,
       nativeInputDigest: nativeInputs(root, product, platform).digest, binaryDigest: artifact.sha256 });
@@ -370,7 +408,9 @@ try {
     command: ['node', 'tools/e2e/run.mjs', product, platform, command, ...args, ...(releaseFile ? ['--release-receipt', resolve(releaseFile)] : []), ...(installRelease ? ['--install-release'] : [])],
     rerunEnvironment: platform === 'web' ? { E2E_WEB_LOCALE: context().locale, EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED: String(context().featureSheets), E2E_WEB_PORT: new URL(expectedOrigin).port, E2E_WORKERS: env.E2E_WORKERS, E2E_KEEP_METRO_CACHE: env.E2E_KEEP_METRO_CACHE === '1' ? '1' : null,
       ...(env.E2E_PERSONAS === '1' ? { E2E_PERSONAS: '1', E2E_PERSONA_MODEL: context().personaModel } : {}) } : { E2E_DEVICE: env.E2E_DEVICE ?? null, E2E_AVD_NAME: env.E2E_AVD_NAME ?? 'Pixel_9_API_37',
-      ...(env.E2E_PERSONAS === '1' ? { E2E_PERSONAS: '1', E2E_PERSONA_MODEL: context().personaModel } : {}) },
+      ...(env.E2E_PERSONAS === '1' ? { E2E_PERSONAS: '1', E2E_PERSONA_MODEL: context().personaModel } : {}),
+      ...(nativeJourneys ? { E2E_NATIVE_JOURNEYS: '1', E2E_NATIVE_BACKEND_MANIFEST: env.E2E_NATIVE_BACKEND_MANIFEST,
+        E2E_NATIVE_QA_AUDIO: env.E2E_NATIVE_QA_AUDIO, E2E_NATIVE_RECOVERY_PORT: env.E2E_NATIVE_RECOVERY_PORT ?? '31284' } : {}) },
     ...(platform === 'web' ? {
       webInputsSha256: webInputIdentity(),
       webLocale: env.E2E_WEB_LOCALE ?? (product === 'lucid' ? 'fr-FR' : 'en-US'),
@@ -379,7 +419,8 @@ try {
       nodeOptionsRestored: Object.hasOwn(env, 'NODE_OPTIONS') ? 'original value' : 'absent',
     } : {}),
     release: release ? { receipt: resolve(releaseFile ?? join(output, 'release.json')), buildSource: release.source.revision, profile: release.profile } : null,
-    services: product === 'backend' ? 'owned local Supabase Auth/Postgres/PostgREST; no external AI, OAuth or payment'
+    services: nativeJourneys ? 'owned local Auth/Postgres, real native storage and handlers; deterministic model transport, recorded system speech input; no physical microphone or Store proof'
+      : product === 'backend' ? 'owned local Supabase Auth/Postgres/PostgREST; no external AI, OAuth or payment'
       : product === 'branch' ? 'allowlisted persistent Supabase test branch; guarded existing shared test accounts'
       : platform === 'web' && product !== 'site' ? 'mock services; local real UI' : 'identified local Release / generated site',
     ...(product === 'backend' ? { backend: { runtime: env.E2E_BACKEND_RUNTIME, cliVersion: env.E2E_BACKEND_CLI_VERSION,
@@ -447,6 +488,7 @@ try {
   // Every final check and lock operation is independent. Persistence failure
   // cannot prevent cleanup or replace the original SDK failure/signal.
   const attempt = (code, body) => { try { return body(); } catch { secondary.push(code); return undefined; } };
+  if (reversePort) attempt('ANDROID_REVERSE_CLEANUP', () => read('adb', ['-s', identity, 'reverse', '--remove', `tcp:${reversePort}`]));
   if (installedReady || installHandoffStarted) attempt('INSTALLED_END_REFUSED', () => writeOnce(join(output, 'installed-end.json'), verifyInstalledRelease({ receipt: release, device: identity, output, read })));
   const end = attempt('SOURCE_END_REFUSED', () => sourceSnapshot(root, product));
   const stability = sourceBefore && end ? compareSnapshots(sourceBefore, end) : null;

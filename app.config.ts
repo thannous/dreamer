@@ -83,6 +83,15 @@ export function resolveDreamerQaBuildEnabled(
 }
 
 export function createDreamerQaExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
+  const nativeQaAudio = process.env.EXPO_PUBLIC_NATIVE_QA_AUDIO === 'true';
+  if (nativeQaAudio) {
+    if (process.env.EAS_BUILD === 'true') throw new Error('[app.config] Native QA audio is local-only; EAS builds are refused.');
+    for (const key of ['EXPO_PUBLIC_API_URL', 'EXPO_PUBLIC_SUPABASE_URL']) {
+      const url = new URL(process.env[key] ?? '');
+      if (url.protocol !== 'http:' || !['127.0.0.1', 'localhost', '[::1]', '10.0.2.2'].includes(url.hostname)
+        || url.username || url.password) throw new Error(`[app.config] Native QA audio requires a loopback ${key}.`);
+    }
+  }
   return {
     ...baseExpo,
     name: DREAMER_QA_APP_NAME,
@@ -91,6 +100,9 @@ export function createDreamerQaExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
       ...baseExpo.ios,
       bundleIdentifier: DREAMER_QA_IOS_BUNDLE_IDENTIFIER,
       associatedDomains: [],
+      infoPlist: { ...baseExpo.ios?.infoPlist, NSAppTransportSecurity: {
+        ...baseExpo.ios?.infoPlist?.NSAppTransportSecurity, NSAllowsLocalNetworking: true,
+      } },
     },
     android: {
       ...baseExpo.android,
@@ -99,12 +111,19 @@ export function createDreamerQaExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
     },
     extra: {
       ...baseExpo.extra,
+      nativeQaAudio,
       eas: {
         projectId: DREAMER_QA_OBSERVE.projectId,
         observe: { endpointUrl: DREAMER_QA_OBSERVE.endpointUrl },
       },
     },
-    updates: undefined,
+    // A local QA Release must execute its embedded, identified JS bundle.
+    updates: { enabled: false },
+    plugins: nativeQaAudio ? baseExpo.plugins?.map(plugin => {
+      if (!Array.isArray(plugin) || plugin[0] !== 'expo-build-properties') return plugin;
+      const options = plugin[1] ?? {};
+      return [plugin[0], { ...options, android: { ...options.android, usesCleartextTraffic: true } }];
+    }) : baseExpo.plugins,
   };
 }
 
@@ -322,6 +341,9 @@ export default function resolveExpoConfig({ config }: ConfigContext): ExpoConfig
     baseExpo = { ...baseExpo, experiments };
   }
   const qaEnabled = resolveDreamerQaBuildEnabled();
+  if (process.env.EXPO_PUBLIC_NATIVE_QA_AUDIO === 'true' && !qaEnabled) {
+    throw new Error('[app.config] Native QA audio requires the separate Dreamer QA bundle.');
+  }
   const lucidEnabled = resolveLucidBuildEnabled();
   assertDreamerQaLucidConflict(qaEnabled, lucidEnabled);
 

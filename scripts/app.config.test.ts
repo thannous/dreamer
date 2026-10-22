@@ -20,6 +20,10 @@ const MARKERS = [
   'EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID',
   'EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID',
   'EAS_BUILD_PROFILE',
+  'EAS_BUILD',
+  'EXPO_PUBLIC_NATIVE_QA_AUDIO',
+  'EXPO_PUBLIC_API_URL',
+  'EXPO_PUBLIC_SUPABASE_URL',
 ];
 
 function withEnv(
@@ -139,7 +143,7 @@ describe('Dreamer QA Expo identity', () => {
       },
       plugins: config.plugins,
     });
-    expect(qaConfig.updates).toBeUndefined();
+    expect(qaConfig.updates).toEqual({ enabled: false });
     // Not the store app's EAS project: Observe starts, and reports nothing off the device.
     expect(qaConfig.extra?.eas).toEqual({
       projectId: DREAMER_QA_OBSERVE.projectId,
@@ -161,7 +165,8 @@ describe('Dreamer QA Expo identity', () => {
       expect(resolved.ios?.bundleIdentifier).toBe(DREAMER_QA_IOS_BUNDLE_IDENTIFIER);
       expect(resolved.ios?.associatedDomains).toEqual([]);
       expect(resolved.android?.intentFilters).toEqual([]);
-      expect(resolved.updates).toBeUndefined();
+      // Explicitly disable updates so the native Release receipt proves embedded JS.
+      expect(resolved.updates).toEqual({ enabled: false });
       expect(resolved.extra?.eas?.projectId).toBe(DREAMER_QA_OBSERVE.projectId);
       expect(resolved.extra?.apiUrl).toBe(config.extra?.apiUrl);
       expect(resolved.name).toBe(DREAMER_QA_APP_NAME);
@@ -225,6 +230,39 @@ describe('product route roots', () => {
     });
     withEnv({ NOCTALIA_APP_VARIANT: 'lucid', EXPO_PUBLIC_APP_VARIANT: 'lucid-trainer' }, () => {
       expect(pluginNames(resolveExpoConfig({ config: baseExpo() } as any))).not.toContain('expo-widgets');
+    });
+  });
+});
+
+// The native journey runs only a valid local QA binary. These rejection cases
+// cover accidental Store/cloud/remote configuration that cannot safely be
+// exercised by that device journey.
+describe('native speech QA build boundary', () => {
+  const local = {
+    NOCTALIA_DREAMER_QA_BUILD: '1', EXPO_PUBLIC_NATIVE_QA_AUDIO: 'true',
+    EXPO_PUBLIC_API_URL: 'http://127.0.0.1:31284/functions/v1/api',
+    EXPO_PUBLIC_SUPABASE_URL: 'http://127.0.0.1:31284',
+  };
+  it('enables fixture input and cleartext only for a local QA binary with OTA disabled', () => {
+    withEnv(local, () => {
+      const config = resolveExpoConfig({ config: baseExpo() } as never);
+      expect(config.extra?.nativeQaAudio).toBe(true);
+      expect(config.updates).toEqual({ enabled: false });
+      expect(config.ios?.infoPlist?.NSAppTransportSecurity?.NSAllowsLocalNetworking).toBe(true);
+      const build = config.plugins?.find(plugin => Array.isArray(plugin) && plugin[0] === 'expo-build-properties');
+      expect(Array.isArray(build) && build[1]?.android.usesCleartextTraffic).toBe(true);
+    });
+  });
+  it.each([
+    { NOCTALIA_DREAMER_QA_BUILD: '0' },
+    { EAS_BUILD: 'true' },
+    { EXPO_PUBLIC_API_URL: 'https://noctalia.app/api' },
+    { EXPO_PUBLIC_SUPABASE_URL: 'https://production.supabase.co' },
+    { EXPO_PUBLIC_API_URL: 'http://localhost.example.com/api' },
+    { EXPO_PUBLIC_API_URL: 'http://user:password@127.0.0.1/api' },
+  ])('rejects an unsafe speech QA build %j', overrides => {
+    withEnv({ ...local, ...overrides }, () => {
+      expect(() => resolveExpoConfig({ config: baseExpo() } as never)).toThrow();
     });
   });
 });

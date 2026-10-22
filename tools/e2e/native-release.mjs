@@ -3,7 +3,15 @@ import { join, resolve, basename, relative, sep } from 'node:path';
 import { digest, directoryFiles, hashFiles, sourceSnapshot } from './qualification.mjs';
 
 const refusal = code => { throw new Error(code); };
-const profiles = new Set(['production-apk', 'mock-persistent', 'lucid-mock', 'meditation-local']);
+const profiles = new Set(['production-apk', 'mock-persistent', 'local-backend', 'lucid-mock', 'meditation-local']);
+function isLocalBackendOrigin(value) {
+  if (typeof value !== 'string') return false;
+  try {
+    const url = new URL(value), port = Number(url.port);
+    return url.protocol === 'http:' && url.hostname === '127.0.0.1' && !url.username && !url.password
+      && port >= 20000 && port <= 32767 && url.origin === value;
+  } catch { return false; }
+}
 export function normalizeAvdName(raw) {
   const lines = raw.trim().split(/\r?\n/).map(line => line.trim());
   if (!lines[0] || lines.length > 2 || (lines.length === 2 && lines[1] !== 'OK')) refusal('AVD_PROTOCOL');
@@ -96,12 +104,19 @@ export function validateReleaseReceipt(receipt, expected) {
     || ['mock', 'persistence', 'audioMock', 'featureSheets'].some(key => typeof receipt.profile[key] !== 'boolean')
     || !Number.isSafeInteger(receipt.profile.categorizationDelayMs) || receipt.profile.categorizationDelayMs < 0) refusal('RELEASE_PROVENANCE');
   validateBuildCommand(receipt.buildCommand, receipt.platform);
-  if ((receipt.product === 'dreamer' && !['production-apk', 'mock-persistent'].includes(receipt.profile.name))
+  if ((receipt.product === 'dreamer' && !['production-apk', 'mock-persistent', 'local-backend'].includes(receipt.profile.name))
     || (receipt.profile.name === 'production-apk' && receipt.profile.mock)
     || (receipt.profile.categorizationDelayMs !== 0 && (!receipt.profile.mock || !receipt.profile.persistence || receipt.profile.categorizationDelayMs < 20000 || receipt.profile.categorizationDelayMs > 60000))
     || (receipt.product === 'lucid' && receipt.profile.name !== 'lucid-mock')
     || (receipt.product === 'meditation' && receipt.profile.name !== 'meditation-local')
     || (receipt.profile.name === 'mock-persistent' && (!receipt.profile.mock || !receipt.profile.persistence))
+    || (receipt.profile.name === 'local-backend' && (receipt.profile.mock || receipt.profile.audioMock || receipt.profile.persistence
+      || receipt.profile.nativeQaAudio !== true
+      || receipt.bundle !== 'com.tanuki75.noctalia.qa' || !receipt.profile.backend
+      || !isLocalBackendOrigin(receipt.profile.backend.origin)
+      || !/^[a-f0-9]{64}$/.test(receipt.profile.backend.stackId ?? '')
+      || !/^[a-f0-9]{64}$/.test(receipt.profile.backend.anonKeySha256 ?? '')
+      || (receipt.platform === 'ios' && !receipt.binary.signed)))
     || (receipt.platform === 'ios' && receipt.product === 'lucid' && !receipt.binary.signed)) refusal('RELEASE_PROFILE');
   return receipt;
 }
