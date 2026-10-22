@@ -11,6 +11,7 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
+const { readMedia, publicUrl, assertRemoteReceipt } = require('./lib/site-media');
 
 const DOCS_DIR = path.join(__dirname, '../docs');
 const DEFAULT_PORT = 8000;
@@ -98,6 +99,8 @@ function send(res, statusCode, headers, body) {
 }
 
 function main() {
+  const media = readMedia(path.resolve(__dirname, '..'));
+  if (media?.config.delivery === 'cdn') assertRemoteReceipt(path.resolve(__dirname, '..'), media);
   const port = parsePort();
   const host = process.argv.find((arg) => arg.startsWith('--host='))?.slice(7) || '127.0.0.1';
   const notFoundPath = safeJoin(DOCS_DIR, '/404.html');
@@ -105,6 +108,10 @@ function main() {
 
   const server = http.createServer((req, res) => {
     const urlPath = req.url || '/';
+    const imagePath = new URL(urlPath, 'http://preview.local').pathname.replace(/^\/+/, '');
+    if (media?.config.delivery === 'cdn' && media.paths.has(imagePath)) {
+      return send(res, 302, { Location: publicUrl(media, imagePath), 'Cache-Control': 'no-store' }, '');
+    }
 
     const filePath = resolveRequestToFile(urlPath);
     if (!filePath) {

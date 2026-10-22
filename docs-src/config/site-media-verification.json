@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "release": "c3eb35388cb4a9acfde81103d84e7af9e193d2d564293ab950e0db07f356e9a7",
+  "origin": "https://media.noctalia.app",
+  "checked": 14239,
+  "bytes": 1121125192,
+  "method": "full GET, MIME, length and SHA-256 for every object",
+  "checkedAt": "2026-10-22T00:32:24.142Z"
+}

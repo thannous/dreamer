@@ -204,7 +204,8 @@
     "test:migration-grants": "node --test scripts/check-migration-grants.test.cjs",
     "start:branch-e2e": "node ./scripts/start-branch-e2e.mjs",
     "test:testerarmy:all": "node tools/e2e/run.mjs all web",
-    "test:testerarmy:login": "node tools/e2e/node_modules/e2e/dist/cli/bin.js login openai"
+    "test:testerarmy:login": "node tools/e2e/node_modules/e2e/dist/cli/bin.js login openai",
+    "docs:media": "node ./scripts/site-media.js"
   },
   "dependencies": {
     "@expo-google-fonts/fraunces": "^0.4.1",
@@ -283,6 +284,7 @@
     "uniwind": "^1.12.2"
   },
   "devDependencies": {
+    "@aws-sdk/client-s3": "3.1155.0",
     "@babel/plugin-transform-template-literals": "^7.27.1",
     "@cspell/dict-fr-fr": "^2.3.2",
     "@electric-sql/pglite": "0.5.8",

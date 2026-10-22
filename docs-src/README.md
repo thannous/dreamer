@@ -32,6 +32,13 @@ Before generating symbol artwork, adding an Atlas entry or changing its motion, 
 [the living illustrations guideline](../doc_web_interne/docs/symbol-atlas-guidelines.md).
 It defines the approved visual direction, source files, per-image motion and review criteria.
 
+## Image storage
+
+Images are versioned by `config/site-media.json`. The build restores the exact
+bytes from the configured CDN when missing; it does not re-encode this snapshot.
+Use `npm run docs:media -- refresh` explicitly when preparing new media, then
+upload and verify before delivery. See the [storage and recovery guide](../doc_web_interne/docs/site-media-storage.md).
+
 ## Daily Maintenance Workflow
 
 ### Preview changes live
@@ -177,9 +184,9 @@ language.
 Production of https://noctalia.app is manual. The Pages project `noctalia` is
 connected with the Cloudflare Git integration, which is a dashboard setting.
 This repository has no `wrangler.toml` and no CI job that runs
-`wrangler pages deploy`. Until Enable automatic production branch deployments
-is turned off (see Publishing to production in `AGENTS.md`), a push to `master`
-still builds and publishes the site. Generated HTML is not stored in Git.
+`wrangler pages deploy`. Automatic production deployments and Git previews were confirmed disabled on
+2026-10-22. A push to `master` does not publish the site; use the guarded manual
+commands described in `AGENTS.md`. Generated HTML is not stored in Git.
 When a build does run, Cloudflare checks out the tracked sources, rebuilds
 `docs/`, validates the result, then uploads that generated directory.
 

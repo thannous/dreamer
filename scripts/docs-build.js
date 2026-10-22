@@ -4,6 +4,7 @@
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const { readMedia, hydrate, mediaCorsHtml, verifyLocal: verifyMediaLocal } = require('./lib/site-media');
 const { spawnSync } = require('child_process');
 const {
   DATA_DIR,
@@ -24,6 +25,7 @@ const {
   ensureDir,
   readJson,
   readSourceDocument,
+  walkFiles,
 } = require('./lib/docs-source-utils');
 const {
   markDocsBuildFailed,
@@ -39,6 +41,8 @@ function hashAssetFiles() {
     path.join(DOCS_SRC_DIR, 'static', 'img', 'seo'),
     path.join(DOCS_SRC_DIR, 'static', 'img', 'og', 'noctalia-dreamscape-v2-1200x630.jpg'),
     path.join(DOCS_SRC_DIR, 'config', 'image-assets.json'),
+    path.join(DOCS_SRC_DIR, 'config', 'site-media.json'),
+    path.join(DOCS_SRC_DIR, 'config', 'site-media-storage.json'),
     // It transforms the css sources into landing.css, so a change there must
     // move ?v= too, or the edge keeps serving the old immutable bundle.
     path.join(ROOT_DIR, 'scripts', 'lib', 'landing-stylesheet.js'),
@@ -239,19 +243,24 @@ function copyStaticFiles() {
   fs.writeFileSync(path.join(symbolContentDir, 'atlas-v1.json'), `${JSON.stringify(buildSymbolAtlas())}\n`);
 }
 
-function main() {
+async function main() {
   markDocsBuildStarted(ROOT_DIR);
+  await hydrate(ROOT_DIR);
 
   // Content quality is a hard prerequisite for generating or expanding the
   // programmatic symbol inventory.
   runNodeScript(path.join('scripts', 'check-content-release-gates.js'));
   runNodeScript(path.join('scripts', 'build-content-manifest.js'));
   runNodeScript(path.join('scripts', 'build-site-manifest.js'));
-  runNodeScript(path.join('scripts', 'generate-image-seo-assets.js'));
-  runNodeScript(path.join('scripts', 'generate-symbol-hero-posters.js'));
-  runNodeScript(path.join('scripts', 'generate-symbol-responsive-images.js'));
-  runNodeScript(path.join('scripts', 'generate-symbol-avif-images.js'));
-  runNodeScript(path.join('scripts', 'generate-blog-responsive-images.js'));
+  // A versioned media release is a binary input. Builds restore exactly those bytes;
+  // encoding belongs to the explicit docs:media refresh/upload/verify workflow.
+  if (!readMedia(ROOT_DIR)) {
+    runNodeScript(path.join('scripts', 'generate-image-seo-assets.js'));
+    runNodeScript(path.join('scripts', 'generate-symbol-hero-posters.js'));
+    runNodeScript(path.join('scripts', 'generate-symbol-responsive-images.js'));
+    runNodeScript(path.join('scripts', 'generate-symbol-avif-images.js'));
+    runNodeScript(path.join('scripts', 'generate-blog-responsive-images.js'));
+  }
   // Bundles docs-src/experience into docs-src/static/js/experience so the
   // output is covered by the asset version hash computed just after.
   runNodeScript(path.join('scripts', 'build-experience.js'));
@@ -266,16 +275,23 @@ function main() {
 
   runNodeScript(path.join('docs', 'scripts', 'generate-symbol-pages.js'));
   runNodeScript(path.join('scripts', 'build-guides-pages.js'));
+  if (readMedia(ROOT_DIR)?.config.delivery === 'cdn') {
+    for (const file of walkFiles(DOCS_DIR, file => file.endsWith('.html'))) {
+      const original = fs.readFileSync(file, 'utf8');
+      const withCors = mediaCorsHtml(original);
+      if (withCors !== original) fs.writeFileSync(file, withCors);
+    }
+  }
   runNodeScript(path.join('scripts', 'check-docs-shell.js'));
   runNodeScript(path.join('scripts', 'generate-sitemap-v2.js'));
 
+  verifyMediaLocal(ROOT_DIR);
   markDocsBuildSucceeded(ROOT_DIR, { version });
   console.log('[docs-build] Docs build complete.');
 }
 
-try {
-  main();
-} catch (error) {
+main().catch(error => {
   markDocsBuildFailed(ROOT_DIR, error);
-  throw error;
-}
+  console.error(error);
+  process.exitCode = 1;
+});

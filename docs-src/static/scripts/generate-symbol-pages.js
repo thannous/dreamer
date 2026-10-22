@@ -1531,7 +1531,7 @@ const TEXT_ATLAS_CSS = atlasCss([]);
 // sentence or an asset file disappears.
 // Motion: every painting carries two distinct raster effects, channel a (layer) and
 // channel b (accent); boxes are fractions of the painting shown (see js/symbol-living).
-const SYMBOL_LIVING_DIR = '/js/symbol-living/c97b1746cf68';
+const SYMBOL_LIVING_DIR = '/js/symbol-living/eb0635253f69';
 const ATLAS_SIX_ASSETS_PATH = path.join(DOCS_SRC_DIR, 'config', 'symbol-atlas-six-assets.json');
 const ATLAS_SIX_PORTRAIT_MEDIA = TIGER_LIVING.media;
 // The six pages, an explicit allowlist read from docs-src/config/symbol-atlas-pilots.json: per

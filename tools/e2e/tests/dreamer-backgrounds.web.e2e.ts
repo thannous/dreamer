@@ -2,7 +2,7 @@ import { createRequire } from 'node:module';
 import type { Page } from 'playwright/test';
 import { createParityTest, expect, withDialog, type ParityInfo } from '../web-parity-fixtures';
 
-const sharp: typeof import('sharp') = createRequire(import.meta.url)('sharp');
+const sharp: typeof import('sharp').default = createRequire(import.meta.url)('sharp');
 const test = createParityTest({ viewport: { width: 390, height: 844 }, locale: 'fr-FR', reducedMotion: 'reduce' });
 
 function luminance(color: number[]) {
