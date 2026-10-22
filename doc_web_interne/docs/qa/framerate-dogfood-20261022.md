@@ -1,18 +1,162 @@
 # Dogfooding de fluidité Dreamer et noctalia.app — 22 octobre 2026
 
-## Résultat
+## Suivi Moto physique : journal et longue lecture
+
+**Candidat écarté : aucun nouveau gain mobile livré.** Un effet ciblé est observé à l'ouverture, sans gain global de framerate qualifié. Après la première seconde, les quatre surfaces >50 ms de master passent à zéro sur les cinq passages du candidat. Les maxima de cette fenêtre passent de 48,95–63,41 à 20,66–30,65 ms, sans recouvrement. Leur médiane passe de 59,27 à 27,31 ms. Le journal donne toutefois davantage d'échéances manquées dans cette paire : le critère secondaire global fixé avant mesure **n'est pas rempli**. Ce résultat reste visible ; il n'est pas transformé en réussite par un contrôle ultérieur.
+
+Le contrôle supplémentaire A5/B3 répète la dégradation des échéances du journal. **Les essais applicatifs sont donc retirés et l’APK QA master `3541d95c3` est réinstallée avec ses données conservées.** Le lot final ne garde que ce rapport et un parcours E2E de changement de page dans les deux sens. L’objectif d’un vrai gain global de fluidité sur ce Moto reste non atteint ; le bénéfice isolé d’ouverture n’est pas présenté comme une amélioration livrée.
+
+### Identité et protocole du Moto
+
+Master récupéré : `3541d95c3dc8ab7626cbdea6fd171688919a3ae3` (PR #551 déjà intégrée). Suivi isolé sur `codex/moto-framerate-20261022`, sans modifier le WIP du checkout principal. Le candidat couvrait ce master avec les seuls changements applicatifs de décor décrits ci-dessous ; les reçus conservent leurs entrées exactes. Après retrait de ces changements, le digest source revient à celui de la référence.
+
+Pendant la campagne, `origin/master` a avancé à `4403a8b1655ac8adb092aac7f39ecffd0e4ad2ad` (collection de badges, PR #552), qui modifie notamment journal, détail et Tendances. La branche du rapport est synchronisée pour la livraison, **mais les mesures et parcours physiques de cette section restent ceux du binaire `3541d95c3`**. Ils ne qualifient pas ce nouveau master ; il faudrait un nouveau build et une nouvelle référence pour le comparer.
+
+| Champ | Master A4 | Candidat B2 |
+| --- | --- | --- |
+| Digest des entrées app | `d4e5482e055a8dbe04628090ee5728aa1e6c9b102278aed420c49b8edbd1519a` | `94b8be9767d4a8007b713e3186057d1ade29d04085ce09623163c146d78081b4` |
+| APK SHA-256 | `00b0152b919f0d5b52ee78c7209d42993d65501b390e90608aa57f280d918300` | `d72a2086a0080e4d1e0935eb16b431704b707089ca4f086b96b2abea60484fe4` |
+| Binaire et installation | Release locale arm64-v8a, 3.7.0 (83), `production-apk`, profileable, non debuggable ; installation QA conservatrice | Identique |
+| Entrées natives | `7aae9ca02d51a82bcca812088cbf1fe24f7b3281baab9222e87cbcbdbb26adcb` | Identiques |
+| Signature SHA-256 | `fac61745dc0903786fb9ede62a962b399f7348f0bb6f899b8332667591033b9c` | Identique |
+| Runtime | Updates désactivées, sans Metro, runtime vide, `updateId=null`, origine Expo `unknown` | Identique |
+
+Cible : Motorola edge 60 fusion, Android 16 / API 36, portrait 1 220 × 2 712, densité 450, texte 1.0, thème sombre. Réglage maximal 120 Hz, minimum non fixé : cela ne signifie pas 120 FPS continus. Batterie 79 %, température **24,0–24,2 °C pour A4, contre 24,9 °C pour B2**, statut thermique 0. Outils : Node 24.22.1, Java 17, Expo 58.0.14, React Native 0.88.0, Reanimated 4.7.1 ; SDK E2E 0.21.2, mobile 0.12.3 et agent-device 0.21.28. Dépendances propres au worktree ; `base64-js` 1.5.1 devenait direct pour B2, sans changer sa version transitive ; cette modification a ensuite été retirée.
+
+Cinq passages A4 puis cinq B2 par scénario, fixés avant leur lancement. Journal : premier rêve synthétique 001 ; détail : recherche du même rêve 013 puis ouverture et lecture. Quatre swipes verticaux identiques, 600 ms, x=610, y=2 150 ↔ 650 ; stabilisation 2 800 ms. Aucun build, profil CPU, SDK E2E ou autre parcours UI pendant les fenêtres retenues. **20 traces et 30 fenêtres valides** dans cette paire ; runner inchangé `5484052b995e7692d535d40b57c38711cf9ea5fe6cd08b4325951a51a0386d78`.
+
+Les P95 sont les médianes des P95 par passage de durée de surface FrameTimeline, pas des FPS moyens ou des latences de clic. Les manqués agrègent les surfaces `App Deadline Missed`. Le comparateur conserve ses conditions : ≥3 passages, scénario/réglages comparables, amélioration P95 ≥10 %, étendues sans recouvrement et manqués sans aggravation >0,2 point.
+
+### Comparaison A4/B2 complète
+
+| Phase | P95 médian avant → après | Étendues par passage | Échéances manquées | Verdict du comparateur |
+| --- | --- | --- | --- | --- |
+| Journal | 14,27 → 15,68 ms (9,88 %) | 14,01–16,19 → 14,27–17,52 ms | 64/2587 (2,47 %) → 83/2590 (3,20 %) | Indéterminé |
+| Ouverture du long rêve | 26,81 → 24,29 ms (-9,40 %) | 18,89–35,75 → 21,00–28,14 ms | 47/648 (7,25 %) → 40/668 (5,99 %) | Indéterminé |
+| Défilement du long rêve | 15,51 → 14,84 ms (-4,32 %) | 14,43–17,28 → 11,56–16,12 ms | 136/2716 (5,01 %) → 119/2727 (4,36 %) | Indéterminé |
+
+Le critère exploratoire des pauses restantes a été fixé avant la capture : fenêtre d'ouverture après 1 000 ms, cinq maxima <50 ms, étendues des maxima séparées, baisse d'au moins moitié des surfaces tardives >50 ms, sans hausse globale de P95 >10 % ou des manqués >0,2 point. Les conditions de pauses tardives passent ; **le garde-fou des manqués du journal échoue** (+0,73 point). Aucun seuil n'est modifié après résultat.
+
+| Sur les cinq ouvertures | Master A4 | Candidat B2 |
+| --- | ---: | ---: |
+| Surfaces >25 ms, ouverture entière | 46 | 34 |
+| Surfaces >50 ms, ouverture entière | 15 | 6 |
+| Surfaces >100 ms, ouverture entière | 1 | 0 |
+| Plus longue surface, ouverture entière | 111,35 ms | 94,72 ms |
+| P99 médian, ouverture entière | 57,99 ms | 38,58 ms |
+| Surfaces >50 ms après la première seconde | 4 | 0 |
+| Maxima tardifs, passage 1 → 5 | 61,28 ; 63,41 ; 58,51 ; 48,95 ; 59,27 ms | 25,07 ; 29,83 ; 20,66 ; 30,65 ; 27,31 ms |
+
+Les six surfaces initiales >50 ms restent dans le résultat. Ce candidat ne supprime pas toutes les saccades de première ouverture. La séparation avant/après la première seconde ne sert pas à cacher ces coûts : ouverture entière et fenêtre tardive sont toutes deux publiées.
+
+### Contrôle supplémentaire du journal
+
+Le journal s'est dégradé dans A4/B2. L’absence des éléments modifiés dans son rendu ordinaire ne suffit pas à exclure des effets indirects des caches et de la mémoire après un détail. Un unique contrôle de renversement A5/B3 a été fixé avant exécution : cinq journaux master, puis cinq avec **le même APK B2**, sans changement de code. Ces dix passages sont une preuve distincte, jamais fusionnée avec A4/B2 et sans requalifier rétroactivement son échec global.
+
+| Journal, cinq passages séparés | Master A5 | Même candidat, B3 |
+| --- | ---: | ---: |
+| P95 médian | 14,30 ms | 14,61 ms (+2,17 %) |
+| Étendue des P95 | 13,73–14,45 ms | 14,01–17,41 ms |
+| Échéances manquées | 70/2591 (2,70 %) | 92/2573 (3,58 %) |
+| Température | 24,0–24,2 °C | 24,0 °C |
+
+Batterie 79 % et statut thermique 0 pour les dix passages. Le P95 reste indéterminé, avec recouvrement des étendues. L’augmentation des manqués (+0,87 point) répète le signal défavorable et dépasse la garde de 0,2 point. Ce constat ne prouve pas à lui seul le mécanisme causal, mais interdit de promouvoir ce candidat comme un gain sans contrepartie. Reçu distinct : `journal-reversal-control-summary.json`.
+
+### Variante de décor rejetée et contreparties
+
+`JournalPaper` conserve le grain, son échelle physique, son origine, son tint et son opacité. Un atlas 3 × 3 remplace plusieurs petites vues par une texture partagée. Les neuf sous-tuiles décodées RGBA sont identiques à l'original 512 × 512 ; l'atlas 1 536 × 1 536 pèse 68 232 octets. L'original est conservé pour calculer l'échelle et pour iOS/web. Hash source `35d49c5f016b7d0b16748f1feb1f4255808df06e125d171e5ce3685d0f720976`, atlas `50e0a557c85a986f75aaa7048967ad4afb7a97b8ada7594fe6169ef6e5976b9a`.
+
+`JournalPageEdges` confie le même SVG masqué à Expo Image sur Android, avec les mêmes chemins, gradients, couleurs et dimensions et le SVG initial en repli. L'URI contient uniquement la géométrie et les couleurs contrôlées. Son `SVGPictureDrawable` est préparé hors du thread UI ; un cache matériel est limité à sa marge de 33 dp sur le Moto pour éviter de rejouer le dessin pendant l'animation. Il n'y a pas de cache plein écran. Un changement de thème ou de dimensions invalide la source. L'arrivée asynchrone du décor doit être distinguée du rendu statique comparé.
+
+L'atlas et le cache ne sont pas gratuits en mémoire. L'écart théorique de taille de texture n'est pas une borne de mémoire réelle.
+
+À titre diagnostique seulement, master A3 donne une médiane PSS de 379 281 Kio et Graphics de 120 259 Kio dans trois processus frais, sur le même détail après cinq secondes. Aucun comparatif mémoire final B2 ni test de fuite prolongé n’est qualifié. La baisse ponctuelle de vues ne vaut pas preuve de fluidité ou d’économie mémoire. L’atlas, le nouveau chemin SVG et sa dépendance directe ont été retirés du diff final.
+
+### Parcours, design et restauration finale
+
+Sur la Release master restaurée `00b0152b919f…`, le SDK final passe **6/6**, sans retry, skip ni filtre : navigation des pages principales ; Tendances et « Tous » = 200 ; longue lecture 013 avec trois retours ; 013 → 012 → 013 puis lecture/retour ; lien direct ; détail illustré 002, dock et retour. Les trois retours retrouvent exactement le même rectangle de carte `{x:45,y:1992,width:1130,height:720}` avant/après chaque boucle.
+
+Artefact frais : `tools/e2e/.e2e/moto-framerate-restored-master-20261022`, run `01a164b3-cbe1-73ba-ab2e-53b825f31cae`, 375,64 s, traces et captures par test, reçu `restored-master-ui-receipt.json`. Le test ajouté a le blob Git `12b3538b4ee49f7678116692af0051ccfacb4018`, identique à celui livré. L’APK QA finale est relue et égale à la référence ; l’identité installée du package personnel est inchangée. Thème sombre confirmé, rotation initiale `accelerometer_rotation=1` / `user_rotation=0` restaurée et relue, taille du texte et réglages de rafraîchissement inchangés (`device-final.json`, `final-theme-inspect.log`).
+
+Avant rejet, les captures sombres B2 donnent zéro pixel différent sur le journal et hors marge droite du détail dans le rectangle de contenu `(0,130)-(1220,2642)`, barres système exclues. La marge conserve 45 232 différences faibles d’anticrénelage, dont 35 pixels avec un canal >3 et deux >10 ; ce n’est pas une égalité intégrale du détail. Le thème clair et le paysage/portrait ont été vérifiés sur master A3, avec thème sombre et réglages de rotation restaurés. **Ils n’ont pas été requalifiés sur B2**, retiré avant cette étape ; son arrivée asynchrone et un éventuel clignotement ne sont pas déclarés validés. Aucun changement de design ou de comportement applicatif de ce suivi n’est conservé.
+
+Les builds locaux et les types/lint ciblés des essais passaient avant leur retrait. Les types E2E passent sur le test final. Ces contrôles ne transforment pas les mesures de performance en réussite.
+
+### Artefacts et rejeu du suivi Moto
+
+Dossier privé canonique : `/private/tmp/noctalia-moto-framerate-20261022`. Reçus `baseline/release.json` et `paper-edge-layer/release.json` ; rapports `final-{a4,b2}-{journal,detail013}-five/report.json` ; synthèse immuable `paper-edge-layer-final-summary.json`. La décision de rejet est `candidate-decision.json` ; la source rejetée est conservée dans `rejected-b2-source.patch` avec `rejected-b2-journal-paper-atlas.webp`. La restauration source est `restored-master-source.json` et la réinstallation `final-master-install.log`. Les séries B1 et A3 restent dans `paper-edge-final-summary.json`. Le plan du contrôle supplémentaire est `journal-reversal-control-plan.json`. Captures, traces, profils, XML et données UI brutes restent hors de Git.
+
+Après installation conservatrice de l'APK QA identifié, sur la même QA et sa fixture préservée :
+
+```sh
+EVIDENCE=/private/tmp/noctalia-moto-framerate-20261022
+# Helpers privés de cette campagne : préparation exacte + runner canonique et verrou.
+zsh "$EVIDENCE/measure.sh" journal replay-journal 5 final-a4-journal-five
+zsh "$EVIDENCE/measure.sh" detail013 replay-detail013 5 final-a4-detail013-five
+# Nouvelle sortie nécessaire pour chaque rejeu. Les pilotes ne sont pas ajoutés aux cinq.
+```
+
+Le parcours natif final est rejouable depuis `tools/e2e/`, sur cette APK QA déjà identifiée et sa fixture préservée :
+
+```sh
+E2E_OWNER_NATIVE_PERF_ACK=approved E2E_PERF_SCOPE=main-pages \
+E2E_PERF_PLATFORM=android E2E_PERF_DEVICE="motorola edge 60 fusion" \
+E2E_PERF_FIXTURE_COUNT=200 E2E_PERF_FIXTURE_UI=framerate \
+E2E_OUTPUT=.e2e/moto-framerate-replay PATH="$ANDROID_HOME/platform-tools:$PATH" \
+mise exec -- node ../../scripts/android-device-lock.js wrap \
+  --owner dreamer --device 192.168.1.176:36041 -- \
+  node node_modules/e2e/dist/cli/bin.js run --config e2e.native-performance.config.ts
+```
+
+Ce rejeu vérifie les parcours, pas les durées FrameTimeline. La revue indépendante du diff de test et des conclusions n’a relevé aucun défaut matériel ; elle est en lecture seule, sans nouvelle exécution. La livraison conserve le bloc `verify:pr` et son commit vérifié dans la PR.
+
+### Diagnostic et essais écartés
+
+Les traces diagnostiques isolent deux coûts à l'arrivée des pages voisines, vers 1,5 s après le tap : une frame UI de 52,2 ms contient environ 36,7 ms de `Record View#draw()`, puis une autre consacre 23,3 ms au montage, dont des lots de 18 vues Image pour le papier. Ces durées imbriquées sont des durées murales d'une trace diagnostique ; elles ne s'additionnent pas comme du CPU exclusif et ne remplacent pas les séries FrameTimeline.
+
+Le profil Simpleperf de référence échantillonne 2 293 ms de CPU sur quatre secondes : `RenderThread` représente 30,22 % et le dessin SVG environ 4,54 % (104 ms échantillonnées). Ce n'est ni de l'utilisation GPU ni une mesure de latence de clic. Les coûts de montage, de dessin et de composition doivent être distingués.
+
+Un atlas papier lossless 3 × 3 réduit les vues du détail de 731 à 635 dans un snapshot, mais conserve un `Record View#draw()` de 36,62 ms. La variante qui confie les bords SVG à Expo Image réduit le dessin tardif `draw-VRI` à 2,21 ms dans son diagnostic, tout en conservant une frame de montage de 25,98 ms. Ces deux diagnostics ont motivé leur combinaison ; ils ne prouvent pas à eux seuls un gain de fluidité.
+
+La première combinaison complète est **écartée en l'état** : cinq passages master A3 puis cinq passages B1, à 24,9 °C et statut thermique 0, donnent 20,82 → 25,86 ms au P95 d'ouverture (+24,2 %), malgré 16,72 → 9,39 % d'échéances manquées. Les surfaces >25 ms passent de 28 à 72. Après la première seconde, les surfaces >50 ms passent de 4 à 3 ; une pause atteint encore 96,66 ms. La médiane des maxima tardifs baisse de 59,07 à 27,94 ms, mais elle ne justifie pas de masquer ces deux passages encore saccadés ni la hausse du P95. Le critère secondaire fixé avant cette capture échoue.
+
+| Essai | Preuve et décision |
+| --- | --- |
+| Caches des pages/viewport, puis caches des cartes | Pilotes sans bénéfice convaincant ; retirés. Ils n'ont pas été ajoutés aux séries retenues. |
+| Styles scalaires supplémentaires | Cinq passages : journal 14,21 ms, ouverture 28,19 ms, lecture 16,35 ms ; pas de gain qualifié. Retirés. |
+| Glyphe de sceau sans wrapper | Cinq passages : journal 14,39 ms, ouverture 21,93 ms, lecture 14,37 ms ; pas de gain qualifié. Retiré. |
+| Halo SVG via image | A1/B consécutifs : journal 14,18 → 14,26 ms ; ouverture 25,98 → 25,18 ms ; lecture 15,08 → 15,11 ms. Étendues superposées. Le CPU SVG local passe d'environ 104 à 83 ms échantillonnées ; aucun gain global établi. Retiré. |
+| Montage échelonné des pages voisines | Les pauses tardives diminuent, mais l'ouverture reste à 25,72 ms contre 20,62 ms lors du retour à master A2 ; les manqués augmentent de 6,57 à 7,90 %. Retiré. |
+| Masque SVG découpé, bords via image seuls, atlas seul | Pilotes et diagnostics exploratoires. Ils ne qualifient aucun gain statistique et ne sont pas fusionnés avec les séries finales. |
+| Première combinaison papier + image SVG | Séries A3/B1 complètes décrites ci-dessus, résultat défavorable conservé. APK B1 `79a7d9470532…`, rapports `final-{a3,b}-*-five`. |
+
+Le retour à master A2 et les références fraîches évitent de choisir la meilleure ancienne référence : l'ouverture varie déjà entre 20,06, 25,98 et 20,62 ms selon les séries de master. Les pilotes ont en outre un préflight Simpleperf d'une seconde ; les comparaisons finales emploient les mêmes cinq passages sans ce probe. Aucune série n'est fusionnée ou prolongée pour améliorer un résultat.
+
+### Périmètre des preuves physiques
+
+Le Moto exécute la Release QA séparée `com.tanuki75.noctalia.qa`, avec la SQLite invitée existante de 200 rêves synthétiques, deux illustrations répétées et le long rêve 013 de 3 511 caractères. Le package personnel `com.tanuki75.noctalia`, installé en Debug 3.7.0 (83), n'a été ni remplacé, ni désinstallé, ni vidé. Aucun compte n'a été créé et aucune fixture réinitialisée. Les installations QA `-r` conservent les données et utilisent la même signature vérifiée.
+
+Les résultats ne qualifient pas les données personnelles, un compte synchronisé, 200 images uniques, la version Play, iOS, ni un usage prolongé. Les gestes sont injectés par ADB/SDK sur le matériel physique ; ils ne constituent pas une observation de gestes au doigt. Le retour au journal est vérifié fonctionnellement et par la position de liste ; sa latence et son framerate ne sont pas mesurés séparément.
+
+Les entrées natives restent identiques, sans OTA ni Metro. Aucun flag global de rendu ou de geste, thème, couleur, équation d'animation ou navigation n'est modifié. Le contrôle de compatibilité Expo hors ligne et les builds passent ; le contrôle en ligne signale des patches SDK disponibles, non appliqués. Aucun déploiement, build EAS, achat ou publication Store n'a été effectué. Les résultats web de la première campagne ci-dessous sont réutilisés, sans nouvelle mesure du site public dans ce suivi Moto.
+
+## Campagne initiale : émulateur et site
+
+Les résultats ci-dessous sont conservés de la première campagne, intégrée par la PR #551. Le « correctif » y désigne ce lot initial ; les essais Moto rejetés ci-dessus n’en font pas partie. Ces mesures web et émulateur sont réutilisées, sans nouvelle exécution dans le suivi physique.
+
+### Résultat
 
 Le correctif conserve les illustrations, couleurs, géométries et équations d'animation. Il réduit le travail de styles mobiles une fois les animations bornées et regroupe les lectures de géométrie des comètes du site avant leurs écritures DOM.
 
 Sur Android Release, les trois séries ont moins d'échéances manquées, mais les P95 varient de −1,46 % à +1,48 % avec des étendues qui se recouvrent : **gain de framerate indéterminé**, sans promesse de disparition de toutes les saccades. Les résultats du site figurent ci-dessous. La preuve mobile concerne un émulateur Android possédé ; iOS et téléphone physique restent non qualifiés par cette campagne.
 
-## Source et limites de livraison
+### Source et limites de livraison
 
 Référence : `origin/master` récupéré à `5a46fcdefb0b293c1d1a1f743cdd1fe0bc483273`. Travail isolé sur `codex/framerate-dogfood-20261022`. Le checkout principal et ses changements préexistants sont préservés. Le site public a été inspecté en lecture seule ; les mesures comparables portent sur le site reconstruit localement depuis cette référence, puis depuis le correctif. Aucun résultat public n'est attribué à une version locale non déployée.
 
 Aucun déploiement, build EAS, publication Store, achat ou changement de compte. Les deux caches précisément validés pour 3,7 Gio ont été supprimés ; le reçu privé `cleanup-native-receipt.json` identifie les deux entrées de Corbeille par inode. Les autres éléments sont préservés. Une hausse ultérieure de l'espace libre n'est pas attribuée à ce lot.
 
-## Causes et corrections
+### Causes et corrections
 
 | Chemin | Constat et changement |
 | --- | --- |
@@ -23,7 +167,7 @@ Aucun déploiement, build EAS, publication Store, achat ou changement de compte.
 
 Les bundles suivis du site ont été régénérés depuis les sources. Les chunks Lenis et Motion mini renommés sont identiques en contenu à leurs anciens noms. Les recommandations officielles [Reanimated sur les performances](https://docs.swmansion.com/react-native-reanimated/docs/guides/performance/) et [les valeurs dérivées](https://docs.swmansion.com/react-native-reanimated/docs/core/useDerivedValue/) ont été confrontées aux API installées ; aucune mise à jour de dépendance n'est incluse.
 
-## Android : identité et protocole
+### Android : identité et protocole
 
 | Champ | Avant | Après |
 | --- | --- | --- |
@@ -52,7 +196,7 @@ Le P95 est une durée de surface FrameTimeline ; il ne se convertit pas en FPS m
 
 Les baisses de manqués sont des observations sur ces séries, sans conclusion statistique universelle. La réduction du travail est établie dans le code ; un gain perceptible mobile n'est pas démontré. Pas de mélange avec les anciens résultats de téléphone ou avec les pilotes.
 
-## Site : comparaison contrôlée
+### Site : comparaison contrôlée
 
 Chromium 156.0.8078.4, cinq contextes neufs par format (390 × 844 et 1 440 × 900, DPR 1), CPU ralenti ×4, médias réels et animations actives, visiteur de retour sans intro, consentement de mesure non accordé (bannière encore présente dans les captures de contrôle des deux formats et versions). Le format mobile utilise le tier `light` et le desktop `full`, avec les mêmes indications matérielles simulées et graine aléatoire. Quatre fenêtres de défilement programmé de quatre secondes par contexte ; mêmes positions initiales/finales vérifiées avant/après. Soit **40 fenêtres par version**, sans build ni autre parcours UI concurrent.
 
@@ -74,7 +218,7 @@ Aucun intervalle rAF >25 ms dans les séries retenues, avant comme après. Les m
 Le travail de layout n'est pas annoncé comme supprimé : la constellation compte encore 224/223 layouts par fenêtre mobile/desktop, comme avant. Le LayoutDuration mobile de l'analyse augmente de 22,28 à 26,07 ms (+17 %) avec 45 layouts inchangés ; les tâches du bas de page augmentent d'environ 3 %. Ces variations et les coûts restants sont conservés dans le résultat. Cette campagne ne mesure pas le démarrage froid, la latence réseau, la mémoire ou le GPU.
 
 
-## Parcours et non-régression
+### Parcours et non-régression
 
 | Contrôle frais | Résultat et artefact |
 | --- | --- |
@@ -91,7 +235,7 @@ Les captures Android avant/après ont été inspectées : les mêmes peintures, 
 
 Revue indépendante : aucun défaut actionnable dans le diff applicatif ou les conclusions ; une variable manquante dans la commande de reproduction a été explicitée. La revue est en lecture seule, sans nouvelle exécution de tests ; le SHA relu est consigné dans la PR. Les échantillons ou installations exploratoires ne remplacent pas les résultats complets.
 
-## Preuves et reproduction
+### Preuves et reproduction
 
 Dossier privé canonique : `/private/tmp/noctalia-framerate-20261022`. Il contient les reçus de nettoyage, scénarios, traces Perfetto, captures, scripts de fixture, logs et rapports. Les données UI brutes restent hors de Git.
 
