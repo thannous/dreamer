@@ -162,8 +162,16 @@ export async function takePreparedIllustration(admin: AdminClient, input: {
       return null;
     }
     if (ownPath !== row.image_path) {
-      await previews().update({ image_path: ownPath })
-        .eq('user_id', input.userId).eq('dream_id', input.dreamId).eq('image_status', 'used').eq('image_path', row.image_path);
+      const { data: recorded, error: recordError } = await previews().update({ image_path: ownPath })
+        .eq('user_id', input.userId).eq('dream_id', input.dreamId).eq('image_status', 'used').eq('image_path', row.image_path)
+        .select('dream_id');
+      if (recordError || !recorded?.length) {
+        // The row still names the former place: the painting goes back there, ready for the next job.
+        console.warn('[analysis-preview] could not record a moved painting');
+        const back = await objects.move(ownPath, row.image_path);
+        if (!back.error) await giveBack(row.image_path);
+        return null;
+      }
     }
     const { data: signed, error: signError } = await objects.createSignedUrl(ownPath, SIGNED_URL_SECONDS);
     if (signError || !signed?.signedUrl) {

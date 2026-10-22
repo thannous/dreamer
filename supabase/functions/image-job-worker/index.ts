@@ -552,14 +552,6 @@ const processImageJob = async (input: {
 
       startedUpstream = true;
       const ownerId = job.user_id ?? `guest_${job.guest_fingerprint ?? 'guest'}`;
-      if (preparedImageUrl && requestPayload.previousImageUrl) {
-        await createStorageHelpers({
-          supabaseUrl: input.supabaseUrl,
-          supabaseServiceRoleKey: input.serviceRoleKey,
-          storageBucket: input.storageBucket,
-          ownerId,
-        }).deleteImageFromStorage(requestPayload.previousImageUrl, ownerId);
-      }
       const result = preparedImageUrl ? { imageUrl: preparedImageUrl } : await generateAndStoreImage({
         apiKey,
         model: resolveImageModel(imageTierDecision.tier, undefined, imageSize),
@@ -573,6 +565,17 @@ const processImageJob = async (input: {
       });
 
       await persistDreamImageResult(adminClient, job, result.imageUrl);
+      // The prepared painting replaces the former illustration only once the dream holds it.
+      if (preparedImageUrl && requestPayload.previousImageUrl) {
+        await createStorageHelpers({
+          supabaseUrl: input.supabaseUrl,
+          supabaseServiceRoleKey: input.serviceRoleKey,
+          storageBucket: input.storageBucket,
+          ownerId,
+        }).deleteImageFromStorage(requestPayload.previousImageUrl, ownerId).catch(() => {
+          console.warn('[image-job-worker] former illustration left in storage', { jobId: job.id });
+        });
+      }
       await updateJob(adminClient, job.id, {
         status: 'succeeded',
         request_payload: redactedRequestPayload(job),

@@ -383,3 +383,36 @@ Deno.test('after a failure that may hide a stored link, the painting is settled 
   assertEquals(await back.release(), false);
   assertEquals([lost.previews[0].image_status, lost.previews[0].image_path], ['ready', 'u1/7-a.jpg']);
 });
+
+Deno.test('a painting moved whose new place cannot be recorded goes back, ready for the next job', async () => {
+  const storage = fakeStorage();
+  storage.objects.set('previews/u1/7-a.jpg', new Uint8Array([1]));
+  const rows: Row[] = [{
+    user_id: 'u1', dream_id: 7, status: 'used', image_status: 'ready', image_prompt: 'A river of glass',
+    image_path: 'previews/u1/7-a.jpg', band_path: 'previews/u1/7-a-band.jpg', band_url: 'https://example.test/band',
+  }];
+  let recordFails = true;
+  const table = previewsTable(rows);
+  const admin = {
+    from: () => {
+      const builder = table();
+      const update = builder.update;
+      // The database refuses the new path once, and answers with an error rather than throwing.
+      builder.update = (values: Row) => {
+        if (recordFails && values.image_path === 'u1/7-a.jpg') {
+          recordFails = false;
+          const failing = { eq: () => failing, select: () => failing, then: (resolve: (value: unknown) => unknown) => Promise.resolve({ data: null, error: { message: 'down' } }).then(resolve) };
+          return failing as never;
+        }
+        return update(values);
+      };
+      return builder;
+    },
+    storage,
+  };
+  const input = { bucket: 'dream-images', userId: 'u1', dreamId: 7, prompt: 'A river of glass' };
+  assertEquals(await take(admin, input), null);
+  assertEquals([...storage.objects.keys()], ['previews/u1/7-a.jpg']);
+  assertEquals([rows[0].image_status, rows[0].image_path], ['ready', 'previews/u1/7-a.jpg']);
+  assertEquals(await take(admin, input), 'https://example.test/sign/u1/7-a.jpg?token=t');
+});
