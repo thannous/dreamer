@@ -88,7 +88,7 @@ test('Dreamer native offline creation and edit survive process restart and synch
 
 test('Dreamer native guest dream and draft survive real sign-in, reconnect and account isolation',
   { ...options, tags: [...options.tags, 'native-real-account'] }, async (fixtures) => {
-    const { app, screen, device, platform, backend } = fixtures;
+    const { app, screen, device, backend } = fixtures;
     const marker = randomUUID().slice(0, 8);
     const story = `Guest lighthouse ${marker} over the sea.`;
     const draft = `Draft garden ${marker} behind a blue door.`;
@@ -133,15 +133,17 @@ test('Dreamer native guest dream and draft survive real sign-in, reconnect and a
     await nativeJournal(screen);
     for (const transcript of [story, draft]) {
       await nativeJournal(screen);
-      const search = screen.getByTestId('input.searchDreams', { visible: true });
-      await search.fill(transcript);
-      // Filtering needs no submission. iOS can open the matching card while the
-      // keyboard is visible (the list uses keyboardShouldPersistTaps=handled).
-      if (platform === 'android') await device.dismissKeyboard();
-      await expect(search).toHaveValue(transcript);
-      const cards = screen.getByTestId(/^dream\.item\./, { visible: true });
-      await expect(cards).toHaveCount(1);
-      await cards.first().tap();
+      // This account journey verifies the two restored dreams directly. Search
+      // has its own journeys and is not a prerequisite for opening these cards.
+      await expect(screen.getByTestId(/^dream\.item\./)).toHaveCount(2);
+      const title = transcript.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      // DreamCard labels start with the complete short title, followed by date
+      // and status. Assert one exact title, excluding its Favorite/Share actions.
+      const card = screen.getByRole('button', new RegExp(`^${title},`), { visible: true });
+      await screen.scrollUntilVisible(card);
+      await expect(card).toHaveCount(1);
+      await expect(card).toBeEnabled();
+      await card.tap();
       await nativeTranscript(screen, transcript);
     }
     const after = await backend.owner.from('dreams').select('id,transcript').order('id');
@@ -153,5 +155,7 @@ test('Dreamer native guest dream and draft survive real sign-in, reconnect and a
     // and hide the tabs, which is unrelated to this durable-draft assertion.
     await app.restart();
     await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
-    await expect(screen.getByTestId('input.dreamTranscript', { visible: true })).toHaveValue('');
+    const restoredDraft = screen.getByTestId('input.dreamTranscript', { visible: true });
+    await expect(restoredDraft).toBeEnabled();
+    await expect(restoredDraft).toHaveValue('');
   });

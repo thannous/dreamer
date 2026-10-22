@@ -190,7 +190,7 @@ describe('useRecordingSession', () => {
 
   it.each([
     ['ios', 'blur'], ['ios', 'unmount'], ['ios', 'pause'], ['android', 'pause'],
-  ] as const)('cancels pending startup on %s %s', async (platform, reason) => {
+  ] as const)('cancels pending startup on %s %s', async (platform: 'ios' | 'android', reason: 'blur' | 'unmount' | 'pause') => {
     (Platform as { OS: string }).OS = platform;
     jest.mocked(AudioModule.getRecordingPermissionsAsync).mockResolvedValue({ granted: true } as never);
     let finishStart!: (session: any) => void;
