@@ -80,14 +80,20 @@ export async function takePreparedReading(admin: AdminClient, input: {
   lang: string;
   transcriptSha256: string;
 }): Promise<StructuredDreamAnalysis | null> {
+  // A lookup that fails is retried with the job rather than read as no preview: the model is
+  // not asked again for a reading already written.
+  const unavailable = () => Object.assign(new Error('Prepared reading unavailable'), { isTransient: true });
+  let answer: { data: { reading?: unknown; lang?: unknown; transcript_sha256?: unknown } | null; error: unknown };
   try {
-    const { data, error } = await admin.from('analysis_previews')
+    answer = await admin.from('analysis_previews')
       .select('reading, lang, transcript_sha256')
       .eq('user_id', input.userId).eq('dream_id', input.dreamId).eq('status', 'ready')
       .maybeSingle();
-    if (error || !data || data.lang !== input.lang || data.transcript_sha256 !== input.transcriptSha256) return null;
-    return isPreparedReading(data.reading) ? data.reading : null;
   } catch {
-    return null;
+    throw unavailable();
   }
+  if (answer.error) throw unavailable();
+  const data = answer.data;
+  if (!data || data.lang !== input.lang || data.transcript_sha256 !== input.transcriptSha256) return null;
+  return isPreparedReading(data.reading) ? data.reading : null;
 }

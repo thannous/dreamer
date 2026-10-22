@@ -1,4 +1,4 @@
-import { assert, assertEquals } from 'https://deno.land/std@0.224.0/assert/mod.ts';
+import { assert, assertEquals, assertRejects } from 'https://deno.land/std@0.224.0/assert/mod.ts';
 import { decodeBase64, encodeBase64 } from 'https://deno.land/std@0.224.0/encoding/base64.ts';
 import { Image } from 'https://deno.land/x/imagescript@1.3.0/mod.ts';
 import { attachPreparedIllustration, cropBand, paintPreparedIllustration, takePreparedIllustration } from './previewIllustration.ts';
@@ -314,7 +314,7 @@ Deno.test('a job that cannot store the taken painting gives it back to the next 
   const first = await takePreparedIllustration(admin, input);
   assert(first);
   // Held while the job stores it: no other job takes it meanwhile.
-  assertEquals(await takePreparedIllustration(admin, input), null);
+  assertEquals(await takePreparedIllustration(admin, { ...input, waitMs: 0 }), null);
   await first.giveBack();
   // Ready again with its band, as analysis_previews_painted_has_image requires.
   assertEquals([rows[0].image_status, rows[0].image_path, rows[0].band_path], ['ready', 'u1/7-a.jpg', 'previews/u1/7-a-band.jpg']);
@@ -415,4 +415,57 @@ Deno.test('a painting moved whose new place cannot be recorded goes back, ready 
   assertEquals([...storage.objects.keys()], ['previews/u1/7-a.jpg']);
   assertEquals([rows[0].image_status, rows[0].image_path], ['ready', 'previews/u1/7-a.jpg']);
   assertEquals(await take(admin, input), 'https://example.test/sign/u1/7-a.jpg?token=t');
+});
+
+Deno.test('a painting held by a job that stopped is taken over after its lease, never while held', async () => {
+  const storage = fakeStorage();
+  storage.objects.set('u1/7-a.jpg', new Uint8Array([1]));
+  storage.objects.set('previews/u1/7-a-band.jpg', new Uint8Array([2]));
+  const start = Date.parse('2026-10-22T07:00:00Z');
+  let clock = start;
+  // Taken (moved to the account's prefix) by a job that stopped before linking or giving it back.
+  const rows: Row[] = [{
+    user_id: 'u1', dream_id: 7, status: 'used', image_status: 'used', image_prompt: 'A river of glass',
+    image_path: 'u1/7-a.jpg', band_path: 'previews/u1/7-a-band.jpg', band_url: 'https://example.test/band',
+    image_updated_at: new Date(start - 10_000).toISOString(),
+  }];
+  const admin = { from: previewsTable(rows), storage };
+  const input = { bucket: 'dream-images', userId: 'u1', dreamId: 7, prompt: 'A river of glass', now: () => clock };
+  // Held: no wait asked, nothing taken.
+  assertEquals(await take(admin, { ...input, waitMs: 0 }), null);
+  // Waited for until its lease ends, then taken over without being moved again.
+  const slept: number[] = [];
+  assertEquals(await take(admin, { ...input, sleep: async (ms: number) => { slept.push(ms); clock += ms; } }), 'https://example.test/sign/u1/7-a.jpg?token=t');
+  assert(slept.length > 0 && clock - start >= 50_000);
+  assertEquals([rows[0].image_status, rows[0].image_path, rows[0].band_path], ['used', null, null]);
+  assertEquals([...storage.objects.keys()], ['u1/7-a.jpg']);
+});
+
+Deno.test('a painting that cannot be given back makes the job try again rather than paint another', async () => {
+  const storage = fakeStorage();
+  const rows: Row[] = [{
+    user_id: 'u1', dream_id: 7, status: 'used', image_status: 'ready', image_prompt: 'A river of glass',
+    image_path: 'previews/u1/7-a.jpg', band_path: 'previews/u1/7-a-band.jpg', band_url: 'https://example.test/band',
+  }];
+  const table = previewsTable(rows);
+  const admin = {
+    from: () => {
+      const builder = table();
+      const update = builder.update;
+      // Giving back (to ready) answers with an error.
+      builder.update = (values: Row) => {
+        if (values.image_status === 'ready') {
+          const failing = { eq: () => failing, select: () => failing, then: (resolve: (value: unknown) => unknown) => Promise.resolve({ data: null, error: { message: 'down' } }).then(resolve) };
+          return failing as never;
+        }
+        return update(values);
+      };
+      return builder;
+    },
+    storage,
+  };
+  // The object is missing for now: the move fails, and the row cannot be given back.
+  const error = await assertRejects(() => takePreparedIllustration(admin, { bucket: 'dream-images', userId: 'u1', dreamId: 7, prompt: 'A river of glass' }));
+  assertEquals((error as { isTransient?: unknown }).isTransient, true);
+  assertEquals(rows[0].image_status, 'used');
 });

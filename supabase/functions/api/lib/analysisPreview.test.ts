@@ -1,4 +1,4 @@
-import { assertEquals } from 'https://deno.land/std@0.224.0/assert/mod.ts';
+import { assertEquals, assertRejects } from 'https://deno.land/std@0.224.0/assert/mod.ts';
 import {
   isPreparedReading,
   previewOf,
@@ -68,6 +68,11 @@ Deno.test('only a reading of the same text and language is taken', async () => {
   assertEquals(await takePreparedReading(admin, { ...input, lang: 'en' }), null);
   assertEquals(await takePreparedReading(admin, { ...input, transcriptSha256: 'b'.repeat(64) }), null);
   assertEquals(await takePreparedReading(admin, { ...input, dreamId: 8 }), null);
+
+  // A lookup that fails is no answer: the job is tried again instead of asking the model.
+  const failing = { from: () => { const b = { select: () => b, eq: () => b, maybeSingle: async () => ({ data: null, error: { message: 'down' } }) }; return b; } };
+  const error = await assertRejects(() => takePreparedReading(failing, input));
+  assertEquals((error as { isTransient?: unknown }).isTransient, true);
 });
 
 Deno.test('a prepared reading is one the analysis job can save as it is', () => {

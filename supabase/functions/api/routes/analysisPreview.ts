@@ -56,6 +56,7 @@ type PreviewRow = {
   transcript_sha256: string;
   reading: unknown;
   image_status: 'none' | 'painting' | 'ready' | 'used' | 'failed';
+  image_prompt: string | null;
   image_path: string | null;
   band_path: string | null;
   band_url: string | null;
@@ -88,7 +89,7 @@ type Hold = {
 };
 
 const PREVIEW_COLUMNS =
-  'dream_id, status, lang, transcript_sha256, reading, image_status, image_path, band_path, band_url, image_updated_at, created_at, updated_at';
+  'dream_id, status, lang, transcript_sha256, reading, image_status, image_prompt, image_path, band_path, band_url, image_updated_at, created_at, updated_at';
 
 const refused = (code: string, status: number) => jsonResponse({ error: 'Preview unavailable', code }, status);
 
@@ -195,9 +196,59 @@ export async function handleAnalysisPreview(ctx: ApiContext, deps: Dependencies 
     };
     const status = (state: 'available' | 'writing' | 'weekly_limit', retryAt: string | null = null) =>
       jsonResponse({ state, preview: null, preparedAt: null, retryAt });
+    const apiKey = deps.apiKey ?? Deno.env.get('GEMINI_API_KEY');
+
+    // The painting follows the reading: the account reads the start of its analysis meanwhile.
+    // It is recorded only for the painting started at `since`.
+    const paintFrom = async (prompt: string, since: string) => {
+      // Opened meanwhile, the preview is spent but its painting is still the analysis's illustration.
+      const stillPainting = (values: Record<string, unknown>) => previews().update(values)
+        .eq('user_id', userId).eq('dream_id', dreamId).in('status', ['ready', 'used'])
+        .eq('image_status', 'painting').eq('image_updated_at', since);
+      try {
+        const painted = await (deps.paint ?? paintPreparedIllustration)({
+          admin, bucket: ctx.storageBucket, apiKey: apiKey!, userId, dreamId, prompt,
+        });
+        const { data, error } = await stillPainting({
+          image_status: 'ready', image_path: painted.imagePath, band_path: painted.bandPath, band_url: painted.bandUrl,
+          image_updated_at: new Date((deps.now ?? Date.now)()).toISOString(),
+        }).select('dream_id');
+        // Deleted or painted again meanwhile: this one goes.
+        if (error || !data?.length) await removePreviewObjects(admin, ctx.storageBucket, [painted.imagePath, painted.bandPath]);
+      } catch {
+        // Provider payloads and prompts must not enter logs.
+        console.warn('[api] /analysis-preview: painting failed');
+        await stillPainting({ image_status: 'failed', image_updated_at: new Date((deps.now ?? Date.now)()).toISOString() })
+          .then(() => undefined, () => undefined);
+      }
+    };
+    /** Runs the painting after the response where the runtime allows it; the row as it then is. */
+    const startPainting = async (row: PreviewRow & { reading: StructuredDreamAnalysis }, prompt: string, since: string) => {
+      const task = paintFrom(prompt, since);
+      if ((deps.runInBackground ?? runInEdgeBackground)(task)) return ready(row);
+      await task;
+      const painted = await readPreview();
+      return matches(painted) ? ready(painted) : status('writing');
+    };
 
     const existing = await readPreview();
-    if (matches(existing)) return ready(existing);
+    if (matches(existing)) {
+      // A painting whose request stopped before it ended (its three minutes gone, nothing
+      // recorded) starts again, once per such stop: the first reader takes it over.
+      const stalled = existing.status === 'ready' && existing.image_status === 'painting' && apiKey
+        && typeof existing.image_prompt === 'string' && Date.parse(existing.image_updated_at ?? '') <= now - PREVIEW_PAINTING_TIMEOUT_MS;
+      if (stalled) {
+        const since = new Date(now).toISOString();
+        const { data: restarted, error: restartError } = await previews()
+          .update({ image_updated_at: since })
+          .eq('user_id', userId).eq('dream_id', dreamId).eq('status', 'ready').eq('image_status', 'painting')
+          .eq('image_updated_at', existing.image_updated_at)
+          .select(PREVIEW_COLUMNS);
+        const row = (restarted as PreviewRow[] | null)?.[0] ?? null;
+        if (!restartError && matches(row)) return startPainting(row, existing.image_prompt!, since);
+      }
+      return ready(existing);
+    }
     if (existing?.status === 'writing' && Date.parse(existing.updated_at) > now - WRITING_TIMEOUT_MS) return status('writing');
     const week = await weekPreviews();
     if (week.length) return status('weekly_limit', nextPreviewAt(week));
@@ -210,7 +261,6 @@ export async function handleAnalysisPreview(ctx: ApiContext, deps: Dependencies 
     if (quotaError || !quota || typeof quota !== 'object') return refused('PREVIEW_UNAVAILABLE', 503);
     if ((quota as { canAnalyze?: unknown }).canAnalyze !== false) return refused('CAN_ANALYZE', 409);
 
-    const apiKey = deps.apiKey ?? Deno.env.get('GEMINI_API_KEY');
     if (!apiKey) return refused('PREVIEW_UNAVAILABLE', 503);
 
     // Under a lock per account, the database checks the dream and the week again and holds
@@ -300,34 +350,7 @@ export async function handleAnalysisPreview(ctx: ApiContext, deps: Dependencies 
     const kept = savedRow;
     if (!matches(kept)) return status('writing');
 
-    // The painting follows the reading: the account reads the start of its analysis meanwhile.
-    const painting = async () => {
-      // Opened meanwhile, the preview is spent but its painting is still the analysis's illustration.
-      const stillPainting = (values: Record<string, unknown>) => previews().update(values)
-        .eq('user_id', userId).eq('dream_id', dreamId).in('status', ['ready', 'used'])
-        .eq('image_status', 'painting').eq('image_updated_at', savedAt);
-      try {
-        const painted = await (deps.paint ?? paintPreparedIllustration)({
-          admin, bucket: ctx.storageBucket, apiKey, userId, dreamId, prompt,
-        });
-        const { data, error } = await stillPainting({
-          image_status: 'ready', image_path: painted.imagePath, band_path: painted.bandPath, band_url: painted.bandUrl,
-          image_updated_at: new Date((deps.now ?? Date.now)()).toISOString(),
-        }).select('dream_id');
-        // Deleted or painted again meanwhile: this one goes.
-        if (error || !data?.length) await removePreviewObjects(admin, ctx.storageBucket, [painted.imagePath, painted.bandPath]);
-      } catch {
-        // Provider payloads and prompts must not enter logs.
-        console.warn('[api] /analysis-preview: painting failed');
-        await stillPainting({ image_status: 'failed', image_updated_at: new Date((deps.now ?? Date.now)()).toISOString() })
-          .then(() => undefined, () => undefined);
-      }
-    };
-    const task = painting();
-    if ((deps.runInBackground ?? runInEdgeBackground)(task)) return ready(kept);
-    await task;
-    const painted = await readPreview();
-    return matches(painted) ? ready(painted) : status('writing');
+    return startPainting(kept, prompt, savedAt);
   } catch (error) {
     console.error('[api] /analysis-preview failed', { code: (error as { code?: unknown })?.code ?? null });
     return refused('PREVIEW_UNAVAILABLE', 503);

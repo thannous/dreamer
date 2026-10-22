@@ -17,6 +17,14 @@ export const BAND_LINK_SECONDS = 60 * 60;
 /** How long an image job waits for a prepared painting under way rather than paying for another. */
 const PAINTING_WAIT_MS = 60 * 1000;
 const PAINTING_POLL_MS = 3000;
+/**
+ * How long a job holds a taken painting before another may take it over: a job that stopped
+ * between the take and the dream's link (its giving back lost) leaves it reclaimable.
+ */
+const HOLD_LEASE_MS = 60 * 1000;
+
+/** The painting could not be given back: the job is tried again later instead of paying for another. */
+const heldPaintingError = () => Object.assign(new Error('Prepared painting held'), { isTransient: true, preparedPaintingHeld: true });
 
 // deno-lint-ignore no-explicit-any
 type AdminClient = { from: (table: string) => any; storage: { from: (bucket: string) => any } };
@@ -132,33 +140,44 @@ export async function takePreparedIllustration(admin: AdminClient, input: {
         : Boolean(input.transcriptSha256) && data.transcript_sha256 === input.transcriptSha256;
       return same ? data : null;
     };
+    const since = (value: unknown, ms: number) => Date.parse(String(value ?? '')) > now() - ms;
+    // Taken by a job and not yet linked (its image path kept): held within its lease.
+    const held = (value: typeof row) => value?.image_status === 'used' && typeof value.image_path === 'string';
     let row = await read();
     const waitUntil = now() + (input.waitMs ?? PAINTING_WAIT_MS);
-    while (row?.image_status === 'painting' && now() < waitUntil
-      && Date.parse(row.image_updated_at ?? '') > now() - PREVIEW_PAINTING_TIMEOUT_MS) {
+    while (now() < waitUntil && ((row?.image_status === 'painting' && since(row.image_updated_at, PREVIEW_PAINTING_TIMEOUT_MS))
+      || (held(row) && since(row!.image_updated_at, HOLD_LEASE_MS)))) {
       await sleep(PAINTING_POLL_MS);
       row = await read();
     }
-    if (row?.image_status !== 'ready' || typeof row.image_path !== 'string') return null;
-    const { data: taken, error: takeError } = await previews()
-      .update({ image_status: 'used', image_updated_at: new Date().toISOString() })
-      .eq('user_id', input.userId).eq('dream_id', input.dreamId).eq('image_status', 'ready').eq('image_path', row.image_path)
-      .select('dream_id');
+    const reclaimable = held(row) && !since(row!.image_updated_at, HOLD_LEASE_MS);
+    if (!row || typeof row.image_path !== 'string' || (row.image_status !== 'ready' && !reclaimable)) return null;
+    let claim = previews()
+      .update({ image_status: 'used', image_updated_at: new Date(now()).toISOString() })
+      .eq('user_id', input.userId).eq('dream_id', input.dreamId).eq('image_status', row.image_status).eq('image_path', row.image_path);
+    if (reclaimable) claim = claim.eq('image_updated_at', row.image_updated_at);
+    const { data: taken, error: takeError } = await claim.select('dream_id');
     if (takeError || !taken?.length) return null;
 
     const objects = admin.storage.from(input.bucket);
     const ownPath = `${input.userId}/${row.image_path.split('/').pop()}`;
     // The row holds the painting where it lies (its band kept) until the dream holds its link.
-    const held = (path: string, values: Record<string, unknown>) => previews().update(values)
+    const holding = (path: string, values: Record<string, unknown>): Promise<boolean> => previews().update(values)
       .eq('user_id', input.userId).eq('dream_id', input.dreamId).eq('image_status', 'used').eq('image_path', path)
-      .then(() => undefined, () => undefined);
-    const giveBack = (path: string) => held(path, { image_status: 'ready' });
+      .select('dream_id')
+      .then(({ data, error }: { data: unknown[] | null; error: unknown }) => !error && Boolean(data?.length), () => false);
+    const giveBack = (path: string) => holding(path, { image_status: 'ready' });
+    // From the take's own failures: a painting not given back is reclaimed after its lease, so
+    // the job tries again then instead of paying for another now.
+    const giveBackOrRetry = async (path: string) => {
+      if (!(await giveBack(path))) throw heldPaintingError();
+    };
     // A painting already moved once (its link could not be made then) only needs its link.
     const moved = row.image_path === ownPath ? { error: null } : await objects.move(row.image_path, ownPath);
     if (moved.error) {
       // Still where it was: the painting stays ready for the next job instead of being paid again.
       console.warn('[analysis-preview] could not move a prepared painting');
-      await giveBack(row.image_path);
+      await giveBackOrRetry(row.image_path);
       return null;
     }
     if (ownPath !== row.image_path) {
@@ -169,26 +188,29 @@ export async function takePreparedIllustration(admin: AdminClient, input: {
         // The row still names the former place: the painting goes back there, ready for the next job.
         console.warn('[analysis-preview] could not record a moved painting');
         const back = await objects.move(ownPath, row.image_path);
-        if (!back.error) await giveBack(row.image_path);
+        if (back.error) throw heldPaintingError();
+        await giveBackOrRetry(row.image_path);
         return null;
       }
     }
     const { data: signed, error: signError } = await objects.createSignedUrl(ownPath, SIGNED_URL_SECONDS);
     if (signError || !signed?.signedUrl) {
-      await giveBack(ownPath);
+      await giveBackOrRetry(ownPath);
       return null;
     }
     const bandPath = row.band_path;
     const url = signed.signedUrl as string;
     const settle = async () => {
       await removePreviewObjects(admin, input.bucket, [bandPath]);
-      await held(ownPath, { image_path: null, band_path: null, band_url: null });
+      await holding(ownPath, { image_path: null, band_path: null, band_url: null });
     };
     return {
       path: ownPath,
       url,
       settle,
-      giveBack: () => giveBack(ownPath),
+      giveBack: async () => {
+        await giveBack(ownPath);
+      },
       release: async () => {
         let linked: unknown;
         try {
@@ -208,7 +230,8 @@ export async function takePreparedIllustration(admin: AdminClient, input: {
         return true;
       },
     };
-  } catch {
+  } catch (error) {
+    if ((error as { preparedPaintingHeld?: unknown })?.preparedPaintingHeld) throw error;
     console.warn('[analysis-preview] could not take a prepared painting');
     return null;
   }

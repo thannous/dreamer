@@ -382,6 +382,26 @@ Deno.test('a band whose link cannot be signed this time is read again, not shown
   assertEquals(read.preview.image.state, 'ready');
 });
 
+Deno.test('a painting whose request stopped is started again by the next read, once', async () => {
+  const stalledRow = (): Row => ({
+    user_id: 'u1', dream_id: 7, status: 'ready', lang: 'fr', reading: reading(),
+    image_status: 'painting', image_prompt: 'A river of glass at dusk leading to a lit childhood home', image_path: null, band_path: null,
+    band_url: null, image_updated_at: iso(NOW - 4 * 60_000), created_at: iso(NOW - 5 * 60_000), updated_at: iso(NOW - 5 * 60_000),
+    transcript_sha256: sha,
+  });
+  const sha = await transcriptSha256(TRANSCRIPT);
+  const { ctx, deps, previews, calls } = setup({ previews: [stalledRow()] });
+  const result = await (await handleAnalysisPreview(ctx({ dreamId: 7, lang: 'fr' }), deps)).json();
+  assertEquals(calls.paint, 1);
+  assertEquals([result.state, result.preview.image.state], ['ready', 'ready']);
+  assertEquals([previews[0].image_status, previews[0].image_path], ['ready', 'previews/u1/7-a.jpg']);
+
+  // Still under way (within its three minutes): read only, never painted twice.
+  const fresh = setup({ previews: [{ ...stalledRow(), image_updated_at: iso(NOW - 60_000) }] });
+  const waiting = await (await handleAnalysisPreview(fresh.ctx({ dreamId: 7, lang: 'fr' }), fresh.deps)).json();
+  assertEquals([fresh.calls.paint, waiting.preview.image.state], [0, 'painting']);
+});
+
 Deno.test('the painting of an older preview of the dream goes once the new one is saved', async () => {
   const older: Row = {
     user_id: 'u1', dream_id: 7, status: 'ready', lang: 'en', transcript_sha256: 'a'.repeat(64), reading: reading(),
