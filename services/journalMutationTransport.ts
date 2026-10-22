@@ -306,6 +306,12 @@ export function createJournalMutationTransport({ getClient, ensureRemoteImage }:
       return result;
     }
 
+    if (sourceMutation.payload.dream.personalNotes !== undefined && result.dream.personalNotes === undefined) {
+      // An old server can acknowledge its known fields but cannot persist personal notes.
+      // Keep the local mutation pending instead of silently discarding private writing.
+      return { ...result, status: 'failed', error: 'Personal notes require the journal schema update', dream: undefined };
+    }
+
     if (normalizeDreamMemoryMetadata(result.dream.memory)) {
       return result;
     }

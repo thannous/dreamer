@@ -29,6 +29,18 @@ function directClient(missingMemory = false) {
 }
 
 describe('journal mutation transport factory', () => {
+  // Real UI/backend E2E runs the current migration; it cannot emulate an old RPC discarding an unknown field.
+  it('refuses an old server acknowledgement that discarded personal notes', async () => {
+    const pending = mutation();
+    pending.payload.dream = { ...dream, personalNotes: [{ id: '11111111-1111-4111-8111-111111111111', text: 'Keep me', createdAt: 100, updatedAt: 100 }] };
+    const client = { rpc: jest.fn().mockResolvedValue({ error: null, data: [{ mutation_id: pending.id, client_request_id: pending.clientRequestId, operation: 'create', status: 'ack', dream: row }] }) };
+    const result = await createJournalMutationTransport({ getClient: () => client as unknown as SupabaseClient, ensureRemoteImage })
+      .syncDreamMutationsInSupabase([pending], 'a');
+    expect(result[0]).toMatchObject({ status: 'failed', error: 'Personal notes require the journal schema update' });
+    expect(result[0].dream).toBeUndefined();
+    expect(pending.payload.dream.personalNotes?.[0].text).toBe('Keep me');
+  });
+
   it('retains optional-column compatibility across calls, isolated per factory', async () => {
     const client = directClient(true);
     const transport = createJournalMutationTransport({

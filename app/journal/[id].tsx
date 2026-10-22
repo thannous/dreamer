@@ -15,6 +15,7 @@ import { useDreamCoverPlaceholder } from '@/hooks/useDreamCoverPlaceholder';
 import { useDreamMedia } from '@/hooks/useDreamMedia';
 import { Toast } from '@/components/Toast';
 import { DreamRecallAssistantCard } from '@/components/journal/DreamRecallAssistantCard';
+import { DreamPersonalNotes } from '@/components/journal/DreamPersonalNotes';
 import { BOOK_MEASURE, BookOrnament, BookProse, BookSectionMark, BookStar } from '@/components/journal/JournalBook';
 import { JournalCoverPlate } from '@/components/journal/JournalCoverPlate';
 import { JournalEditLink } from '@/components/journal/JournalEditLink';
@@ -3232,6 +3233,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
                 <View className="mx-2 mb-7">{renderMetadataChips()}</View>
               </ArrivalLater>
             ) : null}
+
+            {!isEditing ? <DreamPersonalNotes key={`${user?.id ?? 'guest'}:${getDreamIdentityKey(dream)}`} dream={dream} disabled={isAnalysisLocked} /> : null}
 
             {/* A guest reads on into what an account keeps and adds. */}
             {showCompletedReading && !readingInFlight ? renderFirstValueBackupCard() : null}

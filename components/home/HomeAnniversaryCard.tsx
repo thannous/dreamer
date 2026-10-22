@@ -8,6 +8,7 @@ import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
 import { useDreamMedia } from '@/hooks/useDreamMedia';
 import { useTranslation } from '@/hooks/useTranslation';
+import type { DreamAnalysis } from '@/lib/types';
 import type { DreamAnniversary } from '@/lib/dreamAnniversary';
 import { getDreamRouteParams } from '@/lib/dreamRoute';
 import { getDreamThumbnailCacheKey, getDreamThumbnailUri } from '@/lib/imageUtils';
@@ -27,7 +28,7 @@ function opening(text: string, max = 120): string {
  * The dream noted on this date a month or a year ago, on that day only: its painting, its
  * name and its first words, opening its page.
  */
-export function HomeAnniversaryCard({ anniversary }: { anniversary: DreamAnniversary }) {
+export function HomeAnniversaryCard({ anniversary }: { anniversary: DreamAnniversary | { dream: DreamAnalysis; span: 'rediscovery' } }) {
   const { colors, mode } = useTheme();
   const ink = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
@@ -45,7 +46,7 @@ export function HomeAnniversaryCard({ anniversary }: { anniversary: DreamAnniver
   // The journal cards' cache entry: a dream's image downloads once for both screens.
   const cacheKey = getDreamThumbnailCacheKey(media);
   const source = useMemo(() => thumbnail ? { uri: thumbnail, cacheKey } : undefined, [cacheKey, thumbnail]);
-  const label = t(span === 'year' ? 'home.anniversary.year' : 'home.anniversary.month');
+  const label = t(span === 'rediscovery' ? 'home.rediscovery.title' : span === 'year' ? 'home.anniversary.year' : 'home.anniversary.month');
   const title = dream.title?.trim() || t('journal.detail.untitled_dream');
   // None when the name already is that opening, as for a dream not yet read.
   const first = opening(dream.transcript ?? '');
@@ -54,7 +55,7 @@ export function HomeAnniversaryCard({ anniversary }: { anniversary: DreamAnniver
   return (
     <Pressable onPress={() => router.push({ pathname: '/journal/[id]', params: getDreamRouteParams(dream) })}
       accessibilityRole="button" accessibilityLabel={[label, title, excerpt].filter(Boolean).join('. ')}
-      testID={TID.Button.HomeAnniversary}
+      testID={span === 'rediscovery' ? 'home.rediscovery' : TID.Button.HomeAnniversary}
       className="min-h-[88px] flex-row items-center gap-4 border-t border-line py-4 active:opacity-70">
       {/* expo-image and the ring's colours take native props. */}
       <View style={{

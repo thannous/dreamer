@@ -121,6 +121,13 @@ export interface DreamEmotionInsight {
   insight: string;
 }
 
+export interface DreamPersonalNote {
+  id: string;
+  text: string;
+  createdAt: number;
+  updatedAt: number;
+}
+
 export interface DreamAnalysis {
   id: number; // timestamp for unique ID and sorting
   remoteId?: number; // Supabase row id when persisted online
@@ -131,6 +138,8 @@ export interface DreamAnalysis {
   transcript: string;
   /** Original capture exchanges, retained on this device after narrative formatting. */
   captureOriginalTranscript?: string;
+  /** Private, dated reflections; never part of the original story or AI context. */
+  personalNotes?: DreamPersonalNote[];
   title: string;
   interpretation: string;
   /** Legacy storage key: an original poetic line for poetic prompt versions; older entries may contain an excerpt. */
