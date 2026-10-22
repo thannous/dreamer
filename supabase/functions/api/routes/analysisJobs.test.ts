@@ -1,6 +1,7 @@
 import { assertEquals } from 'https://deno.land/std@0.224.0/assert/mod.ts';
 
 import type { ApiContext } from '../types.ts';
+import { AI_LANGUAGES } from '../lib/aiLanguage.ts';
 import { PLUS_DAILY_LIMITS } from '../lib/plusDailyLimits.ts';
 import {
   blockedAdmissionResponse,
@@ -67,6 +68,28 @@ Deno.test('the API daily analysis ceiling matches the one the database enforces'
     migration.match(/daily_limit constant integer := (\d+);/)?.[1],
     String(PLUS_DAILY_LIMITS.analysis)
   );
+});
+
+Deno.test('queued analysis admission accepts every language the API sends', async () => {
+  // normalizeAiLanguage passes any AI_LANGUAGES entry to the RPC. A language the
+  // latest admission function leaves out fails every analysis job of that
+  // account, as Portuguese did until 20261022040000.
+  const migrations = new URL('../../../migrations/', import.meta.url);
+  const names: string[] = [];
+  for await (const entry of Deno.readDir(migrations)) {
+    if (entry.isFile && entry.name.endsWith('.sql')) names.push(entry.name);
+  }
+  let admitted: string[] | undefined;
+  for (const name of names.sort()) {
+    const sql = await Deno.readTextFile(new URL(name, migrations));
+    const start = sql.search(/create\s+or\s+replace\s+function\s+public\.admit_authenticated_analysis_job\(/i);
+    if (start < 0) continue;
+    const bodyStart = sql.indexOf('$$', start) + 2;
+    const body = sql.slice(bodyStart, sql.indexOf('$$', bodyStart));
+    const list = body.match(/p_lang not in \(([^)]*)\)/)?.[1] ?? '';
+    admitted = [...list.matchAll(/'([a-z]+)'/g)].map(([, lang]) => lang);
+  }
+  assertEquals(admitted?.sort(), [...AI_LANGUAGES].sort());
 });
 
 Deno.test('analysis admission backlog responses carry a Retry-After header with CORS', async () => {

@@ -144,5 +144,14 @@ try {
     e => e.code === '42883'
   ); checks++;
   check((await admit()).duplicate === true, 'queued analysis admission still works after legacy RPC removal');
+  // Production may still run this pre-binding admission. The Portuguese
+  // migration carries the transcript-bound body, so it must refuse to install
+  // here rather than turn every queued analysis into a transcript mismatch.
+  const admissionDefinition = async () => (await query("select pg_get_functiondef('public.admit_authenticated_analysis_job(uuid,uuid,bigint,uuid,text,boolean,integer,integer,integer,integer,integer)'::regprocedure) as def"))[0].def;
+  const preBinding = await admissionDefinition();
+  const portuguese = await migration('20261022040000_admit_portuguese_analysis_jobs');
+  await assert.rejects(() => db.exec(portuguese),
+    e => e.message.includes('apply 20261021201021_bind_analysis_receipts_to_transcript.sql first')); checks++;
+  check(await admissionDefinition() === preBinding, 'the Portuguese admission waits for the transcript-bound authorization');
   console.log(JSON.stringify({status:'ok',checks,engine:'PGlite',hosted_access:false,concurrency_tested:false}));
 } finally { await db.close(); }

@@ -115,6 +115,27 @@ assert.equal((await db.query(`select count(*)::integer n from public.quota_usage
 assert.equal((await authClaim(hashB)).code,'ANALYSIS_TRANSCRIPT_MISMATCH');
 await db.query(`update public.quota_usage set occurred_at=now()-interval '25 hours' where user_id=$1 and dream_id=1 and metadata->>'analysis_request_id'=$2`,[uid,rid]);
 assert.equal((await db.query(`select public.claim_authenticated_analysis_quota_bound($1::uuid,5,$2::uuid,$3::text) result`,[uid,dailyRequest,dailyHash])).rows[0].result.allowed,true);
+// The API passes every AI_LANGUAGES entry to the queued path. Until
+// 20261022040000 the admission refused 'pt', so every Portuguese account's
+// analysis job failed before reaching the provider.
+const aiLanguages=[...readFileSync(new URL('../supabase/functions/api/lib/aiLanguage.ts', import.meta.url),'utf8')
+  .match(/AI_LANGUAGES = \[([^\]]+)\] as const/)[1].matchAll(/'([a-z]{2})'/g)].map(([,lang])=>lang);
+assert.ok(aiLanguages.includes('pt'));
+const langUser='abababab-abab-4bab-8bab-abababababab';
+const admitLang=async (dreamId,lang) => {
+  const requestId=`12121212-1212-4212-8212-${String(dreamId).padStart(12,'0')}`;
+  await db.query(`insert into public.dreams(id,user_id,transcript) values($1,$2,$3)`,[dreamId,langUser,`dream in ${lang}`]);
+  return (await db.query(`select public.admit_authenticated_analysis_job($1::uuid,$2::uuid,$3,$1::uuid,$4,false,3,10,600,100,1000) result`,[requestId,langUser,dreamId,lang])).rows[0].result;
+};
+await assert.rejects(() => admitLang(20,'pt'),error=>error.message==='unsupported analysis language');
+await db.exec(readFileSync(new URL('../supabase/migrations/20261022040000_admit_portuguese_analysis_jobs.sql', import.meta.url),'utf8'));
+for (const [index,lang] of aiLanguages.entries()) {
+  const admittedLang=await admitLang(21+index,lang);
+  assert.equal(admittedLang.allowed,true,lang);
+  assert.equal(admittedLang.job.request_payload.lang,lang);
+}
+await assert.rejects(() => admitLang(30,'nl'),error=>error.message==='unsupported analysis language');
+assert.equal((await db.query(`select has_function_privilege('authenticated','public.admit_authenticated_analysis_job(uuid,uuid,bigint,uuid,text,boolean,integer,integer,integer,integer,integer)','EXECUTE') granted`)).rows[0].granted,false);
 await db.exec(`select set_config('test.tier','free',false)`);
 await db.exec(`select set_config('test.jwt_role','authenticated',false); select set_config('test.uid','${uid}',false);`);
 const permissions=(await db.query(`select
@@ -159,5 +180,5 @@ assert.equal((await db.query(`select count(*)::integer n from public.quota_usage
 await db.exec(`select set_config('test.jwt_role','authenticated',false); select set_config('test.uid','${uid}',false);`);
 await db.query(`update public.dreams set exploration_started_at='2000-01-01' where id=2`);
 assert.equal(new Date((await db.query(`select exploration_started_at from public.dreams where id=2`)).rows[0].exploration_started_at).getTime(),new Date(marker).getTime());
-console.log('PASS bound receipts reject changed transcripts and repeat spend; legacy receipts denied; direct backdate stripped; service-only chat failure and completion; immutable server marker');
+console.log('PASS bound receipts reject changed transcripts and repeat spend; legacy receipts denied; every AI language admitted to queued analysis; direct backdate stripped; service-only chat failure and completion; immutable server marker');
 await db.close();
