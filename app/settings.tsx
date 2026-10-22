@@ -99,7 +99,6 @@ export default function SettingsScreen() {
   useClearWebFocus();
 
   const isCompactLayout = width <= 375;
-  const isDesktopLayout = Platform.OS === 'web' && width >= 1024;
   const nativeHostKey = Platform.OS === 'android'
     ? `${Math.round(width)}x${Math.round(height)}`
     : undefined;
@@ -207,7 +206,9 @@ export default function SettingsScreen() {
       className="flex-1 bg-ink"
       testID="screen.settings"
     >
-      <View className={isDesktopLayout ? 'w-full max-w-[760px] self-center' : 'w-full'}>
+      {/* A reading width wherever the window is wider, so a row's name and its value stay
+          close: the open iPhone Duo on its side, a tablet, a browser. */}
+      <View className="w-full max-w-[760px] self-center">
       <NoctaliaScreenHeader
         scene="journal"
         titleKey={returningGuestBlocked ? 'auth.returning_guest.title' : 'settings.title'}
@@ -223,7 +224,7 @@ export default function SettingsScreen() {
       {/* 760px is inline: Tailwind extracts class names statically, so it cannot
           come from a constant. */}
       <View
-        className={`w-full flex-1${isDesktopLayout ? ' max-w-[760px] self-center' : ''}`}
+        className="w-full max-w-[760px] flex-1 self-center"
       >
         <SettingsHost
           colorScheme={mode}

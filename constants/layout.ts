@@ -5,6 +5,25 @@ export const LAYOUT_MAX_WIDTH = 1200;
 export const TAB_BAR_MAX_WIDTH = 640;
 export const TABLET_BREAKPOINT = 600;
 export const DESKTOP_BREAKPOINT = 1024;
+
+/**
+ * Window classes come from the space the app has, never from the device: one iPhone Duo
+ * is a compact phone folded (about 466 × 678 points) and a large display open (about
+ * 669 × 951, or 951 × 669 on its side), and Split View can make either a narrow column.
+ */
+export const LARGE_WINDOW_MIN_WIDTH = TABLET_BREAKPOINT;
+/** A large window this wide lays its grids out in more columns: the open Duo on its side. */
+export const EXPANDED_WINDOW_MIN_WIDTH = 840;
+/** A phone on its side is as wide but too short for the taller cards of an expanded grid. */
+export const EXPANDED_WINDOW_MIN_HEIGHT = 480;
+
+export type WindowClass = 'compact' | 'large' | 'expanded';
+
+export function getWindowClass(width: number, height: number): WindowClass {
+  if (width < LARGE_WINDOW_MIN_WIDTH) return 'compact';
+  return width >= EXPANDED_WINDOW_MIN_WIDTH && height >= EXPANDED_WINDOW_MIN_HEIGHT ? 'expanded' : 'large';
+}
+
 /** Reading width of desktop tab pages beside the sidebar. */
 export const DESKTOP_CONTENT_MAX_WIDTH = 960;
 export const TAB_BAR_HEIGHT = 86;

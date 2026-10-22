@@ -52,6 +52,7 @@ const mockReloadDreams = jest.fn(async () => undefined);
 let mockCompleteness: { status: 'incomplete' | 'loading' } | undefined;
 let mockRemotePreviewAllowed = false;
 const mockListScrollToOffset = jest.fn();
+const mockListScrollToIndex = jest.fn();
 const mockKeyboardDismiss = jest.fn();
 let mockPlatform = 'android';
 let mockListProps: Record<string, any> = {};
@@ -296,6 +297,7 @@ jest.mock('@shopify/flash-list', () => {
           nativeEvent: { contentOffset: { y: Math.max(0, args?.offset ?? 0) } },
         });
       },
+      scrollToIndex: async (args: { index: number }) => { mockListScrollToIndex(args); },
     }));
     const Empty = props.ListEmptyComponent;
     return <div
@@ -479,6 +481,7 @@ afterEach(() => {
   mockKeyboardListeners.clear();
   mockRetryPersistence.mockClear();
   mockListScrollToOffset.mockClear();
+  mockListScrollToIndex.mockClear();
   mockKeyboardDismiss.mockClear();
 });
 
@@ -917,6 +920,114 @@ describe('Journal compact large-text layout', () => {
     expect(mockListProps.ListHeaderComponent).toBeUndefined();
     expect(mockListProps.style).toBeUndefined();
     expect(mockListProps.numColumns).toBe(4);
+  });
+});
+
+describe('Journal on an iPhone Duo', () => {
+  beforeEach(() => {
+    for (let night = 0; night < 8; night += 1) {
+      mockDreams.push({ ...guestDream, id: guestDream.id - night * 86_400_000, title: `Night ${night}` });
+    }
+  });
+
+  const tokens = (indices: number[]) => indices.map((index) => ({ index, item: mockListProps.data[index], key: String(index), isViewable: true }));
+  // The list's two viewability reports: any part in view (for thumbnails), at least half in view.
+  const report = ({ inView, halfInView }: { inView: number[]; halfInView: number[] }) => act(() => {
+    mockListProps.onViewableItemsChanged({ viewableItems: tokens(inView), changed: [] });
+    mockListProps.viewabilityConfigCallbackPairs[0].onViewableItemsChanged({ viewableItems: tokens(halfInView), changed: [] });
+  });
+
+  it.each([
+    [412, 678, 1], // folded, less its status bar column
+    [669, 951, 2], // open
+    [897, 669, 3], // open on its side, less its status bar column
+  ])('lays a %i by %i window out in %i columns', (width: number, height: number, columns: number) => {
+    Object.assign(mockWindow, { width, height });
+    render(<JournalScreen />);
+    expect(mockListProps.numColumns).toBe(columns);
+  });
+
+  it('opens the new columns on the dream at the top when the Duo folds', () => {
+    Object.assign(mockWindow, { width: 669, height: 951 });
+    const view = render(<JournalScreen />);
+    act(() => { mockListProps.onLoad(); });
+    // The last sliver of the row of dreams 4 and 5 is still in view; 6 and 7 fill the screen.
+    report({ inView: [4, 5, 6, 7], halfInView: [6, 7] });
+    expect(mockListProps.viewabilityConfigCallbackPairs[0].viewabilityConfig.itemVisiblePercentThreshold).toBe(50);
+    expect(mockListScrollToIndex).not.toHaveBeenCalled();
+
+    Object.assign(mockWindow, { width: 412, height: 678 });
+    view.rerender(<JournalScreen />);
+    expect(mockListProps.numColumns).toBe(1);
+    act(() => { mockListProps.onLoad(); });
+    expect(mockListScrollToIndex).toHaveBeenCalledTimes(1);
+    expect(mockListScrollToIndex).toHaveBeenCalledWith({
+      index: 6,
+      animated: false,
+      viewOffset: -(MOCK_INSETS.top + ThemeLayout.spacing.sm),
+    });
+
+    // Loaded again in the same columns (a filter on the web), the list stays where it is.
+    act(() => { mockListProps.onLoad(); });
+    expect(mockListScrollToIndex).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps a journal read from its first dream at the top when the Duo opens', () => {
+    Object.assign(mockWindow, { width: 412, height: 678 });
+    const view = render(<JournalScreen />);
+    report({ inView: [0, 1], halfInView: [0] });
+
+    Object.assign(mockWindow, { width: 669, height: 951 });
+    view.rerender(<JournalScreen />);
+    expect(mockListProps.numColumns).toBe(2);
+    act(() => { mockListProps.onLoad(); });
+    expect(mockListScrollToIndex).not.toHaveBeenCalled();
+  });
+
+  it('does not carry the dream kept through a fold into new search results', () => {
+    Object.assign(mockWindow, { width: 669, height: 951 });
+    const view = render(<JournalScreen />);
+    report({ inView: [4, 5], halfInView: [4, 5] });
+    Object.assign(mockWindow, { width: 412, height: 678 });
+    view.rerender(<JournalScreen />);
+
+    fireEvent.change(screen.getByTestId(TID.Input.SearchDreams), { target: { value: 'Night' } });
+    act(() => { mockListProps.onLoad(); });
+    expect(mockListProps.data.length).toBeGreaterThan(4);
+    expect(mockListScrollToIndex).not.toHaveBeenCalled();
+  });
+
+  it('keeps the desktop grid where it is when only the window height changes', () => {
+    mockPlatform = 'web';
+    Object.assign(mockWindow, { width: 1280, height: 800 });
+    const view = render(<JournalScreen />);
+    report({ inView: [4, 5, 6], halfInView: [4, 5, 6] });
+
+    // Short enough to regroup a phone list, which the desktop grid does not use.
+    Object.assign(mockWindow, { width: 1280, height: 400 });
+    view.rerender(<JournalScreen />);
+    expect(mockListProps.numColumns).toBe(3);
+    act(() => { mockListProps.onLoad(); });
+    expect(mockListScrollToIndex).not.toHaveBeenCalled();
+  });
+
+  it('keeps three columns on the web while the keyboard covers the open Duo on its side', () => {
+    mockPlatform = 'web';
+    const page = Object.getOwnPropertyDescriptor(document.documentElement, 'clientHeight');
+    Object.defineProperty(document.documentElement, 'clientHeight', { configurable: true, get: () => 669 });
+    try {
+      Object.assign(mockWindow, { width: 897, height: 669 });
+      const view = render(<JournalScreen />);
+      expect(mockListProps.numColumns).toBe(3);
+
+      // The visual viewport, which the web window follows, shrinks above the keyboard.
+      Object.assign(mockWindow, { width: 897, height: 370 });
+      view.rerender(<JournalScreen />);
+      expect(mockListProps.numColumns).toBe(3);
+    } finally {
+      if (page) Object.defineProperty(document.documentElement, 'clientHeight', page);
+      else delete (document.documentElement as { clientHeight?: number }).clientHeight;
+    }
   });
 });
 

@@ -11,6 +11,7 @@ import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { DarkTheme } from '@/constants/journalTheme';
 import { getLegalLink } from '@/constants/legalLinks';
 import { Fonts } from '@/constants/theme';
+import { useContentWindow } from '@/context/ContentWindowContext';
 import { useOnboarding } from '@/context/OnboardingContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -92,6 +93,9 @@ const BACKGROUND_IMAGE = require('@/assets/images/onboarding-reverie-background.
 // The immersive artwork always needs its nocturnal contrast, independently of
 // the user's app theme. The privacy sheet retains the app's own palette.
 const ONBOARDING_TOKENS = getNoctaliaDesignTokens(DarkTheme, 'dark');
+// As narrow as Split View on the open iPhone Duo (about 290 pt): the top bar can no longer
+// hold the full-size wordmark, the step counter and the skip button side by side.
+const NARROW_TOP_BAR_WIDTH = 360;
 
 const webTitleFocusResetStyle: TextStyle | null = process.env.EXPO_OS === 'web'
   ? ({
@@ -122,6 +126,7 @@ export default function OnboardingScreen() {
   const isReplay = useLocalSearchParams<{ replay?: string }>().replay === '1';
   const [replayStep, setReplayStep] = useState<OnboardingStep>('intro');
   const { height: viewportHeight, fontScale } = useWindowDimensions();
+  const narrowTopBar = useContentWindow().width < NARROW_TOP_BAR_WIDTH;
   const [selectedPathOverride, setSelectedPathOverride] = useState<OnboardingPath | null>(null);
   const [isLeaving, setIsLeaving] = useState(false);
   const [isStepTransitioning, setIsStepTransitioning] = useState(false);
@@ -644,6 +649,7 @@ export default function OnboardingScreen() {
               pointerEvents="none"
               style={[
                 styles.brand,
+                narrowTopBar && styles.brandNarrow,
                 { color: noctalia.text.primary },
                 step !== 'intro' && styles.inactiveControl,
               ]}
@@ -668,7 +674,7 @@ export default function OnboardingScreen() {
               <IconSymbol name="chevron.left" size={22} color={noctalia.text.primary} />
             </Pressable>
           </View>
-          <View style={styles.stepProgress} accessible accessibilityLabel={t('onboarding.progress', { current: step === 'intro' ? 1 : 2, total: 2 })}>
+          <View style={[styles.stepProgress, narrowTopBar && styles.stepProgressNarrow]} accessible accessibilityLabel={t('onboarding.progress', { current: step === 'intro' ? 1 : 2, total: 2 })}>
             <View accessible={false} style={styles.stepMarks}>
               {[0, 1].map((index) => <Animated.View key={index} style={[styles.stepMark, {
                 backgroundColor: titleAccent,
@@ -676,7 +682,9 @@ export default function OnboardingScreen() {
                 transitionProperty: 'opacity', transitionDuration: DURATION.fast, transitionTimingFunction: EASE.out,
               }]} />)}
             </View>
-            <Text accessible={false} style={[styles.stepNumber, { color: noctalia.text.secondary }]}>{step === 'intro' ? '01' : '02'}{' / 02'}</Text>
+            {narrowTopBar ? null : (
+              <Text accessible={false} style={[styles.stepNumber, { color: noctalia.text.secondary }]}>{step === 'intro' ? '01' : '02'}{' / 02'}</Text>
+            )}
           </View>
           <Pressable
             accessibilityRole="button"
@@ -1097,12 +1105,15 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   stepProgress: { alignItems: 'center', gap: 6, marginLeft: -20 },
+  // The marks alone (the bar keeps its spoken label), sitting where the space falls.
+  stepProgressNarrow: { marginLeft: 0 },
   stepMarks: { flexDirection: 'row', gap: 5 },
   stepMark: { width: 18, height: 2, borderRadius: 1 },
   stepNumber: { fontFamily: Fonts.outfit.medium, fontSize: 11, lineHeight: 14, letterSpacing: 1.5 },
   topBarLeading: { position: 'relative', minWidth: 80, height: 44, justifyContent: 'center' },
   topBarBack: { position: 'absolute', top: 0, left: 0 },
   brand: { fontFamily: Fonts.fraunces.regular, fontSize: TypeScale.h1.fontSize, lineHeight: TypeScale.h1.lineHeight, minWidth: 80 },
+  brandNarrow: { fontSize: TypeScale.h3.fontSize, lineHeight: TypeScale.h3.lineHeight },
   iconButton: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
   skipButton: { minWidth: 72, minHeight: 44, alignItems: 'flex-end', justifyContent: 'center' },
   skipText: { fontFamily: Fonts.outfit.bold, fontSize: TypeScale.body.fontSize },
