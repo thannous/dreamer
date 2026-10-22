@@ -1,5 +1,30 @@
 # Progression Dreamer — intégration du 22 octobre 2026
 
+## Suite de publication — Explorer et carte Collection
+
+Le contrôle Release du merge `59b1796e` passe le backend local (22/22), le site
+(269/269) et la première passe Dreamer (120 exécutés, 27 réservés aux autres
+contextes). La passe française fait 24/25 : une ancienne assertion exige que les
+deux actions du rituel soient visibles sans défilement à 390 × 844, avant l’ajout
+de la carte Collection. La page possède déjà un défilement et un dégagement de navigation.
+
+Le test conserve les vérifications de thèmes, descriptions et cibles tactiles,
+confirme l’entrée Collection visible, puis effectue un vrai défilement. Les deux
+actions du rituel doivent alors être entièrement au-dessus de la navigation et
+leur centre doit recevoir les clics. Rejeu ciblé : **1/1 PASS**, run
+`01a16588-c3fe-769a-9278-4d5b9ffc37b7`. Contre-exemple : retirer temporairement le
+dégagement bas fait échouer le nouveau test avec une action encore masquée de
+23 px, run `01a16589-7155-7f75-a37f-d64da93ca4d4`. Le fichier applicatif est restauré
+octet pour octet ; cette suite ne change que le test et ce rapport. Commande :
+`EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=true E2E_WEB_LOCALE=fr-FR E2E_WEB_PORT=8134 mise exec -- npm run test:testerarmy -- run --grep 'compact resources keep'`.
+
+Les contrôles complets de publication doivent encore passer sur le nouveau HEAD.
+Les résultats natifs du même code applicatif sont une union datée de runs QA :
+persistance invitée notes/guide/carte sur iPhone, guide/carte sur Moto et suppression
+de note iPhone ; la limite 4001, la convergence serveur hors ligne et la restauration
+A/B natives restent non qualifiées. Aucun déploiement d’app n’est déduit de ces preuves.
+
+
 Responsable : lot parent Codex, branche `codex/dreamer-progression-20261022`, PR #555. Les trois priorités ont été développées en parallèle dans le checkout isolé `dreamer-progression` ; le travail en cours du checkout principal est préservé. Base historique : `master` `4403a8b16` (PR #552), complétée par le correctif Claude repris sous `5589e72ef`.
 
 **État courant :** les trois défauts A1–A3 sont corrigés et qualifiés localement. Backend réel : **13/13 PASS sur `db8f8ea0ce31ea36134cf170ca6803f47a04860c`**. Candidat intégrant la finition badges/guides de Claude : **`0b474baf87320532df5b0d951d16921bf49027b0`, checkout propre, 4/4 parcours web mock et 3/3 parcours guides français PASS**. Le P2 de focus web est corrigé par Claude dans `d03d3b2a73a7fbdd2fec70183a67a5f2c6f8744e`, intégré sous **`94fb8c954bc7b2455cc97d8e9e12ea471fcb59c6`** : revue du delta sans constat restant et **1/1 parcours collection clavier PASS** sur cette source propre. Ce dernier commit est le candidat applicatif ; les changements documentaires suivants ne modifient pas les entrées testées. Les quatre migrations sont déployées ; aucune publication de l’application ni qualification native n’en est déduite.

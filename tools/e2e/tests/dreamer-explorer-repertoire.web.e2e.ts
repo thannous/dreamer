@@ -31,6 +31,7 @@ test('compact resources keep their descriptions and explicit or system themes', 
   const screen = page.getByTestId('screen.explore').filter({ visible: true });
   // Sleep sounds are native-only; web must not invent a disabled destination.
   await expect(page.getByTestId('btn.explorer.sleepSounds')).toHaveCount(0);
+  await expect(page.getByTestId('btn.explore.collection')).toBeInViewport();
   for (const theme of ['light', 'dark'] as const) {
     await chooseTheme(page, theme);
     const background = theme === 'light' ? 'rgb(240, 228, 212)' : 'rgb(3, 4, 13)';
@@ -46,9 +47,25 @@ test('compact resources keep their descriptions and explicit or system themes', 
     }
     await expect(screen).toContainText('Images et thèmes de tes rêves.');
     await expect(screen).toContainText('Mieux te souvenir de tes rêves.');
-    const change = await page.getByTestId('explorer-change-ritual').boundingBox();
-    const navigation = await page.getByTestId('tab.explore').filter({ visible: true }).boundingBox();
-    expect(change!.y + change!.height, 'Both ritual actions stay above navigation in the nominal viewport').toBeLessThanOrEqual(navigation!.y);
+    // Collection is now a full entry above the resources. The ritual can be below
+    // the first fold; an ordinary scroll must expose both actions above the dock.
+    // This also catches lost bottom clearance: scrolling cannot uncover an action
+    // whose centre remains covered by the fixed navigation.
+    await page.mouse.move(195, 422);
+    await page.mouse.wheel(0, 844);
+    for (const id of ['btn.explorer.ritual', 'explorer-change-ritual']) {
+      const action = page.getByTestId(id);
+      await expect.poll(async () => {
+        const bounds = await action.boundingBox();
+        const navigation = await page.getByTestId('tab.explore').filter({ visible: true }).boundingBox();
+        return bounds && navigation ? bounds.y + bounds.height - navigation.y : Infinity;
+      }, { message: 'Scrolled ritual actions stay above navigation' }).toBeLessThanOrEqual(0);
+      await expect(action).toBeInViewport();
+      expect(await action.evaluate(element => {
+        const box = element.getBoundingClientRect();
+        return element.contains(document.elementFromPoint(box.left + box.width / 2, box.top + box.height / 2));
+      }), 'The dock must not intercept a ritual action').toBe(true);
+    }
     await page.screenshot({ path: info.outputPath(`explorer-${theme}-390.png`) });
   }
   await chooseTheme(page, 'auto');
