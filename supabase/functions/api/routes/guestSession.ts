@@ -140,6 +140,7 @@ export async function handleGuestSession(
     const integrityToken = String(body?.integrityToken ?? '').trim();
     const turnstileToken = String(body?.turnstileToken ?? '').trim();
     const platform = String(body?.platform ?? '').trim() || 'unknown';
+    let iosAppId: string | undefined;
 
     if (!fingerprint) {
       return new Response(JSON.stringify({ error: 'Missing fingerprint' }), {
@@ -265,6 +266,7 @@ export async function handleGuestSession(
             appId: verified.appId,
           });
           if (!completed) return response('Invalid App Attest proof', 401);
+          iosAppId = verified.appId;
         } else if (challenge.kind === 'assertion') {
           if (typeof body.assertionObject !== 'string' || body.attestationObject != null) {
             return response('Invalid App Attest proof', 401);
@@ -286,6 +288,7 @@ export async function handleGuestSession(
           });
           const completed = await store.completeAssertion({ challengeId, keyId, fingerprint, counter });
           if (!completed) return response('Invalid App Attest proof', 401);
+          iosAppId = config.appId;
         } else {
           return response('Invalid App Attest proof', 401);
         }
@@ -304,16 +307,12 @@ export async function handleGuestSession(
     // unavailable, the device receives a normal guest token and all production
     // anti-abuse rules remain in force.
     const qaPassport = await (dependencies.resolveQaPassport ?? resolveGuestQaPassport)(fingerprint);
-    const token = await createGuestToken(
-      fingerprint,
-      platform,
-      qaPassport?.active
-        ? {
-            quotaSubject: qaPassport.quotaSubject,
-            validUntil: qaPassport.validUntil,
-          }
-        : undefined
-    );
+    const token = await createGuestToken(fingerprint, platform, {
+      ...(iosAppId ? { appId: iosAppId } : {}),
+      ...(qaPassport?.active
+        ? { quotaSubject: qaPassport.quotaSubject, validUntil: qaPassport.validUntil }
+        : {}),
+    });
     return new Response(JSON.stringify(token), {
       status: 200,
       headers: { 'Content-Type': 'application/json', ...corsHeaders },

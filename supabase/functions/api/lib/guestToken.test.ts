@@ -1,4 +1,4 @@
-import { assertEquals } from 'https://deno.land/std@0.224.0/assert/mod.ts';
+import { assertEquals, assertRejects } from 'https://deno.land/std@0.224.0/assert/mod.ts';
 
 import { createGuestToken, verifyGuestToken } from './guestToken.ts';
 
@@ -24,7 +24,7 @@ Deno.test('signed guest token carries a server-owned QA quota subject', async ()
   }
 });
 
-Deno.test('legacy signed iOS v1 tokens expire at the App Attest boundary while new iOS v2 and Android v1 work', async () => {
+Deno.test('iOS tokens require an attested App ID and reject older unbound versions', async () => {
   const previous = Deno.env.get('GUEST_SESSION_SECRET');
   Deno.env.set('GUEST_SESSION_SECRET', 'test-only-secret-with-sufficient-entropy');
   try {
@@ -42,11 +42,47 @@ Deno.test('legacy signed iOS v1 tokens expire at the App Attest boundary while n
     const signature = btoa(String.fromCharCode(...bytes)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
     assertEquals((await verifyGuestToken(`${data}.${signature}`, 'a'.repeat(64), 'ios')).ok, false);
 
-    const newIos = await createGuestToken('a'.repeat(64), 'ios');
+    await assertRejects(() => createGuestToken('a'.repeat(64), 'ios'));
+    const newIos = await createGuestToken('a'.repeat(64), 'ios', {
+      appId: 'ABCDEFGHIJ.com.tanuki75.noctalia',
+    });
     assertEquals((await verifyGuestToken(newIos.token, 'a'.repeat(64), 'ios')).ok, true);
+    // Re-sign the same verified token as a legacy v2 token without its App ID.
+    const [newHeader, newPayload] = newIos.token.split('.');
+    const unboundPayload = JSON.parse(atob(newPayload.replace(/-/g, '+').replace(/_/g, '/')));
+    unboundPayload.v = 2;
+    delete unboundPayload.appId;
+    const unboundBody = btoa(JSON.stringify(unboundPayload))
+      .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
+    const unboundData = `${newHeader}.${unboundBody}`;
+    const unboundBytes = new Uint8Array(await crypto.subtle.sign('HMAC', key,
+      new TextEncoder().encode(unboundData)));
+    const unboundSignature = btoa(String.fromCharCode(...unboundBytes))
+      .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
+    assertEquals((await verifyGuestToken(`${unboundData}.${unboundSignature}`, 'a'.repeat(64), 'ios')).ok, false);
     assertEquals((await verifyGuestToken(oldIos.token, 'a'.repeat(64), 'android')).ok, true);
   } finally {
     if (previous) Deno.env.set('GUEST_SESSION_SECRET', previous);
     else Deno.env.delete('GUEST_SESSION_SECRET');
+  }
+});
+
+Deno.test('Lucid iOS guest token can authorize analytics but cannot authorize Dreamer quota', async () => {
+  const previous = Deno.env.get('GUEST_SESSION_SECRET');
+  Deno.env.set('GUEST_SESSION_SECRET', 'test-only-secret-with-sufficient-entropy');
+  try {
+    const fingerprint = 'a'.repeat(64);
+    const lucid = await createGuestToken(fingerprint, 'ios', {
+      appId: 'ABCDEFGHIJ.com.tanuki75.noctalia.lucid',
+    });
+    assertEquals((await verifyGuestToken(lucid.token, fingerprint, 'ios', 'analytics')).ok, true);
+    assertEquals((await verifyGuestToken(lucid.token, fingerprint, 'ios')).ok, false);
+    const dreamer = await createGuestToken(fingerprint, 'ios', {
+      appId: 'ABCDEFGHIJ.com.tanuki75.noctalia',
+    });
+    assertEquals((await verifyGuestToken(dreamer.token, fingerprint, 'ios')).ok, true);
+  } finally {
+    if (previous == null) Deno.env.delete('GUEST_SESSION_SECRET');
+    else Deno.env.set('GUEST_SESSION_SECRET', previous);
   }
 });

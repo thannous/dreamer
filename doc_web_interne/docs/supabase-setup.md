@@ -135,9 +135,24 @@ replace every illustrative Team ID and build number before use:
     "bundleId": "com.tanuki75.noctalia.qa",
     "environment": "development",
     "allowedBundleVersions": ["7"]
+  },
+  {
+    "teamId": "AAAAAAAAAA",
+    "bundleId": "com.tanuki75.noctalia.lucid",
+    "environment": "production",
+    "allowedBundleVersions": ["1"]
   }
 ]
 ```
+
+Lucid iOS uses the same App Attest exchange for consented guest analytics.
+Its `lucid-production` build uses the production environment; a `lucid-preview`
+ad-hoc build uses development and needs a separate exact allowlist entry if it
+talks to this backend. Add the Lucid identity only when its signed binary and
+analytics journey have been qualified. The guest token includes the attested
+App ID; Lucid tokens can exchange for analytics sessions but cannot call
+Dreamer guest quota or AI routes. Old iOS guest tokens without this binding
+are rejected, so qualify fresh sessions when changing the server.
 
 An internal ad-hoc build of the main bundle needs its own exact
 `development` entry if it calls the same backend. The structured allowlist

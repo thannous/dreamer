@@ -22,9 +22,9 @@ export const DREAMER_QA_OBSERVE = Object.freeze({
   endpointUrl: 'https://127.0.0.1:9/',
 });
 const APP_ATTEST_ENTITLEMENT = 'com.apple.developer.devicecheck.appattest-environment';
-const APP_STORE_PROFILES = new Set(['release', 'production', 'ai-internal']);
+const APP_STORE_PROFILES = new Set(['release', 'production', 'ai-internal', 'lucid-production']);
 
-function withDreamerAppAttestEnvironment(baseExpo: ExpoConfig): ExpoConfig {
+function withIosAppAttestEnvironment(baseExpo: ExpoConfig): ExpoConfig {
   // App Store/TestFlight builds use Apple's production App Attest service.
   // Internal ad hoc builds (including release-smoke) use development.
   const environment = APP_STORE_PROFILES.has(process.env.EAS_BUILD_PROFILE ?? '')
@@ -326,12 +326,15 @@ export default function resolveExpoConfig({ config }: ConfigContext): ExpoConfig
   assertDreamerQaLucidConflict(qaEnabled, lucidEnabled);
 
   if (lucidEnabled) {
-    return createLucidExpoConfig(baseExpo);
+    // Lucid analytics also exchanges an App Attest-backed guest session.
+    // Select the entitlement for Lucid's own build profile after removing the
+    // Journal entitlement inherited from app.json.
+    return withIosAppAttestEnvironment(createLucidExpoConfig(baseExpo));
   }
 
   if (qaEnabled) {
-    return withDreamerAppAttestEnvironment(createDreamerQaExpoConfig(baseExpo));
+    return withIosAppAttestEnvironment(createDreamerQaExpoConfig(baseExpo));
   }
 
-  return withDreamerAppAttestEnvironment(baseExpo);
+  return withIosAppAttestEnvironment(baseExpo);
 }

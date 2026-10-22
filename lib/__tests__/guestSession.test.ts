@@ -187,7 +187,8 @@ describe('guestSession bootstrap state', () => {
       'x-guest-fingerprint': 'fingerprint',
       'x-guest-platform': 'ios',
     });
-    expect(secureStore.getItemAsync).toHaveBeenCalledWith('guest-session-v2');
+    expect(secureStore.getItemAsync).toHaveBeenCalledWith('guest-session-v3');
+    expect(secureStore.getItemAsync).not.toHaveBeenCalledWith('guest-session-v2');
     expect(secureStore.getItemAsync).not.toHaveBeenCalledWith('guest-session-v1');
     expect(fetchJSON).toHaveBeenNthCalledWith(1,
       'https://example.com/guest/session/challenge',

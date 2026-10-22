@@ -4,6 +4,7 @@ type GuestTokenPayload = {
   v: number;
   fingerprint: string;
   platform: string;
+  appId?: string;
   quotaSubject?: string;
   iat: number;
   exp: number;
@@ -16,6 +17,8 @@ type GuestTokenVerification = {
 };
 
 const TOKEN_TTL_MS = 15 * 60 * 1000;
+const APP_ID = /^[A-Z0-9]{10}\.com(?:\.[A-Za-z0-9-]+){2,}$/;
+const DREAMER_APP_ID = /^[A-Z0-9]{10}\.com\.tanuki75\.noctalia(?:\.qa)?$/;
 
 const base64UrlEncode = (input: string | Uint8Array): string => {
   const bytes = typeof input === 'string' ? encoder.encode(input) : input;
@@ -65,20 +68,24 @@ const sign = async (data: string, secret: string): Promise<string> => {
 export const createGuestToken = async (
   fingerprint: string,
   platform: string,
-  options?: { quotaSubject?: string; validUntil?: string }
+  options?: { quotaSubject?: string; validUntil?: string; appId?: string }
 ) => {
+  const appId = options?.appId;
+  if (platform === 'ios' && !APP_ID.test(appId ?? '')) {
+    throw new Error('Verified iOS App ID is required');
+  }
   const now = Date.now();
   const qaExpiry = options?.validUntil ? Date.parse(options.validUntil) : Number.NaN;
   const expiresAt = Number.isFinite(qaExpiry)
     ? Math.min(now + TOKEN_TTL_MS, qaExpiry)
     : now + TOKEN_TTL_MS;
   const payload: GuestTokenPayload = {
-    // v2 proves this iOS session passed the App Attest boundary. Legacy iOS
-    // v1 tokens were minted from an unauthenticated fingerprint and must die
-    // immediately when the new verifier is deployed.
-    v: platform === 'ios' ? 2 : 1,
+    // v3 binds an attested iOS app identity. Earlier iOS tokens either lacked
+    // App Attest (v1) or could cross from Lucid analytics into Dreamer AI (v2).
+    v: platform === 'ios' ? 3 : 1,
     fingerprint,
     platform,
+    ...(platform === 'ios' ? { appId } : {}),
     ...(options?.quotaSubject ? { quotaSubject: options.quotaSubject } : {}),
     iat: Math.floor(now / 1000),
     exp: Math.floor(expiresAt / 1000),
@@ -99,7 +106,8 @@ export const createGuestToken = async (
 export const verifyGuestToken = async (
   token: string | null,
   fingerprint: string,
-  platform?: string
+  platform?: string,
+  purpose: 'dreamer' | 'analytics' = 'dreamer'
 ): Promise<GuestTokenVerification> => {
   if (!token) {
     return { ok: false, reason: 'missing_token' };
@@ -125,8 +133,17 @@ export const verifyGuestToken = async (
     return { ok: false, reason: 'bad_payload' };
   }
 
-  if (payload.v !== (payload.platform === 'ios' ? 2 : 1)) {
+  if (payload.v !== (payload.platform === 'ios' ? 3 : 1)) {
     return { ok: false, reason: 'version_mismatch' };
+  }
+
+  if (payload.platform === 'ios' && !APP_ID.test(payload.appId ?? '')) {
+    return { ok: false, reason: 'app_id_mismatch' };
+  }
+
+  if (purpose === 'dreamer' && payload.platform === 'ios' &&
+      !DREAMER_APP_ID.test(payload.appId ?? '')) {
+    return { ok: false, reason: 'app_id_mismatch' };
   }
 
   if (payload.fingerprint !== fingerprint) {

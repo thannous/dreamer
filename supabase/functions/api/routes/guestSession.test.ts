@@ -1,7 +1,9 @@
 import { assertEquals } from 'https://deno.land/std@0.224.0/assert/mod.ts';
 
 import { handleGuestSession, handleIosGuestChallenge } from './guestSession.ts';
+import { handleAnalyticsGuestSession } from './analyticsSession.ts';
 import type { AppAttestStore } from '../lib/appleAppAttestStore.ts';
+import { verifyGuestToken } from '../lib/guestToken.ts';
 
 type Dependencies = Parameters<typeof handleGuestSession>[1];
 
@@ -105,7 +107,10 @@ Deno.test('iOS challenge and attestation mint one guest token; replay is rejecte
       }),
     });
     assertEquals(accepted.status, 200);
-    assertEquals(typeof (await accepted.json()).token, 'string');
+    const issued = await accepted.json();
+    assertEquals(typeof issued.token, 'string');
+    assertEquals((await verifyGuestToken(issued.token, fingerprint, 'ios')).payload?.appId,
+      'ABCDEFGHIJ.com.tanuki75.noctalia');
     const replay = await requestGuestSession(body, { appAttestStore: store });
     assertEquals(replay.status, 401);
   }));
@@ -150,6 +155,9 @@ Deno.test('iOS App Attest accepts only an exact configured Dreamer or QA app ide
     });
     assertEquals(accepted.status, 200);
     assertEquals(completions, 1);
+    const qaToken = (await accepted.json()).token as string;
+    assertEquals((await verifyGuestToken(qaToken, fingerprint, 'ios')).payload?.appId,
+      'ABCDEFGHIJ.com.tanuki75.noctalia.qa');
 
     const mismatched = await requestGuestSession(request, {
       appAttestStore: store,
@@ -197,6 +205,58 @@ Deno.test('iOS App Attest accepts only an exact configured Dreamer or QA app ide
         method: 'POST', body: JSON.stringify({ fingerprint, keyId }),
       }), { appAttestStore: store });
     assertEquals(invalidConfig.status, 503);
+  }));
+});
+
+Deno.test('Lucid App Attest issues an analytics-only iOS guest token', async () => {
+  await withAppAttestConfig(() => withGuestSecret(async () => {
+    const appId = 'ABCDEFGHIJ.com.tanuki75.noctalia.lucid';
+    Deno.env.set('IOS_APP_ATTEST_ALLOWED_APPS', JSON.stringify([
+      { teamId: 'ABCDEFGHIJ', bundleId: 'com.tanuki75.noctalia.lucid',
+        environment: 'production', allowedBundleVersions: ['1'] },
+    ]));
+    const fingerprint = 'a'.repeat(64);
+    const keyId = 'A'.repeat(43) + '=';
+    const challengeId = 'signed.challenge';
+    const challenge = {
+      id: challengeId, challenge: 'fresh-server-signed-challenge', key_id: keyId,
+      fingerprint_hash: fingerprint, kind: 'attestation' as const,
+      expires_at: new Date(Date.now() + 60_000).toISOString(), consumed_at: null,
+    };
+    const store: AppAttestStore = {
+      issue: () => Promise.resolve(challenge),
+      challenge: () => Promise.resolve(challenge),
+      key: () => Promise.resolve(null),
+      completeAttestation: () => Promise.resolve(true),
+      completeAssertion: () => Promise.resolve(false),
+    };
+    const issued = await requestGuestSession({
+      fingerprint, platform: 'ios', keyId, challengeId, attestationObject: 'apple-proof',
+    }, {
+      appAttestStore: store,
+      resolveQaPassport: () => Promise.resolve(null),
+      verifyAppAttestation: (input) => {
+        if (input.expectedAppId !== appId || input.expectedEnvironment !== 'production') {
+          throw new Error('wrong app identity');
+        }
+        return { publicKeyPem: 'verified-key', receiptBase64: 'verified-receipt',
+          appId: input.expectedAppId, environment: input.expectedEnvironment };
+      },
+    });
+    assertEquals(issued.status, 200);
+    const token = (await issued.json()).token as string;
+    assertEquals((await verifyGuestToken(token, fingerprint, 'ios', 'analytics')).payload?.appId, appId);
+    assertEquals((await verifyGuestToken(token, fingerprint, 'ios')).ok, false);
+
+    const analytics = await handleAnalyticsGuestSession(new Request(
+      'https://example.supabase.co/functions/v1/api/analytics/session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json',
+          'x-guest-token': token, 'x-guest-fingerprint': fingerprint },
+        body: JSON.stringify({ platform: 'ios' }),
+      }
+    ));
+    assertEquals(analytics.status, 200);
   }));
 });
 

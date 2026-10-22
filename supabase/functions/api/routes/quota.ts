@@ -273,7 +273,7 @@ export async function handleAuthMarkUpgrade(
     }
     const guestToken = req.headers.get('x-guest-token')?.trim() ?? '';
     const guestPlatform = req.headers.get('x-guest-platform')?.trim() ?? undefined;
-    const verifiedGuest = await verifyGuestToken(guestToken, fingerprint, guestPlatform);
+    const verifiedGuest = await verifyGuestToken(guestToken, fingerprint, guestPlatform, 'dreamer');
     if (!verifiedGuest.ok) {
       return new Response(
         JSON.stringify({ error: 'Invalid guest session' }),
@@ -297,7 +297,7 @@ export async function handleAuthMarkUpgrade(
     });
 
     const platform = verifiedGuest.payload?.platform;
-    const verifiedAppAttest = platform === 'ios' && verifiedGuest.payload?.v === 2;
+    const verifiedAppAttest = platform === 'ios' && verifiedGuest.payload?.v === 3;
     const integrityProvider = platform === 'android'
       ? 'play_integrity'
       : verifiedAppAttest ? 'app_attest' : 'unknown';

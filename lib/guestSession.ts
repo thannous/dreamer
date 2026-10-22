@@ -32,9 +32,9 @@ export type GuestBootstrapState = {
   updatedAt: number;
 };
 
-// Existing iOS v1 tokens were issued before App Attest. Never load one after
-// the server starts requiring attested v2 sessions.
-const STORAGE_KEY = Platform.OS === 'ios' ? 'guest-session-v2' : 'guest-session-v1';
+// iOS v3 tokens bind the signed App ID as well as the attested key. Never load
+// a cached v1/v2 token that the server no longer accepts for Dreamer routes.
+const STORAGE_KEY = Platform.OS === 'ios' ? 'guest-session-v3' : 'guest-session-v1';
 const APP_ATTEST_KEY_STORAGE_KEY = 'guest-app-attest-key-v1';
 const APP_ATTEST_RETRY_STORAGE_KEY = 'guest-app-attest-retry-v1';
 // The server accepts its signed challenge for three minutes. Leave time for

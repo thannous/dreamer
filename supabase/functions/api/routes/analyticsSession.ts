@@ -23,7 +23,7 @@ export async function handleAnalyticsGuestSession(req: Request): Promise<Respons
       const guestToken = req.headers.get('x-guest-token')?.trim() ?? null;
       const fingerprint = req.headers.get('x-guest-fingerprint')?.trim() ?? '';
       if (!/^[0-9a-f]{64}$/.test(fingerprint) ||
-          !(await verifyGuestToken(guestToken, fingerprint, 'ios')).ok) {
+          !(await verifyGuestToken(guestToken, fingerprint, 'ios', 'analytics')).ok) {
         return jsonResponse({ error: 'Invalid integrity proof' }, 401);
       }
       return jsonResponse(await createAnalyticsGuestToken('ios'), 200);

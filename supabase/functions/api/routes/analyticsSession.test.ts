@@ -34,7 +34,7 @@ Deno.test('analytics guest session rejects fingerprint and device id fields', as
   assertEquals(response.status, 400);
 });
 
-Deno.test('analytics guest session requires an attested iOS v2 guest token', async () => {
+Deno.test('analytics guest session accepts an attested Lucid iOS v3 guest token', async () => {
   const previous = Deno.env.get('GUEST_SESSION_SECRET');
   Deno.env.set('GUEST_SESSION_SECRET', 'analytics-test-secret-with-sufficient-entropy');
   try {
@@ -50,7 +50,9 @@ Deno.test('analytics guest session requires an attested iOS v2 guest token', asy
         body: JSON.stringify({ platform: 'ios' }),
       });
     assertEquals((await handleAnalyticsGuestSession(request())).status, 401);
-    const ios = await createGuestToken(fingerprint, 'ios');
+    const ios = await createGuestToken(fingerprint, 'ios', {
+      appId: 'ABCDEFGHIJ.com.tanuki75.noctalia.lucid',
+    });
     assertEquals((await handleAnalyticsGuestSession(request(ios.token, 'b'.repeat(64)))).status, 401);
     const android = await createGuestToken(fingerprint, 'android');
     assertEquals((await handleAnalyticsGuestSession(request(android.token))).status, 401);

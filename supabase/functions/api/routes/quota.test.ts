@@ -156,7 +156,9 @@ Deno.test('/quota/status guest path surfaces image_count independently of analys
   Deno.env.set('GUEST_SESSION_SECRET', 'test-only-secret-with-sufficient-entropy');
   try {
     const fingerprint = 'guest-device-fingerprint';
-    const session = await createGuestToken(fingerprint, 'ios');
+    const session = await createGuestToken(fingerprint, 'ios', {
+      appId: 'ABCDEFGHIJ.com.tanuki75.noctalia',
+    });
     const rpcCalls: string[] = [];
     const response = await handleQuotaStatus(
       createContext({
@@ -249,7 +251,7 @@ Deno.test('/auth/mark-upgrade requires the prior signed guest session', async ()
   assertEquals(await response.json(), { error: 'Invalid guest session' });
 });
 
-Deno.test('/auth/mark-upgrade records verified iOS v2 App Attest and preserves Android/web integrity', async () => {
+Deno.test('/auth/mark-upgrade records verified iOS v3 App Attest and preserves Android/web integrity', async () => {
   const previous = Deno.env.get('GUEST_SESSION_SECRET');
   Deno.env.set('GUEST_SESSION_SECRET', 'test-only-secret-with-sufficient-entropy');
   try {
@@ -260,7 +262,8 @@ Deno.test('/auth/mark-upgrade records verified iOS v2 App Attest and preserves A
     ] as const) {
       const fingerprint = `${platform}-device-fingerprint`;
       const userId = '11111111-1111-4111-8111-111111111111';
-      const session = await createGuestToken(fingerprint, platform);
+      const session = await createGuestToken(fingerprint, platform,
+        platform === 'ios' ? { appId: 'ABCDEFGHIJ.com.tanuki75.noctalia' } : undefined);
       const rpcCalls: { name: string; args: Record<string, unknown> }[] = [];
       const response = await handleAuthMarkUpgrade(createContext({
         path: '/auth/mark-upgrade',
@@ -291,6 +294,42 @@ Deno.test('/auth/mark-upgrade records verified iOS v2 App Attest and preserves A
         },
       }]);
     }
+  } finally {
+    if (previous == null) Deno.env.delete('GUEST_SESSION_SECRET');
+    else Deno.env.set('GUEST_SESSION_SECRET', previous);
+  }
+});
+
+Deno.test('Lucid attested iOS token cannot access Dreamer quota or link its device', async () => {
+  const previous = Deno.env.get('GUEST_SESSION_SECRET');
+  Deno.env.set('GUEST_SESSION_SECRET', 'test-only-secret-with-sufficient-entropy');
+  try {
+    const fingerprint = 'a'.repeat(64);
+    const session = await createGuestToken(fingerprint, 'ios', {
+      appId: 'ABCDEFGHIJ.com.tanuki75.noctalia.lucid',
+    });
+    let rpcCalls = 0;
+    const deps = { createAdminClient: () => ({
+      rpc: async () => {
+        rpcCalls += 1;
+        return { data: null, error: null };
+      },
+    }) };
+    const headers = {
+      'x-guest-token': session.token,
+      'x-guest-fingerprint': fingerprint,
+      'x-guest-platform': 'ios',
+    };
+    const quota = await handleQuotaStatus(createContext({
+      path: '/quota/status', body: { fingerprint }, user: null, headers,
+    }), deps);
+    const upgrade = await handleAuthMarkUpgrade(createContext({
+      path: '/auth/mark-upgrade', body: { fingerprint },
+      user: { id: '11111111-1111-4111-8111-111111111111' }, headers,
+    }), deps);
+    assertEquals(quota.status, 401);
+    assertEquals(upgrade.status, 401);
+    assertEquals(rpcCalls, 0);
   } finally {
     if (previous == null) Deno.env.delete('GUEST_SESSION_SECRET');
     else Deno.env.set('GUEST_SESSION_SECRET', previous);

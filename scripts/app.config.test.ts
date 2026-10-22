@@ -70,10 +70,20 @@ describe('Dreamer QA Expo identity', () => {
           .toBe('development');
       });
     }
-    withEnv({ NOCTALIA_APP_VARIANT: 'lucid', EXPO_PUBLIC_APP_VARIANT: 'lucid' }, () => {
-      expect(resolveExpoConfig({ config: baseExpo() } as never).ios?.entitlements)
-        .not.toHaveProperty(entitlement);
-    });
+    for (const [profile, expected] of [
+      ['lucid-preview', 'development'],
+      ['lucid-production', 'production'],
+    ] as const) {
+      withEnv({
+        NOCTALIA_APP_VARIANT: 'lucid',
+        EXPO_PUBLIC_APP_VARIANT: 'lucid',
+        EAS_BUILD_PROFILE: profile,
+      }, () => {
+        const config = resolveExpoConfig({ config: baseExpo() } as never);
+        expect(config.ios?.bundleIdentifier).toBe('com.tanuki75.noctalia.lucid');
+        expect(config.ios?.entitlements?.[entitlement]).toBe(expected);
+      });
+    }
   });
   it('accepts only unset, 0, or 1 for the native QA marker', () => {
     expect(parseDreamerQaBuildMarker(undefined)).toBe(false);
