@@ -9,6 +9,7 @@ import { SDK_PINS, digest, trackedDiffSha256, sourceSnapshot, compareSnapshots, 
 import { normalizeAvdName, appInputs, nativeInputs, binaryInputs, releaseMetadata, validateReleaseReceipt, verifyInstalledRelease, runWithInstallDiagnostics, validateBuildCommand, archiveReleaseBinary } from './native-release.mjs';
 import { dreamerCampaignContexts } from './campaign-contexts.mjs';
 import { readNativeBackendState } from './native-backend-state.ts';
+import { acquireNativeBackendRunLock, releaseNativeBackendRunLock } from './native-backend-lock.mjs';
 
 const cwd = fileURLToPath(new URL('.', import.meta.url));
 const root = fileURLToPath(new URL('../../', import.meta.url));
@@ -134,6 +135,7 @@ function webInputIdentity() {
   return Object.fromEntries(sourceFiles.map(path => [path, createHash('sha256').update(readFileSync(join(cwd, path))).digest('hex')]));
 }
 let lock;
+let backendLock;
 let reversePort;
 let hostStalls = [];
 let fd;
@@ -368,6 +370,9 @@ try {
         || release.profile.backend?.stackId !== backend.status.LOCAL_E2E_STACK.id
         || release.profile.backend?.anonKeySha256 !== digest(backend.status.ANON_KEY))
         throw new Error('Release does not belong to the live disposable backend.');
+      // Device ownership alone cannot protect the shared accounts and outage control.
+      backendLock = acquireNativeBackendRunLock({ stackId: backend.status.LOCAL_E2E_STACK.id,
+        product, platform, device: identity });
       env.E2E_NATIVE_QA_AUDIO = String(release.profile.nativeQaAudio === true);
       if (platform === 'android') {
         const port = new URL(backend.proxy.origin).port;
@@ -505,6 +510,7 @@ try {
   } else if (mcpStarted) {
     resourceCleanup = 'unproven'; secondary.push('NATIVE_MCP_CLEANUP_UNPROVEN');
   }
+  if (backendLock) attempt('BACKEND_LOCK_RELEASE', () => releaseNativeBackendRunLock(backendLock));
   if (fd !== undefined) {
     attempt('LOCK_CLOSE', () => closeSync(fd));
     attempt('LOCK_OWNERSHIP', () => {
@@ -527,7 +533,8 @@ try {
     exitCode: preserveStatus(requestedSignal ?? primary, secondary), sdkLaunched, installedReady, installationDiagnostics, installationErrorDetails, stability,
     applicationQualified: command === 'run' && preserveStatus(requestedSignal ?? primary, secondary) === 0,
     ownerDecision: '2026-10-06-install-hash-diagnostic-and-release-own-wrapper-lock',
-    secondaryErrors: secondary, resourceCleanup, lockReleased: lock ? !existsSync(lock) : true, hostStalls,
+    secondaryErrors: secondary, resourceCleanup, lockReleased: lock ? !existsSync(lock) : true,
+    ...(backendLock ? { backendLockReleased: !existsSync(backendLock.path) } : {}), hostStalls,
   }));
   process.exitCode = preserveStatus(requestedSignal ?? primary, secondary);
   console.log('E2E evidence: ' + output);
