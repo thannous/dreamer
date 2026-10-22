@@ -23,20 +23,17 @@ async function prepareVoice(fixtures: VoiceFixtures) {
   await expect(fixtures.screen.getByTestId('input.dreamTranscript', { visible: true })).toHaveValue('');
 }
 
-async function startMicrophone({ screen, platform }: VoiceFixtures) {
+async function startMicrophone({ screen }: VoiceFixtures) {
   await tap(screen, 'btn.recordToggle');
-  if (platform === 'android') {
-    const rationale = screen.getByTestId('sheet.recording.micRationale', { visible: true });
-    if (await rationale.count()) await tap(screen, 'btn.recording.micRationale.allow');
-    return;
-  }
-  // The iOS sheet presents asynchronously and omits its wrapper from the
-  // accessibility tree. Observe its actual action or the next speech state.
+  // Both native sheets present asynchronously; iOS also omits the wrapper
+  // from its tree. Wait for the actual action or an observed next speech state.
   const allow = screen.getByTestId('btn.recording.micRationale.allow', { visible: true });
+  const microphonePrompt = screen.getByTestId('com.android.permissioncontroller:id/permission_message', { visible: true });
   const speechPrompt = screen.getByText(/(?:Speech Recognition|reconnaissance vocale)/i, { visible: true });
   const denied = screen.getByText('Microphone permission is required to record dreams.', { visible: true });
   const editor = screen.getByTestId('input.dreamTranscript', { visible: true });
   await expect.poll(async () => (await allow.count()) > 0
+    || (await microphonePrompt.count()) > 0
     || (await speechPrompt.count()) > 0
     || (await denied.count()) > 0
     || (await screen.getByTestId('recording-write-listening-status', { visible: true }).count()) > 0

@@ -32,9 +32,9 @@ async function tap(screen: TestFixtures['screen'], id: string) {
   await target.tap();
 }
 
-async function openDream(screen: TestFixtures['screen'], title: string) {
+async function openDream(screen: TestFixtures['screen'], journalId: number) {
   await nativeJournal(screen);
-  const card = screen.getByTestId(/^dream\.item\./, { visible: true }).filter({ hasText: title });
+  const card = screen.getByTestId(`dream.item.${journalId}`, { visible: true });
   await expect(card).toHaveCount(1);
   await card.tap();
   await expect(screen.getByTestId('screen.dreamDetail', { visible: true })).toBeVisible();
@@ -60,14 +60,17 @@ test('Dreamer queued real analysis survives process restart and completes once w
     user_id: backend.state.accounts.owner.id, title, transcript, interpretation: '', shareable_quote: '',
     dream_type: 'Everyday Dream', theme: 'calm', client_request_id: randomUUID(),
     analysis_status: 'none', is_analyzed: false,
-  }).select('id').single();
+  }).select('id,created_at').single();
   expect(inserted.error).toBeNull();
   const dreamId = inserted.data!.id;
+  // Journal cards use the persisted creation timestamp as their local identity.
+  const journalId = Date.parse(inserted.data!.created_at);
+  expect(Number.isFinite(journalId)).toBe(true);
   const before = await backend.owner.rpc('get_authenticated_quota_snapshot', { p_target_dream_id: dreamId });
   expect(before.error).toBeNull();
   try {
     await nativeLogin(fixtures);
-    await openDream(screen, title);
+    await openDream(screen, journalId);
     await tap(screen, 'btn.dream.primaryCta');
     await acceptAi(screen);
     await expect.poll(async () => (await control(token)).analysisDispatches, { timeout: 30_000 }).toBeGreaterThan(0);
@@ -85,7 +88,8 @@ test('Dreamer queued real analysis survives process restart and completes once w
       const result = await admin.from('ai_jobs').select('status').eq('id', pending.data![0].id).single();
       expect(result.error).toBeNull(); return result.data?.status;
     }, { timeout: 45_000 }).toBe('succeeded');
-    await openDream(screen, 'The lighthouse and the blue door');
+    await openDream(screen, journalId);
+    // A classified dream keeps its stored title. Its actual reading proves recovery.
     const reading = screen.getByText(analysisText, { visible: true });
     await screen.scrollUntilVisible(reading);
     await expect(reading).toHaveCount(1);
@@ -93,7 +97,7 @@ test('Dreamer queued real analysis survives process restart and completes once w
     // analysis, even though the original caller was destroyed mid-request.
     await app.restart();
     await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
-    await openDream(screen, 'The lighthouse and the blue door');
+    await openDream(screen, journalId);
     await screen.scrollUntilVisible(reading);
     await expect(reading).toHaveCount(1);
     const after = await backend.owner.rpc('get_authenticated_quota_snapshot', { p_target_dream_id: dreamId });
@@ -126,16 +130,19 @@ test('Dreamer real chat retries a lost completion without duplicate messages or 
     transcript: 'I walked to a lighthouse. Its door was blue and I could hear the sea.',
     interpretation: analysisText, shareable_quote: '', dream_type: 'Everyday Dream', theme: 'calm',
     client_request_id: randomUUID(), analysis_status: 'done', is_analyzed: true, analyzed_at: analyzedAt, chat_history: [],
-  }).select('id,is_analyzed,analysis_status,analyzed_at').single();
+  }).select('id,created_at,is_analyzed,analysis_status,analyzed_at').single();
   expect(inserted.error).toBeNull();
   expect(inserted.data).toMatchObject({ is_analyzed: true, analysis_status: 'done' });
   expect(Date.parse(inserted.data!.analyzed_at)).toBe(Date.parse(analyzedAt));
   const dreamId = inserted.data!.id;
+  // Journal cards use the persisted creation timestamp as their local identity.
+  const journalId = Date.parse(inserted.data!.created_at);
+  expect(Number.isFinite(journalId)).toBe(true);
   const before = await backend.owner.rpc('get_authenticated_quota_snapshot', { p_target_dream_id: dreamId });
   expect(before.error).toBeNull();
   const question = 'The blue door stayed in my memory.';
   await nativeLogin(fixtures);
-  await openDream(screen, title);
+  await openDream(screen, journalId);
   await tap(screen, 'component.dreamDetail.actionCard');
   await expect(screen.getByTestId('screen.dreamCategories', { visible: true })).toBeVisible();
   await tap(screen, 'btn.dreamCategory.freeChat');
@@ -171,7 +178,7 @@ test('Dreamer real chat retries a lost completion without duplicate messages or 
   expect(recovered.blockedExternalRequests).toBe(0);
   await app.restart();
   await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
-  await openDream(screen, title);
+  await openDream(screen, journalId);
   await tap(screen, 'component.dreamDetail.actionCard');
   await expect(answer).toHaveCount(1);
   await expect(screen.getByText(question, { visible: true })).toHaveCount(1);

@@ -83,6 +83,22 @@ export async function nativeSettings(screen: TestFixtures['screen']) {
   await expect(screen.getByTestId('screen.settings', { visible: true })).toBeVisible();
 }
 
+async function nativeRecordingAfterAuth(screen: TestFixtures['screen']) {
+  const onboarding = screen.getByTestId('screen.onboarding', { visible: true });
+  const recording = screen.getByTestId('screen.recording', { visible: true });
+  await expect.poll(async () => (await onboarding.count()) + (await recording.count())).toBeGreaterThan(0);
+  if (await onboarding.count()) {
+    // Onboarding is scoped to an account. A second account intentionally does
+    // not inherit the guest's completion; take its normal UI exit if presented.
+    const next = screen.getByTestId('btn.onboarding.intro.next', { visible: true });
+    if (await next.count()) await next.tap();
+    const skip = screen.getByTestId('btn.onboarding.skip', { visible: true });
+    await expect(skip).toBeEnabled();
+    await skip.tap();
+  }
+  await expect(recording).toBeVisible();
+}
+
 export async function nativeGuest({ app, screen, platform }: Pick<NativeFixtures, 'app' | 'screen' | 'platform'>) {
   await app.open();
   // iOS clearing an app container preserves SecureStore's Keychain entry. Use
@@ -91,15 +107,16 @@ export async function nativeGuest({ app, screen, platform }: Pick<NativeFixtures
   await expect.poll(async () => (await onboarding.count())
     + (await screen.getByTestId('screen.recording', { visible: true }).count())
     + (await screen.getByTestId('screen.home', { visible: true }).count())).toBeGreaterThan(0);
-  if (!(await onboarding.count())) {
-    await nativeSettings(screen);
-    const signOut = screen.getByTestId('btn.auth.signOut', { visible: true });
-    // Settings is scrollable: locate the account action even if below the viewport.
-    if (await screen.getByTestId('text.auth.email').count()) {
-      await screen.scrollUntilVisible(signOut);
-      await signOut.tap();
-      await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
-    }
+  // Onboarding may belong to an authenticated account after an interrupted
+  // login. Reach Settings before clearing the container, including on iOS.
+  if (await onboarding.count()) await nativeRecordingAfterAuth(screen);
+  await nativeSettings(screen);
+  const signOut = screen.getByTestId('btn.auth.signOut', { visible: true });
+  // Settings is scrollable: locate the account action even if below the viewport.
+  if (await screen.getByTestId('text.auth.email').count()) {
+    await screen.scrollUntilVisible(signOut);
+    await signOut.tap();
+    await nativeRecordingAfterAuth(screen);
   }
   // run.mjs verifies the named disposable emulator/Simulator and Release receipt before this fixture.
   await app.clearState();
@@ -143,7 +160,7 @@ export async function nativeLogin(fixtures: NativeFixtures, account: 'owner' | '
   await screen.getByTestId('input.auth.password', { visible: true }).fill(login.password);
   await device.dismissKeyboard();
   await nativeTap(screen, 'btn.auth.signIn');
-  await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
+  await nativeRecordingAfterAuth(screen);
   await nativeSettings(screen);
   const email = screen.getByTestId('text.auth.email', { visible: true });
   await screen.scrollUntilVisible(email, { direction: 'up' });
@@ -154,7 +171,7 @@ export async function nativeLogin(fixtures: NativeFixtures, account: 'owner' | '
 export async function nativeSignOut(fixtures: NativeFixtures) {
   await nativeSettings(fixtures.screen);
   await nativeTap(fixtures.screen, 'btn.auth.signOut');
-  await expect(fixtures.screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
+  await nativeRecordingAfterAuth(fixtures.screen);
 }
 
 export async function nativeJournal(screen: TestFixtures['screen']) {
