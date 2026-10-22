@@ -120,7 +120,7 @@ test('Dreamer queued real analysis survives process restart and completes once w
 });
 
 test('Dreamer real chat retries a lost completion without duplicate messages or message quota', recoveryOptions, async fixtures => {
-  const { app, screen, device, backend } = fixtures;
+  const { app, screen, device, platform, backend } = fixtures;
   const token = backend.state.proxy.controlToken;
   await control(token, { reset: true, chatDropDone: true });
   const title = `Recovery conversation ${randomUUID().slice(0, 8)}`;
@@ -149,7 +149,8 @@ test('Dreamer real chat retries a lost completion without duplicate messages or 
   const input = screen.getByTestId('chat.input.message', { visible: true });
   await expect(input).toBeEnabled();
   await input.fill(question);
-  await device.dismissKeyboard();
+  // The iPhone composer keeps Send above its open keyboard.
+  if (platform === 'android') await device.dismissKeyboard();
   await tap(screen, 'chat.button.send');
   await acceptAi(screen);
   const retry = screen.getByRole('button', 'Try again', { visible: true });

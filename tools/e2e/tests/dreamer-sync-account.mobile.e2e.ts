@@ -6,7 +6,7 @@ const options = { platforms: ['ios', 'android'], tags: ['native-real-backend'], 
 
 test('Dreamer native offline creation and edit survive process restart and synchronize exactly once',
   { ...options, tags: [...options.tags, 'native-real-sync'] }, async (fixtures) => {
-    const { app, screen, device, backend } = fixtures;
+    const { app, screen, device, platform, backend } = fixtures;
     await nativeLogin(fixtures);
     await nativeCapture(screen);
     const story = `Moon train ${randomUUID().slice(0, 8)} crosses a quiet lake.`;
@@ -20,7 +20,8 @@ test('Dreamer native offline creation and edit survive process restart and synch
       expect(before.data).toEqual([]);
       await nativeTap(screen, 'btn.editDream');
       await screen.getByTestId('input.dreamTranscript', { visible: true }).fill(revision);
-      await device.dismissKeyboard();
+      if (platform === 'ios') await screen.getByTestId('btn.journal.dismissKeyboard', { visible: true }).tap();
+      else await device.dismissKeyboard();
       await nativeTap(screen, 'btn.saveDreamEdit');
       await nativeTranscript(screen, revision);
       await app.restart();
@@ -58,7 +59,7 @@ test('Dreamer native offline creation and edit survive process restart and synch
 
 test('Dreamer native guest dream and draft survive real sign-in, reconnect and account isolation',
   { ...options, tags: [...options.tags, 'native-real-account'] }, async (fixtures) => {
-    const { app, screen, device, backend } = fixtures;
+    const { app, screen, device, platform, backend } = fixtures;
     const marker = randomUUID().slice(0, 8);
     const story = `Guest lighthouse ${marker} over the sea.`;
     const draft = `Draft garden ${marker} behind a blue door.`;
@@ -105,7 +106,8 @@ test('Dreamer native guest dream and draft survive real sign-in, reconnect and a
       await nativeJournal(screen);
       const search = screen.getByTestId('input.searchDreams', { visible: true });
       await search.fill(transcript);
-      await device.dismissKeyboard();
+      if (platform === 'ios') await search.press('Enter');
+      else await device.dismissKeyboard();
       const cards = screen.getByTestId(/^dream\.item\./, { visible: true });
       await expect(cards).toHaveCount(1);
       await cards.first().tap();
