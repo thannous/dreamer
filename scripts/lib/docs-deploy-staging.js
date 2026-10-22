@@ -156,6 +156,24 @@ function createDeployStaging(options = {}) {
   if (useCdn) {
     const redirects = path.join(deployDir, '_redirects');
     fs.writeFileSync(redirects, `${cdnRedirect(media)}\n${fs.readFileSync(redirects, 'utf8')}`);
+    // The alias may switch snapshots or roll back; only the R2 object is immutable.
+    const headersFile = path.join(deployDir, '_headers');
+    let inImages = false, foundImages = false;
+    const headers = [];
+    for (const line of fs.readFileSync(headersFile, 'utf8').split(/\r?\n/)) {
+      if (line.trim() && !/^\s*#/.test(line) && !/^\s/.test(line)) {
+        inImages = line.trim() === '/img/*';
+        if (inImages) {
+          foundImages = true;
+          headers.push(line, '  Cache-Control: public, max-age=300, must-revalidate');
+          continue;
+        }
+      }
+      if (inImages && /^\s+Cache-Control:/i.test(line)) continue;
+      headers.push(line);
+    }
+    if (!foundImages) headers.push('/img/*', '  Cache-Control: public, max-age=300, must-revalidate');
+    fs.writeFileSync(headersFile, headers.join('\n') + '\n');
   }
   assertDeployStaging(deployDir);
   return {

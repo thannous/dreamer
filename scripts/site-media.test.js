@@ -106,6 +106,7 @@ describe('media preservation and recovery', () => {
     for (const dir of ['css', 'js', 'en', 'fr', 'es', 'de', 'it', 'img/symbols']) fs.mkdirSync(path.join(docsDir, dir), { recursive: true });
     for (const dir of ['css', 'js', 'en', 'fr', 'es', 'de', 'it']) fs.writeFileSync(path.join(docsDir, dir, 'index.html'), 'fixture');
     for (const name of ['index.html', 'sitemap.xml', 'robots.txt', '_headers', '_redirects', 'llms.txt']) fs.writeFileSync(path.join(docsDir, name), name === '_redirects' ? '/old /new 301\n' : 'fixture');
+    fs.writeFileSync(path.join(docsDir, '_headers'), '/img/*\n  Cache-Control: public, max-age=31536000, immutable\n  X-Audit: retain\n/css/*\n  Cache-Control: public, max-age=31536000, immutable\n');
     fs.writeFileSync(path.join(docsDir, relative), original);
     expect(() => createDeployStaging({ docsDir, rootDir: root, tempRoot: path.join(root, 'refused') })).toThrow('Full CDN verification');
     await verifyRemote(root, { fetcher: async () => response(original) });
@@ -113,6 +114,7 @@ describe('media preservation and recovery', () => {
     expect(fs.existsSync(path.join(stage.deployDir, relative))).toBe(false);
     expect(sha256(fs.readFileSync(path.join(docsDir, relative)))).toBe(sha256(original));
     expect(fs.readFileSync(path.join(stage.deployDir, '_redirects'), 'utf8')).toBe(`${cdnRedirect(readMedia(root))}\n/old /new 301\n`);
+    expect(fs.readFileSync(path.join(stage.deployDir, '_headers'), 'utf8')).toContain('/img/*\n  Cache-Control: public, max-age=300, must-revalidate\n  X-Audit: retain\n/css/*\n  Cache-Control: public, max-age=31536000, immutable');
     expect(publishedMediaPaths(root, stage.deployDir).has(relative)).toBe(true);
     expect(publishedMediaPaths(root, stage.deployDir).has('img/nonexistent.webp')).toBe(false);
   });

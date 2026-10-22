@@ -188,3 +188,18 @@ maintenant son pack complet depuis PR #499 ; cette attente obsolète est remplac
 par un contre-exemple vérifiant sa plaque, ses trois scènes et ses deux effets.
 Le mécanisme de repli en cas de script ou texture manquants reste couvert par
 les autres parcours inchangés. Aucun contrôle de pixels n'a été supprimé.
+
+Les huit parcours ciblés ont passé sur `0eab1b75a`, avec les 36 atlas, le tigre
+dans les six langues, les deux tailles cadeau et les replis texture/script.
+Artefact canonique local :
+`tools/e2e/.e2e/site-web/1792629950656-79696-e257d142-abe8-4972-8ed3-b428c2eaf04a`.
+La preuve `verify:pr` de cette tête a passé : 6 contrôles rejoués et 10 réutilisés.
+L'aperçu hébergé initial `7b32891f.noctalia.pages.dev` confirme les vrais 302,
+les SHA-256 de cinq surfaces/effets et le moteur chargé avec ses textures.
+
+Cette lecture des en-têtes a révélé qu'une règle historique mettait aussi les
+302 `/img/*` en cache immuable pendant un an. Le staging CDN remplace uniquement
+ce Cache-Control par `public, max-age=300, must-revalidate`, sans modifier les
+autres en-têtes ni le cache CSS. Les objets R2 versionnés restent immuables un an.
+Le repli local conserve ses règles existantes. Cela permet à une nouvelle version
+ou à un retour arrière de changer la destination d'un alias en cinq minutes.
