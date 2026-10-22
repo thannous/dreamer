@@ -27,8 +27,7 @@ type Props = {
 const ART_INSET = 0.02;
 /** The painted disc's share of the medallion, inside the points of its frame. */
 const DISC = 0.84;
-const RING = '#E9C77B';
-const GLYPH = '#F5E6C0';
+const { night: STAND_IN_NIGHT, ring: RING, glyph: GLYPH } = COLLECTION.standIn;
 
 /** The medallion drawn when a family's illustration cannot be shown. */
 const BadgePlaceholderArt = memo(function BadgePlaceholderArt({ family, size }: { family: BadgeFamilyId; size: number }) {
@@ -44,9 +43,9 @@ const BadgePlaceholderArt = memo(function BadgePlaceholderArt({ family, size }: 
       <Svg width={size} height={size}>
         <Defs>
           <RadialGradient id="badge-night" cx="50%" cy="42%" r="62%">
-            <Stop offset="0" stopColor="#24307A" />
-            <Stop offset="0.6" stopColor="#101849" />
-            <Stop offset="1" stopColor="#060A24" />
+            <Stop offset="0" stopColor={STAND_IN_NIGHT[0]} />
+            <Stop offset="0.6" stopColor={STAND_IN_NIGHT[1]} />
+            <Stop offset="1" stopColor={STAND_IN_NIGHT[2]} />
           </RadialGradient>
         </Defs>
         <Circle cx={r} cy={r} r={r * 0.94} fill="url(#badge-night)" />

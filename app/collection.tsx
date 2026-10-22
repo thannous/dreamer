@@ -1,6 +1,7 @@
 import { router } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Pressable, Text, View, type LayoutChangeEvent } from 'react-native';
+import { Modal, Pressable, Text, View, type LayoutChangeEvent } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { BadgeCard, TierPips } from '@/components/badges/BadgeCard';
@@ -19,7 +20,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { useBadgeCollection } from '@/hooks/useBadgeCollection';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useTranslation } from '@/hooks/useTranslation';
-import { BADGE_CARD_COUNT, BADGE_CHAPTERS, BADGE_TIERS, type BadgeFamilyId } from '@/lib/badges/catalog';
+import { BADGE_CARD_COUNT, BADGE_CHAPTERS, BADGE_TIERS, type BadgeFamilyId, type BadgeTierLevel } from '@/lib/badges/catalog';
 import type { BadgeFamilyState } from '@/lib/badges/ledger';
 import { markBadgeFamilyRevealed, settleBadges } from '@/services/badgeLedgerStore';
 
@@ -87,7 +88,7 @@ function CollectionScreen() {
   const cardWidth = gridWidth > 0 ? Math.floor((gridWidth - GAP * (columns - 1)) / columns) : 0;
   const openState = openId ? collection.families.find((state) => state.family.id === openId) ?? null : null;
   const closeDetail = useCallback(() => setOpenId(null), []);
-  const reveal = useCallback((id: BadgeFamilyId) => markBadgeFamilyRevealed(id), []);
+  const reveal = useCallback((id: BadgeFamilyId, tier: BadgeTierLevel) => markBadgeFamilyRevealed(id, tier), []);
   const act = useCallback((state: BadgeFamilyState) => {
     setOpenId(null);
     openAction(state);
@@ -161,7 +162,8 @@ function CollectionScreen() {
         </View>
 
         <View onLayout={onGridLayout} className="gap-9">
-          {cardWidth > 0 ? BADGE_CHAPTERS.map((chapter, chapterIndex) => {
+          {/* Cards are laid only once the ledger is read: none shows face down, then face up. */}
+          {cardWidth > 0 && ready ? BADGE_CHAPTERS.map((chapter, chapterIndex) => {
             const families = collection.families.filter((state) => state.family.chapter === chapter);
             return (
               <Reveal key={chapter} index={chapterIndex} className="gap-4">
@@ -200,17 +202,24 @@ function CollectionScreen() {
           <Text className="font-sans text-body-sm text-ivory-muted">{t('badges.footnote.history')}</Text>
         </View>
       </HeaderScrollView>
+      {/* A modal of its own: above the screen's status-bar veil, closed by back or Escape. The
+          card's tilt needs a gesture root inside it on Android. */}
       {openState ? (
-        <BadgeDetail
-          key={openState.family.id}
-          state={openState}
-          t={t}
-          formatNumber={formatNumber}
-          formatDate={formatDate}
-          onClose={closeDetail}
-          onReveal={reveal}
-          onAction={act}
-        />
+        <Modal visible transparent animationType="fade" statusBarTranslucent navigationBarTranslucent
+          onRequestClose={closeDetail}>
+          <GestureHandlerRootView style={{ flex: 1 }}>
+            <BadgeDetail
+              key={openState.family.id}
+              state={openState}
+              t={t}
+              formatNumber={formatNumber}
+              formatDate={formatDate}
+              onClose={closeDetail}
+              onReveal={reveal}
+              onAction={act}
+            />
+          </GestureHandlerRootView>
+        </Modal>
       ) : null}
     </View>
   );

@@ -198,9 +198,10 @@ function StatisticsScreen() {
   }, [trends.empty]);
 
   const choosePeriod = useCallback((next: DreamTrendsPeriod) => {
+    if (next === period) return;
     setPeriod(next);
     noteExploration();
-  }, [noteExploration]);
+  }, [noteExploration, period]);
 
   const chooseTheme = useCallback((theme: DreamTheme) => {
     setSelectedTheme((current) => (current === theme ? null : theme));

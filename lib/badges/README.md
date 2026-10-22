@@ -26,11 +26,17 @@ never taken back, whatever happens to the journal later.
 | observatory | days the dreamer changed the period, chose a theme or opened a symbol in Trends holding dreams | `app/(tabs)/statistics.tsx` |
 
 Readings, searches and edits were never recorded before the collection: they
-count from the day it ships. The ledger is per scope (`guest` or `user:<id>`),
-on this device; a guest's ledger joins the first account that opens after it,
-as its dreams do. Nothing is synced to the server: on a new device the journal
-families come back from the synced journal, the others start again. Dream keys
-are identity aliases only (`c:`, `r:`, `l:`), never content.
+count from the day it ships. A tier earned by actions is stamped with the action;
+one the journal earns is stamped in idle time after the journal changes, or when
+the album opens.
+
+The ledger is per scope (`guest` or `user:<id>`), on this device. A guest's
+actions join the first account that opens after it; what the guest journal told
+is read again from the account's own journal. A stored ledger the storage cannot
+give is read again later, never replaced by an empty one, and one this version
+cannot read is left untouched. Nothing is synced to the server: on a new device
+the journal families come back from the synced journal, the others start again.
+Dream keys are identity aliases only (`c:`, `r:`, `l:`), never content.
 
 ## Presentation
 

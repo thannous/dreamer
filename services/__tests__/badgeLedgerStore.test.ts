@@ -4,6 +4,7 @@ import { computeBadgeProgress, createEmptyBadgeLedger } from '@/lib/badges/ledge
 import {
   activateBadgeScope,
   flushBadgeLedgerWritesForTests,
+  getBadgeLedgerSnapshot,
   recordBadgeEvent,
   resetBadgeLedgerStoreForTests,
   settleBadges,
@@ -12,9 +13,16 @@ import type { DreamAnalysis } from '@/lib/types';
 
 const mockStore = new Map<string, string>();
 let mockWriteFails = false;
+let mockReadFailures = 0;
 jest.mock('@/services/lucidKeyValueStorage', () => ({
   getLucidKeyValueStorage: () => ({
-    getItem: async (key: string) => mockStore.get(key) ?? null,
+    getItem: async (key: string) => {
+      if (mockReadFailures > 0) {
+        mockReadFailures -= 1;
+        throw new Error('database is locked');
+      }
+      return mockStore.get(key) ?? null;
+    },
     setItem: async (key: string, value: string) => {
       if (mockWriteFails) throw new Error('storage full');
       mockStore.set(key, value);
@@ -41,6 +49,7 @@ describe('badge ledger store', () => {
   beforeEach(() => {
     mockStore.clear();
     mockWriteFails = false;
+    mockReadFailures = 0;
     resetBadgeLedgerStoreForTests();
   });
 
@@ -64,14 +73,59 @@ describe('badge ledger store', () => {
     expect(progressIn('user:b')['night-scholar']).toBe(0);
   });
 
+  it('never writes over a ledger the storage could not give, and opens it once it can', async () => {
+    jest.useFakeTimers();
+    const warn = jest.spyOn(console, 'warn').mockImplementation(() => undefined);
+    try {
+      const saved = { ...createEmptyBadgeLedger(), keys: { 'symbol-explorer': ['moon', 'sea', 'fox'] }, earned: { 'symbol-explorer': [1] } };
+      mockStore.set(`${KEY}user:a`, JSON.stringify(saved));
+      mockReadFailures = 1;
+      await activateBadgeScope('user:a');
+      recordBadgeEvent({ type: 'symbol_viewed', symbolId: 'water' });
+      await flushBadgeLedgerWritesForTests();
+      expect(getBadgeLedgerSnapshot().ready).toBe(false);
+      expect(stored('user:a')).toEqual(saved);
+
+      await jest.advanceTimersByTimeAsync(1_000);
+      await flushBadgeLedgerWritesForTests();
+      expect(getBadgeLedgerSnapshot().ready).toBe(true);
+      expect(stored('user:a').keys['symbol-explorer']).toEqual(['moon', 'sea', 'fox', 'water']);
+      expect(stored('user:a').earned['symbol-explorer']).toEqual([1]);
+    } finally {
+      warn.mockRestore();
+      jest.useRealTimers();
+    }
+  });
+
+  it('keeps a ledger it cannot read untouched, counting meanwhile only in memory', async () => {
+    mockStore.set(`${KEY}user:a`, JSON.stringify({ version: 2, future: true }));
+    await activateBadgeScope('user:a');
+    recordBadgeEvent({ type: 'symbol_viewed', symbolId: 'water' });
+    await flushBadgeLedgerWritesForTests();
+    expect(stored('user:a')).toEqual({ version: 2, future: true });
+    expect(getBadgeLedgerSnapshot().ledger.keys['symbol-explorer']).toEqual(['water']);
+  });
+
+  it('stamps a tier earned by actions alone the moment it is earned', async () => {
+    await activateBadgeScope('user:a');
+    for (const guideId of ['dream-journal', 'lucid-dreaming']) recordBadgeEvent({ type: 'guide_viewed', guideId });
+    await flushBadgeLedgerWritesForTests();
+    expect(stored('user:a').earned['night-scholar']).toHaveLength(1);
+  });
+
   it('gives a guest ledger to the first account that opens, once, and keeps accounts apart', async () => {
     await activateBadgeScope('guest');
     recordBadgeEvent({ type: 'guide_viewed', guideId: 'dream-journal' });
+    // What the guest journal told stays with it: the account reads its own journal.
+    settleBadges([dream(Date.parse('2026-10-01T12:00:00'))], Date.parse('2026-10-01T12:00:00'));
     await flushBadgeLedgerWritesForTests();
+    expect(stored('guest').earned['night-journal']).toHaveLength(1);
 
     await activateBadgeScope('user:a');
     await flushBadgeLedgerWritesForTests();
     expect(progressIn('user:a')['night-scholar']).toBe(1);
+    expect(stored('user:a').earned['night-journal']).toBeUndefined();
+    expect(stored('user:a').best['night-journal']).toBeUndefined();
     expect(stored('guest')).toBeNull();
 
     await activateBadgeScope('user:b');
