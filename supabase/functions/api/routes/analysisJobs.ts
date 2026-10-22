@@ -89,6 +89,8 @@ export const blockedAdmissionResponse = (admission: AnalysisJobAdmission): Respo
     admission.code === 'ANALYSIS_ALREADY_COMPLETE'
     || admission.code === 'ANALYSIS_REQUEST_CONFLICT'
     || admission.code === 'ANALYSIS_IDEMPOTENCY_KEY_REUSED'
+    || admission.code === 'ANALYSIS_ALREADY_CLAIMED'
+    || admission.code === 'ANALYSIS_TRANSCRIPT_MISMATCH'
   ) {
     return jsonResponse({ error: 'Analysis state conflict', code: admission.code }, 409);
   }

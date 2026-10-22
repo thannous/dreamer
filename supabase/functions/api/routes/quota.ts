@@ -238,7 +238,10 @@ export async function handleQuotaStatus(
   }
 }
 
-export async function handleAuthMarkUpgrade(ctx: ApiContext): Promise<Response> {
+export async function handleAuthMarkUpgrade(
+  ctx: ApiContext,
+  deps: QuotaStatusDependencies = {},
+): Promise<Response> {
   const { req, user, supabaseUrl, supabaseServiceRoleKey } = ctx;
 
   try {
@@ -270,7 +273,7 @@ export async function handleAuthMarkUpgrade(ctx: ApiContext): Promise<Response> 
     }
     const guestToken = req.headers.get('x-guest-token')?.trim() ?? '';
     const guestPlatform = req.headers.get('x-guest-platform')?.trim() ?? undefined;
-    const verifiedGuest = await verifyGuestToken(guestToken, fingerprint, guestPlatform);
+    const verifiedGuest = await verifyGuestToken(guestToken, fingerprint, guestPlatform, 'dreamer');
     if (!verifiedGuest.ok) {
       return new Response(
         JSON.stringify({ error: 'Invalid guest session' }),
@@ -286,15 +289,19 @@ export async function handleAuthMarkUpgrade(ctx: ApiContext): Promise<Response> 
       );
     }
 
-    const adminClient = createClient(supabaseUrl, supabaseServiceRoleKey, {
+    const createAdmin = deps.createAdminClient
+      ?? ((url: string, key: string, options?: Record<string, unknown>) =>
+        createClient(url, key, options) as unknown as AdminClient);
+    const adminClient = createAdmin(supabaseUrl, supabaseServiceRoleKey, {
       auth: { autoRefreshToken: false, persistSession: false },
     });
 
     const platform = verifiedGuest.payload?.platform;
-    // Android guests are Play Integrity attested. iOS guests are fingerprint-gated
-    // without App Attest, so the device-account link is recorded as unverified.
-    const integrityProvider = platform === 'android' ? 'play_integrity' : 'unknown';
-    const integrityVerified = platform === 'android';
+    const verifiedAppAttest = platform === 'ios' && verifiedGuest.payload?.v === 3;
+    const integrityProvider = platform === 'android'
+      ? 'play_integrity'
+      : verifiedAppAttest ? 'app_attest' : 'unknown';
+    const integrityVerified = platform === 'android' || verifiedAppAttest;
 
     const { data: risk, error } = await adminClient.rpc('register_device_account_link', {
       p_fingerprint: fingerprint,

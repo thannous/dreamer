@@ -4,9 +4,9 @@ import {
   claimGuestAnalysisQuota,
   isAuthenticatedAnalysisQuotaRetry,
 } from '../lib/analysisQuota.ts';
-import { quotaBlockedResponse, runDreamCategorization } from './dreams.ts';
+import { handleAnalyzeDream, quotaBlockedResponse, runDreamCategorization } from './dreams.ts';
 
-Deno.test('authenticated quota recognizes the same request as an idempotent retry', () => {
+Deno.test('authenticated quota recognizes a spent request before another provider call', () => {
   assertEquals(
     isAuthenticatedAnalysisQuotaRetry({ code: 'ANALYSIS_ALREADY_CLAIMED' }),
     true
@@ -35,14 +35,15 @@ Deno.test('a synchronous Plus analysis past its daily ceiling gets the same calm
   });
 });
 
-Deno.test('guest quota claim forwards the stable request id to the idempotent RPC', async () => {
+Deno.test('guest quota claim forwards the stable request id to the receipt RPC', async () => {
   const calls: { name: string; params: Record<string, unknown> }[] = [];
   const adminClient = {
     rpc: async (name: string, params: Record<string, unknown>) => {
       calls.push({ name, params });
       return {
         data: {
-          allowed: true,
+          allowed: false,
+          code: 'ANALYSIS_ALREADY_CLAIMED',
           new_count: 1,
           claimed: false,
           duplicate: true,
@@ -57,10 +58,12 @@ Deno.test('guest quota claim forwards the stable request id to the idempotent RP
     analysisRequestId: '3f73ab45-9a14-4db9-94a3-d24724457d9e',
     fingerprint: 'hashed-installation-id',
     limit: 1,
+    transcriptSha256: 'a'.repeat(64),
   });
 
   assertEquals(result.response, undefined);
-  assertEquals(result.claim?.allowed, true);
+  assertEquals(result.claim?.allowed, false);
+  assertEquals(result.claim?.code, 'ANALYSIS_ALREADY_CLAIMED');
   assertEquals(result.claim?.duplicate, true);
   assertEquals(calls, [
     {
@@ -69,6 +72,7 @@ Deno.test('guest quota claim forwards the stable request id to the idempotent RP
         p_fingerprint: 'hashed-installation-id',
         p_analysis_request_id: '3f73ab45-9a14-4db9-94a3-d24724457d9e',
         p_limit: 1,
+        p_transcript_sha256: 'a'.repeat(64),
       },
     },
   ]);
@@ -86,6 +90,7 @@ Deno.test('guest quota refuses provider work without a request id', async () => 
     analysisRequestId: null,
     fingerprint: 'hashed-installation-id',
     limit: 1,
+    transcriptSha256: 'a'.repeat(64),
   });
 
   assertEquals(called, false);
@@ -95,6 +100,68 @@ Deno.test('guest quota refuses provider work without a request id', async () => 
     code: 'ANALYSIS_CLAIM_REQUIRED',
   });
 });
+
+for (const code of ['ANALYSIS_ALREADY_CLAIMED', 'ANALYSIS_TRANSCRIPT_MISMATCH']) {
+  Deno.test(`/analyzeDream refuses ${code} before any provider request`, async () => {
+    const originalFetch = globalThis.fetch;
+    const originalApiKey = Deno.env.get('GEMINI_API_KEY');
+    const rpcCalls: string[] = [];
+    const providerRequests: string[] = [];
+
+    try {
+      Deno.env.set('GEMINI_API_KEY', 'synthetic-test-key');
+      globalThis.fetch = async (input, init) => {
+        const request = new Request(input, init);
+        const url = new URL(request.url);
+        const rpcName = url.pathname.split('/rpc/')[1];
+        if (url.hostname !== 'supabase.test' || !rpcName) {
+          providerRequests.push(request.url);
+          return new Response('Unexpected provider request', { status: 500 });
+        }
+        rpcCalls.push(rpcName);
+        const data = rpcName === 'get_effective_subscription_tier'
+          ? 'free'
+          : rpcName === 'claim_authenticated_analysis_quota_bound'
+            ? { allowed: false, code }
+            : { allowed: true };
+        return new Response(JSON.stringify(data), {
+          headers: { 'Content-Type': 'application/json' },
+        });
+      };
+
+      const response = await handleAnalyzeDream({
+        req: new Request('https://api.test/api/analyzeDream', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            transcript: 'An unchanged dream',
+            remoteDreamId: 42,
+            analysisRequestId: '3f73ab45-9a14-4db9-94a3-d24724457d9e',
+          }),
+        }),
+        supabase: null,
+        user: { id: 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa' },
+        supabaseUrl: 'https://supabase.test',
+        supabaseServiceRoleKey: 'synthetic-service-role-key',
+        storageBucket: 'dream-images',
+      });
+
+      assertEquals(response.status, 409);
+      assertEquals((await response.json()).code, code);
+      assertEquals(rpcCalls, [
+        'get_effective_subscription_tier',
+        'claim_ai_request_window',
+        'claim_ai_daily_budget',
+        'claim_authenticated_analysis_quota_bound',
+      ]);
+      assertEquals(providerRequests, []);
+    } finally {
+      globalThis.fetch = originalFetch;
+      if (originalApiKey === undefined) Deno.env.delete('GEMINI_API_KEY');
+      else Deno.env.set('GEMINI_API_KEY', originalApiKey);
+    }
+  });
+}
 
 const claudeJson = (value: unknown, stopReason = 'end_turn') => new Response(JSON.stringify({
   id: 'msg_test', type: 'message', role: 'assistant', model: 'claude-haiku-5-5',

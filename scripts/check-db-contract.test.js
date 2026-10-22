@@ -101,7 +101,8 @@ describe('check-db-contract guest analysis idempotency behavior', () => {
     const client = createMockClient([
       { rows: [] },
       { rows: [{ result: { allowed: true, new_count: 1, claimed: true, duplicate: false } }] },
-      { rows: [{ result: { allowed: true, new_count: 1, claimed: false, duplicate: true } }] },
+      { rows: [{ result: { allowed: false, code: 'ANALYSIS_ALREADY_CLAIMED', new_count: 1, claimed: false, duplicate: true } }] },
+      { rows: [{ result: { allowed: false, code: 'ANALYSIS_TRANSCRIPT_MISMATCH', new_count: 1, claimed: false, duplicate: true } }] },
       { rows: [{ result: { allowed: false, new_count: 1, claimed: false, duplicate: false } }] },
       { rows: [] },
     ]);
@@ -110,13 +111,14 @@ describe('check-db-contract guest analysis idempotency behavior', () => {
 
     expect(result).toEqual({
       ok: true,
-      details: 'guest analysis quota is claimed exactly once per request UUID',
+      details: 'guest analysis receipts reject changed transcripts and repeated provider work',
     });
     expect(client.calls[1]).toMatchObject({
-      sql: 'select public.claim_guest_analysis_quota($1::text, $2::uuid, $3::integer) as result',
-      params: [expect.any(String), '3f73ab45-9a14-4db9-94a3-d24724457d9e', 1],
+      sql: 'select public.claim_guest_analysis_quota($1::text, $2::uuid, $3::integer, $4::text) as result',
+      params: [expect.any(String), '3f73ab45-9a14-4db9-94a3-d24724457d9e', 1, 'a'.repeat(64)],
     });
     expect(client.calls[2].params).toEqual(client.calls[1].params);
+    expect(client.calls[3].params[3]).toBe('b'.repeat(64));
     expect(client.calls.at(-1)).toMatchObject({ sql: 'ROLLBACK' });
   });
 
@@ -124,7 +126,7 @@ describe('check-db-contract guest analysis idempotency behavior', () => {
     const client = createMockClient([
       { rows: [] },
       { rows: [{ result: { allowed: true, new_count: 1, claimed: true } }] },
-      { rows: [{ result: { allowed: true, new_count: 2, duplicate: true } }] },
+      { rows: [{ result: { allowed: false, code: 'ANALYSIS_ALREADY_CLAIMED', new_count: 2, duplicate: true } }] },
       { rows: [] },
     ]);
 

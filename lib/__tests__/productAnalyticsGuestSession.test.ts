@@ -1,7 +1,9 @@
 import * as AppIntegrity from '@expo/app-integrity';
+import * as SecureStore from 'expo-secure-store';
 import { Platform } from 'react-native';
 
 import { getAccessToken } from '@/lib/auth';
+import { getGuestHeaders } from '@/lib/guestSession';
 import { fetchJSON } from '@/lib/http';
 import {
   canDeliverProductAnalytics,
@@ -17,6 +19,10 @@ jest.mock('@expo/app-integrity', () => ({
 
 jest.mock('@/lib/auth', () => ({
   getAccessToken: jest.fn(),
+}));
+
+jest.mock('@/lib/guestSession', () => ({
+  getGuestHeaders: jest.fn(),
 }));
 
 jest.mock('@/lib/http', () => ({
@@ -36,6 +42,9 @@ jest.mock('@/lib/config', () => ({
 
 const mockAccessToken = jest.mocked(getAccessToken);
 const mockFetch = jest.mocked(fetchJSON);
+const mockGuestHeaders = jest.mocked(getGuestHeaders);
+const mockStored = jest.mocked(SecureStore.getItemAsync);
+const iosFingerprint = 'a'.repeat(64);
 
 describe('product analytics guest session', () => {
   const originalPlatform = Platform.OS;
@@ -46,6 +55,12 @@ describe('product analytics guest session', () => {
     process.env.EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER = '123456789';
     mockAccessToken.mockReset().mockResolvedValue(null);
     mockFetch.mockReset();
+    mockStored.mockReset().mockResolvedValue(null);
+    mockGuestHeaders.mockReset().mockResolvedValue({
+      'x-guest-token': 'app-attested-ios-v2-token',
+      'x-guest-fingerprint': iosFingerprint,
+      'x-guest-platform': 'ios',
+    });
     jest.mocked(AppIntegrity.prepareIntegrityTokenProviderAsync).mockReset().mockResolvedValue();
     jest.mocked(AppIntegrity.requestIntegrityCheckAsync).mockReset().mockResolvedValue('integrity-proof-token');
     await resetProductAnalyticsGuestSessionForTesting();
@@ -127,7 +142,7 @@ describe('product analytics guest session', () => {
     expect(AppIntegrity.requestIntegrityCheckAsync).not.toHaveBeenCalled();
   });
 
-  it('lets an unauthenticated iOS guest obtain analytics auth without Play Integrity', async () => {
+  it('exchanges an App Attest-backed iOS guest session for a dedicated analytics token', async () => {
     Platform.OS = 'ios';
     mockFetch.mockResolvedValueOnce({
       token: 'ios-analytics-token',
@@ -140,10 +155,42 @@ describe('product analytics guest session', () => {
     });
     expect(AppIntegrity.requestIntegrityCheckAsync).not.toHaveBeenCalled();
     expect(AppIntegrity.prepareIntegrityTokenProviderAsync).not.toHaveBeenCalled();
+    expect(mockGuestHeaders).toHaveBeenCalledWith({ requireSession: true });
     const sessionCall = mockFetch.mock.calls[0];
     if (!sessionCall) throw new Error('Expected analytics session request');
     const sessionOptions = sessionCall[1];
     if (!sessionOptions) throw new Error('Expected analytics session request options');
     expect(sessionOptions.body).toEqual({ platform: 'ios' });
+    expect(sessionOptions.headers).toEqual({
+      'x-guest-token': 'app-attested-ios-v2-token',
+      'x-guest-fingerprint': iosFingerprint,
+    });
+    expect(mockStored).toHaveBeenCalledWith('product-analytics-guest-session-v2');
+    expect(mockStored).not.toHaveBeenCalledWith('product-analytics-guest-session-v1');
+  });
+
+  it('does not reuse an old unauthenticated iOS analytics session from SecureStore', async () => {
+    Platform.OS = 'ios';
+    mockStored.mockImplementation(async (key) => key === 'product-analytics-guest-session-v1'
+      ? JSON.stringify({ token: 'legacy-ios-token', expiresAt: new Date(Date.now() + 600_000).toISOString() })
+      : null);
+    mockFetch.mockResolvedValueOnce({
+      token: 'new-attested-ios-token',
+      expiresAt: new Date(Date.now() + 15 * 60 * 1000).toISOString(),
+    });
+
+    await expect(getProductAnalyticsAuthHeaders()).resolves.toEqual({
+      'x-analytics-guest-token': 'new-attested-ios-token',
+    });
+    expect(mockStored).toHaveBeenCalledWith('product-analytics-guest-session-v2');
+    expect(mockStored).not.toHaveBeenCalledWith('product-analytics-guest-session-v1');
+  });
+
+  it('does not issue an iOS analytics session when guest attestation is unavailable', async () => {
+    Platform.OS = 'ios';
+    mockGuestHeaders.mockRejectedValueOnce(new Error('App Attest unavailable'));
+
+    await expect(getProductAnalyticsAuthHeaders()).rejects.toThrow('App Attest unavailable');
+    expect(mockFetch).not.toHaveBeenCalled();
   });
 });

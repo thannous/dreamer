@@ -14,7 +14,7 @@ mise exec -- npm run test:e2e:backend -- --qualify-ti528
 ```
 
 `--runtime native` is still accepted; any other `--runtime` is refused before a
-process starts. The second command runs all eight backend scenarios, the database
+process starts. The second command runs all nine backend scenarios, the database
 contracts, then the four TI528 suites (six integration cases) sequentially on the
 same owned stack.
 The runner passes its own private status to TI528 and preserves stack cleanup on
@@ -43,7 +43,7 @@ URLs in those copies are replaced with an unavailable loopback endpoint, and
 scheduled jobs are disabled in the same migration that creates them. Tracked
 migrations are untouched. The runner also asserts zero active cron jobs
 before the suite. These fixture changes prevent unattended production calls; the
-eight backend scenarios do not qualify scheduled reconciliation or AI workers.
+nine backend scenarios do not qualify scheduled reconciliation or AI workers.
 It never resets an existing project. Unique accounts are created per test and
 deleted on completion, including failure. The Plus account is provisioned through
 the existing service-role subscription RPC, without a purchase or billing bypass
@@ -82,7 +82,7 @@ browser types only. SDK traces are Markdown steps, without HTTP payload recordin
 
 ## Assertions and artifacts
 
-Eight backend scenarios, run by TesterArmy, cover:
+Nine backend scenarios, run by TesterArmy, cover:
 
 1. Save via UI, verify the remote row, sign in through the UI from an empty
    browser context, edit, restart the other client, then delete and restart again.
@@ -99,6 +99,8 @@ Eight backend scenarios, run by TesterArmy, cover:
    legacy projection for older apps.
 8. Apple refresh tokens stay outside the public schema and Data API; rotation,
    provider revocation failure/retry and account deletion preserve their privacy.
+9. An edit to a dream during model analysis leaves the edited transcript intact and
+   rejects completion of the stale result in the database transaction.
 
 Artifacts (ignored): `tools/e2e/.e2e/backend-web/<attempt>/`. `evidence.json`
 records the source SHA, dirty state, fixtures and rerun command; `report.json`

@@ -17,6 +17,7 @@ source assets, generated files, private QA and historical evidence;
 | Dream detail and reading | [dream detail](<../../app/journal/[id].tsx>) | `components/journal/`, `components/analysis/`; [appearance guide](../../components/journal/README.md) |
 | Reflection and chat | [dream chat](<../../app/dream-chat/[id].tsx>) | `components/chat/MessagesList.tsx`, `context/ChatContext.tsx` |
 | Settings and account controls | [settings.tsx](../../app/settings.tsx) | `components/settings/QuickSettingsProvider.tsx`, `context/QuickSettingsContext.tsx` |
+| Password recovery | [reset screen](../../components/auth/ResetPasswordScreen.tsx) | `lib/supabase.ts`, `lib/auth.web.ts`; [recovery rollout](password-recovery-rollout.md) |
 | Quotas and subscription | [useQuota.ts](../../hooks/useQuota.ts) | `services/quota/`, `hooks/useSubscription.ts`, `components/subscription/`; [billing QA](revenuecat-qa-workflow.md) |
 | Mock fixtures and service modes | [mock fixture guide](../../mock-data/README.md) | `services/mocks/storageServiceMock.ts`, `mock-data/`, `scripts/expo-safe-runner.js`; use `start:mock` |
 | Backend contracts and jobs | [architecture index](architecture/README.md) | `supabase/functions/`, `supabase/migrations/`; [backend E2E](e2e-backend-qualification.md) |

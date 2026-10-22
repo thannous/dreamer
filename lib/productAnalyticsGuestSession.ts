@@ -5,11 +5,14 @@ import { Platform } from 'react-native';
 
 import { getAccessToken } from '@/lib/auth';
 import { getApiBaseUrl } from '@/lib/config';
+import { getGuestHeaders } from '@/lib/guestSession';
 import { fetchJSON, HttpError, type HttpOptions } from '@/lib/http';
 import { createScopedLogger } from '@/lib/logger';
 
 const log = createScopedLogger('[ProductAnalyticsSession]');
-const STORAGE_KEY = 'product-analytics-guest-session-v1';
+const storageKey = () => Platform.OS === 'ios'
+  ? 'product-analytics-guest-session-v2'
+  : 'product-analytics-guest-session-v1';
 const EXPIRY_SAFETY_MS = 30_000;
 
 type AnalyticsGuestSessionResponse = {
@@ -72,9 +75,20 @@ async function createAnalyticsGuestSession(): Promise<AnalyticsGuestSessionRecor
     requestHash?: string;
     integrityToken?: string;
   };
+  let headers: Record<string, string> | undefined;
 
   if (Platform.OS === 'ios') {
+    // The quota guest session is App Attest-backed on iOS. Exchange it for a
+    // separate analytics token; neither its fingerprint nor token is stored in
+    // analytics events or in the analytics token.
+    const guestHeaders = await getGuestHeaders({ requireSession: true });
+    const guestToken = guestHeaders['x-guest-token'];
+    const fingerprint = guestHeaders['x-guest-fingerprint'];
+    if (!guestToken || !fingerprint) {
+      throw new Error('Product analytics guest session unavailable');
+    }
     body = { platform: 'ios' };
+    headers = { 'x-guest-token': guestToken, 'x-guest-fingerprint': fingerprint };
   } else {
     if (!(await prepareIntegrity())) {
       throw new Error('Product analytics guest session unavailable');
@@ -96,6 +110,7 @@ async function createAnalyticsGuestSession(): Promise<AnalyticsGuestSessionRecor
     {
       method: 'POST',
       body,
+      headers,
       timeoutMs: 10_000,
     }
   );
@@ -107,7 +122,7 @@ async function createAnalyticsGuestSession(): Promise<AnalyticsGuestSessionRecor
   cached = record;
   try {
     await SecureStore.setItemAsync(
-      STORAGE_KEY,
+      storageKey(),
       JSON.stringify({ token: record.token, expiresAt: response.expiresAt })
     );
   } catch {
@@ -123,7 +138,7 @@ async function ensureAnalyticsGuestSession(): Promise<AnalyticsGuestSessionRecor
   sessionPromise = (async () => {
     let stored: AnalyticsGuestSessionRecord | null = null;
     try {
-      stored = decodeStored(await SecureStore.getItemAsync(STORAGE_KEY));
+      stored = decodeStored(await SecureStore.getItemAsync(storageKey()));
     } catch {
       stored = null;
     }
@@ -145,7 +160,7 @@ export async function invalidateProductAnalyticsGuestSession(): Promise<void> {
   cached = null;
   sessionPromise = null;
   try {
-    await SecureStore.deleteItemAsync(STORAGE_KEY);
+    await SecureStore.deleteItemAsync(storageKey());
   } catch {
     // The session is still invalidated in memory.
   }

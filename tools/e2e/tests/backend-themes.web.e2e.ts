@@ -1,4 +1,4 @@
-import { randomUUID } from 'node:crypto';
+import { createHash, randomUUID } from 'node:crypto';
 import { test, expect, login, journal, client, admin } from '../backend-fixtures';
 
 // Apps installed before the luminous and nostalgic themes know only four themes and do not
@@ -74,15 +74,17 @@ test('an older app reads four themes and its theme edit replaces the precise one
 
 test('a completed reading keeps a newer theme for current apps and a legacy one for older apps', async ({ accounts }) => {
   const requestId = randomUUID();
+  const transcript = `E2E reading ${randomUUID()}: an old house by the sea.`;
   const dream = await admin.from('dreams').insert({
-    user_id: accounts.free.id, transcript: `E2E reading ${randomUUID()}: an old house by the sea.`, title: 'House',
+    user_id: accounts.free.id, transcript, title: 'House',
     interpretation: '', shareable_quote: '', dream_type: 'Symbolic Dream', client_request_id: randomUUID(),
     analysis_status: 'pending', analysis_request_id: requestId,
   }).select('id').single();
   expect(dream.error).toBeNull();
   const job = await admin.from('ai_jobs').insert({
     user_id: accounts.free.id, dream_id: dream.data!.id, job_type: 'analyze_dream', status: 'running',
-    request_payload: {}, client_request_id: requestId,
+    request_payload: { transcript_sha256: createHash('sha256').update(transcript).digest('hex') },
+    client_request_id: requestId,
   }).select('id').single();
   expect(job.error).toBeNull();
   const completion = await admin.rpc('complete_authenticated_analysis_job', {
@@ -96,4 +98,55 @@ test('a completed reading keeps a newer theme for current apps and a legacy one 
   const stored = await admin.from('dreams').select('theme,precise_theme,analysis_status').eq('id', dream.data!.id).single();
   expect(stored.error).toBeNull();
   expect(stored.data).toEqual({ theme: 'calm', precise_theme: 'nostalgic', analysis_status: 'done' });
+});
+
+test('an edit during model analysis cannot commit a result for the old transcript', async ({ accounts }) => {
+  const owner = client();
+  expect((await owner.auth.signInWithPassword(accounts.free)).error).toBeNull();
+  try {
+    const requestId = randomUUID();
+    const original = `E2E stale reading ${randomUUID()}: a red door.`;
+    const edited = `${original} A blue door replaces it.`;
+    const dream = await admin.from('dreams').insert({
+      user_id: accounts.free.id, transcript: original, title: 'Door',
+      interpretation: '', shareable_quote: '', dream_type: 'Symbolic Dream',
+      client_request_id: randomUUID(), analysis_status: 'pending', analysis_request_id: requestId,
+    }).select('id').single();
+    expect(dream.error).toBeNull();
+    const dreamId = dream.data!.id as number;
+    const job = await admin.from('ai_jobs').insert({
+      user_id: accounts.free.id, dream_id: dreamId, job_type: 'analyze_dream', status: 'running',
+      request_payload: { transcript_sha256: createHash('sha256').update(original).digest('hex') },
+      client_request_id: requestId,
+    }).select('id').single();
+    expect(job.error).toBeNull();
+
+    const edit = await owner.rpc('sync_dream_mutations', {
+      mutations: syncUpdate(dreamId, { transcript: edited }),
+    });
+    expect(edit.error).toBeNull();
+    expect(edit.data[0]).toMatchObject({ status: 'ack', dream: {
+      transcript: edited, analysis_request_id: requestId,
+    } });
+
+    const completion = await admin.rpc('complete_authenticated_analysis_job', {
+      p_job_id: job.data!.id,
+      p_analysis_result: {
+        title: 'Red door', interpretation: 'The door is red.', shareableQuote: '',
+        theme: 'noir', dreamType: 'Symbolic Dream', imagePrompt: 'A red door',
+      },
+      p_image_job_id: randomUUID(), p_image_max_attempts: 3, p_image_max_active_per_actor: 1,
+      p_image_window_seconds: 600, p_image_max_created_in_window: 4, p_max_global_active: 200,
+    });
+    expect(completion.error).toBeNull();
+    expect(completion.data).toMatchObject({ completed: false, code: 'ANALYSIS_TRANSCRIPT_CHANGED' });
+    const stored = await admin.from('dreams').select('transcript,interpretation,is_analyzed,analysis_status').eq('id', dreamId).single();
+    expect(stored.error).toBeNull();
+    expect(stored.data).toMatchObject({ transcript: edited, interpretation: '', is_analyzed: false, analysis_status: 'pending' });
+    const unchangedJob = await admin.from('ai_jobs').select('status').eq('id', job.data!.id).single();
+    expect(unchangedJob.error).toBeNull();
+    expect(unchangedJob.data).toEqual({ status: 'running' });
+  } finally {
+    await owner.auth.signOut();
+  }
 });
