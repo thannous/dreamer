@@ -9,6 +9,11 @@ const BAND_SHARE = 1 / 3;
 const BAND_QUALITY = 80;
 /** As long as a dream's own illustration link (services/storage.ts). */
 const SIGNED_URL_SECONDS = 60 * 60 * 24 * 365;
+/**
+ * The band's link lasts an hour and is signed again at each read: a dream deleted (its band
+ * then left out of every read) or opened stops showing it soon after.
+ */
+export const BAND_LINK_SECONDS = 60 * 60;
 /** How long an image job waits for a prepared painting under way rather than paying for another. */
 const PAINTING_WAIT_MS = 60 * 1000;
 const PAINTING_POLL_MS = 3000;
@@ -58,7 +63,7 @@ export async function paintPreparedIllustration(input: {
   try {
     const storedBand = await objects.upload(bandPath, band, { ...options, contentType: 'image/jpeg' });
     if (storedBand.error) throw storedBand.error;
-    const { data, error } = await objects.createSignedUrl(bandPath, SIGNED_URL_SECONDS);
+    const { data, error } = await objects.createSignedUrl(bandPath, BAND_LINK_SECONDS);
     if (error || !data?.signedUrl) throw error ?? new Error('No signed link');
     return { imagePath, bandPath, bandUrl: data.signedUrl };
   } catch (error) {
@@ -130,17 +135,31 @@ async function takePreparedPainting(admin: AdminClient, input: Parameters<typeof
 
     const objects = admin.storage.from(input.bucket);
     const ownPath = `${input.userId}/${row.image_path.split('/').pop()}`;
-    const moved = await objects.move(row.image_path, ownPath);
+    // A painting already moved once (its link could not be made then) only needs its link.
+    const moved = row.image_path === ownPath ? { error: null } : await objects.move(row.image_path, ownPath);
     if (moved.error) {
+      // Still where it was: the painting stays ready for the next job instead of being paid again.
       console.warn('[analysis-preview] could not move a prepared painting');
+      await previews().update({ image_status: 'ready' })
+        .eq('user_id', input.userId).eq('dream_id', input.dreamId).eq('image_status', 'used').eq('image_path', row.image_path)
+        .then(() => undefined, () => undefined);
       return null;
     }
     await removePreviewObjects(admin, input.bucket, [row.band_path]);
+    // Moved: the row now holds the painting under the account's prefix until a link is made.
     await previews()
-      .update({ image_path: null, band_path: null, band_url: null })
+      .update({ image_path: ownPath, band_path: null, band_url: null })
       .eq('user_id', input.userId).eq('dream_id', input.dreamId).eq('image_status', 'used');
     const { data: signed, error: signError } = await objects.createSignedUrl(ownPath, SIGNED_URL_SECONDS);
-    if (signError || !signed?.signedUrl) return null;
+    if (signError || !signed?.signedUrl) {
+      // Linked later by the next job, from where it now lies.
+      await previews().update({ image_status: 'ready' })
+        .eq('user_id', input.userId).eq('dream_id', input.dreamId).eq('image_status', 'used').eq('image_path', ownPath)
+        .then(() => undefined, () => undefined);
+      return null;
+    }
+    await previews().update({ image_path: null })
+      .eq('user_id', input.userId).eq('dream_id', input.dreamId).eq('image_status', 'used').eq('image_path', ownPath);
     return { path: ownPath, url: signed.signedUrl };
   } catch {
     console.warn('[analysis-preview] could not take a prepared painting');

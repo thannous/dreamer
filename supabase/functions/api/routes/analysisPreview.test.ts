@@ -131,7 +131,12 @@ function setup(options: {
       assertEquals(name, 'analysis_previews');
       return table(previews)();
     },
-    storage: { from: () => ({ remove: async (keys: string[]) => { calls.removed.push(...keys); return { error: null }; } }) },
+    storage: {
+      from: () => ({
+        remove: async (keys: string[]) => { calls.removed.push(...keys); return { error: null }; },
+        createSignedUrl: async (path: string, seconds: number) => ({ data: { signedUrl: `https://example.test/sign/${path}?expires=${seconds}` }, error: null }),
+      }),
+    },
   };
   const ctx = (body: unknown, user: unknown = { id: 'u1' }): ApiContext => ({
     req: new Request('https://example.test/analysis-preview', { method: 'POST', body: JSON.stringify(body) }),
@@ -201,7 +206,8 @@ Deno.test('prepares the analysis once and gives its title, first sentence, symbo
     title: 'La rivière de verre',
     opening: 'Ton rêve fait de la rivière un passage plutôt qu’un obstacle.',
     symbols: ['Rivière', 'Maison'],
-    image: { state: 'ready', bandUrl: 'https://example.test/sign/band' },
+    // Signed again at each read, for an hour: a deleted dream's band stops showing soon after.
+    image: { state: 'ready', bandUrl: 'https://example.test/sign/previews/u1/7-a-band.jpg?expires=3600' },
   });
   assertEquals(result.preparedAt, iso(NOW));
   // The rest of the reading and the whole painting stay on the server.
@@ -329,7 +335,7 @@ Deno.test('the painting of an older preview of the dream goes once the new one i
   };
   const { ctx, deps, previews, calls } = setup({ previews: [older] });
   const result = await (await handleAnalysisPreview(ctx(prepare), deps)).json();
-  assertEquals([result.state, result.preview.image.bandUrl], ['ready', 'https://example.test/sign/band']);
+  assertEquals([result.state, result.preview.image.bandUrl], ['ready', 'https://example.test/sign/previews/u1/7-a-band.jpg?expires=3600']);
   assertEquals(calls.removed, ['previews/u1/7-old.jpg', 'previews/u1/7-old-band.jpg']);
   assertEquals([previews.length, previews[0].lang, previews[0].image_path], [1, 'fr', 'previews/u1/7-a.jpg']);
 });

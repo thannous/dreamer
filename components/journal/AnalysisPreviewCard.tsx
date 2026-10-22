@@ -33,14 +33,15 @@ type State =
   | { kind: 'hidden' }
   | { kind: 'preparing' }
   | { kind: 'failed' }
-  | { kind: 'loaded'; result: AnalysisPreviewResult };
+  /** The result of one dream, language and text: another subject reads as loading. */
+  | { kind: 'loaded'; result: AnalysisPreviewResult; subject: string };
 
 /**
  * A free account past its monthly analyses: once a week, the analysis of a dream is
  * prepared anyway. It reads the reading's title, first sentence and symbols' names and
  * sees a band of its painting; the rest opens with Plus or with next month's analysis.
  */
-export function AnalysisPreviewCard({ remoteDreamId, transcript, onOpenPlus, onOfferChange, className = '' }: {
+export function AnalysisPreviewCard({ remoteDreamId, transcript, onOpenPlus, onOfferChange, onReadingChange, className = '' }: {
   remoteDreamId: number;
   /** The dream's text: an edited dream is read again. */
   transcript: string;
@@ -48,6 +49,8 @@ export function AnalysisPreviewCard({ remoteDreamId, transcript, onOpenPlus, onO
   onOpenPlus: (prepared: boolean) => void;
   /** True while the card holds the dream's next step, so the page shows no second offer. */
   onOfferChange?: (holdsOffer: boolean) => void;
+  /** True while the card shows model-written text or its band, which can then be reported. */
+  onReadingChange?: (shown: boolean) => void;
   className?: string;
 }) {
   const { t, currentLang } = useTranslation();
@@ -81,7 +84,7 @@ export function AnalysisPreviewCard({ remoteDreamId, transcript, onOpenPlus, onO
           remoteDreamId, lang: currentLang, prepare: prepareNow, signal: controller.signal,
         });
         if (controller.signal.aborted) return;
-        setState({ kind: 'loaded', result });
+        setState({ kind: 'loaded', result, subject });
         if (result.state === 'writing' || result.preview?.image.state === 'painting') readAgain(result.state === 'writing');
       } catch (error) {
         if (controller.signal.aborted) return;
@@ -108,27 +111,32 @@ export function AnalysisPreviewCard({ remoteDreamId, transcript, onOpenPlus, onO
     setRequest((value) => ({ count: value.count + 1, prepare: true, polls: 0, subject }));
   }, [subject, t]);
 
-  const result = state.kind === 'loaded' ? state.result : null;
+  // Another dream, language or text shows nothing of the former one while it loads.
+  const shown: State = state.kind === 'loaded' && state.subject !== subject ? { kind: 'loading' } : state;
+  const result = shown.kind === 'loaded' ? shown.result : null;
   // A note on the week's limit leaves the page's own offer in place. While the card loads it
   // holds the step too, so the page's offer does not show and then vanish.
-  const holdsOffer = state.kind === 'loading' || state.kind === 'preparing' || state.kind === 'failed'
+  const holdsOffer = shown.kind === 'loading' || shown.kind === 'preparing' || shown.kind === 'failed'
     || (result !== null && result.state !== 'weekly_limit');
+  const showsReading = result?.state === 'ready' && result.preview !== null;
   useEffect(() => { onOfferChange?.(holdsOffer); }, [holdsOffer, onOfferChange]);
   useEffect(() => () => onOfferChange?.(false), [onOfferChange]);
+  useEffect(() => { onReadingChange?.(showsReading); }, [showsReading, onReadingChange]);
+  useEffect(() => () => onReadingChange?.(false), [onReadingChange]);
   const day = (iso: string) => withFirstDayOrdinal(formatDate(Date.parse(iso), { day: 'numeric', month: 'long' }), locale);
   let content: React.ReactNode = null;
   if (result?.state === 'ready' && result.preview) {
     content = <PreviewReading preview={result.preview} body={body} noctalia={noctalia} onOpenPlus={() => onOpenPlus(true)}
       freeDate={formatQuotaResetDate(locale)} />;
-  } else if (state.kind === 'preparing' || result?.state === 'writing') {
+  } else if (shown.kind === 'preparing' || result?.state === 'writing') {
     content = (
       <View className="flex-row items-center gap-3 py-4" testID={TID.Text.AnalysisPreviewWaiting}>
         <ActivityIndicator color={noctalia.accent.text} />
         <Text className="flex-1 font-serif-italic text-body leading-[24px] text-ivory-muted">{t('journal.detail.preview.preparing')}</Text>
       </View>
     );
-  } else if (state.kind === 'failed' || result?.state === 'available') {
-    const failed = state.kind === 'failed';
+  } else if (shown.kind === 'failed' || result?.state === 'available') {
+    const failed = shown.kind === 'failed';
     content = (
       <View className="gap-4 rounded-[20px] border border-line bg-ink-card p-5">
         <Text className="font-sans text-body leading-[24px] text-ivory">

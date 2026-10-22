@@ -517,6 +517,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   const [failedCoverUri, setFailedCoverUri] = useState<string | null>(null);
   const [actionDockHeight, setActionDockHeight] = useState(100);
   const [previewHoldsOffer, setPreviewHoldsOffer] = useState(false);
+  const [previewShowsReading, setPreviewShowsReading] = useState(false);
   const [coverIntroHeight, setCoverIntroHeight] = useState<number | null>(null);
   const viewportHeight = coverViewport?.height ?? windowSize.height;
   const navigationHeight = insets.top + 76;
@@ -1963,9 +1964,13 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   // The seal, under the name and before the story, at the head of the reading: from the
   // capture on arrival, and on every page whose dream is being or has been read.
   const readingBegun = readingInFlight || showCompletedReading;
-  // Past its monthly analyses, a free account may still read the start of this dream's analysis.
+  // Past its monthly analyses, a free account may still read the start of this dream's analysis,
+  // once the server holds the text it reads: an edit still syncing would be read in its former words.
   const analysisPreviewDreamId = user && !isPlus && savedAnalysisAction === 'upgrade' && !canResumeAnalysis
-    && !readingBegun && !isAnalysisLocked && !isEditing && dream && !dream.isAnalyzed ? dream.remoteId ?? null : null;
+    && !readingBegun && !isAnalysisLocked && !isEditing && dreamSyncState === 'clean'
+    && dream && !dream.isAnalyzed ? dream.remoteId ?? null : null;
+  // What the preview shows was written and painted by the models: it can be reported like an analysis.
+  const reportable = hasGeneratedContent || (analysisPreviewDreamId != null && previewShowsReading);
   // Its card then holds the dream's next step: the seal and the action dock would only repeat the Plus offer.
   // Right after a capture the dock stays, as it holds the way back to the journal.
   const previewHoldsStep = analysisPreviewDreamId != null && previewHoldsOffer;
@@ -3117,7 +3122,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
             {analysisPreviewDreamId != null && user ? (
               <AnalysisPreviewCard remoteDreamId={analysisPreviewDreamId} transcript={dream.transcript}
                 onOpenPlus={(prepared) => router.push(buildAnalysisPaywallHref(dream, user.id, { prepared }))}
-                onOfferChange={setPreviewHoldsOffer} />
+                onOfferChange={setPreviewHoldsOffer} onReadingChange={setPreviewShowsReading} />
             ) : null}
             {readingBegun ? (
               <OpenUp appear={readingInFlight}
@@ -3268,7 +3273,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
                 </Text>
               </PressableScale>
               </View>
-              {hasGeneratedContent ? (
+              {reportable ? (
                 <PressableScale
                   onPress={onReportGeneratedContent}
                   className="mt-2 min-h-[44px] flex-row items-center justify-center gap-1.5 self-center px-3"

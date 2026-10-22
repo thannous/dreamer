@@ -244,3 +244,46 @@ Deno.test('with no wait, a painting under way is left for later', async () => {
   assertEquals(slept, []);
   assertEquals(previews[0].image_status, 'painting');
 });
+
+Deno.test('a painting that cannot be moved stays ready for the next job instead of being paid again', async () => {
+  const storage = fakeStorage();
+  const rows: Row[] = [{
+    user_id: 'u1', dream_id: 7, status: 'used', image_status: 'ready', image_prompt: 'A river of glass',
+    image_path: 'previews/u1/7-a.jpg', band_path: null, band_url: null,
+  }];
+  const admin = { from: previewsTable(rows), storage };
+  const input = { bucket: 'dream-images', userId: 'u1', dreamId: 7, prompt: 'A river of glass' };
+  // The object is missing for now (the fake move fails): nothing is spent.
+  assertEquals(await takePreparedIllustration(admin, input), null);
+  assertEquals([rows[0].image_status, rows[0].image_path], ['ready', 'previews/u1/7-a.jpg']);
+  storage.objects.set('previews/u1/7-a.jpg', new Uint8Array([1]));
+  assertEquals(await takePreparedIllustration(admin, input), 'https://example.test/sign/u1/7-a.jpg?token=t');
+  assertEquals([rows[0].image_status, rows[0].image_path], ['used', null]);
+});
+
+Deno.test('a painting moved but not linked is linked by the next job from where it lies', async () => {
+  const storage = fakeStorage();
+  storage.objects.set('previews/u1/7-a.jpg', new Uint8Array([1]));
+  let failSign = true;
+  const signing = storage.from;
+  const flaky = {
+    ...storage,
+    from: (bucket: string) => ({
+      ...signing(bucket),
+      createSignedUrl: async (path: string) => (failSign
+        ? { data: null, error: { message: 'down' } }
+        : { data: { signedUrl: `https://example.test/sign/${path}?token=t` }, error: null }),
+    }),
+  };
+  const rows: Row[] = [{
+    user_id: 'u1', dream_id: 7, status: 'used', image_status: 'ready', image_prompt: 'A river of glass',
+    image_path: 'previews/u1/7-a.jpg', band_path: null, band_url: null,
+  }];
+  const admin = { from: previewsTable(rows), storage: flaky };
+  const input = { bucket: 'dream-images', userId: 'u1', dreamId: 7, prompt: 'A river of glass' };
+  assertEquals(await takePreparedIllustration(admin, input), null);
+  assertEquals([rows[0].image_status, rows[0].image_path], ['ready', 'u1/7-a.jpg']);
+  failSign = false;
+  assertEquals(await takePreparedIllustration(admin, input), 'https://example.test/sign/u1/7-a.jpg?token=t');
+  assertEquals([...storage.objects.keys()], ['u1/7-a.jpg']);
+});

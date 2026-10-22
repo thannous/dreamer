@@ -199,3 +199,19 @@ it('steps aside for a refused dream, and offers a retry after a failed preparati
   await waitFor(() => expect(screen.getByText('journal.detail.preview.failed')).toBeTruthy());
   expect(screen.getByTestId('btn.analysisPreview.retry')).toBeTruthy();
 });
+
+it('shows nothing of a former dream while another one loads, and says when a reading can be reported', async () => {
+  const onReadingChange = jest.fn();
+  mockFetchPreview.mockResolvedValueOnce(preview());
+  const screen = render(<AnalysisPreviewCard remoteDreamId={7} transcript="Je marchais." onOpenPlus={jest.fn()} onReadingChange={onReadingChange} />);
+  await waitFor(() => expect(screen.getByText('La rivière de verre')).toBeTruthy());
+  expect(onReadingChange).toHaveBeenLastCalledWith(true);
+
+  let answer: (value: unknown) => void = () => {};
+  mockFetchPreview.mockReturnValueOnce(new Promise((resolve) => { answer = resolve; }));
+  screen.rerender(<AnalysisPreviewCard remoteDreamId={8} transcript="Je volais." onOpenPlus={jest.fn()} onReadingChange={onReadingChange} />);
+  expect(screen.queryByText('La rivière de verre')).toBeNull();
+  expect(onReadingChange).toHaveBeenLastCalledWith(false);
+  await act(async () => { answer({ state: 'available', preview: null, preparedAt: null, retryAt: null }); });
+  expect(screen.getByText('journal.detail.preview.invite')).toBeTruthy();
+});

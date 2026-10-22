@@ -18,7 +18,7 @@ import {
   runDreamAnalysis,
 } from '../services/dreamAnalysis.ts';
 import type { StructuredDreamAnalysis } from '../services/dreamAnalysis.ts';
-import { paintPreparedIllustration, removePreviewObjects } from '../services/previewIllustration.ts';
+import { BAND_LINK_SECONDS, paintPreparedIllustration, removePreviewObjects } from '../services/previewIllustration.ts';
 import type { ApiContext } from '../types.ts';
 
 type Dependencies = {
@@ -163,20 +163,29 @@ export async function handleAnalysisPreview(ctx: ApiContext, deps: Dependencies 
     // Only a reading of this very text, in this language, is the dream's preview.
     const matches = (row: PreviewRow | null): row is PreviewRow & { reading: StructuredDreamAnalysis } =>
       row?.status === 'ready' && row.lang === lang && row.transcript_sha256 === sha256 && isPreparedReading(row.reading);
-    const ready = (row: PreviewRow & { reading: StructuredDreamAnalysis }) => jsonResponse({
-      state: 'ready',
-      // The rest of the reading and of the painting never leaves the server before the account opens it.
-      preview: {
-        ...previewOf(row.reading, keepStoredDreamClass(dream, row.reading).title),
-        image: row.image_status === 'ready' && row.band_url
-          ? { state: 'ready', bandUrl: row.band_url }
-          : row.image_status === 'painting' && Date.parse(row.image_updated_at ?? '') > now - PREVIEW_PAINTING_TIMEOUT_MS
-            ? { state: 'painting', bandUrl: null }
-            : { state: 'none', bandUrl: null },
-      },
-      preparedAt: new Date(row.created_at).toISOString(),
-      retryAt: null,
-    });
+    // The band's link is signed again at each read, for an hour only.
+    const bandUrl = async (path: string | null) => {
+      if (!path) return null;
+      const { data, error } = await admin.storage.from(ctx.storageBucket).createSignedUrl(path, BAND_LINK_SECONDS);
+      return error || !data?.signedUrl ? null : data.signedUrl as string;
+    };
+    const ready = async (row: PreviewRow & { reading: StructuredDreamAnalysis }) => {
+      const band = row.image_status === 'ready' ? await bandUrl(row.band_path) : null;
+      return jsonResponse({
+        state: 'ready',
+        // The rest of the reading and of the painting never leaves the server before the account opens it.
+        preview: {
+          ...previewOf(row.reading, keepStoredDreamClass(dream, row.reading).title),
+          image: band
+            ? { state: 'ready', bandUrl: band }
+            : row.image_status === 'painting' && Date.parse(row.image_updated_at ?? '') > now - PREVIEW_PAINTING_TIMEOUT_MS
+              ? { state: 'painting', bandUrl: null }
+              : { state: 'none', bandUrl: null },
+        },
+        preparedAt: new Date(row.created_at).toISOString(),
+        retryAt: null,
+      });
+    };
     const status = (state: 'available' | 'writing' | 'weekly_limit', retryAt: string | null = null) =>
       jsonResponse({ state, preview: null, preparedAt: null, retryAt });
 
