@@ -11,7 +11,7 @@ type Backend = {
 };
 
 export const test = base.extend<{ backend: Backend }>({
-  backend: async ({ platform }, provide) => {
+  backend: async ({ platform, app, screen }, provide) => {
     if (!['ios', 'android'].includes(platform) || process.env.E2E_NATIVE_MOCK_MODE !== 'false')
       throw new Error('These journeys require the identified local-backend Release, with real Auth and storage.');
     const state = readNativeBackendState();
@@ -31,6 +31,9 @@ export const test = base.extend<{ backend: Backend }>({
     const setOnline = async (online: boolean) => { expect((await transport('network', online)).online).toBe(online); };
     try {
       await setOnline(true);
+      // End the preceding app process and clear its owned queue before deleting
+      // server fixtures; otherwise a late retry can recreate a deleted dream.
+      await nativeGuest({ app, screen, platform });
       for (const [name, client] of [['owner', owner], ['other', other]] as const) {
         const auth = await client.auth.signInWithPassword(state.accounts[name]);
         expect(auth.error).toBeNull();
@@ -59,9 +62,12 @@ export async function nativeTap(screen: TestFixtures['screen'], id: string, dire
 }
 
 export async function nativeHome(screen: TestFixtures['screen']) {
-  const detailBack = screen.getByTestId('btn.navigateJournal', { visible: true });
+  // The detail header scrolls with its page; its absence from the viewport
+  // does not mean the tab bar is available. Reach its back control first.
+  if (await screen.getByTestId('screen.dreamDetail', { visible: true }).count()) {
+    await nativeTap(screen, 'btn.navigateJournal', 'up');
+  }
   const settingsBack = screen.getByTestId('settings.back', { visible: true });
-  if (await detailBack.count()) await detailBack.tap();
   if (await settingsBack.count()) await settingsBack.tap();
   const recordingHome = screen.getByTestId('btn.recording.home', { visible: true });
   if (await recordingHome.count()) await recordingHome.tap();
@@ -77,7 +83,7 @@ export async function nativeSettings(screen: TestFixtures['screen']) {
   await expect(screen.getByTestId('screen.settings', { visible: true })).toBeVisible();
 }
 
-export async function nativeGuest({ app, screen, platform }: NativeFixtures) {
+export async function nativeGuest({ app, screen, platform }: Pick<NativeFixtures, 'app' | 'screen' | 'platform'>) {
   await app.open();
   // iOS clearing an app container preserves SecureStore's Keychain entry. Use
   // the app's own sign-out first; never reset the whole simulator's Keychain.
@@ -152,9 +158,9 @@ export async function nativeSignOut(fixtures: NativeFixtures) {
 }
 
 export async function nativeJournal(screen: TestFixtures['screen']) {
-  const back = screen.getByTestId('btn.navigateJournal', { visible: true });
-  if (await back.count()) await back.tap();
-  else if (!(await screen.getByTestId('screen.journal', { visible: true }).count())) {
+  if (await screen.getByTestId('screen.dreamDetail', { visible: true }).count()) {
+    await nativeTap(screen, 'btn.navigateJournal', 'up');
+  } else if (!(await screen.getByTestId('screen.journal', { visible: true }).count())) {
     await nativeHome(screen);
     await screen.getByTestId('tab.journal', { visible: true }).tap();
   }

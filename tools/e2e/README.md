@@ -351,6 +351,14 @@ manifest. Meditation has its own manifest and check:
 `npm --prefix apps/meditation run dependencies:check`.
 Run the affected check before a local native build; CI checks both manifests.
 
+## Dreamer native recovery journeys
+
+The [native journey runbook](native-journeys.md) covers real local Auth/storage,
+offline sync, account isolation, analysis/chat recovery and system recognition
+from a QA audio file. It gives identified iOS/Android build and run commands,
+shared-backend locking and the explicit limit: file recognition does not qualify
+physical microphone capture.
+
 ## Android release evidence
 
 Since the owner decision of 2026-10-14, Maestro is retired and this runner holds

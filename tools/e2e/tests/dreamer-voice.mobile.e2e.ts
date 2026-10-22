@@ -23,10 +23,26 @@ async function prepareVoice(fixtures: VoiceFixtures) {
   await expect(fixtures.screen.getByTestId('input.dreamTranscript', { visible: true })).toHaveValue('');
 }
 
-async function startMicrophone({ screen }: VoiceFixtures) {
+async function startMicrophone({ screen, platform }: VoiceFixtures) {
   await tap(screen, 'btn.recordToggle');
-  const rationale = screen.getByTestId('sheet.recording.micRationale', { visible: true });
-  if (await rationale.count()) await tap(screen, 'btn.recording.micRationale.allow');
+  if (platform === 'android') {
+    const rationale = screen.getByTestId('sheet.recording.micRationale', { visible: true });
+    if (await rationale.count()) await tap(screen, 'btn.recording.micRationale.allow');
+    return;
+  }
+  // The iOS sheet presents asynchronously and omits its wrapper from the
+  // accessibility tree. Observe its actual action or the next speech state.
+  const allow = screen.getByTestId('btn.recording.micRationale.allow', { visible: true });
+  const speechPrompt = screen.getByText(/(?:Speech Recognition|reconnaissance vocale)/i, { visible: true });
+  const denied = screen.getByText('Microphone permission is required to record dreams.', { visible: true });
+  const editor = screen.getByTestId('input.dreamTranscript', { visible: true });
+  await expect.poll(async () => (await allow.count()) > 0
+    || (await speechPrompt.count()) > 0
+    || (await denied.count()) > 0
+    || (await screen.getByTestId('recording-write-listening-status', { visible: true }).count()) > 0
+    || ((await editor.count()) > 0 && /blue lighthouse/i.test(await editor.inputValue())),
+  { timeout: 30_000 }).toBe(true);
+  if (await allow.count()) await allow.tap();
 }
 
 async function expectSavedOnceAfterRestart({ app, screen, device }: VoiceFixtures, story: string) {
@@ -85,7 +101,10 @@ test('Dreamer native denied microphone preserves typed fallback through reauthor
       await expect(deny).toHaveCount(0);
     }
     await expect(screen.getByText('Microphone permission is required to record dreams.', { visible: true })).toBeVisible();
-    await device.alert('accept');
+    if (platform === 'ios') {
+      await screen.getByRole('button', /^OK$/i, { visible: true }).tap();
+      await expect(screen.getByText('Microphone permission is required to record dreams.', { visible: true })).toHaveCount(0);
+    } else await device.alert('accept');
     await expect(screen.getByTestId('recording-write-listening-status')).toHaveCount(0);
     await expect(editor).toHaveValue(draft);
     await expect(screen.getByTestId('btn.saveDream', { visible: true })).toBeEnabled();
@@ -160,7 +179,12 @@ test('Dreamer native system speech recognizes a QA audio file before correction 
       await expect.poll(async () => (await speechPrompt.count()) > 0
         || (await screen.getByTestId('recording-write-listening-status', { visible: true }).count()) > 0
         || /blue lighthouse/i.test(await editor.inputValue()), { timeout: 30_000 }).toBe(true);
-      if (await speechPrompt.count()) await device.alert('accept');
+      if (await speechPrompt.count()) {
+        // The owned Simulator uses French system dialogs even when the app is
+        // English. Tap the observed affirmative button instead of alert guessing.
+        await screen.getByRole('button', /^(?:Allow|Autoriser|OK)$/i, { visible: true }).tap();
+        await expect(speechPrompt).toHaveCount(0);
+      }
     }
     // Assert landmarks at the beginning and end before supplying any text.
     // The native Android recognizer hears "boat" as "bowed" on this fixture;

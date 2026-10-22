@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { createClient } from '@supabase/supabase-js';
 import { expect, type TestFixtures } from 'e2e';
-import { test, nativeGuest, nativeLogin, nativeJournal } from '../native-backend-fixtures';
+import { test, nativeLogin, nativeJournal } from '../native-backend-fixtures';
 
 // These journeys run in an identified local-backend Release. They use real
 // Auth/Postgres, app HTTP, persisted native storage, API handlers and atomic
@@ -66,7 +66,6 @@ test('Dreamer queued real analysis survives process restart and completes once w
   const before = await backend.owner.rpc('get_authenticated_quota_snapshot', { p_target_dream_id: dreamId });
   expect(before.error).toBeNull();
   try {
-    await nativeGuest(fixtures);
     await nativeLogin(fixtures);
     await openDream(screen, title);
     await tap(screen, 'btn.dream.primaryCta');
@@ -135,7 +134,6 @@ test('Dreamer real chat retries a lost completion without duplicate messages or 
   const before = await backend.owner.rpc('get_authenticated_quota_snapshot', { p_target_dream_id: dreamId });
   expect(before.error).toBeNull();
   const question = 'The blue door stayed in my memory.';
-  await nativeGuest(fixtures);
   await nativeLogin(fixtures);
   await openDream(screen, title);
   await tap(screen, 'component.dreamDetail.actionCard');

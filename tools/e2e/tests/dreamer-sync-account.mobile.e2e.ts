@@ -1,13 +1,12 @@
 import { randomUUID } from 'node:crypto';
 import { expect } from 'e2e';
-import { test, nativeGuest, nativeLogin, nativeSignOut, nativeJournal, nativeCapture, nativeSave, nativeTap, nativeTranscript } from '../native-backend-fixtures';
+import { test, nativeLogin, nativeSignOut, nativeJournal, nativeCapture, nativeSave, nativeTap, nativeTranscript } from '../native-backend-fixtures';
 
 const options = { platforms: ['ios', 'android'], tags: ['native-real-backend'], timeout: 360_000 };
 
 test('Dreamer native offline creation and edit survive process restart and synchronize exactly once',
   { ...options, tags: [...options.tags, 'native-real-sync'] }, async (fixtures) => {
     const { app, screen, device, backend } = fixtures;
-    await nativeGuest(fixtures);
     await nativeLogin(fixtures);
     await nativeCapture(screen);
     const story = `Moon train ${randomUUID().slice(0, 8)} crosses a quiet lake.`;
@@ -63,7 +62,6 @@ test('Dreamer native guest dream and draft survive real sign-in, reconnect and a
     const marker = randomUUID().slice(0, 8);
     const story = `Guest lighthouse ${marker} over the sea.`;
     const draft = `Draft garden ${marker} behind a blue door.`;
-    await nativeGuest(fixtures);
     await nativeSave(fixtures, story);
     await nativeCapture(screen);
     await screen.getByTestId('input.dreamTranscript', { visible: true }).fill(draft);

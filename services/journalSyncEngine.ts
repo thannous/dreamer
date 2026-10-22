@@ -308,6 +308,25 @@ export function createJournalSyncEngine(dependencies: JournalSyncDependencies, i
         retryCount: extras.retryCount ?? mutation.retryCount,
       });
 
+      const applyFailureToLatestDream = (
+        list: DreamAnalysis[],
+        sent: DreamMutation,
+        state: 'failed' | 'conflict',
+        message: string,
+        remoteDream?: DreamAnalysis
+      ): DreamAnalysis[] => {
+        const queue = pendingMutationsRef.current;
+        const sentIndex = queue.findIndex(entry => entry.id === sent.id);
+        if (sentIndex < 0) return list;
+        // Rehydration or an edit can place newer durable content behind an
+        // in-flight create/update. Its failure only changes sync metadata;
+        // it must not restore the earlier payload over that newer intent.
+        const latest = queue.slice(sentIndex).filter(entry =>
+          matchesDreamTarget(getMutationDreamTarget(entry), getMutationDreamTarget(sent))).at(-1) ?? sent;
+        if (latest.operation === 'delete' && latest.id !== sent.id) return list;
+        return applyFailedMutation(list, latest, state, message, remoteDream);
+      };
+
       let resolvedDependencies = false;
       const syncPromise = (async () => {
         const startedAt = Date.now();
@@ -509,7 +528,7 @@ export function createJournalSyncEngine(dependencies: JournalSyncDependencies, i
               }
 
               if (result.status === 'conflict') {
-                nextDreams = applyFailedMutation(
+                nextDreams = applyFailureToLatestDream(
                   nextDreams,
                   mutation,
                   'conflict',
@@ -519,7 +538,7 @@ export function createJournalSyncEngine(dependencies: JournalSyncDependencies, i
                 return;
               }
 
-              nextDreams = applyFailedMutation(
+              nextDreams = applyFailureToLatestDream(
                 nextDreams,
                 mutation,
                 'failed',
@@ -565,7 +584,7 @@ export function createJournalSyncEngine(dependencies: JournalSyncDependencies, i
             let nextDreams = prev;
             eligibleMutations.forEach((mutation) => {
               if (!pendingMutationsRef.current.some((entry) => entry.id === mutation.id)) return;
-              nextDreams = applyFailedMutation(nextDreams, mutation, 'failed', message);
+              nextDreams = applyFailureToLatestDream(nextDreams, mutation, 'failed', message);
             });
             return nextDreams;
           });
