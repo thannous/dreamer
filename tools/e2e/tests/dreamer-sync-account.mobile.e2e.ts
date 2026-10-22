@@ -19,7 +19,7 @@ test('Dreamer native offline creation and edit survive process restart and synch
       const before = await backend.owner.from('dreams').select('id');
       expect(before.error).toBeNull();
       expect(before.data).toEqual([]);
-      await nativeTap(screen, 'btn.editDream', 'up');
+      await nativeTap(screen, 'btn.editDream');
       await screen.getByTestId('input.dreamTranscript', { visible: true }).fill(revision);
       await device.dismissKeyboard();
       await nativeTap(screen, 'btn.saveDreamEdit');

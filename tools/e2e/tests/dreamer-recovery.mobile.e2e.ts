@@ -41,7 +41,7 @@ async function openDream(screen: TestFixtures['screen'], title: string) {
 }
 
 async function acceptAi(screen: TestFixtures['screen']) {
-  const consent = screen.getByRole('button', 'Accept and continue', { visible: true });
+  const consent = screen.getByRole('button', /^Accept and continue$/i, { visible: true });
   await expect(consent).toBeVisible();
   await consent.tap();
   await expect(consent).toHaveCount(0);
@@ -121,13 +121,16 @@ test('Dreamer real chat retries a lost completion without duplicate messages or 
   const token = backend.state.proxy.controlToken;
   await control(token, { reset: true, chatDropDone: true });
   const title = `Recovery conversation ${randomUUID().slice(0, 8)}`;
+  const analyzedAt = new Date().toISOString();
   const inserted = await backend.owner.from('dreams').insert({
     user_id: backend.state.accounts.owner.id, title,
     transcript: 'I walked to a lighthouse. Its door was blue and I could hear the sea.',
     interpretation: analysisText, shareable_quote: '', dream_type: 'Everyday Dream', theme: 'calm',
-    client_request_id: randomUUID(), analysis_status: 'done', is_analyzed: true, chat_history: [],
-  }).select('id').single();
+    client_request_id: randomUUID(), analysis_status: 'done', is_analyzed: true, analyzed_at: analyzedAt, chat_history: [],
+  }).select('id,is_analyzed,analysis_status,analyzed_at').single();
   expect(inserted.error).toBeNull();
+  expect(inserted.data).toMatchObject({ is_analyzed: true, analysis_status: 'done' });
+  expect(Date.parse(inserted.data!.analyzed_at)).toBe(Date.parse(analyzedAt));
   const dreamId = inserted.data!.id;
   const before = await backend.owner.rpc('get_authenticated_quota_snapshot', { p_target_dream_id: dreamId });
   expect(before.error).toBeNull();
@@ -135,7 +138,8 @@ test('Dreamer real chat retries a lost completion without duplicate messages or 
   await nativeGuest(fixtures);
   await nativeLogin(fixtures);
   await openDream(screen, title);
-  await tap(screen, 'btn.dream.primaryCta');
+  await tap(screen, 'component.dreamDetail.actionCard');
+  await expect(screen.getByTestId('screen.dreamCategories', { visible: true })).toBeVisible();
   await tap(screen, 'btn.dreamCategory.freeChat');
   const input = screen.getByTestId('chat.input.message', { visible: true });
   await expect(input).toBeEnabled();
@@ -170,7 +174,7 @@ test('Dreamer real chat retries a lost completion without duplicate messages or 
   await app.restart();
   await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
   await openDream(screen, title);
-  await tap(screen, 'btn.dream.primaryCta');
+  await tap(screen, 'component.dreamDetail.actionCard');
   await expect(answer).toHaveCount(1);
   await expect(screen.getByText(question, { visible: true })).toHaveCount(1);
 });

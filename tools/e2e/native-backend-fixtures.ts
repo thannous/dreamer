@@ -177,7 +177,14 @@ export async function nativeSave(fixtures: NativeFixtures, story: string) {
 export async function nativeTranscript(screen: TestFixtures['screen'], story: string) {
   const detail = screen.getByTestId('screen.dreamDetail', { visible: true });
   await expect(detail).toBeVisible();
-  const text = detail.getByText(story, { visible: true });
+  // Android exposes the decorative drop cap's inline object as U+FFFC after
+  // the initial. Keep the entire story exact, permitting only that object.
+  const escape = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const first = Array.from(story)[0] ?? '';
+  const expected = new RegExp(`^${escape(first)}\\uFFFC?${escape(story.slice(first.length))}$`);
+  // A stable ID on the actual prose avoids both the identical title and
+  // native flattening of the surrounding card's accessibility hierarchy.
+  const text = screen.getByTestId('text.dreamDetail.transcript', { visible: true });
   await screen.scrollUntilVisible(text);
-  await expect(text).toHaveText([story]);
+  await expect(text).toHaveText([expected]);
 }

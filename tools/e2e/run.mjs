@@ -6,7 +6,7 @@ import { availableParallelism, homedir, tmpdir } from 'node:os';
 import { delimiter, join, resolve, basename, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SDK_PINS, digest, trackedDiffSha256, sourceSnapshot, compareSnapshots, verifyReport, aggregateReports, writeOnce, preserveStatus, directoryFiles, hashFiles, createAttemptOutput, verifyEvidenceFiles, verifyNativeCleanup, campaignFailureRecord, startSdkProgress, startHostStallMonitor, HOST_STALL_MS } from './qualification.mjs';
-import { normalizeAvdName, appInputs, nativeInputs, binaryInputs, releaseMetadata, validateReleaseReceipt, verifyInstalledRelease, runWithInstallDiagnostics, validateBuildCommand, archiveReleaseBinary } from './native-release.mjs';
+import { normalizeAvdName, appInputs, nativeInputs, binaryInputs, releaseMetadata, verifyLocalBackendBinaryConfig, validateReleaseReceipt, verifyInstalledRelease, runWithInstallDiagnostics, validateBuildCommand, archiveReleaseBinary } from './native-release.mjs';
 import { dreamerCampaignContexts } from './campaign-contexts.mjs';
 import { readNativeBackendState } from './native-backend-state.ts';
 import { acquireNativeBackendRunLock, releaseNativeBackendRunLock } from './native-backend-lock.mjs';
@@ -262,6 +262,8 @@ async function buildRelease() {
     configuration: 'Release', buildExitCode: 0, startedAt: new Date(startedAt).toISOString(), finishedAt: new Date().toISOString(),
     buildCommand, source, nativeInputDigest: native.digest, nativeInputs: native.files, profile,
     binary: { ...archiveReleaseBinary(path, platform, output), ...metadata } };
+  if (backend) verifyLocalBackendBinaryConfig({ binaryPath: release.binary.path, platform, profile, read: readBuild,
+    record: proof => writeOnce(join(output, 'embedded-public-config.json'), { binarySha256: release.binary.sha256, ...proof }) });
   writeOnce(join(output, 'release.json'), release);
   console.log('Release receipt: ' + join(output, 'release.json'));
 }
@@ -386,6 +388,8 @@ try {
     const artifact = binaryInputs(release.binary.path, platform);
     validateReleaseReceipt(release, { product, platform, bundle, inputDigest: appInputs(root, product).inputDigest,
       nativeInputDigest: nativeInputs(root, product, platform).digest, binaryDigest: artifact.sha256 });
+    if (nativeJourneys) verifyLocalBackendBinaryConfig({ binaryPath: release.binary.path, platform, profile: release.profile, read,
+      record: proof => writeOnce(join(output, 'embedded-public-config.json'), { binarySha256: artifact.sha256, ...proof }) });
     if (env.E2E_PERSONAS === '1' && (product !== 'dreamer' || release.profile.name !== 'mock-persistent'))
       throw new Error('Native personas require the owned Dreamer mock-persistent Release.');
     binary = release.binary;

@@ -90,6 +90,50 @@ export function releaseMetadata(path, platform, env, read) {
   return { bundle: plist.CFBundleIdentifier, version: plist.CFBundleShortVersionString, build: plist.CFBundleVersion,
     otaEnabled: false, signed, executableSha256: digest(readFileSync(executable)), embeddedJsSha256: digest(readFileSync(join(path, 'main.jsbundle'))) };
 }
+/** Inspect the public config inside the actual artifact, never the desired build env. */
+export function verifyLocalBackendBinaryConfig({ binaryPath, platform, profile, read, record = () => {} }) {
+  const backend = profile?.backend;
+  if (profile?.name !== 'local-backend' || !isLocalBackendOrigin(backend?.origin)
+    || !/^[a-f0-9]{64}$/.test(backend?.anonKeySha256 ?? '')) refusal('LOCAL_BACKEND_CONFIG_PROFILE');
+  let raw, configPath, config;
+  try {
+    if (platform === 'android') {
+      configPath = 'assets/app.config';
+      raw = read('unzip', ['-p', binaryPath, configPath]);
+    } else if (platform === 'ios') {
+      // EXConstantsService resolves its resource bundle beside the class bundle:
+      // the main app for static pods, or EXConstants.framework for dynamic pods.
+      const candidates = ['EXConstants.bundle/app.config', 'Frameworks/EXConstants.framework/EXConstants.bundle/app.config']
+        .filter(candidate => existsSync(join(binaryPath, candidate)));
+      if (candidates.length !== 1) throw new Error('Missing or ambiguous config.');
+      configPath = candidates[0];
+      const actual = realpathSync(join(binaryPath, configPath));
+      if (!actual.startsWith(realpathSync(binaryPath) + sep)) throw new Error('Config escaped the binary.');
+      raw = readFileSync(actual, 'utf8');
+    } else throw new Error('Unsupported platform.');
+    config = JSON.parse(raw);
+  } catch {
+    record({ schemaVersion: 1, platform, configurationRead: false });
+    refusal('LOCAL_BACKEND_BINARY_CONFIG_UNREADABLE');
+  }
+  const extra = config?.extra;
+  const anonHash = typeof extra?.supabaseAnonKey === 'string' ? digest(extra.supabaseAnonKey) : null;
+  const functionHash = typeof extra?.supabaseFunctionJwt === 'string' ? digest(extra.supabaseFunctionJwt) : null;
+  const proof = {
+    schemaVersion: 1, platform, configPath, configurationRead: true, configurationSha256: digest(raw),
+    backendOriginMatches: extra?.supabaseUrl === backend.origin,
+    apiUrlMatches: extra?.apiUrl === `${backend.origin}/functions/v1/api`,
+    anonKeySha256: anonHash, publicKeyMatches: anonHash === backend.anonKeySha256,
+    functionKeySha256: functionHash, functionKeyMatches: functionHash === backend.anonKeySha256,
+    storeKeysDisabled: ['revenuecatAndroidKey', 'revenuecatIosKey', 'revenuecatWebKey'].every(key => extra?.[key] === ''),
+    qaMarkerMatches: extra?.nativeQaAudio === true && extra?.eas?.projectId === 'noctalia-qa-local',
+  };
+  // Evidence contains only booleans/digests, never the config, public keys or tokens.
+  record(proof);
+  if (!proof.backendOriginMatches || !proof.apiUrlMatches || !proof.publicKeyMatches || !proof.functionKeyMatches
+    || !proof.storeKeysDisabled || !proof.qaMarkerMatches) refusal('LOCAL_BACKEND_BINARY_CONFIG_MISMATCH');
+  return proof;
+}
 export function validateReleaseReceipt(receipt, expected) {
   if (receipt?.schemaVersion !== 1 || receipt.kind !== 'noctalia-native-release'
     || receipt.product !== expected.product || receipt.platform !== expected.platform || receipt.bundle !== expected.bundle
