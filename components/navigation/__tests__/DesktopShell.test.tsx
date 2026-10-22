@@ -50,8 +50,8 @@ it('keeps screens clear of the folded Duo status bar column, in the page ground'
   expect(screen.getByTestId('content-width').textContent).toBe('412');
 });
 
-it('paints the gutter at night beside the onboarding, which is always night', () => {
-  mockPathname = '/onboarding';
+it.each(['/onboarding', '/sleep-sounds'])('paints the gutter at night beside %s, which is always night', (pathname: string) => {
+  mockPathname = pathname;
   render(<DesktopShell><ContentWidth /></DesktopShell>);
   expect(shellStyle().backgroundColor).toBe(getNoctaliaDesignTokens(DarkTheme, 'dark').screen.background);
   expect(getNoctaliaDesignTokens(DarkTheme, 'dark').screen.background)

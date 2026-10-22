@@ -18,7 +18,7 @@ import { useTheme } from '@/context/ThemeContext';
  */
 const FULL_WINDOW_PREFIXES = ['/onboarding', '/auth', '/paywall', '/lucid', '/dev'];
 /** Routes painted at night whatever the chosen theme, whose gutters must be night too. */
-const NIGHT_ONLY_PREFIXES = ['/onboarding'];
+const NIGHT_ONLY_PREFIXES = ['/onboarding', '/sleep-sounds'];
 const NIGHT_GROUND = getNoctaliaDesignTokens(DarkTheme, 'dark').screen.background;
 
 function isUnder(pathname: string, prefixes: string[]): boolean {
