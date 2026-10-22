@@ -244,7 +244,7 @@ async function openBackgroundRoute(fixtures: NativeBackgroundFixtures, route: st
   await acceptDreamerLink(fixtures);
 }
 
-async function prepareBackgrounds({ app, screen }: NativeBackgroundFixtures, mode: 'light' | 'dark') {
+async function prepareBackgrounds({ app, screen, platform }: NativeBackgroundFixtures, mode: 'light' | 'dark') {
   await app.open();
   await acceptDreamerLink({ screen });
   // The guarded runner owns a disposable simulator and this synthetic profile.
@@ -258,6 +258,11 @@ async function prepareBackgrounds({ app, screen }: NativeBackgroundFixtures, mod
   await settings.tap();
   await screen.getByTestId('quick-settings.language', { visible: true }).tap();
   await screen.getByTestId('quick-settings.language.fr', { visible: true }).tap();
+  // A fresh Android QA target offers its optional voice pack over the language drawer.
+  // Declining that download preserves the selected UI language and the measured fixture.
+  if (platform === 'android' && await screen.getByText('Pack de langue pour la reconnaissance vocale', { visible: true }).count() > 0) {
+    await screen.getByRole('button', 'Annuler', { visible: true }).tap();
+  }
   await expect(screen.getByRole('radio', 'Français', { visible: true })).toBeChecked();
   await screen.getByTestId('quick-settings.close', { visible: true }).tap();
   await settings.tap();
@@ -532,8 +537,7 @@ test('Dreamer release Quick Settings persists French and theme choices while pre
   const french = screen.getByTestId('quick-settings.language.fr', { visible: true });
   await french.tap();
   // Android offers a speech pack independently of the saved UI language.
-  if (platform === 'android') {
-    await expect(screen.getByText('Pack de langue pour la reconnaissance vocale', { visible: true })).toBeVisible();
+  if (platform === 'android' && await screen.getByText('Pack de langue pour la reconnaissance vocale', { visible: true }).count() > 0) {
     await screen.getByRole('button', 'Annuler', { visible: true }).tap();
   }
   await expect(screen.getByRole('radio', 'Français', { visible: true })).toBeChecked();
@@ -697,4 +701,69 @@ test('Dreamer release drawer Plus opens its offer and closes back to Capture', a
   await screen.getByTestId('btn.paywall.close', { visible: true }).tap();
   await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
   await app.screenshot('release-offer-return');
+});
+
+// This journey retains the existing owned synthetic SQLite fixture. It never seeds,
+// clears an account, starts audio, submits an analysis or opens a Store operation.
+test('Dreamer Release scroll dogfood preserves its journal and painted resource screens', {
+  tags: ['framerate'], timeout: 600_000,
+  skip: process.env.E2E_SCROLL_DOGFOOD !== 'synthetic200'
+    ? 'Requires the work package’s owned 200-dream Release fixture.' : false,
+}, async (fixtures) => {
+  const { app, screen, device } = fixtures;
+  await app.open();
+  await screen.getByTestId('tab.journal', { visible: true }).tap();
+  const card = screen.getByTestId(/^dream\.item\./, { visible: true }).filter({ hasText: 'Noctalia performance 001' });
+  await expect(card).toHaveCount(1);
+  await app.screenshot('scroll-dogfood-journal');
+  await card.tap();
+  await expect(screen.getByTestId('screen.dreamDetail', { visible: true })).toBeVisible();
+  await expect(screen.getByRole('heading', 'Noctalia performance 001', { visible: true })).toBeVisible();
+  await app.screenshot('scroll-dogfood-detail');
+  await screen.swipe({ direction: 'up', momentum: 'slow' });
+  await screen.swipe({ direction: 'down', momentum: 'slow' });
+  await device.back();
+  await expect(screen.getByTestId('screen.journal', { visible: true })).toBeVisible();
+  await screen.scrollUntilVisible(card, { direction: 'up' });
+  await expect(card).toHaveCount(1);
+  for (const [tab, root, label] of [
+    ['tab.home', 'screen.home', 'home'], ['tab.stats', 'screen.trends', 'trends'],
+    ['tab.explore', 'screen.explore', 'explore'],
+  ]) {
+    await screen.getByTestId(tab, { visible: true }).tap();
+    await expect(screen.getByTestId(root, { visible: true })).toBeVisible();
+    await app.screenshot(`scroll-dogfood-${label}-top`);
+    await screen.swipe({ direction: 'up', momentum: 'slow' });
+    await screen.swipe({ direction: 'down', momentum: 'slow' });
+    await expect(screen.getByTestId(root, { visible: true })).toBeVisible();
+    if (label === 'trends') {
+      const all = screen.getByTestId('trends.period.all');
+      await screen.scrollUntilVisible(all, { direction: 'up' });
+      await all.tap();
+      await expect(screen.getByTestId('trends.figure.dreams.value')).toHaveText('200');
+    }
+    await app.screenshot(`scroll-dogfood-${label}-return`);
+  }
+  for (const [route, root] of [
+    ['dream-guides', 'screen.dreamGuides'], ['symbol-dictionary', 'screen.symbolDictionary'],
+  ]) {
+    await openBackgroundRoute(fixtures, route);
+    await expect(screen.getByTestId(root, { visible: true })).toBeVisible();
+    await app.screenshot(`scroll-dogfood-${route}`);
+  }
+  // This production-apk profile leaves the audio feature disabled. Its direct
+  // link must retain the existing safe return to Today, without starting audio.
+  await openBackgroundRoute(fixtures, 'sleep-sounds');
+  await expect(screen.getByTestId('screen.home', { visible: true })).toBeVisible();
+  await app.open();
+  await screen.getByTestId('tab.home', { visible: true }).tap();
+  await expect(screen.getByTestId('screen.home', { visible: true })).toBeVisible();
+  try {
+    await device.setOrientation('landscape-left');
+    await expect(screen.getByTestId('screen.home', { visible: true })).toBeVisible();
+    await app.screenshot('scroll-dogfood-landscape');
+  } finally {
+    await device.setOrientation('portrait');
+  }
+  await expect(screen.getByTestId('screen.home', { visible: true })).toBeVisible();
 });

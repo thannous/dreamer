@@ -1855,3 +1855,52 @@ test('site media keep their original pixels and two effects through the configur
     if (width < 768) expect(loaded.some(image => image.path.includes('/plate-'))).toBe(false);
   }
 });
+
+for (const [width, height] of [[390, 844], [1440, 900]]) {
+  test(`landing scroll dogfood preserves comets, reversal and reduced motion at ${width}px`, {
+    tags: ['framerate'], timeout: 180_000,
+  }, async ({ app, browser, screen }) => {
+    await browser.setViewport({ width, height });
+    await app.open('/fr/');
+    const consent = screen.getByRole('button', 'Continuer sans mesure', { visible: true });
+    if (await consent.count()) await consent.tap();
+    await expect.poll(() => browser.evaluate(() => Boolean(document.querySelector('.oh-intro-skip'))
+      || !document.documentElement.classList.contains('exp-intro-pending'))).toBe(true);
+    const skip = browser.locator('.oh-intro-skip');
+    if (await skip.count()) await skip.tap();
+    await expect.poll(() => browser.evaluate(() => document.documentElement.classList.contains('exp-journey')
+      && !document.documentElement.classList.contains('exp-intro-pending'))).toBe(true);
+    // Enter the actual pinned scene before using its visible navigation.
+    await browser.evaluate(() => {
+      const track = document.querySelector('.oh-dreamspace')!;
+      window.scrollTo({ top: track.getBoundingClientRect().top + window.scrollY + 80, behavior: 'instant' });
+      return true;
+    });
+    const map = screen.getByRole('button', 'Ce qui les relie', { visible: true });
+    await expect(map).toBeVisible();
+    await app.screenshot('landing-gallery');
+    await map.tap();
+    const next = screen.getByRole('button', 'Rêve suivant', { visible: true });
+    await expect(next).toBeEnabled();
+    await next.tap();
+    await expect.poll(() => browser.evaluate(() => [...document.querySelectorAll<HTMLElement>('.oh-symbol-comet')]
+      .some(el => !el.hidden && Number(getComputedStyle(el).opacity) > 0.1))).toBe(true);
+    await app.screenshot('landing-comets');
+    // Resizing during a flight must remeasure its endpoints, even at the same progress.
+    await browser.setViewport({ width: width === 390 ? 320 : 1100, height });
+    await expect.poll(() => browser.evaluate(() => document.querySelector('.oh-starmap-step')?.textContent ?? null)).toBe('2');
+    expect(await browser.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+    const previous = screen.getByRole('button', 'Rêve précédent', { visible: true });
+    await previous.focus();
+    await browser.keyboard.press('Enter');
+    await expect.poll(() => browser.evaluate(() => document.querySelector('.oh-starmap-step')?.textContent ?? null)).toBe('1');
+    await expect(previous).toBeDisabled();
+    await app.screenshot('landing-reversed');
+    await browser.emulateMedia({ reducedMotion: 'reduce' });
+    await app.open('/fr/');
+    await expect(screen.getByRole('heading', { level: 1 })).toBeVisible();
+    expect(await browser.evaluate(() => document.documentElement.dataset.expTier ?? null)).toBe('static');
+    expect(await browser.evaluate(() => document.querySelectorAll('.oh-symbol-comet').length)).toBe(0);
+    await app.screenshot('landing-reduced-motion');
+  });
+}
