@@ -131,11 +131,12 @@ test('Dreamer native guest dream and draft survive real sign-in, reconnect and a
     await app.restart();
     await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
     await nativeJournal(screen);
-    for (const transcript of [story, draft]) {
+    for (const transcript of [draft, story]) {
       await nativeJournal(screen);
       // This account journey verifies the two restored dreams directly. Search
       // has its own journeys and is not a prerequisite for opening these cards.
-      await expect(screen.getByTestId(/^dream\.item\./)).toHaveCount(2);
+      // Native accessibility exposes only the mounted rows of this virtualized
+      // list. Visit both unique titles; the server assertions count exactly two.
       const title = transcript.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       // DreamCard labels start with the complete short title, followed by date
       // and status. Assert one exact title, excluding its Favorite/Share actions.
