@@ -142,8 +142,9 @@ export async function nativeGuest({ app, screen, platform }: Pick<NativeFixtures
   if (platform === 'android' && await screen.getByText('Language Pack for Voice Recording', { visible: true }).count())
     await screen.getByRole('button', 'Cancel', { visible: true }).tap();
   await expect(screen.getByRole('radio', 'English', { visible: true })).toBeChecked();
-  await nativeTap(screen, 'quick-settings.close', 'up');
-  await nativeSettings(screen);
+  // Continue through the drawer already open, without closing and reopening it.
+  await nativeTap(screen, 'quick-settings.all');
+  await expect(screen.getByTestId('screen.settings', { visible: true })).toBeVisible();
   const signIn = screen.getByTestId('settings-account-open-signin', { visible: true });
   await screen.scrollUntilVisible(signIn, { direction: 'up' });
   // A positive guest account action, alongside no account identity, proves the fixture's scope.
@@ -164,14 +165,21 @@ export async function nativeCapture(screen: TestFixtures['screen']) {
 }
 
 export async function nativeLogin(fixtures: NativeFixtures, account: 'owner' | 'other' = 'owner') {
-  const { screen, device } = fixtures;
+  const { screen, device, platform } = fixtures;
   const login = credentials.user(account === 'owner' ? 'nativeOwner' : 'nativeOther');
   await nativeSettings(screen);
   await nativeTap(screen, 'settings-account-open-signin', 'up');
   await screen.getByTestId('input.auth.email', { visible: true }).fill(login.username);
-  await screen.getByTestId('input.auth.password', { visible: true }).fill(login.password);
-  await device.dismissKeyboard();
-  await nativeTap(screen, 'btn.auth.signIn');
+  const password = screen.getByTestId('input.auth.password', { visible: true });
+  await password.fill(login.password);
+  if (platform === 'ios') {
+    // The password field submits through onSubmitEditing. Its native Return
+    // avoids the generic keyboard drag, which cannot dismiss this iPhone sheet.
+    await password.press('Enter');
+  } else {
+    await device.dismissKeyboard();
+    await nativeTap(screen, 'btn.auth.signIn');
+  }
   await nativeRecordingAfterAuth(screen);
   await nativeSettings(screen);
   const email = screen.getByTestId('text.auth.email', { visible: true });
