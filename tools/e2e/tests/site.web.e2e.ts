@@ -414,8 +414,8 @@ test('the French tiger atlas reads like a dictionary entry and shows each publis
   expect(target.top).toBeLessThan(phone.viewportHeight / 2);
   await app.screenshot('tiger-atlas-390-variant');
 
-  // A symbol without a pack reads in the same article: its own sections in the same order, the app
-  // after its meaning and questions, and no scene, side illustration or motion script.
+  // Deer now has its complete pack too: its own content stays in the article,
+  // with the three scenes, side painting and common engine after the 240-pack rollout.
   await app.open('/fr/symboles/cerf.html');
   await expect(screen.getByRole('heading', { level: 1 })).toBeVisible();
   expect(await browser.evaluate(() => ({
@@ -424,8 +424,8 @@ test('the French tiger atlas reads like a dictionary entry and shows each publis
     ids: Array.from(document.querySelectorAll('article.atlas :is(section, aside)[id]')).map(node => node.id),
     jumps: Array.from(document.querySelectorAll('.symbol-jump-link')).map(link => link.textContent!.trim()),
   }))).toEqual({
-    articles: 1, packParts: 0,
-    ids: ['meaning', 'questions', 'continuer-noctalia', 'lecture', 'variations', 'faq', 'plus-loin', 'garder-noctalia'],
+    articles: 1, packParts: 6,
+    ids: ['meaning', 'continuer-noctalia', 'scenes', 'reflexion', 'questions', 'lecture', 'variations', 'faq', 'plus-loin', 'garder-noctalia'],
     jumps: ['Sens', 'Questions', 'Variantes'],
   });
   await app.screenshot('symbol-cerf-390');
@@ -785,27 +785,18 @@ test('the French atlas paintings each move two distinct raster effects, only on 
     await expect.poll(() => browser.evaluate(readSurfaces).then(all => surfaceNamed(all, 'hero').state)).toBe('running');
   }
   await browser.emulateMedia({ reducedMotion: 'no-preference' });
-  // A symbol without a pack reads in the same article, as wide, without scenes, side illustration or
-  // motion script (nor its request): its questions sit where a pack shows its illustration.
+  // The completed 240-pack rollout now includes deer. Keep a concrete late-pack
+  // counterexample here: treating it as an unillustrated article would hide its
+  // side painting, three scenes and common motion engine.
   await app.open('/en/symbols/deer.html');
   await expect(screen.getByRole('heading', { level: 1 })).toBeVisible();
-  const plain = await browser.evaluate(() => {
-    const box = (selector: string) => {
-      const rect = document.querySelector(selector)!.getBoundingClientRect();
-      return { left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom, width: rect.width };
-    };
-    return {
-      packParts: document.querySelectorAll('.atlas-scene-input, .atlas-decor, article.max-w-3xl, script[src*="symbol-living"], #symbol-living-config').length,
-      motionRequests: performance.getEntriesByType('resource').filter(entry => /symbol-living|tiger-living/.test(entry.name)).length,
-      article: box('article.atlas'), reading: box('.atlas-reading'), questions: box('.atlas-plate > #questions'),
-      viewport: document.documentElement.clientWidth,
-    };
-  });
-  expect([plain.packParts, plain.motionRequests]).toEqual([0, 0]);
-  expect(plain.article.width).toBeGreaterThanOrEqual(plain.viewport * 0.88);
-  expect(plain.questions.left).toBeGreaterThanOrEqual(plain.reading.right);
-  expect(plain.questions.top).toBeLessThan(plain.reading.bottom);
-  await app.screenshot('symbol-deer-1920');
+  await expect.poll(() => browser.evaluate(readSurfaces).then(all => surfaceNamed(all, 'hero')?.state)).toBe('running');
+  expect(surfaceNamed(await browser.evaluate(readSurfaces), 'hero').channels).toEqual(['a', 'b']);
+  expect(await browser.evaluate(() => document.querySelectorAll('.atlas-decor, .atlas-scene-input').length)).toBe(4);
+  await browser.evaluate(() => { document.querySelector('[data-living-surface="plate"]')!.scrollIntoView({ block: 'center', behavior: 'instant' }); return window.scrollY; });
+  await expect.poll(() => browser.evaluate(readSurfaces).then(all => surfaceNamed(all, 'plate')?.state)).toBe('running');
+  expect(surfaceNamed(await browser.evaluate(readSurfaces), 'plate').opaque.every(count => count > 0)).toBe(true);
+  await app.screenshot('symbol-deer-complete-pack-1920');
 });
 
 // The tiger's paintings move on the packs' engine, with its own files (owner request 2026-10-20): on its

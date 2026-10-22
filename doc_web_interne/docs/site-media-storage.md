@@ -179,3 +179,12 @@ sur R2 et le domaine CDN est actif. La publication de `noctalia.app` reste une
 étape distincte, régie par `AGENTS.md` : fusion autorisée explicitement, preuve
 `verify:release:site` sur `master` puis commande de déploiement gardée. Aucune
 réécriture de l'historique Git ni suppression de sauvegarde n'est incluse.
+
+Le lot de régression sur `15104dc84` a passé les six parcours ciblés CDN,
+portrait sans moteur, tigre dans les six langues, texture cassée et vignette
+cassée. Les 36 peintures du parcours atlas ont également passé leurs contrôles
+avant une assertion historique sur le cerf « sans pack ». Le cerf possède
+maintenant son pack complet depuis PR #499 ; cette attente obsolète est remplacée
+par un contre-exemple vérifiant sa plaque, ses trois scènes et ses deux effets.
+Le mécanisme de repli en cas de script ou texture manquants reste couvert par
+les autres parcours inchangés. Aucun contrôle de pixels n'a été supprimé.
