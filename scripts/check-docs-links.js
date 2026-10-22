@@ -34,8 +34,8 @@ const EXTERNAL_CHECK_HEADERS = {
 const TRANSIENT_EXTERNAL_ERROR_PATTERN =
   /aborted|certificate|eai_again|econnreset|enotfound|fetch failed|network|ssl|terminated|timeout|tls/i;
 // Gateway errors some servers return to HEAD or under load (PubMed answered HEAD with 502 and a
-// single request with 200). They get a GET, then a few spaced GETs; a status that stays one of
-// these still fails, and every other status keeps its meaning (404 fails at once).
+// single request with 200). Retry with spaced GETs, then report continued unavailability as
+// a warning: an external outage does not prove a broken link. Other failures still block.
 const TRANSIENT_HTTP_STATUSES = new Set([502, 503, 504]);
 const TRANSIENT_HTTP_RETRY_DELAYS_MS = [1000, 3000];
 
@@ -300,16 +300,9 @@ async function checkExternalUrl(url, { timeoutMs, retryDelaysMs = TRANSIENT_HTTP
     TRANSIENT_EXTERNAL_ERROR_PATTERN.test(errorMessage);
   const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-  try {
-    const res = await request('HEAD');
-    if (res.status === 405 || res.status === 501) {
-      const res2 = await request('GET');
-      return { ok: isOkStatus(res2.status), status: res2.status };
-    }
-    if (TRANSIENT_HTTP_STATUSES.has(res.status)) {
-      // A gateway error has been seen: a GET that then fails on the network keeps that status,
-      // never the skip reserved for network errors without any HTTP answer.
-      let status = res.status;
+  const checkResponse = async (response) => {
+    let status = response.status;
+    if (TRANSIENT_HTTP_STATUSES.has(status)) {
       for (const delay of [0, ...retryDelaysMs]) {
         if (delay) await wait(delay);
         try {
@@ -319,13 +312,21 @@ async function checkExternalUrl(url, { timeoutMs, retryDelaysMs = TRANSIENT_HTTP
         }
         if (!TRANSIENT_HTTP_STATUSES.has(status)) break;
       }
-      return { ok: isOkStatus(status), status };
     }
-    return { ok: isOkStatus(res.status), status: res.status };
+    return {
+      ok: isOkStatus(status),
+      status,
+      ...(TRANSIENT_HTTP_STATUSES.has(status) ? { unavailable: true } : {})
+    };
+  };
+
+  try {
+    let res = await request('HEAD');
+    if (res.status === 405 || res.status === 501) res = await request('GET');
+    return await checkResponse(res);
   } catch {
     try {
-      const res = await request('GET');
-      return { ok: isOkStatus(res.status), status: res.status };
+      return await checkResponse(await request('GET'));
     } catch (fallbackError) {
       const errorMessage = formatError(fallbackError);
       if (canSkipTransientNetworkError(errorMessage)) {
@@ -483,6 +484,7 @@ async function main() {
   // External checks
   const brokenExternal = [];
   const skippedExternal = [];
+  const unavailableExternal = [];
   if (checkExternal && externalUrls.size > 0) {
     const list = [...externalUrls];
     console.log(`\nChecking external URLs: ${list.length} (concurrency=${concurrency}, timeoutMs=${timeoutMs})`);
@@ -493,7 +495,8 @@ async function main() {
     });
 
     for (const r of results) {
-      if (!r.ok) brokenExternal.push(r);
+      if (r.unavailable) unavailableExternal.push(r);
+      else if (!r.ok) brokenExternal.push(r);
       else if (r.skipped) skippedExternal.push(r);
     }
   }
@@ -512,6 +515,7 @@ async function main() {
   );
   if (checkExternal) {
     console.log(`Broken external: ${brokenExternal.length}`);
+    console.log(`External unavailable (non-blocking): ${unavailableExternal.length}`);
     console.log(`Skipped external transient network errors: ${skippedExternal.length}`);
   }
 
@@ -539,10 +543,20 @@ async function main() {
     if (brokenExternal.length > 200) console.log(`... ${brokenExternal.length - 200} more`);
   }
 
+  if (unavailableExternal.length > 0) {
+    console.warn('\nExternal availability warnings (not validated; publication may continue)');
+    for (const warning of unavailableExternal) {
+      console.warn(`- [${warning.status}] ${warning.url}`);
+    }
+  }
+
   const shouldFail = brokenInternal.length > 0 || (checkExternal && brokenExternal.length > 0);
   if (shouldFail) process.exit(1);
 
   console.log('\n✅ No broken links detected.');
+  if (unavailableExternal.length || skippedExternal.length) {
+    console.warn('Some external links could not be validated; see availability warnings above.');
+  }
 }
 
 if (require.main === module) {

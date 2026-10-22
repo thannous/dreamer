@@ -2,7 +2,8 @@
 
 // Isolated checks of checkExternalUrl against a local server: a publish run cannot make PubMed
 // answer 502 on demand, so these replay the failures seen there (HEAD 502, then 200) and the
-// cases the retry must not hide (a 502 that lasts, a 404).
+// current policy: persistent 502/503/504 warn; missing pages and other errors still fail.
+// The real publication journey cannot reliably make third-party sites fail or recover on demand.
 const http = require('http');
 const { checkExternalUrl } = require('./check-docs-links');
 
@@ -48,17 +49,27 @@ describe('checkExternalUrl', () => {
     expect(await check('/recovers', [502, 503, 504, 200])).toEqual({ result: { ok: true, status: 200 }, methods: ['HEAD', 'GET', 'GET', 'GET'] });
   });
 
-  it('fails a gateway error that lasts', async () => {
-    expect(await check('/always-502', [502])).toEqual({ result: { ok: false, status: 502 }, methods: ['HEAD', 'GET', 'GET', 'GET'] });
+  it.each([502, 503, 504])('warns about persistent HTTP %i without claiming the link passed', async (status) => {
+    expect(await check(`/always-${status}`, [status])).toEqual({ result: { ok: false, status, unavailable: true }, methods: ['HEAD', 'GET', 'GET', 'GET'] });
   });
 
-  it('keeps a gateway error when the following GETs lose their connection, without skipping it', async () => {
-    expect(await check('/gateway-then-drop', [502, 'drop'])).toEqual({ result: { ok: false, status: 502 }, methods: ['HEAD', 'GET'] });
+  it('keeps the unavailable status when following GETs lose their connection', async () => {
+    expect(await check('/gateway-then-drop', [502, 'drop'])).toEqual({ result: { ok: false, status: 502, unavailable: true }, methods: ['HEAD', 'GET'] });
   });
 
   it('fails a 404 at once, and a 404 that follows a gateway error', async () => {
     expect(await check('/missing', [404])).toEqual({ result: { ok: false, status: 404 }, methods: ['HEAD'] });
     expect(await check('/gateway-then-missing', [502, 404])).toEqual({ result: { ok: false, status: 404 }, methods: ['HEAD', 'GET'] });
+  });
+
+  it.each([404, 410, 500])('still fails HTTP %i, including after a temporary outage', async (status) => {
+    expect((await check(`/failure-${status}`, [status])).result).toEqual({ ok: false, status });
+    expect((await check(`/outage-then-${status}`, [503, status])).result).toEqual({ ok: false, status });
+  });
+
+  it('applies the availability warning after HEAD is refused or loses its connection', async () => {
+    expect((await check('/refused-then-outage', [405, 503])).result).toEqual({ ok: false, status: 503, unavailable: true });
+    expect((await check('/drop-then-outage', ['drop', 503])).result).toEqual({ ok: false, status: 503, unavailable: true });
   });
 
   it('keeps the GET fallback for servers that refuse HEAD', async () => {

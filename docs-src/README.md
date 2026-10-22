@@ -349,6 +349,12 @@ If the Cloudflare Pages project or build settings change, update
 `docs-src/config/cloudflare-pages.json` and mirror the same values in the
 Cloudflare dashboard.
 
+External link validation remains enabled during publication. After bounded retries,
+HTTP 502/503/504 from third-party sites are reported with their URL and status as
+non-blocking availability warnings, not as validated links. Broken internal links,
+missing external pages (404/410), and other HTTP failures still block publication.
+This avoids making a release depend on a third-party maintenance window.
+
 ## Source Templates
 
 - `templates/blog-article.example.md`: starting point for a localized blog article.
