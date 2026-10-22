@@ -27,7 +27,7 @@ import { EASE } from '@/components/motion/motion';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { getNoctaliaPalette } from '@/constants/noctaliaPalette';
 import { Fonts } from '@/constants/theme';
-import { useContentWindow } from '@/context/ContentWindowContext';
+import { useContentWindow, useSideGutters } from '@/context/ContentWindowContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
@@ -258,6 +258,7 @@ export function DreamCaptureSeal({ name, mark, provisionalName, date, previousPa
   onSealed: (read: boolean) => void;
 }) {
   const { width, height, fontScale } = useContentWindow();
+  const sideGutters = useSideGutters();
   const insets = useSafeAreaInsets();
   const { colors, mode } = useTheme();
   const { t } = useTranslation();
@@ -792,6 +793,9 @@ export function DreamCaptureSeal({ name, mark, provisionalName, date, previousPa
   return (
     <Modal visible transparent animationType="none" statusBarTranslucent navigationBarTranslucent
       onRequestClose={openDream}>
+    {/* Laid out in the screen's own frame, clear of the side safe areas the screen keeps, so
+        the seal and the name land where the dream page sets them. */}
+    <View pointerEvents="box-none" style={{ position: 'absolute', top: 0, bottom: 0, left: sideGutters.left, right: sideGutters.right }}>
     <View
       testID={TID.Component.DreamCaptureSeal}
       accessible={false}
@@ -1005,6 +1009,7 @@ export function DreamCaptureSeal({ name, mark, provisionalName, date, previousPa
         className="min-h-[48px] items-center justify-center rounded-full border border-line bg-ink px-6 py-3">
         <Text className="text-center font-sans-medium text-[15px] text-ivory">{t('journal.seal.open_dream')}</Text>
       </PressableScale>
+    </View>
     </View>
     </Modal>
   );

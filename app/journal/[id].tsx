@@ -3403,7 +3403,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
               accessibilityRole="button"
               accessibilityLabel={t('journal.detail.image.close_fullscreen')}
             />
-            <View className="flex-1 items-center justify-center px-4">
+            <View className="flex-1 items-center justify-center"
+              style={{ paddingLeft: 16 + insets.left, paddingRight: 16 + insets.right }}>
               {dream.imageUrl ? (
                 <Image
                   source={displayImageUrl ? { uri: displayImageUrl, cacheKey: imageCacheKey } : null}
@@ -3417,8 +3418,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
               testID={TID.Button.JournalIllustrationClose}
               accessibilityRole="button"
               accessibilityLabel={t('journal.detail.image.close_fullscreen')}
-              className="absolute right-5 items-center justify-center rounded-full border border-line bg-ink-raised"
-              style={{ top: insets.top + 12, height: 44, width: 44 }}
+              className="absolute items-center justify-center rounded-full border border-line bg-ink-raised"
+              style={{ top: insets.top + 12, right: 20 + insets.right, height: 44, width: 44 }}
             >
               <IconSymbol name="xmark" size={18} color={noctalia.text.primary} />
             </PressableScale>
@@ -3464,7 +3465,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
           animationType="fade"
           onRequestClose={closeShareModal}
         >
-          <View className="flex-1 items-center justify-center bg-ink-overlay p-6">
+          <View className="flex-1 items-center justify-center bg-ink-overlay p-6"
+            style={{ paddingLeft: 24 + insets.left, paddingRight: 24 + insets.right }}>
             <Pressable className="absolute inset-0" onPress={closeShareModal} />
             <View className="w-full max-w-[420px] gap-4 rounded-[20px] bg-ink-raised p-6"
             >
