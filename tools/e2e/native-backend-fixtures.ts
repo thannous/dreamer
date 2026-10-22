@@ -1,7 +1,10 @@
+import { createRequire } from 'node:module';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import { test as base, type Device } from '@e2e-dev/mobile';
 import { credentials, expect, type TestFixtures } from 'e2e';
 import { readNativeBackendState, type NativeBackendState } from './native-backend-state';
+
+const { Client } = createRequire(import.meta.url)('pg');
 
 export type NativeFixtures = TestFixtures & { device: Device };
 type Backend = {
@@ -45,6 +48,17 @@ export const test = base.extend<{ backend: Backend }>({
         // A new isolated fixture starts with a clean ledger for these owned users only.
         const quota = await admin.from('quota_usage').delete().eq('user_id', state.accounts[name].id);
         expect(quota.error).toBeNull();
+      }
+      // Creation limits survive dream deletion too. The product denies Data API
+      // access even to service_role; reset only these disposable users through
+      // the same guarded loopback database, after their app queue is cleared.
+      const db = new Client({ connectionString: state.status.DB_URL });
+      try {
+        await db.connect();
+        await db.query('delete from public.dream_creation_buckets where user_id = any($1::uuid[])',
+          [[state.accounts.owner.id, state.accounts.other.id]]);
+      } finally {
+        await db.end();
       }
       await provide({ state, owner, other, setOnline, transportState: () => transport('state') });
     } finally {
