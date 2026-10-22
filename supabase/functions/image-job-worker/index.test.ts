@@ -7,6 +7,7 @@ import {
   markTerminalFailure,
   persistDreamImageFailure,
   persistDreamImageResult,
+  preparedPaintingMatch,
   redactedRequestPayload,
 } from './index.ts';
 
@@ -277,4 +278,15 @@ Deno.test('guest image persistence without dream_id does not write dreams', asyn
 Deno.test('duplicate worker triggers cannot claim an already-running job', async () => {
   const client = { from: () => ({ select: () => ({ eq: () => ({ eq: () => ({ limit: () => ({ maybeSingle: async () => ({ data: imageJob, error: null }) }) }) }) }) }) };
   assertEquals(await claimSpecificJob(client as any, imageJob.id), null);
+});
+
+Deno.test('an image job looks for its dream’s prepared painting by prompt, or by text for a first illustration only', () => {
+  const job = { user_id: 'u1', dream_id: 7 };
+  assertEquals(preparedPaintingMatch(job, { prompt: 'A river of glass', imageSize: '1K' }), 'prompt');
+  assertEquals(preparedPaintingMatch(job, { prompt: '', imageSize: '1K' }), 'transcript');
+  // A dream painted again asks for a new painting, not the prepared one.
+  assertEquals(preparedPaintingMatch(job, { prompt: '', previousImageUrl: 'https://example.test/own.jpg', imageSize: '1K' }), null);
+  assertEquals(preparedPaintingMatch(job, { prompt: 'A river of glass', imageSize: '2K' }), null);
+  assertEquals(preparedPaintingMatch({ user_id: null, dream_id: 7 }, { prompt: '', imageSize: '1K' }), null);
+  assertEquals(preparedPaintingMatch({ user_id: 'u1', dream_id: null }, { prompt: 'p', imageSize: '1K' }), null);
 });

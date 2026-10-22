@@ -10,7 +10,7 @@ const BAND_QUALITY = 80;
 /** As long as a dream's own illustration link (services/storage.ts). */
 const SIGNED_URL_SECONDS = 60 * 60 * 24 * 365;
 /** How long an image job waits for a prepared painting under way rather than paying for another. */
-const PAINTING_WAIT_MS = 90 * 1000;
+const PAINTING_WAIT_MS = 60 * 1000;
 const PAINTING_POLL_MS = 3000;
 
 // deno-lint-ignore no-explicit-any
@@ -94,6 +94,10 @@ export async function takePreparedIllustration(admin: AdminClient, input: {
   now?: () => number;
   sleep?: (ms: number) => Promise<void>;
 }): Promise<string | null> {
+  return (await takePreparedPainting(admin, input))?.url ?? null;
+}
+
+async function takePreparedPainting(admin: AdminClient, input: Parameters<typeof takePreparedIllustration>[1]): Promise<{ path: string; url: string } | null> {
   try {
     const previews = () => admin.from('analysis_previews');
     const now = input.now ?? Date.now;
@@ -135,9 +139,45 @@ export async function takePreparedIllustration(admin: AdminClient, input: {
       .eq('user_id', input.userId).eq('dream_id', input.dreamId).eq('image_status', 'used');
     const { data: signed, error: signError } = await objects.createSignedUrl(ownPath, SIGNED_URL_SECONDS);
     if (signError || !signed?.signedUrl) return null;
-    return signed.signedUrl;
+    return { path: ownPath, url: signed.signedUrl };
   } catch {
     console.warn('[analysis-preview] could not take a prepared painting');
     return null;
+  }
+}
+
+/**
+ * Once the analysis has taken the prepared reading and asked for no illustration, the painting
+ * prepared with it (already paid for) becomes the dream's illustration, if the dream has none.
+ * Nothing is painted here: no painting to take leaves the dream as it is.
+ */
+export async function attachPreparedIllustration(admin: AdminClient, input: {
+  bucket: string;
+  userId: string;
+  dreamId: number;
+  prompt: string;
+  now?: () => number;
+  sleep?: (ms: number) => Promise<void>;
+}): Promise<boolean> {
+  try {
+    const dreams = () => admin.from('dreams');
+    const { data: dream, error } = await dreams().select('image_url')
+      .eq('id', input.dreamId).eq('user_id', input.userId).maybeSingle();
+    if (error || !dream || dream.image_url) return false;
+    const painting = await takePreparedPainting(admin, input);
+    if (!painting) return false;
+    const { data: set, error: setError } = await dreams()
+      .update({ image_url: painting.url, image_generation_failed: false })
+      .eq('id', input.dreamId).eq('user_id', input.userId).or('image_url.is.null,image_url.eq.')
+      .select('id');
+    if (setError || !set?.length) {
+      // Illustrated meanwhile: the taken painting would be left unseen.
+      await admin.storage.from(input.bucket).remove([painting.path]).then(() => undefined, () => undefined);
+      return false;
+    }
+    return true;
+  } catch {
+    console.warn('[analysis-preview] could not attach a prepared painting');
+    return false;
   }
 }

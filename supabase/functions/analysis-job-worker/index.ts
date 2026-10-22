@@ -3,6 +3,7 @@ import { corsHeaders } from '../api/lib/constants.ts';
 import { AI_REQUEST_LIMITS, isValidUuid } from '../api/lib/aiRequestPolicy.ts';
 import { resolveStoredTranscriptForAi } from '../api/lib/prompts.ts';
 import { takePreparedReading, transcriptSha256 } from '../api/lib/analysisPreview.ts';
+import { attachPreparedIllustration } from '../api/services/previewIllustration.ts';
 import {
   ANALYSIS_JOB_WORKER_AUTH_HEADER,
   createAnalysisAdminClient,
@@ -153,6 +154,7 @@ export const serializeAnalysisJobError = (error: unknown) => {
 const processAnalysisJob = async (input: {
   supabaseUrl: string;
   serviceRoleKey: string;
+  storageBucket: string;
   jobId: string;
 }) => {
   const adminClient = createAnalysisAdminClient(input.supabaseUrl, input.serviceRoleKey);
@@ -263,6 +265,11 @@ const processAnalysisJob = async (input: {
         serviceRoleKey: input.serviceRoleKey,
         jobId: imageJobId,
       });
+    } else if (prepared) {
+      // Opened with no illustration asked: the painting its preview prepared comes with it.
+      await attachPreparedIllustration(adminClient, {
+        bucket: input.storageBucket, userId: job.user_id, dreamId: job.dream_id, prompt: prepared.imagePrompt.trim(),
+      });
     }
   } catch (error) {
     console.warn('[analysis-job-worker] Job attempt failed', {
@@ -314,7 +321,8 @@ serve(async (req: Request) => {
     const jobId = typeof body.jobId === 'string' ? body.jobId.trim() : '';
     if (!isValidUuid(jobId)) return json({ error: 'Invalid jobId' }, 400);
 
-    const task = processAnalysisJob({ supabaseUrl, serviceRoleKey, jobId });
+    const storageBucket = Deno.env.get('SUPABASE_STORAGE_BUCKET')?.trim() || 'dream-images';
+    const task = processAnalysisJob({ supabaseUrl, serviceRoleKey, storageBucket, jobId });
     if (runInBackground(task)) {
       return json({ ok: true, jobId, status: 'accepted' }, 202);
     }

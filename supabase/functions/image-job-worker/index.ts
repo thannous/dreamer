@@ -317,6 +317,20 @@ export const markTerminalFailure = async (
   await persistDreamImageFailure(adminClient, job);
 };
 
+/**
+ * How an image job finds the painting its dream's analysis preview prepared: by the prompt it
+ * carries, or by the dream's text when it carries none. A dream painted again (it has an
+ * illustration) asks for a new painting, and only a standard size can be the prepared one.
+ */
+export const preparedPaintingMatch = (
+  job: Pick<ImageJobRow, 'user_id' | 'dream_id'>,
+  request: { prompt: string; previousImageUrl?: string | null; imageSize: string }
+): 'prompt' | 'transcript' | null => {
+  if (!job.user_id || job.dream_id == null || request.imageSize !== '1K') return null;
+  if (request.prompt) return 'prompt';
+  return request.previousImageUrl ? null : 'transcript';
+};
+
 /** The fingerprint of the dream's text as its analysis preview read it; undefined when it cannot be read. */
 const storedTranscriptSha256 = async (
   adminClient: ReturnType<typeof createAdminClient>,
@@ -513,8 +527,8 @@ const processImageJob = async (input: {
       // The painting prepared with the dream's analysis preview, from this same prompt (or,
       // asked with the dream's text only, from this same text), is this illustration: it is
       // not painted twice.
-      const takesPrepared = Boolean(job.user_id) && job.dream_id != null && imageSize === '1K';
-      let preparedImageUrl = takesPrepared && !prompt
+      const prepared = preparedPaintingMatch(job, { prompt, previousImageUrl: requestPayload.previousImageUrl, imageSize });
+      let preparedImageUrl = prepared === 'transcript'
         ? await takePreparedIllustration(adminClient, {
           bucket: input.storageBucket, userId: job.user_id!, dreamId: job.dream_id!,
           transcriptSha256: await storedTranscriptSha256(adminClient, job.user_id!, job.dream_id!),
@@ -527,7 +541,7 @@ const processImageJob = async (input: {
           prompt: requestPayload.prompt,
           transcript: requestPayload.transcript,
         });
-      } else if (takesPrepared && !preparedImageUrl) {
+      } else if (prepared === 'prompt') {
         preparedImageUrl = await takePreparedIllustration(adminClient, {
           bucket: input.storageBucket, userId: job.user_id!, dreamId: job.dream_id!, prompt,
         });
