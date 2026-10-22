@@ -1,6 +1,6 @@
 # Dreamer : parcours natifs et reconnaissance depuis un fichier QA
 
-Ce lot ajoute sept cas TesterArmy dans trois fichiers. Le profil local courant en sélectionne **six par plateforme** ; six cas sélectionnés ne signifient pas six cas réussis. L’injection dans l’entrée microphone de l’émulateur reste exclue et non qualifiée. Une liste de tests, un build ou le pilote API ne constituent pas une réussite native. Les rapports frais et identifiés de chaque plateforme portent les résultats ; ce guide ne déclare aucun parcours réussi.
+Ce lot ajoute sept cas TesterArmy dans trois fichiers. La sélection sans injection microphone comprend six cas ; dans la campagne actuelle, le fichier vocal iOS reste aussi exclu et non qualifié, soit **six cas sur Android et cinq sur iOS**. Un cas sélectionné, listé ou ignoré ne constitue pas une réussite. Une liste de tests, un build ou le pilote API ne constituent pas une réussite native. Le [rapport de campagne](../../doc_web_interne/docs/qa/dreamer-native-missing-journeys-20261022.md) associe chaque résultat à ses sources, son Release et son run, en distinguant exécution fraîche, preuve réutilisée et limite non qualifiée.
 
 | Parcours | Preuve attendue | Sélection |
 | --- | --- | --- |
@@ -35,7 +35,11 @@ Cette campagne utilise `EXPO_OFFLINE=1` pour le contrôle Expo et les builds : l
 
 Utiliser un Simulator et un AVD dédiés et disponibles ; jamais une installation personnelle. Le profil porte le bundle distinct `com.tanuki75.noctalia.qa`, les services mock sont désactivés et les OTA sont désactivées. Android exige Java 17 et le SDK Android ; iOS exige Xcode et CocoaPods. Ne pas définir `E2E_WORKERS` : un seul worker pilote chaque appareil.
 
-Le serveur et les deux comptes synthétiques sont partagés par la campagne : **exécuter iOS puis Android, jamais simultanément**. Le runner prend un verrou par appareil **et un verrou par identifiant de pile** (`native-backend-lock`), puis les libère après fermeture du SDK ; une seconde exécution sur la même pile est refusée. Le pilote API ne prend pas ce verrou : le lancer uniquement en dehors des runs natifs. La fixture remet à zéro uniquement les données et crédits des deux comptes de cette pile jetable.
+Le serveur et les deux comptes synthétiques sont partagés par la campagne : **exécuter iOS puis Android, jamais simultanément**. Le runner prend un verrou par appareil **et un verrou par identifiant de pile** (`native-backend-lock`), puis les libère après fermeture du SDK ; une seconde exécution sur la même pile est refusée. Le pilote API ne prend pas ce verrou : le lancer uniquement en dehors des runs natifs.
+
+Avant **chaque** run, fermer l’app `com.tanuki75.noctalia.qa` sur l’autre plateforme partageant cette pile : le verrou bloque les runners concurrents, mais ne termine pas une app restée vivante, dont une ancienne file peut encore synchroniser.
+
+La fixture déconnecte puis efface l’état de l’app QA courante avec `app.clearState()` avant de supprimer les rêves, crédits et compteurs de création des deux seuls comptes jetables `owner` et `other`. Les UUID authentifiés du manifeste bornent chaque suppression. Le compteur de création est réinitialisé par une requête PostgreSQL paramétrée sur la base loopback validée ; la limite produit, les permissions et les autres comptes restent inchangés. Supprimer les rêves seuls ne remet volontairement pas ce compteur à zéro.
 
 Choisir un répertoire privé neuf ; le démarreur refuse un dossier existant. Garder le terminal A actif jusqu’à la fin de tous les runs :
 
@@ -115,7 +119,7 @@ EXPO_OFFLINE=1 E2E_BUILD_PROFILE=local-backend \
 
 Conserver `ios/build/journeys` : les sorties y sont exclues des entrées natives, contrairement à un dossier voisin nommé `ios/build-journeys`. Chaque build réussi affiche son chemin exact `release.json`. Le binaire est archivé dans le dossier immuable du build. Ne pas modifier les sources pendant une exécution ; les identités de source et de binaire restent celles du reçu et du run.
 
-## Exécution séquentielle des six cas
+## Exécution séquentielle des parcours
 
 Remplacer `IOS_BUILD_RUN` et `ANDROID_BUILD_RUN` par les dossiers exacts affichés par les builds. Ces variables ne désignent jamais un fichier « latest » :
 
@@ -124,33 +128,47 @@ export NOCTALIA_IOS_RELEASE=tools/e2e/.e2e/dreamer-ios/IOS_BUILD_RUN/release.jso
 export NOCTALIA_ANDROID_RELEASE=tools/e2e/.e2e/dreamer-android/ANDROID_BUILD_RUN/release.json
 ```
 
-D’abord iOS sur le Simulator `Noctalia_Journeys_QA` :
+Les commandes de fermeture ci-dessous visent uniquement le bundle QA sur les deux cibles dédiées de cette campagne, jamais une installation personnelle. Attendre la fin complète du runner précédent. Si l’autre cible est arrêtée, confirmer cet état ; si elle est active, terminer son app QA avant de poursuivre. Ne pas remplacer cette fermeture par une désinstallation ou un effacement d’une app personnelle.
+
+D’abord, fermer l’app QA Android, puis lancer les cinq cas iOS sur le Simulator `Noctalia_Journeys_QA` ; la reconnaissance du fichier iOS reste hors qualification :
 
 ```sh
+adb -s emulator-5560 shell am force-stop com.tanuki75.noctalia.qa
+
 E2E_DEVICE=0220EB9F-6117-4F95-BAF6-D2D9BAF2C6FD \
   E2E_RELEASE_RECEIPT="$NOCTALIA_IOS_RELEASE" \
   mise exec -- npm run test:testerarmy:mobile -- dreamer ios run \
-  --install-release --exclude-tag native-real-dictation
+  --install-release --exclude-tag native-real-dictation --exclude-tag native-speech-file
 ```
 
-Après fermeture complète du premier runner, Android sur l’AVD dédié :
+Après fermeture complète du runner iOS, **terminer aussi son processus QA** avant que la fixture Android nettoie les comptes partagés. Lancer ensuite les six cas Android sur l’AVD dédié :
 
 ```sh
+xcrun simctl terminate 0220EB9F-6117-4F95-BAF6-D2D9BAF2C6FD com.tanuki75.noctalia.qa
+
 E2E_DEVICE=emulator-5560 E2E_AVD_NAME=Noctalia_Journeys_QA \
   E2E_RELEASE_RECEIPT="$NOCTALIA_ANDROID_RELEASE" \
   mise exec -- npm run test:testerarmy:mobile -- dreamer android run \
   --install-release --exclude-tag native-real-dictation
 ```
 
-Le runner crée puis retire son propre `adb reverse` pour le port 31283 ; ne pas en créer un manuellement. Un mapping existant est refusé. Il vérifie le profil, les empreintes des entrées et du binaire, ainsi que l’installation avant et après le run. Il lit aussi la configuration publique réellement embarquée dans l’APK ou le bundle EXConstants iOS et refuse une origine distante, une clé publique différente ou des clés Store actives avant l’interface. Le reçu `embedded-public-config.json` ne conserve que les comparaisons et empreintes, liées au binaire. Ces diagnostics d’installation et de configuration restent distincts du résultat fonctionnel.
+Avant de revenir à iOS, refaire la fermeture ciblée Android :
 
-Pour une reprise ciblée sur la même plateforme et le même reçu, remplacer `--exclude-tag native-real-dictation` par l’un des tags du tableau. `--tag native-recovery` sélectionne deux cas ; ajouter `--grep 'queued real analysis'` ou `--grep 'real chat retries'` pour n’en exécuter qu’un. Omettre `--install-release` si le binaire identifié est déjà installé. Garder `E2E_NATIVE_JOURNEYS=1` et le manifeste dans l’environnement.
+```sh
+adb -s emulator-5560 shell am force-stop com.tanuki75.noctalia.qa
+```
+
+Ces commandes ne doivent pas être lancées pendant un run actif. Si `simctl terminate` indique que l’app QA est déjà arrêtée, conserver ce constat ; une autre erreur doit être résolue avant le run suivant. Le runner crée puis retire son propre `adb reverse` pour le port 31283 ; ne pas en créer un manuellement. Un mapping existant est refusé. Il vérifie le profil, les empreintes des entrées et du binaire, ainsi que l’installation avant et après le run. Il lit aussi la configuration publique réellement embarquée dans l’APK ou le bundle EXConstants iOS et refuse une origine distante, une clé publique différente ou des clés Store actives avant l’interface. Le reçu `embedded-public-config.json` ne conserve que les comparaisons et empreintes, liées au binaire. Ces diagnostics d’installation et de configuration restent distincts du résultat fonctionnel.
+
+Pour une reprise ciblée sur la même plateforme et le même reçu, remplacer les options `--exclude-tag` de l’exemple par l’un des tags du tableau. Fermer auparavant l’app QA de l’autre plateforme, comme ci-dessus. Une tentative `--tag native-speech-file` sur iOS produit sa propre preuve ; son exclusion de la sélection courante reste explicite jusqu’à qualification. `--tag native-recovery` sélectionne deux cas ; ajouter `--grep 'queued real analysis'` ou `--grep 'real chat retries'` pour n’en exécuter qu’un. Omettre `--install-release` si le binaire identifié est déjà installé. Garder `E2E_NATIVE_JOURNEYS=1` et le manifeste dans l’environnement.
 
 Le cas `native-real-dictation` reste hors sélection : le build actuel fournit un fichier au moteur vocal et ne peut pas qualifier l’injection microphone. Son exclusion n’est pas un succès.
 
 ## Résultats et arrêt
 
-Conserver un seul rapport canonique par plateforme avec le chemin imprimé dans `tools/e2e/.e2e/dreamer-<platform>/<RUN>/` : résultat, première erreur éventuelle, trace/log utile, reçu Release, identité de source et commande exacte. Une réussite native exige le rapport frais avec les six cas attendus passés et les contrôles d’identité/cleanup ; ne pas déduire un succès d’un code SDK seul, d’un test listé ou ignoré. Les parcours avec connexion utilisent des secrets gérés par TesterArmy : ne pas forcer des captures interdites après saisie de ces secrets.
+Conserver les rapports immuables des runs utiles sous `tools/e2e/.e2e/dreamer-<platform>/<RUN>/`, puis un seul [rapport de synthèse](../../doc_web_interne/docs/qa/dreamer-native-missing-journeys-20261022.md) : pour chaque parcours et plateforme, résultat, première erreur éventuelle, trace/log utile, reçu Release, révisions des tests et du binaire, identité du backend et commande exacte. Une campagne fraîche « 6/6 » exige un même run identifié avec les six cas attendus réussis et les contrôles d’identité/cleanup ; six cas réussis répartis entre plusieurs runs constituent une **preuve composite**, pas une campagne fraîche 6/6.
+
+Une preuve antérieure peut être réutilisée si les changements ultérieurs laissent le comportement, les entrées et la configuration concernés inchangés, avec justification du périmètre dans la synthèse. Conserver son ancienne révision et son run : ne jamais les réétiqueter comme exécutés sur le nouveau head. Les cas affectés sont rejoués sur le candidat identifié ; un échec, une exclusion ou une absence de replay restent visibles. Les cinq cas de la sélection iOS ne qualifient pas le sixième cas vocal. Ne pas déduire un succès d’un code SDK seul, d’un test listé ou ignoré. Les parcours avec connexion utilisent des secrets gérés par TesterArmy : ne pas forcer des captures interdites après saisie de ces secrets.
 
 Les manifestes, mots de passe, clés, jetons de contrôle, profils locaux, logs et artefacts restent hors Git. `expo.env` ne contient que la configuration publique client ; la clé service-role et le jeton de contrôle ne doivent jamais devenir des variables `EXPO_PUBLIC_*`. Les ports sont locaux et la pile ne vise aucun compte hébergé.
 

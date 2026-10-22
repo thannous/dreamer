@@ -356,8 +356,11 @@ Run the affected check before a local native build; CI checks both manifests.
 The [native journey runbook](native-journeys.md) covers real local Auth/storage,
 offline sync, account isolation, analysis/chat recovery and system recognition
 from a QA audio file. It gives identified iOS/Android build and run commands,
-shared-backend locking and the explicit limit: file recognition does not qualify
-physical microphone capture.
+shared-backend locking, owned-app termination between platforms, and the explicit
+limit: file recognition does not qualify physical microphone capture. The
+[campaign evidence](../../doc_web_interne/docs/qa/dreamer-native-missing-journeys-20261022.md)
+identifies fresh runs and justified reuse separately: composite coverage is not a
+fresh 6/6 campaign, and excluded iOS speech remains unqualified.
 
 ## Android release evidence
 
