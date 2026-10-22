@@ -820,7 +820,7 @@ export const EmailAuthCard: React.FC<Props> = ({
 
       {showSupabaseConfigHint && (
         <Text style={[styles.hint, { color: noctalia.text.secondary }]}>
-          {t('settings.account.hint.configure_supabase')}
+          {t('settings.account.hint.auth_unavailable')}
         </Text>
       )}
     </>

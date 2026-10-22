@@ -1223,7 +1223,7 @@ const translations: Record<string, string> = {
     'settings.account.button.sign_in': 'Iniciar sesión',
     'settings.account.button.sign_up': 'Crear cuenta',
     'settings.account.button.sign_out': 'Cerrar sesión',
-    'settings.account.hint.configure_supabase': 'Configura las claves de Supabase para habilitar la autenticación',
+    'settings.account.hint.auth_unavailable': 'El inicio de sesión no está disponible en esta versión de la app.',
     'settings.account.mock.quick_title': 'Acceso rápido (modo mock)',
     'settings.account.mock.quick_description': 'Elige un perfil para probar los flujos rápidamente.',
     'settings.account.mock.profile.new': 'Usuario nuevo',
@@ -1777,7 +1777,7 @@ const translations: Record<string, string> = {
     // Legal links & account deletion
     'settings.legal.sectionTitle': 'Legal',
     'settings.stability.title': 'Informes de estabilidad',
-    'settings.stability.description': 'Envía a Expo los tiempos de arranque y los cierres inesperados de la app, nunca el contenido de tus sueños.',
+    'settings.stability.description': 'Nos envía los tiempos de arranque y los cierres inesperados de la app, nunca el contenido de tus sueños.',
     'settings.stability.toggle_label': 'Enviar informes de estabilidad',
     'settings.legal.privacyPolicy': 'Política de privacidad',
     'settings.legal.termsOfUse': 'Términos de uso',

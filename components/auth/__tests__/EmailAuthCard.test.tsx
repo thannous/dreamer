@@ -620,7 +620,7 @@ describe('EmailAuthCard', () => {
 
     render(<EmailAuthCard />);
 
-    expect(screen.getByText('settings.account.hint.configure_supabase')).toBeDefined();
+    expect(screen.getByText('settings.account.hint.auth_unavailable')).toBeDefined();
   });
 
   it('hides Google sign-in and its divider when the companion credentials are unavailable', () => {
