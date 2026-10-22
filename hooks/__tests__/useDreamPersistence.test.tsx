@@ -8,6 +8,7 @@ import type { JournalCursor, JournalPage } from '../../lib/journalReadContracts'
 import type { GuestDreamMigrationOwner, DreamAnalysis, DreamListReadResult, DreamMutation } from '../../lib/types';
 import { useDreamPersistence } from '../useDreamPersistence';
 import * as dreamUtils from '../../lib/dreamUtils';
+import { IncompleteJournalAckError } from '../../lib/journalErrors';
 
 const flushEffects = () => act(async () => {});
 
@@ -1077,6 +1078,40 @@ describe('useDreamPersistence', () => {
   });
 
   describe('dream migration', () => {
+    it('keeps guest notes and the owner receipt across failed reloads until the notes are acknowledged', async () => {
+      const personalNotes = [{ id: '11111111-1111-4111-8111-111111111111', text: 'Guest note', createdAt: 1, updatedAt: 1 }];
+      const original = buildDream({ id: 100, clientRequestId: 'guest-notes', personalNotes });
+      const recovery = { userId: 'user-123', mutationId: 'recovery-mutation', receiptId: 'recovery-receipt', remoteId: 42, revisionId: 'r1' };
+      let local = [original];
+      let cached: DreamAnalysis[] = [];
+      mockGetSavedDreams.mockImplementation(async () => ({ status: 'loaded', value: local }));
+      mockSaveDreams.mockImplementation(async dreams => { local = JSON.parse(JSON.stringify(dreams)); });
+      mockGetCachedRemoteDreams.mockImplementation(async () => ({ status: 'loaded', value: cached }));
+      mockSaveCachedRemoteDreams.mockImplementation(async dreams => { cached = JSON.parse(JSON.stringify(dreams)); });
+      mockFetchFromSupabase.mockResolvedValue([{ ...original, remoteId: 42, revisionId: 'r1', personalNotes: [] }]);
+      mockCreateInSupabase.mockRejectedValue(new IncompleteJournalAckError('Old schema', { remoteId: 42, revisionId: 'r1' }, recovery));
+      const hook = renderHook(() => useDreamPersistence({ canUseRemoteSync: true }));
+      await waitFor(() => expect(hook.result.current.loaded).toBe(true));
+      expect(local[0]).toMatchObject({ personalNotes, migrationRecovery: recovery });
+      expect(local[0].remoteId).toBeUndefined();
+      expect(mockGuestMigrationOwner.current?.userId).toBe('user-123');
+      expect(cached[0]).toMatchObject({ personalNotes, migrationRecovery: recovery });
+      mockCreateInSupabase.mockRejectedValue(new Error('Offline'));
+      await act(async () => { await hook.result.current.reloadDreams(); });
+      expect(local[0]).toMatchObject({ personalNotes, migrationRecovery: recovery });
+      expect(cached[0]).toMatchObject({ personalNotes, migrationRecovery: recovery });
+      const saved = { ...original, remoteId: 42, revisionId: 'r2', personalNotes };
+      mockCreateInSupabase.mockResolvedValue(saved);
+      mockFetchFromSupabase.mockResolvedValue([saved]);
+      await act(async () => { await hook.result.current.reloadDreams(); });
+      await waitFor(() => expect(local).toEqual([]));
+      expect(mockCreateInSupabase).toHaveBeenLastCalledWith(expect.objectContaining({ migrationRecovery: recovery, personalNotes }), 'user-123');
+      expect(mockGuestMigrationOwner.current).toBeNull();
+      expect(cached[0].personalNotes).toEqual(personalNotes);
+      expect(cached[0].migrationRecovery).toBeUndefined();
+      hook.unmount();
+    });
+
     it('keeps one account owner while a guest migration is in flight across an account switch', async () => {
       const guestDream = buildDream({
         id: 35,

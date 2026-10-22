@@ -20,6 +20,7 @@ import { TodayHero } from "@/components/home/TodayHero";
 import { FreeAnalysesNudge, getFreeAnalysesNudge } from "@/components/quota/FreeAnalysesNudge";
 import { MonthEndAnalysesCard } from "@/components/quota/MonthEndAnalysesCard";
 import { useNotificationSettingsController } from "@/components/settings/useNotificationSettingsController";
+import { pickDreamRediscovery } from '@/lib/dreamRediscovery';
 import { buildPersonalReading } from "@/lib/personalReading";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { ThemeLayout } from "@/constants/journalTheme";
@@ -157,6 +158,7 @@ function InspirationScreen() {
     () => (dreamsLoaded ? pickDreamAnniversary(dreams, now) : null),
     [dreams, dreamsLoaded, now]
   );
+  const rediscovery = useMemo(() => dreamsLoaded && !anniversary ? pickDreamRediscovery(dreams, now) : null, [dreams, dreamsLoaded, anniversary, now]);
   // The morning after a full moon and the two days after, for an account: this cycle's letter.
   const moonLetterInvite = useMemo(
     () => (dreamsLoaded && user ? getMoonLetterInvite(dreams, now) : null),
@@ -348,7 +350,7 @@ function InspirationScreen() {
             <View className="px-6">
               {dreamsLoaded ? <HomeFullMoonRow dreams={dreams} now={now} /> : null}
               {moonLetterInvite ? <HomeMoonLetterRow invite={moonLetterInvite} /> : null}
-              {anniversary ? <HomeAnniversaryCard anniversary={anniversary} /> : null}
+              {anniversary ? <HomeAnniversaryCard anniversary={anniversary} /> : rediscovery ? <HomeAnniversaryCard anniversary={{ dream: rediscovery, span: 'rediscovery' }} /> : null}
               {personalReading ? <>
                 <HomeWeekNights dreams={dreams} now={now} />
                 <HomeWeekConstellation dreams={dreams} now={now} />

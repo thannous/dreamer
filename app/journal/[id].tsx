@@ -15,6 +15,7 @@ import { useDreamCoverPlaceholder } from '@/hooks/useDreamCoverPlaceholder';
 import { useDreamMedia } from '@/hooks/useDreamMedia';
 import { Toast } from '@/components/Toast';
 import { DreamRecallAssistantCard } from '@/components/journal/DreamRecallAssistantCard';
+import { DreamPersonalNotes } from '@/components/journal/DreamPersonalNotes';
 import { BOOK_MEASURE, BookOrnament, BookProse, BookSectionMark, BookStar } from '@/components/journal/JournalBook';
 import { JournalCoverPlate } from '@/components/journal/JournalCoverPlate';
 import { JournalEditLink } from '@/components/journal/JournalEditLink';
@@ -629,6 +630,10 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   const [editableTitle, setEditableTitle] = useState('');
   const [editableTheme, setEditableTheme] = useState('');
   const [editableDreamType, setEditableDreamType] = useState('');
+  // For the collection: what the page held when editing began, and which fields the
+  // dreamer changed by hand. A name or type found by the AI meanwhile is not theirs.
+  const editStartRef = useRef<{ title: string; theme: string; dreamType: string; transcript: string } | null>(null);
+  const editTouchedRef = useRef({ title: false, transcript: false, classification: false });
   const recoverMetadata = useCallback(async () => {
     if (!dream || !needsMetadataRecovery || isInitialDreamCategorizationPending(getInitialDreamCategorizationKey(dream))
       || metadataRecoveryInFlightRef.current) return;
@@ -647,6 +652,11 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       if (named) {
         const found = (field: 'title' | 'theme' | 'dreamType', current: string) => (
           current === asked[field] && named[field] && named[field] !== dream[field] ? named[field] : current);
+        // What the naming filled in is the AI's: saving it is not the dreamer's own choice.
+        if (named.title && named.title !== dream.title) editTouchedRef.current.title = false;
+        if ((named.theme && named.theme !== dream.theme) || (named.dreamType && named.dreamType !== dream.dreamType)) {
+          editTouchedRef.current.classification = false;
+        }
         setEditableTitle((current) => found('title', current));
         setEditableTheme((current) => found('theme', current));
         setEditableDreamType((current) => found('dreamType', current));
@@ -737,10 +747,6 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     return items;
   }, [dreamMemory, t]);
   const [editableTranscript, setEditableTranscript] = useState('');
-  // For the collection: what the page held when editing began, and which fields the
-  // dreamer changed by hand. A name or type found by the AI meanwhile is not theirs.
-  const editStartRef = useRef<{ title: string; theme: string; dreamType: string; transcript: string } | null>(null);
-  const editTouchedRef = useRef({ title: false, transcript: false, classification: false });
   const editTitle = useCallback((text: string) => {
     editTouchedRef.current.title = true;
     setEditableTitle(text);
@@ -1270,7 +1276,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       if (touched.title && normalizedTitle !== start.title) {
         recordBadgeEvent({ type: 'title_edited', dream: updatedDream });
       }
-      if (touched.classification && (normalizedTheme !== start.theme || normalizedDreamType !== start.dreamType)) {
+      // The fields as the dreamer left them: an empty theme stays empty, never the stored one.
+      if (touched.classification && (editableTheme.trim() !== start.theme || editableDreamType.trim() !== start.dreamType)) {
         recordBadgeEvent({ type: 'classification_edited', dream: updatedDream });
       }
     }
@@ -3232,6 +3239,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
                 <View className="mx-2 mb-7">{renderMetadataChips()}</View>
               </ArrivalLater>
             ) : null}
+
+            {!isEditing ? <DreamPersonalNotes dream={dream} disabled={isAnalysisLocked} /> : null}
 
             {/* A guest reads on into what an account keeps and adds. */}
             {showCompletedReading && !readingInFlight ? renderFirstValueBackupCard() : null}

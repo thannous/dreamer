@@ -122,8 +122,8 @@ export async function getSavedDreams(): Promise<DreamListReadResult> {
   ensureDreamsPreloaded();
 
   try {
-    const savedDreams = mockStorage['gemini_dream_journal_dreams'];
-    if (savedDreams !== undefined) {
+    const savedDreams = await getMockItem('gemini_dream_journal_dreams');
+    if (savedDreams !== null) {
       const dreams = JSON.parse(savedDreams) as DreamAnalysis[];
       const sorted = dreams.sort((a, b) => b.id - a.id);
       console.log(`[MOCK STORAGE] Returning ${sorted.length} dreams`);
@@ -142,7 +142,7 @@ export async function getSavedDreams(): Promise<DreamListReadResult> {
 export async function saveDreams(dreams: DreamAnalysis[]): Promise<void> {
   console.log(`[MOCK STORAGE] saveDreams called with ${dreams.length} dreams`);
   try {
-    mockStorage['gemini_dream_journal_dreams'] = JSON.stringify(dreams);
+    await setMockItem('gemini_dream_journal_dreams', JSON.stringify(dreams));
     console.log('[MOCK STORAGE] Dreams saved successfully');
   } catch {
     console.error('[MOCK STORAGE] Failed to save dreams');

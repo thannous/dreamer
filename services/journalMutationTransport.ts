@@ -306,6 +306,23 @@ export function createJournalMutationTransport({ getClient, ensureRemoteImage }:
       return result;
     }
 
+    if (sourceMutation.payload.dream.personalNotes !== undefined && result.dream.personalNotes === undefined) {
+      // An old server can acknowledge its known fields but cannot persist personal notes.
+      // Keep the local mutation pending instead of silently discarding private writing.
+      const remoteId = result.remoteId ?? result.dream.remoteId;
+      return {
+        ...result,
+        status: 'failed',
+        error: 'Personal notes require the journal schema update',
+        // Retain only the acknowledged identity. The local writing stays authoritative
+        // until a fresh receipt confirms notes against this server revision.
+        ...(remoteId != null && result.dream.revisionId
+          ? { incompleteAck: { remoteId, revisionId: result.dream.revisionId } }
+          : {}),
+        dream: undefined,
+      };
+    }
+
     if (normalizeDreamMemoryMetadata(result.dream.memory)) {
       return result;
     }
@@ -524,14 +541,18 @@ export function createJournalMutationTransport({ getClient, ensureRemoteImage }:
       aliasesInBatch.clear();
 
       const mutationsById = new Map(currentBatch.map((mutation) => [mutation.id, mutation]));
-      const batchResults = (await executeBatch(currentBatch)).map((result) =>
-        preserveAckDreamMemory(result, mutationsById.get(result.mutationId))
-      );
+      const mutationsByReceipt = new Map(currentBatch.map((mutation) => [mutation.clientRequestId, mutation]));
+      const batchResults = (await executeBatch(currentBatch)).map((result) => {
+        // The server replays the original mutation_id with a durable receipt.
+        // A direct migration caller may have restarted under a new local ID.
+        const source = mutationsByReceipt.get(result.clientRequestId) ?? mutationsById.get(result.mutationId);
+        return preserveAckDreamMemory(source ? { ...result, mutationId: source.id } : result, source);
+      });
       results.push(...batchResults);
 
       batchResults.forEach((result) => {
         const sourceMutation = mutationsById.get(result.mutationId);
-        if (!sourceMutation || result.status !== 'ack') {
+        if (!sourceMutation || (result.status !== 'ack' && !result.incompleteAck)) {
           return;
         }
 
@@ -540,14 +561,14 @@ export function createJournalMutationTransport({ getClient, ensureRemoteImage }:
           return;
         }
 
-        const remoteId = result.remoteId ?? result.dream?.remoteId;
+        const remoteId = result.remoteId ?? result.dream?.remoteId ?? result.incompleteAck?.remoteId;
         if (remoteId != null) {
           rememberRemoteId(sourceMutation, remoteId, idsByDreamId, idsByClientRequestId);
         }
 
         const acknowledgedState: AcknowledgedDreamState = {
           remoteId,
-          revisionId: result.dream?.revisionId,
+          revisionId: result.dream?.revisionId ?? result.incompleteAck?.revisionId,
         };
         const aliases = new Set([
           ...getMutationEntityAliases(sourceMutation),

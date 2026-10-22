@@ -6,6 +6,17 @@ import { afterEach, describe, expect, it, jest } from '@jest/globals';
 
 jest.mock('@/components/ui/DreamerBackground', () => ({ DreamerArtworkWindow: () => null, DreamerBackground: () => null }));
 
+// These route tests cover content and navigation. Account ownership, storage and
+// explicit completion are exercised by the guide-progress E2E journeys/store tests;
+// loading AuthContext here would initialize unrelated native asset and auth services.
+jest.mock('@/hooks/useGuideReading', () => ({
+  useGuideReading: () => ({ scope: 'guest', ready: true, entries: {}, saving: false, error: false }),
+}));
+jest.mock('@/services/guideReadingStore', () => ({
+  updateGuideReading: jest.fn(),
+  retryGuideReading: jest.fn(),
+}));
+
 afterEach(() => {
   cleanup();
   jest.clearAllMocks();

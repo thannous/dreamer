@@ -11,6 +11,7 @@ import {
   parseBadgeLedger,
   revealBadgeFamily,
   settleBadgeLedger,
+  stampActionTiers,
   type BadgeEvent,
   type BadgeLedger,
 } from '@/lib/badges/ledger';
@@ -162,6 +163,19 @@ describe('badge ledger', () => {
     const revealed = revealBadgeFamily(settled, 'night-journal');
     expect(buildBadgeCollection(revealed, progressOf(revealed, dreams)).unrevealedCards).toBe(0);
     expect(revealBadgeFamily(revealed, 'night-journal')).toBe(revealed);
+  });
+
+  it('stamps a tier earned by actions without a journal, and keeps a card turned at the tier it showed', () => {
+    const read = fold([1, 2, 3].map((index) => ({ type: 'symbol_viewed', symbolId: `s${index}` }) as BadgeEvent));
+    expect(stampActionTiers(read, 42).earned['symbol-explorer']).toEqual([42]);
+    // A tier the album showed from progress, before the journal stamped it, stays turned over.
+    // A remote silver award arriving while bronze is open must remain unrevealed.
+    // This interleaving is isolated because it cannot be scheduled reliably in browser E2E.
+    const ahead = { ...createEmptyBadgeLedger(), earned: { 'night-journal': [1, 2] } };
+    expect(revealBadgeFamily(ahead, 'night-journal', 1).revealed['night-journal']).toBe(1);
+    const shown = revealBadgeFamily(createEmptyBadgeLedger(), 'night-journal', 1);
+    const settled = settleBadgeLedger(shown, [dream(at('2026-10-01'))], at('2026-10-01'));
+    expect(buildBadgeCollection(settled, progressOf(settled, [dream(at('2026-10-01'))])).unrevealedCards).toBe(0);
   });
 
   it('survives a corrupt store and keeps both sides when a guest ledger joins an account', () => {
