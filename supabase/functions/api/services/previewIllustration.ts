@@ -30,7 +30,7 @@ const HOLD_LEASE_MS = 60 * 1000;
 const heldPaintingError = () => Object.assign(new Error('Prepared painting unavailable'), { isTransient: true, preparedPaintingHeld: true });
 
 /** Whether a dream's illustration link is the signed link of this object. */
-const linksTo = (imageUrl: unknown, path: string) =>
+export const linksTo = (imageUrl: unknown, path: string) =>
   typeof imageUrl === 'string' && imageUrl.split('?')[0].endsWith(`/${path}`);
 
 // deno-lint-ignore no-explicit-any

@@ -2,7 +2,7 @@ import { verifyAnalysisImageAuthorization } from '../api/services/analysisAuthor
 import { serve } from 'https://deno.land/std@0.224.0/http/server.ts';
 import { GUEST_LIMITS, corsHeaders } from '../api/lib/constants.ts';
 import { ensureImagePrompt, generateAndStoreImage } from '../api/services/imagePipeline.ts';
-import { takePreparedIllustration, type TakenPainting } from '../api/services/previewIllustration.ts';
+import { linksTo, takePreparedIllustration, type TakenPainting } from '../api/services/previewIllustration.ts';
 import { transcriptSha256 } from '../api/lib/analysisPreview.ts';
 import { AI_REQUEST_LIMITS } from '../api/lib/aiRequestPolicy.ts';
 import { resolveStoredTranscriptForAi } from '../api/lib/prompts.ts';
@@ -333,6 +333,13 @@ export const preparedPaintingMatch = (
 };
 
 /** The fingerprint of the dream's text as its analysis preview read it; undefined when it cannot be read. */
+/**
+ * Whether a prepared painting's job deletes the dream's former illustration: never when the
+ * former one is this very painting (linked by a job that stopped before its bookkeeping).
+ */
+export const formerIllustrationGoes = (previousImageUrl: string | null | undefined, paintingPath: string): boolean =>
+  Boolean(previousImageUrl) && !linksTo(previousImageUrl, paintingPath);
+
 export const storedTranscriptSha256 = async (
   adminClient: ReturnType<typeof createAdminClient>,
   userId: string,
@@ -575,13 +582,14 @@ const processImageJob = async (input: {
 
       await persistDreamImageResult(adminClient, job, result.imageUrl);
       // The prepared painting replaces the former illustration only once the dream holds it.
-      if (preparedImageUrl && requestPayload.previousImageUrl) {
+      const formerImageUrl = requestPayload.previousImageUrl;
+      if (takenPainting && formerImageUrl && formerIllustrationGoes(formerImageUrl, takenPainting.path)) {
         await createStorageHelpers({
           supabaseUrl: input.supabaseUrl,
           supabaseServiceRoleKey: input.serviceRoleKey,
           storageBucket: input.storageBucket,
           ownerId,
-        }).deleteImageFromStorage(requestPayload.previousImageUrl, ownerId).catch(() => {
+        }).deleteImageFromStorage(formerImageUrl, ownerId).catch(() => {
           console.warn('[image-job-worker] former illustration left in storage', { jobId: job.id });
         });
       }

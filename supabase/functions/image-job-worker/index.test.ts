@@ -4,6 +4,7 @@ import type { ImageJobRow } from '../api/services/imageJobs.ts';
 import {
   IMAGE_RETRY_PAYLOAD_HASH_KEY,
   claimSpecificJob,
+  formerIllustrationGoes,
   markTerminalFailure,
   persistDreamImageFailure,
   persistDreamImageResult,
@@ -290,6 +291,12 @@ Deno.test('an image job looks for its dream’s prepared painting by prompt, or 
   assertEquals(preparedPaintingMatch(job, { prompt: 'A river of glass', imageSize: '2K' }), null);
   assertEquals(preparedPaintingMatch({ user_id: null, dream_id: 7 }, { prompt: '', imageSize: '1K' }), null);
   assertEquals(preparedPaintingMatch({ user_id: 'u1', dream_id: null }, { prompt: 'p', imageSize: '1K' }), null);
+});
+
+Deno.test('a prepared painting replaces the former illustration, never itself', () => {
+  assertEquals(formerIllustrationGoes('https://example.test/storage/v1/object/sign/dream-images/u1/6-old.jpg?token=t', 'u1/7-a.jpg'), true);
+  assertEquals(formerIllustrationGoes('https://example.test/storage/v1/object/sign/dream-images/u1/7-a.jpg?token=t', 'u1/7-a.jpg'), false);
+  assertEquals(formerIllustrationGoes(null, 'u1/7-a.jpg'), false);
 });
 
 Deno.test('a dream whose text cannot be read makes the job try again rather than paint another', async () => {
