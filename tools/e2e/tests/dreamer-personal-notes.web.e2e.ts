@@ -1,6 +1,8 @@
-import { test } from '@e2e-dev/web';
+import { test, surfaceOf } from '@e2e-dev/web';
+import type { BrowserContext } from 'playwright/test';
 import { expect } from 'e2e';
 import { isolateWeb } from '../web-fixtures';
+import { webEngine } from '../web-engine';
 
 test('personal notes survive reload, edits and deletion without changing the dream; old dreams are rediscovered',
   { tags: ['personal-notes', 'persistence'], timeout: 180_000 }, async ({ app, screen, browser }) => {
@@ -94,9 +96,17 @@ test('an over-limit pasted personal note stays intact until shortened, then surv
       const count = screen.getByTestId('dream.note.count');
       await screen.getByTestId('dream.note.add').tap();
       await input.tap();
-      // Exercise an actual clipboard paste: fill() alone can bypass maxLength.
-      await browser.evaluate(async (text: string) => { await navigator.clipboard.writeText(text); return true; }, overLimit);
-      await input.press('ControlOrMeta+V');
+      // TesterArmy exposes its owned Playwright context for capabilities not
+      // yet present on browser. Limit clipboard permission to this test origin
+      // and restore it immediately after the real paste (never replace by fill).
+      const context = surfaceOf(webEngine)!.context() as unknown as BrowserContext;
+      await context.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: new URL(app.baseUrl!).origin });
+      try {
+        await browser.evaluate(async (text: string) => { await navigator.clipboard.writeText(text); return true; }, overLimit);
+        await input.press('ControlOrMeta+V');
+      } finally {
+        await context.clearPermissions();
+      }
       await expect(input).toHaveValue(overLimit);
       await expect(count).toHaveText('4001 / 4000');
       await expect(notes.getByRole('alert')).toContainText('4000');

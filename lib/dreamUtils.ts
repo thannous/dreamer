@@ -585,6 +585,7 @@ export const areDreamsEqualForLocalState = (a: DreamAnalysis, b: DreamAnalysis):
   if (left.id !== right.id) return false;
   if ((left.remoteId ?? null) !== (right.remoteId ?? null)) return false;
   if ((left.clientRequestId ?? null) !== (right.clientRequestId ?? null)) return false;
+  if (!areDreamUpdateFieldValuesEqual(left.migrationRecovery, right.migrationRecovery)) return false;
   if (left.transcript !== right.transcript) return false;
   if (left.title !== right.title) return false;
   if (left.interpretation !== right.interpretation) return false;

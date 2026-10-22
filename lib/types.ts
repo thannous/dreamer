@@ -132,6 +132,8 @@ export interface DreamAnalysis {
   id: number; // timestamp for unique ID and sorting
   remoteId?: number; // Supabase row id when persisted online
   clientRequestId?: string; // Idempotency key for creates to avoid duplicates
+  /** Local-only recovery owned by the account that claimed an unfinished guest upload. */
+  migrationRecovery?: { userId: string; mutationId: string; receiptId: string; remoteId: number; revisionId: string; operation?: 'delete'; localChanges?: boolean };
   revisionId?: string; // Server-side optimistic concurrency token
   updatedAt?: number; // Server timestamp for the latest accepted mutation
   clientUpdatedAt?: number; // Client timestamp for the latest local edit

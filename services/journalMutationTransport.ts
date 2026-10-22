@@ -541,9 +541,13 @@ export function createJournalMutationTransport({ getClient, ensureRemoteImage }:
       aliasesInBatch.clear();
 
       const mutationsById = new Map(currentBatch.map((mutation) => [mutation.id, mutation]));
-      const batchResults = (await executeBatch(currentBatch)).map((result) =>
-        preserveAckDreamMemory(result, mutationsById.get(result.mutationId))
-      );
+      const mutationsByReceipt = new Map(currentBatch.map((mutation) => [mutation.clientRequestId, mutation]));
+      const batchResults = (await executeBatch(currentBatch)).map((result) => {
+        // The server replays the original mutation_id with a durable receipt.
+        // A direct migration caller may have restarted under a new local ID.
+        const source = mutationsByReceipt.get(result.clientRequestId) ?? mutationsById.get(result.mutationId);
+        return preserveAckDreamMemory(source ? { ...result, mutationId: source.id } : result, source);
+      });
       results.push(...batchResults);
 
       batchResults.forEach((result) => {

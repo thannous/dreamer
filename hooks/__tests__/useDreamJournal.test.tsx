@@ -8,6 +8,7 @@ import type { GuestDreamMigrationOwner, DreamAnalysis, DreamListReadResult, Drea
 import { GuestDreamLimitError, QuotaError, QuotaErrorCode } from '../../lib/errors';
 import { getDreamAnalysisFreshness, hashDreamTranscript } from '../../lib/dreamAnalysisFreshness';
 import { markDreamNamed } from '../../lib/dreamNaming';
+import { IncompleteJournalAckError } from '../../lib/journalErrors';
 
 type AnyFunction = (...args: any[]) => any;
 const typedJestFn = <T extends AnyFunction>() => jest.fn() as jest.MockedFunction<T>;
@@ -1265,6 +1266,24 @@ describe('useDreamJournal', () => {
       expect(mockUpdateDreamInSupabase).not.toHaveBeenCalled();
     });
 
+    // The engine-only recovery test cannot observe this direct online-write fallback.
+    it.each([true, false])('preserves notes and rebases only a confirmed incomplete online ACK (%s)', async (incomplete: boolean) => {
+      setMockUser({ id: 'user-1' });
+      const existingDream = buildDream({ id: 1, remoteId: 101, revisionId: 'before-write', personalNotes: [] });
+      const personalNotes = [{ id: '11111111-1111-4111-8111-111111111111', text: 'My thought', createdAt: 1, updatedAt: 1 }];
+      mockFetchDreamsFromSupabase.mockResolvedValue([existingDream]);
+      mockUpdateDreamInSupabase.mockRejectedValue(incomplete
+        ? new IncompleteJournalAckError('Old schema', { remoteId: 101, revisionId: 'legacy-ack' })
+        : new Error('Network error'));
+      const { result } = await renderLoadedDreamJournal();
+      await act(async () => { await result.current.updateDream({ ...existingDream, personalNotes }); });
+      expect(mockSavePendingDreamMutations).toHaveBeenCalledWith(expect.arrayContaining([
+        expect.objectContaining({ operation: 'update', baseRevision: incomplete ? 'legacy-ack' : 'before-write',
+          payload: { dream: expect.objectContaining({ personalNotes, remoteId: 101 }) } }),
+      ]), 'user:user-1');
+      expect(result.current.dreams[0].personalNotes).toEqual(personalNotes);
+    });
+
     it('queues update when Supabase update fails', async () => {
       setMockUser({ id: 'user-1' });
       const existingDream = buildDream({ id: 1, remoteId: 101 });
@@ -1959,6 +1978,102 @@ describe('useDreamJournal', () => {
   });
 
   describe('resolveDreamConflict', () => {
+    it.each(['edit', 'delete'] as const)('keeps a pending guest recovery under one writer during %s and reload', async (action: 'edit' | 'delete') => {
+      setMockUser({ id: 'user-1' });
+      mockGetDreamsMigrationSynced.mockResolvedValue(false);
+      const personalNotes = [{ id: '11111111-1111-4111-8111-111111111111', text: 'Guest note', createdAt: 1, updatedAt: 1 }];
+      const recovery = { userId: 'user-1', remoteId: 101, revisionId: 'r1', mutationId: 'recover', receiptId: 'recover' };
+      const original = buildDream({ id: 1, clientRequestId: 'guest-edit-delete', personalNotes, migrationRecovery: recovery });
+      let local: DreamAnalysis[] = [original];
+      let cache: DreamAnalysis[] = [];
+      let server: DreamAnalysis[] = [{ ...original, remoteId: 101, migrationRecovery: undefined, personalNotes: [] }];
+      let owner: GuestDreamMigrationOwner | null = { userId: 'user-1', dreamIds: [1] };
+      mockGetSavedDreams.mockImplementation(async () => loadedDreams(local));
+      mockSaveDreams.mockImplementation(async (value: DreamAnalysis[]) => { local = JSON.parse(JSON.stringify(value)); });
+      mockGetCachedRemoteDreams.mockImplementation(async () => loadedDreams(cache));
+      mockSaveCachedRemoteDreams.mockImplementation(async (value: DreamAnalysis[]) => { cache = JSON.parse(JSON.stringify(value)); });
+      mockGetGuestDreamMigrationOwner.mockImplementation(async () => owner);
+      mockSetGuestDreamMigrationOwner.mockImplementation(async (value: GuestDreamMigrationOwner | null) => { owner = value; });
+      mockFetchDreamsFromSupabase.mockImplementation(async () => server);
+      mockCreateDreamInSupabase.mockRejectedValue(new Error('Network unavailable'));
+      const hook = await renderLoadedDreamJournal();
+      await act(async () => { await expect(hook.result.current.analyzeDream(1)).rejects.toThrow('must be synchronized'); });
+      expect(mockAnalyzeDreamText).not.toHaveBeenCalled();
+      if (action === 'edit') {
+        mockNetworkState.isConnected = false;
+        mockNetworkState.isInternetReachable = false;
+        hook.rerender();
+        await act(async () => { await hook.result.current.updateDream({ ...hook.result.current.dreams[0], title: 'Edited title', personalNotes: [{ ...personalNotes[0], text: 'Edited note' }] }); });
+        expect(local[0]).toMatchObject({ title: 'Edited title', personalNotes: [{ text: 'Edited note' }], migrationRecovery: { receiptId: 'recover', localChanges: true } });
+        expect(cache[0]).toMatchObject({ title: 'Edited title', personalNotes: [{ text: 'Edited note' }] });
+        mockCreateDreamInSupabase.mockImplementation(async (dream: DreamAnalysis) => {
+          server = [{ ...dream, remoteId: 101, revisionId: 'r2', migrationRecovery: undefined }];
+          return server[0];
+        });
+      } else {
+        mockDeleteDreamFromSupabase.mockImplementation(async () => { server = []; throw new Error('Deletion response lost'); });
+        await act(async () => { await hook.result.current.deleteDream(1); });
+        expect(local[0].migrationRecovery).toMatchObject({ operation: 'delete', remoteId: 101, revisionId: 'r1' });
+        expect(local[0].personalNotes).toEqual(personalNotes);
+        const deleteReceipt = local[0].migrationRecovery;
+        mockDeleteDreamFromSupabase.mockResolvedValue(undefined);
+        await act(async () => { await hook.result.current.reloadDreams(); });
+        expect(mockDeleteDreamFromSupabase).toHaveBeenLastCalledWith(101, 'r1', deleteReceipt);
+      }
+      await act(async () => { await hook.result.current.reloadDreams(); });
+      expect(local).toEqual([]);
+      expect(owner).toBeNull();
+      expect(cache).toEqual(action === 'delete' ? [] : [expect.objectContaining({ title: 'Edited title', personalNotes: [{ ...personalNotes[0], text: 'Edited note' }] })]);
+      expect(mockSavePendingDreamMutations.mock.calls.flatMap(([queue]: [DreamMutation[]]) => queue)).toEqual([]);
+      hook.unmount();
+    });
+
+    it.each(['keep_local', 'use_server'] as const)('resolves a guest recovery conflict with %s without an automatic overwrite or second writer', async (resolution: 'keep_local' | 'use_server') => {
+      setMockUser({ id: 'user-1' });
+      mockGetDreamsMigrationSynced.mockResolvedValue(false);
+      const localNotes = [{ id: '11111111-1111-4111-8111-111111111111', text: 'Unsynced guest note', createdAt: 1, updatedAt: 1 }];
+      const serverNotes = [{ id: '22222222-2222-4222-8222-222222222222', text: 'Other session note', createdAt: 2, updatedAt: 2 }];
+      const recovery = { userId: 'user-1', remoteId: 101, revisionId: 'r1', mutationId: 'conflicting-mutation', receiptId: 'conflicting-receipt' };
+      const original = buildDream({ id: 1, clientRequestId: 'guest-conflict', personalNotes: localNotes, migrationRecovery: recovery });
+      const { migrationRecovery: _recovery, ...serverBase } = original;
+      let server = { ...serverBase, remoteId: 101, revisionId: 'r2', personalNotes: serverNotes };
+      let local: DreamAnalysis[] = [original];
+      let cache: DreamAnalysis[] = [];
+      let owner: GuestDreamMigrationOwner | null = { userId: 'user-1', dreamIds: [1] };
+      mockGetSavedDreams.mockImplementation(async () => loadedDreams(local));
+      mockSaveDreams.mockImplementation(async (value: DreamAnalysis[]) => { local = JSON.parse(JSON.stringify(value)); });
+      mockGetCachedRemoteDreams.mockImplementation(async () => loadedDreams(cache));
+      mockSaveCachedRemoteDreams.mockImplementation(async (value: DreamAnalysis[]) => { cache = JSON.parse(JSON.stringify(value)); });
+      mockGetGuestDreamMigrationOwner.mockImplementation(async () => owner);
+      mockSetGuestDreamMigrationOwner.mockImplementation(async (value: GuestDreamMigrationOwner | null) => { owner = value; });
+      mockFetchDreamsFromSupabase.mockImplementation(async () => [server]);
+      mockFetchDreamFromSupabase.mockImplementation(async () => server);
+      mockCreateDreamInSupabase.mockRejectedValue(Object.assign(new Error('Revision conflict'), { code: 'CONFLICT', remoteDream: server }));
+      const hook = await renderLoadedDreamJournal();
+      await waitFor(() => expect(hook.result.current.dreams[0].syncState).toBe('conflict'));
+      expect(local[0]).toMatchObject({ personalNotes: localNotes, syncState: 'conflict', conflictRemoteDream: server });
+      expect(cache[0]).toMatchObject({ personalNotes: localNotes, syncState: 'conflict', conflictRemoteDream: server });
+      expect(local[0].remoteId).toBeUndefined();
+      const failedCalls = mockCreateDreamInSupabase.mock.calls.length;
+      await act(async () => { await hook.result.current.reloadDreams(); await hook.result.current.retryDreamSync(1); });
+      expect(mockCreateDreamInSupabase).toHaveBeenCalledTimes(failedCalls);
+      mockCreateDreamInSupabase.mockImplementation(async (dream: DreamAnalysis) => {
+        expect(dream.migrationRecovery).toMatchObject({ remoteId: 101, revisionId: 'r2' });
+        expect(dream.migrationRecovery?.receiptId).not.toBe(recovery.receiptId);
+        server = { ...server, revisionId: 'r3', personalNotes: localNotes };
+        return server;
+      });
+      await act(async () => { await hook.result.current.resolveDreamConflict(1, resolution); });
+      expect(local).toEqual([]);
+      expect(owner).toBeNull();
+      expect(cache[0].personalNotes).toEqual(resolution === 'keep_local' ? localNotes : serverNotes);
+      expect(cache[0].migrationRecovery).toBeUndefined();
+      expect(mockCreateDreamInSupabase).toHaveBeenCalledTimes(failedCalls + (resolution === 'keep_local' ? 1 : 0));
+      expect(mockUpdateDreamInSupabase).not.toHaveBeenCalled();
+      expect(mockSavePendingDreamMutations.mock.calls.flatMap(([queue]: [DreamMutation[]]) => queue)).toEqual([]);
+      hook.unmount();
+    });
+
     it('rebases the local version on the latest server revision before syncing it', async () => {
       setMockUser({ id: 'user-1' });
       const staleServerDream = buildDream({

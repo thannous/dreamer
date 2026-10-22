@@ -18,8 +18,10 @@ test('invalid notes fail individually, preserve saved dreams and retry without s
   try {
     const originalNote = reflection('A reflection already saved before this batch.');
     const seeded = await owner.from('dreams').insert([
-      { user_id: accounts.free.id, client_request_id: randomUUID(), transcript: 'Original dream', title: 'Original title', personal_notes: [originalNote] },
-      { user_id: accounts.free.id, client_request_id: randomUUID(), transcript: 'Another dream', title: 'Another title' },
+      { user_id: accounts.free.id, client_request_id: randomUUID(), transcript: 'Original dream', title: 'Original title',
+        interpretation: '', shareable_quote: '', dream_type: 'Symbolic Dream', personal_notes: [originalNote] },
+      { user_id: accounts.free.id, client_request_id: randomUUID(), transcript: 'Another dream', title: 'Another title',
+        interpretation: '', shareable_quote: '', dream_type: 'Symbolic Dream', personal_notes: [] },
     ]).select('id,transcript,title,personal_notes,revision_id');
     expect(seeded.error).toBeNull();
     const original = seeded.data!.find(dream => dream.transcript === 'Original dream')!;
@@ -100,7 +102,8 @@ test('malformed note collections stay isolated and disclose no foreign dream or 
   try {
     const note = reflection('Private owner reflection.');
     const seeded = await owner.from('dreams').insert({
-      user_id: accounts.free.id, client_request_id: randomUUID(), transcript: 'Private owner dream', personal_notes: [note],
+      user_id: accounts.free.id, client_request_id: randomUUID(), transcript: 'Private owner dream', title: 'Private title',
+      interpretation: '', shareable_quote: '', dream_type: 'Symbolic Dream', personal_notes: [note],
     }).select('id,transcript,personal_notes,revision_id').single();
     expect(seeded.error).toBeNull();
     const original = seeded.data!;
