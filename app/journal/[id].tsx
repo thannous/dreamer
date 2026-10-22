@@ -1,5 +1,6 @@
 import type { LayoutChangeEvent, ViewInstance, ScrollViewInstance, TextInputInstance } from 'react-native';
 import { getSavedAnalysisAction } from '@/lib/savedAnalysisAccess';
+import { AnalysisPreviewCard } from '@/components/journal/AnalysisPreviewCard';
 import { DreamAnalysisContent } from '@/components/journal/DreamAnalysisContent';
 import { isPoeticDreamQuote } from '@/lib/dreamQuote';
 import { CaptureOriginal } from '@/components/recording/CaptureOriginal';
@@ -516,6 +517,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   const [readingActionVisible, setReadingActionVisible] = useState(false);
   const [failedCoverUri, setFailedCoverUri] = useState<string | null>(null);
   const [actionDockHeight, setActionDockHeight] = useState(100);
+  const [previewHoldsOffer, setPreviewHoldsOffer] = useState(false);
+  const [previewShowsReading, setPreviewShowsReading] = useState(false);
   const [coverIntroHeight, setCoverIntroHeight] = useState<number | null>(null);
   const viewportHeight = coverViewport?.height ?? windowSize.height;
   const navigationHeight = insets.top + 76;
@@ -1963,6 +1966,17 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   // The seal, under the name and before the story, at the head of the reading: from the
   // capture on arrival, and on every page whose dream is being or has been read.
   const readingBegun = readingInFlight || showCompletedReading;
+  // Past its monthly analyses, a free account may still read the start of this dream's analysis,
+  // once the server holds the text it reads: an edit still syncing would be read in its former words.
+  const analysisPreviewDreamId = user && !isPlus && savedAnalysisAction === 'upgrade' && !canResumeAnalysis
+    && !readingBegun && !isAnalysisLocked && !isEditing && dreamSyncState === 'clean'
+    && dream && !dream.isAnalyzed ? dream.remoteId ?? null : null;
+  // What the preview shows was written and painted by the models: it can be reported like an analysis.
+  const reportable = hasGeneratedContent || (analysisPreviewDreamId != null && previewShowsReading);
+  // Its card then holds the dream's next step: the seal and the action dock would only repeat the Plus offer.
+  // Right after a capture the dock stays, as it holds the way back to the journal.
+  const previewHoldsStep = analysisPreviewDreamId != null && previewHoldsOffer;
+  const previewHidesDock = previewHoldsStep && !isSavedArrival;
   const sealVisible = !shouldHideHeroMedia && (opensOnSavedMoment || readingBegun);
   // On a page opened again, the seal bears the dream's type and theme as its reading left them.
   const sealTheme = dream?.theme;
@@ -2497,7 +2511,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
           testID: TID.Button.JournalIllustrate,
           emphasis: 'secondary',
         })
-          : !sealReads || !detailActionCard ? null : {
+          : !sealReads || !detailActionCard || previewHoldsStep ? null : {
             label: analysisAccessLabel ?? detailActionCard.cta,
             icon: analysisIcon,
             onPress: primaryPress,
@@ -3061,7 +3075,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
 
           contentContainerStyle={{
             paddingTop: hasIllustratedCover ? 0 : navigationHeight - RUNNING_HEAD_HEIGHT - RUNNING_HEAD_GAP,
-            paddingBottom: ((isEditing) ? 220 : actionDockHeight + 32) + insets.bottom,
+            paddingBottom: ((isEditing) ? 220 : (previewHidesDock ? 0 : actionDockHeight) + 32) + insets.bottom,
           }}
           scrollEventThrottle={16}
           onScroll={Platform.OS === 'web' ? (event) => {
@@ -3108,6 +3122,11 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
             ) : null}
             {/* The reading, under its seal and before the story it reads. */}
             <View>{renderStaleBanner()}</View>
+            {analysisPreviewDreamId != null && user ? (
+              <AnalysisPreviewCard remoteDreamId={analysisPreviewDreamId} transcript={dream.transcript}
+                onOpenPlus={(prepared) => router.push(buildAnalysisPaywallHref(dream, user.id, { prepared }))}
+                onOfferChange={setPreviewHoldsOffer} onReadingChange={setPreviewShowsReading} />
+            ) : null}
             {readingBegun ? (
               <OpenUp appear={readingInFlight}
                 onLayout={({ nativeEvent }) => { readingZoneTopRef.current = nativeEvent.layout.y; }}>
@@ -3257,7 +3276,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
                 </Text>
               </PressableScale>
               </View>
-              {hasGeneratedContent ? (
+              {reportable ? (
                 <PressableScale
                   onPress={onReportGeneratedContent}
                   className="mt-2 min-h-[44px] flex-row items-center justify-center gap-1.5 self-center px-3"
@@ -3281,7 +3300,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
           <CoverFlight source={paintedArtwork} from={coverFlight.from} to={coverFlight.to} height={coverHeight} travel={coverTravel}
             landed={coverFlight.landed} onArrived={coverFlightArrived} onGone={coverFlightGone} />
         ) : null}
-        {!isEditing && !isKeyboardVisible && (!hasIllustratedCover || readingActionVisible) && !(sealShowsReading && !isSavedArrival) ? (
+        {!isEditing && !isKeyboardVisible && (!hasIllustratedCover || readingActionVisible) && !(sealShowsReading && !isSavedArrival)
+          && !previewHidesDock ? (
           <View testID="component.dreamDetail.actionDock"
             className={`absolute bottom-0 left-0 right-0 bg-ink px-6 pt-3 ${isSavedArrival ? '' : 'border-t border-line'}`}
             style={{ paddingBottom: Math.max(insets.bottom, 12) }}

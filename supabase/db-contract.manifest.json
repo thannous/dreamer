@@ -198,6 +198,26 @@
         "created_at",
         "updated_at"
       ]
+    },
+    {
+      "schema": "public",
+      "name": "analysis_previews",
+      "requiredColumns": [
+        "user_id",
+        "dream_id",
+        "status",
+        "lang",
+        "transcript_sha256",
+        "reading",
+        "image_status",
+        "image_prompt",
+        "image_path",
+        "band_path",
+        "band_url",
+        "image_updated_at",
+        "created_at",
+        "updated_at"
+      ]
     }
   ],
   "requiredFunctions": [
@@ -326,6 +346,30 @@
       "name": "delete_moon_letters_of_deleted_dream",
       "identityArguments": "",
       "result": "trigger"
+    },
+    {
+      "schema": "public",
+      "name": "clear_analysis_preview_of_deleted_dream",
+      "identityArguments": "",
+      "result": "trigger"
+    },
+    {
+      "schema": "public",
+      "name": "spend_analysis_preview_of_analyzed_dream",
+      "identityArguments": "",
+      "result": "trigger"
+    },
+    {
+      "schema": "public",
+      "name": "hold_analysis_preview",
+      "identityArguments": "p_user_id uuid, p_dream_id bigint, p_lang text, p_transcript_sha256 text",
+      "result": "jsonb"
+    },
+    {
+      "schema": "public",
+      "name": "save_analysis_preview",
+      "identityArguments": "p_user_id uuid, p_dream_id bigint, p_held_at timestamp with time zone, p_dream_transcript_sha256 text, p_reading jsonb, p_image_prompt text",
+      "result": "jsonb"
     }
   ],
   "requiredTriggers": [
@@ -415,6 +459,28 @@
       "definitionIncludes": [
         "AFTER DELETE",
         "EXECUTE FUNCTION public.delete_moon_letters_of_deleted_dream()"
+      ]
+    },
+    {
+      "schema": "public",
+      "table": "dreams",
+      "name": "trg_clear_analysis_preview_of_deleted_dream",
+      "functionSchema": "public",
+      "functionName": "clear_analysis_preview_of_deleted_dream",
+      "definitionIncludes": [
+        "AFTER DELETE",
+        "EXECUTE FUNCTION public.clear_analysis_preview_of_deleted_dream()"
+      ]
+    },
+    {
+      "schema": "public",
+      "table": "dreams",
+      "name": "trg_spend_analysis_preview_of_analyzed_dream",
+      "functionSchema": "public",
+      "functionName": "spend_analysis_preview_of_analyzed_dream",
+      "definitionIncludes": [
+        "AFTER UPDATE OF is_analyzed",
+        "EXECUTE FUNCTION public.spend_analysis_preview_of_analyzed_dream()"
       ]
     },
     {

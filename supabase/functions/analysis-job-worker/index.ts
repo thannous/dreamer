@@ -3,14 +3,15 @@ import { corsHeaders } from '../api/lib/constants.ts';
 import { AI_REQUEST_LIMITS, isValidUuid } from '../api/lib/aiRequestPolicy.ts';
 import { hashAnalysisTranscript } from '../api/lib/analysisTranscriptHash.ts';
 import { resolveStoredTranscriptForAi } from '../api/lib/prompts.ts';
-import { collectKnownDreamSymbols, type KnownDreamSymbol } from '../api/lib/dreamSymbols.ts';
+import { takePreparedReading, transcriptSha256 } from '../api/lib/analysisPreview.ts';
+import { attachPreparedIllustration, type AttachedPainting } from '../api/services/previewIllustration.ts';
 import {
   ANALYSIS_JOB_WORKER_AUTH_HEADER,
   createAnalysisAdminClient,
   triggerAnalysisWorker,
   type AnalysisJobRow,
 } from '../api/services/analysisJobs.ts';
-import { runDreamAnalysis } from '../api/services/dreamAnalysis.ts';
+import { keepStoredDreamClass, loadKnownDreamSymbols, runDreamAnalysis } from '../api/services/dreamAnalysis.ts';
 import { classifyGeminiError } from '../api/services/gemini.ts';
 import { triggerImageJobWorker } from '../api/services/imageJobs.ts';
 
@@ -35,33 +36,6 @@ const isAuthorized = (req: Request, serviceRoleKey: string): boolean => {
   const apikey = req.headers.get('apikey')?.trim();
   const workerSecret = req.headers.get(ANALYSIS_JOB_WORKER_AUTH_HEADER)?.trim();
   return apikey === serviceRoleKey || workerSecret === serviceRoleKey;
-};
-
-/** How many of the dreamer's latest readings their own symbols are gathered from. */
-const KNOWN_SYMBOL_DREAMS = 200;
-
-/** The dreamer's own symbols from their latest readings. A failed lookup only costs the links. */
-const loadKnownSymbols = async (
-  adminClient: ReturnType<typeof createAnalysisAdminClient>,
-  userId: string,
-  dreamId: number
-): Promise<KnownDreamSymbol[]> => {
-  try {
-    const { data, error } = await adminClient
-      .from('dreams')
-      .select('analysis_details')
-      .eq('user_id', userId)
-      .eq('is_analyzed', true)
-      .neq('id', dreamId)
-      .order('analyzed_at', { ascending: false, nullsFirst: false })
-      .limit(KNOWN_SYMBOL_DREAMS);
-    if (error) throw error;
-    return collectKnownDreamSymbols((data ?? []).map((row: { analysis_details?: unknown }) => row.analysis_details));
-  } catch {
-    // Never log the error: a row could carry dream content.
-    console.warn('[analysis-job-worker] known symbols unavailable');
-    return [];
-  }
 };
 
 export const claimSpecificJob = async (
@@ -192,10 +166,29 @@ export const hasAuthorizedAnalysisTranscript = async (
 const processAnalysisJob = async (input: {
   supabaseUrl: string;
   serviceRoleKey: string;
+  storageBucket: string;
   jobId: string;
 }) => {
   const adminClient = createAnalysisAdminClient(input.supabaseUrl, input.serviceRoleKey);
   let job: AnalysisJobRow | null = null;
+  let attachedPainting: AttachedPainting | null = null;
+  // An analysis not saved: the painting attached for it leaves the dream only if the dream's
+  // text is no longer the one it was painted from. Asked again for the same text, it stays.
+  const dropStalePainting = async () => {
+    if (!attachedPainting || !job) return;
+    try {
+      // A completion that committed with its answer lost keeps its illustration.
+      const { data: current, error: currentError } = await adminClient.from('ai_jobs').select('status')
+        .eq('id', job.id).maybeSingle();
+      if (currentError || (current as any)?.status === 'succeeded') return;
+      const { data, error } = await adminClient.from('dreams').select('transcript')
+        .eq('id', job.dream_id).eq('user_id', job.user_id).maybeSingle();
+      if (error || (data && await hasAuthorizedAnalysisTranscript(job, (data as any).transcript))) return;
+      await attachedPainting.detach();
+    } catch {
+      console.warn('[analysis-job-worker] could not check a prepared painting', { jobId: job.id });
+    }
+  };
 
   try {
     job = await claimSpecificJob(adminClient, input.jobId);
@@ -246,32 +239,33 @@ const processAnalysisJob = async (input: {
     if (tierError) throw tierError;
     const imageTier = tierData === 'plus' || tierData === 'premium' ? 'PLUS' : 'FREE';
     const lang = String(job.request_payload?.lang ?? 'en');
-    const knownSymbols = await loadKnownSymbols(adminClient, job.user_id, job.dream_id);
-    const reading = await runDreamAnalysis({
+    // A reading prepared while the account's analyses were used up is this analysis: the
+    // model is not asked twice for the same dream, text and language.
+    const prepared = await takePreparedReading(adminClient, {
+      userId: job.user_id,
+      dreamId: job.dream_id,
+      lang,
+      transcriptSha256: await transcriptSha256(resolvedTranscript.storedTranscript),
+    });
+    const reading = prepared ?? await runDreamAnalysis({
       apiKey,
       anthropicApiKey: Deno.env.get('ANTHROPIC_API_KEY')?.trim(),
       transcript: resolvedTranscript.promptTranscript,
       truncatedForPrompt: resolvedTranscript.truncatedForPrompt,
       lang,
-      knownSymbols,
+      knownSymbols: await loadKnownDreamSymbols(adminClient, job.user_id, job.dream_id, '/analysis-job-worker'),
       route: '/analysis-job-worker',
     });
-    // A dream its pre-analysis classed keeps that class and the name its seal wrote: the
-    // reading neither classes nor renames it. Synchronized values are shared across
-    // app versions; request capability negotiation does not filter journal reads.
-    // precise_theme holds the full theme; theme is only its projection for older apps.
-    const storedTheme = [(dream as any).precise_theme, (dream as any).theme]
-      .find((value) => typeof value === 'string' && value.length > 0) as string | undefined;
-    const classed = storedTheme !== undefined;
-    const name = typeof (dream as any).title === 'string' ? (dream as any).title.trim() : '';
-    const analysis = classed
-      ? {
-        ...reading,
-        title: name && name.length <= 500 ? name : reading.title,
-        theme: storedTheme,
-        dreamType: String((dream as any).dream_type ?? reading.dreamType),
-      }
-      : reading;
+    const analysis = keepStoredDreamClass(dream as Record<string, unknown>, reading);
+    // Opened with no illustration asked, the dream gets the painting its preview already paid
+    // for before its analysis shows as done, so the app reads both at once. A painting still
+    // under way is left to the image job that "Illustrer" asks for, which waits for it.
+    attachedPainting = prepared && job.request_payload?.replaceExistingImage !== true
+      ? await attachPreparedIllustration(adminClient, {
+        bucket: input.storageBucket, userId: job.user_id, dreamId: job.dream_id, prompt: prepared.imagePrompt.trim(),
+        analysisRequestId: job.client_request_id, waitMs: 0,
+      })
+      : null;
 
     const { data: completionData, error: completionError } = await adminClient.rpc(
       'complete_authenticated_analysis_job',
@@ -298,6 +292,9 @@ const processAnalysisJob = async (input: {
 
     const completion = (completionData ?? {}) as Record<string, any>;
     if (completion.completed !== true) {
+      // Refused (the text edited or the analysis asked again meanwhile): the painting of a
+      // former text leaves the dream.
+      await dropStalePainting();
       await failJob(
         adminClient,
         job,
@@ -341,6 +338,7 @@ const processAnalysisJob = async (input: {
       }
       return;
     }
+    await dropStalePainting();
     await failJob(adminClient, job, serialized.errorCode, serialized.errorMessage);
   }
 };
@@ -367,7 +365,8 @@ const handleAnalysisJobWorkerRequest = async (req: Request): Promise<Response> =
     const jobId = typeof body.jobId === 'string' ? body.jobId.trim() : '';
     if (!isValidUuid(jobId)) return json({ error: 'Invalid jobId' }, 400);
 
-    const task = processAnalysisJob({ supabaseUrl, serviceRoleKey, jobId });
+    const storageBucket = Deno.env.get('SUPABASE_STORAGE_BUCKET')?.trim() || 'dream-images';
+    const task = processAnalysisJob({ supabaseUrl, serviceRoleKey, storageBucket, jobId });
     if (runInBackground(task)) {
       return json({ ok: true, jobId, status: 'accepted' }, 202);
     }

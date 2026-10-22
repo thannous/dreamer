@@ -1,13 +1,16 @@
-import { assertEquals } from 'https://deno.land/std@0.224.0/assert/mod.ts';
+import { assertEquals, assertRejects } from 'https://deno.land/std@0.224.0/assert/mod.ts';
 
 import type { ImageJobRow } from '../api/services/imageJobs.ts';
 import {
   IMAGE_RETRY_PAYLOAD_HASH_KEY,
   claimSpecificJob,
+  formerIllustrationGoes,
   markTerminalFailure,
   persistDreamImageFailure,
   persistDreamImageResult,
+  preparedPaintingMatch,
   redactedRequestPayload,
+  storedTranscriptSha256,
 } from './index.ts';
 
 type DreamUpdate = {
@@ -277,4 +280,32 @@ Deno.test('guest image persistence without dream_id does not write dreams', asyn
 Deno.test('duplicate worker triggers cannot claim an already-running job', async () => {
   const client = { from: () => ({ select: () => ({ eq: () => ({ eq: () => ({ limit: () => ({ maybeSingle: async () => ({ data: imageJob, error: null }) }) }) }) }) }) };
   assertEquals(await claimSpecificJob(client as any, imageJob.id), null);
+});
+
+Deno.test('an image job looks for its dream’s prepared painting by prompt, or by text for a first illustration only', () => {
+  const job = { user_id: 'u1', dream_id: 7 };
+  assertEquals(preparedPaintingMatch(job, { prompt: 'A river of glass', imageSize: '1K' }), 'prompt');
+  assertEquals(preparedPaintingMatch(job, { prompt: '', imageSize: '1K' }), 'transcript');
+  // A dream painted again asks for a new painting, not the prepared one.
+  assertEquals(preparedPaintingMatch(job, { prompt: '', previousImageUrl: 'https://example.test/own.jpg', imageSize: '1K' }), null);
+  assertEquals(preparedPaintingMatch(job, { prompt: 'A river of glass', imageSize: '2K' }), null);
+  assertEquals(preparedPaintingMatch({ user_id: null, dream_id: 7 }, { prompt: '', imageSize: '1K' }), null);
+  assertEquals(preparedPaintingMatch({ user_id: 'u1', dream_id: null }, { prompt: 'p', imageSize: '1K' }), null);
+});
+
+Deno.test('a prepared painting replaces the former illustration, never itself', () => {
+  assertEquals(formerIllustrationGoes('https://example.test/storage/v1/object/sign/dream-images/u1/6-old.jpg?token=t', 'u1/7-a.jpg'), true);
+  assertEquals(formerIllustrationGoes('https://example.test/storage/v1/object/sign/dream-images/u1/7-a.jpg?token=t', 'u1/7-a.jpg'), false);
+  assertEquals(formerIllustrationGoes(null, 'u1/7-a.jpg'), false);
+});
+
+Deno.test('a dream whose text cannot be read makes the job try again rather than paint another', async () => {
+  const dreams = (answer: unknown) => {
+    const builder = { select: () => builder, eq: () => builder, maybeSingle: async () => answer };
+    return { from: () => builder } as unknown as Parameters<typeof storedTranscriptSha256>[0];
+  };
+  assertEquals((await storedTranscriptSha256(dreams({ data: { transcript: 'Je marchais.' }, error: null }), 'u1', 7))?.length, 64);
+  assertEquals(await storedTranscriptSha256(dreams({ data: null, error: null }), 'u1', 7), undefined);
+  const failed = await assertRejects(() => storedTranscriptSha256(dreams({ data: null, error: { message: 'down' } }), 'u1', 7));
+  assertEquals((failed as { isTransient?: unknown }).isTransient, true);
 });

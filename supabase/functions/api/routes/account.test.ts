@@ -98,7 +98,7 @@ function fakeAdminClient(results: FakeAdminResults = {}) {
 
 const USER_ID = '00000000-0000-4000-8000-0000000000aa';
 
-Deno.test('/account deletion removes storage, quota rows, then the auth user', async () => {
+Deno.test('/account deletion removes storage, prepared paintings included, quota rows, then the auth user', async () => {
   const { factory, calls } = fakeAdminClient();
   const res = await handleDeleteAccount(context() as never, factory);
   assertEquals(res.status, 200);
@@ -108,6 +108,8 @@ Deno.test('/account deletion removes storage, quota rows, then the auth user', a
     `storage.list:dream-images:${USER_ID}/`,
     `storage.remove:${USER_ID}/dream.png`,
     `storage.list:dream-images:${USER_ID}/`,
+    // The paintings of prepared analyses, kept out of the account's own prefix.
+    `storage.list:dream-images:previews/${USER_ID}/`,
     `db.delete:quota_usage.user_id=${USER_ID}`,
     `auth.getUserById:${USER_ID}`,
     `auth.deleteUser:${USER_ID}`,

@@ -1,0 +1,99 @@
+import { assertEquals, assertRejects } from 'https://deno.land/std@0.224.0/assert/mod.ts';
+import {
+  isPreparedReading,
+  previewOf,
+  previewOpening,
+  takePreparedReading,
+  transcriptSha256,
+} from './analysisPreview.ts';
+import type { StructuredDreamAnalysis } from '../services/dreamAnalysis.ts';
+
+const reading: StructuredDreamAnalysis = {
+  title: 'La rivière de verre',
+  interpretation: 'Ton rêve fait de la rivière un passage. La maison attend au bout.',
+  shareableQuote: 'Une rivière de verre',
+  theme: 'calm',
+  dreamType: 'Symbolic Dream',
+  imagePrompt: 'A river of glass',
+  promptVersion: 'test',
+  symbols: ['Rivière', 'Maison', 'Verre', 'Pont', 'Lampe', 'Porte', 'Clé'].map((name) => ({ name, meaning: `${name} veut dire…` })),
+  emotions: [],
+  reflectionQuestions: [],
+};
+
+Deno.test('a free account reads the first sentence of the reading, whole', () => {
+  assertEquals(previewOpening('  Ton rêve fait de la rivière un passage.\nLa maison attend.'), 'Ton rêve fait de la rivière un passage.');
+  assertEquals(previewOpening('Une question ? Puis la suite.'), 'Une question ?');
+  // A decimal or an abbreviation without a space after it does not end the sentence.
+  assertEquals(previewOpening('Il était 3.5 fois plus grand. Fin.'), 'Il était 3.5 fois plus grand.');
+  const long = `${'mot '.repeat(120)}fin.`;
+  const opening = previewOpening(long);
+  assertEquals(opening.endsWith('…'), true);
+  assertEquals(opening.length <= 281, true);
+  assertEquals(opening.includes('mo…'), false);
+});
+
+Deno.test('the first sentence is read past the Markdown heading and emphasis', () => {
+  assertEquals(previewOpening('## Ce qui ressort\n\nLa **rivière de verre** te porte vers la maison.\n\n## Lectures possibles\n\nUne autre.'),
+    'La rivière de verre te porte vers la maison.');
+  assertEquals(previewOpening('### Ce qui ressort\n- Le mot *« verre »* revient. Puis la suite.'), 'Le mot « verre » revient.');
+});
+
+Deno.test('the preview names at most six symbols and none of their meanings', () => {
+  assertEquals(previewOf(reading, 'Titre'), {
+    title: 'Titre',
+    opening: 'Ton rêve fait de la rivière un passage.',
+    symbols: ['Rivière', 'Maison', 'Verre', 'Pont', 'Lampe', 'Porte'],
+  });
+});
+
+Deno.test('only a reading of the same text and language is taken', async () => {
+  const sha = await transcriptSha256('Je marchais.');
+  assertEquals(sha, await transcriptSha256('Je marchais.'));
+  assertEquals(sha === await transcriptSha256('Je marchais. '), false);
+  const rows = [{ user_id: 'u1', dream_id: 7, status: 'ready', lang: 'fr', transcript_sha256: sha, reading }];
+  const admin = {
+    from: () => {
+      const filters: [string, unknown][] = [];
+      const builder = {
+        select: () => builder,
+        eq: (column: string, value: unknown) => { filters.push([column, value]); return builder; },
+        maybeSingle: async () => ({ data: rows.find((row) => filters.every(([column, value]) => (row as Record<string, unknown>)[column] === value)) ?? null, error: null }),
+      };
+      return builder;
+    },
+  };
+  const input = { userId: 'u1', dreamId: 7, lang: 'fr', transcriptSha256: sha };
+  assertEquals(await takePreparedReading(admin, input), reading);
+  assertEquals(await takePreparedReading(admin, { ...input, lang: 'en' }), null);
+  assertEquals(await takePreparedReading(admin, { ...input, transcriptSha256: 'b'.repeat(64) }), null);
+  assertEquals(await takePreparedReading(admin, { ...input, dreamId: 8 }), null);
+
+  // A lookup that fails is no answer: the job is tried again instead of asking the model.
+  const failing = { from: () => { const b = { select: () => b, eq: () => b, maybeSingle: async () => ({ data: null, error: { message: 'down' } }) }; return b; } };
+  const error = await assertRejects(() => takePreparedReading(failing, input));
+  assertEquals((error as { isTransient?: unknown }).isTransient, true);
+});
+
+Deno.test('a prepared reading is one the analysis job can save as it is', () => {
+  assertEquals(isPreparedReading(reading), true);
+  assertEquals(isPreparedReading({ ...reading, theme: 'luminous' }), true);
+  assertEquals(isPreparedReading({ ...reading, shareableQuote: '', dreamType: '' }), true);
+  for (const broken of [
+    { symbols: null },
+    { title: '  ' },
+    { title: 'x'.repeat(501) },
+    { interpretation: '' },
+    { interpretation: 'x'.repeat(20001) },
+    // Postgres trims spaces only: a newline counts toward the limit.
+    { interpretation: `${'x'.repeat(20000)}\n` },
+    { shareableQuote: 'x'.repeat(2001) },
+    { theme: 'stormy' },
+    { dreamType: 'x'.repeat(201) },
+    { imagePrompt: ' ' },
+    { imagePrompt: 'x'.repeat(1001) },
+  ]) {
+    assertEquals(isPreparedReading({ ...reading, ...broken }), false, JSON.stringify(broken).slice(0, 40));
+  }
+  assertEquals(isPreparedReading(null), false);
+});
