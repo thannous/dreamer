@@ -594,9 +594,23 @@ const processImageJob = async (input: {
         });
       }
     } catch (error) {
-      // Not stored: the prepared painting waits for the next attempt instead of being paid again
-      // (settled instead if the dream holds it already, so it is never linked twice).
-      await takenPainting?.release();
+      // Not stored: the prepared painting waits for the next attempt instead of being paid again.
+      // Stored already (only the job's bookkeeping failed): the job is done, nothing is painted again.
+      if (takenPainting && await takenPainting.release()) {
+        try {
+          await updateJob(adminClient, job.id, {
+            status: 'succeeded',
+            request_payload: redactedRequestPayload(job),
+            result_payload: { imageUrl: takenPainting.url },
+            error_code: null,
+            error_message: null,
+            finished_at: new Date().toISOString(),
+          });
+          return;
+        } catch {
+          console.warn('[image-job-worker] prepared illustration bookkeeping pending', { jobId: job.id });
+        }
+      }
       const serialized = serializeImageJobError(error);
       let guestClaimCleared = false;
       if (claimedQuotaThisRun && !startedUpstream) {

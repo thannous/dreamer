@@ -370,7 +370,7 @@ Deno.test('after a failure that may hide a stored link, the painting is settled 
   const kept = await takePreparedIllustration(stored.admin, input);
   assert(kept);
   stored.link(kept.url);
-  await kept.release();
+  assertEquals(await kept.release(), true);
   assertEquals([stored.previews[0].image_status, stored.previews[0].image_path, stored.previews[0].band_path], ['used', null, null]);
   assertEquals([...stored.storage.objects.keys()], ['u1/7-a.jpg']);
   assertEquals(await take(stored.admin, input), null);
@@ -380,6 +380,6 @@ Deno.test('after a failure that may hide a stored link, the painting is settled 
   const back = await takePreparedIllustration(lost.admin, input);
   assert(back);
   lost.link(back.url);
-  await back.release();
+  assertEquals(await back.release(), false);
   assertEquals([lost.previews[0].image_status, lost.previews[0].image_path], ['ready', 'u1/7-a.jpg']);
 });

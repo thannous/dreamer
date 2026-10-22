@@ -94,9 +94,10 @@ export type TakenPainting = {
   giveBack: () => Promise<void>;
   /**
    * After a failure that may hide a stored link (a lost answer, a later step failing): settled
-   * when the dream holds it, given back otherwise, so it is never linked twice.
+   * when the dream holds it, given back otherwise, so it is never linked twice. True when the
+   * dream holds it: only the job's bookkeeping is left.
    */
-  release: () => Promise<void>;
+  release: () => Promise<boolean>;
 };
 
 /**
@@ -186,13 +187,17 @@ export async function takePreparedIllustration(admin: AdminClient, input: {
           const { data, error } = await admin.from('dreams').select('image_url')
             .eq('id', input.dreamId).eq('user_id', input.userId).maybeSingle();
           // Unknown: kept as it is (taken), rather than risk a second link to the same object.
-          if (error) return;
+          if (error) return false;
           linked = data?.image_url;
         } catch {
-          return;
+          return false;
         }
-        if (linked === url) await settle();
-        else await giveBack(ownPath);
+        if (linked !== url) {
+          await giveBack(ownPath);
+          return false;
+        }
+        await settle();
+        return true;
       },
     };
   } catch {

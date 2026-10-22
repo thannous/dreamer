@@ -177,6 +177,10 @@ const processAnalysisJob = async (input: {
   const dropStalePainting = async () => {
     if (!attachedPainting || !job) return;
     try {
+      // A completion that committed with its answer lost keeps its illustration.
+      const { data: current, error: currentError } = await adminClient.from('ai_jobs').select('status')
+        .eq('id', job.id).maybeSingle();
+      if (currentError || (current as any)?.status === 'succeeded') return;
       const { data, error } = await adminClient.from('dreams').select('transcript')
         .eq('id', job.dream_id).eq('user_id', job.user_id).maybeSingle();
       if (error || (data && await hasAuthorizedAnalysisTranscript(job, (data as any).transcript))) return;
