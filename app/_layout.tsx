@@ -30,6 +30,7 @@ import { RouteScreenErrorFallback } from '@/components/ScreenErrorBoundary';
 import { DesktopShell } from '@/components/navigation/DesktopShell';
 import { AnalysisFlightIndicator } from '@/components/analysis/AnalysisFlightIndicator';
 import { EngagementRemindersHost } from '@/components/reminders/EngagementRemindersHost';
+import { BadgeLedgerHost } from '@/components/badges/BadgeLedgerHost';
 import { HomeWidgetsHost } from '@/components/widgets/HomeWidgetsHost';
 import { NotificationDreamImportHost } from '@/components/reminders/NotificationDreamImportHost';
 import { OfflineModelPromptHost } from '@/components/speech/OfflineModelPromptHost';
@@ -651,7 +652,8 @@ function RootLayoutNav({
         currentPath?.startsWith('/ritual/') ||
         currentPath?.startsWith('/sleep-sounds') ||
         currentPath?.startsWith('/weekly-recap') ||
-        currentPath?.startsWith('/moon-letter');
+        currentPath?.startsWith('/moon-letter') ||
+        currentPath?.startsWith('/collection');
 
       if (__DEV__) {
         console.log('[RootLayoutNav] navigateForForeground', {
@@ -952,6 +954,7 @@ const RootNavigator = memo(function RootNavigator({
             <Stack.Screen name="paywall" options={{ headerShown: false }} />
             <Stack.Screen name="weekly-recap" options={{ headerShown: false }} />
             <Stack.Screen name="moon-letter" options={{ headerShown: false }} />
+            <Stack.Screen name="collection" options={{ headerShown: false }} />
             <Stack.Screen name="dev/voice-live-spike" options={{ headerShown: false }} />
             </Stack.Protected>
             {/* Lucid screens live under routes/lucid only (Lucid's own router root). */}
@@ -960,7 +963,7 @@ const RootNavigator = memo(function RootNavigator({
           </Stack>
           </DesktopShell>
           </QuickSettingsProvider>
-          {!isLucidTrainer ? <><OfflineModelPromptHost /><EngagementRemindersHost /><HomeWidgetsHost /><NotificationDreamImportHost /><AnalysisFlightIndicator /></> : null}
+          {!isLucidTrainer ? <><OfflineModelPromptHost /><EngagementRemindersHost /><HomeWidgetsHost /><NotificationDreamImportHost /><BadgeLedgerHost /><AnalysisFlightIndicator /></> : null}
           {!isLucidTrainer ? <VercelAnalytics /> : null}
           {!isLucidTrainer ? <VercelSpeedInsights /> : null}
         </JournalRuntime>

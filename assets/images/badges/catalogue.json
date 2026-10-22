@@ -1,0 +1,270 @@
+{
+  "version": 1,
+  "tiers": [
+    "bronze",
+    "silver",
+    "gold"
+  ],
+  "families": [
+    {
+      "id": "night-journal",
+      "name": "Journal des nuits",
+      "rule": "Rêves sauvegardés distincts",
+      "thresholds": [
+        1,
+        25,
+        100
+      ],
+      "art": "A luminous eight-point ivory star above a midnight crescent and tiny cloud, representing the first dream and a growing journal.",
+      "asset": "assets/images/badges/night-journal-v1.png",
+      "status": "generated"
+    },
+    {
+      "id": "gentle-rhythm",
+      "name": "À son rythme",
+      "rule": "Jours locaux distincts avec au moins une sauvegarde",
+      "thresholds": [
+        3,
+        14,
+        50
+      ],
+      "art": "Three delicate stepping stones crossing a calm midnight pool toward a small crescent, expressing a gentle personal rhythm.",
+      "asset": "assets/images/badges/gentle-rhythm-v1.png",
+      "status": "generated"
+    },
+    {
+      "id": "night-thread",
+      "name": "Fil des semaines",
+      "rule": "Semaines civiles distinctes avec une sauvegarde",
+      "thresholds": [
+        2,
+        8,
+        26
+      ],
+      "art": "A fine golden thread connecting a gracefully curved row of seven tiny ivory stars across a deep blue velvet sky.",
+      "asset": "assets/images/badges/night-thread-v1.png",
+      "status": "generated"
+    },
+    {
+      "id": "moon-cycles",
+      "name": "Cycles de lune",
+      "rule": "Mois calendaires distincts avec une sauvegarde",
+      "thresholds": [
+        2,
+        6,
+        12
+      ],
+      "art": "An elegant crescent, half moon and full pearlescent moon arranged in a graceful orbital arch, no calendar numerals.",
+      "asset": "assets/images/badges/moon-cycles-v1.png",
+      "status": "generated"
+    },
+    {
+      "id": "ink-dreamer",
+      "name": "Plume de nuit",
+      "rule": "Rêves distincts sauvegardés depuis la saisie texte",
+      "thresholds": [
+        3,
+        15,
+        50
+      ],
+      "art": "A gracefully curved ivory quill dipping into a tiny midnight enamel inkwell, a small star forming at its tip.",
+      "asset": "assets/images/badges/ink-dreamer-v1.png",
+      "status": "generated"
+    },
+    {
+      "id": "night-voice",
+      "name": "Voix des rêves",
+      "rule": "Rêves distincts sauvegardés après une capture vocale réussie",
+      "thresholds": [
+        1,
+        10,
+        30
+      ],
+      "art": "A sculpted ivory conch shell releasing three curved golden sound waves and a tiny star into midnight blue.",
+      "asset": "assets/images/badges/night-voice-v1.png",
+      "status": "generated"
+    },
+    {
+      "id": "memory-keeper",
+      "name": "Souvenirs retrouvés",
+      "rule": "Rêves distincts explicitement saisis comme souvenirs anciens",
+      "thresholds": [
+        1,
+        5,
+        15
+      ],
+      "art": "An antique miniature moonlit memory chest opened to reveal a single softly luminous pearl and a faint star.",
+      "asset": "assets/images/badges/memory-keeper-v1.png",
+      "status": "generated"
+    },
+    {
+      "id": "dream-reader",
+      "name": "Entre les lignes",
+      "rule": "Rêves distincts rouverts au moins un jour après leur sauvegarde",
+      "thresholds": [
+        1,
+        10,
+        30
+      ],
+      "art": "An open ivory-paged journal with a tiny moon rising from the fold, a midnight ribbon bookmark, no writing.",
+      "asset": "assets/images/badges/dream-reader-v1.png",
+      "status": "generated"
+    },
+    {
+      "id": "time-traveler",
+      "name": "Voyage dans le temps",
+      "rule": "Ancienneté en jours du rêve rouvert : seuil maximal atteint",
+      "thresholds": [
+        7,
+        30,
+        90
+      ],
+      "art": "A refined small hourglass containing luminous stardust instead of sand, a crescent-shaped orbit behind it.",
+      "asset": "assets/images/badges/time-traveler-v1.png",
+      "status": "generated"
+    },
+    {
+      "id": "treasure-keeper",
+      "name": "Trésors de nuit",
+      "rule": "Rêves distincts marqués favoris au moins une fois",
+      "thresholds": [
+        1,
+        5,
+        15
+      ],
+      "art": "A single faceted pearlescent heart-shaped celestial gem held in a restrained gold crescent setting.",
+      "asset": "assets/images/badges/treasure-keeper-v1.png",
+      "status": "generated"
+    },
+    {
+      "id": "favorite-echoes",
+      "name": "Échos précieux",
+      "rule": "Favoris distincts rouverts au moins un jour après sauvegarde",
+      "thresholds": [
+        1,
+        5,
+        15
+      ],
+      "art": "A small luminous heart reflected in concentric rings on a midnight mirror-like pool, a delicate star above.",
+      "asset": "assets/images/badges/favorite-echoes-v1.png",
+      "status": "generated"
+    },
+    {
+      "id": "dream-weaver",
+      "name": "Tisseur de récits",
+      "rule": "Récits distincts réellement modifiés et sauvegardés après création",
+      "thresholds": [
+        1,
+        5,
+        15
+      ],
+      "art": "A tiny golden weaving shuttle drawing an ivory thread through a deep midnight-blue ribbon of stars.",
+      "asset": "assets/images/badges/dream-weaver-v1.png",
+      "status": "generated"
+    },
+    {
+      "id": "dream-namer",
+      "name": "Nommeur d’étoiles",
+      "rule": "Rêves distincts dont le titre a été personnellement modifié et sauvegardé",
+      "thresholds": [
+        1,
+        5,
+        15
+      ],
+      "art": "A blank ivory parchment cartouche and a tiny elegant writing nib, crowned by a solitary luminous star; absolutely no text.",
+      "asset": "assets/images/badges/dream-namer-v1.png",
+      "status": "generated"
+    },
+    {
+      "id": "night-cartographer",
+      "name": "Cartographe des nuits",
+      "rule": "Rêves distincts dont le type ou le thème est choisi ou corrigé manuellement puis sauvegardé",
+      "thresholds": [
+        1,
+        5,
+        15
+      ],
+      "art": "An antique celestial compass rose floating above a folded midnight star map, no lettering or numerals.",
+      "asset": "assets/images/badges/night-cartographer-v1.png",
+      "status": "generated"
+    },
+    {
+      "id": "dream-seeker",
+      "name": "Chercheur de souvenirs",
+      "rule": "Jours distincts avec recherche non vide puis ouverture d’un résultat du journal",
+      "thresholds": [
+        3,
+        10,
+        30
+      ],
+      "art": "An ornate restrained magnifying lens revealing a tiny ivory crescent and star within its midnight-blue glass.",
+      "asset": "assets/images/badges/dream-seeker-v1.png",
+      "status": "generated"
+    },
+    {
+      "id": "path-finder",
+      "name": "Passeur de chemins",
+      "rule": "Jours distincts avec filtre explicite du journal puis ouverture d’un résultat",
+      "thresholds": [
+        3,
+        10,
+        30
+      ],
+      "art": "Three curved celestial paths meeting at a delicate open archway of warm ivory stone under a tiny crescent.",
+      "asset": "assets/images/badges/path-finder-v1.png",
+      "status": "generated"
+    },
+    {
+      "id": "symbol-explorer",
+      "name": "Explorateur des symboles",
+      "rule": "Fiches distinctes du dictionnaire dont le contenu a été affiché",
+      "thresholds": [
+        3,
+        15,
+        40
+      ],
+      "art": "A refined small golden key with an eight-point star bow, a deep blue enamel handle and a single pearlescent accent.",
+      "asset": "assets/images/badges/symbol-explorer-v1.png",
+      "status": "generated"
+    },
+    {
+      "id": "night-scholar",
+      "name": "Bibliothèque des rêves",
+      "rule": "Guides distincts dont le contenu a été affiché",
+      "thresholds": [
+        2,
+        4,
+        8
+      ],
+      "art": "Three small antique ivory and midnight-blue books of different heights under a glowing crescent, unmarked spines.",
+      "asset": "assets/images/badges/night-scholar-v1.png",
+      "status": "generated"
+    },
+    {
+      "id": "observatory",
+      "name": "Observatoire intérieur",
+      "rule": "Jours distincts avec exploration explicite des Tendances contenant des données",
+      "thresholds": [
+        3,
+        10,
+        30
+      ],
+      "art": "A miniature elegant ivory observatory dome and a slim golden telescope aimed at a luminous star.",
+      "asset": "assets/images/badges/observatory-v1.png",
+      "status": "generated"
+    },
+    {
+      "id": "dream-painter",
+      "name": "Images choisies",
+      "rule": "Rêves distincts auxquels une image personnelle est ajoutée avec succès",
+      "thresholds": [
+        1,
+        5,
+        15
+      ],
+      "art": "An artist's fine brush painting a small pearlescent moon on a floating midnight enamel canvas, a subtle gold arc.",
+      "asset": "assets/images/badges/dream-painter-v1.png",
+      "status": "generated"
+    }
+  ]
+}

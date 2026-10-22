@@ -16,6 +16,7 @@ source assets, generated files, private QA and historical evidence;
 | Journal, filters and storage | [journal.tsx](<../../app/(tabs)/journal.tsx>) | `hooks/useDreamJournal.ts`, `hooks/useDreamPersistence.ts`, `hooks/useRemoteJournalList.ts`, `services/storageService.ts` |
 | Dream detail and reading | [dream detail](<../../app/journal/[id].tsx>) | `components/journal/`, `components/analysis/`; [appearance guide](../../components/journal/README.md) |
 | Reflection and chat | [dream chat](<../../app/dream-chat/[id].tsx>) | `components/chat/MessagesList.tsx`, `context/ChatContext.tsx` |
+| Badge collection | [collection.tsx](../../app/collection.tsx) | `lib/badges/` ([counting rules](../../lib/badges/README.md)), `services/badgeLedgerStore.ts`, `components/badges/`; artwork in `assets/images/badges/` |
 | Settings and account controls | [settings.tsx](../../app/settings.tsx) | `components/settings/QuickSettingsProvider.tsx`, `context/QuickSettingsContext.tsx` |
 | Password recovery | [reset screen](../../components/auth/ResetPasswordScreen.tsx) | `lib/supabase.ts`, `lib/auth.web.ts`; [recovery rollout](password-recovery-rollout.md) |
 | Quotas and subscription | [useQuota.ts](../../hooks/useQuota.ts) | `services/quota/`, `hooks/useSubscription.ts`, `components/subscription/`; [billing QA](revenuecat-qa-workflow.md) |
