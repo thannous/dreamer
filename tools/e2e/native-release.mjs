@@ -65,7 +65,9 @@ export function releaseMetadata(path, platform, env, read) {
     const pkg = output.match(/^package: name='([^']+)' versionCode='([^']+)' versionName='([^']+)'/m);
     if (!pkg || output.includes('application-debuggable')) refusal('ANDROID_NOT_RELEASE');
     const manifest = read(join(tools, aapt, 'aapt'), ['dump', 'xmltree', path, 'AndroidManifest.xml']);
-    const ota = manifest.match(/expo\.modules\.updates\.ENABLED[\s\S]*?android:value[^\n]*?(0xffffffff|0x0)/);
+    // Bind the boolean to ENABLED's own metadata element. A later false flag
+    // must never turn an OTA-enabled binary into an allegedly pinned Release.
+    const ota = manifest.match(/A: android:name[^\n]*="expo\.modules\.updates\.ENABLED"[^\n]*\n\s*A: android:value[^\n]*?\(type 0x12\)(0xffffffff|0x0)(?=\s|$)/);
     if (!ota || ota[1] !== '0x0') refusal('OTA_NOT_PINNED');
     return { bundle: pkg[1], version: pkg[3], build: pkg[2], otaEnabled: false, manifestSha256: digest(manifest) };
   }

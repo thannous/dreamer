@@ -39,6 +39,7 @@ export function initStarmapSteps(root, dreams, stars, journey, setStep) {
   counter.setAttribute('aria-live', 'polite'); counter.setAttribute('aria-atomic', 'true');
   counter.before(controls);
   let current = 0, frame = 0, previous = -1;
+  let lastProgress = NaN, lastActive;
   const buttons = [-1, 1].map((direction, i) => {
     const button = document.createElement('button'); button.type = 'button';
     button.className = 'oh-starmap-nav'; button.textContent = direction < 0 ? '←' : '→';
@@ -62,6 +63,9 @@ export function initStarmapSteps(root, dreams, stars, journey, setStep) {
   controls.append(buttons[0], counter, buttons[1]);
   const update = () => {
     frame = 0;
+    // Above and below the map, scrolling does not change its account or comets.
+    if (journey.mapProgress === lastProgress && journey.mapActive === lastActive) return;
+    lastProgress = journey.mapProgress; lastActive = journey.mapActive;
     const { index, flight } = mapStepAt(journey.mapProgress, dreams.length);
     current = index;
     if (previous !== index) {
@@ -84,12 +88,13 @@ export function initStarmapSteps(root, dreams, stars, journey, setStep) {
   };
   const schedule = () => { if (!frame) frame = requestAnimationFrame(update); };
   window.addEventListener('scroll', schedule, { passive: true });
-  window.addEventListener('resize', schedule);
+  const onResize = () => { lastProgress = NaN; schedule(); };
+  window.addEventListener('resize', onResize);
   update();
   return () => {
     cancelAnimationFrame(frame);
     window.removeEventListener('scroll', schedule);
-    window.removeEventListener('resize', schedule);
+    window.removeEventListener('resize', onResize);
     flights.forEach(flight => flight.destroy());
     controls.before(counter); controls.remove();
     dreams.forEach(({ el }) => { el.inert = false; el.removeAttribute('aria-hidden'); });

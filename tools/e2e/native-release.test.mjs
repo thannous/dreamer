@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync, realpathSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { validateReleaseReceipt, runWithInstallDiagnostics, normalizeAvdName, validateBuildCommand, nativeInputs, archiveReleaseBinary } from './native-release.mjs';
+import { validateReleaseReceipt, runWithInstallDiagnostics, normalizeAvdName, validateBuildCommand, nativeInputs, archiveReleaseBinary, releaseMetadata } from './native-release.mjs';
 import { virtualLinks } from './test-support/virtual-links.mjs';
 const sha = 'a'.repeat(64);
 test('iteration APK commands never qualify as Release on either path syntax', () => {
@@ -106,5 +106,23 @@ test('archived Release bytes survive a later cache rebuild, partial or existing 
     assert.notEqual(archiveReleaseBinary(original, 'android', join(root, 'third')).sha256, copy.sha256);
     assert.throws(() => archiveReleaseBinary(original, 'android', output), /ARCHIVE|EEXIST/);
     links.link(original, join(root, 'foreign.apk')); assert.throws(() => archiveReleaseBinary(join(root, 'foreign.apk'), 'android', join(root, 'refused')), /SYMLINK/);
+  } finally { rmSync(root, { recursive: true, force: true }); }
+});
+
+// The real QA APK had ENABLED=true followed by another false metadata flag. The
+// previous regexp mistook the attribute ID's 0x0 prefix for the value and certified OTA=false.
+// UI E2E cannot exercise malformed build metadata without rebuilding every case.
+test('OTA provenance reads the complete boolean belonging to ENABLED only', () => {
+  const root = mkdtempSync(join(tmpdir(), 'noctalia-ota-metadata-'));
+  mkdirSync(join(root, 'build-tools', '37.0.0'), { recursive: true });
+  const node = value => `      E: meta-data (line=148)\n        A: android:name(0x01010003)="expo.modules.updates.ENABLED" (Raw: "expo.modules.updates.ENABLED")\n        A: android:value(0x01010024)=(type 0x12)${value}\n`;
+  const other = '      E: meta-data (line=151)\n        A: android:name(0x01010003)="other.flag"\n        A: android:value(0x01010024)=(type 0x12)0x0\n';
+  const metadata = manifest => releaseMetadata('/qa.apk', 'android', { ANDROID_HOME: root }, (_cmd, args) =>
+    args[1] === 'badging' ? "package: name='com.tanuki75.noctalia' versionCode='83' versionName='3.7.0'" : manifest);
+  try {
+    assert.throws(() => metadata(node('0xffffffff') + other), /OTA_NOT_PINNED/);
+    assert.throws(() => metadata(other), /OTA_NOT_PINNED/);
+    assert.throws(() => metadata(node('0x01') + other), /OTA_NOT_PINNED/);
+    assert.equal(metadata(node('0x0') + other).otaEnabled, false);
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
