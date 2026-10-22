@@ -55,6 +55,7 @@ import {
 } from '@/lib/dreamTrends';
 import { toJournalFilterParams, type JournalFilterRequest } from '@/lib/journalFilterLink';
 import { getSymbolIndex } from '@/lib/symbolLinks';
+import { recordBadgeEvent } from '@/services/badgeLedgerStore';
 import { getPeriodSymbols } from '@/lib/trendsSymbols';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
@@ -191,9 +192,25 @@ function StatisticsScreen() {
     useTrendsReveal(loaded && !trends.empty, trends.count > 0);
   const handleScroll = useHeaderScroll(onRevealScroll);
 
+  // For the collection: a day the dreamer looked into their own trends, by choice.
+  const noteExploration = useCallback(() => {
+    if (!trends.empty) recordBadgeEvent({ type: 'trends_explored', now: Date.now() });
+  }, [trends.empty]);
+
+  const choosePeriod = useCallback((next: DreamTrendsPeriod) => {
+    setPeriod(next);
+    noteExploration();
+  }, [noteExploration]);
+
   const chooseTheme = useCallback((theme: DreamTheme) => {
     setSelectedTheme((current) => (current === theme ? null : theme));
-  }, []);
+    noteExploration();
+  }, [noteExploration]);
+
+  const chooseSymbol = useCallback((key: string | null) => {
+    setOpenSymbol(key);
+    if (key !== null) noteExploration();
+  }, [noteExploration]);
 
   const openDream = useCallback((dream: DreamAnalysis) => {
     router.push({ pathname: '/journal/[id]', params: getDreamRouteParams(dream) });
@@ -286,7 +303,7 @@ function StatisticsScreen() {
   // Each section is its own element: one that lights or changes redraws only itself.
   const periodSection = (
     <View className="gap-5" testID="trends.section.period" accessible={false} accessibilityRole="none">
-      <TrendsPeriodSwitch period={period} onChange={setPeriod} reduced={reduced} t={t} />
+      <TrendsPeriodSwitch period={period} onChange={choosePeriod} reduced={reduced} t={t} />
       <View className="flex-row items-start gap-3">
         <View className="mt-[9px] h-px w-[22px] bg-champagne" />
         <Text testID="trends.range" className="min-w-0 shrink text-caption leading-[18px] font-sans-medium uppercase tracking-[1.6px] text-champagne-on">
@@ -359,7 +376,7 @@ function StatisticsScreen() {
         formatNumber={formatNumber}
         onOpenUnanalyzed={() => openJournal(trends, { analysis: 'unanalyzed' })}
         onOpenType={(type: DreamType) => openJournal(trends, { dreamType: type, analysis: 'analyzed' })}
-        onOpenSymbol={setOpenSymbol}
+        onOpenSymbol={chooseSymbol}
         plusHint={analysesUsedUp && trends.patterns.unrequested > 0 ? {
           text: t(trends.patterns.unrequested === 1 ? 'trends.returns.plus_hint_one' : 'trends.returns.plus_hint', {
             date: formatQuotaResetDate(locale),

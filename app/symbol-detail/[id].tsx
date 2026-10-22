@@ -21,7 +21,9 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { buildFirstValueProperties } from '@/lib/activationAnalytics';
 import { trackProductEvent } from '@/lib/analytics';
 import { atlasPictureSources } from '@/lib/symbolAtlas';
+import { useBadgeReading } from '@/hooks/useBadgeReading';
 import { TID } from '@/lib/testIDs';
+import { recordBadgeEvent } from '@/services/badgeLedgerStore';
 import type { DreamSymbol, SymbolLanguage, SymbolVariation } from '@/lib/symbolTypes';
 import {
   getCategoryName,
@@ -128,6 +130,11 @@ export default function SymbolDetailScreen() {
       );
     }
   }, [onboardingState, source, symbol]);
+  // For the collection: an entry read for a moment, whichever way it was opened.
+  const symbolId = symbol?.id ?? null;
+  useBadgeReading(symbolId, () => {
+    if (symbolId) recordBadgeEvent({ type: 'symbol_viewed', symbolId });
+  });
 
   // On the paper theme the night scene needs room to dawn into the page below its copy.
   const heroDusk = mode === 'light' ? 72 : 0;

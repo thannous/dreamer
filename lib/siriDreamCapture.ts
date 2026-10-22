@@ -23,6 +23,13 @@ export type SiriDreamInvocationLike = {
   createdAt: number;
 };
 
+const SIRI_CAPTURE_PREFIX = 'siri:';
+
+/** Whether an inbox capture was told to Siri, so its words came from recognized speech. */
+export function isSiriDreamCapture(capture: Pick<NotificationDreamCapture, 'id'>): boolean {
+  return capture.id.startsWith(SIRI_CAPTURE_PREFIX);
+}
+
 /**
  * Turns a Siri invocation into a capture, or null when it carries no words.
  * The id comes from the invocation, so a redelivered one maps to the same capture.
@@ -39,7 +46,7 @@ export function parseSiriDreamInvocation(
   if (!text) return null;
 
   return {
-    id: `siri:${invocation.id}`,
+    id: `${SIRI_CAPTURE_PREFIX}${invocation.id}`,
     text,
     // The moment it was told to Siri, which can be hours before the app runs.
     capturedAt: Number.isFinite(invocation.createdAt) ? Math.round(invocation.createdAt) : options.now,
