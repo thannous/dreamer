@@ -86,6 +86,7 @@ export function createDreamerQaExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
   const nativeQaAudio = process.env.EXPO_PUBLIC_NATIVE_QA_AUDIO === 'true';
   if (nativeQaAudio) {
     if (process.env.EAS_BUILD === 'true') throw new Error('[app.config] Native QA audio is local-only; EAS builds are refused.');
+    if (!process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY) throw new Error('[app.config] Native QA backend requires its local public key.');
     for (const key of ['EXPO_PUBLIC_API_URL', 'EXPO_PUBLIC_SUPABASE_URL']) {
       const url = new URL(process.env[key] ?? '');
       if (url.protocol !== 'http:' || !['127.0.0.1', 'localhost', '[::1]', '10.0.2.2'].includes(url.hostname)
@@ -112,6 +113,14 @@ export function createDreamerQaExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
     extra: {
       ...baseExpo.extra,
       nativeQaAudio,
+      // The QA binary must never inherit the hosted fallback from app.json.
+      ...(nativeQaAudio ? {
+        apiUrl: process.env.EXPO_PUBLIC_API_URL,
+        supabaseUrl: process.env.EXPO_PUBLIC_SUPABASE_URL,
+        supabaseAnonKey: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY,
+        supabaseFunctionJwt: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY,
+        revenuecatAndroidKey: '', revenuecatIosKey: '', revenuecatWebKey: '',
+      } : {}),
       eas: {
         projectId: DREAMER_QA_OBSERVE.projectId,
         observe: { endpointUrl: DREAMER_QA_OBSERVE.endpointUrl },

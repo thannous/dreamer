@@ -141,8 +141,7 @@ type ExpoExtra = {
 };
 
 function getSupabaseUrl(): string | undefined {
-  const env = process?.env as Record<string, string> | undefined;
-  const envUrl = env?.EXPO_PUBLIC_SUPABASE_URL;
+  const envUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
 
   const extra = (Constants?.expoConfig as { extra?: ExpoExtra } | undefined)?.extra;
   const extraUrl = extra?.supabaseUrl;
@@ -151,8 +150,7 @@ function getSupabaseUrl(): string | undefined {
 }
 
 function getSupabaseAnonKey(): string | undefined {
-  const env = process?.env as Record<string, string> | undefined;
-  const envKey = env?.EXPO_PUBLIC_SUPABASE_ANON_KEY;
+  const envKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
 
   const extra = (Constants?.expoConfig as { extra?: ExpoExtra } | undefined)?.extra;
   const extraKey = extra?.supabaseAnonKey;
@@ -167,8 +165,7 @@ function getSupabaseAnonKey(): string | undefined {
  * to the legacy anon JWT from the Supabase dashboard to avoid 401s.
  */
 function getSupabaseFunctionJwt(): string | undefined {
-  const env = process?.env as Record<string, string> | undefined;
-  const envJwt = env?.EXPO_PUBLIC_SUPABASE_FUNCTION_JWT;
+  const envJwt = process.env.EXPO_PUBLIC_SUPABASE_FUNCTION_JWT;
 
   const extra = (Constants?.expoConfig as { extra?: ExpoExtra } | undefined)?.extra;
   const extraJwt = extra?.supabaseFunctionJwt;

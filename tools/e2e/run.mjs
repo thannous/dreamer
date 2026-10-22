@@ -207,7 +207,8 @@ async function buildRelease() {
       || profileValues.EXPO_PUBLIC_API_URL !== `${backend.proxy.origin}/functions/v1/api`)
       throw new Error('Local backend build profile differs from the owned stack.');
     Object.assign(buildEnv, profileValues, { NOCTALIA_DREAMER_QA_BUILD: '1',
-      EXPO_PUBLIC_NATIVE_QA_AUDIO: 'true', EXPO_PUBLIC_ANALYSIS_JOBS_ENABLED: 'true' });
+      EXPO_PUBLIC_NATIVE_QA_AUDIO: 'true', EXPO_PUBLIC_ANALYSIS_JOBS_ENABLED: 'true',
+      EXPO_PUBLIC_SUPABASE_FUNCTION_JWT: backend.status.ANON_KEY });
   }
   if (profileFile) {
     if (!['.env.mock', '.env.lucid.mock'].includes(profileFile) || (product === 'dreamer' && profileFile !== '.env.mock') || (product === 'lucid' && profileFile !== '.env.lucid.mock') || product === 'meditation') throw new Error('Unknown build environment profile.');

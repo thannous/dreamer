@@ -120,7 +120,7 @@ export async function nativeGuest({ app, screen, platform }: NativeFixtures) {
 export async function nativeCapture(screen: TestFixtures['screen']) {
   if (!(await screen.getByTestId('screen.recording', { visible: true }).count())) {
     await nativeHome(screen);
-    await screen.getByRole('button', 'Capture', { visible: true }).tap();
+    await screen.getByTestId('tab.addDream', { visible: true }).tap();
   }
   await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
   const textMode = screen.getByTestId('btn.recording.inputMode.text', { visible: true });
@@ -156,7 +156,7 @@ export async function nativeJournal(screen: TestFixtures['screen']) {
   if (await back.count()) await back.tap();
   else if (!(await screen.getByTestId('screen.journal', { visible: true }).count())) {
     await nativeHome(screen);
-    await screen.getByRole('button', 'Journal', { visible: true }).tap();
+    await screen.getByTestId('tab.journal', { visible: true }).tap();
   }
   await expect(screen.getByTestId('screen.journal', { visible: true })).toBeVisible();
 }

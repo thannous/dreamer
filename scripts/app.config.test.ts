@@ -24,6 +24,7 @@ const MARKERS = [
   'EXPO_PUBLIC_NATIVE_QA_AUDIO',
   'EXPO_PUBLIC_API_URL',
   'EXPO_PUBLIC_SUPABASE_URL',
+  'EXPO_PUBLIC_SUPABASE_ANON_KEY',
 ];
 
 function withEnv(
@@ -242,11 +243,19 @@ describe('native speech QA build boundary', () => {
     NOCTALIA_DREAMER_QA_BUILD: '1', EXPO_PUBLIC_NATIVE_QA_AUDIO: 'true',
     EXPO_PUBLIC_API_URL: 'http://127.0.0.1:31284/functions/v1/api',
     EXPO_PUBLIC_SUPABASE_URL: 'http://127.0.0.1:31284',
+    EXPO_PUBLIC_SUPABASE_ANON_KEY: 'owned-local-public-key',
   };
   it('enables fixture input and cleartext only for a local QA binary with OTA disabled', () => {
     withEnv(local, () => {
       const config = resolveExpoConfig({ config: baseExpo() } as never);
       expect(config.extra?.nativeQaAudio).toBe(true);
+      expect(config.extra).toMatchObject({
+        apiUrl: local.EXPO_PUBLIC_API_URL,
+        supabaseUrl: local.EXPO_PUBLIC_SUPABASE_URL,
+        supabaseAnonKey: local.EXPO_PUBLIC_SUPABASE_ANON_KEY,
+        supabaseFunctionJwt: local.EXPO_PUBLIC_SUPABASE_ANON_KEY,
+        revenuecatAndroidKey: '', revenuecatIosKey: '', revenuecatWebKey: '',
+      });
       expect(config.updates).toEqual({ enabled: false });
       expect(config.ios?.infoPlist?.NSAppTransportSecurity?.NSAllowsLocalNetworking).toBe(true);
       const build = config.plugins?.find(plugin => Array.isArray(plugin) && plugin[0] === 'expo-build-properties');
@@ -256,6 +265,7 @@ describe('native speech QA build boundary', () => {
   it.each([
     { NOCTALIA_DREAMER_QA_BUILD: '0' },
     { EAS_BUILD: 'true' },
+    { EXPO_PUBLIC_SUPABASE_ANON_KEY: '' },
     { EXPO_PUBLIC_API_URL: 'https://noctalia.app/api' },
     { EXPO_PUBLIC_SUPABASE_URL: 'https://production.supabase.co' },
     { EXPO_PUBLIC_API_URL: 'http://localhost.example.com/api' },
