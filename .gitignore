@@ -148,3 +148,6 @@ doc_web_interne/SEO_NOCTALIA_AHREF
 /screenshots/
 /.tmp-*
 /playwright-report/
+
+# Restored byte-for-byte from the versioned CDN media manifest
+/docs-src/static/img/

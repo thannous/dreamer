@@ -3,8 +3,9 @@
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const { DOCS_DIR, siteConfig } = require('./docs-site-config');
+const { ROOT_DIR, DOCS_DIR, siteConfig } = require('./docs-site-config');
 const { copyFile, walkFiles } = require('./docs-source-utils');
+const { readMedia, verifyLocal: verifyMediaLocal, assertRemoteReceipt, cdnRedirect } = require('./site-media');
 
 const ALLOWED_ROOT_DIRECTORIES = new Set([
   '.well-known',
@@ -110,6 +111,13 @@ function assertDeployStaging(deployDir) {
 
 function createDeployStaging(options = {}) {
   const docsDir = options.docsDir || DOCS_DIR;
+  const mediaRoot = options.rootDir || (options.docsDir ? path.dirname(path.resolve(options.docsDir)) : ROOT_DIR);
+  const media = readMedia(mediaRoot);
+  const useCdn = media?.config.delivery === 'cdn';
+  if (useCdn) {
+    assertRemoteReceipt(mediaRoot, media);
+    verifyMediaLocal(mediaRoot);
+  }
   const tempRoot = options.tempRoot || fs.mkdtempSync(path.join(os.tmpdir(), 'noctalia-pages-'));
   const deployDir = path.join(tempRoot, 'public');
   fs.mkdirSync(deployDir, { recursive: true });
@@ -122,6 +130,10 @@ function createDeployStaging(options = {}) {
       for (const filePath of walkFiles(sourcePath)) {
         const relativeFromDocs = path.relative(docsDir, filePath).split(path.sep).join('/');
         if (EXCLUDED_RUNTIME_ASSETS.has(relativeFromDocs)) continue;
+        if (useCdn && relativeFromDocs.startsWith('img/')) {
+          if (!media.paths.has(relativeFromDocs)) throw new Error(`Unpublished CDN media: ${relativeFromDocs}`);
+          continue;
+        }
         copyFile(filePath, path.join(destinationPath, path.relative(sourcePath, filePath)));
       }
       continue;
@@ -141,6 +153,10 @@ function createDeployStaging(options = {}) {
     }
   }
 
+  if (useCdn) {
+    const redirects = path.join(deployDir, '_redirects');
+    fs.writeFileSync(redirects, `${cdnRedirect(media)}\n${fs.readFileSync(redirects, 'utf8')}`);
+  }
   assertDeployStaging(deployDir);
   return {
     deployDir,

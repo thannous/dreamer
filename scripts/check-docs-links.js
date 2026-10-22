@@ -19,6 +19,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { publishedMediaPaths } = require('./lib/site-media');
 const { assertDocsBuildReady } = require('./lib/docs-check-helpers');
 
 const DEFAULT_TIMEOUT_MS = 10_000;
@@ -368,6 +369,7 @@ async function main() {
 
   const ignoreDirs = new Set(['node_modules', '.git']);
   if (!includeTemplates) ignoreDirs.add('templates');
+  const externalMedia = publishedMediaPaths(path.resolve(__dirname, '..'), docsDirAbs);
   const allFilesAbs = walkFiles(docsDirAbs, { ignoreDirs });
   const relativeFiles = allFilesAbs.map((abs) => toPosix(path.relative(docsDirAbs, abs)));
   const relativeFilesSet = new Set(relativeFiles);
@@ -451,6 +453,7 @@ async function main() {
       const base = isRootRelative ? '' : pageDirPosix === '.' ? '' : `${pageDirPosix}/`;
       const combined = normalizeInternalPath(isRootRelative ? internalPath : `${base}${internalPath}`);
 
+      if (externalMedia.has(combined.replace(/^\/+/, ''))) continue;
       const targetFileRel = resolvePrettyUrlToFile(relativeFilesSet, combined);
       if (!targetFileRel) {
         brokenInternal.push({

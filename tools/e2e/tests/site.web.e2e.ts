@@ -1804,3 +1804,62 @@ for (const [lot, shots, pack] of [...LOT_08_PACKS.map(pack => ['lot 09', 'lot08-
     }
   });
 }
+
+test('site media keep their original pixels and two effects through the configured CDN on desktop and mobile', { timeout: 180_000 }, async ({ app, browser, screen }) => {
+  const config = JSON.parse(readFileSync(new URL('../../../docs-src/config/site-media-storage.json', import.meta.url), 'utf8')) as { delivery: string; publicOrigin: string };
+  const manifest = JSON.parse(readFileSync(new URL('../../../docs-src/config/site-media.json', import.meta.url), 'utf8')) as { files: Array<[string, number, string]> };
+  const expected = new Map(manifest.files.map(row => [row[0], row]));
+  const origin = config.delivery === 'cdn' ? config.publicOrigin : new URL(app.baseUrl!).origin;
+  for (const [width, height] of [[2560, 1440], [390, 844]]) {
+    await browser.setViewport({ width, height });
+    await app.open('/fr/symboles/cadeau.html');
+    await expect(screen.getByRole('heading', { level: 1 })).toBeVisible();
+    await expect.poll(() => browser.evaluate(readSurfaces).then(all => surfaceNamed(all, 'hero')?.state)).toBe('running');
+    const hero = surfaceNamed(await browser.evaluate(readSurfaces), 'hero');
+    expect(hero.channels).toEqual(['a', 'b']);
+    expect(hero.opaque.every(count => count > 0)).toBe(true);
+    expect(hero.textures[0]).not.toBe(hero.textures[1]);
+    await expect.poll(() => browser.evaluate(readSurfaces).then(all => surfaceNamed(all, 'hero').frames.map((frame, index) => frame !== hero.frames[index]))).toEqual([true, true]);
+    const layout = await browser.evaluate(measureHero);
+    expect(layout.naturalWidth).toBeGreaterThan(0);
+    expect(layout.overflow).toBe(false);
+    expect(new URL(layout.src).pathname).toMatch(width < 768 ? /\/portrait-/ : /\/hero-/);
+    await app.screenshot('media-cdn-' + width + '-hero');
+
+    if (width > 768) {
+      await browser.evaluate(() => { document.querySelector('[data-living-surface="plate"]')!.scrollIntoView({ block: 'center', behavior: 'instant' }); return window.scrollY; });
+      await expect.poll(() => browser.evaluate(readSurfaces).then(all => surfaceNamed(all, 'plate')?.state)).toBe('running');
+      expect(surfaceNamed(await browser.evaluate(readSurfaces), 'plate').opaque.every(count => count > 0)).toBe(true);
+      await app.screenshot('media-cdn-' + width + '-plate');
+    }
+    await browser.evaluate(() => { document.querySelector('.atlas-scene-list')!.scrollIntoView({ block: 'center', behavior: 'instant' }); return window.scrollY; });
+    await expect(screen.getByRole('radio')).toHaveCount(3);
+    const second = await browser.evaluate(() => document.querySelectorAll('.atlas-scene-label')[1].textContent!.trim());
+    await screen.getByText(second, { exact: true }).first().tap();
+    await expect(screen.getByRole('radio').nth(1)).toBeChecked();
+    await app.screenshot('media-cdn-' + width + '-scenes');
+
+    // Only inspect files the real journey loaded. In particular this must not
+    // cause the hidden side painting to be requested on a phone.
+    const loaded = await browser.evaluate(async () => {
+      const images = Array.from(document.querySelectorAll<HTMLImageElement>('.symbol-hero-media img, .atlas-decor img, .atlas-scene-thumb img, .slp-t'));
+      const urls = [...new Set(images.filter(img => img.complete && img.naturalWidth > 0 && img.currentSrc).map(img => img.currentSrc))];
+      return Promise.all(urls.map(async original => {
+        const response = await fetch(original);
+        const bytes = await response.arrayBuffer();
+        const digest = await crypto.subtle.digest('SHA-256', bytes);
+        return { path: new URL(original).pathname.replace(/^\//, ''), origin: new URL(response.url).origin,
+          ok: response.ok, type: response.headers.get('content-type') ?? '', bytes: bytes.byteLength,
+          digest: Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('') };
+      }));
+    });
+    expect(loaded.length).toBeGreaterThanOrEqual(3);
+    for (const image of loaded) {
+      const entry = expected.get(image.path);
+      expect(entry, image.path).toBeDefined();
+      expect([image.ok, image.origin, image.bytes, image.digest], image.path).toEqual([true, origin, entry![1], entry![2]]);
+      expect(image.type.startsWith('image/')).toBe(true);
+    }
+    if (width < 768) expect(loaded.some(image => image.path.includes('/plate-'))).toBe(false);
+  }
+});
