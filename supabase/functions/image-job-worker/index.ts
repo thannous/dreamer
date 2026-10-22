@@ -530,10 +530,14 @@ const processImageJob = async (input: {
       // asked with the dream's text only, from this same text), is this illustration: it is
       // not painted twice.
       const prepared = preparedPaintingMatch(job, { prompt, previousImageUrl: requestPayload.previousImageUrl, imageSize });
+      // A painting still under way after the wait is waited for again by a later attempt; the
+      // last one paints rather than fail.
+      const retryWhileLive = job.attempt_count < job.max_attempts;
       takenPainting = prepared === 'transcript'
         ? await takePreparedIllustration(adminClient, {
           bucket: input.storageBucket, userId: job.user_id!, dreamId: job.dream_id!,
           transcriptSha256: await storedTranscriptSha256(adminClient, job.user_id!, job.dream_id!),
+          retryWhileLive,
         })
         : null;
       if (!prompt && !takenPainting) {
@@ -545,7 +549,7 @@ const processImageJob = async (input: {
         });
       } else if (prepared === 'prompt') {
         takenPainting = await takePreparedIllustration(adminClient, {
-          bucket: input.storageBucket, userId: job.user_id!, dreamId: job.dream_id!, prompt,
+          bucket: input.storageBucket, userId: job.user_id!, dreamId: job.dream_id!, prompt, retryWhileLive,
         });
       }
       const preparedImageUrl = takenPainting?.url ?? null;

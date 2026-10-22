@@ -177,6 +177,10 @@ Deno.test('a painting under way is waited for, not paid for twice', async () => 
   const waitedFrom = clock;
   assertEquals(await take(admin, { ...input, sleep: async (ms: number) => { clock += ms; } }), null);
   assert(clock - waitedFrom <= 93_000);
+  // A job with attempts left tries again later rather than pay while the painting is still live.
+  const live = await assertRejects(() => takePreparedIllustration(admin, { ...input, retryWhileLive: true, sleep: async (ms: number) => { clock += ms; } }));
+  assertEquals((live as { isTransient?: unknown }).isTransient, true);
+  assertEquals(rows[0].image_status, 'painting');
   // A painting under way for longer than its three minutes has failed: nothing to wait for.
   const before = clock;
   clock += 4 * 60_000;
@@ -499,9 +503,12 @@ Deno.test('a held painting the dream already shows is settled, never taken over 
   const dreams: Row[] = [{ id: 7, user_id: 'u1', image_url: 'https://example.test/storage/v1/object/sign/dream-images/u1/7-a.jpg?token=t' }];
   const admin = { from: (name: string) => (name === 'dreams' ? previewsTable(dreams) : previewsTable(previews))(), storage };
   const input = { bucket: 'dream-images', userId: 'u1', dreamId: 7, prompt: 'A river of glass', now: () => Date.parse('2026-10-22T07:00:00Z') };
-  assertEquals(await take(admin, input), null);
+  // Given to the job as stored, the dream's own link: the job only finishes its bookkeeping.
+  assertEquals(await take(admin, input), dreams[0].image_url);
+  assertEquals(dreams[0].image_url, 'https://example.test/storage/v1/object/sign/dream-images/u1/7-a.jpg?token=t');
   assertEquals([previews[0].image_status, previews[0].image_path, previews[0].band_path], ['used', null, null]);
   assertEquals([...storage.objects.keys()], ['u1/7-a.jpg']);
+  assertEquals(storage.calls.filter((call) => call.startsWith('move:')), []);
 });
 
 Deno.test('a preview that cannot be read makes the job try again rather than paint another', async () => {

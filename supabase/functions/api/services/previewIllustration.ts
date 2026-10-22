@@ -130,6 +130,11 @@ export async function takePreparedIllustration(admin: AdminClient, input: {
   transcriptSha256?: string;
   /** How long a painting under way is waited for; 0 takes only a finished one. */
   waitMs?: number;
+  /**
+   * A painting still under way (or held) after the wait makes the job try again later instead
+   * of paying for another; the job's last attempt passes false and paints.
+   */
+  retryWhileLive?: boolean;
   now?: () => number;
   sleep?: (ms: number) => Promise<void>;
 }): Promise<TakenPainting | null> {
@@ -158,20 +163,38 @@ export async function takePreparedIllustration(admin: AdminClient, input: {
       await sleep(PAINTING_POLL_MS);
       row = await read();
     }
+    const live = (row?.image_status === 'painting' && since(row.image_updated_at, PREVIEW_PAINTING_TIMEOUT_MS))
+      || (held(row) && since(row!.image_updated_at, HOLD_LEASE_MS));
+    if (live && input.retryWhileLive) throw heldPaintingError();
     const reclaimable = held(row) && !since(row!.image_updated_at, HOLD_LEASE_MS);
     if (reclaimable) {
-      // A painting the dream already shows (its holder stopped after linking it) is only settled.
+      // A painting the dream already shows (its holder stopped after linking it) is only settled,
+      // and given to the job as stored: only its bookkeeping is left, nothing is painted again.
       const { data: dream, error: dreamError } = await admin.from('dreams').select('image_url')
         .eq('id', input.dreamId).eq('user_id', input.userId).maybeSingle();
       if (dreamError) throw heldPaintingError();
       const ownPath = `${input.userId}/${row!.image_path.split('/').pop()}`;
-      if (linksTo(dream?.image_url, row!.image_path) || linksTo(dream?.image_url, ownPath)) {
-        await removePreviewObjects(admin, input.bucket, [row!.band_path]);
-        await previews().update({ image_path: null, band_path: null, band_url: null })
-          .eq('user_id', input.userId).eq('dream_id', input.dreamId).eq('image_status', 'used')
-          .eq('image_path', row!.image_path).eq('image_updated_at', row!.image_updated_at)
-          .then(() => undefined, () => undefined);
-        return null;
+      const linkedPath = linksTo(dream?.image_url, row!.image_path) ? row!.image_path
+        : linksTo(dream?.image_url, ownPath) ? ownPath : null;
+      if (linkedPath) {
+        const heldRow = row!;
+        const settle = async () => {
+          await removePreviewObjects(admin, input.bucket, [heldRow.band_path]);
+          await previews().update({ image_path: null, band_path: null, band_url: null })
+            .eq('user_id', input.userId).eq('dream_id', input.dreamId).eq('image_status', 'used')
+            .eq('image_path', heldRow.image_path).eq('image_updated_at', heldRow.image_updated_at)
+            .then(() => undefined, () => undefined);
+        };
+        return {
+          path: linkedPath,
+          url: dream!.image_url as string,
+          settle,
+          giveBack: async () => {},
+          release: async () => {
+            await settle();
+            return true;
+          },
+        };
       }
     }
     if (!row || typeof row.image_path !== 'string' || (row.image_status !== 'ready' && !reclaimable)) return null;
