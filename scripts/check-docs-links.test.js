@@ -54,7 +54,11 @@ describe('checkExternalUrl', () => {
   });
 
   it('keeps the unavailable status when following GETs lose their connection', async () => {
-    expect(await check('/gateway-then-drop', [502, 'drop'])).toEqual({ result: { ok: false, status: 502, unavailable: true }, methods: ['HEAD', 'GET'] });
+    expect(await check('/gateway-then-drop', [502, 'drop'])).toEqual({ result: { ok: false, status: 502, unavailable: true }, methods: ['HEAD', 'GET', 'GET', 'GET'] });
+  });
+
+  it('still detects a missing page after a gateway error and a dropped connection', async () => {
+    expect(await check('/outage-drop-missing', [503, 'drop', 404])).toEqual({ result: { ok: false, status: 404 }, methods: ['HEAD', 'GET', 'GET'] });
   });
 
   it('fails a 404 at once, and a 404 that follows a gateway error', async () => {

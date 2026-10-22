@@ -308,7 +308,7 @@ async function checkExternalUrl(url, { timeoutMs, retryDelaysMs = TRANSIENT_HTTP
         try {
           status = (await request('GET')).status;
         } catch {
-          break;
+          continue;
         }
         if (!TRANSIENT_HTTP_STATUSES.has(status)) break;
       }
