@@ -32,8 +32,11 @@ export type AnalysisPreviewResult = {
 };
 
 /** Why the api prepares nothing for this dream: the dream page shows its usual action instead. */
-export type AnalysisPreviewRefusal = 'PLUS_ANALYZES' | 'CAN_ANALYZE' | 'ALREADY_ANALYZED' | 'ANALYSIS_PENDING' | 'DREAM_NOT_FOUND';
-const REFUSALS: readonly string[] = ['PLUS_ANALYZES', 'CAN_ANALYZE', 'ALREADY_ANALYZED', 'ANALYSIS_PENDING', 'DREAM_NOT_FOUND'];
+export type AnalysisPreviewRefusal =
+  'PLUS_ANALYZES' | 'CAN_ANALYZE' | 'ALREADY_ANALYZED' | 'ANALYSIS_PENDING' | 'DREAM_NOT_FOUND' | 'LANGUAGE_UNSUPPORTED';
+const REFUSALS: readonly string[] = [
+  'PLUS_ANALYZES', 'CAN_ANALYZE', 'ALREADY_ANALYZED', 'ANALYSIS_PENDING', 'DREAM_NOT_FOUND', 'LANGUAGE_UNSUPPORTED',
+];
 
 /** The api's code when it prepares nothing for this dream, or null for any other failure. */
 export function analysisPreviewRefusal(error: unknown): AnalysisPreviewRefusal | null {

@@ -371,7 +371,7 @@ Deno.test('a painting attached before an analysis refused leaves the dream, and 
   assertEquals(askedAgain.dreams[0].image_url, null);
 });
 
-Deno.test('after a failure that may hide a stored link, the painting is settled if the dream holds it, given back otherwise', async () => {
+Deno.test('after a failure that may hide a stored link, the painting stays held if the dream holds it, given back otherwise', async () => {
   const setup = (imageUrl: (url: string) => string | null) => {
     const storage = fakeStorage();
     storage.objects.set('previews/u1/7-a.jpg', new Uint8Array([1]));
@@ -392,6 +392,12 @@ Deno.test('after a failure that may hide a stored link, the painting is settled 
   assert(kept);
   stored.link(kept.url);
   assertEquals(await kept.release(), true);
+  // Held until the job is marked done: a retry before that finds it linked, never paints again.
+  assertEquals([stored.previews[0].image_status, stored.previews[0].image_path], ['used', 'u1/7-a.jpg']);
+  const later = Date.now() + 2 * 60_000;
+  assertEquals(await take(stored.admin, { ...input, now: () => later }), kept.url);
+  assertEquals(stored.storage.calls.filter((call) => call.startsWith('move:')).length, 1);
+  await kept.settle();
   assertEquals([stored.previews[0].image_status, stored.previews[0].image_path, stored.previews[0].band_path], ['used', null, null]);
   assertEquals([...stored.storage.objects.keys()], ['u1/7-a.jpg']);
   assertEquals(await take(stored.admin, input), null);

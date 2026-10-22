@@ -207,6 +207,9 @@ Deno.test('the prepared analysis is a journal route, for signed-in free accounts
   const plus = setup({ tier: 'plus' });
   const refused = await handleAnalysisPreview(plus.ctx(prepare), plus.deps);
   assertEquals([refused.status, (await refused.json()).code], [409, 'PLUS_ANALYZES']);
+  // A reading the analysis job could not open in this language is never prepared.
+  const portuguese = await handleAnalysisPreview(ctx({ ...prepare, lang: 'pt-BR' }), deps);
+  assertEquals([portuguese.status, (await portuguese.json()).code], [409, 'LANGUAGE_UNSUPPORTED']);
   assertEquals(calls.analyze + plus.calls.analyze, 0);
 });
 

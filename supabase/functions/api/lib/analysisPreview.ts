@@ -33,6 +33,12 @@ const plainProse = (markdown: string) => markdown
 /** A painting still under way after this has failed. */
 export const PREVIEW_PAINTING_TIMEOUT_MS = 3 * 60 * 1000;
 
+/**
+ * The languages an analysis job is admitted in (`admit_authenticated_analysis_job`): a reading
+ * prepared in another could never be opened, so none is prepared.
+ */
+export const PREVIEW_LANGUAGES: readonly string[] = ['en', 'fr', 'es', 'de', 'it'];
+
 /** The reading's first sentence, as a free account reads it. */
 export function previewOpening(interpretation: string): string {
   const text = plainProse(interpretation).trim().replace(/\s+/g, ' ');

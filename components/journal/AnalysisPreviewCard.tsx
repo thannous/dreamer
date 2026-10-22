@@ -21,9 +21,15 @@ import { BookSectionMark, BookSubheading, useBookBody } from './JournalBook';
 
 /** The band is the middle third of a 9:16 painting. */
 const BAND_ASPECT = 27 / 16;
-/** A painting or a writing under way is read again this often, a little over its three minutes at most. */
+/** A painting or a writing under way is read again this often. */
 const POLL_MS = 4000;
+/** A writing is read again a little over three minutes at most, then can be asked again. */
 const MAX_POLLS = 50;
+/**
+ * A painting is read again longer: one that stops is started again by a read after its three
+ * minutes, and the new one has three minutes of its own.
+ */
+const MAX_PAINTING_POLLS = 100;
 /** Lines standing for the reading's hidden rest: shapes, never its words. */
 const HIDDEN_LINES = [0.96, 0.9, 0.58];
 
@@ -74,7 +80,7 @@ export function AnalysisPreviewCard({ remoteDreamId, transcript, onOpenPlus, onO
     let timer: ReturnType<typeof setTimeout> | null = null;
     const readAgain = (writing: boolean) => {
       // A writing that never ends can be asked again; a painting that never ends leaves the reading.
-      if (polls >= MAX_POLLS) {
+      if (polls >= (writing ? MAX_POLLS : MAX_PAINTING_POLLS)) {
         if (writing) setState({ kind: 'failed', subject });
         return;
       }

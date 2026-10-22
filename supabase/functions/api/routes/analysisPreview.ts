@@ -5,6 +5,7 @@ import { AI_REQUEST_LIMITS, normalizeAiLanguage } from '../lib/aiRequestPolicy.t
 import { resolveStoredTranscriptForAi } from '../lib/prompts.ts';
 import {
   ANALYSIS_PREVIEW_WINDOW_MS,
+  PREVIEW_LANGUAGES,
   PREVIEW_PAINTING_TIMEOUT_MS,
   isPreparedReading,
   previewOf,
@@ -130,6 +131,7 @@ export async function handleAnalysisPreview(ctx: ApiContext, deps: Dependencies 
   if (tierError) return refused('PREVIEW_UNAVAILABLE', 503);
   // Plus analyzes the dream itself, and the analysis takes any reading prepared before.
   if (tierData === 'plus' || tierData === 'premium') return refused('PLUS_ANALYZES', 409);
+  if (!PREVIEW_LANGUAGES.includes(lang)) return refused('LANGUAGE_UNSUPPORTED', 409);
 
   const previews = () => admin.from('analysis_previews');
   const readPreview = async (): Promise<PreviewRow | null> => {

@@ -333,20 +333,25 @@ export const preparedPaintingMatch = (
 };
 
 /** The fingerprint of the dream's text as its analysis preview read it; undefined when it cannot be read. */
-const storedTranscriptSha256 = async (
+export const storedTranscriptSha256 = async (
   adminClient: ReturnType<typeof createAdminClient>,
   userId: string,
   dreamId: number
 ): Promise<string | undefined> => {
+  // A dream that cannot be read is no answer: the job tries again rather than paint another.
+  const unreadable = () => Object.assign(new Error('Dream unreadable'), { isTransient: true });
+  let data: { transcript?: unknown } | null;
   try {
-    const { data, error } = await adminClient.from('dreams').select('transcript')
+    const read = await adminClient.from('dreams').select('transcript')
       .eq('id', dreamId).eq('user_id', userId).maybeSingle();
-    if (error || !data) return undefined;
-    const transcript = resolveStoredTranscriptForAi(data.transcript, AI_REQUEST_LIMITS.transcriptRequestChars);
-    return transcript.ok ? await transcriptSha256(transcript.storedTranscript) : undefined;
+    if (read.error) throw unreadable();
+    data = read.data;
   } catch {
-    return undefined;
+    throw unreadable();
   }
+  if (!data) return undefined;
+  const transcript = resolveStoredTranscriptForAi(data.transcript, AI_REQUEST_LIMITS.transcriptRequestChars);
+  return transcript.ok ? await transcriptSha256(transcript.storedTranscript) : undefined;
 };
 
 const requeueJob = async (
@@ -603,6 +608,7 @@ const processImageJob = async (input: {
     } catch (error) {
       // Not stored: the prepared painting waits for the next attempt instead of being paid again.
       // Stored already (only the job's bookkeeping failed): the job is done, nothing is painted again.
+      // The painting stays held until the job is marked done: a retry finds it linked.
       if (takenPainting && await takenPainting.release()) {
         try {
           await updateJob(adminClient, job.id, {
@@ -613,6 +619,7 @@ const processImageJob = async (input: {
             error_message: null,
             finished_at: new Date().toISOString(),
           });
+          await takenPainting.settle();
           return;
         } catch {
           console.warn('[image-job-worker] prepared illustration bookkeeping pending', { jobId: job.id });

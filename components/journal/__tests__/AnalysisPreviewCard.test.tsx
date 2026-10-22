@@ -159,6 +159,24 @@ it('reads again while the painting is under way, until its band arrives', async 
   }
 });
 
+it('keeps reading a painting started again after its three minutes, until its band arrives', async () => {
+  jest.useFakeTimers();
+  try {
+    mockFetchPreview.mockResolvedValue(preview({ state: 'painting', bandUrl: null }));
+    const screen = renderCard();
+    await waitFor(() => expect(screen.getByText('journal.detail.preview.painting')).toBeTruthy());
+    // Past a writing's budget: the painting may have been started again and is still read.
+    for (let poll = 0; poll < 70; poll += 1) {
+      await act(async () => { jest.advanceTimersByTime(4000); });
+    }
+    mockFetchPreview.mockResolvedValue(preview());
+    await act(async () => { jest.advanceTimersByTime(4000); });
+    await waitFor(() => expect(screen.getByTestId('component.analysisPreview.band')).toBeTruthy());
+  } finally {
+    jest.useRealTimers();
+  }
+});
+
 it('keeps the shown preview when a read fails while the painting is under way', async () => {
   jest.useFakeTimers();
   try {

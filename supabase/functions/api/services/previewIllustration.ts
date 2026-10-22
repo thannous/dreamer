@@ -108,9 +108,9 @@ export type TakenPainting = {
   /** Not stored after all: ready again for the next job, from where it now lies. */
   giveBack: () => Promise<void>;
   /**
-   * After a failure that may hide a stored link (a lost answer, a later step failing): settled
-   * when the dream holds it, given back otherwise, so it is never linked twice. True when the
-   * dream holds it: only the job's bookkeeping is left.
+   * After a failure that may hide a stored link (a lost answer, a later step failing): given
+   * back unless the dream holds it, so it is never linked twice. True when the dream holds it:
+   * only the job's bookkeeping is left, and the painting stays held until the taker settles it.
    */
   release: () => Promise<boolean>;
 };
@@ -190,10 +190,7 @@ export async function takePreparedIllustration(admin: AdminClient, input: {
           url: dream!.image_url as string,
           settle,
           giveBack: async () => {},
-          release: async () => {
-            await settle();
-            return true;
-          },
+          release: async () => true,
         };
       }
     }
@@ -273,7 +270,6 @@ export async function takePreparedIllustration(admin: AdminClient, input: {
           await giveBack(ownPath);
           return false;
         }
-        await settle();
         return true;
       },
     };
@@ -322,7 +318,7 @@ export async function attachPreparedIllustration(admin: AdminClient, input: {
       .select('id');
     // A lost answer may hide a saved link: the painting is settled if the dream holds it, ready again otherwise.
     if (setError) {
-      await painting.release();
+      if (await painting.release()) await painting.settle();
       return null;
     }
     if (!set?.length) {
