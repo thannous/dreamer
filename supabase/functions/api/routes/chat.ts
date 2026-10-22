@@ -37,6 +37,7 @@ import type { ApiContext } from '../types.ts';
 
 type ChatDependencies = {
   admitRequest?: typeof admitSynchronousAiRequest;
+  createAdminClient?: typeof createClient;
 };
 
 type StoredChatMessage = {
@@ -343,21 +344,32 @@ const normalizeGuestDreamContext = (
 });
 
 const markAuthenticatedTurnFailed = async (
-  supabase: ApiContext['supabase'],
+  ctx: ApiContext,
+  dependencies: ChatDependencies,
   turn: { dreamId: number; requestId: string; attemptCount: number } | null,
   errorCode: string
 ) => {
-  if (!turn) return;
-  const { error } = await supabase.rpc('fail_authenticated_chat_turn', {
-    p_dream_id: turn.dreamId,
-    p_request_id: turn.requestId,
-    p_attempt_count: turn.attemptCount,
-    p_error_code: errorCode,
-  });
-  if (error) {
-    console.warn('[api] /chat: failed to release chat turn', {
-      code: error?.code ?? null,
+  if (!turn || !ctx.user?.id || !ctx.supabaseServiceRoleKey) return;
+  try {
+    const adminClient = (dependencies.createAdminClient ?? createClient)(
+      ctx.supabaseUrl,
+      ctx.supabaseServiceRoleKey,
+      { auth: { autoRefreshToken: false, persistSession: false } }
+    );
+    const { error } = await adminClient.rpc('fail_authenticated_chat_turn', {
+      p_user_id: ctx.user.id,
+      p_dream_id: turn.dreamId,
+      p_request_id: turn.requestId,
+      p_attempt_count: turn.attemptCount,
+      p_error_code: errorCode,
     });
+    if (error) {
+      console.warn('[api] /chat: failed to release chat turn', {
+        code: error.code ?? null,
+      });
+    }
+  } catch {
+    console.warn('[api] /chat: failed to release chat turn');
   }
 };
 
@@ -495,6 +507,9 @@ export async function handleChat(
           status: 400,
           headers: { 'Content-Type': 'application/json', ...corsHeaders },
         });
+      }
+      if (!supabaseServiceRoleKey) {
+        return serviceUnavailable('Chat state unavailable');
       }
 
       const remoteDreamId = Number(dreamId);
@@ -732,7 +747,13 @@ export async function handleChat(
 
     const persistModelMessage = async (modelMessage: StoredChatMessage) => {
       if (!shouldPersist || !authenticatedTurn) return;
-      const { data, error } = await supabase.rpc('complete_authenticated_chat_turn', {
+      const adminClient = (dependencies.createAdminClient ?? createClient)(
+        supabaseUrl,
+        supabaseServiceRoleKey!,
+        { auth: { autoRefreshToken: false, persistSession: false } }
+      );
+      const { data, error } = await adminClient.rpc('complete_authenticated_chat_turn', {
+        p_user_id: user.id,
         p_dream_id: authenticatedTurn.dreamId,
         p_request_id: authenticatedTurn.requestId,
         p_attempt_count: authenticatedTurn.attemptCount,
@@ -828,7 +849,7 @@ export async function handleChat(
             send({ done: true, text: reply, message: modelMessage });
           } catch (streamError) {
             console.error('[api] /chat stream failed');
-            await markAuthenticatedTurnFailed(supabase, authenticatedTurn, 'CHAT_STREAM_FAILED');
+            await markAuthenticatedTurnFailed(ctx, dependencies, authenticatedTurn, 'CHAT_STREAM_FAILED');
             const errorInfo = classifyGeminiError(streamError);
             send({ error: errorInfo.userMessage, status: errorInfo.status });
           } finally {
@@ -888,7 +909,7 @@ export async function handleChat(
       headers: { 'Content-Type': 'application/json', ...corsHeaders },
     });
   } catch (e) {
-    await markAuthenticatedTurnFailed(supabase, authenticatedTurn, 'CHAT_REQUEST_FAILED');
+    await markAuthenticatedTurnFailed(ctx, dependencies, authenticatedTurn, 'CHAT_REQUEST_FAILED');
     console.error('[api] /chat request failed');
     const errorInfo = classifyGeminiError(e);
     return new Response(JSON.stringify({ error: errorInfo.userMessage }), {

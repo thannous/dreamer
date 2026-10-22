@@ -44,7 +44,7 @@ export const requireGuestSession = async (
 
   const token = req.headers.get('x-guest-token')?.trim() ?? '';
   const platform = req.headers.get('x-guest-platform')?.trim() ?? undefined;
-  const verified = await verifyGuestToken(token, fingerprint, platform);
+  const verified = await verifyGuestToken(token, fingerprint, platform, 'dreamer');
   if (!verified.ok) {
     // Security: avoid returning verification reasons (expired/bad_signature/etc.),
     // which can help attackers iterate on token forging or session probing.

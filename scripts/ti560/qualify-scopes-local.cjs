@@ -176,16 +176,18 @@ async function qualify() {
   ['get_effective_subscription_tier',{p_user_id:a.id}],
   ['get_authenticated_quota_snapshot',{}],
   ['begin_authenticated_chat_turn',{p_dream_id:rows[0].id,p_request_id:chatRequest,p_user_message:{role:'user',text:'Synthetic question'}}],
-  ['complete_authenticated_chat_turn',{p_dream_id:rows[0].id,p_request_id:chatRequest,p_attempt_count:1,p_model_message:{role:'model',text:'Synthetic response'}}],
-  ['fail_authenticated_chat_turn',{p_dream_id:rows[0].id,p_request_id:chatRequest,p_attempt_count:1,p_error_code:'QA'}],
  ];
  for (const [name,body] of journalCalls) {
   for (const token of [a.lucid,a.unknown]) deny(await rpc(token,name,body),name+' wrong product');
   const result = ok(await rpc(a.journal,name,body),name+' Journal positive');
   if(name === 'begin_authenticated_chat_turn') assert.equal(result.allowed,true);
-  if(name === 'complete_authenticated_chat_turn') assert.equal(result.completed,true);
   if(name === 'get_effective_subscription_tier') assert.equal(result,'free');
  }
+ const failure={p_user_id:a.id,p_dream_id:rows[0].id,p_request_id:chatRequest,p_attempt_count:1,p_error_code:'QA'};
+ for(const token of [a.journal,a.lucid,a.unknown,a.legacy]) deny(await rpc(token,'fail_authenticated_chat_turn',failure),'client chat failure');
+ const completion={p_user_id:a.id,p_dream_id:rows[0].id,p_request_id:chatRequest,p_attempt_count:1,p_model_message:{role:'model',text:'Synthetic response'}};
+ for(const token of [a.journal,a.lucid,a.unknown,a.legacy]) deny(await rpc(token,'complete_authenticated_chat_turn',completion),'client chat completion');
+ assert.equal(ok(await rpc(status.SERVICE_ROLE_KEY,'complete_authenticated_chat_turn',completion),'service chat completion').completed,true);
  for (const [name,body] of [['sync_lucid_trainer_mutations',{mutations:[]}],['delete_lucid_trainer_data',{}]]) {
   for (const token of [a.journal,a.unknown]) deny(await rpc(token,name,body),name+' wrong product');
   ok(await rpc(a.lucid,name,body),name+' Lucid positive');

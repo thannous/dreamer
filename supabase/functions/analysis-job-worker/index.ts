@@ -1,6 +1,7 @@
 import { serve } from 'https://deno.land/std@0.224.0/http/server.ts';
 import { corsHeaders } from '../api/lib/constants.ts';
 import { AI_REQUEST_LIMITS, isValidUuid } from '../api/lib/aiRequestPolicy.ts';
+import { hashAnalysisTranscript } from '../api/lib/analysisTranscriptHash.ts';
 import { resolveStoredTranscriptForAi } from '../api/lib/prompts.ts';
 import { takePreparedReading, transcriptSha256 } from '../api/lib/analysisPreview.ts';
 import { attachPreparedIllustration } from '../api/services/previewIllustration.ts';
@@ -37,7 +38,7 @@ const isAuthorized = (req: Request, serviceRoleKey: string): boolean => {
   return apikey === serviceRoleKey || workerSecret === serviceRoleKey;
 };
 
-const claimSpecificJob = async (
+export const claimSpecificJob = async (
   adminClient: ReturnType<typeof createAnalysisAdminClient>,
   jobId: string
 ): Promise<AnalysisJobRow | null> => {
@@ -52,7 +53,7 @@ const claimSpecificJob = async (
 
   const job = (current ?? null) as AnalysisJobRow | null;
   if (!job || job.status !== 'queued' || job.attempt_count >= job.max_attempts) {
-    return job;
+    return null;
   }
 
   const { data: claimed, error: claimError } = await adminClient
@@ -151,6 +152,17 @@ export const serializeAnalysisJobError = (error: unknown) => {
   };
 };
 
+export const hasAuthorizedAnalysisTranscript = async (
+  job: AnalysisJobRow,
+  transcript: unknown
+): Promise<boolean> => {
+  const expectedHash = job.request_payload?.transcript_sha256;
+  return typeof transcript === 'string'
+    && typeof expectedHash === 'string'
+    && /^[0-9a-f]{64}$/.test(expectedHash)
+    && (await hashAnalysisTranscript(transcript)) === expectedHash;
+};
+
 const processAnalysisJob = async (input: {
   supabaseUrl: string;
   serviceRoleKey: string;
@@ -186,8 +198,14 @@ const processAnalysisJob = async (input: {
       return;
     }
 
+    const transcript = (dream as any).transcript;
+    if (!(await hasAuthorizedAnalysisTranscript(job, transcript))) {
+      await failJob(adminClient, job, 'ANALYSIS_TRANSCRIPT_CHANGED', 'Dream transcript changed');
+      return;
+    }
+
     const resolvedTranscript = resolveStoredTranscriptForAi(
-      (dream as any).transcript,
+      transcript,
       AI_REQUEST_LIMITS.transcriptRequestChars
     );
     if (!resolvedTranscript.ok) {

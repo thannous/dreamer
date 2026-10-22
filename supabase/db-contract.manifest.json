@@ -104,6 +104,7 @@
       "requiredColumns": [
         "fingerprint_hash",
         "analysis_request_id",
+        "transcript_sha256",
         "claimed_at"
       ]
     },
@@ -235,7 +236,19 @@
     {
       "schema": "public",
       "name": "claim_guest_analysis_quota",
-      "identityArguments": "p_fingerprint text, p_analysis_request_id uuid, p_limit integer",
+      "identityArguments": "p_fingerprint text, p_analysis_request_id uuid, p_limit integer, p_transcript_sha256 text",
+      "result": "jsonb"
+    },
+    {
+      "schema": "public",
+      "name": "claim_authenticated_analysis_quota_bound",
+      "identityArguments": "p_user_id uuid, p_dream_id bigint, p_analysis_request_id uuid, p_transcript_sha256 text",
+      "result": "jsonb"
+    },
+    {
+      "schema": "public",
+      "name": "complete_authenticated_chat_turn",
+      "identityArguments": "p_user_id uuid, p_dream_id bigint, p_request_id uuid, p_attempt_count integer, p_model_message jsonb",
       "result": "jsonb"
     },
     {

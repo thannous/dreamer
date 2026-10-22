@@ -1,5 +1,6 @@
 // Synthetic PostgreSQL regression checks. No hosted DB, credentials or provider calls.
 // Usage: npm run test:analysis-authorization:db (optional argv[2]: existing PGlite module path)
+import './verify-analysis-boundaries.mjs';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { pathToFileURL } from 'node:url';

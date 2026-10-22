@@ -1717,6 +1717,15 @@ export const useDreamJournal = () => {
       } catch (error) {
         assertAnalysisScope();
         const quotaError = coerceQuotaError(error, tier);
+        const responseBody = error && typeof error === 'object' && 'body' in error
+          ? error.body : null;
+        const nonReusableRequest = error && typeof error === 'object'
+          && 'status' in error && error.status === 409
+          && responseBody && typeof responseBody === 'object'
+          && 'code' in responseBody
+          && (responseBody.code === 'ANALYSIS_ALREADY_CLAIMED'
+            || responseBody.code === 'ANALYSIS_TRANSCRIPT_MISMATCH'
+            || responseBody.code === 'ANALYSIS_IDEMPOTENCY_KEY_REUSED');
         setLastAnalysisOutcome({ dreamId, status: 'failed', completedAt: Date.now() });
         if (serverJobAccepted) {
           if (serverJobTerminalFailure) {
@@ -1737,7 +1746,14 @@ export const useDreamJournal = () => {
         const failedDream: DreamAnalysis = {
           ...latestDream,
           analysisStatus: 'failed',
+          // A spent or transcript-mismatched receipt cannot fund another
+          // provider call. A later explicit retry needs a fresh quota claim.
+          ...(nonReusableRequest ? { analysisRequestId: undefined } : {}),
         };
+        if (nonReusableRequest) {
+          analysisRequestIdsRef.current.delete(getDreamIdentityKey(dream));
+          quotaService.invalidate(user);
+        }
         try {
           await updateDream(failedDream);
         } catch {

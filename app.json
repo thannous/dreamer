@@ -10,6 +10,9 @@
       "supportsTablet": false,
       "requireFullScreen": false,
       "bundleIdentifier": "com.tanuki75.noctalia",
+      "entitlements": {
+        "com.apple.developer.devicecheck.appattest-environment": "development"
+      },
       "usesAppleSignIn": true,
       "config": {
         "usesNonExemptEncryption": false
