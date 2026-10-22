@@ -1,6 +1,6 @@
 import * as Haptics from 'expo-haptics';
 import React, { useEffect, useRef, useState } from 'react';
-import { AccessibilityInfo, BackHandler, findNodeHandle, Platform, Pressable, ScrollView, Text, View } from 'react-native';
+import { AccessibilityInfo, findNodeHandle, Platform, Pressable, ScrollView, Text, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   interpolate,
@@ -35,7 +35,7 @@ type Props = {
   formatNumber: (value: number) => string;
   formatDate: (value: number, options?: Intl.DateTimeFormatOptions) => string;
   onClose: () => void;
-  onReveal: (id: BadgeFamilyId) => void;
+  onReveal: (id: BadgeFamilyId, tier: BadgeTierLevel) => void;
   onAction: (state: BadgeFamilyState) => void;
 };
 
@@ -87,24 +87,23 @@ export function BadgeDetail({ state, t, formatNumber, formatDate, onClose, onRev
   // A screen reader lands on the card held, or on its back while it waits to be turned.
   const focusRef = useRef<React.ComponentRef<typeof View>>(null);
   useEffect(() => {
-    const node = focusRef.current ? findNodeHandle(focusRef.current) : null;
+    const target = focusRef.current;
+    if (!target) return;
+    // The web has no node handles: the element itself takes the focus.
+    if (Platform.OS === 'web') {
+      (target as unknown as { focus?: () => void }).focus?.();
+      return;
+    }
+    const node = findNodeHandle(target);
     if (node) AccessibilityInfo.setAccessibilityFocus(node);
   }, [faceDown]);
-
-  useEffect(() => {
-    const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
-      onClose();
-      return true;
-    });
-    return () => subscription.remove();
-  }, [onClose]);
 
   // Turned over once: the ledger keeps it unveiled from now on.
   const reveal = () => {
     if (!faceDown) return;
     setFaceDown(false);
     setShownLevel(state.tier === 0 ? 1 : state.tier);
-    onReveal(family.id);
+    onReveal(family.id, state.tier);
     if (Platform.OS !== 'web') {
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => undefined);
     }
@@ -171,7 +170,7 @@ export function BadgeDetail({ state, t, formatNumber, formatDate, onClose, onRev
       accessibilityViewIsModal
       onAccessibilityEscape={onClose}
       testID="collection.detail"
-      style={{ backgroundColor: 'rgba(3, 4, 13, 0.97)' }}
+      style={{ backgroundColor: COLLECTION.scrim }}
     >
       <ScrollView
         contentContainerStyle={{ paddingTop: insets.top + 56, paddingBottom: insets.bottom + 32, alignItems: 'center', gap: 22 }}
@@ -180,7 +179,8 @@ export function BadgeDetail({ state, t, formatNumber, formatDate, onClose, onRev
         <View style={{ width: cardWidth, minHeight: cardHeight }}>
           {arrivedFaceDown ? (
             <Animated.View style={[{ position: faceDown ? 'relative' : 'absolute', inset: faceDown ? undefined : 0 }, backStyle]}
-              pointerEvents={faceDown ? 'auto' : 'none'}>
+              pointerEvents={faceDown ? 'auto' : 'none'}
+              accessibilityElementsHidden={!faceDown} importantForAccessibility={faceDown ? 'auto' : 'no-hide-descendants'}>
               <PressableScale ref={faceDown ? focusRef : undefined} onPress={reveal} haptic="medium" accessibilityRole="button"
                 accessibilityLabel={t('badges.a11y.new_card', { name, tier: heldTier ? badgeTierName(t, heldTier) : '' })}
                 accessibilityHint={t('badges.detail.reveal_hint')} testID="collection.detail.reveal">
@@ -234,8 +234,8 @@ export function BadgeDetail({ state, t, formatNumber, formatDate, onClose, onRev
                     testID={`collection.detail.tier.${tier}`}
                     className="flex-1 items-center gap-1.5 rounded-[16px] border px-1.5 pb-2.5 pt-3"
                     style={{
-                      borderColor: selected ? getBadgeMaterial(tier).frame[1] : 'rgba(183, 174, 201, 0.22)',
-                      backgroundColor: selected ? 'rgba(255, 249, 239, 0.06)' : 'transparent',
+                      borderColor: selected ? getBadgeMaterial(tier).frame[1] : COLLECTION.hairline,
+                      backgroundColor: selected ? COLLECTION.chosen : 'transparent',
                     }}>
                     <BadgeMedallion family={family.id} tier={tier} size={46} veiled={!earned} small />
                     <Text style={{ color: material.ink }} maxFontSizeMultiplier={1.4}
@@ -267,7 +267,7 @@ export function BadgeDetail({ state, t, formatNumber, formatDate, onClose, onRev
                   <View accessible accessibilityRole="progressbar"
                     accessibilityValue={{ min: 0, max: 100, now: Math.round(Math.min(100, Math.max(0, percent))) }}
                     accessibilityLabel={t(remaining === 1 ? 'badges.detail.remaining_one' : 'badges.detail.remaining', { count: formatNumber(remaining) })}
-                    className="h-1.5 overflow-hidden rounded-full" style={{ backgroundColor: 'rgba(183, 174, 201, 0.18)' }}>
+                    className="h-1.5 overflow-hidden rounded-full" style={{ backgroundColor: COLLECTION.track }}>
                     <ProgressFill percent={percent} className="h-full rounded-full"
                       style={{ backgroundColor: getBadgeMaterial(BADGE_TIERS[nextLevel - 1]).ink }} />
                   </View>
@@ -312,7 +312,7 @@ export function BadgeDetail({ state, t, formatNumber, formatDate, onClose, onRev
       <Pressable onPress={onClose} accessibilityRole="button" accessibilityLabel={t('badges.detail.close')}
         testID="collection.detail.close" hitSlop={8}
         className="absolute h-11 w-11 items-center justify-center rounded-full border"
-        style={{ top: insets.top + 8, right: 16, borderColor: 'rgba(183, 174, 201, 0.35)', backgroundColor: 'rgba(20, 19, 26, 0.8)' }}>
+        style={{ top: insets.top + 8, right: 16, borderColor: COLLECTION.hairlineStrong, backgroundColor: COLLECTION.button }}>
         <IconSymbol name="xmark" size={18} color={COLLECTION.text} />
       </Pressable>
     </View>

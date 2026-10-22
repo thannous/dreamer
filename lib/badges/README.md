@@ -27,9 +27,11 @@ never taken back, whatever happens to the journal later.
 | observatory | days the dreamer changed the period, chose a theme or opened a symbol in Trends holding dreams | `app/(tabs)/statistics.tsx` |
 
 Readings, searches and edits were never recorded before the collection: they
-count from the day it ships. The ledger is per scope (`guest` or `user:<id>`),
-on this device; a guest's ledger joins the first account that opens after it,
-as its dreams do. Signed-in accounts also merge this ledger with a private Supabase
+count from the day it ships. A tier earned by actions is stamped with the action;
+a tier earned by the journal is stamped after its changes or when the collection opens.
+The ledger is per scope (`guest` or `user:<id>`). A guest's actions join the first
+account that opens after it; journal facts come from that account's own dreams.
+Unreadable local ledgers are never overwritten. Signed-in accounts also merge with a private Supabase
 `badge_ledgers` row. Every device unions distinct facts, preserves maxima and the
 first acquisition date of each tier. An optimistic revision check prevents a late
 client overwriting another device; an ambiguous acknowledgement can be replayed.

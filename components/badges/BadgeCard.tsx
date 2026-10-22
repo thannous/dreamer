@@ -231,7 +231,7 @@ export const BadgeCard = memo(function BadgeCard({
                 className="text-center font-sans-medium text-caption">
                 {status}
               </Text>
-              <View className="h-[3px] w-[70%] overflow-hidden rounded-full" style={{ backgroundColor: 'rgba(183, 174, 201, 0.18)' }}>
+              <View className="h-[3px] w-[70%] overflow-hidden rounded-full" style={{ backgroundColor: COLLECTION.track }}>
                 <ProgressFill percent={percent} growOnMount={false} className="h-full rounded-full"
                   style={{ backgroundColor: material.ink }} />
               </View>

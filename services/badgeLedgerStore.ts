@@ -8,14 +8,17 @@
  */
 import { useSyncExternalStore } from 'react';
 
-import type { BadgeFamilyId } from '@/lib/badges/catalog';
+import type { BadgeFamilyId, BadgeTierLevel } from '@/lib/badges/catalog';
 import {
+  actionsOnly,
   applyBadgeEvent,
+  BADGE_LEDGER_VERSION,
   createEmptyBadgeLedger,
   mergeBadgeLedgers,
   parseBadgeLedger,
   revealBadgeFamily,
   settleBadgeLedger,
+  stampActionTiers,
   type BadgeEvent,
   type BadgeLedger,
 } from '@/lib/badges/ledger';
@@ -50,18 +53,35 @@ const publish = (next: BadgeLedgerSnapshot) => {
   for (const listener of listeners) listener();
 };
 
-async function readLedger(scope: BadgeScope): Promise<BadgeLedger | null> {
+type StoredLedger =
+  | { status: 'absent' }
+  | { status: 'read'; ledger: BadgeLedger }
+  /** Present but not a ledger this version can read: it is never written over. */
+  | { status: 'unreadable' };
+
+/** Reads a scope's ledger. A storage failure throws, so the caller can try again later. */
+async function readLedger(scope: BadgeScope): Promise<StoredLedger> {
   const raw = await getLucidKeyValueStorage().getItem(storageKey(scope));
-  if (!raw) return null;
+  if (!raw) return { status: 'absent' };
   try {
-    return parseBadgeLedger(JSON.parse(raw));
+    const value: unknown = JSON.parse(raw);
+    if (!value || typeof value !== 'object' || (value as { version?: unknown }).version !== BADGE_LEDGER_VERSION) {
+      return { status: 'unreadable' };
+    }
+    return { status: 'read', ledger: parseBadgeLedger(value) };
   } catch {
-    return null;
+    return { status: 'unreadable' };
   }
 }
 
+/** Waits before reading again a ledger the storage could not give: 1 s, then longer. */
+const READ_RETRY_MS = [1_000, 4_000, 15_000, 60_000];
+// False while the open scope's stored ledger could not be read: nothing may replace it.
+let writable = true;
+
 /** Queues a write behind the previous ones; a failed write never blocks the next. */
 function persist(scope: BadgeScope, ledger: BadgeLedger): Promise<void> {
+  if (!writable) return writes;
   writes = writes
     .catch(() => undefined)
     .then(() => getLucidKeyValueStorage().setItem(storageKey(scope), JSON.stringify(ledger)))
@@ -71,34 +91,50 @@ function persist(scope: BadgeScope, ledger: BadgeLedger): Promise<void> {
   return writes;
 }
 
-/** Opens the scope's ledger. Changes made meanwhile are applied once it is read. */
+/**
+ * Opens the scope's ledger. Changes made meanwhile are applied once it is read. Until the
+ * storage gives it, the ledger stays closed and keeps those changes waiting: an empty one
+ * written over it would lose every earned tier.
+ */
 export function activateBadgeScope(scope: BadgeScope): Promise<void> {
   if (snapshot.scope === scope) return writes;
   const id = ++activation;
   waiting = beforeScope;
   beforeScope = [];
+  writable = true;
   publish({ scope, ledger: createEmptyBadgeLedger(), ready: false });
+  return open(scope, id, 0);
+}
+
+function open(scope: BadgeScope, id: number, attempt: number): Promise<void> {
   writes = writes.catch(() => undefined).then(async () => {
-    let ledger = createEmptyBadgeLedger();
-    let claimedGuest = false;
+    if (id !== activation) return;
+    let own: StoredLedger;
+    let guest: StoredLedger = { status: 'absent' };
     try {
-      ledger = (await readLedger(scope)) ?? ledger;
-      if (scope !== 'guest') {
-        const guest = await readLedger('guest');
-        if (guest) {
-          ledger = mergeBadgeLedgers(ledger, guest);
-          claimedGuest = true;
-        }
-      }
+      own = await readLedger(scope);
+      if (scope !== 'guest') guest = await readLedger('guest');
     } catch (error) {
       if (__DEV__) console.warn('[Badges] Failed to read the ledger', error);
+      const delay = READ_RETRY_MS[Math.min(attempt, READ_RETRY_MS.length - 1)];
+      setTimeout(() => {
+        if (id === activation) void open(scope, id, attempt + 1);
+      }, delay);
+      return;
     }
     if (id !== activation) return;
+    writable = own.status !== 'unreadable';
+    let ledger = own.status === 'read' ? own.ledger : createEmptyBadgeLedger();
+    // A guest's actions join the first account that opens; what its journal told does not,
+    // since the account reads its own journal again.
+    const guestLedger = writable && guest.status === 'read' ? guest.ledger : null;
+    const claimedGuest = guestLedger !== null;
+    if (guestLedger) ledger = mergeBadgeLedgers(ledger, actionsOnly(guestLedger));
     const initial = ledger;
     for (const change of waiting) ledger = change(ledger);
     waiting = [];
     publish({ scope, ledger, ready: true });
-    if (ledger !== initial || claimedGuest) {
+    if (writable && (ledger !== initial || claimedGuest)) {
       await getLucidKeyValueStorage().setItem(storageKey(scope), JSON.stringify(ledger));
     }
     if (claimedGuest) await getLucidKeyValueStorage().removeItem(storageKey('guest'));
@@ -126,7 +162,8 @@ function change(update: Change): void {
 
 /** Counts one action that has just succeeded. Calling it again for the same action is harmless. */
 export function recordBadgeEvent(event: BadgeEvent): void {
-  change((ledger) => applyBadgeEvent(ledger, event));
+  const now = Date.now();
+  change((ledger) => stampActionTiers(applyBadgeEvent(ledger, event), now));
 }
 
 /** Folds the journal as it is now into the ledger, stamping any tier newly reached. */
@@ -134,9 +171,9 @@ export function settleBadges(dreams: readonly DreamAnalysis[], now = Date.now())
   change((ledger) => settleBadgeLedger(ledger, dreams, now));
 }
 
-/** The collection has unveiled this family's earned tiers. */
-export function markBadgeFamilyRevealed(id: BadgeFamilyId): void {
-  change((ledger) => revealBadgeFamily(ledger, id));
+/** The collection has unveiled this family's tiers, up to the one it showed. */
+export function markBadgeFamilyRevealed(id: BadgeFamilyId, shown: BadgeTierLevel): void {
+  change((ledger) => revealBadgeFamily(ledger, id, shown));
 }
 
 const subscribe = (listener: () => void) => {
@@ -145,8 +182,10 @@ const subscribe = (listener: () => void) => {
     listeners.delete(listener);
   };
 };
-export const getBadgeLedgerSnapshot = () => snapshot;
-const getSnapshot = getBadgeLedgerSnapshot;
+const getSnapshot = () => snapshot;
+
+/** The ledger as it is now, outside React. */
+export const getBadgeLedgerSnapshot = getSnapshot;
 
 export function useBadgeLedger(): BadgeLedgerSnapshot {
   return useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
@@ -157,6 +196,7 @@ export function resetBadgeLedgerStoreForTests(): void {
   activation += 1;
   waiting = [];
   beforeScope = [];
+  writable = true;
   writes = Promise.resolve();
   snapshot = { scope: null, ledger: createEmptyBadgeLedger(), ready: false };
   listeners.clear();
