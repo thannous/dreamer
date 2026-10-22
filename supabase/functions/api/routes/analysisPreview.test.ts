@@ -97,15 +97,40 @@ function setup(options: {
     },
     { id: 3, user_id: 'u1', is_analyzed: true, analyzed_at: '2026-10-01T00:00:00Z', analysis_details: { symbols: [{ name: 'Rivière de verre', key: 'glass-river' }] } },
   ];
-  const calls = { analyze: 0, admit: 0, paint: 0, quota: 0, analyzeOptions: [] as Record<string, unknown>[] };
+  const calls = { analyze: 0, admit: 0, paint: 0, quota: 0, analyzeOptions: [] as Record<string, unknown>[], removed: [] as string[] };
+  // hold_analysis_preview as the migration writes it, at NOW, one call at a time like its lock.
+  const hold = (args: Record<string, unknown>) => {
+    const dream = dreams.find((row) => row.id === args.p_dream_id && row.user_id === args.p_user_id);
+    if (!dream) return { state: 'gone' };
+    if (dream.is_analyzed === true) return { state: 'analyzed' };
+    if (dream.analysis_status === 'pending') return { state: 'pending' };
+    const live = (row: Row) => row.status !== 'writing' || Date.parse(String(row.updated_at)) > NOW - 3 * 60_000;
+    const current = previews.find((row) => row.user_id === args.p_user_id && row.dream_id === args.p_dream_id);
+    if (current?.status === 'writing' && live(current)) return { state: 'writing' };
+    const week = previews.filter((row) => row.user_id === args.p_user_id && Date.parse(String(row.created_at)) > NOW - 7 * DAY && live(row));
+    if (week.length) return { state: 'weekly_limit', retry_at: iso(Math.max(...week.map((row) => Date.parse(String(row.created_at)))) + 7 * DAY) };
+    const previous = { previous_image_path: current?.image_path ?? null, previous_band_path: current?.band_path ?? null };
+    const held = {
+      user_id: args.p_user_id, dream_id: args.p_dream_id, status: 'writing', lang: args.p_lang, transcript_sha256: args.p_transcript_sha256,
+      reading: null, image_status: 'none', image_prompt: null, image_path: null, band_path: null, band_url: null, image_updated_at: null,
+      created_at: iso(NOW), updated_at: iso(NOW),
+    };
+    if (current) Object.assign(current, held);
+    else previews.push(held);
+    return { state: 'held', held_at: iso(NOW), ...previous };
+  };
   const admin = {
-    rpc: async (name: string) => (name === 'get_effective_subscription_tier' ? { data: options.tier ?? 'free', error: null } : { data: null, error: { code: 'x' } }),
+    rpc: async (name: string, args: Record<string, unknown>) => {
+      if (name === 'get_effective_subscription_tier') return { data: options.tier ?? 'free', error: null };
+      if (name === 'hold_analysis_preview') return { data: hold(args), error: null };
+      return { data: null, error: { code: 'x' } };
+    },
     from: (name: string) => {
       if (name === 'dreams') return table(dreams, ['id'])();
       assertEquals(name, 'analysis_previews');
       return table(previews)();
     },
-    storage: { from: () => ({ remove: async () => ({ error: null }) }) },
+    storage: { from: () => ({ remove: async (keys: string[]) => { calls.removed.push(...keys); return { error: null }; } }) },
   };
   const ctx = (body: unknown, user: unknown = { id: 'u1' }): ApiContext => ({
     req: new Request('https://example.test/analysis-preview', { method: 'POST', body: JSON.stringify(body) }),
@@ -192,6 +217,8 @@ Deno.test('prepares the analysis once and gives its title, first sentence, symbo
   assertEquals(calls.analyzeOptions[0].route, '/analysis-preview');
   assertEquals(calls.analyzeOptions[0].lang, 'fr');
   assertEquals(calls.analyzeOptions[0].knownSymbols, [{ key: 'glass-river', name: 'Rivière de verre' }]);
+  // Like the other synchronous analyses, Claude has twenty seconds before Gemini takes over.
+  assertEquals(calls.analyzeOptions[0].claudeTimeoutMs, 20_000);
 
   // Read again, prepared or not: the same preview, no second writing.
   const again = await (await handleAnalysisPreview(ctx({ dreamId: 7, lang: 'fr' }), deps)).json();
@@ -248,6 +275,54 @@ Deno.test('a failed reading costs the week nothing', async () => {
   const refused = setup({ admit: async () => new Response('{}', { status: 429 }) });
   assertEquals((await handleAnalysisPreview(refused.ctx(prepare), refused.deps)).status, 429);
   assertEquals([refused.previews.length, refused.calls.analyze], [0, 0]);
+});
+
+Deno.test('any failure once held gives the week back', async () => {
+  const unsavable = setup({ analyze: async () => reading({ imagePrompt: '  ' }) });
+  const refused = await handleAnalysisPreview(unsavable.ctx(prepare), unsavable.deps);
+  assertEquals([refused.status, (await refused.json()).code], [502, 'PREVIEW_FAILED']);
+  assertEquals(unsavable.previews.length, 0);
+
+  const thrown = setup({ admit: () => Promise.reject(new Error('admission down')) });
+  const failed = await handleAnalysisPreview(thrown.ctx(prepare), thrown.deps);
+  assertEquals([failed.status, (await failed.json()).code], [503, 'PREVIEW_UNAVAILABLE']);
+  assertEquals([thrown.previews.length, thrown.calls.analyze], [0, 0]);
+});
+
+Deno.test('a dream analyzed or deleted while its preview is written keeps no preview', async () => {
+  // The dreams' triggers spend or empty the held row meanwhile.
+  const analyzed = setup({
+    analyze: async () => {
+      Object.assign(analyzed.previews[0], { status: 'used' });
+      return reading();
+    },
+  });
+  const late = await handleAnalysisPreview(analyzed.ctx(prepare), analyzed.deps);
+  assertEquals([late.status, (await late.json()).code], [409, 'ALREADY_ANALYZED']);
+  assertEquals([analyzed.previews[0].status, analyzed.previews[0].reading, analyzed.calls.paint], ['used', null, 0]);
+
+  const deleted = setup({
+    analyze: async () => {
+      Object.assign(deleted.previews[0], { status: 'removed' });
+      return reading();
+    },
+  });
+  const gone = await handleAnalysisPreview(deleted.ctx(prepare), deleted.deps);
+  assertEquals([gone.status, (await gone.json()).code], [404, 'DREAM_NOT_FOUND']);
+  assertEquals(deleted.previews[0].status, 'removed');
+});
+
+Deno.test('the painting of an older preview of the dream goes once the new one is saved', async () => {
+  const older: Row = {
+    user_id: 'u1', dream_id: 7, status: 'ready', lang: 'en', transcript_sha256: 'a'.repeat(64), reading: reading(),
+    image_status: 'ready', image_prompt: 'old', image_path: 'previews/u1/7-old.jpg', band_path: 'previews/u1/7-old-band.jpg',
+    band_url: 'https://example.test/sign/old', created_at: iso(NOW - 9 * DAY), updated_at: iso(NOW - 9 * DAY),
+  };
+  const { ctx, deps, previews, calls } = setup({ previews: [older] });
+  const result = await (await handleAnalysisPreview(ctx(prepare), deps)).json();
+  assertEquals([result.state, result.preview.image.bandUrl], ['ready', 'https://example.test/sign/band']);
+  assertEquals(calls.removed, ['previews/u1/7-old.jpg', 'previews/u1/7-old-band.jpg']);
+  assertEquals([previews.length, previews[0].lang, previews[0].image_path], [1, 'fr', 'previews/u1/7-a.jpg']);
 });
 
 Deno.test('a failed painting leaves the reading, without a band', async () => {

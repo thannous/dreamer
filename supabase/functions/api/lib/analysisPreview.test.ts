@@ -3,7 +3,6 @@ import {
   isPreparedReading,
   previewOf,
   previewOpening,
-  spendPreparedReading,
   takePreparedReading,
   transcriptSha256,
 } from './analysisPreview.ts';
@@ -42,21 +41,18 @@ Deno.test('the preview names at most six symbols and none of their meanings', ()
   });
 });
 
-Deno.test('only a reading of the same text and language is taken, and it is spent once saved', async () => {
+Deno.test('only a reading of the same text and language is taken', async () => {
   const sha = await transcriptSha256('Je marchais.');
   assertEquals(sha, await transcriptSha256('Je marchais.'));
   assertEquals(sha === await transcriptSha256('Je marchais. '), false);
   const rows = [{ user_id: 'u1', dream_id: 7, status: 'ready', lang: 'fr', transcript_sha256: sha, reading }];
-  const updates: Record<string, unknown>[] = [];
   const admin = {
     from: () => {
       const filters: [string, unknown][] = [];
       const builder = {
         select: () => builder,
-        update: (values: Record<string, unknown>) => { updates.push(values); return builder; },
         eq: (column: string, value: unknown) => { filters.push([column, value]); return builder; },
         maybeSingle: async () => ({ data: rows.find((row) => filters.every(([column, value]) => (row as Record<string, unknown>)[column] === value)) ?? null, error: null }),
-        then: (resolve: (value: unknown) => unknown) => Promise.resolve({ error: null }).then(resolve),
       };
       return builder;
     },
@@ -66,9 +62,25 @@ Deno.test('only a reading of the same text and language is taken, and it is spen
   assertEquals(await takePreparedReading(admin, { ...input, lang: 'en' }), null);
   assertEquals(await takePreparedReading(admin, { ...input, transcriptSha256: 'b'.repeat(64) }), null);
   assertEquals(await takePreparedReading(admin, { ...input, dreamId: 8 }), null);
-  assertEquals(isPreparedReading({ ...reading, symbols: null }), false);
+});
 
-  await spendPreparedReading(admin, { userId: 'u1', dreamId: 7 });
-  assertEquals(updates[0].status, 'used');
-  assertEquals(updates[0].reading, null);
+Deno.test('a prepared reading is one the analysis job can save as it is', () => {
+  assertEquals(isPreparedReading(reading), true);
+  assertEquals(isPreparedReading({ ...reading, theme: 'luminous' }), true);
+  assertEquals(isPreparedReading({ ...reading, shareableQuote: '', dreamType: '' }), true);
+  for (const broken of [
+    { symbols: null },
+    { title: '  ' },
+    { title: 'x'.repeat(501) },
+    { interpretation: '' },
+    { interpretation: 'x'.repeat(20001) },
+    { shareableQuote: 'x'.repeat(2001) },
+    { theme: 'stormy' },
+    { dreamType: 'x'.repeat(201) },
+    { imagePrompt: ' ' },
+    { imagePrompt: 'x'.repeat(1001) },
+  ]) {
+    assertEquals(isPreparedReading({ ...reading, ...broken }), false, JSON.stringify(broken).slice(0, 40));
+  }
+  assertEquals(isPreparedReading(null), false);
 });

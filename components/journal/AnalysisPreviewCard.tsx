@@ -21,9 +21,9 @@ import { BookSectionMark, BookSubheading, useBookBody } from './JournalBook';
 
 /** The band is the middle third of a 9:16 painting. */
 const BAND_ASPECT = 27 / 16;
-/** A painting or a writing under way is read again this often, two minutes at most. */
+/** A painting or a writing under way is read again this often, a little over its three minutes at most. */
 const POLL_MS = 4000;
-const MAX_POLLS = 30;
+const MAX_POLLS = 50;
 /** Lines standing for the reading's hidden rest: shapes, never its words. */
 const HIDDEN_LINES = [0.96, 0.9, 0.58];
 
@@ -53,40 +53,50 @@ export function AnalysisPreviewCard({ remoteDreamId, transcript, onOpenPlus, cla
   const { locale, formatDate } = useLocaleFormatting();
   const body = useBookBody();
   const [state, setState] = useState<State>({ kind: 'loading' });
-  const [request, setRequest] = useState({ count: 0, prepare: false, polls: 0 });
+  // The dream, language and text a preparation was asked for: once they change, the next read only reads.
+  const subject = `${remoteDreamId}|${currentLang}|${transcript}`;
+  const [request, setRequest] = useState({ count: 0, prepare: false, polls: 0, subject: '' });
+  const prepareNow = request.prepare && request.subject === subject;
 
   useEffect(() => {
     const controller = new AbortController();
     let timer: ReturnType<typeof setTimeout> | null = null;
+    const readAgain = () => {
+      if (request.polls >= MAX_POLLS) return;
+      timer = setTimeout(() => setRequest((value) => ({ ...value, count: value.count + 1, prepare: false, polls: value.polls + 1 })), POLL_MS);
+    };
     void (async () => {
       try {
         const result = await fetchAnalysisPreview({
-          remoteDreamId, lang: currentLang, prepare: request.prepare, signal: controller.signal,
+          remoteDreamId, lang: currentLang, prepare: prepareNow, signal: controller.signal,
         });
         if (controller.signal.aborted) return;
         setState({ kind: 'loaded', result });
-        const waiting = result.state === 'writing' || result.preview?.image.state === 'painting';
-        if (waiting && request.polls < MAX_POLLS) {
-          timer = setTimeout(() => setRequest((value) => ({ count: value.count + 1, prepare: false, polls: value.polls + 1 })), POLL_MS);
-        }
+        if (result.state === 'writing' || result.preview?.image.state === 'painting') readAgain();
       } catch (error) {
         if (controller.signal.aborted) return;
+        const refusal = analysisPreviewRefusal(error);
+        // A failed read while waiting keeps what shows and reads again.
+        if (request.polls > 0 && !prepareNow && !refusal) {
+          readAgain();
+          return;
+        }
         // A refused dream keeps the page's own action; a failed preparation can be tried again.
-        setState(request.prepare && !analysisPreviewRefusal(error) ? { kind: 'failed' } : { kind: 'hidden' });
+        setState(prepareNow && !refusal ? { kind: 'failed' } : { kind: 'hidden' });
       }
     })();
     return () => {
       controller.abort();
       if (timer) clearTimeout(timer);
     };
-  }, [currentLang, remoteDreamId, request, transcript]);
+  }, [currentLang, prepareNow, remoteDreamId, request, transcript]);
 
   const prepare = useCallback(async () => {
     // The dream's text goes to the AI only with consent.
     if (!(await requestAiConsent(t))) return;
     setState({ kind: 'preparing' });
-    setRequest((value) => ({ count: value.count + 1, prepare: true, polls: 0 }));
-  }, [t]);
+    setRequest((value) => ({ count: value.count + 1, prepare: true, polls: 0, subject }));
+  }, [subject, t]);
 
   const result = state.kind === 'loaded' ? state.result : null;
   const day = (iso: string) => withFirstDayOrdinal(formatDate(Date.parse(iso), { day: 'numeric', month: 'long' }), locale);

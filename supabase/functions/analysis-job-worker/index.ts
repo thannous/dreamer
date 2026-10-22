@@ -2,7 +2,7 @@ import { serve } from 'https://deno.land/std@0.224.0/http/server.ts';
 import { corsHeaders } from '../api/lib/constants.ts';
 import { AI_REQUEST_LIMITS, isValidUuid } from '../api/lib/aiRequestPolicy.ts';
 import { resolveStoredTranscriptForAi } from '../api/lib/prompts.ts';
-import { spendPreparedReading, takePreparedReading, transcriptSha256 } from '../api/lib/analysisPreview.ts';
+import { takePreparedReading, transcriptSha256 } from '../api/lib/analysisPreview.ts';
 import {
   ANALYSIS_JOB_WORKER_AUTH_HEADER,
   createAnalysisAdminClient,
@@ -253,9 +253,6 @@ const processAnalysisJob = async (input: {
       );
       return;
     }
-
-    // Saved with the dream now, a prepared reading leaves its table.
-    await spendPreparedReading(adminClient, { userId: job.user_id, dreamId: job.dream_id });
 
     const imageJobId = typeof completion.image_job?.id === 'string'
       ? completion.image_job.id

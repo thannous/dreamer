@@ -1,6 +1,10 @@
 import type { StructuredDreamAnalysis } from '../services/dreamAnalysis.ts';
+import { DREAM_THEME_VALUES } from './dreamThemes.ts';
 
-/** A free account past its monthly analyses gets one new prepared analysis per rolling week. */
+/**
+ * A free account past its monthly analyses gets one new prepared analysis per rolling week.
+ * hold_analysis_preview (20261021235000) holds it within the same seven days.
+ */
 export const ANALYSIS_PREVIEW_WINDOW_MS = 7 * 24 * 60 * 60 * 1000;
 /**
  * A prepared analysis's painting lives in the dream-images bucket under previews/<user id>/:
@@ -36,20 +40,26 @@ export function previewOf(reading: StructuredDreamAnalysis, title: string) {
   };
 }
 
-/** A stored reading still has the shape an analysis job saves. */
+const trimmedWithin = (value: unknown, min: number, max: number) =>
+  typeof value === 'string' && value.trim().length >= min && value.trim().length <= max;
+
+/** A reading complete_authenticated_analysis_job saves as it is: same fields, same limits. */
 export function isPreparedReading(value: unknown): value is StructuredDreamAnalysis {
   const reading = value as Partial<StructuredDreamAnalysis> | null;
-  return Boolean(reading) && typeof reading?.title === 'string' && reading.title.length > 0
-    && typeof reading.interpretation === 'string' && reading.interpretation.length > 0
-    && typeof reading.shareableQuote === 'string' && typeof reading.theme === 'string'
-    && typeof reading.dreamType === 'string' && typeof reading.imagePrompt === 'string'
-    && Array.isArray(reading.symbols) && Array.isArray(reading.emotions) && Array.isArray(reading.reflectionQuestions);
+  return Boolean(reading) && trimmedWithin(reading?.title, 1, 500) && trimmedWithin(reading?.interpretation, 1, 20000)
+    && trimmedWithin(reading?.shareableQuote, 0, 2000)
+    && typeof reading?.theme === 'string' && DREAM_THEME_VALUES.includes(reading.theme.trim())
+    && trimmedWithin(reading?.dreamType, 0, 200) && trimmedWithin(reading?.imagePrompt, 1, 1000)
+    && Array.isArray(reading?.symbols) && Array.isArray(reading?.emotions) && Array.isArray(reading?.reflectionQuestions);
 }
 
 // deno-lint-ignore no-explicit-any
 type AdminClient = { from: (table: string) => any };
 
-/** The reading prepared for this dream from this very transcript and in this language, if one waits. */
+/**
+ * The reading prepared for this dream from this very transcript and in this language, if one
+ * waits. Once the analysis is saved, the dream's is_analyzed trigger spends it.
+ */
 export async function takePreparedReading(admin: AdminClient, input: {
   userId: string;
   dreamId: number;
@@ -65,17 +75,5 @@ export async function takePreparedReading(admin: AdminClient, input: {
     return isPreparedReading(data.reading) ? data.reading : null;
   } catch {
     return null;
-  }
-}
-
-/** Once the dream's analysis is saved, its prepared reading is spent and its text leaves the table. */
-export async function spendPreparedReading(admin: AdminClient, input: { userId: string; dreamId: number }): Promise<void> {
-  try {
-    const { error } = await admin.from('analysis_previews')
-      .update({ status: 'used', reading: null, updated_at: new Date().toISOString() })
-      .eq('user_id', input.userId).eq('dream_id', input.dreamId).eq('status', 'ready');
-    if (error) console.warn('[analysis-preview] could not spend a prepared reading', { code: error.code ?? null });
-  } catch {
-    console.warn('[analysis-preview] could not spend a prepared reading');
   }
 }

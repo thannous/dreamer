@@ -10,7 +10,12 @@ import {
   transcriptSha256,
 } from '../lib/analysisPreview.ts';
 import { admitSynchronousAiRequest } from '../services/aiAdmission.ts';
-import { keepStoredDreamClass, loadKnownDreamSymbols, runDreamAnalysis } from '../services/dreamAnalysis.ts';
+import {
+  CLAUDE_SYNC_ANALYSIS_TIMEOUT_MS,
+  keepStoredDreamClass,
+  loadKnownDreamSymbols,
+  runDreamAnalysis,
+} from '../services/dreamAnalysis.ts';
 import type { StructuredDreamAnalysis } from '../services/dreamAnalysis.ts';
 import { paintPreparedIllustration, removePreviewObjects } from '../services/previewIllustration.ts';
 import type { ApiContext } from '../types.ts';
@@ -28,7 +33,10 @@ type Dependencies = {
   runInBackground?: (task: Promise<void>) => boolean;
 };
 
-/** A request that holds a preview longer than this has failed; another may write it. */
+/**
+ * A request that holds a preview longer than this has failed; another may write it.
+ * hold_analysis_preview (20261021235000) uses the same three minutes.
+ */
 const WRITING_TIMEOUT_MS = 3 * 60 * 1000;
 /** A painting still under way after this has failed: the dream's analysis paints its own. */
 const PAINTING_TIMEOUT_MS = 3 * 60 * 1000;
@@ -64,6 +72,15 @@ type DreamRow = {
   theme: string | null;
   precise_theme: string | null;
   dream_type: string | null;
+};
+
+/** What hold_analysis_preview answers. */
+type Hold = {
+  state?: 'held' | 'writing' | 'weekly_limit' | 'gone' | 'analyzed' | 'pending';
+  held_at?: string;
+  retry_at?: string;
+  previous_image_path?: string | null;
+  previous_band_path?: string | null;
 };
 
 const PREVIEW_COLUMNS =
@@ -176,86 +193,82 @@ export async function handleAnalysisPreview(ctx: ApiContext, deps: Dependencies 
     if (quotaError || !quota || typeof quota !== 'object') return refused('PREVIEW_UNAVAILABLE', 503);
     if ((quota as { canAnalyze?: unknown }).canAnalyze !== false) return refused('CAN_ANALYZE', 409);
 
-    // Hold the dream's preview while it is written, so a second request waits instead of paying twice.
-    const heldAt = new Date(now).toISOString();
-    const held = {
-      status: 'writing', lang, transcript_sha256: sha256, reading: null, created_at: heldAt, updated_at: heldAt,
-      image_status: 'none', image_prompt: null, image_path: null, band_path: null, band_url: null, image_updated_at: null,
-    };
-    if (existing) {
-      // An older preview of another text, a spent one or a failed writing: this week's starts now.
-      const { data: taken, error } = await previews().update(held)
-        .eq('user_id', userId).eq('dream_id', dreamId).eq('updated_at', existing.updated_at)
-        .select('dream_id');
-      if (error) throw error;
-      if (!taken?.length) return status('writing');
-      await removePreviewObjects(admin, ctx.storageBucket, [existing.image_path, existing.band_path]);
-    } else {
-      const { error } = await previews().insert({ user_id: userId, dream_id: dreamId, ...held });
-      if (error?.code === '23505') return status('writing');
-      if (error) throw error;
-    }
-    const release = () => previews().delete()
-      .eq('user_id', userId).eq('dream_id', dreamId).eq('status', 'writing').eq('updated_at', heldAt);
-
-    // Two dreams prepared at once: the first one held keeps the week.
-    const first = (await weekPreviews())
-      .sort((a, b) => Date.parse(a.created_at) - Date.parse(b.created_at) || a.dream_id - b.dream_id)[0];
-    if (first && first.dream_id !== dreamId) {
-      await release();
-      return status('weekly_limit', nextPreviewAt([first]));
-    }
-
-    const admission = await (deps.admit ?? admitSynchronousAiRequest)({ ctx, capability: 'analysis_preview', guestFingerprint: null });
-    if (admission instanceof Response) {
-      await release();
-      return admission;
-    }
     const apiKey = deps.apiKey ?? Deno.env.get('GEMINI_API_KEY');
-    if (!apiKey) {
-      await release();
-      return refused('PREVIEW_UNAVAILABLE', 503);
-    }
+    if (!apiKey) return refused('PREVIEW_UNAVAILABLE', 503);
 
-    let reading: StructuredDreamAnalysis;
-    try {
-      // The same reading the analysis job would write, so the job can take it as it is.
-      reading = await (deps.analyze ?? runDreamAnalysis)({
-        apiKey,
-        anthropicApiKey: deps.anthropicApiKey === undefined ? Deno.env.get('ANTHROPIC_API_KEY')?.trim() : deps.anthropicApiKey,
-        transcript: transcript.promptTranscript,
-        truncatedForPrompt: transcript.truncatedForPrompt,
-        lang,
-        knownSymbols: await loadKnownDreamSymbols(admin, userId, dreamId, '/analysis-preview'),
-        route: '/analysis-preview',
-      });
-    } catch {
-      await release();
-      // Dream content and provider payloads must not enter logs.
-      return refused('PREVIEW_FAILED', 502);
-    }
-
-    const savedAt = new Date((deps.now ?? Date.now)()).toISOString();
-    const prompt = reading.imagePrompt.trim();
-    const { data: saved, error: saveError } = await previews()
-      .update({
-        status: 'ready', reading, updated_at: savedAt,
-        ...(prompt ? { image_status: 'painting', image_prompt: prompt, image_updated_at: savedAt } : {}),
-      })
-      .eq('user_id', userId).eq('dream_id', dreamId).eq('status', 'writing').eq('updated_at', heldAt)
-      .select(PREVIEW_COLUMNS);
-    if (saveError) {
-      await release();
-      throw saveError;
-    }
-    const kept = (saved as PreviewRow[] | null)?.[0] ?? null;
-    if (!kept) {
-      // Taken over after a timeout, or the dream deleted meanwhile: whichever preview was kept is the one to show.
+    // Under a lock per account, the database checks the dream and the week again and holds
+    // the dream's preview while it is written: a second request waits instead of paying twice.
+    const { data: holdData, error: holdError } = await admin.rpc('hold_analysis_preview', {
+      p_user_id: userId, p_dream_id: dreamId, p_lang: lang, p_transcript_sha256: sha256,
+    });
+    if (holdError) throw holdError;
+    const hold = (holdData ?? {}) as Hold;
+    if (hold.state === 'gone') return refused('DREAM_NOT_FOUND', 404);
+    if (hold.state === 'analyzed') return refused('ALREADY_ANALYZED', 409);
+    if (hold.state === 'pending') return refused('ANALYSIS_PENDING', 409);
+    if (hold.state !== 'held' || typeof hold.held_at !== 'string') {
+      // Another request held it or took the week meanwhile: whichever preview it kept is the one to show.
       const other = await readPreview();
       if (matches(other)) return ready(other);
-      return other?.status === 'removed' ? refused('DREAM_NOT_FOUND', 404) : status('writing');
+      return hold.state === 'weekly_limit' && typeof hold.retry_at === 'string'
+        ? status('weekly_limit', new Date(hold.retry_at).toISOString())
+        : status('writing');
     }
-    if (!prompt || !matches(kept)) return matches(kept) ? ready(kept) : status('writing');
+    const heldAt = hold.held_at;
+
+    let saved: PreviewRow | null = null;
+    let prompt = '';
+    let savedAt = '';
+    try {
+      const admission = await (deps.admit ?? admitSynchronousAiRequest)({ ctx, capability: 'analysis_preview', guestFingerprint: null });
+      if (admission instanceof Response) return admission;
+
+      let reading: StructuredDreamAnalysis;
+      try {
+        // The same reading the analysis job would write, so the job can take it as it is.
+        reading = await (deps.analyze ?? runDreamAnalysis)({
+          apiKey,
+          anthropicApiKey: deps.anthropicApiKey === undefined ? Deno.env.get('ANTHROPIC_API_KEY')?.trim() : deps.anthropicApiKey,
+          claudeTimeoutMs: CLAUDE_SYNC_ANALYSIS_TIMEOUT_MS,
+          transcript: transcript.promptTranscript,
+          truncatedForPrompt: transcript.truncatedForPrompt,
+          lang,
+          knownSymbols: await loadKnownDreamSymbols(admin, userId, dreamId, '/analysis-preview'),
+          route: '/analysis-preview',
+        });
+      } catch {
+        // Dream content and provider payloads must not enter logs.
+        return refused('PREVIEW_FAILED', 502);
+      }
+      // A reading the analysis job could not save is no preview.
+      if (!isPreparedReading(reading)) return refused('PREVIEW_FAILED', 502);
+
+      savedAt = new Date((deps.now ?? Date.now)()).toISOString();
+      prompt = reading.imagePrompt.trim();
+      const { data: savedRows, error: saveError } = await previews()
+        .update({ status: 'ready', reading, updated_at: savedAt, image_status: 'painting', image_prompt: prompt, image_updated_at: savedAt })
+        .eq('user_id', userId).eq('dream_id', dreamId).eq('status', 'writing').eq('updated_at', heldAt)
+        .select(PREVIEW_COLUMNS);
+      if (saveError) throw saveError;
+      saved = (savedRows as PreviewRow[] | null)?.[0] ?? null;
+      if (!saved) {
+        // Analyzed, deleted or taken over meanwhile.
+        const other = await readPreview();
+        if (matches(other)) return ready(other);
+        if (other?.status === 'used') return refused('ALREADY_ANALYZED', 409);
+        return other?.status === 'removed' || !other ? refused('DREAM_NOT_FOUND', 404) : status('writing');
+      }
+    } finally {
+      // A preview not written gives the week back; an older painting of the dream goes either way.
+      if (!saved) {
+        await previews().delete()
+          .eq('user_id', userId).eq('dream_id', dreamId).eq('status', 'writing').eq('updated_at', heldAt)
+          .then(() => undefined, () => undefined);
+      }
+      await removePreviewObjects(admin, ctx.storageBucket, [hold.previous_image_path, hold.previous_band_path]);
+    }
+    const kept = saved;
+    if (!matches(kept)) return status('writing');
 
     // The painting follows the reading: the account reads the start of its analysis meanwhile.
     const painting = async () => {

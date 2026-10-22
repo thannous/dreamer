@@ -6,6 +6,7 @@ import { AnalysisPreviewCard } from '../AnalysisPreviewCard';
 
 const mockFetchPreview = jest.fn();
 const mockConsent = jest.fn();
+let mockLang = 'fr';
 jest.mock('@/services/analysisPreviewService', () => ({
   ...jest.requireActual('@/services/analysisPreviewService'),
   fetchAnalysisPreview: (...args: unknown[]) => mockFetchPreview(...args),
@@ -14,7 +15,7 @@ jest.mock('@/lib/aiConsent', () => ({ requestAiConsent: () => mockConsent() }));
 jest.mock('@/hooks/useTranslation', () => ({
   useTranslation: () => ({
     t: (key: string, params?: Record<string, unknown>) => (params?.date ? `${key}:${params.date}` : key),
-    currentLang: 'fr',
+    currentLang: mockLang,
   }),
 }));
 jest.mock('@/hooks/useLocaleFormatting', () => ({
@@ -47,13 +48,13 @@ const preview = (image: Record<string, unknown> = { state: 'ready', bandUrl: 'ht
 });
 
 beforeEach(() => {
+  mockLang = 'fr';
   mockFetchPreview.mockReset();
   mockConsent.mockReset().mockResolvedValue(true);
 });
 
-const renderCard = (onOpenPlus = jest.fn()) => render(
-  <AnalysisPreviewCard remoteDreamId={7} transcript="Je marchais." onOpenPlus={onOpenPlus} />,
-);
+const card = (onOpenPlus = jest.fn()) => <AnalysisPreviewCard remoteDreamId={7} transcript="Je marchais." onOpenPlus={onOpenPlus} />;
+const renderCard = (onOpenPlus = jest.fn()) => render(card(onOpenPlus));
 
 it('invites to prepare the analysis, with consent, then shows its start and locked rest', async () => {
   mockFetchPreview.mockResolvedValueOnce({ state: 'available', preview: null, preparedAt: null, retryAt: null });
@@ -97,6 +98,40 @@ it('reads again while the painting is under way, until its band arrives', async 
   } finally {
     jest.useRealTimers();
   }
+});
+
+it('keeps the shown preview when a read fails while the painting is under way', async () => {
+  jest.useFakeTimers();
+  try {
+    mockFetchPreview.mockResolvedValueOnce(preview({ state: 'painting', bandUrl: null }))
+      .mockRejectedValueOnce(new Error('offline'))
+      .mockResolvedValueOnce(preview());
+    const screen = renderCard();
+    await waitFor(() => expect(screen.getByText('journal.detail.preview.painting')).toBeTruthy());
+    await act(async () => { jest.advanceTimersByTime(4000); });
+    await waitFor(() => expect(mockFetchPreview).toHaveBeenCalledTimes(2));
+    expect(screen.getByText('Ton rêve fait de la rivière un passage.')).toBeTruthy();
+    await act(async () => { jest.advanceTimersByTime(4000); });
+    await waitFor(() => expect(screen.getByTestId('component.analysisPreview.band')).toBeTruthy());
+  } finally {
+    jest.useRealTimers();
+  }
+});
+
+it('prepares only for the language and text it was asked for', async () => {
+  mockFetchPreview.mockResolvedValueOnce({ state: 'available', preview: null, preparedAt: null, retryAt: null })
+    .mockResolvedValueOnce(preview());
+  const screen = renderCard();
+  await waitFor(() => expect(screen.getByTestId('btn.analysisPreview.prepare')).toBeTruthy());
+  fireEvent.press(screen.getByTestId('btn.analysisPreview.prepare'));
+  await waitFor(() => expect(screen.getByText('La rivière de verre')).toBeTruthy());
+  expect(mockFetchPreview).toHaveBeenLastCalledWith(expect.objectContaining({ lang: 'fr', prepare: true }));
+
+  mockLang = 'en';
+  mockFetchPreview.mockResolvedValueOnce({ state: 'weekly_limit', preview: null, preparedAt: null, retryAt: '2026-10-29T07:00:00.000Z' });
+  screen.rerender(card());
+  await waitFor(() => expect(mockFetchPreview).toHaveBeenCalledTimes(3));
+  expect(mockFetchPreview).toHaveBeenLastCalledWith(expect.objectContaining({ lang: 'en', prepare: false }));
 });
 
 it('says when the next prepared analysis comes after this week’s', async () => {
