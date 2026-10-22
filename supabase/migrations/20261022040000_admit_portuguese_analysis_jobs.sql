@@ -4,6 +4,19 @@
 -- of an analysis. Only the language list changes; the body is otherwise the
 -- one from 20261021201021_bind_analysis_receipts_to_transcript.sql.
 
+-- That body needs the transcript-bound authorization of 20261021201021.
+-- Production applies migrations one by one and may still lack it; installed
+-- without it, this body would refuse every queued analysis, so stop instead.
+do $$
+begin
+  if position('transcript_sha256' in pg_catalog.pg_get_functiondef(
+    'public.reserve_authenticated_analysis_authorization(uuid, bigint, uuid, boolean)'::regprocedure
+  )) = 0 then
+    raise exception 'apply 20261021201021_bind_analysis_receipts_to_transcript.sql first';
+  end if;
+end;
+$$;
+
 create or replace function public.admit_authenticated_analysis_job(
   p_job_id uuid,
   p_user_id uuid,
