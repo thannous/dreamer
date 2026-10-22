@@ -104,9 +104,21 @@ export async function nativeGuest({ app, screen, platform }: Pick<NativeFixtures
   // iOS clearing an app container preserves SecureStore's Keychain entry. Use
   // the app's own sign-out first; never reset the whole simulator's Keychain.
   const onboarding = screen.getByTestId('screen.onboarding', { visible: true });
-  await expect.poll(async () => (await onboarding.count())
+  const destinationCount = async () => (await onboarding.count())
     + (await screen.getByTestId('screen.recording', { visible: true }).count())
-    + (await screen.getByTestId('screen.home', { visible: true }).count())).toBeGreaterThan(0);
+    + (await screen.getByTestId('screen.home', { visible: true }).count());
+  // A failed speech pilot can leave this exact owned-app OS dialog above the
+  // next launch. Match its complete observed title; never accept other alerts.
+  const pendingSpeechPermission = screen.getByRole('alert',
+    /^Autoriser «\s*Noctalia QA\s*» à accéder aux propos tenus grâce à la reconnaissance vocale\s*\?$/,
+    { visible: true });
+  await expect.poll(async () => await destinationCount()
+    + (platform === 'ios' ? await pendingSpeechPermission.count() : 0)).toBeGreaterThan(0);
+  if (platform === 'ios' && await pendingSpeechPermission.count()) {
+    await screen.getByRole('button', 'Autoriser', { visible: true }).tap();
+    await expect(pendingSpeechPermission).toHaveCount(0);
+    await expect.poll(destinationCount).toBeGreaterThan(0);
+  }
   // Onboarding may belong to an authenticated account after an interrupted
   // login. Reach Settings before clearing the container, including on iOS.
   if (await onboarding.count()) await nativeRecordingAfterAuth(screen);
