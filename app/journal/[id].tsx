@@ -516,6 +516,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   const [readingActionVisible, setReadingActionVisible] = useState(false);
   const [failedCoverUri, setFailedCoverUri] = useState<string | null>(null);
   const [actionDockHeight, setActionDockHeight] = useState(100);
+  const [previewHoldsOffer, setPreviewHoldsOffer] = useState(false);
   const [coverIntroHeight, setCoverIntroHeight] = useState<number | null>(null);
   const viewportHeight = coverViewport?.height ?? windowSize.height;
   const navigationHeight = insets.top + 76;
@@ -1965,6 +1966,10 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   // Past its monthly analyses, a free account may still read the start of this dream's analysis.
   const analysisPreviewDreamId = user && !isPlus && savedAnalysisAction === 'upgrade' && !canResumeAnalysis
     && !readingBegun && !isAnalysisLocked && !isEditing && dream && !dream.isAnalyzed ? dream.remoteId ?? null : null;
+  // Its card then holds the dream's next step: the seal and the action dock would only repeat the Plus offer.
+  // Right after a capture the dock stays, as it holds the way back to the journal.
+  const previewHoldsStep = analysisPreviewDreamId != null && previewHoldsOffer;
+  const previewHidesDock = previewHoldsStep && !isSavedArrival;
   const sealVisible = !shouldHideHeroMedia && (opensOnSavedMoment || readingBegun);
   // On a page opened again, the seal bears the dream's type and theme as its reading left them.
   const sealTheme = dream?.theme;
@@ -2498,7 +2503,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
           testID: TID.Button.JournalIllustrate,
           emphasis: 'secondary',
         })
-          : !sealReads || !detailActionCard ? null : {
+          : !sealReads || !detailActionCard || previewHoldsStep ? null : {
             label: analysisAccessLabel ?? detailActionCard.cta,
             icon: analysisIcon,
             onPress: primaryPress,
@@ -3062,7 +3067,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
 
           contentContainerStyle={{
             paddingTop: hasIllustratedCover ? 0 : navigationHeight - RUNNING_HEAD_HEIGHT - RUNNING_HEAD_GAP,
-            paddingBottom: ((isEditing) ? 220 : actionDockHeight + 32) + insets.bottom,
+            paddingBottom: ((isEditing) ? 220 : (previewHidesDock ? 0 : actionDockHeight) + 32) + insets.bottom,
           }}
           scrollEventThrottle={16}
           onScroll={Platform.OS === 'web' ? (event) => {
@@ -3111,7 +3116,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
             <View>{renderStaleBanner()}</View>
             {analysisPreviewDreamId != null && user ? (
               <AnalysisPreviewCard remoteDreamId={analysisPreviewDreamId} transcript={dream.transcript}
-                onOpenPlus={() => router.push(buildAnalysisPaywallHref(dream, user.id))} />
+                onOpenPlus={() => router.push(buildAnalysisPaywallHref(dream, user.id, { prepared: true }))}
+                onOfferChange={setPreviewHoldsOffer} />
             ) : null}
             {readingBegun ? (
               <OpenUp appear={readingInFlight}
@@ -3286,7 +3292,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
           <CoverFlight source={paintedArtwork} from={coverFlight.from} to={coverFlight.to} height={coverHeight} travel={coverTravel}
             landed={coverFlight.landed} onArrived={coverFlightArrived} onGone={coverFlightGone} />
         ) : null}
-        {!isEditing && !isKeyboardVisible && (!hasIllustratedCover || readingActionVisible) && !(sealShowsReading && !isSavedArrival) ? (
+        {!isEditing && !isKeyboardVisible && (!hasIllustratedCover || readingActionVisible) && !(sealShowsReading && !isSavedArrival)
+          && !previewHidesDock ? (
           <View testID="component.dreamDetail.actionDock"
             className={`absolute bottom-0 left-0 right-0 bg-ink px-6 pt-3 ${isSavedArrival ? '' : 'border-t border-line'}`}
             style={{ paddingBottom: Math.max(insets.bottom, 12) }}

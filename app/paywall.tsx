@@ -123,6 +123,8 @@ function PaywallScreen() {
   const paywallTrigger = isDeviceUpgraded ? 'returning_device' : routeTrigger;
   const isDreamAnalysisOffer = paywallTrigger === 'analysis_cta' && Boolean(params.dreamId)
     && params.dreamOwnerId === userId;
+  // From the start of a prepared analysis: the analysis is already written, not to be made.
+  const isPreparedOffer = isDreamAnalysisOffer && params.prepared === '1';
   const paywallVariant = useMemo(() => getPaywallVariant(paywallTrigger), [paywallTrigger]);
   const { dreams } = useDreamsData();
   // The saved-dream offer shows the person's own first words: the dream is what they pay to read.
@@ -373,6 +375,7 @@ function PaywallScreen() {
     ? t('subscription.paywall.activation_pending.title')
     : isActive
     ? t(`subscription.paywall.header.${activeTierKey}` as const)
+    : isPreparedOffer ? t('subscription.paywall.prepared.title')
     : isDreamAnalysisOffer ? t('recording.saved_analysis.title')
       : translateWithFallback(paywallVariant.headerTitleKey);
   const headerSubtitle = isActive && !awaitingServerAccess
@@ -648,7 +651,7 @@ function PaywallScreen() {
                 testID={TID.Text.PaywallDreamExcerpt}
               >
                 <Text style={[styles.dreamExcerptLabel, { color: noctalia.accent.text }]}>
-                  {t('subscription.paywall.saved_dream.waiting')}
+                  {t(isPreparedOffer ? 'subscription.paywall.prepared.label' : 'subscription.paywall.saved_dream.waiting')}
                 </Text>
                 <Text numberOfLines={3} style={[styles.dreamExcerptText, { color: noctalia.text.primary }]}>
                   {offeredDreamText}
@@ -859,6 +862,7 @@ function PaywallScreen() {
                       ? t('subscription.paywall.button.primary.auth')
                       : selectedTrialDays
                         ? t('subscription.paywall.button.primary.trial', { days: selectedTrialDays })
+                        : isPreparedOffer ? t('subscription.paywall.prepared.cta')
                         : isDreamAnalysisOffer ? t('subscription.paywall.saved_dream.cta')
                           : translateWithFallback(paywallVariant.primaryLabelKey)}
                   </Text>

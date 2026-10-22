@@ -76,12 +76,20 @@ const MOCK_PREVIEWS: Record<'fr' | 'en', Omit<AnalysisPreview, 'image'>> = {
   },
 };
 const mockPrepared = new Map<string, number>();
+const MOCK_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 
 function mockPreview(dreamId: number, lang: string, prepare: boolean): AnalysisPreviewResult {
   const key = `${dreamId}`;
-  if (prepare && !mockPrepared.has(key)) mockPrepared.set(key, Date.now());
-  const preparedAt = mockPrepared.get(key);
-  if (preparedAt === undefined) return { state: 'available', preview: null, preparedAt: null, retryAt: null };
+  if (!mockPrepared.has(key)) {
+    // Like the api: once a dream's analysis is prepared, the others wait for the next week.
+    const week = [...mockPrepared.values()].filter((time) => Date.now() - time < MOCK_WEEK_MS);
+    if (week.length) {
+      return { state: 'weekly_limit', preview: null, preparedAt: null, retryAt: new Date(Math.max(...week) + MOCK_WEEK_MS).toISOString() };
+    }
+    if (!prepare) return { state: 'available', preview: null, preparedAt: null, retryAt: null };
+    mockPrepared.set(key, Date.now());
+  }
+  const preparedAt = mockPrepared.get(key) ?? Date.now();
   // The band arrives a few seconds after the reading, as the painting does.
   const painted = Date.now() - preparedAt > 4000;
   const bandUrl = painted ? getMockDreamImage('frozen-lake') : '';

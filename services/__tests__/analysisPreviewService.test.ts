@@ -74,6 +74,10 @@ it('mock mode prepares a fixed preview whose band arrives after the reading', as
     expect(prepared.preview?.image).toEqual({ state: 'painting', bandUrl: null });
     jest.setSystemTime(Date.parse('2026-10-22T07:00:05Z'));
     expect((await fetchAnalysisPreview({ remoteDreamId: 9, lang: 'fr' })).preview?.image.state).toBe('ready');
+    // Another dream waits for the next week, as with the api.
+    expect(await fetchAnalysisPreview({ remoteDreamId: 10, lang: 'fr', prepare: true })).toEqual({
+      state: 'weekly_limit', preview: null, preparedAt: null, retryAt: '2026-10-29T07:00:00.000Z',
+    });
     expect(mockFetch).not.toHaveBeenCalled();
   } finally {
     jest.useRealTimers();

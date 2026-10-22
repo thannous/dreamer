@@ -40,11 +40,13 @@ type State =
  * prepared anyway. It reads the reading's title, first sentence and symbols' names and
  * sees a band of its painting; the rest opens with Plus or with next month's analysis.
  */
-export function AnalysisPreviewCard({ remoteDreamId, transcript, onOpenPlus, className = '' }: {
+export function AnalysisPreviewCard({ remoteDreamId, transcript, onOpenPlus, onOfferChange, className = '' }: {
   remoteDreamId: number;
   /** The dream's text: an edited dream is read again. */
   transcript: string;
   onOpenPlus: () => void;
+  /** True while the card holds the dream's next step, so the page shows no second offer. */
+  onOfferChange?: (holdsOffer: boolean) => void;
   className?: string;
 }) {
   const { t, currentLang } = useTranslation();
@@ -102,6 +104,11 @@ export function AnalysisPreviewCard({ remoteDreamId, transcript, onOpenPlus, cla
   }, [subject, t]);
 
   const result = state.kind === 'loaded' ? state.result : null;
+  // A note on the week's limit leaves the page's own offer in place.
+  const holdsOffer = state.kind === 'preparing' || state.kind === 'failed'
+    || (result !== null && result.state !== 'weekly_limit');
+  useEffect(() => { onOfferChange?.(holdsOffer); }, [holdsOffer, onOfferChange]);
+  useEffect(() => () => onOfferChange?.(false), [onOfferChange]);
   const day = (iso: string) => withFirstDayOrdinal(formatDate(Date.parse(iso), { day: 'numeric', month: 'long' }), locale);
   let content: React.ReactNode = null;
   if (result?.state === 'ready' && result.preview) {

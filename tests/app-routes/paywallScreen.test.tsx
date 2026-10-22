@@ -369,6 +369,17 @@ describe('Paywall screen', () => {
     );
   });
 
+  it('opens a prepared analysis as ready to read, not as a dream to analyze', () => {
+    mockParams = { trigger: 'analysis_cta', prepared: '1', dreamId: '42', dreamOwnerId: 'user-1' };
+    mockDreams = [{ id: 42, title: '', transcript: 'Une gare immense où les trains partent vers la mer.' }];
+    render(<PaywallScreen />);
+    expect(screen.getByText('subscription.paywall.prepared.title')).toBeTruthy();
+    expect(screen.queryByText('recording.saved_analysis.title')).toBeNull();
+    expect(screen.getByText('subscription.paywall.prepared.label')).toBeTruthy();
+    expect(screen.getByTestId(TID.Text.PaywallDreamExcerpt).textContent).toContain('Une gare immense');
+    expect(screen.getByTestId(TID.Button.PaywallPurchase).textContent).toBe('subscription.paywall.prepared.cta');
+  });
+
   it('shows the offered dream\'s own words when two dreams share a timestamp', () => {
     mockParams = { trigger: 'analysis_cta', dreamId: '42', dreamClientRequestId: 'capture-b', dreamOwnerId: 'user-1' };
     mockDreams = [
