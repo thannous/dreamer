@@ -39,6 +39,33 @@ test('native journal preserves reading and list position across repeated returns
   await app.screenshot('synthetic-journal-return');
 });
 
+// Both directions exercise newly mounted pages before reading and returning.
+// Reading and return assertions also catch an incomplete handoff after a turn.
+test('native journal turns both ways and returns with its content intact', async ({ app, screen, device }) => {
+  await app.open();
+  await device.openLink(`${scheme}://journal/1791266400000`);
+  const reference = screen.getByRole('heading', 'Noctalia performance 013', { exact: true });
+  await expect(reference).toBeVisible();
+  const page = await screen.getByTestId('screen.dreamDetail').boundingBox();
+  if (!page) throw new Error('Missing page bounds for the turn gesture');
+  const left = { x: page.x + page.width * 0.2, y: page.y + page.height * 0.45 };
+  const right = { x: page.x + page.width * 0.8, y: left.y };
+  await screen.swipe({ from: right, to: left, duration: 450 });
+  await expect(screen.getByRole('heading', 'Noctalia performance 012', { exact: true })).toBeVisible();
+  await app.screenshot('journal-forward-turn');
+  await screen.swipe({ from: left, to: right, duration: 450 });
+  await expect(reference).toBeVisible();
+  const end = screen.getByText('Fin de la lecture de référence 013.', { exact: true });
+  await screen.scrollUntilVisible(end);
+  await expect(end).toBeVisible();
+  await screen.swipe({ direction: 'up', momentum: 'none' });
+  const back = screen.getByTestId('journal.detail.returnTab');
+  await expect(back).toBeVisible();
+  await back.tap();
+  await expect(screen.getByTestId('screen.dreamDetail')).toBeHidden();
+  await expect(screen.getByTestId('screen.journal')).toBeVisible();
+});
+
 test('native direct dream link can return to the journal', async ({ app, screen, device }) => {
   await app.open();
   await device.openLink(`${scheme}://journal/1791266400000`);
