@@ -1807,7 +1807,7 @@ for (const [lot, shots, pack] of [...LOT_08_PACKS.map(pack => ['lot 09', 'lot08-
 
 test('site media keep their original pixels and two effects through the configured CDN on desktop and mobile', { timeout: 180_000 }, async ({ app, browser, screen }) => {
   const config = JSON.parse(readFileSync(new URL('../../../docs-src/config/site-media-storage.json', import.meta.url), 'utf8')) as { delivery: string; publicOrigin: string };
-  const manifest = JSON.parse(readFileSync(new URL('../../../docs-src/config/site-media.json', import.meta.url), 'utf8')) as { files: Array<[string, number, string]> };
+  const manifest = JSON.parse(readFileSync(new URL('../../../docs-src/config/site-media.json', import.meta.url), 'utf8')) as { release: string; files: Array<[string, number, string]> };
   const expected = new Map(manifest.files.map(row => [row[0], row]));
   const origin = config.delivery === 'cdn' ? config.publicOrigin : new URL(app.baseUrl!).origin;
   for (const [width, height] of [[2560, 1440], [390, 844]]) {
@@ -1841,18 +1841,19 @@ test('site media keep their original pixels and two effects through the configur
 
     // Only inspect files the real journey loaded. In particular this must not
     // cause the hidden side painting to be requested on a phone.
-    const loaded = await browser.evaluate(async () => {
+    const loaded = await browser.evaluate(async (mediaBase: string) => {
       const images = Array.from(document.querySelectorAll<HTMLImageElement>('.symbol-hero-media img, .atlas-decor img, .atlas-scene-thumb img, .slp-t'));
       const urls = [...new Set(images.filter(img => img.complete && img.naturalWidth > 0 && img.currentSrc).map(img => img.currentSrc))];
       return Promise.all(urls.map(async original => {
-        const response = await fetch(original);
+        const imagePath = new URL(original).pathname.replace(/^\//, '');
+        const response = await fetch(mediaBase ? mediaBase + imagePath : original, { mode: 'cors', credentials: 'omit' });
         const bytes = await response.arrayBuffer();
         const digest = await crypto.subtle.digest('SHA-256', bytes);
-        return { path: new URL(original).pathname.replace(/^\//, ''), origin: new URL(response.url).origin,
+        return { path: imagePath, origin: new URL(response.url).origin,
           ok: response.ok, type: response.headers.get('content-type') ?? '', bytes: bytes.byteLength,
           digest: Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('') };
       }));
-    });
+    }, config.delivery === 'cdn' ? config.publicOrigin + '/releases/' + manifest.release + '/' : '');
     expect(loaded.length).toBeGreaterThanOrEqual(3);
     for (const image of loaded) {
       const entry = expected.get(image.path);

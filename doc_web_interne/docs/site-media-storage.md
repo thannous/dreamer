@@ -157,3 +157,25 @@ que son `<img>` de secours était un GIF intégré et ne recevait pas CORS.
 Le transformateur HTML commun couvre désormais aussi ce cas, sans charger la
 plaque masquée sur mobile. Le parcours existant contrôle les pixels réels des
 textures et du masque ; cet échec est conservé dans son artefact.
+
+Le parcours CDN est passé à 2560×1440 et 390×844 après cette correction :
+peintures, trois variantes sélectionnables, pixels alpha et deux effets mobiles.
+L'empreinte navigateur est lue directement sur l'URL CDN immuable correspondant
+à chaque image sélectionnée ; les images de la page utilisent encore les adresses
+historiques avec redirection. La lecture JavaScript directe de ces anciennes URL
+à travers la redirection a été refusée lors du diagnostic local ; aucun code du
+site ne dépend de ce fetch d'image. La lecture directe CDN et les canvas passent.
+Le futur passage aux URL CDN directes évitera aussi ce détour.
+
+La validation locale `verify:pr` du premier commit `6995ae2fa` a passé ses
+16 contrôles, dont une restauration fraîche des 14 239 images depuis la copie
+Git isolée. Cette preuve est réutilisable pour le transfert inchangé ; la
+correction HTML ultérieure demande une nouvelle preuve sur la tête finale.
+La revue indépendante a confirmé les corrections de gel des encodeurs, de
+staging isolé, d'écriture depuis le tampon vérifié et du traitement CORS picture.
+
+À ce stade, les originaux et secours sont sur Drive, les images sont présentes
+sur R2 et le domaine CDN est actif. La publication de `noctalia.app` reste une
+étape distincte, régie par `AGENTS.md` : fusion autorisée explicitement, preuve
+`verify:release:site` sur `master` puis commande de déploiement gardée. Aucune
+réécriture de l'historique Git ni suppression de sauvegarde n'est incluse.
