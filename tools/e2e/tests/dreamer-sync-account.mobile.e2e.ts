@@ -144,6 +144,30 @@ test('Dreamer native guest dream and draft survive real sign-in, reconnect and a
       await screen.scrollUntilVisible(card);
       await expect(card).toHaveCount(1);
       await expect(card).toBeEnabled();
+      // Native visibility includes a card partly behind the fixed navigation.
+      // Keep its tap point above Capture, including its raised Android surface.
+      const navigation = screen.getByTestId('tab.addDream', { visible: true });
+      const overhang = screen.getByTestId('tab.addDream.overhang', { visible: true });
+      const geometry = async () => {
+        const button = await card.boundingBox();
+        const tab = await navigation.boundingBox();
+        const hasOverhang = await overhang.count();
+        const raised = hasOverhang ? await overhang.boundingBox() : null;
+        if (!button || !tab || (hasOverhang && !raised)) {
+          throw new Error('Restored dream card geometry is unavailable.');
+        }
+        const centerY = button.y + button.height / 2;
+        const navigationTop = Math.min(tab.y, raised?.y ?? tab.y);
+        return { button, tab, raised, centerY, navigationTop, covered: centerY >= navigationTop };
+      };
+      const beforeScroll = await geometry();
+      console.info('[native-account-card-geometry]', JSON.stringify({ stage: 'before', ...beforeScroll }));
+      if (beforeScroll.covered) {
+        await screen.swipe({ direction: 'down', momentum: 'slow' });
+        const afterScroll = await geometry();
+        console.info('[native-account-card-geometry]', JSON.stringify({ stage: 'after', ...afterScroll }));
+        if (afterScroll.covered) throw new Error('Navigation still covers the restored dream card after one native scroll.');
+      }
       await card.tap();
       await nativeTranscript(screen, transcript);
     }
