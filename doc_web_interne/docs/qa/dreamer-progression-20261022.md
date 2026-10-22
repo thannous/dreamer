@@ -1,6 +1,6 @@
 # Progression Dreamer — intégration du 22 octobre 2026
 
-Responsable : lot parent Codex. Trois priorités développées en parallèle et réunies dans le checkout isolé `dreamer-progression`, branche `codex/dreamer-progression-20261022`. Base : `master` `4403a8b16` (PR #552). Le correctif final Claude `d432ff0e5`, absent de cette fusion déjà effectuée, a été repris sous `5589e72ef`. Code fonctionnel final : `30e93d170` ; ajustement final de navigation E2E : `68f42e56a`. Le checkout principal et son travail en cours sont préservés.
+Responsable : lot parent Codex. Trois priorités développées en parallèle et réunies dans le checkout isolé `dreamer-progression`, branche `codex/dreamer-progression-20261022`. Base : `master` `4403a8b16` (PR #552). Le correctif final Claude `d432ff0e5`, absent de cette fusion déjà effectuée, a été repris sous `5589e72ef`. Fonctionnalités et correctifs de continuité : `30e93d170` ; ajustement final de navigation E2E : `68f42e56a`. Les corrections finales de registre linguistique et de fixture de test sont décrites ci-dessous. Le checkout principal et son travail en cours sont préservés.
 
 ## Fonctionnalités
 
@@ -36,6 +36,8 @@ Revue indépendante des trois lots, puis contrôle ciblé des corrections :
 - **P2 guides** : hôte permanent pour suivre les transitions d’authentification lorsque les guides sont fermés ; une visite à la section zéro ne remplace plus un signet réel ni son horodatage, côté client et SQL.
 - **P2 transfert invité** : l’intention d’attribuer à A survit à l’échec de la première écriture du marqueur, au retry et à l’ouverture de B ; suppression et démarrage froid couverts. Correction `30e93d170`, revue du delta et **14 tests ciblés PASS**.
 - **Continuité des badges pendant une lecture différée** : les actions réussies restent attribuées au compte original ; retries, version inconnue et suppression ne provoquent ni perte ni attribution à B. Correction `46cd3fae2`, **25 tests stockage/sync/suppression PASS**.
+
+Le premier contrôle global sur `ecfa0b667` a aussi détecté le vouvoiement de cinq nouveaux textes français, une expression portugaise européenne et une dépendance Auth non isolée dans l’ancien test de routes des guides. Les textes sont corrigés pour respecter le tutoiement français et le portugais brésilien ; le test de routes isole le nouveau hook, tout en conservant ses assertions de contenu et de navigation. Les parcours réels de progression restent couverts par les E2E ci-dessus.
 
 Types app/tests, types TesterArmy et lint ciblé : PASS. La vérification obligatoire `verify:pr` est exécutée après le commit de ce rapport ; son SHA exact et son reçu sont consignés dans la PR. Les captures prises pendant les transitions ne constituent pas une qualification de la fluidité des animations.
 
