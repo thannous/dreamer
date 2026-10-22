@@ -14,6 +14,7 @@ const translations: Record<string, string> = {
     "notes.updated": "Edited {date}",
     "notes.error": "The note could not be saved, or it changed on another device. Your draft is still here. Try again or reopen the editor.",
     "notes.limit": "This dream has 50 notes. You can edit an existing note.",
+    "notes.too_long": "Your text is still here. Shorten your note to {limit} characters or fewer to save it.",
 
     "dream_categories.explore_angle": "Explore an angle",
     "dream_categories.exchange_saved": "An exchange saved",

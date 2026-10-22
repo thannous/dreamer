@@ -99,6 +99,28 @@ export const normalizeMutation = (mutation: DreamMutation, userScope?: string | 
   } as DreamMutation;
 };
 
+/** Renew a positively incomplete receipt, never an ambiguous network failure.
+ * Keeping the queue ID and dream key stable makes restart/retry idempotent; the
+ * acknowledged revision turns even a legacy create into a conflict-aware update.
+ */
+export const recoverIncompleteAck = (
+  mutation: DreamMutation,
+  result: SyncMutationResult,
+  receiptId?: string
+): DreamMutation => {
+  const identity = result.status === 'failed' ? result.incompleteAck : undefined;
+  if (!identity || !mutation.payload.dream || mutation.operation === 'delete') return mutation;
+  const dream = { ...mutation.payload.dream, remoteId: identity.remoteId, revisionId: identity.revisionId };
+  return normalizeMutation({
+    ...mutation,
+    clientRequestId: receiptId ?? generateUUID(),
+    operation: 'update',
+    entityKey: buildDreamMutationEntityKey(dream),
+    baseRevision: identity.revisionId,
+    payload: { ...mutation.payload, remoteId: identity.remoteId, dream },
+  }, mutation.userScope);
+};
+
 export const isRetryableMutation = (mutation: DreamMutation): boolean =>
   mutation.status === 'pending' || mutation.status === 'sending' || mutation.status === 'failed';
 

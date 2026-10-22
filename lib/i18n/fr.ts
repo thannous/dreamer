@@ -14,6 +14,7 @@ const translations: Record<string, string> = {
     "notes.updated": "Modifiée le {date}",
     "notes.error": "La note n’a pas pu être enregistrée ou a changé sur un autre appareil. Ton brouillon est conservé. Réessaie ou rouvre l’éditeur.",
     "notes.limit": "Ce rêve contient 50 notes. Tu peux modifier une note existante.",
+    "notes.too_long": "Ton texte est conservé. Raccourcis ta note à {limit} caractères maximum pour l’enregistrer.",
 
     "dream_categories.explore_angle": "Explorer un angle",
     "dream_categories.exchange_saved": "Un échange enregistré",

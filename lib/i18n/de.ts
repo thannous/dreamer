@@ -14,6 +14,7 @@ const translations: Record<string, string> = {
     "notes.updated": "Bearbeitet am {date}",
     "notes.error": "Die Notiz konnte nicht gespeichert werden oder wurde auf einem anderen Gerät geändert. Dein Entwurf bleibt erhalten. Versuche es erneut oder öffne den Editor neu.",
     "notes.limit": "Dieser Traum hat 50 Notizen. Du kannst eine vorhandene Notiz bearbeiten.",
+    "notes.too_long": "Dein Text bleibt erhalten. Kürze deine Notiz auf höchstens {limit} Zeichen, um sie zu speichern.",
 
     "dream_categories.explore_angle": "Eine Perspektive erkunden",
     "dream_categories.exchange_saved": "Ein Austausch gespeichert",

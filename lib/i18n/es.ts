@@ -14,6 +14,7 @@ const translations: Record<string, string> = {
     "notes.updated": "Editada el {date}",
     "notes.error": "No se pudo guardar la nota o cambió en otro dispositivo. Tu borrador sigue aquí. Reintenta o vuelve a abrir el editor.",
     "notes.limit": "Este sueño tiene 50 notas. Puedes editar una nota existente.",
+    "notes.too_long": "Tu texto se conserva. Acorta la nota a un máximo de {limit} caracteres para guardarla.",
 
     "dream_categories.explore_angle": "Explorar una perspectiva",
     "dream_categories.exchange_saved": "Un intercambio guardado",

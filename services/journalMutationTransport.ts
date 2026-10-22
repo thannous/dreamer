@@ -309,7 +309,18 @@ export function createJournalMutationTransport({ getClient, ensureRemoteImage }:
     if (sourceMutation.payload.dream.personalNotes !== undefined && result.dream.personalNotes === undefined) {
       // An old server can acknowledge its known fields but cannot persist personal notes.
       // Keep the local mutation pending instead of silently discarding private writing.
-      return { ...result, status: 'failed', error: 'Personal notes require the journal schema update', dream: undefined };
+      const remoteId = result.remoteId ?? result.dream.remoteId;
+      return {
+        ...result,
+        status: 'failed',
+        error: 'Personal notes require the journal schema update',
+        // Retain only the acknowledged identity. The local writing stays authoritative
+        // until a fresh receipt confirms notes against this server revision.
+        ...(remoteId != null && result.dream.revisionId
+          ? { incompleteAck: { remoteId, revisionId: result.dream.revisionId } }
+          : {}),
+        dream: undefined,
+      };
     }
 
     if (normalizeDreamMemoryMetadata(result.dream.memory)) {
@@ -537,7 +548,7 @@ export function createJournalMutationTransport({ getClient, ensureRemoteImage }:
 
       batchResults.forEach((result) => {
         const sourceMutation = mutationsById.get(result.mutationId);
-        if (!sourceMutation || result.status !== 'ack') {
+        if (!sourceMutation || (result.status !== 'ack' && !result.incompleteAck)) {
           return;
         }
 
@@ -546,14 +557,14 @@ export function createJournalMutationTransport({ getClient, ensureRemoteImage }:
           return;
         }
 
-        const remoteId = result.remoteId ?? result.dream?.remoteId;
+        const remoteId = result.remoteId ?? result.dream?.remoteId ?? result.incompleteAck?.remoteId;
         if (remoteId != null) {
           rememberRemoteId(sourceMutation, remoteId, idsByDreamId, idsByClientRequestId);
         }
 
         const acknowledgedState: AcknowledgedDreamState = {
           remoteId,
-          revisionId: result.dream?.revisionId,
+          revisionId: result.dream?.revisionId ?? result.incompleteAck?.revisionId,
         };
         const aliases = new Set([
           ...getMutationEntityAliases(sourceMutation),

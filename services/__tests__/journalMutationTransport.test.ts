@@ -10,7 +10,7 @@ const dream: DreamAnalysis = {
 };
 const row = { id: 42, created_at: '2020-01-01T00:00:00.000Z', transcript: 't', title: 'a',
   interpretation: '', shareable_quote: '', image_url: null, chat_history: [],
-  dream_type: 'Symbolic Dream', is_favorite: false, client_request_id: 'dream-a' };
+  dream_type: 'Symbolic Dream', is_favorite: false, client_request_id: 'dream-a', revision_id: 'revision-old-server' };
 const mutation = () => createDreamMutation({
   id: 'mutation-a', userScope: 'user:a', entityType: 'dream', entityKey: 'client:dream-a',
   operation: 'create', clientRequestId: 'receipt-a', clientUpdatedAt: 1,
@@ -38,6 +38,7 @@ describe('journal mutation transport factory', () => {
       .syncDreamMutationsInSupabase([pending], 'a');
     expect(result[0]).toMatchObject({ status: 'failed', error: 'Personal notes require the journal schema update' });
     expect(result[0].dream).toBeUndefined();
+    expect(result[0].incompleteAck).toEqual({ remoteId: 42, revisionId: 'revision-old-server' });
     expect(pending.payload.dream.personalNotes?.[0].text).toBe('Keep me');
   });
 
