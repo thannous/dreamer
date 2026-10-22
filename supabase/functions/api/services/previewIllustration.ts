@@ -23,8 +23,15 @@ const PAINTING_POLL_MS = 3000;
  */
 const HOLD_LEASE_MS = 60 * 1000;
 
-/** The painting could not be given back: the job is tried again later instead of paying for another. */
-const heldPaintingError = () => Object.assign(new Error('Prepared painting held'), { isTransient: true, preparedPaintingHeld: true });
+/**
+ * The prepared painting could not be read, taken or given back: the job is tried again later
+ * instead of paying for another.
+ */
+const heldPaintingError = () => Object.assign(new Error('Prepared painting unavailable'), { isTransient: true, preparedPaintingHeld: true });
+
+/** Whether a dream's illustration link is the signed link of this object. */
+const linksTo = (imageUrl: unknown, path: string) =>
+  typeof imageUrl === 'string' && imageUrl.split('?')[0].endsWith(`/${path}`);
 
 // deno-lint-ignore no-explicit-any
 type AdminClient = { from: (table: string) => any; storage: { from: (bucket: string) => any } };
@@ -134,7 +141,8 @@ export async function takePreparedIllustration(admin: AdminClient, input: {
       const { data, error } = await previews()
         .select('image_status, image_prompt, image_path, band_path, transcript_sha256, image_updated_at')
         .eq('user_id', input.userId).eq('dream_id', input.dreamId).maybeSingle();
-      if (error || !data) return null;
+      if (error) throw heldPaintingError();
+      if (!data) return null;
       const same = input.prompt
         ? data.image_prompt === input.prompt
         : Boolean(input.transcriptSha256) && data.transcript_sha256 === input.transcriptSha256;
@@ -151,13 +159,29 @@ export async function takePreparedIllustration(admin: AdminClient, input: {
       row = await read();
     }
     const reclaimable = held(row) && !since(row!.image_updated_at, HOLD_LEASE_MS);
+    if (reclaimable) {
+      // A painting the dream already shows (its holder stopped after linking it) is only settled.
+      const { data: dream, error: dreamError } = await admin.from('dreams').select('image_url')
+        .eq('id', input.dreamId).eq('user_id', input.userId).maybeSingle();
+      if (dreamError) throw heldPaintingError();
+      const ownPath = `${input.userId}/${row!.image_path.split('/').pop()}`;
+      if (linksTo(dream?.image_url, row!.image_path) || linksTo(dream?.image_url, ownPath)) {
+        await removePreviewObjects(admin, input.bucket, [row!.band_path]);
+        await previews().update({ image_path: null, band_path: null, band_url: null })
+          .eq('user_id', input.userId).eq('dream_id', input.dreamId).eq('image_status', 'used')
+          .eq('image_path', row!.image_path).eq('image_updated_at', row!.image_updated_at)
+          .then(() => undefined, () => undefined);
+        return null;
+      }
+    }
     if (!row || typeof row.image_path !== 'string' || (row.image_status !== 'ready' && !reclaimable)) return null;
     let claim = previews()
       .update({ image_status: 'used', image_updated_at: new Date(now()).toISOString() })
       .eq('user_id', input.userId).eq('dream_id', input.dreamId).eq('image_status', row.image_status).eq('image_path', row.image_path);
     if (reclaimable) claim = claim.eq('image_updated_at', row.image_updated_at);
     const { data: taken, error: takeError } = await claim.select('dream_id');
-    if (takeError || !taken?.length) return null;
+    if (takeError) throw heldPaintingError();
+    if (!taken?.length) return null;
 
     const objects = admin.storage.from(input.bucket);
     const ownPath = `${input.userId}/${row.image_path.split('/').pop()}`;
@@ -279,9 +303,12 @@ export async function attachPreparedIllustration(admin: AdminClient, input: {
       return null;
     }
     if (!set?.length) {
-      // Illustrated or asked again meanwhile: the taken painting would be left unseen.
+      // Illustrated or asked again meanwhile: the taken painting would be left unseen, unless
+      // another job linked this very painting meanwhile.
       await painting.settle();
-      await removeObject(admin, input.bucket, painting.path);
+      const { data: now } = await dreams().select('image_url')
+        .eq('id', input.dreamId).eq('user_id', input.userId).maybeSingle();
+      if (!linksTo(now?.image_url, painting.path)) await removeObject(admin, input.bucket, painting.path);
       return null;
     }
     await painting.settle();

@@ -234,9 +234,11 @@ export async function handleAnalysisPreview(ctx: ApiContext, deps: Dependencies 
     const existing = await readPreview();
     if (matches(existing)) {
       // A painting whose request stopped before it ended (its three minutes gone, nothing
-      // recorded) starts again, once per such stop: the first reader takes it over.
+      // recorded) starts again, once only: the first reader takes it over. A painting started
+      // with the reading has the reading's time; a restarted one no longer does.
       const stalled = existing.status === 'ready' && existing.image_status === 'painting' && apiKey
-        && typeof existing.image_prompt === 'string' && Date.parse(existing.image_updated_at ?? '') <= now - PREVIEW_PAINTING_TIMEOUT_MS;
+        && typeof existing.image_prompt === 'string' && Date.parse(existing.image_updated_at ?? '') <= now - PREVIEW_PAINTING_TIMEOUT_MS
+        && Date.parse(existing.image_updated_at ?? '') === Date.parse(existing.updated_at);
       if (stalled) {
         const since = new Date(now).toISOString();
         const { data: restarted, error: restartError } = await previews()

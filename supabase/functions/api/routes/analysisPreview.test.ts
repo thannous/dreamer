@@ -386,7 +386,7 @@ Deno.test('a painting whose request stopped is started again by the next read, o
   const stalledRow = (): Row => ({
     user_id: 'u1', dream_id: 7, status: 'ready', lang: 'fr', reading: reading(),
     image_status: 'painting', image_prompt: 'A river of glass at dusk leading to a lit childhood home', image_path: null, band_path: null,
-    band_url: null, image_updated_at: iso(NOW - 4 * 60_000), created_at: iso(NOW - 5 * 60_000), updated_at: iso(NOW - 5 * 60_000),
+    band_url: null, image_updated_at: iso(NOW - 4 * 60_000), created_at: iso(NOW - 4 * 60_000), updated_at: iso(NOW - 4 * 60_000),
     transcript_sha256: sha,
   });
   const sha = await transcriptSha256(TRANSCRIPT);
@@ -396,8 +396,13 @@ Deno.test('a painting whose request stopped is started again by the next read, o
   assertEquals([result.state, result.preview.image.state], ['ready', 'ready']);
   assertEquals([previews[0].image_status, previews[0].image_path], ['ready', 'previews/u1/7-a.jpg']);
 
+  // Restarted once already and stalled again: never painted a third time.
+  const again = setup({ previews: [{ ...stalledRow(), updated_at: iso(NOW - 8 * 60_000) }] });
+  const left = await (await handleAnalysisPreview(again.ctx({ dreamId: 7, lang: 'fr' }), again.deps)).json();
+  assertEquals([again.calls.paint, left.preview.image.state], [0, 'none']);
+
   // Still under way (within its three minutes): read only, never painted twice.
-  const fresh = setup({ previews: [{ ...stalledRow(), image_updated_at: iso(NOW - 60_000) }] });
+  const fresh = setup({ previews: [{ ...stalledRow(), image_updated_at: iso(NOW - 60_000), updated_at: iso(NOW - 60_000) }] });
   const waiting = await (await handleAnalysisPreview(fresh.ctx({ dreamId: 7, lang: 'fr' }), fresh.deps)).json();
   assertEquals([fresh.calls.paint, waiting.preview.image.state], [0, 'painting']);
 });

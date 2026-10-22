@@ -469,3 +469,27 @@ Deno.test('a painting that cannot be given back makes the job try again rather t
   assertEquals((error as { isTransient?: unknown }).isTransient, true);
   assertEquals(rows[0].image_status, 'used');
 });
+
+Deno.test('a held painting the dream already shows is settled, never taken over and linked again', async () => {
+  const storage = fakeStorage();
+  storage.objects.set('u1/7-a.jpg', new Uint8Array([1]));
+  storage.objects.set('previews/u1/7-a-band.jpg', new Uint8Array([2]));
+  const previews: Row[] = [{
+    user_id: 'u1', dream_id: 7, status: 'used', image_status: 'used', image_prompt: 'A river of glass',
+    image_path: 'u1/7-a.jpg', band_path: 'previews/u1/7-a-band.jpg', band_url: 'https://example.test/band',
+    image_updated_at: new Date(Date.parse('2026-10-22T07:00:00Z') - 120_000).toISOString(),
+  }];
+  const dreams: Row[] = [{ id: 7, user_id: 'u1', image_url: 'https://example.test/storage/v1/object/sign/dream-images/u1/7-a.jpg?token=t' }];
+  const admin = { from: (name: string) => (name === 'dreams' ? previewsTable(dreams) : previewsTable(previews))(), storage };
+  const input = { bucket: 'dream-images', userId: 'u1', dreamId: 7, prompt: 'A river of glass', now: () => Date.parse('2026-10-22T07:00:00Z') };
+  assertEquals(await take(admin, input), null);
+  assertEquals([previews[0].image_status, previews[0].image_path, previews[0].band_path], ['used', null, null]);
+  assertEquals([...storage.objects.keys()], ['u1/7-a.jpg']);
+});
+
+Deno.test('a preview that cannot be read makes the job try again rather than paint another', async () => {
+  const failing = { eq: () => failing, select: () => failing, maybeSingle: async () => ({ data: null, error: { message: 'down' } }) };
+  const admin = { from: () => failing, storage: fakeStorage() };
+  const error = await assertRejects(() => takePreparedIllustration(admin, { bucket: 'dream-images', userId: 'u1', dreamId: 7, prompt: 'p' }));
+  assertEquals((error as { isTransient?: unknown }).isTransient, true);
+});
