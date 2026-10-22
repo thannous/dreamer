@@ -26,7 +26,7 @@ export function parseGuideReading(value: unknown): GuideReadingEntries {
   return entries;
 }
 
-/** Latest bookmark wins; completing a guide is permanent, even if an older device returns. */
+/** Latest bookmark wins; a visit alone cannot replace a bookmark. Completion is permanent. */
 export function mergeGuideReading(a: GuideReadingEntries, b: GuideReadingEntries): GuideReadingEntries {
   const result = { ...a };
   for (const id of GUIDE_READING_IDS) {
@@ -35,7 +35,10 @@ export function mergeGuideReading(a: GuideReadingEntries, b: GuideReadingEntries
     if (!left) { result[id] = right; continue; }
     const completedAt = left.completedAt && right.completedAt ? Math.min(left.completedAt, right.completedAt)
       : left.completedAt ?? right.completedAt;
-    result[id] = { ...(left.updatedAt > right.updatedAt ? left : right), ...(completedAt ? { completedAt } : {}) };
+    const bookmark = left.section > 0 && right.section === 0 ? left
+      : right.section > 0 && left.section === 0 ? right
+      : left.updatedAt > right.updatedAt ? left : right;
+    result[id] = { ...bookmark, ...(completedAt ? { completedAt } : {}) };
   }
   return result;
 }

@@ -19,11 +19,11 @@ const enqueue = (work: () => Promise<void>) => { queue = queue.catch(() => undef
 const persist = (scope: GuideReadingScope, entries: GuideReadingEntries) => forgotten.has(scope) ? Promise.resolve() : getLucidKeyValueStorage()
   .setItem(guideReadingStorageKey(scope), JSON.stringify(entries));
 
-export function activateGuideReadingScope(scope: GuideReadingScope): Promise<void> {
+export function activateGuideReadingScope(scope: GuideReadingScope, options?: { transferGuest?: boolean }): Promise<void> {
   if (forgotten.has(scope)) return Promise.resolve();
   if (snapshot.scope === scope && snapshot.ready) return Promise.resolve();
   if (snapshot.scope === scope) return queue;
-  const transferGuest = snapshot.scope === 'guest' && scope !== 'guest';
+  const transferGuest = scope !== 'guest' && (options?.transferGuest ?? snapshot.scope === 'guest');
   const token = ++generation;
   publish({ ...empty, scope });
   return enqueue(async () => {
@@ -93,8 +93,9 @@ export function updateGuideReading(scope: GuideReadingScope, id: DreamGuideId, s
   const previous = snapshot.entries[id];
   const bounded = Math.max(0, Math.min(100, Math.floor(section)));
   if (previous && previous.section === bounded && (!complete || previous.completedAt)) return true;
+  if (previous && previous.section > 0 && bounded === 0 && !complete) return true;
   const now = Math.max(Date.now(), (previous?.updatedAt ?? 0) + 1);
-  const entry = { section: bounded, updatedAt: now,
+  const entry = { section: bounded || previous?.section || 0, updatedAt: now,
     ...(previous?.completedAt || complete ? { completedAt: previous?.completedAt ?? now } : {}) };
   publish({ ...snapshot, entries: { ...snapshot.entries, [id]: entry } });
   const token = generation;

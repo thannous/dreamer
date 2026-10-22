@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
-import { activateGuideReadingScope, forgetGuideReading, flushGuideReadingForTests, guideReadingStorageKey, resetGuideReadingForTests, retryGuideReading, syncGuideReading, updateGuideReading } from '@/services/guideReadingStore';
+import { activateGuideReadingScope, suspendGuideReadingScope, forgetGuideReading, flushGuideReadingForTests, guideReadingStorageKey, resetGuideReadingForTests, retryGuideReading, syncGuideReading, updateGuideReading } from '@/services/guideReadingStore';
 import { mergeGuideReading, type GuideReadingEntries } from '@/lib/guideReading';
 
 const mockStore = new Map<string, string>();
@@ -65,6 +65,35 @@ describe('guide reading recovery and isolation (races not exercised by the UI jo
     expect(stored('user:b')).toEqual({});
     expect(mockRemoteWrite).not.toHaveBeenCalled();
   });
+  it('keeps the cloud bookmark when a fresh device visits before its remote read resolves', async () => {
+    let release!: (entries: GuideReadingEntries) => void;
+    let began!: () => void;
+    const started = new Promise<void>(resolve => { began = resolve; });
+    mockRemoteRead.mockImplementationOnce(() => { began(); return new Promise(resolve => { release = resolve; }); });
+    await activateGuideReadingScope('user:a');
+    const sync = syncGuideReading('user:a');
+    await started;
+    updateGuideReading('user:a', 'dream-journal', 0);
+    release({ 'dream-journal': { section: 3, updatedAt: 100 } });
+    await sync; await flushGuideReadingForTests();
+    expect(stored('user:a')['dream-journal']).toEqual({ section: 3, updatedAt: 100 });
+    expect(mockRemoteWrite).toHaveBeenCalledWith('a', 'dream-journal', { section: 3, updatedAt: 100 });
+    updateGuideReading('user:a', 'dream-journal', 0);
+    await flushGuideReadingForTests();
+    expect(stored('user:a')['dream-journal']).toEqual({ section: 3, updatedAt: 100 });
+  });
+  it('keeps an explicitly observed guest transition across auth loading and isolates later B', async () => {
+    await activateGuideReadingScope('guest');
+    updateGuideReading('guest', 'dream-journal', 2);
+    await flushGuideReadingForTests();
+    suspendGuideReadingScope();
+    await activateGuideReadingScope('user:a', { transferGuest: true });
+    suspendGuideReadingScope();
+    await activateGuideReadingScope('guest', { transferGuest: false });
+    await activateGuideReadingScope('user:b', { transferGuest: true });
+    expect(stored('user:a')['dream-journal'].section).toBe(2);
+    expect(stored('user:b')).toEqual({});
+  });
   it('retains offline completion, retries after remote failure, and never claims visited means completed', async () => {
     mockRemoteRead.mockRejectedValueOnce(Error('offline'));
     await activateGuideReadingScope('user:a');
@@ -108,6 +137,6 @@ describe('guide reading recovery and isolation (races not exercised by the UI jo
   });
   it('keeps completion when an older or merely visited device merges a bookmark', () => {
     expect(mergeGuideReading({ 'dream-journal': { section: 3, updatedAt: 30, completedAt: 20 } },
-      { 'dream-journal': { section: 0, updatedAt: 40 } })['dream-journal']).toEqual({ section: 0, updatedAt: 40, completedAt: 20 });
+      { 'dream-journal': { section: 0, updatedAt: 40 } })['dream-journal']).toEqual({ section: 3, updatedAt: 30, completedAt: 20 });
   });
 });

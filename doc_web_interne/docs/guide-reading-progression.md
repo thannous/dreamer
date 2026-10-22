@@ -19,6 +19,8 @@ with its final badge fixes. No deployment or remote migration is authorized by t
 
 ## Persistence and accounts
 
+`GuideReadingHost` permanently follows Dreamer authentication, including account changes while
+all guide screens are closed. It preserves the guest-to-account transition through auth loading.
 `guideReadingStore` stores `noctalia_guide_reading_v1:guest` or `user:<id>` locally.
 A guest-to-account transition reserves the guest payload for its first owner with
 `__claimOwner`, writes that owner's merged state, then removes the guest key. An
@@ -27,8 +29,8 @@ its contents to the new account. A cold authenticated start does not claim unrel
 unclaimed guest data automatically.
 
 `guide_reading_progress` stores one row per user/guide. RLS and the merge RPC require
-ownership and Dreamer's legacy/journal product scope. Latest timestamp wins the
-bookmark; completion is monotone. Local state stays usable when offline or before
+ownership and Dreamer's legacy/journal product scope. Latest timestamp wins between actual bookmarks; a newer section-zero visit never replaces
+a positive bookmark or its timestamp; completion is monotone. Local state stays usable when offline or before
 the migration is installed, with visible retry. Sync occurs on focus, foreground,
 leaving the screen and completion. Remote responses and queued work cannot publish
 into another account. No journal text or exercise answer is sent with this state.
@@ -55,7 +57,7 @@ mise exec -- npm run typecheck:tests
 mise exec -- npm run test:testerarmy:typecheck
 ```
 
-Eight isolated recovery checks cover storage failure, account-change races, offline
+Ten isolated recovery checks cover storage failure, account-change races, offline
 retry, monotone completion, deletion and interrupted guest transfer. Those failure
 orders cannot be driven reliably through the ordinary mock browser journey.
 

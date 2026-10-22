@@ -34,8 +34,16 @@ begin
   insert into public.guide_reading_progress as current (user_id, guide_id, section, updated_at_ms, completed_at_ms)
   values (p_user_id, p_guide_id, p_section, p_updated_at_ms, p_completed_at_ms)
   on conflict (user_id, guide_id) do update set
-    section = case when excluded.updated_at_ms >= current.updated_at_ms then excluded.section else current.section end,
-    updated_at_ms = greatest(current.updated_at_ms, excluded.updated_at_ms),
+    -- Section zero records a visit, not an intentional bookmark reset. A fresh device
+    -- can open a guide before its cloud read returns, so its newer visit must not win.
+    section = case
+      when current.section > 0 and excluded.section = 0 then current.section
+      when current.section = 0 and excluded.section > 0 then excluded.section
+      when excluded.updated_at_ms >= current.updated_at_ms then excluded.section else current.section end,
+    updated_at_ms = case
+      when current.section > 0 and excluded.section = 0 then current.updated_at_ms
+      when current.section = 0 and excluded.section > 0 then excluded.updated_at_ms
+      else greatest(current.updated_at_ms, excluded.updated_at_ms) end,
     completed_at_ms = least(current.completed_at_ms, excluded.completed_at_ms)
   returning current.*;
 end;
