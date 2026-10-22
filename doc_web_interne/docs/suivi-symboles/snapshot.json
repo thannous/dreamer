@@ -1,10 +1,10 @@
 {
   "schema": "noctalia.symbol-tracking-snapshot/1",
   "date": "2026-10-22",
-  "sourceRevision": "3eadba5f121c1017c032929534d269c330aa5abb",
-  "sourceRevisionScope": "Clean browser-qualified lot-14 implementation; later tracking-only changes reuse this proof. Earlier evidence reused only where its per-symbol inputs are unchanged.",
-  "integratedMaster": "b2460d222752105fdce7f5b8a8fd1704a0757b4f",
-  "sourceBranch": "codex/symbol-images-final-100",
+  "sourceRevision": "674f752f62b3179c8a21300c7796024f5935efc1",
+  "sourceRevisionScope": "Complete current-master site release campaign. Tracking-only follow-up preserves the qualified site rendering inputs.",
+  "integratedMaster": "674f752f62b3179c8a21300c7796024f5935efc1",
+  "sourceBranch": "codex/symbols-publish-240-20261022",
   "integrationOwner": "Codex",
   "totalSymbols": 240,
   "integratedSymbols": 240,
@@ -28,14 +28,14 @@
   "files": {
     "workbook": {
       "path": "suivi-240-symboles-6-langues.xlsx",
-      "sha256": "078acf4b870f7d71decbdeeb767b1495cab4ed5a566235f2d23c0ed6cb0f96b9"
+      "sha256": "b476d6490c8b29120006956fd5d47dc03c0089274866504f985e7d7c224a9c5b"
     },
     "csv": {
       "path": "symbol-rollout.csv",
       "sha256": "1a302fa1b6a93887ecc0b91b82fcb665f9ab58e660e1017ebe188857970adb17"
     }
   },
-  "reportSha256": "88509a9cc8e5e6348fa02997c317f79aaea3f3f5cf26689a500b9f1793a302af",
+  "reportSha256": "5f96fe5298e47cda5939319417a485fcf6418dfdc420aaf55cf8e146f8b9246c",
   "checks": {
     "rows": 240,
     "recalculation": true,
@@ -51,69 +51,68 @@
     "export": true,
     "renderInspected": true,
     "artifactTool": {
-      "counters": [
-        [
-          "Packs d'images",
-          240,
-          "Packs à terminer",
-          0,
-          "Pages avec pack",
-          1440,
-          "Pages web",
-          1440
-        ],
-        [
-          "QA mobile",
-          240,
-          "QA 2560 px",
-          240,
-          "Accord Thanh",
-          0,
-          "Publiées",
-          0
-        ]
+      "inputSha256": "078acf4b870f7d71decbdeeb767b1495cab4ed5a566235f2d23c0ed6cb0f96b9",
+      "outputSha256": "b476d6490c8b29120006956fd5d47dc03c0089274866504f985e7d7c224a9c5b",
+      "reportSha256": "5f96fe5298e47cda5939319417a485fcf6418dfdc420aaf55cf8e146f8b9246c",
+      "revision": "674f752f62b3179c8a21300c7796024f5935efc1",
+      "totalSymbols": 240,
+      "qaSymbols": 240,
+      "publishedCurrentSymbols": 0,
+      "sourceArchiveRecovery": [
+        {
+          "row": 37,
+          "id": "turtle"
+        },
+        {
+          "row": 90,
+          "id": "bee"
+        },
+        {
+          "row": 103,
+          "id": "ring"
+        },
+        {
+          "row": 110,
+          "id": "waterfall"
+        },
+        {
+          "row": 185,
+          "id": "mask"
+        },
+        {
+          "row": 247,
+          "id": "volcano"
+        }
       ],
-      "counts": {
-        "equipped": 240,
-        "atlas": 1440,
-        "mobile": 240,
-        "desktop": 240,
-        "approval": 0,
-        "publication": 0,
-        "remaining": 0
-      },
-      "targetRows": [
-        233,
-        123,
-        101,
-        129,
-        211,
-        212,
-        197,
-        113,
-        121,
-        138
-      ],
-      "plannedRows": [],
-      "sourceHash": "6ec623357f3909da6fab49e90ad7c1cd92f0ab4f081063b54e351ea0a6158ebd",
-      "reportHash": "88509a9cc8e5e6348fa02997c317f79aaea3f3f5cf26689a500b9f1793a302af",
       "formulaPreservation": true,
       "unrelatedValuesPreserved": true,
-      "missingRoleCounterexample": true,
-      "reopen": "{\"kind\":\"region\",\"sheet\":\"Suivi symboles\",\"address\":\"A4:H5\",\"rows\":2,\"cols\":8,\"nonEmpty\":16,\"text\":16,\"maxTextLength\":16,\"preview\":[[\"Packs d'images\",\"240\",\"Packs à terminer\",\"0\",\"Pages avec pack\",\"1440\"],[\"QA mobile\",\"240\",\"QA 2560 px\",\"240\",\"Accord Thanh\",\"0\"]],\"previewAddress\":\"A4:F5\",\"previewRows\":2,\"previewCols\":6}",
+      "publicationCounterProbe": true,
+      "probeRestored": true,
+      "recalculated": true,
+      "reopened": true,
+      "nativeExcelApplication": false,
       "nativeFeaturesPreserved": {
+        "sheets": [
+          "Suivi symboles"
+        ],
         "filter": "A10:AC250",
+        "table": "A10:AC250",
         "freezeTopLeft": "C11",
         "conditionalFormats": 3,
-        "validationRules": 0,
-        "formulas": 489
+        "formulas": 489,
+        "allFormulasPreserved": true,
+        "columnAndRowGeometryPreserved": true,
+        "definedNamesPreserved": true,
+        "nativeExcelApplication": false,
+        "renderInspected": true,
+        "formulaErrors": 0
       }
     },
     "browser": {
-      "freshBatchPasses": 10,
-      "freshQualifiedSymbols": 10,
-      "sourceClean": true,
-      "revision": "3eadba5f121c1017c032929534d269c330aa5abb",
+      "freshCampaignPasses": 267,
+      "freshQualifiedSymbols": 240,
+      "sourceClean": false,
+      "revision": "674f752f62b3179c8a21300c7796024f5935efc1",
       "viewports": [
         [
           2560,
@@ -123,23 +122,46 @@
           390,
           844
         ]
+      ],
+      "boundaries": [
+        "Browser QA does not qualify a physical device, native binary or FPS.",
+        "No personal visual approval is invented.",
+        "No backend, mobile app or Store was deployed.",
+        "Drive metadata and local SHA256 are verified; no remote byte hash is claimed."
       ]
-    }
+    },
+    "publicationCounterProbe": true
   },
   "assetAudit": {
-    "newBatch": "lot-14",
-    "packs": 10,
-    "retainedCovers": 10,
-    "newNativePngs": 70,
-    "derivedFiles": 380,
-    "sourcesBackedUp": 10,
-    "backupVerification": "Local SHA256 plus Drive ID, size, parent and private metadata readback."
+    "scope": "All 240 integrated packs, no new image generation in this work package.",
+    "packs": 240,
+    "recoveredNativeSourcePacks": 6,
+    "remainingInheritedSixPackArchiveGap": 0,
+    "recoveredArchive": {
+      "fileId": "1iZdMcaJxAugVTvqIEnTerhhHhOFSvui8",
+      "url": "https://drive.google.com/file/d/1iZdMcaJxAugVTvqIEnTerhhHhOFSvui8/view?usp=drivesdk",
+      "parent": "1DlN7DcuunoFBLGNmCb2Z3KqLZG0MQmUM",
+      "bytes": 101421638,
+      "sha256": "52aeeaa3d81587f5f38e332388d22c9ede340cf0ccd9a42a336ade74a0bced69",
+      "private": true,
+      "metadataVerified": true,
+      "remoteHashVerified": false,
+      "symbols": [
+        "bee",
+        "volcano",
+        "ring",
+        "waterfall",
+        "turtle",
+        "mask"
+      ],
+      "note": "Archive native complète retrouvée, empreinte locale conforme au reçu source ; taille, parent et confidentialité relus après upload. Aucun hachage distant revendiqué."
+    }
   },
-  "qaReceipt": "../qa/symbol-packs-lot-14-10-20261020.json",
-  "qaReceiptSha256": "316f02111c7b74828a385873c78b5be786cdf38fa641f6a15c9ab228a9b75311",
+  "qaReceipt": "../qa/symbols-240-site-readiness-20261022.json",
+  "qaReceiptSha256": "2d7a5d40e2294e0293b3a8e9dc92801478b43e7a2ee69086c0d8fb9418658371",
   "reusedCurrentQa": {
-    "symbols": 230,
-    "source": "Canonical registry: accepted records whose evidence and per-symbol content, atlas, paintings and engine still match."
+    "symbols": 0,
+    "source": "All 240 packs requalified by the complete 267-case site campaign."
   },
   "commonLayoutSymbols": 240,
   "commonLayoutLocalePages": 1440,
@@ -223,9 +245,9 @@
   },
   "publication": {
     "performedForThisBatch": false,
-    "approvalRecordedForThisCandidate": false,
+    "owner": "Thanh",
     "currentMatchingSymbols": 0,
-    "meaning": "Current matching publication records; historical public availability is recorded separately."
+    "meaning": "The owner publishes. All 1440 public routes respond, but their current HTML and animation script differ from this qualified build."
   },
   "registryTotals": {
     "symbols": 240,
@@ -343,6 +365,29 @@
           "sha256": "9fbaeaf029599612afd999ff7f32fa66f337fea6ad3916ae1bbb196d82cdfa24"
         }
       }
+    },
+    {
+      "sourceRevision": "3eadba5f121c1017c032929534d269c330aa5abb",
+      "qaReceipt": "../qa/symbol-packs-lot-14-10-20261020.json",
+      "qaReceiptSha256": "316f02111c7b74828a385873c78b5be786cdf38fa641f6a15c9ab228a9b75311",
+      "integratedSymbols": 240,
+      "remainingToIntegrate": 0,
+      "currentStageProofs": {
+        "qa": 240,
+        "approval": 0,
+        "publication": 0
+      },
+      "files": {
+        "workbook": {
+          "path": "suivi-240-symboles-6-langues.xlsx",
+          "sha256": "078acf4b870f7d71decbdeeb767b1495cab4ed5a566235f2d23c0ed6cb0f96b9"
+        },
+        "csv": {
+          "path": "symbol-rollout.csv",
+          "sha256": "1a302fa1b6a93887ecc0b91b82fcb665f9ab58e660e1017ebe188857970adb17"
+        }
+      },
+      "note": "Historical lot-14 state before the complete CDN-renderer requalification."
     }
   ],
   "concurrentMasterTracking": {
@@ -370,9 +415,11 @@
   "final100Delivery": {
     "path": "../qa/symbol-packs-final-100-20261022.json",
     "sha256": "8a7bcdab94dca8b261bc4b1ef1a231451b4bf068ce839cdf8f6b384fb9768035",
-    "nativeSourceArchiveGap": 6
+    "nativeSourceArchiveGap": 0,
+    "historicalNativeSourceArchiveGap": 6,
+    "recoveryReceipt": "../qa/symbols-240-site-readiness-20261022.json"
   },
-  "browserQualifiedMaster": "a51fd4fad506490fd0ca04e18ff1a1bcf6056901",
+  "browserQualifiedMaster": "674f752f62b3179c8a21300c7796024f5935efc1",
   "finalMasterMerge": {
     "contentRevision": "76ad320b81b59372a2d57b91a5b88dd08a3fd0c4",
     "scope": "Master dependency update and app-only PR537; site painting/profile/engine inputs unchanged."
@@ -406,7 +453,25 @@
     "private": true
   },
   "registryCompaction": {
-    "path": "../qa/symbol-rollout-registry-compaction-20261022.json",
-    "sha256": "0ffb380dd8dd8d3f45c3d07af5aebcf6263cf897e3aa5d426ff9dec1c4db2ae8"
-  }
+    "path": "../qa/symbol-rollout-history-through-20261022.json",
+    "sha256": "4b9bb785a008e4b51f1bcdc49a28f35be558d96ed8970cd7e82e68bca7ac8981",
+    "historicalRecords": 15834,
+    "retainedLatestRecords": 4764,
+    "addedQaRecords": 2880,
+    "statesPreserved": true,
+    "note": "Exact full registry archived before active-record compaction. No historical record is lost."
+  },
+  "publicObservation": {
+    "revisionCompared": "674f752f62b3179c8a21300c7796024f5935efc1",
+    "reportSha256": "b2e683d6d2fa73dfcbeda94cac89cb5473a4a858b5b0aa06282680268aded320",
+    "summary": {
+      "total": 1440,
+      "passed": 0,
+      "failed": 1440
+    },
+    "http200": 1440,
+    "exactMatchingPublication": false,
+    "note": "Public availability is observed separately. The public HTML lacks the latest crossorigin attributes and loads an older living script; no matching publication is claimed."
+  },
+  "trackingDriveCopiesStatus": "Existing private Drive copies updated separately after this export; retain the last verified metadata below until readback succeeds."
 }
