@@ -1,7 +1,8 @@
 import { Platform, type ViewStyle } from 'react-native';
 
 export const LAYOUT_MAX_WIDTH = 1200;
-export const TAB_BAR_MAX_WIDTH = 960;
+/** Five destinations stay a hand's reach apart on a large display or a phone on its side. */
+export const TAB_BAR_MAX_WIDTH = 640;
 export const TABLET_BREAKPOINT = 600;
 export const DESKTOP_BREAKPOINT = 1024;
 /** Reading width of desktop tab pages beside the sidebar. */

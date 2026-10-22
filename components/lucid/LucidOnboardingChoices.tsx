@@ -21,7 +21,6 @@ import Svg, {
 import {
   StyleSheet,
   Text,
-  useWindowDimensions,
   View,
   type ViewStyle,
 } from 'react-native';
@@ -35,6 +34,7 @@ import {
   LucidSpace,
   LucidType,
 } from '@/constants/lucidTheme';
+import { useContentWindow } from '@/context/ContentWindowContext';
 import { useTheme } from '@/context/ThemeContext';
 import type { LucidExperienceLevel, LucidGoal } from '@/lib/lucid/model';
 
@@ -171,7 +171,7 @@ export function LucidGoalSelector({
   shortLabels: Record<LucidGoal, string>;
   title: string;
 }) {
-  const { fontScale, width } = useWindowDimensions();
+  const { fontScale, width } = useContentWindow();
   const reflow = width < 380 || fontScale >= 1.3;
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, mode);
@@ -254,7 +254,7 @@ export function LucidExperienceSelector({
   selected: LucidExperienceLevel | null;
   startingPoint: string;
 }) {
-  const { fontScale, width } = useWindowDimensions();
+  const { fontScale, width } = useContentWindow();
   const reflow = width < 380 || fontScale >= 1.3;
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, mode);
@@ -364,7 +364,7 @@ export function LucidRhythmSelector({
   subtitle: string;
   title: string;
 }) {
-  const { fontScale, width } = useWindowDimensions();
+  const { fontScale, width } = useContentWindow();
   const reflow = width < 380 || fontScale >= 1.3;
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, mode);

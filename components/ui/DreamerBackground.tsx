@@ -1,12 +1,13 @@
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useState } from 'react';
-import { StyleSheet, useWindowDimensions, type StyleProp, type ViewStyle } from 'react-native';
+import { StyleSheet, type StyleProp, type ViewStyle } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { getDreamerArtwork, type DreamerScene } from '@/constants/dreamerArtwork';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
+import { useContentWindow } from '@/context/ContentWindowContext';
 import { useTheme } from '@/context/ThemeContext';
 import { usePaintingArrival, usePaintingDepthStyle, useHeaderStretchStyle } from './headerStretch';
 
@@ -56,7 +57,7 @@ export function DreamerArtworkWindow({ scene, style, bleedTop = 0, maxHeight = 2
   maxHeight?: number;
 }) {
   const { colors, mode } = useTheme();
-  const { width, height, fontScale } = useWindowDimensions();
+  const { width, height, fontScale } = useContentWindow();
   const ground = getNoctaliaDesignTokens(colors, mode).screen.background;
   const artworkKey = `${scene}:${mode}`;
   const [failedArtwork, setFailedArtwork] = useState<string | null>(null);

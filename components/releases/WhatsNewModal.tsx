@@ -122,7 +122,8 @@ export function WhatsNewModal({ visible, onClose, onPrimary }: WhatsNewModalProp
     >
       <View
         accessibilityViewIsModal
-        style={styles.overlay}
+        // Clear of the side safe areas too: the iPhone Duo's status bar column, a phone's camera on its side.
+        style={[styles.overlay, { paddingLeft: 20 + insets.left, paddingRight: 20 + insets.right }]}
         testID={TID.Modal.WhatsNew}
       >
         <BlurView

@@ -1,11 +1,12 @@
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { LARGE_TEXT_FONT_SCALE } from '@/constants/layout';
+import { useContentWindow } from '@/context/ContentWindowContext';
 import { useTheme } from '@/context/ThemeContext';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { TID } from '@/lib/testIDs';
 import React, { useMemo, useState } from 'react';
-import { Platform, Pressable, StyleSheet, Text, View, useWindowDimensions, type ViewStyle } from 'react-native';
+import { Platform, Pressable, StyleSheet, Text, View, type ViewStyle } from 'react-native';
 
 interface RecordingFooterProps {
   onSave: () => void;
@@ -28,7 +29,7 @@ export function RecordingFooter({
 }: RecordingFooterProps) {
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
-  const { width, fontScale } = useWindowDimensions();
+  const { width, fontScale } = useContentWindow();
   const controlFontScale = Math.min(1.3, Math.max(1, fontScale));
   const [availableWidth, setAvailableWidth] = useState(0);
   const largeText = fontScale >= LARGE_TEXT_FONT_SCALE;

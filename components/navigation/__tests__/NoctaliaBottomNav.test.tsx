@@ -201,8 +201,9 @@ describe('NoctaliaBottomNav', () => {
 
     const addDreamTab = screen.getByTestId(TID.Tab.AddDream);
     expect(addDreamTab).toBeTruthy();
-    expect(addDreamTab.parentElement?.parentElement?.getAttribute('data-native-style')).toContain('"start":160');
-    expect(addDreamTab.parentElement?.parentElement?.getAttribute('data-native-style')).toContain('"end":160');
+    // Bounded to 640 points and centered: five tabs, not a ruler across the window.
+    expect(addDreamTab.parentElement?.parentElement?.getAttribute('data-native-style')).toContain('"start":320');
+    expect(addDreamTab.parentElement?.parentElement?.getAttribute('data-native-style')).toContain('"end":320');
   });
 
   it('remains hidden on desktop Web', () => {
@@ -382,7 +383,8 @@ describe('NoctaliaBottomNav', () => {
     const center = centerBox(TID.Tab.AddDream);
     const labels = barLabels();
 
-    expect(center.width).toBeCloseTo(168.6, 2);
+    // A fifth of the bar, now bounded to 640 points on a phone on its side.
+    expect(center.width).toBeCloseTo(122.4, 2);
     expect(labels).toHaveLength(5);
     expect(screen.getByText(/^nav\.capture_dream(?:_compact)?$/).getAttribute('data-number-of-lines')).toBe('1');
   });

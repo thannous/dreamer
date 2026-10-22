@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import React, { useMemo, useState } from 'react';
-import { Platform, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { Platform, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { DreamAnalysisContent } from '@/components/journal/DreamAnalysisContent';
@@ -18,6 +18,7 @@ import { SEAL_EMBLEMS, SEAL_NAME_LINES } from '@/components/journal/story/sealMa
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { PaintingAtRest } from '@/components/ui/PaintingTilt';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
+import { useContentWindow } from '@/context/ContentWindowContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useDreamCoverPlaceholder } from '@/hooks/useDreamCoverPlaceholder';
 import { useDreamMedia } from '@/hooks/useDreamMedia';
@@ -38,7 +39,7 @@ import type { DreamAnalysis } from '@/lib/types';
  * It runs none of the page's work and offers none of its controls.
  */
 export function JournalPagePreview({ dream, folio, height }: { dream: DreamAnalysis; folio?: number; height: number }) {
-  const window = useWindowDimensions();
+  const window = useContentWindow();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { colors, mode } = useTheme();

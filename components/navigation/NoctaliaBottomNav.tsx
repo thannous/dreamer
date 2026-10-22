@@ -10,6 +10,7 @@ import {
 } from '@/constants/layout';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useAnalysisActivity } from '@/context/AnalysisActivityContext';
+import { useContentWindow } from '@/context/ContentWindowContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
@@ -22,7 +23,6 @@ import {
   StyleSheet,
   Text,
   View,
-  useWindowDimensions,
   type LayoutChangeEvent,
   type ViewStyle,
 } from 'react-native';
@@ -75,7 +75,7 @@ export function NoctaliaBottomNav({
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  const { width, height, fontScale } = useWindowDimensions();
+  const { width, height, fontScale } = useContentWindow();
   // The Capture button doubles as the in-progress indicator for a background
   // dream analysis, so no overlay has to cover the screen content.
   const { activeAnalysis } = useAnalysisActivity();

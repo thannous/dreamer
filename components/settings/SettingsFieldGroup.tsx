@@ -8,7 +8,6 @@ import {
   Pressable,
   ScrollView,
   Text,
-  useWindowDimensions,
   View,
   type TextStyle,
 } from 'react-native';
@@ -20,6 +19,7 @@ import {
 } from '@/components/ui/BottomSheet';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { getNoctaliaDesignTokens, type NoctaliaDesignTokens } from '@/constants/noctaliaDesign';
+import { useContentWindow } from '@/context/ContentWindowContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
@@ -259,7 +259,7 @@ function PreferenceRow({
   value,
   wideValue = false,
 }: PreferenceRowProps) {
-  const { width, fontScale } = useWindowDimensions();
+  const { width, fontScale } = useContentWindow();
   const stackCopy = width < 375 || fontScale >= 1.3;
   return (
     <PressableScale

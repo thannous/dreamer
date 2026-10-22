@@ -8,7 +8,6 @@ import {
   Platform,
   Text,
   type ViewStyle,
-  useWindowDimensions,
   View,
 } from 'react-native';
 
@@ -26,6 +25,7 @@ import { SettingsFieldGroup } from '@/components/settings/SettingsFieldGroup';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
+import { useContentWindow } from '@/context/ContentWindowContext';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
@@ -88,7 +88,7 @@ export default function SettingsScreen() {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
-  const { width, height } = useWindowDimensions();
+  const { width, height } = useContentWindow();
   const appVersion = getAppVersionString();
   const storeKey = getExpoPublicEnvValue(Platform.OS === 'android'
     ? 'EXPO_PUBLIC_REVENUECAT_ANDROID_KEY'

@@ -1,7 +1,7 @@
 import { Tabs, router, useSegments } from 'expo-router';
 import { BlurTargetView } from 'expo-blur';
 import React, { createRef, useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Platform, Pressable, StyleSheet, Text, View, ViewStyle, useWindowDimensions } from 'react-native';
+import { ActivityIndicator, Platform, Pressable, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { HapticTab } from '@/components/haptic-tab';
@@ -20,6 +20,7 @@ import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useAuth } from '@/context/AuthContext';
 import { useAnalysisActivity } from '@/context/AnalysisActivityContext';
 import { useStartupRoute } from '@/context/StartupRouteContext';
+import { useContentWindow } from '@/context/ContentWindowContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useKeyboardVisible } from '@/hooks/useKeyboardVisible';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -224,7 +225,7 @@ export default function TabLayout() {
   const { returningGuestBlocked } = useAuth();
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  const { width, height, fontScale } = useWindowDimensions();
+  const { width, height, fontScale } = useContentWindow();
   const segments = useSegments();
   const { routeCommitted } = useStartupRoute();
   const { activeAnalysis } = useAnalysisActivity();

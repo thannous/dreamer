@@ -51,6 +51,7 @@ import {
 import { DURATION, EASING, PressableScale, Reveal } from '@/components/motion';
 import { DREAM_TRANSCRIPT_MAX_CHARS, QUOTAS } from '@/constants/limits';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
+import { useContentWindow, useSideGutters } from '@/context/ContentWindowContext';
 import { useAuth } from '@/context/AuthContext';
 import { SignInToOpenDream } from '@/components/auth/SignInToOpenDream';
 import { dreamAuthReturnDestination } from '@/lib/authReturnIntent';
@@ -124,7 +125,6 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  useWindowDimensions,
   View,
 } from 'react-native';
 import Animated, {
@@ -508,7 +508,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   const { user } = useAuth();
   const { colors, shadows, mode } = useTheme();
   const insets = useSafeAreaInsets();
-  const windowSize = useWindowDimensions();
+  const windowSize = useContentWindow();
+  const sideGutters = useSideGutters();
   const compactTextScale = Math.min(1.3, Math.max(1, windowSize.fontScale));
   const titleTextScale = Math.min(1.4, Math.max(1, windowSize.fontScale));
   const metadataTextStyle = { fontSize: 14 * compactTextScale, lineHeight: 20 * compactTextScale };
@@ -1998,7 +1999,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     const seal = sealWindowRef.current;
     if (!seal || !onScreen || coverFlight || isEditing || isIllustrationFullscreen) return;
     seal.measureInWindow((x, y, sealWidth) => {
-      const centre = { x: x + sealWidth / 2, y: y + SEAL_MEASURES.orbit / 2 };
+      // The flight is drawn inside the page, which starts after the left safe area.
+      const centre = { x: x - sideGutters.left + sealWidth / 2, y: y + SEAL_MEASURES.orbit / 2 };
       if (centre.y < insets.top + 24 || centre.y > viewportHeight - 96) return;
       // The painting leaves the seal: heard and felt once, as it goes.
       playSignature('painting');
@@ -2015,7 +2017,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       setCoverFlight({ from: { ...centre, size: SEAL_MEASURES.medallion }, to: { top, drift }, landed: false });
     });
   }, [coverFlight, coverHeight, coverTravel, insets.top, isEditing, isIllustrationFullscreen, onScreen, readingContentTop, readingScrollOffset,
-    reducedMotion, revealPlate, viewportHeight, windowSize.height]);
+    reducedMotion, revealPlate, sideGutters.left, viewportHeight, windowSize.height]);
   useEffect(() => {
     if (!sealHoldsArtwork) return;
     const frame = requestAnimationFrame(releaseArtwork);
@@ -3421,7 +3423,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
               accessibilityRole="button"
               accessibilityLabel={t('journal.detail.image.close_fullscreen')}
             />
-            <View className="flex-1 items-center justify-center px-4">
+            <View className="flex-1 items-center justify-center"
+              style={{ paddingLeft: 16 + insets.left, paddingRight: 16 + insets.right }}>
               {dream.imageUrl ? (
                 <Image
                   source={displayImageUrl ? { uri: displayImageUrl, cacheKey: imageCacheKey } : null}
@@ -3435,8 +3438,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
               testID={TID.Button.JournalIllustrationClose}
               accessibilityRole="button"
               accessibilityLabel={t('journal.detail.image.close_fullscreen')}
-              className="absolute right-5 items-center justify-center rounded-full border border-line bg-ink-raised"
-              style={{ top: insets.top + 12, height: 44, width: 44 }}
+              className="absolute items-center justify-center rounded-full border border-line bg-ink-raised"
+              style={{ top: insets.top + 12, right: 20 + insets.right, height: 44, width: 44 }}
             >
               <IconSymbol name="xmark" size={18} color={noctalia.text.primary} />
             </PressableScale>
@@ -3482,7 +3485,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
           animationType="fade"
           onRequestClose={closeShareModal}
         >
-          <View className="flex-1 items-center justify-center bg-ink-overlay p-6">
+          <View className="flex-1 items-center justify-center bg-ink-overlay p-6"
+            style={{ paddingLeft: 24 + insets.left, paddingRight: 24 + insets.right }}>
             <Pressable className="absolute inset-0" onPress={closeShareModal} />
             <View className="w-full max-w-[420px] gap-4 rounded-[20px] bg-ink-raised p-6"
             >
