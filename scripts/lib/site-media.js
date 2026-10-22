@@ -171,11 +171,18 @@ function assertRemoteReceipt(root, media) {
 // CDN redirects make pixel-reading canvases and alpha masks cross-origin.
 // Keep image requests and their preloads in the same anonymous CORS mode.
 function mediaCorsHtml(html) {
-  return html.replace(/<!--[\s\S]*?-->|<(?:script|style)\b[^>]*>[\s\S]*?<\/(?:script|style)\s*>|<(img|link)\b[^>]*>/gi, (tag, kind) => {
-    if (!kind) return tag;
-    if (/\bcrossorigin\s*=/i.test(tag) || !/\/img\//.test(tag)) return tag;
+  const annotate = (tag, kind, managedPicture = false) => {
+    if (/\bcrossorigin\s*=/i.test(tag) || (!managedPicture && !/\/img\//.test(tag))) return tag;
     if (kind.toLowerCase() === 'link' && !/\bas=["']image["']/i.test(tag)) return tag;
     return tag.replace(/^(<(?:img|link))\b/i, '$1 crossorigin="anonymous"');
+  };
+  return html.replace(/<!--[\s\S]*?-->|<(?:script|style)\b[^>]*>[\s\S]*?<\/(?:script|style)\s*>|<picture\b[^>]*>[\s\S]*?<\/picture\s*>|<(img|link)\b[^>]*>/gi, (tag, kind) => {
+    if (kind) return annotate(tag, kind);
+    // A picture may select CDN sources while its img fallback is an inline GIF.
+    if (/^<picture\b/i.test(tag) && /\/img\//.test(tag)) {
+      return tag.replace(/<img\b[^>]*>/gi, image => annotate(image, 'img', true));
+    }
+    return tag;
   });
 }
 

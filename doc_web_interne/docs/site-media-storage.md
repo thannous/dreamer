@@ -150,3 +150,10 @@ Un clone superficiel permet déjà de récupérer seulement la nouvelle version.
 Le rendu via CDN, la reconstruction sans binaires Git et la livraison sont
 qualifiés séparément dans la suite du relevé ; ces contrôles ne constituent
 pas une publication en production.
+
+La première exécution navigateur sur `6995ae2fa` a détecté un canvas non lisible
+sur l'illustration détourée : le `<picture>` sélectionnait une source CDN, alors
+que son `<img>` de secours était un GIF intégré et ne recevait pas CORS.
+Le transformateur HTML commun couvre désormais aussi ce cas, sans charger la
+plaque masquée sur mobile. Le parcours existant contrôle les pixels réels des
+textures et du masque ; cet échec est conservé dans son artefact.
