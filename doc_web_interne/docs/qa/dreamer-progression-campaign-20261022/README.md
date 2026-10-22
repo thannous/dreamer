@@ -14,16 +14,23 @@ mêmes 27 ID.
   app/backend, ni publication Store. Aucun compte de production créé ou supprimé. Aucun
   achat ni appel IA payant. Aucun changement de droits ou du registre OAuth. Aucune clé
   privilégiée utilisée. Aucune donnée réelle modifiée.
-- **Date d’exécution** : 22/10/2026 (toutes les preuves fraîches).
+- **Date d’exécution** : les preuves fraîches F1 à F3 ont été exécutées le 22/10/2026
+  sur 271fd2b. R1 à R5 sont réutilisées (révisions antérieures ou même SHA, artefacts
+  bruts non accessibles ici) ; voir [Preuves](#preuves).
 
 ## Synthèse
 
 | Statut dans l’environnement exigé | Nombre | ID |
 | --- | --- | --- |
 | PASS | 0 | — |
-| FAIL | 2 | Q01, Q03 (équivalents locaux ; voir anomalies A1 et A3) |
-| BLOQUÉ | 25 | H00 et tous les cas H, Q et N restants |
+| FAIL | 0 | — |
+| BLOQUÉ | 27 | tous : H, Q et N indisponibles ici |
 | NON EXÉCUTÉ | 0 | — |
+
+Un statut ne change que dans l’environnement exigé. Les défauts reproduits sur des
+équivalents locaux sont donc relevés comme anomalies, sans changer le statut :
+- Q03 et N03 : A1 ;
+- Q01 : A2 et A3.
 
 Les parcours H sont **BLOQUÉS** : aucune application candidate hébergée (URL ou build)
 contenant ce commit, et aucun compte QA A/B autorisé n’est disponible ici. Les cas N
@@ -118,6 +125,8 @@ E2E_WORKERS=1 mise exec -- npm run test:testerarmy -- run --grep 'a written drea
   migrations du candidat, avec la vraie fonction `current_app_product()`.
 - Les sessions sont ordinaires : rôles `authenticated`/`anon` avec claims JWT
   synthétiques ; aucun rôle qui contourne RLS.
+- La sonde refuse de tourner si une migration diffère des octets de 271fd2b
+  (empreintes SHA-256 dans le script).
 - Limites :
   - pas de Supabase Auth ni de PostgREST ;
   - table `dreams` minimale, sans ses politiques RLS historiques ;
@@ -135,9 +144,16 @@ mise exec -- node --test doc_web_interne/docs/qa/dreamer-progression-campaign-20
   achèvement d’un guide, puis collection. Mesures : clés i18n brutes, débordement
   horizontal, éléments hors écran, erreurs JS.
 - Avec `--limits` (en-US) : collage de 4 001 caractères et plafond de 50 notes.
-- Captures hors Git (`test-results/`, ignoré). Rejouer, serveur mock sur 8096 :
+- Captures hors Git (`test-results/`, ignoré). Le script sort en échec si une langue
+  n’a pas pu être inspectée jusqu’au bout.
+- Rejouer : démarrer d’abord le serveur web mock avec les réglages utilisés ici, puis
+  lancer l’inspection quand `http://127.0.0.1:8096/` répond.
 
 ```sh
+EXPO_NO_METRO_LAZY=1 EXPO_PUBLIC_MOCK_AUDIO=true EXPO_PUBLIC_MOCK_PERSISTENCE=true \
+  EXPO_PUBLIC_PERFORMANCE_TRACING=false NOCTALIA_APP_VARIANT=noctalia EXPO_PUBLIC_APP_VARIANT=noctalia \
+  EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=false \
+  mise exec -- npm run start:mock -- --web --port 8096
 node doc_web_interne/docs/qa/dreamer-progression-campaign-20261022/ui-inspect.mjs
 node doc_web_interne/docs/qa/dreamer-progression-campaign-20261022/ui-inspect.mjs en-US --limits
 ```
@@ -186,9 +202,9 @@ décrits à part et ne changent pas ce statut.
 | S02 | P1 | H, sinon schéma + Q | BLOQUÉ | F2 PASS (vraie fonction, registre simulé) ; R1 ; R5 | — | Contextes produit QA réels, ou runner Q |
 | S03 | P1 | H lecture + Q | BLOQUÉ | R5 (H lecture) ; F2 PASS ; R4 | — | Runner Q, compte jetable |
 | U01 | P2 | H/Q | BLOQUÉ | F3 PASS partiel (mock) | O1 | Texte agrandi natif ; changement de langue en session |
-| Q01 | P1 | Q | FAIL | F2 bornes PASS ; F3 plafond 50 PASS | A2, A3 | Décider A2/A3 ; rejouer en Q |
+| Q01 | P1 | Q | BLOQUÉ | F2 bornes PASS ; F3 plafond 50 PASS ; A2 et A3 reproduites | A2, A3 | Décider A2/A3 ; rejouer en Q |
 | Q02 | P1 | Q | BLOQUÉ | R4 (isolation, stockage mémoire) | — | Runner Q |
-| Q03 | P1 | Q simulé | FAIL | F2 (reprise impossible) ; R4 (pas de fausse confirmation) | A1 | Corriger A1 ; rejouer |
+| Q03 | P1 | Q simulé | BLOQUÉ | F2 : A1 reproduite (reprise impossible) ; R4 (pas de fausse confirmation) | A1 | Corriger A1 ; rejouer en Q |
 | T01 | P1 | N | BLOQUÉ | Aucun ; NON QUALIFIÉ | — | Build Release et cible native |
 | T02 | P1 | N | BLOQUÉ | Aucun ; navigateur vierge ≠ réinstallation | — | Installation QA vierge possédée |
 | T03 | P2 | N | BLOQUÉ | Aucun ; pas de mesure FPS | — | Cible native, lecteur d’écran |
@@ -437,7 +453,7 @@ Pour tous les cas :
 
 ### Q01 — P1/Q — bornes
 
-- **Statut Q** : FAIL, constaté sur les équivalents (le runner Q est bloqué).
+- **Statut Q** : BLOQUÉ (runner). Anomalies A2 et A3 reproduites sur les équivalents.
 - **F2 : refus en base, sans écrasement et sans reçu.**
   - Notes : 50 notes et 4 000 caractères acceptés ; 51 notes, 4 001 caractères,
     identifiant dupliqué, texte vide ou `updatedAt < createdAt` refusés.
@@ -464,7 +480,7 @@ Pour tous les cas :
 
 ### Q03 — P1/Q simulé — ancien serveur sans notes
 
-- **Statut** : FAIL, en simulation PGlite (le runner Q est bloqué).
+- **Statut Q** : BLOQUÉ (runner). Anomalie A1 reproduite en simulation PGlite.
 - **Pas de fausse confirmation** : le client convertit un `ack` sans `personal_notes`
   en `failed` (R4, `journalMutationTransport`). Données locales conservées.
 - **La reprise échoue (A1)** : après migration, la même mutation rejoue l’ancien reçu

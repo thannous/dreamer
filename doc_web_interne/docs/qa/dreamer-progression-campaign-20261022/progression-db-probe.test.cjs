@@ -5,6 +5,7 @@
 // Supabase Auth/PostgREST: auth.uid()/role come from synthetic JWT claims, ordinary
 // roles (authenticated/anon) are used for RLS, never a role that bypasses it.
 const { describe, it } = require('node:test');
+const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
 const { createRequire } = require('node:module');
@@ -15,7 +16,22 @@ const req = createRequire(path.join(WT, 'package.json'));
 const { PGlite } = req('@electric-sql/pglite');
 const { expect } = req('expect');
 
-const migration = (name) => fs.readFileSync(path.join(WT, 'supabase', 'migrations', `${name}.sql`), 'utf8');
+// The bytes this campaign reviewed in candidate 271fd2b: other migrations are another candidate.
+const CANDIDATE_SHA256 = {
+  '20260909010000_scope_oauth_product_access': 'f656b084dd6b1de8d7eaa8bb0504974c79db2b95762dfeaf23a7099681d9f613',
+  '20261021171000_limit_dream_sync_size_and_rate': 'd859438c2d6b204c56647d014e1e568f04fb92103373b3accd4704b6c7be7f8f',
+  '20261022170231_badge_ledger_continuity': 'e8995c874a0ac93887dcb76fd6602854d2b430b102c1ee1168f310499e6597bc',
+  '20261022170242_dream_personal_notes': '1f6ed1e03f648cceb482dffd74894cdf89a1daec09dafdcd29523a856e4467f4',
+  '20261022170346_guide_reading_progress': '57337c4ca3ea67fab094e51027e916666640e5be83bee6e7f029ad9d4da8d630',
+};
+const migration = (name) => {
+  const bytes = fs.readFileSync(path.join(WT, 'supabase', 'migrations', `${name}.sql`));
+  const digest = crypto.createHash('sha256').update(bytes).digest('hex');
+  if (digest !== CANDIDATE_SHA256[name]) {
+    throw new Error(`${name}.sql differs from candidate 271fd2b (sha256 ${digest}): this probe records that candidate only.`);
+  }
+  return bytes.toString('utf8');
+};
 const LIMITS = '20261021171000_limit_dream_sync_size_and_rate';
 const BADGES = '20261022170231_badge_ledger_continuity';
 const NOTES = '20261022170242_dream_personal_notes';
@@ -243,7 +259,7 @@ describe('QA progression probe on 271fd2b migrations (synthetic PGlite)', () => 
       halfProvided: await errorOf(() => badge(r1.revision)),
     };
     console.log('[Q01] badge refusals ->', JSON.stringify(Object.fromEntries(Object.entries(refusals).map(([k, v]) => [k, v?.code ?? 'ACCEPTED']))));
-    for (const [, value] of Object.entries(refusals).filter(([k]) => k !== 'halfProvided')) expect(value?.code).toBe('22023');
+    for (const value of Object.values(refusals)) expect(value?.code).toBe('22023');
     const stored = (await badge(null)).rows[0].r;
     expect(stored).toMatchObject({ ledger: goodLedger, revision: r1.revision, accepted: false });
 

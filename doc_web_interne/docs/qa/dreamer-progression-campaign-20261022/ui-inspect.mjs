@@ -118,3 +118,9 @@ for (const locale of locales) {
 }
 await browser.close();
 writeFileSync(`${out}/report${limits ? '-limits' : ''}.json`, JSON.stringify(report, null, 2));
+// The report keeps every locale, but an incomplete inspection is not a pass.
+const failed = Object.entries(report).filter(([, entry]) => entry.failure).map(([locale]) => locale);
+if (failed.length) {
+  console.error(`Inspection incomplete for: ${failed.join(', ')}`);
+  process.exitCode = 1;
+}
