@@ -209,3 +209,38 @@ Deno.test('an analysis opened with no illustration asked takes the painting alre
   assertEquals(edited.dreams[0].image_url, null);
   assertEquals([...edited.storage.objects.keys()], ['previews/u1/7-a.jpg']);
 });
+
+Deno.test('a dream illustrated between the read and the link keeps its own illustration, and the taken painting goes', async () => {
+  const storage = fakeStorage();
+  storage.objects.set('previews/u1/7-a.jpg', new Uint8Array([1]));
+  const previews: Row[] = [{
+    user_id: 'u1', dream_id: 7, status: 'used', image_status: 'ready', image_prompt: 'A river of glass',
+    image_path: 'previews/u1/7-a.jpg', band_path: null, band_url: null,
+  }];
+  const dreams: Row[] = [{ id: 7, user_id: 'u1', image_url: 'https://example.test/own.jpg' }];
+  let dreamReads = 0;
+  // The first read still sees no illustration: the image job saved its own right after.
+  const stale = { select: () => stale, eq: () => stale, maybeSingle: async () => ({ data: { image_url: null }, error: null }) };
+  const admin = {
+    from: (name: string) => (name !== 'dreams' ? previewsTable(previews)() : dreamReads++ === 0 ? stale : previewsTable(dreams)()),
+    storage,
+  };
+  assertEquals(await attachPreparedIllustration(admin, { bucket: 'dream-images', userId: 'u1', dreamId: 7, prompt: 'A river of glass' }), false);
+  assertEquals(dreams[0].image_url, 'https://example.test/own.jpg');
+  assertEquals([...storage.objects.keys()], []);
+});
+
+Deno.test('with no wait, a painting under way is left for later', async () => {
+  const storage = fakeStorage();
+  const previews: Row[] = [{
+    user_id: 'u1', dream_id: 7, status: 'used', image_status: 'painting', image_prompt: 'A river of glass',
+    image_path: null, band_path: null, band_url: null, image_updated_at: new Date().toISOString(),
+  }];
+  const dreams: Row[] = [{ id: 7, user_id: 'u1', image_url: null }];
+  const admin = { from: (name: string) => (name === 'dreams' ? previewsTable(dreams) : previewsTable(previews))(), storage };
+  const slept: number[] = [];
+  const input = { bucket: 'dream-images', userId: 'u1', dreamId: 7, prompt: 'A river of glass', sleep: async (ms: number) => { slept.push(ms); } };
+  assertEquals(await attachPreparedIllustration(admin, { ...input, waitMs: 0 }), false);
+  assertEquals(slept, []);
+  assertEquals(previews[0].image_status, 'painting');
+});

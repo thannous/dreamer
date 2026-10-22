@@ -91,6 +91,8 @@ export async function takePreparedIllustration(admin: AdminClient, input: {
   dreamId: number;
   prompt?: string;
   transcriptSha256?: string;
+  /** How long a painting under way is waited for; 0 takes only a finished one. */
+  waitMs?: number;
   now?: () => number;
   sleep?: (ms: number) => Promise<void>;
 }): Promise<string | null> {
@@ -113,7 +115,7 @@ async function takePreparedPainting(admin: AdminClient, input: Parameters<typeof
       return same ? data : null;
     };
     let row = await read();
-    const waitUntil = now() + PAINTING_WAIT_MS;
+    const waitUntil = now() + (input.waitMs ?? PAINTING_WAIT_MS);
     while (row?.image_status === 'painting' && now() < waitUntil
       && Date.parse(row.image_updated_at ?? '') > now() - PREVIEW_PAINTING_TIMEOUT_MS) {
       await sleep(PAINTING_POLL_MS);
@@ -156,6 +158,7 @@ export async function attachPreparedIllustration(admin: AdminClient, input: {
   userId: string;
   dreamId: number;
   prompt: string;
+  waitMs?: number;
   now?: () => number;
   sleep?: (ms: number) => Promise<void>;
 }): Promise<boolean> {
@@ -170,11 +173,12 @@ export async function attachPreparedIllustration(admin: AdminClient, input: {
       .update({ image_url: painting.url, image_generation_failed: false })
       .eq('id', input.dreamId).eq('user_id', input.userId).or('image_url.is.null,image_url.eq.')
       .select('id');
-    if (setError || !set?.length) {
-      // Illustrated meanwhile: the taken painting would be left unseen.
+    // Illustrated meanwhile: the taken painting would be left unseen. A lost answer may hide a
+    // saved link, so the painting then stays.
+    if (!setError && !set?.length) {
       await admin.storage.from(input.bucket).remove([painting.path]).then(() => undefined, () => undefined);
-      return false;
     }
+    if (setError || !set?.length) return false;
     return true;
   } catch {
     console.warn('[analysis-preview] could not attach a prepared painting');

@@ -319,8 +319,9 @@ export const markTerminalFailure = async (
 
 /**
  * How an image job finds the painting its dream's analysis preview prepared: by the prompt it
- * carries, or by the dream's text when it carries none. A dream painted again (it has an
- * illustration) asks for a new painting, and only a standard size can be the prepared one.
+ * carries (the prepared reading's, so the very painting the preview showed a band of), or by
+ * the dream's text when it carries none, for a first illustration only: a dream painted again
+ * from its text asks for a new painting. Only a standard size can be the prepared one.
  */
 export const preparedPaintingMatch = (
   job: Pick<ImageJobRow, 'user_id' | 'dream_id'>,
