@@ -148,7 +148,9 @@ describe('narrow bottom navigation', () => {
     expect(getTabBarHorizontalLayout(402)).toEqual({ start: 8, end: 8 });
     expect(getTabBarHorizontalLayout(599)).toEqual({ start: 8, end: 8 });
     expect(getTabBarHorizontalLayout(600)).toEqual({ start: 22, end: 22 });
-    expect(getTabBarHorizontalLayout(1280)).toEqual({ start: 160, end: 160 });
+    // The open iPhone Duo on its side, less its status bar column: five tabs, not a ruler.
+    expect(getTabBarHorizontalLayout(897)).toEqual({ start: 128.5, end: 128.5 });
+    expect(getTabBarHorizontalLayout(1280)).toEqual({ start: 320, end: 320 });
   });
 });
 

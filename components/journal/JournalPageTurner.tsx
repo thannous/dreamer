@@ -1,6 +1,6 @@
 import * as Haptics from 'expo-haptics';
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { AccessibilityInfo, Platform, StyleSheet, View, useWindowDimensions } from 'react-native';
+import { AccessibilityInfo, Platform, StyleSheet, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   Easing, Extrapolation, interpolate, useAnimatedReaction, useAnimatedStyle, useReducedMotion, useSharedValue, withSequence,
@@ -13,6 +13,7 @@ import { PageTurnsContext } from '@/components/journal/journalPageTurns';
 import { JournalTonightPage } from '@/components/journal/JournalTonightPage';
 import { EASING } from '@/components/motion/motion';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
+import { useContentWindow } from '@/context/ContentWindowContext';
 import { useTheme } from '@/context/ThemeContext';
 import { scheduleIdleTask } from '@/lib/scheduleIdleTask';
 import type { DreamAnalysis } from '@/lib/types';
@@ -136,7 +137,7 @@ export function JournalPageTurner({ dream, newer, older, folio, tonight = false,
   onTurn: (dream: DreamAnalysis) => void;
   children: React.ReactNode;
 }) {
-  const { width, height } = useWindowDimensions();
+  const { width, height } = useContentWindow();
   const [pageHeight, setPageHeight] = useState(height);
   // The page's own width, narrower than the window beside the desktop sidebar.
   const [pageWidth, setPageWidth] = useState(width);

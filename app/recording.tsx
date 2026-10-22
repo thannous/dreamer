@@ -23,6 +23,7 @@ import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
 import { DESKTOP_BREAKPOINT } from '@/constants/layout';
 import { DREAM_TRANSCRIPT_MAX_CHARS, GUEST_DREAM_RECORDING_LIMIT } from '@/constants/limits';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
+import { useContentWindow } from '@/context/ContentWindowContext';
 import { useDreamsData, useDreamsActions } from '@/context/DreamsContext';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
@@ -127,7 +128,6 @@ import {
   StyleSheet,
   type TextInputInstance,
   View,
-  useWindowDimensions,
 } from 'react-native';
 import { useReducedMotion } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -180,7 +180,7 @@ function RecordingScreen() {
     transition: transitionOnboarding,
   } = useOnboarding();
   const insets = useSafeAreaInsets();
-  const { width: viewportWidth, height: viewportHeight } = useWindowDimensions();
+  const { width: viewportWidth, height: viewportHeight } = useContentWindow();
   const recordingParams = useLocalSearchParams<RecordingRouteParams>();
   const parsedRecordingParams = useMemo(
     () => parseRecordingRouteParams(recordingParams),

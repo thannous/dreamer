@@ -341,9 +341,10 @@ describe('TabLayout returning guest navigation', () => {
 
     render(<TabLayout />);
 
+    // Bounded to 640 points and centered: five tabs, not a ruler across the window.
     expect(capturedTabBarStyle).toEqual(expect.objectContaining({
-      end: 160,
-      start: 160,
+      end: 320,
+      start: 320,
     }));
     expect(capturedTabBarStyle).not.toEqual(expect.objectContaining({
       left: expect.anything(),
@@ -449,7 +450,8 @@ describe('TabLayout returning guest navigation', () => {
     expect(screen.getByText(/^nav\.capture_dream(?:_compact)?$/)).toBeTruthy();
     expect(screen.getByText(/^nav\.capture_dream(?:_compact)?$/).getAttribute('data-number-of-lines')).toBe('1');
     const box = centerBox('nav.capture_dream_compact');
-    expect(box.width).toBeCloseTo(168.6, 2);
+    // A fifth of the bar, now bounded to 640 points on a phone on its side.
+    expect(box.width).toBeCloseTo(122.4, 2);
   });
 
   it.each([[640, 320], [915, 412]])('keeps Capture centered in one row at %i by %i dp', (width: number, height: number) => {

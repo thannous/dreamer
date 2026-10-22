@@ -1,13 +1,14 @@
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { memo, useMemo } from 'react';
-import { StyleSheet, View, useWindowDimensions, type StyleProp, type ViewStyle } from 'react-native';
+import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 import Animated, { useReducedMotion, type CSSStyle } from 'react-native-reanimated';
 import Svg, { Circle, Defs, RadialGradient, Stop } from 'react-native-svg';
 
 import { EASE } from '@/components/motion';
 
 import { STORY } from './storyMotion';
+import { useContentWindow } from '@/context/ContentWindowContext';
 
 const ARTWORK_SOURCE = require('@/assets/images/onboarding-reverie-background.webp');
 /** Intrinsic size of the painting and its moon, in source pixels. */
@@ -56,7 +57,7 @@ export type NightSkyProps = {
  */
 export const NightSky = memo(function NightSky({ step, leaving, arrival, covered = false }: NightSkyProps) {
   const reduced = useReducedMotion();
-  const { width, height } = useWindowDimensions();
+  const { width, height } = useContentWindow();
 
   // Where the painting lands under `cover` in the overscanned frame. The moon and stars
   // are drawn in the same space so they stay glued to the artwork.

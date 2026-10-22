@@ -1,10 +1,11 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useId, useMemo } from 'react';
-import { Platform, View, useWindowDimensions } from 'react-native';
+import { Platform, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Defs, G, LinearGradient as Gradient, Mask, Path, Rect, Stop } from 'react-native-svg';
 
 import { getNoctaliaPalette } from '@/constants/noctaliaPalette';
+import { useContentWindow } from '@/context/ContentWindowContext';
 import { useTheme } from '@/context/ThemeContext';
 
 /** The block of leaves still to turn; the capture seal lands the journal's own paper's edge where it starts. */
@@ -85,7 +86,7 @@ function blockPath(width: number, height: number, corner: number): string {
  * still, and kept to the margins so the reading keeps its full width.
  */
 export function JournalPageEdges() {
-  const { width, height } = useWindowDimensions();
+  const { width, height } = useContentWindow();
   const insets = useSafeAreaInsets();
   const { mode } = useTheme();
   const leaves = useMemo(() => getNoctaliaPalette(mode).journalLeaves, [mode]);

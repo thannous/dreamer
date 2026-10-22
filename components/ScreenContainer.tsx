@@ -1,7 +1,8 @@
 import React, { type ReactNode } from 'react';
-import { Platform, View, type ViewProps, useWindowDimensions } from 'react-native';
+import { View, type ViewProps } from 'react-native';
 
-import { DESKTOP_BREAKPOINT, LAYOUT_MAX_WIDTH, TABLET_BREAKPOINT } from '@/constants/layout';
+import { LAYOUT_MAX_WIDTH, TABLET_BREAKPOINT } from '@/constants/layout';
+import { useContentWindow } from '@/context/ContentWindowContext';
 
 export type ScreenContainerProps = ViewProps & {
   children: ReactNode;
@@ -12,11 +13,14 @@ export type ScreenContainerProps = ViewProps & {
   className?: string;
 };
 
-/** True where `ScreenContainer` narrows and pads its content, leaving side gutters. */
+/**
+ * True where `ScreenContainer` narrows and pads its content, leaving side gutters: on
+ * every platform once the screen is tablet-wide (the open iPhone Duo, a tablet, a phone
+ * on its side, a browser window).
+ */
 export function useWideConstrainedLayout(): boolean {
-  const { width } = useWindowDimensions();
-  return (Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT)
-    || (Platform.OS === 'android' && width >= TABLET_BREAKPOINT);
+  const { width } = useContentWindow();
+  return width >= TABLET_BREAKPOINT;
 }
 
 export function ScreenContainer({
@@ -30,19 +34,13 @@ export function ScreenContainer({
 }: ScreenContainerProps) {
   const isWideConstrainedLayout = useWideConstrainedLayout();
 
-  if (!isWideConstrainedLayout && !fillContent) {
-    return (
-      <View className={className} style={style} {...rest}>
-        {children}
-      </View>
-    );
-  }
-
+  // One tree at every width: folding or unfolding an iPhone Duo crosses the breakpoint,
+  // and a different parent would remount the page under the person's finger.
   return (
     <View className={className} style={style} {...rest}>
       {/* `maxWidth` and the desktop gutter are props, so they stay values rather than
           classes — a caller can pass any number. */}
-      <View className="w-full self-center" style={{ ...(isWideConstrainedLayout ? { maxWidth, paddingHorizontal: desktopPaddingHorizontal } : {}), ...(fillContent ? { flex: 1 } : {}) }}>
+      <View className="w-full self-center" pointerEvents={rest.pointerEvents === 'box-none' ? 'box-none' : undefined} style={{ ...(isWideConstrainedLayout ? { maxWidth, paddingHorizontal: desktopPaddingHorizontal } : {}), ...(fillContent ? { flex: 1 } : {}) }}>
         {children}
       </View>
     </View>

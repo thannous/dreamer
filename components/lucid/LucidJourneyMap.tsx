@@ -6,7 +6,6 @@ import {
   ActivityIndicator,
   StyleSheet,
   Text,
-  useWindowDimensions,
   View,
   type ViewStyle,
 } from 'react-native';
@@ -26,6 +25,7 @@ import {
   LucidSpace,
   LucidType,
 } from '@/constants/lucidTheme';
+import { useContentWindow } from '@/context/ContentWindowContext';
 import { useTheme } from '@/context/ThemeContext';
 import type { LucidProgramSession } from '@/lib/lucid/content/types';
 
@@ -148,7 +148,7 @@ export function LucidJourneyMap({
   onSceneLayout?: (bottom: number) => void;
 }) {
   const { colors } = useTheme();
-  const { fontScale, width } = useWindowDimensions();
+  const { fontScale, width } = useContentWindow();
   // The journey is deliberately a night scene in both app themes. Its text
   // therefore reads from the audited dark palette instead of changing colour
   // over a fixed dark raster when the rest of the app switches to light mode.
