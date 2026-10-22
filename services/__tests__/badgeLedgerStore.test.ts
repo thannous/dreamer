@@ -53,6 +53,17 @@ describe('badge ledger store', () => {
     expect(stored('user:a').keys['symbol-explorer']).toEqual(['moon', 'water']);
   });
 
+  it('keeps an action finished at launch, before any account is known, for the first ledger opened', async () => {
+    recordBadgeEvent({ type: 'guide_viewed', guideId: 'dream-journal' });
+    await activateBadgeScope('user:a');
+    await flushBadgeLedgerWritesForTests();
+    expect(progressIn('user:a')['night-scholar']).toBe(1);
+
+    await activateBadgeScope('user:b');
+    await flushBadgeLedgerWritesForTests();
+    expect(progressIn('user:b')['night-scholar']).toBe(0);
+  });
+
   it('gives a guest ledger to the first account that opens, once, and keeps accounts apart', async () => {
     await activateBadgeScope('guest');
     recordBadgeEvent({ type: 'guide_viewed', guideId: 'dream-journal' });

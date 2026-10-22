@@ -38,6 +38,9 @@ export type BadgeLedgerSnapshot = {
 
 let snapshot: BadgeLedgerSnapshot = { scope: null, ledger: createEmptyBadgeLedger(), ready: false };
 let waiting: Change[] = [];
+// Actions that succeeded before any scope was known (auth still loading at launch): they
+// belong to the first dreamer whose ledger opens.
+let beforeScope: Change[] = [];
 let writes: Promise<void> = Promise.resolve();
 let activation = 0;
 const listeners = new Set<() => void>();
@@ -72,7 +75,8 @@ function persist(scope: BadgeScope, ledger: BadgeLedger): Promise<void> {
 export function activateBadgeScope(scope: BadgeScope): Promise<void> {
   if (snapshot.scope === scope) return writes;
   const id = ++activation;
-  waiting = [];
+  waiting = beforeScope;
+  beforeScope = [];
   publish({ scope, ledger: createEmptyBadgeLedger(), ready: false });
   writes = writes.catch(() => undefined).then(async () => {
     let ledger = createEmptyBadgeLedger();
@@ -106,7 +110,10 @@ export function activateBadgeScope(scope: BadgeScope): Promise<void> {
 
 function change(update: Change): void {
   const { scope, ledger, ready } = snapshot;
-  if (!scope) return;
+  if (!scope) {
+    beforeScope.push(update);
+    return;
+  }
   if (!ready) {
     waiting.push(update);
     return;
@@ -148,6 +155,7 @@ export function useBadgeLedger(): BadgeLedgerSnapshot {
 export function resetBadgeLedgerStoreForTests(): void {
   activation += 1;
   waiting = [];
+  beforeScope = [];
   writes = Promise.resolve();
   snapshot = { scope: null, ledger: createEmptyBadgeLedger(), ready: false };
   listeners.clear();
