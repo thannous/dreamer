@@ -40,7 +40,8 @@ export type BadgeLedgerSnapshot = {
 };
 
 let snapshot: BadgeLedgerSnapshot = { scope: null, ledger: createEmptyBadgeLedger(), ready: false };
-let waiting: Change[] = [];
+const waiting = new Map<BadgeScope, Change[]>();
+const forgotten = new Set<BadgeScope>();
 // Actions that succeeded before any scope was known (auth still loading at launch): they
 // belong to the first dreamer whose ledger opens.
 let beforeScope: Change[] = [];
@@ -81,10 +82,10 @@ let writable = true;
 
 /** Queues a write behind the previous ones; a failed write never blocks the next. */
 function persist(scope: BadgeScope, ledger: BadgeLedger): Promise<void> {
-  if (!writable) return writes;
+  if (!writable || forgotten.has(scope)) return writes;
   writes = writes
     .catch(() => undefined)
-    .then(() => getLucidKeyValueStorage().setItem(storageKey(scope), JSON.stringify(ledger)))
+    .then(() => forgotten.has(scope) ? undefined : getLucidKeyValueStorage().setItem(storageKey(scope), JSON.stringify(ledger)))
     .catch((error) => {
       if (__DEV__) console.warn('[Badges] Failed to save the ledger', error);
     });
@@ -97,49 +98,65 @@ function persist(scope: BadgeScope, ledger: BadgeLedger): Promise<void> {
  * written over it would lose every earned tier.
  */
 export function activateBadgeScope(scope: BadgeScope): Promise<void> {
+  if (forgotten.has(scope)) return writes;
   if (snapshot.scope === scope) return writes;
   const id = ++activation;
-  waiting = beforeScope;
+  const pending = waiting.get(scope) ?? [];
+  pending.push(...beforeScope);
+  waiting.set(scope, pending);
   beforeScope = [];
   writable = true;
   publish({ scope, ledger: createEmptyBadgeLedger(), ready: false });
-  return open(scope, id, 0);
+  return open(scope, id, 0, pending);
 }
 
-function open(scope: BadgeScope, id: number, attempt: number): Promise<void> {
+function open(scope: BadgeScope, id: number, attempt: number, pending: Change[]): Promise<void> {
+  const isCurrent = () => id === activation;
+  // Changing accounts stops publication, not the original account's successful actions.
+  // The array identity also fences retries after deletion or a test/runtime reset.
+  const canContinue = () => !forgotten.has(scope) && waiting.get(scope) === pending
+    && (isCurrent() || pending.length > 0);
+  const retry = () => {
+    const delay = READ_RETRY_MS[Math.min(attempt, READ_RETRY_MS.length - 1)];
+    setTimeout(() => {
+      if (canContinue()) void open(scope, id, attempt + 1, pending);
+    }, delay);
+  };
   writes = writes.catch(() => undefined).then(async () => {
-    if (id !== activation) return;
+    if (!canContinue()) return;
     let own: StoredLedger;
     let guest: StoredLedger = { status: 'absent' };
     try {
       own = await readLedger(scope);
-      if (scope !== 'guest') guest = await readLedger('guest');
+      if (scope !== 'guest' && isCurrent()) guest = await readLedger('guest');
     } catch (error) {
       if (__DEV__) console.warn('[Badges] Failed to read the ledger', error);
-      const delay = READ_RETRY_MS[Math.min(attempt, READ_RETRY_MS.length - 1)];
-      setTimeout(() => {
-        if (id === activation) void open(scope, id, attempt + 1);
-      }, delay);
+      retry();
       return;
     }
-    if (id !== activation) return;
-    writable = own.status !== 'unreadable';
+    if (!canContinue()) return;
+    const canWrite = own.status !== 'unreadable';
+    if (isCurrent()) writable = canWrite;
     let ledger = own.status === 'read' ? own.ledger : createEmptyBadgeLedger();
+    // A retry after a failed initial write must retain subsequent in-memory actions too.
+    if (snapshot.scope === scope && snapshot.ready) ledger = mergeBadgeLedgers(ledger, snapshot.ledger);
     // A guest's actions join the first account that opens; what its journal told does not,
     // since the account reads its own journal again.
-    const guestLedger = writable && guest.status === 'read' ? guest.ledger : null;
+    const guestLedger = isCurrent() && canWrite && guest.status === 'read' ? guest.ledger : null;
     const claimedGuest = guestLedger !== null;
     if (guestLedger) ledger = mergeBadgeLedgers(ledger, actionsOnly(guestLedger));
     const initial = ledger;
-    for (const change of waiting) ledger = change(ledger);
-    waiting = [];
-    publish({ scope, ledger, ready: true });
-    if (writable && (ledger !== initial || claimedGuest)) {
+    const pendingCount = pending.length;
+    for (const change of pending.slice(0, pendingCount)) ledger = change(ledger);
+    if (isCurrent()) publish({ scope, ledger, ready: true });
+    if (canWrite && (ledger !== initial || claimedGuest || pendingCount > 0)) {
       await getLucidKeyValueStorage().setItem(storageKey(scope), JSON.stringify(ledger));
     }
+    if (canWrite) pending.splice(0, pendingCount);
     if (claimedGuest) await getLucidKeyValueStorage().removeItem(storageKey('guest'));
   }).catch((error) => {
     if (__DEV__) console.warn('[Badges] Failed to open the ledger', error);
+    if (canContinue()) retry();
   });
   return writes;
 }
@@ -151,7 +168,7 @@ function change(update: Change): void {
     return;
   }
   if (!ready) {
-    waiting.push(update);
+    waiting.get(scope)?.push(update);
     return;
   }
   const next = update(ledger);
@@ -194,7 +211,8 @@ export function useBadgeLedger(): BadgeLedgerSnapshot {
 /** Test-only: forgets the in-memory ledger and pending work. */
 export function resetBadgeLedgerStoreForTests(): void {
   activation += 1;
-  waiting = [];
+  waiting.clear();
+  forgotten.clear();
   beforeScope = [];
   writable = true;
   writes = Promise.resolve();
@@ -216,9 +234,10 @@ export function mergeRemoteBadgeLedger(scope: BadgeScope, remote: BadgeLedger): 
 /** Local completion after confirmed account deletion; remote rows cascade with auth.users. */
 export async function forgetBadgeLedger(userId: string): Promise<void> {
   const scope: BadgeScope = `user:${userId}`;
+  forgotten.add(scope);
+  waiting.delete(scope);
   if (snapshot.scope === scope) {
     activation += 1;
-    waiting = [];
     beforeScope = [];
     publish({ scope: null, ledger: createEmptyBadgeLedger(), ready: false });
   }
