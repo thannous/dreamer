@@ -213,11 +213,26 @@ test('Dreamer native system speech recognizes a QA audio file before correction 
     // Android restarts hands-free dictation after each phrase, which can replay
     // this finite QA file. Pause immediately, before screenshots or text edits.
     // iOS can finish by itself; don't start it again after its natural end.
-    if (platform === 'android'
-      || await screen.getByTestId('recording-write-listening-status', { visible: true }).count()) {
-      await screen.getByTestId('btn.recordToggle', { visible: true }).tap();
+    const pause = screen.getByTestId('btn.recordToggle', { visible: true });
+    const beforePause = await Promise.all([pause.boundingBox(), editor.boundingBox(), pause.isEnabled()]);
+    try {
+      if (platform === 'android'
+        || await screen.getByTestId('recording-write-listening-status', { visible: true }).count()) {
+        await pause.tap();
+      }
+      await expect(screen.getByTestId('recording-write-listening-status')).toHaveCount(0);
+    } catch (error) {
+      // Resetting microphone permission can terminate Android. Keep the actual
+      // failed capture, including control geometry, before that cleanup runs.
+      await app.screenshot('native-voice-pause-failed-before-permission-reset').catch(() => undefined);
+      const afterPause = await Promise.allSettled([
+        pause.boundingBox(), editor.boundingBox(), pause.isEnabled(), editor.inputValue(),
+        screen.getByTestId('recording-write-listening-status').count(),
+      ]);
+      const observed = { beforePause, afterPause: afterPause.map(result =>
+        result.status === 'fulfilled' ? result.value : String(result.reason)) };
+      throw new Error(`${error instanceof Error ? error.message : String(error)}\nNative pause state: ${JSON.stringify(observed)}`, { cause: error });
     }
-    await expect(screen.getByTestId('recording-write-listening-status')).toHaveCount(0);
     await app.screenshot('native-speech-file-recognized-before-text-edit');
     const recognized = await editor.inputValue();
     const corrected = recognized.replace(/blue lighthouse/i, 'green lighthouse') + ' I felt peaceful when I woke up.';

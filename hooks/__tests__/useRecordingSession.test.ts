@@ -188,8 +188,10 @@ describe('useRecordingSession', () => {
     expect(result.current.isSpeechListening).toBe(false);
   });
 
-  it.each(['blur', 'unmount'] as const)('cancels pending startup on %s', async (reason: 'blur' | 'unmount') => {
-    (Platform as { OS: string }).OS = 'ios';
+  it.each([
+    ['ios', 'blur'], ['ios', 'unmount'], ['ios', 'pause'], ['android', 'pause'],
+  ] as const)('cancels pending startup on %s %s', async (platform, reason) => {
+    (Platform as { OS: string }).OS = platform;
     jest.mocked(AudioModule.getRecordingPermissionsAsync).mockResolvedValue({ granted: true } as never);
     let finishStart!: (session: any) => void;
     jest.mocked(startNativeSpeechSession).mockImplementation(() => new Promise((resolve) => { finishStart = resolve; }));
@@ -198,10 +200,13 @@ describe('useRecordingSession', () => {
     let pending!: ReturnType<typeof result.current.startRecording>;
     await act(async () => { pending = result.current.startRecording('My draft'); });
     const options = jest.mocked(startNativeSpeechSession).mock.calls[0][1];
-    await act(async () => { await result.current.forceStopRecording(reason); });
-    expect(options?.signal?.aborted).toBe(true);
+    await act(async () => {
+      if (reason === 'pause') await result.current.stopRecording();
+      else await result.current.forceStopRecording(reason);
+    });
     await act(async () => { finishStart(session); await pending; });
     await expect(pending).resolves.toEqual({ success: false, error: 'cancelled' });
+    expect(options?.signal?.aborted).toBe(true);
     expect(session.abort).toHaveBeenCalled();
     expect(result.current.isRecording).toBe(false);
     expect(Alert.alert).not.toHaveBeenCalled();

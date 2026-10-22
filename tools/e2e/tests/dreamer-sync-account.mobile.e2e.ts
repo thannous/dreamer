@@ -148,7 +148,10 @@ test('Dreamer native guest dream and draft survive real sign-in, reconnect and a
     expect(after.error).toBeNull();
     expect(after.data?.map(row => row.id)).toEqual(ids.data!.map(row => row.id));
     expect(after.data?.map(row => row.transcript).sort()).toEqual([story, draft].sort());
-    // The draft was saved once; restarting or another login must not resurrect it.
-    await nativeCapture(screen);
+    // Restart directly after verifying both restored dreams: the saved draft
+    // must not resurrect. Returning to Journal can refocus its iOS search field
+    // and hide the tabs, which is unrelated to this durable-draft assertion.
+    await app.restart();
+    await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
     await expect(screen.getByTestId('input.dreamTranscript', { visible: true })).toHaveValue('');
   });
