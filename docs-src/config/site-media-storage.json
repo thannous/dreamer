@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "accountId": "412fc919ce706e002b751da5daaa0076",
+  "bucket": "noctalia-site-media",
+  "publicOrigin": "https://media.noctalia.app",
+  "delivery": "cdn",
+  "bundledPaths": [
+    "img/dreams/cat-480w.webp",
+    "img/dreams/doors-480w.webp",
+    "img/dreams/floating-480w.webp",
+    "img/dreams/frozen-lake-480w.webp",
+    "img/dreams/glass-teeth-480w.webp",
+    "img/dreams/harbour-480w.webp",
+    "img/dreams/no-driver-480w.webp",
+    "img/dreams/staircase-480w.webp",
+    "img/dreams/staircase-800w.webp",
+    "img/dreams/station-480w.webp",
+    "img/dreams/tide-480w.webp",
+    "img/starmap/cat-160w.webp",
+    "img/starmap/door-160w.webp",
+    "img/starmap/house-160w.webp",
+    "img/starmap/water-160w.webp"
+  ]
+}
