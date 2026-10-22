@@ -23,7 +23,8 @@ never taken back, whatever happens to the journal later.
 | dream-reader, favorite-echoes, time-traveler | a dream page read for 2 s on a later local day than its saving; favourites; the longest gap in days | `app/journal/[id].tsx` |
 | dream-weaver, dream-namer, night-cartographer | story, title, type or theme changed by hand, then saved; the AI's own naming never counts | edit save in `app/journal/[id].tsx` |
 | dream-seeker, path-finder | days a journal result was opened under a typed search, or a filter chosen by hand (a link's preset is not) | `app/(tabs)/journal.tsx` |
-| symbol-explorer, night-scholar | dictionary entries and guides read for 2 s; gold for the guides is all eight | symbol and guide screens |
+| symbol-explorer | dictionary entries read for 2 s | symbol screen |
+| night-scholar | guides explicitly marked completed by the reader; existing earned levels remain; gold is all eight | guide screen |
 | observatory | days the dreamer changed the period, chose a theme or opened a symbol in Trends holding dreams | `app/(tabs)/statistics.tsx` |
 
 Readings, searches and edits were never recorded before the collection: they

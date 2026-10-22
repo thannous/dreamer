@@ -14,6 +14,7 @@ interface DreamGuideCardProps {
   guide: DreamGuide;
   language: DreamGuideLanguage;
   metaLabel: string;
+  progressLabel?: string;
   onPress: (id: string) => void;
   showSeparator?: boolean;
 }
@@ -22,6 +23,7 @@ export const DreamGuideCard = memo(function DreamGuideCard({
   guide,
   language,
   metaLabel,
+  progressLabel,
   onPress,
   showSeparator = true,
 }: DreamGuideCardProps) {
@@ -34,7 +36,7 @@ export const DreamGuideCard = memo(function DreamGuideCard({
     <PressableScale
       onPress={handlePress}
       accessibilityRole="button"
-      accessibilityLabel={`${content.title}. ${metaLabel}`}
+      accessibilityLabel={`${content.title}. ${metaLabel}${progressLabel ? `. ${progressLabel}` : ''}`}
       accessibilityHint={content.metaDescription}
       testID={`dream-guide-${guide.id}`}
       // Adjacent reading rows already provide a generous, separate touch target.
@@ -60,6 +62,7 @@ export const DreamGuideCard = memo(function DreamGuideCard({
           {content.metaDescription}
         </Text>
         <Text style={[styles.metadata, { color: noctalia.accent.text }]}>{metaLabel}</Text>
+        {progressLabel ? <Text testID={`guide-progress-${guide.id}`} style={[styles.metadata, { color: noctalia.text.secondary }]}>{progressLabel}</Text> : null}
       </View>
     </PressableScale>
   );

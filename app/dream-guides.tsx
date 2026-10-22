@@ -1,6 +1,10 @@
 import React, { useCallback, useMemo } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { useGuideReading } from '@/hooks/useGuideReading';
+import { guideReadingStatus } from '@/lib/guideReading';
+import { getGuideReadingCopy } from '@/lib/guideReadingCopy';
+import { retryGuideReading } from '@/services/guideReadingStore';
 import { DreamGuideCard } from '@/components/guides/DreamGuideCard';
 import { DreamerArtworkWindow } from '@/components/ui/DreamerBackground';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -33,6 +37,13 @@ function DreamGuidesScreen() {
   const generalGuides = getGeneralDreamGuides();
   const symbolGuides = getImportantDreamGuides();
   const scrollPerf = useScrollIdle();
+  const reading = useGuideReading();
+  const readingCopy = getGuideReadingCopy(language);
+  const completedCount = Object.values(reading.entries).filter(entry => entry?.completedAt).length;
+  const resumeGuide = [...generalGuides, ...symbolGuides].filter(guide => {
+    const entry = reading.entries[guide.id];
+    return entry && !entry.completedAt;
+  }).sort((a, b) => reading.entries[b.id]!.updatedAt - reading.entries[a.id]!.updatedAt)[0];
 
   const handleGuidePress = useCallback((id: string) => {
     router.push({ pathname: '/dream-guide/[id]', params: { id } });
@@ -81,6 +92,16 @@ function DreamGuidesScreen() {
             {copy.screenSubtitle}
           </Text>
 
+          {reading.ready ? <View style={styles.readingProgress}>
+            <Text testID="guides.reading.summary" accessibilityLiveRegion="polite" style={[styles.subtitle, { color: noctalia.text.primary }]}>{readingCopy.progress(completedCount)}</Text>
+            {resumeGuide ? <Pressable accessibilityRole="button" testID="guides.reading.resume" onPress={() => handleGuidePress(resumeGuide.id)} style={styles.readingAction}>
+              <Text style={[styles.dictionaryButtonText, { color: noctalia.accent.text }]}>{readingCopy.resume} · {resumeGuide[language].title}</Text>
+            </Pressable> : null}
+          </View> : null}
+          {reading.error ? <View style={styles.readingProgress}>
+            <Text accessibilityRole="alert" style={[styles.dictionaryBody, { color: noctalia.text.secondary }]}>{readingCopy.pending}</Text>
+            <Pressable accessibilityRole="button" onPress={() => { void retryGuideReading(reading.scope); }} style={styles.readingAction}><Text style={{ color: noctalia.accent.text }}>{readingCopy.retry}</Text></Pressable>
+          </View> : null}
           <View>
             <Text accessibilityRole="header" style={[styles.sectionLabel, { color: noctalia.accent.text }]}>
               {copy.practicalLabel}
@@ -90,6 +111,7 @@ function DreamGuidesScreen() {
                 key={guide.id}
                 guide={guide}
                 language={language}
+                progressLabel={reading.ready ? readingCopy.status[guideReadingStatus(reading.entries[guide.id])] : undefined}
                 metaLabel={copy.readingTime(guide.readingMinutes)}
                 onPress={handleGuidePress}
                 showSeparator={index < generalGuides.length - 1}
@@ -142,6 +164,7 @@ function DreamGuidesScreen() {
                 key={guide.id}
                 guide={guide}
                 language={language}
+                progressLabel={reading.ready ? readingCopy.status[guideReadingStatus(reading.entries[guide.id])] : undefined}
                 metaLabel={copy.symbolCount(guide.symbols.length)}
                 onPress={handleGuidePress}
                 showSeparator={index < symbolGuides.length - 1}
@@ -155,6 +178,8 @@ function DreamGuidesScreen() {
 }
 
 const styles = StyleSheet.create({
+  readingProgress: { gap: 8 },
+  readingAction: { minHeight: 44, justifyContent: 'center' },
   container: {
     flex: 1,
   },
