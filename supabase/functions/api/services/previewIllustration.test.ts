@@ -70,6 +70,15 @@ const painting = async () => {
   return encodeBase64(await image.encode());
 };
 
+/** A take whose job stores the painting: settled, as the image job does once the dream holds it. */
+const take = async (...args: Parameters<typeof takePreparedIllustration>) => {
+  const painting = await takePreparedIllustration(...args);
+  if (!painting) return null;
+  await painting.settle();
+  return painting.url;
+};
+const attached = async (...args: Parameters<typeof attachPreparedIllustration>) => (await attachPreparedIllustration(...args)) !== null;
+
 Deno.test('the band is the middle third of the painting, nothing above or below', async () => {
   const band = await Image.decode(await cropBand(decodeBase64(await painting())));
   assertEquals([band.width, band.height], [90, 53]);
@@ -120,12 +129,12 @@ Deno.test('the image job takes the painting of the same prompt once, into the ac
   const admin = { from: previewsTable(rows), storage };
   const input = { bucket: 'dream-images', userId: 'u1', dreamId: 7, prompt: 'A river of glass' };
 
-  assertEquals(await takePreparedIllustration(admin, { ...input, prompt: 'Another prompt' }), null);
-  assertEquals(await takePreparedIllustration(admin, input), 'https://example.test/sign/u1/7-a.jpg?token=t');
+  assertEquals(await take(admin, { ...input, prompt: 'Another prompt' }), null);
+  assertEquals(await take(admin, input), 'https://example.test/sign/u1/7-a.jpg?token=t');
   assertEquals([...storage.objects.keys()], ['u1/7-a.jpg']);
   assertEquals([rows[0].image_status, rows[0].image_path, rows[0].band_path, rows[0].band_url], ['used', null, null, null]);
   // Taken: a second job paints its own.
-  assertEquals(await takePreparedIllustration(admin, input), null);
+  assertEquals(await take(admin, input), null);
 });
 
 Deno.test('a job asked with the dream’s text only takes the painting of that same text', async () => {
@@ -138,9 +147,9 @@ Deno.test('a job asked with the dream’s text only takes the painting of that s
   const admin = { from: previewsTable(rows), storage };
   const input = { bucket: 'dream-images', userId: 'u1', dreamId: 7 };
 
-  assertEquals(await takePreparedIllustration(admin, input), null);
-  assertEquals(await takePreparedIllustration(admin, { ...input, transcriptSha256: 'sha-edited' }), null);
-  assertEquals(await takePreparedIllustration(admin, { ...input, transcriptSha256: 'sha-1' }), 'https://example.test/sign/u1/7-a.jpg?token=t');
+  assertEquals(await take(admin, input), null);
+  assertEquals(await take(admin, { ...input, transcriptSha256: 'sha-edited' }), null);
+  assertEquals(await take(admin, { ...input, transcriptSha256: 'sha-1' }), 'https://example.test/sign/u1/7-a.jpg?token=t');
 });
 
 Deno.test('a painting under way is waited for, not paid for twice', async () => {
@@ -161,18 +170,18 @@ Deno.test('a painting under way is waited for, not paid for twice', async () => 
       Object.assign(rows[0], { image_status: 'ready', image_path: 'previews/u1/7-a.jpg' });
     }
   };
-  assertEquals(await takePreparedIllustration(admin, { ...input, sleep }), 'https://example.test/sign/u1/7-a.jpg?token=t');
+  assertEquals(await take(admin, { ...input, sleep }), 'https://example.test/sign/u1/7-a.jpg?token=t');
 
   // A painting that never ends is waited for a bounded time only.
   Object.assign(rows[0], { image_status: 'painting', image_path: null, image_updated_at: new Date(clock).toISOString() });
   const waitedFrom = clock;
-  assertEquals(await takePreparedIllustration(admin, { ...input, sleep: async (ms: number) => { clock += ms; } }), null);
+  assertEquals(await take(admin, { ...input, sleep: async (ms: number) => { clock += ms; } }), null);
   assert(clock - waitedFrom <= 93_000);
   // A painting under way for longer than its three minutes has failed: nothing to wait for.
   const before = clock;
   clock += 4 * 60_000;
   const slept: number[] = [];
-  assertEquals(await takePreparedIllustration(admin, { ...input, sleep: async (ms: number) => { slept.push(ms); } }), null);
+  assertEquals(await take(admin, { ...input, sleep: async (ms: number) => { slept.push(ms); } }), null);
   assertEquals(slept, []);
   assert(clock > before);
 });
@@ -185,27 +194,27 @@ Deno.test('an analysis opened with no illustration asked takes the painting alre
       user_id: 'u1', dream_id: 7, status: 'used', image_status: 'ready', image_prompt: 'A river of glass',
       image_path: 'previews/u1/7-a.jpg', band_path: null, band_url: null,
     }];
-    const dreams: Row[] = [{ id: 7, user_id: 'u1', image_url: imageUrl, image_generation_failed: null }];
+    const dreams: Row[] = [{ id: 7, user_id: 'u1', image_url: imageUrl, image_generation_failed: null, analysis_request_id: 'r1', analysis_status: 'pending' }];
     const admin = { from: (name: string) => (name === 'dreams' ? previewsTable(dreams) : previewsTable(previews))(), storage };
     return { admin, storage, previews, dreams };
   };
-  const input = { bucket: 'dream-images', userId: 'u1', dreamId: 7, prompt: 'A river of glass' };
+  const input = { bucket: 'dream-images', userId: 'u1', dreamId: 7, prompt: 'A river of glass', analysisRequestId: 'r1' };
 
   const fresh = setup(null);
-  assertEquals(await attachPreparedIllustration(fresh.admin, input), true);
+  assertEquals(await attached(fresh.admin, input), true);
   assertEquals(fresh.dreams[0].image_url, 'https://example.test/sign/u1/7-a.jpg?token=t');
   assertEquals(fresh.dreams[0].image_generation_failed, false);
   assertEquals(fresh.previews[0].image_status, 'used');
 
   // An illustration already there stays, and the prepared painting is left for nothing else.
   const illustrated = setup('https://example.test/own.jpg');
-  assertEquals(await attachPreparedIllustration(illustrated.admin, input), false);
+  assertEquals(await attached(illustrated.admin, input), false);
   assertEquals(illustrated.dreams[0].image_url, 'https://example.test/own.jpg');
   assertEquals(illustrated.previews[0].image_status, 'ready');
 
   // Another reading (an edited dream) has another prompt: nothing is taken, nothing is painted.
   const edited = setup(null);
-  assertEquals(await attachPreparedIllustration(edited.admin, { ...input, prompt: 'Another prompt' }), false);
+  assertEquals(await attached(edited.admin, { ...input, prompt: 'Another prompt' }), false);
   assertEquals(edited.dreams[0].image_url, null);
   assertEquals([...edited.storage.objects.keys()], ['previews/u1/7-a.jpg']);
 });
@@ -217,7 +226,7 @@ Deno.test('a dream illustrated between the read and the link keeps its own illus
     user_id: 'u1', dream_id: 7, status: 'used', image_status: 'ready', image_prompt: 'A river of glass',
     image_path: 'previews/u1/7-a.jpg', band_path: null, band_url: null,
   }];
-  const dreams: Row[] = [{ id: 7, user_id: 'u1', image_url: 'https://example.test/own.jpg' }];
+  const dreams: Row[] = [{ id: 7, user_id: 'u1', image_url: 'https://example.test/own.jpg', analysis_request_id: 'r1', analysis_status: 'pending' }];
   let dreamReads = 0;
   // The first read still sees no illustration: the image job saved its own right after.
   const stale = { select: () => stale, eq: () => stale, maybeSingle: async () => ({ data: { image_url: null }, error: null }) };
@@ -225,7 +234,7 @@ Deno.test('a dream illustrated between the read and the link keeps its own illus
     from: (name: string) => (name !== 'dreams' ? previewsTable(previews)() : dreamReads++ === 0 ? stale : previewsTable(dreams)()),
     storage,
   };
-  assertEquals(await attachPreparedIllustration(admin, { bucket: 'dream-images', userId: 'u1', dreamId: 7, prompt: 'A river of glass' }), false);
+  assertEquals(await attached(admin, { bucket: 'dream-images', userId: 'u1', dreamId: 7, prompt: 'A river of glass', analysisRequestId: 'r1' }), false);
   assertEquals(dreams[0].image_url, 'https://example.test/own.jpg');
   assertEquals([...storage.objects.keys()], []);
 });
@@ -236,11 +245,11 @@ Deno.test('with no wait, a painting under way is left for later', async () => {
     user_id: 'u1', dream_id: 7, status: 'used', image_status: 'painting', image_prompt: 'A river of glass',
     image_path: null, band_path: null, band_url: null, image_updated_at: new Date().toISOString(),
   }];
-  const dreams: Row[] = [{ id: 7, user_id: 'u1', image_url: null }];
+  const dreams: Row[] = [{ id: 7, user_id: 'u1', image_url: null, analysis_request_id: 'r1', analysis_status: 'pending' }];
   const admin = { from: (name: string) => (name === 'dreams' ? previewsTable(dreams) : previewsTable(previews))(), storage };
   const slept: number[] = [];
-  const input = { bucket: 'dream-images', userId: 'u1', dreamId: 7, prompt: 'A river of glass', sleep: async (ms: number) => { slept.push(ms); } };
-  assertEquals(await attachPreparedIllustration(admin, { ...input, waitMs: 0 }), false);
+  const input = { bucket: 'dream-images', userId: 'u1', dreamId: 7, prompt: 'A river of glass', analysisRequestId: 'r1', sleep: async (ms: number) => { slept.push(ms); } };
+  assertEquals(await attached(admin, { ...input, waitMs: 0 }), false);
   assertEquals(slept, []);
   assertEquals(previews[0].image_status, 'painting');
 });
@@ -254,10 +263,10 @@ Deno.test('a painting that cannot be moved stays ready for the next job instead 
   const admin = { from: previewsTable(rows), storage };
   const input = { bucket: 'dream-images', userId: 'u1', dreamId: 7, prompt: 'A river of glass' };
   // The object is missing for now (the fake move fails): nothing is spent.
-  assertEquals(await takePreparedIllustration(admin, input), null);
+  assertEquals(await take(admin, input), null);
   assertEquals([rows[0].image_status, rows[0].image_path], ['ready', 'previews/u1/7-a.jpg']);
   storage.objects.set('previews/u1/7-a.jpg', new Uint8Array([1]));
-  assertEquals(await takePreparedIllustration(admin, input), 'https://example.test/sign/u1/7-a.jpg?token=t');
+  assertEquals(await take(admin, input), 'https://example.test/sign/u1/7-a.jpg?token=t');
   assertEquals([rows[0].image_status, rows[0].image_path], ['used', null]);
 });
 
@@ -282,12 +291,61 @@ Deno.test('a painting moved but not linked is linked by the next job from where 
   }];
   const admin = { from: previewsTable(rows), storage: flaky };
   const input = { bucket: 'dream-images', userId: 'u1', dreamId: 7, prompt: 'A river of glass' };
-  assertEquals(await takePreparedIllustration(admin, input), null);
+  assertEquals(await take(admin, input), null);
   // Ready again with its band, as analysis_previews_painted_has_image requires.
   assertEquals([rows[0].image_status, rows[0].image_path, rows[0].band_path], ['ready', 'u1/7-a.jpg', 'previews/u1/7-a-band.jpg']);
   assert(rows[0].band_url);
   failSign = false;
-  assertEquals(await takePreparedIllustration(admin, input), 'https://example.test/sign/u1/7-a.jpg?token=t');
+  assertEquals(await take(admin, input), 'https://example.test/sign/u1/7-a.jpg?token=t');
   assertEquals([...storage.objects.keys()], ['u1/7-a.jpg']);
   assertEquals([rows[0].image_status, rows[0].image_path, rows[0].band_path, rows[0].band_url], ['used', null, null, null]);
+});
+
+Deno.test('a job that cannot store the taken painting gives it back to the next one', async () => {
+  const storage = fakeStorage();
+  storage.objects.set('previews/u1/7-a.jpg', new Uint8Array([1]));
+  storage.objects.set('previews/u1/7-a-band.jpg', new Uint8Array([2]));
+  const rows: Row[] = [{
+    user_id: 'u1', dream_id: 7, status: 'used', image_status: 'ready', image_prompt: 'A river of glass',
+    image_path: 'previews/u1/7-a.jpg', band_path: 'previews/u1/7-a-band.jpg', band_url: 'https://example.test/band',
+  }];
+  const admin = { from: previewsTable(rows), storage };
+  const input = { bucket: 'dream-images', userId: 'u1', dreamId: 7, prompt: 'A river of glass' };
+  const first = await takePreparedIllustration(admin, input);
+  assert(first);
+  // Held while the job stores it: no other job takes it meanwhile.
+  assertEquals(await takePreparedIllustration(admin, input), null);
+  await first.giveBack();
+  // Ready again with its band, as analysis_previews_painted_has_image requires.
+  assertEquals([rows[0].image_status, rows[0].image_path, rows[0].band_path], ['ready', 'u1/7-a.jpg', 'previews/u1/7-a-band.jpg']);
+  assertEquals(await take(admin, input), 'https://example.test/sign/u1/7-a.jpg?token=t');
+  assertEquals([...storage.objects.keys()], ['u1/7-a.jpg']);
+});
+
+Deno.test('a painting attached before an analysis refused leaves the dream, and only for that analysis', async () => {
+  const setup = (dream: Row) => {
+    const storage = fakeStorage();
+    storage.objects.set('previews/u1/7-a.jpg', new Uint8Array([1]));
+    const previews: Row[] = [{
+      user_id: 'u1', dream_id: 7, status: 'used', image_status: 'ready', image_prompt: 'A river of glass',
+      image_path: 'previews/u1/7-a.jpg', band_path: null, band_url: null,
+    }];
+    const dreams: Row[] = [{ id: 7, user_id: 'u1', image_url: null, analysis_request_id: 'r1', analysis_status: 'pending', ...dream }];
+    const admin = { from: (name: string) => (name === 'dreams' ? previewsTable(dreams) : previewsTable(previews))(), storage };
+    return { admin, storage, dreams };
+  };
+  const input = { bucket: 'dream-images', userId: 'u1', dreamId: 7, prompt: 'A river of glass', analysisRequestId: 'r1' };
+
+  const refused = setup({});
+  const painting = await attachPreparedIllustration(refused.admin, input);
+  assert(painting);
+  assertEquals(refused.dreams[0].image_url, 'https://example.test/sign/u1/7-a.jpg?token=t');
+  await painting.detach();
+  assertEquals(refused.dreams[0].image_url, null);
+  assertEquals([...refused.storage.objects.keys()], []);
+
+  // Asked again meanwhile: another analysis, the painting is not this dream's.
+  const askedAgain = setup({ analysis_request_id: 'r2' });
+  assertEquals(await attachPreparedIllustration(askedAgain.admin, input), null);
+  assertEquals(askedAgain.dreams[0].image_url, null);
 });

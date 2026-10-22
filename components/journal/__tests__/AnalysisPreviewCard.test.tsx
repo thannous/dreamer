@@ -111,6 +111,30 @@ it('offers to try again when a writing never ends', async () => {
   }
 });
 
+it('gives another dream its own reads, whatever the former one spent', async () => {
+  jest.useFakeTimers();
+  try {
+    mockFetchPreview.mockResolvedValue({ state: 'writing', preview: null, preparedAt: null, retryAt: null });
+    const onOpenPlus = jest.fn();
+    const screen = render(card(onOpenPlus));
+    for (let poll = 0; poll <= 50; poll += 1) {
+      await act(async () => { jest.advanceTimersByTime(4000); });
+    }
+    await waitFor(() => expect(screen.getByTestId('btn.analysisPreview.retry')).toBeTruthy());
+
+    // Another dream still being written waits for its writing, then reads it.
+    screen.rerender(<AnalysisPreviewCard remoteDreamId={8} transcript="Je volais." onOpenPlus={onOpenPlus} />);
+    await waitFor(() => expect(screen.getByTestId('text.analysisPreview.waiting')).toBeTruthy());
+    expect(screen.queryByTestId('btn.analysisPreview.retry')).toBeNull();
+    mockFetchPreview.mockResolvedValue(preview());
+    await act(async () => { jest.advanceTimersByTime(4000); });
+    await waitFor(() => expect(screen.getByText('Ton rêve fait de la rivière un passage.')).toBeTruthy());
+    expect(mockFetchPreview).toHaveBeenLastCalledWith(expect.objectContaining({ remoteDreamId: 8, prepare: false }));
+  } finally {
+    jest.useRealTimers();
+  }
+});
+
 it('prepares nothing without consent', async () => {
   mockFetchPreview.mockResolvedValueOnce({ state: 'available', preview: null, preparedAt: null, retryAt: null });
   mockConsent.mockResolvedValue(false);

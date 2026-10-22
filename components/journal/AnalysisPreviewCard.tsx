@@ -68,15 +68,19 @@ export function AnalysisPreviewCard({ remoteDreamId, transcript, onOpenPlus, onO
   useEffect(() => {
     const prepareNow = request.prepare && request.subject === subject && sentPreparation.current !== request.count;
     if (prepareNow) sentPreparation.current = request.count;
+    // Reads already spent waiting count for their own dream, language and text only.
+    const polls = request.subject === subject ? request.polls : 0;
     const controller = new AbortController();
     let timer: ReturnType<typeof setTimeout> | null = null;
     const readAgain = (writing: boolean) => {
       // A writing that never ends can be asked again; a painting that never ends leaves the reading.
-      if (request.polls >= MAX_POLLS) {
+      if (polls >= MAX_POLLS) {
         if (writing) setState({ kind: 'failed', subject });
         return;
       }
-      timer = setTimeout(() => setRequest((value) => ({ ...value, count: value.count + 1, prepare: false, polls: value.polls + 1 })), POLL_MS);
+      timer = setTimeout(() => setRequest((value) => ({
+        count: value.count + 1, prepare: false, polls: (value.subject === subject ? value.polls : 0) + 1, subject,
+      })), POLL_MS);
     };
     void (async () => {
       try {
@@ -90,7 +94,7 @@ export function AnalysisPreviewCard({ remoteDreamId, transcript, onOpenPlus, onO
         if (controller.signal.aborted) return;
         const refusal = analysisPreviewRefusal(error);
         // A failed read while waiting keeps what shows and reads again.
-        if (request.polls > 0 && !prepareNow && !refusal) {
+        if (polls > 0 && !prepareNow && !refusal) {
           readAgain(false);
           return;
         }

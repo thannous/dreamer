@@ -84,11 +84,22 @@ export async function removePreviewObjects(admin: AdminClient, bucket: string, p
   }
 }
 
+/** A prepared painting taken by a job, held for it until the dream stores its link. */
+export type TakenPainting = {
+  path: string;
+  url: string;
+  /** Once the dream holds it: its band goes and the preview keeps no path to it. */
+  settle: () => Promise<void>;
+  /** Not stored after all: ready again for the next job, from where it now lies. */
+  giveBack: () => Promise<void>;
+};
+
 /**
  * The painting prepared for this dream from this very image prompt (or, for a job asked with
  * the dream's text only, from this very text), moved to the account's own prefix and linked
  * like any dream illustration; null when there is none to take. A painting still under way is
- * waited for: the analysis was opened before it was done.
+ * waited for: the analysis was opened before it was done. The taker settles it once the dream
+ * holds its link, or gives it back, so a job that fails after the take leaves it for the next.
  */
 export async function takePreparedIllustration(admin: AdminClient, input: {
   bucket: string;
@@ -100,11 +111,7 @@ export async function takePreparedIllustration(admin: AdminClient, input: {
   waitMs?: number;
   now?: () => number;
   sleep?: (ms: number) => Promise<void>;
-}): Promise<string | null> {
-  return (await takePreparedPainting(admin, input))?.url ?? null;
-}
-
-async function takePreparedPainting(admin: AdminClient, input: Parameters<typeof takePreparedIllustration>[1]): Promise<{ path: string; url: string } | null> {
+}): Promise<TakenPainting | null> {
   try {
     const previews = () => admin.from('analysis_previews');
     const now = input.now ?? Date.now;
@@ -135,73 +142,107 @@ async function takePreparedPainting(admin: AdminClient, input: Parameters<typeof
 
     const objects = admin.storage.from(input.bucket);
     const ownPath = `${input.userId}/${row.image_path.split('/').pop()}`;
+    // The row holds the painting where it lies (its band kept) until the dream holds its link.
+    const held = (path: string, values: Record<string, unknown>) => previews().update(values)
+      .eq('user_id', input.userId).eq('dream_id', input.dreamId).eq('image_status', 'used').eq('image_path', path)
+      .then(() => undefined, () => undefined);
+    const giveBack = (path: string) => held(path, { image_status: 'ready' });
     // A painting already moved once (its link could not be made then) only needs its link.
     const moved = row.image_path === ownPath ? { error: null } : await objects.move(row.image_path, ownPath);
     if (moved.error) {
       // Still where it was: the painting stays ready for the next job instead of being paid again.
       console.warn('[analysis-preview] could not move a prepared painting');
-      await previews().update({ image_status: 'ready' })
-        .eq('user_id', input.userId).eq('dream_id', input.dreamId).eq('image_status', 'used').eq('image_path', row.image_path)
-        .then(() => undefined, () => undefined);
+      await giveBack(row.image_path);
       return null;
     }
-    // Moved: the row holds the painting under the account's prefix (its band kept) until a link is made.
     if (ownPath !== row.image_path) {
       await previews().update({ image_path: ownPath })
         .eq('user_id', input.userId).eq('dream_id', input.dreamId).eq('image_status', 'used').eq('image_path', row.image_path);
     }
     const { data: signed, error: signError } = await objects.createSignedUrl(ownPath, SIGNED_URL_SECONDS);
     if (signError || !signed?.signedUrl) {
-      // Linked later by the next job, from where it now lies.
-      await previews().update({ image_status: 'ready' })
-        .eq('user_id', input.userId).eq('dream_id', input.dreamId).eq('image_status', 'used').eq('image_path', ownPath)
-        .then(() => undefined, () => undefined);
+      await giveBack(ownPath);
       return null;
     }
-    await removePreviewObjects(admin, input.bucket, [row.band_path]);
-    await previews().update({ image_path: null, band_path: null, band_url: null })
-      .eq('user_id', input.userId).eq('dream_id', input.dreamId).eq('image_status', 'used').eq('image_path', ownPath);
-    return { path: ownPath, url: signed.signedUrl };
+    const bandPath = row.band_path;
+    return {
+      path: ownPath,
+      url: signed.signedUrl,
+      settle: async () => {
+        await removePreviewObjects(admin, input.bucket, [bandPath]);
+        await held(ownPath, { image_path: null, band_path: null, band_url: null });
+      },
+      giveBack: () => giveBack(ownPath),
+    };
   } catch {
     console.warn('[analysis-preview] could not take a prepared painting');
     return null;
   }
 }
 
+/** The prepared painting a job attached to its dream. */
+export type AttachedPainting = {
+  /** The analysis was not saved after all: the dream drops the painting, if it still holds it. */
+  detach: () => Promise<void>;
+};
+
 /**
  * Once the analysis has taken the prepared reading and asked for no illustration, the painting
- * prepared with it (already paid for) becomes the dream's illustration, if the dream has none.
- * Nothing is painted here: no painting to take leaves the dream as it is.
+ * prepared with it (already paid for) becomes the dream's illustration, if the dream has none
+ * and is still waiting for this very analysis. Nothing is painted here: no painting to take
+ * leaves the dream as it is.
  */
 export async function attachPreparedIllustration(admin: AdminClient, input: {
   bucket: string;
   userId: string;
   dreamId: number;
   prompt: string;
+  /** The analysis request the dream must still be waiting for. */
+  analysisRequestId: string;
   waitMs?: number;
   now?: () => number;
   sleep?: (ms: number) => Promise<void>;
-}): Promise<boolean> {
+}): Promise<AttachedPainting | null> {
   try {
     const dreams = () => admin.from('dreams');
     const { data: dream, error } = await dreams().select('image_url')
       .eq('id', input.dreamId).eq('user_id', input.userId).maybeSingle();
-    if (error || !dream || dream.image_url) return false;
-    const painting = await takePreparedPainting(admin, input);
-    if (!painting) return false;
+    if (error || !dream || dream.image_url) return null;
+    const painting = await takePreparedIllustration(admin, input);
+    if (!painting) return null;
     const { data: set, error: setError } = await dreams()
       .update({ image_url: painting.url, image_generation_failed: false })
-      .eq('id', input.dreamId).eq('user_id', input.userId).or('image_url.is.null,image_url.eq.')
+      .eq('id', input.dreamId).eq('user_id', input.userId)
+      .eq('analysis_request_id', input.analysisRequestId).eq('analysis_status', 'pending')
+      .or('image_url.is.null,image_url.eq.')
       .select('id');
-    // Illustrated meanwhile: the taken painting would be left unseen. A lost answer may hide a
-    // saved link, so the painting then stays.
-    if (!setError && !set?.length) {
-      await admin.storage.from(input.bucket).remove([painting.path]).then(() => undefined, () => undefined);
+    // A lost answer may hide a saved link: the painting then stays where it is, ready again.
+    if (setError) {
+      await painting.giveBack();
+      return null;
     }
-    if (setError || !set?.length) return false;
-    return true;
+    if (!set?.length) {
+      // Illustrated or asked again meanwhile: the taken painting would be left unseen.
+      await painting.settle();
+      await removeObject(admin, input.bucket, painting.path);
+      return null;
+    }
+    await painting.settle();
+    return {
+      detach: async () => {
+        const { data: dropped, error: dropError } = await dreams()
+          .update({ image_url: null })
+          .eq('id', input.dreamId).eq('user_id', input.userId).eq('image_url', painting.url)
+          .select('id');
+        if (!dropError && dropped?.length) await removeObject(admin, input.bucket, painting.path);
+      },
+    };
   } catch {
     console.warn('[analysis-preview] could not attach a prepared painting');
-    return false;
+    return null;
   }
+}
+
+async function removeObject(admin: AdminClient, bucket: string, path: string) {
+  await Promise.resolve(admin.storage.from(bucket).remove([path])).then(() => undefined, () => undefined);
 }

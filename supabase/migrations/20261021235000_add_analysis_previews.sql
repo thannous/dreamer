@@ -135,6 +135,67 @@ $$;
 revoke execute on function public.hold_analysis_preview(uuid, bigint, text, text) from public, anon, authenticated;
 grant execute on function public.hold_analysis_preview(uuid, bigint, text, text) to service_role;
 
+-- The api function saves the reading it wrote only for the dream as it read
+-- it: the same stored text (p_dream_transcript_sha256 hashes dreams.transcript
+-- as stored), not analyzed and no analysis asked meanwhile. The dream's row is
+-- locked, so an edit made during the save waits for it, and an edit made while
+-- the model wrote refuses the reading: the hold is then given back.
+create or replace function public.save_analysis_preview(
+  p_user_id uuid,
+  p_dream_id bigint,
+  p_held_at timestamptz,
+  p_dream_transcript_sha256 text,
+  p_reading jsonb,
+  p_image_prompt text
+)
+returns jsonb
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  dream_row record;
+  saved_at timestamptz := now();
+begin
+  if p_user_id is null or p_dream_id is null or p_held_at is null or p_reading is null then
+    raise exception 'preview identifiers and reading are required';
+  end if;
+
+  select d.transcript, d.is_analyzed, d.analysis_status into dream_row
+  from public.dreams d
+  where d.id = p_dream_id and d.user_id = p_user_id
+  for share;
+  if not found then
+    return jsonb_build_object('state', 'gone');
+  end if;
+  if dream_row.is_analyzed is true then
+    return jsonb_build_object('state', 'analyzed');
+  end if;
+  if dream_row.analysis_status = 'pending' then
+    return jsonb_build_object('state', 'pending');
+  end if;
+  if encode(pg_catalog.sha256(convert_to(coalesce(dream_row.transcript, ''), 'UTF8')), 'hex')
+    is distinct from p_dream_transcript_sha256 then
+    return jsonb_build_object('state', 'changed');
+  end if;
+
+  update public.analysis_previews p
+  set status = 'ready', reading = p_reading, updated_at = saved_at,
+    image_status = 'painting', image_prompt = p_image_prompt, image_updated_at = saved_at
+  where p.user_id = p_user_id
+    and p.dream_id = p_dream_id
+    and p.status = 'writing'
+    and p.updated_at = p_held_at;
+  if not found then
+    return jsonb_build_object('state', 'lost');
+  end if;
+  return jsonb_build_object('state', 'saved', 'saved_at', saved_at);
+end;
+$$;
+
+revoke execute on function public.save_analysis_preview(uuid, bigint, timestamptz, text, jsonb, text) from public, anon, authenticated;
+grant execute on function public.save_analysis_preview(uuid, bigint, timestamptz, text, jsonb, text) to service_role;
+
 -- Deleting a dream deletes the reading prepared from it, as deleting a dream
 -- withdraws it from the AI, and its band's link. The painting's objects stay,
 -- like a deleted dream's illustration, until the account is deleted. Security

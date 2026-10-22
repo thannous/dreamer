@@ -2,7 +2,7 @@ import { verifyAnalysisImageAuthorization } from '../api/services/analysisAuthor
 import { serve } from 'https://deno.land/std@0.224.0/http/server.ts';
 import { GUEST_LIMITS, corsHeaders } from '../api/lib/constants.ts';
 import { ensureImagePrompt, generateAndStoreImage } from '../api/services/imagePipeline.ts';
-import { takePreparedIllustration } from '../api/services/previewIllustration.ts';
+import { takePreparedIllustration, type TakenPainting } from '../api/services/previewIllustration.ts';
 import { transcriptSha256 } from '../api/lib/analysisPreview.ts';
 import { AI_REQUEST_LIMITS } from '../api/lib/aiRequestPolicy.ts';
 import { resolveStoredTranscriptForAi } from '../api/lib/prompts.ts';
@@ -500,6 +500,7 @@ const processImageJob = async (input: {
     let claimedQuotaThisRun = false;
     const imageSize = requestPayload.imageSize ?? '1K';
     const highResolution = imageSize === '2K' || imageSize === '4K';
+    let takenPainting: TakenPainting | null = null;
 
     try {
       if (!['1K', '2K', '4K'].includes(imageSize)) {
@@ -529,13 +530,13 @@ const processImageJob = async (input: {
       // asked with the dream's text only, from this same text), is this illustration: it is
       // not painted twice.
       const prepared = preparedPaintingMatch(job, { prompt, previousImageUrl: requestPayload.previousImageUrl, imageSize });
-      let preparedImageUrl = prepared === 'transcript'
+      takenPainting = prepared === 'transcript'
         ? await takePreparedIllustration(adminClient, {
           bucket: input.storageBucket, userId: job.user_id!, dreamId: job.dream_id!,
           transcriptSha256: await storedTranscriptSha256(adminClient, job.user_id!, job.dream_id!),
         })
         : null;
-      if (!prompt && !preparedImageUrl) {
+      if (!prompt && !takenPainting) {
         startedUpstream = true;
         prompt = await ensureImagePrompt({
           apiKey,
@@ -543,10 +544,11 @@ const processImageJob = async (input: {
           transcript: requestPayload.transcript,
         });
       } else if (prepared === 'prompt') {
-        preparedImageUrl = await takePreparedIllustration(adminClient, {
+        takenPainting = await takePreparedIllustration(adminClient, {
           bucket: input.storageBucket, userId: job.user_id!, dreamId: job.dream_id!, prompt,
         });
       }
+      const preparedImageUrl = takenPainting?.url ?? null;
 
       startedUpstream = true;
       const ownerId = job.user_id ?? `guest_${job.guest_fingerprint ?? 'guest'}`;
@@ -581,6 +583,9 @@ const processImageJob = async (input: {
         error_message: null,
         finished_at: new Date().toISOString(),
       });
+      // Stored with the dream and the job: the prepared painting is this illustration for good.
+      await takenPainting?.settle();
+      takenPainting = null;
       if (highResolution) {
         // A failed bookkeeping update must never regenerate an already stored image.
         // The reservation still counts towards the monthly limit.
@@ -589,6 +594,8 @@ const processImageJob = async (input: {
         });
       }
     } catch (error) {
+      // Not stored: the prepared painting waits for the next attempt instead of being paid again.
+      await takenPainting?.giveBack();
       const serialized = serializeImageJobError(error);
       let guestClaimCleared = false;
       if (claimedQuotaThisRun && !startedUpstream) {

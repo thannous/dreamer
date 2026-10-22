@@ -75,6 +75,9 @@ type DreamRow = {
   dream_type: string | null;
 };
 
+/** What save_analysis_preview answers. */
+type Save = { state?: 'saved' | 'gone' | 'analyzed' | 'pending' | 'changed' | 'lost'; saved_at?: string };
+
 /** What hold_analysis_preview answers. */
 type Hold = {
   state?: 'held' | 'writing' | 'weekly_limit' | 'gone' | 'analyzed' | 'pending';
@@ -159,6 +162,8 @@ export async function handleAnalysisPreview(ctx: ApiContext, deps: Dependencies 
     const transcript = resolveStoredTranscriptForAi(dream.transcript, AI_REQUEST_LIMITS.transcriptRequestChars);
     if (!transcript.ok) return refused('INVALID_TRANSCRIPT', 422);
     const sha256 = await transcriptSha256(transcript.storedTranscript);
+    // The dream's text as stored, which the save checks again: an edit made while the model writes refuses the reading.
+    const dreamSha256 = await transcriptSha256(String(dream.transcript ?? ''));
 
     // Only a reading of this very text, in this language, is the dream's preview.
     const matches = (row: PreviewRow | null): row is PreviewRow & { reading: StructuredDreamAnalysis } =>
@@ -178,7 +183,9 @@ export async function handleAnalysisPreview(ctx: ApiContext, deps: Dependencies 
           ...previewOf(row.reading, keepStoredDreamClass(dream, row.reading).title),
           image: band
             ? { state: 'ready', bandUrl: band }
-            : row.image_status === 'painting' && Date.parse(row.image_updated_at ?? '') > now - PREVIEW_PAINTING_TIMEOUT_MS
+            // A painting under way, or done but whose link could not be signed this time: read again.
+            : (row.image_status === 'painting' && Date.parse(row.image_updated_at ?? '') > now - PREVIEW_PAINTING_TIMEOUT_MS)
+                || row.image_status === 'ready'
               ? { state: 'painting', bandUrl: null }
               : { state: 'none', bandUrl: null },
         },
@@ -226,7 +233,7 @@ export async function handleAnalysisPreview(ctx: ApiContext, deps: Dependencies 
     }
     const heldAt = hold.held_at;
 
-    let saved: PreviewRow | null = null;
+    let saved = false;
     let prompt = '';
     let savedAt = '';
     try {
@@ -254,15 +261,22 @@ export async function handleAnalysisPreview(ctx: ApiContext, deps: Dependencies 
       if (!isPreparedReading(reading)) return refused('PREVIEW_FAILED', 502);
       if ((deps.now ?? Date.now)() - Date.parse(heldAt) > SAVE_DEADLINE_MS) return refused('PREVIEW_FAILED', 502);
 
-      savedAt = new Date((deps.now ?? Date.now)()).toISOString();
       prompt = reading.imagePrompt.trim();
-      const { data: savedRows, error: saveError } = await previews()
-        .update({ status: 'ready', reading, updated_at: savedAt, image_status: 'painting', image_prompt: prompt, image_updated_at: savedAt })
-        .eq('user_id', userId).eq('dream_id', dreamId).eq('status', 'writing').eq('updated_at', heldAt)
-        .select(PREVIEW_COLUMNS);
+      // In one transaction, the database checks the dream again (its text, no analysis) and saves.
+      const { data: saveData, error: saveError } = await admin.rpc('save_analysis_preview', {
+        p_user_id: userId, p_dream_id: dreamId, p_held_at: heldAt, p_dream_transcript_sha256: dreamSha256,
+        p_reading: reading, p_image_prompt: prompt,
+      });
       if (saveError) throw saveError;
-      saved = (savedRows as PreviewRow[] | null)?.[0] ?? null;
-      if (!saved) {
+      const save = (saveData ?? {}) as Save;
+      saved = save.state === 'saved' && typeof save.saved_at === 'string';
+      if (saved) savedAt = save.saved_at!;
+      else if (save.state === 'gone') return refused('DREAM_NOT_FOUND', 404);
+      else if (save.state === 'analyzed') return refused('ALREADY_ANALYZED', 409);
+      else if (save.state === 'pending') return refused('ANALYSIS_PENDING', 409);
+      // Edited meanwhile: the reading was of the former text, and the week is given back.
+      else if (save.state === 'changed') return status('available');
+      else {
         // Analyzed, deleted or taken over meanwhile.
         const other = await readPreview();
         if (matches(other)) return ready(other);
@@ -278,7 +292,7 @@ export async function handleAnalysisPreview(ctx: ApiContext, deps: Dependencies 
       }
       await removePreviewObjects(admin, ctx.storageBucket, [hold.previous_image_path, hold.previous_band_path]);
     }
-    const kept = saved;
+    const kept = await readPreview();
     if (!matches(kept)) return status('writing');
 
     // The painting follows the reading: the account reads the start of its analysis meanwhile.

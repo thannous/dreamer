@@ -89,6 +89,7 @@ function setup(options: {
   analyze?: () => Promise<StructuredDreamAnalysis>;
   paint?: () => Promise<{ imagePath: string; bandPath: string; bandUrl: string }>;
   admit?: () => Promise<unknown>;
+  signFails?: () => boolean;
 } = {}) {
   const previews = options.previews ?? [];
   const dreams: Row[] = [
@@ -120,10 +121,28 @@ function setup(options: {
     else previews.push(held);
     return { state: 'held', held_at: iso(NOW), ...previous };
   };
+  // save_analysis_preview as the migration writes it: the dream checked again, then the held row saved.
+  const save = async (args: Record<string, unknown>) => {
+    const dream = dreams.find((row) => row.id === args.p_dream_id && row.user_id === args.p_user_id);
+    if (!dream) return { state: 'gone' };
+    if (dream.is_analyzed === true) return { state: 'analyzed' };
+    if (dream.analysis_status === 'pending') return { state: 'pending' };
+    if (await transcriptSha256(String(dream.transcript ?? '')) !== args.p_dream_transcript_sha256) return { state: 'changed' };
+    const held = previews.find((row) => row.user_id === args.p_user_id && row.dream_id === args.p_dream_id
+      && row.status === 'writing' && row.updated_at === args.p_held_at);
+    if (!held) return { state: 'lost' };
+    const savedAt = iso(NOW);
+    Object.assign(held, {
+      status: 'ready', reading: args.p_reading, updated_at: savedAt,
+      image_status: 'painting', image_prompt: args.p_image_prompt, image_updated_at: savedAt,
+    });
+    return { state: 'saved', saved_at: savedAt };
+  };
   const admin = {
     rpc: async (name: string, args: Record<string, unknown>) => {
       if (name === 'get_effective_subscription_tier') return { data: options.tier ?? 'free', error: null };
       if (name === 'hold_analysis_preview') return { data: hold(args), error: null };
+      if (name === 'save_analysis_preview') return { data: await save(args), error: null };
       return { data: null, error: { code: 'x' } };
     },
     from: (name: string) => {
@@ -134,7 +153,9 @@ function setup(options: {
     storage: {
       from: () => ({
         remove: async (keys: string[]) => { calls.removed.push(...keys); return { error: null }; },
-        createSignedUrl: async (path: string, seconds: number) => ({ data: { signedUrl: `https://example.test/sign/${path}?expires=${seconds}` }, error: null }),
+        createSignedUrl: async (path: string, seconds: number) => options.signFails?.()
+          ? { data: null, error: { message: 'unavailable' } }
+          : { data: { signedUrl: `https://example.test/sign/${path}?expires=${seconds}` }, error: null },
       }),
     },
   };
@@ -325,6 +346,40 @@ Deno.test('a dream analyzed or deleted while its preview is written keeps no pre
   const gone = await handleAnalysisPreview(deleted.ctx(prepare), deleted.deps);
   assertEquals([gone.status, (await gone.json()).code], [404, 'DREAM_NOT_FOUND']);
   assertEquals(deleted.previews[0].status, 'removed');
+});
+
+Deno.test('a dream edited while its preview is written keeps no reading of its former text, and the week', async () => {
+  const edited = setup({
+    analyze: async () => {
+      Object.assign(edited.dreams[0], { transcript: `${TRANSCRIPT} Puis la rivière a gelé.` });
+      return reading();
+    },
+  });
+  const result = await (await handleAnalysisPreview(edited.ctx(prepare), edited.deps)).json();
+  assertEquals(result, { state: 'available', preview: null, preparedAt: null, retryAt: null });
+  assertEquals([edited.previews.length, edited.calls.paint], [0, 0]);
+
+  const asked = setup({
+    analyze: async () => {
+      Object.assign(asked.dreams[0], { analysis_status: 'pending' });
+      return reading();
+    },
+  });
+  const pending = await handleAnalysisPreview(asked.ctx(prepare), asked.deps);
+  assertEquals([pending.status, (await pending.json()).code], [409, 'ANALYSIS_PENDING']);
+  assertEquals([asked.previews.length, asked.calls.paint], [0, 0]);
+});
+
+Deno.test('a band whose link cannot be signed this time is read again, not shown as missing', async () => {
+  let failing = false;
+  const { ctx, deps } = setup({ signFails: () => failing });
+  await handleAnalysisPreview(ctx(prepare), deps);
+  failing = true;
+  const missed = await (await handleAnalysisPreview(ctx({ dreamId: 7, lang: 'fr' }), deps)).json();
+  assertEquals(missed.preview.image, { state: 'painting', bandUrl: null });
+  failing = false;
+  const read = await (await handleAnalysisPreview(ctx({ dreamId: 7, lang: 'fr' }), deps)).json();
+  assertEquals(read.preview.image.state, 'ready');
 });
 
 Deno.test('the painting of an older preview of the dream goes once the new one is saved', async () => {

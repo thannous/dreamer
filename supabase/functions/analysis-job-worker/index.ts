@@ -242,11 +242,12 @@ const processAnalysisJob = async (input: {
     // Opened with no illustration asked, the dream gets the painting its preview already paid
     // for before its analysis shows as done, so the app reads both at once. A painting still
     // under way is left to the image job that "Illustrer" asks for, which waits for it.
-    if (prepared && job.request_payload?.replaceExistingImage !== true) {
-      await attachPreparedIllustration(adminClient, {
-        bucket: input.storageBucket, userId: job.user_id, dreamId: job.dream_id, prompt: prepared.imagePrompt.trim(), waitMs: 0,
-      });
-    }
+    const attachedPainting = prepared && job.request_payload?.replaceExistingImage !== true
+      ? await attachPreparedIllustration(adminClient, {
+        bucket: input.storageBucket, userId: job.user_id, dreamId: job.dream_id, prompt: prepared.imagePrompt.trim(),
+        analysisRequestId: job.client_request_id, waitMs: 0,
+      })
+      : null;
 
     const { data: completionData, error: completionError } = await adminClient.rpc(
       'complete_authenticated_analysis_job',
@@ -273,6 +274,9 @@ const processAnalysisJob = async (input: {
 
     const completion = (completionData ?? {}) as Record<string, any>;
     if (completion.completed !== true) {
+      // Refused (the text edited or the analysis asked again meanwhile): the painting of the
+      // former reading leaves the dream.
+      await attachedPainting?.detach();
       await failJob(
         adminClient,
         job,
