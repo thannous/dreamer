@@ -82,7 +82,6 @@ async function signInExistingGuest(page: Page, account: Account, freshOnboarding
   if (freshOnboarding) {
     // Only A inherits guest onboarding. B completes its own first-run flow.
     await expect(page.getByTestId('screen.onboarding')).toBeVisible();
-    await page.getByTestId('btn.onboarding.intro.next').click();
     await page.getByTestId('btn.onboarding.skip').click();
   }
   await expect(page.getByTestId('screen.recording')).toBeVisible();
