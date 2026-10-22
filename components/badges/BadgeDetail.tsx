@@ -177,11 +177,13 @@ export function BadgeDetail({ state, t, formatNumber, formatDate, onClose, onRev
         showsVerticalScrollIndicator={false}
       >
         <View style={{ width: cardWidth, minHeight: cardHeight }}>
+          {/* The face not shown is hidden from assistive technology on every platform (the web
+              reads aria-hidden), and the turned back is no longer a button to tab to. */}
           {arrivedFaceDown ? (
             <Animated.View style={[{ position: faceDown ? 'relative' : 'absolute', inset: faceDown ? undefined : 0 }, backStyle]}
-              pointerEvents={faceDown ? 'auto' : 'none'}
+              pointerEvents={faceDown ? 'auto' : 'none'} aria-hidden={!faceDown}
               accessibilityElementsHidden={!faceDown} importantForAccessibility={faceDown ? 'auto' : 'no-hide-descendants'}>
-              <PressableScale ref={faceDown ? focusRef : undefined} onPress={reveal} haptic="medium" accessibilityRole="button"
+              <PressableScale ref={faceDown ? focusRef : undefined} onPress={reveal} disabled={!faceDown} haptic="medium" accessibilityRole="button"
                 accessibilityLabel={t('badges.a11y.new_card', { name, tier: heldTier ? badgeTierName(t, heldTier) : '' })}
                 accessibilityHint={t('badges.detail.reveal_hint')} testID="collection.detail.reveal">
                 <BadgeCardBackFace tier={heldTier ?? 'bronze'} width={cardWidth} caption={t('badges.detail.reveal')} />
@@ -189,7 +191,7 @@ export function BadgeDetail({ state, t, formatNumber, formatDate, onClose, onRev
             </Animated.View>
           ) : null}
           <Animated.View style={[faceDown ? { position: 'absolute', inset: 0 } : null, frontStyle]} pointerEvents={faceDown ? 'none' : 'auto'}
-            accessibilityElementsHidden={faceDown} importantForAccessibility={faceDown ? 'no-hide-descendants' : 'auto'}>
+            aria-hidden={faceDown} accessibilityElementsHidden={faceDown} importantForAccessibility={faceDown ? 'no-hide-descendants' : 'auto'}>
             <GestureDetector gesture={pan}>
               <Animated.View ref={faceDown ? undefined : focusRef} style={leanStyle} accessible accessibilityRole="image"
                 accessibilityLabel={shownVeiled

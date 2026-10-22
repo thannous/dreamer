@@ -4,12 +4,15 @@ import type { GuideReadingStatus } from '@/lib/guideReading';
 type ReadingCopy = {
   status: Record<GuideReadingStatus, string>; progress: (count: number) => string;
   resume: string; complete: string; completed: string; optional: string; retry: string; pending: string;
+  /** After a completion: the next guide still to finish, or the way back once all eight are. */
+  next: string; allDone: string; backToGuides: string;
   exercise: Record<PracticalDreamGuideId, { body: string; action: string }>;
 };
 const copy: Record<DreamGuideLanguage, ReadingCopy> = {
   en: {
     status: { new: 'Not opened', visited: 'Visited', inProgress: 'In progress', completed: 'Completed' },
     progress: count => `${count} of 8 guides completed`, resume: 'Resume reading', complete: 'Mark as completed', completed: 'You marked this guide as completed.', optional: 'Try it, if you like',
+    next: 'Next guide', allDone: 'All 8 guides completed.', backToGuides: 'Back to guides',
     retry: 'Retry saving', pending: 'Progress is waiting to be saved. Keep this device until saving succeeds.',
     exercise: {
       'understand-dreams': { body: 'Choose a dream in your journal. Notice one image and ask what it brings to mind for you. There is no single correct interpretation.', action: 'Revisit a dream' },
@@ -20,7 +23,8 @@ const copy: Record<DreamGuideLanguage, ReadingCopy> = {
   },
   fr: {
     status: { new: 'À découvrir', visited: 'Consulté', inProgress: 'En cours', completed: 'Terminé' },
-    progress: count => `${count} guides terminés sur 8`, resume: 'Reprendre la lecture', complete: 'Marquer comme terminé', completed: 'Tu as marqué ce guide comme terminé.', optional: 'À essayer, si tu le souhaites',
+    progress: count => count > 1 ? `${count} guides terminés sur 8` : `${count} guide terminé sur 8`, resume: 'Reprendre la lecture', complete: 'Marquer comme terminé', completed: 'Tu as marqué ce guide comme terminé.', optional: 'À essayer, si tu le souhaites',
+    next: 'Guide suivant', allDone: 'Les 8 guides sont terminés.', backToGuides: 'Revenir aux guides',
     retry: 'Réessayer la sauvegarde', pending: 'La progression attend sa sauvegarde. Garde cet appareil jusqu’à sa réussite.',
     exercise: {
       'understand-dreams': { body: 'Choisis un rêve dans ton journal. Repère une image et demande-toi ce qu’elle évoque pour toi. Il n’y a pas une seule bonne interprétation.', action: 'Relire un rêve' },
@@ -32,6 +36,7 @@ const copy: Record<DreamGuideLanguage, ReadingCopy> = {
   es: {
     status: { new: 'Por descubrir', visited: 'Consultada', inProgress: 'En curso', completed: 'Terminada' },
     progress: count => `${count} de 8 guías terminadas`, resume: 'Continuar la lectura', complete: 'Marcar como terminada', completed: 'Has marcado esta guía como terminada.', optional: 'Para probar, si te apetece',
+    next: 'Siguiente guía', allDone: 'Las 8 guías están terminadas.', backToGuides: 'Volver a las guías',
     retry: 'Volver a guardar', pending: 'El progreso está pendiente de guardarse. Conserva este dispositivo hasta que se guarde.',
     exercise: {
       'understand-dreams': { body: 'Elige un sueño del diario. Fíjate en una imagen y pregúntate qué te evoca. No hay una única interpretación correcta.', action: 'Releer un sueño' },
@@ -43,6 +48,7 @@ const copy: Record<DreamGuideLanguage, ReadingCopy> = {
   de: {
     status: { new: 'Noch nicht geöffnet', visited: 'Angesehen', inProgress: 'In Bearbeitung', completed: 'Abgeschlossen' },
     progress: count => `${count} von 8 Ratgebern abgeschlossen`, resume: 'Weiterlesen', complete: 'Als abgeschlossen markieren', completed: 'Sie haben diesen Ratgeber als abgeschlossen markiert.', optional: 'Zum Ausprobieren, wenn Sie möchten',
+    next: 'Nächster Ratgeber', allDone: 'Alle 8 Ratgeber abgeschlossen.', backToGuides: 'Zurück zu den Ratgebern',
     retry: 'Speichern erneut versuchen', pending: 'Der Fortschritt wartet auf das Speichern. Behalten Sie dieses Gerät, bis das Speichern gelingt.',
     exercise: {
       'understand-dreams': { body: 'Wählen Sie einen Traum im Tagebuch. Achten Sie auf ein Bild und fragen Sie sich, was es für Sie bedeutet. Es gibt nicht nur eine richtige Deutung.', action: 'Einen Traum erneut lesen' },
@@ -53,7 +59,8 @@ const copy: Record<DreamGuideLanguage, ReadingCopy> = {
   },
   it: {
     status: { new: 'Da scoprire', visited: 'Consultata', inProgress: 'In corso', completed: 'Completata' },
-    progress: count => `${count} guide completate su 8`, resume: 'Riprendi la lettura', complete: 'Segna come completata', completed: 'Hai segnato questa guida come completata.', optional: 'Da provare, se ti va',
+    progress: count => count === 1 ? '1 guida completata su 8' : `${count} guide completate su 8`, resume: 'Riprendi la lettura', complete: 'Segna come completata', completed: 'Hai segnato questa guida come completata.', optional: 'Da provare, se ti va',
+    next: 'Guida successiva', allDone: 'Tutte le 8 guide sono completate.', backToGuides: 'Torna alle guide',
     retry: 'Riprova a salvare', pending: 'I progressi sono in attesa di essere salvati. Conserva questo dispositivo finché il salvataggio non riesce.',
     exercise: {
       'understand-dreams': { body: 'Scegli un sogno nel diario. Nota un’immagine e chiediti che cosa ti evoca. Non esiste un’unica interpretazione corretta.', action: 'Rileggere un sogno' },
@@ -65,6 +72,7 @@ const copy: Record<DreamGuideLanguage, ReadingCopy> = {
   pt: {
     status: { new: 'Por descobrir', visited: 'Consultado', inProgress: 'Em andamento', completed: 'Concluído' },
     progress: count => `${count} de 8 guias concluídos`, resume: 'Retomar a leitura', complete: 'Marcar como concluído', completed: 'Você marcou este guia como concluído.', optional: 'Para experimentar, se quiser',
+    next: 'Próximo guia', allDone: 'Os 8 guias estão concluídos.', backToGuides: 'Voltar aos guias',
     retry: 'Tentar salvar novamente', pending: 'O progresso está aguardando para ser salvo. Mantenha este dispositivo até que seja salvo.',
     exercise: {
       'understand-dreams': { body: 'Escolha um sonho no diário. Observe uma imagem e pergunte o que ela evoca para você. Não existe uma única interpretação correta.', action: 'Reler um sonho' },

@@ -36,17 +36,26 @@ test('guide reading resumes after reload and only explicit completion earns a un
     await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
     await guides(screen);
     await expect(screen.getByTestId('guide-progress-dream-journal')).toHaveText('In progress');
+    // One tap from the list lands on the stored bookmark, with no second step on the guide.
     await screen.getByTestId('guides.reading.resume').tap();
-    await screen.getByTestId('guide.reading.resume').tap();
-    await expect.poll(() => browser.evaluate(() => {
-      const element = document.querySelector('[data-testid="guide.section.3"]');
-      return element ? element.getBoundingClientRect().top : -9999;
-    })).toBeGreaterThanOrEqual(0);
+    await expect.poll(() => browser.evaluate((key: string) => {
+      const section = JSON.parse(localStorage.getItem(key) ?? '{}')['dream-journal']?.section ?? 0;
+      const element = document.querySelector(`[data-testid="guide.section.${section}"]`);
+      if (!element) return `no section ${section}`;
+      const { top } = element.getBoundingClientRect();
+      return top >= 0 && top < innerHeight / 2 ? 'at bookmark' : `section ${section} at ${Math.round(top)}`;
+    }, KEY)).toBe('at bookmark');
     await screen.getByTestId('guide.reading.complete').scrollIntoView();
     await screen.getByTestId('guide.reading.complete').tap();
     await expect(screen.getByTestId('guide.reading.completed')).toBeVisible();
     await app.screenshot('guide-explicit-completion-and-optional-exercise');
+    // The reading goes on with the next guide still to finish, in the order of the list.
+    await expect(screen.getByTestId('guide.reading.next')).toContainText('Lucid dreaming for beginners');
     await expect.poll(() => browser.evaluate((key: string) => JSON.parse(localStorage.getItem(key) ?? '{}').keys?.['night-scholar'] ?? [], LEDGER)).toEqual(['dream-journal']);
+    await screen.getByTestId('guide.reading.next').tap();
+    await expect(screen.getByTestId('screen.dreamGuideDetail', { visible: true })).toContainText('Lucid dreaming for beginners');
+    await expect(screen.getByTestId('guide.reading.status', { visible: true })).toHaveText('Visited');
+    // The next guide replaced the finished one: back returns to the list.
     await app.back();
     await expect(screen.getByTestId('guides.reading.summary')).toHaveText('1 of 8 guides completed');
     await screen.getByTestId('dream-guide-remember-dreams').tap();

@@ -91,6 +91,7 @@ function CollectionScreen() {
   const columns = columnsFor(gridWidth, fontScale);
   const cardWidth = gridWidth > 0 ? Math.floor((gridWidth - GAP * (columns - 1)) / columns) : 0;
   const openState = openId ? collection.families.find((state) => state.family.id === openId) ?? null : null;
+  const firstUnrevealed = collection.unrevealedCards > 0 ? collection.families.find((state) => state.unrevealed > 0) : undefined;
   const closeDetail = useCallback(() => setOpenId(null), []);
   const reveal = useCallback((id: BadgeFamilyId, tier: BadgeTierLevel) => markBadgeFamilyRevealed(id, tier), []);
   const act = useCallback((state: BadgeFamilyState) => {
@@ -141,12 +142,19 @@ function CollectionScreen() {
           <View className="gap-3 rounded-[24px] border border-line bg-ink-card p-4" testID="collection.summary">
             <View className="flex-row flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
               <Text className="font-display-semibold text-h2 text-ivory" testID="collection.summary.count">{summary}</Text>
-              {ready && collection.unrevealedCards > 0 ? (
-                <Text className="font-sans-bold text-body-sm text-champagne-on" testID="collection.summary.new">
-                  {t(collection.unrevealedCards === 1 ? 'badges.new_cards_one' : 'badges.new_cards', {
-                    count: formatNumber(collection.unrevealedCards),
-                  })}
-                </Text>
+              {ready && firstUnrevealed ? (
+                // Straight to the first card waiting to be turned, wherever it is in the album.
+                <Pressable onPress={() => setOpenId(firstUnrevealed.family.id)} accessibilityRole="button"
+                  accessibilityHint={t('badges.detail.reveal_hint')} testID="collection.summary.new"
+                  className="min-h-11 flex-row items-center gap-1.5 active:opacity-70">
+                  <IconSymbol name="sparkles" size={15} color={noctalia.accent.text} />
+                  <Text className="font-sans-bold text-body-sm text-champagne-on">
+                    {t(collection.unrevealedCards === 1 ? 'badges.new_cards_one' : 'badges.new_cards', {
+                      count: formatNumber(collection.unrevealedCards),
+                    })}
+                  </Text>
+                  <IconSymbol name="chevron.right" size={15} color={noctalia.accent.text} />
+                </Pressable>
               ) : null}
             </View>
             <View accessible accessibilityRole="progressbar" accessibilityLabel={summary}

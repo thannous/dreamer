@@ -80,8 +80,9 @@ export function getNoctaliaPalette(mode: ThemeMode) {
       gold: { frame: ['#7E5414', '#FFF0B8', '#C9973A', '#5E3E0C'] as const, glow: 'rgba(255, 214, 128, 0.42)', ink: '#F5D88E' },
       foil: ['rgba(255, 170, 205, 0)', 'rgba(255, 170, 205, 0.5)', 'rgba(255, 236, 170, 0.5)', 'rgba(150, 240, 220, 0.5)', 'rgba(165, 175, 255, 0.5)', 'rgba(255, 170, 230, 0.5)', 'rgba(255, 170, 205, 0)'] as const,
       sheen: ['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 0.5)', 'rgba(255, 255, 255, 0)'] as const,
-      // The night a held card is shown against, its tracks, hairlines, chosen tier and close button.
-      scrim: 'rgba(3, 4, 13, 0.97)',
+      // The night a held card is shown against (opaque: no album text ghosts behind the tiers),
+      // its tracks, hairlines, chosen tier and close button.
+      scrim: '#03040D',
       track: 'rgba(183, 174, 201, 0.18)',
       hairline: 'rgba(183, 174, 201, 0.22)',
       hairlineStrong: 'rgba(183, 174, 201, 0.35)',

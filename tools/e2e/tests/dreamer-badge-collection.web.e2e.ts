@@ -64,7 +64,10 @@ test('a written dream earns its card face down, turned over once and kept after 
       .toHaveAttribute('aria-label', 'Voice of Dreams. Not earned yet. 0 of 1 toward Bronze');
     await app.screenshot('collection-new-card-face-down');
 
-    await card(screen, 'night-journal').tap();
+    // The summary's own link opens the card waiting to be turned.
+    await screen.getByTestId('collection.summary.new', { visible: true }).tap();
+    await expect(screen.getByTestId('collection.detail.reveal', { visible: true }))
+      .toHaveAttribute('aria-label', /Night Journal/);
     await screen.getByTestId('collection.detail.reveal', { visible: true }).tap();
     await expect(screen.getByTestId('collection.detail.tier.bronze', { visible: true })).toBeVisible();
     await expect(screen.getByTestId('collection.detail')).toContainText('Next tier: Silver');
