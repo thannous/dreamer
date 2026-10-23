@@ -85,11 +85,11 @@
       "navLabel": "Auf dieser Seite",
       "scenes": {
         "title": "Häufige Szenen",
-        "hint": "Wählen Sie die Szene, die Ihrem Traum am nächsten kommt.",
+        "hint": "Wähle die Szene, die deinem Traum am nächsten kommt.",
         "legend": "Eine Szene wählen",
         "reading": "Deutung der gewählten Szene",
         "source": "Variante lesen",
-        "chosen": "Ihre Szene"
+        "chosen": "Deine Szene"
       },
       "continuationTitle": "Ausführliche Deutung",
       "keepKicker": "In Noctalia weitermachen",
@@ -229,11 +229,11 @@
         }
       },
       "de": {
-        "caveat": "Das sind Spuren, die Sie mit Ihrem jetzigen Leben abgleichen können",
+        "caveat": "Das sind Spuren, die du mit deinem jetzigen Leben abgleichen kannst",
         "journalLead": "Erfundenes Tagebuchbeispiel:",
         "scenes": {
           "poursuite": {
-            "variation": "Ein Tiger, der Sie angreift oder verfolgt",
+            "variation": "Ein Tiger, der dich angreift oder verfolgt",
             "anchor": "verfolgung",
             "label": "Er verfolgt mich"
           },
@@ -657,7 +657,7 @@
         }
       },
       "de": {
-        "caveat": "Das sind Spuren, die Sie mit Ihrem jetzigen Leben abgleichen können",
+        "caveat": "Das sind Spuren, die du mit deinem jetzigen Leben abgleichen kannst",
         "scenes": {
           "inconnue": {
             "variation": "Ein unbekanntes oder seltsames Haus",
@@ -868,7 +868,7 @@
         "caveat": null,
         "scenes": {
           "pose": {
-            "variation": "Ein Schmetterling landet auf Ihnen",
+            "variation": "Ein Schmetterling landet auf dir",
             "anchor": "landung"
           },
           "chrysalide": {
@@ -1700,11 +1700,11 @@
         "caveat": null,
         "scenes": {
           "poursuite": {
-            "variation": "Ein Hund, der Sie angreift oder verfolgt",
+            "variation": "Ein Hund, der dich angreift oder verfolgt",
             "anchor": "verfolgung"
           },
           "familier": {
-            "variation": "Ihr eigener Hund, ein Welpe oder ein Hund von früher",
+            "variation": "Dein eigener Hund, ein Welpe oder ein Hund von früher",
             "anchor": "eigener-hund"
           },
           "meute": {
@@ -3060,7 +3060,7 @@
             "anchor": "sternschnuppe"
           },
           "guide": {
-            "variation": "Ein heller Stern, der Sie leitet",
+            "variation": "Ein heller Stern, der dich leitet",
             "anchor": "leitstern"
           }
         }
@@ -3468,7 +3468,7 @@
         "caveat": null,
         "scenes": {
           "solitaire": {
-            "variation": "Ein einzelner Wolf beobachtet Sie",
+            "variation": "Ein einzelner Wolf beobachtet dich",
             "anchor": "einzelner-wolf"
           },
           "meute": {
@@ -5140,7 +5140,7 @@
             "anchor": "a-busy-crowded-street"
           },
           "the-street-where-you-grew-up": {
-            "variation": "Die Straße Ihrer Kindheit",
+            "variation": "Die Straße deiner Kindheit",
             "anchor": "the-street-where-you-grew-up"
           }
         }
@@ -5548,7 +5548,7 @@
         "caveat": null,
         "scenes": {
           "a-strong-wind-pushing-you-back": {
-            "variation": "Starker Wind, der Sie zurückdrängt",
+            "variation": "Starker Wind, der dich zurückdrängt",
             "anchor": "a-strong-wind-pushing-you-back"
           },
           "being-lifted-by-the-wind": {
@@ -5756,7 +5756,7 @@
         "caveat": null,
         "scenes": {
           "thin-ice-cracking-under-you": {
-            "variation": "Dünnes Eis, das unter Ihnen knackt",
+            "variation": "Dünnes Eis, das unter dir knackt",
             "anchor": "thin-ice-cracking-under-you"
           },
           "falling-through-the-ice": {
@@ -5972,7 +5972,7 @@
             "anchor": "being-knocked-over-by-a-wave"
           },
           "a-wave-about-to-break-over-you": {
-            "variation": "Eine Welle, die gleich über Ihnen bricht",
+            "variation": "Eine Welle, die gleich über dir bricht",
             "anchor": "a-wave-about-to-break-over-you"
           }
         }
@@ -6384,7 +6384,7 @@
             "anchor": "being-lost-in-a-crowd"
           },
           "a-crowd-staring-at-you": {
-            "variation": "Eine Menge, die Sie anstarrt",
+            "variation": "Eine Menge, die dich anstarrt",
             "anchor": "a-crowd-staring-at-you"
           },
           "speaking-or-performing-in-front-of-a-c": {
@@ -6588,7 +6588,7 @@
         "caveat": null,
         "scenes": {
           "a-dragon-attacking-or-chasing-you": {
-            "variation": "Ein Drache, der Sie angreift oder verfolgt",
+            "variation": "Ein Drache, der dich angreift oder verfolgt",
             "anchor": "a-dragon-attacking-or-chasing-you"
           },
           "fighting-or-slaying-a-dragon": {
@@ -6800,7 +6800,7 @@
             "anchor": "a-fox-crossing-the-road"
           },
           "a-fox-watching-you": {
-            "variation": "Ein Fuchs, der Sie ansieht",
+            "variation": "Ein Fuchs, der dich ansieht",
             "anchor": "a-fox-watching-you"
           },
           "a-fox-biting-or-attacking-you": {
@@ -7108,11 +7108,11 @@
         "caveat": null,
         "scenes": {
           "tentacles-wrapping-around-you": {
-            "variation": "Tentakel, die sich um Sie schlingen",
+            "variation": "Tentakel, die sich um dich schlingen",
             "anchor": "tentacles-wrapping-around-you"
           },
           "an-octopus-watching-you": {
-            "variation": "Ein Krake, der Sie beobachtet",
+            "variation": "Ein Krake, der dich beobachtet",
             "anchor": "an-octopus-watching-you"
           },
           "a-cloud-of-ink": {
@@ -8984,7 +8984,7 @@
             "anchor": "a-calm-majestic-lion"
           },
           "a-lion-attacking-or-chasing-you": {
-            "variation": "Ein Löwe greift an oder verfolgt Sie",
+            "variation": "Ein Löwe greift an oder verfolgt dich",
             "anchor": "a-lion-attacking-or-chasing-you"
           },
           "taming-or-befriending-a-lion": {
@@ -11164,7 +11164,7 @@
         "caveat": null,
         "scenes": {
           "regard": {
-            "variation": "Eine Eule, die Sie anstarrt",
+            "variation": "Eine Eule, die dich anstarrt",
             "anchor": "anstarren"
           },
           "cri": {
@@ -11684,7 +11684,7 @@
         "caveat": null,
         "scenes": {
           "proche": {
-            "variation": "Ein Wal, der neben Ihnen schwimmt",
+            "variation": "Ein Wal, der neben dir schwimmt",
             "anchor": "neben-ihnen"
           },
           "echouee": {
@@ -11788,7 +11788,7 @@
         "caveat": null,
         "scenes": {
           "a-partner-leaving-you": {
-            "variation": "Der Partner verlässt Sie",
+            "variation": "Der Partner verlässt dich",
             "anchor": "a-partner-leaving-you"
           },
           "being-left-behind-by-a-group": {
@@ -11996,11 +11996,11 @@
         "caveat": null,
         "scenes": {
           "an-angel-speaking-to-you": {
-            "variation": "Ein Engel, der zu Ihnen spricht",
+            "variation": "Ein Engel, der zu dir spricht",
             "anchor": "an-angel-speaking-to-you"
           },
           "a-guardian-angel-protecting-you": {
-            "variation": "Ein Schutzengel, der Sie beschützt",
+            "variation": "Ein Schutzengel, der dich beschützt",
             "anchor": "a-guardian-angel-protecting-you"
           },
           "becoming-an-angel": {
@@ -12628,7 +12628,7 @@
             "anchor": "your-partner-cheating-on-you"
           },
           "your-partner-leaving-you": {
-            "variation": "Der Partner verlässt Sie",
+            "variation": "Der Partner verlässt dich",
             "anchor": "your-partner-leaving-you"
           }
         }
@@ -12728,7 +12728,7 @@
             "anchor": "spending-time-with-a-close-friend"
           },
           "an-old-friend-you-no-longer-see": {
-            "variation": "Ein alter Freund, den Sie nicht mehr sehen",
+            "variation": "Ein alter Freund, den du nicht mehr siehst",
             "anchor": "an-old-friend-you-no-longer-see"
           },
           "fighting-with-a-friend": {
@@ -13252,7 +13252,7 @@
             "anchor": "arguing-with-a-coworker"
           },
           "a-coworker-taking-credit-for-your-work": {
-            "variation": "Ein Kollege, der sich Ihre Arbeit zuschreibt",
+            "variation": "Ein Kollege, der sich deine Arbeit zuschreibt",
             "anchor": "a-coworker-taking-credit-for-your-work"
           }
         }
@@ -13980,7 +13980,7 @@
             "anchor": "an-unfamiliar-bedroom"
           },
           "someone-comes-into-your-bedroom": {
-            "variation": "Jemand betritt Ihr Schlafzimmer",
+            "variation": "Jemand betritt dein Schlafzimmer",
             "anchor": "someone-comes-into-your-bedroom"
           }
         }
@@ -15120,7 +15120,7 @@
             "anchor": "receiving-a-letter"
           },
           "a-sealed-letter-you-dare-not-open": {
-            "variation": "Ein verschlossener Brief, den Sie nicht öffnen",
+            "variation": "Ein verschlossener Brief, den du nicht öffnest",
             "anchor": "a-sealed-letter-you-dare-not-open"
           },
           "an-unreadable-letter": {
@@ -15228,7 +15228,7 @@
             "anchor": "cutting-your-own-hair"
           },
           "someone-cutting-your-hair": {
-            "variation": "Jemand schneidet Ihnen die Haare",
+            "variation": "Jemand schneidet dir die Haare",
             "anchor": "someone-cutting-your-hair"
           }
         }
@@ -18760,7 +18760,7 @@
             "anchor": "a-cow-grazing-peacefully"
           },
           "a-cow-charging-or-chasing-you": {
-            "variation": "Eine Kuh, die angreift oder Sie verfolgt",
+            "variation": "Eine Kuh, die angreift oder dich verfolgt",
             "anchor": "a-cow-charging-or-chasing-you"
           },
           "milking-a-cow": {
@@ -19488,7 +19488,7 @@
             "anchor": "a-fin-on-the-surface"
           },
           "a-shark-circling-you": {
-            "variation": "Ein Hai, der Sie umkreist",
+            "variation": "Ein Hai, der dich umkreist",
             "anchor": "a-shark-circling-you"
           },
           "swimming-calmly-among-sharks": {
@@ -20004,7 +20004,7 @@
         "caveat": null,
         "scenes": {
           "a-crow-watching-you": {
-            "variation": "Eine Krähe, die Sie beobachtet",
+            "variation": "Eine Krähe, die dich beobachtet",
             "anchor": "a-crow-watching-you"
           },
           "a-crow-calling-loudly": {
@@ -21780,7 +21780,7 @@
             "anchor": "attacked-by-someone-you-know"
           },
           "an-intruder-attacking-you-at-home": {
-            "variation": "Ein Eindringling greift Sie zu Hause an",
+            "variation": "Ein Eindringling greift dich zu Hause an",
             "anchor": "an-intruder-attacking-you-at-home"
           }
         }
@@ -23020,11 +23020,11 @@
         "caveat": null,
         "scenes": {
           "a-monkey-stealing-something": {
-            "variation": "Ein Affe, der Ihnen etwas stiehlt",
+            "variation": "Ein Affe, der dir etwas stiehlt",
             "anchor": "a-monkey-stealing-something"
           },
           "a-monkey-copying-you": {
-            "variation": "Ein Affe, der Sie nachäfft",
+            "variation": "Ein Affe, der dich nachäfft",
             "anchor": "a-monkey-copying-you"
           },
           "a-baby-monkey-or-a-pet-monkey": {
@@ -23856,7 +23856,7 @@
             "anchor": "meeting-a-celebrity"
           },
           "a-celebrity-who-ignores-you": {
-            "variation": "Ein Star, der Sie ignoriert",
+            "variation": "Ein Star, der dich ignoriert",
             "anchor": "a-celebrity-who-ignores-you"
           },
           "becoming-famous-yourself": {
@@ -24060,11 +24060,11 @@
         "caveat": null,
         "scenes": {
           "your-crush-likes-you-back": {
-            "variation": "Der Schwarm erwidert Ihre Gefühle",
+            "variation": "Der Schwarm erwidert deine Gefühle",
             "anchor": "your-crush-likes-you-back"
           },
           "your-crush-ignores-or-rejects-you": {
-            "variation": "Der Schwarm ignoriert Sie oder weist Sie ab",
+            "variation": "Der Schwarm ignoriert dich oder weist dich ab",
             "anchor": "your-crush-ignores-or-rejects-you"
           },
           "your-crush-with-someone-else": {
@@ -24164,7 +24164,7 @@
         "caveat": null,
         "scenes": {
           "a-witch-casting-a-spell-on-you": {
-            "variation": "Eine Hexe verzaubert Sie",
+            "variation": "Eine Hexe verzaubert dich",
             "anchor": "a-witch-casting-a-spell-on-you"
           },
           "a-kind-witch-or-a-healer": {
@@ -24684,7 +24684,7 @@
         "caveat": null,
         "scenes": {
           "a-doll-from-your-childhood": {
-            "variation": "Die Puppe aus Ihrer Kindheit",
+            "variation": "Die Puppe aus deiner Kindheit",
             "anchor": "a-doll-from-your-childhood"
           },
           "a-doll-that-moves-talks-or-comes-alive": {
