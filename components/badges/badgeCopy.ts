@@ -1,15 +1,37 @@
-import type { BadgeAction, BadgeFamily, BadgeFamilyId, BadgeTier, BadgeTierLevel } from '@/lib/badges/catalog';
+import { BADGE_CARD_COUNT, type BadgeAction, type BadgeFamily, type BadgeFamilyId, type BadgeTier, type BadgeTierLevel } from '@/lib/badges/catalog';
 import type { BadgeFamilyState } from '@/lib/badges/ledger';
+import type { TranslateFunction as Translate } from '@/lib/errors';
 
 import { tierOfLevel } from './badgeMaterials';
 
-type Translate = (key: string, params?: Record<string, string | number>) => string;
 type FormatNumber = (value: number) => string;
 
 export const badgeName = (t: Translate, id: BadgeFamilyId) => t(`badges.family.${id}.name`);
 export const badgeRule = (t: Translate, id: BadgeFamilyId) => t(`badges.family.${id}.rule`);
 export const badgeTierName = (t: Translate, tier: BadgeTier) => t(`badges.tier.${tier}`);
 export const badgeActionLabel = (t: Translate, action: BadgeAction) => t(`badges.action.${action}`);
+
+/** How many cards are held, out of the whole collection. */
+export function badgeHeldText(t: Translate, earned: number, formatNumber: FormatNumber): string {
+  return t(earned === 0 ? 'badges.summary_zero' : earned === 1 ? 'badges.summary_one' : 'badges.summary', {
+    count: formatNumber(earned),
+    total: formatNumber(BADGE_CARD_COUNT),
+  });
+}
+
+/** How many earned cards wait to be turned over. */
+export function badgeNewCardsText(t: Translate, unrevealed: number, formatNumber: FormatNumber): string {
+  return t(unrevealed === 1 ? 'badges.new_cards_one' : 'badges.new_cards', { count: formatNumber(unrevealed) });
+}
+
+/** How far along the next tier is: « 3 / 25 ». Empty once gold is held. */
+export function badgeProgressText(t: Translate, state: BadgeFamilyState, formatNumber: FormatNumber): string {
+  if (state.nextThreshold == null) return '';
+  return t('badges.card.progress', {
+    count: formatNumber(Math.min(state.progress, state.nextThreshold)),
+    goal: formatNumber(state.nextThreshold),
+  });
+}
 
 /** What a tier asks, in the family's own words: « 25 rêves gardés ». */
 export function badgeGoal(t: Translate, family: BadgeFamily, level: 1 | 2 | 3, formatNumber: FormatNumber): string {
@@ -23,10 +45,7 @@ export function badgeGoal(t: Translate, family: BadgeFamily, level: 1 | 2 | 3, f
 export function badgeStatus(t: Translate, state: BadgeFamilyState, formatNumber: FormatNumber): string {
   const tier = tierOfLevel(state.tier);
   if (state.nextThreshold == null) return tier ? badgeTierName(t, tier) : '';
-  const progress = t('badges.card.progress', {
-    count: formatNumber(Math.min(state.progress, state.nextThreshold)),
-    goal: formatNumber(state.nextThreshold),
-  });
+  const progress = badgeProgressText(t, state, formatNumber);
   return tier ? `${badgeTierName(t, tier)} · ${progress}` : progress;
 }
 

@@ -109,8 +109,6 @@ export const BADGE_FAMILIES: readonly BadgeFamily[] = [
   family('observatory', 'explore', 'day', [3, 10, 30], 'trends'),
 ];
 
-export const BADGE_FAMILY_IDS = BADGE_FAMILIES.map((entry) => entry.id);
-
 const FAMILY_BY_ID = new Map(BADGE_FAMILIES.map((entry) => [entry.id, entry]));
 
 export function getBadgeFamily(id: string): BadgeFamily | undefined {
