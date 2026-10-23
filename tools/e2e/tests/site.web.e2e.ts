@@ -212,7 +212,6 @@ function readAtlas() {
   };
   const flat = (node: Element | null) => (node?.textContent ?? '').replace(/\s+/g, '');
   const visible = Array.from(document.querySelectorAll<HTMLElement>('.atlas-scene-result')).filter(node => getComputedStyle(node).display !== 'none');
-  const shownBox = visible[0]?.getBoundingClientRect();
   const checked = document.querySelector<HTMLInputElement>('.atlas-scene-input:checked');
   const label = checked ? document.querySelector(`label[for="${checked.id}"] .atlas-scene-variation`)?.textContent?.trim() ?? null : null;
   const card = Array.from(document.querySelectorAll('#variations .variation-card')).find(node => node.querySelector('h3')?.textContent?.trim() === label);
@@ -226,7 +225,6 @@ function readAtlas() {
     questionTops: Array.from(document.querySelectorAll('#questions .symbol-question-item')).map(node => Math.round(node.getBoundingClientRect().top)),
     checked: checked?.value ?? null,
     checkedLabel: checked ? document.querySelector(`label[for="${checked.id}"] .atlas-scene-label`)?.textContent?.trim() ?? null : null,
-    shownInView: shownBox ? shownBox.top >= 0 && shownBox.bottom <= window.innerHeight + 1 : false,
     shown: visible.map(node => ({
       scene: node.dataset.scene ?? '',
       inReading: Boolean(node.closest('#reflexion')),
@@ -267,6 +265,53 @@ const expectPublishedScene = (atlas: Atlas, scene: string) => {
   expect(atlas.card!.startsWith(question)).toBe(true);
   expect(atlas.card!.slice(question.length).trim().startsWith(excerpt)).toBe(true);
 };
+
+// The selected illustration is the thumbnail's own painting, served at a larger
+// responsive size. Read the displayed result rather than hidden sibling images.
+async function readExpandedScene() {
+  const results = Array.from(document.querySelectorAll<HTMLElement>('.atlas-scene-result'))
+    .filter(node => getComputedStyle(node).display !== 'none');
+  const result = results[0];
+  const img = result?.querySelector<HTMLImageElement>('.atlas-scene-art img');
+  const checked = document.querySelector<HTMLInputElement>('.atlas-scene-input:checked');
+  const thumb = checked ? document.querySelector<HTMLImageElement>(`label[for="${checked.id}"] .atlas-scene-thumb img`) : null;
+  if (!img || !thumb) return null;
+  // A broken asset is reported by the assertions, without hiding the selected text.
+  await Promise.all([img.decode().catch(() => {}), thumb.decode().catch(() => {})]);
+  const box = img.getBoundingClientRect();
+  const thumbBox = thumb.getBoundingClientRect();
+  const readingBox = result.querySelector('.atlas-scene-reading')!.getBoundingClientRect();
+  const cover = Math.max(0, ...['#navbar', '.symbol-jump-nav'].map(selector => {
+    const node = document.querySelector(selector);
+    return node && getComputedStyle(node).display !== 'none' ? node.getBoundingClientRect().bottom : 0;
+  }));
+  const family = (source: string) => new URL(source).pathname.replace(/-\d+-[0-9a-f]{12}\.(?:avif|webp)$/, '');
+  return {
+    visibleResults: results.length,
+    scene: result.dataset.scene ?? null,
+    checked: checked?.value ?? null,
+    family: img.currentSrc ? family(img.currentSrc) : null,
+    thumbFamily: thumb.currentSrc ? family(thumb.currentSrc) : null,
+    naturalWidth: img.naturalWidth,
+    sizes: img.sizes,
+    thumbSizes: thumb.sizes,
+    width: box.width, height: box.height, thumbWidth: thumbBox.width,
+    imageBeforeReading: box.bottom <= readingBox.top + 1 || box.right <= readingBox.left + 1,
+    inView: box.top >= cover - 1 && box.top < innerHeight / 2 && box.bottom > cover,
+    overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth,
+  };
+}
+
+async function expectExpandedScene(browser: Browser, scene: string) {
+  await expect.poll(() => browser.evaluate(readExpandedScene).then(read => read?.naturalWidth ?? 0)).toBeGreaterThan(0);
+  const art = (await browser.evaluate(readExpandedScene))!;
+  expect([art.visibleResults, art.scene, art.checked]).toEqual([1, scene, scene]);
+  expect(art.family).toBe(art.thumbFamily);
+  expect(art.sizes).not.toBe(art.thumbSizes);
+  expect(art.width).toBeGreaterThan(art.thumbWidth * 2);
+  expect(art.width / art.height).toBeCloseTo(16 / 9, 2);
+  expect([art.imageBeforeReading, art.overflow]).toEqual([true, false]);
+}
 
 test('the French tiger atlas reads like a dictionary entry and shows each published scene from mouse or keyboard', { timeout: 180_000 }, async ({ app, browser, screen }) => {
   // Every paragraph of the published interpretation, whole, in its zone: the first opens the plate,
@@ -324,18 +369,41 @@ test('the French tiger atlas reads like a dictionary entry and shows each publis
   expectPublishedScene(wide, 'poursuite');
 
   // Mouse on the visible cards, then the arrow keys of the native radio group, back round to the first.
-  // A clicked card brings its reading, which sits below the cards, into view.
-  expect(wide.shownInView).toBe(false);
+  // A clicked card brings the enlarged painting into view. Its reading follows
+  // the image and can be taller than the viewport without hiding the illustration.
   await screen.getByText('Il est calme').tap(); // the native radio is visually hidden behind its card
   await expect(screen.getByRole('radio', { name: /^Il est calme/ })).toBeChecked();
-  await expect.poll(() => browser.evaluate(readAtlas).then(read => read.shownInView)).toBe(true);
+  await expect.poll(() => browser.evaluate(readExpandedScene).then(read => read?.inView)).toBe(true);
   expectPublishedScene(await browser.evaluate(readAtlas), 'calme');
+  await expectExpandedScene(browser, 'calme');
+  await expect.poll(() => browser.evaluate(readSurfaces).then(all => surfaceNamed(all, 'scene-calme-expanded').state)).toBe('running');
+  const movingArt = surfaceNamed(await browser.evaluate(readSurfaces), 'scene-calme-expanded');
+  expect(movingArt.channels).toEqual(['a', 'b']);
+  await expect.poll(() => browser.evaluate(readSurfaces).then(all => surfaceNamed(all, 'scene-calme-expanded').frames.map((frame, index) => frame !== movingArt.frames[index]))).toEqual([true, true]);
+  await app.screenshot('tiger-expanded-calm-1920');
   await screen.getByRole('radio', { name: /^Il est calme/ }).press('ArrowDown');
   await expect(screen.getByRole('radio', { name: /^Il est en cage/ })).toBeChecked();
   expectPublishedScene(await browser.evaluate(readAtlas), 'cage');
+  await expectExpandedScene(browser, 'cage');
+  await expect.poll(() => browser.evaluate(readSurfaces).then(all => surfaceNamed(all, 'scene-calme-expanded').state)).toBe('paused');
   await screen.getByRole('radio', { name: /^Il est en cage/ }).press('ArrowDown');
   await expect(screen.getByRole('radio', { name: /^Il me poursuit/ })).toBeChecked();
   expectPublishedScene(await browser.evaluate(readAtlas), 'poursuite');
+  await expectExpandedScene(browser, 'poursuite');
+
+  // At an intermediate width the illustration keeps a useful width below the
+  // choices; a premature two-column layout would squeeze the same painting.
+  await browser.setViewport({ width: 900, height: 1000 });
+  await app.open('/fr/symboles/tigre.html');
+  await screen.getByText('Il est calme').tap();
+  await expect(screen.getByRole('radio', { name: /^Il est calme/ })).toBeChecked();
+  await expect.poll(() => browser.evaluate(readExpandedScene).then(read => read?.inView)).toBe(true);
+  const tablet = await browser.evaluate(readAtlas);
+  expect(tablet.reflection!.top).toBeGreaterThanOrEqual(tablet.list!.bottom);
+  expect(tablet.reflection!.left).toBeCloseTo(tablet.list!.left, 0);
+  expectPublishedScene(tablet, 'calme');
+  await expectExpandedScene(browser, 'calme');
+  await app.screenshot('tiger-expanded-calm-900');
 
   // A phone: one column without overflow, the choices right after the opening, the chosen
   // scene's reading right under them and the questions after it, and the hidden art never fetched.
@@ -343,7 +411,7 @@ test('the French tiger atlas reads like a dictionary entry and shows each publis
   await app.open('/fr/symboles/tigre.html');
   await expect(screen.getByRole('heading', { level: 1 })).toBeVisible();
   await screen.getByText('Il est en cage').tap();
-  await expect.poll(() => browser.evaluate(readAtlas).then(read => read.shownInView)).toBe(true);
+  await expect.poll(() => browser.evaluate(readExpandedScene).then(read => read?.inView)).toBe(true);
   const phone = await browser.evaluate(readAtlas);
   expect(phone.overflow).toBe(false);
   expect([phone.rail, phone.decor, phone.decorLoads]).toEqual([null, null, 0]);
@@ -353,7 +421,12 @@ test('the French tiger atlas reads like a dictionary entry and shows each publis
   expect(phone.reflection!.left).toBeCloseTo(phone.list!.left, 0);
   expect(phone.questionsBox!.top).toBeGreaterThanOrEqual(phone.reflection!.bottom);
   expectPublishedScene(phone, 'cage');
+  await expectExpandedScene(browser, 'cage');
+  await browser.emulateMedia({ reducedMotion: 'reduce' });
+  await expect.poll(() => browser.evaluate(readSurfaces).then(all => surfaceNamed(all, 'scene-cage-expanded').state)).toBe('reduced');
+  expect((await browser.evaluate(readAtlasSix)).playStates).toEqual([]);
   await app.screenshot('tiger-atlas-390');
+  await browser.emulateMedia({ reducedMotion: 'no-preference' });
   // Past the hero the shared navbar gets a ground over the text (it stays transparent on the hero).
   const navGround = () => browser.evaluate(() => getComputedStyle(document.querySelector('#navbar')!).backgroundColor);
   for (const [top, transparent] of [[1127, false], [760, false], [0, true]] as const) {
@@ -700,6 +773,7 @@ function readSurfaces() {
       state: node.dataset.livingMotionState ?? null,
       reasons: (node.dataset.livingMotionReasons ?? '').split(' ').filter(Boolean),
       channels: layers.map(layer => layer.dataset.livingChannel ?? ''),
+      animationStates: node.getAnimations({ subtree: true }).filter(animation => animation instanceof CSSAnimation).map(animation => animation.playState),
       textures: layers.map(layer => layer.querySelector<HTMLImageElement>('img.slp-t')?.currentSrc.replace(/^.*\//, '') ?? ''),
       opaque: layers.map(layer => opaque(layer.querySelector<HTMLImageElement>('img.slp-t'))),
       frames: layers.map(layer => { const style = getComputedStyle(layer.querySelector('.slp-t')!); return style.opacity + ' ' + style.transform; }),
@@ -716,6 +790,15 @@ function readSurfaces() {
 
 const surfaceNamed = (all: Awaited<ReturnType<typeof readSurfaces>>, name: string) => all.find(surface => surface.name === name)!;
 
+async function expectReducedSurfaces(browser: Browser) {
+  // Hidden expanded choices can remain unmounted until selected. They have no
+  // effects to stop; every mounted painting and every original surface must stop.
+  await expect.poll(() => browser.evaluate(readSurfaces).then(all => all.every(surface =>
+    surface.animationStates.length === 0 && (surface.state === 'reduced'
+      || (surface.name.endsWith('-expanded') && surface.state === null && surface.channels.length === 0))
+  ))).toBe(true);
+}
+
 test('the French atlas paintings each move two distinct raster effects, only on screen, and stop by themselves off screen or with reduced motion, without a pause control', { timeout: 300_000 }, async ({ app, browser, screen }) => {
   await browser.setViewport({ width: 1920, height: 1080 });
   for (const page of ATLAS_PAGES) {
@@ -725,7 +808,8 @@ test('the French atlas paintings each move two distinct raster effects, only on 
     // page is open (only routes and the viewport are set before the first open).
     await browser.emulateMedia({ reducedMotion: 'no-preference' });
     const config = await browser.evaluate(readAtlasSix).then(read => read.config);
-    expect(config?.surfaces.map(surface => surface.name), `${page.id}: every painting has its two effects`).toEqual(['hero', 'plate', ...page.scenes.map(scene => 'scene-' + scene)]);
+    expect(config?.surfaces.map(surface => surface.name).sort(), `${page.id}: every painting has its two effects`)
+      .toEqual(['hero', 'plate', ...page.scenes.flatMap(scene => ['scene-' + scene, 'scene-' + scene + '-expanded'])].sort());
     // Explicit texture ids: on every painting, channel a is this page's own layer and channel b its own accent.
     for (const surface of config!.surfaces) {
       for (const [scene, { layers }] of Object.entries(surface.scenes)) {
@@ -778,7 +862,7 @@ test('the French atlas paintings each move two distinct raster effects, only on 
 
     // A live reduced-motion preference stops every painting; back to none, the hero on screen runs again.
     await browser.emulateMedia({ reducedMotion: 'reduce' });
-    await expect.poll(() => browser.evaluate(readSurfaces).then(all => [...new Set(all.map(surface => surface.state))])).toEqual(['reduced']);
+    await expectReducedSurfaces(browser);
     expect((await browser.evaluate(readAtlasSix)).playStates).toEqual([]);
     await app.screenshot('atlas-six-' + page.id + '-reduced-1920');
     await browser.emulateMedia({ reducedMotion: 'no-preference' });
@@ -862,7 +946,8 @@ test('the tiger paintings each move two effects of the packs\' engine in the six
     // One engine, the packs' own; the tiger's former script is no longer loaded.
     expect(await browser.evaluate(() => Array.from(document.querySelectorAll<HTMLScriptElement>('script[src*="-living"]')).map(node => new URL(node.src).pathname)), path).toEqual([engine]);
     const config = await browser.evaluate(readAtlasSix).then(read => read.config);
-    expect(config?.surfaces.map(surface => surface.name), path).toEqual(['hero', 'plate', ...TIGER_SCENES.map(scene => 'scene-' + scene)]);
+    expect(config?.surfaces.map(surface => surface.name).sort(), path)
+      .toEqual(['hero', 'plate', ...TIGER_SCENES.flatMap(scene => ['scene-' + scene, 'scene-' + scene + '-expanded'])].sort());
     // On every painting, channel a is the tiger's lantern glow and channel b its mist, from its own folder.
     for (const surface of config!.surfaces) {
       for (const [scene, { layers }] of Object.entries(surface.scenes)) {
@@ -916,7 +1001,7 @@ test('the tiger paintings each move two effects of the packs\' engine in the six
 
     // A live reduced-motion preference stops every painting; back to none, the hero on screen runs again.
     await browser.emulateMedia({ reducedMotion: 'reduce' });
-    await expect.poll(() => browser.evaluate(readSurfaces).then(all => [...new Set(all.map(surface => surface.state))])).toEqual(['reduced']);
+    await expectReducedSurfaces(browser);
     expect((await browser.evaluate(readAtlasSix)).playStates).toEqual([]);
     await browser.emulateMedia({ reducedMotion: 'no-preference' });
     await expect.poll(() => browser.evaluate(readSurfaces).then(all => surfaceNamed(all, 'hero').state)).toBe('running');
@@ -1197,6 +1282,22 @@ test('the language menu leads from the French moon atlas to the pt-br and the En
   await browser.setViewport({ width: 1920, height: 1080 });
   await app.open('/fr/symboles/lune.html');
   await expect(screen.getByRole('heading', { level: 1, name: 'Lune' })).toBeVisible();
+  // The generic pack renderer keeps the full painting and the full published
+  // reading in step through all three choices, independently of the tiger.
+  const frenchSecond = await browser.evaluate(() => document.querySelectorAll('.atlas-scene-label')[1].textContent!.trim());
+  await screen.getByText(frenchSecond, { exact: true }).first().tap();
+  await expect(screen.getByRole('radio').nth(1)).toBeChecked();
+  await expectExpandedScene(browser, 'croissant');
+  await expect.poll(() => browser.evaluate(readExpandedScene).then(read => read?.inView)).toBe(true);
+  await expect.poll(() => browser.evaluate(readSurfaces).then(all => surfaceNamed(all, 'scene-croissant-expanded').state)).toBe('running');
+  await screen.getByRole('radio').nth(1).press('ArrowDown');
+  await expect(screen.getByRole('radio').nth(2)).toBeChecked();
+  await expectExpandedScene(browser, 'double');
+  await screen.getByRole('radio').nth(2).press('ArrowDown');
+  await expect(screen.getByRole('radio').nth(0)).toBeChecked();
+  await expectExpandedScene(browser, 'pleine');
+  await app.screenshot('atlas-fr-moon-expanded-1920');
+  expect(await browser.evaluate(scrollToY, 0)).toBe(0);
   await screen.getByRole('button', { name: 'Choisir la langue' }).tap();
   await screen.getByRole('menuitem', { name: 'Português (Brasil)' }).tap();
   await expect(screen.getByRole('heading', { level: 1, name: 'Lua' })).toBeVisible();
@@ -1208,8 +1309,10 @@ test('the language menu leads from the French moon atlas to the pt-br and the En
   await expect(screen.getByRole('radio', { name: /^Lua nova ou lua escura/ })).toBeChecked();
   read = await browser.evaluate(readLocalizedAtlas);
   expect([read.checked, read.chosen, read.source, read.shown]).toEqual(['croissant', 'Sua cena: Lua nova ou lua escura', 'Ler a variação “Lua nova ou lua escura”', read.card]);
+  await expectExpandedScene(browser, 'croissant');
   await screen.getByRole('radio', { name: /^Lua nova ou lua escura/ }).press('ArrowUp');
   await expect(screen.getByRole('radio', { name: /^Lua cheia/ })).toBeChecked();
+  await expectExpandedScene(browser, 'pleine');
   await app.screenshot('atlas-pt-br-moon-1920');
 
   // A phone: the section bar in Portuguese lands each section below it, and the source link of the
@@ -1230,6 +1333,9 @@ test('the language menu leads from the French moon atlas to the pt-br and the En
   await expect.poll(() => bar().then(read => read.variationsTitle >= read.bottom && read.variationsTitle < 844 / 2)).toBe(true);
   expect(await browser.evaluate(scrollToY, 0)).toBe(0);
   await screen.getByText('Duas luas ou mais', { exact: true }).first().tap();
+  await expectExpandedScene(browser, 'double');
+  await expect.poll(() => browser.evaluate(readExpandedScene).then(read => read?.inView)).toBe(true);
+  await app.screenshot('atlas-pt-br-moon-expanded-390');
   await screen.getByRole('link', { name: 'Ler a variação “Duas luas ou mais”' }).tap();
   await expect.poll(() => browser.evaluate(() => window.location.hash)).toBe('#variacao-duas-luas');
   await expect.poll(() => browser.evaluate(() => {
@@ -1652,7 +1758,7 @@ for (const page of NEW_SYMBOL_PACKS) {
     }
     await app.screenshot('pack-' + page.id + '-2560-scenes');
     await browser.emulateMedia({ reducedMotion: 'reduce' });
-    await expect.poll(() => browser.evaluate(readSurfaces).then(all => [...new Set(all.map(s => s.state))])).toEqual(['reduced']);
+    await expectReducedSurfaces(browser);
 
     await browser.setViewport({ width: 390, height: 844 });
     await app.open('/fr/symboles/' + page.slug + '.html');
@@ -1745,7 +1851,8 @@ for (const [lot, shots, pack] of [...LOT_08_PACKS.map(pack => ['lot 09', 'lot08-
       // The symbol's name alone, without a "Meaning" label, in every language.
       await expect(screen.getByRole('heading', { level: 1 })).toHaveText(pack.pages[lang][1]);
       const config = await browser.evaluate(readAtlasSix).then(read => read.config);
-      expect(config?.surfaces.map(surface => surface.name), path).toEqual(['hero', 'plate', ...pack.scenes.map(scene => 'scene-' + scene)]);
+      expect(config?.surfaces.map(surface => surface.name).sort(), path)
+        .toEqual(['hero', 'plate', ...pack.scenes.flatMap(scene => ['scene-' + scene, 'scene-' + scene + '-expanded'])].sort());
       // On every painting, channel a is this pack's own layer and channel b its own accent.
       for (const surface of config!.surfaces) {
         for (const [scene, { layers }] of Object.entries(surface.scenes)) {
@@ -1772,7 +1879,7 @@ for (const [lot, shots, pack] of [...LOT_08_PACKS.map(pack => ['lot 09', 'lot08-
       // No pause control on any painting; reduced motion stops them all.
       expect(await browser.evaluate(() => document.querySelectorAll('.symbol-hero button, [data-living-surface] button, .atlas-scenes button, .slp-toggle').length)).toBe(0);
       await browser.emulateMedia({ reducedMotion: 'reduce' });
-      await expect.poll(() => browser.evaluate(readSurfaces).then(all => [...new Set(all.map(surface => surface.state))])).toEqual(['reduced']);
+      await expectReducedSurfaces(browser);
     }
 
     await browser.setViewport({ width: 390, height: 844 });
