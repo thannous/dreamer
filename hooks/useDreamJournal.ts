@@ -1683,10 +1683,12 @@ export const useDreamJournal = () => {
             await persistDreamClientState(latestDream);
           }
 
-          analysisStatusOverridesRef.current.set(getDreamIdentityKey(dream), 'done');
           emitProgress(AnalysisStep.FINALIZING);
           const remoteDream = await fetchDreamFromSupabase(syncedDream.remoteId!, user?.id);
           assertAnalysisScope();
+          // Only the read result may mark it done: a failed read keeps it pending
+          // for an image registered before a retry or recovery.
+          analysisStatusOverridesRef.current.set(getDreamIdentityKey(dream), 'done');
           const mergedDream = mergeServerDreamWithLocalState(remoteDream, latestDream);
           const stampedDream = stampDreamAnalysisTranscript(mergedDream, mergedDream.transcript);
           await updateDream(stampedDream);
