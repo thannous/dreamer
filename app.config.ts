@@ -82,7 +82,15 @@ export function resolveDreamerQaBuildEnabled(
   return parseDreamerQaBuildMarker(env[DREAMER_QA_BUILD_ENV]);
 }
 
-export function createDreamerQaExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
+export function createDreamerQaExpoConfig(
+  baseExpo: ExpoConfig,
+  env: Record<string, string | undefined> = process.env
+): ExpoConfig {
+  // This separate QA package must never inherit the production fallback when
+  // its backend overrides are absent. Normal app builds keep their own config.
+  const qaApiUrl = env.EXPO_PUBLIC_API_URL?.trim() || 'https://127.0.0.1:9';
+  const qaSupabaseUrl = env.EXPO_PUBLIC_SUPABASE_URL?.trim() || 'https://127.0.0.1:9';
+  const qaAnonKey = env.EXPO_PUBLIC_SUPABASE_ANON_KEY?.trim() || undefined;
   return {
     ...baseExpo,
     name: DREAMER_QA_APP_NAME,
@@ -99,6 +107,9 @@ export function createDreamerQaExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
     },
     extra: {
       ...baseExpo.extra,
+      apiUrl: qaApiUrl,
+      supabaseUrl: qaSupabaseUrl,
+      supabaseAnonKey: qaAnonKey,
       eas: {
         projectId: DREAMER_QA_OBSERVE.projectId,
         observe: { endpointUrl: DREAMER_QA_OBSERVE.endpointUrl },

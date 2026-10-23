@@ -1,4 +1,5 @@
 import type { ExpoConfig } from 'expo/config';
+import { createClient } from '@supabase/supabase-js';
 import resolveExpoConfig, {
   DREAMER_QA_ANDROID_PACKAGE,
   DREAMER_QA_APP_NAME,
@@ -19,6 +20,9 @@ const MARKERS = [
   'EXPO_PUBLIC_APP_VARIANT',
   'EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID',
   'EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID',
+  'EXPO_PUBLIC_API_URL',
+  'EXPO_PUBLIC_SUPABASE_URL',
+  'EXPO_PUBLIC_SUPABASE_ANON_KEY',
   'EAS_BUILD_PROFILE',
 ];
 
@@ -121,7 +125,7 @@ describe('Dreamer QA Expo identity', () => {
   it('isolates QA identity without inheriting production store or OTA bindings', () => {
     const config = baseExpo();
     const original = structuredClone(config);
-    const qaConfig = createDreamerQaExpoConfig(config);
+    const qaConfig = createDreamerQaExpoConfig(config, {});
 
     expect(config).toEqual(original);
     expect(qaConfig).toMatchObject({
@@ -147,8 +151,9 @@ describe('Dreamer QA Expo identity', () => {
     });
     expect(qaConfig.extra?.eas?.projectId).not.toBe(config.extra?.eas?.projectId);
     expect(new URL(DREAMER_QA_OBSERVE.endpointUrl).hostname).toBe('127.0.0.1');
-    expect(qaConfig.extra?.apiUrl).toBe(config.extra?.apiUrl);
-    expect(qaConfig.extra?.supabaseUrl).toBe(config.extra?.supabaseUrl);
+    expect(qaConfig.extra?.apiUrl).toBe('https://127.0.0.1:9');
+    expect(qaConfig.extra?.supabaseUrl).toBe('https://127.0.0.1:9');
+    expect(qaConfig.extra?.supabaseAnonKey).toBeUndefined();
     expect(qaConfig.extra?.revenuecatAndroidKey).toBe(
       config.extra?.revenuecatAndroidKey
     );
@@ -163,10 +168,40 @@ describe('Dreamer QA Expo identity', () => {
       expect(resolved.android?.intentFilters).toEqual([]);
       expect(resolved.updates).toBeUndefined();
       expect(resolved.extra?.eas?.projectId).toBe(DREAMER_QA_OBSERVE.projectId);
-      expect(resolved.extra?.apiUrl).toBe(config.extra?.apiUrl);
+      expect(resolved.extra?.apiUrl).toBe('https://127.0.0.1:9');
       expect(resolved.name).toBe(DREAMER_QA_APP_NAME);
       expect(resolved.scheme).toBe(DREAMER_QA_SCHEME);
     });
+  });
+
+  // Build-time configuration is not a browser journey. A missing QA override
+  // must never inherit a production backend from app.json; an explicit target
+  // must remain usable without changing the normal app's configuration.
+  it('uses only explicit QA backend settings and fails closed for blanks', () => {
+    const base = baseExpo();
+    const original = structuredClone(base);
+    const explicit = createDreamerQaExpoConfig(base, {
+      EXPO_PUBLIC_API_URL: ' https://qa-api.example.invalid ',
+      EXPO_PUBLIC_SUPABASE_URL: ' https://qa-auth.example.invalid ',
+      EXPO_PUBLIC_SUPABASE_ANON_KEY: ' synthetic-qa-public-key ',
+    });
+    expect(explicit.extra).toMatchObject({
+      apiUrl: 'https://qa-api.example.invalid',
+      supabaseUrl: 'https://qa-auth.example.invalid',
+      supabaseAnonKey: 'synthetic-qa-public-key',
+    });
+    const blank = createDreamerQaExpoConfig(base, {
+      EXPO_PUBLIC_API_URL: ' ', EXPO_PUBLIC_SUPABASE_URL: ' ', EXPO_PUBLIC_SUPABASE_ANON_KEY: ' ',
+    });
+    expect(blank.extra).toMatchObject({
+      apiUrl: 'https://127.0.0.1:9', supabaseUrl: 'https://127.0.0.1:9', supabaseAnonKey: undefined,
+    });
+    // Match the runtime's missing-key fallback with the real SDK constructor:
+    // an empty string survives ?? and crashes before the QA app can start.
+    expect(() => createClient(blank.extra!.supabaseUrl, blank.extra!.supabaseAnonKey ?? 'anon-key-not-set', {
+      auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
+    })).not.toThrow();
+    expect(base).toEqual(original);
   });
 
   it('rejects combining Dreamer QA with Lucid Trainer', () => {
