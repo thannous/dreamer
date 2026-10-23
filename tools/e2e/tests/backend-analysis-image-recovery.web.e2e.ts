@@ -8,7 +8,7 @@ const analysisText = 'A lighthouse can be a point of orientation. What does this
 // transport is deterministic; image dispatch is held after durable admission.
 test('Plus HD reanalysis resumes its requested image once after reload', {
   tags: ['analysis-hd-recovery'], timeout: 180_000,
-}, async ({ page, accounts, recovery }) => {
+}, async ({ page, browser, accounts, recovery }) => {
   const owner = client();
   expect((await owner.auth.signInWithPassword(accounts.plus)).error).toBeNull();
   await recovery.control({ reset: true, analysisHold: true });
@@ -53,8 +53,18 @@ test('Plus HD reanalysis resumes its requested image once after reload', {
     await page.getByTestId('btn.saveDreamEdit').click();
     await page.getByTestId('btn.dream.staleCta').click();
     await page.getByRole('checkbox', { name: 'Also regenerate the dream image', exact: true }).click();
-    await page.getByRole('button', { name: 'Update', exact: true }).click();
-    await page.getByRole('button', { name: 'Accept and continue', exact: true }).click();
+    const consentPrompts: string[] = [];
+    const offConsent = await browser.onDialog(async dialog => {
+      consentPrompts.push(dialog.message);
+      await dialog.accept();
+    });
+    try {
+      await page.getByRole('button', { name: 'Update', exact: true }).click();
+      await expect.poll(() => consentPrompts.length).toBe(1);
+      expect(consentPrompts[0]).toContain('Anthropic');
+    } finally {
+      offConsent();
+    }
     await expect.poll(async () => (await recovery.state()).analysisDispatches).toBeGreaterThan(0);
     const pending = await jobs();
     expect(pending).toHaveLength(1);
