@@ -277,13 +277,6 @@ jest.doMock('@/components/ui/icon-symbol', () => ({
   IconSymbol: () => <span data-testid="icon-symbol" />,
 }));
 
-jest.doMock('@/services/voiceLiveSpikeStorage', () => ({
-  loadDebugEnabled: jest.fn(async () => false),
-  loadFeatureEnabled: jest.fn(async () => false),
-  saveDebugEnabled: jest.fn(async () => undefined),
-  saveFeatureEnabled: jest.fn(async () => undefined),
-}));
-
 jest.doMock('@/services/quota/GuestDreamCounter', () => ({
   resetGuestDreamRecordingAllowanceForDev: () => mockResetGuestRecordingAllowance(),
 }));

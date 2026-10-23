@@ -1,5 +1,10 @@
 # Dreamer Voice Live Spike V3 (TI-428)
 
+> **Status (2026-10-23): removed from the app.** The spike code, its dev route,
+> its Settings debug entry and its tests were deleted to simplify Dreamer; this
+> page is kept as history. `expo-speech` stays installed until the next native
+> build, because removing a native module changes the fingerprint runtime version.
+
 Internal prototype kernel for an optional live voice loop after a persisted
 original dream. This ticket is local and read-only of TI-427: it reuses persist
 ids, hashes, closed recall intents, and the add -> persist -> request contract.

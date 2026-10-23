@@ -13,7 +13,6 @@ import {
 
 import { EmailAuthCard } from '@/components/auth/EmailAuthCard';
 import { GuestRecordingQaReset } from '@/components/dev/GuestRecordingQaReset';
-import { VoiceLiveSpikeDebugEntry } from '@/components/dev/VoiceLiveSpikeDebugEntry';
 import { GuestProdQALab } from '@/components/guest/GuestProdQALab';
 import { StaticFlatGlassCard } from '@/components/inspiration/GlassCard';
 import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
@@ -159,7 +158,6 @@ export default function SettingsScreen() {
       <EmailAuthCard isCompact={isCompactLayout} presentation="embedded" showSignOut={false} initialAccountSheetOpen={auth === 'signin'} />
       <GuestRecordingQaReset />
       <GuestProdQALab />
-      <VoiceLiveSpikeDebugEntry />
     </View>
   );
 
