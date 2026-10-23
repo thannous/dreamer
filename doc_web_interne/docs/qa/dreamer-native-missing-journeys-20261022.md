@@ -1,5 +1,9 @@
 # Dreamer — parcours natifs manquants, 22 octobre 2026
 
+> Évolution du 2026-10-23 : la simplification #564 retire le HD côté app et
+> adapte le parcours web à la reprise Standard. Voir le [rapport dédié](dreamer-simplification-20261023.md).
+> Les résultats HD et natifs ci-dessous restent les preuves historiques de leurs sources identifiées.
+
 **Android : six parcours couverts par preuve composite.** iOS : cinq parcours validés ; la reconnaissance vocale reste bloquée par l’environnement Apple. Tests courants : `b2b9937aa67c29c914e49b2c5bbc4897ab103db7` ; binaires : `0ee3471fd00361c0df2d90f8cd67aefded4c2d27`. Ces résultats réunissent plusieurs exécutions identifiées ; aucune campagne fraîche « 6/6 » n’est revendiquée.
 
 ## Identité du candidat
