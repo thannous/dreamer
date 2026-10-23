@@ -5,7 +5,7 @@
   "lang": "de",
   "slug": "zeitumstellung-schlaf-traeume",
   "title": "Zeitumstellung: Folgen für Schlaf und Träume | Noctalia",
-  "description": "Zeitumstellung und Schlaf: Warum die Umstellung im Frühjahr schwerer fällt, was sie mit REM-Schlaf und Träumen macht und wie Sie sich anpassen.",
+  "description": "Zeitumstellung und Schlaf: Warum die Umstellung im Frühjahr schwerer fällt, was sie mit REM-Schlaf und Träumen macht und wie du dich anpasst.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -14,12 +14,12 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
   "ogTitle": "Zeitumstellung: Folgen für Schlaf und Träume | Noctalia",
-  "ogDescription": "Warum die Umstellung auf Sommerzeit den Schlaf stärker trifft, was sie mit Ihren Träumen macht und wie Sie sich in wenigen Tagen anpassen.",
+  "ogDescription": "Warum die Umstellung auf Sommerzeit den Schlaf stärker trifft, was sie mit deinen Träumen macht und wie du dich in wenigen Tagen anpasst.",
   "ogImage": "https://noctalia.app/img/blog/daylight-saving-time-sleep-dreams.webp",
   "ogImageAlt": "Uhr umgeben von gestörten Schlafzyklen und Traumsymbolen in Violett- und Bernsteintönen",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Zeitumstellung: Folgen für Schlaf und Träume | Noctalia",
-  "twitterDescription": "Warum die Umstellung auf Sommerzeit den Schlaf stärker trifft, was sie mit Ihren Träumen macht und wie Sie sich in wenigen Tagen anpassen.",
+  "twitterDescription": "Warum die Umstellung auf Sommerzeit den Schlaf stärker trifft, was sie mit deinen Träumen macht und wie du dich in wenigen Tagen anpasst.",
   "twitterImage": "https://noctalia.app/img/blog/daylight-saving-time-sleep-dreams.webp",
   "twitterImageAlt": "Uhr umgeben von gestörten Schlafzyklen und Traumsymbolen in Violett- und Bernsteintönen",
   "publishedTime": "2026-03-17",
@@ -29,9 +29,9 @@
   "nextPath": "/de/blog/schlafschuld-gesundheit-traeume",
   "preloadImage": "/img/blog/daylight-saving-time-sleep-dreams.webp",
   "jsonLd": [
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Zeitumstellung und Schlaf: Was die Sommerzeit mit Ihren Nächten und Träumen macht\",\n    \"description\": \"Zeitumstellung und Schlaf: Warum die Umstellung im Frühjahr schwerer fällt, was sie mit REM-Schlaf und Träumen macht und wie Sie sich anpassen.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/daylight-saving-time-sleep-dreams.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/de/ueber-uns#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Gründer & Publikationsleiter\",\n            \"url\": \"https://noctalia.app/de/ueber-uns\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2026-03-17\",\n    \"dateModified\": \"2026-10-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/de/blog/zeitumstellung-schlaf-traeume\"\n    },\n    \"inLanguage\": \"de\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2079,\n    \"timeRequired\": \"PT10M\",\n    \"url\": \"https://noctalia.app/de/blog/zeitumstellung-schlaf-traeume\"\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"@id\": \"https://noctalia.app/de/blog/zeitumstellung-schlaf-traeume\",\n  \"url\": \"https://noctalia.app/de/blog/zeitumstellung-schlaf-traeume\",\n  \"name\": \"Zeitumstellung und Schlaf: Wie der Uhrzeitwechsel Ihre Träume stört | Noctalia\",\n  \"inLanguage\": \"de\"\n}",
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Beeinflusst die Zeitumstellung wirklich den Schlaf?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Ja, vor allem im Frühjahr. Übersichtsarbeiten zeigen über mehrere Tage kürzeren und stärker zerstückelten Schlaf, nicht nur in der Nacht der Umstellung. Der Wecker kappt zudem das Ende der Nacht, wenn die Phasen des REM-Schlafs am längsten sind.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Wie lange dauert es, sich an die Zeitumstellung anzupassen?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Die meisten fühlen sich nach einigen Tagen bis einer Woche besser. Nachteulen passen sich schlechter an die Umstellung im Frühjahr an: In einer Studie hatten sich ihre Aktivitätszeiten auch Wochen später noch nicht vollständig eingestellt. Wenn Sie mehrere Wochen schlecht schlafen, sprechen Sie mit Ihrer Ärztin oder Ihrem Arzt.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Kann die Zeitumstellung meine Träume beeinflussen?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Indirekt, ja. Ein kürzeres Nachtende kann zunächst weniger erinnerte Träume bedeuten und danach, wenn der REM-Schlaf nachgeholt wird, intensivere. Für die Zeitumstellung ist das eher plausibel als belegt. Themen wie Zuspätkommen oder Uhren können außerdem die Woche widerspiegeln.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Wie bereitet man sich am besten auf die Sommerzeit vor?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Gehen Sie in den drei bis vier Tagen davor jeden Tag 15 bis 20 Minuten früher ins Bett und stehen Sie früher auf. Nach der Umstellung: kurz nach dem Aufwachen ins Tageslicht, abends das Licht dimmen und ab dem frühen Nachmittag auf Koffein verzichten.\"\n            }\n        }\n    ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Zeitumstellung und Schlaf: Was die Sommerzeit mit deinen Nächten und Träumen macht\",\n    \"description\": \"Zeitumstellung und Schlaf: Warum die Umstellung im Frühjahr schwerer fällt, was sie mit REM-Schlaf und Träumen macht und wie du dich anpasst.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/daylight-saving-time-sleep-dreams.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/de/ueber-uns#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Gründer & Publikationsleiter\",\n            \"url\": \"https://noctalia.app/de/ueber-uns\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2026-03-17\",\n    \"dateModified\": \"2026-10-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/de/blog/zeitumstellung-schlaf-traeume\"\n    },\n    \"inLanguage\": \"de\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2079,\n    \"timeRequired\": \"PT10M\",\n    \"url\": \"https://noctalia.app/de/blog/zeitumstellung-schlaf-traeume\"\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"@id\": \"https://noctalia.app/de/blog/zeitumstellung-schlaf-traeume\",\n  \"url\": \"https://noctalia.app/de/blog/zeitumstellung-schlaf-traeume\",\n  \"name\": \"Zeitumstellung und Schlaf: Wie der Uhrzeitwechsel deine Träume stört | Noctalia\",\n  \"inLanguage\": \"de\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Beeinflusst die Zeitumstellung wirklich den Schlaf?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Ja, vor allem im Frühjahr. Übersichtsarbeiten zeigen über mehrere Tage kürzeren und stärker zerstückelten Schlaf, nicht nur in der Nacht der Umstellung. Der Wecker kappt zudem das Ende der Nacht, wenn die Phasen des REM-Schlafs am längsten sind.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Wie lange dauert es, sich an die Zeitumstellung anzupassen?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Die meisten fühlen sich nach einigen Tagen bis einer Woche besser. Nachteulen passen sich schlechter an die Umstellung im Frühjahr an: In einer Studie hatten sich ihre Aktivitätszeiten auch Wochen später noch nicht vollständig eingestellt. Wenn du mehrere Wochen schlecht schläfst, sprich mit deiner Ärztin oder deinem Arzt.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Kann die Zeitumstellung meine Träume beeinflussen?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Indirekt, ja. Ein kürzeres Nachtende kann zunächst weniger erinnerte Träume bedeuten und danach, wenn der REM-Schlaf nachgeholt wird, intensivere. Für die Zeitumstellung ist das eher plausibel als belegt. Themen wie Zuspätkommen oder Uhren können außerdem die Woche widerspiegeln.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Wie bereitet man sich am besten auf die Sommerzeit vor?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Geh in den drei bis vier Tagen davor jeden Tag 15 bis 20 Minuten früher ins Bett und steh früher auf. Nach der Umstellung: kurz nach dem Aufwachen ins Tageslicht, abends das Licht dimmen und ab dem frühen Nachmittag auf Koffein verzichten.\"\n            }\n        }\n    ]\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Startseite\",\n      \"item\": \"https://noctalia.app/de/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Ressourcen\",\n      \"item\": \"https://noctalia.app/de/blog/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"Zeitumstellung\",\n      \"item\": \"https://noctalia.app/de/blog/zeitumstellung-schlaf-traeume\"\n    }\n  ]\n}"
   ],
   "activeNav": "resources"
@@ -67,10 +67,10 @@
 <span class="text-sm text-purple-300/60">10 Min. Lesezeit</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-Zeitumstellung und Schlaf: Was die Sommerzeit mit Ihren Nächten und Träumen macht
+Zeitumstellung und Schlaf: Was die Sommerzeit mit deinen Nächten und Träumen macht
 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-Montagmorgen, der erste nach der Umstellung auf Sommerzeit. Der Wecker zeigt 7 Uhr, Ihr Körper besteht darauf, dass es 6 ist, und der Traum, in dem Sie gerade waren, ein Zug, den Sie nicht verpassen durften, ist weg, sobald Sie sich aufsetzen. Die Zeitumstellung verschiebt die Uhr in einer Nacht um eine Stunde; Ihre innere Uhr braucht mehrere Tage, um nachzuziehen. Hier lesen Sie, was diese Stunde mit Ihrem Schlaf und Ihren Träumen macht, was gemessen ist und was noch Hypothese bleibt, und wie Sie die Umstellung sanfter überstehen.
+Montagmorgen, der erste nach der Umstellung auf Sommerzeit. Der Wecker zeigt 7 Uhr, dein Körper besteht darauf, dass es 6 ist, und der Traum, in dem du gerade warst, ein Zug, den du nicht verpassen durftest, ist weg, sobald du dich aufsetzt. Die Zeitumstellung verschiebt die Uhr in einer Nacht um eine Stunde; Deine innere Uhr braucht mehrere Tage, um nachzuziehen. Hier liest du, was diese Stunde mit deinem Schlaf und deinen Träumen macht, was gemessen ist und was noch Hypothese bleibt, und wie du die Umstellung sanfter überstehst.
 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -102,7 +102,7 @@ Montagmorgen, der erste nach der Umstellung auf Sommerzeit. Der Wecker zeigt 7 U
 <!-- Quick Answer (AI SEO) -->
 <section aria-labelledby="quick-answer-title" class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5">
 <h2 class="font-serif text-xl text-dream-cream mb-3" id="quick-answer-title">Kurze Antwort</h2>
-<p class="text-purple-100/80 leading-relaxed">Die Uhrzeit springt in einer Nacht, Ihre innere Uhr holt das in mehreren Tagen auf. Die Umstellung im Frühjahr ist die schwierigere: Der Schlaf wird kürzer und unruhiger, und der Wecker schneidet ins Ende der Nacht, wenn der REM-Schlaf, die Phase mit den lebhaftesten Träumen, am längsten dauert. Rechnen Sie mit ein paar müden Tagen, als Nachteule eher mit mehr. Am meisten helfen eine schrittweise Anpassung, Morgenlicht und gedämpftes Licht am Abend.</p>
+<p class="text-purple-100/80 leading-relaxed">Die Uhrzeit springt in einer Nacht, deine innere Uhr holt das in mehreren Tagen auf. Die Umstellung im Frühjahr ist die schwierigere: Der Schlaf wird kürzer und unruhiger, und der Wecker schneidet ins Ende der Nacht, wenn der REM-Schlaf, die Phase mit den lebhaftesten Träumen, am längsten dauert. Rechne mit ein paar müden Tagen, als Nachteule eher mit mehr. Am meisten helfen eine schrittweise Anpassung, Morgenlicht und gedämpftes Licht am Abend.</p>
 </section>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
@@ -118,16 +118,16 @@ Montagmorgen, der erste nach der Umstellung auf Sommerzeit. Der Wecker zeigt 7 U
 <li><a class="toc-link block" href="#sleep-architecture">2. Wie stört die Zeitumstellung den Schlaf?</a></li>
 <li><a class="toc-link block" href="#dream-disruption">3. Und was passiert mit den Träumen?</a></li>
 <li><a class="toc-link block" href="#health-risks">4. Ist die Zeitumstellung schlecht für die Gesundheit?</a></li>
-<li><a class="toc-link block" href="#tips">5. So passen Sie sich vor und nach der Umstellung an</a></li>
+<li><a class="toc-link block" href="#tips">5. So passt du dich vor und nach der Umstellung an</a></li>
 <li><a class="toc-link block" href="#abolish-dst">6. Sollte die Zeitumstellung abgeschafft werden?</a></li>
 </ol>
 </nav>
 <!-- Article Content -->
 <div class="prose max-w-none text-gray-300">
 <h2 id="clock-change">Was passiert im Körper, wenn die Uhren umgestellt werden?</h2>
-<h3>Ihre innere Uhr liest nicht die Uhrzeit auf dem Handy</h3>
+<h3>Deine innere Uhr liest nicht die Uhrzeit auf dem Handy</h3>
 <p>
-Ihr Körper hat seine eigene Zeit. Eine zentrale Uhr im Hypothalamus, der Nucleus suprachiasmaticus, gibt den Takt für Melatonin, Körpertemperatur und Müdigkeit vor. Sie stellt sich jeden Tag neu ein, vor allem über Licht, und das Morgenlicht zählt am meisten.
+Dein Körper hat seine eigene Zeit. Eine zentrale Uhr im Hypothalamus, der Nucleus suprachiasmaticus, gibt den Takt für Melatonin, Körpertemperatur und Müdigkeit vor. Sie stellt sich jeden Tag neu ein, vor allem über Licht, und das Morgenlicht zählt am meisten.
 </p>
 <p>
 Wenn die Uhrzeit auf dem Handy springt, springt diese innere Uhr nicht mit. Einige Tage lang passen soziale und biologische Zeit nicht zusammen. Diese Lücke, <strong>zirkadiane Fehlanpassung</strong> genannt, erklärt die zähen Morgen und die Abende, an denen der Schlaf nicht kommen will.
@@ -138,7 +138,7 @@ Kantermann und Kollegen (2007) begleiteten 50 Personen jeweils acht Wochen rund 
 </p>
 <h3>Das verspätete Melatonin</h3>
 <p>
-Nach der Umstellung auf Sommerzeit schüttet Ihr Körper Melatonin weiter nach dem alten Zeitplan aus. Zur neuen Schlafenszeit sind Sie nicht müde, und der Wecker klingelt, bevor Ihr Organismus bereit ist. Es fühlt sich an wie ein kleiner Jetlag, nur ohne Reise.
+Nach der Umstellung auf Sommerzeit schüttet dein Körper Melatonin weiter nach dem alten Zeitplan aus. Zur neuen Schlafenszeit bist du nicht müde, und der Wecker klingelt, bevor dein Organismus bereit ist. Es fühlt sich an wie ein kleiner Jetlag, nur ohne Reise.
 </p>
 <h2 id="sleep-architecture">Wie stört die Zeitumstellung den Schlaf?</h2>
 <h3>Kürzere, unruhigere Nächte</h3>
@@ -147,12 +147,12 @@ Meist stellen wir uns die Umstellung im Frühjahr als eine einzige verlorene Stu
 </p>
 <h3>Das Ende der Nacht, wo die REM-Phasen am längsten sind</h3>
 <p>
-Schlaf verläuft in aufeinanderfolgenden Zyklen, und die Phasen des <a class="text-dream-salmon hover:underline" href="rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen">REM-Schlafs</a> werden zum Morgen hin länger. Klingelt der Wecker eine Stunde früher, als Ihr Körper erwartet, wird vor allem dieser letzte Abschnitt der Nacht gekappt. Wie viele Minuten REM-Schlaf nach der Zeitumstellung tatsächlich verloren gehen, ist nicht verlässlich gemessen, doch die Logik der Schlafzyklen macht das Ende der Nacht zum verletzlichsten Teil.
+Schlaf verläuft in aufeinanderfolgenden Zyklen, und die Phasen des <a class="text-dream-salmon hover:underline" href="rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen">REM-Schlafs</a> werden zum Morgen hin länger. Klingelt der Wecker eine Stunde früher, als dein Körper erwartet, wird vor allem dieser letzte Abschnitt der Nacht gekappt. Wie viele Minuten REM-Schlaf nach der Zeitumstellung tatsächlich verloren gehen, ist nicht verlässlich gemessen, doch die Logik der Schlafzyklen macht das Ende der Nacht zum verletzlichsten Teil.
 </p>
 <h2 id="dream-disruption">Und was passiert mit den Träumen?</h2>
 <h3>Zuerst: weniger erinnerte Träume</h3>
 <p>
-Nur wenige Studien haben Träume direkt nach der Zeitumstellung untersucht. Das Folgende ist aus dem abgeleitet, was wir über den Schlaf wissen, und nicht an der Zeitumstellung selbst gemessen. Mit einem kürzeren Nachtende und einem abrupten Wecken stehen viele Menschen ohne jeden Traum auf, oder mit einem Fetzen, der in Sekunden verblasst. Unser Leitfaden, <a class="text-dream-salmon hover:underline" href="so-erinnern-sie-sich-an-ihre-traeume-10-effektive-techniken">wie Sie sich an Ihre Träume erinnern</a>, zeigt, wie Sie ihn festhalten.
+Nur wenige Studien haben Träume direkt nach der Zeitumstellung untersucht. Das Folgende ist aus dem abgeleitet, was wir über den Schlaf wissen, und nicht an der Zeitumstellung selbst gemessen. Mit einem kürzeren Nachtende und einem abrupten Wecken stehen viele Menschen ohne jeden Traum auf, oder mit einem Fetzen, der in Sekunden verblasst. Unser Leitfaden, <a class="text-dream-salmon hover:underline" href="so-erinnern-sie-sich-an-ihre-traeume-10-effektive-techniken">wie du dich an deine Träume erinnerst</a>, zeigt, wie du ihn festhältst.
 </p>
 <h3>Danach manchmal: intensivere Träume</h3>
 <p>
@@ -160,7 +160,7 @@ Nach verlorenem REM-Schlaf holt der Körper ihn in den folgenden Nächten tenden
 </p>
 <h3>Träume vom Zuspätkommen und von Uhren</h3>
 <p>
-Träume greifen oft auf, was uns tagsüber beschäftigt. Eine Woche, in der Sie ständig auf die Uhr schauen, kann einen verpassten Zug bringen, eine Uhr mit unmöglicher Zeit, eine <a class="text-dream-salmon hover:underline" href="../traumsymbole/sonne">Sonne</a>, die um Mitternacht noch hoch steht, einen <a class="text-dream-salmon hover:underline" href="../traumsymbole/mond">Mond</a> am falschen Platz oder eine <a class="text-dream-salmon hover:underline" href="../traumsymbole/nacht">Nacht</a>, die nicht endet. Sehen Sie diese Bilder als Echo der Woche, nicht als Botschaft.
+Träume greifen oft auf, was uns tagsüber beschäftigt. Eine Woche, in der du ständig auf die Uhr schaust, kann einen verpassten Zug bringen, eine Uhr mit unmöglicher Zeit, eine <a class="text-dream-salmon hover:underline" href="../traumsymbole/sonne">Sonne</a>, die um Mitternacht noch hoch steht, einen <a class="text-dream-salmon hover:underline" href="../traumsymbole/mond">Mond</a> am falschen Platz oder eine <a class="text-dream-salmon hover:underline" href="../traumsymbole/nacht">Nacht</a>, die nicht endet. Sieh diese Bilder als Echo der Woche, nicht als Botschaft.
 </p>
 <h3>Ein Traumtagebuch-Eintrag für die Woche der Umstellung</h3>
 <p><strong>Fiktives Beispiel</strong>, um zu zeigen, was sich zu notieren lohnt:</p>
@@ -176,15 +176,15 @@ Ein einzelner Eintrag beweist nichts. Erst der Vergleich der Umstellungswoche mi
 <h2 id="health-risks">Ist die Zeitumstellung schlecht für die Gesundheit?</h2>
 <h3>Herzinfarkte: eher zeitlich verschoben als häufiger</h3>
 <p>
-Sandhu und Kollegen (2014) werteten Herzinfarkte aus, die rund um mehrere Zeitumstellungen in Krankenhäusern in Michigan behandelt wurden. Sie fanden etwa <strong>24 % mehr Infarkte am Montag nach der Umstellung im Frühjahr</strong> und etwa 21 % weniger am Dienstag nach der Umstellung im Herbst. Die Gesamtzahl pro Woche änderte sich jedoch nicht. Die Autoren folgern, dass die Zeitumstellung beeinflusst, <em>wann</em> Herzinfarkte auftreten, nicht wie viele. Kein Grund zur Panik, aber ein Grund, diese Woche ernst zu nehmen, wenn Sie bereits Herz-Risikofaktoren haben.
+Sandhu und Kollegen (2014) werteten Herzinfarkte aus, die rund um mehrere Zeitumstellungen in Krankenhäusern in Michigan behandelt wurden. Sie fanden etwa <strong>24 % mehr Infarkte am Montag nach der Umstellung im Frühjahr</strong> und etwa 21 % weniger am Dienstag nach der Umstellung im Herbst. Die Gesamtzahl pro Woche änderte sich jedoch nicht. Die Autoren folgern, dass die Zeitumstellung beeinflusst, <em>wann</em> Herzinfarkte auftreten, nicht wie viele. Kein Grund zur Panik, aber ein Grund, diese Woche ernst zu nehmen, wenn du bereits Herz-Risikofaktoren hast.
 </p>
 <h3>Straßenverkehr, Aufmerksamkeit und Stimmung</h3>
 <p>
 In den USA steigt das Risiko tödlicher Verkehrsunfälle in der Woche nach der Umstellung im Frühjahr um etwa 6 %, so eine Auswertung nationaler Unfalldaten (Fritz et al., 2020). Die American Academy of Sleep Medicine (AASM) nennt außerdem Herz-Kreislauf-Ereignisse, Stimmungsstörungen und Verkehrsunfälle unter den akuten Risiken dieses Übergangs. Praktisch heißt das: in den ersten Tagen vorsichtiger fahren und wichtige Entscheidungen möglichst nicht auf Montagmorgen legen.
 </p>
-<h3>Wann Sie ärztlichen Rat suchen sollten</h3>
+<h3>Wann du ärztlichen Rat suchen solltest</h3>
 <p>
-Die Müdigkeit vergeht meist innerhalb von etwa einer Woche. Sprechen Sie mit einer Ärztin oder einem Arzt, wenn Sie Wochen später noch schlecht schlafen, tagsüber sehr schläfrig sind, jemand bei Ihnen Schnarchen mit Atempausen bemerkt oder Ihre Stimmung deutlich sinkt. Ebenso, wenn <a class="text-dream-salmon hover:underline" href="albtraeume-ursachen-bedeutung-und-wie-man-sie-stoppen-kann">Albträume</a> so häufig werden, dass sie Ihren Schlaf beeinträchtigen.
+Die Müdigkeit vergeht meist innerhalb von etwa einer Woche. Sprich mit einer Ärztin oder einem Arzt, wenn du Wochen später noch schlecht schläfst, tagsüber sehr schläfrig bist, jemand bei dir Schnarchen mit Atempausen bemerkt oder deine Stimmung deutlich sinkt. Ebenso, wenn <a class="text-dream-salmon hover:underline" href="albtraeume-ursachen-bedeutung-und-wie-man-sie-stoppen-kann">Albträume</a> so häufig werden, dass sie deinen Schlaf beeinträchtigen.
 </p>
 </div>
 
@@ -194,8 +194,8 @@ Die Müdigkeit vergeht meist innerhalb von etwa einer Woche. Sprechen Sie mit ei
 <i class="w-6 h-6 text-dream-salmon" data-lucide="book-open"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Notieren Sie Ihre Träume in der Umstellungswoche</h4>
-<p class="text-sm text-gray-400 mb-4">Erzählen Sie Ihren Traum direkt nach dem Aufwachen laut oder tippen Sie ihn ein. Noctalia transkribiert ihn und legt ihn in Ihrem Tagebuch ab, sodass Sie die Nächte vor und nach der Zeitumstellung nebeneinander lesen können.</p>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Notiere deine Träume in der Umstellungswoche</h4>
+<p class="text-sm text-gray-400 mb-4">Erzähl deinen Traum direkt nach dem Aufwachen laut oder tipp ihn ein. Noctalia transkribiert ihn und legt ihn in deinem Tagebuch ab, sodass du die Nächte vor und nach der Zeitumstellung nebeneinander lesen kannst.</p>
 <a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/de/traumtagebuch-spracheingabe">
 Traumtagebuch per Sprache testen <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
@@ -204,17 +204,17 @@ Traumtagebuch per Sprache testen <i class="w-4 h-4" data-lucide="arrow-right"></
 </aside>
 
 <div class="prose max-w-none text-gray-300">
-<h2 id="tips">So passen Sie sich vor und nach der Umstellung an</h2>
+<h2 id="tips">So passt du dich vor und nach der Umstellung an</h2>
 <h3>Vor der Umstellung: schrittweise verschieben</h3>
 <p>
-Gehen Sie drei bis vier Tage vor der Umstellung im Frühjahr jeden Tag 15 bis 20 Minuten früher ins Bett und stehen Sie entsprechend früher auf. Am Sonntag ist dann der größte Teil der Stunde schon geschafft. Auch die Mahlzeiten können Sie vorziehen: Essenszeiten gehören zu den Signalen, an denen sich die Uhren des Körpers orientieren, und das kann dem ganzen System helfen nachzuziehen.
+Geh drei bis vier Tage vor der Umstellung im Frühjahr jeden Tag 15 bis 20 Minuten früher ins Bett und steh entsprechend früher auf. Am Sonntag ist dann der größte Teil der Stunde schon geschafft. Auch die Mahlzeiten kannst du vorziehen: Essenszeiten gehören zu den Signalen, an denen sich die Uhren des Körpers orientieren, und das kann dem ganzen System helfen nachzuziehen.
 </p>
 <p>
-Im Herbst machen Sie es umgekehrt, oder Sie behalten einfach Ihre gewohnte Aufstehzeit bei und schlafen nicht aus.
+Im Herbst machst du es umgekehrt, oder du behältst einfach deine gewohnte Aufstehzeit bei und schläfst nicht aus.
 </p>
 <h3>Morgens Licht, abends gedämpft</h3>
 <p>
-Licht ist das stärkste Signal für Ihre innere Uhr. Gehen Sie in den Tagen nach der Umstellung im Frühjahr <strong>kurz nach dem Aufwachen nach draußen</strong>, auch bei bewölktem Himmel: Tageslicht im Freien ist weit heller als jede Innenbeleuchtung. Abends gilt das Gegenteil: Licht dimmen und Bildschirme eine Weile vor der neuen Schlafenszeit weglegen.
+Licht ist das stärkste Signal für deine innere Uhr. Geh in den Tagen nach der Umstellung im Frühjahr <strong>kurz nach dem Aufwachen nach draußen</strong>, auch bei bewölktem Himmel: Tageslicht im Freien ist weit heller als jede Innenbeleuchtung. Abends gilt das Gegenteil: Licht dimmen und Bildschirme eine Weile vor der neuen Schlafenszeit weglegen.
 </p>
 <h3>Einfache Gewohnheiten für die Umstellungswoche</h3>
 <ul>
@@ -222,7 +222,7 @@ Licht ist das stärkste Signal für Ihre innere Uhr. Gehen Sie in den Tagen nach
 <li><strong>Schlafzimmer kühl, dunkel und ruhig halten:</strong> Das erleichtert Einschlafen und Durchschlafen</li>
 <li><strong>Leicht und nicht zu spät zu Abend essen:</strong> Eine schwere Mahlzeit kurz vor dem Schlafen verzögert das Einschlafen</li>
 <li><strong>Kurz und früh ruhen:</strong> Ein kurzes Nickerchen am frühen Nachmittag ist in Ordnung, ein langes, spätes erschwert die neue Schlafenszeit</li>
-<li><strong>Ein <a class="text-dream-salmon hover:underline" href="dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer">Traumtagebuch</a> führen:</strong> Notieren Sie in der Umstellungswoche Schlafens- und Aufstehzeit und den Traum, falls einer da war; so sehen Sie, wie sich Ihre Nächte erholen</li>
+<li><strong>Ein <a class="text-dream-salmon hover:underline" href="dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer">Traumtagebuch</a> führen:</strong> Notiere in der Umstellungswoche Schlafens- und Aufstehzeit und den Traum, falls einer da war; so siehst du, wie sich deine Nächte erholen</li>
 </ul>
 <h2 id="abolish-dst">Sollte die Zeitumstellung abgeschafft werden?</h2>
 <h3>Was Schlafforscher empfehlen</h3>
@@ -234,7 +234,7 @@ Schlaf- und Chronobiologie-Forschende sind sich weitgehend einig. In einem Posit
 In der Europäischen Union stimmte das Parlament im März 2019 für ein Ende der saisonalen Zeitumstellung, doch die Mitgliedstaaten haben sich nicht auf ein gemeinsames Vorgehen geeinigt. In Deutschland, Österreich und den anderen EU-Ländern werden die Uhren deshalb weiterhin am letzten Sonntag im März und im Oktober umgestellt. In den USA verabschiedete das Repräsentantenhaus im Juli 2026 den Sunshine Protection Act, der die Sommerzeit dauerhaft machen würde; Anfang Oktober 2026 hatte der Senat noch nicht darüber abgestimmt.
 </p>
 <p>
-Bis sich die Regeln ändern, liegt der wirksamste Hebel bei Ihnen: die Umstellung ein paar Tage vorher vorbereiten und sich eine Woche Nachsicht gönnen.
+Bis sich die Regeln ändern, liegt der wirksamste Hebel bei dir: die Umstellung ein paar Tage vorher vorbereiten und sich eine Woche Nachsicht gönnen.
 </p>
 </div>
 <!-- CTA Section -->
@@ -242,9 +242,9 @@ Bis sich die Regeln ändern, liegt der wirksamste Hebel bei Ihnen: die Umstellun
 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
 <i class="w-8 h-8 text-dream-salmon" data-lucide="moon"></i>
 </div>
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Halten Sie die Woche der Zeitumstellung fest</h3>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Halte die Woche der Zeitumstellung fest</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-Notieren Sie Ihren Traum nach dem Aufwachen per Sprache oder schriftlich. Noctalia transkribiert ihn und legt ihn in Ihrem Tagebuch ab, damit Sie die Nächte vor und nach der Umstellung vergleichen und erkennen, was wiederkehrt.
+Notiere deinen Traum nach dem Aufwachen per Sprache oder schriftlich. Noctalia transkribiert ihn und legt ihn in deinem Tagebuch ab, damit du die Nächte vor und nach der Umstellung vergleichst und erkennst, was wiederkehrt.
 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/de/">
 Traumtagebuch beginnen <i class="w-5 h-5" data-lucide="arrow-right"></i>
@@ -269,7 +269,7 @@ Wie lange dauert es, sich an die Zeitumstellung anzupassen?
 <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-Die meisten fühlen sich nach einigen Tagen bis einer Woche besser. Nachteulen passen sich schlechter an die Umstellung im Frühjahr an: In einer Studie hatten sich ihre Aktivitätszeiten auch Wochen später noch nicht vollständig eingestellt. Wenn Sie mehrere Wochen schlecht schlafen, sprechen Sie mit Ihrer Ärztin oder Ihrem Arzt.
+Die meisten fühlen sich nach einigen Tagen bis einer Woche besser. Nachteulen passen sich schlechter an die Umstellung im Frühjahr an: In einer Studie hatten sich ihre Aktivitätszeiten auch Wochen später noch nicht vollständig eingestellt. Wenn du mehrere Wochen schlecht schläfst, sprich mit deiner Ärztin oder deinem Arzt.
 </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -287,7 +287,7 @@ Wie bereitet man sich am besten auf die Sommerzeit vor?
 <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-Gehen Sie in den drei bis vier Tagen davor jeden Tag 15 bis 20 Minuten früher ins Bett und stehen Sie früher auf. Nach der Umstellung: kurz nach dem Aufwachen ins Tageslicht, abends das Licht dimmen und ab dem frühen Nachmittag auf Koffein verzichten.
+Geh in den drei bis vier Tagen davor jeden Tag 15 bis 20 Minuten früher ins Bett und steh früher auf. Nach der Umstellung: kurz nach dem Aufwachen ins Tageslicht, abends das Licht dimmen und ab dem frühen Nachmittag auf Koffein verzichten.
 </p>
 </details>
 </div>
@@ -313,7 +313,7 @@ Gehen Sie in den drei bis vier Tagen davor jeden Tag 15 bis 20 Minuten früher i
 <i class="w-5 h-5 text-dream-salmon" data-lucide="book-open"></i>
                     Verwandte Traumsymbole entdecken
                 </h2>
-<p class="text-sm text-purple-300/60 mb-4">Vertiefen Sie sich in die Symbole dieses Artikels:</p>
+<p class="text-sm text-purple-300/60 mb-4">Vertief dich in die Symbole dieses Artikels:</p>
 <div class="flex flex-wrap gap-3">
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/mond">Traumdeutung Mond</a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/sonne">Traumdeutung Sonne</a>
@@ -334,7 +334,7 @@ Gehen Sie in den drei bis vier Tagen davor jeden Tag 15 bis 20 Minuten früher i
 <a class="glass-panel rounded-xl p-5 flex items-start justify-end gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="schlafschuld-gesundheit-traeume">
 <div class="text-right">
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">N&auml;chster Artikel</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Schlafschuld: Wie chronischer Schlafmangel Ihre Gesundheit und Tr&auml;ume beeintr&auml;chtigt</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Schlafschuld: Wie chronischer Schlafmangel deine Gesundheit und Tr&auml;ume beeintr&auml;chtigt</div>
 </div>
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
@@ -355,13 +355,13 @@ Gehen Sie in den drei bis vier Tagen davor jeden Tag 15 bis 20 Minuten früher i
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="so-erinnern-sie-sich-an-ihre-traeume-10-effektive-techniken">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Leitfaden</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">So erinnern Sie sich an Ihre Tr&auml;ume</h3>
-<p class="text-sm text-gray-400">Wissenschaftlich fundierte Techniken, um Ihre Traumerinnerung ab heute Nacht zu verbessern.</p>
+<h3 class="font-serif text-lg text-dream-cream mb-2">So erinnerst du dich an deine Tr&auml;ume</h3>
+<p class="text-sm text-gray-400">Wissenschaftlich fundierte Techniken, um deine Traumerinnerung ab heute Nacht zu verbessern.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="schlaftag-umgebung-traeume">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Wissenschaft</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Welttag des Schlafs 2026: Wie Ihre Umgebung Ihre Tr&auml;ume verwandelt</h3>
-<p class="text-sm text-gray-400">Wie Licht, Lärm und Temperatur im Schlafzimmer Schlaf und Träume beeinflussen und was Sie heute Abend ändern können.</p>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Welttag des Schlafs 2026: Wie deine Umgebung deine Tr&auml;ume verwandelt</h3>
+<p class="text-sm text-gray-400">Wie Licht, Lärm und Temperatur im Schlafzimmer Schlaf und Träume beeinflussen und was du heute Abend ändern kannst.</p>
 </a>
 </div>
 </section>
@@ -370,6 +370,6 @@ Gehen Sie in den drei bis vier Tagen davor jeden Tag 15 bis 20 Minuten früher i
 <!-- Health Disclaimer (TI-97 E-E-A-T) -->
 <aside aria-label="Disclaimer" class="glass-panel rounded-xl p-4 my-8 border border-purple-500/20" role="note">
 <p class="text-sm text-purple-200/70">
-<strong class="text-dream-cream">Wichtig:</strong> Dieser Artikel dient ausschließlich zu Informationszwecken und stellt keine medizinische oder psychologische Beratung dar. Wenn Sie unter anhaltenden Schlafstörungen oder psychischen Problemen leiden, wenden Sie sich bitte an eine qualifizierte medizinische Fachkraft.
+<strong class="text-dream-cream">Wichtig:</strong> Dieser Artikel dient ausschließlich zu Informationszwecken und stellt keine medizinische oder psychologische Beratung dar. Wenn du unter anhaltenden Schlafstörungen oder psychischen Problemen leidest, wende dich bitte an eine qualifizierte medizinische Fachkraft.
 </p>
 </aside>

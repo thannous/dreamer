@@ -29,9 +29,9 @@
   "nextPath": "/de/blog/traeume-und-kreativitaet",
   "preloadImage": "/img/blog/stress-dreams-work.webp",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"Stressträume über die Arbeit: Warum Ihr Job Sie in den Schlaf verfolgt\",\n  \"description\": \"Von der Arbeit träumen: Verspätung, Besprechung, Kündigung oder Überlastung. Fragen zur Einordnung, Schlaf und Grenzen der Traumdeutung.\",\n  \"image\": {\n    \"@type\": \"ImageObject\",\n    \"url\": \"https://noctalia.app/img/blog/stress-dreams-work.webp\",\n    \"width\": 1200,\n    \"height\": 630\n  },\n  \"author\": [\n    {\n      \"@type\": \"Person\",\n      \"@id\": \"https://noctalia.app/de/ueber-uns#person\",\n      \"name\": \"Thanh Chau\",\n      \"jobTitle\": \"Gründer & Publikationsleiter\",\n      \"url\": \"https://noctalia.app/de/ueber-uns\",\n      \"worksFor\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n      }\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n      }\n    }\n  ],\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"url\": \"https://noctalia.app\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  },\n  \"datePublished\": \"2026-03-05\",\n  \"dateModified\": \"2026-09-06\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/de/blog/stresstraeume-von-der-arbeit-warum-ihr-job-sie-in-den-schlaf-begleitet\"\n  },\n  \"inLanguage\": \"de\",\n  \"isAccessibleForFree\": true,\n  \"url\": \"https://noctalia.app/de/blog/stresstraeume-von-der-arbeit-warum-ihr-job-sie-in-den-schlaf-begleitet\"\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"Stressträume über die Arbeit: Warum dein Job dich in den Schlaf verfolgt\",\n  \"description\": \"Von der Arbeit träumen: Verspätung, Besprechung, Kündigung oder Überlastung. Fragen zur Einordnung, Schlaf und Grenzen der Traumdeutung.\",\n  \"image\": {\n    \"@type\": \"ImageObject\",\n    \"url\": \"https://noctalia.app/img/blog/stress-dreams-work.webp\",\n    \"width\": 1200,\n    \"height\": 630\n  },\n  \"author\": [\n    {\n      \"@type\": \"Person\",\n      \"@id\": \"https://noctalia.app/de/ueber-uns#person\",\n      \"name\": \"Thanh Chau\",\n      \"jobTitle\": \"Gründer & Publikationsleiter\",\n      \"url\": \"https://noctalia.app/de/ueber-uns\",\n      \"worksFor\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n      }\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n      }\n    }\n  ],\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"url\": \"https://noctalia.app\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  },\n  \"datePublished\": \"2026-03-05\",\n  \"dateModified\": \"2026-09-06\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/de/blog/stresstraeume-von-der-arbeit-warum-ihr-job-sie-in-den-schlaf-begleitet\"\n  },\n  \"inLanguage\": \"de\",\n  \"isAccessibleForFree\": true,\n  \"url\": \"https://noctalia.app/de/blog/stresstraeume-von-der-arbeit-warum-ihr-job-sie-in-den-schlaf-begleitet\"\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"@id\": \"https://noctalia.app/de/blog/stresstraeume-von-der-arbeit-warum-ihr-job-sie-in-den-schlaf-begleitet\",\n  \"url\": \"https://noctalia.app/de/blog/stresstraeume-von-der-arbeit-warum-ihr-job-sie-in-den-schlaf-begleitet\",\n  \"name\": \"Stressträume durch die Arbeit: Ursachen und Hilfe | Noctalia\",\n  \"inLanguage\": \"de\"\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Warum träume ich ständig von der Arbeit?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Arbeit kann Szenen für einen Traum liefern. Vergleichen Sie Erinnerung, Kontext und Gefühl, ohne eine einzige Ursache oder eine verborgene Botschaft vorauszusetzen.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Sind Stressträume über die Arbeit normal?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Ein Arbeitstraum allein zeigt kein Problem an. Entscheidend sind eher Belastung und Auswirkungen auf Schlaf und Alltag als das Thema des Traums.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Können Arbeitsträume auf Burnout hinweisen?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Ein Arbeitstraum allein erlaubt keinen Rückschluss auf Burnout. Wenn Ihr Schlaf oder Alltag anhaltend beeinträchtigt ist, sprechen Sie mit einer medizinischen Fachperson.\"\n      }\n    }\n  ]\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Warum träume ich ständig von der Arbeit?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Arbeit kann Szenen für einen Traum liefern. Vergleiche Erinnerung, Kontext und Gefühl, ohne eine einzige Ursache oder eine verborgene Botschaft vorauszusetzen.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Sind Stressträume über die Arbeit normal?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Ein Arbeitstraum allein zeigt kein Problem an. Entscheidend sind eher Belastung und Auswirkungen auf Schlaf und Alltag als das Thema des Traums.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Können Arbeitsträume auf Burnout hinweisen?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Ein Arbeitstraum allein erlaubt keinen Rückschluss auf Burnout. Wenn dein Schlaf oder Alltag anhaltend beeinträchtigt ist, sprich mit einer medizinischen Fachperson.\"\n      }\n    }\n  ]\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Startseite\",\n      \"item\": \"https://noctalia.app/de/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Ressourcen\",\n      \"item\": \"https://noctalia.app/de/blog/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"Stressträume über die Arbeit\",\n      \"item\": \"https://noctalia.app/de/blog/stresstraeume-von-der-arbeit-warum-ihr-job-sie-in-den-schlaf-begleitet\"\n    }\n  ]\n}"
   ],
   "activeNav": "resources"
@@ -67,10 +67,10 @@
 <span class="text-sm text-purple-300/60">2 Min. Lesezeit</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Stressträume über die Arbeit: Warum Ihr Job Sie in den Schlaf verfolgt
+                    Stressträume über die Arbeit: Warum dein Job dich in den Schlaf verfolgt
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-Eine Besprechung beginnt ohne Sie, eine Frist läuft ab oder der Posteingang wird nie leer. Ein Arbeitstraum kann nach dem Aufwachen nachwirken. Dieser Leitfaden hilft beim Nachdenken über Szene und Kontext, ohne eine allgemeingültige Bedeutung oder eine Diagnose daraus abzuleiten.
+Eine Besprechung beginnt ohne dich, eine Frist läuft ab oder der Posteingang wird nie leer. Ein Arbeitstraum kann nach dem Aufwachen nachwirken. Dieser Leitfaden hilft beim Nachdenken über Szene und Kontext, ohne eine allgemeingültige Bedeutung oder eine Diagnose daraus abzuleiten.
 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -86,7 +86,7 @@ Eine Besprechung beginnt ohne Sie, eine Frist läuft ab oder der Posteingang wir
 <!-- Quick Answer (AI SEO) -->
 <section aria-labelledby="quick-answer-title" class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5">
 <h2 class="font-serif text-xl text-dream-cream mb-3" id="quick-answer-title">Kurze Antwort</h2>
-<p class="text-purple-100/80 leading-relaxed">Arbeit kann Szenen für einen Traum liefern. Vergleichen Sie Erinnerung, Kontext und Gefühl, ohne eine einzige Ursache oder eine verborgene Botschaft vorauszusetzen.</p>
+<p class="text-purple-100/80 leading-relaxed">Arbeit kann Szenen für einen Traum liefern. Vergleiche Erinnerung, Kontext und Gefühl, ohne eine einzige Ursache oder eine verborgene Botschaft vorauszusetzen.</p>
 </section>
 <!-- Editorial Review (E-E-A-T) -->
 <div class="mb-8">
@@ -99,7 +99,7 @@ Eine Besprechung beginnt ohne Sie, eine Frist läuft ab oder der Posteingang wir
             <p class="text-sm text-purple-100/80 leading-relaxed">
                 <strong class="text-dream-cream">Redaktionelle Überprüfung:</strong>
                 Diese gesundheitsbezogene Seite wurde auf Klarheit und Quellengenauigkeit anhand der auf der Seite zitierten Referenzen überprüft. Sie dient der Information und ersetzt keinen medizinischen Rat.
-                <a class="text-dream-salmon hover:underline" href="/de/ueber-uns">Erfahren Sie, wie wir sensible Themen überprüfen</a>.
+                <a class="text-dream-salmon hover:underline" href="/de/ueber-uns">Erfahre, wie wir sensible Themen überprüfen</a>.
             </p>
         </div>
     </details>
@@ -126,30 +126,30 @@ Eine Besprechung beginnt ohne Sie, eine Frist läuft ab oder der Posteingang wir
 <!-- Article Content -->
 <div class="prose max-w-none text-gray-300">
 <h2 id="why-work-invades">Warum Arbeit im Traum auftaucht</h2>
-<p>Ein Arbeitsplatz, eine Person oder eine Aufgabe kann ein Ausgangspunkt für Ihre Überlegungen sein. Erinnert die Szene an ein aktuelles Ereignis, eine frühere Erfahrung oder eine gegenwärtige Sorge? Eine plausible Verbindung bleibt eine persönliche Vermutung, kein Beweis.</p><p>Notieren Sie auch Abweichungen: ein unbekanntes Büro, einen früheren Kollegen oder eine unerwartete Emotion. Nicht jedes Detail muss mit Stress erklärt werden. Ein Arbeitstraum allein zeigt nicht, dass mit Ihrer beruflichen Situation etwas nicht stimmt.</p>
+<p>Ein Arbeitsplatz, eine Person oder eine Aufgabe kann ein Ausgangspunkt für deine Überlegungen sein. Erinnert die Szene an ein aktuelles Ereignis, eine frühere Erfahrung oder eine gegenwärtige Sorge? Eine plausible Verbindung bleibt eine persönliche Vermutung, kein Beweis.</p><p>Notiere auch Abweichungen: ein unbekanntes Büro, einen früheren Kollegen oder eine unerwartete Emotion. Nicht jedes Detail muss mit Stress erklärt werden. Ein Arbeitstraum allein zeigt nicht, dass mit deiner beruflichen Situation etwas nicht stimmt.</p>
 <h2 id="common-scenarios">Verspätung, Besprechung und Kündigung einordnen</h2>
-<h3>Zu spät kommen oder eine Frist verpassen</h3><p>Überwiegen Zeitdruck, Ärger, Angst vor Enttäuschung oder Gleichgültigkeit? Vergleichen Sie das Gefühl mit tatsächlichen Terminen, ohne den Traum als Vorhersage eines Scheiterns zu lesen.</p><h3>Unvorbereitet in einer Besprechung</h3><p>Was fehlt Ihnen in der Szene: Unterlagen, Zeit, Ihre Stimme oder Unterstützung? Daraus können Fragen zu Ihren Erwartungen entstehen. Ein solcher Traum belegt jedoch kein Impostor-Syndrom.</p><h3>Kündigung oder Stellenwechsel</h3><p>Ein Traum sagt keine Kündigung voraus. Trennen Sie das nächtliche Geschehen von überprüfbaren Informationen über Ihren Arbeitsplatz. Berufliche Entscheidungen brauchen reale Fakten und Gespräche.</p><h3>Endlose Aufgaben oder ein schwieriger Vortrag</h3><p>Vergleichen Sie mögliche Themen wie Überlastung, Bewertung durch andere und Erinnerungen an ähnliche Situationen. Keine dieser Deutungen ist zwingend. Eine ähnliche Szene kann für verschiedene Menschen unterschiedlich wirken.</p>
+<h3>Zu spät kommen oder eine Frist verpassen</h3><p>Überwiegen Zeitdruck, Ärger, Angst vor Enttäuschung oder Gleichgültigkeit? Vergleiche das Gefühl mit tatsächlichen Terminen, ohne den Traum als Vorhersage eines Scheiterns zu lesen.</p><h3>Unvorbereitet in einer Besprechung</h3><p>Was fehlt dir in der Szene: Unterlagen, Zeit, deine Stimme oder Unterstützung? Daraus können Fragen zu deinen Erwartungen entstehen. Ein solcher Traum belegt jedoch kein Impostor-Syndrom.</p><h3>Kündigung oder Stellenwechsel</h3><p>Ein Traum sagt keine Kündigung voraus. Trenne das nächtliche Geschehen von überprüfbaren Informationen über deinen Arbeitsplatz. Berufliche Entscheidungen brauchen reale Fakten und Gespräche.</p><h3>Endlose Aufgaben oder ein schwieriger Vortrag</h3><p>Vergleiche mögliche Themen wie Überlastung, Bewertung durch andere und Erinnerungen an ähnliche Situationen. Keine dieser Deutungen ist zwingend. Eine ähnliche Szene kann für verschiedene Menschen unterschiedlich wirken.</p>
 <h2 id="science">Was die Quellen tatsächlich aussagen</h2>
-<p>Das <a href="https://www.nimh.nih.gov/health/publications/so-stressed-out-fact-sheet" rel="noopener noreferrer" target="_blank">NIMH</a> beschreibt, dass Stress und Angst den Schlaf beeinträchtigen können. Daraus lässt sich weder der Hormonauslöser eines einzelnen Traums noch Ihr Stressniveau anhand seines Inhalts bestimmen.</p><p>Die Einordnung auf dieser Seite ist eine Reflexionshilfe, kein wissenschaftlicher Test. Ohne eine überprüfbare Quelle nennen wir weder einen Anteil wöchentlicher Arbeitsträume noch einen Risikofaktor oder eine garantierte Verringerung ihrer Häufigkeit.</p>
+<p>Das <a href="https://www.nimh.nih.gov/health/publications/so-stressed-out-fact-sheet" rel="noopener noreferrer" target="_blank">NIMH</a> beschreibt, dass Stress und Angst den Schlaf beeinträchtigen können. Daraus lässt sich weder der Hormonauslöser eines einzelnen Traums noch dein Stressniveau anhand seines Inhalts bestimmen.</p><p>Die Einordnung auf dieser Seite ist eine Reflexionshilfe, kein wissenschaftlicher Test. Ohne eine überprüfbare Quelle nennen wir weder einen Anteil wöchentlicher Arbeitsträume noch einen Risikofaktor oder eine garantierte Verringerung ihrer Häufigkeit.</p>
 <h2 id="what-telling-you">Fragen statt verborgener Botschaften</h2>
-<p>Trennen Sie die Traumszene, das Gefühl und Ihre Kenntnisse über den Alltag. Halten Sie mehrere Erklärungen fest und lassen Sie auch „Ich weiß es nicht“ gelten. Eine vertraut klingende Erklärung muss nicht zutreffen.</p><p>Ein Arbeitstraum allein erlaubt keinen Rückschluss auf Burnout. Die <a href="https://www.who.int/news/item/28-05-2019-burn-out-an-occupational-phenomenon-international-classification-of-diseases" rel="noopener noreferrer" target="_blank">WHO</a> beschreibt Burnout im beruflichen Kontext, nicht anhand bestimmter Traumszenen.</p>
+<p>Trenne die Traumszene, das Gefühl und deine Kenntnisse über den Alltag. Halte mehrere Erklärungen fest und lass auch „Ich weiß es nicht“ gelten. Eine vertraut klingende Erklärung muss nicht zutreffen.</p><p>Ein Arbeitstraum allein erlaubt keinen Rückschluss auf Burnout. Die <a href="https://www.who.int/news/item/28-05-2019-burn-out-an-occupational-phenomenon-international-classification-of-diseases" rel="noopener noreferrer" target="_blank">WHO</a> beschreibt Burnout im beruflichen Kontext, nicht anhand bestimmter Traumszenen.</p>
 <h2 id="how-to-stop">Den Übergang von Arbeit zu Schlaf gestalten</h2>
-<p>Probieren Sie einen einfachen Übergang: berufliche Programme schließen, offene Aufgaben notieren und eine ruhige Tätigkeit wählen. Passen Sie das an Ihren Alltag an. Es handelt sich nicht um ein Verfahren, das Arbeitsträume zuverlässig beendet.</p><ul><li>Versuchen Sie, eine regelmäßige Schlafroutine einzuhalten.</li><li>Beobachten Sie, ob berufliche Nachrichten am Abend das Abschalten erschweren.</li><li>Schreiben oder ruhiges Atmen können Sie ausprobieren, ohne Zeitvorgabe oder Versprechen einer Cortisolsenkung.</li><li>Achten Sie darauf, was Ihnen persönlich hilft und was Sorgen verstärkt.</li></ul>
+<p>Probiere einen einfachen Übergang: berufliche Programme schließen, offene Aufgaben notieren und eine ruhige Tätigkeit wählen. Pass das an deinen Alltag an. Es handelt sich nicht um ein Verfahren, das Arbeitsträume zuverlässig beendet.</p><ul><li>Versuche, eine regelmäßige Schlafroutine einzuhalten.</li><li>Beobachte, ob berufliche Nachrichten am Abend das Abschalten erschweren.</li><li>Schreiben oder ruhiges Atmen kannst du ausprobieren, ohne Zeitvorgabe oder Versprechen einer Cortisolsenkung.</li><li>Achte darauf, was dir persönlich hilft und was Sorgen verstärkt.</li></ul>
 <h2 id="warning-sign">Wann Unterstützung sinnvoll ist</h2>
-<p>Wenn Schlafprobleme oder Angst Ihren Alltag anhaltend beeinträchtigen oder Sie sich überfordert fühlen, suchen Sie fachlichen Rat. Sie müssen dafür weder eine feste Anzahl von Nächten abwarten noch ein bestimmtes Traumsymbol erkennen.</p><p>Beschreiben Sie Aufwachen, Müdigkeit, Belastung und Auswirkungen am Tag. Der Traum kann diesen Bericht ergänzen, ersetzt aber keine fachliche Einschätzung. Noctalia stellt keine Diagnose und ersetzt keine geeignete Behandlung.</p>
+<p>Wenn Schlafprobleme oder Angst deinen Alltag anhaltend beeinträchtigen oder du dich überfordert fühlst, such fachlichen Rat. Du musst dafür weder eine feste Anzahl von Nächten abwarten noch ein bestimmtes Traumsymbol erkennen.</p><p>Beschreibe Aufwachen, Müdigkeit, Belastung und Auswirkungen am Tag. Der Traum kann diesen Bericht ergänzen, ersetzt aber keine fachliche Einschätzung. Noctalia stellt keine Diagnose und ersetzt keine geeignete Behandlung.</p>
 <p>Eine Anleitung zum Aufschreiben: <a class="text-dream-salmon hover:underline" href="dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer">unseren Tagebuch-Leitfaden</a>.</p>
 <h2 id="dream-journaling">Ein Traumtagebuch ohne Selbstdiagnose</h2>
-<p>Ein Tagebuch kann Erinnerungen festhalten und Fragen vorbereiten. Notieren Sie Szene, Gefühl, beruflichen Kontext und Zustand beim Aufwachen. Unterscheiden Sie Beobachtungen von Vermutungen; fehlende Angaben dürfen offenbleiben.</p><p>Achten Sie beim Lesen auch auf Ausnahmen: belastende Tage ohne Arbeitstraum oder ähnliche Träume in ruhigen Zeiten. Wiederholungen beweisen keine Ursache. Sie müssen weder eine versteckte Botschaft noch innerhalb von zwei Wochen ein Muster finden.</p><p>Mit Noctalia können Sie Träume festhalten und erneut lesen. Das Tagebuch ist eine Reflexionshilfe, keine Garantie für besseren Schlaf. Wenn die Beschäftigung damit belastet, können Sie pausieren.</p>
+<p>Ein Tagebuch kann Erinnerungen festhalten und Fragen vorbereiten. Notiere Szene, Gefühl, beruflichen Kontext und Zustand beim Aufwachen. Unterscheide Beobachtungen von Vermutungen; fehlende Angaben dürfen offenbleiben.</p><p>Achte beim Lesen auch auf Ausnahmen: belastende Tage ohne Arbeitstraum oder ähnliche Träume in ruhigen Zeiten. Wiederholungen beweisen keine Ursache. Du musst weder eine versteckte Botschaft noch innerhalb von zwei Wochen ein Muster finden.</p><p>Mit Noctalia kannst du Träume festhalten und erneut lesen. Das Tagebuch ist eine Reflexionshilfe, keine Garantie für besseren Schlaf. Wenn die Beschäftigung damit belastet, kannst du pausieren.</p>
 </div>
 <!-- CTA Section -->
 <aside class="glass-panel rounded-3xl p-8 md:p-10 mt-16 text-center border border-dream-salmon/20">
 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
 <i class="w-8 h-8 text-dream-salmon" data-lucide="moon"></i>
 </div>
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Halten Sie Ihre Träume fest</h3>
-<p class="text-purple-200/70 mb-6 max-w-lg mx-auto">Mit Noctalia können Sie Träume festhalten und erneut lesen. Das Tagebuch ist eine Reflexionshilfe, keine Garantie für besseren Schlaf. Wenn die Beschäftigung damit belastet, können Sie pausieren.</p>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Halte deine Träume fest</h3>
+<p class="text-purple-200/70 mb-6 max-w-lg mx-auto">Mit Noctalia kannst du Träume festhalten und erneut lesen. Das Tagebuch ist eine Reflexionshilfe, keine Garantie für besseren Schlaf. Wenn die Beschäftigung damit belastet, kannst du pausieren.</p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/de/">
-                    Starten Sie Ihr Traumtagebuch <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                    Starte dein Traumtagebuch <i class="w-5 h-5" data-lucide="arrow-right"></i>
 </a>
 </aside>
 <!-- FAQ Section -->
@@ -161,7 +161,7 @@ Eine Besprechung beginnt ohne Sie, eine Frist läuft ab oder der Posteingang wir
                             Warum träume ich ständig von der Arbeit?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
-<p class="mt-4 text-sm text-gray-400 leading-relaxed">Arbeit kann Szenen für einen Traum liefern. Vergleichen Sie Erinnerung, Kontext und Gefühl, ohne eine einzige Ursache oder eine verborgene Botschaft vorauszusetzen.</p>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">Arbeit kann Szenen für einen Traum liefern. Vergleiche Erinnerung, Kontext und Gefühl, ohne eine einzige Ursache oder eine verborgene Botschaft vorauszusetzen.</p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
@@ -175,7 +175,7 @@ Eine Besprechung beginnt ohne Sie, eine Frist läuft ab oder der Posteingang wir
                             Können Arbeitsträume auf Burnout hinweisen?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
-<p class="mt-4 text-sm text-gray-400 leading-relaxed">Ein Arbeitstraum allein erlaubt keinen Rückschluss auf Burnout. Wenn Ihr Schlaf oder Alltag anhaltend beeinträchtigt ist, sprechen Sie mit einer medizinischen Fachperson.</p>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">Ein Arbeitstraum allein erlaubt keinen Rückschluss auf Burnout. Wenn dein Schlaf oder Alltag anhaltend beeinträchtigt ist, sprich mit einer medizinischen Fachperson.</p>
 </details>
 </div>
 </section>
@@ -194,7 +194,7 @@ Eine Besprechung beginnt ohne Sie, eine Frist läuft ab oder der Posteingang wir
 <i class="w-5 h-5 text-dream-salmon" data-lucide="book-open"></i>
                     Verwandte Symbole erkunden
                 </h2>
-<p class="text-sm text-purple-300/60 mb-4">Tauchen Sie tiefer in die Symbole aus diesem Artikel ein:</p>
+<p class="text-sm text-purple-300/60 mb-4">Tauch tiefer in die Symbole aus diesem Artikel ein:</p>
 <div class="flex flex-wrap gap-3">
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/pruefung">Bedeutung von Prüfungsträumen</a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/verfolgung">Bedeutung des Traums „Verfolgt werden"</a>
@@ -215,7 +215,7 @@ Eine Besprechung beginnt ohne Sie, eine Frist läuft ab oder der Posteingang wir
 <a class="glass-panel rounded-xl p-5 flex items-start justify-end gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="traeume-und-kreativitaet">
 <div class="text-right">
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Nächster Artikel</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Träume und Kreativität: Wie Ihr schlafendes Gehirn Probleme löst</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Träume und Kreativität: Wie dein schlafendes Gehirn Probleme löst</div>
 </div>
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
@@ -231,18 +231,18 @@ Eine Besprechung beginnt ohne Sie, eine Frist läuft ab oder der Posteingang wir
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="wiederkehrende-traeume-bedeuten-ihre-verborgenen-botschaften-verstehen">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretation</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Wiederkehrende Träume: Ihre verborgenen Botschaften verstehen</h3>
-<p class="text-sm text-gray-400">Entdecken Sie, warum bestimmte Träume immer wiederkehren und was Ihr Unterbewusstsein Ihnen mitteilen möchte.</p>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Wiederkehrende Träume: ihre verborgenen Botschaften verstehen</h3>
+<p class="text-sm text-gray-400">Entdecke, warum bestimmte Träume immer wiederkehren und was dein Unterbewusstsein dir mitteilen möchte.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="traeume-und-psychische-gesundheit-wie-ihr-schlaf-ihren-geist-offenbart">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Leitfaden</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Träume und psychische Gesundheit: Wie Ihr Schlaf Ihren Geist offenbart</h3>
-<p class="text-sm text-gray-400">Entdecken Sie den Zusammenhang zwischen Träumen und psychischer Gesundheit, einschließlich der Auswirkungen von Angstzuständen, Depressionen und Traumata auf Träume.</p>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Träume und psychische Gesundheit: Wie dein Schlaf deinen Geist offenbart</h3>
+<p class="text-sm text-gray-400">Entdecke den Zusammenhang zwischen Träumen und psychischer Gesundheit, einschließlich der Auswirkungen von Angstzuständen, Depressionen und Traumata auf Träume.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="albtraeume-ursachen-bedeutung-und-wie-man-sie-stoppen-kann">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Leitfaden</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Albträume: Ursachen, Bedeutung und wie man sie stoppt</h3>
-<p class="text-sm text-gray-400">Verstehen Sie, warum Albträume auftreten, und lernen Sie bewährte Techniken, um ihre Häufigkeit zu reduzieren.</p>
+<p class="text-sm text-gray-400">Verstehe, warum Albträume auftreten, und lerne bewährte Techniken, um ihre Häufigkeit zu reduzieren.</p>
 </a>
 </div>
 </section>
@@ -251,6 +251,6 @@ Eine Besprechung beginnt ohne Sie, eine Frist läuft ab oder der Posteingang wir
 <!-- Health Disclaimer (E-E-A-T) -->
 <aside aria-label="Haftungsausschluss" class="glass-panel rounded-xl p-4 my-8 border border-purple-500/20" role="note">
 <p class="text-sm text-purple-200/70">
-<strong class="text-dream-cream">Wichtig:</strong> Dieser Artikel dient nur zu Informationszwecken und stellt keine medizinische oder psychologische Beratung dar. Wenn Sie unter anhaltenden Schlafstörungen oder psychischen Problemen leiden, wenden Sie sich bitte an eine qualifizierte medizinische Fachkraft.
+<strong class="text-dream-cream">Wichtig:</strong> Dieser Artikel dient nur zu Informationszwecken und stellt keine medizinische oder psychologische Beratung dar. Wenn du unter anhaltenden Schlafstörungen oder psychischen Problemen leidest, wende dich bitte an eine qualifizierte medizinische Fachkraft.
                 </p>
 </aside>

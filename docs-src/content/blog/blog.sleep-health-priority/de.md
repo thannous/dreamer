@@ -31,7 +31,7 @@
   "jsonLd": [
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Schlaf als Gesundheitsfaktor Nr. 1? Was die OHSU-Studie wirklich zeigt\",\n    \"description\": \"Schlaf als Gesundheitsfaktor Nr. 1? Eine OHSU-Studie verknüpft kurzen Schlaf mit geringerer Lebenserwartung, noch vor Ernährung und Sport. Was sie zeigt.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/sleep-health-priority.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/de/ueber-uns#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Gründer & Publikationsleiter\",\n            \"url\": \"https://noctalia.app/de/ueber-uns\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2026-03-24\",\n    \"dateModified\": \"2026-10-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/de/blog/schlaf-gesundheit-prioritaet\"\n    },\n    \"inLanguage\": \"de\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 1978,\n    \"timeRequired\": \"PT9M\",\n    \"url\": \"https://noctalia.app/de/blog/schlaf-gesundheit-prioritaet\"\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"@id\": \"https://noctalia.app/de/blog/schlaf-gesundheit-prioritaet\",\n  \"url\": \"https://noctalia.app/de/blog/schlaf-gesundheit-prioritaet\",\n  \"name\": \"Schlaf als Gesundheitsfaktor Nr. 1: Die OHSU-Studie, die alles verändert | Noctalia\",\n  \"inLanguage\": \"de\"\n}",
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Ist Schlaf wichtiger als Ernährung und Bewegung?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"In einer im Dezember 2025 veröffentlichten OHSU-Auswertung von US-Landkreisen hing zu wenig Schlaf stärker mit geringerer Lebenserwartung zusammen als schlechte Ernährung oder Bewegungsmangel; nur beim Rauchen war der Zusammenhang noch stärker. Das ist eine Korrelation zwischen Bevölkerungsgruppen, kein Beweis für den Einzelnen. Die Lehre daraus: nicht wählen, sondern Schlaf nicht mehr als Erstes opfern.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Wie viel Schlaf brauchen Erwachsene?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Die American Academy of Sleep Medicine und die Sleep Research Society empfehlen regelmäßig mindestens 7 Stunden. Der Bedarf ist individuell. Wenn Sie oft deutlich mehr als 9 Stunden brauchen und trotzdem müde sind, sprechen Sie mit Ihrer Ärztin oder Ihrem Arzt: Sehr langer Schlaf kann auch ein Gesundheitsproblem begleiten.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Können veränderte Träume auf Schlafmangel hinweisen?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Sie sind kein Test, können aber ein Hinweis sein. Kurze Nächte kappen vor allem den REM-Schlaf am Morgen, sodass Sie sich an weniger Träume erinnern. Nach erholsamem Ausschlafen kann der REM-Rebound besonders lebhafte Träume bringen. Wer Träume zusammen mit den Schlafenszeiten notiert, sieht, ob diese Veränderungen auf kurze Nächte folgen.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Wann sollte ich wegen meines Schlafs zum Arzt?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Wenn Sie trotz ausreichender Schlafdauer erschöpft aufwachen, wenn jemand lautes Schnarchen oder Atemaussetzer bemerkt, wenn Sie tagsüber kaum wach bleiben, wenn Schlaflosigkeit seit Wochen anhält oder Albträume mehrmals pro Woche wiederkehren. Diese Zeichen verdienen eine ärztliche Abklärung.\"\n            }\n        }\n    ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Ist Schlaf wichtiger als Ernährung und Bewegung?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"In einer im Dezember 2025 veröffentlichten OHSU-Auswertung von US-Landkreisen hing zu wenig Schlaf stärker mit geringerer Lebenserwartung zusammen als schlechte Ernährung oder Bewegungsmangel; nur beim Rauchen war der Zusammenhang noch stärker. Das ist eine Korrelation zwischen Bevölkerungsgruppen, kein Beweis für den Einzelnen. Die Lehre daraus: nicht wählen, sondern Schlaf nicht mehr als Erstes opfern.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Wie viel Schlaf brauchen Erwachsene?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Die American Academy of Sleep Medicine und die Sleep Research Society empfehlen regelmäßig mindestens 7 Stunden. Der Bedarf ist individuell. Wenn du oft deutlich mehr als 9 Stunden brauchst und trotzdem müde bist, sprich mit deiner Ärztin oder deinem Arzt: Sehr langer Schlaf kann auch ein Gesundheitsproblem begleiten.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Können veränderte Träume auf Schlafmangel hinweisen?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Sie sind kein Test, können aber ein Hinweis sein. Kurze Nächte kappen vor allem den REM-Schlaf am Morgen, sodass du dich an weniger Träume erinnerst. Nach erholsamem Ausschlafen kann der REM-Rebound besonders lebhafte Träume bringen. Wer Träume zusammen mit den Schlafenszeiten notiert, sieht, ob diese Veränderungen auf kurze Nächte folgen.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Wann sollte ich wegen meines Schlafs zum Arzt?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Wenn du trotz ausreichender Schlafdauer erschöpft aufwachst, wenn jemand lautes Schnarchen oder Atemaussetzer bemerkt, wenn du tagsüber kaum wach bleibst, wenn Schlaflosigkeit seit Wochen anhält oder Albträume mehrmals pro Woche wiederkehren. Diese Zeichen verdienen eine ärztliche Abklärung.\"\n            }\n        }\n    ]\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Startseite\",\n      \"item\": \"https://noctalia.app/de/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Ressourcen\",\n      \"item\": \"https://noctalia.app/de/blog/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"Schlaf und Gesundheit\",\n      \"item\": \"https://noctalia.app/de/blog/schlaf-gesundheit-prioritaet\"\n    }\n  ]\n}"
   ],
   "activeNav": "resources"
@@ -69,7 +69,7 @@
                     Schlaf als Gesundheitsfaktor Nr. 1? Was die OHSU-Studie wirklich zeigt
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Mittags gesund gegessen, die Treppe statt des Aufzugs genommen, und um 23:40 Uhr sagen Sie sich: Eine Folge geht noch. Der Wecker klingelt trotzdem um 6:30 Uhr. Eine Studie der Oregon Health &amp; Science University (OHSU) vom Dezember 2025 legt nahe, dass solche kurzen Nächte die Gesundheit stärker belasten, als viele denken: In ihren Daten hing zu wenig Schlaf enger mit der Lebenserwartung zusammen als Ernährung oder Bewegung. Hier lesen Sie, was die Studie gemessen hat, was sie nicht beweisen kann und was Ihre Träume darüber sagen können und was nicht.
+                    Mittags gesund gegessen, die Treppe statt des Aufzugs genommen, und um 23:40 Uhr sagst du dir: Eine Folge geht noch. Der Wecker klingelt trotzdem um 6:30 Uhr. Eine Studie der Oregon Health &amp; Science University (OHSU) vom Dezember 2025 legt nahe, dass solche kurzen Nächte die Gesundheit stärker belasten, als viele denken: In ihren Daten hing zu wenig Schlaf enger mit der Lebenserwartung zusammen als Ernährung oder Bewegung. Hier liest du, was die Studie gemessen hat, was sie nicht beweisen kann und was deine Träume darüber sagen können und was nicht.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -85,12 +85,12 @@
 <!-- Health Disclaimer -->
 <div class="glass-panel rounded-xl p-4 mb-8 border border-amber-400/20 bg-amber-400/5 text-sm text-purple-200/70 flex items-start gap-3">
 <i class="w-5 h-5 text-amber-400 shrink-0 mt-0.5" data-lucide="shield-alert"></i>
-<p>Dieser Artikel dient ausschlie&szlig;lich zu Informationszwecken und stellt keine medizinische Beratung dar. Konsultieren Sie bei schlafbezogenen Beschwerden einen Arzt.</p>
+<p>Dieser Artikel dient ausschlie&szlig;lich zu Informationszwecken und stellt keine medizinische Beratung dar. Konsultiere bei schlafbezogenen Beschwerden einen Arzt.</p>
 </div>
 <!-- Quick Answer (AI SEO) -->
 <section aria-labelledby="quick-answer-title" class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5">
 <h2 class="font-serif text-xl text-dream-cream mb-3" id="quick-answer-title">Kurze Antwort</h2>
-<p class="text-purple-100/80 leading-relaxed">In einer OHSU-Auswertung von US-Landkreisen (2019 bis 2025) war die Lebenserwartung dort niedriger, wo mehr Erwachsene angaben, weniger als 7 Stunden zu schlafen. Der Zusammenhang blieb bestehen, nachdem Ernährung, Bewegungsmangel und weitere Faktoren berücksichtigt wurden; nur das Rauchen zeigte einen stärkeren. Das ist eine Korrelation zwischen Bevölkerungsgruppen, keine Vorhersage über Ihr eigenes Leben. Sie passt aber zu vielen anderen Studien: Erwachsene sollten regelmäßig mindestens 7 Stunden schlafen. Träume messen Ihren Schlaf nicht, doch wer sie morgens notiert, bemerkt eine Serie zu kurzer Nächte leichter.</p>
+<p class="text-purple-100/80 leading-relaxed">In einer OHSU-Auswertung von US-Landkreisen (2019 bis 2025) war die Lebenserwartung dort niedriger, wo mehr Erwachsene angaben, weniger als 7 Stunden zu schlafen. Der Zusammenhang blieb bestehen, nachdem Ernährung, Bewegungsmangel und weitere Faktoren berücksichtigt wurden; nur das Rauchen zeigte einen stärkeren. Das ist eine Korrelation zwischen Bevölkerungsgruppen, keine Vorhersage über dein eigenes Leben. Sie passt aber zu vielen anderen Studien: Erwachsene sollten regelmäßig mindestens 7 Stunden schlafen. Träume messen deinen Schlaf nicht, doch wer sie morgens notiert, bemerkt eine Serie zu kurzer Nächte leichter.</p>
 </section>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
@@ -106,8 +106,8 @@
 <li><a class="toc-link block" href="#hierarchy">2. Ist Schlaf wirklich wichtiger als Ernährung und Sport?</a></li>
 <li><a class="toc-link block" href="#brain-changes">3. Was kurze Nächte im Gehirn bewirken</a></li>
 <li><a class="toc-link block" href="#rem-emotions">4. Kurze Nächte, REM-Schlaf und Stimmung</a></li>
-<li><a class="toc-link block" href="#dream-warnings">5. Können Träume zeigen, dass Sie zu wenig schlafen?</a></li>
-<li><a class="toc-link block" href="#strategies">6. Schlaf zuerst: was Sie ab heute Abend tun können</a></li>
+<li><a class="toc-link block" href="#dream-warnings">5. Können Träume zeigen, dass du zu wenig schläfst?</a></li>
+<li><a class="toc-link block" href="#strategies">6. Schlaf zuerst: was du ab heute Abend tun kannst</a></li>
 </ol>
 </nav>
 <!-- Article Content -->
@@ -126,7 +126,7 @@
 <h2 id="hierarchy">Ist Schlaf wirklich wichtiger als Ernährung und Sport?</h2>
 <h3>Was die Rangfolge bedeutet und was nicht</h3>
 <p>
-                    Die Studie vergleicht Bevölkerungsgruppen, nicht Einzelpersonen. Sie zeigt, dass Schlaf auf Kreisebene mindestens so eng mit der Lebenserwartung zusammenhängt wie Ernährung oder Bewegung. Sie zeigt nicht, dass 6 Stunden Schlaf Sie Lebensjahre kosten oder dass Sie auf Bewegung verzichten können, wenn Sie gut schlafen.
+                    Die Studie vergleicht Bevölkerungsgruppen, nicht Einzelpersonen. Sie zeigt, dass Schlaf auf Kreisebene mindestens so eng mit der Lebenserwartung zusammenhängt wie Ernährung oder Bewegung. Sie zeigt nicht, dass 6 Stunden Schlaf dich Lebensjahre kosten oder dass du auf Bewegung verzichten kannst, wenn du gut schläfst.
                 </p>
 <p>
                     Die Autoren nennen selbst mehrere Grenzen. Der Schlaf wurde erfragt, nicht gemessen. Schichtarbeit und Schlafstörungen wurden nicht erfasst. Sehr lange Schläfer zählten zu denen, die genug schlafen. Und Krankheit kann den Schlaf ebenso verkürzen, wie Schlafmangel der Gesundheit schaden kann.
@@ -166,17 +166,17 @@
                     Direkter beobachtet wurde Folgendes: In einer Bildgebungsstudie von Seung-Schik Yoo und Kollegen (2007) reagierte die Amygdala nach einer durchwachten Nacht deutlich stärker auf unangenehme Bilder, bei schwächerer Verbindung zu den präfrontalen Bereichen, die sie regulieren. Allgemein beeinflussen sich Schlaf und Stimmung gegenseitig: Schlechter Schlaf kann reizbarer und <a class="text-dream-salmon hover:underline" href="angsttraeume-bedeutung">ängstlicher</a> machen, und Angst erschwert den Schlaf.
                 </p>
 
-<h2 id="dream-warnings">Können Träume zeigen, dass Sie zu wenig schlafen?</h2>
+<h2 id="dream-warnings">Können Träume zeigen, dass du zu wenig schläfst?</h2>
 <p>
                     Nicht verlässlich, und das sollte man klar sagen. Ein Traum ist keine Schlafmessung, und keine Studie hat gezeigt, dass veränderte Träume Gesundheitsprobleme ankündigen. Auch ein Symbol hilft hier nicht weiter: Wer von der <a class="text-dream-salmon hover:underline" href="../traumsymbole/nacht">Nacht</a> oder von Dunkelheit träumt, schläft deshalb nicht zu wenig. Einige Muster passen aber zu dem, was man über Schlaf weiß.
                 </p>
 <h3>Weniger Träume nach kurzen Nächten, intensive beim Nachholen</h3>
 <p>
-                    Weil kurze Nächte vor allem den REM-Schlaf am Morgen kappen, erinnern Sie sich in einer Woche mit frühem Wecker vielleicht an weniger Träume. Schlafen Sie endlich aus, holt das Gehirn verpassten REM-Schlaf oft nach, der sogenannte <strong>REM-Rebound</strong>, und Träume kehren lang, intensiv und manchmal seltsam zurück. Meist ist das ein Zeichen der Erholung, kein Problem. Mehr dazu in unserem Artikel über <a class="text-dream-salmon hover:underline" href="schlafschuld-gesundheit-traeume">Schlafschuld</a>.
+                    Weil kurze Nächte vor allem den REM-Schlaf am Morgen kappen, erinnerst du dich in einer Woche mit frühem Wecker vielleicht an weniger Träume. Schläfst du endlich aus, holt das Gehirn verpassten REM-Schlaf oft nach, der sogenannte <strong>REM-Rebound</strong>, und Träume kehren lang, intensiv und manchmal seltsam zurück. Meist ist das ein Zeichen der Erholung, kein Problem. Mehr dazu in unserem Artikel über <a class="text-dream-salmon hover:underline" href="schlafschuld-gesundheit-traeume">Schlafschuld</a>.
                 </p>
 <h3>Stressträume und Albträume</h3>
 <p>
-                    <a class="text-dream-salmon hover:underline" href="stresstraeume-von-der-arbeit-warum-ihr-job-sie-in-den-schlaf-begleitet">Stressträume</a> (zu spät kommen, verfolgt werden, eine unvorbereitete Prüfung) kehren oft in anstrengenden Phasen zurück, in denen man meist auch weniger schläft. Der Traum beweist keinen Schlafmangel, er spiegelt vor allem, was Sie beschäftigt. Wenn <a class="text-dream-salmon hover:underline" href="albtraeume-ursachen-bedeutung-und-wie-man-sie-stoppen-kann">Albträume</a> mehrmals pro Woche wiederkehren und Ihre Nächte stören, verdienen sie eigene Aufmerksamkeit.
+                    <a class="text-dream-salmon hover:underline" href="stresstraeume-von-der-arbeit-warum-ihr-job-sie-in-den-schlaf-begleitet">Stressträume</a> (zu spät kommen, verfolgt werden, eine unvorbereitete Prüfung) kehren oft in anstrengenden Phasen zurück, in denen man meist auch weniger schläft. Der Traum beweist keinen Schlafmangel, er spiegelt vor allem, was dich beschäftigt. Wenn <a class="text-dream-salmon hover:underline" href="albtraeume-ursachen-bedeutung-und-wie-man-sie-stoppen-kann">Albträume</a> mehrmals pro Woche wiederkehren und deine Nächte stören, verdienen sie eigene Aufmerksamkeit.
                 </p>
 <h3>Beispiel für ein Schlaf- und Traumtagebuch</h3>
 <p><strong>Fiktives Beispiel:</strong> Es zeigt, wie man Nacht und Traum nebeneinander notiert, ohne einen einzelnen Eintrag zu überdeuten.</p>
@@ -188,10 +188,10 @@
 </ul>
 <p>Eine Woche beweist nichts. Nach einem Monat zeigen diese wenigen Zeilen, ob Träume, Stimmung und Schlafenszeiten zusammenhängen.</p>
 
-<h2 id="strategies">Schlaf zuerst: was Sie ab heute Abend tun können</h2>
+<h2 id="strategies">Schlaf zuerst: was du ab heute Abend tun kannst</h2>
 <h3>Ein Schlaffenster schützen</h3>
 <p>
-                    Gehen Sie von Ihrer Aufstehzeit aus und rechnen Sie mindestens 7 Stunden Schlaf zurück, plus die Zeit, die Sie zum Einschlafen brauchen. So erhalten Sie Ihre Schlafenszeit. Behandeln Sie sie wie einen Termin.
+                    Geh von deiner Aufstehzeit aus und rechne mindestens 7 Stunden Schlaf zurück, plus die Zeit, die du zum Einschlafen brauchst. So erhältst du deine Schlafenszeit. Behandle sie wie einen Termin.
                 </p>
 <h3>Gewohnheiten, die helfen</h3>
 <ul>
@@ -202,13 +202,13 @@
 <li><strong>Kühl, dunkel, ruhig:</strong> Ein eher kühles Schlafzimmer erleichtert meist den Schlaf.</li>
 <li><strong>Ein kurzes Abendritual:</strong> Lesen, sanftes Dehnen oder eine To-do-Liste für morgen statt Scrollen.</li>
 </ul>
-<h3>Wann Sie zum Arzt gehen sollten</h3>
+<h3>Wann du zum Arzt gehen solltest</h3>
 <p>
-                    Sprechen Sie mit Ihrer Ärztin, Ihrem Arzt oder einem Schlaflabor, wenn Sie 7 bis 9 Stunden schlafen und trotzdem erschöpft aufwachen, wenn jemand lautes Schnarchen oder Atemaussetzer bemerkt, wenn Sie tagsüber oder am Steuer gegen den Schlaf kämpfen, wenn Schlaflosigkeit seit Wochen anhält oder Albträume immer wiederkehren. Eine Schlafapnoe etwa kann den Schlaf stören, ohne ihn zu verkürzen, und braucht ärztliche Behandlung.
+                    Sprich mit deiner Ärztin, deinem Arzt oder einem Schlaflabor, wenn du 7 bis 9 Stunden schläfst und trotzdem erschöpft aufwachst, wenn jemand lautes Schnarchen oder Atemaussetzer bemerkt, wenn du tagsüber oder am Steuer gegen den Schlaf kämpfst, wenn Schlaflosigkeit seit Wochen anhält oder Albträume immer wiederkehren. Eine Schlafapnoe etwa kann den Schlaf stören, ohne ihn zu verkürzen, und braucht ärztliche Behandlung.
                 </p>
 <h3>Träume als Gesundheitsindikator nutzen</h3>
 <p>
-                    Ein <a class="text-dream-salmon hover:underline" href="traumtagebuch-erinnerung-methoden-und-routinen">Traumtagebuch</a> misst Ihren REM-Schlaf nicht. Aber ein paar Zeilen jeden Morgen (Schlafenszeit, Aufwachzeit, Befinden, ein Traum oder „keine Erinnerung“) machen aus vagen Eindrücken etwas, das Sie nachlesen können. Das dauert zwei Minuten und zeigt mit der Zeit, ob kurze Nächte bei Ihnen Ausnahme oder Regel sind.
+                    Ein <a class="text-dream-salmon hover:underline" href="traumtagebuch-erinnerung-methoden-und-routinen">Traumtagebuch</a> misst deinen REM-Schlaf nicht. Aber ein paar Zeilen jeden Morgen (Schlafenszeit, Aufwachzeit, Befinden, ein Traum oder „keine Erinnerung“) machen aus vagen Eindrücken etwas, das du nachlesen kannst. Das dauert zwei Minuten und zeigt mit der Zeit, ob kurze Nächte bei dir Ausnahme oder Regel sind.
                 </p>
 </div>
 <!-- CTA Section -->
@@ -218,7 +218,7 @@
 </div>
 <h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Kurze Nächte erkennen, bevor sie sich häufen</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Erzählen Sie Noctalia jeden Morgen Ihren Traum per Sprache oder tippen Sie ihn ein, mit einer Notiz zu Ihrer Nacht. Alles landet in einem Tagebuch: Wenn Sie Ihre Einträge nebeneinander lesen, sehen Sie, was wiederkehrt.
+                    Erzähl Noctalia jeden Morgen deinen Traum per Sprache oder tippe ihn ein, mit einer Notiz zu deiner Nacht. Alles landet in einem Tagebuch: Wenn du deine Einträge nebeneinander liest, siehst du, was wiederkehrt.
                 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/de/">
                     Mein Traumtagebuch beginnen <i class="w-5 h-5" data-lucide="arrow-right"></i>
@@ -243,7 +243,7 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Die American Academy of Sleep Medicine und die Sleep Research Society empfehlen regelmäßig mindestens 7 Stunden. Der Bedarf ist individuell. Wenn Sie oft deutlich mehr als 9 Stunden brauchen und trotzdem müde sind, sprechen Sie mit Ihrer Ärztin oder Ihrem Arzt: Sehr langer Schlaf kann auch ein Gesundheitsproblem begleiten.
+                            Die American Academy of Sleep Medicine und die Sleep Research Society empfehlen regelmäßig mindestens 7 Stunden. Der Bedarf ist individuell. Wenn du oft deutlich mehr als 9 Stunden brauchst und trotzdem müde bist, sprich mit deiner Ärztin oder deinem Arzt: Sehr langer Schlaf kann auch ein Gesundheitsproblem begleiten.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -252,7 +252,7 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Sie sind kein Test, können aber ein Hinweis sein. Kurze Nächte kappen vor allem den REM-Schlaf am Morgen, sodass Sie sich an weniger Träume erinnern. Nach erholsamem Ausschlafen kann der <a class="text-dream-salmon hover:underline" href="rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen">REM-Rebound</a> besonders lebhafte Träume bringen. Wer Träume zusammen mit den Schlafenszeiten notiert, sieht, ob diese Veränderungen auf kurze Nächte folgen.
+                            Sie sind kein Test, können aber ein Hinweis sein. Kurze Nächte kappen vor allem den REM-Schlaf am Morgen, sodass du dich an weniger Träume erinnerst. Nach erholsamem Ausschlafen kann der <a class="text-dream-salmon hover:underline" href="rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen">REM-Rebound</a> besonders lebhafte Träume bringen. Wer Träume zusammen mit den Schlafenszeiten notiert, sieht, ob diese Veränderungen auf kurze Nächte folgen.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -261,7 +261,7 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Wenn Sie trotz ausreichender Schlafdauer erschöpft aufwachen, wenn jemand lautes Schnarchen oder Atemaussetzer bemerkt, wenn Sie tagsüber kaum wach bleiben, wenn Schlaflosigkeit seit Wochen anhält oder Albträume mehrmals pro Woche wiederkehren. Diese Zeichen verdienen eine ärztliche Abklärung.
+                            Wenn du trotz ausreichender Schlafdauer erschöpft aufwachst, wenn jemand lautes Schnarchen oder Atemaussetzer bemerkt, wenn du tagsüber kaum wach bleibst, wenn Schlaflosigkeit seit Wochen anhält oder Albträume mehrmals pro Woche wiederkehren. Diese Zeichen verdienen eine ärztliche Abklärung.
                         </p>
 </details>
 </div>
@@ -290,7 +290,7 @@
 <i class="w-5 h-5 text-dream-salmon" data-lucide="book-open"></i>
                     Verwandte Traumsymbole entdecken
                 </h2>
-<p class="text-sm text-purple-300/60 mb-4">Vertiefen Sie die Symbole aus diesem Artikel:</p>
+<p class="text-sm text-purple-300/60 mb-4">Vertiefe die Symbole aus diesem Artikel:</p>
 <div class="flex flex-wrap gap-3">
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/nacht">Traumdeutung Nacht</a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/mond">Traumdeutung Mond</a>
@@ -305,7 +305,7 @@
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-left"></i>
 <div>
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Vorheriger Artikel</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Fr&uuml;hling und Schlaf: Wie die saisonale St&ouml;rung Ihre Tr&auml;ume ver&auml;ndert</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Fr&uuml;hling und Schlaf: Wie die saisonale St&ouml;rung deine Tr&auml;ume ver&auml;ndert</div>
 </div>
 </a>
 <a class="glass-panel rounded-xl p-5 flex items-start justify-end gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="schlaf-tracker-wearables-traeume">
@@ -328,12 +328,12 @@
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="schlafschuld-gesundheit-traeume">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Gesundheit</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Schlafschuld und chronischer Schlafmangel: Auswirkungen auf Gesundheit und Tr&auml;ume</h3>
-<p class="text-sm text-gray-400">Erfahren Sie, was Schlafschuld ist, wie sie sich aufbaut und welche Strategien helfen, erholsamen Schlaf zur&uuml;ckzugewinnen.</p>
+<p class="text-sm text-gray-400">Erfahre, was Schlafschuld ist, wie sie sich aufbaut und welche Strategien helfen, erholsamen Schlaf zur&uuml;ckzugewinnen.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Schlafwissenschaft</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">REM-Schlaf und Tr&auml;ume: Den n&auml;chtlichen Reset Ihres Gehirns verstehen</h3>
-<p class="text-sm text-gray-400">Erfahren Sie, wie die REM-Phase Ihre Tr&auml;ume formt und warum sie f&uuml;r Ihr Wohlbefinden essentiell ist.</p>
+<h3 class="font-serif text-lg text-dream-cream mb-2">REM-Schlaf und Tr&auml;ume: Den n&auml;chtlichen Reset deines Gehirns verstehen</h3>
+<p class="text-sm text-gray-400">Erfahre, wie die REM-Phase deine Tr&auml;ume formt und warum sie f&uuml;r dein Wohlbefinden essentiell ist.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="/de/blog/">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Ressourcen</span>
@@ -348,6 +348,6 @@
 <!-- Health Disclaimer (TI-97 E-E-A-T) -->
 <aside aria-label="Disclaimer" class="glass-panel rounded-xl p-4 my-8 border border-purple-500/20" role="note">
 <p class="text-sm text-purple-200/70">
-<strong class="text-dream-cream">Wichtig:</strong> Dieser Artikel dient ausschließlich zu Informationszwecken und stellt keine medizinische oder psychologische Beratung dar. Wenn Sie unter anhaltenden Schlafstörungen oder psychischen Problemen leiden, wenden Sie sich bitte an eine qualifizierte medizinische Fachkraft.
+<strong class="text-dream-cream">Wichtig:</strong> Dieser Artikel dient ausschließlich zu Informationszwecken und stellt keine medizinische oder psychologische Beratung dar. Wenn du unter anhaltenden Schlafstörungen oder psychischen Problemen leidest, wende dich bitte an eine qualifizierte medizinische Fachkraft.
 </p>
 </aside>
