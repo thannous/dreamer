@@ -14,7 +14,7 @@ mise exec -- npm run test:e2e:backend -- --qualify-ti528
 ```
 
 `--runtime native` is still accepted; any other `--runtime` is refused before a
-process starts. The second command runs all nine backend scenarios, the database
+process starts. The second command runs the current backend scenarios, the database
 contracts, then the four TI528 suites (six integration cases) sequentially on the
 same owned stack.
 The runner passes its own private status to TI528 and preserves stack cleanup on
@@ -43,7 +43,7 @@ URLs in those copies are replaced with an unavailable loopback endpoint, and
 scheduled jobs are disabled in the same migration that creates them. Tracked
 migrations are untouched. The runner also asserts zero active cron jobs
 before the suite. These fixture changes prevent unattended production calls; the
-nine backend scenarios do not qualify scheduled reconciliation or AI workers.
+backend scenarios do not qualify scheduled reconciliation or AI workers.
 It never resets an existing project. Unique accounts are created per test and
 deleted on completion, including failure. The Plus account is provisioned through
 the existing service-role subscription RPC, without a purchase or billing bypass
@@ -82,7 +82,7 @@ browser types only. SDK traces are Markdown steps, without HTTP payload recordin
 
 ## Assertions and artifacts
 
-Nine backend scenarios, run by TesterArmy, cover:
+The original backend scenarios, run by TesterArmy, cover:
 
 1. Save via UI, verify the remote row, sign in through the UI from an empty
    browser context, edit, restart the other client, then delete and restart again.
@@ -101,6 +101,20 @@ Nine backend scenarios, run by TesterArmy, cover:
    provider revocation failure/retry and account deletion preserve their privacy.
 9. An edit to a dream during model analysis leaves the edited transcript intact and
    rejects completion of the stale result in the database transaction.
+
+The same `backend-*.web.e2e.ts` selection also includes the subsequent scenarios:
+
+- `backend-personal-notes`, `backend-guest-note-recovery`,
+  `backend-note-receipt-recovery` and `backend-note-batch-validation`: local drafts,
+  offline persistence, account migration, ownership, partial failure and recovery
+  without duplicate dreams or stale receipts;
+- `backend-badge-continuity`: ownership, monotone progress, product boundaries,
+  deletion and restoration on an empty browser;
+- `backend-guide-progress`: explicit completion, bookmarks, stale writes,
+  restoration and ownership across account changes while guides stay closed.
+
+Read the [selected test sources](../../tools/e2e/tests/) and the candidate's report
+for the exact executed set. This inventory describes assertions, not a fresh pass.
 
 Artifacts (ignored): `tools/e2e/.e2e/backend-web/<attempt>/`. `evidence.json`
 records the source SHA, dirty state, fixtures and rerun command; `report.json`

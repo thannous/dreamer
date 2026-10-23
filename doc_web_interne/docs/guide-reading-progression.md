@@ -61,7 +61,11 @@ Ten isolated recovery checks cover storage failure, account-change races, offlin
 retry, monotone completion, deletion and interrupted guest transfer. Those failure
 orders cannot be driven reliably through the ordinary mock browser journey.
 
-`backend-guide-progress.web.e2e.ts` is reserved for the parent's canonical native local
-Supabase run: real RPC ownership/RLS, invalid records, stale writes, and restoring
-bookmarks/completion in a second empty browser. Native device layout, deployed database
-and production restoration are not qualified by local browser/mock proof.
+[backend-guide-progress.web.e2e.ts](../../tools/e2e/tests/backend-guide-progress.web.e2e.ts)
+is included in the owned local backend campaign by the `backend-*.web.e2e.ts`
+selection in [e2e.config.ts](../../tools/e2e/e2e.config.ts). It checks real RPC
+ownership/RLS, invalid records, stale writes, restoration in a second empty
+browser and account changes while guides stay closed. Run it through
+`npm run test:e2e:backend`; its presence does not attest a passed run. Native
+device layout, deployed database and production restoration remain separate
+from local browser/mock proof.

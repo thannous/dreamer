@@ -3,14 +3,17 @@
 **Version documentaire :** 1.2 · **Revue ciblée :** 2026-09-08, base `d2bc25936` · **Statut :** code présent ; publication native non attestée par cette revue
 
 Le [contrat de marque](noctalia-brand-contract.md) définit les responsabilités des trois apps. Cette revue corrige les contrats devenus contradictoires (autonomie, microphone local, entrée en quatre écrans) ; les inventaires et dettes historiques datés du 20 août ne constituent pas une nouvelle validation exhaustive. TI-518 porte la séparation runtime des lectures Journal, TI-529 la qualification des permissions et TI-531 la preuve sur appareil.
-**Source de vérité :** le code du dépôt `dreamer`, branche du module Lucid Trainer. Ce document décrit ce
-qui existe, pas ce qui est souhaité. Chaque valeur citée est relevée dans un fichier nommé.
+**Actualisation ciblée du 23 octobre 2026 :** séparation des routes et points de
+validation remis en cohérence avec le checkout. Les résultats datés restent
+historiques ; cette mise à jour ne qualifie ni un binaire ni une publication.
+**Source de vérité :** le code du dépôt Noctalia et le registre de versions courant.
 **Documents frères :** [`LUCID_TRAINER_ARCHITECTURE.md`](../doc_web_interne/docs/LUCID_TRAINER_ARCHITECTURE.md)
 (architecture, en anglais), [`LUCID_TRAINER_RELEASE.md`](../doc_web_interne/docs/LUCID_TRAINER_RELEASE.md)
 (runbook de release), [`LUCID_TRAINER_SHARED_IDENTITY_ADR.md`](../doc_web_interne/docs/LUCID_TRAINER_SHARED_IDENTITY_ADR.md)
-(ADR sur l'identité Supabase partagée), [`LUCID_TRAINER_HANDOFF.md`](../doc_web_interne/docs/LUCID_TRAINER_HANDOFF.md)
-(rapport de passation). Le présent document est la vue produit + technique en français ; les quatre autres
-restent la référence opérationnelle.
+(ADR sur l'identité Supabase partagée), [`LUCID_TRAINER_HANDOFF.md`](https://github.com/thannous/dreamer/blob/c0de9eae92b0f4c43220ca07cf690955dc2419c5/doc_web_interne/docs/LUCID_TRAINER_HANDOFF.md)
+(passation historique conservée dans Git). Le présent document est la vue produit + technique en français.
+Pour les commandes actuelles, partir du
+[guide des opérations](../doc_web_interne/docs/repository-operations.md).
 
 ---
 
@@ -21,7 +24,7 @@ au rêve lucide. Elle construit une routine en trois temps — l'attention en jo
 la préparation au coucher (programmes guidés, signaux nocturnes facultatifs), le bilan au réveil —
 puis restitue des tendances personnelles et une recommandation calculée hors ligne.
 
-Lucid possède ses observations matinales, notes vocales locales, signes confirmés et routines. Journal conserve les récits et leur réflexion facultative. Une observation d'entraînement n'est pas un doublon à supprimer ; installer Journal ou ouvrir un compte ne doit pas être nécessaire à la pratique. La composition autonome ne monte plus le fournisseur de données Journal ; les écrans utilisent les observations Lucid. TI-522 reste un import facultatif à livrer, distinct de la connexion au même compte.
+Lucid possède ses observations matinales, notes vocales locales, signes confirmés et routines. Journal conserve les récits et leur réflexion facultative. Une observation d'entraînement n'est pas un doublon à supprimer ; installer Journal ou ouvrir un compte ne doit pas être nécessaire à la pratique. La composition autonome ne monte plus le fournisseur de données Journal ; les écrans utilisent les observations Lucid. L’import facultatif possède son écran `routes/lucid/lucid/journal-import.tsx` et ses services `lucidJournalImport*` : il crée des copies locales après autorisation explicite. Sa disponibilité dépend du runtime et de l’émetteur configurés ; sa présence dans le code ne prouve pas une activation distante. Il reste distinct de la connexion au même compte.
 
 Trois techniques sont couvertes, et seulement trois (`LUCID_TECHNIQUES` dans `lib/lucid/model.ts`) :
 **MILD**, **SSILD**, **WBTB**.
@@ -47,7 +50,7 @@ Quatre conséquences, toutes appliquées dans le code :
    réduisez jamais votre sommeil pour rattraper ».
 3. **Aucun contenu généré par IA.** Aucun appel à Gemini, aucun service d'analyse : le catalogue est
    statique et typé, le coaching est une fonction pure sur les observations locales.
-4. **Une porte de sortie nommée.** L'aide (`app/lucid/help.tsx`) et l'écran science
+4. **Une porte de sortie nommée.** L'aide (`routes/lucid/lucid/help.tsx`) et l'écran science
    (`content.science.supportAdvice`) invitent à arrêter et à consulter un professionnel adapté si la
    perturbation du sommeil, la détresse, la confusion ou la somnolence diurne persistent.
 
@@ -61,19 +64,20 @@ Quatre conséquences, toutes appliquées dans le code :
 
 Contrairement à `Noctalia Meditation` (monorepo, `apps/meditation/`, cf.
 [`noctalia-meditation.md`](noctalia-meditation.md) §3), **Lucid Trainer n'a pas de projet Expo séparé**.
-Le module vit dans l'arbre de l'app journal :
+Les deux applications partagent le package racine, mais leurs arbres de routes sont séparés :
 
-- ses routes sont sous `app/lucid/**`, enregistrées dans le `Stack` racine
-  (`app/_layout.tsx`, `<Stack.Screen name="lucid" />`) ;
-- son domaine est sous `lib/lucid/**`, ses services sous `services/lucidTrainer*.ts`, son état sous
-  `context/LucidTrainerContext.tsx`, son kit d'interface sous `components/lucid/**` ;
-- **une seule variante native** commute l'identité du binaire dans `app.config.ts`.
+- Dreamer utilise `app/` et `app/_layout.tsx` ;
+- Lucid utilise `routes/lucid/`, sélectionné par le plugin Expo Router dans
+  `app.config.ts`, avec ses écrans dans `routes/lucid/lucid/` ;
+- le domaine Lucid reste sous `lib/lucid/`, les services sous `services/lucidTrainer*.ts`,
+  l'état dans `context/LucidTrainerContext.tsx` et l'interface sous `components/lucid/`.
 
-Le même bundle JavaScript sert donc les deux applications. Dans le build Noctalia, `/lucid` reste
-atteignable depuis la carte du rituel « lucide » (`app/ritual/[id].tsx`, `ritual.id === 'lucid'` →
-`router.push('/lucid')`). Dans le build Lucid, `/lucid` est le point de départ et le reste :
-`unstable_settings.anchor` vaut `'lucid'`, et `resolveAppStartupDecision` force toute destination
-initiale hors `/lucid` vers `/lucid`.
+Dreamer ne bundle plus les écrans Lucid. Sa carte de rituel ouvre
+`https://lucid.noctalia.app/lucid` avec `Linking.openURL`, comme le définit
+`app/ritual/[id].tsx`. Les URLs Lucid restent sous `/lucid` ; sa racine possède
+ses propres providers et son démarrage. Voir le
+[registre de séparation des routes](../doc_web_interne/docs/architecture/TI561-LUCID-ROUTE-ROOT.md)
+pour la transition historique et [la configuration actuelle](../app.config.ts).
 
 ### 2.1 Sélection de la variante — deux marqueurs, jamais un seul
 
@@ -109,7 +113,7 @@ E2E_DEVICE=<émulateur> npm run test:testerarmy:mobile -- lucid android  # build
 | Slug | `noctalia-lucid-trainer` |
 | Schéma | `noctalia-lucid` |
 | Bundle iOS / package Android | `com.tanuki75.noctalia.lucid` |
-| Version / runtimeVersion | `1.0.0` (ligne de version propre, `buildNumber` `1`, `versionCode` `1`) |
+| Version / runtimeVersion | Lire `release/mobile-versions.json` et la configuration Expo résolue ; compteurs de distribution EAS distincts des miroirs locaux |
 | Projet EAS | `d210576f-5dc4-4f7a-a5e1-a407c209c3a2` — **distinct** de celui de Noctalia |
 | OTA | `updates: undefined` : le compagnon **n'hérite pas** du canal OTA de Noctalia |
 | App links | `applinks:lucid.noctalia.app` (iOS) et `https://lucid.noctalia.app/` (`autoVerify`, Android) |
@@ -119,7 +123,7 @@ E2E_DEVICE=<émulateur> npm run test:testerarmy:mobile -- lucid android  # build
 
 ### 2.3 Microphone local et services retirés
 
-`createLucidExpoConfig` conserve l'enregistrement local avec `expo-audio` et une description de permission dédiée. `RECORD_AUDIO` n'est plus bloqué. Le plugin `expo-speech-recognition` et la permission de reconnaissance vocale iOS restent retirés : une note audio locale ne déclenche pas de transcription distante. La demande de microphone intervient à l'action d'enregistrement ; son refus laisse la saisie texte disponible. Voir `scripts/lucid-microphone-contract.js`, `app/lucid/morning-voice.tsx` et `services/lucidMorningVoiceNoteStorage.ts`. La configuration source ne remplace pas la vérification du manifeste du binaire installé.
+`createLucidExpoConfig` conserve l'enregistrement local avec `expo-audio` et une description de permission dédiée. `RECORD_AUDIO` n'est plus bloqué. Le plugin `expo-speech-recognition` et la permission de reconnaissance vocale iOS restent retirés : une note audio locale ne déclenche pas de transcription distante. La demande de microphone intervient à l'action d'enregistrement ; son refus laisse la saisie texte disponible. Voir `scripts/lucid-microphone-contract.js`, `routes/lucid/lucid/morning-voice.tsx` et `services/lucidMorningVoiceNoteStorage.ts`. La configuration source ne remplace pas la vérification du manifeste du binaire installé.
 
 Il ajoute en revanche neuf sons de signal groupés (`expo-audio` + `expo-notifications` avec
 `sounds:`), le plugin `./plugins/withLucidNoctaliaQueries` (déclaration `<queries>` étroite du schéma
@@ -129,14 +133,14 @@ restauration des notifications après redémarrage.
 
 ### 2.4 Intégration sommeil facultative
 
-`app/lucid/sleep-integration.tsx` propose un import explicite de l’historique `sleepAnalysis` Apple Health, en lecture seule. Aucun appel d’autorisation au démarrage : le bouton de connexion/import déclenche la demande. Android reste utilisable sans HealthKit. Une réponse vide après demande ne permet pas de distinguer un refus, une révocation ou une absence de données ; l’interface ne doit pas prétendre les distinguer. Aucune détection REM en temps réel, écriture HealthKit ou commande des signaux nocturnes ne découle de cet import.
+`routes/lucid/lucid/sleep-integration.tsx` propose un import explicite de l’historique `sleepAnalysis` Apple Health, en lecture seule. Aucun appel d’autorisation au démarrage : le bouton de connexion/import déclenche la demande. Android reste utilisable sans HealthKit. Une réponse vide après demande ne permet pas de distinguer un refus, une révocation ou une absence de données ; l’interface ne doit pas prétendre les distinguer. Aucune détection REM en temps réel, écriture HealthKit ou commande des signaux nocturnes ne découle de cet import.
 
 Le snapshot a son stockage local séparé et protégé sur natif. Désactiver conserve les échantillons ; supprimer dans cet écran les efface. La suppression générale Lucid efface aussi ce snapshot. Il ne fait pas partie de l’export JSON/CSV structuré ni du transport de synchronisation Lucid. Les fichiers audio sont partagés individuellement, jamais inclus automatiquement dans cet export. Voir la [matrice des capacités et données](../doc_web_interne/docs/architecture/NOCTALIA-CAPABILITIES-2026-09-08.md) pour les distinctions code, configuration et preuve native.
 
 ### 2.5 Arborescence du module
 
 ```
-app/lucid/
+routes/lucid/lucid/
 ├── _layout.tsx                     # LucidTrainerProvider + porte d'onboarding + Stack
 ├── (tabs)/
 │   ├── _layout.tsx                 # barre d'onglets flottante en verre
@@ -377,7 +381,7 @@ où `/lucid` et `/lucid/(tabs)` désignent la même chose.
 
 ### 5.2 Parcours d'entrée — quatre écrans
 
-TI-402 regroupe l'entrée en quatre écrans (`STEP_COUNT` dans `app/lucid/onboarding.tsx`) : réponses personnelles, rythme de sommeil, premier plan et préférences de démarrage. Les réponses alimentent un plan local réel ; les consentements ne sont pas déduits d'une connexion. Consulter le code et ses tests de parcours pour l'ordre exact des champs ; ne pas réintroduire l'ancien tunnel à sept étapes.
+TI-402 regroupe l'entrée en quatre écrans (`STEP_COUNT` dans `routes/lucid/lucid/onboarding.tsx`) : réponses personnelles, rythme de sommeil, premier plan et préférences de démarrage. Les réponses alimentent un plan local réel ; les consentements ne sont pas déduits d'une connexion. Consulter le code et ses tests de parcours pour l'ordre exact des champs ; ne pas réintroduire l'ancien tunnel à sept étapes.
 Le bouton d'action est **épinglé hors du `ScrollView`** : dans le flux, quatre interrupteurs de 70 px
 poussaient « Configurer mon entraînement » hors de l'écran.
 
@@ -508,7 +512,7 @@ ni contenu de rêve. Le fournisseur produit refuse l'envoi sans consentement ; l
 Lucid respectent aussi `analyticsConsent`. Les contrôles de consentement, de valeurs
 fermées et de rejet des propriétés privées sont vérifiés sur ce fournisseur actif.
 
-**Export et suppression** (`app/lucid/data.tsx`) :
+**Export et suppression** (`routes/lucid/lucid/data.tsx`) :
 
 - export **JSON** (enveloppe versionnée `exportVersion: 1` + horodatage) ou **CSV** via
   `expo-file-system` puis `expo-sharing`. Le CSV échappe les cellules et **préfixe d'une apostrophe
@@ -528,11 +532,14 @@ reprise des données invité, et le rattachement de l'abonnement. L'identité es
 Noctalia** (même projet Supabase Auth, domaines produit isolés) — c'est l'objet de l'ADR d'identité
 partagée, et `lucid:gates` vérifie que l'URL et la clé anonyme sont bien celles de Noctalia.
 
-Limite à garder en tête, énoncée dans l'ADR : dans un projet Supabase partagé, le cloisonnement entre
-applications est **logique, pas cryptographique**. Un JWT appartient au projet entier ; les politiques
-RLS protègent les autres utilisateurs, pas les autres domaines produit du même utilisateur.
+L’ADR d’identité partagée décrit la limite des sessions historiques sans identité
+produit. Pour les nouveaux flux, consulter
+[l’ADR d’autorisation interapp](adr-002-interapp-authorization.md), les gardes
+serveur et la configuration de l’émetteur réellement utilisé. Le partage du projet
+Supabase ne prouve à lui seul ni un accès commun ni une isolation entre produits ;
+la compatibilité des anciens jetons et l’activation distante se qualifient séparément.
 
-Monétisation : abonnement **Plus** via RevenueCat (`app/lucid/subscription.tsx`, `useSubscription`),
+Monétisation : abonnement **Plus** via RevenueCat (`routes/lucid/lucid/subscription.tsx`, `useSubscription`),
 avec bénéfices, comparaison mensuel/annuel, remise annuelle calculée, achat et restauration.
 Les clés RevenueCat du compagnon sont **volontairement absentes** de `app.config.ts` : hériter la clé
 de Noctalia rattacherait les achats à la mauvaise application. La porte de release le vérifie.
@@ -541,12 +548,20 @@ de Noctalia rattacherait les achats à la mauvaise application. La porte de rele
 
 ## 10. Pont avec Noctalia
 
-Le lien catégoriel historique ci-dessous ne constitue ni l’import de récits TI-522 ni la promotion progressive TI-523 : ces deux parcours restent à livrer. Un compte partagé ne vaut pas consentement de partage.
+L’ouverture par lien, le résumé catégoriel et l’import de récits sont des parcours
+distincts. L’écran `routes/lucid/lucid/journal-import.tsx` permet de préparer une
+autorisation puis de confirmer des copies locales de texte, dates et provenance.
+Il ne copie ni images, ni audio, ni analyses et ne synchronise pas ces copies
+vers le cloud Lucid. Sa disponibilité exige le runtime et l’émetteur adaptés ;
+un compte partagé ne vaut pas consentement de partage. La présence de cet import
+ne constitue pas une preuve de livraison de la promotion progressive TI-523.
 
-Deux ponts, dans les deux sens, tous deux étroits :
+Les liens entre applications restent limités :
 
-**Noctalia → Lucid.** La carte du rituel « lucide » propose « Ouvrir Lucid Trainer » et navigue vers
-`/lucid` dans le même bundle (`app/ritual/[id].tsx`). Libellés dans les six langues de Noctalia.
+**Noctalia → Lucid.** La carte du rituel « lucide » ouvre
+`https://lucid.noctalia.app/lucid` via `Linking.openURL`
+(`app/ritual/[id].tsx`). Elle ne navigue plus vers une route du bundle Dreamer.
+Libellés dans les six langues de Noctalia.
 
 **Lucid → Noctalia.** `lib/lucid/deepLinks.ts` construit un lien **uniquement si le consentement
 explicite est présent** (`{ dataTransfer: true }`, objet à une seule clé) et si la charge utile est
@@ -590,23 +605,19 @@ Ce qui est réellement en place :
 
 ## 12. Tests
 
-**25 fichiers de test dédiés**, tous en Jest :
+La couverture se lit dans les sources et les rapports du candidat, sans figer un
+nombre de fichiers dans cette spécification :
 
-| Emplacement | Fichiers | Portée |
-|---|---|---|
-| `lib/lucid/__tests__/` | 11 | modèle et validateurs, domaine et fusion, progression et coaching, audio, rappels, calendrier, routes, contenu et parité des locales, liens profonds, analytics, variante d'app |
-| `services/__tests__/lucidTrainer*` | 4 | stockage et verrous, chiffrement, synchronisation, notifications |
-| `context/__tests__/` | 1 | `LucidTrainerContext` |
-| `hooks/__tests__/` | 1 | `useLucidNow` |
-| `tests/app-routes/` | 8 | onboarding, réglages, données, compte, abonnement, barre d'onglets, navigation à froid, pont depuis le rituel |
+- domaine et stockage : `lib/lucid/__tests__/`, `services/__tests__/lucidTrainer*`,
+  `context/__tests__/` et les tests de routes ;
+- web : `tools/e2e/tests/lucid.web.e2e.ts`, via `npm run test:testerarmy:lucid` ;
+- natif : `tools/e2e/tests/lucid.mobile.e2e.ts`, via
+  `npm run test:testerarmy:mobile -- lucid <android|ios>`, sur un Release identifié.
 
-La logique décidable du module est presque entièrement pure et testée à ce titre : plans de signaux,
-plans de rappels, calendrier, fusion d'états, résolution de conflits, backoff, coaching.
-
-**E2E** : TesterArmy — `tools/e2e/tests/lucid.web.e2e.ts` (`npm run test:testerarmy:lucid`) et
-`tools/e2e/tests/lucid.mobile.e2e.ts` (`npm run test:testerarmy:mobile -- lucid <android|ios>`, profil
-`lucid-mock`, deux parcours natifs : intention et expérience requises, plan local activé puis
-redémarrage). L'ancienne suite Maestro `lucid` a été retirée le 2026-10-14 (§14.8).
+Suivre [le guide E2E](../tools/e2e/README.md) et
+[la matrice native](../tools/e2e/NATIVE-MATRIX.md) pour les prérequis et la portée.
+Un test présent ou listé n'est pas une exécution. Les anciens flux Maestro
+et leurs lacunes observées restent décrits comme historique au §14.8.
 
 ---
 
@@ -785,5 +796,5 @@ passation.
 | [`doc_web_interne/docs/LUCID_TRAINER_ARCHITECTURE.md`](../doc_web_interne/docs/LUCID_TRAINER_ARCHITECTURE.md) | carte d'exécution, propriété des données, variantes de build |
 | [`doc_web_interne/docs/LUCID_TRAINER_RELEASE.md`](../doc_web_interne/docs/LUCID_TRAINER_RELEASE.md) | runbook : portes locales, matrice appareil, chemins EAS, rollback |
 | [`doc_web_interne/docs/LUCID_TRAINER_SHARED_IDENTITY_ADR.md`](../doc_web_interne/docs/LUCID_TRAINER_SHARED_IDENTITY_ADR.md) | ADR : un projet Supabase Auth, domaines produit isolés |
-| [`doc_web_interne/docs/LUCID_TRAINER_HANDOFF.md`](../doc_web_interne/docs/LUCID_TRAINER_HANDOFF.md) | passation : état, correctifs, gates externes, ordre de reprise |
+| [Passation historique](https://github.com/thannous/dreamer/blob/c0de9eae92b0f4c43220ca07cf690955dc2419c5/doc_web_interne/docs/LUCID_TRAINER_HANDOFF.md) | état, correctifs et limites de l'ancienne campagne ; ne qualifie pas le candidat actuel |
 | [`specs/noctalia-meditation.md`](noctalia-meditation.md) | spec de l'autre application compagnon (monorepo, Uniwind) |

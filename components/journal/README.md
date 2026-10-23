@@ -33,3 +33,11 @@ There is no feature-specific palette or appearance provider.
 `noctaliaPalette.test.ts` verifies CSS/native parity, `themeContrast.test.ts` checks
 foreground/action/status contrast, and route tests cover reading order and actions.
 Real UI checks remain necessary for dialogs, native presentation and responsive layout.
+
+## Images du journal
+
+[Le service média](../../services/dreamMediaService.ts) résout les images ;
+[les utilitaires](../../lib/imageUtils.ts) définissent thumbnails, cache et versions.
+Préserver les contrôles de propriété, la durée des URL signées et l'identité du
+cache lors d'un remplacement d'illustration. Vérifier miniature, image complète,
+remplacement, réouverture et échec réseau sur le build concerné.

@@ -10,7 +10,7 @@ and fails without actual model calls; no API-key fallback is configured. Use
 `npm run test:testerarmy:login` only if a saved login is missing. Native runs retain
 their separate identified Release/device requirements. See the
 [journey guide](../../e2e/README.md) and
-[migration record](../../doc_web_interne/docs/qa/full-testerarmy-20261021.md).
+[migration record](https://github.com/thannous/dreamer/blob/c0de9eae92b0f4c43220ca07cf690955dc2419c5/doc_web_interne/docs/qa/full-testerarmy-20261021.md).
 
 Follow https://docs.expo.dev/guides/using-e2e/ and the skill bundled in this
 package's `node_modules/e2e/skills/e2e/`. Dependencies and lockfile are isolated
@@ -237,7 +237,7 @@ session.
 
 ### Native personas with Sol
 
-The [2026-10-20 native campaign](../../doc_web_interne/docs/qa/dreamer-native-personas-20261020.md)
+The [2026-10-20 native campaign](https://github.com/thannous/dreamer/blob/c0de9eae92b0f4c43220ca07cf690955dc2419c5/doc_web_interne/docs/qa/dreamer-native-personas-20261020.md)
 records four passing personas on each platform, the exact builds and rerun commands.
 
 First prepare an isolated native project and create its `mock-persistent`
@@ -383,12 +383,13 @@ the native build command below (`E2E_BUILD_PROFILE=production-apk`), then run
 Its journeys stay offline; they do not prove purchases, real voice or backend
 accounts. Real voice and RevenueCat Test Store purchases follow the manual
 checklists (the voice one is an optional manual test that does not block
-`android:gates:strict`, owner decision 2026-10-17) of `doc_web_interne/docs/android-expo57-qa-runbook.md` and
-`doc_web_interne/docs/revenuecat-qa-workflow.md`.
+`android:gates:strict`, owner decision 2026-10-17) in the
+[speech-to-text guide](../../doc_web_interne/docs/speech-to-text-integration.md#configuration-and-verification)
+and [billing workflow](../../doc_web_interne/docs/revenuecat-qa-workflow.md).
 
 ## Native Release provenance and diagnostic handoff
 
-Current delivered native evidence and retained limits: [retrospective qualification](../../doc_web_interne/docs/qa/native-retro-qualification-20261006.md). Historical reports retain their original source/build identities.
+Historical native evidence and retained limits: [retrospective qualification of 2026-10-06](https://github.com/thannous/dreamer/blob/c0de9eae92b0f4c43220ca07cf690955dc2419c5/doc_web_interne/docs/qa/native-retro-qualification-20261006.md). Historical reports retain their original source/build identities and do not qualify the current candidate.
 
 Requested native implementation/QA includes necessary local generation in its
 isolated worktree after SDK/profile checks; reuse compatible existing native
@@ -655,7 +656,7 @@ purchase with the continuation test; do not tap Buy again to check it. Original 
 human steps and continuation passes stay distinct evidence.
 
 See the [reusable iOS runbook](../../doc_web_interne/docs/revenuecat-qa-workflow.md#ios-physique--réutiliser-la-préparation-sandbox)
-and the [dated qualification](../../doc_web_interne/docs/qa/revenuecat-ios-sandbox-20261016.md).
+and the [dated qualification](https://github.com/thannous/dreamer/blob/c0de9eae92b0f4c43220ca07cf690955dc2419c5/doc_web_interne/docs/qa/revenuecat-ios-sandbox-20261016.md).
 This developer-client proof does not qualify Release/TestFlight or production delivery.
 
 Receipt qualification also binds Metro to the clean checked-out source, resolves the device

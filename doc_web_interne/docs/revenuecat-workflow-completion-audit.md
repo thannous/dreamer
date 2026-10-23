@@ -1,12 +1,17 @@
 # RevenueCat Workflow Completion Audit
 
+> Archive : les états, commandes et validations ci-dessous décrivent leurs dates
+> de relevé. Pour une opération actuelle, suivre [le guide maintenu](revenuecat-qa-workflow.md)
+> et [les règles de validation](validation-proportionnee.md). Aucune case cochée
+> ni ancienne politique de release ne constitue une preuve du candidat actuel.
+
 Date: 2026-05-14
 
 Derniere mise a jour locale: 2026-05-15
 
 Objectif utilisateur: tester et finaliser le workflow RevenueCat avec differents profils utilisateurs et abonnements, du mock valide au Test Store puis Play autant que possible localement.
 
-## Politique de release actuelle — 2026-08-09
+## Politique de release relevée le 2026-08-09 (historique)
 
 Cet audit conserve les preuves historiques des sept scenarios, mais ils ne constituent plus sept
 portes obligatoires a chaque release. Le verdict courant est un seul smoke:

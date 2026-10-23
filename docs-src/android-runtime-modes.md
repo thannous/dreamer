@@ -4,10 +4,10 @@ Use this as the quick reference for Android purchase/auth testing. Keep generate
 
 ## Release Readiness
 
-Android is not considered production-store ready until the production constants in
-`doc_web_interne/docs/PRODUCTION_CONSTANTS.md` are complete, a signed AAB has
-been produced with `eas build --platform android --profile production`, and the
-same artifact has been installed and tested from Google Play Internal Testing.
+Follow the [Android release checklist](../doc_web_interne/docs/android-release-checklist.md)
+and [mobile release procedure](../doc_web_interne/docs/MOBILE_VERSIONING.md).
+Qualify the signed candidate installed from Google Play Internal Testing;
+record its actual version, signing identity and test results before publication.
 
 Local emulator success is useful for regressions, but it does not validate Google
 Play Billing, Play Integrity, Play App Signing SHA behavior, or Play Console
@@ -24,7 +24,7 @@ compliance.
 ## Common Android Keys
 
 - RevenueCat: `EXPO_PUBLIC_REVENUECAT_ANDROID_KEY` is required for real Android purchases. `EXPO_PUBLIC_REVENUECAT_WEB_KEY` only affects web fallback behavior.
-- Google Sign-In: `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID` is required by native Google Sign-In configuration; keep `EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID` available for environment parity and Supabase provider configuration.
+- Google Sign-In: native configuration reads `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`; it does not read `EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID`. The Android OAuth client still binds the package to its signing certificates in Google Cloud. Follow the [Google sign-in guide](../doc_web_interne/docs/google-sign-in.md).
 - Backend/auth: `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`, and `EXPO_PUBLIC_API_URL` are required for real Supabase/API flows.
 - Play Integrity client: `EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER` must be the Google Cloud project number, not the project ID.
 - Play Integrity server: Supabase functions need `PLAY_INTEGRITY_SERVICE_ACCOUNT_JSON_BASE64`, `PLAY_INTEGRITY_PACKAGE_NAME=com.tanuki75.noctalia`, and `GUEST_SESSION_SECRET`.
@@ -42,4 +42,6 @@ Android Google Sign-In depends on the SHA-1 fingerprints registered on the Andro
 - Development/dev-client builds: EAS Android keystore SHA-1 from `eas credentials`.
 - Google Play/Internal Testing and production: Play Console > Release > Setup > App Integrity > App signing SHA-1.
 
-Keep the Android OAuth client package name as `com.tanuki75.noctalia`. In Supabase Google provider settings, keep the Web Client ID configured with its client secret, add the Android Client ID to Authorized Client IDs, and keep nonce handling aligned with the native `signInWithIdToken` flow.
+Use the package of the actual app variant and its signing certificate. Follow the
+[Google sign-in guide](../doc_web_interne/docs/google-sign-in.md) for Web/iOS client
+IDs, Supabase provider configuration and the native `signInWithIdToken` flow.

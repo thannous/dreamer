@@ -1,8 +1,9 @@
 # Ambiances dynamiques Noctalia
 
-Index global des maquettes et preuves Android des quatre thèmes applicatifs.
-Les fichiers sources restent rangés avec le chantier Lucid afin de ne pas
-dupliquer les PNG lourds.
+Le calcul horaire actuel est dans [lib/themeAmbience.ts](../../../lib/themeAmbience.ts),
+consommé par [ThemeContext](../../../context/ThemeContext.tsx). Ce guide concerne
+les ambiances partagées de Dreamer/Lucid ; Meditation suit ses propres univers
+et [son guide local](../../../apps/meditation/AGENTS.md).
 
 ## Règle horaire locale
 
@@ -16,19 +17,21 @@ dupliquer les PNG lourds.
 `Dynamique` suit ces plages sans accès à la position. `Automatique` reste un
 choix distinct qui suit uniquement le thème clair/sombre du système.
 
-## Preuves dans l’application
+## Références visuelles historiques du 21 août 2026
 
-- [Accueil complet — matin](../lucid-onboarding/mockups/2026-08-21/00-app-today-morning.png)
-- [Réglages complets — afterglow](../lucid-onboarding/mockups/2026-08-21/00-app-settings-afterglow.png)
+Les six captures suivantes étaient référencées sous
+`../lucid-onboarding/mockups/2026-08-21/`. Elles ne sont pas présentes dans le
+checkout relu le 23 octobre 2026 ; elles ne constituent donc pas une preuve
+visuelle consultable pour le candidat actuel :
 
-## Comparaison sur le choix de l’horizon
+- `00-app-today-morning.png` : accueil du matin ;
+- `00-app-settings-afterglow.png` : réglages afterglow ;
+- `02-emulator-393x850-theme-dark.png` : nuit ;
+- `02-emulator-393x850-theme-light.png` : clair ;
+- `02-emulator-393x850-theme-morning.png` : matin ;
+- `02-emulator-393x850-theme-afterglow.png` : afterglow.
 
-- [Nuit](../lucid-onboarding/mockups/2026-08-21/02-emulator-393x850-theme-dark.png)
-- [Clair](../lucid-onboarding/mockups/2026-08-21/02-emulator-393x850-theme-light.png)
-- [Matin](../lucid-onboarding/mockups/2026-08-21/02-emulator-393x850-theme-morning.png)
-- [Afterglow](../lucid-onboarding/mockups/2026-08-21/02-emulator-393x850-theme-afterglow.png)
-
-Les captures ont été prises sur Android à `1080 × 2340`, densité `440`, soit
-environ `393 × 850 dp`. Les aperçus `?ambience=` sont disponibles uniquement
-en développement et ne modifient pas la préférence persistée.
-
+Le relevé historique indique Android `1080 × 2340`, densité `440`, soit environ
+`393 × 850 dp`. Conserver cette provenance sans recréer ni dupliquer les médias.
+Les aperçus `?ambience=` sont réservés au développement et ne changent pas la
+préférence persistée.

@@ -69,7 +69,7 @@ inconnue. Ce résultat ne qualifie pas un binaire Release/TestFlight ultérieur.
 ### Reprise courte sur cette machine
 
 Le wrapper, la configuration et les tests sont versionnés avec le
-[rapport iOS Sandbox](qa/revenuecat-ios-sandbox-20261016.md). Le profil privé et les preuves brutes
+[rapport iOS Sandbox](https://github.com/thannous/dreamer/blob/c0de9eae92b0f4c43220ca07cf690955dc2419c5/doc_web_interne/docs/qa/revenuecat-ios-sandbox-20261016.md). Le profil privé et les preuves brutes
 restent dans le worktree iPhone conservé. Le pilote sous `/private/tmp` est un cache réutilisable
 tant qu’il existe, pas une sauvegarde durable.
 

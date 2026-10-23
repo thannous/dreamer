@@ -189,8 +189,8 @@ The gate derives stability and cleanliness from the run's `source-start.json` an
 Owner decision 2026-10-17 (thanh): the Android real voice check is an optional
 manual test and does not block the release gate; `android:gates:strict` lists it
 as `manual`, which passes. Real voice and
-RevenueCat Test Store purchases follow the manual checklists of
-`doc_web_interne/docs/android-expo57-qa-runbook.md` and `doc_web_interne/docs/revenuecat-qa-workflow.md`.
+RevenueCat Test Store purchases follow the [speech-to-text checks](speech-to-text-integration.md#configuration-and-verification)
+and [billing workflow](revenuecat-qa-workflow.md), respectively.
 
 
 For native inspection/exploration, use the official `agent-device` skill with

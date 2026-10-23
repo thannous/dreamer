@@ -9,7 +9,7 @@
 - `templates/`: shared HTML shells used by the renderer.
 
 `docs/` is generated output. It is ignored by Git, should never be edited
-manually, and is rebuilt locally or by Cloudflare Pages from the tracked sources.
+manually, and is rebuilt locally from the tracked sources before a manual upload.
 
 The canonical symbol catalogs shared by the app and the site are
 `data/dream-symbols.json`, `data/dream-symbols-extended.json`, and
@@ -204,10 +204,12 @@ in `config/cloudflare-pages.json` means the repository root. Keep the Cloudflare
 dashboard aligned with that file whenever the build command, output directory,
 or branch changes.
 
-A commit on another branch may create a Cloudflare Preview deployment, but it does
-not update `noctalia.app`. Leave those previews on. A commit on `master` publishes
-production only while the dashboard production auto-deploy remains on. After it
-is turned off, publish with `npm run docs:deploy:prod` from the approved SHA.
+Disable automatic Git deployments for both production and preview branches in the
+Cloudflare dashboard. A tracked config file does not apply that setting. Check it
+before pushing if its state is unknown; this guide does not attest the live dashboard.
+Previews are uploaded on demand with `npm run docs:deploy:preview`; production uses
+`npm run docs:deploy:prod` from the approved SHA after release validation. See the
+[Pages procedure](../doc_web_interne/docs/repository-operations.md#cloudflare-pages-httpsnoctaliaapp).
 
 Commit source changes under `docs-src/`, `data/`, and the relevant generator or
 configuration files. If `docs:build` updates a tracked manifest under `data/`,
@@ -264,7 +266,7 @@ Use the smallest preview level that answers the current question:
 | `npm run docs:dev` | Local live server | None | Default while editing. Rebuilds on source changes and resolves the site's clean URLs. |
 | `npm run docs:preview:cf` | Local Wrangler server | None | Final local check of Cloudflare Pages routing, redirects, and headers. |
 | `npm run docs:deploy:preview` | Remote Cloudflare Pages preview | Publishes a public preview | Cross-browser and click-through QA on Cloudflare before publication. |
-| `npm run docs:deploy:prod` | Production Cloudflare Pages deployment | Publishes production | Manual production publish after the founder or CTO decides. Requires `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`. |
+| `npm run docs:deploy:prod` | Production Cloudflare Pages deployment | Publishes production | Manual production publish after thanh authorizes it and release proof passes. Requires `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`. |
 
 `docs:preview:cf` serves the existing generated output, so build and validate it
 first:

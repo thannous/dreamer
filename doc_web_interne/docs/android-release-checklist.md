@@ -170,4 +170,4 @@ Sur le candidat installé depuis Play, connecté au compte QA `qa-free` :
 
 Play Console affichait Production **54 (3.1.0)** et un candidat **57** créé,
 non envoyé pour examen. Ce relevé est daté et ne décrit pas le Store actuel.
-Voir [les anciennes notes Play](noctalia-3.1.0-google-play-patch-notes.md).
+Voir [les anciennes notes Play](https://github.com/thannous/dreamer/blob/c0de9eae92b0f4c43220ca07cf690955dc2419c5/doc_web_interne/docs/noctalia-3.1.0-google-play-patch-notes.md).

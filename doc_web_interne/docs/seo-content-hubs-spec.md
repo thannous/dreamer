@@ -438,7 +438,12 @@ Les liens contextuels supplémentaires restent autorisés. Le contrôle ne doit 
 - `scripts/docs-check.js` : ajout des deux contrats ;
 - `package.json` : commandes ciblées `docs:check-content-hubs` et `docs:check-url-stability`.
 
-Le job CircleCI `site-build` exécute `docs:build` puis `docs:check` lorsque les générateurs, `data/` ou les scripts site changent. Un changement pur `docs-src/` de la vitrine reste un no-op CI, validé par le build Cloudflare Pages. Aucune modification du routage n’est nécessaire si les deux contrôles sont bien intégrés à `docs:check`.
+La validation actuelle est locale : `verify:pr` sélectionne `docs:build` et
+`docs:check` pour les changements du site, y compris `docs-src/`. CircleCI ne lance
+que le benchmark optionnel d’installation. Les déploiements Git automatiques
+Cloudflare doivent être désactivés ; la publication manuelle exige la preuve
+`verify:release:site` et le go de thanh. Voir le
+[guide de validation](validation-proportionnee.md#prouver-avant-de-pousser).
 
 ### Fichiers explicitement inchangés dans le MVP
 

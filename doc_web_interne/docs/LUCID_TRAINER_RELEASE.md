@@ -1,6 +1,9 @@
 # Noctalia Lucid Trainer — release runbook
 
-This runbook turns the local Lucid Trainer implementation into an auditable release candidate. It does not authorize `expo prebuild`, EAS builds, signing, Supabase migration deployment, DNS changes, RevenueCat changes, store submission, or publication. Each external mutation needs explicit authorization.
+This runbook describes candidate preparation. Requested native work includes necessary
+local builds and isolated native generation under [the repository rules](../../AGENTS.md).
+EAS builds, remote migrations, access changes and Store/publication actions retain
+their own authorization boundaries. A runbook is not authorization to execute them.
 
 ## 1. Candidate identity and prerequisites
 
@@ -17,7 +20,7 @@ Required local state:
 
 - dependencies installed from the lockfile;
 - no unrelated candidate changes hidden or discarded;
-- `.env.lucid` or `.env.lucid.mock` present locally and excluded from version control;
+- the tracked, nonsecret `.env.lucid` or `.env.lucid.mock` profile; private credentials remain outside Git;
 - no secret copied into screenshots, logs, documentation, or tracked files;
 - both variant selectors resolve to `lucid`: `NOCTALIA_APP_VARIANT` for Expo/native configuration and `EXPO_PUBLIC_APP_VARIANT` for the runtime shell.
 

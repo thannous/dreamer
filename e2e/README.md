@@ -77,4 +77,4 @@ passes. Real microphone/OS permissions, background audio, Store purchase/restore
 production services and deployment remain separate qualification boundaries.
 
 Migration equivalences and current coverage are recorded in the
-[work package](../doc_web_interne/docs/qa/full-testerarmy-20261021.md).
+[work package](https://github.com/thannous/dreamer/blob/c0de9eae92b0f4c43220ca07cf690955dc2419c5/doc_web_interne/docs/qa/full-testerarmy-20261021.md).

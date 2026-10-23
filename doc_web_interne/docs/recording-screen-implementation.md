@@ -1,143 +1,40 @@
-# Recording Screen Implementation Summary
+# Dreamer : capture et sauvegarde d'un rêve
 
-## Overview
-Successfully implemented a React Native Expo recording screen that faithfully reproduces the HTML maquette design with a surreal, dreamy aesthetic.
+Guide de l'implémentation actuelle, relu le 23 octobre 2026. La source est
+[l'écran de capture](../../app/recording.tsx) ; les anciennes descriptions de
+maquette et de première sauvegarde ne définissent plus son comportement.
 
-## Implemented Features
+## Parcours
 
-### 1. Visual Design
-- **Surreal gradient background**: Linear gradient from `#1a0f2b` to `#3b2a50`
-- **Sticky header** with:
-  - Close button (X icon) on the left
-  - "New Dream" centered title
-  - "Save" button on the right (purple accent color)
-- **Main content area** with:
-  - Italic instruction text: "Whisper your dream into the ether..."
-  - Large circular microphone button (144px diameter)
-  - Animated ambient background driven by `AtmosphereBackground`
-  - Timestamp text: "Cycle of the Moon: [date and time]"
-- **Bottom section**:
-  - Large textarea for manual text entry
-  - Rounded corners with dark purple background
-  - Placeholder text in italic style
+1. Le brouillon est hydraté avant de pouvoir démarrer ou sauvegarder. La saisie
+   texte reste distincte de la dictée et de ses permissions.
+2. La capture vocale passe par [useRecordingSession](../../hooks/useRecordingSession.ts).
+   Les limites et différences Android/iOS/web sont décrites dans le
+   [guide de transcription](speech-to-text-integration.md).
+3. L'aide à la restitution et la relecture utilisent
+   [useCaptureConversation](../../hooks/useCaptureConversation.ts) et
+   [CaptureReviewPanel](../../components/recording/CaptureReviewPanel.tsx).
+4. La sauvegarde arrête la dictée, valide le texte et attend `addDream` avant de
+   vider le brouillon. Une nouvelle tentative conserve l'identité du rêve après
+   une erreur de persistance. Un texte trop long reste disponible pour correction.
+5. La catégorisation facultative intervient après la sauvegarde et exige le
+   consentement IA. Elle ne retarde pas la conservation du récit.
+6. L'écran ouvre le rêve enregistré via la séquence de sauvegarde ; la réduction
+   des animations ouvre directement la destination. L'entrée en lecture dépend
+   du choix enregistré et du contexte de capture, pas d'une analyse obligatoire.
 
-### 2. Functional Components
+## Points d'entrée
 
-#### MicButton Component (`components/recording/MicButton.tsx`)
-- 144px diameter circular button
-- Pulse animation during recording
-- Glow effect when recording
-- Icon changes from mic to stop icon when recording
-- Drop shadow and border styling matching maquette
+| Responsabilité | Source |
+| --- | --- |
+| Brouillon, reprise et sortie | [useRecordingDraftPersistence](../../hooks/useRecordingDraftPersistence.ts) |
+| Capture, validation et navigation après sauvegarde | [recording.tsx](../../app/recording.tsx), notamment `handleSaveDream` |
+| Édition et original de la capture | [CaptureDraftEditor](../../components/recording/CaptureDraftEditor.tsx), [CaptureOriginal](../../components/recording/CaptureOriginal.tsx) |
+| Persistance du journal | [DreamsContext](../../context/DreamsContext.tsx), [useDreamPersistence](../../hooks/useDreamPersistence.ts) |
+| Couleurs et mouvement | [procédure partagée](repository-operations.md#styling-and-motion) |
 
-#### AtmosphereBackground Component (`components/recording/AtmosphereBackground.tsx`)
-- Provides the current ambient visual layer behind the recording controls
-- Adapts its animation to screen focus, platform, theme, and reduced-motion preferences
-- Replaces the former `Waveform.tsx` and `MicClouds.tsx` implementations, which were unused and have been removed
-
-### 3. Recording Functionality
-- **Microphone permissions**: Properly requested on mount via `AudioModule.requestRecordingPermissionsAsync()` (expo-audio)
-- **Audio recording**: Using `expo-audio` `useAudioRecorder`
-- **Start/Stop toggle**: Single button controls recording state
-- **Recording options tuned for STT**:
-  - iOS: Linear PCM (`.caf`, 16kHz, mono)
-  - Android: AMR_WB (`.amr`, 16kHz, mono)
-  - Web: WebM/Opus (128 kbps)
-- **Audio mode**: Configured with `setAudioModeAsync({ allowsRecording: true, playsInSilentMode: true })`
-
-### 4. Text Input
-- Manual text entry via textarea
-- Supports multiline input
-- Editable during recording
-- Disabled during save/analysis process
-
-### 5. Save Functionality
-- Validates that dream text exists before saving
-- Integrates with existing DreamsContext
-- Persists a draft `DreamAnalysis` in the journal
-- After save, opens a **first-dream bottom sheet** that lets the user choose what to do next:
-  - Analyze this dream (triggers AI analysis + imagery generation)
-  - See dream journal (go back to the journal list)
-  - Not now (dismiss the sheet and return to the recording screen)
-- Shows loading state during processing and analysis
-
-### 6. Close Functionality
-- Warns user about unsaved changes
-- Confirmation dialog with Cancel/Discard options
-- Navigates back to previous screen
-
-### 7. User Experience Enhancements
-- Keyboard-aware scrolling (KeyboardAvoidingView)
-- Platform-specific padding for iOS notch
-- Activity indicators during loading
-- Error handling with user-friendly alerts
-- Visual feedback for all interactions
-
-## Files Created/Modified
-
-### Created Files:
-1. `/mnt/c/Users/thann/WebstormProjects/dream-app/components/recording/MicButton.tsx`
-   - Reusable microphone button with animations
-
-2. `doc_web_interne/docs/speech-to-text-integration.md`
-   - Guide for implementing speech-to-text transcription
-
-4. `doc_web_interne/docs/recording-screen-implementation.md`
-   - This summary document
-
-### Modified Files:
-1. `/mnt/c/Users/thann/WebstormProjects/dream-app/constants/theme.ts`
-   - Added SurrealTheme color constants
-
-2. `app/recording.tsx`
-   - Complete rewrite with new UI and functionality
-
-3. `app.json`
-   - Added expo-audio plugin with microphone permission message
-
-## Dependencies Installed
-- `expo-audio` - Audio recording functionality (replaces deprecated expo-av)
-- `expo-speech` - Text-to-speech (for future features)
-- `expo-linear-gradient` - Gradient backgrounds
-- `@react-native-async-storage/async-storage` - Already present, used for persistence
-
-## Theme Colors (SurrealTheme)
-```typescript
-{
-  bgStart: '#1a0f2b',      // Gradient start
-  bgEnd: '#3b2a50',        // Gradient end
-  textLight: '#e0d9f0',    // Primary text
-  textMuted: '#a097b8',    // Secondary text
-  accent: '#6b5a8e',       // Accent/highlight
-  shape: '#4f3d6b',        // Button background
-  darkAccent: '#2e1d47',   // Input background
-}
-```
-
-## Future Enhancements
-
-### Speech-to-Text Integration
-Transcription now runs natively first (via `expo-speech-recognition`) with Google Cloud Speech-to-Text as a backup. See `doc_web_interne/docs/speech-to-text-integration.md` for the current flow and setup.
-
-### Additional Features
-1. **Real-time transcription**: Display text as user speaks
-2. **Audio playback**: Allow users to review recordings before saving
-3. **Language selection**: Support multiple languages for transcription
-4. **Voice effects**: Add audio filters or enhancements
-5. **Offline recording**: Store recordings locally and transcribe when online
-
-## Testing Notes
-- TypeScript compilation: Successful (no errors)
-- All components properly typed
-- Follows React Native best practices
-- Uses React hooks exclusively
-- Proper cleanup in useEffect hooks
-- Animation performance optimized with native driver where possible
-
-## Usage
-Navigate to `/recording` route to access the recording screen. The screen:
-1. Requests microphone permissions on mount
-2. Allows voice recording via mic button
-3. Provides manual text entry alternative
-4. Saves dream to journal with AI analysis
-5. Navigates to dream detail screen after save
+Pour une modification fonctionnelle, vérifier le parcours affecté : texte →
+sauvegarde → réouverture, brouillon après sortie, ou erreur de sauvegarde →
+nouvelle tentative sans doublon. La dictée et les permissions réelles demandent
+une preuve sur la plateforme concernée. Utiliser le [guide E2E](../../e2e/README.md)
+pour choisir la commande ; cette relecture documentaire n'est pas une exécution.

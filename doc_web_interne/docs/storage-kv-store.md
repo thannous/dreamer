@@ -1,32 +1,50 @@
-# Storage migration (TI-40) — `expo-sqlite/kv-store`
+# Stockage natif du journal et migration KV historique
 
-## Goal
-Les rêves (transcript/interpretation/chatHistory) peuvent devenir volumineux. Les stocker en JSON via AsyncStorage (ou via fichiers) peut impacter le temps de load/save et générer des soucis de quotas/limites selon la plateforme.
+Revue des sources du 23 octobre 2026. Le nom de ce fichier conserve l'ancien
+point d'entrée TI-40 ; `expo-sqlite/kv-store` n'est plus le moteur principal des
+rêves natifs.
 
-## Solution implémentée
-Sur **iOS/Android**, `services/storageServiceReal.ts` utilise désormais **`expo-sqlite/kv-store`** (stockage clé/valeur backed par SQLite) comme backend principal dès qu’il est disponible.
+## Moteur actuel
 
-Sur **web**, on conserve le backend existant **IndexedDB → localStorage** (le support web de `expo-sqlite` nécessite WASM + en-têtes COOP/COEP pour `SharedArrayBuffer`).
+Sur iOS/Android, [storageServiceReal.ts](../../services/storageServiceReal.ts)
+utilise [createJournalRecordStore](../../services/journalRecordStore.ts) dans
+`dreamer-journal-v1.db` pour les rêves et le cache distant. Les enregistrements
+sont stockés par identité, ordre et scope, avec un commit transactionnel du scope.
+Les checkpoints de lignes serveur complètes utilisent aussi ce moteur.
 
-## Clés concernées
-Les clés lourdes sont regroupées dans `FILE_BACKED_KEYS` (ex: `gemini_dream_journal_dreams`, cache remote, pending mutations).
+Lors de la première lecture d'un scope, le moteur importe les anciens records
+via `readLegacyDreamRecords`. Cette lecture utilise `getItem(key, { strict: true })` :
+une erreur de lecture ou un payload invalide interrompt la migration, au lieu de
+transformer l'échec en journal vide. `getSavedDreams` distingue `absent`, `loaded`
+et `error` ; une sauvegarde échouée rejette sa promesse.
 
-## Migration incrémentale (sans perte)
-Pour les clés lourdes sur mobile, l’ordre de lecture est :
-1. `expo-sqlite/kv-store` (si présent)
-2. fichier legacy (si présent)
-3. AsyncStorage legacy (si présent)
+Sur le web, les chemins KV existants restent en place : IndexedDB et le fallback
+localStorage. Cette architecture locale ne prouve pas une synchronisation distante.
 
-Dès qu’une valeur est trouvée en (2) ou (3), elle est **copiée vers kv-store**, puis la source legacy est **supprimée** (best-effort).
+## Adaptateur KV et héritage TI-40
 
-## Mesure (POC)
-En `__DEV__`, `services/storageServiceReal.ts` log :
-- hit kv-store (`bytes`, `ms`)
-- write kv-store (`bytes`, `ms`)
-- migrations (file → kv-store, AsyncStorage → kv-store)
+Le stockage KV reste utilisé pour d'autres clés et pour relire les anciens gros
+payloads. Pour les clés de `FILE_BACKED_KEYS`, lorsque kv-store est disponible,
+l'ordre de lecture legacy est :
 
-## Rollout proposé
-1. Ship kv-store + migration lazy (actuel) avec fallback intact.
-2. Observer les logs perf (dev) et, si besoin, ajouter un flag pour activer/désactiver kv-store.
-3. Après une ou deux versions, supprimer les chemins legacy si le taux de migration est satisfaisant.
+1. `expo-sqlite/kv-store` ;
+2. fichier legacy ;
+3. AsyncStorage legacy.
 
+En mode non strict, une valeur trouvée dans un fallback est copiée vers kv-store
+avant nettoyage de sa source. En mode strict, elle est rendue sans cette migration
+opportuniste, et une erreur du stockage principal reste une erreur. Ce chemin
+legacy ne décrit pas les écritures actuelles des rêves dans le record store.
+
+Les anciens logs `kv-store hit`, `kv-store write` et les logs de migration mesurent
+l'adaptateur KV. Les marqueurs `journal.records_*` concernent le moteur à records ;
+ne pas comparer leurs durées comme s'ils couvraient la même opération.
+
+## Maintenance
+
+Les chemins legacy servent encore à la lecture et à la récupération. Leur retrait
+nécessite une preuve de migration et une couverture des installations concernées ;
+un nombre de versions écoulées ne suffit pas. Pour une modification, vérifier
+lecture legacy, écriture échouée, nouvelle tentative et redémarrage avec les
+fixtures possédées, sans réinitialiser de données personnelles. Voir la
+[validation proportionnée](validation-proportionnee.md).

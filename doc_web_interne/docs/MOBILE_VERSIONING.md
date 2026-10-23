@@ -36,7 +36,7 @@ Pour Méditation, exécuter aussi `npm ci` dans `apps/meditation/` : ce sous-pro
 
 `release:build` vérifie que les changements mobiles ont une version préparée. Avant de lancer EAS, il calcule le fingerprint de la plateforme et refuse toute source native résolue hors du checkout. Pour Noctalia/Lucid, il vérifie aussi l'identité du package Android ou du bundle iOS ; sur iOS, il contrôle les deux mentions HealthKit dans l'`Info.plist` résolu par Expo. Une dépendance liée à un autre dossier ou un plugin qui retire une mention bloque ainsi le build localement. Cette commande requiert l'autorisation habituelle de build EAS. Elle n'effectue aucune soumission aux Stores. `release:plan`, `release:check` et `verify` ne lancent aucun build.
 
-Le hook `eas-build-pre-install` et `node scripts/mobile-release.js verify --app all` (inclus dans la validation complète locale et dans une pipeline CircleCI manuelle) contrôlent la cohérence des versions entre registre, Expo, package et lockfile. Il refuse aussi une configuration HealthKit sans les deux mentions de base. Le hook fonctionne sans dossier `.git` ni dépendances installées sur le builder : il ne peut vérifier ni l'historique, ni le fingerprint de la machine qui a lancé EAS, ni l'`Info.plist` final. Passer directement par `eas build` contourne ces contrôles locaux ; utiliser `release:build` comme entrée de release.
+Le hook `eas-build-pre-install` et `node scripts/mobile-release.js verify --app all` (inclus dans la validation complète locale) contrôlent la cohérence des versions entre registre, Expo, package et lockfile. CircleCI ne lance que le benchmark optionnel d'installation, sans validation applicative. Le contrôle refuse aussi une configuration HealthKit sans les deux mentions de base. Le hook fonctionne sans dossier `.git` ni dépendances installées sur le builder : il ne peut vérifier ni l'historique, ni le fingerprint de la machine qui a lancé EAS, ni l'`Info.plist` final. Passer directement par `eas build` contourne ces contrôles locaux ; utiliser `release:build` comme entrée de release.
 
 ## Envoyer en test interne
 
@@ -70,7 +70,11 @@ Les APK locaux directs ne réservent pas de code EAS et ne sont pas des artefact
 
 Pour comparer un binaire distribué à un build EAS précis, le garde `check-android-release-ref.js` utilise `BUILT_ANDROID_VERSION_CODE` et `EXPECTED_ANDROID_VERSION_CODE` (valeur tirée des métadonnées de **ce build**, et non du compteur global après d'autres builds). Un code attendu distant manquant ou incohérent bloque la vérification.
 
-## Point de départ
+## Points de départ historiques
+
+Les valeurs ci-dessous décrivent l'adoption du mécanisme. Pour la version préparée
+actuelle de chaque app, lire [le registre](../../release/mobile-versions.json) et
+exécuter `npm run release:check -- --app all` ; cela n'atteste aucune publication Store.
 
 - Noctalia `3.1.0` : snapshot du build EAS 68, `285f4363-10bf-4b2b-8833-54a028f9b2dd`, commit `e9c8d647c601b05e5b68e31c2ac8db8c22bdab9a`. Cette branche n'est pas un ancêtre direct de master : le plan compare les contenus des snapshots et examine les commits ajoutés, sans supposer une filiation. Si nécessaire, récupérer ce commit depuis origin avant de calculer le plan.
 - Lucid `1.0.0` et Méditation `0.1.0` : adoption du snapshot `bc4911f711ac0dccc3e7f9247434bb6e6fb9470b`. Ce n'est pas une affirmation de publication antérieure. Les changements antérieurs à cette adoption ne sont pas reclassifiés.

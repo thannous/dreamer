@@ -26,8 +26,8 @@ reads `DB_URL` from `supabase status --env` (or `SUPABASE_LOCAL_DB_URL`) and fai
 local stack is running.
 
 The [backend qualification guide](doc_web_interne/docs/e2e-backend-qualification.md)
-covers prerequisites, target guards, fixture migrations, seven browser journeys,
-six TI528 integration cases and cleanup. The [database contract manifest](supabase/db-contract.manifest.json)
+covers prerequisites, target guards, fixture migrations, the current backend
+scenarios, the six TI528 integration cases and cleanup. The [database contract manifest](supabase/db-contract.manifest.json)
 records the database objects checked by `db:contract:check`.
 
 For architecture and implementation entry points, use the

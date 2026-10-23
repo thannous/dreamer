@@ -1,6 +1,6 @@
 # Builds Android et démarrage Metro — 18 octobre 2026
 
-Suite de l'[audit CI/site](site-ci-performance-2026-10-18.md).
+Suite de l'[audit CI/site](https://github.com/thannous/dreamer/blob/c0de9eae92b0f4c43220ca07cf690955dc2419c5/doc_web_interne/docs/qa/site-ci-performance-2026-10-18.md).
 Les mesures brutes et identifiants des rapports sont dans le
 [reçu JSON](mobile-ci-android-metro-2026-10-18.json). Mesures locales,
 pas des durées CircleCI ou EAS. Aucun build EAS, déploiement, téléchargement

@@ -1,134 +1,43 @@
-# RG — Mode invité (guest)
+# Mode invité : données et quotas
 
-Ce document décrit les **règles de gestion** appliquées quand l’utilisateur **n’est pas connecté** (“guest”).
+Le mode invité permet une première utilisation sans compte. Les limites sont
+centralisées dans [constants/limits.ts](../../../constants/limits.ts) et appliquées
+par [GuestQuotaProvider](../../../services/quota/GuestQuotaProvider.ts).
+Relecture des sources : 23 octobre 2026 ; aucune nouvelle qualification distante.
 
-## Objectifs
+## Limites et admission
 
-- Permettre de tester l’app sans compte avec une expérience fluide.
-- Appliquer des limites simples (anti-abus) **sans contournement via suppression** de contenu.
-- Garder une source de vérité claire dans le code.
+| Usage | Contrat actuel |
+| --- | --- |
+| Rêves enregistrés | Cinq sauvegardes locales cumulées ; supprimer un rêve ne rend pas de place. |
+| Analyse IA | Deux analyses ; la suppression du rêve ne remet pas le compteur à zéro. |
+| Illustration | Deux images selon le quota invité. |
+| Chat | Dix messages utilisateur par rêve ; `exploration` est une métrique de compatibilité, sans plafond produit séparé. |
 
-## Source de vérité (quotas guest)
+[GuestDreamCounter](../../../services/quota/GuestDreamCounter.ts) réserve la place
+avant écriture, sous verrou. La réservation est réconciliée avec le journal durable
+après un échec ou un redémarrage. Une lecture impossible ne devient pas un quota
+vide. À la limite, la capture conserve le brouillon et propose l'accès au compte.
 
-La source de vérité des quotas “guest” est dans `constants/limits.ts` :
+Les compteurs locaux ne remplacent pas l'autorisation serveur : les appels IA
+exigent une session invitée vérifiée et l'admission du backend. Voir le
+[contrat des commandes IA](../architecture/ai-call-hardening/implementation/server-owned-ai-command.md).
 
-- Analyses (IA) : `QUOTAS.guest.analysis = 2`
-- Explorations (début de chat sur un rêve) : `QUOTAS.guest.exploration` n’est plus une entitlement produit (voir `limits.ts`)
-- Messages par rêve : `QUOTAS.guest.messagesPerDream = 10`
-- Images : `QUOTAS.guest.image = 2`
-- Rêves enregistrés : `GUEST_DREAM_RECORDING_LIMIT = 5` sauvegardes locales cumulées (même après suppression). Un compte permet ensuite la sauvegarde et la synchronisation sans cette limite guest.
+## Stockage et passage au compte
 
-## Où sont enregistrés les rêves guest
+Les rêves invités restent sur l'appareil : [record store natif, KV web et
+migration historique](../storage-kv-store.md). Ils ne sont pas transférés sur un
+autre appareil sans synchronisation ; désinstaller ou effacer les données locales
+peut les détruire.
 
-Les rêves guest sont persistés **localement** sur l’appareil via `services/storageServiceReal.ts` :
+[useDreamPersistence](../../../hooks/useDreamPersistence.ts) attribue la migration
+à un compte et à un ensemble de rêves avant envoi. Les identités de requête sont
+stables ; les échecs et conflits conservent une copie récupérable. Le nettoyage
+local ne retire que les éléments acquittés de cette migration, sans effacer un
+nouveau rêve capturé entre-temps. Une migration déjà attribuée à un autre compte
+n'est pas reprise silencieusement.
 
-- Clé principale : `gemini_dream_journal_dreams` (`DREAMS_STORAGE_KEY`).
-- Mobile : stockage via `@react-native-async-storage/async-storage` et bascule “file-backed” via `expo-file-system` pour éviter les limites de taille.
-- Web : stockage via IndexedDB (fallback localStorage).
-
-Impacts produit :
-
-- Désinstaller l’app / effacer les données locales efface les rêves.
-- Changer d’appareil ne transfère pas les rêves (sans compte).
-
-## Règle “rêves enregistrés” (guest)
-
-### Limite
-
-- Un utilisateur guest peut **enregistrer jusqu’à 5 rêves localement** au total. Supprimer un rêve ne rend pas une place.
-- Le contrôle s’applique avant l’écriture d’un nouveau rêve ; à la limite, le brouillon reste disponible et l’utilisateur peut créer un compte.
-- Les quotas analyses / images / chat restent inchangés.
-
-### Compteur local (admission)
-
-Le compteur cumulatif local décide si un nouveau rêve peut être enregistré :
-
-- Module : `services/quota/GuestDreamCounter.ts`
-- Clé AsyncStorage : `guest_dream_recording_state_v2` (compteur et réservation liée à l’identité du rêve). La clé `guest_total_dream_recording_count_v1` reste l’entrée de migration.
-- Une réservation est écrite avant le rêve, puis confirmée quand celui-ci est durable. Après un échec ou un redémarrage, le journal local est relu : une réservation sans rêve durable est libérée ; un rêve durable garde sa place.
-- Si le compteur ou le journal ne peut pas être lu, un nouvel enregistrement est refusé temporairement plutôt que de remettre le quota à zéro.
-
-### Gating (contrôle)
-
-- `app/recording.tsx` affiche le nombre de sauvegardes restantes et garde le brouillon avec un accès au compte si `addDream()` refuse une sixième sauvegarde.
-- `hooks/useDreamJournal.ts` (`addDream()` guest) réserve une place sous lock avant l’écriture ; une nouvelle ligne n’apparaît dans le journal qu’après une écriture durable.
-
-### Concurrence (double tap / double submit)
-
-- `withGuestDreamRecordingLock()` sérialise l’admission, l’écriture et la suppression locale guest pour éviter les doubles réservations et préserver le compteur après suppression.
-
-### Migration (compat)
-
-Au démarrage, `migrateExistingGuestDreamRecording()` réconcilie le compteur avec au moins `dreams.length`, même si l’ancien marqueur de migration existe déjà. Cela corrige un ancien compteur sous-évalué après un échec d’incrément. Les rêves déjà enregistrés restent lisibles même si ce total dépasse la nouvelle limite ; seuls les nouveaux enregistrements sont bloqués.
-
-### Remise à zéro pour les développeurs
-
-Dans une build `__DEV__`, un invité peut ouvrir **Réglages → Test invité · mode dev → Réinitialiser les places invitées**. Cette action remet le compteur au nombre de rêves encore enregistrés sur l’appareil ; elle ne supprime aucun rêve et ne touche pas aux quotas d’analyse. Pour retrouver les cinq places, supprimer d’abord les rêves de test depuis le journal, puis utiliser ce bouton. Le contrôle n’est pas affiché dans les builds de production.
-
-## Règle “analyses” (guest)
-
-### Limite
-
-- Un utilisateur guest peut lancer **2 analyses**.
-
-### Anti-bypass
-
-On maintient un compteur cumulatif local (jamais décrémenté) :
-
-- Module : `services/quota/GuestAnalysisCounter.ts`
-- Clé AsyncStorage : `guest_total_analysis_count_v1`
-- Usage effectif : `max(compteur_local, rêves_marques_analysés)`
-
-### Gating
-
-- Contrôle via `quotaService` → provider guest (`services/quota/GuestQuotaProvider.ts`).
-- Lors d’une analyse réussie en guest : incrément du compteur local dans `hooks/useDreamJournal.ts` (et éventuellement sync max(local, server) quand un retour serveur existe).
-
-## Règle “explorations” (guest)
-
-### Limite
-
-- Un utilisateur guest peut explorer **2 rêves** (démarrer une exploration/chat).
-
-### Règle d’exception (continuer un chat déjà démarré)
-
-- Si le rêve est déjà “exploré” (chat démarré), on autorise la reprise même si la limite globale est atteinte.
-- Objectif : éviter de “repayer” pour continuer une conversation existante.
-
-### Anti-bypass
-
-Comme pour les analyses :
-
-- Module : `services/quota/GuestAnalysisCounter.ts`
-- Clé AsyncStorage : `guest_total_exploration_count_v1`
-- Usage effectif : `max(compteur_local, rêves_marques_explorés)`
-
-## Affichage UI (Settings)
-
-- Carte quotas : `components/quota/QuotaStatusCard.tsx`
-- Les quotas affichés pour le guest restent analyses / images / chat.
-- La capture affiche séparément le nombre de rêves guest encore enregistrables.
-
-## Limites connues / risques
-
-- Comme c’est du local, un utilisateur peut “reset” en réinstallant l’app ou en effaçant les données.
-  - Mitigation possible : enforcement serveur par fingerprint (déjà en place côté endpoint quota pour certaines métriques), au prix d’une dépendance réseau.
-- Si le stockage des rêves est purgé (ex: récupération automatique “Row too big”), le journal local est perdu. Le compteur cumulatif peut rester à sa valeur antérieure ; une suppression ou purge ne rend pas le quota guest.
-  - Mitigation : proposer un compte pour sauvegarder et synchroniser les rêves.
-
-## Passage guest → compte (création / connexion)
-
-### Données (rêves)
-
-Quand l’utilisateur se connecte (ou crée un compte), **tous** les rêves guest locaux sont migrés vers Supabase :
-
-- Logique : `hooks/useDreamPersistence.ts` (`migrateGuestDreamsToSupabase()`)
-- Stratégie : `createDreamInSupabase()` fait un `upsert` sur `(user_id, client_request_id)` pour éviter les doublons (idempotent).
-- Après une migration **complète** : les rêves locaux guest sont vidés (`saveDreams([])`), puis l’app charge la liste remote.
-- En cas d’échec partiel : le stockage local n’est pas vidé, afin de ne perdre aucun récit. Un nouvel essai reprend les mêmes `client_request_id`.
-
-### Quotas
-
-- Les compteurs “guest” (analyses / explorations / rêves enregistrés) **ne comptent pas** pour les quotas mensuels d’un compte.
-- Une fois connecté, `quotaService` bascule sur `SupabaseQuotaProvider` et l’UI affiche les quotas du tier (`free` mensuel ou `premium` illimité).
-- Les compteurs guest restent dans le stockage local (utile si l’utilisateur se déconnecte plus tard), mais **ne sont plus affichés** tant qu’un `user` est présent.
+Une session connectée utilise le provider de quotas du compte ; les compteurs
+invités ne deviennent pas ses quotas mensuels. Tester les reprises après erreur,
+redémarrage et changement de compte avec des données QA possédées, sans effacer
+les données personnelles pour contourner un blocage.

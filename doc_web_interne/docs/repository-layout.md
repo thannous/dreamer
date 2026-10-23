@@ -38,9 +38,10 @@ is not cleanup authorization.
 
 ## Private QA and durable evidence
 
-Raw local runs, account-specific captures, machine receipts and temporary logs
-belong in ignored `test-results/` or the existing ignored runner locations such
-as `tools/e2e/.e2e/`. Keep personal data, credentials and private formative feedback
+New task artifacts, captures, exports and compact receipts belong in the canonical
+ignored `outputs/<task>/` directory. Existing runners retain their own canonical
+locations, such as `test-results/` and `tools/e2e/.e2e/`; reference their results
+instead of copying complete media into `outputs/`. Keep personal data, credentials and private formative feedback
 out of Git. Keep the exact build/source identity, verdict, useful failure artifact
 and rerun command in one canonical result; link it rather than copying complete
 media archives or rehashing unchanged evidence for each handoff.
@@ -51,11 +52,12 @@ artifacts may be tracked under `doc_web_interne/docs/qa/` or an existing work-pa
 location. Review them for private content first. Record date, source/build,
 environment, command, result and limits; a historical pass is not current proof.
 
-Existing `outputs/`, `screenshots/` and `tmp-stage/` records include useful historical
-evidence. Their exact retained paths are listed in
+Some older files under `outputs/`, `screenshots/` and `tmp-stage/` are tracked
+historical evidence. Their exact retained paths are listed in
 [data/repository-hygiene-baseline.json](../../data/repository-hygiene-baseline.json).
-This is a path-specific exception, not permission to add neighboring files. Do not
-put new local captures, exports or scratch output in those trees. New durable
+This is a path-specific tracking exception, not permission to commit neighboring
+files. New private task output stays ignored under `outputs/`; do not introduce
+new `output/`, `screenshots/` or `tmp-stage/` task roots. New durable
 redacted evidence uses the documentation locations above; an additional legacy
 exception needs explicit review. Preserve old factual outcomes and useful history;
 age alone does not justify deletion, and this change does not mass-move them.

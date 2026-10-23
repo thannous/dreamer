@@ -10,7 +10,7 @@ Références visuelles : Tigre validé pour l'identité et le comportement ; lot
 
 **Fin :** ID/langue, trois IDs de scènes, sources éditoriales et provenance des images sont explicites ; tout contenu réellement manquant est identifié avant de promettre la page.
 
-Avant de paralléliser les nouveaux packs, intégrer une fiche complète selon ce contrat et l’examiner sur grand écran et mobile, scènes et deux phénomènes inclus. Réutiliser ensuite ses décisions dans le lot. Un seul intégrateur assemble les fichiers partagés ; chaque remise identifie sa base et les sources sélectionnées. Les décisions déjà validées restent acquises. Voir la [rétrospective du pilote et du lot de six](qa/symbol-atlas-retrospective-2026-10-18.md) pour les causes des reprises, l’organisation proposée et les mesures à suivre.
+Avant de paralléliser les nouveaux packs, intégrer une fiche complète selon ce contrat et l’examiner sur grand écran et mobile, scènes et deux phénomènes inclus. Réutiliser ensuite ses décisions dans le lot. Un seul intégrateur assemble les fichiers partagés ; chaque remise identifie sa base et les sources sélectionnées. Les décisions déjà validées restent acquises. Voir la [rétrospective du pilote et du lot de six](https://github.com/thannous/dreamer/blob/c0de9eae92b0f4c43220ca07cf690955dc2419c5/doc_web_interne/docs/qa/symbol-atlas-retrospective-2026-10-18.md) pour les causes des reprises, l’organisation proposée et les mesures à suivre.
 
 ## 2. Préparer les cinq surfaces illustrées
 
@@ -70,7 +70,7 @@ Le suivi sépare les sources réellement consommées : changer un cadrage ne pé
 
 ### Outils communs pour les lots suivants
 
-Les commandes et effets détaillés sont dans le [catalogue des outils Atlas](../../scripts/README.md#atlas-pages-asset-packs-handoffs-and-qualification-receipts). Depuis la racine, utiliser `npm run <commande> --prefix apps/site -- <options>` ; ne pas recopier un encodeur ou un collecteur par symbole.
+Les commandes et effets détaillés sont dans le [catalogue des outils Atlas](../../scripts/README.md#atlas-pages-asset-packs-handoffs-qualification-receipts-and-review-galleries). Depuis la racine, utiliser `npm run <commande> --prefix apps/site -- <options>` ; ne pas recopier un encodeur ou un collecteur par symbole.
 
 - `atlas:pack` lit un `noctalia.atlas-pack/1` portable : huit rôles, chemins relatifs, SHA et prompts/provenance réels. Faire le dry-run, puis fusionner dans le manifeste canonique quand l’ID est activé. Le cache par symbole évite le réencodage des sources et recettes inchangées ; le reçu identifie les dérivés écrits/réutilisés. Un réemploi reste conditionné au style, au sens et au rendu effectif, pas à la seule présence d’un fichier.
 - `atlas:handoff` remet et vérifie le patch avec sa base, son head et les blobs avant/après. Sans les refs cloud locales, distinguer le contrôle des contenus de la preuve d’ascendance ; appliquer seulement le patch attendu sur les chemins détenus par le lot.
