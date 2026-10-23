@@ -76,7 +76,7 @@ import {
   isResumableAnalysisRequest,
 } from '@/lib/analysisRequest';
 import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
-import { deriveDraftTitle, getDreamSyncState, normalizeDreamMemoryMetadata, sortDreams } from '@/lib/dreamUtils';
+import { deriveDraftTitle, generateUUID, getDreamSyncState, normalizeDreamMemoryMetadata, sortDreams } from '@/lib/dreamUtils';
 import {
   buildReflectionResumeHref,
   getDreamAnalysisState,
@@ -175,14 +175,6 @@ const getDreamLimitSyncError = (message?: string | null): 'too_long' | 'daily_li
   if (text.includes('DREAM_TRANSCRIPT_TOO_LONG')) return 'too_long';
   if (text.includes('DAILY_DREAM_LIMIT')) return 'daily_limit';
   return null;
-};
-
-const generateUUID = (): string => {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-    const r = (Math.random() * 16) | 0;
-    const v = c === 'x' ? r : (r & 0x3) | 0x8;
-    return v.toString(16);
-  });
 };
 
 type PickedImageAsset = {
@@ -1627,7 +1619,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
         router.push(quotaStatus?.isUpgraded
           ? '/settings?section=account&auth=signin' : '/settings?section=account&auth=signup');
       } else {
-        setQuotaSheetMode(!user && quotaStatus?.isUpgraded ? 'login' : 'quota');
+        setQuotaSheetMode('quota');
         setShowQuotaLimitSheet(true);
       }
       return false;
@@ -1657,10 +1649,6 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       if (dream && user) router.push(buildAnalysisPaywallHref(dream, user.id));
     }
   }, [dream, quotaSheetMode, tier, user]);
-
-  const handleQuotaLimitSecondary = useCallback(() => {
-    setShowQuotaLimitSheet(false);
-  }, []);
 
   const handleFirstValueBackup = useCallback(() => {
     router.push('/settings?section=account&auth=signup');
@@ -1886,7 +1874,6 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     android: 'height',
     default: undefined,
   });
-  const keyboardVerticalOffset = Platform.select({ ios: 0, android: 0, web: 0 }) ?? 0;
   const shouldHideHeroMedia = isKeyboardVisible && (isEditing);
   const coverImageFailed = Boolean((failedCoverUri && failedCoverUri === displayImageUrl) || (!displayImageUrl && media.error));
   const hasIllustratedCover = (artworkAtArrival === true || plateRevealed) && Boolean(dream?.imageUrl?.trim())
@@ -2082,7 +2069,6 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   useEffect(() => () => {
     if (scrollRestRef.current) clearTimeout(scrollRestRef.current);
   }, []);
-  const coverFlightArrived = revealPlate;
   const coverFlightGone = useCallback(() => setCoverFlight(null), []);
   // While the seal holds the illustration, while it flies and as the plate settles in.
   const holdsReading = sealHoldsArtwork || Boolean(coverFlight) || plateSettling;
@@ -2122,7 +2108,6 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
         <KeyboardAvoidingView
           className="flex-1"
           behavior={keyboardBehavior}
-          keyboardVerticalOffset={keyboardVerticalOffset}
         >
           <View className="flex-1 items-center justify-center p-5">
             <Text className="text-[18px] text-ivory">
@@ -3105,7 +3090,6 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       <KeyboardAvoidingView
         className="flex-1"
         behavior={keyboardBehavior}
-        keyboardVerticalOffset={keyboardVerticalOffset}
       >
         {/* Kept as real views: blocks come and go inside them while the page is read (the
             dock, the plate taking the running head's place), and the native mounting
@@ -3131,7 +3115,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
             readingScrollOffset.set(nativeEvent.contentOffset.y);
             updateReadingChrome(nativeEvent.contentOffset.y);
             // The web has no end of drag or momentum: a pause in the scrolling stands for it.
-            if (Platform.OS === 'web' && sealHoldsArtwork) {
+            if (sealHoldsArtwork) {
               if (scrollRestRef.current) clearTimeout(scrollRestRef.current);
               scrollRestRef.current = setTimeout(releaseArtwork, SCROLL_REST_MS);
             }
@@ -3347,7 +3331,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
         <JournalReturnTab top={insets.top + 6} onPress={handleBackPress} />
         {coverFlight && paintedArtwork ? (
           <CoverFlight source={paintedArtwork} from={coverFlight.from} to={coverFlight.to} height={coverHeight} travel={coverTravel}
-            landed={coverFlight.landed} onArrived={coverFlightArrived} onGone={coverFlightGone} />
+            landed={coverFlight.landed} onArrived={revealPlate} onGone={coverFlightGone} />
         ) : null}
         {!isEditing && !isInteractingWithNote && !isKeyboardVisible && (!hasIllustratedCover || readingActionVisible) && !(sealShowsReading && !isSavedArrival)
           && !previewHidesDock ? (
@@ -3504,7 +3488,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
           visible={showQuotaLimitSheet}
           onClose={handleQuotaLimitDismiss}
           onPrimary={handleQuotaLimitPrimary}
-          onSecondary={handleQuotaLimitSecondary}
+          onSecondary={handleQuotaLimitDismiss}
           tier={tier}
           mode={quotaSheetMode}
           usageLimit={usage?.analysis.limit}

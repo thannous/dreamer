@@ -23,7 +23,6 @@ export interface RecordingTextInputProps {
   selection?: TextInputProps['selection'];
   onSelectionChange?: TextInputProps['onSelectionChange'];
   disabled: boolean;
-  lengthWarning: string;
   /** The text is a whole dream: it stops at the dream's maximum length (the screen's draft count shows it). */
   limitDreamLength?: boolean;
   instructionText: string;
@@ -58,7 +57,6 @@ export const RecordingTextInput = forwardRef<TextInputInstance, RecordingTextInp
       selection,
       onSelectionChange,
       disabled,
-      lengthWarning,
       limitDreamLength = false,
       instructionText,
       switchToVoiceLabel,
@@ -401,13 +399,6 @@ export const RecordingTextInput = forwardRef<TextInputInstance, RecordingTextInp
         >
           {isVoiceFirst && voiceSupported ? expressiveVoiceControl : textEditor}
           {isVoiceFirst && voiceSupported ? voiceTranscript : null}
-
-          {lengthWarning ? (
-            <Text style={[styles.lengthWarning, { color: noctalia.accent.text }]}>
-              {lengthWarning}
-            </Text>
-          ) : null}
-
         </View>
       </View>
     );
@@ -557,11 +548,6 @@ const styles = StyleSheet.create({
   },
   placeholderIconCompact: {
     top: 15,
-  },
-  lengthWarning: {
-    fontFamily: Fonts.outfit.medium,
-    fontSize: 12,
-    textAlign: 'right',
   },
   voiceHero: {
     alignItems: 'center',

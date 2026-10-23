@@ -736,9 +736,6 @@ export const applyPendingMutations = (
   return sortDreams(next);
 };
 
-export const getDreamSyncError = (dream: DreamAnalysis): string | undefined =>
-  dream.lastSyncError?.trim() || undefined;
-
 export const clearDreamConflict = (dream: DreamAnalysis): DreamAnalysis =>
   setDreamSyncState(dream, 'clean', {
     lastSyncedAt: dream.lastSyncedAt,

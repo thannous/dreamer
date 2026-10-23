@@ -46,10 +46,7 @@ const DEFAULT_LANGUAGE_PREFERENCE: LanguagePreference = 'auto';
 const DEFAULT_JOURNAL_LAYOUT_PREFERENCE: JournalLayoutPreference = 'cards';
 const JOURNAL_LAYOUT_PREFERENCE_KEY = 'gemini_dream_journal_layout_preference';
 const RECORDING_INPUT_MODE_PREFERENCE_KEY = 'gemini_dream_journal_recording_input_mode_preference';
-const RECORDING_VOICE_STATUS_HIDDEN_KEY = 'gemini_dream_journal_recording_voice_status_hidden';
-const RECORDING_ONBOARDING_COMPLETED_KEY = 'gemini_dream_journal_recording_onboarding_completed';
 const RECORDING_VOICE_HINT_COMPLETED_KEY = 'gemini_dream_journal_recording_voice_hint_completed_v1';
-const REMEMBERED_DREAM_PROMPT_DISMISSED_KEY = 'gemini_dream_journal_remembered_dream_prompt_dismissed';
 const RITUAL_PREFERENCE_KEY = 'gemini_dream_journal_ritual_preference';
 const RITUAL_PROGRESS_KEY = 'gemini_dream_journal_ritual_progress';
 const FIRST_LAUNCH_COMPLETED_KEY = 'gemini_dream_journal_first_launch_completed';
@@ -358,29 +355,6 @@ export async function saveRecordingInputModePreference(
   }
 }
 
-export async function getRecordingVoiceStatusHidden(): Promise<boolean> {
-  console.log('[MOCK STORAGE] getRecordingVoiceStatusHidden called');
-  try {
-    const savedPreference = mockStorage[RECORDING_VOICE_STATUS_HIDDEN_KEY];
-    if (savedPreference) {
-      return JSON.parse(savedPreference) === true;
-    }
-  } catch (error) {
-    console.error('[MOCK STORAGE] Failed to retrieve recording voice status preference:', error);
-  }
-  return false;
-}
-
-export async function saveRecordingVoiceStatusHidden(hidden: boolean): Promise<void> {
-  console.log('[MOCK STORAGE] saveRecordingVoiceStatusHidden called:', hidden);
-  try {
-    mockStorage[RECORDING_VOICE_STATUS_HIDDEN_KEY] = JSON.stringify(hidden);
-  } catch (error) {
-    console.error('[MOCK STORAGE] Failed to save recording voice status preference:', error);
-    throw new Error('Failed to save recording voice status preference');
-  }
-}
-
 const REMINDER_PROMPT_DISMISSED_KEY = 'gemini_dream_journal_reminder_prompt_dismissed';
 
 export async function getReminderPromptDismissed(): Promise<boolean> {
@@ -431,29 +405,6 @@ export async function saveStaleAnalysisBannerDismissed(dismissed: boolean): Prom
   }
 }
 
-export async function getRecordingOnboardingCompleted(): Promise<boolean> {
-  console.log('[MOCK STORAGE] getRecordingOnboardingCompleted called');
-  try {
-    const savedFlag = mockStorage[RECORDING_ONBOARDING_COMPLETED_KEY];
-    if (savedFlag) {
-      return JSON.parse(savedFlag) === true;
-    }
-  } catch (error) {
-    console.error('[MOCK STORAGE] Failed to retrieve recording onboarding flag:', error);
-  }
-  return false;
-}
-
-export async function saveRecordingOnboardingCompleted(completed: boolean): Promise<void> {
-  console.log('[MOCK STORAGE] saveRecordingOnboardingCompleted called:', completed);
-  try {
-    mockStorage[RECORDING_ONBOARDING_COMPLETED_KEY] = JSON.stringify(completed);
-  } catch (error) {
-    console.error('[MOCK STORAGE] Failed to save recording onboarding flag:', error);
-    throw new Error('Failed to save recording onboarding flag');
-  }
-}
-
 export async function getRecordingVoiceHintCompleted(actorScope?: string | null): Promise<boolean> {
   console.log('[MOCK STORAGE] getRecordingVoiceHintCompleted called');
   try {
@@ -478,29 +429,6 @@ export async function saveRecordingVoiceHintCompleted(
   } catch (error) {
     console.error('[MOCK STORAGE] Failed to save recording voice hint flag:', error);
     throw new Error('Failed to save recording voice hint flag');
-  }
-}
-
-export async function getRememberedDreamPromptDismissed(): Promise<boolean> {
-  console.log('[MOCK STORAGE] getRememberedDreamPromptDismissed called');
-  try {
-    const savedFlag = mockStorage[REMEMBERED_DREAM_PROMPT_DISMISSED_KEY];
-    if (savedFlag) {
-      return JSON.parse(savedFlag) === true;
-    }
-  } catch (error) {
-    console.error('[MOCK STORAGE] Failed to retrieve remembered dream prompt flag:', error);
-  }
-  return false;
-}
-
-export async function saveRememberedDreamPromptDismissed(dismissed: boolean): Promise<void> {
-  console.log('[MOCK STORAGE] saveRememberedDreamPromptDismissed called:', dismissed);
-  try {
-    mockStorage[REMEMBERED_DREAM_PROMPT_DISMISSED_KEY] = JSON.stringify(dismissed);
-  } catch (error) {
-    console.error('[MOCK STORAGE] Failed to save remembered dream prompt flag:', error);
-    throw new Error('Failed to save remembered dream prompt flag');
   }
 }
 

@@ -1,25 +1,4 @@
-/**
- * Below are the colors that are used in the app. The colors are defined in the light and dark mode.
- * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reaunistctnativeunistyles.vercel.app), etc.
- */
-
 import { Platform } from 'react-native';
-
-import { createNoctaliaTheme } from './noctaliaPalette';
-
-function legacyColors(mode: 'light' | 'dark') {
-  const theme = createNoctaliaTheme(mode, mode);
-  return {
-    text: theme.textPrimary,
-    background: theme.backgroundDark,
-    tint: theme.accentText,
-    icon: theme.textSecondary,
-    tabIconDefault: theme.navbarTextInactive,
-    tabIconSelected: theme.navbarTextActive,
-  };
-}
-
-export const Colors = { light: legacyColors('light'), dark: legacyColors('dark') };
 
 export const Fonts = {
   // Outfit - for display/body text
@@ -78,13 +57,3 @@ export const GlassCardTokens = {
   borderRadius: 24,
   getBackground: getGlassCardBackground,
 } as const;
-
-export const SurrealTheme = {
-  bgStart: '#1a0f2b',
-  bgEnd: '#3b2a50',
-  textLight: '#e0d9f0',
-  textMuted: '#a097b8',
-  accent: '#6b5a8e',
-  shape: '#4f3d6b',
-  darkAccent: '#2e1d47',
-};

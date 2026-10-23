@@ -256,10 +256,6 @@ const rememberedDreamPromptKeys = [
 ] as const;
 
 const settingsOnboardingKeys = [
-  'settings.onboarding.title',
-  'settings.onboarding.description',
-  'settings.onboarding.restart',
-  'settings.onboarding.restart_hint',
   'analytics.privacy.title',
   'analytics.privacy.description',
   'analytics.privacy.enabled',

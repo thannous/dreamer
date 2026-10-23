@@ -1,5 +1,5 @@
 import { markPerformance, performanceTraceId } from '../lib/performanceTrace';
-import { retainedImageJobError } from '@/lib/dreamSnapshotMerge';
+import { mergeServerDreamWithLocalState } from '@/lib/journalQueueTransitions';
 import { type DreamTarget, matchesDreamTarget, resolveDreamTarget, getDreamIdentityKey } from '../lib/dreamIdentity';
 /**
  * useDreamJournal - Main hook for dream journal operations
@@ -109,32 +109,6 @@ const isActiveImageJobStatus = (
 
 const waitForPollDelay = (delayMs: number) =>
   new Promise<void>((resolve) => setTimeout(resolve, delayMs));
-
-const mergeRemoteDreamWithClientState = (
-  remoteDream: DreamAnalysis,
-  localDream: DreamAnalysis
-): DreamAnalysis =>
-  setDreamSyncState(
-    {
-      ...remoteDream,
-      id: localDream.id,
-      captureOriginalTranscript: localDream.captureOriginalTranscript,
-      memory: remoteDream.memory ?? localDream.memory,
-      imageUpdatedAt: localDream.imageUpdatedAt ?? remoteDream.imageUpdatedAt,
-      imageSource: localDream.imageSource ?? remoteDream.imageSource,
-      imageJobId: localDream.imageJobId,
-      imageJobStatus: localDream.imageJobStatus,
-      imageJobRequestId: localDream.imageJobRequestId,
-      imageJobErrorCode: retainedImageJobError(remoteDream, localDream),
-      imageJobErrorMessage: localDream.imageJobErrorMessage,
-    },
-    'clean',
-    {
-      lastSyncedAt: Date.now(),
-      lastSyncError: undefined,
-      conflictRemoteDream: undefined,
-    }
-  );
 
 export const useDreamJournal = () => {
   const { user } = useAuth();
@@ -790,7 +764,7 @@ export const useDreamJournal = () => {
         for (let attempt = 0; attempt < 2; attempt += 1) {
           try {
             const saved = await updateDreamInSupabase({ ...candidate, remoteId });
-            const merged = mergeRemoteDreamWithClientState(saved, candidate);
+            const merged = mergeServerDreamWithLocalState(saved, candidate);
             await persistRemoteDreams((prev) => applyCandidate(prev, merged));
             return;
           } catch (error) {
@@ -801,7 +775,7 @@ export const useDreamJournal = () => {
               !hasDreamUpdateIntentConflict(baseDream, error.remoteDream, intent);
 
             if (canSafelyRebase && isConflictError(error) && error.remoteDream) {
-              const latestRemote = mergeRemoteDreamWithClientState(
+              const latestRemote = mergeServerDreamWithLocalState(
                 error.remoteDream,
                 resolveCurrentDream(candidate)
               );
@@ -1119,7 +1093,7 @@ export const useDreamJournal = () => {
             // succeeded. Refresh that server-owned revision instead of sending a
             // redundant stale update that would create a revision conflict.
             const remoteDream = await fetchDreamFromSupabase(currentDream.remoteId, user?.id);
-            const refreshedDream = mergeRemoteDreamWithClientState(remoteDream, nextDream);
+            const refreshedDream = mergeServerDreamWithLocalState(remoteDream, nextDream);
             await persistRemoteDreams((prev) => upsertDream(prev, refreshedDream));
             await finalizeTerminalImageJob(true);
             return;
@@ -1370,7 +1344,7 @@ export const useDreamJournal = () => {
           throw new Error('The server dream identity could not be confirmed');
         }
         const resolved = resolution === 'use_server'
-          ? mergeRemoteDreamWithClientState(remoteConflictDream, dream)
+          ? mergeServerDreamWithLocalState(remoteConflictDream, dream)
           : setDreamSyncState({
               ...dream,
               migrationRecovery: {
@@ -1386,7 +1360,7 @@ export const useDreamJournal = () => {
       }
 
       if (resolution === 'use_server') {
-        const resolved = mergeRemoteDreamWithClientState(remoteConflictDream, dream);
+        const resolved = mergeServerDreamWithLocalState(remoteConflictDream, dream);
         await clearQueuedMutationsForDream(target);
         await persistRemoteDreams((prev) => upsertDream(prev, resolved));
         return;
@@ -1626,7 +1600,7 @@ export const useDreamJournal = () => {
           emitProgress(AnalysisStep.FINALIZING);
           const remoteDream = await fetchDreamFromSupabase(syncedDream.remoteId!, user?.id);
           assertAnalysisScope();
-          const mergedDream = mergeRemoteDreamWithClientState(remoteDream, latestDream);
+          const mergedDream = mergeServerDreamWithLocalState(remoteDream, latestDream);
           const stampedDream = stampDreamAnalysisTranscript(mergedDream, mergedDream.transcript);
           await updateDream(stampedDream);
           await syncPendingMutations({ target: stampedDream });
