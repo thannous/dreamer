@@ -122,7 +122,7 @@ export const PRACTICAL_DREAM_GUIDES: readonly PracticalDreamGuide[] = [
     de: {
       title: 'So erinnerst du dich an Träume',
       metaDescription: 'Eine ruhige Aufwachroutine, um Traumfragmente festzuhalten, bevor sie verblassen.',
-      intro: 'Traumerinnerungen können in wenigen Augenblicken verschwinden. Die Erinnerung verbessert sich, wenn du die ersten Minuten nach dem Aufwachen schützt und jedes Fragment ohne Druck notieren.',
+      intro: 'Traumerinnerungen können in wenigen Augenblicken verschwinden. Die Erinnerung verbessert sich, wenn du die ersten Minuten nach dem Aufwachen schützt und jedes Fragment ohne Druck notierst.',
       essentialPoints: [
         'Bleib kurz still liegen, halte die Augen geschlossen und such das letzte Bild, Gefühl oder Körperempfinden.',
         'Geh den Traum rückwärts durch und halte Fragmente in den ersten drei Minuten fest.',

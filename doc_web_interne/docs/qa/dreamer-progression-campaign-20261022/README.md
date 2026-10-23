@@ -54,7 +54,7 @@ jamais comme hébergés ou natifs :
 | A1 | Moyenne, latente | Q03, N03 | Une note acquittée par un serveur pré-migration ne peut plus jamais être sauvegardée : l’ancien reçu est rejoué après la migration. Confirme le fil Codex P2 ouvert sur la PR. |
 | A2 | Faible (robustesse) | Q01 | Une mutation de notes invalide fait échouer **tout** le lot `sync_dream_mutations` (erreur 23514), y compris les mutations valides du même lot, au lieu d’un résultat `failed` par mutation. |
 | A3 | Faible | Q01 | Un collage de 4 001 caractères dans l’éditeur de note est tronqué en silence à 4 000 (`maxLength`) : compteur `4000 / 4000`, pas de refus explicite. Contredit « ni le client ni la base ne tronquent ». |
-| O1 | Observation (préexistante) | U01 | Allemand : le nouveau texte des guides vouvoie (« Sie haben … markiert »), comme les guides existants, alors que notes et collection tutoient. |
+| O1 | Observation (préexistante) | U01 | Allemand : le nouveau texte des guides vouvoie (« Sie haben … markiert »), comme les guides existants, alors que notes et collection tutoient. Partiellement corrigée le 23/10 ; les guides de symboles restent à décider. |
 
 ### Prochaines actions
 
@@ -559,12 +559,16 @@ Les textes de progression des guides (`lib/guideReadingCopy.ts`) vouvoient, comm
 guides existants (`lib/dreamGuideCopy.ts`). Notes et collection tutoient. Ce n’est
 pas une régression du candidat ; décision éditoriale à prendre (Thanh).
 
-**Corrigé le 23/10/2026** sur demande de Thanh : l’allemand des guides de l’app passe au
-« du » prévu par le [contrat de marque](../../../../specs/noctalia-brand-contract.md)
+**Partiellement corrigé le 23/10/2026, O1 reste ouverte.** Sur demande de Thanh,
+l’allemand de l’interface des guides, de leur progression et des quatre guides pratiques
+passe au « du » prévu par le [contrat de marque](../../../../specs/noctalia-brand-contract.md)
 (`lib/guideReadingCopy.ts`, `lib/dreamGuideCopy.ts`, `data/practicalDreamGuides.ts`).
-Les guides de symboles (`docs-src/static/data/curation-pages.json`) restent en « Sie » :
-ce fichier est partagé avec le site, dont la [charte éditoriale](../../charte-editoriale.md)
-impose « Sie » en allemand. Leur lecture dans l’app garde donc ce registre.
+Les quatre guides de symboles affichés dans l’app (`services/dreamGuideService.ts`)
+lisent `docs-src/static/data/curation-pages.json`, partagé avec le site, dont la
+[charte éditoriale](../../charte-editoriale.md) impose « Sie » en allemand : un lecteur
+allemand passe donc encore du « du » au « Sie » dans ces quatre guides.
+Prochaine action (Thanh) : passer le site allemand au « du » (charte et contenu public),
+ou fournir à l’app une version « du » de ces guides.
 
 ## Limites
 
