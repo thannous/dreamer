@@ -51,9 +51,9 @@ const DREAM_GUIDE_COPY: Record<DreamGuideLanguage, DreamGuideUiCopy> = {
   },
   de: {
     screenTitle: 'Traumratgeber',
-    screenSubtitle: 'Verstehen Sie Ihre Träume, verbessern Sie die Erinnerung und entdecken Sie Noctalias wichtigste Themen und Symbole.',
+    screenSubtitle: 'Verstehe deine Träume, verbessere deine Erinnerung und entdecke Noctalias wichtigste Themen und Symbole.',
     dictionaryTitle: 'Traumsymbole-Lexikon',
-    dictionaryBody: (count) => `Suchen Sie ein bestimmtes Bild? Entdecken Sie ${count} Symbole mit Bedeutungen, Varianten und Reflexionsfragen.`,
+    dictionaryBody: (count) => `Suchst du ein bestimmtes Bild? Entdecke ${count} Symbole mit Bedeutungen, Varianten und Reflexionsfragen.`,
     dictionaryCta: 'Lexikon öffnen',
     guideLabel: 'Traumratgeber',
     practicalLabel: 'Praktische Ratgeber',

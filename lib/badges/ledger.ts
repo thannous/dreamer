@@ -88,6 +88,16 @@ export const weekKey = (timestamp: number): string => getLocalDateKey(startOfWee
 export const monthKey = (timestamp: number): string => getLocalDateKey(timestamp).slice(0, 7);
 
 const splitAliases = (key: string) => key.split('|').filter(Boolean);
+const stableAliases = (aliases: readonly string[]) => aliases.filter((alias) => alias.startsWith('c:') || alias.startsWith('r:'));
+const sharesDream = (known: readonly string[], incoming: readonly string[]) => {
+  const knownStable = stableAliases(known);
+  const incomingStable = stableAliases(incoming);
+  // Local timestamps can collide across devices. When both have stable identities,
+  // only an actual shared UUID/server row establishes that this is the same dream.
+  const left = knownStable.length && incomingStable.length ? knownStable : known;
+  const right = knownStable.length && incomingStable.length ? incomingStable : incoming;
+  return left.some((alias) => right.includes(alias));
+};
 
 /**
  * Distinct dreams among alias groups. Sync gives a dream its server id later, so two groups
@@ -112,7 +122,8 @@ export function countDistinctDreams(groups: Iterable<readonly string[]>): number
     const node = parent.length;
     parent.push(node);
     distinct += 1;
-    for (const alias of group) {
+    const stable = stableAliases(group);
+    for (const alias of stable.length ? stable : group) {
       const known = owner.get(alias);
       if (known === undefined) {
         owner.set(alias, node);
@@ -145,7 +156,7 @@ function addKey(ledger: BadgeLedger, id: BadgeFamilyId, key: string): BadgeLedge
 function addDreamAliases(ledger: BadgeLedger, id: BadgeFamilyId, aliases: readonly string[]): BadgeLedger {
   if (aliases.length === 0) return ledger;
   const keys = ledger.keys[id] ?? [];
-  const index = keys.findIndex((key) => splitAliases(key).some((alias) => aliases.includes(alias)));
+  const index = keys.findIndex((key) => sharesDream(splitAliases(key), aliases));
   if (index < 0) return addKey(ledger, id, aliases.join('|'));
   // Already counted: it may have received its server id since, which joins its names.
   const known = splitAliases(keys[index]);
@@ -219,7 +230,7 @@ const isRecoveredMemory = (dream: DreamAnalysis) =>
 const hasChosenImage = (dream: DreamAnalysis) =>
   dream.imageSource === 'user' && Boolean(dream.imageUrl) && getDreamSyncState(dream) === 'clean';
 
-type JournalReading = {
+export type JournalReading = {
   saved: string[][];
   days: Set<string>;
   weeks: Set<string>;
@@ -230,7 +241,7 @@ type JournalReading = {
 };
 
 /** What the journal itself tells, read again on every pass. */
-function readJournal(dreams: readonly DreamAnalysis[]): JournalReading {
+export function readBadgeJournal(dreams: readonly DreamAnalysis[]): JournalReading {
   const reading: JournalReading = {
     saved: [],
     days: new Set(),
@@ -258,7 +269,8 @@ function readJournal(dreams: readonly DreamAnalysis[]): JournalReading {
 
 const storedGroups = (ledger: BadgeLedger, id: BadgeFamilyId) => (ledger.keys[id] ?? []).map(splitAliases);
 
-function progressFrom(ledger: BadgeLedger, reading: JournalReading): Record<BadgeFamilyId, number> {
+/** Every family's value from the ledger and a journal already read. */
+export function progressFromJournal(ledger: BadgeLedger, reading: JournalReading): Record<BadgeFamilyId, number> {
   const fromJournal: Partial<Record<BadgeFamilyId, number>> = {
     'night-journal': countDistinctDreams(reading.saved),
     'gentle-rhythm': reading.days.size,
@@ -287,7 +299,7 @@ export function computeBadgeProgress(
   ledger: BadgeLedger,
   dreams: readonly DreamAnalysis[],
 ): Record<BadgeFamilyId, number> {
-  return progressFrom(ledger, readJournal(dreams));
+  return progressFromJournal(ledger, readBadgeJournal(dreams));
 }
 
 /**
@@ -299,30 +311,74 @@ export function settleBadgeLedger(
   dreams: readonly DreamAnalysis[],
   now: number,
 ): BadgeLedger {
-  const reading = readJournal(dreams);
+  const reading = readBadgeJournal(dreams);
   let next = ledger;
+  // Keep identities as well as maxima: disjoint devices and later-deleted dreams must
+  // contribute once when their histories meet. A maximum alone cannot be added safely.
+  for (const aliases of reading.saved) next = addDreamAliases(next, 'night-journal', aliases);
+  for (const key of reading.days) next = addKey(next, 'gentle-rhythm', key);
+  for (const key of reading.weeks) next = addKey(next, 'night-thread', key);
+  for (const key of reading.months) next = addKey(next, 'moon-cycles', key);
+  for (const aliases of reading.remembered) next = addDreamAliases(next, 'memory-keeper', aliases);
   for (const aliases of reading.favorites) next = addDreamAliases(next, 'treasure-keeper', aliases);
   for (const aliases of reading.pictured) next = addDreamAliases(next, 'dream-painter', aliases);
-  const progress = progressFrom(next, reading);
+  const progress = progressFromJournal(next, reading);
   for (const family of BADGE_FAMILIES) {
-    const value = progress[family.id];
-    if (family.fromJournal) next = raiseBest(next, family.id, value);
-    const earned = next.earned[family.id] ?? [];
-    const reached = tierForProgress(family.thresholds, value);
-    if (reached > earned.length) {
-      const stamps = [...earned];
-      while (stamps.length < reached) stamps.push(now);
-      next = { ...next, earned: { ...next.earned, [family.id]: stamps } };
-    }
+    if (family.fromJournal) next = raiseBest(next, family.id, progress[family.id]);
+    next = stamp(next, family, progress[family.id], now);
   }
   return next;
 }
 
-/** Marks a family's earned tiers as unveiled. */
-export function revealBadgeFamily(ledger: BadgeLedger, id: BadgeFamilyId): BadgeLedger {
-  const earned = Math.min(3, (ledger.earned[id] ?? []).length) as BadgeTierLevel;
-  if ((ledger.revealed[id] ?? 0) >= earned) return ledger;
-  return { ...ledger, revealed: { ...ledger.revealed, [id]: earned } };
+function stamp(ledger: BadgeLedger, family: BadgeFamily, value: number, now: number): BadgeLedger {
+  const earned = ledger.earned[family.id] ?? [];
+  const reached = tierForProgress(family.thresholds, value);
+  if (reached <= earned.length) return ledger;
+  const stamps = [...earned];
+  while (stamps.length < reached) stamps.push(now);
+  return { ...ledger, earned: { ...ledger.earned, [family.id]: stamps } };
+}
+
+/**
+ * Stamps the tiers that actions alone earn (readings, searches, edits), the moment they are
+ * earned: those families never wait for the journal to change.
+ */
+export function stampActionTiers(ledger: BadgeLedger, now: number): BadgeLedger {
+  let next = ledger;
+  for (const family of BADGE_FAMILIES) {
+    if (family.fromJournal) continue;
+    const value = family.unit === 'max_days'
+      ? ledger.best[family.id] ?? 0
+      : family.unit === 'dream'
+        ? countDistinctDreams(storedGroups(ledger, family.id))
+        : (ledger.keys[family.id] ?? []).length;
+    next = stamp(next, family, value, now);
+  }
+  return next;
+}
+
+/** Marks a family's tiers as unveiled up to the one the collection showed, or every one earned. */
+export function revealBadgeFamily(ledger: BadgeLedger, id: BadgeFamilyId, shown: number = 0): BadgeLedger {
+  const level = Math.min(3, Math.max(0, shown || (ledger.earned[id] ?? []).length)) as BadgeTierLevel;
+  if ((ledger.revealed[id] ?? 0) >= level) return ledger;
+  return { ...ledger, revealed: { ...ledger.revealed, [id]: level } };
+}
+
+/**
+ * What a guest ledger may hand to an account: its actions only. What the guest journal told
+ * is read again from the account's own journal, which holds the dreams that really moved.
+ */
+export function actionsOnly(ledger: BadgeLedger): BadgeLedger {
+  const keep = <T,>(record: Partial<Record<BadgeFamilyId, T>>) => Object.fromEntries(
+    Object.entries(record).filter(([id]) => !familyById.get(id as BadgeFamilyId)?.fromJournal),
+  ) as Partial<Record<BadgeFamilyId, T>>;
+  return {
+    version: ledger.version,
+    keys: keep(ledger.keys),
+    best: keep(ledger.best),
+    earned: keep(ledger.earned),
+    revealed: keep(ledger.revealed),
+  };
 }
 
 // ------------------------------------------------------------------------------ the view --

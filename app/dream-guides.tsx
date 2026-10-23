@@ -1,7 +1,12 @@
 import React, { useCallback, useMemo } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { useGuideReading } from '@/hooks/useGuideReading';
+import { GUIDE_READING_IDS, guideReadingStatus } from '@/lib/guideReading';
+import { getGuideReadingCopy } from '@/lib/guideReadingCopy';
+import { retryGuideReading } from '@/services/guideReadingStore';
 import { DreamGuideCard } from '@/components/guides/DreamGuideCard';
+import { BOOK_MEASURE } from '@/components/journal/JournalBook';
 import { DreamerArtworkWindow } from '@/components/ui/DreamerBackground';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ThemeLayout } from '@/constants/journalTheme';
@@ -33,9 +38,20 @@ function DreamGuidesScreen() {
   const generalGuides = getGeneralDreamGuides();
   const symbolGuides = getImportantDreamGuides();
   const scrollPerf = useScrollIdle();
+  const reading = useGuideReading();
+  const readingCopy = getGuideReadingCopy(language);
+  const completedCount = Object.values(reading.entries).filter(entry => entry?.completedAt).length;
+  const resumeGuide = [...generalGuides, ...symbolGuides].filter(guide => {
+    const entry = reading.entries[guide.id];
+    return entry && !entry.completedAt;
+  }).sort((a, b) => reading.entries[b.id]!.updatedAt - reading.entries[a.id]!.updatedAt)[0];
 
   const handleGuidePress = useCallback((id: string) => {
     router.push({ pathname: '/dream-guide/[id]', params: { id } });
+  }, []);
+  // Resuming opens the guide at its bookmark, not at its top.
+  const resumeReading = useCallback((id: string) => {
+    router.push({ pathname: '/dream-guide/[id]', params: { id, resume: '1' } });
   }, []);
 
   return (
@@ -60,93 +76,128 @@ function DreamGuidesScreen() {
           onMomentumScrollEnd={scrollPerf.onMomentumScrollEnd}
         >
           <DreamerArtworkWindow scene="path" style={{ marginHorizontal: -20 }} bleedTop={insets.top + 20} />
-          <View style={styles.headerRow}>
-            <Pressable
-              onPress={() => router.back()}
-              accessibilityRole="button"
-              accessibilityLabel={t('navigation.back')}
+          {/* On a wide window the guides keep a reading measure under the full-width artwork. */}
+          <View style={styles.measure}>
+            <View style={styles.headerRow}>
+              <Pressable
+                onPress={() => router.back()}
+                accessibilityRole="button"
+                accessibilityLabel={t('navigation.back')}
+                style={[
+                  styles.backButton,
+                  { backgroundColor: noctalia.surface.raised, borderColor: noctalia.surface.border },
+                ]}
+              >
+                <IconSymbol name="chevron.left" size={21} color={noctalia.text.secondary} />
+              </Pressable>
+              <Text selectable accessibilityRole="header" style={[styles.title, { color: noctalia.text.primary }]}>
+                {copy.screenTitle}
+              </Text>
+            </View>
+
+            <Text selectable style={[styles.subtitle, { color: noctalia.text.secondary }]}>
+              {copy.screenSubtitle}
+            </Text>
+
+            {reading.ready ? <View style={styles.readingProgress}>
+              <Text testID="guides.reading.summary" accessibilityLiveRegion="polite" style={[styles.subtitle, { color: noctalia.text.primary }]}>{readingCopy.progress(completedCount)}</Text>
+              {/* One step per guide, filled once it is completed; the sentence above says it. */}
+              <View accessible={false} style={styles.meter}>
+                {GUIDE_READING_IDS.map((id, index) => (
+                  <View key={id} style={[styles.meterStep, { backgroundColor: index < completedCount ? noctalia.accent.base : noctalia.surface.border }]} />
+                ))}
+              </View>
+              {resumeGuide ? <Pressable accessibilityRole="button" testID="guides.reading.resume"
+                accessibilityLabel={`${readingCopy.resume}. ${resumeGuide[language].title}`}
+                onPress={() => resumeReading(resumeGuide.id)}
+                style={({ pressed }) => [styles.resumeCard, { backgroundColor: noctalia.surface.raised, borderColor: noctalia.surface.border }, pressed && styles.pressed]}>
+                <View accessible={false} style={[styles.resumeIcon, { backgroundColor: noctalia.surface.soft }]}>
+                  <IconSymbol name="book.closed.fill" size={18} color={noctalia.accent.text} />
+                </View>
+                <View style={styles.resumeCopy}>
+                  <Text style={[styles.resumeLabel, { color: noctalia.accent.text }]}>{readingCopy.resume}</Text>
+                  <Text style={[styles.resumeTitle, { color: noctalia.text.primary }]}>{resumeGuide[language].title}</Text>
+                </View>
+                <View accessible={false}>
+                  <IconSymbol name="chevron.right" size={18} color={noctalia.text.tertiary} />
+                </View>
+              </Pressable> : null}
+            </View> : null}
+            {reading.error ? <View style={styles.readingProgress}>
+              <Text accessibilityRole="alert" style={[styles.dictionaryBody, { color: noctalia.text.secondary }]}>{readingCopy.pending}</Text>
+              <Pressable accessibilityRole="button" onPress={() => { void retryGuideReading(reading.scope); }} style={styles.readingAction}><Text style={{ color: noctalia.accent.text }}>{readingCopy.retry}</Text></Pressable>
+            </View> : null}
+            <View>
+              <Text accessibilityRole="header" style={[styles.sectionLabel, { color: noctalia.accent.text }]}>
+                {copy.practicalLabel}
+              </Text>
+              {generalGuides.map((guide, index) => (
+                <DreamGuideCard
+                  key={guide.id}
+                  guide={guide}
+                  language={language}
+                  progressLabel={reading.ready ? readingCopy.status[guideReadingStatus(reading.entries[guide.id])] : undefined}
+                  status={reading.ready ? guideReadingStatus(reading.entries[guide.id]) : undefined}
+                  metaLabel={copy.readingTime(guide.readingMinutes)}
+                  onPress={handleGuidePress}
+                  showSeparator={index < generalGuides.length - 1}
+                />
+              ))}
+            </View>
+
+            <View
               style={[
-                styles.backButton,
+                styles.dictionaryCard,
                 { backgroundColor: noctalia.surface.raised, borderColor: noctalia.surface.border },
               ]}
             >
-              <IconSymbol name="chevron.left" size={21} color={noctalia.text.secondary} />
-            </Pressable>
-            <Text selectable accessibilityRole="header" style={[styles.title, { color: noctalia.text.primary }]}>
-              {copy.screenTitle}
-            </Text>
-          </View>
-
-          <Text selectable style={[styles.subtitle, { color: noctalia.text.secondary }]}>
-            {copy.screenSubtitle}
-          </Text>
-
-          <View>
-            <Text accessibilityRole="header" style={[styles.sectionLabel, { color: noctalia.accent.text }]}>
-              {copy.practicalLabel}
-            </Text>
-            {generalGuides.map((guide, index) => (
-              <DreamGuideCard
-                key={guide.id}
-                guide={guide}
-                language={language}
-                metaLabel={copy.readingTime(guide.readingMinutes)}
-                onPress={handleGuidePress}
-                showSeparator={index < generalGuides.length - 1}
-              />
-            ))}
-          </View>
-
-          <View
-            style={[
-              styles.dictionaryCard,
-              { backgroundColor: noctalia.surface.raised, borderColor: noctalia.surface.border },
-            ]}
-          >
-            <View style={styles.dictionaryHeader}>
-              <View accessible={false} style={styles.dictionaryIcon}>
-                <IconSymbol name="book.closed.fill" size={26} color={noctalia.accent.text} />
+              <View style={styles.dictionaryHeader}>
+                <View accessible={false} style={styles.dictionaryIcon}>
+                  <IconSymbol name="book.closed.fill" size={26} color={noctalia.accent.text} />
+                </View>
+                <Text style={[styles.dictionaryTitle, { color: noctalia.text.primary }]}>
+                  {copy.dictionaryTitle}
+                </Text>
               </View>
-              <Text style={[styles.dictionaryTitle, { color: noctalia.text.primary }]}>
-                {copy.dictionaryTitle}
+              <Text style={[styles.dictionaryBody, { color: noctalia.text.secondary }]}>
+                {copy.dictionaryBody(getAllSymbols().length)}
               </Text>
+              <Pressable
+                onPress={() => router.push('/symbol-dictionary')}
+                accessibilityRole="button"
+                testID="btn.dreamGuides.dictionary"
+                style={({ pressed }) => [
+                  styles.dictionaryButton,
+                  { backgroundColor: noctalia.action.primary, borderColor: noctalia.action.primaryBorder },
+                  pressed && styles.pressed,
+                ]}
+              >
+                <Text style={[styles.dictionaryButtonText, { color: noctalia.action.primaryText }]}>
+                  {copy.dictionaryCta}
+                </Text>
+                <View accessible={false}>
+                  <IconSymbol name="arrow.right" size={17} color={noctalia.action.primaryText} />
+                </View>
+              </Pressable>
             </View>
-            <Text style={[styles.dictionaryBody, { color: noctalia.text.secondary }]}>
-              {copy.dictionaryBody(getAllSymbols().length)}
-            </Text>
-            <Pressable
-              onPress={() => router.push('/symbol-dictionary')}
-              accessibilityRole="button"
-              testID="btn.dreamGuides.dictionary"
-              style={({ pressed }) => [
-                styles.dictionaryButton,
-                { backgroundColor: noctalia.action.primary, borderColor: noctalia.action.primaryBorder },
-                pressed && styles.pressed,
-              ]}
-            >
-              <Text style={[styles.dictionaryButtonText, { color: noctalia.action.primaryText }]}>
-                {copy.dictionaryCta}
-              </Text>
-              <View accessible={false}>
-                <IconSymbol name="arrow.right" size={17} color={noctalia.action.primaryText} />
-              </View>
-            </Pressable>
-          </View>
 
-          <View>
-            <Text accessibilityRole="header" style={[styles.sectionLabel, { color: noctalia.accent.text }]}>
-              {copy.symbolGuidesLabel}
-            </Text>
-            {symbolGuides.map((guide, index) => (
-              <DreamGuideCard
-                key={guide.id}
-                guide={guide}
-                language={language}
-                metaLabel={copy.symbolCount(guide.symbols.length)}
-                onPress={handleGuidePress}
-                showSeparator={index < symbolGuides.length - 1}
-              />
-            ))}
+            <View>
+              <Text accessibilityRole="header" style={[styles.sectionLabel, { color: noctalia.accent.text }]}>
+                {copy.symbolGuidesLabel}
+              </Text>
+              {symbolGuides.map((guide, index) => (
+                <DreamGuideCard
+                  key={guide.id}
+                  guide={guide}
+                  language={language}
+                  progressLabel={reading.ready ? readingCopy.status[guideReadingStatus(reading.entries[guide.id])] : undefined}
+                  status={reading.ready ? guideReadingStatus(reading.entries[guide.id]) : undefined}
+                  metaLabel={copy.symbolCount(guide.symbols.length)}
+                  onPress={handleGuidePress}
+                  showSeparator={index < symbolGuides.length - 1}
+                />
+              ))}
+            </View>
           </View>
         </HeaderScrollView>
       </View>
@@ -155,6 +206,58 @@ function DreamGuidesScreen() {
 }
 
 const styles = StyleSheet.create({
+  readingProgress: { gap: 12 },
+  measure: {
+    width: '100%',
+    maxWidth: BOOK_MEASURE,
+    alignSelf: 'center',
+    gap: ThemeLayout.spacing.lg20,
+  },
+  meter: {
+    flexDirection: 'row',
+    gap: 4,
+  },
+  meterStep: {
+    flex: 1,
+    height: 4,
+    borderRadius: 2,
+  },
+  resumeCard: {
+    minHeight: 64,
+    borderRadius: 18,
+    borderCurve: 'continuous',
+    borderWidth: 1,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  resumeIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  resumeCopy: {
+    flex: 1,
+    minWidth: 0,
+    gap: 2,
+  },
+  resumeLabel: {
+    fontFamily: Fonts.outfit.bold,
+    fontSize: TypeScale.caption.fontSize,
+    lineHeight: 16,
+    textTransform: 'uppercase',
+    letterSpacing: 0.8,
+  },
+  resumeTitle: {
+    fontFamily: Fonts.fraunces.semiBold,
+    fontSize: TypeScale.body.fontSize,
+    lineHeight: TypeScale.body.lineHeight,
+  },
+  readingAction: { minHeight: 44, justifyContent: 'center' },
   container: {
     flex: 1,
   },

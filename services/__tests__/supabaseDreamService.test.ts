@@ -112,6 +112,75 @@ describe('supabaseDreamService', () => {
     process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY = 'anon-key';
   });
 
+  it('resumes guest notes with a stable recovery receipt through old schemas and lost responses', async () => {
+    let upgraded = false;
+    let loseResponse = false;
+    let writes = 0;
+    const receipts = new Map<string, unknown>();
+    mocks.rpc = jest.fn(async (_name: string, { mutations }: { mutations: Record<string, any>[] }) => {
+      const request = mutations[0];
+      expect(request.payload).not.toHaveProperty('migrationRecovery');
+      let result = receipts.get(request.client_request_id);
+      if (!result) {
+        writes += 1;
+        result = { mutation_id: request.mutation_id, client_request_id: request.client_request_id,
+          operation: request.operation, status: 'ack', remote_id: 42,
+          dream: buildRow({ revision_id: `r${writes}`, title: request.payload.title, ...(upgraded ? { personal_notes: request.payload.personal_notes } : {}) }) };
+        receipts.set(request.client_request_id, result);
+      }
+      if (loseResponse) { loseResponse = false; throw new Error('Response lost'); }
+      return { error: null, data: [result] };
+    });
+    const { createDreamInSupabase } = require('../supabaseDreamService');
+    const personalNotes = [{ id: '11111111-1111-4111-8111-111111111111', text: 'Guest writing', createdAt: 1, updatedAt: 1 }];
+    const original = buildDream({ personalNotes });
+    const first = await createDreamInSupabase(original, 'user-1').catch((error: Error) => error);
+    expect(first).toMatchObject({ name: 'IncompleteJournalAckError', migrationRecovery: { userId: 'user-1', revisionId: 'r1', remoteId: 42 } });
+    // The original server receipt has a different mutation_id after restart.
+    await expect(createDreamInSupabase(original, 'user-1')).rejects.toMatchObject({ name: 'IncompleteJournalAckError' });
+    let pending = { ...original, migrationRecovery: first.migrationRecovery };
+    const second = await createDreamInSupabase(pending, 'user-1').catch((error: Error) => error);
+    expect(second.migrationRecovery.revisionId).toBe('r2');
+    expect(second.migrationRecovery.receiptId).not.toBe(first.migrationRecovery.receiptId);
+    pending = { ...pending, migrationRecovery: second.migrationRecovery };
+    expect(pending).not.toHaveProperty('remoteId');
+    await expect(createDreamInSupabase(pending, 'other-account')).rejects.toThrow('another account');
+    upgraded = true;
+    loseResponse = true;
+    await expect(createDreamInSupabase(pending, 'user-1')).rejects.toThrow('Response lost');
+    const saved = await createDreamInSupabase(pending, 'user-1');
+    expect(saved).toMatchObject({ remoteId: 42, personalNotes });
+    expect(saved).not.toHaveProperty('migrationRecovery');
+    expect(writes).toBe(3);
+    expect(receipts.size).toBe(3);
+    const newerNotes = [{ ...personalNotes[0], text: 'Newer guest writing', updatedAt: 2 }];
+    const changed = await createDreamInSupabase({ ...pending, personalNotes: newerNotes }, 'user-1').catch((error: Error) => error);
+    expect(changed).toMatchObject({ name: 'IncompleteJournalAckError', migrationRecovery: { revisionId: 'r3' } });
+    const newest = await createDreamInSupabase({ ...pending, personalNotes: newerNotes, migrationRecovery: changed.migrationRecovery }, 'user-1');
+    expect(newest.personalNotes).toEqual(newerNotes);
+    expect(writes).toBe(4);
+    const renamed = { ...pending, personalNotes: newerNotes, title: 'Edited after lost response',
+      migrationRecovery: { ...changed.migrationRecovery, localChanges: true } };
+    const titleRecovery = await createDreamInSupabase(renamed, 'user-1').catch((error: Error) => error);
+    expect(titleRecovery).toMatchObject({ name: 'IncompleteJournalAckError', migrationRecovery: { revisionId: 'r4' } });
+    const renamedSaved = await createDreamInSupabase({ ...renamed, migrationRecovery: titleRecovery.migrationRecovery }, 'user-1');
+    expect(renamedSaved.title).toBe(renamed.title);
+    expect(writes).toBe(5);
+  });
+
+  it('passes an incomplete online acknowledgement identity to the durable fallback', async () => {
+    mocks.rpc = jest.fn(async (_name: string, { mutations }: { mutations: { mutation_id: string; client_request_id: string }[] }) => ({
+      error: null, data: [{ mutation_id: mutations[0].mutation_id, client_request_id: mutations[0].client_request_id,
+        operation: 'update', status: 'ack', remote_id: 42, dream: buildRow({ revision_id: 'acknowledged-revision' }) }],
+    }));
+    const { updateDreamInSupabase } = require('../supabaseDreamService');
+    await expect(updateDreamInSupabase(buildDream({ remoteId: 42, revisionId: 'old-revision', personalNotes: [
+      { id: '11111111-1111-4111-8111-111111111111', text: 'Keep me', createdAt: 1, updatedAt: 1 },
+    ] }))).rejects.toMatchObject({
+      name: 'IncompleteJournalAckError', identity: { remoteId: 42, revisionId: 'acknowledged-revision' },
+    });
+  });
+
   it('updateDreamInSupabase throws when remoteId is missing', async () => {
     const { updateDreamInSupabase } = require('../supabaseDreamService');
 

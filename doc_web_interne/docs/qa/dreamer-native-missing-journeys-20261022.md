@@ -65,3 +65,9 @@ E2E_DEVICE=emulator-5560 E2E_AVD_NAME=Noctalia_Journeys_QA E2E_RELEASE_RECEIPT=t
 Conserver rapport, reçu Release, configuration publique embarquée, `end.json` et trace utile. Ces artefacts et les secrets restent privés et ignorés par Git. Stockage natif, HTTP, Auth/Postgres, handlers, worker et quotas réels **locaux** ; fournisseur IA déterministe au transport. Analyse suspendue après admission durable ; chat coupé après le vrai commit. Coupure réseau limitée au backend par proxy, sans mode avion. Le fichier vocal ne qualifie pas l’entrée acoustique ; `native-real-dictation` reste exclu. Aucun déploiement, Store, achat, appareil physique ni donnée personnelle n’est couvert.
 
 Campagne arrêtée après fermeture des runners : API et pile locales terminées, manifeste privé retiré, AVD et Simulators QA arrêtés. Artefacts conservés. Les commandes ci-dessus documentent la pile de cette campagne ; sa recréation exige un nouveau manifeste et de nouveaux reçus de build selon le guide.
+
+## Intégration de master — 23 octobre 2026
+
+La PR #557 intègre `origin/master` au commit `605829bc878a3100c68b6f35998f93ec573aaa50`. Les conflits concernaient `app.config.ts` et `services/journalSyncEngine.ts` : la configuration QA conserve le repli local fermé de master et les gardes vocales locales ; la synchronisation conserve le dernier texte en attente pour une erreur ordinaire et les identifiants serveur récupérés pour un accusé incomplet de notes personnelles. Le contrôle de configuration applique la même source d’environnement aux valeurs et à leurs gardes.
+
+Les tests ciblés couvrent configuration, journal, récupération des notes et reprise d’analyse ; la révision vérifiée et la preuve finale `verify:pr` sont consignées dans la PR. Les résultats natifs ci-dessus restent les preuves historiques du 22 octobre, avec leurs sources et builds d’origine. Aucun nouveau build ni rejeu iOS/Android n’est revendiqué pour cette intégration.

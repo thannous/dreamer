@@ -10,7 +10,7 @@ const dream: DreamAnalysis = {
 };
 const row = { id: 42, created_at: '2020-01-01T00:00:00.000Z', transcript: 't', title: 'a',
   interpretation: '', shareable_quote: '', image_url: null, chat_history: [],
-  dream_type: 'Symbolic Dream', is_favorite: false, client_request_id: 'dream-a' };
+  dream_type: 'Symbolic Dream', is_favorite: false, client_request_id: 'dream-a', revision_id: 'revision-old-server' };
 const mutation = () => createDreamMutation({
   id: 'mutation-a', userScope: 'user:a', entityType: 'dream', entityKey: 'client:dream-a',
   operation: 'create', clientRequestId: 'receipt-a', clientUpdatedAt: 1,
@@ -29,6 +29,19 @@ function directClient(missingMemory = false) {
 }
 
 describe('journal mutation transport factory', () => {
+  // Real UI/backend E2E runs the current migration; it cannot emulate an old RPC discarding an unknown field.
+  it('refuses an old server acknowledgement that discarded personal notes', async () => {
+    const pending = mutation();
+    pending.payload.dream = { ...dream, personalNotes: [{ id: '11111111-1111-4111-8111-111111111111', text: 'Keep me', createdAt: 100, updatedAt: 100 }] };
+    const client = { rpc: jest.fn().mockResolvedValue({ error: null, data: [{ mutation_id: pending.id, client_request_id: pending.clientRequestId, operation: 'create', status: 'ack', dream: row }] }) };
+    const result = await createJournalMutationTransport({ getClient: () => client as unknown as SupabaseClient, ensureRemoteImage })
+      .syncDreamMutationsInSupabase([pending], 'a');
+    expect(result[0]).toMatchObject({ status: 'failed', error: 'Personal notes require the journal schema update' });
+    expect(result[0].dream).toBeUndefined();
+    expect(result[0].incompleteAck).toEqual({ remoteId: 42, revisionId: 'revision-old-server' });
+    expect(pending.payload.dream.personalNotes?.[0].text).toBe('Keep me');
+  });
+
   it('retains optional-column compatibility across calls, isolated per factory', async () => {
     const client = directClient(true);
     const transport = createJournalMutationTransport({

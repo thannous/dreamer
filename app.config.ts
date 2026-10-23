@@ -82,13 +82,23 @@ export function resolveDreamerQaBuildEnabled(
   return parseDreamerQaBuildMarker(env[DREAMER_QA_BUILD_ENV]);
 }
 
-export function createDreamerQaExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
-  const nativeQaAudio = process.env.EXPO_PUBLIC_NATIVE_QA_AUDIO === 'true';
+export function createDreamerQaExpoConfig(
+  baseExpo: ExpoConfig,
+  env: Record<string, string | undefined> = process.env
+): ExpoConfig {
+  // This separate QA package must never inherit the production fallback when
+  // its backend overrides are absent. Normal app builds keep their own config.
+  const qaApiUrl = env.EXPO_PUBLIC_API_URL?.trim() || 'https://127.0.0.1:9';
+  const qaSupabaseUrl = env.EXPO_PUBLIC_SUPABASE_URL?.trim() || 'https://127.0.0.1:9';
+  const qaAnonKey = env.EXPO_PUBLIC_SUPABASE_ANON_KEY?.trim() || undefined;
+  const nativeQaAudio = env.EXPO_PUBLIC_NATIVE_QA_AUDIO === 'true';
   if (nativeQaAudio) {
-    if (process.env.EAS_BUILD === 'true') throw new Error('[app.config] Native QA audio is local-only; EAS builds are refused.');
-    if (!process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY) throw new Error('[app.config] Native QA backend requires its local public key.');
-    for (const key of ['EXPO_PUBLIC_API_URL', 'EXPO_PUBLIC_SUPABASE_URL']) {
-      const url = new URL(process.env[key] ?? '');
+    if (env.EAS_BUILD === 'true') throw new Error('[app.config] Native QA audio is local-only; EAS builds are refused.');
+    if (!qaAnonKey) throw new Error('[app.config] Native QA backend requires its local public key.');
+    for (const [key, value] of [
+      ['EXPO_PUBLIC_API_URL', qaApiUrl], ['EXPO_PUBLIC_SUPABASE_URL', qaSupabaseUrl],
+    ]) {
+      const url = new URL(value);
       if (url.protocol !== 'http:' || !['127.0.0.1', 'localhost', '[::1]', '10.0.2.2'].includes(url.hostname)
         || url.username || url.password) throw new Error(`[app.config] Native QA audio requires a loopback ${key}.`);
     }
@@ -113,12 +123,11 @@ export function createDreamerQaExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
     extra: {
       ...baseExpo.extra,
       nativeQaAudio,
-      // The QA binary must never inherit the hosted fallback from app.json.
+      apiUrl: qaApiUrl,
+      supabaseUrl: qaSupabaseUrl,
+      supabaseAnonKey: qaAnonKey,
       ...(nativeQaAudio ? {
-        apiUrl: process.env.EXPO_PUBLIC_API_URL,
-        supabaseUrl: process.env.EXPO_PUBLIC_SUPABASE_URL,
-        supabaseAnonKey: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY,
-        supabaseFunctionJwt: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY,
+        supabaseFunctionJwt: qaAnonKey,
         revenuecatAndroidKey: '', revenuecatIosKey: '', revenuecatWebKey: '',
       } : {}),
       eas: {

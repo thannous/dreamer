@@ -32,7 +32,8 @@
         "has_person",
         "has_animal",
         "memory",
-        "analysis_details"
+        "analysis_details",
+        "personal_notes"
       ]
     },
     {
@@ -218,6 +219,27 @@
         "created_at",
         "updated_at"
       ]
+    },
+    {
+      "schema": "public",
+      "name": "badge_ledgers",
+      "requiredColumns": [
+        "user_id",
+        "ledger",
+        "revision",
+        "updated_at"
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "guide_reading_progress",
+      "requiredColumns": [
+        "user_id",
+        "guide_id",
+        "section",
+        "updated_at_ms",
+        "completed_at_ms"
+      ]
     }
   ],
   "requiredFunctions": [
@@ -370,6 +392,18 @@
       "name": "save_analysis_preview",
       "identityArguments": "p_user_id uuid, p_dream_id bigint, p_held_at timestamp with time zone, p_dream_transcript_sha256 text, p_reading jsonb, p_image_prompt text",
       "result": "jsonb"
+    },
+    {
+      "schema": "public",
+      "name": "sync_badge_ledger",
+      "identityArguments": "p_user_id uuid, p_revision bigint, p_ledger jsonb",
+      "result": "jsonb"
+    },
+    {
+      "schema": "public",
+      "name": "merge_guide_reading_progress",
+      "identityArguments": "p_user_id uuid, p_guide_id text, p_section integer, p_updated_at_ms bigint, p_completed_at_ms bigint",
+      "result": "SETOF guide_reading_progress"
     }
   ],
   "requiredTriggers": [

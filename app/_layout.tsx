@@ -31,6 +31,7 @@ import { DesktopShell } from '@/components/navigation/DesktopShell';
 import { AnalysisFlightIndicator } from '@/components/analysis/AnalysisFlightIndicator';
 import { EngagementRemindersHost } from '@/components/reminders/EngagementRemindersHost';
 import { BadgeLedgerHost } from '@/components/badges/BadgeLedgerHost';
+import { GuideReadingHost } from '@/components/guides/GuideReadingHost';
 import { HomeWidgetsHost } from '@/components/widgets/HomeWidgetsHost';
 import { NotificationDreamImportHost } from '@/components/reminders/NotificationDreamImportHost';
 import { OfflineModelPromptHost } from '@/components/speech/OfflineModelPromptHost';
@@ -963,7 +964,7 @@ const RootNavigator = memo(function RootNavigator({
           </Stack>
           </DesktopShell>
           </QuickSettingsProvider>
-          {!isLucidTrainer ? <><OfflineModelPromptHost /><EngagementRemindersHost /><HomeWidgetsHost /><NotificationDreamImportHost /><BadgeLedgerHost /><AnalysisFlightIndicator /></> : null}
+          {!isLucidTrainer ? <><OfflineModelPromptHost /><EngagementRemindersHost /><HomeWidgetsHost /><NotificationDreamImportHost /><BadgeLedgerHost /><GuideReadingHost /><AnalysisFlightIndicator /></> : null}
           {!isLucidTrainer ? <VercelAnalytics /> : null}
           {!isLucidTrainer ? <VercelSpeedInsights /> : null}
         </JournalRuntime>

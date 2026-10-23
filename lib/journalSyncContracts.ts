@@ -10,4 +10,6 @@ export type SyncMutationResult = {
   dream?: DreamAnalysis;
   remoteId?: number;
   error?: string;
+  /** An ACK persisted the legacy fields but omitted notes; its receipt cannot be reused. */
+  incompleteAck?: { remoteId: number; revisionId: string };
 };

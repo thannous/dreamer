@@ -1,10 +1,10 @@
 /** Durable Journal replay engine. No React, native storage or network imports. */
-import { normalizeMutation, isRetryableMutation, applyAckedMutation, applyFailedMutation } from '../lib/journalQueueTransitions';
+import { normalizeMutation, isRetryableMutation, applyAckedMutation, applyFailedMutation, recoverIncompleteAck } from '../lib/journalQueueTransitions';
 import { type DreamTarget, matchesDreamTarget, getDreamIdentityKey } from '../lib/dreamIdentity';
 import { DreamPersistenceError } from '../lib/dreamStorageRead';
 import type { DreamAnalysis, DreamMutation } from '../lib/types';
 import type { SyncMutationResult } from '../lib/journalSyncContracts';
-import { type DreamListUpdater, generateMutationId, getMutationDreamTarget, getMutationRemoteId, upsertDream } from '../lib/dreamUtils';
+import { type DreamListUpdater, generateMutationId, getMutationDreamTarget, getMutationRemoteId, upsertDream, generateUUID } from '../lib/dreamUtils';
 import type { recordSyncReplayMetrics as recordMetrics, reportSyncQueueMetrics as reportMetrics } from '../lib/syncObservability';
 
 export type JournalSyncOptions = {
@@ -465,27 +465,41 @@ export function createJournalSyncEngine(dependencies: JournalSyncDependencies, i
           }
 
           const resultsById = new Map(results.map((result) => [result.mutationId, result]));
+          const recoveryReceiptIds = new Map(results.filter(result => result.incompleteAck)
+            .map(result => [result.mutationId, generateUUID()]));
+          // A later acknowledged full notes snapshot replaces an earlier incomplete
+          // write. Retrying both would manufacture a conflict against the later revision.
+          const supersededIncompleteIds = new Set(eligibleMutations.filter((mutation, index) =>
+            resultsById.get(mutation.id)?.incompleteAck && eligibleMutations.slice(index + 1).some(later => {
+              const result = resultsById.get(later.id);
+              return (result?.status === 'ack' || result?.incompleteAck) &&
+                (later.operation === 'delete' || later.payload.dream?.personalNotes !== undefined) &&
+                matchesDreamTarget(getMutationDreamTarget(mutation), getMutationDreamTarget(later));
+            })).map(mutation => mutation.id));
           const buildNextQueue = () => pendingMutationsRef.current
             .map((mutation) => {
               const result = resultsById.get(mutation.id);
               if (!result) {
-                const receipt = results.find((entry) => entry.status === 'ack' && entry.remoteId != null &&
+                const receipt = results.find((entry) => (entry.status === 'ack' || entry.incompleteAck) &&
+                  (entry.remoteId ?? entry.incompleteAck?.remoteId) != null &&
                   eligibleMutations.some((sent) => sent.id === entry.mutationId &&
                     sent.operation === 'create' && matchesDreamTarget(getMutationDreamTarget(sent), getMutationDreamTarget(mutation))));
                 if (!receipt || getMutationRemoteId(mutation) != null) return mutation;
                 resolvedDependencies = true;
+                const remoteId = receipt.remoteId ?? receipt.incompleteAck?.remoteId;
+                const revisionId = receipt.dream?.revisionId ?? receipt.incompleteAck?.revisionId;
                 return {
                   ...mutation,
-                  baseRevision: receipt.dream?.revisionId,
+                  baseRevision: revisionId,
                   payload: {
                     ...mutation.payload,
-                    remoteId: receipt.remoteId,
-                    ...(mutation.payload.dream ? { dream: { ...mutation.payload.dream, remoteId: receipt.remoteId, revisionId: receipt.dream?.revisionId } } : {}),
+                    remoteId,
+                    ...(mutation.payload.dream ? { dream: { ...mutation.payload.dream, remoteId, revisionId } } : {}),
                   },
                 };
               }
 
-              if (result.status === 'ack') {
+              if (result.status === 'ack' || supersededIncompleteIds.has(mutation.id)) {
                 return markMutationState(mutation, 'acked', { lastError: undefined });
               }
 
@@ -495,7 +509,7 @@ export function createJournalSyncEngine(dependencies: JournalSyncDependencies, i
                 });
               }
 
-              return markMutationState(mutation, 'failed', {
+              return markMutationState(recoverIncompleteAck(mutation, result, recoveryReceiptIds.get(mutation.id)), 'failed', {
                 lastError: result.error ?? 'Failed to sync mutation',
                 retryCount: mutation.retryCount + 1,
               });
@@ -505,8 +519,9 @@ export function createJournalSyncEngine(dependencies: JournalSyncDependencies, i
           await persistRemoteDreams((prev) => {
             let nextDreams = prev;
             results.forEach((result) => {
-              const mutation = eligibleMutations.find((entry) => entry.id === result.mutationId);
-              if (!mutation || !pendingMutationsRef.current.some((entry) => entry.id === mutation.id)) {
+              const mutation = pendingMutationsRef.current.find((entry) => entry.id === result.mutationId);
+              if (!mutation || supersededIncompleteIds.has(mutation.id) ||
+                !eligibleMutations.some((entry) => entry.id === mutation.id)) {
                 return;
               }
 
@@ -538,9 +553,24 @@ export function createJournalSyncEngine(dependencies: JournalSyncDependencies, i
                 return;
               }
 
-              nextDreams = applyFailureToLatestDream(
+              let failedMutation = recoverIncompleteAck(mutation, result, recoveryReceiptIds.get(mutation.id));
+              if (result.incompleteAck) {
+                const currentIndex = pendingMutationsRef.current.findIndex((entry) => entry.id === mutation.id);
+                const laterMutation = pendingMutationsRef.current.slice(currentIndex + 1).filter((entry) =>
+                  matchesDreamTarget(getMutationDreamTarget(entry), getMutationDreamTarget(mutation))).at(-1);
+                if (laterMutation?.operation === 'delete') return;
+                if (laterMutation?.payload.dream) {
+                  failedMutation = { ...laterMutation, payload: { ...laterMutation.payload,
+                    dream: { ...laterMutation.payload.dream, ...result.incompleteAck } } };
+                }
+              }
+              // An incomplete receipt carries recovered server identity not yet
+              // present in the queue. Preserve it; ordinary failures use the
+              // newest durable edit instead of the older in-flight payload.
+              const applyFailure = result.incompleteAck ? applyFailedMutation : applyFailureToLatestDream;
+              nextDreams = applyFailure(
                 nextDreams,
-                mutation,
+                failedMutation,
                 'failed',
                 result.error ?? 'Failed to sync mutation'
               );

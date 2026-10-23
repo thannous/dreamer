@@ -4,6 +4,7 @@ import type { SyncMutationResult, SyncMutationResultStatus } from '@/lib/journal
 import { normalizeDreamMemoryMetadata } from '@/lib/dreamUtils';
 import { ANALYSIS_TRANSCRIPT_HASH_KEY, isAnalysisTranscriptHash } from '@/lib/dreamAnalysisFreshness';
 import { toStoredImageReference } from '@/lib/journalImageReference';
+import { parsePersonalNotes } from '@/lib/dreamPersonalNotes';
 import { toLegacyDreamTheme } from '@/lib/dreamThemes';
 
 export type SupabaseDreamRow = {
@@ -36,6 +37,7 @@ export type SupabaseDreamRow = {
   has_animal?: boolean | null;
   memory?: DreamMemoryMetadata | Record<string, unknown> | null;
   analysis_details?: Record<string, unknown> | null;
+  personal_notes?: unknown;
 };
 
 type AnalysisDetailFields = Pick<DreamAnalysis, 'symbols' | 'emotions' | 'reflectionQuestions' | 'promptVersion'>;
@@ -135,6 +137,7 @@ export const mapRowToDream = (row: SupabaseDreamRow, now: () => number = Date.no
     imageUrl,
     thumbnailUrl: hasImage ? imageUrl : undefined,
     chatHistory: Array.isArray(row.chat_history) ? row.chat_history : [],
+    personalNotes: parsePersonalNotes(row.personal_notes),
     theme: row.precise_theme ?? row.theme ?? undefined,
     dreamType: (row.dream_type ?? 'Symbolic Dream') as DreamType,
     isFavorite: row.is_favorite ?? false,
@@ -172,6 +175,7 @@ export const mapDreamToRow = (
     shareable_quote: dream.shareableQuote,
     image_url: toStoredImageReference(dream.imageUrl) || null,
     chat_history: dream.chatHistory ?? [],
+    ...(dream.personalNotes !== undefined ? { personal_notes: parsePersonalNotes(dream.personalNotes) } : {}),
     theme: dream.theme ? toLegacyDreamTheme(dream.theme) : null,
     precise_theme: dream.theme ?? null,
     dream_type: dream.dreamType,
