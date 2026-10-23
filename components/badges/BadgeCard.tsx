@@ -1,15 +1,14 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { memo } from 'react';
 import { Text, View } from 'react-native';
-import Animated, { useAnimatedStyle, type SharedValue } from 'react-native-reanimated';
+import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import Svg, { Circle, Path } from 'react-native-svg';
 
 import { sparklePath } from '@/components/journal/story/sparkle';
 import { PressableScale, ProgressFill } from '@/components/motion';
 import { BADGE_TIERS, type BadgeFamilyId, type BadgeTier, type BadgeTierLevel } from '@/lib/badges/catalog';
-import type { BadgeFamilyState } from '@/lib/badges/ledger';
 
-import { BadgeMedallion } from './BadgeMedallion';
+import { BadgeMedallion, type BadgeLight } from './BadgeMedallion';
 import { COLLECTION, getBadgeMaterial, tierOfLevel } from './badgeMaterials';
 
 /** Width over height: the proportion of a playing card. */
@@ -40,32 +39,31 @@ export function TierPips({ tier, size = 9 }: { tier: BadgeTierLevel; size?: numb
   );
 }
 
+const TOP_LEFT = { top: 9, left: 9 };
+const BOTTOM_RIGHT = { bottom: 9, right: 9 };
+
 /**
  * What makes each tier rarer than the last, beyond its metal: a heavier frame, an inner
  * rim, stars set in the corners and, on gold, a holographic film across the whole card.
  */
 const RARITY = {
-  locked: { frame: 2, rim: false, corners: 0 },
-  bronze: { frame: 3, rim: false, corners: 0 },
-  silver: { frame: 4, rim: true, corners: 2 },
-  gold: { frame: 5, rim: true, corners: 4 },
+  locked: { frame: 2, rim: false, corners: [] },
+  bronze: { frame: 3, rim: false, corners: [] },
+  silver: { frame: 4, rim: true, corners: [TOP_LEFT, BOTTOM_RIGHT] },
+  gold: { frame: 5, rim: true, corners: [TOP_LEFT, { top: 9, right: 9 }, { bottom: 9, left: 9 }, BOTTOM_RIGHT] },
 } as const;
-
-type Light = { x: SharedValue<number>; y: SharedValue<number> } | null;
 
 /** A card's metal frame and night ground, shared by both faces. */
 export function BadgeCardFrame({
   tier,
   width,
-  veiled = false,
   light = null,
   children,
 }: {
   tier: BadgeTier | null;
   width: number;
-  veiled?: boolean;
   /** Moves gold's film with the hand that tilts the card; still when absent. */
-  light?: Light;
+  light?: BadgeLight;
   children: React.ReactNode;
 }) {
   const material = getBadgeMaterial(tier);
@@ -73,9 +71,6 @@ export function BadgeCardFrame({
   const radius = Math.max(14, Math.round(width * 0.09));
   const inner = radius - rarity.frame;
   const star = Math.max(4, Math.round(width * 0.03));
-  const corners = rarity.corners === 4
-    ? [{ top: 9, left: 9 }, { top: 9, right: 9 }, { bottom: 9, left: 9 }, { bottom: 9, right: 9 }]
-    : rarity.corners === 2 ? [{ top: 9, left: 9 }, { bottom: 9, right: 9 }] : [];
   return (
     <LinearGradient
       colors={material.frame}
@@ -87,7 +82,6 @@ export function BadgeCardFrame({
         minHeight: Math.round(width / BADGE_CARD_RATIO),
         borderRadius: radius,
         padding: rarity.frame,
-        opacity: veiled ? 0.55 : 1,
         boxShadow: [{ offsetX: 0, offsetY: 6, blurRadius: tier === 'gold' ? 26 : 18, spreadDistance: -4, color: material.glow }],
       }}
     >
@@ -105,7 +99,7 @@ export function BadgeCardFrame({
             borderColor: material.frame[1], opacity: 0.45,
           }} />
         ) : null}
-        {corners.map((corner, index) => (
+        {rarity.corners.map((corner, index) => (
           <View key={index} pointerEvents="none" style={{ position: 'absolute', ...corner }}>
             <Svg width={star * 2} height={star * 2}>
               <Path d={sparklePath(star, star, star)} fill={material.ink} />
@@ -119,7 +113,7 @@ export function BadgeCardFrame({
 }
 
 /** Gold's holographic film over the night ground, drifting with the light. */
-function CardFoil({ light, width }: { light: Light; width: number }) {
+function CardFoil({ light, width }: { light: BadgeLight; width: number }) {
   const height = width / BADGE_CARD_RATIO;
   const style = useAnimatedStyle(() => ({
     transform: [
@@ -179,7 +173,13 @@ export function BadgeCardBackFace({ tier, width, caption, name }: {
 }
 
 type BadgeCardProps = {
-  state: BadgeFamilyState;
+  id: BadgeFamilyId;
+  /** Tiers earned. */
+  tier: BadgeTierLevel;
+  /** The highest tier waits face down until it is turned over. */
+  faceDown: boolean;
+  /** How far along the next tier is; 100 once gold is held. */
+  percent: number;
   width: number;
   name: string;
   /** Under the name: the tier held, or the goal still ahead. */
@@ -193,7 +193,10 @@ type BadgeCardProps = {
 
 /** A family in the album: its highest tier face up, or face down while a new one waits. */
 export const BadgeCard = memo(function BadgeCard({
-  state,
+  id,
+  tier: level,
+  faceDown,
+  percent,
   width,
   name,
   status,
@@ -202,26 +205,23 @@ export const BadgeCard = memo(function BadgeCard({
   onPress,
   testID,
 }: BadgeCardProps) {
-  const tier = tierOfLevel(state.tier);
+  const tier = tierOfLevel(level);
   const material = getBadgeMaterial(tier);
-  const goal = state.nextThreshold;
-  const previous = state.tier === 0 ? 0 : state.family.thresholds[state.tier - 1];
-  const percent = goal == null ? 100 : ((state.progress - previous) / Math.max(1, goal - previous)) * 100;
 
   return (
     <PressableScale
-      onPress={() => onPress(state.family.id)}
+      onPress={() => onPress(id)}
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel}
       testID={testID}
       haptic="light"
     >
-      {state.unrevealed > 0 && tier ? (
+      {faceDown && tier ? (
         <BadgeCardBackFace tier={tier} width={width} caption={newCaption} name={name} />
       ) : (
         <BadgeCardFrame tier={tier} width={width}>
           <View className="flex-1 items-center justify-center gap-2.5 px-2.5 pb-3 pt-3.5">
-            <BadgeMedallion family={state.family.id} tier={tier} size={Math.round(width * 0.7)} veiled={!tier} small />
+            <BadgeMedallion family={id} tier={tier} size={Math.round(width * 0.7)} veiled={!tier} small />
             <View className="w-full items-center gap-1.5">
               <Text numberOfLines={2} maxFontSizeMultiplier={1.4} style={{ color: tier ? COLLECTION.text : COLLECTION.muted }}
                 className="text-center font-display-semibold text-body-sm leading-[18px]">
@@ -235,7 +235,7 @@ export const BadgeCard = memo(function BadgeCard({
                 <ProgressFill percent={percent} growOnMount={false} className="h-full rounded-full"
                   style={{ backgroundColor: material.ink }} />
               </View>
-              <TierPips tier={state.tier} size={7} />
+              <TierPips tier={level} size={7} />
             </View>
           </View>
         </BadgeCardFrame>

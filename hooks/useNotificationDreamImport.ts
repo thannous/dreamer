@@ -110,7 +110,7 @@ export function useNotificationDreamImport(): void {
               // Told to Siri: a voice capture. A notification reply may be typed or
               // dictated by the keyboard, which nothing here can tell.
               if (isSiriDreamCapture(capture)) {
-                recordBadgeEvent({ type: 'dream_saved', dream: saved, voiced: true, typed: false });
+                recordBadgeEvent({ type: 'dream_saved', dream: saved, input: 'voice' });
               }
             } catch (error) {
               // Kept in the inbox (a full guest journal, a storage error): the

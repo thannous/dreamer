@@ -16,7 +16,7 @@ export function useBadgeSummary(): BadgeSummary {
     let featuredAt = -Infinity;
     for (const family of BADGE_FAMILIES) {
       const stamps = ledger.earned[family.id] ?? [];
-      const earned = Math.min(3, stamps.length) as BadgeTierLevel;
+      const earned = stamps.length as BadgeTierLevel;
       earnedCards += earned;
       unrevealedCards += Math.max(0, earned - (ledger.revealed[family.id] ?? 0));
       // The card shown at the door: the one earned last, at its tier.

@@ -1,5 +1,6 @@
 /** Durable account copy. Only badge identities, counts and dates leave the device. */
 import { mergeBadgeLedgers, parseBadgeLedger, settleBadgeLedger, type BadgeLedger } from '@/lib/badges/ledger';
+import { withAbortTimeout } from '@/lib/networkPolicy';
 import { supabase } from '@/lib/supabase';
 
 export type RemoteBadgeLedger = { ledger: BadgeLedger; revision: number; accepted: boolean };
@@ -10,21 +11,16 @@ export type BadgeLedgerTransport = {
 export const badgeLedgerTransport: BadgeLedgerTransport = {
   async exchange(userId, revision, ledger) {
     // Binding the expected user in SQL closes the getSession -> RPC account-switch race.
-    const abort = new AbortController();
-    const timer = setTimeout(() => abort.abort(), 15_000);
-    try {
-      const { data, error } = await supabase.rpc('sync_badge_ledger', {
-        p_user_id: userId, p_revision: revision, p_ledger: ledger,
-      }).abortSignal(abort.signal);
-      if (error) throw error;
-      if (!data || !Number.isSafeInteger(data.revision) || data.revision < 0 ||
-          typeof data.accepted !== 'boolean' || data.ledger?.version !== 1) {
-        throw new Error('Invalid badge sync response');
-      }
-      return { ...data, ledger: parseBadgeLedger(data.ledger) };
-    } finally {
-      clearTimeout(timer);
+    const { data, error } = await withAbortTimeout(15_000, (signal) => supabase.rpc('sync_badge_ledger', {
+      p_user_id: userId, p_revision: revision, p_ledger: ledger,
+    }).abortSignal(signal));
+    if (error) throw error;
+    const remote = data ? parseBadgeLedger(data.ledger) : null;
+    if (!data || !remote || !Number.isSafeInteger(data.revision) || data.revision < 0 ||
+        typeof data.accepted !== 'boolean') {
+      throw new Error('Invalid badge sync response');
     }
+    return { ...data, ledger: remote };
   },
 };
 

@@ -58,9 +58,9 @@ describe('badge ledger', () => {
     const saved = dream(at('2026-10-01'));
     const synced = { ...saved, id: saved.id + 5000, remoteId: 42 };
     const ledger = fold([
-      { type: 'dream_saved', dream: saved, typed: true, voiced: false },
-      { type: 'dream_saved', dream: saved, typed: true, voiced: false },
-      { type: 'dream_saved', dream: synced, typed: true, voiced: false },
+      { type: 'dream_saved', dream: saved, input: 'text' },
+      { type: 'dream_saved', dream: saved, input: 'text' },
+      { type: 'dream_saved', dream: synced, input: 'text' },
       { type: 'symbol_viewed', symbolId: 'water' },
       { type: 'symbol_viewed', symbolId: 'water' },
       { type: 'guide_viewed', guideId: 'dream-journal' },
@@ -75,10 +75,10 @@ describe('badge ledger', () => {
 
   it('tells a spoken dream from a written one', () => {
     const ledger = fold([
-      { type: 'dream_saved', dream: dream(1), typed: false, voiced: true },
-      { type: 'dream_saved', dream: dream(2), typed: true, voiced: false },
+      { type: 'dream_saved', dream: dream(1), input: 'voice' },
+      { type: 'dream_saved', dream: dream(2), input: 'text' },
       // A restored draft alone says neither.
-      { type: 'dream_saved', dream: dream(3), typed: false, voiced: false },
+      { type: 'dream_saved', dream: dream(3), input: null },
     ]);
     expect(progressOf(ledger)['night-voice']).toBe(1);
     expect(progressOf(ledger)['ink-dreamer']).toBe(1);
@@ -160,9 +160,9 @@ describe('badge ledger', () => {
     const settled = settleBadgeLedger(createEmptyBadgeLedger(), dreams, at('2026-10-01'));
     expect(settleBadgeLedger(settled, dreams, at('2026-10-02'))).toBe(settled);
     expect(buildBadgeCollection(settled, progressOf(settled, dreams)).unrevealedCards).toBe(1);
-    const revealed = revealBadgeFamily(settled, 'night-journal');
+    const revealed = revealBadgeFamily(settled, 'night-journal', 1);
     expect(buildBadgeCollection(revealed, progressOf(revealed, dreams)).unrevealedCards).toBe(0);
-    expect(revealBadgeFamily(revealed, 'night-journal')).toBe(revealed);
+    expect(revealBadgeFamily(revealed, 'night-journal', 1)).toBe(revealed);
   });
 
   it('stamps a tier earned by actions without a journal, and keeps a card turned at the tier it showed', () => {
@@ -179,12 +179,13 @@ describe('badge ledger', () => {
   });
 
   it('survives a corrupt store and keeps both sides when a guest ledger joins an account', () => {
-    expect(parseBadgeLedger('not json')).toEqual(createEmptyBadgeLedger());
+    expect(parseBadgeLedger('not json')).toBeNull();
+    expect(parseBadgeLedger({ version: 2, keys: {} })).toBeNull();
     expect(parseBadgeLedger({ version: 1, keys: { 'night-voice': 'x', unknown: ['a'] }, earned: { 'night-voice': [1, 'b'] } }))
       .toEqual(createEmptyBadgeLedger());
 
-    const guest = fold([{ type: 'symbol_viewed', symbolId: 'moon' }, { type: 'dream_saved', dream: dream(1), typed: false, voiced: true }]);
-    const account = fold([{ type: 'symbol_viewed', symbolId: 'water' }, { type: 'dream_saved', dream: dream(1), typed: false, voiced: true }]);
+    const guest = fold([{ type: 'symbol_viewed', symbolId: 'moon' }, { type: 'dream_saved', dream: dream(1), input: 'voice' }]);
+    const account = fold([{ type: 'symbol_viewed', symbolId: 'water' }, { type: 'dream_saved', dream: dream(1), input: 'voice' }]);
     const merged = mergeBadgeLedgers(
       { ...account, earned: { 'night-voice': [200] } },
       { ...guest, earned: { 'night-voice': [100] } },

@@ -12,8 +12,8 @@ import type { BadgeFamilyId, BadgeTierLevel } from '@/lib/badges/catalog';
 import {
   actionsOnly,
   applyBadgeEvent,
-  BADGE_LEDGER_VERSION,
   createEmptyBadgeLedger,
+  dreamRef,
   mergeBadgeLedgers,
   parseBadgeLedger,
   revealBadgeFamily,
@@ -65,11 +65,8 @@ async function readLedger(scope: BadgeScope): Promise<StoredLedger> {
   const raw = await getLucidKeyValueStorage().getItem(storageKey(scope));
   if (!raw) return { status: 'absent' };
   try {
-    const value: unknown = JSON.parse(raw);
-    if (!value || typeof value !== 'object' || (value as { version?: unknown }).version !== BADGE_LEDGER_VERSION) {
-      return { status: 'unreadable' };
-    }
-    return { status: 'read', ledger: parseBadgeLedger(value) };
+    const ledger = parseBadgeLedger(JSON.parse(raw));
+    return ledger ? { status: 'read', ledger } : { status: 'unreadable' };
   } catch {
     return { status: 'unreadable' };
   }
@@ -125,10 +122,12 @@ function open(scope: BadgeScope, id: number, attempt: number, pending: Change[])
   writes = writes.catch(() => undefined).then(async () => {
     if (!canContinue()) return;
     let own: StoredLedger;
-    let guest: StoredLedger = { status: 'absent' };
+    let guest: StoredLedger;
     try {
-      own = await readLedger(scope);
-      if (scope !== 'guest' && isCurrent()) guest = await readLedger('guest');
+      [own, guest] = await Promise.all([
+        readLedger(scope),
+        scope !== 'guest' && isCurrent() ? readLedger('guest') : { status: 'absent' as const },
+      ]);
     } catch (error) {
       if (__DEV__) console.warn('[Badges] Failed to read the ledger', error);
       retry();
@@ -180,7 +179,9 @@ function change(update: Change): void {
 /** Counts one action that has just succeeded. Calling it again for the same action is harmless. */
 export function recordBadgeEvent(event: BadgeEvent): void {
   const now = Date.now();
-  change((ledger) => stampActionTiers(applyBadgeEvent(ledger, event), now));
+  // A change waiting for the ledger keeps a dream's names only, never its words.
+  const kept: BadgeEvent = 'dream' in event ? { ...event, dream: dreamRef(event.dream) } : event;
+  change((ledger) => stampActionTiers(applyBadgeEvent(ledger, kept), now));
 }
 
 /** Folds the journal as it is now into the ledger, stamping any tier newly reached. */
