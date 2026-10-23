@@ -1044,7 +1044,7 @@ const TIGER_ATLAS_PAGE = {
   name: 'Tiger',
   omitJournal: true,
   sceneText: 'excerpt',
-  scenePicture: (role) => renderAtlasSixScenePicture(role, TIGER_ATLAS_ASSETS[role]),
+  scenePicture: (role, expanded) => renderAtlasSixScenePicture(role, TIGER_ATLAS_ASSETS[role], expanded),
   decorHtml: () => renderAtlasSixPlate(TIGER_ATLAS_ASSETS.plate),
 };
 
@@ -1098,11 +1098,14 @@ function renderAtlasArticle(c, atlas) {
                                     <span class="atlas-scene-mark" aria-hidden="true"><i data-lucide="arrow-right" class="w-4 h-4"></i></span>
                                 </label>`).join('');
   const sceneResultsHtml = scenes.map((scene) => `
-                        <div class="atlas-scene-result" data-scene="${scene.id}">
+                        <div class="atlas-scene-result" data-scene="${scene.id}">${scene.image ? `
+                            ${atlas.scenePicture(scene.image, true)}` : ''}
+                            <div class="atlas-scene-reading">
                             <p class="atlas-kicker atlas-scene-chosen">${escapeHtml(atlas.scenes.chosen)}${escapeHtml(atlas.chosenSeparator)}${escapeHtml(scene.label)}</p>${scene.question ? `
                             <p class="atlas-scene-question"><i data-lucide="quote" class="w-5 h-5"></i>${escapeHtml(scene.question)}</p>` : ''}
                             <p class="atlas-scene-excerpt">${escapeHtml(scene.excerpt)}</p>
                             <a class="atlas-link" href="#${anchors.variation}-${scene.anchor}">${escapeHtml(atlas.scenes.source)} ${escapeHtml(open)}${escapeHtml(scene.variation)}${escapeHtml(close)}</a>
+                            </div>
                         </div>`).join('');
 
   // Each scene's source link lands on its own variation card.
@@ -1246,14 +1249,19 @@ function renderAtlasArticle(c, atlas) {
                     const top = Math.round(nav.getBoundingClientRect().height);
                     new IntersectionObserver(([entry]) => nav.classList.toggle('atlas-nav-solid', !entry.isIntersecting), { rootMargin: '-' + top + 'px 0px 0px 0px' }).observe(hero);
                 })();
-                // A clicked or tapped scene brings its reading into view, just enough to show it whole
-                // (on a phone it sits below the cards); the arrow keys change the scene without moving the page.
+                // Reveal the selected painting below the choices on small screens. A tall result
+                // starts below the fixed navigation; arrow keys change scenes without scrolling.
                 (() => {
                     const results = document.getElementById('atlas-scene-results');
                     if (!results) return;
                     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
                     document.querySelectorAll('.atlas-scene').forEach((label) => label.addEventListener('click', () => {
-                        requestAnimationFrame(() => results.scrollIntoView({ block: 'nearest', behavior: reduced.matches ? 'instant' : 'smooth' }));
+                        requestAnimationFrame(() => {
+                            const top = parseFloat(getComputedStyle(results).scrollMarginTop) || 0;
+                            const bounds = results.getBoundingClientRect();
+                            const fits = bounds.height <= window.innerHeight - top - 24;
+                            results.scrollIntoView({ block: fits ? 'nearest' : 'start', behavior: reduced.matches ? 'instant' : 'smooth' });
+                        });
                     }));
                 })();
             </script>
@@ -1266,9 +1274,9 @@ function atlasCss(sceneIds) {
   const [first] = sceneIds;
   const shown = sceneIds.map((id) => `.atlas:has(#atlas-scene-${id}:checked) .atlas-scene-result[data-scene="${id}"]`).join(',\n        ');
   const sceneResults = first ? `
-        .atlas-scene-result[data-scene="${first}"] { display: block; }
+        .atlas-scene-result[data-scene="${first}"] { display: var(--atlas-scene-display, block); }
         .atlas:has(.atlas-scene-input:checked) .atlas-scene-result { display: none; }
-        ${shown} { display: block; }` : '';
+        ${shown} { display: var(--atlas-scene-display, block); }` : '';
   return `
         /* Atlas composition (French tiger pilot), read like a dictionary entry. Phones keep one column. */
         .symbol-page-main > article.atlas { max-width: none; }
@@ -1340,6 +1348,10 @@ function atlasCss(sceneIds) {
         .atlas-scene-input:checked + .atlas-scene .atlas-scene-mark { background: var(--salmon); border-color: var(--salmon); color: #0a0512; }
         .atlas-scene-input:focus-visible + .atlas-scene { outline: 2px solid var(--salmon); outline-offset: 3px; }
         .atlas-scene-result { display: none; }${sceneResults}
+        .atlas-scene-art { display: block; position: relative; overflow: hidden; width: 100%; max-width: 40rem; aspect-ratio: 16 / 9; background: rgba(10, 5, 18, 0.92); }
+        .atlas-scene-art > img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; }
+        .atlas-scene-art + .atlas-scene-reading { padding-top: clamp(1.25rem, 2vw, 2rem); }
+        .atlas-scene-reading { max-width: 46rem; }
         .atlas-scene-question {
             position: relative;
             padding-left: 2rem;
@@ -1354,7 +1366,7 @@ function atlasCss(sceneIds) {
         .atlas-scene-question::after { content: ''; display: block; width: 1.5rem; height: 1px; margin: 1.1rem 0; background: var(--cream-64); }
         .atlas-scene-excerpt { padding-left: 2rem; font-size: 0.95rem; line-height: 1.65; color: var(--cream-64); margin-bottom: 0.35rem; }
         .atlas-scene-result .atlas-link { margin-left: 2rem; }
-        .atlas-scene-results { scroll-margin-bottom: 1.5rem; }
+        .atlas-scene-results { scroll-margin-top: 10rem; scroll-margin-bottom: 1.5rem; }
         .atlas-reflection .atlas-caveat { padding-left: 2rem; }
         .atlas-link { display: inline-flex; align-items: center; min-height: 44px; font-size: 0.85rem; color: var(--salmon); text-decoration: underline; text-decoration-color: rgba(234, 212, 180, 0.35); text-underline-offset: 3px; }
         .atlas-caveat { margin-top: 0.75rem; font-size: 0.8rem; font-style: italic; color: var(--cream-64); }
@@ -1362,7 +1374,7 @@ function atlasCss(sceneIds) {
         .atlas .variation-card:target { border-top-color: var(--salmon); }
         .atlas .variation-card:target h3 { color: var(--salmon); }
 
-        .atlas-reflection { max-width: 44rem; scroll-margin-top: 7rem; }
+        .atlas-reflection { min-width: 0; scroll-margin-top: 7rem; }
 
         /* Questions to ask: side by side when they fit, one per line otherwise. */
         .atlas-questions { margin-top: clamp(3rem, 6vw, 4.5rem); }
@@ -1432,8 +1444,6 @@ function atlasCss(sceneIds) {
             .atlas-variation-grid, .atlas-faq-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
             /* No section bar here: the meaning keeps its distance from the summary. */
             .atlas-meaning { margin-top: clamp(1.75rem, 2.5vw, 2.25rem); }
-            /* The list on the left, the chosen scene's reading on its right. */
-            .atlas-scenes-body { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--atlas-gap); }
             .atlas-further { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--atlas-gap); align-items: start; }
             .atlas-further > .symbol-h2 { grid-column: 1 / -1; }
             .atlas-related { margin-bottom: 0; }
@@ -1449,12 +1459,21 @@ function atlasCss(sceneIds) {
             .atlas-reading { grid-column: 1; grid-row: 1; }
             .atlas-plate > .atlas-keep { grid-column: 1 / -1; grid-row: 2; }
             .atlas-scenes { grid-column: 1 / -1; grid-row: 3; }
-            .atlas-scenes-body { grid-template-columns: minmax(0, 25rem) minmax(0, 1fr); }
+            /* Give the selected painting most of the width; keep its choices within reach. */
+            .atlas-scenes-body { grid-template-columns: minmax(0, 22rem) minmax(0, 1fr); column-gap: var(--atlas-gap); }
+            .atlas-scene-list { position: sticky; top: 8rem; }
+            .atlas-scene-results { scroll-margin-top: 8rem; }
             .atlas-plate--text > .atlas-questions { grid-column: 1 / -1; grid-row: 2; }
             .atlas-plate--text > .atlas-keep { grid-row: 3; }
         }
         @media (min-width: 1200px) {
             .atlas-scene { grid-template-columns: 8.5rem minmax(0, 1fr) auto; }
+        }
+        @media (min-width: 1800px) {
+            /* Keep the served 640px painting crisp, with its reading alongside on wide screens. */
+            .atlas-scenes { --atlas-scene-display: grid; }
+            .atlas-scene-result { grid-template-columns: minmax(0, 40rem) minmax(18rem, 1fr); gap: 2rem; align-items: start; }
+            .atlas-scene-art + .atlas-scene-reading { padding-top: 0; }
         }
         @media (min-width: 1200px) {
             .atlas-top { display: grid; grid-template-columns: var(--atlas-rail) minmax(0, 1fr); column-gap: var(--atlas-gap); }
@@ -1828,12 +1847,16 @@ function renderAtlasSixPlate(asset) {
                     </div>`;
 }
 
-// A scene thumbnail, painting the variation card it names (lazy, like the tiger's).
-function renderAtlasSixScenePicture(role, asset) {
+// Use the same landscape painting for the choice and its immersive reading, with
+// independent responsive sizes and motion surfaces so each can stop off screen.
+function renderAtlasSixScenePicture(role, asset, expanded = false) {
   const smallest = Object.keys(asset.webp).map(Number).sort((a, b) => a - b)[0];
-  return `<picture class="atlas-scene-thumb" data-living-surface="${role}">${asset.avif ? `
-                                        <source type="image/avif" srcset="${atlasSixSrcset(asset.avif)}" sizes="${TIGER_ATLAS.sceneSizes}">` : ''}
-                                        <img src="${asset.webp[smallest]}" srcset="${atlasSixSrcset(asset.webp)}" sizes="${TIGER_ATLAS.sceneSizes}" alt="" width="${asset.width}" height="${asset.height}" loading="lazy" decoding="async">
+  const sizes = expanded
+    ? '(min-width: 768px) 40rem, calc(100vw - 3rem)'
+    : TIGER_ATLAS.sceneSizes;
+  return `<picture class="${expanded ? 'atlas-scene-art' : 'atlas-scene-thumb'}" data-living-surface="${role}${expanded ? '-expanded' : ''}">${asset.avif ? `
+                                        <source type="image/avif" srcset="${atlasSixSrcset(asset.avif)}" sizes="${sizes}">` : ''}
+                                        <img src="${asset.webp[smallest]}" srcset="${atlasSixSrcset(asset.webp)}" sizes="${sizes}" alt="" width="${asset.width}" height="${asset.height}" loading="lazy" decoding="async">
                                     </picture>`;
 }
 
@@ -1862,7 +1885,9 @@ function atlasSixLivingConfig({ motion, scenes: pilotScenes }, assets, match) {
     const role = `scene-${scene.id}`;
     if (!assets[role]) return;
     // Thumbnails share the default effects and phase; a local light can follow its subject in each scene.
-    surfaces.push({ name: role, selector: `[data-living-surface="${role}"]`, img: 'img', clip: true, phase: index / pilotScenes.length, scenes: { [role]: { match: match(role), layers: layers(motion.scenes?.[scene.id] ?? motion.thumb, assets[role]) } } });
+    for (const name of [role, `${role}-expanded`]) {
+      surfaces.push({ name, selector: `[data-living-surface="${name}"]`, img: 'img', clip: true, phase: index / pilotScenes.length, scenes: { [role]: { match: match(role), layers: layers(motion.scenes?.[scene.id] ?? motion.thumb, assets[role]) } } });
+    }
   });
   const live = surfaces.filter((surface) => Object.values(surface.scenes).some((scene) => scene.layers.length > 0));
   if (live.length === 0) return null;
@@ -2177,7 +2202,7 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
     scenes: { ...atlasLocale.scenes, choices: atlasSix.scenes.map((scene) => ({ id: scene.id, ...atlasLocale.sceneLocales[scene.id], image: atlasSixAssets[`scene-${scene.id}`] ? `scene-${scene.id}` : undefined })) },
     sceneText: 'full',
     omitJournal: false,
-    scenePicture: (role) => renderAtlasSixScenePicture(role, atlasSixAssets[role]),
+    scenePicture: (role, expanded) => renderAtlasSixScenePicture(role, atlasSixAssets[role], expanded),
     decorHtml: () => (atlasSixAssets.plate ? renderAtlasSixPlate(atlasSixAssets.plate) : ''),
   } : atlasTextFor(symbol.id, lang));
 
