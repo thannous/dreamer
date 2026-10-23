@@ -3058,6 +3058,58 @@ describe('useDreamJournal', () => {
       }));
     });
 
+    it('keeps the analysis pending when its result read fails after the bundled image registers', async () => {
+      mockEnvState.analysisJobsEnabled = true;
+      setMockUser({ id: 'user-1' });
+      mockSubscriptionStatus = { tier: 'plus' };
+      const requestId = '3f73ab45-9a14-4db9-94a3-d24724457d9e';
+      const existingDream = buildDream({
+        id: 1,
+        remoteId: 101,
+        isAnalyzed: true,
+        analysisStatus: 'done',
+        analysisRequestId: requestId,
+        interpretation: 'Previous interpretation',
+        imageUrl: 'https://example.com/previous.webp',
+      });
+      let cache: DreamAnalysis[] = [];
+      mockSaveCachedRemoteDreams.mockImplementation(async (value: DreamAnalysis[]) => { cache = value; });
+      mockFetchDreamsFromSupabase.mockResolvedValue([existingDream]);
+      mockUpdateDreamInSupabase.mockImplementation(async (dream: DreamAnalysis) => ({ ...dream }));
+      mockFetchDreamFromSupabase.mockRejectedValue(new Error('Network request failed'));
+      mockGetDreamAnalysisJobStatus.mockResolvedValue({
+        jobId: 'analysis-job-1',
+        status: 'succeeded',
+        clientRequestId: requestId,
+        resultPayload: {
+          dreamId: 101,
+          imageJob: {
+            id: 'image-job-from-analysis',
+            status: 'queued',
+            client_request_id: requestId,
+            dream_id: 101,
+          },
+        },
+      });
+
+      const { result } = await renderLoadedDreamJournal();
+
+      await act(async () => {
+        await expect(result.current.analyzeDream(1, existingDream.transcript, {
+          lang: 'fr',
+          replaceExistingImage: true,
+        })).rejects.toThrow('Network request failed');
+      });
+
+      // The image job is durable, but the new interpretation was never read: a restart
+      // must still find the analysis pending, not the previous reading marked complete.
+      expect(cache.find((dream) => dream.remoteId === 101)).toEqual(expect.objectContaining({
+        imageJobId: 'image-job-from-analysis',
+        analysisStatus: 'pending',
+        interpretation: 'Previous interpretation',
+      }));
+    });
+
     it('keeps the latest server revision when legacy image admission fails', async () => {
       setMockUser({ id: 'user-1' });
       const existingDream = buildDream({

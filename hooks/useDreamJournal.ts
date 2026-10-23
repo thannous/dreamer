@@ -1661,7 +1661,6 @@ export const useDreamJournal = () => {
             throw new Error(status.errorMessage || 'Dream analysis failed');
           }
 
-          analysisStatusOverridesRef.current.set(getDreamIdentityKey(dream), 'done');
           let latestDream = resolveCurrentDream(syncedDream);
           const imageJob = status.resultPayload?.imageJob;
           if (
@@ -1684,6 +1683,7 @@ export const useDreamJournal = () => {
             await persistDreamClientState(latestDream);
           }
 
+          analysisStatusOverridesRef.current.set(getDreamIdentityKey(dream), 'done');
           emitProgress(AnalysisStep.FINALIZING);
           const remoteDream = await fetchDreamFromSupabase(syncedDream.remoteId!, user?.id);
           assertAnalysisScope();
