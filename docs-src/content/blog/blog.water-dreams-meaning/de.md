@@ -5,7 +5,7 @@
   "lang": "de",
   "slug": "wassertraeume-bedeutung-von-ertrinkungs-ozean-und-ueberschwemmungstraeumen",
   "title": "Wasser- und Überschwemmungsträume: Bedeutung nach Detail | Noctalia",
-  "description": "Von Überschwemmung, steigendem Wasser oder überflutetem Haus geträumt? Was klares, trübes oder aufgewühltes Wasser bedeuten kann und was Sie notieren sollten.",
+  "description": "Von Überschwemmung, steigendem Wasser oder überflutetem Haus geträumt? Was klares, trübes oder aufgewühltes Wasser bedeuten kann und was du notieren solltest.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -14,7 +14,7 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
   "ogTitle": "Wasser- und Überschwemmungsträume: Bedeutung nach Detail | Noctalia",
-  "ogDescription": "Überschwemmung, Ertrinken oder überflutetes Haus im Traum: was der Zustand des Wassers bedeuten kann und was Sie nach dem Aufwachen notieren.",
+  "ogDescription": "Überschwemmung, Ertrinken oder überflutetes Haus im Traum: was der Zustand des Wassers bedeuten kann und was du nach dem Aufwachen notierst.",
   "ogImage": "https://noctalia.app/img/blog/water-dreams-meaning.webp",
   "ogImageAlt": "Riesige Meeresoberfläche, die die Tiefen des emotionalen Unterbewusstseins darstellt",
   "twitterCard": "summary_large_image",
@@ -29,8 +29,8 @@
   "nextPath": "/de/blog/traeume-ueber-deinen-ex-was-sie-wirklich-bedeuten",
   "preloadImage": "/img/blog/water-dreams-meaning.webp",
   "jsonLd": [
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Wasser- und Überschwemmungsträume: was sie bedeuten können, Detail für Detail\",\n    \"description\": \"Von Überschwemmung, steigendem Wasser oder überflutetem Haus geträumt? Was klares, trübes oder aufgewühltes Wasser bedeuten kann und was Sie notieren sollten.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/water-dreams-meaning.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/de/ueber-uns#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/de/ueber-uns\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-12-11\",\n    \"dateModified\": \"2026-10-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/de/blog/wassertraeume-bedeutung-von-ertrinkungs-ozean-und-ueberschwemmungstraeumen\"\n    },\n    \"inLanguage\": \"de\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2249,\n    \"timeRequired\": \"PT11M\",\n    \"url\": \"https://noctalia.app/de/blog/wassertraeume-bedeutung-von-ertrinkungs-ozean-und-ueberschwemmungstraeumen\"\n}",
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Was bedeutet Wasser im Traum?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Wasser wird oft als Bild für Gefühle gelesen, hat aber keine allgemeingültige Bedeutung. Ort, Bewegung des Wassers, Ihr Handeln, Ihr Gefühl und die Ereignisse der letzten Tage helfen mehr als das Symbol allein.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Was bedeutet es, von Überschwemmung zu träumen?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Ein Überschwemmungstraum begleitet oft Stress oder eine Veränderung, die sich zu schnell anfühlt. Achten Sie auf den überfluteten Ort, das Tempo des Wassers, Ihren Handlungsspielraum und die vorangegangenen Tage. Eine Vorhersage ist er nicht.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Was bedeutet es, vom Ertrinken zu träumen?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Ertrinken geht oft mit dem Gefühl einher, überfordert zu sein oder keine Luft zu bekommen. Es kann auch eine Körperempfindung oder ein aktuelles Bild aufgreifen. Wachen Sie oft mit Luftnot auf, sprechen Sie mit Ihrer Ärztin oder Ihrem Arzt.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Was bedeutet ein überflutetes Haus im Traum?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Es kann mit einer Sorge um Zuhause, Familie oder Sicherheit zusammenhängen. Notieren Sie den Raum, die anwesenden Personen und was Sie retten wollten, und prüfen Sie einfache Auslöser wie einen Wasserschaden, einen Umzug oder Hochwasserbilder.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Ist klares Wasser im Traum ein gutes Zeichen?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Klares Wasser geht oft mit Erleichterung oder Klarheit einher, ist aber kein Omen, weder gut noch schlecht. Stieg es oder machte es Ihnen Angst, zählt Ihr Gefühl mehr als seine Farbe.\"\n            }\n        }\n    ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Wasser- und Überschwemmungsträume: was sie bedeuten können, Detail für Detail\",\n    \"description\": \"Von Überschwemmung, steigendem Wasser oder überflutetem Haus geträumt? Was klares, trübes oder aufgewühltes Wasser bedeuten kann und was du notieren solltest.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/water-dreams-meaning.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/de/ueber-uns#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/de/ueber-uns\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-12-11\",\n    \"dateModified\": \"2026-10-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/de/blog/wassertraeume-bedeutung-von-ertrinkungs-ozean-und-ueberschwemmungstraeumen\"\n    },\n    \"inLanguage\": \"de\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2249,\n    \"timeRequired\": \"PT11M\",\n    \"url\": \"https://noctalia.app/de/blog/wassertraeume-bedeutung-von-ertrinkungs-ozean-und-ueberschwemmungstraeumen\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Was bedeutet Wasser im Traum?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Wasser wird oft als Bild für Gefühle gelesen, hat aber keine allgemeingültige Bedeutung. Ort, Bewegung des Wassers, dein Handeln, dein Gefühl und die Ereignisse der letzten Tage helfen mehr als das Symbol allein.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Was bedeutet es, von Überschwemmung zu träumen?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Ein Überschwemmungstraum begleitet oft Stress oder eine Veränderung, die sich zu schnell anfühlt. Achte auf den überfluteten Ort, das Tempo des Wassers, deinen Handlungsspielraum und die vorangegangenen Tage. Eine Vorhersage ist er nicht.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Was bedeutet es, vom Ertrinken zu träumen?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Ertrinken geht oft mit dem Gefühl einher, überfordert zu sein oder keine Luft zu bekommen. Es kann auch eine Körperempfindung oder ein aktuelles Bild aufgreifen. Wachst du oft mit Luftnot auf, sprich mit deiner Ärztin oder deinem Arzt.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Was bedeutet ein überflutetes Haus im Traum?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Es kann mit einer Sorge um Zuhause, Familie oder Sicherheit zusammenhängen. Notiere den Raum, die anwesenden Personen und was du retten wolltest, und prüfe einfache Auslöser wie einen Wasserschaden, einen Umzug oder Hochwasserbilder.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Ist klares Wasser im Traum ein gutes Zeichen?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Klares Wasser geht oft mit Erleichterung oder Klarheit einher, ist aber kein Omen, weder gut noch schlecht. Stieg es oder machte es dir Angst, zählt dein Gefühl mehr als seine Farbe.\"\n            }\n        }\n    ]\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Startseite\",\n      \"item\": \"https://noctalia.app/de/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Ressourcen\",\n      \"item\": \"https://noctalia.app/de/blog/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"Wasserträume\",\n      \"item\": \"https://noctalia.app/de/blog/wassertraeume-bedeutung-von-ertrinkungs-ozean-und-ueberschwemmungstraeumen\"\n    }\n  ]\n}"
   ],
   "activeNav": "resources"
@@ -67,7 +67,7 @@
                     Wasser- und Überschwemmungsträume: was sie bedeuten können, Detail für Detail
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Das Wasser steht schon auf der untersten Treppenstufe, als Sie es bemerken. Es drückt unter der Tür durch, steigt am Sofa hoch, und Sie tragen immer hastiger Dinge nach oben. Dann wachen Sie auf, mit Herzklopfen, in einem trockenen Bett. Wasser- und Überschwemmungsträume haben keine feste Bedeutung. Wo das Wasser war, wie schnell es stieg und was Sie tun konnten, sagt mehr als das Wort „Wasser“ allein.
+                    Das Wasser steht schon auf der untersten Treppenstufe, als du es bemerkst. Es drückt unter der Tür durch, steigt am Sofa hoch, und du trägst immer hastiger Dinge nach oben. Dann wachst du auf, mit Herzklopfen, in einem trockenen Bett. Wasser- und Überschwemmungsträume haben keine feste Bedeutung. Wo das Wasser war, wie schnell es stieg und was du tun konntest, sagt mehr als das Wort „Wasser“ allein.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -88,12 +88,12 @@
 <!-- GSC SEO Update: water and flood intent -->
 <section class="glass-panel rounded-2xl p-6 my-10 border border-dream-salmon/15 bg-white/5">
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Von Überschwemmung träumen: wenn das Wasser eine Grenze überschreitet</h2>
-<p class="text-gray-300 leading-relaxed mb-5">Bei einer Überschwemmung im Traum ist das Wasser dort, wo es nicht hingehört. Es bedeckt die Straße, dringt ins Haus ein, steigt zu schnell oder reißt Sie mit. Bevor Sie nach einer verborgenen Bedeutung suchen, notieren Sie, was bedroht war, was Sie noch tun konnten und ob etwas aus den letzten Tagen die Szene schon erklärt.</p>
+<p class="text-gray-300 leading-relaxed mb-5">Bei einer Überschwemmung im Traum ist das Wasser dort, wo es nicht hingehört. Es bedeckt die Straße, dringt ins Haus ein, steigt zu schnell oder reißt dich mit. Bevor du nach einer verborgenen Bedeutung suchst, notiere, was bedroht war, was du noch tun konntest und ob etwas aus den letzten Tagen die Szene schon erklärt.</p>
 <div class="grid md:grid-cols-2 gap-4 text-sm text-gray-300">
-<div class="glass-panel rounded-xl p-5 border border-white/10"><h3 class="font-serif text-lg text-dream-cream mb-2">Was bedeutet Wasser im Traum?</h3><p>Das hängt von der Szene ab. Beschreiben Sie Zustand und Bewegung des Wassers und Ihre Reaktion: Ruhiges Wasser kann den einen beruhigen und den anderen beunruhigen.</p></div>
-<div class="glass-panel rounded-xl p-5 border border-white/10"><h3 class="font-serif text-lg text-dream-cream mb-2">Was bedeuten Überschwemmungsträume?</h3><p>Sie gehen oft mit dem Gefühl einher, überrollt zu werden. Achten Sie auf den überfluteten Ort, das Tempo des Wassers und Ihren Handlungsspielraum.</p></div>
-<div class="glass-panel rounded-xl p-5 border border-white/10"><h3 class="font-serif text-lg text-dream-cream mb-2">Und eine Sturmflut mit Meerwasser?</h3><p>Das Meer bringt Weite und Ungewissheit ins Bild. Standen Sie am Ufer, waren Sie im Wasser oder suchten Sie höheres Gelände?</p></div>
-<div class="glass-panel rounded-xl p-5 border border-white/10"><h3 class="font-serif text-lg text-dream-cream mb-2">Was bedeutet ein überflutetes Haus im Traum?</h3><p>Notieren Sie den Raum, die anwesenden Personen und was Sie retten wollten. Eine Sorge um Zuhause, Familie oder Sicherheit ist eine Spur, kein Urteil.</p></div>
+<div class="glass-panel rounded-xl p-5 border border-white/10"><h3 class="font-serif text-lg text-dream-cream mb-2">Was bedeutet Wasser im Traum?</h3><p>Das hängt von der Szene ab. Beschreibe Zustand und Bewegung des Wassers und deine Reaktion: Ruhiges Wasser kann den einen beruhigen und den anderen beunruhigen.</p></div>
+<div class="glass-panel rounded-xl p-5 border border-white/10"><h3 class="font-serif text-lg text-dream-cream mb-2">Was bedeuten Überschwemmungsträume?</h3><p>Sie gehen oft mit dem Gefühl einher, überrollt zu werden. Achte auf den überfluteten Ort, das Tempo des Wassers und deinen Handlungsspielraum.</p></div>
+<div class="glass-panel rounded-xl p-5 border border-white/10"><h3 class="font-serif text-lg text-dream-cream mb-2">Und eine Sturmflut mit Meerwasser?</h3><p>Das Meer bringt Weite und Ungewissheit ins Bild. Standest du am Ufer, warst du im Wasser oder suchtest du höheres Gelände?</p></div>
+<div class="glass-panel rounded-xl p-5 border border-white/10"><h3 class="font-serif text-lg text-dream-cream mb-2">Was bedeutet ein überflutetes Haus im Traum?</h3><p>Notiere den Raum, die anwesenden Personen und was du retten wolltest. Eine Sorge um Zuhause, Familie oder Sicherheit ist eine Spur, kein Urteil.</p></div>
 </div>
 </section>
 <figure class="mb-12 rounded-2xl overflow-hidden">
@@ -105,11 +105,11 @@
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
 <li><a class="toc-link block" href="#symbolism">1. Steht Wasser im Traum immer für Gefühle?</a></li>
-<li><a class="toc-link block" href="#types">2. Welche Wasserszene haben Sie geträumt?</a></li>
+<li><a class="toc-link block" href="#types">2. Welche Wasserszene hast du geträumt?</a></li>
 <li><a class="toc-link block" href="#state">3. Klares, trübes, ruhiges oder steigendes Wasser</a></li>
 <li><a class="toc-link block" href="#interpretations">4. Fünf Deutungsansätze für Wasserträume</a></li>
 <li><a class="toc-link block" href="#psychology">5. Was die Forschung sagt und wie Jung und Freud es sahen</a></li>
-<li><a class="toc-link block" href="#action">6. Was Sie nach einem Wassertraum tun können</a></li>
+<li><a class="toc-link block" href="#action">6. Was du nach einem Wassertraum tun kannst</a></li>
 </ol>
 </nav>
 <div class="prose max-w-none text-gray-300">
@@ -118,11 +118,11 @@
                     Nicht unbedingt. In vielen Traditionen der Traumdeutung steht <a class="text-dream-salmon hover:underline" href="../traumsymbole/wasser">Wasser</a> für das Gefühlsleben, und das Bild leuchtet ein: Gefühle können ruhig oder aufgewühlt sein, klar oder trüb, und manchmal laufen sie über. Eine hilfreiche Metapher, aber keine Regel.
                 </p>
 <p>
-                    Ein vertrautes Schwimmbad, ein tropfender Siphon und eine Welle, die durch eine Stadt rollt, sind drei verschiedene Träume. Beginnen Sie mit dem, was Sie gesehen haben: Ort, Bewegung des Wassers, Ihr Handeln, Ihr Gefühl. Prüfen Sie dann die naheliegenden Erklärungen. Starkregen, ein Rohrbruch, ein Ausflug an die Ostsee oder Hochwasserbilder im Fernsehen können in einen Traum einfließen.
+                    Ein vertrautes Schwimmbad, ein tropfender Siphon und eine Welle, die durch eine Stadt rollt, sind drei verschiedene Träume. Beginne mit dem, was du gesehen hast: Ort, Bewegung des Wassers, dein Handeln, dein Gefühl. Prüfe dann die naheliegenden Erklärungen. Starkregen, ein Rohrbruch, ein Ausflug an die Ostsee oder Hochwasserbilder im Fernsehen können in einen Traum einfließen.
                 </p>
-<h2 id="types">Welche Wasserszene haben Sie geträumt?</h2>
+<h2 id="types">Welche Wasserszene hast du geträumt?</h2>
 <p>
-                    Die Art des Wassers hilft vor allem, genauere Fragen zu stellen. Lesen Sie die folgenden Karten als Spuren, die Sie mit Ihrer Situation vergleichen, nicht als Lexikoneinträge.
+                    Die Art des Wassers hilft vor allem, genauere Fragen zu stellen. Lies die folgenden Karten als Spuren, die du mit deiner Situation vergleichst, nicht als Lexikoneinträge.
                 </p>
 </div>
 <div class="grid md:grid-cols-2 gap-6 my-12">
@@ -134,7 +134,7 @@
 <h3 class="font-serif text-lg text-dream-cream"><a class="text-dream-cream hover:text-dream-salmon transition-colors" href="../traumsymbole/meer">Vom Meer träumen</a></h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Die Weite des <a class="text-dream-salmon hover:underline" href="../traumsymbole/meer">Meeres</a> kann <strong>Staunen oder das Gefühl des Unbekannten</strong> auslösen. Standen Sie am Strand, waren Sie weit draußen oder auf der Suche nach einem sicheren Ort? Ihre Position zeigt, wie viel Kontrolle Sie spürten.
+                        Die Weite des <a class="text-dream-salmon hover:underline" href="../traumsymbole/meer">Meeres</a> kann <strong>Staunen oder das Gefühl des Unbekannten</strong> auslösen. Standest du am Strand, warst du weit draußen oder auf der Suche nach einem sicheren Ort? Deine Position zeigt, wie viel Kontrolle du spürtest.
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -145,7 +145,7 @@
 <h3 class="font-serif text-lg text-dream-cream">Vom Ertrinken träumen</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        <a class="text-dream-salmon hover:underline" href="../traumsymbole/ertrinken">Ertrinken</a> geht oft mit dem Gefühl einher, <strong>dass Ihnen etwas über den Kopf wächst</strong>: zu viel Arbeit, zu viele Ansprüche, keine Luft. Es kann auch eine Körperempfindung aufgreifen, etwa eine verstopfte Nase oder eine schwere Bettdecke. Sind Sie aufgetaucht oder vorher aufgewacht?
+                        <a class="text-dream-salmon hover:underline" href="../traumsymbole/ertrinken">Ertrinken</a> geht oft mit dem Gefühl einher, <strong>dass dir etwas über den Kopf wächst</strong>: zu viel Arbeit, zu viele Ansprüche, keine Luft. Es kann auch eine Körperempfindung aufgreifen, etwa eine verstopfte Nase oder eine schwere Bettdecke. Bist du aufgetaucht oder vorher aufgewacht?
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -156,7 +156,7 @@
 <h3 class="font-serif text-lg text-dream-cream">Von Hochwasser und Überschwemmung träumen</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Eine <a class="text-dream-salmon hover:underline" href="../traumsymbole/ueberschwemmung">Überschwemmung</a> wird oft mit <strong>Stress oder einer zu schnellen Veränderung</strong> verbunden. Manche spüren Erleichterung, wenn das Wasser abfließt. Der überflutete Ort und das Tempo des Wassers geben Ihnen mehr Anhaltspunkte als die Flut selbst.
+                        Eine <a class="text-dream-salmon hover:underline" href="../traumsymbole/ueberschwemmung">Überschwemmung</a> wird oft mit <strong>Stress oder einer zu schnellen Veränderung</strong> verbunden. Manche spüren Erleichterung, wenn das Wasser abfließt. Der überflutete Ort und das Tempo des Wassers geben dir mehr Anhaltspunkte als die Flut selbst.
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -167,7 +167,7 @@
 <h3 class="font-serif text-lg text-dream-cream">Vom Schwimmen träumen</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Mühelos <a class="text-dream-salmon hover:underline" href="../traumsymbole/schwimmen">schwimmen</a>, sich treiben lassen, jemanden retten oder gegen die Strömung kämpfen sind verschiedene Szenen. Sie beschreiben, <strong>wie viel Kraft und Kontrolle</strong> Sie hatten. Notieren Sie das genaue Verb, bevor Sie nach einer Bedeutung suchen.
+                        Mühelos <a class="text-dream-salmon hover:underline" href="../traumsymbole/schwimmen">schwimmen</a>, sich treiben lassen, jemanden retten oder gegen die Strömung kämpfen sind verschiedene Szenen. Sie beschreiben, <strong>wie viel Kraft und Kontrolle</strong> du hattest. Notiere das genaue Verb, bevor du nach einer Bedeutung suchst.
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -178,7 +178,7 @@
 <h3 class="font-serif text-lg text-dream-cream">Von einem See oder Teich träumen</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Ein stiller See kann <strong>für die eine Person friedlich, für die andere bedrohlich</strong> wirken. Notieren Sie, wie tief er schien, ob Sie den Ort kannten und ob Sie hineinwollten. Ein trüber Teich geht oft mit Unbehagen einher, mit dem Eindruck, dass etwas verborgen bleibt.
+                        Ein stiller See kann <strong>für die eine Person friedlich, für die andere bedrohlich</strong> wirken. Notiere, wie tief er schien, ob du den Ort kanntest und ob du hineinwolltest. Ein trüber Teich geht oft mit Unbehagen einher, mit dem Eindruck, dass etwas verborgen bleibt.
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -189,47 +189,47 @@
 <h3 class="font-serif text-lg text-dream-cream">Von einem Fluss träumen</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Einen <a class="text-dream-salmon hover:underline" href="../traumsymbole/fluss">Fluss</a> überqueren, sich treiben lassen oder mitgerissen werden: drei verschiedene Geschichten. Viele verbinden sie mit <strong>einem Richtungswechsel</strong>. Achten Sie darauf, wohin Sie unterwegs waren und ob Sie wählen konnten.
+                        Einen <a class="text-dream-salmon hover:underline" href="../traumsymbole/fluss">Fluss</a> überqueren, sich treiben lassen oder mitgerissen werden: drei verschiedene Geschichten. Viele verbinden sie mit <strong>einem Richtungswechsel</strong>. Achte darauf, wohin du unterwegs warst und ob du wählen konntest.
                     </p>
 </div>
 </div>
 <div class="prose max-w-none text-gray-300">
 <h3 id="flooded-house">Von einem überfluteten Haus träumen</h3>
-<p>War es Ihre jetzige Wohnung, das Elternhaus oder ein fremdes Haus? Notieren Sie, welcher Raum unter Wasser stand, wer da war und wie schnell das Wasser stieg. Dinge retten, jemandem helfen oder einen Ausweg suchen weisen auf unterschiedliche Sorgen hin. Auch Ihre Reaktion zählt: Panik, Konzentration oder Erleichterung, als das Wasser zurückging.</p>
-<p>Vergleichen Sie die Szene dann mit aktuellen Ereignissen, etwa einem Wasserschaden, einem Umzug, Spannungen zu Hause oder Hochwasserbildern in den Nachrichten. Eine Sorge um Ihr <a class="text-dream-salmon hover:underline" href="../traumsymbole/haus">Zuhause</a> oder die Menschen darin ist eine mögliche Spur, kein Befund über Ihre Familie oder Ihre Sicherheit.</p>
+<p>War es deine jetzige Wohnung, das Elternhaus oder ein fremdes Haus? Notiere, welcher Raum unter Wasser stand, wer da war und wie schnell das Wasser stieg. Dinge retten, jemandem helfen oder einen Ausweg suchen weisen auf unterschiedliche Sorgen hin. Auch deine Reaktion zählt: Panik, Konzentration oder Erleichterung, als das Wasser zurückging.</p>
+<p>Vergleiche die Szene dann mit aktuellen Ereignissen, etwa einem Wasserschaden, einem Umzug, Spannungen zu Hause oder Hochwasserbildern in den Nachrichten. Eine Sorge um dein <a class="text-dream-salmon hover:underline" href="../traumsymbole/haus">Zuhause</a> oder die Menschen darin ist eine mögliche Spur, kein Befund über deine Familie oder deine Sicherheit.</p>
 <h3 id="flooded-road">Von einer überfluteten Straße träumen</h3>
-<p>Eine Straße unter Wasser beendet eine Fahrt oder erzwingt einen Umweg. Wohin wollten Sie, und konnten Sie umkehren oder einen anderen Weg finden? Die Szene kann einen Rückschlag im Wachleben spiegeln oder einfach eine kürzliche Fahrt wiederverwenden. Sie sagt weder einen Unfall noch das Scheitern eines Plans voraus.</p>
+<p>Eine Straße unter Wasser beendet eine Fahrt oder erzwingt einen Umweg. Wohin wolltest du, und konntest du umkehren oder einen anderen Weg finden? Die Szene kann einen Rückschlag im Wachleben spiegeln oder einfach eine kürzliche Fahrt wiederverwenden. Sie sagt weder einen Unfall noch das Scheitern eines Plans voraus.</p>
 <h2 id="state">Klar, trüb, ruhig oder steigend: was der Zustand des Wassers ergänzt</h2>
 <p>
-                    Der Zustand des Wassers bestimmt die Stimmung des Traums. Er liest nicht Ihre Gedanken, hilft Ihnen aber, Ihr Gefühl zu benennen.
+                    Der Zustand des Wassers bestimmt die Stimmung des Traums. Er liest nicht deine Gedanken, hilft dir aber, dein Gefühl zu benennen.
                 </p>
 <h3>Klares Wasser</h3>
 <p>
-                    Klares Wasser wird oft mit <strong>Erleichterung, Klarheit oder einem unverstellten Blick</strong> auf eine Lage verbunden. Stieg es aber schnell oder machte es Ihnen Angst, wird der Traum durch die Klarheit nicht angenehmer.
+                    Klares Wasser wird oft mit <strong>Erleichterung, Klarheit oder einem unverstellten Blick</strong> auf eine Lage verbunden. Stieg es aber schnell oder machte es dir Angst, wird der Traum durch die Klarheit nicht angenehmer.
                 </p>
 <h3>Trübes oder schmutziges Wasser</h3>
 <p>
-                    Trübes Wasser geht häufig mit <strong>Verwirrung, Ekel oder dem Gefühl einher, einem Problem nicht auf den Grund zu sehen</strong>. Fragen Sie sich auch, ob Sie kürzlich schmutziges Wasser, einen verstopften Abfluss oder ein ähnliches Bild gesehen haben.
+                    Trübes Wasser geht häufig mit <strong>Verwirrung, Ekel oder dem Gefühl einher, einem Problem nicht auf den Grund zu sehen</strong>. Frag dich auch, ob du kürzlich schmutziges Wasser, einen verstopften Abfluss oder ein ähnliches Bild gesehen hast.
                 </p>
 <h3>Ruhiges Wasser</h3>
 <p>
-                    Stilles Wasser kann sich wie <strong>Erholung, Warten oder Stillstand</strong> anfühlen. Nur Ihr Gefühl im Traum kann diese drei unterscheiden.
+                    Stilles Wasser kann sich wie <strong>Erholung, Warten oder Stillstand</strong> anfühlen. Nur dein Gefühl im Traum kann diese drei unterscheiden.
                 </p>
 <h3>Aufgewühltes oder steigendes Wasser</h3>
 <p>
-                    Wellen, Stromschnellen oder Wasser, das immer weiter steigt, erzeugen <strong>Dringlichkeit</strong>. Fanden Sie Halt, verloren Sie den Boden unter den Füßen oder kamen Sie heraus?
+                    Wellen, Stromschnellen oder Wasser, das immer weiter steigt, erzeugen <strong>Dringlichkeit</strong>. Fandest du Halt, verlorst du den Boden unter den Füßen oder kamst du heraus?
                 </p>
 <h3>Warmes oder kaltes Wasser</h3>
 <p>
-                    Warmes Wasser wird oft als <strong>Geborgenheit</strong> erlebt, kaltes als Schock. Achten Sie auch auf das Schlafzimmer: Ein kalter Raum kann im Traum auftauchen.
+                    Warmes Wasser wird oft als <strong>Geborgenheit</strong> erlebt, kaltes als Schock. Achte auch auf das Schlafzimmer: Ein kalter Raum kann im Traum auftauchen.
                 </p>
 <h2 id="interpretations">Fünf Deutungsansätze für Wasserträume</h2>
 <p>
-                    Keine Liste kann Ihnen sagen, warum gerade <em>Sie</em> diesen Traum hatten. Behalten Sie, was stimmig wirkt, und lassen Sie den Rest.
+                    Keine Liste kann dir sagen, warum gerade <em>du</em> diesen Traum hattest. Behalte, was stimmig wirkt, und lass den Rest.
                 </p>
 <h3>1. Druck, der schwer zu halten ist</h3>
 <p>
-                    Eine Flut oder eine Riesenwelle kann an eine Verantwortung erinnern, die zu viel Raum einnimmt. Suchen Sie eine konkrete, aktuelle Entsprechung, bevor Sie diese Spur festhalten: <strong>Was läuft gerade über?</strong>
+                    Eine Flut oder eine Riesenwelle kann an eine Verantwortung erinnern, die zu viel Raum einnimmt. Such eine konkrete, aktuelle Entsprechung, bevor du diese Spur festhältst: <strong>Was läuft gerade über?</strong>
                 </p>
 <h3>2. Ein aktuelles Bild, neu abgespielt</h3>
 <p>
@@ -241,15 +241,15 @@
                 </p>
 <h3>4. Ein Übergang oder ein Richtungswechsel</h3>
 <p>
-                    Einen Fluss durchqueren, das Ufer erreichen oder über eine <a class="text-dream-salmon hover:underline" href="../traumsymbole/bruecke">Brücke</a> gehen kann helfen, über eine <strong>Entscheidung oder einen Übergang</strong> nachzudenken. Wohin Sie unterwegs waren und ob Sie es selbst gewählt haben, zählt mehr als das Wasser.
+                    Einen Fluss durchqueren, das Ufer erreichen oder über eine <a class="text-dream-salmon hover:underline" href="../traumsymbole/bruecke">Brücke</a> gehen kann helfen, über eine <strong>Entscheidung oder einen Übergang</strong> nachzudenken. Wohin du unterwegs warst und ob du es selbst gewählt hast, zählt mehr als das Wasser.
                 </p>
-<h3>5. Ihr schlafender Körper</h3>
+<h3>5. Dein schlafender Körper</h3>
 <p>
-                    Durst, eine volle Blase, eine verstopfte Nase oder Regen am Fenster können manchmal in einen Traum hineinwirken. Eine bescheidene Spur, aber leicht zu prüfen: <strong>Wie fühlte sich Ihr Körper beim Aufwachen an?</strong>
+                    Durst, eine volle Blase, eine verstopfte Nase oder Regen am Fenster können manchmal in einen Traum hineinwirken. Eine bescheidene Spur, aber leicht zu prüfen: <strong>Wie fühlte sich dein Körper beim Aufwachen an?</strong>
                 </p>
 <h3 id="journal-example">Ein Beispiel aus dem Traumtagebuch</h3>
 <p>
-<strong>Fiktives Beispiel:</strong> Dieser Eintrag zeigt, wie Sie Szene, Gefühl und eine mögliche Verbindung zum Alltag getrennt festhalten.
+<strong>Fiktives Beispiel:</strong> Dieser Eintrag zeigt, wie du Szene, Gefühl und eine mögliche Verbindung zum Alltag getrennt festhältst.
 </p>
 <ul>
 <li><strong>Traum:</strong> „Durch den Küchenboden drückte Wasser herauf. Ich stellte meinen Laptop immer höher, Regal für Regal. Meine Schwester blieb ruhig und kochte Kaffee.“</li>
@@ -259,7 +259,7 @@
 <li><strong>Offene Frage:</strong> „Kommen diese Überschwemmungsträume wieder, wenn sich Arbeit staut, oder in Regennächten?“</li>
 </ul>
 <p>
-                    Ein einzelner Eintrag beweist nichts. Über mehrere Nächte sehen Sie, welche Spur sich hält.
+                    Ein einzelner Eintrag beweist nichts. Über mehrere Nächte siehst du, welche Spur sich hält.
                 </p>
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <div class="flex items-start gap-4">
@@ -267,8 +267,8 @@
 <i class="w-6 h-6 text-dream-salmon" data-lucide="sparkles"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Halten Sie die Details fest, bevor sie verblassen</h4>
-<p class="text-sm text-gray-400 mb-4">Sprechen Sie Ihren Traum in Noctalia direkt nach dem Aufwachen ein oder tippen Sie ihn. Er wird transkribiert und mit Ort, Wasser und Gefühl in Ihrem Tagebuch gespeichert, sodass Sie Ihre Wasserträume später nebeneinander lesen können.</p>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Halte die Details fest, bevor sie verblassen</h4>
+<p class="text-sm text-gray-400 mb-4">Sprich deinen Traum in Noctalia direkt nach dem Aufwachen ein oder tipp ihn. Er wird transkribiert und mit Ort, Wasser und Gefühl in deinem Tagebuch gespeichert, sodass du deine Wasserträume später nebeneinander lesen kannst.</p>
 <a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/de/ki-traumdeutung-app">
                                 Noctalia kostenlos testen <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
@@ -278,39 +278,39 @@
 <h2 id="psychology">Was die Forschung sagt und wie Jung und Freud es sahen</h2>
 <h3>Was die Forschung stützt</h3>
 <p>
-                    Die Traumforschung untersucht seit Langem die <strong>Kontinuitätshypothese</strong>: die Annahme, dass Träume aus dem Wachleben schöpfen. Eine Tagebuchstudie von Michael Schredl und Frauke Hofmann (2003) fand diesen Zusammenhang, aber ungleichmäßig. Manche Tätigkeiten des Tages tauchen in Träumen viel seltener auf als andere, und die Autoren folgerten, dass die Hypothese genauer gefasst werden muss. Keine Studie hat Wasser eine allgemeingültige Bedeutung zugeschrieben, doch Ihre aktuellen Sorgen sind ein guter Ausgangspunkt.
+                    Die Traumforschung untersucht seit Langem die <strong>Kontinuitätshypothese</strong>: die Annahme, dass Träume aus dem Wachleben schöpfen. Eine Tagebuchstudie von Michael Schredl und Frauke Hofmann (2003) fand diesen Zusammenhang, aber ungleichmäßig. Manche Tätigkeiten des Tages tauchen in Träumen viel seltener auf als andere, und die Autoren folgerten, dass die Hypothese genauer gefasst werden muss. Keine Studie hat Wasser eine allgemeingültige Bedeutung zugeschrieben, doch deine aktuellen Sorgen sind ein guter Ausgangspunkt.
                 </p>
 <h3>Die Sicht C. G. Jungs</h3>
 <p>
-                    C. G. Jung sah im Wasser das häufigste Symbol für das Unbewusste und kommt in seinen Schriften über die Archetypen immer wieder auf dieses Bild zurück. In diesem Rahmen kann das Hinabsteigen ins Wasser für die Hinwendung zu dem stehen, was noch nicht bewusst ist. Eine Deutungstradition, hilfreich, wenn sie Sie anspricht, aber kein Beweis.
+                    C. G. Jung sah im Wasser das häufigste Symbol für das Unbewusste und kommt in seinen Schriften über die Archetypen immer wieder auf dieses Bild zurück. In diesem Rahmen kann das Hinabsteigen ins Wasser für die Hinwendung zu dem stehen, was noch nicht bewusst ist. Eine Deutungstradition, hilfreich, wenn sie dich anspricht, aber kein Beweis.
                 </p>
 <h3>Die Sicht Sigmund Freuds</h3>
 <p>
                     In der <em>Traumdeutung</em> (1900) brachte Freud manche Wasserträume, etwa ins Wasser fallen oder aus ihm heraussteigen, mit der Geburt in Verbindung. Diese Lesart prägte die Geschichte der Psychoanalyse. Sie ist ein historischer Rahmen, kein wissenschaftlicher Befund.
                 </p>
-<h2 id="action">Was Sie nach einem Wassertraum tun können</h2>
+<h2 id="action">Was du nach einem Wassertraum tun kannst</h2>
 <p>
-                    Die meisten Wasserträume brauchen nichts Besonderes. Wenn einer Sie nicht loslässt, helfen diese Schritte.
+                    Die meisten Wasserträume brauchen nichts Besonderes. Wenn einer dich nicht loslässt, helfen diese Schritte.
                 </p>
 <h3>1. Erst beschreiben, dann deuten</h3>
 <p>
-                    Notieren Sie direkt nach dem Aufwachen <strong>den Ort, das Wasser und seine Bewegung</strong>: ruhig, aufgewühlt, klar, trüb, warm, kalt, steigend oder sinkend. Unser <a class="text-dream-salmon hover:underline" href="dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer">Leitfaden zum Traumtagebuch</a> zeigt eine einfache Methode.
+                    Notiere direkt nach dem Aufwachen <strong>den Ort, das Wasser und seine Bewegung</strong>: ruhig, aufgewühlt, klar, trüb, warm, kalt, steigend oder sinkend. Unser <a class="text-dream-salmon hover:underline" href="dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer">Leitfaden zum Traumtagebuch</a> zeigt eine einfache Methode.
                 </p>
-<h3>2. Notieren Sie, was Sie taten und fühlten</h3>
+<h3>2. Notiere, was du getan und gefühlt hast</h3>
 <p>
-                    Sind Sie geschwommen, haben Sie sich treiben lassen, Wasser geschöpft oder einen Ausweg gesucht? Das Verb zeigt, <strong>wie viel Handlungsspielraum Sie hatten</strong>. Benennen Sie dann das Gefühl (Angst, Ruhe, Erleichterung, Ekel) und wie stark es war.
+                    Bist du geschwommen, hast du dich treiben lassen, Wasser geschöpft oder einen Ausweg gesucht? Das Verb zeigt, <strong>wie viel Handlungsspielraum du hattest</strong>. Benenne dann das Gefühl (Angst, Ruhe, Erleichterung, Ekel) und wie stark es war.
                 </p>
-<h3>3. Vergleichen Sie zwei Erklärungen</h3>
+<h3>3. Vergleiche zwei Erklärungen</h3>
 <p>
-                    Stellen Sie eine persönliche Verbindung („bei der Arbeit läuft alles über“) neben eine wörtlichere („es hat die ganze Nacht geregnet“). Passt keine, lassen Sie die Frage offen. Das ist in Ordnung.
+                    Stell eine persönliche Verbindung („bei der Arbeit läuft alles über“) neben eine wörtlichere („es hat die ganze Nacht geregnet“). Passt keine, lass die Frage offen. Das ist in Ordnung.
                 </p>
-<h3>4. Beobachten Sie wiederkehrende Wasserträume</h3>
+<h3>4. Beobachte wiederkehrende Wasserträume</h3>
 <p>
-                    Wiederholt sich das Thema, vergleichen Sie Daten, Szenen und den jeweiligen Vortag. Unser Artikel über <a class="text-dream-salmon hover:underline" href="wiederkehrende-traeume-bedeuten-ihre-verborgenen-botschaften-verstehen">wiederkehrende Träume</a> erklärt, wie Sie ein Muster erkennen. Bei belastenden Szenen können Sie im Wachzustand ein neues Ende einüben, wie in unserem <a class="text-dream-salmon hover:underline" href="albtraeume-ursachen-bedeutung-und-wie-man-sie-stoppen-kann">Ratgeber gegen Albträume</a> beschrieben.
+                    Wiederholt sich das Thema, vergleiche Daten, Szenen und den jeweiligen Vortag. Unser Artikel über <a class="text-dream-salmon hover:underline" href="wiederkehrende-traeume-bedeuten-ihre-verborgenen-botschaften-verstehen">wiederkehrende Träume</a> erklärt, wie du ein Muster erkennst. Bei belastenden Szenen kannst du im Wachzustand ein neues Ende einüben, wie in unserem <a class="text-dream-salmon hover:underline" href="albtraeume-ursachen-bedeutung-und-wie-man-sie-stoppen-kann">Ratgeber gegen Albträume</a> beschrieben.
                 </p>
-<h3>5. Wann Sie ärztlichen Rat suchen sollten</h3>
+<h3>5. Wann du ärztlichen Rat suchen solltest</h3>
 <p>
-                    Laut dem österreichischen <a class="text-dream-salmon hover:underline" href="https://www.gesundheit.gv.at/krankheiten/gehirn-nerven/schlafstoerungen/albtraeume.html" rel="nofollow noopener noreferrer" target="_blank">Gesundheitsportal</a> ist professionelle Hilfe sinnvoll, wenn Albträume häufig auftreten und Schlaf und Wohlbefinden spürbar beeinträchtigen, ob mit Wasser oder ohne. Wachen Sie nach Ertrinkungs- oder Erstickungsträumen oft mit Herzrasen und Luftnot auf, schnarchen Sie laut oder sind Sie tagsüber stark müde, sprechen Sie das ebenfalls an: <a class="text-dream-salmon hover:underline" href="https://gesund.bund.de/obstruktive-schlafapnoe-osa" rel="nofollow noopener noreferrer" target="_blank">gesund.bund.de</a> nennt plötzliches Erwachen mit Luftnot und starke Tagesmüdigkeit als mögliche Anzeichen einer Schlafapnoe. Der Traum selbst ist keine Diagnose.
+                    Laut dem österreichischen <a class="text-dream-salmon hover:underline" href="https://www.gesundheit.gv.at/krankheiten/gehirn-nerven/schlafstoerungen/albtraeume.html" rel="nofollow noopener noreferrer" target="_blank">Gesundheitsportal</a> ist professionelle Hilfe sinnvoll, wenn Albträume häufig auftreten und Schlaf und Wohlbefinden spürbar beeinträchtigen, ob mit Wasser oder ohne. Wachst du nach Ertrinkungs- oder Erstickungsträumen oft mit Herzrasen und Luftnot auf, schnarchst du laut oder bist du tagsüber stark müde, sprich das ebenfalls an: <a class="text-dream-salmon hover:underline" href="https://gesund.bund.de/obstruktive-schlafapnoe-osa" rel="nofollow noopener noreferrer" target="_blank">gesund.bund.de</a> nennt plötzliches Erwachen mit Luftnot und starke Tagesmüdigkeit als mögliche Anzeichen einer Schlafapnoe. Der Traum selbst ist keine Diagnose.
                 </p>
 </div>
 <!-- Symbol Guide CTA -->
@@ -358,7 +358,7 @@
 </div>
 <h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Ein Hochwassertraum ist eine Szene. Mehrere ergeben ein Muster.</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Bewahren Sie Ihre Wasserträume in Noctalia auf, mit Ort, Wasser und Gefühl. Wenn Sie sie nebeneinander lesen, sehen Sie, wann sie wiederkommen und was sie begleitet.
+                    Bewahre deine Wasserträume in Noctalia auf, mit Ort, Wasser und Gefühl. Wenn du sie nebeneinander liest, siehst du, wann sie wiederkommen und was sie begleitet.
                 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/de/">
                     Mein Traumtagebuch beginnen <i class="w-5 h-5" data-lucide="arrow-right"></i>
@@ -374,7 +374,7 @@ Was bedeutet Wasser im Traum?
 <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-Wasser wird oft als Bild für Gefühle gelesen, hat aber keine allgemeingültige Bedeutung. Ort, Bewegung des Wassers, Ihr Handeln, Ihr Gefühl und die Ereignisse der letzten Tage helfen mehr als das Symbol allein.
+Wasser wird oft als Bild für Gefühle gelesen, hat aber keine allgemeingültige Bedeutung. Ort, Bewegung des Wassers, dein Handeln, dein Gefühl und die Ereignisse der letzten Tage helfen mehr als das Symbol allein.
 </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -383,7 +383,7 @@ Was bedeutet es, von Überschwemmung zu träumen?
 <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-Ein Überschwemmungstraum begleitet oft Stress oder eine Veränderung, die sich zu schnell anfühlt. Achten Sie auf den überfluteten Ort, das Tempo des Wassers, Ihren Handlungsspielraum und die vorangegangenen Tage. Eine Vorhersage ist er nicht.
+Ein Überschwemmungstraum begleitet oft Stress oder eine Veränderung, die sich zu schnell anfühlt. Achte auf den überfluteten Ort, das Tempo des Wassers, deinen Handlungsspielraum und die vorangegangenen Tage. Eine Vorhersage ist er nicht.
 </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -392,7 +392,7 @@ Was bedeutet es, vom Ertrinken zu träumen?
 <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-Ertrinken geht oft mit dem Gefühl einher, überfordert zu sein oder keine Luft zu bekommen. Es kann auch eine Körperempfindung oder ein aktuelles Bild aufgreifen. Wachen Sie oft mit Luftnot auf, sprechen Sie mit Ihrer Ärztin oder Ihrem Arzt.
+Ertrinken geht oft mit dem Gefühl einher, überfordert zu sein oder keine Luft zu bekommen. Es kann auch eine Körperempfindung oder ein aktuelles Bild aufgreifen. Wachst du oft mit Luftnot auf, sprich mit deiner Ärztin oder deinem Arzt.
 </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -401,7 +401,7 @@ Was bedeutet ein überflutetes Haus im Traum?
 <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-Es kann mit einer Sorge um Zuhause, Familie oder Sicherheit zusammenhängen. Notieren Sie den Raum, die anwesenden Personen und was Sie retten wollten, und prüfen Sie einfache Auslöser wie einen Wasserschaden, einen Umzug oder Hochwasserbilder.
+Es kann mit einer Sorge um Zuhause, Familie oder Sicherheit zusammenhängen. Notiere den Raum, die anwesenden Personen und was du retten wolltest, und prüfe einfache Auslöser wie einen Wasserschaden, einen Umzug oder Hochwasserbilder.
 </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -410,7 +410,7 @@ Ist klares Wasser im Traum ein gutes Zeichen?
 <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-Klares Wasser geht oft mit Erleichterung oder Klarheit einher, ist aber kein Omen, weder gut noch schlecht. Stieg es oder machte es Ihnen Angst, zählt Ihr Gefühl mehr als seine Farbe.
+Klares Wasser geht oft mit Erleichterung oder Klarheit einher, ist aber kein Omen, weder gut noch schlecht. Stieg es oder machte es dir Angst, zählt dein Gefühl mehr als seine Farbe.
 </p>
 </details>
 </div>
@@ -440,7 +440,7 @@ Klares Wasser geht oft mit Erleichterung oder Klarheit einher, ist aber kein Ome
                                                                 <a href="traeume-ueber-deinen-ex-was-sie-wirklich-bedeuten" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                                                                   <div>
                                                                     <span class="text-xs text-purple-300/60 uppercase tracking-wide">Nächster Artikel</span>
-                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Träume über Ihren Ex: Was sie wirklich bedeuten</div>
+                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Träume über deinen Ex: Was sie wirklich bedeuten</div>
                                                                   </div>
                                                                   <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
                                                                 </a>
@@ -458,17 +458,17 @@ Klares Wasser geht oft mit Erleichterung oder Klarheit einher, ist aber kein Ome
                     <a href="wiederkehrende-traeume-bedeuten-ihre-verborgenen-botschaften-verstehen" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Deutung</span>
                         <h3 class="font-serif text-lg text-dream-cream mb-2">Wiederkehrende Träume: Ihre verborgenen Botschaften verstehen</h3>
-                        <p class="text-sm text-gray-400">Warum derselbe Traum wiederkehrt, was Sie zwischen den Episoden notieren können und wann wiederholte Albträume ärztlich abgeklärt werden sollten.</p>
+                        <p class="text-sm text-gray-400">Warum derselbe Traum wiederkehrt, was du zwischen den Episoden notieren kannst und wann wiederholte Albträume ärztlich abgeklärt werden sollten.</p>
                     </a>
                     <a href="traeume-von-ausfallenden-zaehnen-bedeutung-und-interpretation" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Deutung</span>
                         <h3 class="font-serif text-lg text-dream-cream mb-2">Träume von ausfallenden Zähnen: Bedeutung und Interpretation</h3>
-                        <p class="text-sm text-gray-400">Sieben mögliche Lesarten von Träumen über ausfallende Zähne, vom verspannten Kiefer bis zur Angst vor Blamage, und die Varianten, auf die Sie achten können.</p>
+                        <p class="text-sm text-gray-400">Sieben mögliche Lesarten von Träumen über ausfallende Zähne, vom verspannten Kiefer bis zur Angst vor Blamage, und die Varianten, auf die du achten kannst.</p>
                     </a>
                     <a href="bedeutung-von-fallenden-traeumen-warum-sie-vom-fallen-traeumen" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Deutung</span>
-                        <h3 class="font-serif text-lg text-dream-cream mb-2">Fallende Träume: Warum Sie vom Fallen träumen</h3>
-                        <p class="text-sm text-gray-400">Warum wir vom Fallen träumen, vom Zucken beim Einschlafen bis zum langen Sturz, und was Sie nach dem Aufwachen notieren können.</p>
+                        <h3 class="font-serif text-lg text-dream-cream mb-2">Fallende Träume: Warum du vom Fallen träumst</h3>
+                        <p class="text-sm text-gray-400">Warum wir vom Fallen träumen, vom Zucken beim Einschlafen bis zum langen Sturz, und was du nach dem Aufwachen notieren kannst.</p>
                     </a>
               </div>
             </section>
@@ -477,6 +477,6 @@ Klares Wasser geht oft mit Erleichterung oder Klarheit einher, ist aber kein Ome
 <!-- Health Disclaimer (TI-97 E-E-A-T) -->
 <aside aria-label="Disclaimer" class="glass-panel rounded-xl p-4 my-8 border border-purple-500/20" role="note">
 <p class="text-sm text-purple-200/70">
-<strong class="text-dream-cream">Wichtig:</strong> Dieser Artikel dient nur zu Informationszwecken und stellt keine medizinische oder psychologische Beratung dar. Wenn Sie unter anhaltenden Schlafstörungen oder psychischen Problemen leiden, wenden Sie sich bitte an einen qualifizierten Arzt.
+<strong class="text-dream-cream">Wichtig:</strong> Dieser Artikel dient nur zu Informationszwecken und stellt keine medizinische oder psychologische Beratung dar. Wenn du unter anhaltenden Schlafstörungen oder psychischen Problemen leidest, wende dich bitte an einen qualifizierten Arzt.
                 </p>
 </aside>

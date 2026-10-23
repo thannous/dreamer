@@ -14,12 +14,12 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "website",
   "ogTitle": "Traumbedeutungen: Interpretation & Symbole",
-  "ogDescription": "Häufige Traumsymbole und Traumthemen und eine Methode in vier Schritten, um einen Traum von Ihrer Szene und Ihrem Gefühl aus zu lesen.",
+  "ogDescription": "Häufige Traumsymbole und Traumthemen und eine Methode in vier Schritten, um einen Traum von deiner Szene und deinem Gefühl aus zu lesen.",
   "ogImage": "https://noctalia.app/img/og/noctalia-de-1200x630.jpg",
   "ogImageAlt": "",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Traumbedeutungen: Interpretation & Symbole",
-  "twitterDescription": "Häufige Traumsymbole und Traumthemen und eine einfache Methode, Ihren Traum vom eigenen Gefühl aus zu deuten.",
+  "twitterDescription": "Häufige Traumsymbole und Traumthemen und eine einfache Methode, deinen Traum vom eigenen Gefühl aus zu deuten.",
   "twitterImage": "https://noctalia.app/img/og/noctalia-de-1200x630.jpg",
   "twitterImageAlt": "Traumbedeutungen: Interpretation & Symbole",
   "publishedTime": "",
@@ -65,29 +65,29 @@
 Traumbedeutungen: Träume und ihre Symbole deuten
 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-Sie wachen auf, und ein Bild ist noch ganz scharf: eine Treppe, die nicht endet, ein Handy, mit dem Sie niemanden erreichen, ein Zahn, der wackelt. Bevor es verblasst, möchten Sie wissen, was es bedeutet. Dieser Themen-Hub zu Traumbedeutungen bündelt unsere Ratgeber zu häufigen Traumthemen und Symbolen. Dabei gilt ein Grundsatz: Dasselbe Symbol kann je nach Szene, Gefühl und aktueller Lebenslage etwas anderes bedeuten.
+Du wachst auf, und ein Bild ist noch ganz scharf: eine Treppe, die nicht endet, ein Handy, mit dem du niemanden erreichst, ein Zahn, der wackelt. Bevor es verblasst, möchtest du wissen, was es bedeutet. Dieser Themen-Hub zu Traumbedeutungen bündelt unsere Ratgeber zu häufigen Traumthemen und Symbolen. Dabei gilt ein Grundsatz: Dasselbe Symbol kann je nach Szene, Gefühl und aktueller Lebenslage etwas anderes bedeuten.
 </p>
 <p class="text-sm text-purple-200/70 leading-relaxed mt-4">
-Sie suchen ein bestimmtes Bild? Öffnen Sie das <a class="text-dream-salmon hover:underline" href="../guides/traumsymbole-lexikon">Lexikon der Traumsymbole</a> oder beginnen Sie mit häufigen Symbolen wie <a class="text-dream-salmon hover:underline" href="../traumsymbole/wasser">Wasser</a>, <a class="text-dream-salmon hover:underline" href="../traumsymbole/zaehne">Zähnen</a> und <a class="text-dream-salmon hover:underline" href="../traumsymbole/schlange">Schlangen</a>.
+Du suchst ein bestimmtes Bild? Öffne das <a class="text-dream-salmon hover:underline" href="../guides/traumsymbole-lexikon">Lexikon der Traumsymbole</a> oder beginne mit häufigen Symbolen wie <a class="text-dream-salmon hover:underline" href="../traumsymbole/wasser">Wasser</a>, <a class="text-dream-salmon hover:underline" href="../traumsymbole/zaehne">Zähnen</a> und <a class="text-dream-salmon hover:underline" href="../traumsymbole/schlange">Schlangen</a>.
 </p>
 <p class="text-sm text-purple-200/70 leading-relaxed mt-3">
-Die Ratgeber eignen sich zum schnellen Nachschlagen im Web. Wenn Sie den Traum selbst festhalten möchten, können Sie ihn mit der <a class="text-dream-salmon hover:underline" href="/de/traumlexikon-app">Traumlexikon-App</a> auf Android aufschreiben oder einsprechen und seine Symbole später in Ihrem Tagebuch wiederfinden.
+Die Ratgeber eignen sich zum schnellen Nachschlagen im Web. Wenn du den Traum selbst festhalten möchtest, kannst du ihn mit der <a class="text-dream-salmon hover:underline" href="/de/traumlexikon-app">Traumlexikon-App</a> auf Android aufschreiben oder einsprechen und seine Symbole später in deinem Tagebuch wiederfinden.
 </p>
 </header>
 <section class="glass-panel rounded-2xl p-6 md:p-8 mt-10 border border-dream-salmon/10" data-blog-hub-expanded="true">
   <h2 class="font-serif text-2xl text-dream-cream mb-4">Einen Traum in vier Schritten lesen</h2>
   <div class="prose prose-invert prose-purple max-w-none text-gray-300 leading-relaxed space-y-4">
-    <p><strong>Kurze Antwort:</strong> Ein Traum hat keine einzige, feste Bedeutung. Manche Themen kennen sehr viele Menschen: In <a class="text-dream-salmon hover:underline" href="https://doi.org/10.1023/B:DREM.0000003144.40929.0b" rel="nofollow noopener noreferrer" target="_blank">einer Befragung von über tausend kanadischen Studierenden</a> gehörten Verfolgtwerden und Fallen zu den Träumen, die die meisten schon einmal gehabt hatten. Was ein Thema für Sie bedeutet, hängt von drei Dingen ab: der Szene, dem Gefühl im Traum und dem, was gerade in Ihrem Leben passiert.</p>
-    <ul><li><strong>Zuerst die Szene notieren.</strong> Ort, Personen, Handlung, noch ohne Deutung.</li><li><strong>Das Gefühl benennen.</strong> Angst, Erleichterung, Scham, Neugier: Es sagt oft mehr als das Symbol.</li><li><strong>Auf die letzten Tage schauen.</strong> Eine Sorge, ein Gespräch, eine Veränderung, die gerade ansteht.</li><li><strong>Dann einen Ratgeber unten öffnen</strong> und nur behalten, was zu Ihrem Traum passt. Jede Deutung ist eine Spur zum Prüfen, kein Urteil.</li></ul>
+    <p><strong>Kurze Antwort:</strong> Ein Traum hat keine einzige, feste Bedeutung. Manche Themen kennen sehr viele Menschen: In <a class="text-dream-salmon hover:underline" href="https://doi.org/10.1023/B:DREM.0000003144.40929.0b" rel="nofollow noopener noreferrer" target="_blank">einer Befragung von über tausend kanadischen Studierenden</a> gehörten Verfolgtwerden und Fallen zu den Träumen, die die meisten schon einmal gehabt hatten. Was ein Thema für dich bedeutet, hängt von drei Dingen ab: der Szene, dem Gefühl im Traum und dem, was gerade in deinem Leben passiert.</p>
+    <ul><li><strong>Zuerst die Szene notieren.</strong> Ort, Personen, Handlung, noch ohne Deutung.</li><li><strong>Das Gefühl benennen.</strong> Angst, Erleichterung, Scham, Neugier: Es sagt oft mehr als das Symbol.</li><li><strong>Auf die letzten Tage schauen.</strong> Eine Sorge, ein Gespräch, eine Veränderung, die gerade ansteht.</li><li><strong>Dann einen Ratgeber unten öffnen</strong> und nur behalten, was zu deinem Traum passt. Jede Deutung ist eine Spur zum Prüfen, kein Urteil.</li></ul>
     <p>Orte verdienen dieselbe Aufmerksamkeit. Ein <a class="text-dream-salmon hover:underline" href="../traumsymbole/wald">Wald im Traum</a> kann sich geborgen, düster, vertraut oder verwirrend anfühlen, und das sind vier verschiedene Träume.</p>
     <p><strong>Beispiel (fiktiver Tagebucheintrag):</strong> „Ich gehe in der Dämmerung durch einen Wald. Mein Handy hat keinen Empfang. Ich habe keine Angst, ich bin eher genervt.“ Gefühl: Ärger statt Angst. Möglicher Zusammenhang: ein Projekt im Job, bei dem niemand die Richtung vorgibt. Frage an sich selbst: Wo habe ich das Gefühl, ohne Karte voranzugehen?</p>
-    <p>Ein einzelner Traum sagt wenig. Über einige Wochen zeigen Ihre Notizen, was wiederkehrt: ein Ort, eine Person, ein Gefühl. Meist wird die Deutung erst dann hilfreich. Warum manche Träume so echt wirken, erklärt unser Artikel über <a class="text-dream-salmon hover:underline" href="rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen">REM-Schlaf und Träume</a>.</p>
-    <p>Wenn Albträume so oft wiederkehren, dass Ihr Schlaf darunter leidet, oder wenn Sie verstört aufwachen, sprechen Sie mit Ihrer Hausärztin oder Ihrem Hausarzt. Unser <a class="text-dream-salmon hover:underline" href="albtraeume-ursachen-bedeutung-und-wie-man-sie-stoppen-kann">Ratgeber zu Albträumen</a> stellt Ansätze vor, die helfen können.</p>
+    <p>Ein einzelner Traum sagt wenig. Über einige Wochen zeigen deine Notizen, was wiederkehrt: ein Ort, eine Person, ein Gefühl. Meist wird die Deutung erst dann hilfreich. Warum manche Träume so echt wirken, erklärt unser Artikel über <a class="text-dream-salmon hover:underline" href="rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen">REM-Schlaf und Träume</a>.</p>
+    <p>Wenn Albträume so oft wiederkehren, dass dein Schlaf darunter leidet, oder wenn du verstört aufwachst, sprich mit deiner Hausärztin oder deinem Hausarzt. Unser <a class="text-dream-salmon hover:underline" href="albtraeume-ursachen-bedeutung-und-wie-man-sie-stoppen-kann">Ratgeber zu Albträumen</a> stellt Ansätze vor, die helfen können.</p>
   </div>
 </section>
 
 <section class="mt-12">
-<h2 class="font-serif text-2xl text-dream-cream mb-8">Welchen Traum möchten Sie verstehen?</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-8">Welchen Traum möchtest du verstehen?</h2>
 <div class="grid md:grid-cols-2 gap-6">
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="die-geschichte-der-traumdeutung-von-antiken-tempeln-bis-zur-modernen-wissenschaft">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Grundlagen</span>
@@ -97,7 +97,7 @@ Die Ratgeber eignen sich zum schnellen Nachschlagen im Web. Wenn Sie den Traum s
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="wiederkehrende-traeume-bedeuten-ihre-verborgenen-botschaften-verstehen">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Muster</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Wiederkehrende Träume</h3>
-<p class="text-sm text-gray-400">Warum derselbe Traum zurückkehrt und was Sie jedes Mal notieren sollten.</p>
+<p class="text-sm text-gray-400">Warum derselbe Traum zurückkehrt und was du jedes Mal notieren solltest.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="traeume-von-ausfallenden-zaehnen-bedeutung-und-interpretation">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Symbol</span>
@@ -107,12 +107,12 @@ Die Ratgeber eignen sich zum schnellen Nachschlagen im Web. Wenn Sie den Traum s
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="traeume-verfolgt-werden-bedeutung-und-interpretation">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Symbol</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Verfolgt werden</h3>
-<p class="text-sm text-gray-400">Wer Sie verfolgt hat und wie Sie reagiert haben: Details, die die Deutung verändern.</p>
+<p class="text-sm text-gray-400">Wer dich verfolgt hat und wie du reagiert hast: Details, die die Deutung verändern.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="traeume-von-schlangen-wovor-ihr-unterbewusstsein-sie-wirklich-warnt">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Symbol</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Schlangen</h3>
-<p class="text-sm text-gray-400">Angst, Wandel oder Faszination: die Schlange über Ihre eigene Reaktion deuten.</p>
+<p class="text-sm text-gray-400">Angst, Wandel oder Faszination: die Schlange über deine eigene Reaktion deuten.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="wassertraeume-bedeutung-von-ertrinkungs-ozean-und-ueberschwemmungstraeumen">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Symbol</span>
@@ -132,7 +132,7 @@ Die Ratgeber eignen sich zum schnellen Nachschlagen im Web. Wenn Sie den Traum s
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="traeume-ueber-deinen-ex-was-sie-wirklich-bedeuten">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Beziehungen</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Träume vom Ex</h3>
-<p class="text-sm text-gray-400">Sehnsucht, Unerledigtes oder bloß Erinnerung: wie Sie das unterscheiden.</p>
+<p class="text-sm text-gray-400">Sehnsucht, Unerledigtes oder bloß Erinnerung: wie du das unterscheidest.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="schwangerschaftstraeume-was-sie-bedeuten-auch-wenn-sie-nicht-schwanger-sind">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Leben</span>
@@ -183,7 +183,7 @@ Die Ratgeber eignen sich zum schnellen Nachschlagen im Web. Wenn Sie den Traum s
                     Verwandte Symbole erkunden
                 </h2>
 <p class="text-sm text-purple-300/60 mb-4">
-                    Lesen Sie die Symbole dieser Übersicht nach oder stöbern Sie im <a class="text-dream-salmon hover:underline" href="../guides/traumsymbole-lexikon">Wörterbuch der Traumsymbole</a>.
+                    Lies die Symbole dieser Übersicht nach oder stöbere im <a class="text-dream-salmon hover:underline" href="../guides/traumsymbole-lexikon">Wörterbuch der Traumsymbole</a>.
                 </p>
 <div class="flex flex-wrap gap-3">
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/wasser">
@@ -208,6 +208,6 @@ Die Ratgeber eignen sich zum schnellen Nachschlagen im Web. Wenn Sie den Traum s
 <!-- Health Disclaimer (TI-97 E-E-A-T) -->
 <aside aria-label="Disclaimer" class="glass-panel rounded-xl p-4 my-8 border border-purple-500/20" role="note">
 <p class="text-sm text-purple-200/70">
-<strong class="text-dream-cream">Wichtig:</strong> Dieser Artikel dient nur zu Informationszwecken und stellt keine medizinische oder psychologische Beratung dar. Wenn Sie unter anhaltenden Schlafstörungen oder psychischen Problemen leiden, wenden Sie sich bitte an einen qualifizierten Arzt.
+<strong class="text-dream-cream">Wichtig:</strong> Dieser Artikel dient nur zu Informationszwecken und stellt keine medizinische oder psychologische Beratung dar. Wenn du unter anhaltenden Schlafstörungen oder psychischen Problemen leidest, wende dich bitte an einen qualifizierten Arzt.
                 </p>
 </aside>

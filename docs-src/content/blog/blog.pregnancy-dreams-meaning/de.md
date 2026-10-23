@@ -19,7 +19,7 @@
   "ogImageAlt": "Sanftes Licht und Symbole für Wachstum und Neuanfang",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Schwangerschaftsträume: Bedeutung und Ursachen",
-  "twitterDescription": "Träumen, schwanger zu sein: was der Traum erzählen kann und was Sie notieren können.",
+  "twitterDescription": "Träumen, schwanger zu sein: was der Traum erzählen kann und was du notieren kannst.",
   "twitterImage": "https://noctalia.app/img/blog/pregnancy-dreams-meaning.webp",
   "twitterImageAlt": "Sanftes Licht und Symbole für Wachstum und Neuanfang",
   "publishedTime": "2025-12-11",
@@ -29,8 +29,8 @@
   "nextPath": "/de/blog/albtraeume-ursachen-bedeutung-und-wie-man-sie-stoppen-kann",
   "preloadImage": "/img/blog/pregnancy-dreams-meaning.webp",
   "jsonLd": [
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Schwangerschaftsträume: was sie bedeuten können, auch wenn Sie nicht schwanger sind\",\n    \"description\": \"Im Traum schwanger, bei der Geburt oder eine Freundin erwartet ein Baby? Was Schwangerschaftsträume bedeuten können und was die Forschung dazu sagt.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/pregnancy-dreams-meaning.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/de/ueber-uns#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/de/ueber-uns\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-12-11\",\n    \"dateModified\": \"2026-10-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/de/blog/schwangerschaftstraeume-was-sie-bedeuten-auch-wenn-sie-nicht-schwanger-sind\"\n    },\n    \"inLanguage\": \"de\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2104,\n    \"timeRequired\": \"PT10M\",\n    \"url\": \"https://noctalia.app/de/blog/schwangerschaftstraeume-was-sie-bedeuten-auch-wenn-sie-nicht-schwanger-sind\"\n}",
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Was bedeutet es, zu träumen, schwanger zu sein?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Eine feste Bedeutung gibt es nicht. Der Traum begleitet oft etwas Neues oder Wachsendes in Ihrem Leben: ein Projekt, eine Rolle, eine Beziehung, eine Veränderung oder die Frage nach Kindern. Ihr Gefühl im Traum und Ihre aktuelle Lebenslage sind die besten Hinweise.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Warum träume ich von einer Schwangerschaft, obwohl ich nicht schwanger bin?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Träume holen sich ihre Bilder aus dem, was Sie beschäftigt. Die Schwangerschaft ist ein naheliegendes Bild für etwas, das Zeit zum Wachsen braucht und Ihr Leben verändert. Eine neue Stelle, ein Projekt oder eine Entscheidung über Kinder können es hervorrufen, egal ob Sie Mann oder Frau sind.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Sagen Schwangerschaftsträume eine echte Schwangerschaft voraus?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Nein. Ein Traum kann eine Schwangerschaft weder erkennen noch ankündigen. Wenn Sie vermuten, schwanger zu sein, machen Sie einen Test oder gehen Sie zu Ihrer Ärztin oder Ihrem Arzt.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Sind Albträume in der Schwangerschaft normal?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Ja, schlechte Träume und Albträume sind in der Schwangerschaft häufig, besonders im dritten Trimester, und sie sagen nichts über das Baby voraus. Wenn sie Ihren Schlaf stören, immer wiederkehren oder Sie tagsüber belasten, sprechen Sie Ihre Hebamme oder Ihre Ärztin darauf an.\"\n            }\n        }\n    ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Schwangerschaftsträume: was sie bedeuten können, auch wenn du nicht schwanger bist\",\n    \"description\": \"Im Traum schwanger, bei der Geburt oder eine Freundin erwartet ein Baby? Was Schwangerschaftsträume bedeuten können und was die Forschung dazu sagt.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/pregnancy-dreams-meaning.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/de/ueber-uns#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/de/ueber-uns\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-12-11\",\n    \"dateModified\": \"2026-10-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/de/blog/schwangerschaftstraeume-was-sie-bedeuten-auch-wenn-sie-nicht-schwanger-sind\"\n    },\n    \"inLanguage\": \"de\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2104,\n    \"timeRequired\": \"PT10M\",\n    \"url\": \"https://noctalia.app/de/blog/schwangerschaftstraeume-was-sie-bedeuten-auch-wenn-sie-nicht-schwanger-sind\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Was bedeutet es, zu träumen, schwanger zu sein?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Eine feste Bedeutung gibt es nicht. Der Traum begleitet oft etwas Neues oder Wachsendes in deinem Leben: ein Projekt, eine Rolle, eine Beziehung, eine Veränderung oder die Frage nach Kindern. Dein Gefühl im Traum und deine aktuelle Lebenslage sind die besten Hinweise.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Warum träume ich von einer Schwangerschaft, obwohl ich nicht schwanger bin?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Träume holen sich ihre Bilder aus dem, was dich beschäftigt. Die Schwangerschaft ist ein naheliegendes Bild für etwas, das Zeit zum Wachsen braucht und dein Leben verändert. Eine neue Stelle, ein Projekt oder eine Entscheidung über Kinder können es hervorrufen, egal ob du Mann oder Frau bist.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Sagen Schwangerschaftsträume eine echte Schwangerschaft voraus?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Nein. Ein Traum kann eine Schwangerschaft weder erkennen noch ankündigen. Wenn du vermutest, schwanger zu sein, mach einen Test oder geh zu deiner Ärztin oder deinem Arzt.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Sind Albträume in der Schwangerschaft normal?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Ja, schlechte Träume und Albträume sind in der Schwangerschaft häufig, besonders im dritten Trimester, und sie sagen nichts über das Baby voraus. Wenn sie deinen Schlaf stören, immer wiederkehren oder dich tagsüber belasten, sprich deine Hebamme oder deine Ärztin darauf an.\"\n            }\n        }\n    ]\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Startseite\",\n            \"item\": \"https://noctalia.app/de/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Ressourcen\",\n            \"item\": \"https://noctalia.app/de/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Schwangerschaftsträume\",\n            \"item\": \"https://noctalia.app/de/blog/schwangerschaftstraeume-was-sie-bedeuten-auch-wenn-sie-nicht-schwanger-sind\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
@@ -64,10 +64,10 @@
 <span class="text-sm text-purple-300/60">10 Min. Lesezeit</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Schwangerschaftsträume: was sie bedeuten können, auch wenn Sie nicht schwanger sind
+                    Schwangerschaftsträume: was sie bedeuten können, auch wenn du nicht schwanger bist
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Ihre Hand liegt auf einem runden Bauch, der gestern noch nicht da war. Oder Sie sind im Kreißsaal und halten ein Neugeborenes im Arm, von dem Sie einfach wissen, dass es Ihres ist. Dann wachen Sie auf: keine <a class="text-dream-salmon hover:underline" href="../traumsymbole/schwangerschaft">Schwangerschaft</a>, vielleicht nicht einmal ein Kinderwunsch. Ein Schwangerschaftstraum wirkt wie eine Ankündigung. Meist bringt er etwas ins Bild, das in Ihrem Leben wächst, oder eine Sorge darum, und die Details helfen, das eine vom anderen zu unterscheiden.
+                    Deine Hand liegt auf einem runden Bauch, der gestern noch nicht da war. Oder du bist im Kreißsaal und hältst ein Neugeborenes im Arm, von dem du einfach weißt, dass es deines ist. Dann wachst du auf: keine <a class="text-dream-salmon hover:underline" href="../traumsymbole/schwangerschaft">Schwangerschaft</a>, vielleicht nicht einmal ein Kinderwunsch. Ein Schwangerschaftstraum wirkt wie eine Ankündigung. Meist bringt er etwas ins Bild, das in deinem Leben wächst, oder eine Sorge darum, und die Details helfen, das eine vom anderen zu unterscheiden.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -83,7 +83,7 @@
 <!-- Quick Answer (AI SEO) -->
 <section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
     <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Kurzantwort</h2>
-    <p class="text-purple-100/80 leading-relaxed">Wer träumt, schwanger zu sein, ist es deshalb nicht, und der Traum kündigt keine Schwangerschaft an. Außerhalb einer Schwangerschaft begleitet das Bild oft etwas, das beginnt oder reift: ein Projekt, eine neue Rolle, eine Beziehung, eine Veränderung, auf die Sie sich vorbereiten, oder die Frage nach Kindern. In der Schwangerschaft sind intensive Träume und Albträume häufig, auch weil der Schlaf öfter unterbrochen wird. Ihr Gefühl im Traum ist der beste Hinweis darauf, welche Deutung passt.</p>
+    <p class="text-purple-100/80 leading-relaxed">Wer träumt, schwanger zu sein, ist es deshalb nicht, und der Traum kündigt keine Schwangerschaft an. Außerhalb einer Schwangerschaft begleitet das Bild oft etwas, das beginnt oder reift: ein Projekt, eine neue Rolle, eine Beziehung, eine Veränderung, auf die du dich vorbereitest, oder die Frage nach Kindern. In der Schwangerschaft sind intensive Träume und Albträume häufig, auch weil der Schlaf öfter unterbrochen wird. Dein Gefühl im Traum ist der beste Hinweis darauf, welche Deutung passt.</p>
 </section>
 <figure class="mb-12 rounded-2xl overflow-hidden">
 <img alt="Sanftes Licht und Symbole für Wachstum und Neuanfang" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/pregnancy-dreams-meaning.webp" srcset="../../img/blog/pregnancy-dreams-meaning-480w.webp 480w, ../../img/blog/pregnancy-dreams-meaning-800w.webp 800w, ../../img/blog/pregnancy-dreams-meaning-1200w.webp 1200w" width="1200">
@@ -94,7 +94,7 @@
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
 <li><a class="toc-link block" href="#symbolism">1. Warum träumt man, schwanger zu sein, ohne es zu sein?</a></li>
-<li><a class="toc-link block" href="#scenarios">2. Was ist in Ihrem Traum passiert?</a></li>
+<li><a class="toc-link block" href="#scenarios">2. Was ist in deinem Traum passiert?</a></li>
 <li><a class="toc-link block" href="#meanings">3. Fünf Lesarten eines Schwangerschaftstraums</a></li>
 <li><a class="toc-link block" href="#who-has-them">4. Wer hat Schwangerschaftsträume?</a></li>
 <li><a class="toc-link block" href="#actual-pregnancy">5. Träume in der Schwangerschaft: was die Forschung zeigt</a></li>
@@ -104,24 +104,24 @@
 <div class="prose max-w-none text-gray-300">
 <h2 id="symbolism">Warum träumt man, schwanger zu sein, ohne es zu sein?</h2>
 <p>
-Ein Traum kündigt selten ein reales Ereignis an. Er leiht sich seine Bilder bei dem, was Sie ohnehin beschäftigt. Traumforscher wie G. William Domhoff sprechen von einer Kontinuität zwischen Traum und Wachleben: Menschen, Pläne und Sorgen aus Ihrem Alltag kehren nachts zurück, oft übertrieben oder verkleidet.
+Ein Traum kündigt selten ein reales Ereignis an. Er leiht sich seine Bilder bei dem, was dich ohnehin beschäftigt. Traumforscher wie G. William Domhoff sprechen von einer Kontinuität zwischen Traum und Wachleben: Menschen, Pläne und Sorgen aus deinem Alltag kehren nachts zurück, oft übertrieben oder verkleidet.
 </p>
 <p>
-Die Schwangerschaft eignet sich gut dafür. Etwas wächst im Verborgenen, braucht Zeit, verändert Körper und Alltag und kommt dann, ob man sich bereit fühlt oder nicht. Sie kann für vieles stehen, nicht nur für ein <a class="text-dream-salmon hover:underline" href="../traumsymbole/baby">Baby</a>. Der Traum taucht oft auf, wenn Sie:
+Die Schwangerschaft eignet sich gut dafür. Etwas wächst im Verborgenen, braucht Zeit, verändert Körper und Alltag und kommt dann, ob man sich bereit fühlt oder nicht. Sie kann für vieles stehen, nicht nur für ein <a class="text-dream-salmon hover:underline" href="../traumsymbole/baby">Baby</a>. Der Traum taucht oft auf, wenn du:
 </p>
 <ul>
 <li><strong>Etwas Neues beginnen</strong>: eine Stelle, eine Weiterbildung, ein Unternehmen, einen Umzug</li>
 <li><strong>An einem Projekt arbeiten</strong>, das noch niemand gesehen hat, etwa ein Buch, eine Bewerbung oder einen Plan</li>
 <li><strong>Neue Verantwortung übernehmen</strong>, für ein Team, die Eltern oder ein Zuhause</li>
-<li><strong>Über Kinder nachdenken</strong>, ob Sie welche möchten oder nicht</li>
+<li><strong>Über Kinder nachdenken</strong>, ob du welche möchtest oder nicht</li>
 <li><strong>Sich selbst verändern</strong>, und diese Veränderung noch nicht abgeschlossen ist</li>
 </ul>
 <p>
 Das sind Spuren, keine Regeln. Derselbe Traum kann für die eine Person freudig und für die andere beängstigend sein, und er bedeutet für beide nicht dasselbe.
 </p>
-<h2 id="scenarios">Was ist in Ihrem Traum passiert?</h2>
+<h2 id="scenarios">Was ist in deinem Traum passiert?</h2>
 <p>
-Bevor Sie nach einer Bedeutung suchen, beschreiben Sie die Szene. Diese Varianten sind keine Definitionen, sondern Fragen, die Sie mit Ihrem Gefühl abgleichen können.
+Bevor du nach einer Bedeutung suchst, beschreib die Szene. Diese Varianten sind keine Definitionen, sondern Fragen, die du mit deinem Gefühl abgleichen kannst.
 </p>
 </div>
 <div class="grid md:grid-cols-2 gap-6 my-12">
@@ -130,10 +130,10 @@ Bevor Sie nach einer Bedeutung suchen, beschreiben Sie die Szene. Diese Variante
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="baby"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Erfahren, dass Sie schwanger sind</h3>
+<h3 class="font-serif text-lg text-dream-cream">Erfahren, dass du schwanger bist</h3>
 </div>
 <p class="text-sm text-gray-300">
-Ein positiver Test, die Nachricht einer Ärztin, ein Bauch, den Sie plötzlich bemerken? Solche Träume begleiten oft den Moment, in dem Ihnen klar wird, dass <strong>etwas Neues begonnen hat</strong>. Freude, Schreck oder Sorge? Diese erste Reaktion sagt mehr als die Nachricht selbst.
+Ein positiver Test, die Nachricht einer Ärztin, ein Bauch, den du plötzlich bemerkst? Solche Träume begleiten oft den Moment, in dem dir klar wird, dass <strong>etwas Neues begonnen hat</strong>. Freude, Schreck oder Sorge? Diese erste Reaktion sagt mehr als die Nachricht selbst.
 </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -144,7 +144,7 @@ Ein positiver Test, die Nachricht einer Ärztin, ein Bauch, den Sie plötzlich b
 <h3 class="font-serif text-lg text-dream-cream">Hochschwanger sein</h3>
 </div>
 <p class="text-sm text-gray-300">
-Schwere Schritte, der Geburtstermin ist nah: Die Szene kann etwas spiegeln, das <strong>fast so weit ist</strong>, oder eine Frist, die näher rückt. Fühlte es sich an, als sei die Zeit reif, oder hätten Sie gern mehr Zeit gehabt?
+Schwere Schritte, der Geburtstermin ist nah: Die Szene kann etwas spiegeln, das <strong>fast so weit ist</strong>, oder eine Frist, die näher rückt. Fühlte es sich an, als sei die Zeit reif, oder hättest du gern mehr Zeit gehabt?
 </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -155,7 +155,7 @@ Schwere Schritte, der Geburtstermin ist nah: Die Szene kann etwas spiegeln, das 
 <h3 class="font-serif text-lg text-dream-cream">Ein Kind zur Welt bringen</h3>
 </div>
 <p class="text-sm text-gray-300">
-Eine <a class="text-dream-salmon hover:underline" href="../traumsymbole/geburt">Geburt</a> bringt etwas ans Licht. Eine leichte und eine schmerzhafte Geburt erzählen nicht dieselbe Geschichte: Der Traum kann zeigen, <strong>wie Sie sich eine bevorstehende Veränderung vorstellen</strong>. Wer war bei Ihnen, und wo waren Sie?
+Eine <a class="text-dream-salmon hover:underline" href="../traumsymbole/geburt">Geburt</a> bringt etwas ans Licht. Eine leichte und eine schmerzhafte Geburt erzählen nicht dieselbe Geschichte: Der Traum kann zeigen, <strong>wie du dir eine bevorstehende Veränderung vorstellst</strong>. Wer war bei dir, und wo warst du?
 </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -177,7 +177,7 @@ Aus solchen Träumen wacht man schwer auf. Sie begleiten oft die <strong>Angst, 
 <h3 class="font-serif text-lg text-dream-cream">Ungeplant schwanger</h3>
 </div>
 <p class="text-sm text-gray-300">
-Schwanger, ohne es geplant zu haben, manchmal in einer unmöglichen Lage? Der Traum kann eine <strong>Veränderung spiegeln, die Sie nicht gewählt haben</strong>, oder eine Verantwortung, die zu früh kam. Was hat in Ihrem Leben begonnen, ohne Sie zu fragen?
+Schwanger, ohne es geplant zu haben, manchmal in einer unmöglichen Lage? Der Traum kann eine <strong>Veränderung spiegeln, die du nicht gewählt hast</strong>, oder eine Verantwortung, die zu früh kam. Was hat in deinem Leben begonnen, ohne dich zu fragen?
 </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -188,44 +188,44 @@ Schwanger, ohne es geplant zu haben, manchmal in einer unmöglichen Lage? Der Tr
 <h3 class="font-serif text-lg text-dream-cream">Eine andere Person ist schwanger</h3>
 </div>
 <p class="text-sm text-gray-300">
-Eine Freundin, die Schwester, eine Kollegin erwartet ein Kind? Der Traum kann von <strong>Ihrer Beziehung zu dieser Person</strong> handeln, von einer Veränderung, die Sie an ihr wahrnehmen, oder von einer Seite an Ihnen, an die sie Sie erinnert. Er ist kein Zeichen, dass sie schwanger ist.
+Eine Freundin, die Schwester, eine Kollegin erwartet ein Kind? Der Traum kann von <strong>deiner Beziehung zu dieser Person</strong> handeln, von einer Veränderung, die du an ihr wahrnimmst, oder von einer Seite an dir, an die sie dich erinnert. Er ist kein Zeichen, dass sie schwanger ist.
 </p>
 </div>
 </div>
 <div class="prose max-w-none text-gray-300">
 <h2 id="meanings">Fünf Lesarten eines Schwangerschaftstraums</h2>
 <p>
-Keine Liste kann Ihnen sagen, warum gerade <em>Sie</em> diesen Traum hatten. Diese Lesarten tauchen oft auf, wenn man den Traum mit dem eigenen Alltag vergleicht. Behalten Sie die, die für Sie stimmig ist, und lassen Sie die anderen beiseite.
+Keine Liste kann dir sagen, warum gerade <em>du</em> diesen Traum hattest. Diese Lesarten tauchen oft auf, wenn man den Traum mit dem eigenen Alltag vergleicht. Behalte die, die für dich stimmig ist, und lass die anderen beiseite.
 </p>
 <h3>1. Ein Projekt, das heranreift</h3>
 <p>
-Schwangerschaft als Reifezeit: ein <strong>Vorhaben, das Zeit braucht</strong>, bevor es gezeigt werden kann. Wenn der Traum wiederkehrt, während Sie schreiben, aufbauen oder etwas vorbereiten, lohnt es sich, den Zusammenhang zu notieren. Welches Projekt tragen Sie gerade mit sich herum?
+Schwangerschaft als Reifezeit: ein <strong>Vorhaben, das Zeit braucht</strong>, bevor es gezeigt werden kann. Wenn der Traum wiederkehrt, während du schreibst, aufbaust oder etwas vorbereitest, lohnt es sich, den Zusammenhang zu notieren. Welches Projekt trägst du gerade mit dir herum?
 </p>
-<h3>2. Eine Veränderung in Ihnen selbst</h3>
+<h3>2. Eine Veränderung in dir selbst</h3>
 <p>
-Manche Menschen haben diesen Traum in einer Phase <strong>persönlicher Veränderung</strong>: mehr Selbstvertrauen, der Abschied von einer alten Rolle, das Hineinwachsen in eine neue. Was ist an Ihnen heute anders als vor einem Jahr?
+Manche Menschen haben diesen Traum in einer Phase <strong>persönlicher Veränderung</strong>: mehr Selbstvertrauen, der Abschied von einer alten Rolle, das Hineinwachsen in eine neue. Was ist an dir heute anders als vor einem Jahr?
 </p>
 <h3>3. Ein Neuanfang</h3>
 <p>
-Ein neuer Job, eine neue Beziehung, eine neue Stadt. Der Traum kann die <strong>Ungewissheit eines Anfangs</strong> begleiten, wenn etwas begonnen hat, Sie aber noch nicht wissen, was daraus wird.
+Ein neuer Job, eine neue Beziehung, eine neue Stadt. Der Traum kann die <strong>Ungewissheit eines Anfangs</strong> begleiten, wenn etwas begonnen hat, du aber noch nicht weißt, was daraus wird.
 </p>
 <h3>4. Das Gewicht einer Verantwortung</h3>
 <p>
-Wie ein <a class="text-dream-salmon hover:underline" href="../traumsymbole/kind">Kind</a> verlangt eine neue Verpflichtung Fürsorge und Aufmerksamkeit. Wenn der Traum schwer war, fragen Sie sich, <strong>was Sie fürchten, nicht zu schaffen</strong>, und ob Sie die Unterstützung haben, die Sie brauchen.
+Wie ein <a class="text-dream-salmon hover:underline" href="../traumsymbole/kind">Kind</a> verlangt eine neue Verpflichtung Fürsorge und Aufmerksamkeit. Wenn der Traum schwer war, frag dich, <strong>was du fürchtest, nicht zu schaffen</strong>, und ob du die Unterstützung hast, die du brauchst.
 </p>
 <h3>5. Die Frage nach Kindern</h3>
 <p>
-Manchmal ist die einfachste Lesart die richtige. Wenn Sie schwanger werden möchten, zögern oder sich gegen Kinder entschieden haben, kann der Traum schlicht <strong>eine Frage wiederholen, die Ihnen wichtig ist</strong>. Er sagt Ihnen nicht, wie Sie entscheiden sollen, und nicht, was Ihr Körper gerade tut.
+Manchmal ist die einfachste Lesart die richtige. Wenn du schwanger werden möchtest, zögerst oder dich gegen Kinder entschieden hast, kann der Traum schlicht <strong>eine Frage wiederholen, die dir wichtig ist</strong>. Er sagt dir nicht, wie du entscheiden sollst, und nicht, was dein Körper gerade tut.
 </p>
 <h3 id="traumtagebuch-beispiel">Beispiel aus einem Traumtagebuch</h3>
-<p><strong>Erfundenes Beispiel:</strong> Es zeigt, wie Sie das Geschehen im Traum von einer möglichen Verbindung zum Alltag trennen.</p>
+<p><strong>Erfundenes Beispiel:</strong> Es zeigt, wie du das Geschehen im Traum von einer möglichen Verbindung zum Alltag trennst.</p>
 <ul>
 <li><strong>Traum:</strong> „Ich war im achten Monat schwanger und saß an meinem Schreibtisch. Meine Chefin reichte mir eine Akte nach der anderen, und ich hatte Angst, dass das Baby kommt, bevor ich fertig bin.“</li>
 <li><strong>Gefühl:</strong> „Erst stolz, dann Panik. Mit Herzrasen aufgewacht.“</li>
 <li><strong>Aktueller Kontext:</strong> „Nächsten Monat starten wir bei der Arbeit ein neues Angebot. Ich bin nicht schwanger und plane es auch nicht.“</li>
 <li><strong>Offene Frage:</strong> „Kommt der Traum wieder, wenn eine Frist näher rückt, oder auch in ruhigen Wochen?“</li>
 </ul>
-<p>Ein einzelner Eintrag beweist nichts. Wenn Sie dieselben Punkte über mehrere Nächte notieren, sehen Sie, ob die Spur zur Arbeit trägt oder ob etwas anderes dahintersteckt.</p>
+<p>Ein einzelner Eintrag beweist nichts. Wenn du dieselben Punkte über mehrere Nächte notierst, siehst du, ob die Spur zur Arbeit trägt oder ob etwas anderes dahintersteckt.</p>
 <!-- CTA inline -->
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <div class="flex items-start gap-4">
@@ -233,8 +233,8 @@ Manchmal ist die einfachste Lesart die richtige. Wenn Sie schwanger werden möch
 <i class="w-6 h-6 text-dream-salmon" data-lucide="sparkles"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Halten Sie den Traum fest, bevor er verblasst</h4>
-<p class="text-sm text-gray-400 mb-4">Erzählen Sie Ihren Traum in Noctalia gleich nach dem Aufwachen laut oder tippen Sie ihn ein. Er wird transkribiert und in Ihrem Tagebuch gespeichert, und Sie können Ihre Schwangerschaftsträume nebeneinander lesen, um zu sehen, was wiederkehrt.</p>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Halte den Traum fest, bevor er verblasst</h4>
+<p class="text-sm text-gray-400 mb-4">Erzähl deinen Traum in Noctalia gleich nach dem Aufwachen laut oder tippe ihn ein. Er wird transkribiert und in deinem Tagebuch gespeichert, und du kannst deine Schwangerschaftsträume nebeneinander lesen, um zu sehen, was wiederkehrt.</p>
 <a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/de/">
                                 Noctalia kostenlos ausprobieren <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
@@ -248,19 +248,19 @@ Nichts in einem Traum setzt einen Körper voraus, der ein Kind austragen kann. A
 </p>
 <h3>Schwanger träumen ohne Kinderwunsch</h3>
 <p>
-Der Traum verrät keinen heimlichen Kinderwunsch. Er kann von etwas ganz anderem handeln oder die Fragen aufgreifen, die Ihnen Ihr Umfeld stellt. <strong>Ihre Reaktion im Traum</strong> sagt mehr als das Bild.
+Der Traum verrät keinen heimlichen Kinderwunsch. Er kann von etwas ganz anderem handeln oder die Fragen aufgreifen, die dir dein Umfeld stellt. <strong>Deine Reaktion im Traum</strong> sagt mehr als das Bild.
 </p>
-<h3>Wenn Sie schwanger werden möchten</h3>
+<h3>Wenn du schwanger werden möchtest</h3>
 <p>
 Bei einem Kinderwunsch können diese Träume zärtlich oder schmerzhaft sein, besonders nach einem negativen Test. Sie zeigen, wie präsent die Hoffnung ist. Sie bedeuten weder, dass eine Schwangerschaft begonnen hat, noch, dass sie ausbleiben wird: Das kann nur ein Test sagen.
 </p>
 <h3>Nach dem Verlust einer Schwangerschaft</h3>
 <p>
-Nach einer Fehlgeburt oder einer schweren Geburt können Schwangerschaftsträume eine Zeit lang wiederkehren. Sie können Teil der Trauer sein. Wenn sie Ihnen den Schlaf rauben oder Sie sehr belasten, kann ein Gespräch mit Ihrer Ärztin, Ihrer Hebamme oder einer Psychotherapeutin helfen.
+Nach einer Fehlgeburt oder einer schweren Geburt können Schwangerschaftsträume eine Zeit lang wiederkehren. Sie können Teil der Trauer sein. Wenn sie dir den Schlaf rauben oder dich sehr belasten, kann ein Gespräch mit deiner Ärztin, deiner Hebamme oder einer Psychotherapeutin helfen.
 </p>
 <h2 id="actual-pregnancy">Träume in der Schwangerschaft: was die Forschung zeigt</h2>
 <p>
-Wenn Sie schwanger sind, sind intensive Träume und Albträume laut der <a class="text-dream-salmon hover:underline" href="https://www.sleepfoundation.org/pregnancy/how-pregnancy-affects-dreams" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation</a> häufig. Der Schlaf wird öfter unterbrochen, und wer mitten aus einem Traum erwacht, erinnert sich leichter an ihn.
+Wenn du schwanger bist, sind intensive Träume und Albträume laut der <a class="text-dream-salmon hover:underline" href="https://www.sleepfoundation.org/pregnancy/how-pregnancy-affects-dreams" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation</a> häufig. Der Schlaf wird öfter unterbrochen, und wer mitten aus einem Traum erwacht, erinnert sich leichter an ihn.
 </p>
 <h3>Babys, Geburt und Mutterwerden</h3>
 <p>
@@ -274,30 +274,30 @@ Eine zweite Studie desselben Teams (2014) ergab, dass sich Schwangere im dritten
 <p>
 Tore Nielsen und Tyna Paquette (2007) verglichen Schwangere, junge Mütter und Frauen, die nie schwanger gewesen waren. Träume vom Baby waren in den ersten beiden Gruppen häufig. Junge Mütter träumten öfter, dass das Baby in Gefahr sei, und bewegten sich in diesen Träumen öfter. Viele wachten ängstlich oder verwirrt auf, mit dem Drang, nach dem Baby zu sehen. Zu wissen, dass das häufig vorkommt, kann solche Nächte weniger beunruhigend machen.
 </p>
-<h3>Wann Sie mit jemandem sprechen sollten</h3>
+<h3>Wann du mit jemandem sprechen solltest</h3>
 <p>
-Sprechen Sie mit Ihrer Hebamme, Ihrer Ärztin oder Ihrem Arzt oder einer Psychotherapeutin, wenn Albträume Sie um den Schlaf bringen, wenn derselbe Albtraum immer wiederkommt oder wenn Sie sich tagsüber ängstlich oder niedergeschlagen fühlen. Diese Zeichen verdienen Aufmerksamkeit, in der Schwangerschaft wie nach der Geburt, und es gibt Hilfe. Unser <a class="text-dream-salmon hover:underline" href="albtraeume-ursachen-bedeutung-und-wie-man-sie-stoppen-kann">Ratgeber zu Albträumen</a> beschreibt Ansätze, die helfen können.
+Sprich mit deiner Hebamme, deiner Ärztin oder deinem Arzt oder einer Psychotherapeutin, wenn Albträume dich um den Schlaf bringen, wenn derselbe Albtraum immer wiederkommt oder wenn du dich tagsüber ängstlich oder niedergeschlagen fühlst. Diese Zeichen verdienen Aufmerksamkeit, in der Schwangerschaft wie nach der Geburt, und es gibt Hilfe. Unser <a class="text-dream-salmon hover:underline" href="albtraeume-ursachen-bedeutung-und-wie-man-sie-stoppen-kann">Ratgeber zu Albträumen</a> beschreibt Ansätze, die helfen können.
 </p>
 <h2 id="action">Was tun nach einem Schwangerschaftstraum?</h2>
 <h3>1. Erst die Szene notieren, dann das Gefühl</h3>
 <p>
-Wer war schwanger, in welchem Monat, wo waren Sie, wie ging es aus? Dann eine Zeile dazu, wie Sie sich gefühlt haben. Das Gefühl verbindet den Traum oft deutlicher mit Ihrem Tag als das Bild.
+Wer war schwanger, in welchem Monat, wo warst du, wie ging es aus? Dann eine Zeile dazu, wie du dich gefühlt hast. Das Gefühl verbindet den Traum oft deutlicher mit deinem Tag als das Bild.
 </p>
-<h3>2. Fragen Sie sich, was in Ihrem Leben wächst</h3>
+<h3>2. Frag dich, was in deinem Leben wächst</h3>
 <p>
-<strong>Woran arbeite ich, worauf warte ich, was macht mir Sorgen?</strong> Wenn eine Antwort schnell kommt, notieren Sie sie neben dem Traum. Wenn nichts passt, lassen Sie die Frage ein paar Nächte offen.
+<strong>Woran arbeite ich, worauf warte ich, was macht mir Sorgen?</strong> Wenn eine Antwort schnell kommt, notiere sie neben dem Traum. Wenn nichts passt, lass die Frage ein paar Nächte offen.
 </p>
-<h3>3. Lesen Sie das Stadium als Frage, nicht als Zeitplan</h3>
+<h3>3. Lies das Stadium als Frage, nicht als Zeitplan</h3>
 <p>
-Eine frühe Schwangerschaft oder eine Geburt im Traum setzt keine Frist in Ihrem Leben. Sie kann eine Frage aufwerfen: Fühlt sich dieses Projekt an, als hätte es gerade erst begonnen, oder als sei es längst überfällig?
+Eine frühe Schwangerschaft oder eine Geburt im Traum setzt keine Frist in deinem Leben. Sie kann eine Frage aufwerfen: Fühlt sich dieses Projekt an, als hätte es gerade erst begonnen, oder als sei es längst überfällig?
 </p>
-<h3>4. Schauen Sie auf das Baby, falls es eines gab</h3>
+<h3>4. Schau auf das Baby, falls es eines gab</h3>
 <p>
-War das Baby ruhig, weinte es, wirkte es fremd, hatten Sie es irgendwo vergessen? Solche Details können spiegeln, wie Sie zu dem stehen, was Sie in die Welt bringen, oder einfach Ihre Gedanken über ein echtes Kind.
+War das Baby ruhig, weinte es, wirkte es fremd, hattest du es irgendwo vergessen? Solche Details können spiegeln, wie du zu dem stehst, was du in die Welt bringst, oder einfach deine Gedanken über ein echtes Kind.
 </p>
-<h3>5. Trennen Sie Traum und Wirklichkeit</h3>
+<h3>5. Trenne Traum und Wirklichkeit</h3>
 <p>
-Ein Traum ist kein Schwangerschaftstest. Wenn Sie vermuten, schwanger zu sein, gibt Ihnen ein Test oder Ihre Ärztin Gewissheit. Wenn Sie schwanger sind und ein Traum Sie beunruhigt, sprechen Sie ihn beim nächsten Termin an, statt nach Vorzeichen zu suchen.
+Ein Traum ist kein Schwangerschaftstest. Wenn du vermutest, schwanger zu sein, gibt dir ein Test oder deine Ärztin Gewissheit. Wenn du schwanger bist und ein Traum dich beunruhigt, sprich ihn beim nächsten Termin an, statt nach Vorzeichen zu suchen.
 </p>
 </div>
 <!-- Related Symbols Start -->
@@ -326,7 +326,7 @@ Ein Traum ist kein Schwangerschaftstest. Wenn Sie vermuten, schwanger zu sein, g
 </div>
 <h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Ein Traum ist eine Szene. Mehrere Träume sind eine Spur.</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Sammeln Sie Ihre Schwangerschaftsträume in Noctalia, zusammen mit Ihrem Gefühl und dem, was in jener Woche los war. Nebeneinander gelesen zeigen sie, wann sie wiederkehren.
+                    Sammle deine Schwangerschaftsträume in Noctalia, zusammen mit deinem Gefühl und dem, was in jener Woche los war. Nebeneinander gelesen zeigen sie, wann sie wiederkehren.
                 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/de/">
                     Mein Traumtagebuch beginnen <i class="w-5 h-5" data-lucide="arrow-right"></i>
@@ -342,7 +342,7 @@ Ein Traum ist kein Schwangerschaftstest. Wenn Sie vermuten, schwanger zu sein, g
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Eine feste Bedeutung gibt es nicht. Der Traum begleitet oft etwas Neues oder Wachsendes in Ihrem Leben: ein Projekt, eine Rolle, eine Beziehung, eine Veränderung oder die Frage nach Kindern. Ihr Gefühl im Traum und Ihre aktuelle Lebenslage sind die besten Hinweise.
+                            Eine feste Bedeutung gibt es nicht. Der Traum begleitet oft etwas Neues oder Wachsendes in deinem Leben: ein Projekt, eine Rolle, eine Beziehung, eine Veränderung oder die Frage nach Kindern. Dein Gefühl im Traum und deine aktuelle Lebenslage sind die besten Hinweise.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -351,7 +351,7 @@ Ein Traum ist kein Schwangerschaftstest. Wenn Sie vermuten, schwanger zu sein, g
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Träume holen sich ihre Bilder aus dem, was Sie beschäftigt. Die Schwangerschaft ist ein naheliegendes Bild für etwas, das Zeit zum Wachsen braucht und Ihr Leben verändert. Eine neue Stelle, ein Projekt oder eine Entscheidung über Kinder können es hervorrufen, egal ob Sie Mann oder Frau sind.
+                            Träume holen sich ihre Bilder aus dem, was dich beschäftigt. Die Schwangerschaft ist ein naheliegendes Bild für etwas, das Zeit zum Wachsen braucht und dein Leben verändert. Eine neue Stelle, ein Projekt oder eine Entscheidung über Kinder können es hervorrufen, egal ob du Mann oder Frau bist.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -360,7 +360,7 @@ Ein Traum ist kein Schwangerschaftstest. Wenn Sie vermuten, schwanger zu sein, g
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Nein. Ein Traum kann eine Schwangerschaft weder erkennen noch ankündigen. Wenn Sie vermuten, schwanger zu sein, machen Sie einen Test oder gehen Sie zu Ihrer Ärztin oder Ihrem Arzt.
+                            Nein. Ein Traum kann eine Schwangerschaft weder erkennen noch ankündigen. Wenn du vermutest, schwanger zu sein, mach einen Test oder geh zu deiner Ärztin oder deinem Arzt.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -369,7 +369,7 @@ Ein Traum ist kein Schwangerschaftstest. Wenn Sie vermuten, schwanger zu sein, g
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Ja, schlechte Träume und Albträume sind in der Schwangerschaft häufig, besonders im dritten Trimester, und sie sagen nichts über das Baby voraus. Wenn sie Ihren Schlaf stören, immer wiederkehren oder Sie tagsüber belasten, sprechen Sie Ihre Hebamme oder Ihre Ärztin darauf an.
+                            Ja, schlechte Träume und Albträume sind in der Schwangerschaft häufig, besonders im dritten Trimester, und sie sagen nichts über das Baby voraus. Wenn sie deinen Schlaf stören, immer wiederkehren oder dich tagsüber belasten, sprich deine Hebamme oder deine Ärztin darauf an.
                         </p>
 </details>
 </div>
@@ -381,7 +381,7 @@ Ein Traum ist kein Schwangerschaftstest. Wenn Sie vermuten, schwanger zu sein, g
                                                                   <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
                                                                   <div>
                                                                     <span class="text-xs text-purple-300/60 uppercase tracking-wide">Vorheriger Artikel</span>
-                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Träume über Ihren Ex: Was sie wirklich bedeuten</div>
+                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Träume über deinen Ex: Was sie wirklich bedeuten</div>
                                                                   </div>
                                                                 </a>
                                                                 <a href="albtraeume-ursachen-bedeutung-und-wie-man-sie-stoppen-kann" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
@@ -404,17 +404,17 @@ Ein Traum ist kein Schwangerschaftstest. Wenn Sie vermuten, schwanger zu sein, g
                     <a href="wiederkehrende-traeume-bedeuten-ihre-verborgenen-botschaften-verstehen" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Deutung</span>
                         <h3 class="font-serif text-lg text-dream-cream mb-2">Wiederkehrende Träume: Ihre verborgenen Botschaften verstehen</h3>
-                        <p class="text-sm text-gray-400">Warum derselbe Traum wiederkehrt, was Sie zwischen den Episoden notieren können und wann wiederholte Albträume ärztlich abgeklärt werden sollten.</p>
+                        <p class="text-sm text-gray-400">Warum derselbe Traum wiederkehrt, was du zwischen den Episoden notieren kannst und wann wiederholte Albträume ärztlich abgeklärt werden sollten.</p>
                     </a>
                     <a href="traeume-von-ausfallenden-zaehnen-bedeutung-und-interpretation" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Deutung</span>
                         <h3 class="font-serif text-lg text-dream-cream mb-2">Träume von ausfallenden Zähnen: Bedeutung und Interpretation</h3>
-                        <p class="text-sm text-gray-400">Sieben mögliche Lesarten von Träumen über ausfallende Zähne, vom verspannten Kiefer bis zur Angst vor Blamage, und die Varianten, auf die Sie achten können.</p>
+                        <p class="text-sm text-gray-400">Sieben mögliche Lesarten von Träumen über ausfallende Zähne, vom verspannten Kiefer bis zur Angst vor Blamage, und die Varianten, auf die du achten kannst.</p>
                     </a>
                     <a href="bedeutung-von-fallenden-traeumen-warum-sie-vom-fallen-traeumen" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Deutung</span>
-                        <h3 class="font-serif text-lg text-dream-cream mb-2">Fallende Träume: Warum Sie vom Fallen träumen</h3>
-                        <p class="text-sm text-gray-400">Warum wir vom Fallen träumen, vom Zucken beim Einschlafen bis zum langen Sturz, und was Sie nach dem Aufwachen notieren können.</p>
+                        <h3 class="font-serif text-lg text-dream-cream mb-2">Fallende Träume: Warum du vom Fallen träumst</h3>
+                        <p class="text-sm text-gray-400">Warum wir vom Fallen träumen, vom Zucken beim Einschlafen bis zum langen Sturz, und was du nach dem Aufwachen notieren kannst.</p>
                     </a>
               </div>
             </section>
@@ -435,6 +435,6 @@ Ein Traum ist kein Schwangerschaftstest. Wenn Sie vermuten, schwanger zu sein, g
 <!-- Health Disclaimer (TI-97 E-E-A-T) -->
 <aside aria-label="Disclaimer" class="glass-panel rounded-xl p-4 my-8 border border-purple-500/20" role="note">
 <p class="text-sm text-purple-200/70">
-<strong class="text-dream-cream">Wichtig:</strong> Dieser Artikel dient nur zu Informationszwecken und stellt keine medizinische oder psychologische Beratung dar. Wenn Sie unter anhaltenden Schlafstörungen oder psychischen Problemen leiden, wenden Sie sich bitte an einen qualifizierten Arzt.
+<strong class="text-dream-cream">Wichtig:</strong> Dieser Artikel dient nur zu Informationszwecken und stellt keine medizinische oder psychologische Beratung dar. Wenn du unter anhaltenden Schlafstörungen oder psychischen Problemen leidest, wende dich bitte an einen qualifizierten Arzt.
                 </p>
 </aside>

@@ -19,7 +19,7 @@
   "ogImageAlt": "Illustration eines schlafenden Gehirns, dessen Träume allmählich verschwinden",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Warum vergessen wir unsere Träume? | Noctalia",
-  "twitterDescription": "Warum Träume nach dem Aufwachen so schnell verschwinden, und wie Sie mehr davon behalten.",
+  "twitterDescription": "Warum Träume nach dem Aufwachen so schnell verschwinden, und wie du mehr davon behältst.",
   "twitterImage": "https://noctalia.app/img/blog/why-we-forget-dreams.webp",
   "twitterImageAlt": "Illustration eines schlafenden Gehirns, dessen Träume allmählich verschwinden",
   "publishedTime": "2026-01-08",
@@ -30,7 +30,7 @@
   "preloadImage": "/img/blog/why-we-forget-dreams.webp",
   "jsonLd": [
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Warum vergessen wir unsere Träume? Was die Wissenschaft über Traumamnesie weiß\",\n    \"description\": \"Warum vergessen wir unsere Träume so schnell? Was die Forschung über REM-Schlaf, Gedächtnis und Aufwachen weiß, und einfache Tipps zur Traumerinnerung.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/why-we-forget-dreams.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/de/ueber-uns#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/de/ueber-uns\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2026-01-08\",\n    \"dateModified\": \"2026-10-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/de/blog/warum-vergessen-wir-unsere-traeume-die-wissenschaft-hinter-traumamnesie\"\n    },\n    \"inLanguage\": \"de\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2278,\n    \"timeRequired\": \"PT11M\",\n    \"url\": \"https://noctalia.app/de/blog/warum-vergessen-wir-unsere-traeume-die-wissenschaft-hinter-traumamnesie\"\n}",
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Ist es normal, alle Träume zu vergessen?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Ja. Die meisten Träume werden vergessen, und wie oft man sich erinnert, ist sehr unterschiedlich: von fast jedem Morgen bis zu wenigen Malen im Monat. Das schlafende Gehirn speichert schlecht, und Noradrenalin, das das Gedächtnis unterstützt, ist im REM-Schlaf sehr niedrig. Träume zu vergessen ist kein Zeichen für ein Gedächtnisproblem.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Warum erinnere ich mich an manche Träume und an andere nicht?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Entscheidend ist vor allem der Zeitpunkt. Sie erinnern sich eher an einen Traum, wenn Sie während oder kurz nach dem REM-Schlaf aufwachen, oft in den frühen Morgenstunden, und wenn nichts sofort Ihre Aufmerksamkeit beansprucht. Starke Gefühle, ein leichterer Schlaf und die Absicht, sich zu erinnern, können ebenfalls eine Rolle spielen.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Träumen Menschen, die sich nie an Träume erinnern, trotzdem?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"In den allermeisten Fällen ja. Im Schlaflabor berichten Menschen, die angeben, selten zu träumen, meist von einem Traum, wenn man sie aus dem REM-Schlaf weckt. Der Unterschied liegt nicht im Träumen, sondern im Erinnern: Wer sich oft erinnert, wacht nachts häufiger kurz auf, was dem Traum eine Chance gibt, gespeichert zu werden.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Wie kann ich mich leichter an meine Träume erinnern?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Legen Sie ein Traumtagebuch neben das Bett und notieren Sie Ihre Träume, bevor Sie aufstehen oder aufs Handy schauen. Bleiben Sie nach dem Aufwachen ein paar Sekunden still liegen, fassen Sie vor dem Einschlafen die Absicht, sich zu erinnern, und wählen Sie einen sanften Wecker. Wer den Traum per Sprache aufnimmt, zum Beispiel in Noctalia, hält ihn in Sekunden fest.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Beeinflusst Alkohol die Traumerinnerung?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Das kann er. Alkohol verringert den REM-Schlaf in der ersten Nachthälfte und macht den Schlaf leichter und unruhiger, sobald er abgebaut ist. Eine so gestörte Nacht ist keine gute Voraussetzung, um sich an Träume zu erinnern.\"\n            }\n        }\n    ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Ist es normal, alle Träume zu vergessen?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Ja. Die meisten Träume werden vergessen, und wie oft man sich erinnert, ist sehr unterschiedlich: von fast jedem Morgen bis zu wenigen Malen im Monat. Das schlafende Gehirn speichert schlecht, und Noradrenalin, das das Gedächtnis unterstützt, ist im REM-Schlaf sehr niedrig. Träume zu vergessen ist kein Zeichen für ein Gedächtnisproblem.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Warum erinnere ich mich an manche Träume und an andere nicht?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Entscheidend ist vor allem der Zeitpunkt. Du erinnerst dich eher an einen Traum, wenn du während oder kurz nach dem REM-Schlaf aufwachst, oft in den frühen Morgenstunden, und wenn nichts sofort deine Aufmerksamkeit beansprucht. Starke Gefühle, ein leichterer Schlaf und die Absicht, sich zu erinnern, können ebenfalls eine Rolle spielen.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Träumen Menschen, die sich nie an Träume erinnern, trotzdem?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"In den allermeisten Fällen ja. Im Schlaflabor berichten Menschen, die angeben, selten zu träumen, meist von einem Traum, wenn man sie aus dem REM-Schlaf weckt. Der Unterschied liegt nicht im Träumen, sondern im Erinnern: Wer sich oft erinnert, wacht nachts häufiger kurz auf, was dem Traum eine Chance gibt, gespeichert zu werden.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Wie kann ich mich leichter an meine Träume erinnern?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Leg ein Traumtagebuch neben das Bett und notiere deine Träume, bevor du aufstehst oder aufs Handy schaust. Bleib nach dem Aufwachen ein paar Sekunden still liegen, fass vor dem Einschlafen die Absicht, dich zu erinnern, und wähle einen sanften Wecker. Wer den Traum per Sprache aufnimmt, zum Beispiel in Noctalia, hält ihn in Sekunden fest.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Beeinflusst Alkohol die Traumerinnerung?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Das kann er. Alkohol verringert den REM-Schlaf in der ersten Nachthälfte und macht den Schlaf leichter und unruhiger, sobald er abgebaut ist. Eine so gestörte Nacht ist keine gute Voraussetzung, um sich an Träume zu erinnern.\"\n            }\n        }\n    ]\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Startseite\",\n            \"item\": \"https://noctalia.app/de/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Ressourcen\",\n            \"item\": \"https://noctalia.app/de/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Warum wir Träume vergessen\",\n            \"item\": \"https://noctalia.app/de/blog/warum-vergessen-wir-unsere-traeume-die-wissenschaft-hinter-traumamnesie\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
@@ -69,7 +69,7 @@
                     Warum vergessen wir unsere Träume? Was die Wissenschaft über Traumamnesie weiß
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Sie wachen auf, und der Traum ist noch da: ein Flur, eine vertraute Stimme, ein Gefühl, das sich schwer benennen lässt. Sie greifen zum Handy, und bis der Bildschirm aufleuchtet, ist alles weg. Träume so schnell zu vergessen ist normal. Hier lesen Sie, was die Schlafforschung über die Gründe weiß und was hilft, mehr davon festzuhalten.
+                    Du wachst auf, und der Traum ist noch da: ein Flur, eine vertraute Stimme, ein Gefühl, das sich schwer benennen lässt. Du greifst zum Handy, und bis der Bildschirm aufleuchtet, ist alles weg. Träume so schnell zu vergessen ist normal. Hier liest du, was die Schlafforschung über die Gründe weiß und was hilft, mehr davon festzuhalten.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -101,7 +101,7 @@
 <li><a class="toc-link block" href="#brain-mechanisms">1. Was passiert im Gehirn, wenn ein Traum verblasst?</a></li>
 <li><a class="toc-link block" href="#rem-sleep">2. Warum der Moment des Aufwachens so wichtig ist</a></li>
 <li><a class="toc-link block" href="#factors">3. Was lässt Träume schneller verschwinden?</a></li>
-<li><a class="toc-link block" href="#remember-dreams">4. Wie Sie sich an mehr Träume erinnern</a></li>
+<li><a class="toc-link block" href="#remember-dreams">4. Wie du dich an mehr Träume erinnerst</a></li>
 <li><a class="toc-link block" href="#should-worry">5. Muss man sich Sorgen machen, wenn man sich nie an Träume erinnert?</a></li>
 <li><a class="toc-link block" href="#faq">6. Häufige Fragen</a></li>
 </ol>
@@ -133,22 +133,22 @@
                 </p>
 <h2 id="rem-sleep">Warum der Moment des Aufwachens so wichtig ist</h2>
 <p>
-                    Ob Sie sich an einen Traum erinnern, hängt stark davon ab, wann und wie Sie aufwachen.
+                    Ob du dich an einen Traum erinnerst, hängt stark davon ab, wann und wie du aufwachst.
                 </p>
 <h3>Schlafzyklen und die langen Morgenträume</h3>
 <p>
-                    Eine typische Nacht umfasst vier bis sechs Schlafzyklen von etwa 90 Minuten. Jeder durchläuft leichten Schlaf, Tiefschlaf und REM-Schlaf. Die erste REM-Phase dauert oft nur wenige Minuten, spätere können rund eine Stunde dauern. Deshalb erinnern Sie sich meist an die letzten Träume der Nacht, kurz vor dem Aufwachen.
+                    Eine typische Nacht umfasst vier bis sechs Schlafzyklen von etwa 90 Minuten. Jeder durchläuft leichten Schlaf, Tiefschlaf und REM-Schlaf. Die erste REM-Phase dauert oft nur wenige Minuten, spätere können rund eine Stunde dauern. Deshalb erinnerst du dich meist an die letzten Träume der Nacht, kurz vor dem Aufwachen.
                 </p>
 <h3>Während oder direkt nach einem Traum aufwachen</h3>
 <p>
-                    Im Schlaflabor berichten Menschen, die aus dem REM-Schlaf geweckt werden, meist von einem Traum. Aus anderen Schlafphasen geweckt, tun sie es seltener, und ihre Berichte sind meist kürzer und weniger zusammenhängend. Zu Hause gilt dieselbe Logik: Weckt Sie der Wecker oder ein Geräusch während eines Traums oder kurz danach, stehen Ihre Chancen besser.
+                    Im Schlaflabor berichten Menschen, die aus dem REM-Schlaf geweckt werden, meist von einem Traum. Aus anderen Schlafphasen geweckt, tun sie es seltener, und ihre Berichte sind meist kürzer und weniger zusammenhängend. Zu Hause gilt dieselbe Logik: Weckt dich der Wecker oder ein Geräusch während eines Traums oder kurz danach, stehen deine Chancen besser.
                 </p>
 <p>
-                    Diese Chance hält nicht lange an. In den ersten Momenten nach dem Aufwachen ist der Traum noch greifbar. Sobald Ihre Aufmerksamkeit woandershin wandert, zum Wecker, zum Handy oder zum anstehenden Tag, entgleitet er meist.
+                    Diese Chance hält nicht lange an. In den ersten Momenten nach dem Aufwachen ist der Traum noch greifbar. Sobald deine Aufmerksamkeit woandershin wandert, zum Wecker, zum Handy oder zum anstehenden Tag, entgleitet er meist.
                 </p>
 <h3>Ein Gehirn in einem besonderen Zustand</h3>
 <p>
-                    Im REM-Schlaf sind die Muskeln vorübergehend gelähmt, außer den Augen und der Atemmuskulatur. Man nennt das Atonie. Im Gehirn sind emotionale Regionen wie die Amygdala sehr aktiv, während Teile des präfrontalen Kortex, zuständig für Logik und Selbstreflexion, weniger aktiv sind. Sie erleben den Traum intensiv, sind aber nicht in der Lage, ihn zu ordnen, zu benennen und abzulegen.
+                    Im REM-Schlaf sind die Muskeln vorübergehend gelähmt, außer den Augen und der Atemmuskulatur. Man nennt das Atonie. Im Gehirn sind emotionale Regionen wie die Amygdala sehr aktiv, während Teile des präfrontalen Kortex, zuständig für Logik und Selbstreflexion, weniger aktiv sind. Du erlebst den Traum intensiv, bist aber nicht in der Lage, ihn zu ordnen, zu benennen und abzulegen.
                 </p>
 <h2 id="factors">Was lässt Träume schneller verschwinden?</h2>
 <p>
@@ -165,7 +165,7 @@
 <h3 class="font-serif text-lg text-dream-cream">Stress und kreisende Gedanken</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Wenn Sie schon beim Aufwachen an die Arbeit oder an eine Sorge denken, nimmt dieser Gedanke sofort Ihre ganze Aufmerksamkeit ein. Stress kann den Schlaf außerdem leichter und unruhiger machen, sodass weniger ruhige Momente zum Erinnern bleiben.
+                        Wenn du schon beim Aufwachen an die Arbeit oder an eine Sorge denkst, nimmt dieser Gedanke sofort deine ganze Aufmerksamkeit ein. Stress kann den Schlaf außerdem leichter und unruhiger machen, sodass weniger ruhige Momente zum Erinnern bleiben.
                     </p>
 </div>
 <div class="factor-card glass-panel rounded-xl p-6 border border-transparent">
@@ -187,7 +187,7 @@
 <h3 class="font-serif text-lg text-dream-cream">Alkohol und manche Medikamente</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Alkohol verringert den REM-Schlaf in der ersten Nachthälfte und macht den Schlaf leichter, sobald er abgebaut ist. Manche Medikamente, darunter bestimmte Antidepressiva, verändern ebenfalls den REM-Schlaf und die Träume. Setzen Sie eine Behandlung nie ab, ohne mit der verschreibenden Ärztin oder dem verschreibenden Arzt zu sprechen.
+                        Alkohol verringert den REM-Schlaf in der ersten Nachthälfte und macht den Schlaf leichter, sobald er abgebaut ist. Manche Medikamente, darunter bestimmte Antidepressiva, verändern ebenfalls den REM-Schlaf und die Träume. Setz eine Behandlung nie ab, ohne mit der verschreibenden Ärztin oder dem verschreibenden Arzt zu sprechen.
                     </p>
 </div>
 <div class="factor-card glass-panel rounded-xl p-6 border border-transparent">
@@ -198,15 +198,15 @@
 <h3 class="font-serif text-lg text-dream-cream">Ein schriller Wecker</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Ein lauter Wecker reißt Sie direkt in den Handlungsmodus, und der Traum übersteht die Hektik beim Ausschalten selten. Zudem kann er in einer Schlafphase klingeln, in der es kaum Trauminhalt zu erhaschen gibt.
+                        Ein lauter Wecker reißt dich direkt in den Handlungsmodus, und der Traum übersteht die Hektik beim Ausschalten selten. Zudem kann er in einer Schlafphase klingeln, in der es kaum Trauminhalt zu erhaschen gibt.
                     </p>
 </div>
 </div>
 <div class="prose max-w-none text-gray-300">
 <p>
-                    Auch kurze Nächte spielen eine Rolle: Wer an Schlaf spart, verliert die letzten REM-Phasen, also die längsten. Und wenn Ihnen Träume schlicht egal sind, suchen Sie beim Aufwachen auch seltener danach.
+                    Auch kurze Nächte spielen eine Rolle: Wer an Schlaf spart, verliert die letzten REM-Phasen, also die längsten. Und wenn dir Träume schlicht egal sind, suchst du beim Aufwachen auch seltener danach.
                 </p>
-<h2 id="remember-dreams">Wie Sie sich an mehr Träume erinnern</h2>
+<h2 id="remember-dreams">Wie du dich an mehr Träume erinnerst</h2>
 <p>
                     Vergessen ist der Normalfall, aber Traumerinnerung lässt sich trainieren. Die folgenden Gewohnheiten sind einfach und kostenlos. Die meisten bilden auch die Grundlage des <a class="text-dream-salmon hover:underline" href="leitfaden-zum-klartraeumen-fuer-anfaenger-uebernehmen-sie-die-kontrolle-ueber-ihre-naechte">Klarträumens</a>.
                 </p>
@@ -215,14 +215,14 @@
                     Das ist die verlässlichste Gewohnheit. Eine Übersichtsarbeit kam zu dem Ergebnis, dass Menschen, die ihre Träume jeden Morgen in einem Tagebuch festhalten, mehr Träume notieren, als sie in rückblickenden Fragebögen schätzen, und dass das Führen des Tagebuchs selbst die Erinnerung zu steigern scheint.
                 </p>
 <p>
-                    So funktioniert Ihr <a class="text-dream-salmon hover:underline" href="dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer">Traumtagebuch</a>:
+                    So funktioniert dein <a class="text-dream-salmon hover:underline" href="dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer">Traumtagebuch</a>:
                 </p>
 <ul>
-<li>Legen Sie ein Notizbuch oder das aufnahmebereite Handy griffbereit neben das Bett</li>
-<li>Notieren Sie den Traum, bevor Sie aufstehen oder eine Nachricht lesen</li>
-<li>Beginnen Sie mit dem Deutlichsten: einem Bild, einem Gefühl, einem Gesicht</li>
-<li>Deuten Sie noch nicht: Erst festhalten</li>
-<li>Schreiben Sie auch Bruchstücke auf, oder „heute nichts“: Es zählt die Gewohnheit</li>
+<li>Leg ein Notizbuch oder das aufnahmebereite Handy griffbereit neben das Bett</li>
+<li>Notiere den Traum, bevor du aufstehst oder eine Nachricht liest</li>
+<li>Beginne mit dem Deutlichsten: einem Bild, einem Gefühl, einem Gesicht</li>
+<li>Deute noch nicht: Erst festhalten</li>
+<li>Schreib auch Bruchstücke auf, oder „heute nichts“: Es zählt die Gewohnheit</li>
 </ul>
 <p>
                     <strong>Fiktives Beispiel</strong> für einen Eintrag am Morgen, um zu zeigen, dass ein paar Zeilen genügen:
@@ -234,7 +234,7 @@
 <li><strong>Morgen ausprobieren:</strong> „Dreißig Sekunden still liegen bleiben, bevor ich das Handy anfasse.“</li>
 </ul>
 <p>
-                    Nach einigen Wochen zeigen solche Einträge auch, in welchen Nächten Sie sich am besten erinnern. Weitere Techniken finden Sie in unserem <a class="text-dream-salmon hover:underline" href="so-erinnern-sie-sich-an-ihre-traeume-10-effektive-techniken">Leitfaden zur Traumerinnerung</a>.
+                    Nach einigen Wochen zeigen solche Einträge auch, in welchen Nächten du dich am besten erinnerst. Weitere Techniken findest du in unserem <a class="text-dream-salmon hover:underline" href="so-erinnern-sie-sich-an-ihre-traeume-10-effektive-techniken">Leitfaden zur Traumerinnerung</a>.
                 </p>
 <!-- CTA inline -->
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
@@ -243,8 +243,8 @@
 <i class="w-6 h-6 text-dream-salmon" data-lucide="mic"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Sprechen Sie ihn aus, bevor er verblasst</h4>
-<p class="text-sm text-gray-400 mb-4">Mit halb geschlossenen Augen zu schreiben ist mühsam. In Noctalia erzählen Sie Ihren Traum gleich nach dem Aufwachen laut: Er wird transkribiert und in Ihrem Tagebuch gespeichert, damit Sie ihn später nachlesen können.</p>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Sprich ihn aus, bevor er verblasst</h4>
+<p class="text-sm text-gray-400 mb-4">Mit halb geschlossenen Augen zu schreiben ist mühsam. In Noctalia erzählst du deinen Traum gleich nach dem Aufwachen laut: Er wird transkribiert und in deinem Tagebuch gespeichert, damit du ihn später nachlesen kannst.</p>
 <a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/de/traumtagebuch-spracheingabe">
                                 Traumtagebuch per Sprache testen <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
@@ -253,26 +253,26 @@
 </aside>
 <h3>Einen Moment still liegen bleiben</h3>
 <p>
-                    Lassen Sie nach dem Aufwachen die Augen geschlossen und bewegen Sie sich ein paar Sekunden nicht. Fragen Sie sich: Wo war ich gerade? Die Bilder kommen oft einzeln zurück, manchmal vom Ende des Traums her. Bewegung oder ein Blick auf den Bildschirm reißt den Faden meist ab.
+                    Lass nach dem Aufwachen die Augen geschlossen und beweg dich ein paar Sekunden nicht. Frag dich: Wo war ich gerade? Die Bilder kommen oft einzeln zurück, manchmal vom Ende des Traums her. Bewegung oder ein Blick auf den Bildschirm reißt den Faden meist ab.
                 </p>
 <h3>Vor dem Einschlafen eine Absicht fassen</h3>
 <p>
-                    Sagen Sie sich kurz vor dem Einschlafen ruhig, dass Sie sich heute Nacht an Ihre Träume erinnern möchten. Manche stellen sich dabei vor, wie sie aufwachen und zum Notizbuch greifen. Das dauert eine Minute und lenkt Ihre Aufmerksamkeit am nächsten Morgen auf die Träume. Es ist auch der Ausgangspunkt mehrerer Klartraum-Techniken.
+                    Sag dir kurz vor dem Einschlafen ruhig, dass du dich heute Nacht an deine Träume erinnern möchtest. Manche stellen sich dabei vor, wie sie aufwachen und zum Notizbuch greifen. Das dauert eine Minute und lenkt deine Aufmerksamkeit am nächsten Morgen auf die Träume. Es ist auch der Ausgangspunkt mehrerer Klartraum-Techniken.
                 </p>
 <h3>Den Schlaf schützen</h3>
 <ul>
-<li><strong>Schlafen Sie ausreichend</strong>: Die längsten REM-Phasen kommen am Ende der Nacht</li>
-<li><strong>Halten Sie regelmäßige Schlafenszeiten ein</strong>, wenn möglich auch am Wochenende</li>
-<li><strong>Trinken Sie abends wenig Alkohol</strong>, denn er verringert den REM-Schlaf in der ersten Nachthälfte</li>
-<li><strong>Verzichten Sie ab dem Nachmittag möglichst auf Koffein</strong></li>
-<li><strong>Wählen Sie einen sanften Wecker</strong>, oder wachen Sie an freien Tagen von selbst auf</li>
+<li><strong>Schlaf ausreichend</strong>: Die längsten REM-Phasen kommen am Ende der Nacht</li>
+<li><strong>Halte regelmäßige Schlafenszeiten ein</strong>, wenn möglich auch am Wochenende</li>
+<li><strong>Trink abends wenig Alkohol</strong>, denn er verringert den REM-Schlaf in der ersten Nachthälfte</li>
+<li><strong>Verzichte ab dem Nachmittag möglichst auf Koffein</strong></li>
+<li><strong>Wähle einen sanften Wecker</strong>, oder wache an freien Tagen von selbst auf</li>
 </ul>
 <p>
-                    Wenn Sie noch weiter gehen und das Thema Ihrer Träume selbst wählen möchten, erklärt unser Leitfaden zur <a class="text-dream-salmon hover:underline" href="trauminkubation-wie-sie-heute-abend-genau-das-traeumen-was-sie-wollen">Trauminkubation</a>, wie Sie es vor dem Schlafen vorbereiten.
+                    Wenn du noch weiter gehen und das Thema deiner Träume selbst wählen möchtest, erklärt unser Leitfaden zur <a class="text-dream-salmon hover:underline" href="trauminkubation-wie-sie-heute-abend-genau-das-traeumen-was-sie-wollen">Trauminkubation</a>, wie du es vor dem Schlafen vorbereitest.
                 </p>
 <h3>Übungen aus dem Klarträumen nutzen</h3>
 <p>
-                    <a class="text-dream-salmon hover:underline" href="leitfaden-zum-klartraeumen-fuer-anfaenger-uebernehmen-sie-die-kontrolle-ueber-ihre-naechte">Klarträumen</a> bedeutet, zu erkennen, dass man träumt, während der Traum weiterläuft. Seine Übungen, etwa Realitätschecks oder die MILD-Technik, trainieren alle dasselbe: Aufmerksamkeit für Träume. Auch wenn Sie nie luzide werden, kann diese Aufmerksamkeit das Erinnern erleichtern.
+                    <a class="text-dream-salmon hover:underline" href="leitfaden-zum-klartraeumen-fuer-anfaenger-uebernehmen-sie-die-kontrolle-ueber-ihre-naechte">Klarträumen</a> bedeutet, zu erkennen, dass man träumt, während der Traum weiterläuft. Seine Übungen, etwa Realitätschecks oder die MILD-Technik, trainieren alle dasselbe: Aufmerksamkeit für Träume. Auch wenn du nie luzide wirst, kann diese Aufmerksamkeit das Erinnern erleichtern.
                 </p>
 <h2 id="should-worry">Muss man sich Sorgen machen, wenn man sich nie an Träume erinnert?</h2>
 <p>
@@ -284,23 +284,23 @@
 <li><strong>Phasen ohne Erinnerung sind häufig</strong>, etwa in vollen Wochen, bei kurzen Nächten oder nach einer Umstellung des Schlafrhythmus.</li>
 </ul>
 <p>
-                    In manchen Situationen lohnt sich ein Gespräch mit Ihrer Hausärztin, Ihrem Hausarzt oder einer Schlafmedizinerin:
+                    In manchen Situationen lohnt sich ein Gespräch mit deiner Hausärztin, deinem Hausarzt oder einer Schlafmedizinerin:
                 </p>
 <ul>
-<li><strong>Sie setzen Ihre Träume körperlich um</strong>: Sie sprechen laut, treten oder schlagen im Schlaf. Das kann auf eine REM-Schlaf-Verhaltensstörung hinweisen.</li>
-<li><strong>Ihre <a class="text-dream-salmon hover:underline" href="albtraeume-ursachen-bedeutung-und-wie-man-sie-stoppen-kann">Albträume</a> kehren häufig wieder</strong>, wecken Sie oder lassen Sie tagsüber ängstlich zurück.</li>
-<li><strong>Sie sind erschöpft</strong>, obwohl Sie ausreichend lange schlafen.</li>
-<li><strong>Ihre Träume haben sich deutlich verändert</strong>, nachdem Sie ein Medikament begonnen oder abgesetzt haben.</li>
+<li><strong>Du setzt deine Träume körperlich um</strong>: Du sprichst laut, trittst oder schlägst im Schlaf. Das kann auf eine REM-Schlaf-Verhaltensstörung hinweisen.</li>
+<li><strong>Deine <a class="text-dream-salmon hover:underline" href="albtraeume-ursachen-bedeutung-und-wie-man-sie-stoppen-kann">Albträume</a> kehren häufig wieder</strong>, wecken dich oder lassen dich tagsüber ängstlich zurück.</li>
+<li><strong>Du bist erschöpft</strong>, obwohl du ausreichend lange schläfst.</li>
+<li><strong>Deine Träume haben sich deutlich verändert</strong>, nachdem du ein Medikament begonnen oder abgesetzt hast.</li>
 </ul>
 <p>
-                    Und wenn Sie ein Traum Nacht für Nacht begleitet, hilft Ihnen unser Artikel über <a class="text-dream-salmon hover:underline" href="wiederkehrende-traeume-bedeuten-ihre-verborgenen-botschaften-verstehen">wiederkehrende Träume</a>, ihn genauer anzuschauen.
+                    Und wenn dich ein Traum Nacht für Nacht begleitet, hilft dir unser Artikel über <a class="text-dream-salmon hover:underline" href="wiederkehrende-traeume-bedeuten-ihre-verborgenen-botschaften-verstehen">wiederkehrende Träume</a>, ihn genauer anzuschauen.
                 </p>
 <h2>Kurz gesagt</h2>
 <p>
-                    Wir vergessen die meisten Träume, weil das schlafende Gehirn nicht darauf ausgelegt ist, sie zu speichern: Die Gedächtnischemie verändert sich im REM-Schlaf, und ein Traum braucht einen kurzen Wachmoment, um festgehalten zu werden. Das ist normal und bedeutet nicht, dass Sie weniger träumen.
+                    Wir vergessen die meisten Träume, weil das schlafende Gehirn nicht darauf ausgelegt ist, sie zu speichern: Die Gedächtnischemie verändert sich im REM-Schlaf, und ein Traum braucht einen kurzen Wachmoment, um festgehalten zu werden. Das ist normal und bedeutet nicht, dass du weniger träumst.
                 </p>
 <p>
-                    Was Sie ändern können, ist die erste Minute Ihres Tages. Wachen Sie sanft auf, bleiben Sie still liegen und notieren Sie, was übrig ist, auch wenn es nur eine Farbe oder ein Gefühl ist. Nach einigen Wochen reicht diese kleine Gewohnheit oft, um mehr Träume zurückzuholen.
+                    Was du ändern kannst, ist die erste Minute deines Tages. Wach sanft auf, bleib still liegen und notiere, was übrig ist, auch wenn es nur eine Farbe oder ein Gefühl ist. Nach einigen Wochen reicht diese kleine Gewohnheit oft, um mehr Träume zurückzuholen.
                 </p>
 </div>
 <!-- CTA Section -->
@@ -308,9 +308,9 @@
 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
 <i class="w-8 h-8 text-dream-salmon" data-lucide="sparkles"></i>
 </div>
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Halten Sie den Traum von morgen fest, bevor er verblasst</h3>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Halte den Traum von morgen fest, bevor er verblasst</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Mit Noctalia sprechen oder schreiben Sie Ihren Traum direkt nach dem Aufwachen auf. Ihre Einträge bleiben in einem Tagebuch: So können Sie sie nebeneinander lesen und erkennen, was wiederkehrt.
+                    Mit Noctalia sprichst oder schreibst du deinen Traum direkt nach dem Aufwachen auf. Deine Einträge bleiben in einem Tagebuch: So kannst du sie nebeneinander lesen und erkennen, was wiederkehrt.
                 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/de/">
                     Mein Traumtagebuch beginnen <i class="w-5 h-5" data-lucide="arrow-right"></i>
@@ -335,7 +335,7 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Entscheidend ist vor allem der Zeitpunkt. Sie erinnern sich eher an einen Traum, wenn Sie während oder kurz nach dem REM-Schlaf aufwachen, oft in den frühen Morgenstunden, und wenn nichts sofort Ihre Aufmerksamkeit beansprucht. Starke Gefühle, ein leichterer Schlaf und die Absicht, sich zu erinnern, können ebenfalls eine Rolle spielen.
+                            Entscheidend ist vor allem der Zeitpunkt. Du erinnerst dich eher an einen Traum, wenn du während oder kurz nach dem REM-Schlaf aufwachst, oft in den frühen Morgenstunden, und wenn nichts sofort deine Aufmerksamkeit beansprucht. Starke Gefühle, ein leichterer Schlaf und die Absicht, sich zu erinnern, können ebenfalls eine Rolle spielen.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -353,7 +353,7 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Legen Sie ein Traumtagebuch neben das Bett und notieren Sie Ihre Träume, bevor Sie aufstehen oder aufs Handy schauen. Bleiben Sie nach dem Aufwachen ein paar Sekunden still liegen, fassen Sie vor dem Einschlafen die Absicht, sich zu erinnern, und wählen Sie einen sanften Wecker. Wer den Traum per Sprache aufnimmt, zum Beispiel in Noctalia, hält ihn in Sekunden fest.
+                            Leg ein Traumtagebuch neben das Bett und notiere deine Träume, bevor du aufstehst oder aufs Handy schaust. Bleib nach dem Aufwachen ein paar Sekunden still liegen, fass vor dem Einschlafen die Absicht, dich zu erinnern, und wähle einen sanften Wecker. Wer den Traum per Sprache aufnimmt, zum Beispiel in Noctalia, hält ihn in Sekunden fest.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -404,7 +404,7 @@
       <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Vorheriger Artikel</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Wie Sie sich an Ihre Träume erinnern: 10 effektive Techniken</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Wie du dich an deine Träume erinnerst: 10 effektive Techniken</div>
       </div>
     </a>
     <a href="wiederkehrende-traeume-bedeuten-ihre-verborgenen-botschaften-verstehen" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
@@ -432,12 +432,12 @@
         </a>
         <a href="traeume-und-psychische-gesundheit-wie-ihr-schlaf-ihren-geist-offenbart" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Wissenschaft</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Träume und psychische Gesundheit: Wie Ihr Schlaf Ihren Geist offenbart</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Träume und psychische Gesundheit: Wie dein Schlaf deinen Geist offenbart</h3>
             <p class="text-sm text-gray-400">Wie sich Angst, Depression, Stress und Trauma in Träumen zeigen und wann häufige Albträume ein Gespräch mit einer Fachperson wert sind.</p>
         </a>
         <a href="warum-traeumen-wir-die-wissenschaft-hinter-ihren-naechtlichen-abenteuern" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Wissenschaft</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Warum träumen wir? Die Wissenschaft hinter Ihren nächtlichen Abenteuern</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Warum träumen wir? Die Wissenschaft hinter deinen nächtlichen Abenteuern</h3>
             <p class="text-sm text-gray-400">Was die Forschung über Gedächtnis, Gefühle und das Proben von Bedrohungen im Traum gemessen hat und was noch Hypothese ist.</p>
         </a>
   </div>
@@ -447,6 +447,6 @@
 <!-- Health Disclaimer (TI-97 E-E-A-T) -->
 <aside aria-label="Disclaimer" class="glass-panel rounded-xl p-4 my-8 border border-purple-500/20" role="note">
 <p class="text-sm text-purple-200/70">
-<strong class="text-dream-cream">Wichtig:</strong> Dieser Artikel dient nur zu Informationszwecken und stellt keine medizinische oder psychologische Beratung dar. Wenn Sie unter anhaltenden Schlafstörungen oder psychischen Problemen leiden, wenden Sie sich bitte an einen qualifizierten Arzt.
+<strong class="text-dream-cream">Wichtig:</strong> Dieser Artikel dient nur zu Informationszwecken und stellt keine medizinische oder psychologische Beratung dar. Wenn du unter anhaltenden Schlafstörungen oder psychischen Problemen leidest, wende dich bitte an einen qualifizierten Arzt.
                 </p>
 </aside>
