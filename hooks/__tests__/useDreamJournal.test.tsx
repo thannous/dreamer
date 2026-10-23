@@ -90,7 +90,7 @@ const setSavedDreams = (value: DreamAnalysis[]) => mockGetSavedDreams.mockResolv
 const setCachedRemoteDreams = (value: DreamAnalysis[]) => mockGetCachedRemoteDreams.mockResolvedValue(loadedDreams(value));
 
 let mockSubscriptionStatus: any = { tier: 'free' };
-const mockEnvState = { analysisJobsEnabled: false, mockMode: false };
+const mockEnvState = { analysisJobsEnabled: false, mockMode: false, hdIllustrationsEnabled: true };
 const mockNetworkState = {
   isInternetReachable: true as boolean | null,
   isConnected: true as boolean | null,
@@ -127,6 +127,7 @@ jest.mock('../../lib/env', () => ({
   ...(jest.requireActual('../../lib/env') as Record<string, unknown>),
   isMockModeEnabled: () => mockEnvState.mockMode,
   isAnalysisJobsEnabled: () => mockEnvState.analysisJobsEnabled,
+  isHdIllustrationsEnabled: () => mockEnvState.hdIllustrationsEnabled,
 }));
 
 // Ensure EXPO_PUBLIC_MOCK_MODE is not set (to avoid mock mode being enabled)
@@ -375,6 +376,7 @@ describe('useDreamJournal', () => {
     mockSubscriptionStatus = { tier: 'free' };
     mockEnvState.analysisJobsEnabled = false;
     mockEnvState.mockMode = false;
+    mockEnvState.hdIllustrationsEnabled = true;
     setMockUser(null);
     mockGuestDreamCounterState.count = 0;
     mockGuestDreamCounterState.pending = null;
@@ -2819,6 +2821,216 @@ describe('useDreamJournal', () => {
       expect(mockUpdateDreamInSupabase).not.toHaveBeenCalled();
       expect(mockIncrementLocalAnalysisCount).not.toHaveBeenCalled();
       expect(mockInvalidateQuota).toHaveBeenCalled();
+      unmount();
+    });
+
+    // The native journey covers process restart. These tests hold image admission
+    // and account changes at the exact acknowledgement boundary it cannot time.
+    it('retains an HD request through restart and a terminal server snapshot before announcing completion', async () => {
+      mockSubscriptionStatus = { tier: 'plus' };
+      mockGetIllustrationResolution.mockResolvedValue('4K');
+      const original = { ...pendingDream(), analysisStatus: 'failed' as const, imageUrl: 'https://example.com/old.jpg' };
+      let cached: DreamAnalysis[] = [];
+      mockSaveCachedRemoteDreams.mockImplementation(async (dreams: DreamAnalysis[]) => { cached = structuredClone(dreams); });
+      mockFetchDreamsFromSupabase.mockResolvedValue([original]);
+      mockUpdateDreamInSupabase.mockImplementation(async (dream: DreamAnalysis) => ({ ...dream }));
+      mockFetchDreamFromSupabase.mockResolvedValue({ ...original, analysisStatus: 'pending' });
+      mockSubmitDreamAnalysisJob.mockImplementation(async () => {
+        expect(cached[0]?.analysisImageIntent).toMatchObject({
+          userId: 'user-1', remoteDreamId: 101, analysisRequestId: requestId, imageSize: '4K',
+        });
+        return { jobId: 'analysis-job-1', status: 'queued', clientRequestId: requestId };
+      });
+      mockGetDreamAnalysisJobStatus.mockRejectedValueOnce(new Error('Connection interrupted'));
+      const first = await renderLoadedDreamJournal();
+      await act(async () => {
+        await expect(first.result.current.analyzeDream(1, original.transcript, { replaceExistingImage: true }))
+          .rejects.toThrow('Connection interrupted');
+      });
+      expect(cached[0]?.analysisImageIntent?.imageSize).toBe('4K');
+      first.unmount();
+
+      setCachedRemoteDreams(cached);
+      const terminal = { ...original, analysisStatus: 'done' as const, isAnalyzed: true, title: 'Recovered reading' };
+      mockFetchDreamsFromSupabase.mockResolvedValue([terminal]);
+      mockFetchDreamFromSupabase.mockResolvedValue(terminal);
+      // A preference change must not rewrite an already requested continuation.
+      mockGetIllustrationResolution.mockResolvedValue('1K');
+      let acknowledge!: (job: unknown) => void;
+      mockSubmitImageGenerationJob.mockImplementationOnce(() => new Promise(resolve => { acknowledge = resolve; }));
+      const second = await renderLoadedDreamJournal();
+      await waitFor(() => expect(acknowledge).toBeDefined());
+      expect(second.result.current.dreams[0]?.analysisStatus).toBe('pending');
+      expect(second.result.current.lastAnalysisOutcome).toBeNull();
+      expect(mockSubmitImageGenerationJob).toHaveBeenCalledWith({
+        clientRequestId: requestId, dreamId: 101, transcript: original.transcript,
+        previousImageUrl: original.imageUrl, imageSize: '4K',
+      });
+      await act(async () => acknowledge({ jobId: 'hd-job', status: 'queued', clientRequestId: requestId }));
+      await waitFor(() => expect(second.result.current.lastAnalysisOutcome?.status).toBe('done'));
+      expect(second.result.current.dreams[0]).toMatchObject({
+        analysisStatus: 'done', title: 'Recovered reading', imageJobId: 'hd-job', imageJobRequestId: requestId,
+      });
+      expect(cached[0]?.analysisImageIntent).toBeUndefined();
+      expect(mockSubmitDreamAnalysisJob).toHaveBeenCalledTimes(1);
+      expect(mockSubmitImageGenerationJob).toHaveBeenCalledTimes(1);
+      expect(mockAnalyzeDreamText).not.toHaveBeenCalled();
+      second.unmount();
+    });
+
+    it('replays a lost HD acknowledgement with the persisted key without a second analysis', async () => {
+      const pending = pendingDream();
+      pending.analysisImageIntent = {
+        userId: 'user-1', remoteDreamId: 101, analysisRequestId: requestId,
+        transcript: pending.transcript, imageSize: '2K',
+      };
+      setCachedRemoteDreams([pending]);
+      const terminal = { ...pending, analysisImageIntent: undefined, analysisStatus: 'done' as const, isAnalyzed: true };
+      mockFetchDreamsFromSupabase.mockResolvedValue([terminal]);
+      mockFetchDreamFromSupabase.mockResolvedValue(terminal);
+      mockSubmitImageGenerationJob.mockRejectedValueOnce(new Error('Acknowledgement lost'))
+        .mockResolvedValue({ jobId: 'same-hd-job', status: 'queued', clientRequestId: requestId });
+      const { result, unmount } = await renderLoadedDreamJournal();
+      await waitFor(() => expect(result.current.lastAnalysisOutcome?.status).toBe('done'), { timeout: 2500 });
+      expect(mockSubmitImageGenerationJob).toHaveBeenCalledTimes(2);
+      expect(mockSubmitImageGenerationJob.mock.calls[0]).toEqual(mockSubmitImageGenerationJob.mock.calls[1]);
+      expect(mockSubmitImageGenerationJob).toHaveBeenCalledWith(expect.objectContaining({
+        clientRequestId: requestId, imageSize: '2K',
+      }));
+      expect(result.current.dreams[0]?.analysisImageIntent).toBeUndefined();
+      expect(result.current.dreams[0]?.imageJobId).toBe('same-hd-job');
+      expect(mockSubmitDreamAnalysisJob).not.toHaveBeenCalled();
+      unmount();
+    });
+
+    it('uses an already registered HD job after interruption without another admission', async () => {
+      const pending = pendingDream();
+      pending.analysisImageIntent = {
+        userId: 'user-1', remoteDreamId: 101, analysisRequestId: requestId,
+        transcript: pending.transcript, imageSize: '4K',
+      };
+      mockFetchDreamsFromSupabase.mockResolvedValue([pending]);
+      mockFetchDreamFromSupabase.mockResolvedValue({ ...pending, analysisStatus: 'done', isAnalyzed: true });
+      mockGetPendingImageJobs.mockResolvedValue([{
+        dreamId: 1, remoteDreamId: 101, jobId: 'registered-hd', clientRequestId: requestId,
+        status: 'running', requestedAt: Date.now(),
+      }]);
+      const { result, unmount } = await renderLoadedDreamJournal();
+      await waitFor(() => expect(result.current.lastAnalysisOutcome?.status).toBe('done'));
+      expect(mockSubmitImageGenerationJob).not.toHaveBeenCalled();
+      expect(result.current.dreams[0]?.analysisImageIntent).toBeUndefined();
+      expect(result.current.dreams[0]?.imageJobId).toBe('registered-hd');
+      unmount();
+    });
+
+    it('discards an HD acknowledgement after the account changes', async () => {
+      const pending = pendingDream();
+      pending.analysisImageIntent = {
+        userId: 'user-1', remoteDreamId: 101, analysisRequestId: requestId,
+        transcript: pending.transcript, imageSize: '4K',
+      };
+      mockFetchDreamsFromSupabase.mockResolvedValue([pending]);
+      mockFetchDreamFromSupabase.mockResolvedValue({ ...pending, analysisStatus: 'done', isAnalyzed: true });
+      let acknowledge!: (job: unknown) => void;
+      mockSubmitImageGenerationJob.mockImplementationOnce(() => new Promise(resolve => { acknowledge = resolve; }));
+      const { result, rerender, unmount } = await renderLoadedDreamJournal();
+      await waitFor(() => expect(acknowledge).toBeDefined());
+      mockFetchDreamsFromSupabase.mockResolvedValue([]);
+      setMockUser({ id: 'user-2' });
+      rerender();
+      await waitFor(() => expect(result.current.dreams).toEqual([]));
+      mockSaveCachedRemoteDreams.mockClear();
+      mockSavePendingImageJobs.mockClear();
+      await act(async () => acknowledge({ jobId: 'previous-account-hd', status: 'queued', clientRequestId: requestId }));
+      expect(result.current.dreams).toEqual([]);
+      expect(result.current.lastAnalysisOutcome).toBeNull();
+      expect(mockSaveCachedRemoteDreams).not.toHaveBeenCalled();
+      expect(mockSavePendingImageJobs).not.toHaveBeenCalled();
+      unmount();
+    });
+
+    it.each([
+      [403, 'HD_IMAGE_PLUS_REQUIRED'], [409, 'AI_JOB_ATTEMPTS_EXHAUSTED'],
+    ] as const)('finishes text after a definitive image refusal %s without retrying or losing the old image', async (status: number, code: string) => {
+      const pending = pendingDream();
+      pending.imageUrl = 'https://example.com/previous-image.jpg';
+      pending.analysisImageIntent = {
+        userId: 'user-1', remoteDreamId: 101, analysisRequestId: requestId,
+        transcript: pending.transcript, imageSize: '4K', previousImageUrl: pending.imageUrl,
+      };
+      let cached: DreamAnalysis[] = [];
+      mockSaveCachedRemoteDreams.mockImplementation(async (dreams: DreamAnalysis[]) => { cached = structuredClone(dreams); });
+      mockFetchDreamsFromSupabase.mockResolvedValue([pending]);
+      const terminal = { ...pending, analysisImageIntent: undefined, analysisStatus: 'done' as const, isAnalyzed: true };
+      mockFetchDreamFromSupabase.mockResolvedValue(terminal);
+      mockSubmitImageGenerationJob.mockRejectedValue(Object.assign(new Error('HTTP refusal'), { status, body: { code } }));
+      const first = await renderLoadedDreamJournal();
+      await waitFor(() => expect(first.result.current.lastAnalysisOutcome?.status).toBe('done'));
+      expect(first.result.current.dreams[0]).toMatchObject({
+        analysisStatus: 'done', imageUrl: pending.imageUrl, imageJobErrorCode: code,
+        analysisImageIntent: { failureCode: code },
+      });
+      expect(mockSubmitImageGenerationJob).toHaveBeenCalledTimes(1);
+      first.unmount();
+      setCachedRemoteDreams(cached);
+      mockFetchDreamsFromSupabase.mockResolvedValue([terminal]);
+      const second = await renderLoadedDreamJournal();
+      expect(second.result.current.dreams[0]).toMatchObject({ analysisStatus: 'done', imageJobErrorCode: code });
+      expect(mockSubmitImageGenerationJob).toHaveBeenCalledTimes(1);
+      second.unmount();
+    });
+
+    it('keeps the HD size explicit when the client feature is disabled after restart', async () => {
+      mockEnvState.hdIllustrationsEnabled = false;
+      const pending = pendingDream();
+      pending.analysisImageIntent = {
+        userId: 'user-1', remoteDreamId: 101, analysisRequestId: requestId,
+        transcript: pending.transcript, imageSize: '4K',
+      };
+      mockFetchDreamsFromSupabase.mockResolvedValue([pending]);
+      mockFetchDreamFromSupabase.mockResolvedValue({ ...pending, analysisStatus: 'done', isAnalyzed: true });
+      const { result, unmount } = await renderLoadedDreamJournal();
+      await waitFor(() => expect(result.current.lastAnalysisOutcome?.status).toBe('done'));
+      expect(result.current.dreams[0]?.imageJobErrorCode).toBe('HD_IMAGE_DISABLED');
+      expect(mockSubmitImageGenerationJob).not.toHaveBeenCalled();
+      unmount();
+    });
+
+    it('does not apply the old HD job when its transcript changes during queue persistence', async () => {
+      const pending = pendingDream();
+      pending.analysisImageIntent = {
+        userId: 'user-1', remoteDreamId: 101, analysisRequestId: requestId,
+        transcript: pending.transcript, imageSize: '4K',
+      };
+      mockFetchDreamsFromSupabase.mockResolvedValue([pending]);
+      mockFetchDreamFromSupabase.mockResolvedValue({ ...pending, analysisStatus: 'done', isAnalyzed: true });
+      let finishSave!: () => void;
+      mockSavePendingImageJobs.mockImplementationOnce(() => new Promise<void>(resolve => { finishSave = resolve; }));
+      const { result, unmount } = await renderLoadedDreamJournal();
+      await waitFor(() => expect(finishSave).toBeDefined());
+      await act(async () => {
+        await result.current.applyServerDreamState({ ...pending, transcript: 'Newer edited transcript', analysisImageIntent: undefined });
+      });
+      await act(async () => finishSave());
+      await waitFor(() => expect(mockSavePendingImageJobs).toHaveBeenLastCalledWith([]));
+      expect(result.current.dreams[0]).toMatchObject({ transcript: 'Newer edited transcript' });
+      expect(result.current.dreams[0]?.imageJobId).toBeUndefined();
+      expect(result.current.lastAnalysisOutcome).toBeNull();
+      unmount();
+    });
+
+    it('does not admit an HD continuation owned by another account', async () => {
+      const pending = pendingDream();
+      pending.analysisImageIntent = {
+        userId: 'user-2', remoteDreamId: 101, analysisRequestId: requestId,
+        transcript: pending.transcript, imageSize: '4K',
+      };
+      mockFetchDreamsFromSupabase.mockResolvedValue([pending]);
+      mockFetchDreamFromSupabase.mockResolvedValue({ ...pending, analysisStatus: 'done', isAnalyzed: true });
+      const { result, unmount } = await renderLoadedDreamJournal();
+      await waitFor(() => expect(mockFetchDreamFromSupabase).toHaveBeenCalled());
+      expect(mockSubmitImageGenerationJob).not.toHaveBeenCalled();
+      expect(result.current.lastAnalysisOutcome).toBeNull();
       unmount();
     });
 

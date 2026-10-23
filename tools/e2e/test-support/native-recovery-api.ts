@@ -1,5 +1,5 @@
 /**
- * Disposable native QA API. Auth, route handlers, worker and database RPCs are
+ * Disposable recovery QA API. Auth, route handlers, worker and database RPCs are
  * the real implementation. Only the paid model transport is deterministic.
  * ImageScript initializes its pinned WASM dependency from deno.land at import.
  * That startup-only permission is revoked before this server can accept work.
@@ -12,19 +12,33 @@ import { handleCreateAnalysisJob, handleGetAnalysisJobStatus } from '../../../su
 import { handleChat } from '../../../supabase/functions/api/routes/chat.ts';
 import { handleQuotaStatus } from '../../../supabase/functions/api/routes/quota.ts';
 import { handleCategorizeDream } from '../../../supabase/functions/api/routes/dreams.ts';
+import { handleCreateImageJob, handleGetImageJobStatus } from '../../../supabase/functions/api/routes/imageJobs.ts';
 import { processAnalysisJob } from '../../../supabase/functions/analysis-job-worker/index.ts';
 
 await Deno.permissions.revoke({ name: 'net', host: 'deno.land:443' });
 
 const manifestPath = Deno.env.get('E2E_NATIVE_BACKEND_MANIFEST');
-if (!manifestPath) throw new Error('E2E_NATIVE_BACKEND_MANIFEST is required');
-const manifest = JSON.parse(await Deno.readTextFile(manifestPath));
-if (manifest.kind !== 'noctalia-native-backend' || manifest.schemaVersion !== 1) {
-  throw new Error('Only this invocation\'s native backend manifest is accepted');
+const webRecovery = Deno.env.get('E2E_BACKEND_RECOVERY') === '1';
+if (webRecovery && manifestPath) throw new Error('Choose exactly one owned recovery backend');
+let status: { API_URL: string; DB_URL: string; ANON_KEY: string; SERVICE_ROLE_KEY: string;
+  LOCAL_E2E_STACK: { id: string; runtime: 'native' } };
+let controlToken: unknown;
+if (webRecovery) {
+  const statusPath = Deno.env.get('E2E_BACKEND_STATUS_FILE');
+  if (!statusPath) throw new Error('The backend runner status file is required');
+  status = JSON.parse(await Deno.readTextFile(statusPath));
+  controlToken = Deno.env.get('E2E_BACKEND_RECOVERY_CONTROL_TOKEN');
+} else {
+  if (!manifestPath) throw new Error('E2E_NATIVE_BACKEND_MANIFEST is required');
+  const manifest = JSON.parse(await Deno.readTextFile(manifestPath));
+  if (manifest.kind !== 'noctalia-native-backend' || manifest.schemaVersion !== 1) {
+    throw new Error('Only this invocation\'s native backend manifest is accepted');
+  }
+  status = manifest.status;
+  controlToken = manifest.proxy?.controlToken;
 }
-const backend = assertBackendTarget(manifest.status);
-const serviceRoleKey = manifest.status.SERVICE_ROLE_KEY;
-const controlToken = manifest.proxy?.controlToken;
+const backend = assertBackendTarget(status);
+const serviceRoleKey = status.SERVICE_ROLE_KEY;
 if (typeof controlToken !== 'string' || controlToken.length < 32) throw new Error('Missing control capability');
 const port = Number(Deno.env.get('E2E_NATIVE_RECOVERY_PORT') ?? 31284);
 if (!Number.isSafeInteger(port) || port < 20000 || port > 32767) throw new Error('Invalid loopback port');
@@ -33,6 +47,7 @@ if (!Number.isSafeInteger(port) || port < 20000 || port > 32767) throw new Error
 // non-stack request except this deterministic, in-process provider response.
 Deno.env.set('GEMINI_API_KEY', 'native-e2e-no-network-provider');
 Deno.env.set('ANTHROPIC_API_KEY', 'native-e2e-no-network-provider');
+if (webRecovery) Deno.env.set('HD_ILLUSTRATIONS_ENABLED', 'true');
 const originalFetch = globalThis.fetch;
 let analysisHold = false;
 let releaseAnalysis: (() => void) | undefined;
@@ -42,6 +57,8 @@ const state = {
   analysisProviderCalls: 0, chatProviderCalls: 0, categorizationProviderCalls: 0, analysisDispatches: 0,
   droppedChatCompletions: 0, analysisRequests: [] as string[], chatRequests: [] as string[],
   blockedExternalRequests: 0, workerFailures: 0,
+  imageDispatches: 0, heldImageJobs: [] as string[],
+  imageRequests: [] as { clientRequestId: string; dreamId: number; imageSize?: string; previousImageUrl?: string }[],
   backendFailures: [] as { route: string; status: number; code?: string; message?: string }[],
 };
 const jobs = new Set<Promise<void>>();
@@ -72,6 +89,14 @@ globalThis.fetch = async (input, init) => {
       });
     })().catch(() => { state.workerFailures += 1; }).finally(() => jobs.delete(task));
     jobs.add(task);
+    return json({ ok: true, status: 'accepted' }, 202);
+  }
+  if (webRecovery && url.origin === backend.origin && url.pathname === '/functions/v1/image-job-worker') {
+    const { jobId } = await request.json();
+    state.imageDispatches += 1;
+    // This journey proves durable admission and recovery, not image generation.
+    // Leave the real admitted job queued; never fabricate a finished image.
+    state.heldImageJobs.push(jobId);
     return json({ ok: true, status: 'accepted' }, 202);
   }
   if (url.origin === backend.origin && /^\/(?:auth|rest|storage)\/v1\//.test(url.pathname)) {
@@ -121,7 +146,7 @@ globalThis.fetch = async (input, init) => {
 
 async function apiContext(req: Request): Promise<ApiContext> {
   const authorization = req.headers.get('authorization') ?? '';
-  const supabase = createClient(backend.origin, manifest.status.ANON_KEY, {
+  const supabase = createClient(backend.origin, status.ANON_KEY, {
     global: { headers: { Authorization: authorization } },
     auth: { persistSession: false, autoRefreshToken: false },
   });
@@ -146,6 +171,7 @@ Deno.serve({ hostname: '127.0.0.1', port, onListen: () => console.log(`Native re
       state.analysisDispatches = 0;
       state.droppedChatCompletions = state.blockedExternalRequests = state.workerFailures = 0;
       state.analysisRequests = []; state.chatRequests = [];
+      state.imageDispatches = 0; state.heldImageJobs = []; state.imageRequests = [];
       state.backendFailures = [];
       chatDropDone = false;
     }
@@ -164,7 +190,7 @@ Deno.serve({ hostname: '127.0.0.1', port, onListen: () => console.log(`Native re
     // Guest AI is outside these authenticated recovery journeys. Failure is
     // explicit, never a fabricated session or a fabricated successful result.
     if (!context.user) return json({ error: 'Sign in required' }, 401);
-    switch (path.replace(/^\/functions\/v1\/api/, '')) {
+    switch (path.replace(/^\/functions\/v1\/(?:api|illustration-hd)/, '')) {
       case '/analysis-jobs': {
         const body = await req.clone().json();
         state.analysisRequests.push(body.analysisRequestId);
@@ -172,6 +198,15 @@ Deno.serve({ hostname: '127.0.0.1', port, onListen: () => console.log(`Native re
       }
       case '/analysis-jobs/status': return handleGetAnalysisJobStatus(context);
       case '/quota/status': return handleQuotaStatus(context);
+      case '/image-jobs': {
+        if (!webRecovery) return json({ error: 'Image admission is outside this native journey' }, 503);
+        const body = await req.clone().json();
+        state.imageRequests.push({ clientRequestId: body.clientRequestId, dreamId: body.dreamId,
+          imageSize: body.imageSize, previousImageUrl: body.previousImageUrl });
+        return handleCreateImageJob(context);
+      }
+      case '/image-jobs/status': return webRecovery
+        ? handleGetImageJobStatus(context) : json({ error: 'Image admission is outside this native journey' }, 503);
       case '/categorizeDream': return handleCategorizeDream(context);
       case '/chat': {
         const body = await req.clone().json();

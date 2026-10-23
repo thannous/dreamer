@@ -98,10 +98,11 @@ test('Dreamer native denied microphone preserves typed fallback through reauthor
   await device.dismissKeyboard();
   // Leaving Capture flushes the current draft before the OS may kill the process.
   await device.home();
-  await device.setPermission('microphone', 'deny');
-  await app.open();
-  await expect(editor).toHaveValue(draft);
   try {
+    // The OS can mutate permission before reporting an error or failing to reopen.
+    await device.setPermission('microphone', 'deny');
+    await app.open();
+    await expect(editor).toHaveValue(draft);
     await startMicrophone(fixtures);
     if (platform === 'android') {
       // The pilot reported a successful tap while this OS dialog stayed visible.
@@ -152,9 +153,9 @@ test('Dreamer native real microphone dictation is recognized before correction a
 }, async fixtures => {
   const { app, screen, device } = fixtures;
   await prepareVoice(fixtures);
-  await device.setPermission('microphone', 'grant');
-  await app.open();
   try {
+    await device.setPermission('microphone', 'grant');
+    await app.open();
     await startMicrophone(fixtures);
     await expect(screen.getByTestId('recording-write-listening-status', { visible: true })).toBeVisible();
     // The fixture enters the emulator microphone, exercising the actual speech
@@ -188,9 +189,9 @@ test('Dreamer native system speech recognizes a QA audio file before correction 
 }, async fixtures => {
   const { app, screen, device, platform } = fixtures;
   await prepareVoice(fixtures);
-  await device.setPermission('microphone', 'grant');
-  await app.open();
   try {
+    await device.setPermission('microphone', 'grant');
+    await app.open();
     await startMicrophone(fixtures);
     const editor = screen.getByTestId('input.dreamTranscript', { visible: true });
     if (platform === 'ios') {

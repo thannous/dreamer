@@ -364,6 +364,7 @@ const DREAM_REMOTE_UPDATE_FIELDS = [
 ] as const satisfies readonly (keyof DreamAnalysis)[];
 
 const DREAM_LOCAL_UPDATE_FIELDS = [
+  'analysisImageIntent',
   'captureOriginalTranscript',
   'thumbnailUrl',
   'imageUpdatedAt',
@@ -611,6 +612,7 @@ export const areDreamsEqualForLocalState = (a: DreamAnalysis, b: DreamAnalysis):
   if ((left.analyzedAt ?? null) !== (right.analyzedAt ?? null)) return false;
   if ((left.analysisStatus ?? 'none') !== (right.analysisStatus ?? 'none')) return false;
   if ((left.analysisRequestId ?? null) !== (right.analysisRequestId ?? null)) return false;
+  if (!areDreamUpdateFieldValuesEqual(left.analysisImageIntent, right.analysisImageIntent)) return false;
   if ((left.explorationStartedAt ?? null) !== (right.explorationStartedAt ?? null)) return false;
   if (!areDreamUpdateFieldValuesEqual(left.symbols, right.symbols)) return false;
   if (!areDreamUpdateFieldValuesEqual(left.emotions, right.emotions)) return false;
