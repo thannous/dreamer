@@ -1,5 +1,5 @@
 diff --git a/node_modules/expo/types/react-native-web.d.ts b/node_modules/expo/types/react-native-web.d.ts
-index 1fc21a2..1b5d299 100644
+index bbf8566..87816c1 100644
 --- a/node_modules/expo/types/react-native-web.d.ts
 +++ b/node_modules/expo/types/react-native-web.d.ts
 @@ -1,6 +1,5 @@
@@ -9,11 +9,20 @@ index 1fc21a2..1b5d299 100644
  import * as RN from 'react-native';
  
  declare module 'react-native' {
-@@ -91,13 +90,9 @@ declare module 'react-native' {
+@@ -41,8 +40,6 @@ declare module 'react-native' {
+     /** @platform web */
+     clip?: string;
+     /** @platform web */
+-    cursor?: string;
+-    /** @platform web */
+     gridAutoColumns?: string;
+     /** @platform web */
+     gridAutoFlow?: string;
+@@ -93,13 +90,9 @@ declare module 'react-native' {
      /** @platform web */
      transitionTimingFunction?: string | Function | (string | Function)[];
      /** @platform web */
--    userSelect?: string;
+-    userSelect?: 'auto' | 'text' | 'none' | 'contain' | 'all';
 -    /** @platform web */
      visibility?: string;
      /** @platform web */
@@ -23,7 +32,7 @@ index 1fc21a2..1b5d299 100644
    }
  
    /**
-@@ -105,7 +100,6 @@ declare module 'react-native' {
+@@ -107,7 +100,6 @@ declare module 'react-native' {
     */
    interface TextProps {
      className?: string;
@@ -31,7 +40,7 @@ index 1fc21a2..1b5d299 100644
      /** @platform web */
      tabIndex?: number;
      /** @platform web */
-@@ -198,8 +192,6 @@ declare module 'react-native' {
+@@ -200,8 +192,6 @@ declare module 'react-native' {
      /** @platform web */
      willChange?: string;
      /** @platform web */
@@ -40,7 +49,7 @@ index 1fc21a2..1b5d299 100644
      fontFeatureSettings?: string;
      /** @platform web */
      textIndent?: string;
-@@ -226,9 +218,6 @@ declare module 'react-native' {
+@@ -228,9 +218,6 @@ declare module 'react-native' {
        | React.ReactNode
        | ((state: PressableStateCallbackType) => React.ReactNode)
        | undefined;
