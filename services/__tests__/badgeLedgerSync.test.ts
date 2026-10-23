@@ -51,10 +51,10 @@ describe('badge account continuity (transport isolation)', () => {
   it('does not collapse distinct devices whose dreams have the same local timestamp', async () => {
     const remote = server();
     const first = applyBadgeEvent(createEmptyBadgeLedger(), {
-      type: 'dream_saved', typed: true, voiced: false, dream: { id: 12345, clientRequestId: 'device-a-request' },
+      type: 'dream_saved', input: 'text', dream: { id: 12345, clientRequestId: 'device-a-request' },
     });
     const second = applyBadgeEvent(createEmptyBadgeLedger(), {
-      type: 'dream_saved', typed: true, voiced: false, dream: { id: 12345, clientRequestId: 'device-b-request' },
+      type: 'dream_saved', input: 'text', dream: { id: 12345, clientRequestId: 'device-b-request' },
     });
     await synchronizeBadgeLedger('a', first, remote.transport);
     const combined = await synchronizeBadgeLedger('a', second, remote.transport);

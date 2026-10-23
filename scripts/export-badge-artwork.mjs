@@ -8,7 +8,7 @@
  * and the tier row, both keeping the alpha channel at full quality.
  *
  *   node scripts/export-badge-artwork.mjs          write the exports
- *   node scripts/export-badge-artwork.mjs --check  fail when an export is missing or stale
+ *   node scripts/export-badge-artwork.mjs --check  fail when an export is missing
  */
 import { existsSync, mkdirSync, readFileSync, statSync } from 'node:fs';
 import path from 'node:path';
@@ -38,12 +38,11 @@ for (const family of catalogue.families) {
   }
   for (const { suffix, width } of SIZES) {
     const output = path.join(OUTPUT_DIR, `${family.id}${suffix}.webp`);
-    const stale = !existsSync(output) || statSync(output).mtimeMs < statSync(source).mtimeMs;
     if (check) {
       if (!existsSync(output)) problems.push(`${family.id}: missing ${path.relative(ROOT, output)}`);
       continue;
     }
-    if (!stale) continue;
+    if (existsSync(output) && statSync(output).mtimeMs >= statSync(source).mtimeMs) continue;
     await sharp(source).resize({ width, height: width, fit: 'contain' }).webp(WEBP).toFile(output);
     written += 1;
   }
