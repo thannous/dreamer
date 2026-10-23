@@ -29,6 +29,16 @@ async function openCollection(screen: Screen) {
 
 const card = (screen: Screen, id: string) => screen.getByTestId(`collection.card.${id}`, { visible: true });
 
+async function expectTierSelection(screen: Screen, selected: 'bronze' | 'silver' | 'gold') {
+  const group = screen.getByRole('radiogroup');
+  await expect(group.getByRole('radio')).toHaveCount(3);
+  await expect(group.getByRole('radio', { checked: true })).toHaveCount(1);
+  for (const tier of ['bronze', 'silver', 'gold']) {
+    await expect(screen.getByTestId(`collection.detail.tier.${tier}`, { visible: true }))
+      .toHaveAttribute('aria-checked', String(tier === selected));
+  }
+}
+
 test('a written dream earns its card face down, turned over once and kept after a reload',
   { tags: ['collection', 'persistence'] }, async ({ app, screen, browser }) => {
     await isolateWeb(browser, app);
@@ -83,6 +93,19 @@ test('a written dream earns its card face down, turned over once and kept after 
     await browser.keyboard.press('Enter');
     await expect.poll(focused).toEqual({ testId: null, role: 'img', label: 'Night Journal, Bronze', hidden: false });
     await expect(screen.getByTestId('collection.detail.tier.bronze', { visible: true })).toBeVisible();
+    await expectTierSelection(screen, 'bronze');
+    // A preview changes the same state announced to assistive technology. RNW's Pressable
+    // supports Enter; this also proves choosing a locked tier never reveals/earns it.
+    const silver = screen.getByTestId('collection.detail.tier.silver', { visible: true });
+    await silver.focus();
+    await browser.keyboard.press('Enter');
+    await expectTierSelection(screen, 'silver');
+    await expect(silver).toBeFocused();
+    const bronze = screen.getByTestId('collection.detail.tier.bronze', { visible: true });
+    await bronze.focus();
+    await browser.keyboard.press('Enter');
+    await expectTierSelection(screen, 'bronze');
+    await expect(bronze).toBeFocused();
     await expect(screen.getByTestId('collection.detail')).toContainText('Next tier: Silver');
     // The capture waits for the card to settle face up: nothing fading on the way in (opacity
     // through every ancestor), the turn and the lean over, the back and every star of the
@@ -130,6 +153,11 @@ test('a written dream earns its card face down, turned over once and kept after 
     await expect(card(screen, 'ink-dreamer'))
       .toHaveAttribute('aria-label', 'Night Quill. Not earned yet. 1 of 3 toward Bronze');
     await expect(screen.getByTestId('collection.summary.new')).toHaveCount(0);
+    await card(screen, 'night-journal').tap();
+    await expect(screen.getByTestId('collection.detail.reveal', { visible: true })).toHaveCount(0);
+    await expect.poll(focused).toEqual({ testId: null, role: 'img', label: 'Night Journal, Bronze', hidden: false });
+    await expectTierSelection(screen, 'bronze');
+    await screen.getByTestId('collection.detail.close', { visible: true }).tap();
     await app.screenshot('collection-after-reload');
     } finally { await decline(); }
   });

@@ -237,9 +237,11 @@ export function BadgeDetail({ state, t, formatNumber, formatDate, onClose, onRev
                 const earned = level <= state.tier;
                 const selected = level === shownLevel;
                 const material = getBadgeMaterial(earned ? tier : null);
+                // RNW reads the ARIA prop directly; native keeps accessibilityState.
                 return (
                   <PressableScale key={tier} onPress={() => setShownLevel(level)} haptic="selection"
                     accessibilityRole="radio" accessibilityState={{ selected, checked: selected }}
+                    aria-checked={Platform.OS === 'web' ? selected : undefined}
                     accessibilityLabel={`${badgeTierName(t, tier)}. ${badgeGoal(t, family, level, formatNumber)}. ${earned ? earnedOn(level) ?? t('badges.a11y.held', { tier: badgeTierName(t, tier) }) : t('badges.detail.not_yet')}`}
                     testID={`collection.detail.tier.${tier}`}
                     className="flex-1 items-center gap-1.5 rounded-[16px] border px-1.5 pb-2.5 pt-3"

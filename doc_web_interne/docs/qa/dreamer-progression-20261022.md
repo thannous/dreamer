@@ -1,6 +1,68 @@
 # Progression Dreamer — intégration du 22 octobre 2026
 
-## Suite de publication — Explorer et carte Collection
+## Correctifs de sélection des badges et d’édition des notes — 23 octobre
+
+Candidat applicatif : `860925b27fba42cfbd5b2d56ed62db14033f48c9`, sur la base
+`bf198b6ec`. L’ancien client web a confirmé deux défauts : les radios de palier
+n’exposaient pas leur sélection, et le dock de lecture pouvait intercepter les
+clics sur les actions de note. Le champ multiligne natif pouvait aussi grandir
+jusqu’à exiger six défilements pour atteindre son compteur.
+
+Les radios transmettent désormais `aria-checked` sur le web en conservant
+l’état accessible natif. Pendant l’édition ou la confirmation de suppression
+d’une note, le dock est masqué et le changement de page verrouillé. Le champ
+est borné, compteur et erreur sont placés au-dessus ; « Terminé » sur iOS ferme
+le clavier sans modifier le brouillon. Aucun texte n’est tronqué.
+
+**Web ciblé : 5/5 PASS**, run `01a1679c-43ae-7ddc-91b6-87a16c848c39`.
+Le parcours Collection exige exactement un radio coché, Bronze → Argent → Bronze
+avec Entrée, focus conservé et état correct après rechargement. Les quatre
+parcours notes couvrent 1920×907 et 390×844 : géométrie et hit-test avant clic,
+CRUD/dates/récit conservé, vrai collage 4001 intact et refusé, réduction à 4000,
+sauvegarde/rechargement et annulation d’une modification invalide.
+
+Commande depuis la racine :
+`E2E_WEB_PORT=8134 E2E_WORKERS=1 mise exec -- npm run test:testerarmy -- run --grep 'a written dream earns its card face down|personal notes survive reload|an over-limit pasted personal note'`.
+Rapport canonique :
+`tools/e2e/.e2e/dreamer-web/1792739655347-66343-bfd50396-8ef9-416b-ad6b-c1ea45877652/report.json`.
+Le run a testé la base avec les cinq fichiers modifiés ; son empreinte de delta
+`0582407684f0b5b3ebeb76265a22b7eb28a44b0aa2411feb9364653d8cc63e38`
+correspond au commit applicatif ci-dessus. e2e 0.21.2, web 0.15.2,
+Playwright 1.64.0 ; stockage mock persistant, sans preuve serveur.
+Les deux captures 4001 ont été inspectées. Revues croisées du code/tests sans
+constat restant.
+
+`verify:pr` sur `860925b27` : **PASS, 7 exécutés, 5 réutilisés, 10 hors périmètre**.
+
+**iPhone physique : 1/1 PASS ciblé**, run `01a167af-d3da-7c74-924d-859d9ef962fa`,
+Release QA 3.7.0(14) du candidat ci-dessus, OTA désactivée. Quatorze lignes,
+111 caractères : un petit geste expose compteur et « Terminé », qui ferme
+réellement le clavier en conservant le brouillon exact ; les actions sont alors
+accessibles sans autre geste. Annuler restaure le dock, sans sauvegarde.
+Les captures avant/après ont été inspectées ; la hauteur native est bornée.
+Le boundingBox avant fermeture du clavier ne mesure que la partie visible du champ.
+Ce résultat n’affirme pas une exposition automatique sans défilement.
+Rapport : `tools/e2e/.e2e/progression-iphone-inputs/runs/note-polish-04/report.json`.
+
+À la demande du propriétaire, aucun nouveau test natif de limite 4000/4001 ni
+campagne CRUD n’est lancé : leur logique est inchangée et leurs preuves antérieures
+restent réutilisées. Les pilotes iPhone 01–03 conservent leurs échecs d’injection
+ou de placement du pilote ; aucun succès rétroactif. L’app personnelle est préservée.
+
+**Moto physique : 1/1 PASS ciblé**, run `01a167b6-a47b-741e-a402-32f161a204fe`,
+69 secondes, Release QA 3.7.0(83), même source applicative, OTA désactivée.
+APK `916c293fe83de187503aec127b32550821cf3ac39a38d14ce57825c747c05b42`,
+installation de signature compatible sans effacement. Un brouillon de quatorze
+lignes/620 caractères reste exact après fermeture du clavier ; champ borné,
+compteur et actions entièrement visibles, dock absent puis restauré après Annuler.
+Aucune sauvegarde ni campagne de limites/CRUD. Les deux captures sont inspectées.
+Rapport : `tools/e2e/.e2e/progression-moto-polish-inputs/runs/pilot-01/report.json`.
+L’app personnelle est inchangée ; les données QA existantes sont préservées.
+
+Les deux FAIL hébergés sont historiques : aucun nouveau déploiement et aucune
+qualification VoiceOver/TalkBack ne sont déduits de ce lot.
+
+## Historique — suite de publication, Explorer et carte Collection
 
 Le contrôle Release du merge `59b1796e` passe le backend local (22/22), le site
 (269/269) et la première passe Dreamer (120 exécutés, 27 réservés aux autres
