@@ -95,6 +95,38 @@ test('read receipts obey the same bounded/profile rules as their canonical build
   }
 });
 
+// A UI journey cannot prove a receipt refuses a hosted origin or forged mode.
+// Keep that trust boundary independent of the happy-path native evidence.
+test('local backend receipts require real modes, a disposable identity and strict loopback origin', () => {
+  const local = () => ({ ...receipt(), bundle: 'com.tanuki75.noctalia.qa', profile: {
+    name: 'local-backend', mock: false, persistence: false, audioMock: false, featureSheets: false,
+    categorizationDelayMs: 0, nativeQaAudio: true,
+    backend: { origin: 'http://127.0.0.1:31283', stackId: sha, anonKeySha256: sha },
+  } });
+  const localExpected = { ...expected, bundle: 'com.tanuki75.noctalia.qa' };
+  assert.equal(validateReleaseReceipt(local(), localExpected).profile.name, 'local-backend');
+  const alternativePort = local(); alternativePort.profile.backend.origin = 'http://127.0.0.1:32001';
+  validateReleaseReceipt(alternativePort, localExpected);
+  for (const origin of ['https://127.0.0.1:31283', 'http://localhost:31283', 'http://10.0.2.2:31283',
+    'http://example.com:31283', 'http://127.0.0.1:19999', 'http://127.0.0.1:32768',
+    'http://user:pass@127.0.0.1:31283', 'http://127.0.0.1:31283/', 'http://127.0.0.1:31283/api',
+    'http://127.0.0.1:31283?host=example.com', 'http://127.0.0.1:31283#fragment']) {
+    const r = local(); r.profile.backend.origin = origin;
+    assert.throws(() => validateReleaseReceipt(r, localExpected), /RELEASE_PROFILE/);
+  }
+  for (const mutate of [r => { r.profile.mock = true; }, r => { r.profile.persistence = true; },
+    r => { r.profile.audioMock = true; }, r => { r.profile.nativeQaAudio = false; },
+    r => { delete r.profile.nativeQaAudio; }, r => { r.profile.backend.stackId = 'other'; },
+    r => { delete r.profile.backend; }, r => { r.profile.backend.anonKeySha256 = 'other'; }]) {
+    const r = local(); mutate(r);
+    assert.throws(() => validateReleaseReceipt(r, localExpected), /RELEASE_PROFILE/);
+  }
+  const ios = { ...local(), platform: 'ios', buildCommand: ['xcodebuild', '-configuration', 'Release', 'build'] };
+  assert.throws(() => validateReleaseReceipt(ios, { ...localExpected, platform: 'ios' }), /RELEASE_PROFILE/);
+  ios.binary.signed = true;
+  validateReleaseReceipt(ios, { ...localExpected, platform: 'ios' });
+});
+
 test('archived Release bytes survive a later cache rebuild, partial or existing copies never qualify', t => {
   const links = virtualLinks(t);
   const root = mkdtempSync(join(tmpdir(), 'noctalia-binary-archive-'));

@@ -146,7 +146,7 @@ const initialWidths = new Map<string, number>();
  * in one selectable block, read and copied as written. A story written with Markdown
  * keeps the Markdown renderer, without the initial.
  */
-export function BookProse({ text }: { text: string }) {
+export function BookProse({ text, testID }: { text: string; testID?: string }) {
   const ink = useInk();
   const { fontScale } = useWindowDimensions();
   const body = useBookBody();
@@ -164,7 +164,7 @@ export function BookProse({ text }: { text: string }) {
   }));
 
   if (!initial) {
-    return <MarkdownText variant="reading" style={{ ...body, lineHeight: PROSE.lineHeight }}>{text}</MarkdownText>;
+    return <MarkdownText testID={testID} variant="reading" style={{ ...body, lineHeight: PROSE.lineHeight }}>{text}</MarkdownText>;
   }
   const rest = story.slice(initial.length);
   const prose = { ...body, fontSize: PROSE.fontSize, lineHeight: PROSE.lineHeight };
@@ -179,7 +179,7 @@ export function BookProse({ text }: { text: string }) {
     // heightening the line: the text reads exactly as written.
     return (
       <View style={{ paddingTop: rise }}>
-        <Text selectable style={prose}>
+        <Text testID={testID} selectable style={prose}>
           <Text style={{ ...initialInk, lineHeight: 0, marginRight: INITIAL_GAP }}>{initial}</Text>
           {rest}
         </Text>
@@ -209,7 +209,7 @@ export function BookProse({ text }: { text: string }) {
       <Text {...hidden} onLayout={measure('letter')} style={{ ...prose, position: 'absolute', left: 0, top: 0, opacity: 0 }}>
         {initial}
       </Text>
-      <Text selectable style={prose}>
+      <Text testID={testID} selectable style={prose}>
         {/* Android reads a colour of 0, transparent, as none and inks the letter as the story: a clear white is not 0. */}
         <Text style={{ color: 'rgba(255, 255, 255, 0)' }}>{initial}</Text>
         <View style={{ width: spacer, height: 1 }} />

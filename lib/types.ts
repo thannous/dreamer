@@ -189,6 +189,17 @@ export interface DreamAnalysis {
   analyzedAt?: number; // Timestamp when analysis was completed
   analysisStatus?: AnalysisStatus; // Current status of analysis (for offline queue, idempotence)
   analysisRequestId?: string; // UUID for server-side idempotence
+  /** Local durable continuation of an HD illustration requested with this analysis. */
+  analysisImageIntent?: {
+    userId: string;
+    remoteDreamId: number;
+    analysisRequestId: string;
+    imageSize: '2K' | '4K';
+    transcript: string;
+    previousImageUrl?: string;
+    /** A definitive image refusal; text analysis may still complete. */
+    failureCode?: string;
+  };
   explorationStartedAt?: number; // Timestamp when first chat message was sent (marks dream as "explored")
   imageJobId?: string; // Local-only async image job tracking
   imageJobStatus?: ImageJobStatus; // Local-only async image job state
@@ -204,6 +215,8 @@ export interface PendingImageJob {
   clientRequestId: string;
   status: ImageJobStatus;
   requestedAt: number;
+  /** Correlation for an image continuing a particular analysis; absent on legacy/direct image jobs. */
+  analysisImageRequest?: { userId: string; analysisRequestId: string; transcript: string };
 }
 
 export interface NotificationSettings {

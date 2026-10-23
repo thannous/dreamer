@@ -2183,7 +2183,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
           textAlignVertical="top"
         />
       ) : (
-        <BookProse text={dream.transcript} />
+        <BookProse text={dream.transcript} testID={TID.Text.DreamDetailTranscript} />
       )}
       {isEditing ? <DreamLengthCounter length={editableTranscript.length} style={{ marginTop: 6 }} /> : null}
       {dream.captureOriginalTranscript ? <CaptureOriginal source={dream.captureOriginalTranscript} /> : null}

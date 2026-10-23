@@ -78,7 +78,9 @@ describe('personal-note recovery from a legacy durable receipt', () => {
     const state = setup(operation);
     await state.restart().syncPendingMutations();
     expect(state.row().personal_notes).toBeUndefined();
-    expect(state.dreams()[0].personalNotes).toEqual([note]);
+    // The recovered identity must be visible immediately, before the next replay;
+    // using an older queued payload here loses the durable server receipt.
+    expect(state.dreams()[0]).toMatchObject({ remoteId: 42, revisionId: 'r1', personalNotes: [note] });
     const recovery = state.queue()[0];
     expect(recovery).toMatchObject({ id: 'local-mutation', operation: 'update', status: 'failed', baseRevision: 'r1',
       payload: { dream: { clientRequestId: local.clientRequestId, remoteId: 42, personalNotes: [note] } } });

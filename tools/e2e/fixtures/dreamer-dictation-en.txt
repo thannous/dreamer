@@ -1,0 +1,17 @@
+Synthetic public QA audio; contains no user recording.
+Tracked audio asset: assets/qa/dreamer-dictation-en.wav
+SHA256: ed2bd9767d9c7f6c7cd28cbaaa62491a22a690fe201b7eb00fe7d16e2619f485
+
+I walked beside a blue lighthouse. A golden boat crossed the quiet sea. I counted seven windows before I woke up.
+
+Generated locally on macOS with:
+/usr/bin/say -v Samantha -r 135 -o dreamer-dictation-en.wav --file-format=WAVE --data-format=LEI16@16000 "I walked beside a blue lighthouse. A golden boat crossed the quiet sea. I counted seven windows before I woke up."
+
+Format: RIFF WAV, PCM16 little endian, 16000 Hz, mono, 7.506312 seconds.
+The test injects these audio samples at the Android emulator microphone input.
+Recognized words are checked before the test edits any text. No transcript result
+is supplied to the application. iOS requires a separately qualified microphone
+input for microphone-capture proof. The local native QA build can supply this file
+to the real system recognizer (audioSource), strictly behind the QA bundle,
+non-EAS build stamp and loopback-backend guards. That test proves file
+transcription/correction/save/restart, not physical microphone capture.
