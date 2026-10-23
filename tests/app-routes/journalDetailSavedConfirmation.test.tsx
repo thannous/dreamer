@@ -474,7 +474,6 @@ jest.mock('@/hooks/useTranslation', () => ({
 }));
 
 jest.mock('@/lib/env', () => ({
-  isHdIllustrationsEnabled: () => true,
   isMockModeEnabled: () => false,
 }));
 
@@ -1311,16 +1310,15 @@ describe('journal detail saved confirmation route', () => {
     }
   });
 
-  it('keeps illustration retry available after the HD quota is exhausted', () => {
+  it('keeps illustration retry available after a Plus illustration fails', () => {
     mockTier = 'plus';
     mockDreams = [buildDream({
       isAnalyzed: true,
       analysisStatus: 'done',
       imageGenerationFailed: true,
-      imageJobErrorCode: 'HD_IMAGE_QUOTA_EXCEEDED',
+      imageJobErrorCode: 'IMAGE_JOB_SUBMISSION_FAILED',
     })];
     render(<JournalDetailScreen />);
-    expect(screen.getByRole('button', { name: 'settings.illustration.preferences' })).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Retry illustration' })).toBeTruthy();
   });
 

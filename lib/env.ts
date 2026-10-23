@@ -12,7 +12,6 @@ export type ExpoPublicEnvKey =
   | 'EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID'
   | 'EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID'
   | 'EXPO_PUBLIC_GUEST_QA_LAB'
-  | 'EXPO_PUBLIC_HD_ILLUSTRATIONS_ENABLED'
   | 'EXPO_PUBLIC_MOCK_MODE'
   | 'EXPO_PUBLIC_MOCK_PERSISTENCE'
   | 'EXPO_PUBLIC_MOCK_CATEGORIZATION_DELAY_MS'
@@ -47,8 +46,6 @@ export function getExpoPublicEnvValue(key: ExpoPublicEnvKey): string | undefined
       return process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID;
     case 'EXPO_PUBLIC_GUEST_QA_LAB':
       return process.env.EXPO_PUBLIC_GUEST_QA_LAB;
-    case 'EXPO_PUBLIC_HD_ILLUSTRATIONS_ENABLED':
-      return process.env.EXPO_PUBLIC_HD_ILLUSTRATIONS_ENABLED;
     case 'EXPO_PUBLIC_MOCK_MODE':
       return process.env.EXPO_PUBLIC_MOCK_MODE;
     case 'EXPO_PUBLIC_MOCK_PERSISTENCE':
@@ -119,10 +116,6 @@ export function isGuestQaLabEnabled(): boolean {
 
 export function isPerformanceTracingEnabled(): boolean {
   return (getExpoPublicEnvValue('EXPO_PUBLIC_PERFORMANCE_TRACING') ?? '').toLowerCase() === 'true';
-}
-
-export function isHdIllustrationsEnabled(): boolean {
-  return getExpoPublicEnvValue('EXPO_PUBLIC_HD_ILLUSTRATIONS_ENABLED') === 'true';
 }
 
 export function isSubscriptionQaLabEnabled(): boolean {

@@ -133,8 +133,6 @@ jest.doMock('@/components/ui/icon-symbol', () => ({
   IconSymbol: ({ name }: { name: string }) => <span data-testid={`icon.${name}`} />,
 }));
 
-jest.doMock('@/components/settings/IllustrationQualityPreference', () => ({ IllustrationQualityPreference: () => <div data-testid="settings-illustration-quality" /> }));
-
 jest.doMock('@/components/settings/useSettingsPreferences', () => ({
   useSettingsPreferences: () => ({
     theme: preference('theme', 'auto', selectTheme as never),

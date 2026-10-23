@@ -86,7 +86,7 @@ import {
   type ReflectionQuotaHint,
 } from '@/lib/dreamUsage';
 import { getDreamAnalysisFreshness } from '@/lib/dreamAnalysisFreshness';
-import { isHdIllustrationsEnabled, isMockModeEnabled } from '@/lib/env';
+import { isMockModeEnabled } from '@/lib/env';
 import { isFullMoonDream } from '@/lib/fullMoon';
 import { classifyError, ErrorType, QuotaError, QuotaErrorCode } from '@/lib/errors';
 import { getDreamImageCacheKey, getDreamImageVersion, getImageConfig, withCacheBuster } from '@/lib/imageUtils';
@@ -3049,14 +3049,6 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
             )}
           </View>
         )}
-        {isHdIllustrationsEnabled() && dream.imageJobErrorCode === 'HD_IMAGE_QUOTA_EXCEEDED' ? (
-          <View className="gap-3 rounded-lg bg-ink-soft p-4">
-            <Text accessibilityRole="alert" className="font-sans text-body-sm text-ivory">{t('settings.illustration.exhausted')}</Text>
-            <Pressable accessibilityRole="button" onPress={() => router.push('/settings')} className="min-h-[44px] justify-center">
-              <Text className={`font-sans-medium text-champagne-on`}>{t('settings.illustration.preferences')}</Text>
-            </Pressable>
-          </View>
-        ) : null}
         {isRetryingImage && dream.imageUrl ? (
           <View className="absolute inset-0 items-center justify-center rounded-lg bg-ink-overlay">
             <ActivityIndicator color={noctalia.text.primary} />
