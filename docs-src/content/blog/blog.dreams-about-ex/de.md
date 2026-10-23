@@ -254,7 +254,7 @@
                 </p>
 <h2 id="current">Vom Ex träumen in einer neuen Beziehung</h2>
 <p>
-                    Die Antwort ist entspannt: Ein Traum ist keine Untreue und kein Zeichen dafür, dass deine Beziehung scheitert. Du hast dir den Traum nicht ausgesucht. Entscheidend ist, wie du und dein Partner oder deine Partnerin im Wachleben miteinander umgeht.
+                    Die Antwort ist entspannt: Ein Traum ist keine Untreue und kein Zeichen dafür, dass deine Beziehung scheitert. Du hast dir den Traum nicht ausgesucht. Entscheidend ist, wie du mit deinem Partner oder deiner Partnerin im Wachleben umgehst.
                 </p>
 <h3>Wenn der Traum eine Frage aufwirft</h3>
 <p>
@@ -375,7 +375,7 @@
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <a href="wiederkehrende-traeume-bedeuten-ihre-verborgenen-botschaften-verstehen" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Deutung</span>
-                        <h3 class="font-serif text-lg text-dream-cream mb-2">Wiederkehrende Träume: Ihre verborgenen Botschaften verstehen</h3>
+                        <h3 class="font-serif text-lg text-dream-cream mb-2">Wiederkehrende Träume: ihre verborgenen Botschaften verstehen</h3>
                         <p class="text-sm text-gray-400">Warum derselbe Traum wiederkehrt, was du zwischen den Episoden notieren kannst und wann wiederholte Albträume ärztlich abgeklärt werden sollten.</p>
                     </a>
                     <a href="traeume-von-ausfallenden-zaehnen-bedeutung-und-interpretation" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">

@@ -313,7 +313,7 @@ Was, wenn ich mich an gar nichts erinnere?
 <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-Schreib „heute keine Traumerinnerung“ und wie du dich fühlst, dann startest du in den Tag. Das heißt nicht, dass du nicht geträumt hast. Erfinde keine Szene, nur um die Seite zu füllen.
+Schreib „heute keine Traumerinnerung“ und wie du dich fühlst, dann starte in den Tag. Das heißt nicht, dass du nicht geträumt hast. Erfinde keine Szene, nur um die Seite zu füllen.
 </p>
 </details>
 </div>

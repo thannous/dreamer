@@ -441,7 +441,7 @@ Meistens nicht. Wenn er mehrmals pro Woche auftritt, deinen Schlaf stört oder d
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <a href="wiederkehrende-traeume-bedeuten-ihre-verborgenen-botschaften-verstehen" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Deutung</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Wiederkehrende Träume: Ihre verborgenen Botschaften verstehen</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Wiederkehrende Träume: ihre verborgenen Botschaften verstehen</h3>
             <p class="text-sm text-gray-400">Warum derselbe Traum wiederkehrt, was du zwischen den Episoden notieren kannst und wann wiederholte Albträume ärztlich abgeklärt werden sollten.</p>
         </a>
         <a href="bedeutung-von-fallenden-traeumen-warum-sie-vom-fallen-traeumen" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">

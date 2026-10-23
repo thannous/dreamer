@@ -410,7 +410,7 @@
     <a href="wiederkehrende-traeume-bedeuten-ihre-verborgenen-botschaften-verstehen" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Nächster Artikel</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Wiederkehrende Träume: Ihre verborgenen Botschaften verstehen</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Wiederkehrende Träume: ihre verborgenen Botschaften verstehen</div>
       </div>
       <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
     </a>

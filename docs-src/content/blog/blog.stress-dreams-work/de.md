@@ -231,7 +231,7 @@ Eine Besprechung beginnt ohne dich, eine Frist läuft ab oder der Posteingang wi
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="wiederkehrende-traeume-bedeuten-ihre-verborgenen-botschaften-verstehen">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretation</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Wiederkehrende Träume: Ihre verborgenen Botschaften verstehen</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Wiederkehrende Träume: ihre verborgenen Botschaften verstehen</h3>
 <p class="text-sm text-gray-400">Entdecke, warum bestimmte Träume immer wiederkehren und was dein Unterbewusstsein dir mitteilen möchte.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="traeume-und-psychische-gesundheit-wie-ihr-schlaf-ihren-geist-offenbart">
