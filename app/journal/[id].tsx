@@ -764,9 +764,10 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     setEditableTheme(theme);
   }, []);
   const [isEditing, setIsEditing] = useState(false);
+  const [isInteractingWithNote, setIsInteractingWithNote] = useState(false);
   const [isPickingImage, setIsPickingImage] = useState(false);
   // A page being written in, or its illustration held open, is not leafed through.
-  useJournalPageTurnLock(isEditing || isIllustrationFullscreen);
+  useJournalPageTurnLock(isEditing || isInteractingWithNote || isIllustrationFullscreen);
   // A page just turned to takes over from its likeness once it has laid itself out: its
   // heading measured and its illustration, sized to it, on screen.
   const pageLaidOut = useJournalPageLaidOut();
@@ -3240,7 +3241,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
               </ArrivalLater>
             ) : null}
 
-            {!isEditing ? <DreamPersonalNotes dream={dream} disabled={isAnalysisLocked} /> : null}
+            {!isEditing ? <DreamPersonalNotes dream={dream} disabled={isAnalysisLocked} onInteractionChange={setIsInteractingWithNote} /> : null}
 
             {/* A guest reads on into what an account keeps and adds. */}
             {showCompletedReading && !readingInFlight ? renderFirstValueBackupCard() : null}
@@ -3356,7 +3357,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
           <CoverFlight source={paintedArtwork} from={coverFlight.from} to={coverFlight.to} height={coverHeight} travel={coverTravel}
             landed={coverFlight.landed} onArrived={coverFlightArrived} onGone={coverFlightGone} />
         ) : null}
-        {!isEditing && !isKeyboardVisible && (!hasIllustratedCover || readingActionVisible) && !(sealShowsReading && !isSavedArrival)
+        {!isEditing && !isInteractingWithNote && !isKeyboardVisible && (!hasIllustratedCover || readingActionVisible) && !(sealShowsReading && !isSavedArrival)
           && !previewHidesDock ? (
           <View testID="component.dreamDetail.actionDock"
             className={`absolute bottom-0 left-0 right-0 bg-ink px-6 pt-3 ${isSavedArrival ? '' : 'border-t border-line'}`}

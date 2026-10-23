@@ -1,12 +1,49 @@
-import { test, surfaceOf } from '@e2e-dev/web';
+import { test, surfaceOf, type Browser } from '@e2e-dev/web';
 import type { BrowserContext } from 'playwright/test';
 import { expect } from 'e2e';
 import { isolateWeb } from '../web-fixtures';
 import { webEngine } from '../web-engine';
 
-test('personal notes survive reload, edits and deletion without changing the dream; old dreams are rediscovered',
-  { tags: ['personal-notes', 'persistence'], timeout: 180_000 }, async ({ app, screen, browser }) => {
+
+// Exercise the lower part of the viewport where the reading dock used to
+// intercept these actions. An ordinary wheel scroll, followed by hit testing,
+// must expose the whole bounded editor without a click silently scrolling it.
+async function expectReachableEditor(browser: Browser, saveEnabled: boolean) {
+  const position = await browser.evaluate(() => {
+    const input = document.querySelector('[data-testid="dream.note.input"]');
+    const save = document.querySelector('[data-testid="dream.note.save"]');
+    if (!input || !save) throw new Error('The note editor is not open');
+    const field = input.getBoundingClientRect();
+    const action = save.getBoundingClientRect();
+    return { x: field.left - 8, y: innerHeight / 2, delta: action.bottom - (innerHeight - 48) };
+  });
+  await browser.mouse.move(position.x, position.y);
+  await browser.mouse.wheel(0, position.delta);
+  await expect.poll(() => browser.evaluate((enabled: boolean) => {
+    const ids = ['dream.note.input', 'dream.note.count', 'dream.note.save', 'dream.note.cancel'];
+    return ids.every(id => {
+      const element = document.querySelector(`[data-testid="${id}"]`);
+      if (!element) return false;
+      const box = element.getBoundingClientRect();
+      if (box.width <= 0 || box.height <= 0 || box.top < 0 || box.bottom > innerHeight
+        || box.left < 0 || box.right > innerWidth) return false;
+      const hit = document.elementFromPoint(box.left + box.width / 2, box.top + box.height / 2);
+      // A disabled save intentionally rejects pointer events; it must still
+      // remain visually clear of the fixed reading actions.
+      if (id === 'dream.note.save' && !enabled) {
+        return !hit?.closest('[data-testid="component.dreamDetail.actionDock"]');
+      }
+      return element.contains(hit);
+    });
+  }, saveEnabled), { message: 'The counter, field and note actions fit and are not covered by the reading dock' }).toBe(true);
+}
+
+for (const viewport of [{ width: 1920, height: 907 }, { width: 390, height: 844 }]) {
+
+test(`personal notes survive reload, edits and deletion with reachable actions at ${viewport.width}x${viewport.height}; old dreams are rediscovered`,
+  { tags: ['personal-notes', 'persistence', 'note-actions'], timeout: 180_000 }, async ({ app, screen, browser }) => {
     await isolateWeb(browser, app);
+    await browser.setViewport(viewport);
     await app.open();
     await browser.emulateMedia({ reducedMotion: 'reduce' });
     await screen.getByTestId('btn.onboarding.intro.next').tap();
@@ -25,6 +62,7 @@ test('personal notes survive reload, edits and deletion without changing the dre
       const notes = screen.getByTestId('dream.personal-notes');
       await screen.getByTestId('dream.note.add').tap();
       await screen.getByTestId('dream.note.input').fill('Today this bridge reminds me of a fresh start.');
+      await expectReachableEditor(browser, true);
       await screen.getByTestId('dream.note.save').tap();
       await expect(notes).toContainText('Today this bridge reminds me of a fresh start.');
       await expect(screen.getByTestId('dream.note.input')).toHaveCount(0);
@@ -35,6 +73,7 @@ test('personal notes survive reload, edits and deletion without changing the dre
       await expect(notes).toContainText('Today this bridge reminds me of a fresh start.');
       await notes.getByRole('button', 'Edit note').tap();
       await screen.getByTestId('dream.note.input').fill('A new perspective, while my original dream stays the same.');
+      await expectReachableEditor(browser, true);
       await screen.getByTestId('dream.note.save').tap();
       await expect(notes).toContainText('A new perspective, while my original dream stays the same.');
       await expect(notes).not.toContainText('Today this bridge reminds me of a fresh start.');
@@ -69,9 +108,10 @@ test('personal notes survive reload, edits and deletion without changing the dre
     } finally { await stop(); }
   });
 
-test('an over-limit pasted personal note stays intact until shortened, then survives saving and reload',
-  { tags: ['personal-notes', 'persistence', 'note-length'], timeout: 180_000 }, async ({ app, screen, browser }) => {
+test(`an over-limit pasted personal note stays intact with reachable actions at ${viewport.width}x${viewport.height}, then survives saving and reload`,
+  { tags: ['personal-notes', 'persistence', 'note-length', 'note-actions'], timeout: 180_000 }, async ({ app, screen, browser }) => {
     await isolateWeb(browser, app);
+    await browser.setViewport(viewport);
     await app.open();
     await browser.emulateMedia({ reducedMotion: 'reduce' });
     await screen.getByTestId('btn.onboarding.intro.next').tap();
@@ -111,6 +151,7 @@ test('an over-limit pasted personal note stays intact until shortened, then surv
       await expect(count).toHaveText('4001 / 4000');
       await expect(notes.getByRole('alert')).toContainText('4000');
       await expect(save).toBeDisabled();
+      await expectReachableEditor(browser, false);
       await app.screenshot('personal-note-over-limit-preserved');
 
       await input.press('End');
@@ -119,6 +160,7 @@ test('an over-limit pasted personal note stays intact until shortened, then surv
       await expect(count).toHaveText('4000 / 4000');
       await expect(screen.getByTestId('dream.note.length-error')).toHaveCount(0);
       await expect(save).toBeEnabled();
+      await expectReachableEditor(browser, true);
       await save.tap();
       await expect(input).toHaveCount(0);
       await expect(notes).toContainText(valid);
@@ -135,6 +177,7 @@ test('an over-limit pasted personal note stays intact until shortened, then surv
       await input.fill(overLimit);
       await expect(input).toHaveValue(overLimit);
       await expect(save).toBeDisabled();
+      await expectReachableEditor(browser, false);
       await notes.getByRole('button', 'Cancel').tap();
       await expect(input).toHaveCount(0);
       await notes.getByRole('button', 'Edit note').tap();
@@ -143,3 +186,4 @@ test('an over-limit pasted personal note stays intact until shortened, then surv
       await notes.getByRole('button', 'Cancel').tap();
     } finally { await stop(); }
   });
+}
