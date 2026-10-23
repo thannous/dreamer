@@ -200,7 +200,7 @@ const COPY = {
   en: { label: 'Dream Guides', title: 'Dream Guides & Symbol Meanings | Noctalia', desc: "Browse Noctalia's dream guides: the dictionary plus themed pages for common, scary, positive, water, people, places, and transformation dreams.", intro: 'Start with the full dream symbols dictionary, then explore themed guides that group related dream patterns and meanings.', dictionary: 'Dream Symbols Dictionary', openDictionary: 'Open dictionary', openGuide: 'Open guide', browseAll: 'Browse all dream guides' },
   fr: { label: 'Guides des rêves', title: 'Guides des rêves et symboles oniriques | Noctalia', desc: 'Explorez les guides des rêves de Noctalia : dictionnaire des symboles, thèmes fréquents, cauchemars, eau, personnes, lieux et transformation.', intro: 'Commencez par le dictionnaire complet des symboles, puis explorez des guides thématiques qui regroupent des motifs oniriques proches.', dictionary: 'Dictionnaire des symboles de rêves', openDictionary: 'Ouvrir le dictionnaire', openGuide: 'Ouvrir le guide', browseAll: 'Parcourir tous les guides des rêves' },
   es: { label: 'Guías de sueños', title: 'Guías de sueños y significados de símbolos | Noctalia', desc: 'Explora las guías de sueños de Noctalia: diccionario de símbolos, sueños frecuentes, pesadillas, agua, personas, lugares y transformación.', intro: 'Empieza por el diccionario completo de símbolos y luego entra en guías temáticas que agrupan patrones y significados relacionados.', dictionary: 'Diccionario de símbolos de sueños', openDictionary: 'Abrir diccionario', openGuide: 'Abrir guía', browseAll: 'Ver todas las guías de sueños' },
-  de: { label: 'Traumratgeber', title: 'Traumratgeber & Traumsymbole | Noctalia', desc: 'Entdecken Sie Noctalias Traumratgeber: Traumsymbole-Lexikon sowie Guides zu häufigen Träumen, Albträumen, Wasser, Personen, Orten und Wandel.', intro: 'Starten Sie mit dem vollständigen Traumsymbole-Lexikon und vertiefen Sie sich dann in thematische Ratgeber zu verwandten Traumthemen.', dictionary: 'Traumsymbole-Lexikon', openDictionary: 'Lexikon öffnen', openGuide: 'Ratgeber öffnen', browseAll: 'Alle Traumratgeber ansehen' },
+  de: { label: 'Traumratgeber', title: 'Traumratgeber & Traumsymbole | Noctalia', desc: 'Entdecke Noctalias Traumratgeber: Traumsymbole-Lexikon sowie Guides zu häufigen Träumen, Albträumen, Wasser, Personen, Orten und Wandel.', intro: 'Starte mit dem vollständigen Traumsymbole-Lexikon und vertiefe dich dann in thematische Ratgeber zu verwandten Traumthemen.', dictionary: 'Traumsymbole-Lexikon', openDictionary: 'Lexikon öffnen', openGuide: 'Ratgeber öffnen', browseAll: 'Alle Traumratgeber ansehen' },
   it: { label: 'Guide ai sogni', title: 'Guide ai sogni e significati dei simboli | Noctalia', desc: 'Esplora le guide ai sogni di Noctalia: dizionario dei simboli e percorsi su sogni comuni, incubi, acqua, persone, luoghi e trasformazione.', intro: 'Inizia dal dizionario completo dei simboli e poi approfondisci con guide tematiche che raggruppano schemi e significati collegati.', dictionary: 'Dizionario dei simboli dei sogni', openDictionary: 'Apri il dizionario', openGuide: 'Apri la guida', browseAll: 'Sfoglia tutte le guide ai sogni' },
   'pt-br': { label: 'Guias dos sonhos', title: 'Guias dos sonhos e significados dos símbolos | Noctalia', desc: 'Explore os guias dos sonhos do Noctalia: o dicionário de símbolos e guias temáticos sobre sonhos comuns, pesadelos, água, pessoas, lugares e transformação.', intro: 'Comece pelo dicionário completo de símbolos e depois explore guias temáticos que reúnem padrões e significados de sonhos relacionados.', dictionary: 'Dicionário de símbolos dos sonhos', openDictionary: 'Abrir o dicionário', openGuide: 'Abrir o guia', browseAll: 'Ver todos os guias dos sonhos' },
 };
@@ -280,13 +280,13 @@ const GUIDE_HUB_UI = {
   },
   de: {
     eyebrow: 'Traumratgeber',
-    heroIntro: 'Praktische Ratgeber, verständliche Wissenschaft und Schlüssel, um Ihre Träume zu verstehen und zu deuten.',
+    heroIntro: 'Praktische Ratgeber, verständliche Wissenschaft und Schlüssel, um deine Träume zu verstehen und zu deuten.',
     primaryCta: 'Ratgeber erkunden',
     secondaryCta: 'Lexikon',
-    chooseTitle: 'Wählen Sie Ihren Einstieg',
-    chooseIntro: 'Starten Sie im Lexikon oder erkunden Sie praktische Ratgeber nach Thema.',
+    chooseTitle: 'Wähle deinen Einstieg',
+    chooseIntro: 'Starte im Lexikon oder erkunde praktische Ratgeber nach Thema.',
     featuredLabel: 'Traumlexikon',
-    dictionarySummary: 'Öffnen Sie unser Lexikon mit {symbolCount} Traumsymbolen, Bedeutungen und Reflexionsfragen.',
+    dictionarySummary: 'Öffne unser Lexikon mit {symbolCount} Traumsymbolen, Bedeutungen und Reflexionsfragen.',
     dictionaryCta: 'Lexikon öffnen',
     trustVerified: 'Geprüfte Inhalte',
     trustVerifiedDesc: 'Ratgeber mit Bezügen zu Traum- und Schlafforschung.',
@@ -296,11 +296,11 @@ const GUIDE_HUB_UI = {
     trustAccessibleDesc: 'Klare und praktische Inhalte für jedes Niveau.',
     symbolCount: 'Symbole erklärt',
     pathSymbols: 'Symbole',
-    pathSymbolsDesc: 'Verstehen Sie die häufigsten Traumsymbole.',
+    pathSymbolsDesc: 'Verstehe die häufigsten Traumsymbole.',
     pathNightmares: 'Albträume',
-    pathNightmaresDesc: 'Entschlüsseln Sie nächtliche Ängste und lernen Sie damit umzugehen.',
+    pathNightmaresDesc: 'Entschlüssle nächtliche Ängste und lerne, damit umzugehen.',
     pathLucid: 'Klartraum',
-    pathLucidDesc: 'Lernen Sie, im Traum bewusst zu werden.'
+    pathLucidDesc: 'Lerne, im Traum bewusst zu werden.'
   },
   it: {
     eyebrow: 'Guide ai sogni',
@@ -402,12 +402,12 @@ const GUIDE_HUB_BENTO_COPY = {
     { key: 'spirituality', label: 'Espiritualidad', title: 'Sueños y espiritualidad', desc: 'Explora la dimensión espiritual y simbólica de tus sueños.', tone: 'blue' }
   ],
   de: [
-    { key: 'understand', label: 'Praxisratgeber', title: 'Träume verstehen', desc: 'Die Grundlagen, um die Sprache Ihres Unbewussten zu entschlüsseln.', tone: 'salmon' },
-    { key: 'science', label: 'Wissenschaft', title: 'Schlaf und Träume', desc: 'Was die Wissenschaft über Ihre Nächte und Träume zeigt.', tone: 'violet' },
+    { key: 'understand', label: 'Praxisratgeber', title: 'Träume verstehen', desc: 'Die Grundlagen, um die Sprache deines Unbewussten zu entschlüsseln.', tone: 'salmon' },
+    { key: 'science', label: 'Wissenschaft', title: 'Schlaf und Träume', desc: 'Was die Wissenschaft über deine Nächte und Träume zeigt.', tone: 'violet' },
     { key: 'interpretation', label: 'Deutung', title: 'Deutungsmethoden', desc: 'Konkrete Techniken, um Träume genauer zu analysieren.', tone: 'rose' },
     { key: 'journal', label: 'Praxis', title: 'Traumtagebuch', desc: 'Methoden und Tipps für ein wirksames Traumtagebuch.', tone: 'gold' },
-    { key: 'emotions', label: 'Therapie', title: 'Träume und Gefühle', desc: 'Nutzen Sie Träume als Werkzeug für Erkenntnis und Wandel.', tone: 'green' },
-    { key: 'spirituality', label: 'Spiritualität', title: 'Träume und Spiritualität', desc: 'Erkunden Sie die spirituelle und symbolische Dimension Ihrer Träume.', tone: 'blue' }
+    { key: 'emotions', label: 'Therapie', title: 'Träume und Gefühle', desc: 'Nutze Träume als Werkzeug für Erkenntnis und Wandel.', tone: 'green' },
+    { key: 'spirituality', label: 'Spiritualität', title: 'Träume und Spiritualität', desc: 'Erkunde die spirituelle und symbolische Dimension deiner Träume.', tone: 'blue' }
   ],
   it: [
     { key: 'understand', label: 'Guida pratica', title: 'Comprendere i sogni', desc: "Le basi per decifrare il linguaggio dell'inconscio.", tone: 'salmon' },
@@ -454,12 +454,12 @@ const GUIDE_HUB_DEPTH_COPY = {
     ]
   },
   de: {
-    title: 'So nutzen Sie diese Ratgeber',
+    title: 'So nutzt du diese Ratgeber',
     paragraphs: [
-      'Ein Traumratgeber hilft am meisten, wenn Sie mit dem genauen Bild beginnen, das nach dem Aufwachen geblieben ist: ein Ort, ein Tier, eine Person, ein Gefühl oder eine wiederholte Handlung. Öffnen Sie das Lexikon für ein einzelnes Symbol und nutzen Sie die thematischen Ratgeber, wenn der Traum zu einem größeren Muster gehört, etwa Angst, Wandel, Wasser, Menschen oder vertrauten Orten.',
-      'Lesen Sie jede Deutung als Orientierung, nicht als endgültiges Urteil. Dasselbe Symbol kann je nach Traumgefühl, Ihrer Rolle in der Szene und Ihrer aktuellen Lebenslage Unterschiedliches bedeuten. Wasser kann zum Beispiel emotionale Überforderung, Erneuerung, Erinnerung oder Unsicherheit anzeigen, je nachdem ob Sie schwimmen, untergehen, Wellen beobachten oder einen Fluss überqueren.',
-      'Noch genauer wird die Deutung, wenn Sie den Ratgeber mit einem kurzen Traumtagebuch verbinden. Notieren Sie Datum, Hauptgefühl, stärkstes Bild und eine reale Situation, die zum Traum passen könnte. Muster werden über mehrere Nächte sichtbar, besonders bei wiederkehrenden Träumen, Albträumen oder Träumen, die während Stress, Prüfungen, Trauer, Beziehungswechseln oder kreativer Arbeit auftreten.',
-      'Gehen Sie vom Allgemeinen zum Konkreten: Wählen Sie zuerst ein Thema und öffnen Sie danach die Symbolseite, die zum stärksten Detail passt. So bleibt die Deutung geerdet und Sie vermeiden, jedem Traum dieselbe feste Bedeutung aufzuzwingen. Wenn ein Symbol mehrdeutig bleibt, vergleichen Sie es mit einem zweiten Motiv aus demselben Traum, statt sofort eine einzige Erklärung zu wählen. Das macht die Auswertung stabiler.'
+      'Ein Traumratgeber hilft am meisten, wenn du mit dem genauen Bild beginnst, das nach dem Aufwachen geblieben ist: ein Ort, ein Tier, eine Person, ein Gefühl oder eine wiederholte Handlung. Öffne das Lexikon für ein einzelnes Symbol und nutze die thematischen Ratgeber, wenn der Traum zu einem größeren Muster gehört, etwa Angst, Wandel, Wasser, Menschen oder vertrauten Orten.',
+      'Lies jede Deutung als Orientierung, nicht als endgültiges Urteil. Dasselbe Symbol kann je nach Traumgefühl, deiner Rolle in der Szene und deiner aktuellen Lebenslage Unterschiedliches bedeuten. Wasser kann zum Beispiel emotionale Überforderung, Erneuerung, Erinnerung oder Unsicherheit anzeigen, je nachdem ob du schwimmst, untergehst, Wellen beobachtest oder einen Fluss überquerst.',
+      'Noch genauer wird die Deutung, wenn du den Ratgeber mit einem kurzen Traumtagebuch verbindest. Notiere Datum, Hauptgefühl, stärkstes Bild und eine reale Situation, die zum Traum passen könnte. Muster werden über mehrere Nächte sichtbar, besonders bei wiederkehrenden Träumen, Albträumen oder Träumen, die während Stress, Prüfungen, Trauer, Beziehungswechseln oder kreativer Arbeit auftreten.',
+      'Geh vom Allgemeinen zum Konkreten: Wähle zuerst ein Thema und öffne danach die Symbolseite, die zum stärksten Detail passt. So bleibt die Deutung geerdet und du vermeidest, jedem Traum dieselbe feste Bedeutung aufzuzwingen. Wenn ein Symbol mehrdeutig bleibt, vergleiche es mit einem zweiten Motiv aus demselben Traum, statt sofort eine einzige Erklärung zu wählen. Das macht die Auswertung stabiler.'
     ]
   },
   it: {
