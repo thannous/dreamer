@@ -4,8 +4,8 @@
   "layout": "blogArticle",
   "lang": "de",
   "slug": "so-erinnern-sie-sich-an-ihre-traeume-10-effektive-techniken",
-  "title": "So erinnern Sie sich an Träume: 10 praktische Techniken | Noctalia",
-  "description": "Aufgewacht und der Traum ist sofort weg? So erinnern Sie sich an Träume: 10 Techniken, vom ruhigen Aufwachen bis zum Notieren erster Bruchstücke.",
+  "title": "So erinnerst du dich an Träume: 10 praktische Techniken | Noctalia",
+  "description": "Aufgewacht und der Traum ist sofort weg? So erinnerst du dich an Träume: 10 Techniken, vom ruhigen Aufwachen bis zum Notieren erster Bruchstücke.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -13,13 +13,13 @@
   "bodyStyle": "background-color: #0a0514;",
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
-  "ogTitle": "So erinnern Sie sich an Träume: 10 praktische Techniken | Noctalia",
-  "ogDescription": "So erinnern Sie sich an Träume: liegen bleiben, das letzte Bild rückwärts verfolgen und Bruchstücke notieren, bevor Sie aufs Handy schauen.",
+  "ogTitle": "So erinnerst du dich an Träume: 10 praktische Techniken | Noctalia",
+  "ogDescription": "So erinnerst du dich an Träume: liegen bleiben, das letzte Bild rückwärts verfolgen und Bruchstücke notieren, bevor du aufs Handy schaust.",
   "ogImage": "https://noctalia.app/img/blog/how-to-remember-dreams.webp",
   "ogImageAlt": "Einzelner schreibt beim Aufwachen Traumdetails auf",
   "twitterCard": "summary_large_image",
-  "twitterTitle": "So erinnern Sie sich an Träume: 10 praktische Techniken | Noctalia",
-  "twitterDescription": "Ob Sie sich an Träume erinnern, entscheidet sich in den ersten Minuten nach dem Aufwachen. 10 schlaffreundliche Techniken.",
+  "twitterTitle": "So erinnerst du dich an Träume: 10 praktische Techniken | Noctalia",
+  "twitterDescription": "Ob du dich an Träume erinnerst, entscheidet sich in den ersten Minuten nach dem Aufwachen. 10 schlaffreundliche Techniken.",
   "twitterImage": "https://noctalia.app/img/blog/how-to-remember-dreams.webp",
   "twitterImageAlt": "Einzelner schreibt beim Aufwachen Traumdetails auf",
   "publishedTime": "2025-01-06",
@@ -29,8 +29,8 @@
   "nextPath": "/de/blog/warum-vergessen-wir-unsere-traeume-die-wissenschaft-hinter-traumamnesie",
   "preloadImage": "/img/blog/how-to-remember-dreams.webp",
   "jsonLd": [
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"So erinnern Sie sich an Träume: 10 praktische Techniken\",\n    \"description\": \"Aufgewacht und der Traum ist sofort weg? So erinnern Sie sich an Träume: 10 Techniken, vom ruhigen Aufwachen bis zum Notieren erster Bruchstücke.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/how-to-remember-dreams.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/de/ueber-uns#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/de/ueber-uns\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-01-06\",\n    \"dateModified\": \"2026-10-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/de/blog/so-erinnern-sie-sich-an-ihre-traeume-10-effektive-techniken\"\n    },\n    \"inLanguage\": \"de\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 1759,\n    \"timeRequired\": \"PT8M\",\n    \"url\": \"https://noctalia.app/de/blog/so-erinnern-sie-sich-an-ihre-traeume-10-effektive-techniken\"\n}",
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Warum vergessen wir unsere Träume?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Wir träumen etwa zwei Stunden pro Nacht, vergessen aber das meiste. Die Erinnerung scheint auf ähnlichen Gedächtnismechanismen zu beruhen wie im Wachzustand: Ein Traum, den Sie beim Aufwachen nicht festhalten, verfliegt schnell. Mehr dazu in Warum vergessen wir unsere Träume?\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Wie lange dauert es, bis sich die Traumerinnerung verbessert?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Einen festen Zeitraum gibt es nicht. Die Erinnerung schwankt von Mensch zu Mensch und von Nacht zu Nacht. Notieren Sie jeden Morgen etwas, und sei es nur ein Bruchstück.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Soll ich meine Träume aufschreiben oder aufnehmen?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Wählen Sie, was Sie im Halbschlaf tatsächlich tun. Sprechen geht beim Aufwachen oft schneller, Schreiben hilft später beim Ordnen. In Noctalia ist beides möglich.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Was, wenn ich mich an gar nichts erinnere?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Schreiben Sie „heute keine Traumerinnerung“ und wie Sie sich fühlen, dann starten Sie in den Tag. Das heißt nicht, dass Sie nicht geträumt haben. Erfinden Sie keine Szene, nur um die Seite zu füllen.\"\n            }\n        }\n    ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"So erinnerst du dich an Träume: 10 praktische Techniken\",\n    \"description\": \"Aufgewacht und der Traum ist sofort weg? So erinnerst du dich an Träume: 10 Techniken, vom ruhigen Aufwachen bis zum Notieren erster Bruchstücke.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/how-to-remember-dreams.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/de/ueber-uns#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/de/ueber-uns\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-01-06\",\n    \"dateModified\": \"2026-10-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/de/blog/so-erinnern-sie-sich-an-ihre-traeume-10-effektive-techniken\"\n    },\n    \"inLanguage\": \"de\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 1759,\n    \"timeRequired\": \"PT8M\",\n    \"url\": \"https://noctalia.app/de/blog/so-erinnern-sie-sich-an-ihre-traeume-10-effektive-techniken\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Warum vergessen wir unsere Träume?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Wir träumen etwa zwei Stunden pro Nacht, vergessen aber das meiste. Die Erinnerung scheint auf ähnlichen Gedächtnismechanismen zu beruhen wie im Wachzustand: Ein Traum, den du beim Aufwachen nicht festhältst, verfliegt schnell. Mehr dazu in Warum vergessen wir unsere Träume?\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Wie lange dauert es, bis sich die Traumerinnerung verbessert?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Einen festen Zeitraum gibt es nicht. Die Erinnerung schwankt von Mensch zu Mensch und von Nacht zu Nacht. Notiere jeden Morgen etwas, und sei es nur ein Bruchstück.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Soll ich meine Träume aufschreiben oder aufnehmen?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Wähle, was du im Halbschlaf tatsächlich tust. Sprechen geht beim Aufwachen oft schneller, Schreiben hilft später beim Ordnen. In Noctalia ist beides möglich.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Was, wenn ich mich an gar nichts erinnere?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Schreib „heute keine Traumerinnerung“ und wie du dich fühlst, dann starte in den Tag. Das heißt nicht, dass du nicht geträumt hast. Erfinde keine Szene, nur um die Seite zu füllen.\"\n            }\n        }\n    ]\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Startseite\",\n            \"item\": \"https://noctalia.app/de/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Ressourcen\",\n            \"item\": \"https://noctalia.app/de/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Traumerinnerung\",\n            \"item\": \"https://noctalia.app/de/blog/so-erinnern-sie-sich-an-ihre-traeume-10-effektive-techniken\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
@@ -70,10 +70,10 @@
 <span class="text-sm text-purple-300/60">8 Min. Lesezeit</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-So erinnern Sie sich an Träume: 10 praktische Techniken
+So erinnerst du dich an Träume: 10 praktische Techniken
 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-Sie wachen auf und wissen genau: Da war ein Traum. Ein Haus vielleicht, eine Stimme. Sie greifen danach, und bevor Ihre Füße den Boden berühren, ist alles weg. Ob Sie sich an Träume erinnern, entscheidet sich vor allem in den ersten Minuten nach dem Aufwachen: liegen bleiben, ein Bruchstück festhalten und es notieren, bevor der Tag übernimmt.
+Du wachst auf und weißt genau: Da war ein Traum. Ein Haus vielleicht, eine Stimme. Du greifst danach, und bevor deine Füße den Boden berühren, ist alles weg. Ob du dich an Träume erinnerst, entscheidet sich vor allem in den ersten Minuten nach dem Aufwachen: liegen bleiben, ein Bruchstück festhalten und es notieren, bevor der Tag übernimmt.
 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -90,7 +90,7 @@ Sie wachen auf und wissen genau: Da war ein Traum. Ein Haus vielleicht, eine Sti
 <!-- Quick Answer (AI SEO) -->
 <section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
     <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Kurzantwort</h2>
-    <p class="text-purple-100/80 leading-relaxed">Bewegen Sie sich nach dem Aufwachen nicht. Suchen Sie mit geschlossenen Augen das letzte Bild oder Gefühl, gehen Sie den Traum rückwärts durch und schreiben oder sprechen Sie ihn auf, bevor Sie aufs Handy schauen. Ein Traumtagebuch am Bett und ein kurzer Vorsatz am Abend erleichtern die Gewohnheit. Die Erinnerung schwankt trotzdem von Nacht zu Nacht, und ein leerer Morgen ist normal.</p>
+    <p class="text-purple-100/80 leading-relaxed">Beweg dich nach dem Aufwachen nicht. Such mit geschlossenen Augen das letzte Bild oder Gefühl, geh den Traum rückwärts durch und schreib oder sprich ihn auf, bevor du aufs Handy schaust. Ein Traumtagebuch am Bett und ein kurzer Vorsatz am Abend erleichtern die Gewohnheit. Die Erinnerung schwankt trotzdem von Nacht zu Nacht, und ein leerer Morgen ist normal.</p>
 </section>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
@@ -108,13 +108,13 @@ Inhaltsverzeichnis
 <li><a class="toc-link block" href="#technique-2">2. Ein Vorsatz vor dem Einschlafen</a></li>
 <li><a class="toc-link block" href="#technique-3">3. Sanft aufwachen</a></li>
 <li><a class="toc-link block" href="#technique-4">4. MILD: Erinnern oder Klarträumen?</a></li>
-<li><a class="toc-link block" href="#technique-5">5. Schützen Sie Ihren Schlaf</a></li>
+<li><a class="toc-link block" href="#technique-5">5. Schütze deinen Schlaf</a></li>
 <li><a class="toc-link block" href="#technique-6">6. Den Traum laut erzählen</a></li>
 <li><a class="toc-link block" href="#technique-7">7. Eine ruhige Minute vor dem Schlafen</a></li>
 <li><a class="toc-link block" href="#technique-8">8. Den Traum rückwärts rekonstruieren</a></li>
-<li><a class="toc-link block" href="#technique-9">9. WBTB nur, wenn Sie es wollen</a></li>
-<li><a class="toc-link block" href="#technique-10">10. Bei dem ansetzen, was Sie noch spüren</a></li>
-<li><a class="toc-link block" href="#conclusion">Womit Sie anfangen</a></li>
+<li><a class="toc-link block" href="#technique-9">9. WBTB nur, wenn du es willst</a></li>
+<li><a class="toc-link block" href="#technique-10">10. Bei dem ansetzen, was du noch spürst</a></li>
+<li><a class="toc-link block" href="#conclusion">Womit du anfängst</a></li>
 </ol>
 </nav>
 <!-- Article Content -->
@@ -125,48 +125,48 @@ Inhaltsverzeichnis
 Träumen und sich an Träume erinnern sind zwei verschiedene Dinge. Laut dem US-amerikanischen <a class="text-dream-salmon hover:underline" href="https://www.ninds.nih.gov/health-information/public-education/brain-basics/brain-basics-understanding-sleep" rel="nofollow noopener noreferrer" target="_blank">NINDS</a> träumt jeder Mensch, etwa zwei Stunden pro Nacht, vor allem im <a class="text-dream-salmon hover:underline" href="rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen">REM-Schlaf</a>, aber auch in anderen Schlafphasen. Das meiste davon bleibt nicht hängen. Wer morgens mit leeren Händen aufwacht, hat also trotzdem geträumt.
 </p>
 <p>
-Eine <a class="text-dream-salmon hover:underline" href="https://pubmed.ncbi.nlm.nih.gov/22024432/" rel="nofollow noopener noreferrer" target="_blank">Übersichtsarbeit von De Gennaro und Kollegen (2012)</a> fasst zusammen, dass die Traumerinnerung auf ähnlichen Hirnmechanismen beruht wie das episodische Gedächtnis im Wachzustand; die Autoren bezeichnen die Datenlage als vorläufig. Praktisch heißt das: Ein Traum, den Sie beim Aufwachen nicht festhalten, verfliegt wie jeder flüchtige Gedanke. Mehr zur Forschung lesen Sie in <a class="text-dream-salmon hover:underline" href="warum-vergessen-wir-unsere-traeume-die-wissenschaft-hinter-traumamnesie">Warum vergessen wir unsere Träume?</a>
+Eine <a class="text-dream-salmon hover:underline" href="https://pubmed.ncbi.nlm.nih.gov/22024432/" rel="nofollow noopener noreferrer" target="_blank">Übersichtsarbeit von De Gennaro und Kollegen (2012)</a> fasst zusammen, dass die Traumerinnerung auf ähnlichen Hirnmechanismen beruht wie das episodische Gedächtnis im Wachzustand; die Autoren bezeichnen die Datenlage als vorläufig. Praktisch heißt das: Ein Traum, den du beim Aufwachen nicht festhältst, verfliegt wie jeder flüchtige Gedanke. Mehr zur Forschung liest du in <a class="text-dream-salmon hover:underline" href="warum-vergessen-wir-unsere-traeume-die-wissenschaft-hinter-traumamnesie">Warum vergessen wir unsere Träume?</a>
 </p>
 <p>
-Die zehn Techniken sind von einfach bis anspruchsvoll geordnet. Beginnen Sie mit den ersten drei: Sie kosten nichts und lassen Ihren Schlaf in Ruhe.
+Die zehn Techniken sind von einfach bis anspruchsvoll geordnet. Beginne mit den ersten drei: Sie kosten nichts und lassen deinen Schlaf in Ruhe.
 </p>
 <h2 id="technique-1">1. Ein <a class="text-dream-salmon hover:underline" href="dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer">Traumtagebuch</a> neben dem Bett</h2>
 <p>
-Das ist die Grundlage. <strong>Wenn Sie einen Traum direkt nach dem Aufwachen notieren</strong>, bleibt eine Spur, die Sie später nachlesen können, auch wenn der Rest der Erinnerung eine Stunde danach verschwunden ist.
+Das ist die Grundlage. <strong>Wenn du einen Traum direkt nach dem Aufwachen notierst</strong>, bleibt eine Spur, die du später nachlesen kannst, auch wenn der Rest der Erinnerung eine Stunde danach verschwunden ist.
 </p>
-<h3>Was Sie notieren und wie</h3>
+<h3>Was du notierst und wie</h3>
 <ul>
-<li>Legen Sie Notizbuch und Stift oder Ihr Handy in Griffweite</li>
-<li>Schreiben Sie, bevor Sie aufstehen, und sei es nur eine Zeile</li>
-<li>Halten Sie Orte, Personen, Farben, Geräusche und vor allem das Gefühl fest, auch Verschwommenes</li>
-<li>Deuten Sie noch nichts: erst festhalten, dann nachdenken</li>
+<li>Leg Notizbuch und Stift oder dein Handy in Griffweite</li>
+<li>Schreib, bevor du aufstehst, und sei es nur eine Zeile</li>
+<li>Halte Orte, Personen, Farben, Geräusche und vor allem das Gefühl fest, auch Verschwommenes</li>
+<li>Deute noch nichts: erst festhalten, dann nachdenken</li>
 </ul>
 <p>
-Einen festen Zeitrahmen gibt es nicht. Manche erinnern sich nach wenigen Tagen an Bruchstücke, andere brauchen länger. Regelmäßige Notizen zeigen Ihnen vor allem, welche Gewohnheiten bei Ihnen wirken.
+Einen festen Zeitrahmen gibt es nicht. Manche erinnern sich nach wenigen Tagen an Bruchstücke, andere brauchen länger. Regelmäßige Notizen zeigen dir vor allem, welche Gewohnheiten bei dir wirken.
 </p>
 <h2 id="technique-2">2. Ein Vorsatz vor dem Einschlafen</h2>
 <p>
-Ein kurzer Vorsatz gibt Ihnen für den Morgen einen Anker. Er garantiert keine Erinnerung, bereitet Sie aber darauf vor, das Übriggebliebene zu bemerken und aufzuschreiben.
+Ein kurzer Vorsatz gibt dir für den Morgen einen Anker. Er garantiert keine Erinnerung, bereitet dich aber darauf vor, das Übriggebliebene zu bemerken und aufzuschreiben.
 </p>
 <h3>Ein Abendritual von einer Minute</h3>
 <ol>
-<li>Legen Sie sich bequem hin, bereit zum Schlafen</li>
-<li>Sagen Sie sich ein- oder zweimal: „Heute Nacht achte ich auf meine Träume.“</li>
-<li>Stellen Sie sich vor, wie Sie aufwachen, liegen bleiben und nach dem Tagebuch greifen</li>
-<li>Lassen Sie den Gedanken dann los und schlafen Sie ohne Druck ein</li>
+<li>Leg dich bequem hin, bereit zum Schlafen</li>
+<li>Sag dir ein- oder zweimal: „Heute Nacht achte ich auf meine Träume.“</li>
+<li>Stell dir vor, wie du aufwachst, liegen bleibst und nach dem Tagebuch greifst</li>
+<li>Lass den Gedanken dann los und schlaf ohne Druck ein</li>
 </ol>
 <p>
-Verbinden Sie den Vorsatz mit Ihrem <a class="text-dream-salmon hover:underline" href="dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer">Traumtagebuch</a>, dann wissen Sie genau, was zu tun ist, wenn ein Bruchstück zurückkommt.
+Verbinde den Vorsatz mit deinem <a class="text-dream-salmon hover:underline" href="dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer">Traumtagebuch</a>, dann weißt du genau, was zu tun ist, wenn ein Bruchstück zurückkommt.
 </p>
 <h2 id="technique-3">3. Sanft aufwachen</h2>
 <p>
-Wie Sie aufwachen, beeinflusst, was noch greifbar ist. Ein schriller Wecker oder sofortiges Aufspringen lenkt die Aufmerksamkeit von Traumresten ab, die noch zerbrechlich sind.
+Wie du aufwachst, beeinflusst, was noch greifbar ist. Ein schriller Wecker oder sofortiges Aufspringen lenkt die Aufmerksamkeit von Traumresten ab, die noch zerbrechlich sind.
 </p>
 <h3>Kleine Änderungen, die helfen</h3>
 <ul>
-<li>Wählen Sie, wenn möglich, einen sanfteren Weckton</li>
-<li>Bleiben Sie nach dem Aufwachen einige Augenblicke in derselben Position</li>
-<li>Lassen Sie die Augen zu und die Bilder von selbst auftauchen</li>
+<li>Wähle, wenn möglich, einen sanfteren Weckton</li>
+<li>Bleib nach dem Aufwachen einige Augenblicke in derselben Position</li>
+<li>Lass die Augen zu und die Bilder von selbst auftauchen</li>
 <li>Nachrichten und Mails haben Zeit bis später</li>
 </ul>
 <p>
@@ -174,12 +174,12 @@ In diesen ersten Sekunden entscheidet sich das meiste.
 </p>
 <h2 id="technique-4">4. MILD: Erinnern oder Klarträumen?</h2>
 <p>
-MILD (Mnemonic Induction of Lucid Dreams), 1980 vom Psychologen Stephen LaBerge beschrieben, verfolgt ein anderes Ziel: im Traum zu erkennen, dass man träumt. Sie gehen einen kürzlichen Traum durch, wählen ein Detail, das Sie stutzig machen soll, und wiederholen einen Vorsatz wie „Wenn ich das nächste Mal träume, merke ich, dass ich träume.“
+MILD (Mnemonic Induction of Lucid Dreams), 1980 vom Psychologen Stephen LaBerge beschrieben, verfolgt ein anderes Ziel: im Traum zu erkennen, dass man träumt. Du gehst einen kürzlichen Traum durch, wählst ein Detail, das dich stutzig machen soll, und wiederholst einen Vorsatz wie „Wenn ich das nächste Mal träume, merke ich, dass ich träume.“
 </p>
 <p>
-Erinnerung und Klarträumen hängen zusammen, aber in dieser Reihenfolge. In der <a class="text-dream-salmon hover:underline" href="https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2020.01746/full" rel="nofollow noopener noreferrer" target="_blank">International Lucid Dream Induction Study (2020)</a> war eine bessere allgemeine Traumerinnerung einer der Faktoren, die mit Erfolg einhergingen. Lernen Sie also zuerst, sich zu erinnern. Wenn Sie später das Klarträumen reizt, erklärt der <a class="text-dream-salmon hover:underline" href="leitfaden-zum-klartraeumen-fuer-anfaenger-uebernehmen-sie-die-kontrolle-ueber-ihre-naechte">Leitfaden zum Klarträumen für Anfänger</a> die Methode.
+Erinnerung und Klarträumen hängen zusammen, aber in dieser Reihenfolge. In der <a class="text-dream-salmon hover:underline" href="https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2020.01746/full" rel="nofollow noopener noreferrer" target="_blank">International Lucid Dream Induction Study (2020)</a> war eine bessere allgemeine Traumerinnerung einer der Faktoren, die mit Erfolg einhergingen. Lerne also zuerst, dich zu erinnern. Wenn dich später das Klarträumen reizt, erklärt der <a class="text-dream-salmon hover:underline" href="leitfaden-zum-klartraeumen-fuer-anfaenger-uebernehmen-sie-die-kontrolle-ueber-ihre-naechte">Leitfaden zum Klarträumen für Anfänger</a> die Methode.
 </p>
-<h2 id="technique-5">5. Schützen Sie Ihren Schlaf</h2>
+<h2 id="technique-5">5. Schütze deinen Schlaf</h2>
 <p>
 <a class="text-dream-salmon hover:underline" href="https://www.sleepfoundation.org/stages-of-sleep" rel="nofollow noopener noreferrer" target="_blank">REM-Phasen werden im Laufe der Nacht länger</a>, vor allem in der zweiten Hälfte. Wer die Nacht verkürzt, verliert einen großen Teil der Zeit, in der lebhafte Träume am wahrscheinlichsten sind.
 </p>
@@ -196,7 +196,7 @@ Erinnerung und Klarträumen hängen zusammen, aber in dieser Reihenfolge. In der
 Im Halbschlaf zu schreiben ist mühsam, und manchmal ist der Stift unauffindbar. <strong>Sprechen</strong> hält den Kern eines Traums in wenigen Sekunden fest, bevor er verblasst.
 </p>
 <p>
-Genau dafür ist Noctalia gedacht: Sie erzählen der App Ihren Traum direkt nach dem Aufwachen, und sie schreibt ihn als Text in Ihr Tagebuch. So funktioniert das <a class="text-dream-salmon hover:underline" href="/de/traumtagebuch-spracheingabe">Traumtagebuch mit Spracheingabe</a>.
+Genau dafür ist Noctalia gedacht: Du erzählst der App deinen Traum direkt nach dem Aufwachen, und sie schreibt ihn als Text in dein Tagebuch. So funktioniert das <a class="text-dream-salmon hover:underline" href="/de/traumtagebuch-spracheingabe">Traumtagebuch mit Spracheingabe</a>.
 </p>
 <!-- CTA inline -->
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
@@ -206,7 +206,7 @@ Genau dafür ist Noctalia gedacht: Sie erzählen der App Ihren Traum direkt nach
 </div>
 <div>
 <h4 class="font-serif text-lg text-dream-cream mb-2">Aussprechen, bevor es verblasst</h4>
-<p class="text-sm text-gray-400 mb-4">In Noctalia erzählen Sie Ihren Traum laut, die Augen noch halb geschlossen. Er wird transkribiert und in Ihrem Tagebuch gespeichert, bereit zum Nachlesen, wenn Sie richtig wach sind.</p>
+<p class="text-sm text-gray-400 mb-4">In Noctalia erzählst du deinen Traum laut, die Augen noch halb geschlossen. Er wird transkribiert und in deinem Tagebuch gespeichert, bereit zum Nachlesen, wenn du richtig wach bist.</p>
 <a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/de/traumtagebuch-spracheingabe">
 Traumtagebuch mit Spracheingabe ansehen <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
@@ -215,18 +215,18 @@ Traumtagebuch mit Spracheingabe ansehen <i class="w-4 h-4" data-lucide="arrow-ri
 </aside>
 <h2 id="technique-7">7. Eine ruhige Minute vor dem Schlafen</h2>
 <p>
-Wenn Sie gern zur Ruhe kommen, nehmen Sie sich im Bett eine Minute, atmen Sie normal und lassen Sie Gedanken vorbeiziehen. Legen Sie zum Schluss Tagebuch oder Handy so hin, dass Ihre Hand es findet. Das entspannt; dass es die Erinnerung verbessert, ist nicht belegt. Wird es zur Pflicht, lassen Sie es weg.
+Wenn du gern zur Ruhe kommst, nimm dir im Bett eine Minute, atme normal und lass Gedanken vorbeiziehen. Leg zum Schluss Tagebuch oder Handy so hin, dass deine Hand es findet. Das entspannt; dass es die Erinnerung verbessert, ist nicht belegt. Wird es zur Pflicht, lass es weg.
 </p>
 <h2 id="technique-8">8. Den Traum rückwärts rekonstruieren</h2>
 <p>
-Oft bleibt nur die letzte Szene oder ein Gefühl. Nutzen Sie es als Faden, statt eine vollständige Geschichte erzwingen zu wollen. Sie tun das erst nach dem Aufwachen, es kostet also keinen Schlaf.
+Oft bleibt nur die letzte Szene oder ein Gefühl. Nutze es als Faden, statt eine vollständige Geschichte erzwingen zu wollen. Du tust das erst nach dem Aufwachen, es kostet also keinen Schlaf.
 </p>
 <h3>Vier Schritte mit geschlossenen Augen</h3>
 <ol>
-<li>Achten Sie auf das letzte Bild, Gefühl, die letzte Person oder den letzten Ort</li>
-<li>Fragen Sie sich, was unmittelbar davor geschah</li>
-<li>Gehen Sie Szene für Szene zurück</li>
-<li>Notieren Sie Details, sobald sie auftauchen, auch ungeordnet; sortieren können Sie später</li>
+<li>Achte auf das letzte Bild, Gefühl, die letzte Person oder den letzten Ort</li>
+<li>Frag dich, was unmittelbar davor geschah</li>
+<li>Geh Szene für Szene zurück</li>
+<li>Notiere Details, sobald sie auftauchen, auch ungeordnet; sortieren kannst du später</li>
 </ol>
 <h3 id="journal-example">So kann ein Eintrag aussehen</h3>
 <p>
@@ -239,28 +239,28 @@ Oft bleibt nur die letzte Szene oder ein Gefühl. Nutzen Sie es als Faden, statt
 <li><strong>Unsicher:</strong> „Vielleicht ein Hund. Weiß nicht.“</li>
 </ul>
 <p>
-Vier Zeilen, zwei Minuten, und ein Traum, der verschwunden wäre, steht auf dem Papier. Kommt nach ein, zwei Minuten nichts zurück, lassen Sie es gut sein und versuchen Sie es morgen wieder.
+Vier Zeilen, zwei Minuten, und ein Traum, der verschwunden wäre, steht auf dem Papier. Kommt nach ein, zwei Minuten nichts zurück, lass es gut sein und versuch es morgen wieder.
 </p>
-<h2 id="technique-9">9. WBTB nur, wenn Sie es wollen</h2>
+<h2 id="technique-9">9. WBTB nur, wenn du es willst</h2>
 <p>
-Bei WBTB (<em>Wake Back To Bed</em>) stellen Sie einen Wecker in die zweite Nachthälfte, bleiben kurz wach und schlafen dann weiter. Die Methode wird vor allem zum Auslösen von Klarträumen untersucht: In der oben genannten Studie von 2020 stellten die Teilnehmenden den Wecker auf fünf Stunden nach dem Zubettgehen. Um sich an Träume zu erinnern, brauchen Sie sie nicht.
-</p>
-<p>
-WBTB unterbricht den Schlaf absichtlich. Verzichten Sie darauf, wenn Sie ohnehin zu wenig schlafen, unter Schlaflosigkeit oder Tagesmüdigkeit leiden oder früh hellwach sein müssen, und hören Sie auf, wenn Schlaf oder Tagesform leiden. Wachen Sie nachts von selbst auf, kann eine kurze Notiz genügen, solange sie Sie nicht wach hält.
-</p>
-<h2 id="technique-10">10. Bei dem ansetzen, was Sie noch spüren</h2>
-<p>
-Manchmal ist kein Bild mehr da, nur eine Stimmung, eine Farbe, ein Geräusch oder ein Körpergefühl. Auch das zählt. Schreiben Sie es auf, wie es ist, so wie die letzte Szene bei der Rückwärtsmethode: Manchmal holt es ein Stück des Traums zurück.
+Bei WBTB (<em>Wake Back To Bed</em>) stellst du einen Wecker in die zweite Nachthälfte, bleibst kurz wach und schläfst dann weiter. Die Methode wird vor allem zum Auslösen von Klarträumen untersucht: In der oben genannten Studie von 2020 stellten die Teilnehmenden den Wecker auf fünf Stunden nach dem Zubettgehen. Um dich an Träume zu erinnern, brauchst du sie nicht.
 </p>
 <p>
-Taucht später ein Detail auf, ergänzen Sie es als späte Erinnerung und lassen Sie Lücken, wo Sie nichts wissen. Ein ehrliches Bruchstück ist mehr wert als eine aufgefüllte Geschichte.
+WBTB unterbricht den Schlaf absichtlich. Verzichte darauf, wenn du ohnehin zu wenig schläfst, unter Schlaflosigkeit oder Tagesmüdigkeit leidest oder früh hellwach sein musst, und hör auf, wenn Schlaf oder Tagesform leiden. Wachst du nachts von selbst auf, kann eine kurze Notiz genügen, solange sie dich nicht wach hält.
 </p>
-<h2 id="conclusion">Womit Sie anfangen</h2>
+<h2 id="technique-10">10. Bei dem ansetzen, was du noch spürst</h2>
 <p>
-Beginnen Sie mit dem Tagebuch am Bett, dem Vorsatz am Abend und einem ruhigen Aufwachen. MILD oder WBTB müssen nicht folgen: Einen Traum zu erkennen, während er läuft, ist ein eigenes Ziel. Wenn sich Bruchstücke sammeln, hilft Ihnen unser <a class="text-dream-salmon hover:underline" href="../guides/traumsymbole-lexikon">Traumsymbole-Lexikon</a>, die Symbole anzusehen, die immer wiederkehren.
+Manchmal ist kein Bild mehr da, nur eine Stimmung, eine Farbe, ein Geräusch oder ein Körpergefühl. Auch das zählt. Schreib es auf, wie es ist, so wie die letzte Szene bei der Rückwärtsmethode: Manchmal holt es ein Stück des Traums zurück.
 </p>
 <p>
-Entscheidend ist die Regelmäßigkeit. Notieren Sie auch das kleinste Bruchstück, und schreiben Sie an leeren Morgen „heute nichts“. Auch diese Zeile gehört ins Tagebuch.
+Taucht später ein Detail auf, ergänze es als späte Erinnerung und lass Lücken, wo du nichts weißt. Ein ehrliches Bruchstück ist mehr wert als eine aufgefüllte Geschichte.
+</p>
+<h2 id="conclusion">Womit du anfängst</h2>
+<p>
+Beginne mit dem Tagebuch am Bett, dem Vorsatz am Abend und einem ruhigen Aufwachen. MILD oder WBTB müssen nicht folgen: Einen Traum zu erkennen, während er läuft, ist ein eigenes Ziel. Wenn sich Bruchstücke sammeln, hilft dir unser <a class="text-dream-salmon hover:underline" href="../guides/traumsymbole-lexikon">Traumsymbole-Lexikon</a>, die Symbole anzusehen, die immer wiederkehren.
+</p>
+<p>
+Entscheidend ist die Regelmäßigkeit. Notiere auch das kleinste Bruchstück, und schreib an leeren Morgen „heute nichts“. Auch diese Zeile gehört ins Tagebuch.
 </p>
 </div>
 <!-- CTA Section -->
@@ -270,7 +270,7 @@ Entscheidend ist die Regelmäßigkeit. Notieren Sie auch das kleinste Bruchstüc
 </div>
 <h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Morgen früh: das Bruchstück behalten.</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-Mit Noctalia sprechen oder tippen Sie Ihren Traum gleich nach dem Aufwachen. Er wird transkribiert und gespeichert, und mit der Zeit lesen Sie Ihre Träume nebeneinander und sehen, was wiederkehrt.
+Mit Noctalia sprichst oder tippst du deinen Traum gleich nach dem Aufwachen. Er wird transkribiert und gespeichert, und mit der Zeit liest du deine Träume nebeneinander und siehst, was wiederkehrt.
 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/de/">
 Mein Traumtagebuch beginnen <i class="w-5 h-5" data-lucide="arrow-right"></i>
@@ -286,7 +286,7 @@ Warum vergessen wir unsere Träume?
 <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-Wir träumen etwa zwei Stunden pro Nacht, vergessen aber das meiste. Die Erinnerung scheint auf ähnlichen Gedächtnismechanismen zu beruhen wie im Wachzustand: Ein Traum, den Sie beim Aufwachen nicht festhalten, verfliegt schnell. Mehr dazu in <a class="text-dream-salmon hover:underline" href="warum-vergessen-wir-unsere-traeume-die-wissenschaft-hinter-traumamnesie">Warum vergessen wir unsere Träume?</a>
+Wir träumen etwa zwei Stunden pro Nacht, vergessen aber das meiste. Die Erinnerung scheint auf ähnlichen Gedächtnismechanismen zu beruhen wie im Wachzustand: Ein Traum, den du beim Aufwachen nicht festhältst, verfliegt schnell. Mehr dazu in <a class="text-dream-salmon hover:underline" href="warum-vergessen-wir-unsere-traeume-die-wissenschaft-hinter-traumamnesie">Warum vergessen wir unsere Träume?</a>
 </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -295,7 +295,7 @@ Wie lange dauert es, bis sich die Traumerinnerung verbessert?
 <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-Einen festen Zeitraum gibt es nicht. Die Erinnerung schwankt von Mensch zu Mensch und von Nacht zu Nacht. Notieren Sie jeden Morgen etwas, und sei es nur ein Bruchstück.
+Einen festen Zeitraum gibt es nicht. Die Erinnerung schwankt von Mensch zu Mensch und von Nacht zu Nacht. Notiere jeden Morgen etwas, und sei es nur ein Bruchstück.
 </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -304,7 +304,7 @@ Soll ich meine Träume aufschreiben oder aufnehmen?
 <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-Wählen Sie, was Sie im Halbschlaf tatsächlich tun. Sprechen geht beim Aufwachen oft schneller, Schreiben hilft später beim Ordnen. In Noctalia ist beides möglich.
+Wähle, was du im Halbschlaf tatsächlich tust. Sprechen geht beim Aufwachen oft schneller, Schreiben hilft später beim Ordnen. In Noctalia ist beides möglich.
 </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -313,13 +313,13 @@ Was, wenn ich mich an gar nichts erinnere?
 <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-Schreiben Sie „heute keine Traumerinnerung“ und wie Sie sich fühlen, dann starten Sie in den Tag. Das heißt nicht, dass Sie nicht geträumt haben. Erfinden Sie keine Szene, nur um die Seite zu füllen.
+Schreib „heute keine Traumerinnerung“ und wie du dich fühlst, dann starte in den Tag. Das heißt nicht, dass du nicht geträumt hast. Erfinde keine Szene, nur um die Seite zu füllen.
 </p>
 </details>
 </div>
 </section>
 <!-- July catch-up backlink: remember-to-night-waking -->
-<section class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20"><h2 class="font-serif text-2xl text-dream-cream mb-3">Nächtliches Erwachen</h2><p>Um drei Uhr nachts wach, und der Traum ist noch frisch? Wie Sie ihn notieren, ohne den Rest der Nacht zu verlieren, erklärt <a class="text-dream-salmon hover:underline" href="naechtliches-erwachen-traumerinnerung">nächtliches Erwachen und Traumerinnerung</a>.</p></section>
+<section class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20"><h2 class="font-serif text-2xl text-dream-cream mb-3">Nächtliches Erwachen</h2><p>Um drei Uhr nachts wach, und der Traum ist noch frisch? Wie du ihn notierst, ohne den Rest der Nacht zu verlieren, erklärt <a class="text-dream-salmon hover:underline" href="naechtliches-erwachen-traumerinnerung">nächtliches Erwachen und Traumerinnerung</a>.</p></section>
 <!-- Sources / Trust (TI-97) -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Quellen und weiterführende Literatur</h2>
@@ -379,18 +379,18 @@ Schreiben Sie „heute keine Traumerinnerung“ und wie Sie sich fühlen, dann s
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <a href="trauminkubation-wie-sie-heute-abend-genau-das-traeumen-was-sie-wollen" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Ratgeber</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Trauminkubation: Wie Sie heute Abend genau das träumen, was Sie wollen</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Trauminkubation: Wie du heute Abend genau das träumst, was du willst</h3>
             <p class="text-sm text-gray-400">Eine Methode in sechs Schritten, um vor dem Schlafen eine Frage zu wählen und morgens festzuhalten, was zurückkommt, mit Forschungsstand und Grenzen.</p>
         </a>
         <a href="albtraeume-ursachen-bedeutung-und-wie-man-sie-stoppen-kann" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Ratgeber</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Albträume: Ursachen, Bedeutung und wie man sie stoppt</h3>
-            <p class="text-sm text-gray-400">Warum haben wir Albträume? Erfahren Sie die Ursachen schlechter Träume, ihre Bedeutung und bewährte Techniken, um Albträume zu reduzieren und besser zu schlafen.</p>
+            <p class="text-sm text-gray-400">Warum haben wir Albträume? Erfahre die Ursachen schlechter Träume, ihre Bedeutung und bewährte Techniken, um Albträume zu reduzieren und besser zu schlafen.</p>
         </a>
         <a href="schlaflaehmung-erklaert-warum-sie-sich-nicht-bewegen-koennen-und-wie-sie-sie-stoppen-koennen" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Ratgeber</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Schlaflähmung erklärt: Warum Sie sich nicht bewegen können und wie Sie sie stoppen</h3>
-            <p class="text-sm text-gray-400">Vollständiger Ratgeber zum Verständnis der Schlaflähmung. Erfahren Sie, was sie verursacht, warum Halluzinationen auftreten und bewährte Techniken zur Vorbeugung.</p>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Schlaflähmung erklärt: Warum du dich nicht bewegen kannst und wie du sie stoppst</h3>
+            <p class="text-sm text-gray-400">Vollständiger Ratgeber zum Verständnis der Schlaflähmung. Erfahre, was sie verursacht, warum Halluzinationen auftreten und bewährte Techniken zur Vorbeugung.</p>
         </a>
   </div>
 </section>
@@ -399,6 +399,6 @@ Schreiben Sie „heute keine Traumerinnerung“ und wie Sie sich fühlen, dann s
 <!-- Health Disclaimer (TI-97 E-E-A-T) -->
 <aside aria-label="Disclaimer" class="glass-panel rounded-xl p-4 my-8 border border-purple-500/20" role="note">
 <p class="text-sm text-purple-200/70">
-<strong class="text-dream-cream">Wichtig:</strong> Dieser Artikel dient nur zu Informationszwecken und stellt keine medizinische oder psychologische Beratung dar. Wenn Sie unter anhaltenden Schlafstörungen oder psychischen Problemen leiden, wenden Sie sich bitte an einen qualifizierten Arzt.
+<strong class="text-dream-cream">Wichtig:</strong> Dieser Artikel dient nur zu Informationszwecken und stellt keine medizinische oder psychologische Beratung dar. Wenn du unter anhaltenden Schlafstörungen oder psychischen Problemen leidest, wende dich bitte an einen qualifizierten Arzt.
                 </p>
 </aside>
