@@ -91,7 +91,6 @@ export const TID = {
     RecordingOnboardingNext: 'btn.recording.onboarding.next',
     RecordingOnboardingSkip: 'btn.recording.onboarding.skip',
     RecordingVoiceHintDismiss: 'btn.recording.voiceHint.dismiss',
-    RecordingOnboardingRestart: 'btn.recording.onboarding.restart',
     OnboardingBack: 'btn.onboarding.back',
     OnboardingIntroNext: 'btn.onboarding.intro.next',
     OnboardingPath: (id: string) => `btn.onboarding.path.${id}`,

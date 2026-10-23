@@ -284,7 +284,6 @@ function RecordingScreen() {
     return insertion;
   }, [conversation.question, t]);
   const captureMicrophoneMutedRef = useRef(false);
-  const [lengthWarning, setLengthWarning] = useState('');
   const hasAutoStoppedRecordingRef = useRef(false);
   const [showMicRationaleSheet, setShowMicRationaleSheet] = useState(false);
   const [showOfflineModelSheet, setShowOfflineModelSheet] = useState(false);
@@ -691,7 +690,6 @@ function RecordingScreen() {
     setCurrentAnswer('');
     setTranscript('');
     setDraftDream(null);
-    setLengthWarning('');
     setVoiceFallbackReason(null);
     setCaptureIntent('fresh');
     setRememberedCaptureSource('journal');
@@ -2087,7 +2085,6 @@ function RecordingScreen() {
                     setTranscriptSelection(selection);
                   }}
                   disabled={interactionDisabled}
-                  lengthWarning={lengthWarning}
                   limitDreamLength
                   instructionText={!keyboardVisible && captureIntent === 'remembered'
                     ? t('recording.remembered.active_instruction')

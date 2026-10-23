@@ -197,10 +197,6 @@ jest.doMock('@/components/guest/UpsellCard', () => ({
   UpsellCard: () => <div />,
 }));
 
-jest.doMock('@/components/icons/DreamIcons', () => ({
-  DreamIcon: () => <div />,
-}));
-
 jest.doMock('@shopify/flash-list', () => ({
   FlashList: ({
     ListHeaderComponent,

@@ -4,7 +4,7 @@ import { test, expect, admin } from '../backend-fixtures';
 // Admission through the real service-only RPC. No worker or paid provider is
 // dispatched; the separate UI recovery journey covers execution and restart.
 test('Plus reanalysis keeps ownership, idempotency, Free and daily quota boundaries', {
-  tags: ['analysis-hd-recovery'], timeout: 90_000,
+  tags: ['plus-reanalysis'], timeout: 90_000,
 }, async ({ accounts }) => {
   const seedAnalyzed = async (userId: string, transcript: string) => {
     const result = await admin.from('dreams').insert({

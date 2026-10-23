@@ -50,21 +50,3 @@ it('keeps a legacy local failure after reload but gives server outcomes preceden
   expect(retainedImageJobError({ ...remote, analysisRequestId: 'new-analysis' }, cached)).toBeUndefined();
   expect(retainedImageJobError({ ...remote, imageUrl: 'existing-image' }, cached)).toBeUndefined();
 });
-
-
-it('keeps an HD continuation across a terminal refresh but discards a different request or transcript', () => {
-  const cached: DreamAnalysis = {
-    ...dream(1, 11), analysisStatus: 'pending', analysisRequestId: 'request',
-    analysisImageIntent: {
-      userId: 'owner', remoteDreamId: 11, analysisRequestId: 'request',
-      imageSize: '4K', transcript: 'complete transcript',
-    },
-  };
-  const remote: DreamAnalysis = { ...dream(1, 11), analysisRequestId: 'request', analysisStatus: 'done', isAnalyzed: true };
-  expect(mergeDreamSnapshot([cached], [cached], [remote])[0]).toMatchObject({
-    analysisStatus: 'pending', analysisImageIntent: cached.analysisImageIntent,
-  });
-  for (const changed of [{ ...remote, analysisRequestId: 'another' }, { ...remote, transcript: 'edited' }]) {
-    expect(mergeDreamSnapshot([cached], [cached], [changed])[0].analysisImageIntent).toBeUndefined();
-  }
-});

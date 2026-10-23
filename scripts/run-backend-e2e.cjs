@@ -93,10 +93,9 @@ async function main() {
       const profile = path.join(workdir, 'expo.env');
       const publicEnv = {
         EXPO_PUBLIC_MOCK_MODE: 'false',
-        // Real recovery journeys opt into these features on the owned local stack.
+        // Real recovery journeys opt into queued analysis on the owned local stack.
         // Browser functions remain blocked unless their dedicated fixture forwards them.
         EXPO_PUBLIC_ANALYSIS_JOBS_ENABLED: 'true',
-        EXPO_PUBLIC_HD_ILLUSTRATIONS_ENABLED: 'true',
         EXPO_PUBLIC_SUPABASE_URL: url.origin,
         EXPO_PUBLIC_SUPABASE_ANON_KEY: status.ANON_KEY,
         EXPO_PUBLIC_API_URL: `${url.origin}/functions/v1/api`,

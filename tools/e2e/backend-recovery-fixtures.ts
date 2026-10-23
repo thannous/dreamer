@@ -15,9 +15,6 @@ export type RecoveryState = {
   pendingWorkers: number;
   analysisHold: boolean;
   analysisText: string;
-  imageDispatches: number;
-  heldImageJobs: string[];
-  imageRequests: { clientRequestId: string; dreamId: number; imageSize?: string; previousImageUrl?: string }[];
   blockedExternalRequests: number;
   workerFailures: number;
   backendFailures: { route: string; status: number; code?: string; message?: string }[];
@@ -86,7 +83,7 @@ export const test = base.extend<{ recovery: RecoveryFixture }>({
       state: () => request<RecoveryState>('/__state'),
       control: async command => { await request('/__control', command); },
     };
-    const pattern = /\/functions\/v1\/(?:api\/[^?]*|illustration-hd\/image-jobs)(?:\?.*)?$/;
+    const pattern = /\/functions\/v1\/api\/[^?]*(?:\?.*)?$/;
     const forward = async (route: Route) => {
       // Only this page's API transport is redirected. Auth, PostgREST and Storage
       // keep the base fixture's guarded real stack; all other destinations stay blocked.
@@ -122,7 +119,6 @@ export const test = base.extend<{ recovery: RecoveryFixture }>({
         if (routed) await page.unroute(pattern, forward);
       } finally {
         // No worker is left holding a test account when its fixture is removed.
-        // Held image dispatches never start a worker or reserve an HD credit.
         if (!closed) {
           await recovery.control({ analysisHold: false }).catch(() => undefined);
           child.kill('SIGTERM');

@@ -157,7 +157,6 @@ function JournalListScreen() {
   // Keep the shared brand header and search outside the column-keyed list so
   // rotation cannot remount the input. Filters remain in ListHeaderComponent;
   // on short viewports the measured chrome can collapse as the list scrolls.
-  const scrollHeader = !isDesktopLayout;
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(getInitialKeyboardVisibility);
   const navigationClearance = navigationLayout.barHeight + Math.max(insets.bottom, navigationLayout.minimumBottomInset);
   // The tab bar in app/(tabs)/_layout.tsx is position:absolute glass, so dreams scroll
@@ -176,7 +175,6 @@ function JournalListScreen() {
       ? measuredHeaderHeight
       : insets.top + ThemeLayout.spacing.sm + searchBarLayout(fontScale).minHeight + ThemeLayout.spacing.sm;
   const overlayNavClearance = isDesktopLayout || isKeyboardVisible ? 0 : navigationClearance;
-  const searchConsumesLayout = isDesktopLayout;
   // A column change remounts the list, which opens on the same dream; the keyboard keeps
   // its columns and offset.
   const mobileListKey = listColumns > 1 ? `tablet-${listColumns}col` : 'mobile-cards-1col';
@@ -186,7 +184,7 @@ function JournalListScreen() {
   // The journal's own scroll, read by its header, painting and dream cards.
   const headerScrollY = useHeaderScrollY();
   const staticScrollY = useRef(0);
-  const scrollLayout = useRef({ columnsKey, searchConsumesLayout });
+  const scrollLayoutKey = useRef(columnsKey);
   // Open at the top and gone once scrolled past: those two hand back the same transform on
   // each scroll frame, since Reanimated commits a style each time it gets a new one.
   const searchEnds = useMemo(() => ({
@@ -195,7 +193,7 @@ function JournalListScreen() {
   }), [mobileSearchHeaderHeight]);
   const searchCollapseStyle = useAnimatedStyle(() => {
     const y = listScrollY.get();
-    if (searchConsumesLayout || y <= 0) return { transform: searchEnds.open };
+    if (isDesktopLayout || y <= 0) return { transform: searchEnds.open };
     if (y >= mobileSearchHeaderHeight) return { transform: searchEnds.collapsed };
     return { transform: [{ translateY: -y }] };
   });
@@ -301,19 +299,14 @@ function JournalListScreen() {
   const overlaySearchDragOriginRef = useRef({ pageX: 0, pageY: 0, offset: 0 });
 
   useLayoutEffect(() => {
-    const previous = scrollLayout.current;
-    if (previous.columnsKey !== columnsKey) {
+    if (scrollLayoutKey.current !== columnsKey) {
       // The dream at the top, before the remount's own first rows replace it.
       resumeDreamKeyRef.current = topDreamKeyRef.current;
       staticScrollY.current = 0;
       listScrollY.set(0);
-    } else if (previous.searchConsumesLayout !== searchConsumesLayout) {
-      // Transfer once when the header changes mode; keep retained list offsets.
-      if (searchConsumesLayout) staticScrollY.current = listScrollY.get();
-      else listScrollY.set(staticScrollY.current);
     }
-    scrollLayout.current = { columnsKey, searchConsumesLayout };
-  }, [columnsKey, searchConsumesLayout, listScrollY]);
+    scrollLayoutKey.current = columnsKey;
+  }, [columnsKey, listScrollY]);
 
   const setScrolling = useCallback((next: boolean) => {
     isScrollingRef.current = next;
@@ -385,10 +378,8 @@ function JournalListScreen() {
       labelsSource: t,
     });
 
-    const orderedDreams = baseDreams;
-
     // Stored order is newest-first; only the opposite order needs a sort.
-    return sortOrder === 'oldest' ? sortDreamsByDate(orderedDreams, true) : orderedDreams;
+    return sortOrder === 'oldest' ? sortDreamsByDate(baseDreams, true) : baseDreams;
   }, [
     dreams,
     deferredSearchQuery,
@@ -744,12 +735,11 @@ function JournalListScreen() {
   }, [listScrollY]);
 
   const shouldForwardOverlaySearchDrag = useCallback((event: GestureResponderEvent) => {
-    if (searchConsumesLayout) return false;
     const origin = overlaySearchDragOriginRef.current;
     const dx = event.nativeEvent.pageX - origin.pageX;
     const dy = event.nativeEvent.pageY - origin.pageY;
     return Math.abs(dy) > OVERLAY_SEARCH_DRAG_SLOP && Math.abs(dy) >= Math.abs(dx);
-  }, [searchConsumesLayout]);
+  }, []);
 
   const handleOverlaySearchDragGrant = useCallback(() => {
     // Forwarded overlay drags use scrollToOffset, so FlashList
@@ -760,12 +750,11 @@ function JournalListScreen() {
   }, []);
 
   const handleOverlaySearchDragMove = useCallback((event: GestureResponderEvent) => {
-    if (searchConsumesLayout) return;
     const dy = event.nativeEvent.pageY - overlaySearchDragOriginRef.current.pageY;
     const next = Math.max(0, overlaySearchDragOriginRef.current.offset - dy);
     handleScrollBegin();
     flatListRef.current?.scrollToOffset({ offset: next, animated: false });
-  }, [handleScrollBegin, searchConsumesLayout]);
+  }, [handleScrollBegin]);
 
   const handleOverlaySearchDragEnd = useCallback(() => {
     scheduleIdle();
@@ -1092,8 +1081,8 @@ function JournalListScreen() {
   );
 
   const listHeader = (
-    <View style={scrollHeader ? { marginHorizontal: -ThemeLayout.spacing.md } : undefined}>
-      {!searchConsumesLayout ? (
+    <View style={isDesktopLayout ? undefined : { marginHorizontal: -ThemeLayout.spacing.md }}>
+      {!isDesktopLayout ? (
         <View testID="journal-search-scroll-slot" style={{ height: mobileSearchHeaderHeight }} />
       ) : null}
       {isDesktopLayout ? <DreamerArtworkWindow scene="journal" /> : null}
@@ -1214,35 +1203,31 @@ function JournalListScreen() {
           // SearchBar. Vertical drags that start on the controls are forwarded
           // to the list so the bar can collapse, while taps still reach the
           // input and clear button.
-          pointerEvents={searchConsumesLayout ? 'auto' : 'box-none'}
+          pointerEvents="box-none"
           style={[{
-            ...(searchConsumesLayout
-              ? null
-              : {
-                  position: 'absolute' as const,
-                  top: 0,
-                  start: 0,
-                  end: 0,
-                  zIndex: 2,
-                }),
+            position: 'absolute' as const,
+            top: 0,
+            start: 0,
+            end: 0,
+            zIndex: 2,
           }, searchCollapseStyle]}
         >
           <View
-            pointerEvents={searchConsumesLayout ? 'auto' : 'box-none'}
+            pointerEvents="box-none"
             testID="journal-search-controls"
-            onTouchStart={searchConsumesLayout ? undefined : handleOverlaySearchTouchStart}
-            onStartShouldSetResponderCapture={searchConsumesLayout ? undefined : () => false}
-            onMoveShouldSetResponderCapture={searchConsumesLayout ? undefined : shouldForwardOverlaySearchDrag}
-            onMoveShouldSetResponder={searchConsumesLayout ? undefined : shouldForwardOverlaySearchDrag}
-            onResponderGrant={searchConsumesLayout ? undefined : handleOverlaySearchDragGrant}
-            onResponderMove={searchConsumesLayout ? undefined : handleOverlaySearchDragMove}
-            onResponderRelease={searchConsumesLayout ? undefined : handleOverlaySearchDragEnd}
-            onResponderTerminate={searchConsumesLayout ? undefined : handleOverlaySearchDragEnd}
+            onTouchStart={handleOverlaySearchTouchStart}
+            onStartShouldSetResponderCapture={() => false}
+            onMoveShouldSetResponderCapture={shouldForwardOverlaySearchDrag}
+            onMoveShouldSetResponder={shouldForwardOverlaySearchDrag}
+            onResponderGrant={handleOverlaySearchDragGrant}
+            onResponderMove={handleOverlaySearchDragMove}
+            onResponderRelease={handleOverlaySearchDragEnd}
+            onResponderTerminate={handleOverlaySearchDragEnd}
           >
             <NoctaliaScreenHeader
               scene="journal"
               // On phones the header floats over the list: its painting grows down on a pull.
-              pinned={!searchConsumesLayout}
+              pinned
               titleKey="nav.journal"
               variant="tab"
               // The title rests lower in the painting, like Today and Explore.
@@ -1315,7 +1300,7 @@ function JournalListScreen() {
         // Keep layout styles on the wrapper: Reanimated supplies style arrays,
         // while FlashList's web container spreads its style as an object.
         ListHeaderComponent={listHeader}
-        onScroll={isWeb || searchConsumesLayout ? handleStaticListScroll : handleListScroll}
+        onScroll={isWeb ? handleStaticListScroll : handleListScroll}
         scrollEventThrottle={16}
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode={isWeb ? 'none' : 'on-drag'}

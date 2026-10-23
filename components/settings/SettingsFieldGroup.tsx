@@ -23,11 +23,9 @@ import { useContentWindow } from '@/context/ContentWindowContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
-import { IllustrationQualityPreference } from './IllustrationQualityPreference';
 import { SettingsSection } from './SettingsSection';
 import { SettingsToggle } from './SettingsToggle';
 import { useSignatureSoundsPreference } from './useSignatureSoundsPreference';
-import { isHdIllustrationsEnabled } from '@/lib/env';
 
 import {
   getDateFromTime,
@@ -448,7 +446,7 @@ export function SettingsFieldGroup({
             ) : null}
             <PreferenceRow
               icon="globe"
-              isLast={!onReplayOnboarding && !onRateApp && !isHdIllustrationsEnabled()}
+              isLast={!onReplayOnboarding && !onRateApp}
               label={language.title}
               noctalia={noctalia}
               onPress={() => setLanguageSheetVisible(true)}
@@ -458,7 +456,7 @@ export function SettingsFieldGroup({
             {/* Replays the welcome story without changing the saved onboarding. */}
             {onReplayOnboarding ? <PreferenceRow
               icon="arrow.clockwise"
-              isLast={!onRateApp && !isHdIllustrationsEnabled()}
+              isLast={!onRateApp}
               label={t('settings.onboarding_replay')}
               noctalia={noctalia}
               onPress={onReplayOnboarding}
@@ -466,13 +464,12 @@ export function SettingsFieldGroup({
             /> : null}
             {onRateApp ? <PreferenceRow
               icon="star.fill"
-              isLast={!isHdIllustrationsEnabled()}
+              isLast
               label={t('settings.rate_app')}
               noctalia={noctalia}
               onPress={onRateApp}
               testID="settings-rate-app"
             /> : null}
-            <IllustrationQualityPreference />
           </SettingsSection>
 
           {!returningGuestBlocked ? (

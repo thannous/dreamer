@@ -956,7 +956,6 @@ const RootNavigator = memo(function RootNavigator({
             <Stack.Screen name="weekly-recap" options={{ headerShown: false }} />
             <Stack.Screen name="moon-letter" options={{ headerShown: false }} />
             <Stack.Screen name="collection" options={{ headerShown: false }} />
-            <Stack.Screen name="dev/voice-live-spike" options={{ headerShown: false }} />
             </Stack.Protected>
             {/* Lucid screens live under routes/lucid only (Lucid's own router root). */}
             {isLucidTrainer ? <Stack.Screen name="lucid" options={{ headerShown: false }} /> : null}

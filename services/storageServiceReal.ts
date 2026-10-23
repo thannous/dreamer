@@ -33,12 +33,9 @@ const THEME_PREFERENCE_KEY = 'gemini_dream_journal_theme_preference';
 const LANGUAGE_PREFERENCE_KEY = 'gemini_dream_journal_language_preference';
 const JOURNAL_LAYOUT_PREFERENCE_KEY = 'gemini_dream_journal_layout_preference';
 const RECORDING_INPUT_MODE_PREFERENCE_KEY = 'gemini_dream_journal_recording_input_mode_preference';
-const RECORDING_VOICE_STATUS_HIDDEN_KEY = 'gemini_dream_journal_recording_voice_status_hidden';
 const REMINDER_PROMPT_DISMISSED_KEY = 'gemini_dream_journal_reminder_prompt_dismissed';
 const STALE_ANALYSIS_BANNER_DISMISSED_KEY = 'gemini_dream_journal_stale_analysis_banner_dismissed';
-const RECORDING_ONBOARDING_COMPLETED_KEY = 'gemini_dream_journal_recording_onboarding_completed';
 const RECORDING_VOICE_HINT_COMPLETED_KEY = 'gemini_dream_journal_recording_voice_hint_completed_v1';
-const REMEMBERED_DREAM_PROMPT_DISMISSED_KEY = 'gemini_dream_journal_remembered_dream_prompt_dismissed';
 const RITUAL_PREFERENCE_KEY = 'gemini_dream_journal_ritual_preference';
 const RITUAL_PROGRESS_KEY = 'gemini_dream_journal_ritual_progress';
 const FIRST_LAUNCH_COMPLETED_KEY = 'gemini_dream_journal_first_launch_completed';
@@ -1219,31 +1216,6 @@ export async function saveRecordingInputModePreference(
   }
 }
 
-export async function getRecordingVoiceStatusHidden(): Promise<boolean> {
-  try {
-    const savedPreference = await getItem(RECORDING_VOICE_STATUS_HIDDEN_KEY);
-    if (savedPreference) {
-      return JSON.parse(savedPreference) === true;
-    }
-  } catch (error) {
-    if (__DEV__) {
-      console.error('Failed to retrieve recording voice status preference:', error);
-    }
-  }
-  return false;
-}
-
-export async function saveRecordingVoiceStatusHidden(hidden: boolean): Promise<void> {
-  try {
-    await setItem(RECORDING_VOICE_STATUS_HIDDEN_KEY, JSON.stringify(hidden));
-  } catch (error) {
-    if (__DEV__) {
-      console.error('Failed to save recording voice status preference:', error);
-    }
-    throw new Error('Failed to save recording voice status preference');
-  }
-}
-
 /**
  * Whether the in-app "morning reminder" opt-in card was dismissed. Once true the
  * card never comes back; the user can still enable reminders from Settings.
@@ -1302,31 +1274,6 @@ export async function saveStaleAnalysisBannerDismissed(dismissed: boolean): Prom
   }
 }
 
-export async function getRecordingOnboardingCompleted(): Promise<boolean> {
-  try {
-    const savedFlag = await getItem(RECORDING_ONBOARDING_COMPLETED_KEY);
-    if (savedFlag) {
-      return JSON.parse(savedFlag) === true;
-    }
-  } catch (error) {
-    if (__DEV__) {
-      console.error('Failed to retrieve recording onboarding flag:', error);
-    }
-  }
-  return false;
-}
-
-export async function saveRecordingOnboardingCompleted(completed: boolean): Promise<void> {
-  try {
-    await setItem(RECORDING_ONBOARDING_COMPLETED_KEY, JSON.stringify(completed));
-  } catch (error) {
-    if (__DEV__) {
-      console.error('Failed to save recording onboarding flag:', error);
-    }
-    throw new Error('Failed to save recording onboarding flag');
-  }
-}
-
 export async function getRecordingVoiceHintCompleted(actorScope?: string | null): Promise<boolean> {
   try {
     const savedFlag = await getItem(scopedStorageKey(RECORDING_VOICE_HINT_COMPLETED_KEY, actorScope));
@@ -1355,31 +1302,6 @@ export async function saveRecordingVoiceHintCompleted(
       console.error('Failed to save recording voice hint flag:', error);
     }
     throw new Error('Failed to save recording voice hint flag');
-  }
-}
-
-export async function getRememberedDreamPromptDismissed(): Promise<boolean> {
-  try {
-    const savedFlag = await getItem(REMEMBERED_DREAM_PROMPT_DISMISSED_KEY);
-    if (savedFlag) {
-      return JSON.parse(savedFlag) === true;
-    }
-  } catch (error) {
-    if (__DEV__) {
-      console.error('Failed to retrieve remembered dream prompt flag:', error);
-    }
-  }
-  return false;
-}
-
-export async function saveRememberedDreamPromptDismissed(dismissed: boolean): Promise<void> {
-  try {
-    await setItem(REMEMBERED_DREAM_PROMPT_DISMISSED_KEY, JSON.stringify(dismissed));
-  } catch (error) {
-    if (__DEV__) {
-      console.error('Failed to save remembered dream prompt flag:', error);
-    }
-    throw new Error('Failed to save remembered dream prompt flag');
   }
 }
 
@@ -1597,24 +1519,14 @@ export async function setGuestDreamMigrationOwner(owner: GuestDreamMigrationOwne
   }
 }
 
+// Only the scoped key is read: legacy global sync blobs predate per-user
+// scoping, so they cannot be safely attributed to whichever account reads them first.
 async function readScopedJson(
   baseKey: string,
   userScope?: string | null,
   options?: { strict?: boolean }
 ): Promise<string | null> {
-  const scopedKey = scopedStorageKey(baseKey, userScope);
-  const scopedValue = await getItem(scopedKey, options);
-  if (scopedValue != null) {
-    return scopedValue;
-  }
-
-  if (!userScope) {
-    return null;
-  }
-
-  // Legacy global sync blobs predate per-user scoping, so they cannot be
-  // safely attributed to whichever account reads them first after upgrade.
-  return null;
+  return getItem(scopedStorageKey(baseKey, userScope), options);
 }
 
 async function writeScopedJson(

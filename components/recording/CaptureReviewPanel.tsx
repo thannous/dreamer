@@ -24,7 +24,7 @@ export function CaptureReviewPanel({ text, source, disabled, onChange, onExit }:
       </Pressable>
     </View>
     <Text style={[styles.body, { color: theme.text.secondary }]}>{t('recording.review.hint')}</Text>
-    <RecordingTextInput value={text} onChange={onChange} disabled={disabled} lengthWarning="" limitDreamLength
+    <RecordingTextInput value={text} onChange={onChange} disabled={disabled} limitDreamLength
       instructionText="" voiceSupported={false} autoFocus={false} onSwitchToVoice={() => {}}
       inputTestID="capture-review-text" inputAccessibilityLabel={t('recording.review.title')} />
     {answers.length ? (

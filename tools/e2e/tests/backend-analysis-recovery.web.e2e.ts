@@ -5,14 +5,14 @@ import { test, expect, login, journal, client, admin } from '../backend-recovery
 const analysisText = 'A lighthouse can be a point of orientation. What does this particular lighthouse bring to mind for you?';
 
 // Auth, Postgres, API admission and the analysis worker are real. Paid analysis
-// transport is deterministic; image dispatch is held after durable admission.
-test('Plus HD reanalysis resumes its requested image once after reload', {
-  tags: ['analysis-hd-recovery'], timeout: 180_000,
+// transport is deterministic; the real worker is held after durable admission.
+test('Plus reanalysis survives reload and completes once while preserving its image', {
+  tags: ['analysis-recovery'], timeout: 180_000,
 }, async ({ page, browser, accounts, recovery }) => {
   const owner = client();
   expect((await owner.auth.signInWithPassword(accounts.plus)).error).toBeNull();
   await recovery.control({ reset: true, analysisHold: true });
-  const title = `HD recovery ${randomUUID().slice(0, 8)}`;
+  const title = `Analysis recovery ${randomUUID().slice(0, 8)}`;
   const transcript = 'I walked to a lighthouse beside the sea.';
   const revised = `${transcript} Its door was blue and I could hear the waves.`;
   // A loopback URL suffices: this journey preserves the old reference and never
@@ -42,17 +42,15 @@ test('Plus HD reanalysis resumes its requested image once after reload', {
   };
   try {
     await login(page, accounts.plus);
-    await page.getByTestId('settings-illustration-quality').click();
-    await expect(page.getByTestId('settings-illustration-2K')).toBeEnabled();
-    await page.getByTestId('settings-illustration-2K').click();
-    await expect(page.getByTestId('settings-illustration-sheet')).toBeHidden();
     await journal(page);
     await page.getByTestId(/^dream\.item\./).filter({ hasText: transcript }).click();
     await page.getByTestId('btn.editDream').click();
     await page.getByTestId('input.dreamTranscript').fill(revised);
     await page.getByTestId('btn.saveDreamEdit').click();
     await page.getByTestId('btn.dream.staleCta').click();
-    await page.getByRole('checkbox', { name: 'Also regenerate the dream image', exact: true }).click();
+    const replaceImage = page.getByRole('checkbox', { name: 'Also regenerate the dream image', exact: true });
+    await expect(replaceImage).toBeVisible();
+    await expect(replaceImage).not.toBeChecked();
     const consentPrompts: string[] = [];
     const offConsent = await browser.onDialog(async dialog => {
       consentPrompts.push(dialog.message);
@@ -73,18 +71,20 @@ test('Plus HD reanalysis resumes its requested image once after reload', {
     expect((await recovery.state()).analysisProviderCalls).toBe(0);
 
     // Destroy the live caller before the worker can complete. Only the normal
-    // persisted journal state can carry the user's HD replacement choice.
+    // persisted journal state can restore the pending analysis request.
     await page.reload({ waitUntil: 'domcontentloaded' });
     await expect(page.getByTestId('screen.recording')).toBeVisible();
     await recovery.control({ analysisHold: false });
-    await expect.poll(async () => (await jobs()).filter(job => job.job_type === 'generate_image').length,
-      { timeout: 45_000 }).toBe(1);
+    await expect.poll(async () => (await jobs())[0]?.status,
+      { timeout: 45_000 }).toBe('succeeded');
     const recovered = await jobs();
-    expect(recovered).toHaveLength(2);
+    expect(recovered).toHaveLength(1);
     expect(recovered[0]).toMatchObject({ id: pending[0].id, status: 'succeeded', attempt_count: 1 });
-    expect(recovered[1]).toMatchObject({
-      job_type: 'generate_image', status: 'queued', client_request_id: pending[0].client_request_id,
-      request_payload: { imageSize: '2K', transcript: revised, previousImageUrl },
+    const completedDream = await owner.from('dreams').select('transcript,image_url,is_analyzed,analysis_status')
+      .eq('id', dreamId).single();
+    expect(completedDream.error).toBeNull();
+    expect(completedDream.data).toMatchObject({
+      transcript: revised, image_url: previousImageUrl, is_analyzed: true, analysis_status: 'done',
     });
     await openDream();
     await expect(page.getByText(analysisText, { exact: true })).toBeVisible();

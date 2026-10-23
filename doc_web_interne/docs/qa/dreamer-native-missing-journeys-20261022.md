@@ -1,5 +1,9 @@
 # Dreamer — parcours natifs manquants, 22 octobre 2026
 
+> Évolution du 2026-10-23 : la simplification #564 retire le HD côté app et
+> adapte le parcours web à la reprise Standard. Voir le [rapport dédié](dreamer-simplification-20261023.md).
+> Les résultats HD et natifs ci-dessous restent les preuves historiques de leurs sources identifiées.
+
 **Android : six parcours couverts par preuve composite.** iOS : cinq parcours validés ; la reconnaissance vocale reste bloquée par l’environnement Apple. Tests courants : `b2b9937aa67c29c914e49b2c5bbc4897ab103db7` ; binaires : `0ee3471fd00361c0df2d90f8cd67aefded4c2d27`. Ces résultats réunissent plusieurs exécutions identifiées ; aucune campagne fraîche « 6/6 » n’est revendiquée.
 
 ## Identité du candidat
@@ -76,7 +80,7 @@ Les tests ciblés couvrent configuration, journal, récupération des notes et r
 
 La branche intègre ensuite `origin/master a3946ea8ac3b51cf1c54b3aeb796300a92ef8844`. La reprise d’analyse conserve localement la demande d’illustration HD, sa résolution, son compte et sa clé d’idempotence avant l’admission de l’analyse. Après redémarrage, la même demande d’image reprend ; un refus définitif laisse le texte terminé avec un diagnostic image. La reprise ne doit jamais réappliquer un résultat à un rêve modifié, supprimé ou appartenant à une autre session.
 
-Le [parcours backend HD](../../../tools/e2e/tests/backend-analysis-image-recovery.web.e2e.ts) utilise Auth/Postgres et les handlers réels sur une pile locale jetable. Il demande une réanalyse Plus en 2K, recharge avant la fin de l’analyse et vérifie une admission image unique, avec la même clé, la résolution choisie, le texte modifié et l’ancienne image. Un second rechargement vérifie la lecture et l’absence de doublon. Le fournisseur d’analyse est déterministe ; le worker image est retenu après admission : ni le rendu HD ni son crédit ne sont qualifiés. Commande : `mise exec -- npm run test:e2e:backend -- --tag analysis-hd-recovery`.
+Le [parcours backend HD](https://github.com/thannous/dreamer/blob/4e4f292f94bcb9c9c380536536996e370e98b9a2/tools/e2e/tests/backend-analysis-image-recovery.web.e2e.ts) utilise Auth/Postgres et les handlers réels sur une pile locale jetable. Il demande une réanalyse Plus en 2K, recharge avant la fin de l’analyse et vérifie une admission image unique, avec la même clé, la résolution choisie, le texte modifié et l’ancienne image. Un second rechargement vérifie la lecture et l’absence de doublon. Le fournisseur d’analyse est déterministe ; le worker image est retenu après admission : ni le rendu HD ni son crédit ne sont qualifiés. Commande : `mise exec -- npm run test:e2e:backend -- --tag analysis-hd-recovery`.
 
 Les trois parcours vocaux englobent désormais la modification de permission et `app.open()` dans leur `try/finally`. L’injection sur leurs callbacks réels couvre les échecs de permission, de lancement et d’assertion après lancement : zéro nettoyage sur sept avant correction, sept sur sept après, avec conservation de l’erreur initiale. Ce contrôle isolé couvre une panne de lanceur qu’un parcours natif normal ne peut pas provoquer de façon fiable. Preuve privée : `outputs/pr557-review-20261023/voice-cleanup-after.json` dans le checkout principal.
 

@@ -870,10 +870,9 @@ export function useDreamPersistence({
         ...claimedDreams.filter((dream) => !dream.remoteId),
       ].filter(dream => !deferMigration(dream));
 
-      // Deduplicate by clientRequestId (or fallback to local id)
       const seen = new Set<string>();
       const unsynced = candidates.filter((dream) => {
-        const key = dream.clientRequestId ?? `id-${dream.id}`;
+        const key = getMigrationDreamKey(dream);
         if (seen.has(key)) return false;
         seen.add(key);
         return true;

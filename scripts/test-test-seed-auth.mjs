@@ -278,7 +278,7 @@ test('start-branch-e2e gives the app only the branch URL, anon key and functions
   // Only the allowlisted EXPO_PUBLIC_* flags pass; every other one is dropped.
   const shell = {
     PATH: '/bin',
-    EXPO_PUBLIC_HD_ILLUSTRATIONS_ENABLED: 'true',
+    EXPO_PUBLIC_ANALYSIS_JOBS_ENABLED: 'true',
     EXPO_PUBLIC_TURNSTILE_SITE_KEY: 'prod-site-key',
     EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID: 'prod-client',
     EXPO_PUBLIC_SUBSCRIPTION_QA_LAB: 'true',
@@ -291,8 +291,8 @@ test('start-branch-e2e gives the app only the branch URL, anon key and functions
   const filtered = branchAppEnv({ ref: REF, url: `https://${REF}.supabase.co` }, env(), shell);
   const publicNames = Object.keys(filtered).filter((name) => name.startsWith('EXPO_PUBLIC_')).sort();
   assert.deepEqual(publicNames, [
+    'EXPO_PUBLIC_ANALYSIS_JOBS_ENABLED',
     'EXPO_PUBLIC_API_URL',
-    'EXPO_PUBLIC_HD_ILLUSTRATIONS_ENABLED',
     'EXPO_PUBLIC_MOCK_MODE',
     'EXPO_PUBLIC_SUPABASE_ANON_KEY',
     'EXPO_PUBLIC_SUPABASE_FUNCTION_JWT',
