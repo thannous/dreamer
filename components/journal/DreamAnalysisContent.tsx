@@ -26,6 +26,35 @@ function Chapter({ className, testID, onLayout, children }: {
 }
 
 /**
+ * The dream's own line, as the reading ends on it: set apart like the last page of a
+ * chapter, centred under an ornament. On two facing pages it stands under the dream's name
+ * on the left-hand page instead, set as an epigraph (`align="start"`).
+ */
+export function DreamQuote({ dream, align = 'center', className = '' }: {
+  dream: DreamAnalysis;
+  align?: 'center' | 'start';
+  className?: string;
+}) {
+  const { t } = useTranslation();
+  const tid = useLiveTestID();
+  const quote = dream.shareableQuote?.trim();
+  if (!quote) return null;
+  const centred = align === 'center';
+  return (
+    <View className={`gap-3 ${centred ? 'items-center px-2' : 'items-start'} ${className}`}>
+      {centred ? <BookOrnament /> : <View accessible={false} className="h-px w-8 bg-champagne opacity-40" />}
+      <Text testID={tid(TID.Text.DreamDetailQuote)}
+        className={`font-serif-italic text-[18px] leading-7 text-ivory ${centred ? 'text-center' : ''}`}>{`« ${quote} »`}</Text>
+      {isPoeticDreamQuote(dream) ? (
+        <Text className={`font-serif-italic text-[13px] text-ivory-muted ${centred ? 'text-center' : ''}`}>
+          {t('journal.detail.quote_attribution')}
+        </Text>
+      ) : null}
+    </View>
+  );
+}
+
+/**
  * The complete saved reading belongs to the dream, including its reflection prompts.
  * It is Act II of the dream story: a waiting state while the analysis runs, then the
  * dream's symbols as a constellation and the reading in chapters, ending on its quote.
@@ -33,9 +62,11 @@ function Chapter({ className, testID, onLayout, children }: {
  * opened by an ornament. Each symbol is followed through the journal: it opens its page,
  * with the dreams it went through.
  */
-export function DreamAnalysisContent({ dream, pending, reveal = false, onLayout, onInterpretationLayout }: {
+export function DreamAnalysisContent({ dream, pending, reveal = false, withQuote = true, onLayout, onInterpretationLayout }: {
   dream: DreamAnalysis;
   pending: boolean;
+  /** The reading ends on the dream's quote, unless the page sets it elsewhere (beside its name). */
+  withQuote?: boolean;
   /** The reading landed while this screen was watching: play the reveal once. */
   reveal?: boolean;
   onLayout?: ViewProps['onLayout'];
@@ -64,7 +95,6 @@ export function DreamAnalysisContent({ dream, pending, reveal = false, onLayout,
     markPerformance('analysis.text_committed', details);
     return markPerformanceAfterFrames('analysis.reveal_window_elapsed', details);
   }, [decorative, pending, dream.analysisRequestId]);
-  const quote = dream.shareableQuote?.trim();
 
   return (
     <View testID={tid(TID.Component.DreamDetailReadingZone)} onLayout={onLayout} className="mx-2 mb-8 gap-5">
@@ -109,12 +139,9 @@ export function DreamAnalysisContent({ dream, pending, reveal = false, onLayout,
               </View>
             </Chapter>
           ) : null}
-          {quote ? (
-            // The reading ends on the dream's own line, set apart like the last page of a chapter.
-            <Chapter className="mt-4 items-center gap-3 px-2">
-              <BookOrnament />
-              <Text testID={tid(TID.Text.DreamDetailQuote)} className="text-center font-serif-italic text-[18px] leading-7 text-ivory">{`« ${quote} »`}</Text>
-              {isPoeticDreamQuote(dream) ? <Text className="text-center font-serif-italic text-[13px] text-ivory-muted">{t('journal.detail.quote_attribution')}</Text> : null}
+          {withQuote && dream.shareableQuote?.trim() ? (
+            <Chapter className="mt-4">
+              <DreamQuote dream={dream} />
             </Chapter>
           ) : null}
         </>

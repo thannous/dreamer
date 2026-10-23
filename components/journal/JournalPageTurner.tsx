@@ -8,10 +8,14 @@ import Animated, {
 } from 'react-native-reanimated';
 import { scheduleOnRN, scheduleOnUI } from 'react-native-worklets';
 
+import { JournalPageEdges } from '@/components/journal/JournalPageEdges';
 import { JournalPagePreview } from '@/components/journal/JournalPagePreview';
+import { JournalPaper } from '@/components/journal/JournalPaper';
 import { PageTurnsContext } from '@/components/journal/journalPageTurns';
 import { JournalTonightPage } from '@/components/journal/JournalTonightPage';
+import { useJournalSpread } from '@/components/journal/useJournalSpread';
 import { EASING } from '@/components/motion/motion';
+import type { JournalSpread } from '@/constants/layout';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useContentWindow } from '@/context/ContentWindowContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -50,6 +54,13 @@ const HINT_REBOUND = 0.02;
 const HINT_REBOUND_RISE = 150;
 const HINT_REBOUND_FALL = 220;
 /**
+ * On two facing pages the right-hand page turns about the binding and nothing covers the
+ * page beneath it: arriving, it lifts only enough to show the paper's edge underneath.
+ */
+const HINT_LIFT_SPREAD = 0.06;
+/** A leaf of two facing pages stands on edge half way through its turn, then lies down on the other side. */
+const ON_EDGE = 0.5;
+/**
  * Lifted as little as on its arrival, the page still covers the one beneath it whole (it
  * comes towards the reader), so the pages either side need not be drawn with it: they are
  * drawn once it has come in and fallen shut, or at the first touch. Until they are, a turn
@@ -70,12 +81,107 @@ function fallingShut(direction: SharedValue<number>) {
   ] as const;
 }
 
+/** How far a leaf of two facing pages has turned `way` (0 unless it is turning that way). */
+function leafTurn(phase: number, direction: number, progress: number, way: number) {
+  'worklet';
+  return phase === IDLE && direction === way ? progress : 0;
+}
+
+/** Whether the page beneath a leaf turning `way` shows: while it turns, and until the page turned to has faded in. */
+function leafBeneath(phase: number, direction: number, way: number) {
+  'worklet';
+  return direction === way && (phase === IDLE || phase === SETTLING_FORWARD) ? 1 : 0;
+}
+
+/** The other side of a leaf turning `way`: hidden until the leaf stands on edge, then lying down at the binding. */
+function overleaf(phase: number, direction: number, progress: number, settle: number, way: number) {
+  'worklet';
+  const sign = way === FORWARD ? 1 : -1;
+  if (direction !== way || (phase !== IDLE && phase !== SETTLING_FORWARD)) {
+    return { opacity: 0, transform: [{ perspective: PERSPECTIVE }, { rotateY: `${sign * 90}deg` }] };
+  }
+  if (phase === SETTLING_FORWARD) {
+    return { opacity: 1 - settle, transform: [{ perspective: PERSPECTIVE }, { rotateY: '0deg' }] };
+  }
+  return {
+    opacity: progress >= ON_EDGE ? 1 : 0,
+    transform: [{ perspective: PERSPECTIVE }, { rotateY: `${sign * 180 * (1 - Math.max(progress, ON_EDGE))}deg` }],
+  };
+}
+
 /** How far a page this wide turns (as a turn's progress) before what lies beneath shows past its edge. */
 function coveringTurn(width: number) {
   return (2 * Math.atan(width / PERSPECTIVE) * 180) / Math.PI / TURN_DEGREES;
 }
 
 const PageTurnLockContext = createContext<(locked: boolean) => void>(() => {});
+/** The turn in progress, which each of two facing pages follows. */
+const SpreadTurnContext = createContext<{
+  phase: SharedValue<number>;
+  direction: SharedValue<number>;
+  progress: SharedValue<number>;
+} | null>(null);
+
+/** The halves of two facing pages, each turning about the binding between them. */
+function spreadHalf(side: 'left' | 'right', spread: JournalSpread) {
+  return side === 'left'
+    ? { position: 'absolute' as const, top: 0, bottom: 0, left: 0, width: spread.spine, overflow: 'hidden' as const, transformOrigin: 'right center' }
+    : { position: 'absolute' as const, top: 0, bottom: 0, left: spread.spine, right: 0, overflow: 'hidden' as const, transformOrigin: 'left center' };
+}
+
+/**
+ * One of a dream's two facing pages, on its own paper, with its edges: the crease at the
+ * binding and the block of leaves at its outer side. The page turner turns it about the
+ * binding (the right-hand page towards a later dream, the left-hand page back to an earlier
+ * one). Without a `spread` it is the single page itself, laid out as before. It is the same
+ * view either way, so folding or unfolding the device keeps what the page holds.
+ */
+export function JournalSpreadLeaf({ side, spread, edges = true, children }: {
+  side: 'left' | 'right';
+  spread: JournalSpread | null;
+  /** The page's edges, which an editor laid over the page hides. */
+  edges?: boolean;
+  children: React.ReactNode;
+}) {
+  const turn = useContext(SpreadTurnContext);
+  const still = useSharedValue(0);
+  const turns = Boolean(spread && turn);
+  const phase = spread && turn ? turn.phase : still;
+  const direction = spread && turn ? turn.direction : still;
+  const progress = spread && turn ? turn.progress : still;
+  const { colors, mode } = useTheme();
+  const shadow = useMemo(() => getNoctaliaDesignTokens(colors, mode).surface.overlay, [colors, mode]);
+  // The right-hand leaf turns over towards a later dream, the left-hand one back to an earlier one;
+  // each lies under the other as it comes over. A leaf lifts towards the reader from the binding.
+  const over = side === 'right' ? FORWARD : BACKWARD;
+  const under = side === 'right' ? BACKWARD : FORWARD;
+  const lift = side === 'right' ? -180 : 180;
+  const leaf = useAnimatedStyle(() => {
+    const turned = leafTurn(phase.get(), direction.get(), progress.get(), over);
+    return {
+      opacity: turned < ON_EDGE ? 1 : 0,
+      transform: [{ perspective: PERSPECTIVE }, { rotateY: `${lift * Math.min(turned, ON_EDGE)}deg` }],
+    };
+  });
+  // It darkens as it stands on edge, and as the leaf coming over casts its shadow on it.
+  const shade = useAnimatedStyle(() => ({
+    opacity: Math.max(
+      interpolate(leafTurn(phase.get(), direction.get(), progress.get(), over), [0, ON_EDGE], [0, 0.45], Extrapolation.CLAMP),
+      interpolate(leafTurn(phase.get(), direction.get(), progress.get(), under), [ON_EDGE, 1], [0, 0.35], Extrapolation.CLAMP)),
+  }));
+  return (
+    <Animated.View collapsable={false} style={[spread ? spreadHalf(side, spread) : styles.page, turns ? leaf : null]}>
+      {spread ? (
+        <View pointerEvents="none" className="absolute inset-0 bg-ink">
+          <JournalPaper />
+        </View>
+      ) : null}
+      {children}
+      {spread && edges ? <JournalPageEdges side={side} /> : null}
+      {turns ? <Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: shadow }, shade]} /> : null}
+    </Animated.View>
+  );
+}
 const PageArrivalContext = createContext<{ laidOut: () => void; arriving: () => boolean }>({
   laidOut: () => {},
   arriving: () => false,
@@ -138,6 +244,9 @@ export function JournalPageTurner({ dream, newer, older, folio, tonight = false,
   children: React.ReactNode;
 }) {
   const { width, height } = useContentWindow();
+  // Two facing pages turn their leaves about the binding instead of the page about its left edge.
+  const spread = useJournalSpread();
+  const spreadOpen = spread !== null;
   const [pageHeight, setPageHeight] = useState(height);
   // The page's own width, narrower than the window beside the desktop sidebar.
   const [pageWidth, setPageWidth] = useState(width);
@@ -262,7 +371,9 @@ export function JournalPageTurner({ dream, newer, older, folio, tonight = false,
     const timer = awaitTimer.get();
     if (timer) clearTimeout(timer);
     awaitTimer.set(null);
-    settle.set(withTiming(turnedTo === FORWARD ? 1 : 0, { duration: SETTLE_MS, easing: EASING.out }, (done) => {
+    // Two facing pages turned either way show the pages turned to as likenesses over which the
+    // dream page, set back flat but unseen, fades in, as a single page turned forward does.
+    settle.set(withTiming(spreadOpen || turnedTo === FORWARD ? 1 : 0, { duration: SETTLE_MS, easing: EASING.out }, (done) => {
       if (!done) return;
       phase.set(IDLE);
       direction.set(0);
@@ -270,7 +381,7 @@ export function JournalPageTurner({ dream, newer, older, folio, tonight = false,
       settle.set(1);
       scheduleOnRN(settled);
     }));
-  }, [awaitTimer, awaiting, direction, phase, progress, settle, settled]);
+  }, [awaitTimer, awaiting, direction, phase, progress, settle, settled, spreadOpen]);
 
   // Two frames on, the page laid out is painted too before it is let in.
   const pageLaidOut = useCallback(() => {
@@ -294,8 +405,12 @@ export function JournalPageTurner({ dream, newer, older, folio, tonight = false,
     setFrozen({ newer: shown.newer, older: shown.older, folio: shown.folio });
     void Haptics.selectionAsync().catch(() => {});
     // The likeness holds the place while the page turned to lays itself out: forward, the
-    // turned page is set back flat but unseen over it; back, the likeness stays on top.
-    if (turnedTo === FORWARD) {
+    // turned page is set back flat but unseen over it; back, the likeness stays on top. Two
+    // facing pages hold the turned leaf where it lies, and set their dream page back unseen.
+    if (spreadOpen) {
+      settle.set(0);
+      phase.set(SETTLING_FORWARD);
+    } else if (turnedTo === FORWARD) {
       settle.set(0);
       progress.set(0);
       phase.set(SETTLING_FORWARD);
@@ -308,7 +423,8 @@ export function JournalPageTurner({ dream, newer, older, folio, tonight = false,
       if (awaiting.get() !== 0) settleIn(awaiting.get());
     }, SETTLE_AT_LATEST));
     onTurn(target);
-  }, [awaitTimer, awaiting, endOpening, onTurn, phase, progress, reachTonight, settle, settleIn, shown.folio, shown.newer, shown.older]);
+  }, [awaitTimer, awaiting, endOpening, onTurn, phase, progress, reachTonight, settle, settleIn, shown.folio, shown.newer, shown.older,
+    spreadOpen]);
 
   const turnAtOnce = useCallback((turnedTo: number) => {
     endOpening();
@@ -372,18 +488,19 @@ export function JournalPageTurner({ dream, newer, older, folio, tonight = false,
     if (lockedNow.current || direction.get() !== 0 || turnedOver.get()) return;
     hinted.current = true;
     direction.set(FORWARD);
+    const lift = spreadOpen ? HINT_LIFT_SPREAD : HINT_LIFT;
     if (openingNow.get()) {
-      progress.set(HINT_LIFT);
+      progress.set(lift);
       hintWaits.set(true);
       return;
     }
     progress.set(withSequence(
-      withTiming(HINT_LIFT, { duration: 0 }),
+      withTiming(lift, { duration: 0 }),
       // Held while the screen comes in, then let go.
-      withTiming(HINT_LIFT, { duration: HINT_HOLD }),
+      withTiming(lift, { duration: HINT_HOLD }),
       ...fallingShut(direction),
     ));
-  }, [direction, hint, hintWaits, newer, openingNow, progress, reduced, tonight, turnedOver]);
+  }, [direction, hint, hintWaits, newer, openingNow, progress, reduced, spreadOpen, tonight, turnedOver]);
 
   const hasLaterDream = shown.newer != null;
   const hasNewer = hasLaterDream || tonight;
@@ -424,9 +541,10 @@ export function JournalPageTurner({ dream, newer, older, folio, tonight = false,
       const available = turnedTo === FORWARD ? hasNewer : hasOlder;
       const amount = Math.max(0, (turnedTo === FORWARD ? -event.translationX : event.translationX) / (width * 0.8));
       // Until the page that way is drawn, this one lifts only as far as it still covers it,
-      // and an earlier one does not come over yet.
-      const reach = turnedTo === FORWARD ? (!hasLaterDream || likenessesDrawn.get() ? 1 : covering)
-        : likenessesDrawn.get() ? 1 : 0;
+      // and an earlier one does not come over yet. A leaf of two facing pages covers nothing
+      // beneath once lifted: it waits for that page.
+      const drawnThatWay = turnedTo === FORWARD ? !hasLaterDream || likenessesDrawn.get() : likenessesDrawn.get();
+      const reach = drawnThatWay ? 1 : turnedTo === FORWARD && !spreadOpen ? covering : 0;
       // Without a page on that side, the page only lifts a little and resists.
       progress.set(available ? Math.min(reach, amount) : Math.min(0.06, amount * 0.15));
     })
@@ -484,20 +602,20 @@ export function JournalPageTurner({ dream, newer, older, folio, tonight = false,
         }));
       }
     }), [covering, direction, drawLikenesses, finishTurn, hasLaterDream, hasNewer, hasOlder, held, hintWaits, holdAtMost,
-    leaveTonight, likenessesDrawn, locked, phase, progress, reduced, turnAtOnce, turnedOver, width]);
+    leaveTonight, likenessesDrawn, locked, phase, progress, reduced, spreadOpen, turnAtOnce, turnedOver, width]);
 
   // The page turning over: it lifts from the binding, darkening as it stands on edge. Once
   // turned forward it is set back flat, unseen, and the page turned to fades in there.
   const currentPage = useAnimatedStyle(() => {
     const idle = phase.get() === IDLE;
-    const turn = idle && direction.get() === FORWARD ? progress.get() : 0;
+    const turn = !spreadOpen && idle && direction.get() === FORWARD ? progress.get() : 0;
     return {
       opacity: phase.get() === SETTLING_FORWARD ? settle.get() : 1,
       transform: [{ perspective: PERSPECTIVE }, { rotateY: `${-TURN_DEGREES * turn}deg` }],
     };
   });
   const currentShade = useAnimatedStyle(() => ({
-    opacity: phase.get() === IDLE && direction.get() === FORWARD
+    opacity: !spreadOpen && phase.get() === IDLE && direction.get() === FORWARD
       ? interpolate(progress.get(), [0, 1], [0, 0.45], Extrapolation.CLAMP) : 0,
   }));
   // The later page, lying beneath: in shadow while the turning page still covers it.
@@ -527,12 +645,42 @@ export function JournalPageTurner({ dream, newer, older, folio, tonight = false,
   // The shadow the earlier page casts as it comes over. Once it lies flat it covers the
   // page whole, so the shadow is gone before the page shows through it.
   const currentUnderShade = useAnimatedStyle(() => ({
-    opacity: phase.get() === IDLE && direction.get() === BACKWARD
+    opacity: !spreadOpen && phase.get() === IDLE && direction.get() === BACKWARD
       ? interpolate(progress.get(), [0, 1], [0, 0.4], Extrapolation.CLAMP) : 0,
   }));
 
   // Opening, the page's likeness lies over it, and fades off it once it has laid itself out.
   const openingLikeness = useAnimatedStyle(() => ({ opacity: likenessShown.get() }));
+
+  // Two facing pages. Towards a later dream the right-hand leaf lifts from the binding, stands
+  // on edge half way, and its other side, the later dream's left-hand page, lies down over the
+  // left; beneath it lay that dream's right-hand page. Back, the left-hand leaf turns over the
+  // same way to the right (`JournalSpreadLeaf` turns the dream page's own leaves). Each side
+  // shows only while it faces the reader. Each style reads the shared values itself: a mapper
+  // follows only those its own worklet captures, not those of a worklet it calls.
+  // Beneath the turning leaf, in its shadow until it stands on edge; shown on until the dream
+  // page turned to has faded in over it.
+  const beneathRight = useAnimatedStyle(() => ({ opacity: leafBeneath(phase.get(), direction.get(), FORWARD) }));
+  const beneathLeft = useAnimatedStyle(() => ({ opacity: leafBeneath(phase.get(), direction.get(), BACKWARD) }));
+  const beneathRightShade = useAnimatedStyle(() => ({
+    opacity: interpolate(leafTurn(phase.get(), direction.get(), progress.get(), FORWARD), [0, ON_EDGE], [0.4, 0], Extrapolation.CLAMP)
+      * leafBeneath(phase.get(), direction.get(), FORWARD),
+  }));
+  const beneathLeftShade = useAnimatedStyle(() => ({
+    opacity: interpolate(leafTurn(phase.get(), direction.get(), progress.get(), BACKWARD), [0, ON_EDGE], [0.4, 0], Extrapolation.CLAMP)
+      * leafBeneath(phase.get(), direction.get(), BACKWARD),
+  }));
+  // The turning leaf's other side, from on edge at the binding to lying flat; once the leaf
+  // is down, it fades off the dream page turned to as that page fades in beneath it.
+  const overleafLeft = useAnimatedStyle(() => overleaf(phase.get(), direction.get(), progress.get(), settle.get(), FORWARD));
+  const overleafRight = useAnimatedStyle(() => overleaf(phase.get(), direction.get(), progress.get(), settle.get(), BACKWARD));
+  const overleafLeftShade = useAnimatedStyle(() => ({
+    opacity: interpolate(leafTurn(phase.get(), direction.get(), progress.get(), FORWARD), [ON_EDGE, 1], [0.45, 0], Extrapolation.CLAMP),
+  }));
+  const overleafRightShade = useAnimatedStyle(() => ({
+    opacity: interpolate(leafTurn(phase.get(), direction.get(), progress.get(), BACKWARD), [ON_EDGE, 1], [0.45, 0], Extrapolation.CLAMP),
+  }));
+  const spreadTurn = useMemo(() => (spreadOpen ? { phase, direction, progress } : null), [direction, phase, progress, spreadOpen]);
 
   const pageFrame = { position: 'absolute' as const, top: 0, left: 0, right: 0, bottom: 0, transformOrigin: 'left center' };
   // Android draws each layer of a fading view with its opacity, so a page's veils darken
@@ -543,13 +691,36 @@ export function JournalPageTurner({ dream, newer, older, folio, tonight = false,
     <PageTurnLockContext.Provider value={setLocked}>
       <PageArrivalContext.Provider value={arrival}>
       <PageTurnsContext.Provider value={turnsValue}>
+      <SpreadTurnContext.Provider value={spreadTurn}>
       <View className="flex-1 bg-ink">
       <GestureDetector gesture={pan} touchAction="pan-y">
         <View className="flex-1 bg-ink" onLayout={({ nativeEvent: { layout } }) => {
           setPageHeight(layout.height);
           setPageWidth(layout.width);
         }}>
-          {shown.newer ? (likenesses ? (
+          {spread ? <JournalPaper /> : null}
+          {spread ? (
+            <>
+              {/* Beneath the turning leaves: the later dream's right-hand page (or tonight's), the earlier one's left-hand page. */}
+              {shown.newer ? (likenesses ? (
+                <Animated.View pointerEvents="none" style={[spreadHalf('right', spread), beneathRight]} onLayout={likenessLaidOut}>
+                  <JournalPagePreview height={pageHeight} dream={shown.newer} folio={shown.folio ? shown.folio + 1 : undefined} side="right" />
+                  <Animated.View className="absolute inset-0" style={[{ backgroundColor: shadow }, beneathRightShade]} />
+                </Animated.View>
+              ) : null) : tonight ? (
+                <Animated.View pointerEvents={atTonight ? 'box-none' : 'none'} style={[spreadHalf('right', spread), beneathRight]}>
+                  <JournalTonightPage folio={shown.folio ? shown.folio + 1 : undefined} interactive={atTonight} />
+                  <Animated.View pointerEvents="none" className="absolute inset-0" style={[{ backgroundColor: shadow }, beneathRightShade]} />
+                </Animated.View>
+              ) : null}
+              {shown.older && likenesses ? (
+                <Animated.View pointerEvents="none" style={[spreadHalf('left', spread), beneathLeft]} onLayout={likenessLaidOut}>
+                  <JournalPagePreview height={pageHeight} dream={shown.older} folio={shown.folio ? shown.folio - 1 : undefined} side="left" />
+                  <Animated.View className="absolute inset-0" style={[{ backgroundColor: shadow }, beneathLeftShade]} />
+                </Animated.View>
+              ) : null}
+            </>
+          ) : shown.newer ? (likenesses ? (
             <Animated.View pointerEvents="none" style={[pageFrame, laterPage]} onLayout={likenessLaidOut}>
               <JournalPagePreview height={pageHeight} dream={shown.newer} folio={shown.folio ? shown.folio + 1 : undefined} />
               <Animated.View className="absolute inset-0" style={[{ backgroundColor: shadow }, laterShade]} />
@@ -576,7 +747,31 @@ export function JournalPageTurner({ dream, newer, older, folio, tonight = false,
             <Animated.View pointerEvents="none" className="absolute inset-0" style={[{ backgroundColor: shadow }, currentShade]} />
             <Animated.View pointerEvents="none" className="absolute inset-0" style={[{ backgroundColor: shadow }, currentUnderShade]} />
           </Animated.View>
-          {shown.older && likenesses ? (
+          {spread ? (
+            <>
+              {/* The turning leaf's other side: the later dream's left-hand page (a blank verso before tonight's), the earlier one's right-hand page. */}
+              {shown.newer ? (likenesses ? (
+                <Animated.View pointerEvents="none" {...fadesWhole} style={[spreadHalf('left', spread), overleafLeft]}>
+                  <JournalPagePreview height={pageHeight} dream={shown.newer} folio={shown.folio ? shown.folio + 1 : undefined} side="left" />
+                  <Animated.View className="absolute inset-0" style={[{ backgroundColor: shadow }, overleafLeftShade]} />
+                </Animated.View>
+              ) : null) : tonight ? (
+                <Animated.View pointerEvents="none" {...fadesWhole} style={[spreadHalf('left', spread), overleafLeft]}>
+                  <View className="flex-1 bg-ink">
+                    <JournalPaper />
+                    <JournalPageEdges side="left" />
+                  </View>
+                  <Animated.View className="absolute inset-0" style={[{ backgroundColor: shadow }, overleafLeftShade]} />
+                </Animated.View>
+              ) : null}
+              {shown.older && likenesses ? (
+                <Animated.View pointerEvents="none" {...fadesWhole} style={[spreadHalf('right', spread), overleafRight]}>
+                  <JournalPagePreview height={pageHeight} dream={shown.older} folio={shown.folio ? shown.folio - 1 : undefined} side="right" />
+                  <Animated.View className="absolute inset-0" style={[{ backgroundColor: shadow }, overleafRightShade]} />
+                </Animated.View>
+              ) : null}
+            </>
+          ) : shown.older && likenesses ? (
             <Animated.View pointerEvents="none" {...fadesWhole} style={[pageFrame, earlierPage]} onLayout={likenessLaidOut}>
               <JournalPagePreview height={pageHeight} dream={shown.older} folio={shown.folio ? shown.folio - 1 : undefined} />
               <Animated.View className="absolute inset-0" style={[{ backgroundColor: shadow }, earlierShade]} />
@@ -585,8 +780,13 @@ export function JournalPageTurner({ dream, newer, older, folio, tonight = false,
         </View>
       </GestureDetector>
       </View>
+      </SpreadTurnContext.Provider>
       </PageTurnsContext.Provider>
       </PageArrivalContext.Provider>
     </PageTurnLockContext.Provider>
   );
 }
+
+const styles = StyleSheet.create({
+  page: { flex: 1 },
+});

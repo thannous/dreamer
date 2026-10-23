@@ -24,6 +24,37 @@ export function getWindowClass(width: number, height: number): WindowClass {
   return width >= EXPANDED_WINDOW_MIN_WIDTH && height >= EXPANDED_WINDOW_MIN_HEIGHT ? 'expanded' : 'large';
 }
 
+/** Each page's margin at the binding of two facing pages: text and controls keep clear of the fold. */
+export const SPREAD_GUTTER = 28;
+/** The narrowest page two facing pages are laid out with. */
+export const SPREAD_PAGE_MIN_WIDTH = 320;
+
+/** Two facing pages: the binding (`spine`) and the whole width, in the screen's content frame. */
+export type JournalSpread = { spine: number; width: number };
+
+/**
+ * A dream opens as a book's two facing pages where an expanded window has room for both:
+ * the open iPhone Duo on its side, held as a book. Folded, open upright, in Split View or
+ * on a phone on its side the window is narrower and the dream keeps its single page. The
+ * binding lies on the window's middle, where the open Duo folds (an expanded window fills
+ * the open display), given in the content's frame, which starts after the left side safe
+ * area; each page keeps a reading width. The web keeps its single page beside its shell.
+ */
+export function getJournalSpread({ width, height, windowWidth, leftInset, web }: {
+  /** The content's width: the window less its side safe areas. */
+  width: number;
+  height: number;
+  windowWidth: number;
+  /** The left side safe area, where the content starts in the window. */
+  leftInset: number;
+  web: boolean;
+}): JournalSpread | null {
+  if (web || getWindowClass(width, height) !== 'expanded') return null;
+  const fold = windowWidth / 2 - leftInset;
+  const spine = Math.round(Math.min(width - SPREAD_PAGE_MIN_WIDTH, Math.max(SPREAD_PAGE_MIN_WIDTH, fold)));
+  return { spine, width };
+}
+
 /** Reading width of desktop tab pages beside the sidebar. */
 export const DESKTOP_CONTENT_MAX_WIDTH = 960;
 export const TAB_BAR_HEIGHT = 86;

@@ -83,9 +83,11 @@ function blockPath(width: number, height: number, corner: number): string {
  * page's own: on the left the paper runs into the binding's crease, on the right lies the
  * block of leaves still to turn, its edges alternately in shadow and catching the light.
  * The block follows the screen's rounded corners and fades as it turns them. Decorative,
- * still, and kept to the margins so the reading keeps its full width.
+ * still, and kept to the margins so the reading keeps its full width. The left-hand page of
+ * two facing pages has them the other way round (`side="left"`): its crease at the binding
+ * on its right, and the leaves already turned on its left.
  */
-export function JournalPageEdges() {
+export function JournalPageEdges({ side = 'right' }: { side?: 'left' | 'right' }) {
   const { width, height } = useContentWindow();
   const insets = useSafeAreaInsets();
   const { mode } = useTheme();
@@ -100,7 +102,8 @@ export function JournalPageEdges() {
 
   return (
     <View pointerEvents="none" accessible={false} importantForAccessibility="no-hide-descendants"
-      accessibilityElementsHidden className="absolute inset-0">
+      accessibilityElementsHidden className="absolute inset-0"
+      style={side === 'left' ? { transform: [{ scaleX: -1 }] } : undefined}>
       <LinearGradient start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} colors={[leaves.binding, `${leaves.binding}00`]}
         style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: BINDING, opacity: 0.7 }} />
       <LinearGradient start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} colors={[`${leaves.inner}00`, leaves.inner]}
