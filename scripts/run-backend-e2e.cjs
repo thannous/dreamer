@@ -93,6 +93,9 @@ async function main() {
       const profile = path.join(workdir, 'expo.env');
       const publicEnv = {
         EXPO_PUBLIC_MOCK_MODE: 'false',
+        // Real recovery journeys opt into queued analysis on the owned local stack.
+        // Browser functions remain blocked unless their dedicated fixture forwards them.
+        EXPO_PUBLIC_ANALYSIS_JOBS_ENABLED: 'true',
         EXPO_PUBLIC_SUPABASE_URL: url.origin,
         EXPO_PUBLIC_SUPABASE_ANON_KEY: status.ANON_KEY,
         EXPO_PUBLIC_API_URL: `${url.origin}/functions/v1/api`,
@@ -108,7 +111,7 @@ async function main() {
       await runChild(process.execPath, ['tools/e2e/run.mjs', 'backend', 'web', 'run', ...args], {
         cwd: root,
         env: { ...process.env, E2E_BACKEND_STATUS_FILE: statusFile, E2E_BACKEND_PROFILE: profile,
-          E2E_BACKEND_RUNTIME: runtime,
+          E2E_BACKEND_RUNTIME: runtime, E2E_BACKEND_RECOVERY: '1',
           E2E_BACKEND_CLI_VERSION: cliVersion,
           E2E_BACKEND_RERUN: `${rerunEnv}mise exec -- npm run test:e2e:backend${rerunArgs ? ` -- ${rerunArgs}` : ''}`,
           E2E_BACKEND_MIGRATION_FIXTURES: JSON.stringify(migrationFixtures) },

@@ -218,6 +218,8 @@ export function useRecordingSession({
   );
 
   const stopRecording = useCallback(async (): Promise<RecordingSessionResult> => {
+    // A user pause also cancels a hands-free restart still awaiting native startup.
+    pendingStartRef.current?.abort();
     if (stopPromiseRef.current) {
       return stopPromiseRef.current;
     }

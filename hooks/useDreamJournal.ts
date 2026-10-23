@@ -1204,6 +1204,93 @@ export const useDreamJournal = () => {
     };
   }, [hasNetwork, isAppActive, loaded, pendingImageJobsVersion, reconcileImageJob]);
 
+  // A durable analysis can finish while the process is gone. Reattach to its
+  // persisted result without admitting another job or writing server state.
+  useEffect(() => {
+    if (!loaded || !canUseRemoteSync || !isAnalysisJobsEnabled() || !user ||
+      !hasNetwork || !isAppActive || !pendingMutationsLoaded || pendingMutationsScope !== userScope) {
+      return;
+    }
+
+    const epoch = analysisEpochRef.current;
+    let cancelled = false;
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
+    let attempt = 0;
+    const isCurrent = () => !cancelled && isAppActiveRef.current && analysisScopeRef.current === userScope &&
+      analysisEpochRef.current === epoch;
+    const isObservable = (dream: DreamAnalysis) => dream.remoteId != null &&
+      dream.analysisStatus === 'pending' &&
+      isResumableAnalysisRequest(dream) &&
+      activeAnalysis?.dreamId !== dream.id && getDreamSyncState(dream) === 'clean' &&
+      !livePendingMutationsRef.current.some(mutation =>
+        matchesDreamTarget(getMutationDreamTarget(mutation), dream));
+
+    const poll = async () => {
+      const pending = dreamsRef.current.filter(isObservable);
+      for (const pendingDream of pending) {
+        if (!isCurrent()) return;
+        try {
+          const remoteDream = await fetchDreamFromSupabase(pendingDream.remoteId!, user.id);
+          if (!isCurrent()) return;
+          if (remoteDream.remoteId !== pendingDream.remoteId ||
+            remoteDream.analysisRequestId !== pendingDream.analysisRequestId ||
+            remoteDream.transcript !== pendingDream.transcript ||
+            (remoteDream.analysisStatus !== 'done' && remoteDream.analysisStatus !== 'failed') ||
+            (remoteDream.analysisStatus === 'done' && !remoteDream.isAnalyzed)) {
+            continue;
+          }
+          const latest = resolveDreamTarget(dreamsRef.current, pendingDream);
+          if (!latest || !isObservable(latest) || !areDreamsEqualForLocalState(latest, pendingDream)) continue;
+          const recoveryBase = latest;
+          let recoveredSnapshot: DreamAnalysis | undefined;
+          await persistRemoteDreams((previous) => {
+            const current = resolveDreamTarget(previous, pendingDream);
+            // A response must not overwrite a newer local edit, retry, deletion,
+            // or another account, even if that edit finished syncing meanwhile.
+            if (!isCurrent() || !current || !isObservable(current) ||
+              !areDreamsEqualForLocalState(current, recoveryBase)) return previous;
+            const merged = mergeServerDreamWithLocalState(remoteDream, current);
+            const recovered = remoteDream.analysisStatus === 'done'
+              ? stampDreamAnalysisTranscript(merged, merged.transcript)
+              : merged;
+            recoveredSnapshot = recovered;
+            return upsertDream(previous, recovered);
+          });
+          // Publishing the recovered dream may clean up this effect. Account
+          // and dream identity still guard the outcome after the cache write.
+          const published = resolveDreamTarget(dreamsRef.current, pendingDream);
+          const reservedRequestId = analysisRequestIdsRef.current.get(getDreamIdentityKey(pendingDream));
+          if (recoveredSnapshot && published && areDreamsEqualForLocalState(published, recoveredSnapshot) &&
+            (!reservedRequestId || reservedRequestId === pendingDream.analysisRequestId) &&
+            analysisScopeRef.current === userScope && analysisEpochRef.current === epoch) {
+            analysisStatusOverridesRef.current.delete(getDreamIdentityKey(pendingDream));
+            analysisRequestIdsRef.current.delete(getDreamIdentityKey(pendingDream));
+            quotaService.invalidate(user);
+            setLastAnalysisOutcome({
+              dreamId: pendingDream.id,
+              status: remoteDream.analysisStatus,
+              completedAt: Date.now(),
+            });
+          }
+        } catch (error) {
+          if (isCurrent()) logger.warn('[useDreamJournal] Failed to refresh pending analysis', error);
+        }
+      }
+      attempt += 1;
+      if (isCurrent() && attempt < MAX_ANALYSIS_JOB_POLL_ATTEMPTS &&
+        dreamsRef.current.some(isObservable)) {
+        timeoutId = setTimeout(() => { void poll(); }, getAnalysisJobPollDelay(attempt - 1));
+      }
+    };
+
+    void poll();
+    return () => {
+      cancelled = true;
+      if (timeoutId) clearTimeout(timeoutId);
+    };
+  }, [activeAnalysis, canUseRemoteSync, dreams, dreamsRef, hasNetwork, isAppActive, loaded,
+    livePendingMutationsRef, pendingMutationsLoaded, pendingMutationsScope, persistRemoteDreams, user, userScope]);
+
   /**
    * Queue async image generation for an existing dream
    */

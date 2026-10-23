@@ -6,7 +6,14 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { BadgeCard, TierPips } from '@/components/badges/BadgeCard';
 import { BadgeDetail } from '@/components/badges/BadgeDetail';
-import { badgeAccessibilityLabel, badgeName, badgeStatus } from '@/components/badges/badgeCopy';
+import {
+  badgeAccessibilityLabel,
+  badgeHeldText,
+  badgeName,
+  badgeNewCardsText,
+  badgeStatus,
+  badgeTierName,
+} from '@/components/badges/badgeCopy';
 import { COLLECTION } from '@/components/badges/badgeMaterials';
 import { ProgressFill, Reveal } from '@/components/motion';
 import { DreamerArtworkWindow } from '@/components/ui/DreamerBackground';
@@ -22,8 +29,8 @@ import { useTheme } from '@/context/ThemeContext';
 import { useBadgeCollection } from '@/hooks/useBadgeCollection';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useTranslation } from '@/hooks/useTranslation';
-import { BADGE_CARD_COUNT, BADGE_CHAPTERS, BADGE_TIERS, type BadgeFamilyId, type BadgeTierLevel } from '@/lib/badges/catalog';
-import type { BadgeFamilyState } from '@/lib/badges/ledger';
+import { BADGE_CARD_COUNT, BADGE_CHAPTERS, BADGE_TIERS, type BadgeFamilyId } from '@/lib/badges/catalog';
+import { nextTierPercent, type BadgeFamilyState } from '@/lib/badges/ledger';
 import { markBadgeFamilyRevealed, settleBadges } from '@/services/badgeLedgerStore';
 
 const GAP = 12;
@@ -91,9 +98,8 @@ function CollectionScreen() {
   const columns = columnsFor(gridWidth, fontScale);
   const cardWidth = gridWidth > 0 ? Math.floor((gridWidth - GAP * (columns - 1)) / columns) : 0;
   const openState = openId ? collection.families.find((state) => state.family.id === openId) ?? null : null;
-  const firstUnrevealed = collection.unrevealedCards > 0 ? collection.families.find((state) => state.unrevealed > 0) : undefined;
+  const firstUnrevealed = collection.families.find((state) => state.unrevealed > 0);
   const closeDetail = useCallback(() => setOpenId(null), []);
-  const reveal = useCallback((id: BadgeFamilyId, tier: BadgeTierLevel) => markBadgeFamilyRevealed(id, tier), []);
   const act = useCallback((state: BadgeFamilyState) => {
     setOpenId(null);
     openAction(state);
@@ -103,11 +109,7 @@ function CollectionScreen() {
     setGridWidth((current) => (current === width ? current : width));
   }, []);
 
-  const summary = t(collection.earnedCards === 0 ? 'badges.summary_zero'
-    : collection.earnedCards === 1 ? 'badges.summary_one' : 'badges.summary', {
-    count: formatNumber(collection.earnedCards),
-    total: formatNumber(BADGE_CARD_COUNT),
-  });
+  const summary = badgeHeldText(t, collection.earnedCards, formatNumber);
   const newCaption = t('badges.card.new');
 
   return (
@@ -149,9 +151,7 @@ function CollectionScreen() {
                   className="min-h-11 flex-row items-center gap-1.5 active:opacity-70">
                   <IconSymbol name="sparkles" size={15} color={noctalia.accent.text} />
                   <Text className="font-sans-bold text-body-sm text-champagne-on">
-                    {t(collection.unrevealedCards === 1 ? 'badges.new_cards_one' : 'badges.new_cards', {
-                      count: formatNumber(collection.unrevealedCards),
-                    })}
+                    {badgeNewCardsText(t, collection.unrevealedCards, formatNumber)}
                   </Text>
                   <IconSymbol name="chevron.right" size={15} color={noctalia.accent.text} />
                 </Pressable>
@@ -165,10 +165,10 @@ function CollectionScreen() {
             <View className="flex-row flex-wrap gap-x-5 gap-y-2">
               {BADGE_TIERS.map((tier) => (
                 <View key={tier} className="flex-row items-center gap-2" accessible
-                  accessibilityLabel={t('badges.summary.tier', { tier: t(`badges.tier.${tier}`), count: formatNumber(collection.counts[tier]) })}>
+                  accessibilityLabel={t('badges.summary.tier', { tier: badgeTierName(t, tier), count: formatNumber(collection.counts[tier]) })}>
                   <View style={{ width: 10, height: 10, transform: [{ rotate: '45deg' }], backgroundColor: COLLECTION[tier].ink, borderWidth: 1, borderColor: COLLECTION[tier].frame[0] }} />
                   <Text className="font-sans-medium text-body-sm text-ivory">
-                    {t(`badges.tier.${tier}`)} · {formatNumber(collection.counts[tier])}
+                    {badgeTierName(t, tier)} · {formatNumber(collection.counts[tier])}
                   </Text>
                 </View>
               ))}
@@ -192,7 +192,10 @@ function CollectionScreen() {
                   {families.map((state) => (
                     <BadgeCard
                       key={state.family.id}
-                      state={state}
+                      id={state.family.id}
+                      tier={state.tier}
+                      faceDown={state.unrevealed > 0}
+                      percent={nextTierPercent(state)}
                       width={cardWidth}
                       name={badgeName(t, state.family.id)}
                       status={badgeStatus(t, state, formatNumber)}
@@ -230,7 +233,7 @@ function CollectionScreen() {
               formatNumber={formatNumber}
               formatDate={formatDate}
               onClose={closeDetail}
-              onReveal={reveal}
+              onReveal={markBadgeFamilyRevealed}
               onAction={act}
             />
           </GestureHandlerRootView>

@@ -4,6 +4,7 @@ import { router } from 'expo-router';
 import React, { memo, useMemo } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 
+import { badgeNewCardsText } from '@/components/badges/badgeCopy';
 import { CollectionFan, COLLECTION_ROUTE } from '@/components/badges/CollectionEntry';
 import { PressableScale } from '@/components/motion';
 import { getDreamerArtwork } from '@/constants/dreamerArtwork';
@@ -119,9 +120,7 @@ export const HomeDiscoverTiles = memo(function HomeDiscoverTiles({ now, selected
       art: undefined,
       scene: <View className="absolute inset-x-0 top-3 items-center"><CollectionFan width={112} /></View>,
       // A card waiting to be turned over is said first.
-      eyebrow: badges.unrevealedCards > 0
-        ? t(badges.unrevealedCards === 1 ? 'badges.new_cards_one' : 'badges.new_cards', { count: formatNumber(badges.unrevealedCards) })
-        : undefined,
+      eyebrow: badges.unrevealedCards > 0 ? badgeNewCardsText(t, badges.unrevealedCards, formatNumber) : undefined,
       title: t('badges.title'),
       onPress: () => router.push(COLLECTION_ROUTE),
       testID: 'btn.home.collection',

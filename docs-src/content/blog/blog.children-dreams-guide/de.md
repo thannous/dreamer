@@ -14,7 +14,7 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
   "ogTitle": "Kinderträume: Wovon Kinder träumen und wie man ihnen hilft | Noctalia",
-  "ogDescription": "Wovon Kinder in welchem Alter träumen, wie Sie Albtraum und Nachtschreck unterscheiden und was beim Einschlafen wirklich hilft.",
+  "ogDescription": "Wovon Kinder in welchem Alter träumen, wie du Albtraum und Nachtschreck unterscheidest und was beim Einschlafen wirklich hilft.",
   "ogImage": "https://noctalia.app/img/blog/children-dreams-guide.webp",
   "ogImageAlt": "Friedlich schlafendes Kind umgeben von sanften traumhaften Bildern in weichen Violett- und Blautönen",
   "twitterCard": "summary_large_image",
@@ -29,9 +29,9 @@
   "nextPath": "/de/blog/schlaftag-umgebung-traeume",
   "preloadImage": "/img/blog/children-dreams-guide.webp",
   "jsonLd": [
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Kinderträume: Wovon Kinder träumen und wie Sie helfen können\",\n    \"description\": \"Wovon träumen Kinder in welchem Alter? Albtraum oder Nachtschreck, was beim Einschlafen hilft und wann zum Arzt: ein ruhiger Ratgeber zu Kinderträumen.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/children-dreams-guide.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/de/ueber-uns#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Gründer & Publikationsleiter\",\n            \"url\": \"https://noctalia.app/de/ueber-uns\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2026-03-06\",\n    \"dateModified\": \"2026-10-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/de/blog/kindertraeume-ratgeber\"\n    },\n    \"inLanguage\": \"de\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2285,\n    \"timeRequired\": \"PT11M\",\n    \"url\": \"https://noctalia.app/de/blog/kindertraeume-ratgeber\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Kinderträume: Wovon Kinder träumen und wie du helfen kannst\",\n    \"description\": \"Wovon träumen Kinder in welchem Alter? Albtraum oder Nachtschreck, was beim Einschlafen hilft und wann zum Arzt: ein ruhiger Ratgeber zu Kinderträumen.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/children-dreams-guide.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/de/ueber-uns#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Gründer & Publikationsleiter\",\n            \"url\": \"https://noctalia.app/de/ueber-uns\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2026-03-06\",\n    \"dateModified\": \"2026-10-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/de/blog/kindertraeume-ratgeber\"\n    },\n    \"inLanguage\": \"de\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2285,\n    \"timeRequired\": \"PT11M\",\n    \"url\": \"https://noctalia.app/de/blog/kindertraeume-ratgeber\"\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"@id\": \"https://noctalia.app/de/blog/kindertraeume-ratgeber\",\n  \"url\": \"https://noctalia.app/de/blog/kindertraeume-ratgeber\",\n  \"name\": \"Kinderträume: Wovon Kinder träumen und wie man ihnen hilft | Noctalia\",\n  \"inLanguage\": \"de\"\n}",
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Ab welchem Alter träumen Kinder?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Babys verbringen viel Zeit im REM-Schlaf, aber was sie erleben, kann niemand wissen, bevor sie sprechen können. Im Kindergartenalter beginnen Kinder, von Träumen zu erzählen, oft als kurze Szene oder einzelnes Bild. Im Grundschulalter werden daraus richtige Geschichten, in denen das Kind selbst mitspielt.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Was ist der Unterschied zwischen Albtraum und Nachtschreck?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Ein Albtraum ist ein beängstigender Traum im REM-Schlaf, oft spät in der Nacht: Das Kind wacht auf, erinnert sich und sucht Trost. Nachtschreck entsteht im Tiefschlaf, eher früh in der Nacht: Das Kind schreit oder schlägt um sich, ohne richtig wach zu werden, und erinnert sich am Morgen an nichts.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Soll ich mein Kind bei Nachtschreck wecken?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Nein. Bleiben Sie ruhig in der Nähe, sorgen Sie dafür, dass Ihr Kind sich nicht verletzen kann, und lassen Sie die Episode vorübergehen. Weckversuche können die Verwirrung verstärken. Sind die Episoden häufig oder gefährlich, sprechen Sie mit Ihrer Kinderarztpraxis.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Wie kann ich meinem Kind helfen, das häufig Albträume hat?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Erst trösten, am nächsten Tag darüber sprechen. Halten Sie das Zubettgehen ruhig und regelmäßig und meiden Sie abends beängstigende Inhalte. Ab etwa 5 Jahren können Sie tagsüber gemeinsam ein neues Ende für den Traum erfinden. Halten Albträume wochenlang an, folgen sie einem erschreckenden Erlebnis oder belasten sie den Alltag, wenden Sie sich an die Kinderarztpraxis.\"\n            }\n        }\n    ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Ab welchem Alter träumen Kinder?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Babys verbringen viel Zeit im REM-Schlaf, aber was sie erleben, kann niemand wissen, bevor sie sprechen können. Im Kindergartenalter beginnen Kinder, von Träumen zu erzählen, oft als kurze Szene oder einzelnes Bild. Im Grundschulalter werden daraus richtige Geschichten, in denen das Kind selbst mitspielt.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Was ist der Unterschied zwischen Albtraum und Nachtschreck?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Ein Albtraum ist ein beängstigender Traum im REM-Schlaf, oft spät in der Nacht: Das Kind wacht auf, erinnert sich und sucht Trost. Nachtschreck entsteht im Tiefschlaf, eher früh in der Nacht: Das Kind schreit oder schlägt um sich, ohne richtig wach zu werden, und erinnert sich am Morgen an nichts.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Soll ich mein Kind bei Nachtschreck wecken?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Nein. Bleib ruhig in der Nähe, sorg dafür, dass dein Kind sich nicht verletzen kann, und lass die Episode vorübergehen. Weckversuche können die Verwirrung verstärken. Sind die Episoden häufig oder gefährlich, sprich mit deiner Kinderarztpraxis.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Wie kann ich meinem Kind helfen, das häufig Albträume hat?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Erst trösten, am nächsten Tag darüber sprechen. Halte das Zubettgehen ruhig und regelmäßig und meide abends beängstigende Inhalte. Ab etwa 5 Jahren kannst du tagsüber gemeinsam ein neues Ende für den Traum erfinden. Halten Albträume wochenlang an, folgen sie einem erschreckenden Erlebnis oder belasten sie den Alltag, wende dich an die Kinderarztpraxis.\"\n            }\n        }\n    ]\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Startseite\",\n      \"item\": \"https://noctalia.app/de/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Ressourcen\",\n      \"item\": \"https://noctalia.app/de/blog/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"Kinderträume Ratgeber\",\n      \"item\": \"https://noctalia.app/de/blog/kindertraeume-ratgeber\"\n    }\n  ]\n}"
   ],
   "activeNav": "resources"
@@ -67,10 +67,10 @@
 <span class="text-sm text-purple-300/60">11 Min. Lesezeit</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Kinderträume: Wovon Kinder träumen und wie Sie helfen können
+                    Kinderträume: Wovon Kinder träumen und wie du helfen kannst
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Es ist zwei Uhr nachts, Ihr Kind steht mit nassen Wangen an Ihrem Bett: Im Flur war ein Wolf. Ein paar Tage später erzählt dasselbe Kind strahlend, wie es auf einem riesigen Hund über die Dächer geflogen ist. Kinderträume können intensiv, seltsam und für Kinder sehr wirklich sein. Dieser Ratgeber erklärt, wovon Kinder in welchem Alter oft träumen, wie Sie Albtraum und Nachtschreck unterscheiden und was nachts und am nächsten Tag wirklich hilft.
+                    Es ist zwei Uhr nachts, dein Kind steht mit nassen Wangen an deinem Bett: Im Flur war ein Wolf. Ein paar Tage später erzählt dasselbe Kind strahlend, wie es auf einem riesigen Hund über die Dächer geflogen ist. Kinderträume können intensiv, seltsam und für Kinder sehr wirklich sein. Dieser Ratgeber erklärt, wovon Kinder in welchem Alter oft träumen, wie du Albtraum und Nachtschreck unterscheidest und was nachts und am nächsten Tag wirklich hilft.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -86,7 +86,7 @@
 <!-- Quick Answer (AI SEO) -->
 <section aria-labelledby="quick-answer-title" class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5">
 <h2 class="font-serif text-xl text-dream-cream mb-3" id="quick-answer-title">Kurze Antwort</h2>
-<p class="text-purple-100/80 leading-relaxed">Kinder beginnen im Kindergartenalter, von Träumen zu erzählen. Die ersten Berichte sind kurz, oft ein einzelnes Bild oder ein Tier; Geschichten mit Anfang, Ende und dem Kind als Figur kommen meist erst im Grundschulalter. Schlechte Träume sind häufig und gehen meist vorüber. Nach einem Albtraum zuerst trösten und am nächsten Tag darüber sprechen. Bei Nachtschreck in der Nähe bleiben und das Kind nicht wecken. Halten die Probleme an oder belasten sie den Alltag, fragen Sie in der Kinderarztpraxis nach.</p>
+<p class="text-purple-100/80 leading-relaxed">Kinder beginnen im Kindergartenalter, von Träumen zu erzählen. Die ersten Berichte sind kurz, oft ein einzelnes Bild oder ein Tier; Geschichten mit Anfang, Ende und dem Kind als Figur kommen meist erst im Grundschulalter. Schlechte Träume sind häufig und gehen meist vorüber. Nach einem Albtraum zuerst trösten und am nächsten Tag darüber sprechen. Bei Nachtschreck in der Nähe bleiben und das Kind nicht wecken. Halten die Probleme an oder belasten sie den Alltag, frag in der Kinderarztpraxis nach.</p>
 </section>
 <!-- Editorial Review (E-E-A-T) -->
 <div class="mb-8">
@@ -99,7 +99,7 @@
             <p class="text-sm text-purple-100/80 leading-relaxed">
                 <strong class="text-dream-cream">Redaktionelle Überprüfung:</strong>
                 Diese gesundheitsbezogene Seite wurde auf Klarheit und Quellengenauigkeit anhand der auf der Seite zitierten Referenzen überprüft. Sie dient der Information und ersetzt keinen medizinischen Rat.
-                <a class="text-dream-salmon hover:underline" href="/de/ueber-uns">Erfahren Sie, wie wir sensible Themen überprüfen</a>.
+                <a class="text-dream-salmon hover:underline" href="/de/ueber-uns">Erfahre, wie wir sensible Themen überprüfen</a>.
             </p>
         </div>
     </details>
@@ -117,7 +117,7 @@
 <li><a class="toc-link block" href="#dreams-by-age">1. Wie verändern sich Kinderträume mit dem Alter?</a></li>
 <li><a class="toc-link block" href="#what-children-dream">2. Wovon träumen Kinder?</a></li>
 <li><a class="toc-link block" href="#nightmares-vs-terrors">3. Albtraum oder Nachtschreck?</a></li>
-<li><a class="toc-link block" href="#helping-children">4. Wie helfen Sie nach einem schlechten Traum?</a></li>
+<li><a class="toc-link block" href="#helping-children">4. Wie hilfst du nach einem schlechten Traum?</a></li>
 <li><a class="toc-link block" href="#journaling-for-kids">5. Ein Traumtagebuch für Kinder?</a></li>
 <li><a class="toc-link block" href="#when-to-consult">6. Wann ist ärztlicher Rat sinnvoll?</a></li>
 </ol>
@@ -171,12 +171,12 @@
                 </p>
 <h3>Jugendliche: Identität und Gefühle</h3>
 <p>
-                    Träume von Jugendlichen ähneln denen von Erwachsenen: Beziehungen, Körperbild, Zukunft, daneben ganz alltägliche oder absurde Szenen. Stressige Phasen wie Prüfungszeiten können mehr <a class="text-dream-salmon hover:underline" href="albtraeume-ursachen-bedeutung-und-wie-man-sie-stoppen-kann">Albträume</a> bringen. Ist Ihr Teenager neugierig, erklärt unser Überblick, <a class="text-dream-salmon hover:underline" href="warum-traeumen-wir-die-wissenschaft-hinter-ihren-naechtlichen-abenteuern">welche Theorien es zum Träumen gibt</a>. Ein offenes Gespräch hilft mehr als eine schnelle Symboldeutung.
+                    Träume von Jugendlichen ähneln denen von Erwachsenen: Beziehungen, Körperbild, Zukunft, daneben ganz alltägliche oder absurde Szenen. Stressige Phasen wie Prüfungszeiten können mehr <a class="text-dream-salmon hover:underline" href="albtraeume-ursachen-bedeutung-und-wie-man-sie-stoppen-kann">Albträume</a> bringen. Ist dein Teenager neugierig, erklärt unser Überblick, <a class="text-dream-salmon hover:underline" href="warum-traeumen-wir-die-wissenschaft-hinter-ihren-naechtlichen-abenteuern">welche Theorien es zum Träumen gibt</a>. Ein offenes Gespräch hilft mehr als eine schnelle Symboldeutung.
                 </p>
 
 <h2 id="nightmares-vs-terrors">Albtraum oder Nachtschreck: Was ist der Unterschied?</h2>
 <p>
-                    Ihr Kind schreit in der Nacht. Albtraum oder Nachtschreck? Von außen sehen beide ähnlich aus. Sie entstehen aber in unterschiedlichen Schlafphasen und verlangen nicht dieselbe Reaktion.
+                    Dein Kind schreit in der Nacht. Albtraum oder Nachtschreck? Von außen sehen beide ähnlich aus. Sie entstehen aber in unterschiedlichen Schlafphasen und verlangen nicht dieselbe Reaktion.
                 </p>
 <h3>Albtraum: ein beängstigender Traum im REM-Schlaf</h3>
 <p>
@@ -210,7 +210,7 @@
 <h3 class="font-serif text-lg text-dream-cream">Albträume</h3>
 </div>
 <p class="text-sm text-gray-300 mb-3">
-                        Meist in der zweiten Nachthälfte, im REM-Schlaf. Ihr Kind wird ganz wach, erinnert sich an den Traum und sucht Trost.
+                        Meist in der zweiten Nachthälfte, im REM-Schlaf. Dein Kind wird ganz wach, erinnert sich an den Traum und sucht Trost.
                     </p>
 <p class="text-xs text-dream-salmon">Was hilft: jetzt trösten, morgen reden</p>
 </div>
@@ -222,39 +222,39 @@
 <h3 class="font-serif text-lg text-dream-cream">Nachtschreck</h3>
 </div>
 <p class="text-sm text-gray-300 mb-3">
-                        Meist in den ersten Stunden, aus dem tiefen Nicht-REM-Schlaf. Ihr Kind wirkt wach, ist es aber nicht, und erinnert sich am Morgen an nichts.
+                        Meist in den ersten Stunden, aus dem tiefen Nicht-REM-Schlaf. Dein Kind wirkt wach, ist es aber nicht, und erinnert sich am Morgen an nichts.
                     </p>
 <p class="text-xs text-dream-salmon">Was hilft: in der Nähe bleiben, nicht wecken</p>
 </div>
 </div>
 <div class="prose max-w-none text-gray-300">
-<h2 id="helping-children">Wie helfen Sie Ihrem Kind nach einem schlechten Traum?</h2>
+<h2 id="helping-children">Wie hilfst du deinem Kind nach einem schlechten Traum?</h2>
 <p>
-                    Mitten in der Nacht braucht Ihr Kind Sicherheit, keine Erklärungen. Eine ruhige Stimme, etwas Licht bei Bedarf und ein kurzer Satz reichen oft. Über den Traum selbst können Sie morgen sprechen.
+                    Mitten in der Nacht braucht dein Kind Sicherheit, keine Erklärungen. Eine ruhige Stimme, etwas Licht bei Bedarf und ein kurzer Satz reichen oft. Über den Traum selbst kannst du morgen sprechen.
                 </p>
 <h3>Die Angst ernst nehmen</h3>
 <p>
-                    „Das war doch nur ein Traum“ stimmt, aber ein Kind hört darin leicht „Deine Angst zählt nicht“. Benennen Sie lieber, was gerade ist: „Das hat dich erschreckt. Jetzt bist du wach und ich bin bei dir.“ Fragen Sie dann, ob es erzählen möchte, ohne zu drängen.
+                    „Das war doch nur ein Traum“ stimmt, aber ein Kind hört darin leicht „Deine Angst zählt nicht“. Benenne lieber, was gerade ist: „Das hat dich erschreckt. Jetzt bist du wach und ich bin bei dir.“ Frag dann, ob es erzählen möchte, ohne zu drängen.
                 </p>
 <h3>Gemeinsam ein neues Ende erfinden (ab etwa 5 Jahren)</h3>
 <p>
-                    Tagsüber, nie direkt nach einem Albtraum, können Sie ein Spiel vorschlagen: den Traum erzählen und <strong>ein neues Ende erfinden</strong>. Der Wolf wird zum Wachhund, Hilfe kommt, der dunkle Wald führt nach Hause. Die neue Fassung zu malen, funktioniert auch gut. Die Idee stammt aus der Imagery Rehearsal Therapy, die bei Erwachsenen mit häufigen Albträumen gut belegt ist; zu Kindern gibt es weniger Studien. Begannen die Albträume nach einem erschreckenden Erlebnis, sprechen Sie vorher mit einer Fachperson.
+                    Tagsüber, nie direkt nach einem Albtraum, kannst du ein Spiel vorschlagen: den Traum erzählen und <strong>ein neues Ende erfinden</strong>. Der Wolf wird zum Wachhund, Hilfe kommt, der dunkle Wald führt nach Hause. Die neue Fassung zu malen, funktioniert auch gut. Die Idee stammt aus der Imagery Rehearsal Therapy, die bei Erwachsenen mit häufigen Albträumen gut belegt ist; zu Kindern gibt es weniger Studien. Begannen die Albträume nach einem erschreckenden Erlebnis, sprich vorher mit einer Fachperson.
                 </p>
 <h3>Ein ruhiges, vorhersehbares Zubettgehen</h3>
 <ul>
 <li><strong>Feste Zeiten:</strong> ungefähr zur gleichen Zeit ins Bett und aufstehen, auch am Wochenende</li>
 <li><strong>Zur Ruhe kommen:</strong> Vorlesen, Kuscheln oder leise Musik, jeden Abend in derselben Reihenfolge</li>
-<li><strong>Ruhige Abende:</strong> keine beängstigenden Filme, Spiele oder Nachrichten kurz vor dem Schlafen, und achten Sie darauf, was nachwirkt</li>
+<li><strong>Ruhige Abende:</strong> keine beängstigenden Filme, Spiele oder Nachrichten kurz vor dem Schlafen, und achte darauf, was nachwirkt</li>
 <li><strong>Ein Kuscheltier:</strong> ein Lieblingstier oder eine Decke, die „Wache hält“</li>
-<li><strong>Ein Nachtlicht, wenn es beruhigt:</strong> schwach und warm, und prüfen Sie, ob Ihr Kind damit wirklich besser schläft</li>
+<li><strong>Ein Nachtlicht, wenn es beruhigt:</strong> schwach und warm, und prüfe, ob dein Kind damit wirklich besser schläft</li>
 </ul>
 <h3>Abendliche Geschichten und Bildschirme bewusst wählen</h3>
 <p>
-                    Kinder reagieren sehr unterschiedlich auf denselben Film oder dasselbe Buch. Was Erwachsenen harmlos erscheint, kann ein vierjähriges Kind tagelang beschäftigen. Kommt eine Geschichte beim Zubettgehen immer wieder hoch, wählen Sie etwas Ruhigeres. Ein einzelner Albtraum beweist nicht, dass eine bestimmte Sendung schuld war.
+                    Kinder reagieren sehr unterschiedlich auf denselben Film oder dasselbe Buch. Was Erwachsenen harmlos erscheint, kann ein vierjähriges Kind tagelang beschäftigen. Kommt eine Geschichte beim Zubettgehen immer wieder hoch, wähle etwas Ruhigeres. Ein einzelner Albtraum beweist nicht, dass eine bestimmte Sendung schuld war.
                 </p>
 <h3>Ein kleines beruhigendes Ritual</h3>
 <p>
-                    Viele kleine Kinder mögen ein Ritual: einen gemeinsam gebastelten Traumfänger, eine Taschenlampe am Bett, einen Satz für jeden Abend („Mein Zimmer ist sicher“). Wählen Sie eines, das Kontrolle gibt, ohne zu bestätigen, dass das Monster echt ist. Ein „Monsterspray“ beruhigt manche Kinder und überzeugt andere, dass es wirklich etwas zu bekämpfen gibt.
+                    Viele kleine Kinder mögen ein Ritual: einen gemeinsam gebastelten Traumfänger, eine Taschenlampe am Bett, einen Satz für jeden Abend („Mein Zimmer ist sicher“). Wähle eines, das Kontrolle gibt, ohne zu bestätigen, dass das Monster echt ist. Ein „Monsterspray“ beruhigt manche Kinder und überzeugt andere, dass es wirklich etwas zu bekämpfen gibt.
                 </p>
 
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
@@ -263,8 +263,8 @@
 <i class="w-6 h-6 text-dream-salmon" data-lucide="book-open"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Die Träume festhalten, die Ihr Kind teilen möchte</h4>
-<p class="text-sm text-gray-400 mb-4">Erzählt Ihr Kind gern einen Traum, sprechen Sie ihn morgens in Noctalia ein. Er wird transkribiert und in Ihrem <a class="text-dream-salmon hover:underline" href="dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer">Traumtagebuch</a> gespeichert, und Sie können ihn illustrieren und gemeinsam ansehen. Halten Sie nur fest, was Ihr Kind teilen möchte.</p>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Die Träume festhalten, die dein Kind teilen möchte</h4>
+<p class="text-sm text-gray-400 mb-4">Erzählt dein Kind gern einen Traum, sprich ihn morgens in Noctalia ein. Er wird transkribiert und in deinem <a class="text-dream-salmon hover:underline" href="dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer">Traumtagebuch</a> gespeichert, und du kannst ihn illustrieren und gemeinsam ansehen. Halte nur fest, was dein Kind teilen möchte.</p>
 <a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/de/">
                                 Noctalia kostenlos testen <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
@@ -274,19 +274,19 @@
 
 <h2 id="journaling-for-kids">Können Kinder ein Traumtagebuch führen?</h2>
 <p>
-                    Ja, wenn es ihnen Freude macht. Ein Traumtagebuch kann ein Familienritual werden. Es ist weder Therapie noch Hausaufgabe: Ihr Kind entscheidet, was es erzählt, malt oder für sich behält.
+                    Ja, wenn es ihnen Freude macht. Ein Traumtagebuch kann ein Familienritual werden. Es ist weder Therapie noch Hausaufgabe: Dein Kind entscheidet, was es erzählt, malt oder für sich behält.
                 </p>
 <h3>3 bis 5 Jahre: den Traum malen</h3>
 <p>
-                    Legen Sie Papier und Buntstifte ans Bett. Stellen Sie morgens offene Fragen: „Was hast du gesehen? Wer war da? Wie hast du dich gefühlt?“ So findet Ihr Kind Worte für Gefühle. „Ich möchte nicht erzählen“ ist auch eine gute Antwort. Weitere Ideen finden Sie in unserem <a class="text-dream-salmon hover:underline" href="dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer">Traumtagebuch-Leitfaden</a>.
+                    Leg Papier und Buntstifte ans Bett. Stell morgens offene Fragen: „Was hast du gesehen? Wer war da? Wie hast du dich gefühlt?“ So findet dein Kind Worte für Gefühle. „Ich möchte nicht erzählen“ ist auch eine gute Antwort. Weitere Ideen findest du in unserem <a class="text-dream-salmon hover:underline" href="dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer">Traumtagebuch-Leitfaden</a>.
                 </p>
 <h3>6 bis 9 Jahre: erzählen und schreiben</h3>
 <p>
-                    Ihr Kind kann den Traum diktieren, malen oder ein paar Zeilen schreiben. Ein eigenes Heft mit seinem Namen gibt dem Ritual Gewicht. Ein Titel und ein kleines Gesicht für das Gefühl (fröhlich, ängstlich, verwirrt) genügen. Fragen Sie, bevor Sie einen Eintrag lesen oder teilen.
+                    Dein Kind kann den Traum diktieren, malen oder ein paar Zeilen schreiben. Ein eigenes Heft mit seinem Namen gibt dem Ritual Gewicht. Ein Titel und ein kleines Gesicht für das Gefühl (fröhlich, ängstlich, verwirrt) genügen. Frag, bevor du einen Eintrag liest oder teilst.
                 </p>
 <h3>Ab 10 Jahren: ein eigenes Tagebuch</h3>
 <p>
-                    Ältere Kinder und Jugendliche können ein eigenes Tagebuch führen, auf Papier oder auf dem Handy. Lesen Sie es nicht ohne Erlaubnis und vereinbaren Sie gemeinsam, wie digitale Notizen geschützt werden. Der Leitfaden zur <a class="text-dream-salmon hover:underline" href="so-erinnern-sie-sich-an-ihre-traeume-10-effektive-techniken">Traumerinnerung</a> hilft, mehr zu behalten.
+                    Ältere Kinder und Jugendliche können ein eigenes Tagebuch führen, auf Papier oder auf dem Handy. Lies es nicht ohne Erlaubnis und vereinbare gemeinsam, wie digitale Notizen geschützt werden. Der Leitfaden zur <a class="text-dream-salmon hover:underline" href="so-erinnern-sie-sich-an-ihre-traeume-10-effektive-techniken">Traumerinnerung</a> hilft, mehr zu behalten.
                 </p>
 <h3>Beispiel für einen Eintrag im Familien-Traumtagebuch</h3>
 <p><strong>Erfundenes Beispiel:</strong> Es zeigt, wie Eltern einen Traum notieren können, ohne ihn für das Kind zu deuten.</p>
@@ -296,21 +296,21 @@
 <li><strong>Aktueller Kontext:</strong> neue Klasse seit dieser Woche, sie kennt noch niemanden.</li>
 <li><strong>Offene Frage:</strong> Kommt der Schulhof in anderen Träumen wieder vor, und bleibt der Hund freundlich?</li>
 </ul>
-<p>Ein einzelner Eintrag beweist nichts. Über einige Wochen sehen Sie vielleicht, ob bestimmte Szenen an bestimmten Tagen wiederkehren, und die Träume öffnen leicht ein Gespräch.</p>
+<p>Ein einzelner Eintrag beweist nichts. Über einige Wochen siehst du vielleicht, ob bestimmte Szenen an bestimmten Tagen wiederkehren, und die Träume öffnen leicht ein Gespräch.</p>
 
 <h2 id="when-to-consult">Wann ist ärztlicher Rat sinnvoll?</h2>
 <p>
-                    Die meisten Albträume im Kindesalter sind eine vorübergehende Phase. Sprechen Sie mit Ihrer Kinderärztin oder Ihrem Kinderarzt, wenn Sie Folgendes bemerken:
+                    Die meisten Albträume im Kindesalter sind eine vorübergehende Phase. Sprich mit deiner Kinderärztin oder deinem Kinderarzt, wenn du Folgendes bemerkst:
                 </p>
 <ul>
 <li><strong>Häufige oder zunehmende Albträume:</strong> besonders, wenn sie über mehrere Wochen anhalten</li>
-<li><strong>Angst vor dem Zubettgehen:</strong> Ihr Kind will nicht allein schlafen oder sorgt sich tagsüber um die Nacht</li>
+<li><strong>Angst vor dem Zubettgehen:</strong> Dein Kind will nicht allein schlafen oder sorgt sich tagsüber um die Nacht</li>
 <li><strong>Häufiger oder riskanter Nachtschreck:</strong> mehrmals pro Woche oder mit gefährlichem Verhalten, etwa das Zimmer verlassen oder sich verletzen</li>
 <li><strong>Albträume nach einem erschreckenden Erlebnis:</strong> Unfall, Verlust, erlebte oder beobachtete Gewalt</li>
 <li><strong>Folgen am Tag:</strong> Müdigkeit, Stimmungs- oder Verhaltensänderungen, Schwierigkeiten in der Schule durch schlechten Schlaf</li>
 </ul>
 <p>
-                    Eine kinderärztliche, kinderpsychologische oder schlafmedizinische Fachperson kann das Gesamtbild einordnen: Schlafrhythmus, Belastungen, mögliche körperliche Ursachen. Welcher Weg passt, hängt von Alter und Situation ab. Wenn Sie glauben, dass Ihr Kind in Gefahr ist oder Gewalt erlebt, holen Sie sofort Hilfe.
+                    Eine kinderärztliche, kinderpsychologische oder schlafmedizinische Fachperson kann das Gesamtbild einordnen: Schlafrhythmus, Belastungen, mögliche körperliche Ursachen. Welcher Weg passt, hängt von Alter und Situation ab. Wenn du glaubst, dass dein Kind in Gefahr ist oder Gewalt erlebt, hol sofort Hilfe.
                 </p>
 </div>
 <!-- CTA Section -->
@@ -320,7 +320,7 @@
 </div>
 <h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Den Traum notieren, bevor das Frühstück ihn verwischt</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Mit Noctalia sprechen Sie einen Traum gleich nach dem Aufwachen ein. Er wird transkribiert und im Tagebuch gespeichert, und Sie können Träume nebeneinander lesen, um zu sehen, was wiederkehrt. Ein Tagebuch ersetzt keinen ärztlichen Rat.
+                    Mit Noctalia sprichst du einen Traum gleich nach dem Aufwachen ein. Er wird transkribiert und im Tagebuch gespeichert, und du kannst Träume nebeneinander lesen, um zu sehen, was wiederkehrt. Ein Tagebuch ersetzt keinen ärztlichen Rat.
                 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/de/">
                     Mein Traumtagebuch starten <i class="w-5 h-5" data-lucide="arrow-right"></i>
@@ -354,7 +354,7 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Nein. Bleiben Sie ruhig in der Nähe, sorgen Sie dafür, dass Ihr Kind sich nicht verletzen kann, und lassen Sie die Episode vorübergehen. Weckversuche können die Verwirrung verstärken. Sind die Episoden häufig oder gefährlich, sprechen Sie mit Ihrer Kinderarztpraxis.
+                            Nein. Bleib ruhig in der Nähe, sorg dafür, dass dein Kind sich nicht verletzen kann, und lass die Episode vorübergehen. Weckversuche können die Verwirrung verstärken. Sind die Episoden häufig oder gefährlich, sprich mit deiner Kinderarztpraxis.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -363,7 +363,7 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Erst trösten, am nächsten Tag darüber sprechen. Halten Sie das Zubettgehen ruhig und regelmäßig und meiden Sie abends beängstigende Inhalte. Ab etwa 5 Jahren können Sie tagsüber gemeinsam ein neues Ende für den Traum erfinden. Halten Albträume wochenlang an, folgen sie einem erschreckenden Erlebnis oder belasten sie den Alltag, wenden Sie sich an die Kinderarztpraxis.
+                            Erst trösten, am nächsten Tag darüber sprechen. Halte das Zubettgehen ruhig und regelmäßig und meide abends beängstigende Inhalte. Ab etwa 5 Jahren kannst du tagsüber gemeinsam ein neues Ende für den Traum erfinden. Halten Albträume wochenlang an, folgen sie einem erschreckenden Erlebnis oder belasten sie den Alltag, wende dich an die Kinderarztpraxis.
                         </p>
 </details>
 </div>
@@ -412,7 +412,7 @@
 <a class="glass-panel rounded-xl p-5 flex items-start justify-end gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="schlaftag-umgebung-traeume">
 <div class="text-right">
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Nächster Artikel</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Schlaftag 2026: Wie Ihre Umgebung Ihre Träume verändert</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Schlaftag 2026: Wie deine Umgebung deine Träume verändert</div>
 </div>
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
@@ -433,12 +433,12 @@
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="warum-traeumen-wir-die-wissenschaft-hinter-ihren-naechtlichen-abenteuern">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Wissenschaft</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Warum träumen wir? Die Wissenschaft hinter Ihren nächtlichen Abenteuern</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Warum träumen wir? Die Wissenschaft hinter deinen nächtlichen Abenteuern</h3>
 <p class="text-sm text-gray-400">Ein Überblick über wichtige Theorien der Traumforschung und die Fragen, die weiterhin offen sind.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Wissenschaft</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">REM-Schlaf und Träume: Den nächtlichen Reset Ihres Gehirns verstehen</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">REM-Schlaf und Träume: Den nächtlichen Reset deines Gehirns verstehen</h3>
 <p class="text-sm text-gray-400">Was im REM-Schlaf geschieht und wie diese Schlafphase mit Träumen und Gedächtnis zusammenhängt.</p>
 </a>
 </div>
@@ -448,6 +448,6 @@
 <!-- Health Disclaimer (E-E-A-T) -->
 <aside aria-label="Haftungsausschluss" class="glass-panel rounded-xl p-4 my-8 border border-purple-500/20" role="note">
 <p class="text-sm text-purple-200/70">
-<strong class="text-dream-cream">Wichtig:</strong> Dieser Artikel dient nur zu Informationszwecken und stellt keine medizinische oder psychologische Beratung dar. Wenn Sie unter anhaltenden Schlafstörungen oder psychischen Problemen leiden, wenden Sie sich bitte an eine qualifizierte medizinische Fachkraft.
+<strong class="text-dream-cream">Wichtig:</strong> Dieser Artikel dient nur zu Informationszwecken und stellt keine medizinische oder psychologische Beratung dar. Wenn du unter anhaltenden Schlafstörungen oder psychischen Problemen leidest, wende dich bitte an eine qualifizierte medizinische Fachkraft.
                 </p>
 </aside>

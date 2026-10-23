@@ -257,8 +257,10 @@ const ExpoSecureStoreAdapter = {
   },
 };
 
-const envUrl = (process?.env as any)?.EXPO_PUBLIC_SUPABASE_URL as string | undefined;
-const envAnon = (process?.env as any)?.EXPO_PUBLIC_SUPABASE_ANON_KEY as string | undefined;
+// Expo replaces direct property accesses when bundling a native Release.
+// Optional chaining or an alias of process.env silently keeps the fallback.
+const envUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
+const envAnon = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
 const extra = (Constants?.expoConfig as any)?.extra ?? {};
 const extraUrl = (extra?.supabaseUrl as string | undefined) ?? undefined;
 const extraAnon = (extra?.supabaseAnonKey as string | undefined) ?? undefined;

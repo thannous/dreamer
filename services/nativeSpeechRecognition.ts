@@ -2,6 +2,8 @@ import { Platform } from 'react-native';
 
 import type { ExpoSpeechRecognitionModuleType } from 'expo-speech-recognition/build/ExpoSpeechRecognitionModule.types';
 
+import { getNativeQaSpeechAudioSource } from '@/services/nativeQaSpeechAudio';
+
 import { APP_TRANSCRIPTION_LOCALES } from '@/lib/locale';
 import { waitForPermissionActivityToSettle } from '@/lib/recordingPermissions';
 import { publishVoiceLevel, VOICE_LEVEL_SILENT } from '@/lib/voiceLevel';
@@ -638,6 +640,8 @@ export async function startNativeSpeechSession(
 
     if (options?.signal?.aborted) return null;
 
+    const qaAudioSource = await getNativeQaSpeechAudioSource();
+    if (options?.signal?.aborted) return null;
     const supportsRecording = speechModule.supportsRecording?.() ?? false;
     if (__DEV__) {
       const service = speechModule.getDefaultRecognitionService?.();
@@ -818,6 +822,7 @@ export async function startNativeSpeechSession(
         continuous: Platform.OS === 'web' || Platform.OS === 'ios',
         requiresOnDeviceRecognition,
         androidRecognitionServicePackage,
+        ...(qaAudioSource ? { audioSource: qaAudioSource } : {}),
         volumeChangeEventOptions: { enabled: true, intervalMillis: 80 },
         recordingOptions: supportsRecording
           ? {

@@ -163,7 +163,7 @@ export const hasAuthorizedAnalysisTranscript = async (
     && (await hashAnalysisTranscript(transcript)) === expectedHash;
 };
 
-const processAnalysisJob = async (input: {
+export const processAnalysisJob = async (input: {
   supabaseUrl: string;
   serviceRoleKey: string;
   storageBucket: string;

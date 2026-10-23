@@ -5,7 +5,7 @@
   "lang": "de",
   "slug": "warum-traeumen-wir-die-wissenschaft-hinter-ihren-naechtlichen-abenteuern",
   "title": "Warum träumen wir? Die Wissenschaft erklärt | Noctalia",
-  "description": "Warum träumen wir? Gedächtnis, Gefühle, Gefahren proben: was die Traumforschung gemessen hat, was Hypothese bleibt und was das für Ihre Träume heißt.",
+  "description": "Warum träumen wir? Gedächtnis, Gefühle, Gefahren proben: was die Traumforschung gemessen hat, was Hypothese bleibt und was das für deine Träume heißt.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -29,8 +29,8 @@
   "nextPath": "/de/blog/rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen",
   "preloadImage": "/img/blog/why-we-dream-science.webp",
   "jsonLd": [
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Warum träumen wir? Was die Wissenschaft weiß und was noch offen ist\",\n    \"description\": \"Warum träumen wir? Gedächtnis, Gefühle, Gefahren proben: was die Traumforschung gemessen hat, was Hypothese bleibt und was das für Ihre Träume heißt.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/why-we-dream-science.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/de/ueber-uns#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/de/ueber-uns\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-12-11\",\n    \"dateModified\": \"2026-10-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/de/blog/warum-traeumen-wir-die-wissenschaft-hinter-ihren-naechtlichen-abenteuern\"\n    },\n    \"inLanguage\": \"de\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2534,\n    \"timeRequired\": \"PT12M\",\n    \"url\": \"https://noctalia.app/de/blog/warum-traeumen-wir-die-wissenschaft-hinter-ihren-naechtlichen-abenteuern\"\n}",
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Träumt jeder Mensch?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Sehr wahrscheinlich. Jeder durchläuft pro Nacht mehrere REM-Phasen, und wer sagt, nie zu träumen, berichtet meist doch von Träumen, wenn man ihn im Schlaflabor weckt. Sehr unterschiedlich ist dagegen, wie viel man am Morgen noch weiß.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Warum erinnere ich mich nicht an meine Träume?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Man erinnert sich vor allem an Träume, aus denen man während oder kurz danach aufwacht. Die Chemie des schlafenden Gehirns, vor allem das niedrige Noradrenalin, erschwert vermutlich das Abspeichern. Nach dem Aufwachen kurz still liegen bleiben und ein paar Stichworte in ein Traumtagebuch schreiben, hilft oft.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Haben Träume eine Bedeutung?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Ob Träumen eine eigene Funktion hat, ist in der Forschung umstritten. Zufällig ist der Inhalt aber nicht: Er spiegelt oft unsere Sorgen, Beziehungen und Gefühle. Ein Traum ist keine verschlüsselte Botschaft, kann aber ein guter Ausgangspunkt sein, um über das nachzudenken, was Sie beschäftigt.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Träumen wir nur im REM-Schlaf?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Nein. REM-Träume sind oft die längsten und lebhaftesten, doch auch aus anderen Schlafphasen geweckte Menschen berichten von Träumen, meist kürzer und eher gedankenähnlich.\"\n            }\n        }\n    ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Warum träumen wir? Was die Wissenschaft weiß und was noch offen ist\",\n    \"description\": \"Warum träumen wir? Gedächtnis, Gefühle, Gefahren proben: was die Traumforschung gemessen hat, was Hypothese bleibt und was das für deine Träume heißt.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/why-we-dream-science.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/de/ueber-uns#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/de/ueber-uns\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-12-11\",\n    \"dateModified\": \"2026-10-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/de/blog/warum-traeumen-wir-die-wissenschaft-hinter-ihren-naechtlichen-abenteuern\"\n    },\n    \"inLanguage\": \"de\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2534,\n    \"timeRequired\": \"PT12M\",\n    \"url\": \"https://noctalia.app/de/blog/warum-traeumen-wir-die-wissenschaft-hinter-ihren-naechtlichen-abenteuern\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Träumt jeder Mensch?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Sehr wahrscheinlich. Jeder durchläuft pro Nacht mehrere REM-Phasen, und wer sagt, nie zu träumen, berichtet meist doch von Träumen, wenn man ihn im Schlaflabor weckt. Sehr unterschiedlich ist dagegen, wie viel man am Morgen noch weiß.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Warum erinnere ich mich nicht an meine Träume?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Man erinnert sich vor allem an Träume, aus denen man während oder kurz danach aufwacht. Die Chemie des schlafenden Gehirns, vor allem das niedrige Noradrenalin, erschwert vermutlich das Abspeichern. Nach dem Aufwachen kurz still liegen bleiben und ein paar Stichworte in ein Traumtagebuch schreiben, hilft oft.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Haben Träume eine Bedeutung?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Ob Träumen eine eigene Funktion hat, ist in der Forschung umstritten. Zufällig ist der Inhalt aber nicht: Er spiegelt oft unsere Sorgen, Beziehungen und Gefühle. Ein Traum ist keine verschlüsselte Botschaft, kann aber ein guter Ausgangspunkt sein, um über das nachzudenken, was dich beschäftigt.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Träumen wir nur im REM-Schlaf?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Nein. REM-Träume sind oft die längsten und lebhaftesten, doch auch aus anderen Schlafphasen geweckte Menschen berichten von Träumen, meist kürzer und eher gedankenähnlich.\"\n            }\n        }\n    ]\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Startseite\",\n            \"item\": \"https://noctalia.app/de/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Ressourcen\",\n            \"item\": \"https://noctalia.app/de/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Warum wir träumen\",\n            \"item\": \"https://noctalia.app/de/blog/warum-traeumen-wir-die-wissenschaft-hinter-ihren-naechtlichen-abenteuern\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
@@ -69,7 +69,7 @@
                     Warum träumen wir? Was die Wissenschaft weiß und was noch offen ist
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Sie wachen mitten in einer Verfolgungsjagd auf, das Herz rast, in einem Haus, das zugleich Ihre alte Schule und die Küche Ihrer Großmutter war. Eine Minute später ist fast alles verblasst. Warum spielt das Gehirn jede Nacht dieses Theater? Auf die Frage, warum wir träumen, hat die Wissenschaft keine einzige Antwort. Sie hat aber belastbare Spuren und weiß, welche davon noch Vermutungen sind.
+                    Du wachst mitten in einer Verfolgungsjagd auf, das Herz rast, in einem Haus, das zugleich deine alte Schule und die Küche deiner Großmutter war. Eine Minute später ist fast alles verblasst. Warum spielt das Gehirn jede Nacht dieses Theater? Auf die Frage, warum wir träumen, hat die Wissenschaft keine einzige Antwort. Sie hat aber belastbare Spuren und weiß, welche davon noch Vermutungen sind.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -131,7 +131,7 @@
 <ol>
 <li><strong>Aktivierung:</strong> Der Hirnstamm schaltet die Hirnrinde im REM-Schlaf ein.</li>
 <li><strong>Synthese:</strong> Die Hirnrinde verknüpft Bilder, Empfindungen und Erinnerungen zu einer Szene.</li>
-<li><strong>Der Traum:</strong> die Geschichte, an die Sie sich erinnern, mit ihren Sprüngen und unmöglichen Wendungen.</li>
+<li><strong>Der Traum:</strong> die Geschichte, an die du dich erinnerst, mit ihren Sprüngen und unmöglichen Wendungen.</li>
 </ol>
 <p>
                     Das würde erklären, warum Träume improvisiert wirken: Die Handlung entsteht spontan aus Signalen, die nie als Geschichte gedacht waren.
@@ -190,7 +190,7 @@
                     Raubtiere sind selten geworden, doch dieselben Szenarien passen zu modernen Sorgen: ein Vortrag, ein Vorstellungsgespräch, ein Konflikt, ein gesundheitliches Problem.
                 </p>
 <p>
-                    Träume, in denen Sie <strong>eine <a class="text-dream-salmon hover:underline" href="../traumsymbole/pruefung">Prüfung</a> verpassen oder <a class="text-dream-salmon hover:underline" href="../traumsymbole/nacktheit">nackt</a> zur Arbeit kommen</strong>, könnten zu dieser Art Probe gehören. Der Traum zeigt, dass Ihnen etwas wichtig ist, nicht, dass es schiefgehen wird. Die Theorie ist umstritten: Sie erklärt beängstigende Träume gut, angenehme oder alltägliche weniger.
+                    Träume, in denen du <strong>eine <a class="text-dream-salmon hover:underline" href="../traumsymbole/pruefung">Prüfung</a> verpasst oder <a class="text-dream-salmon hover:underline" href="../traumsymbole/nacktheit">nackt</a> zur Arbeit kommst</strong>, könnten zu dieser Art Probe gehören. Der Traum zeigt, dass dir etwas wichtig ist, nicht, dass es schiefgehen wird. Die Theorie ist umstritten: Sie erklärt beängstigende Träume gut, angenehme oder alltägliche weniger.
                 </p>
 <h2 id="emotional-regulation">Dämpfen Träume unsere Gefühle?</h2>
 <p>
@@ -218,7 +218,7 @@
 <li><strong>Angststörungen:</strong> Sie gehen oft mit häufigeren schlechten Träumen einher.</li>
 </ul>
 <p>
-                    Wenn Albträume mehrmals pro Woche wiederkehren, Ihren Schlaf stören oder Sie tagsüber ängstlich machen, lassen Sie sich ärztlich beraten, zum Beispiel in einer schlafmedizinischen Sprechstunde. Es gibt wirksame Behandlungen.
+                    Wenn Albträume mehrmals pro Woche wiederkehren, deinen Schlaf stören oder dich tagsüber ängstlich machen, lass dich ärztlich beraten, zum Beispiel in einer schlafmedizinischen Sprechstunde. Es gibt wirksame Behandlungen.
                 </p>
 </div>
 <!-- Theory Cards -->
@@ -265,7 +265,7 @@
 <li><strong>Der dorsolaterale präfrontale Kortex:</strong> zuständig für Abwägen und Selbstkontrolle. Seine geringere Aktivität könnte erklären, warum wir ohne Staunen hinnehmen, dass ein Raum seine Form ändert.</li>
 </ul>
 <p>
-                    Gleichzeitig hält eine REM-typische Muskellähmung den Körper still. Deshalb können Sie im Traum rennen, ohne sich im Bett zu bewegen.
+                    Gleichzeitig hält eine REM-typische Muskellähmung den Körper still. Deshalb kannst du im Traum rennen, ohne dich im Bett zu bewegen.
                 </p>
 <h3>Eine andere Chemie</h3>
 <ul>
@@ -301,8 +301,8 @@
 <i class="w-6 h-6 text-dream-salmon" data-lucide="book-open"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Halten Sie Ihren Traum fest, bevor er verblasst</h4>
-<p class="text-sm text-gray-400 mb-4">Ein Traum verschwindet wenige Minuten nach dem Aufwachen. In Noctalia erzählen Sie ihn laut, sobald Sie die Augen öffnen: Er wird transkribiert und in Ihrem Tagebuch gespeichert.</p>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Halte deinen Traum fest, bevor er verblasst</h4>
+<p class="text-sm text-gray-400 mb-4">Ein Traum verschwindet wenige Minuten nach dem Aufwachen. In Noctalia erzählst du ihn laut, sobald du die Augen öffnest: Er wird transkribiert und in deinem Tagebuch gespeichert.</p>
 <a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/de/traumtagebuch-spracheingabe">
                                 Traumtagebuch per Sprache ausprobieren <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
@@ -315,8 +315,8 @@
                 </p>
 <h3>Erleben ohne Sinneseindrücke</h3>
 <ul>
-<li>Im Traum sehen, hören und fühlen Sie, fast <strong>ohne Information von den Sinnen</strong>.</li>
-<li>Sie sind bei Bewusstsein, aber <strong>von Ihrer Umgebung abgekoppelt</strong>.</li>
+<li>Im Traum siehst, hörst und fühlst du, fast <strong>ohne Information von den Sinnen</strong>.</li>
+<li>Du bist bei Bewusstsein, aber <strong>von deiner Umgebung abgekoppelt</strong>.</li>
 <li>Das Gehirn baut eine überzeugende Welt <strong>aus eigenen Mitteln</strong>.</li>
 </ul>
 <p>
@@ -324,7 +324,7 @@
                 </p>
 <h3>Was Klarträume gezeigt haben</h3>
 <p>
-                    In einem <strong><a class="text-dream-salmon hover:underline" href="leitfaden-zum-klartraeumen-fuer-anfaenger-uebernehmen-sie-die-kontrolle-ueber-ihre-naechte">Klartraum</a></strong> wissen Sie, dass Sie träumen. Forschende nutzen das, um Träume von innen zu untersuchen:
+                    In einem <strong><a class="text-dream-salmon hover:underline" href="leitfaden-zum-klartraeumen-fuer-anfaenger-uebernehmen-sie-die-kontrolle-ueber-ihre-naechte">Klartraum</a></strong> weißt du, dass du träumst. Forschende nutzen das, um Träume von innen zu untersuchen:
                 </p>
 <ul>
 <li>Seit Anfang der 1980er-Jahre geben Klarträumende den Versuchsleitern mit vorher vereinbarten Augenbewegungen Zeichen, aufgezeichnet im REM-Schlaf.</li>
@@ -361,11 +361,11 @@
 <li>Was entscheidet, welche Erinnerungen und Sorgen in einen Traum gelangen.</li>
 <li>Ob Träumen selbst eine Funktion hat oder ein Nebenprodukt des Schlafs ist.</li>
 </ul>
-<h3>Was Sie daraus machen können</h3>
+<h3>Was du daraus machen kannst</h3>
 <p>
-                    Die Wissenschaft sagt Ihnen nicht, was ein bestimmter Traum „bedeutet“. Sie legt aber eine praktische Methode nahe: Szene, Gefühl und Lebenslage notieren und über mehrere Wochen vergleichen.
+                    Die Wissenschaft sagt dir nicht, was ein bestimmter Traum „bedeutet“. Sie legt aber eine praktische Methode nahe: Szene, Gefühl und Lebenslage notieren und über mehrere Wochen vergleichen.
                 </p>
-<p><strong>Fiktives Beispiel:</strong> Dieser Eintrag zeigt, wie Sie den Traum von einem möglichen Bezug zu Ihrem Alltag trennen.</p>
+<p><strong>Fiktives Beispiel:</strong> Dieser Eintrag zeigt, wie du den Traum von einem möglichen Bezug zu deinem Alltag trennst.</p>
 <ul>
 <li><strong>Traum:</strong> „Ich schrieb noch einmal mein Abitur, in einer leeren Turnhalle. Die Aufsicht wechselte ständig das Gesicht.“</li>
 <li><strong>Gefühl:</strong> „Angespannt, dann seltsam ruhig, sobald ich angefangen hatte zu schreiben.“</li>
@@ -381,9 +381,9 @@
 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
 <i class="w-8 h-8 text-dream-salmon" data-lucide="moon-star"></i>
 </div>
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Die Wissenschaft erforscht Träume im Allgemeinen. Ihre eigenen sind es wert, bewahrt zu werden.</h3>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Die Wissenschaft erforscht Träume im Allgemeinen. Deine eigenen sind es wert, bewahrt zu werden.</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Halten Sie Ihre Träume per Sprache oder schriftlich fest und lesen Sie sie in Noctalia nebeneinander. Mit der Zeit sehen Sie, welche Szenen und Gefühle wiederkehren.
+                    Halte deine Träume per Sprache oder schriftlich fest und lies sie in Noctalia nebeneinander. Mit der Zeit siehst du, welche Szenen und Gefühle wiederkehren.
                 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/de/">
                     Mein Traumtagebuch beginnen <i class="w-5 h-5" data-lucide="arrow-right"></i>
@@ -417,7 +417,7 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Ob Träumen eine eigene Funktion hat, ist in der Forschung umstritten. Zufällig ist der Inhalt aber nicht: Er spiegelt oft unsere Sorgen, Beziehungen und Gefühle. Ein Traum ist keine verschlüsselte Botschaft, kann aber ein guter Ausgangspunkt sein, um über das nachzudenken, was Sie beschäftigt.
+                            Ob Träumen eine eigene Funktion hat, ist in der Forschung umstritten. Zufällig ist der Inhalt aber nicht: Er spiegelt oft unsere Sorgen, Beziehungen und Gefühle. Ein Traum ist keine verschlüsselte Botschaft, kann aber ein guter Ausgangspunkt sein, um über das nachzudenken, was dich beschäftigt.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -474,13 +474,13 @@
       <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Vorheriger Artikel</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Träume und psychische Gesundheit: Wie Ihr Schlaf Ihren Geist offenbart</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Träume und psychische Gesundheit: Wie dein Schlaf deinen Geist offenbart</div>
       </div>
     </a>
     <a href="rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Nächster Artikel</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">REM-Schlaf und Träume: Den nächtlichen Reset Ihres Gehirns verstehen</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">REM-Schlaf und Träume: Den nächtlichen Reset deines Gehirns verstehen</div>
       </div>
       <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
     </a>
@@ -507,7 +507,7 @@
         </a>
         <a href="traeume-und-psychische-gesundheit-wie-ihr-schlaf-ihren-geist-offenbart" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Wissenschaft</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Träume und psychische Gesundheit: Wie Ihr Schlaf Ihren Geist offenbart</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Träume und psychische Gesundheit: Wie dein Schlaf deinen Geist offenbart</h3>
             <p class="text-sm text-gray-400">Wie sich Angst, Depression, Stress und Trauma in Träumen zeigen und wann häufige Albträume ein Gespräch mit einer Fachperson wert sind.</p>
         </a>
   </div>
@@ -517,6 +517,6 @@
 <!-- Health Disclaimer (TI-97 E-E-A-T) -->
 <aside aria-label="Disclaimer" class="glass-panel rounded-xl p-4 my-8 border border-purple-500/20" role="note">
 <p class="text-sm text-purple-200/70">
-<strong class="text-dream-cream">Wichtig:</strong> Dieser Artikel dient nur zu Informationszwecken und stellt keine medizinische oder psychologische Beratung dar. Wenn Sie unter anhaltenden Schlafstörungen oder psychischen Problemen leiden, wenden Sie sich bitte an einen qualifizierten Arzt.
+<strong class="text-dream-cream">Wichtig:</strong> Dieser Artikel dient nur zu Informationszwecken und stellt keine medizinische oder psychologische Beratung dar. Wenn du unter anhaltenden Schlafstörungen oder psychischen Problemen leidest, wende dich bitte an einen qualifizierten Arzt.
                 </p>
 </aside>

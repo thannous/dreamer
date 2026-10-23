@@ -12,14 +12,16 @@ import type { BadgeFamilyId, BadgeTier } from '@/lib/badges/catalog';
 
 import { COLLECTION, getBadgeMaterial } from './badgeMaterials';
 
+/** The light's position across a card, -1 to 1 on each axis; still when absent. */
+export type BadgeLight = { x: SharedValue<number>; y: SharedValue<number> } | null;
+
 type Props = {
   family: BadgeFamilyId;
   tier: BadgeTier | null;
   size: number;
   /** A tier not earned yet is shown veiled: blurred and dimmed, like a dream half remembered. */
   veiled?: boolean;
-  /** The light's position across the card, -1 to 1 on each axis; still when absent. */
-  light?: { x: SharedValue<number>; y: SharedValue<number> } | null;
+  light?: BadgeLight;
   /** The lighter export, for the album grid and other small medallions. */
   small?: boolean;
 };
@@ -124,7 +126,7 @@ export const BadgeMedallion = memo(function BadgeMedallion({ family, tier, size,
 });
 
 /** Gold's crown of light behind the medallion, turning a little with the card. */
-function Rays({ size, light, color }: { size: number; light: Props['light']; color: string }) {
+function Rays({ size, light, color }: { size: number; light: BadgeLight; color: string }) {
   const span = size * 1.7;
   const c = span / 2;
   const rays = Array.from({ length: 16 }, (_, index) => {
@@ -149,7 +151,7 @@ function Rays({ size, light, color }: { size: number; light: Props['light']; col
 }
 
 /** Gold's holographic film: iridescent bands drifting across the painting with the light. */
-function Foil({ size, light }: { size: number; light: Props['light'] }) {
+function Foil({ size, light }: { size: number; light: BadgeLight }) {
   const style = useAnimatedStyle(() => ({
     transform: [
       { translateX: (light ? light.x.get() : -0.2) * size * 0.9 },
@@ -167,7 +169,7 @@ function Foil({ size, light }: { size: number; light: Props['light'] }) {
 }
 
 /** A narrow band of light across the metal, opposite the tilt. */
-function Sheen({ size, light }: { size: number; light: Props['light'] }) {
+function Sheen({ size, light }: { size: number; light: BadgeLight }) {
   const style = useAnimatedStyle(() => ({
     transform: [
       { translateX: (light ? -light.x.get() : -0.55) * size * 1.1 },

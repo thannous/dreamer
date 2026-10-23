@@ -373,6 +373,7 @@ export const TID = {
     DreamDetailQuotaHint: 'text.dreamDetail.quotaHint',
     DreamDetailActionStep: 'text.dreamDetail.actionStep',
     DreamDetailDreamZone: 'text.dreamDetail.dreamZone',
+    DreamDetailTranscript: 'text.dreamDetail.transcript',
     DreamDetailReadingZone: 'text.dreamDetail.readingZone',
     DreamDetailReflectionZone: 'text.dreamDetail.reflectionZone',
     AnalysisStaleBanner: 'text.dreamDetail.staleBanner',

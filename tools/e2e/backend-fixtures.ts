@@ -12,6 +12,7 @@ export const repoRoot = fileURLToPath(new URL('../../', import.meta.url));
 
 const status = JSON.parse(readFileSync(process.env.E2E_BACKEND_STATUS_FILE!, 'utf8'));
 const url = assertBackendTarget(status);
+export const backendOrigin = url.origin;
 const options = { auth: { persistSession: false, autoRefreshToken: false } };
 export const admin = createClient(url.href, status.SERVICE_ROLE_KEY, options);
 

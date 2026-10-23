@@ -4,7 +4,7 @@
   "layout": "blogArticle",
   "lang": "de",
   "slug": "ki-schlafanalyse-traeume",
-  "title": "Die KI, die Ihren Schlaf liest: Stanfords | Noctalia",
+  "title": "Die KI, die deinen Schlaf liest: Stanfords | Noctalia",
   "description": "Stanfords KI SleepFM schätzt aus einer Nacht Schlaf das Risiko für 130 Krankheiten. Was diese KI-Schlafanalyse misst und wo ihre Grenzen liegen.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
@@ -13,13 +13,13 @@
   "bodyStyle": "background-color: #0a0514;",
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
-  "ogTitle": "Die KI, die Ihren Schlaf liest: Stanfords | Noctalia",
+  "ogTitle": "Die KI, die deinen Schlaf liest: Stanfords | Noctalia",
   "ogDescription": "Eine Nacht im Schlaflabor, 130 Krankheiten nach Risiko geordnet. Was Stanfords KI SleepFM wirklich misst, wo sie aufhört und warum sie keine Träume liest.",
   "ogImage": "https://noctalia.app/img/blog/ai-sleep-analysis-dreams.webp",
   "ogImageAlt": "Futuristische Visualisierung von Gehirnsignalen, die von künstlicher Intelligenz im Schlaf analysiert werden",
   "twitterCard": "summary_large_image",
-  "twitterTitle": "Die KI, die Ihren Schlaf liest: Stanfords | Noctalia",
-  "twitterDescription": "Stanfords KI SleepFM schätzt aus einer Nacht Schlaf das Risiko für 130 Krankheiten. Was sie misst, ihre Grenzen und was KI mit Ihren Träumen anfangen kann.",
+  "twitterTitle": "Die KI, die deinen Schlaf liest: Stanfords | Noctalia",
+  "twitterDescription": "Stanfords KI SleepFM schätzt aus einer Nacht Schlaf das Risiko für 130 Krankheiten. Was sie misst, ihre Grenzen und was KI mit deinen Träumen anfangen kann.",
   "twitterImage": "https://noctalia.app/img/blog/ai-sleep-analysis-dreams.webp",
   "twitterImageAlt": "Futuristische Visualisierung von Gehirnsignalen, die von künstlicher Intelligenz im Schlaf analysiert werden",
   "publishedTime": "2026-03-12",
@@ -29,9 +29,9 @@
   "nextPath": "/de/blog/traumkontrolle-problemloesung",
   "preloadImage": "/img/blog/ai-sleep-analysis-dreams.webp",
   "jsonLd": [
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Die KI, die Ihren Schlaf liest: was Stanfords SleepFM kann und was nicht\",\n    \"description\": \"Stanfords KI SleepFM schätzt aus einer Nacht Schlaf das Risiko für 130 Krankheiten. Was diese KI-Schlafanalyse misst und wo ihre Grenzen liegen.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/ai-sleep-analysis-dreams.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/de/ueber-uns#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Gründer & Publikationsleiter\",\n            \"url\": \"https://noctalia.app/de/ueber-uns\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2026-03-12\",\n    \"dateModified\": \"2026-10-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/de/blog/ki-schlafanalyse-traeume\"\n    },\n    \"inLanguage\": \"de\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 1872,\n    \"timeRequired\": \"PT9M\",\n    \"url\": \"https://noctalia.app/de/blog/ki-schlafanalyse-traeume\"\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"@id\": \"https://noctalia.app/de/blog/ki-schlafanalyse-traeume\",\n  \"url\": \"https://noctalia.app/de/blog/ki-schlafanalyse-traeume\",\n  \"name\": \"Die KI, die Ihren Schlaf liest: Stanfords | Noctalia\",\n  \"inLanguage\": \"de\"\n}",
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Kann SleepFM einen Arzt bei der Diagnose von Krankheiten ersetzen?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Nein. SleepFM schätzt aus Schlafaufzeichnungen ein künftiges Risiko; eine Diagnose stellt es nicht. Es ist ein Forschungsmodell, und jede Sorge um Ihre Gesundheit gehört zu einer Ärztin oder einem Arzt und zu den üblichen Untersuchungen.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Kann ich meinen eigenen Schlaf von SleepFM auswerten lassen?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Derzeit nicht. Das Modell beruht auf vollständigen Polysomnografien im Labor und wird nicht für Privatpersonen angeboten. Wenn Ihr Schlaf Sie beunruhigt, fragen Sie Ihre Ärztin oder Ihren Arzt, ob eine Untersuchung im Schlaflabor sinnvoll ist.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Kann KI den Inhalt meiner Träume analysieren?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Ja, anhand dessen, was Sie sagen oder schreiben. Sprachverarbeitende Werkzeuge erkennen Figuren, Gefühle und Themen in vielen Traumberichten. In Noctalia schlägt die KI Ansätze und Fragen zu den Einträgen in Ihrem Traumtagebuch vor; die eine wahre Bedeutung eines Traums kann sie nicht kennen.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Sind meine Schlaf- und Traumdaten bei KI-Werkzeugen sicher?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Das hängt vom Werkzeug ab; lesen Sie also die Datenschutzerklärung, bevor Sie etwas teilen. Noctalia verkauft keine personenbezogenen Daten, zeigt keine personalisierte Werbung, nutzt Audio nur für die Transkription und speichert Transkripte in der Europäischen Union, wie die Datenschutzerklärung erläutert.\"\n            }\n        }\n    ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Die KI, die deinen Schlaf liest: was Stanfords SleepFM kann und was nicht\",\n    \"description\": \"Stanfords KI SleepFM schätzt aus einer Nacht Schlaf das Risiko für 130 Krankheiten. Was diese KI-Schlafanalyse misst und wo ihre Grenzen liegen.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/ai-sleep-analysis-dreams.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/de/ueber-uns#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Gründer & Publikationsleiter\",\n            \"url\": \"https://noctalia.app/de/ueber-uns\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2026-03-12\",\n    \"dateModified\": \"2026-10-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/de/blog/ki-schlafanalyse-traeume\"\n    },\n    \"inLanguage\": \"de\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 1872,\n    \"timeRequired\": \"PT9M\",\n    \"url\": \"https://noctalia.app/de/blog/ki-schlafanalyse-traeume\"\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"@id\": \"https://noctalia.app/de/blog/ki-schlafanalyse-traeume\",\n  \"url\": \"https://noctalia.app/de/blog/ki-schlafanalyse-traeume\",\n  \"name\": \"Die KI, die deinen Schlaf liest: Stanfords | Noctalia\",\n  \"inLanguage\": \"de\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Kann SleepFM einen Arzt bei der Diagnose von Krankheiten ersetzen?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Nein. SleepFM schätzt aus Schlafaufzeichnungen ein künftiges Risiko; eine Diagnose stellt es nicht. Es ist ein Forschungsmodell, und jede Sorge um deine Gesundheit gehört zu einer Ärztin oder einem Arzt und zu den üblichen Untersuchungen.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Kann ich meinen eigenen Schlaf von SleepFM auswerten lassen?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Derzeit nicht. Das Modell beruht auf vollständigen Polysomnografien im Labor und wird nicht für Privatpersonen angeboten. Wenn dein Schlaf dich beunruhigt, frag deine Ärztin oder deinen Arzt, ob eine Untersuchung im Schlaflabor sinnvoll ist.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Kann KI den Inhalt meiner Träume analysieren?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Ja, anhand dessen, was du sagst oder schreibst. Sprachverarbeitende Werkzeuge erkennen Figuren, Gefühle und Themen in vielen Traumberichten. In Noctalia schlägt die KI Ansätze und Fragen zu den Einträgen in deinem Traumtagebuch vor; die eine wahre Bedeutung eines Traums kann sie nicht kennen.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Sind meine Schlaf- und Traumdaten bei KI-Werkzeugen sicher?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Das hängt vom Werkzeug ab; lies also die Datenschutzerklärung, bevor du etwas teilst. Noctalia verkauft keine personenbezogenen Daten, zeigt keine personalisierte Werbung, nutzt Audio nur für die Transkription und speichert Transkripte in der Europäischen Union, wie die Datenschutzerklärung erläutert.\"\n            }\n        }\n    ]\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Startseite\",\n      \"item\": \"https://noctalia.app/de/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Ressourcen\",\n      \"item\": \"https://noctalia.app/de/blog/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"KI und Schlafanalyse\",\n      \"item\": \"https://noctalia.app/de/blog/ki-schlafanalyse-traeume\"\n    }\n  ]\n}"
   ],
   "activeNav": "resources"
@@ -66,10 +66,10 @@
 <span class="text-sm text-purple-300/60">9 Min. Lesezeit</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-Die KI, die Ihren Schlaf liest: was Stanfords SleepFM kann und was nicht
+Die KI, die deinen Schlaf liest: was Stanfords SleepFM kann und was nicht
 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-Eine Nacht im Schlaflabor: Elektroden auf dem Kopf, ein Clip am Finger, Gurte um die Brust. Meist wird diese Aufzeichnung auf Schlafapnoe geprüft und dann archiviert. Ein Team aus Stanford hat gezeigt, dass dieselbe Nacht auch frühe Hinweise auf Krankheiten enthalten kann, die erst Jahre später auftreten. Hier lesen Sie, was diese KI-Schlafanalyse tatsächlich misst, wo sie an Grenzen stößt und warum Ihre Träume etwas bleiben, das nur Sie selbst festhalten können.
+Eine Nacht im Schlaflabor: Elektroden auf dem Kopf, ein Clip am Finger, Gurte um die Brust. Meist wird diese Aufzeichnung auf Schlafapnoe geprüft und dann archiviert. Ein Team aus Stanford hat gezeigt, dass dieselbe Nacht auch frühe Hinweise auf Krankheiten enthalten kann, die erst Jahre später auftreten. Hier liest du, was diese KI-Schlafanalyse tatsächlich misst, wo sie an Grenzen stößt und warum deine Träume etwas bleiben, das nur du selbst festhalten kannst.
 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -85,7 +85,7 @@ Eine Nacht im Schlaflabor: Elektroden auf dem Kopf, ein Clip am Finger, Gurte um
 <!-- Quick Answer (AI SEO) -->
 <section aria-labelledby="quick-answer-title" class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5">
 <h2 class="font-serif text-xl text-dream-cream mb-3" id="quick-answer-title">Schnelle Antwort</h2>
-<p class="text-purple-100/80 leading-relaxed">SleepFM ist ein KI-Modell aus Stanford, im Januar 2026 in Nature Medicine veröffentlicht. Trainiert mit rund 585.000 Stunden Schlaflabor-Aufzeichnungen, schätzt es aus einer einzigen Nacht das Risiko für 130 Erkrankungen, darunter Parkinson und Demenz. Es ist ein Forschungsmodell, kein Test, den man machen kann: Es stellt keine Diagnosen und liest keine Träume. Trauminhalte stammen weiterhin aus dem, woran Sie sich erinnern und was Sie aufschreiben.</p>
+<p class="text-purple-100/80 leading-relaxed">SleepFM ist ein KI-Modell aus Stanford, im Januar 2026 in Nature Medicine veröffentlicht. Trainiert mit rund 585.000 Stunden Schlaflabor-Aufzeichnungen, schätzt es aus einer einzigen Nacht das Risiko für 130 Erkrankungen, darunter Parkinson und Demenz. Es ist ein Forschungsmodell, kein Test, den man machen kann: Es stellt keine Diagnosen und liest keine Träume. Trauminhalte stammen weiterhin aus dem, woran du dich erinnerst und was du aufschreibst.</p>
 </section>
 <!-- Editorial Review (E-E-A-T) -->
 <div class="mb-8">
@@ -98,7 +98,7 @@ Eine Nacht im Schlaflabor: Elektroden auf dem Kopf, ein Clip am Finger, Gurte um
             <p class="text-sm text-purple-100/80 leading-relaxed">
                 <strong class="text-dream-cream">Redaktionelle Überprüfung:</strong>
                 Diese gesundheitsbezogene Seite wurde auf Klarheit und Quellengenauigkeit gegenüber den zitierten Referenzen geprüft. Sie ist informativ und ersetzt keinen ärztlichen Rat.
-                <a class="text-dream-salmon hover:underline" href="/de/ueber-uns">Erfahren Sie, wie wir sensible Themen prüfen</a>.
+                <a class="text-dream-salmon hover:underline" href="/de/ueber-uns">Erfahre, wie wir sensible Themen prüfen</a>.
             </p>
         </div>
     </details>
@@ -117,7 +117,7 @@ Eine Nacht im Schlaflabor: Elektroden auf dem Kopf, ein Clip am Finger, Gurte um
 <li><a class="toc-link block" href="#how-it-works">2. Wie liest eine KI eine Nacht Schlaf?</a></li>
 <li><a class="toc-link block" href="#predictions">3. Was kann SleepFM vorhersagen, und wie verlässlich?</a></li>
 <li><a class="toc-link block" href="#dream-database">4. Die DREAM-Datenbank: Hirnaktivität trifft Traumberichte</a></li>
-<li><a class="toc-link block" href="#ai-dream-analysis">5. Was kann KI mit Ihren Traumberichten anfangen?</a></li>
+<li><a class="toc-link block" href="#ai-dream-analysis">5. Was kann KI mit deinen Traumberichten anfangen?</a></li>
 <li><a class="toc-link block" href="#future">6. Wie geht es weiter, und wo liegen die Grenzen?</a></li>
 </ol>
 </nav>
@@ -166,7 +166,7 @@ Eine Nacht im Schlaflabor: Elektroden auf dem Kopf, ein Clip am Finger, Gurte um
                     Jenseits der Neurologie nennt Stanford einen C-Index von 0,81 für Herzinfarkt, 0,84 für Tod jeglicher Ursache, 0,89 für Prostatakrebs und 0,87 für Brustkrebs. Eine Hypothese: Manche Krankheiten verändern die automatische Steuerung von Herz und Atmung im Schlaf, lange bevor Beschwerden auftreten.
                 </p>
 <p>
-                    Diese Zahlen beschreiben Menschen, die in Schlafkliniken untersucht wurden. Über Ihr persönliches Risiko sagen sie nichts, und das Modell wird nicht als Test angeboten, den man buchen kann.
+                    Diese Zahlen beschreiben Menschen, die in Schlafkliniken untersucht wurden. Über dein persönliches Risiko sagen sie nichts, und das Modell wird nicht als Test angeboten, den man buchen kann.
                 </p>
 
 <h2 id="dream-database">Die DREAM-Datenbank: Hirnaktivität trifft Traumberichte</h2>
@@ -188,7 +188,7 @@ Eine Nacht im Schlaflabor: Elektroden auf dem Kopf, ein Clip am Finger, Gurte um
 </div>
 <div>
 <h4 class="font-serif text-lg text-dream-cream mb-2">Festhalten, was kein Sensor aufzeichnet</h4>
-<p class="text-sm text-gray-400 mb-4">Kein Labor erfasst die Geschichte Ihres Traums. Erzählen Sie sie in Noctalia nach dem Aufwachen laut oder tippen Sie sie ein: Sie wird transkribiert und in Ihrem Tagebuch gespeichert, und Sie können Ihre Träume nebeneinander lesen.</p>
+<p class="text-sm text-gray-400 mb-4">Kein Labor erfasst die Geschichte deines Traums. Erzähl sie in Noctalia nach dem Aufwachen laut oder tipp sie ein: Sie wird transkribiert und in deinem Tagebuch gespeichert, und du kannst deine Träume nebeneinander lesen.</p>
 <a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/de/traumtagebuch-spracheingabe">
                                 Traumtagebuch mit Spracheingabe testen <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
@@ -197,7 +197,7 @@ Eine Nacht im Schlaflabor: Elektroden auf dem Kopf, ein Clip am Finger, Gurte um
 </aside>
 
 <div class="prose max-w-none text-gray-300">
-<h2 id="ai-dream-analysis">Was kann KI mit Ihren Traumberichten anfangen?</h2>
+<h2 id="ai-dream-analysis">Was kann KI mit deinen Traumberichten anfangen?</h2>
 <h3>Vom Kodieren per Hand zur automatischen Analyse</h3>
 <p>
                     Jahrzehntelang wurden Trauminhalte von Hand untersucht. Beim System von Hall und Van de Castle, veröffentlicht 1966, zählen geschulte Personen Figuren, Interaktionen und Gefühle in jedem Bericht. Das ist zuverlässig, aber langsam.
@@ -208,15 +208,15 @@ Eine Nacht im Schlaflabor: Elektroden auf dem Kopf, ein Clip am Finger, Gurte um
 <p>
                     Solche Werkzeuge beschreiben große Gruppen. Sie entscheiden nicht, was ein einzelner Traum bedeutet, und sie dienen nicht dazu, jemanden zu diagnostizieren.
                 </p>
-<h3>Wie die KI von Noctalia Ihre Traumberichte liest</h3>
+<h3>Wie die KI von Noctalia deine Traumberichte liest</h3>
 <p>
-                    Hier arbeitet die KI mit dem, woran Sie sich erinnern, nicht mit Hirnsignalen. Sie sprechen oder schreiben Ihren Traum auf, er wird transkribiert, und die KI schlägt eine Deutung vor: Symbole, Gefühle, mögliche Bezüge zu Ihrem Alltag und Fragen zum Weiterdenken. Diese Deutung erfolgt nur, wenn Sie der KI-Verarbeitung in der App zugestimmt haben. Jede Deutung ist ein Ansatz, kein Urteil.
+                    Hier arbeitet die KI mit dem, woran du dich erinnerst, nicht mit Hirnsignalen. Du sprichst oder schreibst deinen Traum auf, er wird transkribiert, und die KI schlägt eine Deutung vor: Symbole, Gefühle, mögliche Bezüge zu deinem Alltag und Fragen zum Weiterdenken. Diese Deutung erfolgt nur, wenn du der KI-Verarbeitung in der App zugestimmt hast. Jede Deutung ist ein Ansatz, kein Urteil.
                 </p>
 <p>
                     <strong>Erfundenes Beispiel:</strong> In drei Wochen sammelt ein Tagebuch einen <a class="text-dream-salmon hover:underline" href="../traumsymbole/spiegel">Spiegel</a>, der ein leicht verändertes Gesicht zeigt, einen <a class="text-dream-salmon hover:underline" href="../traumsymbole/schluessel">Schlüssel</a>, der nicht mehr in die Haustür passt, und einen <a class="text-dream-salmon hover:underline" href="../traumsymbole/weg">Weg</a>, der sich im Nebel gabelt. Jeder Eintrag hält auch eine Stimmung fest: erst Unbehagen, dann Neugier. Zusammen gelesen werfen diese Träume eher eine Frage auf als eine Antwort: Was verändert sich gerade in meinem Leben, und wie geht es mir damit?
                 </p>
 <p>
-                    Genau das ermöglicht ein <a class="text-dream-salmon hover:underline" href="dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer">Traumtagebuch</a>: zu sehen, was mit der Zeit wiederkehrt. Noctalia ersetzt keine Therapie, und Albträume, die Ihren Schlaf dauerhaft stören, gehören in fachkundige Hände.
+                    Genau das ermöglicht ein <a class="text-dream-salmon hover:underline" href="dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer">Traumtagebuch</a>: zu sehen, was mit der Zeit wiederkehrt. Noctalia ersetzt keine Therapie, und Albträume, die deinen Schlaf dauerhaft stören, gehören in fachkundige Hände.
                 </p>
 
 <h2 id="future">Wie geht es weiter, und wo liegen die Grenzen?</h2>
@@ -238,7 +238,7 @@ Eine Nacht im Schlaflabor: Elektroden auf dem Kopf, ein Clip am Finger, Gurte um
                     Die Forschung zu <a class="text-dream-salmon hover:underline" href="traeume-und-psychische-gesundheit-wie-ihr-schlaf-ihren-geist-offenbart">Träumen und psychischer Gesundheit</a> und zu <a class="text-dream-salmon hover:underline" href="traeume-und-kreativitaet">Träumen und Kreativität</a> erinnert daran: Schlaf ist mehr als ein Biomarker. Er ist eine sehr persönliche Erfahrung, und ihn jede Nacht zu überwachen, wirft echte Fragen nach Privatsphäre und Selbstbestimmung auf.
                 </p>
 <p>
-                    Bis dahin ein praktischer Hinweis: Wenn Sie mit Atemaussetzern schnarchen, tagsüber sehr müde sind oder man Ihnen sagt, dass Sie Ihre Träume im Schlaf ausleben, sprechen Sie mit Ihrer Ärztin oder Ihrem Arzt. Genau dafür ist eine Untersuchung im Schlaflabor gedacht.
+                    Bis dahin ein praktischer Hinweis: Wenn du mit Atemaussetzern schnarchst, tagsüber sehr müde bist oder man dir sagt, dass du deine Träume im Schlaf auslebst, sprich mit deiner Ärztin oder deinem Arzt. Genau dafür ist eine Untersuchung im Schlaflabor gedacht.
                 </p>
 </div>
 <!-- CTA Section -->
@@ -246,9 +246,9 @@ Eine Nacht im Schlaflabor: Elektroden auf dem Kopf, ein Clip am Finger, Gurte um
 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
 <i class="w-8 h-8 text-dream-salmon" data-lucide="brain"></i>
 </div>
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Kein Sensor zeichnet Ihre Träume auf. Sie schon.</h3>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Kein Sensor zeichnet deine Träume auf. Du schon.</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Noctalia bewahrt den Teil der Nacht, an den nur Sie sich erinnern. Halten Sie Ihren Traum per Sprache oder schriftlich fest, lassen Sie ihn transkribieren und lesen Sie Ihre Einträge wieder, um zu sehen, was zurückkehrt.
+                    Noctalia bewahrt den Teil der Nacht, an den nur du dich erinnerst. Halte deinen Traum per Sprache oder schriftlich fest, lass ihn transkribieren und lies deine Einträge wieder, um zu sehen, was zurückkehrt.
                 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/de/">
                     Mein Traumtagebuch beginnen <i class="w-5 h-5" data-lucide="arrow-right"></i>
@@ -264,7 +264,7 @@ Eine Nacht im Schlaflabor: Elektroden auf dem Kopf, ein Clip am Finger, Gurte um
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Nein. SleepFM schätzt aus Schlafaufzeichnungen ein künftiges Risiko; eine Diagnose stellt es nicht. Es ist ein Forschungsmodell, und jede Sorge um Ihre Gesundheit gehört zu einer Ärztin oder einem Arzt und zu den üblichen Untersuchungen.
+                            Nein. SleepFM schätzt aus Schlafaufzeichnungen ein künftiges Risiko; eine Diagnose stellt es nicht. Es ist ein Forschungsmodell, und jede Sorge um deine Gesundheit gehört zu einer Ärztin oder einem Arzt und zu den üblichen Untersuchungen.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -273,7 +273,7 @@ Eine Nacht im Schlaflabor: Elektroden auf dem Kopf, ein Clip am Finger, Gurte um
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Derzeit nicht. Das Modell beruht auf vollständigen Polysomnografien im Labor und wird nicht für Privatpersonen angeboten. Wenn Ihr Schlaf Sie beunruhigt, fragen Sie Ihre Ärztin oder Ihren Arzt, ob eine Untersuchung im Schlaflabor sinnvoll ist.
+                            Derzeit nicht. Das Modell beruht auf vollständigen Polysomnografien im Labor und wird nicht für Privatpersonen angeboten. Wenn dein Schlaf dich beunruhigt, frag deine Ärztin oder deinen Arzt, ob eine Untersuchung im Schlaflabor sinnvoll ist.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -282,7 +282,7 @@ Eine Nacht im Schlaflabor: Elektroden auf dem Kopf, ein Clip am Finger, Gurte um
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Ja, anhand dessen, was Sie sagen oder schreiben. Sprachverarbeitende Werkzeuge erkennen Figuren, Gefühle und Themen in vielen Traumberichten. In Noctalia schlägt die KI Ansätze und Fragen zu den Einträgen in Ihrem <a class="text-dream-salmon hover:underline" href="dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer">Traumtagebuch</a> vor; die eine wahre Bedeutung eines Traums kann sie nicht kennen.
+                            Ja, anhand dessen, was du sagst oder schreibst. Sprachverarbeitende Werkzeuge erkennen Figuren, Gefühle und Themen in vielen Traumberichten. In Noctalia schlägt die KI Ansätze und Fragen zu den Einträgen in deinem <a class="text-dream-salmon hover:underline" href="dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer">Traumtagebuch</a> vor; die eine wahre Bedeutung eines Traums kann sie nicht kennen.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -291,7 +291,7 @@ Eine Nacht im Schlaflabor: Elektroden auf dem Kopf, ein Clip am Finger, Gurte um
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Das hängt vom Werkzeug ab; lesen Sie also die Datenschutzerklärung, bevor Sie etwas teilen. Noctalia verkauft keine personenbezogenen Daten, zeigt keine personalisierte Werbung, nutzt Audio nur für die Transkription und speichert Transkripte in der Europäischen Union, wie die <a class="text-dream-salmon hover:underline" href="/de/datenschutz">Datenschutzerklärung</a> erläutert.
+                            Das hängt vom Werkzeug ab; lies also die Datenschutzerklärung, bevor du etwas teilst. Noctalia verkauft keine personenbezogenen Daten, zeigt keine personalisierte Werbung, nutzt Audio nur für die Transkription und speichert Transkripte in der Europäischen Union, wie die <a class="text-dream-salmon hover:underline" href="/de/datenschutz">Datenschutzerklärung</a> erläutert.
                         </p>
 </details>
 </div>
@@ -315,7 +315,7 @@ Eine Nacht im Schlaflabor: Elektroden auf dem Kopf, ein Clip am Finger, Gurte um
 <i class="w-5 h-5 text-dream-salmon" data-lucide="book-open"></i>
                     Verwandte Symbole
                 </h2>
-<p class="text-sm text-purple-300/60 mb-4">Vertiefen Sie die Symbole aus diesem Artikel:</p>
+<p class="text-sm text-purple-300/60 mb-4">Vertiefe die Symbole aus diesem Artikel:</p>
 <div class="flex flex-wrap gap-3">
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/spiegel">Traumdeutung Spiegel</a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/schluessel">Traumdeutung Schlüssel</a>
@@ -363,7 +363,7 @@ Eine Nacht im Schlaflabor: Elektroden auf dem Kopf, ein Clip am Finger, Gurte um
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="traeume-und-psychische-gesundheit-wie-ihr-schlaf-ihren-geist-offenbart">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Wissenschaft</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Träume und psychische Gesundheit</h3>
-<p class="text-sm text-gray-400">Wie Träume Ihr psychisches Wohlbefinden widerspiegeln und beeinflussen.</p>
+<p class="text-sm text-gray-400">Wie Träume dein psychisches Wohlbefinden widerspiegeln und beeinflussen.</p>
 </a>
 </div>
 </section>
@@ -372,6 +372,6 @@ Eine Nacht im Schlaflabor: Elektroden auf dem Kopf, ein Clip am Finger, Gurte um
 <!-- Health Disclaimer (E-E-A-T) -->
 <aside aria-label="Haftungsausschluss" class="glass-panel rounded-xl p-4 my-8 border border-purple-500/20" role="note">
 <p class="text-sm text-purple-200/70">
-<strong class="text-dream-cream">Hinweis:</strong> Dieser Artikel dient nur zu Informationszwecken und stellt keine medizinische oder psychologische Beratung dar. Wenn Sie unter anhaltenden Schlafstörungen oder psychischen Problemen leiden, konsultieren Sie bitte eine qualifizierte medizinische Fachkraft.
+<strong class="text-dream-cream">Hinweis:</strong> Dieser Artikel dient nur zu Informationszwecken und stellt keine medizinische oder psychologische Beratung dar. Wenn du unter anhaltenden Schlafstörungen oder psychischen Problemen leidest, konsultiere bitte eine qualifizierte medizinische Fachkraft.
                 </p>
 </aside>

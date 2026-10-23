@@ -4,6 +4,9 @@
 > its Settings debug entry and its tests were deleted to simplify Dreamer; this
 > page is kept as history. `expo-speech` stays installed until the next native
 > build, because removing a native module changes the fingerprint runtime version.
+> Meditation also keeps its separate `expo-speech` dependency for breathing guidance;
+> Dreamer dictation continues to use `expo-speech-recognition`. Links below point to
+> the last implementation before removal; the commands and results are historical.
 
 Internal prototype kernel for an optional live voice loop after a persisted
 original dream. This ticket is local and read-only of TI-427: it reuses persist
@@ -44,7 +47,7 @@ privacy, or quota failures are a hard no-go, not a reason to start B.
 
 ## Kernel
 
-Pure persistable module: [`lib/voiceLiveSpike.ts`](../../../lib/voiceLiveSpike.ts).
+Pure persistable module: [`lib/voiceLiveSpike.ts`](https://github.com/thannous/dreamer/blob/4e4f292f94bcb9c9c380536536996e370e98b9a2/lib/voiceLiveSpike.ts).
 
 Statuses: `idle`, `listening`, `await_persist`, `thinking`, `speaking`,
 `interrupted`, `paused`, `offline`.
@@ -73,14 +76,14 @@ the existing `dreamer.voiceLiveSpike.v3` local flag:
 
 | Boundary | Location |
 |---|---|
-| Gate / persist-first loop / stub AI | [`lib/voiceLiveSpikeHost.ts`](../../../lib/voiceLiveSpikeHost.ts) |
-| Session lane | `voice_live_spike_v3:{dreamId}` via [`services/voiceLiveSpikeStorage.ts`](../../../services/voiceLiveSpikeStorage.ts) |
+| Gate / persist-first loop / stub AI | [`lib/voiceLiveSpikeHost.ts`](https://github.com/thannous/dreamer/blob/4e4f292f94bcb9c9c380536536996e370e98b9a2/lib/voiceLiveSpikeHost.ts) |
+| Session lane | `voice_live_spike_v3:{dreamId}` via [`services/voiceLiveSpikeStorage.ts`](https://github.com/thannous/dreamer/blob/4e4f292f94bcb9c9c380536536996e370e98b9a2/services/voiceLiveSpikeStorage.ts) |
 | Debug enablement | `dreamer.voiceLiveSpike.v3.debug` |
 | Local flag | `dreamer.voiceLiveSpike.v3.flag` |
-| TTS after persist | [`services/voiceLiveSpikeTts.ts`](../../../services/voiceLiveSpikeTts.ts) (`expo-speech`) |
-| Native STT reuse | `useRecordingSession` inside [`components/dev/VoiceLiveSpikeHost.tsx`](../../../components/dev/VoiceLiveSpikeHost.tsx) |
-| Route | [`app/dev/voice-live-spike.tsx`](../../../app/dev/voice-live-spike.tsx) returns `null` outside `__DEV__` |
-| Settings entry | [`components/dev/VoiceLiveSpikeDebugEntry.tsx`](../../../components/dev/VoiceLiveSpikeDebugEntry.tsx) returns `null` outside `__DEV__` |
+| TTS after persist | [`services/voiceLiveSpikeTts.ts`](https://github.com/thannous/dreamer/blob/4e4f292f94bcb9c9c380536536996e370e98b9a2/services/voiceLiveSpikeTts.ts) (`expo-speech`) |
+| Native STT reuse | `useRecordingSession` inside [`components/dev/VoiceLiveSpikeHost.tsx`](https://github.com/thannous/dreamer/blob/4e4f292f94bcb9c9c380536536996e370e98b9a2/components/dev/VoiceLiveSpikeHost.tsx) |
+| Route | [`app/dev/voice-live-spike.tsx`](https://github.com/thannous/dreamer/blob/4e4f292f94bcb9c9c380536536996e370e98b9a2/app/dev/voice-live-spike.tsx) returns `null` outside `__DEV__` |
+| Settings entry | [`components/dev/VoiceLiveSpikeDebugEntry.tsx`](https://github.com/thannous/dreamer/blob/4e4f292f94bcb9c9c380536536996e370e98b9a2/components/dev/VoiceLiveSpikeDebugEntry.tsx) returns `null` outside `__DEV__` |
 
 The host hydrates that spike lane before `start`. A valid stored session is
 resumed; a missing/idle snapshot starts a new Prototype A chat loop. `remove`

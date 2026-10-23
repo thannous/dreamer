@@ -7,6 +7,7 @@ import { createDreamerPersonaAgents } from './dreamer-personas';
 import { readFileSync } from 'node:fs';
 import { assertBackendTarget } from '../../scripts/lib/backend-e2e-local.cjs';
 import { assertTestSupabaseTarget, readTestEnv, BRANCH_WEB_PORT } from './branch-target';
+import { nativeBackendCredentials } from './native-backend-state';
 
 const root = fileURLToPath(new URL('../../', import.meta.url));
 const product = process.env.E2E_PRODUCT ?? 'dreamer';
@@ -16,6 +17,9 @@ if (!products.includes(product) || !['web', 'android', 'ios'].includes(platform)
   throw new Error('Select dreamer|lucid|meditation|site|backend|branch and web|android|ios.');
 if (['site', 'backend', 'branch'].includes(product) && platform !== 'web') throw new Error('The site and backend have web targets only.');
 const native = platform !== 'web';
+const nativeJourneys = process.env.E2E_NATIVE_JOURNEYS === '1';
+if (nativeJourneys && (!native || product !== 'dreamer' || process.env.E2E_PERSONAS === '1'))
+  throw new Error('Native recovery journeys require their dedicated Dreamer local-backend profile.');
 const backend = product === 'backend';
 const branch = product === 'branch';
 if (branch) assertTestSupabaseTarget(readTestEnv());
@@ -38,7 +42,7 @@ if (!native && (!Number.isInteger(port) || port < 1 || port > 65535))
 if ((backend || branch) && port !== ports[product as 'backend' | 'branch'])
   throw new Error('Backend and saved branch sessions require their fixed local origin.');
 const bundles: Record<string, string> = { dreamer: 'com.tanuki75.noctalia', lucid: 'com.tanuki75.noctalia.lucid', meditation: 'com.noctalia.meditation' };
-const bundleId = bundles[product];
+const bundleId = nativeJourneys ? 'com.tanuki75.noctalia.qa' : bundles[product];
 // Managed app commands inherit only the runner's public environment allowlist.
 // Restore the caller's NODE_OPTIONS exactly, including its absence.
 const appNodeOptions = process.env.E2E_APP_NODE_OPTIONS_PRESENT === undefined
@@ -64,9 +68,11 @@ const managedCommand = !native && product !== 'site'
 
 export default {
   projectId: `noctalia-${product}`,
-  tests: branch ? 'tests/branch.web.e2e.ts' : backend ? 'tests/backend-*.web.e2e.ts' : personas ? `tests/dreamer-personas.${native ? 'mobile' : 'web'}.e2e.ts`
+  tests: nativeJourneys ? ['tests/dreamer-voice.mobile.e2e.ts', 'tests/dreamer-sync-account.mobile.e2e.ts', 'tests/dreamer-recovery.mobile.e2e.ts']
+    : branch ? 'tests/branch.web.e2e.ts' : backend ? 'tests/backend-*.web.e2e.ts' : personas ? `tests/dreamer-personas.${native ? 'mobile' : 'web'}.e2e.ts`
     : product === 'dreamer' && !native ? 'tests/dreamer*.web.e2e.ts' : `tests/${product}.${native ? 'mobile' : 'web'}.e2e.ts`,
   ...(personas ? { agents: createDreamerPersonaAgents(process.env.E2E_PERSONA_MODEL?.trim() || undefined) } : {}),
+  ...(nativeJourneys ? { credentials: nativeBackendCredentials() } : {}),
   targets: [{
     name: `${product}-${platform}`,
     engine: native

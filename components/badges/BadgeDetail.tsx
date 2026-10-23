@@ -20,14 +20,13 @@ import { DURATION, EASING, PressableScale, ProgressFill, Reveal, SPRING } from '
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useContentWindow } from '@/context/ContentWindowContext';
 import { BADGE_TIERS, type BadgeFamilyId, type BadgeTierLevel } from '@/lib/badges/catalog';
-import type { BadgeFamilyState } from '@/lib/badges/ledger';
+import { nextTierPercent, type BadgeFamilyState } from '@/lib/badges/ledger';
+import type { TranslateFunction as Translate } from '@/lib/errors';
 
-import { BadgeCardBackFace, BadgeCardFrame, TierPips } from './BadgeCard';
+import { BADGE_CARD_RATIO, BadgeCardBackFace, BadgeCardFrame, TierPips } from './BadgeCard';
 import { BadgeMedallion } from './BadgeMedallion';
-import { badgeActionLabel, badgeGoal, badgeName, badgeRule, badgeTierName } from './badgeCopy';
+import { badgeActionLabel, badgeGoal, badgeName, badgeProgressText, badgeRule, badgeTierName } from './badgeCopy';
 import { COLLECTION, getBadgeMaterial, NIGHT_ACTION, tierOfLevel } from './badgeMaterials';
-
-type Translate = (key: string, params?: Record<string, string | number>) => string;
 
 type Props = {
   state: BadgeFamilyState;
@@ -151,11 +150,9 @@ export function BadgeDetail({ state, t, formatNumber, formatDate, onClose, onRev
   }));
 
   const nextLevel = state.tier < 3 ? ((state.tier + 1) as 1 | 2 | 3) : null;
-  const previousThreshold = state.tier === 0 ? 0 : family.thresholds[state.tier - 1];
-  const percent = state.nextThreshold == null
-    ? 100
-    : ((state.progress - previousThreshold) / Math.max(1, state.nextThreshold - previousThreshold)) * 100;
+  const percent = nextTierPercent(state);
   const remaining = state.nextThreshold == null ? 0 : Math.max(0, state.nextThreshold - state.progress);
+  const remainingText = t(remaining === 1 ? 'badges.detail.remaining_one' : 'badges.detail.remaining', { count: formatNumber(remaining) });
   const earnedOn = (level: number) => {
     const at = state.earnedAt[level - 1];
     return at ? t('badges.detail.earned_on', {
@@ -163,7 +160,7 @@ export function BadgeDetail({ state, t, formatNumber, formatDate, onClose, onRev
       date: formatDate(at, { day: 'numeric', month: 'long', year: 'numeric' }),
     }) : null;
   };
-  const cardHeight = Math.round(cardWidth / 0.7);
+  const cardHeight = Math.round(cardWidth / BADGE_CARD_RATIO);
   const shownMaterial = getBadgeMaterial(shownVeiled ? null : shownTier);
 
   return (
@@ -237,11 +234,10 @@ export function BadgeDetail({ state, t, formatNumber, formatDate, onClose, onRev
                 const earned = level <= state.tier;
                 const selected = level === shownLevel;
                 const material = getBadgeMaterial(earned ? tier : null);
-                // RNW reads the ARIA prop directly; native keeps accessibilityState.
+                // The web reads the ARIA prop, not accessibilityState; native reads both.
                 return (
                   <PressableScale key={tier} onPress={() => setShownLevel(level)} haptic="selection"
-                    accessibilityRole="radio" accessibilityState={{ selected, checked: selected }}
-                    aria-checked={Platform.OS === 'web' ? selected : undefined}
+                    accessibilityRole="radio" accessibilityState={{ selected }} aria-checked={selected}
                     accessibilityLabel={`${badgeTierName(t, tier)}. ${badgeGoal(t, family, level, formatNumber)}. ${earned ? earnedOn(level) ?? t('badges.a11y.held', { tier: badgeTierName(t, tier) }) : t('badges.detail.not_yet')}`}
                     testID={`collection.detail.tier.${tier}`}
                     className="flex-1 items-center gap-1.5 rounded-[16px] border px-1.5 pb-2.5 pt-3"
@@ -270,15 +266,12 @@ export function BadgeDetail({ state, t, formatNumber, formatDate, onClose, onRev
                       {t('badges.detail.next', { tier: badgeTierName(t, BADGE_TIERS[nextLevel - 1]) })}
                     </Text>
                     <Text style={{ color: getBadgeMaterial(BADGE_TIERS[nextLevel - 1]).ink }} className="font-sans-medium text-body-sm">
-                      {t('badges.card.progress', {
-                        count: formatNumber(Math.min(state.progress, state.nextThreshold ?? 0)),
-                        goal: formatNumber(state.nextThreshold ?? 0),
-                      })}
+                      {badgeProgressText(t, state, formatNumber)}
                     </Text>
                   </View>
                   <View accessible accessibilityRole="progressbar"
                     accessibilityValue={{ min: 0, max: 100, now: Math.round(Math.min(100, Math.max(0, percent))) }}
-                    accessibilityLabel={t(remaining === 1 ? 'badges.detail.remaining_one' : 'badges.detail.remaining', { count: formatNumber(remaining) })}
+                    accessibilityLabel={remainingText}
                     className="h-1.5 overflow-hidden rounded-full" style={{ backgroundColor: COLLECTION.track }}>
                     <ProgressFill percent={percent} className="h-full rounded-full"
                       style={{ backgroundColor: getBadgeMaterial(BADGE_TIERS[nextLevel - 1]).ink }} />
@@ -286,12 +279,12 @@ export function BadgeDetail({ state, t, formatNumber, formatDate, onClose, onRev
                   <Text style={{ color: COLLECTION.muted }} className="font-sans text-body-sm">
                     {badgeGoal(t, family, nextLevel, formatNumber)}
                     {' · '}
-                    {t(remaining === 1 ? 'badges.detail.remaining_one' : 'badges.detail.remaining', { count: formatNumber(remaining) })}
+                    {remainingText}
                   </Text>
                 </>
               ) : (
                 <View className="flex-row items-center gap-3">
-                  <TierPips tier={3 as BadgeTierLevel} />
+                  <TierPips tier={3} />
                   <Text style={{ color: COLLECTION.gold.ink }} className="min-w-0 shrink font-sans-bold text-body">
                     {t('badges.detail.complete')}
                   </Text>

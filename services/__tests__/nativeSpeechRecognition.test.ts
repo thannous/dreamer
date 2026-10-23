@@ -351,6 +351,38 @@ describe('native speech module integration', () => {
     session?.abort();
   });
 
+  it('passes guarded QA audio to the actual native start boundary on iOS and Android', async () => {
+    // Regression: resolving a valid fixture alone is insufficient if start()
+    // silently omits it and listens to the microphone instead. Native runs must
+    // prove actual recognition; this check isolates that wiring failure.
+    const qaAudio = require('../nativeQaSpeechAudio');
+    const source = { uri: 'file:///fixture.wav', audioChannels: 1, audioEncoding: 2, sampleRate: 16000 };
+    jest.spyOn(qaAudio, 'getNativeQaSpeechAudioSource').mockResolvedValue(source);
+    const { Platform } = require('react-native');
+    for (const platform of ['ios', 'android']) {
+      Platform.OS = platform;
+      (Platform as any).Version = platform === 'ios' ? 18 : 36;
+      const nativeStart = jest.fn();
+      const speechModule = {
+        isRecognitionAvailable: () => true,
+        supportsOnDeviceRecognition: () => true,
+        getSupportedLocales: async () => ({ installedLocales: ['en-US'] }),
+        supportsRecording: () => true,
+        getStateAsync: async () => 'inactive',
+        start: nativeStart,
+        abort: jest.fn(),
+        addListener: jest.fn(() => ({ remove: jest.fn() })),
+      } as any;
+      __setCachedSpeechModuleForTests(speechModule);
+      const session = await startNativeSpeechSession('en-US', { permissionAlreadyGranted: true });
+      expect(session).not.toBeNull();
+      expect(nativeStart).toHaveBeenCalledWith(expect.objectContaining({
+        audioSource: source, lang: 'en-US', interimResults: true,
+      }));
+      session?.abort();
+    }
+  });
+
   it('removes every listener when starting recognition throws', async () => {
     const { Platform } = require('react-native');
     Platform.OS = 'ios';

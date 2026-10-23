@@ -16,6 +16,7 @@ import { startOfWeek } from '@/lib/weekConstellations';
 
 import {
   BADGE_FAMILIES,
+  getBadgeFamily,
   isBadgeFamilyId,
   tierForProgress,
   type BadgeFamily,
@@ -54,13 +55,20 @@ export const createEmptyBadgeLedger = (): BadgeLedger => ({
 export type BadgeDreamRef = Pick<DreamAnalysis, 'id' | 'remoteId' | 'clientRequestId'> &
   Partial<Pick<DreamAnalysis, 'isFavorite'>>;
 
+/** The fields of a dream an event needs, so a whole dream is not kept with it. */
+export const dreamRef = ({ id, remoteId, clientRequestId, isFavorite }: BadgeDreamRef): BadgeDreamRef =>
+  ({ id, remoteId, clientRequestId, isFavorite });
+
 /**
  * A successful action. Favourites, old memories and personal images are not events: the
  * journal shows them once they are durably there, and the ledger keeps what it saw.
  */
 export type BadgeEvent =
-  /** A new dream reached durable storage. `typed` and `voiced` say how its words arrived. */
-  | { type: 'dream_saved'; dream: BadgeDreamRef; typed: boolean; voiced: boolean }
+  /**
+   * A new dream reached durable storage. `input` says how its words arrived: recognised
+   * speech, typing alone, or neither (a restored draft).
+   */
+  | { type: 'dream_saved'; dream: BadgeDreamRef; input: 'voice' | 'text' | null }
   /** A saved dream's page stayed open to be read again. */
   | { type: 'dream_reopened'; dream: BadgeDreamRef; now: number }
   | { type: 'narrative_edited'; dream: BadgeDreamRef }
@@ -75,7 +83,7 @@ export type BadgeEvent =
 // ---------------------------------------------------------------------------------- keys --
 
 /** Every name a dream is known by: its stable request id, its server row, its local id. */
-export function dreamAliases(dream: BadgeDreamRef): string[] {
+function dreamAliases(dream: BadgeDreamRef): string[] {
   const aliases: string[] = [];
   if (dream.clientRequestId) aliases.push(`c:${dream.clientRequestId}`);
   if (dream.remoteId != null) aliases.push(`r:${dream.remoteId}`);
@@ -83,9 +91,9 @@ export function dreamAliases(dream: BadgeDreamRef): string[] {
   return aliases;
 }
 
-export const dayKey = (timestamp: number): string => getLocalDateKey(timestamp);
-export const weekKey = (timestamp: number): string => getLocalDateKey(startOfWeek(timestamp));
-export const monthKey = (timestamp: number): string => getLocalDateKey(timestamp).slice(0, 7);
+const dayKey = (timestamp: number): string => getLocalDateKey(timestamp);
+const weekKey = (timestamp: number): string => getLocalDateKey(startOfWeek(timestamp));
+const monthKey = (timestamp: number): string => getLocalDateKey(timestamp).slice(0, 7);
 
 const splitAliases = (key: string) => key.split('|').filter(Boolean);
 const stableAliases = (aliases: readonly string[]) => aliases.filter((alias) => alias.startsWith('c:') || alias.startsWith('r:'));
@@ -142,8 +150,7 @@ export function countDistinctDreams(groups: Iterable<readonly string[]>): number
 
 // ------------------------------------------------------------------------------ reducing --
 
-const familyById = new Map(BADGE_FAMILIES.map((family) => [family.id, family]));
-const gold = (id: BadgeFamilyId) => familyById.get(id)!.thresholds[2];
+const gold = (id: BadgeFamilyId) => getBadgeFamily(id)!.thresholds[2];
 
 /** Adds one distinct key; the same ledger comes back when nothing changed. */
 function addKey(ledger: BadgeLedger, id: BadgeFamilyId, key: string): BadgeLedger {
@@ -152,23 +159,52 @@ function addKey(ledger: BadgeLedger, id: BadgeFamilyId, key: string): BadgeLedge
   return { ...ledger, keys: { ...ledger.keys, [id]: [...keys, key] } };
 }
 
-/** Adds a dream by its names unless one of them is already counted. */
-function addDreamAliases(ledger: BadgeLedger, id: BadgeFamilyId, aliases: readonly string[]): BadgeLedger {
-  if (aliases.length === 0) return ledger;
-  const keys = ledger.keys[id] ?? [];
-  const index = keys.findIndex((key) => sharesDream(splitAliases(key), aliases));
-  if (index < 0) return addKey(ledger, id, aliases.join('|'));
-  // Already counted: it may have received its server id since, which joins its names.
-  const known = splitAliases(keys[index]);
-  const added = aliases.filter((alias) => !known.includes(alias));
-  if (added.length === 0) return ledger;
-  const next = [...keys];
-  next[index] = [...known, ...added].join('|');
-  return { ...ledger, keys: { ...ledger.keys, [id]: next } };
+/**
+ * Adds each dream by its names unless one of them is already counted. The counted keys are
+ * indexed by alias once, so a whole journal folds in linear time rather than key by key.
+ */
+function addDreamAliases(ledger: BadgeLedger, id: BadgeFamilyId, groups: Iterable<readonly string[]>): BadgeLedger {
+  const stored = ledger.keys[id] ?? [];
+  const known = stored.map(splitAliases);
+  const owners = new Map<string, number[]>();
+  const own = (aliases: readonly string[], index: number) => {
+    for (const alias of aliases) {
+      const indices = owners.get(alias);
+      if (indices) indices.push(index);
+      else owners.set(alias, [index]);
+    }
+  };
+  known.forEach(own);
+  let keys = stored;
+  for (const aliases of groups) {
+    if (aliases.length === 0) continue;
+    // The first counted dream sharing a name, as a scan of the keys in order would find it.
+    let index = -1;
+    for (const alias of aliases) {
+      for (const candidate of owners.get(alias) ?? []) {
+        if ((index < 0 || candidate < index) && sharesDream(known[candidate], aliases)) index = candidate;
+      }
+    }
+    if (index < 0) {
+      const key = aliases.join('|');
+      if (keys.length >= gold(id) || keys.includes(key)) continue;
+      keys = [...keys, key];
+      index = keys.length - 1;
+    } else {
+      // Already counted: it may have received its server id since, which joins its names.
+      const added = aliases.filter((alias) => !known[index].includes(alias));
+      if (added.length === 0) continue;
+      keys = [...keys];
+      keys[index] = [...known[index], ...added].join('|');
+    }
+    known[index] = splitAliases(keys[index]);
+    own(known[index], index);
+  }
+  return keys === stored ? ledger : { ...ledger, keys: { ...ledger.keys, [id]: keys } };
 }
 
 const addDream = (ledger: BadgeLedger, id: BadgeFamilyId, dream: BadgeDreamRef) =>
-  addDreamAliases(ledger, id, dreamAliases(dream));
+  addDreamAliases(ledger, id, [dreamAliases(dream)]);
 
 function raiseBest(ledger: BadgeLedger, id: BadgeFamilyId, value: number): BadgeLedger {
   if (!Number.isFinite(value) || value <= (ledger.best[id] ?? 0)) return ledger;
@@ -176,7 +212,7 @@ function raiseBest(ledger: BadgeLedger, id: BadgeFamilyId, value: number): Badge
 }
 
 /** Whole local days between a dream's saving and now; 0 on the day it was saved. */
-export function daysSinceSaved(dream: BadgeDreamRef, now: number): number {
+function daysSinceSaved(dream: BadgeDreamRef, now: number): number {
   if (!Number.isFinite(dream.id) || !Number.isFinite(now)) return 0;
   return Math.max(0, differenceInCalendarDays(now, dream.id));
 }
@@ -185,10 +221,9 @@ export function daysSinceSaved(dream: BadgeDreamRef, now: number): number {
 export function applyBadgeEvent(ledger: BadgeLedger, event: BadgeEvent): BadgeLedger {
   switch (event.type) {
     case 'dream_saved': {
-      let next = ledger;
-      if (event.typed) next = addDream(next, 'ink-dreamer', event.dream);
-      if (event.voiced) next = addDream(next, 'night-voice', event.dream);
-      return next;
+      if (event.input === 'text') return addDream(ledger, 'ink-dreamer', event.dream);
+      if (event.input === 'voice') return addDream(ledger, 'night-voice', event.dream);
+      return ledger;
     }
     case 'dream_reopened': {
       // Read again on a later day than it was saved: the page right after saving is not a return.
@@ -269,6 +304,13 @@ export function readBadgeJournal(dreams: readonly DreamAnalysis[]): JournalReadi
 
 const storedGroups = (ledger: BadgeLedger, id: BadgeFamilyId) => (ledger.keys[id] ?? []).map(splitAliases);
 
+/** A family's value from what the ledger itself holds: its longest gap, dreams or keys. */
+function storedProgress(ledger: BadgeLedger, family: BadgeFamily): number {
+  if (family.unit === 'max_days') return ledger.best[family.id] ?? 0;
+  if (family.unit === 'dream') return countDistinctDreams(storedGroups(ledger, family.id));
+  return (ledger.keys[family.id] ?? []).length;
+}
+
 /** Every family's value from the ledger and a journal already read. */
 export function progressFromJournal(ledger: BadgeLedger, reading: JournalReading): Record<BadgeFamilyId, number> {
   const fromJournal: Partial<Record<BadgeFamilyId, number>> = {
@@ -283,13 +325,8 @@ export function progressFromJournal(ledger: BadgeLedger, reading: JournalReading
   };
   const progress = {} as Record<BadgeFamilyId, number>;
   for (const family of BADGE_FAMILIES) {
-    const stored = family.unit === 'max_days'
-      ? ledger.best[family.id] ?? 0
-      : family.unit === 'dream'
-        ? countDistinctDreams(storedGroups(ledger, family.id))
-        : (ledger.keys[family.id] ?? []).length;
     const kept = family.fromJournal ? ledger.best[family.id] ?? 0 : 0;
-    progress[family.id] = Math.max(fromJournal[family.id] ?? 0, stored, kept);
+    progress[family.id] = Math.max(fromJournal[family.id] ?? 0, storedProgress(ledger, family), kept);
   }
   return progress;
 }
@@ -315,13 +352,13 @@ export function settleBadgeLedger(
   let next = ledger;
   // Keep identities as well as maxima: disjoint devices and later-deleted dreams must
   // contribute once when their histories meet. A maximum alone cannot be added safely.
-  for (const aliases of reading.saved) next = addDreamAliases(next, 'night-journal', aliases);
+  next = addDreamAliases(next, 'night-journal', reading.saved);
   for (const key of reading.days) next = addKey(next, 'gentle-rhythm', key);
   for (const key of reading.weeks) next = addKey(next, 'night-thread', key);
   for (const key of reading.months) next = addKey(next, 'moon-cycles', key);
-  for (const aliases of reading.remembered) next = addDreamAliases(next, 'memory-keeper', aliases);
-  for (const aliases of reading.favorites) next = addDreamAliases(next, 'treasure-keeper', aliases);
-  for (const aliases of reading.pictured) next = addDreamAliases(next, 'dream-painter', aliases);
+  next = addDreamAliases(next, 'memory-keeper', reading.remembered);
+  next = addDreamAliases(next, 'treasure-keeper', reading.favorites);
+  next = addDreamAliases(next, 'dream-painter', reading.pictured);
   const progress = progressFromJournal(next, reading);
   for (const family of BADGE_FAMILIES) {
     if (family.fromJournal) next = raiseBest(next, family.id, progress[family.id]);
@@ -346,22 +383,15 @@ function stamp(ledger: BadgeLedger, family: BadgeFamily, value: number, now: num
 export function stampActionTiers(ledger: BadgeLedger, now: number): BadgeLedger {
   let next = ledger;
   for (const family of BADGE_FAMILIES) {
-    if (family.fromJournal) continue;
-    const value = family.unit === 'max_days'
-      ? ledger.best[family.id] ?? 0
-      : family.unit === 'dream'
-        ? countDistinctDreams(storedGroups(ledger, family.id))
-        : (ledger.keys[family.id] ?? []).length;
-    next = stamp(next, family, value, now);
+    if (!family.fromJournal) next = stamp(next, family, storedProgress(ledger, family), now);
   }
   return next;
 }
 
-/** Marks a family's tiers as unveiled up to the one the collection showed, or every one earned. */
-export function revealBadgeFamily(ledger: BadgeLedger, id: BadgeFamilyId, shown: number = 0): BadgeLedger {
-  const level = Math.min(3, Math.max(0, shown || (ledger.earned[id] ?? []).length)) as BadgeTierLevel;
-  if ((ledger.revealed[id] ?? 0) >= level) return ledger;
-  return { ...ledger, revealed: { ...ledger.revealed, [id]: level } };
+/** Marks a family's tiers as unveiled up to the one the collection showed. */
+export function revealBadgeFamily(ledger: BadgeLedger, id: BadgeFamilyId, shown: BadgeTierLevel): BadgeLedger {
+  if ((ledger.revealed[id] ?? 0) >= shown) return ledger;
+  return { ...ledger, revealed: { ...ledger.revealed, [id]: shown } };
 }
 
 /**
@@ -370,7 +400,7 @@ export function revealBadgeFamily(ledger: BadgeLedger, id: BadgeFamilyId, shown:
  */
 export function actionsOnly(ledger: BadgeLedger): BadgeLedger {
   const keep = <T,>(record: Partial<Record<BadgeFamilyId, T>>) => Object.fromEntries(
-    Object.entries(record).filter(([id]) => !familyById.get(id as BadgeFamilyId)?.fromJournal),
+    Object.entries(record).filter(([id]) => !getBadgeFamily(id)?.fromJournal),
   ) as Partial<Record<BadgeFamilyId, T>>;
   return {
     version: ledger.version,
@@ -396,6 +426,13 @@ export type BadgeFamilyState = {
   unrevealed: number;
 };
 
+/** How far along the way from the tier held to the next one, in percent; 100 once gold is held. */
+export function nextTierPercent(state: BadgeFamilyState): number {
+  if (state.nextThreshold == null) return 100;
+  const previous = state.tier === 0 ? 0 : state.family.thresholds[state.tier - 1];
+  return ((state.progress - previous) / Math.max(1, state.nextThreshold - previous)) * 100;
+}
+
 export type BadgeCollection = {
   families: BadgeFamilyState[];
   earnedCards: number;
@@ -411,7 +448,7 @@ export function buildBadgeCollection(
   const families = BADGE_FAMILIES.map((family): BadgeFamilyState => {
     const value = progress[family.id] ?? 0;
     const earnedAt = ledger.earned[family.id] ?? [];
-    const tier = Math.min(3, Math.max(earnedAt.length, tierForProgress(family.thresholds, value))) as BadgeTierLevel;
+    const tier = Math.max(earnedAt.length, tierForProgress(family.thresholds, value)) as BadgeTierLevel;
     return {
       family,
       progress: value,
@@ -442,12 +479,16 @@ const isStampArray = (value: unknown): value is number[] =>
 const entriesOf = (field: unknown) =>
   field && typeof field === 'object' && !Array.isArray(field) ? Object.entries(field as Record<string, unknown>) : [];
 
-/** Reads a stored ledger, keeping every well-formed family and dropping the rest. */
-export function parseBadgeLedger(raw: unknown): BadgeLedger {
-  const ledger = createEmptyBadgeLedger();
-  if (!raw || typeof raw !== 'object') return ledger;
+/**
+ * Reads a stored ledger, keeping every well-formed family and dropping the rest. Anything
+ * that is not a ledger of this version gives null: an empty ledger in its place would let
+ * a write lose every tier it holds.
+ */
+export function parseBadgeLedger(raw: unknown): BadgeLedger | null {
+  if (!raw || typeof raw !== 'object') return null;
   const value = raw as Partial<Record<keyof BadgeLedger, unknown>>;
-  if (value.version !== BADGE_LEDGER_VERSION) return ledger;
+  if (value.version !== BADGE_LEDGER_VERSION) return null;
+  const ledger = createEmptyBadgeLedger();
   for (const [id, keys] of entriesOf(value.keys)) {
     if (isBadgeFamilyId(id) && isStringArray(keys)) ledger.keys[id] = [...new Set(keys)].slice(0, gold(id));
   }
@@ -470,11 +511,10 @@ export function parseBadgeLedger(raw: unknown): BadgeLedger {
 export function mergeBadgeLedgers(base: BadgeLedger, other: BadgeLedger): BadgeLedger {
   let next = base;
   for (const [id, keys] of Object.entries(other.keys) as [BadgeFamilyId, string[]][]) {
-    const family = familyById.get(id);
+    const family = getBadgeFamily(id);
     if (!family) continue;
-    for (const key of keys) {
-      next = family.unit === 'dream' ? addDreamAliases(next, id, splitAliases(key)) : addKey(next, id, key);
-    }
+    if (family.unit === 'dream') next = addDreamAliases(next, id, keys.map(splitAliases));
+    else for (const key of keys) next = addKey(next, id, key);
   }
   for (const [id, best] of Object.entries(other.best) as [BadgeFamilyId, number][]) next = raiseBest(next, id, best);
   for (const [id, stamps] of Object.entries(other.earned) as [BadgeFamilyId, number[]][]) {

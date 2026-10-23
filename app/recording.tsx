@@ -1233,8 +1233,11 @@ function RecordingScreen() {
         void trackDreamSaveMilestone(isFirstDream);
         // Spoken words make it a told dream; otherwise typed ones make it a written one.
         // A restored draft alone says neither.
-        const voiced = voicedCaptureRef.current;
-        recordBadgeEvent({ type: 'dream_saved', dream: savedDream, voiced, typed: !voiced && typedCaptureRef.current });
+        recordBadgeEvent({
+          type: 'dream_saved',
+          dream: savedDream,
+          input: voicedCaptureRef.current ? 'voice' : typedCaptureRef.current ? 'text' : null,
+        });
       }
       clearAfterSuccessfulSave();
       setDraftDream(savedDream);

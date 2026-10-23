@@ -49,3 +49,17 @@ export const NETWORK_REQUEST_POLICIES = {
   textToSpeech: createPolicy(60000, 0, 1200),
   transcribeAudio: createPolicy(60000, 0, 1200),
 } as const;
+
+/** Runs a cancellable request (a Supabase query or RPC), aborting it after `timeoutMs`. */
+export async function withAbortTimeout<T>(
+  timeoutMs: number,
+  request: (signal: AbortSignal) => PromiseLike<T>,
+): Promise<T> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await request(controller.signal);
+  } finally {
+    clearTimeout(timer);
+  }
+}
