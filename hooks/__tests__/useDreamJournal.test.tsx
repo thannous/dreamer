@@ -3110,6 +3110,51 @@ describe('useDreamJournal', () => {
       }));
     });
 
+    it('keeps the analysis pending when an image registers after its result read fails', async () => {
+      mockEnvState.analysisJobsEnabled = true;
+      setMockUser({ id: 'user-1' });
+      const requestId = '3f73ab45-9a14-4db9-94a3-d24724457d9e';
+      const existingDream = buildDream({
+        id: 1,
+        remoteId: 101,
+        isAnalyzed: true,
+        analysisStatus: 'done',
+        analysisRequestId: requestId,
+        interpretation: 'Previous interpretation',
+        imageUrl: 'https://example.com/previous.webp',
+      });
+      let cache: DreamAnalysis[] = [];
+      mockSaveCachedRemoteDreams.mockImplementation(async (value: DreamAnalysis[]) => { cache = value; });
+      mockFetchDreamsFromSupabase.mockResolvedValue([existingDream]);
+      mockUpdateDreamInSupabase.mockImplementation(async (dream: DreamAnalysis) => ({ ...dream }));
+      mockFetchDreamFromSupabase.mockRejectedValue(new Error('Network request failed'));
+      mockGetDreamAnalysisJobStatus.mockResolvedValue({
+        jobId: 'analysis-job-1',
+        status: 'succeeded',
+        clientRequestId: requestId,
+        resultPayload: { dreamId: 101 },
+      });
+
+      const { result } = await renderLoadedDreamJournal();
+
+      await act(async () => {
+        await expect(result.current.analyzeDream(1, existingDream.transcript, { lang: 'fr' }))
+          .rejects.toThrow('Network request failed');
+      });
+      await act(async () => {
+        await result.current.generateDreamImage(1);
+      });
+
+      // The new interpretation was never read: an image requested before any retry or
+      // recovery must not mark the previous reading complete and hide it from recovery.
+      expect(mockSubmitImageGenerationJob).toHaveBeenCalledTimes(1);
+      expect(cache.find((dream) => dream.remoteId === 101)).toEqual(expect.objectContaining({
+        imageJobId: 'job-queued',
+        analysisStatus: 'pending',
+        interpretation: 'Previous interpretation',
+      }));
+    });
+
     it('keeps the latest server revision when legacy image admission fails', async () => {
       setMockUser({ id: 'user-1' });
       const existingDream = buildDream({
