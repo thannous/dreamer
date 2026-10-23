@@ -21,6 +21,14 @@ There is no feature-specific palette or appearance provider.
   mark in spaced capitals between hairlines, the story opening on a raised initial (its
   words unchanged, for reading and copying), and the actions as a colophon under an
   ornament. The name keeps its place and alignment: the capture seal lands on it.
+- In an expanded native window (the open iPhone Duo held as a book, `getJournalSpread`)
+  the dream lies open on two facing pages bound at the display's fold: the plate (or the
+  illustration's place), the name and the quote as an epigraph on the left; the running
+  head, seal, reading, story, actions and dock on the right. Each page keeps a margin at
+  the binding (`SPREAD_GUTTER`), editing and notices stay on the right-hand page, and a
+  turn lifts a leaf about the binding (`JournalSpreadLeaf`). Folding or unfolding keeps
+  the same tree and the reader's place. The web and compact or upright windows keep the
+  single page. The capture seal's hand-off is still laid out for the single page.
 - Navigation, decorative headings, list previews and control labels use bounded
   explicit font metrics. Readonly text uses matching drawing and layout sizes to
   avoid stale native measurements during live Dynamic Type changes. Search and

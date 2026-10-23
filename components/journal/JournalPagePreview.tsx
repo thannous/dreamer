@@ -3,7 +3,7 @@ import React, { useMemo, useState } from 'react';
 import { Platform, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { DreamAnalysisContent } from '@/components/journal/DreamAnalysisContent';
+import { DreamAnalysisContent, DreamQuote } from '@/components/journal/DreamAnalysisContent';
 import { BOOK_MEASURE, BookOrnament, BookProse, BookSectionMark, BookStar } from '@/components/journal/JournalBook';
 import { JournalCoverPlate } from '@/components/journal/JournalCoverPlate';
 import { JournalEditLink } from '@/components/journal/JournalEditLink';
@@ -15,8 +15,10 @@ import { JournalRunningHead, RUNNING_HEAD_GAP } from '@/components/journal/Journ
 import { DecorativeCopy } from '@/components/journal/DecorativeCopy';
 import { SavedDreamMoment } from '@/components/journal/SavedDreamMoment';
 import { SEAL_EMBLEMS, SEAL_NAME_LINES } from '@/components/journal/story/sealMarks';
+import { useJournalSpread } from '@/components/journal/useJournalSpread';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { PaintingAtRest } from '@/components/ui/PaintingTilt';
+import { SPREAD_GUTTER } from '@/constants/layout';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useContentWindow } from '@/context/ContentWindowContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -36,10 +38,18 @@ import type { DreamAnalysis } from '@/lib/types';
  * name, date and details, on the plate of its illustration when it has one; once read, its
  * seal bearing those details and its reading; its story under "My story", then its
  * actions), so that once turned to, the dream page takes its place without anything moving.
- * It runs none of the page's work and offers none of its controls.
+ * It runs none of the page's work and offers none of its controls. On two facing pages it
+ * draws both, or the one `side` a leaf of the turn shows: on the left the plate or the name
+ * with the dream's quote, on the right the reading and the story.
  */
-export function JournalPagePreview({ dream, folio, height }: { dream: DreamAnalysis; folio?: number; height: number }) {
+export function JournalPagePreview({ dream, folio, height, side }: {
+  dream: DreamAnalysis;
+  folio?: number;
+  height: number;
+  side?: 'left' | 'right';
+}) {
   const window = useContentWindow();
+  const spread = useJournalSpread();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { colors, mode } = useTheme();
@@ -69,9 +79,11 @@ export function JournalPagePreview({ dream, folio, height }: { dream: DreamAnaly
   const cover = plated && media.imageUrl
     ? { uri: withCacheBuster(media.imageUrl, imageVersion), cacheKey: imageVersion ? `${dream.imageUrl}|${imageVersion}` : undefined }
     : null;
-  const coverTravel = Math.round(height * 0.06);
+  // Two facing pages hold their plate still: it does not drift with the reading beside it.
+  const coverTravel = spread ? 0 : Math.round(height * 0.06);
 
-  const head = <JournalRunningHead label={plated ? undefined : t('nav.sidebar_tagline')} />;
+  // On two facing pages the journal's name heads the right-hand page instead.
+  const head = <JournalRunningHead label={plated || spread ? undefined : t('nav.sidebar_tagline')} />;
   // A read dream's seal heads its reading, between its name and its story, and carries its details.
   const sealMark = showReading && dream.theme && dream.theme in SEAL_EMBLEMS ? {
     theme: dream.theme,
@@ -82,7 +94,7 @@ export function JournalPagePreview({ dream, folio, height }: { dream: DreamAnaly
     <View className="w-full self-center" style={{ maxWidth: BOOK_MEASURE - 32 }}
       onLayout={({ nativeEvent: { layout } }) => setIntroHeight(layout.height)}>
       <View className={`mx-2 ${showReading ? 'mb-1' : 'mb-7'}`}>
-        <View style={showReading && !plated ? { minHeight: SEAL_NAME_LINES * 32 * titleTextScale + 8 } : undefined}>
+        <View style={showReading && !plated && !spread ? { minHeight: SEAL_NAME_LINES * 32 * titleTextScale + 8 } : undefined}>
           <Text allowFontScaling={false} style={{ fontSize: 26 * titleTextScale, lineHeight: 32 * titleTextScale }}
             className="mb-2 font-display-semibold text-[26px] leading-8 text-ivory">
             {dream.title || t('journal.detail.untitled_dream')}
@@ -108,8 +120,113 @@ export function JournalPagePreview({ dream, folio, height }: { dream: DreamAnaly
           ) : null}
         </View>}
       </View>
+      {spread && showReading ? <DreamQuote dream={dream} align="start" className="mx-2 mt-4 mb-6" /> : null}
     </View>
   );
+
+  // What follows the name: once read, its seal and reading, then its story and its actions.
+  const body = (
+    <>
+      {showReading ? (
+        <>
+          <SavedDreamMoment phase="read" still wordsLine={false} sealing={sealMark ? { mark: sealMark, settled: true } : null}
+            date={formatDreamStamp(dream.id)} />
+          <JournalSealShare />
+          <DreamAnalysisContent dream={dream} pending={false} withQuote={!spread} />
+        </>
+      ) : null}
+
+      <View className="mt-2 mb-5">
+        <View className="px-2 pb-4">
+          <BookSectionMark label={t('journal.original_transcript')} scale={compactTextScale} className="mb-5" />
+          <BookProse text={dream.transcript} />
+        </View>
+      </View>
+
+      <BookOrnament className="mt-3 mb-4" />
+      <View className="mb-1 flex-row flex-wrap items-center justify-center">
+        <View className="min-h-[44px] flex-row items-center justify-center gap-2 px-4">
+          <IconSymbol name={dream.isFavorite ? 'heart.fill' : 'heart'} size={18} color={noctalia.accent.text} />
+          <Text className="font-serif-italic text-[16px] text-ivory">
+            {dream.isFavorite ? t('journal.detail.favorite.on') : t('journal.detail.favorite.off')}
+          </Text>
+        </View>
+        <View className="h-5 w-px bg-line" />
+        <View className="min-h-[44px] flex-row items-center justify-center gap-2 px-4">
+          <IconSymbol name="square.and.arrow.up" size={18} color={noctalia.accent.text} />
+          <Text className="font-serif-italic text-[16px] text-ivory">{t('journal.detail.share.button_default')}</Text>
+        </View>
+      </View>
+      <View className="flex-row items-center justify-center self-center">
+        <JournalEditLink />
+        <View className="h-5 w-px bg-line" />
+        <View className="min-h-[44px] flex-row items-center justify-center gap-1.5 px-3">
+          <IconSymbol name="trash" size={16} color={noctalia.status.danger.icon} />
+          <Text className="font-serif-italic text-[15px] text-danger-on">{t('journal.menu.delete')}</Text>
+        </View>
+      </View>
+      <JournalFolio folio={folio} className="mt-8" />
+    </>
+  );
+  const plate = (
+    <JournalCoverPlate height={height} titleHeight={introHeight} head={head}
+      picture={(
+        <View style={{ position: 'absolute', left: 0, right: 0, top: -coverTravel, bottom: -coverTravel }}>
+          <PaintingAtRest>
+            {coverPlaceholder ? (
+              <Image source={coverPlaceholder} style={StyleSheet.absoluteFill} contentFit="cover" cachePolicy="memory-disk" />
+            ) : null}
+            {cover ? <Image source={cover} style={StyleSheet.absoluteFill} contentFit="cover" /> : null}
+          </PaintingAtRest>
+        </View>
+      )}>
+      {spread ? <View style={{ paddingRight: SPREAD_GUTTER - 16 }}>{heading}</View> : heading}
+    </JournalCoverPlate>
+  );
+  // The left-hand page: the plate, or the way back and the name with the dream's quote.
+  const leftPage = (
+    <View className="flex-1 overflow-hidden bg-ink">
+      <JournalPaper />
+      {plated ? plate : (
+        <View style={{ paddingTop: navigationHeight - 64 }}>
+          <View style={{ marginBottom: RUNNING_HEAD_GAP }}>{head}</View>
+          <View className="px-4" style={{ paddingRight: SPREAD_GUTTER }}>{heading}</View>
+        </View>
+      )}
+      <JournalPageEdges side="left" />
+    </View>
+  );
+  // The right-hand page: the journal's name at its head, then the reading and the story.
+  const rightPage = (
+    <View className="flex-1 overflow-hidden bg-ink">
+      <JournalPaper />
+      <View style={{ paddingTop: navigationHeight - 64 }}>
+        <View style={{ marginBottom: RUNNING_HEAD_GAP }}>
+          <JournalRunningHead arrow={false} label={t('nav.sidebar_tagline')} />
+        </View>
+        <View className="w-full self-center px-4 pb-6" style={{ maxWidth: BOOK_MEASURE, paddingLeft: SPREAD_GUTTER }}>
+          {body}
+        </View>
+      </View>
+      <JournalPageEdges side="right" />
+    </View>
+  );
+
+  if (spread) {
+    return (
+      <DecorativeCopy>
+        <View className="flex-1 overflow-hidden bg-ink" accessible={false} importantForAccessibility="no-hide-descendants"
+          accessibilityElementsHidden {...(Platform.OS === 'web' ? { 'aria-hidden': true, inert: true } : {})}>
+          {side === 'left' ? leftPage : side === 'right' ? rightPage : (
+            <>
+              <View style={{ position: 'absolute', top: 0, bottom: 0, left: 0, width: spread.spine }}>{leftPage}</View>
+              <View style={{ position: 'absolute', top: 0, bottom: 0, left: spread.spine, right: 0 }}>{rightPage}</View>
+            </>
+          )}
+        </View>
+      </DecorativeCopy>
+    );
+  }
 
   return (
     <DecorativeCopy>
@@ -117,64 +234,12 @@ export function JournalPagePreview({ dream, folio, height }: { dream: DreamAnaly
         accessibilityElementsHidden {...(Platform.OS === 'web' ? { 'aria-hidden': true, inert: true } : {})}>
         <JournalPaper />
         {/* The plate fills the page at least: what follows it on the dream page lies below. */}
-        {plated ? (
-          <JournalCoverPlate height={height} titleHeight={introHeight} head={head}
-            picture={(
-              <View style={{ position: 'absolute', left: 0, right: 0, top: -coverTravel, bottom: -coverTravel }}>
-                <PaintingAtRest>
-                  {coverPlaceholder ? (
-                    <Image source={coverPlaceholder} style={StyleSheet.absoluteFill} contentFit="cover" cachePolicy="memory-disk" />
-                  ) : null}
-                  {cover ? <Image source={cover} style={StyleSheet.absoluteFill} contentFit="cover" /> : null}
-                </PaintingAtRest>
-              </View>
-            )}>
-            {heading}
-          </JournalCoverPlate>
-        ) : (
+        {plated ? plate : (
           <View style={{ paddingTop: navigationHeight - 64 }}>
             <View style={{ marginBottom: RUNNING_HEAD_GAP }}>{head}</View>
             <View className="w-full self-center px-4 pb-6" style={{ maxWidth: BOOK_MEASURE }}>
               {heading}
-              {showReading ? (
-                <>
-                  <SavedDreamMoment phase="read" still wordsLine={false} sealing={sealMark ? { mark: sealMark, settled: true } : null}
-                    date={formatDreamStamp(dream.id)} />
-                  <JournalSealShare />
-                  <DreamAnalysisContent dream={dream} pending={false} />
-                </>
-              ) : null}
-
-              <View className="mt-2 mb-5">
-                <View className="px-2 pb-4">
-                  <BookSectionMark label={t('journal.original_transcript')} scale={compactTextScale} className="mb-5" />
-                  <BookProse text={dream.transcript} />
-                </View>
-              </View>
-
-              <BookOrnament className="mt-3 mb-4" />
-              <View className="mb-1 flex-row flex-wrap items-center justify-center">
-                <View className="min-h-[44px] flex-row items-center justify-center gap-2 px-4">
-                  <IconSymbol name={dream.isFavorite ? 'heart.fill' : 'heart'} size={18} color={noctalia.accent.text} />
-                  <Text className="font-serif-italic text-[16px] text-ivory">
-                    {dream.isFavorite ? t('journal.detail.favorite.on') : t('journal.detail.favorite.off')}
-                  </Text>
-                </View>
-                <View className="h-5 w-px bg-line" />
-                <View className="min-h-[44px] flex-row items-center justify-center gap-2 px-4">
-                  <IconSymbol name="square.and.arrow.up" size={18} color={noctalia.accent.text} />
-                  <Text className="font-serif-italic text-[16px] text-ivory">{t('journal.detail.share.button_default')}</Text>
-                </View>
-              </View>
-              <View className="flex-row items-center justify-center self-center">
-                <JournalEditLink />
-                <View className="h-5 w-px bg-line" />
-                <View className="min-h-[44px] flex-row items-center justify-center gap-1.5 px-3">
-                  <IconSymbol name="trash" size={16} color={noctalia.status.danger.icon} />
-                  <Text className="font-serif-italic text-[15px] text-danger-on">{t('journal.menu.delete')}</Text>
-                </View>
-              </View>
-              <JournalFolio folio={folio} className="mt-8" />
+              {body}
             </View>
           </View>
         )}

@@ -268,6 +268,8 @@ jest.mock('@/components/journal/JournalPageTurner', () => ({
     {newer ? <button data-testid="test.page.newer" onClick={() => onTurn(newer)}>Newer</button> : null}
     {older ? <button data-testid="test.page.older" onClick={() => onTurn(older)}>Older</button> : null}
   </>,
+  // A phone's single page: the reading's page is the whole screen.
+  JournalSpreadLeaf: ({ children }: { children: React.ReactNode }) => <>{children}</>,
   useJournalPageTurnLock: () => {},
   useJournalPageLaidOut: () => () => {},
   useJournalPageTurnedTo: () => false,

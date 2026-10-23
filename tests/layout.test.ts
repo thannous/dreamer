@@ -6,6 +6,7 @@ import {
   TAB_BAR_HEIGHT,
   getBottomNavigationLayout,
   getBottomNavigationItemStyle,
+  getJournalSpread,
   getRecordingComposerLayout,
   getTabBarHorizontalLayout,
   getWindowClass,
@@ -174,6 +175,36 @@ describe('getWindowClass', () => {
     [840, 479, 'large'],
   ] as [number, number, WindowClass][])('classifies a %i × %i window as %s', (width: number, height: number, expected: WindowClass) => {
     expect(getWindowClass(width, height)).toBe(expected);
+  });
+});
+
+describe('getJournalSpread', () => {
+  const spread = (width: number, height: number, windowWidth: number, leftInset: number, web = false) =>
+    getJournalSpread({ width, height, windowWidth, leftInset, web });
+
+  it('binds the open Duo on its side at its fold, whichever side its status bar column takes', () => {
+    // The column on the left: the left page ends where the display folds.
+    expect(spread(867, 669, 951, 84)).toEqual({ spine: 392, width: 867 });
+    // The column on the right: the left page is half the display.
+    expect(spread(867, 669, 951, 0)).toEqual({ spine: 476, width: 867 });
+  });
+
+  it.each([
+    [412, 678, 496, 84], // the folded Duo
+    [669, 951, 669, 0], // the open Duo upright, its fold across the pages
+    [385, 669, 469, 84], // the left window of Split View on the open Duo
+    [834, 402, 956, 62], // a phone on its side: too short for two pages
+  ])('keeps a single page in a %i × %i window', (width: number, height: number, windowWidth: number, leftInset: number) => {
+    expect(spread(width, height, windowWidth, leftInset)).toBeNull();
+  });
+
+  it('keeps the web on its single page', () => {
+    expect(spread(1280, 800, 1280, 0, true)).toBeNull();
+  });
+
+  it('keeps each page a reading width when the fold lies near an edge', () => {
+    expect(spread(840, 600, 900, 300)).toEqual({ spine: 320, width: 840 });
+    expect(spread(840, 600, 1800, 0)).toEqual({ spine: 520, width: 840 });
   });
 });
 

@@ -1,7 +1,7 @@
 import type { LayoutChangeEvent, ViewInstance, ScrollViewInstance, TextInputInstance } from 'react-native';
 import { getSavedAnalysisAction } from '@/lib/savedAnalysisAccess';
 import { AnalysisPreviewCard } from '@/components/journal/AnalysisPreviewCard';
-import { DreamAnalysisContent } from '@/components/journal/DreamAnalysisContent';
+import { DreamAnalysisContent, DreamQuote } from '@/components/journal/DreamAnalysisContent';
 import { isPoeticDreamQuote } from '@/lib/dreamQuote';
 import { CaptureOriginal } from '@/components/recording/CaptureOriginal';
 import { DreamLengthCounter } from '@/components/recording/DreamLengthCounter';
@@ -22,7 +22,9 @@ import { JournalEditLink } from '@/components/journal/JournalEditLink';
 import { JournalSealShare } from '@/components/journal/JournalSealShare';
 import { JournalFolio } from '@/components/journal/JournalFolio';
 import { JournalPageEdges } from '@/components/journal/JournalPageEdges';
-import { JournalPageTurner, useJournalPageLaidOut, useJournalPageTurnedTo, useJournalPageTurnLock } from '@/components/journal/JournalPageTurner';
+import {
+  JournalPageTurner, JournalSpreadLeaf, useJournalPageLaidOut, useJournalPageTurnedTo, useJournalPageTurnLock,
+} from '@/components/journal/JournalPageTurner';
 import { JournalPaper } from '@/components/journal/JournalPaper';
 import { JournalRunningHead, RUNNING_HEAD_GAP, RUNNING_HEAD_HEIGHT } from '@/components/journal/JournalRunningHead';
 import { SavedDreamMoment, type SavedDreamAction, type SavedDreamPhase, type SealMark } from '@/components/journal/SavedDreamMoment';
@@ -32,6 +34,7 @@ import { WrittenTitle } from '@/components/journal/story/WrittenTitle';
 import { DreamPaintedArtwork } from '@/components/journal/story/DreamPaintedArtwork';
 import { DreamPaintingWait } from '@/components/journal/story/DreamPaintingWait';
 import { DREAM_STORY } from '@/components/journal/story/dreamStoryMotion';
+import { useJournalSpread } from '@/components/journal/useJournalSpread';
 import { WaitingStars } from '@/components/journal/story/WaitingStars';
 import { markDreamStoryEpilogue } from '@/lib/dreamStoryEpilogue';
 import { markDreamNamed } from '@/lib/dreamNaming';
@@ -50,6 +53,7 @@ import {
   type AnalysisNotice,
 } from '@/components/journal/JournalDetailSheets';
 import { DURATION, EASING, PressableScale, Reveal } from '@/components/motion';
+import { SPREAD_GUTTER } from '@/constants/layout';
 import { DREAM_TRANSCRIPT_MAX_CHARS, QUOTAS } from '@/constants/limits';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useContentWindow, useSideGutters } from '@/context/ContentWindowContext';
@@ -244,6 +248,8 @@ const ARRIVAL_NOT_YET = 60 * 60 * 1000;
 const PLATE_SETTLE_MS = 800;
 /** On the web, a pause this long in the scrolling ends it, as the end of a drag does on a device. */
 const SCROLL_REST_MS = 160;
+/** How long the reader's place is kept while a fold lays the reading out again. */
+const KEEP_PLACE_MS = 600;
 
 /** Staggers the arrival from capture once; every other visit shows sections immediately. */
 function ArrivalReveal({ play, index, className, children }: {
@@ -465,7 +471,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   }, [plateSettling]);
   const [coverFlight, setCoverFlight] = useState<{
     from: { x: number; y: number; size: number };
-    to: { top: number; drift: number };
+    to: { top: number; drift: number; left?: number; width?: number };
     landed: boolean;
   } | null>(null);
   const sealWindowRef = useRef<ViewInstance | null>(null);
@@ -505,6 +511,10 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   const insets = useSafeAreaInsets();
   const windowSize = useContentWindow();
   const sideGutters = useSideGutters();
+  // On the open iPhone Duo held as a book, the dream lies open on two facing pages: its
+  // picture, name and quote on the left, its reading and story on the right.
+  const spread = useJournalSpread();
+  const spreadOpen = spread !== null;
   const compactTextScale = Math.min(1.3, Math.max(1, windowSize.fontScale));
   const titleTextScale = Math.min(1.4, Math.max(1, windowSize.fontScale));
   const metadataTextStyle = { fontSize: 14 * compactTextScale, lineHeight: 20 * compactTextScale };
@@ -520,8 +530,9 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   // A page with its illustration opens on it as a plate filling the screen; the dream's
   // name is set at its foot, at its own measured height (including enlarged native text).
   const coverHeight = viewportHeight;
-  // The illustration lies a little deeper than the page and drifts as it scrolls.
-  const coverTravel = Math.round(coverHeight * 0.06);
+  // The illustration lies a little deeper than the page and drifts as it scrolls; on the
+  // left-hand page of two facing pages it holds still beside the reading.
+  const coverTravel = spreadOpen ? 0 : Math.round(coverHeight * 0.06);
   const headerScrollY = useHeaderScrollY();
   // A page turned to opens at its top: the screen's scroll, which its painting follows, starts over.
   useEffect(() => {
@@ -770,6 +781,20 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   const [readingContentTop, setReadingContentTop] = useState(insets.top + 76);
   const readingScrollOffset = useSharedValue(0);
   const readingContentRef = useRef<ViewInstance | null>(null);
+  // Folding or unfolding the device lays the dream out on one page or on two: the reader
+  // keeps their place in its reading, at the same share of it whatever its new line lengths.
+  // The new layout may settle over a few passes (the plate follows the measured viewport), so
+  // the place is kept through each of them for a moment, unless the reader scrolls meanwhile.
+  const readingHeightRef = useRef(0);
+  const spreadShownRef = useRef(spreadOpen);
+  const keptPlaceRef = useRef<{ share: number; until: number } | null>(null);
+  useLayoutEffect(() => {
+    if (spreadShownRef.current === spreadOpen) return;
+    spreadShownRef.current = spreadOpen;
+    const height = readingHeightRef.current;
+    keptPlaceRef.current = height > 0
+      ? { share: (readingScrollOffset.get() - readingContentTop) / height, until: Date.now() + KEEP_PLACE_MS } : null;
+  }, [readingContentTop, readingScrollOffset, spreadOpen]);
   // Past the plate, the page's actions come in as soon as its reading is on the screen: the
   // seal and the analysis, which now come before the story, or the story itself.
   const readingActionThreshold = Math.max(1, readingContentTop - viewportHeight + Math.min(144, viewportHeight * 0.2));
@@ -2050,6 +2075,11 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
         revealPlate();
         return;
       }
+      // On two facing pages the plate fills the left-hand page, across the binding from the seal.
+      if (spread) {
+        setCoverFlight({ from: { ...centre, size: SEAL_MEASURES.medallion }, to: { top: 0, drift: 0, left: 0, width: spread.spine }, landed: false });
+        return;
+      }
       // The plate takes the place of the running head and the name, above the reading,
       // which stays where the reader has it: on the screen it ends just above the reading.
       const top = readingContentTop - readingScrollOffset.get() - coverHeight;
@@ -2059,7 +2089,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       setCoverFlight({ from: { ...centre, size: SEAL_MEASURES.medallion }, to: { top, drift }, landed: false });
     });
   }, [coverFlight, coverHeight, coverTravel, insets.top, isEditing, isIllustrationFullscreen, onScreen, readingContentTop, readingScrollOffset,
-    reducedMotion, revealPlate, sideGutters.left, viewportHeight, windowSize.height]);
+    reducedMotion, revealPlate, sideGutters.left, spread, viewportHeight, windowSize.height]);
   useEffect(() => {
     if (!sealHoldsArtwork) return;
     const frame = requestAnimationFrame(releaseArtwork);
@@ -2230,7 +2260,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
           ) : (
             // Above its seal, the name keeps the same lines whatever its length, so the seal
             // lies at the same place on every page.
-            <View style={compactMetadata && sealVisible && !hasIllustratedCover
+            <View style={compactMetadata && sealVisible && !hasIllustratedCover && !spreadOpen
               ? { minHeight: SEAL_NAME_LINES * 32 * titleTextScale + 8 } : undefined}>
           {namingOn && !windowHandedOver ? (
             <View className="mb-2">
@@ -2860,7 +2890,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       <Animated.View style={[{ position: 'absolute', left: 0, right: 0, top: -coverTravel, bottom: -coverTravel }, coverParallax.style]}>
       {/* While the plate fills the screen, it follows the phone's tilt. */}
       <PaintingTilt active={!isEditing && !isIllustrationFullscreen && !(coverFlight && !coverFlight.landed)}
-        dominantUntil={coverHeight * 0.35}>
+        dominantUntil={spreadOpen ? Number.POSITIVE_INFINITY : coverHeight * 0.35}>
       {/* Beneath, the painting the journal's card already holds: the page opens on it, and the
           original sharpens it once loaded. */}
       {coverPlaceholder ? (
@@ -3058,9 +3088,15 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   ) : null;
   // Over a plate the head carries only the way back; on the paper it is printed with the journal's name,
   // which gives the line to the seal when there is one.
+  // On two facing pages the left-hand page carries the way back, and the right-hand page the
+  // journal's name and the full moon's seal.
   const runningHead = (
     <JournalRunningHead onBack={handleBackPress} testID="journal.detail.navigation" backTestID={TID.Button.NavigateJournal}
-      label={hasIllustratedCover || fullMoonSeal ? undefined : t('nav.sidebar_tagline')} aside={fullMoonSeal} />
+      label={spreadOpen || hasIllustratedCover || fullMoonSeal ? undefined : t('nav.sidebar_tagline')}
+      aside={spreadOpen ? undefined : fullMoonSeal} />
+  );
+  const facingHead = (
+    <JournalRunningHead arrow={false} label={fullMoonSeal ? undefined : t('nav.sidebar_tagline')} aside={fullMoonSeal} />
   );
   const sealBlock = (
     <View ref={sealWindowRef} collapsable={false}>
@@ -3081,12 +3117,39 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       }}>
       {/* After the seal, the name and date are already in place: they do not enter again. */}
       {!isEditing ? <ArrivalReveal play={opensOnSavedMoment && !windowHandedOver} index={0}>{renderMetadataCard()}</ArrivalReveal> : null}
+      {/* On two facing pages the reading's last line stands under the name, as an epigraph. */}
+      {spreadOpen && !isEditing && readingBegun && !isAnalysisPending && !readingAwaited ? (
+        <DreamQuote dream={dream} align="start" className="mx-2 mt-4 mb-6" />
+      ) : null}
     </View>
   );
+  // The left-hand page of two facing pages: the plate with the name, or the name and the
+  // illustration's place. It scrolls only when the name and quote outgrow it.
+  const leftPage = spread ? (
+    <JournalSpreadLeaf side="left" spread={spread} edges={!isEditing}>
+      <ScrollView className="flex-1" showsVerticalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1 }}>
+        {hasIllustratedCover ? (
+          <JournalCoverPlate testID={TID.Component.JournalIllustration} height={coverHeight} titleHeight={coverIntroHeight}
+            picture={renderCoverPicture()} head={runningHead}>
+            <View style={{ paddingRight: SPREAD_GUTTER - 16 }}>{heading}</View>
+          </JournalCoverPlate>
+        ) : (
+          <View style={{ paddingTop: navigationHeight - RUNNING_HEAD_HEIGHT - RUNNING_HEAD_GAP, paddingBottom: insets.bottom + 24 }}>
+            <View style={{ marginBottom: RUNNING_HEAD_GAP }}>{runningHead}</View>
+            <View className="px-4" style={{ paddingRight: SPREAD_GUTTER }}>
+              {heading}
+              {renderIllustrationSection()}
+            </View>
+          </View>
+        )}
+      </ScrollView>
+    </JournalSpreadLeaf>
+  ) : null;
 
   return (
-    <View testID="screen.dreamDetail" className="relative flex-1 overflow-hidden bg-ink">
-      <JournalPaper />
+    <View testID="screen.dreamDetail" className={`relative flex-1 overflow-hidden ${spreadOpen ? '' : 'bg-ink'}`}>
+      {/* Two facing pages lie each on its own paper, so that a leaf turning shows what lies beneath. */}
+      {spreadOpen ? null : <JournalPaper />}
       <KeyboardAvoidingView
         className="flex-1"
         behavior={keyboardBehavior}
@@ -3095,6 +3158,9 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
             dock, the plate taking the running head's place), and the native mounting
             tracks those changes reliably only under parents that exist natively. */}
         <View className="flex-1" collapsable={false}>
+        {leftPage}
+        {/* The reading's page: the whole screen, or the right-hand page of two. */}
+        <JournalSpreadLeaf side="right" spread={spread} edges={!isEditing}>
         <ReadingScrollView
           ref={scrollViewRef}
           onContentSizeChange={revealRecallInput}
@@ -3105,7 +3171,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
           }}
 
           contentContainerStyle={{
-            paddingTop: hasIllustratedCover ? 0 : navigationHeight - RUNNING_HEAD_HEIGHT - RUNNING_HEAD_GAP,
+            paddingTop: hasIllustratedCover && !spreadOpen ? 0 : navigationHeight - RUNNING_HEAD_HEIGHT - RUNNING_HEAD_GAP,
             paddingBottom: ((isEditing) ? 220 : (previewHidesDock ? 0 : actionDockHeight) + 32) + insets.bottom,
           }}
           scrollEventThrottle={16}
@@ -3120,6 +3186,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
               scrollRestRef.current = setTimeout(releaseArtwork, SCROLL_REST_MS);
             }
           } : handleReadingScroll}
+          // The reader's own scroll ends the place kept through a fold.
+          onScrollBeginDrag={() => { keptPlaceRef.current = null; }}
           // Scrolled back to a seal still holding its illustration, the reader sees it leave.
           onScrollEndDrag={sealHoldsArtwork ? releaseArtwork : undefined}
           onMomentumScrollEnd={sealHoldsArtwork ? releaseArtwork : undefined}
@@ -3127,11 +3195,14 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
           // as the plate comes in above it. The reading is the third block under the running
           // head and the name, the second under the plate: the index must name it, or the
           // native side keeps an anchor it can no longer find and drifts on every update.
-          maintainVisibleContentPosition={holdsReading
+          // Two facing pages set the plate beside the reading, which it never moves.
+          maintainVisibleContentPosition={holdsReading && !spreadOpen
             ? { minIndexForVisible: hasIllustratedCover ? 1 : 2 } : undefined}
           keyboardShouldPersistTaps="handled"
         >
-          {hasIllustratedCover ? (
+          {spreadOpen ? (
+            <View style={{ marginBottom: RUNNING_HEAD_GAP }} collapsable={false}>{facingHead}</View>
+          ) : hasIllustratedCover ? (
             <JournalCoverPlate testID={TID.Component.JournalIllustration} height={coverHeight} titleHeight={coverIntroHeight}
               picture={renderCoverPicture()} head={runningHead}>
               {heading}
@@ -3140,10 +3211,20 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
             <View style={{ marginBottom: RUNNING_HEAD_GAP }} collapsable={false}>{runningHead}</View>
           )}
           {/* The name, then the reading, which starts with the name's seal. */}
-          {hasIllustratedCover ? null : <View className="px-4" collapsable={false}>{heading}</View>}
-          <View ref={readingContentRef} collapsable={false} className="w-full self-center px-4 pb-6" style={{ maxWidth: BOOK_MEASURE }}
+          {hasIllustratedCover || spreadOpen ? null : <View className="px-4" collapsable={false}>{heading}</View>}
+          <View ref={readingContentRef} collapsable={false} className="w-full self-center px-4 pb-6"
+            style={{ maxWidth: BOOK_MEASURE, paddingLeft: spreadOpen ? SPREAD_GUTTER : undefined }}
             onLayout={({ nativeEvent: { layout } }) => {
+              readingHeightRef.current = layout.height;
               setReadingContentTop((previous) => (previous === layout.y ? previous : layout.y));
+              const kept = keptPlaceRef.current;
+              if (!kept) return;
+              if (Date.now() > kept.until) {
+                keptPlaceRef.current = null;
+                return;
+              }
+              // Above the reading (on the plate or the name), the page opens at its top again.
+              scrollViewRef.current?.scrollTo({ y: kept.share <= 0 ? 0 : layout.y + kept.share * layout.height, animated: false });
             }}>
             {sealVisible ? (
               <OpenUp appear={!opensOnSavedMoment && readingInFlight}>{sealBlock}</OpenUp>
@@ -3163,6 +3244,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
                 onLayout={({ nativeEvent }) => { readingZoneTopRef.current = nativeEvent.layout.y; }}>
                 <DreamAnalysisContent dream={dream}
                   pending={isAnalysisPending || readingAwaited}
+                  withQuote={!spreadOpen}
                   onInterpretationLayout={({ nativeEvent: { layout } }) => setInterpretationLayout((current) =>
                     current?.key === readingLayoutKey && current.top === layout.y
                       ? current : { key: readingLayoutKey, top: layout.y })}
@@ -3221,7 +3303,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
 
             {/* A guest reads on into what an account keeps and adds. */}
             {showCompletedReading && !readingInFlight ? renderFirstValueBackupCard() : null}
-            {!hasIllustratedCover ? renderIllustrationSection() : null}
+            {!hasIllustratedCover && !spreadOpen ? renderIllustrationSection() : null}
             {!recallRequested ? (
               <ArrivalReveal play={opensOnSavedMoment && !windowHandedOver} index={2}>
                 <DreamRecallAssistantCard dreamId={getDreamRecallStorageId(dream, user?.id ?? null)}
@@ -3327,17 +3409,12 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
             </View>
             </View>
         </ReadingScrollView>
-
-        <JournalReturnTab top={insets.top + 6} onPress={handleBackPress} />
-        {coverFlight && paintedArtwork ? (
-          <CoverFlight source={paintedArtwork} from={coverFlight.from} to={coverFlight.to} height={coverHeight} travel={coverTravel}
-            landed={coverFlight.landed} onArrived={revealPlate} onGone={coverFlightGone} />
-        ) : null}
-        {!isEditing && !isInteractingWithNote && !isKeyboardVisible && (!hasIllustratedCover || readingActionVisible) && !(sealShowsReading && !isSavedArrival)
-          && !previewHidesDock ? (
+        {/* The page's next step, at the foot of the reading's page. */}
+        {!isEditing && !isInteractingWithNote && !isKeyboardVisible && (spreadOpen || !hasIllustratedCover || readingActionVisible)
+          && !(sealShowsReading && !isSavedArrival) && !previewHidesDock ? (
           <View testID="component.dreamDetail.actionDock"
             className={`absolute bottom-0 left-0 right-0 bg-ink px-6 pt-3 ${isSavedArrival ? '' : 'border-t border-line'}`}
-            style={{ paddingBottom: Math.max(insets.bottom, 12) }}
+            style={{ paddingBottom: Math.max(insets.bottom, 12), paddingLeft: spreadOpen ? SPREAD_GUTTER : undefined }}
             onLayout={({ nativeEvent }) => setActionDockHeight(nativeEvent.layout.height)}>
             <View pointerEvents="none" className="absolute inset-0 overflow-hidden">
               <View style={{ position: 'absolute', left: 0, right: 0, top: actionDockHeight - windowSize.height, height: windowSize.height }}>
@@ -3353,6 +3430,14 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
               <ArrivalLater play={opensOnSavedMoment && !windowHandedOver} ready={!namingOn}>{renderDetailActionCard()}</ArrivalLater>
             </View>
           </View>
+        ) : null}
+        </JournalSpreadLeaf>
+
+        {/* Two facing pages keep the way back on the left-hand page, always in sight. */}
+        {spreadOpen ? null : <JournalReturnTab top={insets.top + 6} onPress={handleBackPress} />}
+        {coverFlight && paintedArtwork ? (
+          <CoverFlight source={paintedArtwork} from={coverFlight.from} to={coverFlight.to} height={coverHeight} travel={coverTravel}
+            landed={coverFlight.landed} onArrived={revealPlate} onGone={coverFlightGone} />
         ) : null}
 
         {isEditing && (
@@ -3370,7 +3455,9 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
               </Pressable>
             ) : null}
             <ScrollView ref={editorScrollRef} className="flex-1" keyboardShouldPersistTaps="handled"
-              contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-end', paddingHorizontal: 16, paddingTop: 12, paddingBottom: floatingTranscriptBottom }}
+              // On two facing pages the dream is written in on its right-hand page, clear of the fold.
+              contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-end', paddingLeft: spread ? spread.spine + SPREAD_GUTTER : 16,
+                paddingRight: 16, paddingTop: 12, paddingBottom: floatingTranscriptBottom }}
               onLayout={() => {
                 // The keyboard shrinks the sheet: keep the story being written in view.
                 if (editingStoryRef.current) editorScrollRef.current?.scrollToEnd({ animated: true });
@@ -3579,25 +3666,28 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
           </View>
         </Modal>
 
-        {savedConfirmationVisible && !opensOnSavedMoment ? (
-          <Toast
-            message={t('recording.save.confirmation')}
-            mode="success"
-            onHide={() => setSavedConfirmationVisible(false)}
-            testID={TID.Text.RecordingSaveConfirmation}
-          />
-        ) : null}
+        {/* Notices land on the reading's page: on two facing pages, the right-hand one, clear of the fold. */}
+        <View pointerEvents="box-none" style={spread ? { position: 'absolute', top: 0, bottom: 0, left: spread.spine, right: 0 } : StyleSheet.absoluteFill}>
+          {savedConfirmationVisible && !opensOnSavedMoment ? (
+            <Toast
+              message={t('recording.save.confirmation')}
+              mode="success"
+              onHide={() => setSavedConfirmationVisible(false)}
+              testID={TID.Text.RecordingSaveConfirmation}
+            />
+          ) : null}
 
-        {favoriteError ? (
-          <Toast
-            message={favoriteError}
-            mode="error"
-            onHide={() => setFavoriteError(null)}
-          />
-        ) : null}
+          {favoriteError ? (
+            <Toast
+              message={favoriteError}
+              mode="error"
+              onHide={() => setFavoriteError(null)}
+            />
+          ) : null}
+        </View>
 
-        {/* The journal page's own edges, over everything that rests on it. */}
-        {!isEditing ? <JournalPageEdges /> : null}
+        {/* The journal page's own edges, over everything that rests on it (each of two facing pages has its own). */}
+        {!isEditing && !spreadOpen ? <JournalPageEdges /> : null}
         </View>
       </KeyboardAvoidingView>
     </View>
