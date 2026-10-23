@@ -54,7 +54,7 @@ jamais comme hébergés ou natifs :
 | A1 | Moyenne, latente | Q03, N03 | Une note acquittée par un serveur pré-migration ne peut plus jamais être sauvegardée : l’ancien reçu est rejoué après la migration. Confirme le fil Codex P2 ouvert sur la PR. |
 | A2 | Faible (robustesse) | Q01 | Une mutation de notes invalide fait échouer **tout** le lot `sync_dream_mutations` (erreur 23514), y compris les mutations valides du même lot, au lieu d’un résultat `failed` par mutation. |
 | A3 | Faible | Q01 | Un collage de 4 001 caractères dans l’éditeur de note est tronqué en silence à 4 000 (`maxLength`) : compteur `4000 / 4000`, pas de refus explicite. Contredit « ni le client ni la base ne tronquent ». |
-| O1 | Observation (préexistante) | U01 | Allemand : le nouveau texte des guides vouvoie (« Sie haben … markiert »), comme les guides existants, alors que notes et collection tutoient. Textes des guides corrigés le 23/10 ; cartes symboles et lexique encore en « Sie » (lot fiches symboles). |
+| O1 | Observation (préexistante) | U01 | Allemand : le nouveau texte des guides vouvoie (« Sie haben … markiert »), comme les guides existants, alors que notes et collection tutoient. Corrigée le 23/10 : guides, cartes symboles et lexique au « du ». |
 
 ### Prochaines actions
 
@@ -578,6 +578,11 @@ convertis. Reste visible dans l’app : les cartes symboles de ces guides et le 
 lisent les fiches symboles (`data/dream-symbols*.json`, synchronisées vers `data/app/`),
 encore en « Sie ». Elles passent au « du » avec le lot fiches symboles du site, puis
 articles, sans changer leurs URL.
+
+**Close le 23/10/2026.** Les fiches symboles allemandes (`data/dream-symbols*.json`,
+atlas `docs-src/config/symbol-atlas-locales.json`) passent au « du » ; `data/app/` est
+régénéré. Dans l’app allemande, guides, lexique et cartes tutoient. Seuls les articles du
+site gardent « Sie » jusqu’à leur lot.
 
 ## Limites
 
