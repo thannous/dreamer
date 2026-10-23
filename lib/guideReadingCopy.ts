@@ -47,14 +47,14 @@ const copy: Record<DreamGuideLanguage, ReadingCopy> = {
   },
   de: {
     status: { new: 'Noch nicht geöffnet', visited: 'Angesehen', inProgress: 'In Bearbeitung', completed: 'Abgeschlossen' },
-    progress: count => `${count} von 8 Ratgebern abgeschlossen`, resume: 'Weiterlesen', complete: 'Als abgeschlossen markieren', completed: 'Sie haben diesen Ratgeber als abgeschlossen markiert.', optional: 'Zum Ausprobieren, wenn Sie möchten',
+    progress: count => `${count} von 8 Ratgebern abgeschlossen`, resume: 'Weiterlesen', complete: 'Als abgeschlossen markieren', completed: 'Du hast diesen Ratgeber als abgeschlossen markiert.', optional: 'Zum Ausprobieren, wenn du möchtest',
     next: 'Nächster Ratgeber', allDone: 'Alle 8 Ratgeber abgeschlossen.', backToGuides: 'Zurück zu den Ratgebern',
-    retry: 'Speichern erneut versuchen', pending: 'Der Fortschritt wartet auf das Speichern. Behalten Sie dieses Gerät, bis das Speichern gelingt.',
+    retry: 'Speichern erneut versuchen', pending: 'Der Fortschritt wartet auf das Speichern. Behalte dieses Gerät, bis das Speichern gelingt.',
     exercise: {
-      'understand-dreams': { body: 'Wählen Sie einen Traum im Tagebuch. Achten Sie auf ein Bild und fragen Sie sich, was es für Sie bedeutet. Es gibt nicht nur eine richtige Deutung.', action: 'Einen Traum erneut lesen' },
-      'remember-dreams': { body: 'Bereiten Sie auf Wunsch ein sanftes Erinnerungsritual für Ihr nächstes Erwachen vor. Ein Fragment reicht; nichts muss erfunden oder erzwungen werden.', action: 'Erinnerungsritual öffnen' },
-      'dream-journal': { body: 'Notieren Sie ein Fragment: einen Ort, ein Bild oder ein Gefühl. Ein paar Worte reichen; Einzelheiten können warten.', action: 'Ein Fragment aufschreiben' },
-      'lucid-dreaming': { body: 'Entdecken Sie bei Interesse das Achtsamkeitsritual für den Tag. Behalten Sie Ihren Schlafrhythmus bei und lassen Sie ermüdende oder unangenehme Übungen aus.', action: 'Klartraumritual entdecken' },
+      'understand-dreams': { body: 'Wähle einen Traum im Tagebuch. Achte auf ein Bild und frag dich, was es für dich bedeutet. Es gibt nicht nur eine richtige Deutung.', action: 'Einen Traum erneut lesen' },
+      'remember-dreams': { body: 'Bereite auf Wunsch ein sanftes Erinnerungsritual für dein nächstes Erwachen vor. Ein Fragment reicht; nichts muss erfunden oder erzwungen werden.', action: 'Erinnerungsritual öffnen' },
+      'dream-journal': { body: 'Notiere ein Fragment: einen Ort, ein Bild oder ein Gefühl. Ein paar Worte reichen; Einzelheiten können warten.', action: 'Ein Fragment aufschreiben' },
+      'lucid-dreaming': { body: 'Entdecke bei Interesse das Achtsamkeitsritual für den Tag. Behalte deinen Schlafrhythmus bei und lass ermüdende oder unangenehme Übungen aus.', action: 'Klartraumritual entdecken' },
     },
   },
   it: {

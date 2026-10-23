@@ -559,6 +559,13 @@ Les textes de progression des guides (`lib/guideReadingCopy.ts`) vouvoient, comm
 guides existants (`lib/dreamGuideCopy.ts`). Notes et collection tutoient. Ce n’est
 pas une régression du candidat ; décision éditoriale à prendre (Thanh).
 
+**Corrigé le 23/10/2026** sur demande de Thanh : l’allemand des guides de l’app passe au
+« du » prévu par le [contrat de marque](../../../../specs/noctalia-brand-contract.md)
+(`lib/guideReadingCopy.ts`, `lib/dreamGuideCopy.ts`, `data/practicalDreamGuides.ts`).
+Les guides de symboles (`docs-src/static/data/curation-pages.json`) restent en « Sie » :
+ce fichier est partagé avec le site, dont la [charte éditoriale](../../charte-editoriale.md)
+impose « Sie » en allemand. Leur lecture dans l’app garde donc ce registre.
+
 ## Limites
 
 - Aucun résultat de cette campagne ne qualifie l’application hébergée, le backend
