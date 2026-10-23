@@ -816,6 +816,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     },
   });
   const scrollViewRef = useRef<ScrollViewInstance | null>(null);
+  const leftPageScrollRef = useRef<ScrollViewInstance | null>(null);
   const editorScrollRef = useRef<ScrollViewInstance | null>(null);
   const recallInputRef = useRef<TextInputInstance | null>(null);
   const revealRecallInput = useCallback(() => {
@@ -2075,8 +2076,10 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
         revealPlate();
         return;
       }
-      // On two facing pages the plate fills the left-hand page, across the binding from the seal.
+      // On two facing pages the plate fills the left-hand page, across the binding from the seal,
+      // which opens at its top to receive it.
       if (spread) {
+        leftPageScrollRef.current?.scrollTo({ y: 0, animated: false });
         setCoverFlight({ from: { ...centre, size: SEAL_MEASURES.medallion }, to: { top: 0, drift: 0, left: 0, width: spread.spine }, landed: false });
         return;
       }
@@ -3124,18 +3127,19 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     </View>
   );
   // The left-hand page of two facing pages: the plate with the name, or the name and the
-  // illustration's place. It scrolls only when the name and quote outgrow it.
+  // illustration's place. It scrolls only when the name and quote outgrow it; the way back
+  // stays pinned at its head, where the plate or the page would print it.
   const leftPage = spread ? (
     <JournalSpreadLeaf side="left" spread={spread} edges={!isEditing}>
-      <ScrollView className="flex-1" showsVerticalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1 }}>
+      <ScrollView ref={leftPageScrollRef} className="flex-1" showsVerticalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1 }}>
         {hasIllustratedCover ? (
           <JournalCoverPlate testID={TID.Component.JournalIllustration} height={coverHeight} titleHeight={coverIntroHeight}
-            picture={renderCoverPicture()} head={runningHead}>
+            picture={renderCoverPicture()} head={null}>
             <View style={{ paddingRight: SPREAD_GUTTER - 16 }}>{heading}</View>
           </JournalCoverPlate>
         ) : (
           <View style={{ paddingTop: navigationHeight - RUNNING_HEAD_HEIGHT - RUNNING_HEAD_GAP, paddingBottom: insets.bottom + 24 }}>
-            <View style={{ marginBottom: RUNNING_HEAD_GAP }}>{runningHead}</View>
+            <View style={{ height: RUNNING_HEAD_HEIGHT, marginBottom: RUNNING_HEAD_GAP }} />
             <View className="px-4" style={{ paddingRight: SPREAD_GUTTER }}>
               {heading}
               {renderIllustrationSection()}
@@ -3143,7 +3147,14 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
           </View>
         )}
       </ScrollView>
+      <View pointerEvents="box-none" style={{ position: 'absolute', left: 0, right: 0, top: navigationHeight - RUNNING_HEAD_HEIGHT - RUNNING_HEAD_GAP }}>
+        {runningHead}
+      </View>
     </JournalSpreadLeaf>
+  ) : null;
+  const coverFlightView = coverFlight && paintedArtwork ? (
+    <CoverFlight source={paintedArtwork} from={coverFlight.from} to={coverFlight.to} height={coverHeight} travel={coverTravel}
+      landed={coverFlight.landed} onArrived={revealPlate} onGone={coverFlightGone} />
   ) : null;
 
   return (
@@ -3409,6 +3420,9 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
             </View>
             </View>
         </ReadingScrollView>
+        {/* On a single page the way back and the painting's flight pass under the page's next step. */}
+        {spreadOpen ? null : <JournalReturnTab top={insets.top + 6} onPress={handleBackPress} />}
+        {spreadOpen ? null : coverFlightView}
         {/* The page's next step, at the foot of the reading's page. */}
         {!isEditing && !isInteractingWithNote && !isKeyboardVisible && (spreadOpen || !hasIllustratedCover || readingActionVisible)
           && !(sealShowsReading && !isSavedArrival) && !previewHidesDock ? (
@@ -3432,13 +3446,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
           </View>
         ) : null}
         </JournalSpreadLeaf>
-
-        {/* Two facing pages keep the way back on the left-hand page, always in sight. */}
-        {spreadOpen ? null : <JournalReturnTab top={insets.top + 6} onPress={handleBackPress} />}
-        {coverFlight && paintedArtwork ? (
-          <CoverFlight source={paintedArtwork} from={coverFlight.from} to={coverFlight.to} height={coverHeight} travel={coverTravel}
-            landed={coverFlight.landed} onArrived={revealPlate} onGone={coverFlightGone} />
-        ) : null}
+        {/* On two facing pages the painting flies across the binding, from the seal to the left-hand page. */}
+        {spreadOpen ? coverFlightView : null}
 
         {isEditing && (
           <View pointerEvents="auto" testID={TID.Component.DreamEditor} className="absolute inset-0 bg-ink-overlay"

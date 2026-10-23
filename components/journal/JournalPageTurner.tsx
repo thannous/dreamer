@@ -662,23 +662,29 @@ export function JournalPageTurner({ dream, newer, older, folio, tonight = false,
   // page turned to has faded in over it.
   const beneathRight = useAnimatedStyle(() => ({ opacity: leafBeneath(phase.get(), direction.get(), FORWARD) }));
   const beneathLeft = useAnimatedStyle(() => ({ opacity: leafBeneath(phase.get(), direction.get(), BACKWARD) }));
+  // The shadows fall only while a hand or the page's own weight turns the leaf: once it lies
+  // down, the pages turned to show as they are until the dream page fades in over them.
   const beneathRightShade = useAnimatedStyle(() => ({
-    opacity: interpolate(leafTurn(phase.get(), direction.get(), progress.get(), FORWARD), [0, ON_EDGE], [0.4, 0], Extrapolation.CLAMP)
-      * leafBeneath(phase.get(), direction.get(), FORWARD),
+    opacity: phase.get() !== IDLE ? 0
+      : interpolate(leafTurn(phase.get(), direction.get(), progress.get(), FORWARD), [0, ON_EDGE], [0.4, 0], Extrapolation.CLAMP)
+        * leafBeneath(phase.get(), direction.get(), FORWARD),
   }));
   const beneathLeftShade = useAnimatedStyle(() => ({
-    opacity: interpolate(leafTurn(phase.get(), direction.get(), progress.get(), BACKWARD), [0, ON_EDGE], [0.4, 0], Extrapolation.CLAMP)
-      * leafBeneath(phase.get(), direction.get(), BACKWARD),
+    opacity: phase.get() !== IDLE ? 0
+      : interpolate(leafTurn(phase.get(), direction.get(), progress.get(), BACKWARD), [0, ON_EDGE], [0.4, 0], Extrapolation.CLAMP)
+        * leafBeneath(phase.get(), direction.get(), BACKWARD),
   }));
   // The turning leaf's other side, from on edge at the binding to lying flat; once the leaf
   // is down, it fades off the dream page turned to as that page fades in beneath it.
   const overleafLeft = useAnimatedStyle(() => overleaf(phase.get(), direction.get(), progress.get(), settle.get(), FORWARD));
   const overleafRight = useAnimatedStyle(() => overleaf(phase.get(), direction.get(), progress.get(), settle.get(), BACKWARD));
   const overleafLeftShade = useAnimatedStyle(() => ({
-    opacity: interpolate(leafTurn(phase.get(), direction.get(), progress.get(), FORWARD), [ON_EDGE, 1], [0.45, 0], Extrapolation.CLAMP),
+    opacity: phase.get() !== IDLE ? 0
+      : interpolate(leafTurn(phase.get(), direction.get(), progress.get(), FORWARD), [ON_EDGE, 1], [0.45, 0], Extrapolation.CLAMP),
   }));
   const overleafRightShade = useAnimatedStyle(() => ({
-    opacity: interpolate(leafTurn(phase.get(), direction.get(), progress.get(), BACKWARD), [ON_EDGE, 1], [0.45, 0], Extrapolation.CLAMP),
+    opacity: phase.get() !== IDLE ? 0
+      : interpolate(leafTurn(phase.get(), direction.get(), progress.get(), BACKWARD), [ON_EDGE, 1], [0.45, 0], Extrapolation.CLAMP),
   }));
   const spreadTurn = useMemo(() => (spreadOpen ? { phase, direction, progress } : null), [direction, phase, progress, spreadOpen]);
 
