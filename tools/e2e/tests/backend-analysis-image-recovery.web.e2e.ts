@@ -94,6 +94,11 @@ test('Plus HD reanalysis resumes its requested image once after reload', {
     await openDream();
     await expect(page.getByText(analysisText, { exact: true })).toBeVisible();
     expect(await jobs()).toEqual(recovered);
+    const receipts = await admin.from('quota_usage').select('id')
+      .eq('user_id', accounts.plus.id).eq('quota_type', 'analysis')
+      .eq('metadata->>analysis_request_id', pending[0].client_request_id);
+    expect(receipts.error).toBeNull();
+    expect(receipts.data).toHaveLength(1);
     const state = await recovery.state();
     expect(state.analysisProviderCalls).toBe(1);
     expect(new Set(state.analysisRequests).size).toBe(1);

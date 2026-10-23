@@ -80,4 +80,6 @@ Le [parcours backend HD](../../../tools/e2e/tests/backend-analysis-image-recover
 
 Les trois parcours vocaux englobent désormais la modification de permission et `app.open()` dans leur `try/finally`. L’injection sur leurs callbacks réels couvre les échecs de permission, de lancement et d’assertion après lancement : zéro nettoyage sur sept avant correction, sept sur sept après, avec conservation de l’erreur initiale. Ce contrôle isolé couvre une panne de lanceur qu’un parcours natif normal ne peut pas provoquer de façon fiable. Preuve privée : `outputs/pr557-review-20261023/voice-cleanup-after.json` dans le checkout principal.
 
+Le parcours réel a aussi révélé un refus serveur de la réanalyse Plus en file d’attente (HTTP 409), alors que le chemin synchrone l’autorise déjà. La migration locale `20261023120000_preserve_plus_queued_reanalysis.sql` aligne cette admission, puis marque la nouvelle analyse en attente sans supprimer la lecture précédente. Le contre-test RPC vérifie l’admission et sa répétition, le refus Free, la propriété du rêve et le plafond inchangé de dix analyses Plus sur 24 heures. La migration n’a pas été déployée.
+
 La révision, le résultat du parcours HD et le résultat final `verify:pr` sont consignés dans la PR. Ces corrections ne constituent pas un nouveau rejeu iOS/Android ; la limite vocale iOS ci-dessus reste ouverte.
