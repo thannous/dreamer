@@ -47,6 +47,11 @@ const NATIVE_SHEET_HORIZONTAL_INSET = 0;
 const IOS_SHEET_MAX_WIDTH = 540;
 const ANDROID_SHEET_MAX_WIDTH = 640;
 
+/** The tallest a sheet's content gets in this window, leaving the scrim in sight above it. */
+export function getBottomSheetMaximumHeight(viewportHeight: number, insets: { top: number; bottom: number }) {
+  return Math.max(160, viewportHeight - insets.top - insets.bottom - 72);
+}
+
 export function getNativeBottomSheetContentWidth(
   viewportWidth: number,
   platform: 'android' | 'ios',
@@ -78,7 +83,7 @@ export function BottomSheet({
 }: BottomSheetProps) {
   const { width: viewportWidth, height: viewportHeight } = useWindowDimensions();
   const insets = useSafeAreaInsets();
-  const maximumHeight = Math.max(160, viewportHeight - insets.top - insets.bottom - 72);
+  const maximumHeight = getBottomSheetMaximumHeight(viewportHeight, insets);
   const previouslyFocusedElementRef = useRef<{ focus?: () => void } | null>(null);
   const wasVisibleRef = useRef(false);
   const [presentationEpoch, setPresentationEpoch] = useState(0);

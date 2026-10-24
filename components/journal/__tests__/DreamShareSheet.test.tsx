@@ -1,6 +1,6 @@
 /* @jest-environment jsdom */
 import React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, jest } from '@jest/globals';
 
 import { DreamShareSheet } from '@/components/journal/DreamShareSheet';
@@ -12,22 +12,32 @@ jest.mock('react-native', () => {
   return {
     Platform: { OS: 'ios' },
     Text: ({ children }: { children?: React.ReactNode }) => <span>{children}</span>,
-    View: ({ children, accessibilityLabel }: { children?: React.ReactNode; accessibilityLabel?: string }) => (
-      <div aria-label={accessibilityLabel}>{children}</div>
-    ),
+    View: ({ children, accessibilityLabel, style, onLayout }: {
+      children?: React.ReactNode; accessibilityLabel?: string; style?: { width?: number; height?: number }; onLayout?: any;
+    }) => {
+      // The preview reports where it starts; the unlabelled measured view holds the choices.
+      if (onLayout) mockLayouts[accessibilityLabel ?? 'choices'] = onLayout;
+      return <div aria-label={accessibilityLabel} data-size={accessibilityLabel ? `${style?.width}x${style?.height}` : undefined}>{children}</div>;
+    },
   };
 });
 
+// What the sheet and the body measure, as a short window would.
+let mockReportBodyRoom: ((room: number) => void) | undefined;
+const mockLayouts: Record<string, (event: unknown) => void> = {};
 jest.mock('@/components/ui/StandardBottomSheet', () => ({
-  StandardBottomSheet: ({ visible, title, children, actions, dismissBehavior }: any) => visible ? (
-    <section data-testid="share-sheet" data-dismiss={dismissBehavior}>
-      <h1>{title}</h1>
-      {children}
-      <button data-testid={actions.primaryTestID} data-loading={String(Boolean(actions.primaryLoading))} onClick={actions.onPrimary}>
-        {actions.primaryLabel}
-      </button>
-    </section>
-  ) : null,
+  StandardBottomSheet: ({ visible, title, children, actions, dismissBehavior, onBodyRoom }: any) => {
+    mockReportBodyRoom = onBodyRoom;
+    return visible ? (
+      <section data-testid="share-sheet" data-dismiss={dismissBehavior}>
+        <h1>{title}</h1>
+        {children}
+        <button data-testid={actions.primaryTestID} data-loading={String(Boolean(actions.primaryLoading))} onClick={actions.onPrimary}>
+          {actions.primaryLabel}
+        </button>
+      </section>
+    ) : null;
+  },
 }));
 
 jest.mock('@/components/motion', () => ({
@@ -139,6 +149,28 @@ describe('DreamShareSheet', () => {
     expect(screen.getByTestId('share-sheet').getAttribute('data-dismiss')).toBe('pan');
     rerender(<DreamShareSheet {...props} capturing />);
     expect(screen.getByTestId('share-sheet').getAttribute('data-dismiss')).toBe('none');
+  });
+
+  // On the folded iPhone Duo the body has about 410 points between the sheet's header and its
+  // button; 112 above the preview and 102 of choices leave the preview 176, never below 160.
+  it('gives the choices the height they need above the button, out of the preview', () => {
+    renderSheet();
+    const previewSize = () => screen.getByLabelText('journal.detail.share_sheet.preview').getAttribute('data-size');
+    const measure = (key: string, y: number, height: number) => act(() => mockLayouts[key]({ nativeEvent: { layout: { x: 0, y, width: 326, height } } }));
+    expect(previewSize()).toBe('216x270');
+    act(() => mockReportBodyRoom?.(410));
+    measure('journal.detail.share_sheet.preview', 112, 270);
+    expect(previewSize()).toBe('216x270');
+    measure('choices', 402, 102);
+    expect(previewSize()).toBe('140.8x176');
+    // Measured again at its new size, the preview keeps it: nothing it measures depends on it.
+    measure('journal.detail.share_sheet.preview', 112, 176);
+    measure('choices', 308, 102);
+    expect(previewSize()).toBe('140.8x176');
+    act(() => mockReportBodyRoom?.(300));
+    expect(previewSize()).toBe('128x160');
+    act(() => mockReportBodyRoom?.(700));
+    expect(previewSize()).toBe('216x270');
   });
 
   it('starts again from the first offer each time it opens', () => {
