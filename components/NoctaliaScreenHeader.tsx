@@ -241,6 +241,10 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
     );
   }
 
+  // Over its painting the header reads like the tab header: full ink, and buttons on a dark
+  // scrim with a hairline, legible wherever the painting is bright.
+  const painted = Boolean(scene && backdrop);
+
   return (
     <Animated.View onLayout={(event) => setMeasuredHeight(event.nativeEvent.layout.height)}
       style={[fadeStyle, styles.container, isProminent && styles.prominentContainer, variant === 'editorial' && styles.editorialContainer, { paddingTop: (includeTopInset ? insets.top : 0) + ThemeLayout.spacing.sm, borderBottomColor: noctalia.surface.border }]}>
@@ -269,7 +273,7 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
             accessibilityRole={isProminent || variant === 'editorial' ? 'header' : undefined}
             allowFontScaling={false}
             style={[styles.subtitle, isProminent && styles.prominentTitle, variant === 'editorial' && styles.editorialTitle, scene && paintedTextShadow, {
-              color: isProminent || variant === 'editorial' ? noctalia.text.primary : noctalia.text.secondary,
+              color: isProminent || variant === 'editorial' || painted ? noctalia.text.primary : noctalia.text.secondary,
               fontSize: titleTypography.fontSize * titleFontScale,
               lineHeight: titleTypography.lineHeight * titleFontScale,
             }]}
@@ -296,8 +300,10 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
                 style={[
                   styles.iconButton,
                   {
-                    backgroundColor: action.active ? noctalia.action.primary : iconButtonBg,
-                    borderColor: action.active ? noctalia.action.primaryBorder : noctalia.surface.border,
+                    backgroundColor: action.active ? noctalia.action.primary
+                      : painted ? `${noctalia.screen.background}B8` : iconButtonBg,
+                    borderColor: action.active ? noctalia.action.primaryBorder
+                      : painted ? noctalia.text.tertiary : noctalia.surface.border,
                   },
                 ]}
                 hitSlop={8}
@@ -308,7 +314,7 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
                 <IconSymbol
                   name={action.icon}
                   size={20}
-                  color={action.active ? noctalia.action.primaryText : quietIconColor}
+                  color={action.active ? noctalia.action.primaryText : painted ? noctalia.text.primary : quietIconColor}
                 />
               </Pressable>
             ))}
