@@ -57,9 +57,14 @@ type Tokens = ReturnType<typeof getNoctaliaDesignTokens>;
 const HERO_TOKENS = getNoctaliaDesignTokens(DarkTheme, 'dark');
 const SKY_FALLBACK = DREAMER_ARTWORK.symbols;
 const TOP_BAR_HEIGHT = 52;
-// How much of the painting, from its foot, the title and description may cover: about where
-// its veil starts to darken.
+// How much of the painting, from its foot, the title and description may cover before the
+// painting grows to hold them.
 const HERO_COPY_SHARE = 0.55;
+// The painting's veil is dark enough to read on over about its lower 40 %: copy that climbs
+// higher brings a veil of its own.
+const VEIL_DARK_SHARE = 0.4;
+// How far above the title the copy's own veil starts to darken.
+const COPY_VEIL_LEAD = 48;
 const BODY_GUTTER = 24;
 // The painted scenes keep a reading size on a wide window.
 const SCENES_MAX_WIDTH = 640;
@@ -166,6 +171,11 @@ export default function SymbolDetailScreen() {
   // grows instead of laying the copy over its bright middle.
   const copyFitHeight = Math.min(windowHeight * 0.9, Math.max(0, heroCopyHeight - heroDusk) / HERO_COPY_SHARE);
   const heroHeight = Math.round(Math.max(paintingHeight, copyFitHeight)) + heroDusk;
+  // Even grown (up to 90 % of the window), the painting can leave a long description's title
+  // and first lines on its lighter middle: the copy then brings a veil of its own, deeper the
+  // higher it climbs. Measured against the whole hero, as the painting's own veil is.
+  const copyShare = heroHeight > 0 ? heroCopyHeight / heroHeight : 0;
+  const copyVeil = Math.min(1, Math.max(0, (copyShare - VEIL_DARK_SHARE) / 0.15)) * 0.5;
   const heroFrame = useMemo(() => ({ width: heroWidth, height: heroHeight }), [heroHeight, heroWidth]);
   const backdropSource = useMemo(
     // The smallest width is plenty under a 40 point blur.
@@ -298,6 +308,14 @@ export default function SymbolDetailScreen() {
               locations={[0, 0.3, 0.56, 0.9]}
               style={StyleSheet.absoluteFill}
             />
+            {copyVeil > 0 ? (
+              <LinearGradient
+                pointerEvents="none"
+                colors={['rgba(9,4,19,0)', `rgba(9,4,19,${copyVeil.toFixed(2)})`]}
+                locations={[0, COPY_VEIL_LEAD / (heroCopyHeight + COPY_VEIL_LEAD)]}
+                style={[styles.copyVeil, { height: heroCopyHeight + COPY_VEIL_LEAD }]}
+              />
+            ) : null}
             <LinearGradient
               pointerEvents="none"
               colors={mode === 'dark'
@@ -545,6 +563,7 @@ const styles = StyleSheet.create({
   emptyText: { fontFamily: Fonts.outfit.medium, fontSize: TypeScale.body.fontSize },
   hero: { overflow: 'hidden', justifyContent: 'flex-end', backgroundColor: '#090413' },
   heroFade: { position: 'absolute', left: 0, right: 0, bottom: 0, height: 36 },
+  copyVeil: { position: 'absolute', left: 0, right: 0, bottom: 0 },
   heroCopy: { paddingHorizontal: 24, paddingBottom: 30, gap: 14 },
   chip: {
     alignSelf: 'flex-start',
