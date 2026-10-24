@@ -1,5 +1,5 @@
 import { spawn, spawnSync } from 'node:child_process';
-import { existsSync, readFileSync, readdirSync, openSync, closeSync, unlinkSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, openSync, closeSync, unlinkSync, writeFileSync, mkdirSync, renameSync } from 'node:fs';
 import { createHash, randomUUID } from 'node:crypto';
 import { createRequire } from 'node:module';
 import { availableParallelism, homedir, tmpdir } from 'node:os';
@@ -73,12 +73,12 @@ if (nativeJourneys && (product !== 'dreamer' || platform === 'web' || env.E2E_PE
   throw new Error('Local backend journeys require Dreamer on one owned native QA target.');
 if (nativeJourneys) env.E2E_NATIVE_JOURNEYS = '1';
 // Local web files run in parallel against the one local server, each attempt in its
-// own browser context and storage: half the cores, at most four. CI keeps e2e's single
+// own browser context and storage: half the cores, at most eight. CI keeps e2e's single
 // worker and shards; a native target drives its one named device. The resolved count
 // reaches the config and the evidence's rerun environment.
 if (['backend', 'branch'].includes(product)) env.E2E_WORKERS = '1';
 else if (platform === 'web' && env.E2E_WORKERS === undefined)
-  env.E2E_WORKERS = String(!['', '0', 'false'].includes(env.CI ?? '') ? 1 : Math.min(4, Math.max(1, Math.floor(availableParallelism() / 2))));
+  env.E2E_WORKERS = String(!['', '0', 'false'].includes(env.CI ?? '') ? 1 : Math.min(8, Math.max(1, Math.floor(availableParallelism() / 2))));
 function cliEnvironment() {
   if (platform !== 'web') return env;
   return {
@@ -316,6 +316,46 @@ function collectCampaign() {
   }
   writeOnce(join(output, 'campaign.json'), { campaignId, revision: sourceBefore.revision, ...aggregate });
 }
+// e2e starts the slowest files first from the previous report in the output
+// directory, and each run gets a new one. The last report of a run with no
+// selection is kept in the clone's git directory, shared by every worktree
+// (verify:release runs in one), and seeded into the next output directory.
+function durationHistory() {
+  try { return join(read('git', ['rev-parse', '--path-format=absolute', '--git-common-dir']), 'verify-cache', 'e2e-durations', `${product}-${platform}.report.json`); }
+  catch { return null; }
+}
+// The history only orders files: without it, or unreadable, they start in
+// collection order and nothing else changes.
+function seedDurations(history) {
+  if (!history || !existsSync(history)) return null;
+  try {
+    const seed = readFileSync(history);
+    writeFileSync(join(output, 'report.json'), seed, { flag: 'wx' });
+    return seed;
+  } catch { return null; }
+}
+// Only a run that reached the app measured its files: a blocked one (the app
+// never answered) fails every test in milliseconds and would start the slowest last.
+function measuredDurations(report) {
+  try {
+    const { run } = JSON.parse(report);
+    return run.status !== 'blocked' && run.summary.passed > 0;
+  } catch { return false; }
+}
+// A seed the run did not replace is removed: its provenance predates this run,
+// so it could never qualify, and no later reader mistakes it for this run's report.
+function keepDurations(history, seed, selected) {
+  const report = join(output, 'report.json');
+  if (!existsSync(report)) return;
+  const written = readFileSync(report);
+  if (seed && written.equals(seed)) { unlinkSync(report); return; }
+  if (!history || selected || !measuredDurations(written)) return;
+  try {
+    mkdirSync(dirname(history), { recursive: true });
+    writeFileSync(`${history}.${process.pid}`, written);
+    renameSync(`${history}.${process.pid}`, history);
+  } catch {}
+}
 async function runSdk() {
   // The auth script rejects production and unlisted targets before any request.
   // Sessions stay in ignored .auth/; their tokens never enter SDK step arguments.
@@ -329,10 +369,12 @@ async function runSdk() {
   const collection = JSON.parse(read(process.execPath, [...webNodeArgs, cli, 'list', ...collectionArgs, '--reporter', 'json'], { cwd, env: cliEnvironment() }));
   writeOnce(join(output, 'collection.json'), collection);
   if (!collection.pairs?.length) throw new Error('No selected pairs.');
+  const history = durationHistory();
+  const seed = seedDurations(history);
   sdkLaunched = true;
   const stopStallMonitor = startHostStallMonitor();
   try { primary = await execute(process.execPath, [...webNodeArgs, cli, 'run', ...args], 'sdk.log', cliEnvironment()); }
-  finally { hostStalls = stopStallMonitor(); }
+  finally { hostStalls = stopStallMonitor(); keepDurations(history, seed, collectionArgs.length > 0); }
   if (primary === 0) {
     const report = JSON.parse(readFileSync(join(output, 'report.json'), 'utf8'));
     const proof = verifyReport(report, { target: `${product}-${platform}`, platform, revision: sourceBefore.revision,

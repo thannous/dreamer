@@ -45,8 +45,49 @@ const SITE_ONLY = [
   'tools/e2e/tests/**',
 ];
 
-// Site inputs, kept at least as broad as the former CI routing.
-const SITE = ['docs-src/', 'data/', 'scripts/', 'package.json', 'package-lock.json', '.nvmrc'];
+// What `docs:build` and `docs:check` read: every tracked file they opened,
+// traced with strace on master 3cd790554, plus the scripts their require graph
+// reaches on other paths (scripts/verify-local-config.test.js keeps the list
+// covering that graph). A PR that changes none of them skips the site check,
+// and a later push that leaves them as they were reuses its pass. A release
+// rebuilds the site whatever changed.
+const SITE_SCRIPTS = [
+  'build-content-manifest', 'build-experience', 'build-guides-pages', 'build-site-manifest',
+  'check-article-date-contract', 'check-content-hub-contract', 'check-content-release-gates',
+  'check-docs-deploy-surface', 'check-docs-links', 'check-docs-shell', 'check-image-seo-contract',
+  'check-intent-ownership', 'check-public-url-stability', 'check-public-url-stability.test',
+  'check-symbol-illustration-parity', 'check-symbol-image-contract', 'check-web-performance-contract',
+  'docs-build', 'docs-check', 'generate-blog-responsive-images', 'generate-image-seo-assets',
+  'generate-sitemap-v2', 'generate-symbol-avif-images', 'generate-symbol-hero-posters',
+  'generate-symbol-responsive-images', 'optimize-homepage-hero', 'sync-app-symbol-dictionary',
+  'validate-i18n-seo',
+].map((name) => `scripts/${name}.js`);
+const SITE_LIBS = [
+  'ahrefs-analytics', 'alternatives-table', 'article-date-contract', 'atlas-motion',
+  'canonical-organization', 'content-hub-registry', 'docs-check-helpers', 'docs-deploy-staging',
+  'docs-renderer', 'docs-seo-utils', 'docs-site-config', 'docs-source-utils', 'docs-view-transitions',
+  'educational-diagram-v2', 'experience-tier', 'generated-page-writer', 'guide-dictionary-model',
+  'image-build-cache', 'image-seo-assets', 'landing-stylesheet', 'lucide-inline',
+  'minify-static-stylesheets', 'page-illustrations', 'pages-redirect-contract', 'site-manifest',
+  'site-media', 'symbol-image-assets', 'symbol-locales',
+].map((name) => `scripts/lib/${name}.js`);
+const SITE = [
+  'docs-src/',
+  'data/',
+  ...SITE_SCRIPTS,
+  ...SITE_LIBS,
+  'scripts/lib/docs-components/',
+  // docs:check scans the archived one-shot SEO scripts.
+  'scripts/archive/seo-one-shots/',
+  // The plan facts the pages state, and the site's own dependency manifest.
+  'constants/limits.ts',
+  'apps/site/dependencies.js',
+  'apps/site/package.json',
+  'package.json',
+  'package-lock.json',
+  '.npmrc',
+  '.nvmrc',
+];
 
 // apps/meditation and the shared files .circleci/dependency-consumers.tsv routes to it.
 const MEDITATION = [
@@ -357,11 +398,12 @@ export default {
     // origin/master (scripts/run-jest-changed.js). Whole tree: tests read files.
     // Picks its tests from the diff: reused only against the same merge base.
     // JEST_CHANGED_SINCE would override that base (HEAD selects no test), so
-    // the check never inherits it.
+    // the check never inherits it. Workers come from jest.config.js: on PR
+    // #570's 1,314 related tests, 95 s in band against 42 s on 4 workers.
     {
       name: 'jest-changed',
       perBase: true,
-      command: 'npm run test:changed -- --runInBand --watchman=false',
+      command: 'npm run test:changed -- --watchman=false',
       env: { JEST_CHANGED_SINCE: '' },
     },
     { name: 'db-contracts', command: DB_CONTRACTS },
@@ -399,7 +441,7 @@ export default {
     },
 
     // ---- verify:pr, only when the commit changes that surface since origin/master.
-    { name: 'site', command: 'npm run docs:build && npm run docs:check', when: SITE },
+    { name: 'site', command: 'npm run docs:build && npm run docs:check', inputs: SITE, when: SITE },
     {
       name: 'ci-contracts', command: CI_CONTRACTS,
       when: [
@@ -422,11 +464,11 @@ export default {
       kinds: ['release'],
     },
     { name: 'jest-full', command: 'npm run test:fast', kinds: ['release'] },
-    // noctalia.app (Cloudflare Pages) and the Vercel web app, rebuilt for the delivered commit.
+    // The Vercel web app, rebuilt for the delivered commit. noctalia.app needs no
+    // check of its own here: a release runs `site` above on that commit too.
     // `targets: ['app']` marks what only an app release runs (npm run
     // verify:release, which web:deploy:prod requires); npm run
     // verify:release:site, enough for the static site, leaves it out.
-    { name: 'site-build', command: 'npm run docs:build && npm run docs:check', kinds: ['release'], perCommit: true },
     { name: 'web-build', command: 'npm run build:web', kinds: ['release'], targets: ['app'], perCommit: true },
     {
       name: 'e2e-backend',
