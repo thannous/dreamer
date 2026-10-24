@@ -184,7 +184,7 @@ jest.mock('expo-router', () => ({
 }));
 
 jest.mock('expo-haptics', () => ({
-  notificationAsync: jest.fn(),
+  notificationAsync: jest.fn(async () => undefined),
   NotificationFeedbackType: { Success: 'success', Error: 'error' },
 }));
 
@@ -325,7 +325,7 @@ jest.mock('@/components/journal/JournalDetailSheets', () => ({
     </div>
   ) : null,
   AnalysisNoticeSheet: ({ visible, notice }: any) => visible ? <div role="alert">{notice.message}</div> : null,
-  DeleteConfirmSheet: () => null,
+  DeleteConfirmSheet: ({ visible, onConfirm }: any) => visible ? <button onClick={onConfirm}>Confirm delete</button> : null,
   ImageErrorSheet: () => null,
   QuotaLimitSheet: ({ visible }: any) => visible ? <div data-testid="quota-limit" /> : null,
   ReanalyzeSheet: () => null,
@@ -1487,6 +1487,34 @@ describe('journal detail saved confirmation route', () => {
     expect(analysis).toBeTruthy();
     expect(recall).toBeTruthy();
     expect(screen.getByTestId(TID.Button.DreamRecallStart)).toBeTruthy();
+  });
+
+  // A few frames between the store dropping the dream and router.replace landing: no
+  // journey sees them reliably, and the page under the turner remounts in between.
+  it('never shows the not-found page while its own dream is being deleted', async () => {
+    mockSearchParams = { id: '42' };
+    const replace = require('expo-router').router.replace;
+    replace.mockClear();
+    let settleDelete!: () => void;
+    mockDeleteDream.mockImplementationOnce(() => new Promise<void>((resolve) => { settleDelete = resolve; }));
+    const view = render(<JournalDetailScreen />);
+
+    fireEvent.click(screen.getByTestId(TID.Button.DreamDelete));
+    fireEvent.click(screen.getByText('Confirm delete'));
+    mockDreams = [];
+    view.rerender(<JournalDetailScreen />);
+    expect(screen.queryByText('journal.detail.not_found.title')).toBeNull();
+
+    await act(async () => { settleDelete(); });
+    expect(replace).toHaveBeenCalledWith('/(tabs)/journal');
+    expect(screen.queryByText('journal.detail.not_found.title')).toBeNull();
+  });
+
+  it('still shows the not-found page for a dream that is not there', () => {
+    mockDreams = [];
+    render(<JournalDetailScreen />);
+
+    expect(screen.getByText('journal.detail.not_found.title')).toBeTruthy();
   });
 
   it('exposes delete as a 44 dp button', () => {
