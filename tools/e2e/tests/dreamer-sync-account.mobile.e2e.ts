@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { expect } from 'e2e';
-import { test, nativeLogin, nativeSignOut, nativeJournal, nativeCapture, nativeSave, nativeTap, nativeTranscript } from '../native-backend-fixtures';
+import { test, nativeLogin, nativeSignOut, nativeJournal, nativeCapture, nativeDismissCaptureKeyboard, nativeSave, nativeTap, nativeTranscript } from '../native-backend-fixtures';
 
 const options = { platforms: ['ios', 'android'], tags: ['native-real-backend'], timeout: 360_000 };
 
@@ -95,7 +95,7 @@ test('Dreamer native guest dream and draft survive real sign-in, reconnect and a
     await nativeSave(fixtures, story);
     await nativeCapture(screen);
     await screen.getByTestId('input.dreamTranscript', { visible: true }).fill(draft);
-    await device.dismissKeyboard();
+    await nativeDismissCaptureKeyboard(fixtures);
     // Leave capture normally: its lifecycle flush makes the draft durable before Auth changes.
     await nativeLogin(fixtures);
     await expect.poll(async () => {
