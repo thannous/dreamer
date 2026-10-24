@@ -223,7 +223,11 @@ describe('verify-local.config.mjs', () => {
     // after changing what the build runs. strace found the list; this walk of
     // relative requires and spawned scripts keeps it complete.
     const site = config.checks.find((check) => check.name === 'site');
-    expect(site.inputs).toEqual(site.when);
+    // This test runs in the site check itself, so a PR on the site path runs it.
+    const name = expect.getState().currentTestName.replace(/^verify-local\.config\.mjs /, '');
+    expect(site.command).toContain(`npm run test:file -- scripts/verify-local-config.test.js -t '${name}'`);
+    // A pass is reused only while the site, this test and what it reads are unchanged.
+    expect(site.inputs).toEqual([...site.when, 'scripts/verify-local-config.test.js', 'verify-local.config.mjs', 'scripts/verify-local.mjs', 'jest.config.js']);
     const { existsSync, statSync } = require('node:fs');
     const isFile = (file) => existsSync(file) && statSync(file).isFile();
     const seen = new Set();
