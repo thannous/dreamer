@@ -8,8 +8,8 @@
 // verify-local.config.mjs), and describes its checks in verify-local.config.mjs
 // at its root. Nothing here reads or compares another repository.
 //
-//   node scripts/verify-local.mjs pr       [--rev <rev>] [--force] [--keep] [--external <check>=<evidence>]
-//   node scripts/verify-local.mjs release  [--rev <rev>] [--target <name>]... [--force] [--keep] [--external ...]
+//   node scripts/verify-local.mjs pr       [--rev <rev>] [--force] [--keep] [--external <check>=<evidence>] [--plan [--json]]
+//   node scripts/verify-local.mjs release  [--rev <rev>] [--target <name>]... [--force] [--keep] [--external ...] [--plan [--json]]
 //   node scripts/verify-local.mjs status   [--rev <rev>] [--json]
 //   node scripts/verify-local.mjs proof-block [--rev <rev>]
 //   node scripts/verify-local.mjs hook <remote> [<url>]       (pre-push hook; refs on stdin)
@@ -38,7 +38,13 @@
 // if its paths changed since origin/<main> (a docs-only PR skips typecheck in a
 // fresh clone). A release runs every check, `when` ones included: on the main
 // commit nothing changed since origin/<main>, and a release proves the
-// delivered commit, not a diff (releaseAlways is implied).
+// delivered commit, not a diff (releaseAlways is implied). In `when`, `inputs`
+// and `exclude`, a glob starting with `!` takes files back; the last glob that
+// matches a file decides, as in .gitignore.
+//
+// --plan prints what the run would do with each check (run, reused, out of
+// scope, cannot run here) and a time from the past runs of the clone, then
+// stops: no isolated copy, no run log entry, no proof.
 //
 // --external <check>=<evidence> stands in only for a specialised check whose
 // probe fails here. The evidence is "owner-machine: <host> <note> on <SHA>"
@@ -201,6 +207,10 @@ export function normaliseConfig(raw) {
   for (const check of checks) {
     if (check.parallel && check.install) throw new UsageError(`check ${check.name}: parallel checks cannot install dependencies.`);
     if (names.has(check.name)) throw new UsageError(`check ${check.name} is declared twice.`);
+    for (const field of ['inputs', 'exclude', 'when']) {
+      // A leading `!` has nothing to take back: the list would take no file.
+      if (check[field]?.[0]?.startsWith('!')) throw new UsageError(`check ${check.name}: ${field} starts with ${check[field][0]}, which takes back nothing; put a glob that takes files first.`);
+    }
     names.add(check.name);
     // A release proof must also prove what a PR proof proves.
     if (check.kinds.includes('pr') && !check.kinds.includes('release')) {
@@ -259,8 +269,18 @@ export function globToRegExp(glob) {
   return new RegExp(`^${out}$`);
 }
 
+/**
+ * Whether a list of globs takes the file. A glob starting with `!` takes it
+ * back, and the last glob that matches decides, as in .gitignore:
+ * ['**', '!docs/', 'docs/api.ts'] takes everything but docs/, except docs/api.ts.
+ */
 export function matchesAny(file, globs) {
-  return globs.some((glob) => globToRegExp(glob).test(file));
+  let matched = false;
+  for (const glob of globs) {
+    const negated = glob.startsWith('!');
+    if (negated === matched && globToRegExp(negated ? glob.slice(1) : glob).test(file)) matched = !negated;
+  }
+  return matched;
 }
 
 // ---------------------------------------------------------------- proofs
@@ -1352,7 +1372,7 @@ function removeWorktree(git, dir) {
 // ---------------------------------------------------------------- verify
 
 function parseArgs(argv) {
-  const options = { rev: 'HEAD', targets: [], external: {}, force: false, keep: false, json: false, rest: [] };
+  const options = { rev: 'HEAD', targets: [], external: {}, force: false, keep: false, json: false, plan: false, rest: [] };
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
     const value = () => {
@@ -1370,6 +1390,7 @@ function parseArgs(argv) {
     } else if (arg === '--force') options.force = true;
     else if (arg === '--keep') options.keep = true;
     else if (arg === '--json') options.json = true;
+    else if (arg === '--plan') options.plan = true;
     else if (arg === '--') continue;
     else options.rest.push(arg);
   }
@@ -1382,6 +1403,117 @@ function selectChecks(config, kind, targets) {
     if (!check.targets) return true;
     return kind === 'release' && check.targets.some((target) => targets.includes(target));
   });
+}
+
+/**
+ * What a run does with a check, decided before anything runs: out of scope (a
+ * PR that changes none of its `when` paths; a release runs every check),
+ * reused (a PR whose identical inputs passed already, on any tree), external
+ * or unavailable (its probe fails here), or run. --plan prints these.
+ */
+function decideCheck(check, fingerprint, { kind, scope, base, proofs, open, probe, external }) {
+  // Without a known base the changed files are unknown: nothing is out of scope.
+  if (check.when && kind === 'pr' && scope && !scope.files.some((file) => matchesAny(file, check.when))) {
+    return { action: 'skipped', reason: `no change in its paths since ${base.ref}` };
+  }
+  const reusedFrom = open.has(check.name) ? null : findReusable(proofs, fingerprint);
+  if (reusedFrom) return { action: 'reused', reusedFrom };
+  if (check.requires && !probe(check)) {
+    if (external[check.name]) return { action: 'external', evidence: external[check.name] };
+    return { action: 'unavailable', hint: check.requires.hint ?? 'run it where it can run, then pass --external' };
+  }
+  return { action: 'run' };
+}
+
+/**
+ * The median duration of each check over its real passed runs in the proofs
+ * of the clone, whatever engine wrote them: an estimate, never a result.
+ */
+export function pastDurations(commonDir) {
+  const dir = proofsDir(commonDir);
+  const runs = new Map();
+  for (const name of existsSync(dir) ? readdirSync(dir) : []) {
+    if (!name.endsWith('.json')) continue;
+    let proof;
+    try {
+      proof = JSON.parse(readFileSync(path.join(dir, name), 'utf8'));
+    } catch {
+      continue;
+    }
+    for (const check of Array.isArray(proof?.checks) ? proof.checks : []) {
+      if (check?.result !== 'passed' || check.reused || check.external || !Number.isFinite(check.durationMs)) continue;
+      runs.set(check.name, [...(runs.get(check.name) ?? []), check.durationMs]);
+    }
+  }
+  return new Map([...runs].map(([name, list]) => {
+    const sorted = list.sort((a, b) => a - b);
+    return [name, { ms: sorted[Math.floor(sorted.length / 2)], runs: sorted.length }];
+  }));
+}
+
+const duration = (ms) => {
+  const seconds = Math.round(ms / 1000);
+  return seconds < 60 ? `${seconds} s` : `${Math.floor(seconds / 60)} min ${String(seconds % 60).padStart(2, '0')} s`;
+};
+
+/**
+ * --plan: what verify would do with each check, without an isolated copy, a
+ * run log entry or a proof. The time is the median of past runs; consecutive
+ * parallel checks count as their longest one.
+ */
+function planRun({ kind, sha, tree, base, scope, selected, decisions, durations, json, log }) {
+  const checks = [];
+  let estimateMs = 0;
+  let step = 0;
+  const flush = () => {
+    estimateMs += step;
+    step = 0;
+  };
+  for (const check of selected) {
+    if (!check.parallel) flush();
+    const { decision } = decisions.get(check.name);
+    const item = { name: check.name, action: decision.action };
+    if (decision.reason) item.reason = decision.reason;
+    if (decision.reusedFrom) item.reusedFrom = decision.reusedFrom;
+    if (decision.hint) item.reason = `\`${check.requires.command}\` failed here: ${decision.hint}`;
+    if (decision.action === 'run') {
+      item.parallel = check.parallel;
+      const past = durations.get(check.name);
+      if (past) {
+        Object.assign(item, { estimateMs: past.ms, pastRuns: past.runs });
+        if (check.parallel) step = Math.max(step, past.ms);
+        else estimateMs += past.ms;
+      }
+    }
+    checks.push(item);
+  }
+  flush();
+  const count = (action) => checks.filter((item) => item.action === action).length;
+  const untimed = checks.filter((item) => item.action === 'run' && item.estimateMs === undefined).map((item) => item.name);
+  const plan = {
+    kind, sha, tree, base: { ref: base.ref, sha: base.sha, mergeBase: scope?.mergeBase ?? null },
+    changedFiles: scope ? scope.files.length : null, checks, estimateMs, untimed,
+  };
+  if (json) {
+    log(JSON.stringify(plan, null, 2));
+    return { status: 0, plan };
+  }
+  log(`${PREFIX} plan only: nothing runs, no proof is written. ${scope ? `${scope.files.length} file${scope.files.length === 1 ? '' : 's'} changed since the merge base.` : 'Changes since the base unknown: every check is in scope.'}`);
+  for (const item of checks) {
+    let what;
+    if (item.action === 'run') {
+      const time = item.estimateMs === undefined ? 'no earlier run to time it' : `about ${duration(item.estimateMs)}, median of ${item.pastRuns} run${item.pastRuns === 1 ? '' : 's'}`;
+      what = `runs (${time}${item.parallel ? ', parallel step' : ''})`;
+    } else if (item.action === 'skipped') what = `out of scope (${item.reason})`;
+    else if (item.action === 'reused') what = `reused (same inputs passed on ${item.reusedFrom.sha.slice(0, 12)})`;
+    else if (item.action === 'external') what = 'cannot run here, --external evidence given';
+    else what = `cannot run here (${item.reason})`;
+    log(`${PREFIX}   ${item.name}: ${what}`);
+  }
+  const unavailable = count('unavailable');
+  log(`${PREFIX} plan: ${count('run')} to run, ${count('reused')} reused, ${count('skipped')} out of scope${count('external') ? `, ${count('external')} external` : ''}${unavailable ? `, ${unavailable} cannot run here` : ''}; `
+    + `about ${duration(estimateMs)} of checks${untimed.length ? ` plus ${untimed.join(', ')} (never timed here)` : ''}, without the isolated copy and its setup.`);
+  return { status: 0, plan };
 }
 
 const HEX40 = /(?<![0-9a-f])[0-9a-f]{40}(?![0-9a-f])/gi;
@@ -1507,6 +1639,10 @@ export async function verify(kind, argv = [], {
 } = {}) {
   const options = parseArgs(argv);
   if (options.rest.length) throw new UsageError(`unknown argument ${options.rest[0]}.`);
+  if (options.plan && options.keep) throw new UsageError('--plan makes no isolated copy to keep.');
+  // --plan --json prints the plan alone.
+  const report = log;
+  if (options.plan && options.json) log = () => {};
   const { root, commonDir, git } = resolveRepository(cwd, env);
   const sha = git(['rev-parse', '--verify', `${options.rev}^{commit}`]);
   const tree = git(['rev-parse', `${sha}^{tree}`]);
@@ -1554,7 +1690,7 @@ export async function verify(kind, argv = [], {
   // A release reuses nothing: every release check runs on the delivered commit.
   const proofs = options.force || kind === 'release' ? [] : listProofs(commonDir);
   const command = config.commands[kind];
-  log(`${PREFIX} ${command} on ${sha} (tree ${tree.slice(0, 12)}, base ${base.ref} ${base.sha ? base.sha.slice(0, 12) : 'unknown'}).`);
+  log(`${PREFIX} ${options.plan ? 'plan of ' : ''}${command} on ${sha} (tree ${tree.slice(0, 12)}, base ${base.ref} ${base.sha ? base.sha.slice(0, 12) : 'unknown'}).`);
 
   // --external stands in for a specialised check that cannot run here, and
   // only with evidence for this exact head commit. Anything else writes no proof.
@@ -1580,6 +1716,14 @@ export async function verify(kind, argv = [], {
   // pass) is never reused: only a run that really reruns it can close it.
   const openItems = openChecks(readRunLog(commonDir, sha), config.checks.map((check) => check.name));
   const open = new Set(openItems.map((item) => item.check));
+  const decisions = new Map(selected.map((check) => {
+    const fingerprint = checkFingerprint({ check, files, tree, sha, environment, mergeBase: scope?.mergeBase ?? null });
+    const entry = { name: check.name, command: check.command, fingerprint, specialised: check.specialised };
+    if (check.targets) entry.targets = check.targets;
+    return [check.name, { entry, decision: decideCheck(check, fingerprint, { kind, scope, base, proofs, open, probe, external: options.external }) }];
+  }));
+  if (options.plan) return planRun({ kind, sha, tree, base, scope, selected, decisions, durations: pastDurations(commonDir), json: options.json, log: report });
+
   // A start entry first: a run that never ends (killed, OOM) counts as an
   // interrupted run of every check it selected, so it is never a pass.
   const runId = randomBytes(8).toString('hex');
@@ -1619,37 +1763,26 @@ export async function verify(kind, argv = [], {
       // including dependency installs, builds, and checks after a failed batch.
       if (!check.parallel) finishParallel();
       if (failed) break;
-      const fingerprint = checkFingerprint({ check, files, tree, sha, environment, mergeBase: scope?.mergeBase ?? null });
-      const entry = { name: check.name, command: check.command, fingerprint, specialised: check.specialised };
-      if (check.targets) entry.targets = check.targets;
-
-      // `when` narrows a PR to the paths it changes; a release runs every check.
-      if (check.when && kind === 'pr') {
-        const touched = scope ? scope.files.filter((file) => matchesAny(file, check.when)) : null;
-        if (touched && touched.length === 0) {
-          results.push({ ...entry, result: 'skipped', reason: `no change under ${check.when.join(', ')} since ${base.ref}` });
-          log(`${PREFIX} ${check.name}: out of scope (no change under ${check.when.join(', ')}).`);
-          continue;
-        }
-      }
-      // A PR reuses a result whose inputs are identical, from any tree; a
-      // release has no proofs to reuse.
-      const reusable = open.has(check.name) ? null : findReusable(proofs, fingerprint);
-      if (reusable) {
-        results.push({ ...entry, result: 'passed', reused: true, reusedFrom: reusable });
-        log(`${PREFIX} ${check.name}: reused (same inputs passed on ${reusable.sha.slice(0, 12)}).`);
+      const { entry, decision } = decisions.get(check.name);
+      if (decision.action === 'skipped') {
+        results.push({ ...entry, result: 'skipped', reason: decision.reason });
+        log(`${PREFIX} ${check.name}: out of scope (${decision.reason}).`);
         continue;
       }
-      if (check.requires && !probe(check)) {
-        if (options.external[check.name]) {
-          results.push({ ...entry, result: 'passed', external: options.external[check.name] });
-          log(`${PREFIX} ${check.name}: cannot run here, passed elsewhere (${options.external[check.name]}).`);
-          continue;
-        }
+      if (decision.action === 'reused') {
+        results.push({ ...entry, result: 'passed', reused: true, reusedFrom: decision.reusedFrom });
+        log(`${PREFIX} ${check.name}: reused (same inputs passed on ${decision.reusedFrom.sha.slice(0, 12)}).`);
+        continue;
+      }
+      if (decision.action === 'external') {
+        results.push({ ...entry, result: 'passed', external: decision.evidence });
+        log(`${PREFIX} ${check.name}: cannot run here, passed elsewhere (${decision.evidence}).`);
+        continue;
+      }
+      if (decision.action === 'unavailable') {
         incomplete = true;
-        const hint = check.requires.hint ?? 'run it where it can run, then pass --external';
-        results.push({ ...entry, result: 'unavailable', reason: `\`${check.requires.command}\` failed here: ${hint}` });
-        log(`${PREFIX} ${check.name}: cannot run here (\`${check.requires.command}\` failed). ${hint}.`);
+        results.push({ ...entry, result: 'unavailable', reason: `\`${check.requires.command}\` failed here: ${decision.hint}` });
+        log(`${PREFIX} ${check.name}: cannot run here (\`${check.requires.command}\` failed). ${decision.hint}.`);
         continue;
       }
 
@@ -1961,7 +2094,8 @@ export async function proofBlock(argv = [], { cwd = process.cwd(), env = cleanGi
   if (open.length) lines.push(`- Open on this commit: ${describeOpen(open)}; a run that really reruns them must pass`);
   // A PR can change its own checks or hook rules: say so, for the owner's review.
   const scope = changedFiles(git, base, sha);
-  const delivery = (scope?.files ?? []).filter((file) => matchesAny(file, [...DELIVERY_FILES, ...config.deliveryFiles]));
+  // Two lists: a `!` glob of the config never takes back one of the engine's.
+  const delivery = (scope?.files ?? []).filter((file) => matchesAny(file, DELIVERY_FILES) || matchesAny(file, config.deliveryFiles));
   // Every package.json the PR changes, root and workspaces: its scripts are
   // what the checks run, and it can hold tool config (jest, eslintConfig,
   // prettier, babel). Only a dependency or version change goes unflagged.

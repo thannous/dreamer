@@ -219,7 +219,7 @@ const cachedTypecheck = (name, script) => {
 // tests compare the file with it, so an engine edit is a deliberate change of
 // this pin. No other repository is read or compared.
 export const ENGINE_SHA256 =
-  'b9db26791531e01cd76afdda0a3244b9492e749d9c9c9c924ff832165d6b384b';
+  'bd42265c67911491d230362ce61006979a76b56e1eda9930355f41dbdb3f7eb6';
 
 export default {
   mainBranch: 'master',
