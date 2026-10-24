@@ -3,6 +3,7 @@ import { expect } from 'e2e';
 import { test, nativeLogin, nativeSignOut, nativeJournal, nativeCapture, nativeDismissCaptureKeyboard, nativeSave, nativeTap, nativeTranscript } from '../native-backend-fixtures';
 
 const options = { platforms: ['ios', 'android'], tags: ['native-real-backend'], timeout: 360_000 };
+const IOS_TAB_TOUCH_CLEARANCE = 44;
 
 test('Dreamer native offline creation and edit survive process restart and synchronize exactly once',
   { ...options, tags: [...options.tags, 'native-real-sync'] }, async (fixtures) => {
@@ -88,7 +89,7 @@ test('Dreamer native offline creation and edit survive process restart and synch
 
 test('Dreamer native guest dream and draft survive real sign-in, reconnect and account isolation',
   { ...options, tags: [...options.tags, 'native-real-account'] }, async (fixtures) => {
-    const { app, screen, device, backend } = fixtures;
+    const { app, screen, device, platform, backend } = fixtures;
     const marker = randomUUID().slice(0, 8);
     const story = `Guest lighthouse ${marker} over the sea.`;
     const draft = `Draft garden ${marker} behind a blue door.`;
@@ -157,7 +158,10 @@ test('Dreamer native guest dream and draft survive real sign-in, reconnect and a
           throw new Error('Restored dream card geometry is unavailable.');
         }
         const centerY = button.y + button.height / 2;
-        const navigationTop = Math.min(tab.y, raised?.y ?? tab.y);
+        // iOS exposes no overhang node, yet its Capture tab takes touches above
+        // its reported frame: a card centred 16 pt above it opened Capture
+        // (e2e 0.21.3, mobile 0.12.4). Keep one 44 pt touch target clear there.
+        const navigationTop = Math.min(tab.y, raised?.y ?? tab.y) - (platform === 'ios' ? IOS_TAB_TOUCH_CLEARANCE : 0);
         return { button, tab, raised, centerY, navigationTop, covered: centerY >= navigationTop };
       };
       const beforeScroll = await geometry();
