@@ -601,7 +601,8 @@ function PaywallScreen() {
           <Pressable
             onPress={handleClose}
             disabled={busy}
-            style={({ pressed }) => [styles.closeButton, styles.closeButtonFloating, { backgroundColor: noctalia.surface.raised }, pressed && styles.closeButtonPressed]}
+            // Its edge keeps it apart from the cards it floats over once the page scrolls.
+            style={({ pressed }) => [styles.closeButton, styles.closeButtonFloating, { backgroundColor: noctalia.surface.raised, borderColor: noctalia.surface.border }, pressed && styles.closeButtonPressed]}
             accessibilityRole="button"
             testID={TID.Button.PaywallClose}
           >
@@ -1090,6 +1091,7 @@ const styles = StyleSheet.create({
   closeButtonFloating: {
     alignSelf: 'flex-end',
     paddingHorizontal: 14,
+    borderWidth: 1,
   },
   closeButtonPressed: {
     opacity: 0.7,
